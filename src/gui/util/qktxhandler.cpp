@@ -1,13 +1,13 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qktxhandler_p.h"
-#include "qtexturefiledata_p.h"
-#include <QtEndian>
+#include "bobuiexturefiledata_p.h"
+#include <BobUIEndian>
 #include <QSize>
 #include <QMap>
-#include <QtCore/qiodevice.h>
+#include <BobUICore/qiodevice.h>
 
 //#define KTX_DEBUG
 #ifdef KTX_DEBUG
@@ -16,9 +16,9 @@
 #include <QOpenGLTexture>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 #define KTX_IDENTIFIER_LENGTH 12
 static const char ktxIdentifier[KTX_IDENTIFIER_LENGTH] = { '\xAB', 'K', 'T', 'X', ' ', '1', '1', '\xBB', '\r', '\n', '\x1A', '\n' };
@@ -100,35 +100,35 @@ bool QKtxHandler::canRead(const QByteArray &suffix, const QByteArray &block)
     return block.startsWith(ktxIdentifier);
 }
 
-QTextureFileData QKtxHandler::read()
+BOBUIextureFileData QKtxHandler::read()
 {
     if (!device())
-        return QTextureFileData();
+        return BOBUIextureFileData();
 
     const QByteArray buf = device()->readAll();
     if (static_cast<size_t>(buf.size()) > std::numeric_limits<quint32>::max()) {
-        qCWarning(lcQtGuiTextureIO, "Too big KTX file %s", logName().constData());
-        return QTextureFileData();
+        qCWarning(lcBobUIGuiTextureIO, "Too big KTX file %s", logName().constData());
+        return BOBUIextureFileData();
     }
 
     if (!canRead(QByteArray(), buf)) {
-        qCWarning(lcQtGuiTextureIO, "Invalid KTX file %s", logName().constData());
-        return QTextureFileData();
+        qCWarning(lcBobUIGuiTextureIO, "Invalid KTX file %s", logName().constData());
+        return BOBUIextureFileData();
     }
 
     if (buf.size() < qsizetype(qktxh_headerSize)) {
-        qCWarning(lcQtGuiTextureIO, "Invalid KTX header size in %s", logName().constData());
-        return QTextureFileData();
+        qCWarning(lcBobUIGuiTextureIO, "Invalid KTX header size in %s", logName().constData());
+        return BOBUIextureFileData();
     }
 
     KTXHeader header;
     memcpy(&header, buf.data(), qktxh_headerSize);
     if (!checkHeader(header)) {
-        qCWarning(lcQtGuiTextureIO, "Unsupported KTX file format in %s", logName().constData());
-        return QTextureFileData();
+        qCWarning(lcBobUIGuiTextureIO, "Unsupported KTX file format in %s", logName().constData());
+        return BOBUIextureFileData();
     }
 
-    QTextureFileData texData;
+    BOBUIextureFileData texData;
     texData.setData(buf);
 
     texData.setSize(QSize(decode(header.pixelWidth), decode(header.pixelHeight)));
@@ -142,29 +142,29 @@ QTextureFileData QKtxHandler::read()
     const quint32 bytesOfKeyValueData = decode(header.bytesOfKeyValueData);
     quint32 headerKeyValueSize;
     if (qAddOverflow(qktxh_headerSize, bytesOfKeyValueData, &headerKeyValueSize)) {
-        qCWarning(lcQtGuiTextureIO, "Overflow in size of key value data in header of KTX file %s",
+        qCWarning(lcBobUIGuiTextureIO, "Overflow in size of key value data in header of KTX file %s",
                  logName().constData());
-        return QTextureFileData();
+        return BOBUIextureFileData();
     }
 
     if (headerKeyValueSize >= quint32(buf.size())) {
-        qCWarning(lcQtGuiTextureIO, "OOB request in KTX file %s", logName().constData());
-        return QTextureFileData();
+        qCWarning(lcBobUIGuiTextureIO, "OOB request in KTX file %s", logName().constData());
+        return BOBUIextureFileData();
     }
 
     // File contains key/values
     if (bytesOfKeyValueData > 0) {
         auto keyValueDataView = safeView(buf, qktxh_headerSize, bytesOfKeyValueData);
         if (keyValueDataView.isEmpty()) {
-            qCWarning(lcQtGuiTextureIO, "Invalid view in KTX file %s", logName().constData());
-            return QTextureFileData();
+            qCWarning(lcBobUIGuiTextureIO, "Invalid view in KTX file %s", logName().constData());
+            return BOBUIextureFileData();
         }
 
         auto keyValues = decodeKeyValues(keyValueDataView);
         if (!keyValues) {
-            qCWarning(lcQtGuiTextureIO, "Could not parse key values in KTX file %s",
+            qCWarning(lcBobUIGuiTextureIO, "Could not parse key values in KTX file %s",
                      logName().constData());
-            return QTextureFileData();
+            return BOBUIextureFileData();
         }
 
         texData.setKeyValueMetadata(*keyValues);
@@ -178,21 +178,21 @@ QTextureFileData QKtxHandler::read()
                     { header.pixelWidth, header.pixelHeight, header.pixelDepth }));
 
     if (texData.numLevels() > maxLevels) {
-        qCWarning(lcQtGuiTextureIO, "Too many levels in KTX file %s", logName().constData());
-        return QTextureFileData();
+        qCWarning(lcBobUIGuiTextureIO, "Too many levels in KTX file %s", logName().constData());
+        return BOBUIextureFileData();
     }
 
     if (texData.numFaces() != 1 && texData.numFaces() != 6) {
-        qCWarning(lcQtGuiTextureIO, "Invalid number of faces in KTX file %s", logName().constData());
-        return QTextureFileData();
+        qCWarning(lcBobUIGuiTextureIO, "Invalid number of faces in KTX file %s", logName().constData());
+        return BOBUIextureFileData();
     }
 
     quint32 offset = headerKeyValueSize;
     for (int level = 0; level < texData.numLevels(); level++) {
         const auto imageSizeView = safeView(buf, offset, sizeof(quint32));
         if (imageSizeView.isEmpty()) {
-            qCWarning(lcQtGuiTextureIO, "OOB request in KTX file %s", logName().constData());
-            return QTextureFileData();
+            qCWarning(lcBobUIGuiTextureIO, "OOB request in KTX file %s", logName().constData());
+            return BOBUIextureFileData();
         }
 
         const quint32 imageSize = decode(qFromUnaligned<quint32>(imageSizeView.data()));
@@ -205,14 +205,14 @@ QTextureFileData QKtxHandler::read()
             // Add image data and padding to offset
             const auto padded = nearestMultipleOf4(imageSize);
             if (!padded) {
-                qCWarning(lcQtGuiTextureIO, "Overflow in KTX file %s", logName().constData());
-                return QTextureFileData();
+                qCWarning(lcBobUIGuiTextureIO, "Overflow in KTX file %s", logName().constData());
+                return BOBUIextureFileData();
             }
 
             quint32 offsetNext;
             if (qAddOverflow(offset, *padded, &offsetNext)) {
-                qCWarning(lcQtGuiTextureIO, "OOB request in KTX file %s", logName().constData());
-                return QTextureFileData();
+                qCWarning(lcBobUIGuiTextureIO, "OOB request in KTX file %s", logName().constData());
+                return BOBUIextureFileData();
             }
 
             offset = offsetNext;
@@ -220,9 +220,9 @@ QTextureFileData QKtxHandler::read()
     }
 
     if (!texData.isValid()) {
-        qCWarning(lcQtGuiTextureIO, "Invalid values in header of KTX file %s",
+        qCWarning(lcBobUIGuiTextureIO, "Invalid values in header of KTX file %s",
                  logName().constData());
-        return QTextureFileData();
+        return BOBUIextureFileData();
     }
 
     texData.setLogName(logName());
@@ -274,7 +274,7 @@ std::optional<QMap<QByteArray, QByteArray>> QKtxHandler::decodeKeyValues(QByteAr
     while (offset < quint32(view.size())) {
         const auto keyAndValueByteSizeView = safeView(view, offset, sizeof(quint32));
         if (keyAndValueByteSizeView.isEmpty()) {
-            qCWarning(lcQtGuiTextureIO, "Invalid view in KTX key-value");
+            qCWarning(lcBobUIGuiTextureIO, "Invalid view in KTX key-value");
             return std::nullopt;
         }
 
@@ -283,19 +283,19 @@ std::optional<QMap<QByteArray, QByteArray>> QKtxHandler::decodeKeyValues(QByteAr
 
         quint32 offsetKeyAndValueStart;
         if (qAddOverflow(offset, quint32(sizeof(quint32)), &offsetKeyAndValueStart)) {
-            qCWarning(lcQtGuiTextureIO, "Overflow in KTX key-value");
+            qCWarning(lcBobUIGuiTextureIO, "Overflow in KTX key-value");
             return std::nullopt;
         }
 
         quint32 offsetKeyAndValueEnd;
         if (qAddOverflow(offsetKeyAndValueStart, keyAndValueByteSize, &offsetKeyAndValueEnd)) {
-            qCWarning(lcQtGuiTextureIO, "Overflow in KTX key-value");
+            qCWarning(lcBobUIGuiTextureIO, "Overflow in KTX key-value");
             return std::nullopt;
         }
 
         const auto keyValueView = safeView(view, offsetKeyAndValueStart, keyAndValueByteSize);
         if (keyValueView.isEmpty()) {
-            qCWarning(lcQtGuiTextureIO, "Invalid view in KTX key-value");
+            qCWarning(lcBobUIGuiTextureIO, "Invalid view in KTX key-value");
             return std::nullopt;
         }
 
@@ -305,13 +305,13 @@ std::optional<QMap<QByteArray, QByteArray>> QKtxHandler::decodeKeyValues(QByteAr
 
         const int idx = keyValueView.indexOf('\0');
         if (idx == -1) {
-            qCWarning(lcQtGuiTextureIO, "Invalid key in KTX key-value");
+            qCWarning(lcBobUIGuiTextureIO, "Invalid key in KTX key-value");
             return std::nullopt;
         }
 
         const QByteArrayView keyView = safeView(view, offsetKeyAndValueStart, idx);
         if (keyView.isEmpty()) {
-            qCWarning(lcQtGuiTextureIO, "Overflow in KTX key-value");
+            qCWarning(lcBobUIGuiTextureIO, "Overflow in KTX key-value");
             return std::nullopt;
         }
 
@@ -319,19 +319,19 @@ std::optional<QMap<QByteArray, QByteArray>> QKtxHandler::decodeKeyValues(QByteAr
 
         quint32 offsetValueStart;
         if (qAddOverflow(offsetKeyAndValueStart, keySize, &offsetValueStart)) {
-            qCWarning(lcQtGuiTextureIO, "Overflow in KTX key-value");
+            qCWarning(lcBobUIGuiTextureIO, "Overflow in KTX key-value");
             return std::nullopt;
         }
 
         quint32 valueSize;
         if (qSubOverflow(keyAndValueByteSize, keySize, &valueSize)) {
-            qCWarning(lcQtGuiTextureIO, "Underflow in KTX key-value");
+            qCWarning(lcBobUIGuiTextureIO, "Underflow in KTX key-value");
             return std::nullopt;
         }
 
         const QByteArrayView valueView = safeView(view, offsetValueStart, valueSize);
         if (valueView.isEmpty()) {
-            qCWarning(lcQtGuiTextureIO, "Invalid view in KTX key-value");
+            qCWarning(lcBobUIGuiTextureIO, "Invalid view in KTX key-value");
             return std::nullopt;
         }
 
@@ -339,7 +339,7 @@ std::optional<QMap<QByteArray, QByteArray>> QKtxHandler::decodeKeyValues(QByteAr
 
         const auto offsetNext = nearestMultipleOf4(offsetKeyAndValueEnd);
         if (!offsetNext) {
-            qCWarning(lcQtGuiTextureIO, "Overflow in KTX key-value");
+            qCWarning(lcBobUIGuiTextureIO, "Overflow in KTX key-value");
             return std::nullopt;
         }
 
@@ -354,4 +354,4 @@ quint32 QKtxHandler::decode(quint32 val) const
     return inverseEndian ? qbswap<quint32>(val) : val;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

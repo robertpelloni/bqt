@@ -1,6 +1,6 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #if !defined(QNSWINDOW_PROTOCOL_IMPLMENTATION)
 
@@ -14,9 +14,9 @@
 
 #include <qpa/qwindowsysteminterface.h>
 
-#include <QtGui/private/qhighdpiscaling_p.h>
+#include <BobUIGui/private/qhighdpiscaling_p.h>
 
-Q_STATIC_LOGGING_CATEGORY(lcQpaEvents, "qt.qpa.events");
+Q_STATIC_LOGGING_CATEGORY(lcQpaEvents, "bobui.qpa.events");
 
 static bool isMouseEvent(NSEvent *ev)
 {
@@ -41,27 +41,27 @@ static bool isMouseEvent(NSEvent *ev)
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
     [center addObserverForName:NSWindowDidEnterFullScreenNotification object:nil queue:nil
         usingBlock:^(NSNotification *notification) {
-            objc_setAssociatedObject(notification.object, @selector(qt_fullScreen),
+            objc_setAssociatedObject(notification.object, @selector(bobui_fullScreen),
                 @(YES), OBJC_ASSOCIATION_RETAIN);
         }
     ];
     [center addObserverForName:NSWindowDidExitFullScreenNotification object:nil queue:nil
         usingBlock:^(NSNotification *notification) {
-            objc_setAssociatedObject(notification.object, @selector(qt_fullScreen),
+            objc_setAssociatedObject(notification.object, @selector(bobui_fullScreen),
                 nil, OBJC_ASSOCIATION_RETAIN);
         }
     ];
 }
 
-- (BOOL)qt_fullScreen
+- (BOOL)bobui_fullScreen
 {
-    NSNumber *number = objc_getAssociatedObject(self, @selector(qt_fullScreen));
+    NSNumber *number = objc_getAssociatedObject(self, @selector(bobui_fullScreen));
     return [number boolValue];
 }
 @end
 
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 NSWindow<QNSWindowProtocol> *qnswindow_cast(NSWindow *window)
 {
     if ([window conformsToProtocol:@protocol(QNSWindowProtocol)])
@@ -69,7 +69,7 @@ NSWindow<QNSWindowProtocol> *qnswindow_cast(NSWindow *window)
     else
         return nil;
 }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 @implementation QNSWindow
 #define QNSWINDOW_PROTOCOL_IMPLMENTATION 1
@@ -152,7 +152,7 @@ QT_END_NAMESPACE
     //
     // The first set of windows should always be blocked by the current
     // modal session, regardless of window type. The latter set may contain
-    // windows with a transient parent, which from Qt's point of view makes
+    // windows with a transient parent, which from BobUI's point of view makes
     // them 'child' windows, so we treat them as operable within the current
     // modal session.
 
@@ -163,11 +163,11 @@ QT_END_NAMESPACE
     // don't have a transient parent set, and we don't want to block them. The
     // assumption is that these windows are only opened intermittently, from
     // within windows that can already be interacted with in this modal session.
-    Qt::WindowType type = m_platformWindow->window()->type();
-    if (type == Qt::Popup)
+    BobUI::WindowType type = m_platformWindow->window()->type();
+    if (type == BobUI::Popup)
         return YES;
 
-    // If the current modal window (top level modal session) is not a Qt window we
+    // If the current modal window (top level modal session) is not a BobUI window we
     // have no way of knowing if this window is transient child of the modal window.
     if (![NSApp.modalWindow conformsToProtocol:@protocol(QNSWindowProtocol)])
         return NO;
@@ -248,7 +248,7 @@ QT_END_NAMESPACE
 {
     NSMutableString *description = [NSMutableString stringWithString:[super description]];
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
     QString contentViewDescription;
     QDebug debug(&contentViewDescription);
     debug.nospace() << "; contentView=" << qnsview_cast(self.contentView) << ">";
@@ -270,8 +270,8 @@ QT_END_NAMESPACE
 
     if ([self isKindOfClass:[QNSPanel class]]) {
         // Only tool or dialog windows should become key:
-        Qt::WindowType type = m_platformWindow->window()->type();
-        if (type == Qt::Tool || type == Qt::Dialog)
+        BobUI::WindowType type = m_platformWindow->window()->type();
+        if (type == BobUI::Tool || type == BobUI::Dialog)
             return YES;
 
         return NO;
@@ -306,10 +306,10 @@ QT_END_NAMESPACE
     // frame then you intend to do all background drawing yourself.
     const QWindow *window = m_platformWindow ? m_platformWindow->window() : nullptr;
     if (!self.opaque && window) {
-        // Qt::Popup also requires clearColor - in qmacstyle
+        // BobUI::Popup also requires clearColor - in qmacstyle
         // we fill background using a special path with rounded corners.
-        if (window->flags().testFlag(Qt::FramelessWindowHint)
-            || (window->flags() & Qt::WindowType_Mask) == Qt::Popup)
+        if (window->flags().testFlag(BobUI::FramelessWindowHint)
+            || (window->flags() & BobUI::WindowType_Mask) == BobUI::Popup)
             return [NSColor clearColor];
     }
 
@@ -363,8 +363,8 @@ QT_END_NAMESPACE
         return; // Platform window went away while processing event
 
     // Cocoa will not deliver mouse events to a window that is modally blocked (by Cocoa,
-    // not Qt). However, an active popup is expected to grab any mouse event within the
-    // application, so we need to handle those explicitly and trust Qt's isWindowBlocked
+    // not BobUI). However, an active popup is expected to grab any mouse event within the
+    // application, so we need to handle those explicitly and trust BobUI's isWindowBlocked
     // implementation to eat events that shouldn't be delivered anyway.
     if (isMouseEvent(theEvent) && QGuiApplicationPrivate::instance()->activePopupWindow()
         && QGuiApplicationPrivate::instance()->isWindowBlocked(m_platformWindow->window(), nullptr)) {

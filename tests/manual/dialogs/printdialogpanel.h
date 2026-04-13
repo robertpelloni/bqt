@@ -1,10 +1,10 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef PRINTDIALOGPANEL_H
 #define PRINTDIALOGPANEL_H
 
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
 
 #include "ui_printdialogpanel.h"
 
@@ -12,13 +12,13 @@
 #include <QPrinter>
 #include <QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QPrinter;
 class QComboBox;
 class QGroupBox;
 class QPushButton;
 class QCheckBox;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 class PageSizeControl;
 class OptionsControl;
@@ -59,5 +59,5 @@ private:
     QScopedPointer<QPrinter> m_printer;
 };
 
-#endif // !QT_NO_PRINTER
+#endif // !BOBUI_NO_PRINTER
 #endif // PRINTDIALOGPANEL_H

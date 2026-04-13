@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qstringbuilder.h"
 #include <private/qstringconverter_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QStringBuilder
-    \inmodule QtCore
+    \inmodule BobUICore
     \internal
     \reentrant
     \since 4.6
@@ -45,7 +45,7 @@ QT_BEGIN_NAMESPACE
     \endlist
 
     The types in the last list point are only available when
-    \c QT_NO_CAST_FROM_ASCII is not defined.
+    \c BOBUI_NO_CAST_FROM_ASCII is not defined.
 
     For building QByteArrays:
 
@@ -58,8 +58,8 @@ QT_BEGIN_NAMESPACE
     if there are three or more of them, and performs equally well in other
     cases.
 
-    \note Defining \c QT_USE_QSTRINGBUILDER at build time (this is the
-    default when building Qt libraries and tools), will make using \c {'+'}
+    \note Defining \c BOBUI_USE_QSTRINGBUILDER at build time (this is the
+    default when building BobUI libraries and tools), will make using \c {'+'}
     when concatenating strings work the same way as \c operator%().
 
     \sa QLatin1StringView, QString
@@ -115,4 +115,4 @@ void QAbstractConcatenable::convertFromUtf8(QByteArrayView in, QChar *&out) noex
     out = QUtf8::convertToUnicode(out, in);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

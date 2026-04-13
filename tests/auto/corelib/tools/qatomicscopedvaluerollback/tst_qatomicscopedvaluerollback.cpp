@@ -1,9 +1,9 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/qatomicscopedvaluerollback.h>
+#include <BobUICore/qatomicscopedvaluerollback.h>
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <chrono>
 
@@ -103,14 +103,14 @@ void tst_QAtomicScopedValueRollback::exceptions()
 {
     std::atomic<bool> b = false;
     bool caught = false;
-    QT_TRY
+    BOBUI_TRY
     {
         QAtomicScopedValueRollback rb(b);
         b = true;
-        QT_THROW(std::bad_alloc()); //if Qt compiled without exceptions this is noop
-        rb.commit(); //if Qt compiled without exceptions, true is committed
+        BOBUI_THROW(std::bad_alloc()); //if BobUI compiled without exceptions this is noop
+        rb.commit(); //if BobUI compiled without exceptions, true is committed
     }
-    QT_CATCH(...)
+    BOBUI_CATCH(...)
     {
         caught = true;
     }
@@ -278,5 +278,5 @@ void tst_QAtomicScopedValueRollback::earlyExitScope_helper(int exitpoint, std::a
     r.commit();
 }
 
-QTEST_MAIN(tst_QAtomicScopedValueRollback)
+BOBUIEST_MAIN(tst_QAtomicScopedValueRollback)
 #include "tst_qatomicscopedvaluerollback.moc"

@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <QAtomicInt>
 #include <QCoreApplication>
@@ -213,18 +213,18 @@ void tst_QAtomicInt::alignment()
 
 void tst_QAtomicInt::constructor_data()
 {
-    QTest::addColumn<int>("value");
+    BOBUIest::addColumn<int>("value");
 
-    QTest::newRow("0") << 31337;
-    QTest::newRow("1") << 0;
-    QTest::newRow("2") << 1;
-    QTest::newRow("3") << -1;
-    QTest::newRow("4") << 2;
-    QTest::newRow("5") << -2;
-    QTest::newRow("6") << 3;
-    QTest::newRow("7") << -3;
-    QTest::newRow("8") << INT_MAX;
-    QTest::newRow("9") << INT_MIN+1;
+    BOBUIest::newRow("0") << 31337;
+    BOBUIest::newRow("1") << 0;
+    BOBUIest::newRow("2") << 1;
+    BOBUIest::newRow("3") << -1;
+    BOBUIest::newRow("4") << 2;
+    BOBUIest::newRow("5") << -2;
+    BOBUIest::newRow("6") << 3;
+    BOBUIest::newRow("7") << -3;
+    BOBUIest::newRow("8") << INT_MAX;
+    BOBUIest::newRow("9") << INT_MIN+1;
 }
 
 void tst_QAtomicInt::constructor()
@@ -257,15 +257,15 @@ void tst_QAtomicInt::copy_constructor()
 
 void tst_QAtomicInt::assignment_operator_data()
 {
-    QTest::addColumn<int>("value");
-    QTest::addColumn<int>("newval");
+    BOBUIest::addColumn<int>("value");
+    BOBUIest::addColumn<int>("newval");
 
-    QTest::newRow("value0") <<  0 <<  1;
-    QTest::newRow("value1") <<  1 <<  0;
-    QTest::newRow("value2") <<  0 << -1;
-    QTest::newRow("value3") << -1 <<  0;
-    QTest::newRow("value4") << -1 <<  1;
-    QTest::newRow("value5") <<  1 << -1;
+    BOBUIest::newRow("value0") <<  0 <<  1;
+    BOBUIest::newRow("value1") <<  1 <<  0;
+    BOBUIest::newRow("value2") <<  0 << -1;
+    BOBUIest::newRow("value3") << -1 <<  0;
+    BOBUIest::newRow("value4") << -1 <<  1;
+    BOBUIest::newRow("value5") <<  1 << -1;
 }
 
 void tst_QAtomicInt::assignment_operator()
@@ -336,40 +336,40 @@ void tst_QAtomicInt::isReferenceCountingWaitFree()
 
 void tst_QAtomicInt::ref_data()
 {
-    QTest::addColumn<int>("value");
-    QTest::addColumn<int>("result");
-    QTest::addColumn<int>("expected");
+    BOBUIest::addColumn<int>("value");
+    BOBUIest::addColumn<int>("result");
+    BOBUIest::addColumn<int>("expected");
 
-    QTest::newRow("data0") <<  0 << 1 << 1;
-    QTest::newRow("data1") << -1 << 0 << 0;
-    QTest::newRow("data2") <<  1 << 1 << 2;
+    BOBUIest::newRow("data0") <<  0 << 1 << 1;
+    BOBUIest::newRow("data1") << -1 << 0 << 0;
+    BOBUIest::newRow("data2") <<  1 << 1 << 2;
 }
 
 void tst_QAtomicInt::ref()
 {
     QFETCH(int, value);
     QAtomicInt x = value;
-    QTEST(x.ref() ? 1 : 0, "result");
-    QTEST(x.loadRelaxed(), "expected");
+    BOBUIEST(x.ref() ? 1 : 0, "result");
+    BOBUIEST(x.loadRelaxed(), "expected");
 }
 
 void tst_QAtomicInt::deref_data()
 {
-    QTest::addColumn<int>("value");
-    QTest::addColumn<int>("result");
-    QTest::addColumn<int>("expected");
+    BOBUIest::addColumn<int>("value");
+    BOBUIest::addColumn<int>("result");
+    BOBUIest::addColumn<int>("expected");
 
-    QTest::newRow("data0") <<  0 << 1 << -1;
-    QTest::newRow("data1") <<  1 << 0 <<  0;
-    QTest::newRow("data2") <<  2 << 1 <<  1;
+    BOBUIest::newRow("data0") <<  0 << 1 << -1;
+    BOBUIest::newRow("data1") <<  1 << 0 <<  0;
+    BOBUIest::newRow("data2") <<  2 << 1 <<  1;
 }
 
 void tst_QAtomicInt::deref()
 {
     QFETCH(int, value);
     QAtomicInt x = value;
-    QTEST(x.deref() ? 1 : 0, "result");
-    QTEST(x.loadRelaxed(), "expected");
+    BOBUIEST(x.deref() ? 1 : 0, "result");
+    BOBUIEST(x.loadRelaxed(), "expected");
 }
 
 void tst_QAtomicInt::isTestAndSetNative()
@@ -422,37 +422,37 @@ void tst_QAtomicInt::isTestAndSetWaitFree()
 
 void tst_QAtomicInt::testAndSet_data()
 {
-    QTest::addColumn<int>("value");
-    QTest::addColumn<int>("expected");
-    QTest::addColumn<int>("newval");
-    QTest::addColumn<bool>("result");
+    BOBUIest::addColumn<int>("value");
+    BOBUIest::addColumn<int>("expected");
+    BOBUIest::addColumn<int>("newval");
+    BOBUIest::addColumn<bool>("result");
 
     // these should succeed
-    QTest::newRow("success0") <<         0 <<         0 <<         0 << true;
-    QTest::newRow("success1") <<         0 <<         0 <<         1 << true;
-    QTest::newRow("success2") <<         0 <<         0 <<        -1 << true;
-    QTest::newRow("success3") <<         1 <<         1 <<         0 << true;
-    QTest::newRow("success4") <<         1 <<         1 <<         1 << true;
-    QTest::newRow("success5") <<         1 <<         1 <<        -1 << true;
-    QTest::newRow("success6") <<        -1 <<        -1 <<         0 << true;
-    QTest::newRow("success7") <<        -1 <<        -1 <<         1 << true;
-    QTest::newRow("success8") <<        -1 <<        -1 <<        -1 << true;
-    QTest::newRow("success9") << INT_MIN+1 << INT_MIN+1 << INT_MIN+1 << true;
-    QTest::newRow("successA") << INT_MIN+1 << INT_MIN+1 <<         1 << true;
-    QTest::newRow("successB") << INT_MIN+1 << INT_MIN+1 <<        -1 << true;
-    QTest::newRow("successC") << INT_MAX   << INT_MAX   << INT_MAX   << true;
-    QTest::newRow("successD") << INT_MAX   << INT_MAX   <<         1 << true;
-    QTest::newRow("successE") << INT_MAX   << INT_MAX   <<        -1 << true;
+    BOBUIest::newRow("success0") <<         0 <<         0 <<         0 << true;
+    BOBUIest::newRow("success1") <<         0 <<         0 <<         1 << true;
+    BOBUIest::newRow("success2") <<         0 <<         0 <<        -1 << true;
+    BOBUIest::newRow("success3") <<         1 <<         1 <<         0 << true;
+    BOBUIest::newRow("success4") <<         1 <<         1 <<         1 << true;
+    BOBUIest::newRow("success5") <<         1 <<         1 <<        -1 << true;
+    BOBUIest::newRow("success6") <<        -1 <<        -1 <<         0 << true;
+    BOBUIest::newRow("success7") <<        -1 <<        -1 <<         1 << true;
+    BOBUIest::newRow("success8") <<        -1 <<        -1 <<        -1 << true;
+    BOBUIest::newRow("success9") << INT_MIN+1 << INT_MIN+1 << INT_MIN+1 << true;
+    BOBUIest::newRow("successA") << INT_MIN+1 << INT_MIN+1 <<         1 << true;
+    BOBUIest::newRow("successB") << INT_MIN+1 << INT_MIN+1 <<        -1 << true;
+    BOBUIest::newRow("successC") << INT_MAX   << INT_MAX   << INT_MAX   << true;
+    BOBUIest::newRow("successD") << INT_MAX   << INT_MAX   <<         1 << true;
+    BOBUIest::newRow("successE") << INT_MAX   << INT_MAX   <<        -1 << true;
 
     // these should fail
-    QTest::newRow("failure0") <<       0   <<       1   <<        ~0 << false;
-    QTest::newRow("failure1") <<       0   <<      -1   <<        ~0 << false;
-    QTest::newRow("failure2") <<       1   <<       0   <<        ~0 << false;
-    QTest::newRow("failure3") <<      -1   <<       0   <<        ~0 << false;
-    QTest::newRow("failure4") <<       1   <<      -1   <<        ~0 << false;
-    QTest::newRow("failure5") <<      -1   <<       1   <<        ~0 << false;
-    QTest::newRow("failure6") << INT_MIN+1 << INT_MAX   <<        ~0 << false;
-    QTest::newRow("failure7") << INT_MAX   << INT_MIN+1 <<        ~0 << false;
+    BOBUIest::newRow("failure0") <<       0   <<       1   <<        ~0 << false;
+    BOBUIest::newRow("failure1") <<       0   <<      -1   <<        ~0 << false;
+    BOBUIest::newRow("failure2") <<       1   <<       0   <<        ~0 << false;
+    BOBUIest::newRow("failure3") <<      -1   <<       0   <<        ~0 << false;
+    BOBUIest::newRow("failure4") <<       1   <<      -1   <<        ~0 << false;
+    BOBUIest::newRow("failure5") <<      -1   <<       1   <<        ~0 << false;
+    BOBUIest::newRow("failure6") << INT_MIN+1 << INT_MAX   <<        ~0 << false;
+    BOBUIest::newRow("failure7") << INT_MAX   << INT_MIN+1 <<        ~0 << false;
 }
 
 void tst_QAtomicInt::testAndSet()
@@ -463,22 +463,22 @@ void tst_QAtomicInt::testAndSet()
 
     {
         QAtomicInt atomic = value;
-        QTEST(atomic.testAndSetRelaxed(expected, newval), "result");
+        BOBUIEST(atomic.testAndSetRelaxed(expected, newval), "result");
     }
 
     {
         QAtomicInt atomic = value;
-        QTEST(atomic.testAndSetAcquire(expected, newval), "result");
+        BOBUIEST(atomic.testAndSetAcquire(expected, newval), "result");
     }
 
     {
         QAtomicInt atomic = value;
-        QTEST(atomic.testAndSetRelease(expected, newval), "result");
+        BOBUIEST(atomic.testAndSetRelease(expected, newval), "result");
     }
 
     {
         QAtomicInt atomic = value;
-        QTEST(atomic.testAndSetOrdered(expected, newval), "result");
+        BOBUIEST(atomic.testAndSetOrdered(expected, newval), "result");
     }
 
     QFETCH(bool, result);
@@ -567,12 +567,12 @@ void tst_QAtomicInt::isFetchAndStoreWaitFree()
 
 void tst_QAtomicInt::fetchAndStore_data()
 {
-    QTest::addColumn<int>("value");
-    QTest::addColumn<int>("newval");
+    BOBUIest::addColumn<int>("value");
+    BOBUIest::addColumn<int>("newval");
 
-    QTest::newRow("data0") << 0 << 1;
-    QTest::newRow("data1") << 1 << 2;
-    QTest::newRow("data2") << 3 << 8;
+    BOBUIest::newRow("data0") << 0 << 1;
+    BOBUIest::newRow("data1") << 1 << 2;
+    BOBUIest::newRow("data2") << 3 << 8;
 }
 
 void tst_QAtomicInt::fetchAndStore()
@@ -655,57 +655,57 @@ void tst_QAtomicInt::isFetchAndAddWaitFree()
 
 void tst_QAtomicInt::fetchAndAdd_data()
 {
-    QTest::addColumn<int>("value1");
-    QTest::addColumn<int>("value2");
+    BOBUIest::addColumn<int>("value1");
+    BOBUIest::addColumn<int>("value2");
 
-    QTest::newRow("0+1") << 0 << 1;
-    QTest::newRow("1+0") << 1 << 0;
-    QTest::newRow("1+2") << 1 << 2;
-    QTest::newRow("2+1") << 2 << 1;
-    QTest::newRow("10+21") << 10 << 21;
-    QTest::newRow("31+40") << 31 << 40;
-    QTest::newRow("51+62") << 51 << 62;
-    QTest::newRow("72+81") << 72 << 81;
-    QTest::newRow("810+721") << 810 << 721;
-    QTest::newRow("631+540") << 631 << 540;
-    QTest::newRow("451+362") << 451 << 362;
-    QTest::newRow("272+181") << 272 << 181;
-    QTest::newRow("1810+8721") << 1810 << 8721;
-    QTest::newRow("3631+6540") << 3631 << 6540;
-    QTest::newRow("5451+4362") << 5451 << 4362;
-    QTest::newRow("7272+2181") << 7272 << 2181;
+    BOBUIest::newRow("0+1") << 0 << 1;
+    BOBUIest::newRow("1+0") << 1 << 0;
+    BOBUIest::newRow("1+2") << 1 << 2;
+    BOBUIest::newRow("2+1") << 2 << 1;
+    BOBUIest::newRow("10+21") << 10 << 21;
+    BOBUIest::newRow("31+40") << 31 << 40;
+    BOBUIest::newRow("51+62") << 51 << 62;
+    BOBUIest::newRow("72+81") << 72 << 81;
+    BOBUIest::newRow("810+721") << 810 << 721;
+    BOBUIest::newRow("631+540") << 631 << 540;
+    BOBUIest::newRow("451+362") << 451 << 362;
+    BOBUIest::newRow("272+181") << 272 << 181;
+    BOBUIest::newRow("1810+8721") << 1810 << 8721;
+    BOBUIest::newRow("3631+6540") << 3631 << 6540;
+    BOBUIest::newRow("5451+4362") << 5451 << 4362;
+    BOBUIest::newRow("7272+2181") << 7272 << 2181;
 
-    QTest::newRow("0+-1") << 0 << -1;
-    QTest::newRow("1+-2") << 1 << -2;
-    QTest::newRow("2+-1") << 2 << -1;
-    QTest::newRow("10+-21") << 10 << -21;
-    QTest::newRow("31+-40") << 31 << -40;
-    QTest::newRow("51+-62") << 51 << -62;
-    QTest::newRow("72+-81") << 72 << -81;
-    QTest::newRow("810+-721") << 810 << -721;
-    QTest::newRow("631+-540") << 631 << -540;
-    QTest::newRow("451+-362") << 451 << -362;
-    QTest::newRow("272+-181") << 272 << -181;
-    QTest::newRow("1810+-8721") << 1810 << -8721;
-    QTest::newRow("3631+-6540") << 3631 << -6540;
-    QTest::newRow("5451+-4362") << 5451 << -4362;
-    QTest::newRow("7272+-2181") << 7272 << -2181;
+    BOBUIest::newRow("0+-1") << 0 << -1;
+    BOBUIest::newRow("1+-2") << 1 << -2;
+    BOBUIest::newRow("2+-1") << 2 << -1;
+    BOBUIest::newRow("10+-21") << 10 << -21;
+    BOBUIest::newRow("31+-40") << 31 << -40;
+    BOBUIest::newRow("51+-62") << 51 << -62;
+    BOBUIest::newRow("72+-81") << 72 << -81;
+    BOBUIest::newRow("810+-721") << 810 << -721;
+    BOBUIest::newRow("631+-540") << 631 << -540;
+    BOBUIest::newRow("451+-362") << 451 << -362;
+    BOBUIest::newRow("272+-181") << 272 << -181;
+    BOBUIest::newRow("1810+-8721") << 1810 << -8721;
+    BOBUIest::newRow("3631+-6540") << 3631 << -6540;
+    BOBUIest::newRow("5451+-4362") << 5451 << -4362;
+    BOBUIest::newRow("7272+-2181") << 7272 << -2181;
 
-    QTest::newRow("-1+0") << -1 << 0;
-    QTest::newRow("-1+2") << -1 << 2;
-    QTest::newRow("-2+1") << -2 << 1;
-    QTest::newRow("-10+21") << -10 << 21;
-    QTest::newRow("-31+40") << -31 << 40;
-    QTest::newRow("-51+62") << -51 << 62;
-    QTest::newRow("-72+81") << -72 << 81;
-    QTest::newRow("-810+721") << -810 << 721;
-    QTest::newRow("-631+540") << -631 << 540;
-    QTest::newRow("-451+362") << -451 << 362;
-    QTest::newRow("-272+181") << -272 << 181;
-    QTest::newRow("-1810+8721") << -1810 << 8721;
-    QTest::newRow("-3631+6540") << -3631 << 6540;
-    QTest::newRow("-5451+4362") << -5451 << 4362;
-    QTest::newRow("-7272+2181") << -7272 << 2181;
+    BOBUIest::newRow("-1+0") << -1 << 0;
+    BOBUIest::newRow("-1+2") << -1 << 2;
+    BOBUIest::newRow("-2+1") << -2 << 1;
+    BOBUIest::newRow("-10+21") << -10 << 21;
+    BOBUIest::newRow("-31+40") << -31 << 40;
+    BOBUIest::newRow("-51+62") << -51 << 62;
+    BOBUIest::newRow("-72+81") << -72 << 81;
+    BOBUIest::newRow("-810+721") << -810 << 721;
+    BOBUIest::newRow("-631+540") << -631 << 540;
+    BOBUIest::newRow("-451+362") << -451 << 362;
+    BOBUIest::newRow("-272+181") << -272 << 181;
+    BOBUIest::newRow("-1810+8721") << -1810 << 8721;
+    BOBUIest::newRow("-3631+6540") << -3631 << 6540;
+    BOBUIest::newRow("-5451+4362") << -5451 << 4362;
+    BOBUIest::newRow("-7272+2181") << -7272 << 2181;
 }
 
 void tst_QAtomicInt::fetchAndAdd()
@@ -790,12 +790,12 @@ void tst_QAtomicInt::operators()
     QCOMPARE(int(atomic), x);
     QCOMPARE(int(atomic), 0x13);
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_CLANG("-Wself-assign-overloaded")
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_CLANG("-Wself-assign-overloaded")
     x = (atomic ^= atomic);
     QCOMPARE(int(atomic), x);
     QCOMPARE(int(atomic), 0);
-QT_WARNING_POP
+BOBUI_WARNING_POP
 }
 
 void tst_QAtomicInt::testAndSet_loop()
@@ -834,7 +834,7 @@ void tst_QAtomicInt::fetchAndAdd_loop()
     }
 }
 
-class FetchAndAddThread : public QThread
+class FetchAndAddThread : public BOBUIhread
 {
 public:
     void run() override
@@ -871,5 +871,5 @@ void tst_QAtomicInt::fetchAndAdd_threadedLoop()
     QCOMPARE(val.loadRelaxed(), 0);
 }
 
-QTEST_MAIN(tst_QAtomicInt)
+BOBUIEST_MAIN(tst_QAtomicInt)
 #include "tst_qatomicint.moc"

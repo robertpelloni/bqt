@@ -1,15 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDBUSABSTRACTINTERFACE_H
 #define QDBUSABSTRACTINTERFACE_H
 
 #include <BobUIDBus/bobuidbusglobal.h>
+<<<<<<< HEAD
 #include <QtCore/qstring.h>
 #include <QtCore/qvariant.h>
 #include <QtCore/qlist.h>
 #include <QtCore/qobject.h>
+=======
+#include <BobUICore/qstring.h>
+#include <BobUICore/qvariant.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qobject.h>
+>>>>>>> origin/dev
 
 #include <BobUIDBus/qdbusmessage.h>
 #include <BobUIDBus/qdbusextratypes.h>
@@ -20,7 +27,7 @@
 #undef interface
 #endif
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
 BOBUI_BEGIN_NAMESPACE
 
@@ -33,7 +40,7 @@ class QDBusAbstractInterfacePrivate;
 class Q_DBUS_EXPORT QDBusAbstractInterfaceBase: public QObject
 {
 public:
-    int qt_metacall(QMetaObject::Call, int, void**) override;
+    int bobui_metacall(QMetaObject::Call, int, void**) override;
 protected:
     QDBusAbstractInterfaceBase(QDBusAbstractInterfacePrivate &dd, QObject *parent);
 private:
@@ -141,5 +148,5 @@ private:
 
 BOBUI_END_NAMESPACE
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS
 #endif

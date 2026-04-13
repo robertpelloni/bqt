@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
 #include <QDataStream>
@@ -21,7 +21,7 @@ int main() {
         QFile out("typedef.q5");
         out.open(QIODevice::ReadWrite);
         QDataStream stream(&out);
-        stream.setVersion(QDataStream::Qt_5_15);
+        stream.setVersion(QDataStream::BobUI_5_15);
         CustomPair p {42, 100};
         qDebug() << p.first << p.second;
         stream << QVariant::fromValue(p);

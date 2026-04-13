@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
   \example ipc/sharedmemory
@@ -81,7 +81,7 @@
   shared memory segment, the segment would be destroyed before we get
   to the next step.
 
-  When the function returns, if the file you selected was qt.png, your
+  When the function returns, if the file you selected was bobui.png, your
   first dialog looks like this.
 
   \image sharedmemory-example_2.png Screenshot of the Shared Memory example

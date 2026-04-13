@@ -1,11 +1,11 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/QTest>
-#include <QtCore/qfile.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qpluginloader.h>
-#include <QtPlugin>
+#include <BobUITest/BOBUIest>
+#include <BobUICore/qfile.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qpluginloader.h>
+#include <BobUIPlugin>
 
 Q_IMPORT_PLUGIN(TestStaticPlugin)
 
@@ -21,7 +21,7 @@ void TestInitResourcesStaticPlugin::resourceFilesExist()
     bool result = false;
     for (QObject *obj : QPluginLoader::staticInstances()) {
         if (obj->metaObject()->className() == QLatin1String("TestStaticPlugin")) {
-            QMetaObject::invokeMethod(obj, "checkResources", Qt::DirectConnection,
+            QMetaObject::invokeMethod(obj, "checkResources", BobUI::DirectConnection,
                                       Q_RETURN_ARG(bool, result));
         }
         break;
@@ -29,5 +29,5 @@ void TestInitResourcesStaticPlugin::resourceFilesExist()
     QVERIFY(result);
 }
 
-QTEST_MAIN(TestInitResourcesStaticPlugin)
+BOBUIEST_MAIN(TestInitResourcesStaticPlugin)
 #include "test_init_resources_static_plugin.moc"

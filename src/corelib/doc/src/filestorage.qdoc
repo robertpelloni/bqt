@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
 \page io-functions.html
 \title File and Datastream Functions
 
 The QIODevice class is the base interface class of all I/O devices in
-\l{Qt Core}.  QIODevice provides both a common implementation and an
+\l{BobUI Core}.  QIODevice provides both a common implementation and an
 abstract interface for devices that support reading and writing of blocks
 of data. The device can be a memory buffer, a file, or a datastream.
 
@@ -17,7 +17,7 @@ read/write operations. Buffering makes functions like \l{QFile::}{getChar()} and
 directly on the device itself.
 
 The QFile class provides functions for reading from and writing to files.
-A QFile may be used by itself or, more conveniently, with a QTextStream or
+A QFile may be used by itself or, more conveniently, with a BOBUIextStream or
 QDataStream.
 
 QBuffer allows you to access a QByteArray using the QIODevice interface.
@@ -29,7 +29,7 @@ An example:
      char ch;
 
      buffer.open(QBuffer::ReadWrite);
-     buffer.write("Qt rocks!");
+     buffer.write("BobUI rocks!");
      buffer.seek(0);
      buffer.getChar(&ch);  // ch == 'Q'
      buffer.getChar(&ch);  // ch == 't'
@@ -51,25 +51,25 @@ by a Sun SPARC running Solaris. You can also use a data stream to read/write
 raw unencoded binary data.
 
 For more details on the datatypes that QDataStream can serialize, see
-\l{Serializing Qt Data Types}.
+\l{Serializing BobUI Data Types}.
 
-The QTextStream class provides a convenient interface for reading and
-writing text. QTextStream can operate on a QIODevice, a QByteArray or
-a QString. Using QTextStream's streaming operators, you can conveniently read
-and write words, lines and numbers. It's also common to use QTextStream to
+The BOBUIextStream class provides a convenient interface for reading and
+writing text. BOBUIextStream can operate on a QIODevice, a QByteArray or
+a QString. Using BOBUIextStream's streaming operators, you can conveniently read
+and write words, lines and numbers. It's also common to use BOBUIextStream to
 read console input and write console output.
 
-There are three general ways to use QTextStream when reading text files:
+There are three general ways to use BOBUIextStream when reading text files:
 
 \list
     \li Chunk by chunk, by calling \l{QBuffer::readLine()}{readLine()} or \l{QBuffer::readAll()}{readAll()}.
-    \li Word by word. QTextStream supports streaming into \l{QString}s, \l{QByteArray}s
+    \li Word by word. BOBUIextStream supports streaming into \l{QString}s, \l{QByteArray}s
         and char* buffers. Words are delimited by space, and leading white space
         is automatically skipped.
     \li Character by character, by streaming into QChar or char types. This
         method is often used for convenient input handling when parsing files,
         independent of character encoding and end-of-line semantics. To skip
-        white space, call \l{QTextStream::}{skipWhiteSpace()}.
+        white space, call \l{BOBUIextStream::}{skipWhiteSpace()}.
 \endlist
 
 QByteArray can be used to store both raw bytes (including \c{\0}) and traditional
@@ -78,10 +78,10 @@ than using const char *. It always ensures that the data is followed by a '\\0'
 terminator, and uses \l{Implicit Sharing}{implicitly shared classes} (copy-on-write)
 to reduce memory usage and avoid needless copying of data.
 
-In addition to QByteArray, Qt also provides the QString class to store string
+In addition to QByteArray, BobUI also provides the QString class to store string
 data. For most purposes, QString is the most appropriate class to use. It stores
 16-bit Unicode characters. It is, however, a good idea to use QByteArray when you
 need to store raw binary data, and when memory conservation is critical (for
-example, with Qt for Embedded Linux).
+example, with BobUI for Embedded Linux).
 
 */

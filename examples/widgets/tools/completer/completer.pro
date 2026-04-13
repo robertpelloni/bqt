@@ -1,5 +1,5 @@
-QT += widgets
-requires(qtConfig(completer))
+BOBUI += widgets
+requires(bobuiConfig(completer))
 
 HEADERS   = fsmodel.h \
             mainwindow.h
@@ -9,5 +9,5 @@ SOURCES   = fsmodel.cpp \
 RESOURCES = completer.qrc
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/tools/completer
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/tools/completer
 INSTALLS += target

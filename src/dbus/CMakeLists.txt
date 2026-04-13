@@ -1,11 +1,11 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## DBus Module:
 #####################################################################
 
-qt_internal_add_module(DBus
+bobui_internal_add_module(DBus
     QMAKE_MODULE_CONFIG dbusadaptors dbusinterfaces
     SOURCES
         dbus_minimal_p.h
@@ -40,22 +40,25 @@ qt_internal_add_module(DBus
         qdbusxmlgenerator.cpp
         qdbusxmlparser.cpp qdbusxmlparser_p.h
         bobuidbusglobal.h bobuidbusglobal_p.h
+<<<<<<< HEAD
         BobUIDBus
+=======
+>>>>>>> origin/dev
     NO_UNITY_BUILD_SOURCES
-        qdbusconnectionmanager.cpp # qt_windows.h clashing with "interface"
+        qdbusconnectionmanager.cpp # bobui_windows.h clashing with "interface"
     DEFINES
         DBUS_API_SUBJECT_TO_CHANGE
-        QT_NO_CONTEXTLESS_CONNECT
-        QT_NO_FOREACH
-        QT_NO_QPAIR
-        QT_NO_URL_CAST_FROM_STRING
-        QT_USE_NODISCARD_FILE_OPEN
+        BOBUI_NO_CONTEXTLESS_CONNECT
+        BOBUI_NO_FOREACH
+        BOBUI_NO_QPAIR
+        BOBUI_NO_URL_CAST_FROM_STRING
+        BOBUI_USE_NODISCARD_FILE_OPEN
     LIBRARIES
-        Qt::CorePrivate
+        BobUI::CorePrivate
     PUBLIC_LIBRARIES
-        Qt::Core
+        BobUI::Core
     PRIVATE_MODULE_INTERFACE
-        Qt::CorePrivate
+        BobUI::CorePrivate
 )
 
 # This file is included by qdbusargument.cpp
@@ -65,20 +68,24 @@ set_source_files_properties(qdbusmarshaller.cpp
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(DBus CONDITION QT_FEATURE_dbus_linked
+bobui_internal_extend_target(DBus CONDITION BOBUI_FEATURE_dbus_linked
     DEFINES
-        QT_LINKED_LIBDBUS
+        BOBUI_LINKED_LIBDBUS
     LIBRARIES
         dbus-1
 )
 
-qt_internal_extend_target(DBus CONDITION WIN32
+bobui_internal_extend_target(DBus CONDITION WIN32
     LIBRARIES
         advapi32
         netapi32
         user32
         ws2_32
 )
+<<<<<<< HEAD
 qt_internal_add_docs(DBus
+=======
+bobui_internal_add_docs(DBus
+>>>>>>> origin/dev
     doc/bobuidbus.qdocconf
 )

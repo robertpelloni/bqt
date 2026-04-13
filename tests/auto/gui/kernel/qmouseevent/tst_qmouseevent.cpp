@@ -1,15 +1,15 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <qevent.h>
 #include <qwindow.h>
-#include <QtGui/private/qpointingdevice_p.h>
+#include <BobUIGui/private/qpointingdevice_p.h>
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
-Q_LOGGING_CATEGORY(lcTests, "qt.gui.tests")
+Q_LOGGING_CATEGORY(lcTests, "bobui.gui.tests")
 
 class MouseEventWidget : public QWindow
 {
@@ -134,52 +134,52 @@ void tst_QMouseEvent::mouseEventBasic()
     QPointF scene(200, 200);
     QPointF screen(300, 300);
     // Press left button
-    QMouseEvent me(QEvent::MouseButtonPress, local, scene, screen, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+    QMouseEvent me(QEvent::MouseButtonPress, local, scene, screen, BobUI::LeftButton, BobUI::LeftButton, BobUI::NoModifier);
     QVERIFY(me.isInputEvent());
     QVERIFY(me.isPointerEvent());
     QVERIFY(me.isSinglePointEvent());
     QCOMPARE(me.isAccepted(), true);
-    QCOMPARE(me.button(), Qt::LeftButton);
-    QCOMPARE(me.buttons(), Qt::LeftButton);
+    QCOMPARE(me.button(), BobUI::LeftButton);
+    QCOMPARE(me.buttons(), BobUI::LeftButton);
     QVERIFY(me.isBeginEvent());
     QVERIFY(!me.isEndEvent());
     QCOMPARE(me.position(), local);
     QCOMPARE(me.scenePosition(), scene);
     QCOMPARE(me.globalPosition(), screen);
     // Press right button while left is already pressed
-    QMouseEvent me2(QEvent::MouseButtonPress, local, scene, screen, Qt::RightButton, Qt::LeftButton | Qt::RightButton, Qt::NoModifier);
+    QMouseEvent me2(QEvent::MouseButtonPress, local, scene, screen, BobUI::RightButton, BobUI::LeftButton | BobUI::RightButton, BobUI::NoModifier);
     QVERIFY(me2.isBeginEvent());
     QVERIFY(!me2.isEndEvent());
     // Release right button while left is still pressed
-    QMouseEvent me3 = QMouseEvent(QEvent::MouseButtonRelease, local, scene, screen, Qt::RightButton, Qt::LeftButton, Qt::NoModifier);
+    QMouseEvent me3 = QMouseEvent(QEvent::MouseButtonRelease, local, scene, screen, BobUI::RightButton, BobUI::LeftButton, BobUI::NoModifier);
     QVERIFY(!me3.isBeginEvent());
     QVERIFY(me3.isEndEvent());
     // Release left button in the usual way
-    QMouseEvent me4 = QMouseEvent(QEvent::MouseButtonRelease, local, scene, screen, Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
+    QMouseEvent me4 = QMouseEvent(QEvent::MouseButtonRelease, local, scene, screen, BobUI::LeftButton, BobUI::NoButton, BobUI::NoModifier);
     QVERIFY(!me4.isBeginEvent());
     QVERIFY(me4.isEndEvent());
 }
 
 void tst_QMouseEvent::checkMousePressEvent_data()
 {
-    QTest::addColumn<int>("buttonPressed");
-    QTest::addColumn<int>("keyPressed");
+    BOBUIest::addColumn<int>("buttonPressed");
+    BOBUIest::addColumn<int>("keyPressed");
 
-    QTest::newRow("leftButton-nokey") << int(Qt::LeftButton) << int(Qt::NoButton);
-    QTest::newRow("leftButton-shiftkey") << int(Qt::LeftButton) << int(Qt::ShiftModifier);
-    QTest::newRow("leftButton-controlkey") << int(Qt::LeftButton) << int(Qt::ControlModifier);
-    QTest::newRow("leftButton-altkey") << int(Qt::LeftButton) << int(Qt::AltModifier);
-    QTest::newRow("leftButton-metakey") << int(Qt::LeftButton) << int(Qt::MetaModifier);
-    QTest::newRow("rightButton-nokey") << int(Qt::RightButton) << int(Qt::NoButton);
-    QTest::newRow("rightButton-shiftkey") << int(Qt::RightButton) << int(Qt::ShiftModifier);
-    QTest::newRow("rightButton-controlkey") << int(Qt::RightButton) << int(Qt::ControlModifier);
-    QTest::newRow("rightButton-altkey") << int(Qt::RightButton) << int(Qt::AltModifier);
-    QTest::newRow("rightButton-metakey") << int(Qt::RightButton) << int(Qt::MetaModifier);
-    QTest::newRow("middleButton-nokey") << int(Qt::MiddleButton) << int(Qt::NoButton);
-    QTest::newRow("middleButton-shiftkey") << int(Qt::MiddleButton) << int(Qt::ShiftModifier);
-    QTest::newRow("middleButton-controlkey") << int(Qt::MiddleButton) << int(Qt::ControlModifier);
-    QTest::newRow("middleButton-altkey") << int(Qt::MiddleButton) << int(Qt::AltModifier);
-    QTest::newRow("middleButton-metakey") << int(Qt::MiddleButton) << int(Qt::MetaModifier);
+    BOBUIest::newRow("leftButton-nokey") << int(BobUI::LeftButton) << int(BobUI::NoButton);
+    BOBUIest::newRow("leftButton-shiftkey") << int(BobUI::LeftButton) << int(BobUI::ShiftModifier);
+    BOBUIest::newRow("leftButton-controlkey") << int(BobUI::LeftButton) << int(BobUI::ControlModifier);
+    BOBUIest::newRow("leftButton-altkey") << int(BobUI::LeftButton) << int(BobUI::AltModifier);
+    BOBUIest::newRow("leftButton-metakey") << int(BobUI::LeftButton) << int(BobUI::MetaModifier);
+    BOBUIest::newRow("rightButton-nokey") << int(BobUI::RightButton) << int(BobUI::NoButton);
+    BOBUIest::newRow("rightButton-shiftkey") << int(BobUI::RightButton) << int(BobUI::ShiftModifier);
+    BOBUIest::newRow("rightButton-controlkey") << int(BobUI::RightButton) << int(BobUI::ControlModifier);
+    BOBUIest::newRow("rightButton-altkey") << int(BobUI::RightButton) << int(BobUI::AltModifier);
+    BOBUIest::newRow("rightButton-metakey") << int(BobUI::RightButton) << int(BobUI::MetaModifier);
+    BOBUIest::newRow("middleButton-nokey") << int(BobUI::MiddleButton) << int(BobUI::NoButton);
+    BOBUIest::newRow("middleButton-shiftkey") << int(BobUI::MiddleButton) << int(BobUI::ShiftModifier);
+    BOBUIest::newRow("middleButton-controlkey") << int(BobUI::MiddleButton) << int(BobUI::ControlModifier);
+    BOBUIest::newRow("middleButton-altkey") << int(BobUI::MiddleButton) << int(BobUI::AltModifier);
+    BOBUIest::newRow("middleButton-metakey") << int(BobUI::MiddleButton) << int(BobUI::MetaModifier);
 }
 
 void tst_QMouseEvent::checkMousePressEvent()
@@ -190,37 +190,37 @@ void tst_QMouseEvent::checkMousePressEvent()
     int buttons = button;
     int modifiers = keyPressed;
 
-    QTest::mousePress(testMouseWidget, Qt::MouseButton(buttonPressed), Qt::KeyboardModifiers(keyPressed));
+    BOBUIest::mousePress(testMouseWidget, BobUI::MouseButton(buttonPressed), BobUI::KeyboardModifiers(keyPressed));
     qApp->processEvents();
     QVERIFY(testMouseWidget->mousePressEventRecieved);
     QCOMPARE(testMouseWidget->mousePressButton, button);
     QCOMPARE(testMouseWidget->mousePressButtons, buttons);
     QCOMPARE(testMouseWidget->mousePressModifiers, modifiers);
 
-    QTest::mouseRelease(testMouseWidget, Qt::MouseButton(buttonPressed), Qt::KeyboardModifiers(keyPressed));
+    BOBUIest::mouseRelease(testMouseWidget, BobUI::MouseButton(buttonPressed), BobUI::KeyboardModifiers(keyPressed));
     qApp->processEvents();
 }
 
 void tst_QMouseEvent::checkMouseReleaseEvent_data()
 {
-    QTest::addColumn<int>("buttonReleased");
-    QTest::addColumn<int>("keyPressed");
+    BOBUIest::addColumn<int>("buttonReleased");
+    BOBUIest::addColumn<int>("keyPressed");
 
-    QTest::newRow("leftButton-nokey") << int(Qt::LeftButton) << int(Qt::NoButton);
-    QTest::newRow("leftButton-shiftkey") << int(Qt::LeftButton) << int(Qt::ShiftModifier);
-    QTest::newRow("leftButton-controlkey") << int(Qt::LeftButton) << int(Qt::ControlModifier);
-    QTest::newRow("leftButton-altkey") << int(Qt::LeftButton) << int(Qt::AltModifier);
-    QTest::newRow("leftButton-metakey") << int(Qt::LeftButton) << int(Qt::MetaModifier);
-    QTest::newRow("rightButton-nokey") << int(Qt::RightButton) << int(Qt::NoButton);
-    QTest::newRow("rightButton-shiftkey") << int(Qt::RightButton) << int(Qt::ShiftModifier);
-    QTest::newRow("rightButton-controlkey") << int(Qt::RightButton) << int(Qt::ControlModifier);
-    QTest::newRow("rightButton-altkey") << int(Qt::RightButton) << int(Qt::AltModifier);
-    QTest::newRow("rightButton-metakey") << int(Qt::RightButton) << int(Qt::MetaModifier);
-    QTest::newRow("middleButton-nokey") << int(Qt::MiddleButton) << int(Qt::NoButton);
-    QTest::newRow("middleButton-shiftkey") << int(Qt::MiddleButton) << int(Qt::ShiftModifier);
-    QTest::newRow("middleButton-controlkey") << int(Qt::MiddleButton) << int(Qt::ControlModifier);
-    QTest::newRow("middleButton-altkey") << int(Qt::MiddleButton) << int(Qt::AltModifier);
-    QTest::newRow("middleButton-metakey") << int(Qt::MiddleButton) << int(Qt::MetaModifier);
+    BOBUIest::newRow("leftButton-nokey") << int(BobUI::LeftButton) << int(BobUI::NoButton);
+    BOBUIest::newRow("leftButton-shiftkey") << int(BobUI::LeftButton) << int(BobUI::ShiftModifier);
+    BOBUIest::newRow("leftButton-controlkey") << int(BobUI::LeftButton) << int(BobUI::ControlModifier);
+    BOBUIest::newRow("leftButton-altkey") << int(BobUI::LeftButton) << int(BobUI::AltModifier);
+    BOBUIest::newRow("leftButton-metakey") << int(BobUI::LeftButton) << int(BobUI::MetaModifier);
+    BOBUIest::newRow("rightButton-nokey") << int(BobUI::RightButton) << int(BobUI::NoButton);
+    BOBUIest::newRow("rightButton-shiftkey") << int(BobUI::RightButton) << int(BobUI::ShiftModifier);
+    BOBUIest::newRow("rightButton-controlkey") << int(BobUI::RightButton) << int(BobUI::ControlModifier);
+    BOBUIest::newRow("rightButton-altkey") << int(BobUI::RightButton) << int(BobUI::AltModifier);
+    BOBUIest::newRow("rightButton-metakey") << int(BobUI::RightButton) << int(BobUI::MetaModifier);
+    BOBUIest::newRow("middleButton-nokey") << int(BobUI::MiddleButton) << int(BobUI::NoButton);
+    BOBUIest::newRow("middleButton-shiftkey") << int(BobUI::MiddleButton) << int(BobUI::ShiftModifier);
+    BOBUIest::newRow("middleButton-controlkey") << int(BobUI::MiddleButton) << int(BobUI::ControlModifier);
+    BOBUIest::newRow("middleButton-altkey") << int(BobUI::MiddleButton) << int(BobUI::AltModifier);
+    BOBUIest::newRow("middleButton-metakey") << int(BobUI::MiddleButton) << int(BobUI::MetaModifier);
 }
 
 void tst_QMouseEvent::checkMouseReleaseEvent()
@@ -231,7 +231,7 @@ void tst_QMouseEvent::checkMouseReleaseEvent()
     int buttons = 0;
     int modifiers = keyPressed;
 
-    QTest::mouseClick(testMouseWidget, Qt::MouseButton(buttonReleased), Qt::KeyboardModifiers(keyPressed));
+    BOBUIest::mouseClick(testMouseWidget, BobUI::MouseButton(buttonReleased), BobUI::KeyboardModifiers(keyPressed));
     qApp->processEvents();
     QVERIFY(testMouseWidget->mouseReleaseEventRecieved);
     QCOMPARE(testMouseWidget->mouseReleaseButton, button);
@@ -241,12 +241,12 @@ void tst_QMouseEvent::checkMouseReleaseEvent()
 
 void tst_QMouseEvent::grabbers_data()
 {
-    QTest::addColumn<bool>("grabExclusive");
-    QTest::addColumn<bool>("grabPassive");
+    BOBUIest::addColumn<bool>("grabExclusive");
+    BOBUIest::addColumn<bool>("grabPassive");
 
-    QTest::newRow("no grab") << false << false;
-    QTest::newRow("exclusive") << true << false;
-    QTest::newRow("passive") << false << true;
+    BOBUIest::newRow("no grab") << false << false;
+    BOBUIest::newRow("exclusive") << true << false;
+    BOBUIest::newRow("passive") << false << true;
 }
 
 void tst_QMouseEvent::grabbers()
@@ -257,7 +257,7 @@ void tst_QMouseEvent::grabbers()
     testMouseWidget->grabExclusive = grabExclusive;
     testMouseWidget->grabPassive = grabPassive;
 
-    QTest::mousePress(testMouseWidget, Qt::LeftButton, Qt::KeyboardModifiers(), {10, 10});
+    BOBUIest::mousePress(testMouseWidget, BobUI::LeftButton, BobUI::KeyboardModifiers(), {10, 10});
 
     auto devPriv = QPointingDevicePrivate::get(QPointingDevice::primaryPointingDevice());
     QCOMPARE(devPriv->activePoints.count(), 1);
@@ -271,8 +271,8 @@ void tst_QMouseEvent::grabbers()
         QCOMPARE(firstEPD->passiveGrabbers.first(), testMouseWidget);
 
     // Ensure that grabbers are forgotten after release delivery
-    QTest::mouseRelease(testMouseWidget, Qt::LeftButton, Qt::KeyboardModifiers(), {10, 10});
-    QTRY_COMPARE(firstEPD->exclusiveGrabber, nullptr);
+    BOBUIest::mouseRelease(testMouseWidget, BobUI::LeftButton, BobUI::KeyboardModifiers(), {10, 10});
+    BOBUIRY_COMPARE(firstEPD->exclusiveGrabber, nullptr);
     QCOMPARE(firstEPD->passiveGrabbers.size(), 0);
 }
 
@@ -284,7 +284,7 @@ void tst_QMouseEvent::velocity()
 
     qCDebug(lcTests) << "sending mouse press event";
     QPoint pos(10, 10);
-    QTest::mousePress(testMouseWidget, Qt::LeftButton, Qt::KeyboardModifiers(), pos);
+    BOBUIest::mousePress(testMouseWidget, BobUI::LeftButton, BobUI::KeyboardModifiers(), pos);
     QCOMPARE(devPriv->activePoints.count(), 1);
     QVERIFY(devPriv->activePoints.count() <= 2);
     const auto &firstPoint = devPriv->pointById(0)->eventPoint;
@@ -295,7 +295,7 @@ void tst_QMouseEvent::velocity()
     for (int i = 1; i < 4; ++i) {
         qCDebug(lcTests) << "sending mouse move event" << i;
         pos += {10, 10};
-        QTest::mouseMove(testMouseWidget, pos, 1);
+        BOBUIest::mouseMove(testMouseWidget, pos, 1);
         qApp->processEvents();
         qCDebug(lcTests) << firstPoint;
         // currently we expect it to be updated in-place in devPriv->activePoints
@@ -306,7 +306,7 @@ void tst_QMouseEvent::velocity()
         QVERIFY(testMouseWidget->velocity.x() > 0);
         QVERIFY(testMouseWidget->velocity.y() > 0);
     }
-    QTest::mouseRelease(testMouseWidget, Qt::LeftButton, Qt::KeyboardModifiers(), pos, 1);
+    BOBUIest::mouseRelease(testMouseWidget, BobUI::LeftButton, BobUI::KeyboardModifiers(), pos, 1);
     qCDebug(lcTests) << firstPoint;
     QVERIFY(testMouseWidget->velocity.x() > 0);
     QVERIFY(testMouseWidget->velocity.y() > 0);
@@ -316,7 +316,7 @@ void tst_QMouseEvent::clone()
 {
     const QPointF pos(10.0f, 10.0f);
 
-    QMouseEvent originalMe(QEvent::MouseButtonPress, pos, pos, pos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+    QMouseEvent originalMe(QEvent::MouseButtonPress, pos, pos, pos, BobUI::LeftButton, BobUI::LeftButton, BobUI::NoModifier);
     QVERIFY(!originalMe.allPointsAccepted());
     QVERIFY(!originalMe.points().first().isAccepted());
 
@@ -331,5 +331,5 @@ void tst_QMouseEvent::clone()
     QVERIFY(!clonedMe->points().first().isAccepted());
 }
 
-QTEST_MAIN(tst_QMouseEvent)
+BOBUIEST_MAIN(tst_QMouseEvent)
 #include "tst_qmouseevent.moc"

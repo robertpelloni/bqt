@@ -1,29 +1,29 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QPUSHBUTTON_P_H
 #define QPUSHBUTTON_P_H
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 #include "private/qabstractbutton_p.h"
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
-QT_REQUIRE_CONFIG(pushbutton);
+BOBUI_REQUIRE_CONFIG(pushbutton);
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDialog;
 class QPushButton;
@@ -42,13 +42,13 @@ public:
 
     void init();
     static QPushButtonPrivate* get(QPushButton *b) { return b->d_func(); }
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
     QPoint adjustedMenuPosition();
 #endif
     void resetLayoutItemMargins();
     void popupPressed();
     QStyle::State styleButtonState(QStyle::State state) const override;
-#if QT_CONFIG(dialog)
+#if BOBUI_CONFIG(dialog)
     QDialog *dialogParent() const;
 #else
     QDialog *dialogParent() const { return nullptr; }
@@ -63,6 +63,6 @@ public:
     mutable uint lastAutoDefault : 1;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPUSHBUTTON_P_H

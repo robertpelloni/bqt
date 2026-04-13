@@ -1,17 +1,17 @@
 // Copyright (C) 2014 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Stephen Kelly <stephen.kelly@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QApplication>
 #include <QStandardItemModel>
-#include <QTableView>
+#include <BOBUIableView>
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
     QStandardItemModel model(4, 4);
-    QTableView tableView;
-    tableView.setSizeAdjustPolicy(QTableView::AdjustToContents);
+    BOBUIableView tableView;
+    tableView.setSizeAdjustPolicy(BOBUIableView::AdjustToContents);
     tableView.setModel(&model);
 
     for (int row = 0; row < model.rowCount(); ++row) {

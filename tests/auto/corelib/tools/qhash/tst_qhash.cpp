@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qdebug.h>
 #include <qhash.h>
@@ -19,7 +19,7 @@
 
 #include <private/qcomparisontesthelper_p.h>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class tst_QHash : public QObject
 {
@@ -101,7 +101,7 @@ private slots:
     void reserveKeepCapacity_data();
     void reserveKeepCapacity();
 
-    void QTBUG98265();
+    void BOBUIBUG98265();
 
     void detachAndReferences();
 
@@ -369,8 +369,8 @@ void tst_QHash::insert1()
         QVERIFY(hash.size() == 2);
         QVERIFY(!hash.isEmpty());
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_CLANG("-Wself-assign-overloaded")
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_CLANG("-Wself-assign-overloaded")
         {
             Hash hash2 = hash;
             hash2 = hash;
@@ -383,7 +383,7 @@ QT_WARNING_DISABLE_CLANG("-Wself-assign-overloaded")
             QVERIFY(hash2.isEmpty());
         }
         QVERIFY(hash.size() == 2);
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
         {
             Hash hash2 = hash;
@@ -1034,12 +1034,12 @@ void tst_QHash::take()
 
 void tst_QHash::comparisonCompiles()
 {
-    QTestPrivate::testEqualityOperatorsCompile<QHash<int, int>>();
-    QTestPrivate::testEqualityOperatorsCompile<QHash<QString, QString>>();
-    QTestPrivate::testEqualityOperatorsCompile<QHash<QString, int>>();
-    QTestPrivate::testEqualityOperatorsCompile<QMultiHash<int, int>>();
-    QTestPrivate::testEqualityOperatorsCompile<QMultiHash<QString, QString>>();
-    QTestPrivate::testEqualityOperatorsCompile<QMultiHash<QString, int>>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QHash<int, int>>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QHash<QString, QString>>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QHash<QString, int>>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QMultiHash<int, int>>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QMultiHash<QString, QString>>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QMultiHash<QString, int>>();
 }
 
 // slightly modified from tst_QMap
@@ -1052,35 +1052,35 @@ void tst_QHash::operator_eq()
 
         QVERIFY(a == b);
         QVERIFY(!(a != b));
-        QT_TEST_EQUALITY_OPS(a, b, true);
+        BOBUI_TEST_EQUALITY_OPS(a, b, true);
 
         a.insert(1,1);
         b.insert(1,1);
         QVERIFY(a == b);
         QVERIFY(!(a != b));
-        QT_TEST_EQUALITY_OPS(a, b, true);
+        BOBUI_TEST_EQUALITY_OPS(a, b, true);
 
         a.insert(0,1);
         b.insert(0,1);
         QVERIFY(a == b);
         QVERIFY(!(a != b));
-        QT_TEST_EQUALITY_OPS(a, b, true);
+        BOBUI_TEST_EQUALITY_OPS(a, b, true);
 
         // compare for inequality:
         a.insert(42,0);
         QVERIFY(a != b);
         QVERIFY(!(a == b));
-        QT_TEST_EQUALITY_OPS(a, b, false);
+        BOBUI_TEST_EQUALITY_OPS(a, b, false);
 
         a.insert(65, -1);
         QVERIFY(a != b);
         QVERIFY(!(a == b));
-        QT_TEST_EQUALITY_OPS(a, b, false);
+        BOBUI_TEST_EQUALITY_OPS(a, b, false);
 
         b.insert(-1, -1);
         QVERIFY(a != b);
         QVERIFY(!(a == b));
-        QT_TEST_EQUALITY_OPS(a, b, false);
+        BOBUI_TEST_EQUALITY_OPS(a, b, false);
     }
 
     {
@@ -1090,22 +1090,22 @@ void tst_QHash::operator_eq()
 
         QVERIFY(a == b);
         QVERIFY(!(a != b));
-        QT_TEST_EQUALITY_OPS(a, b, true);
+        BOBUI_TEST_EQUALITY_OPS(a, b, true);
 
         a.insert("Hello", "World");
         QVERIFY(a != b);
         QVERIFY(!(a == b));
-        QT_TEST_EQUALITY_OPS(a, b, false);
+        BOBUI_TEST_EQUALITY_OPS(a, b, false);
 
         b.insert("Hello", "World");
         QVERIFY(a == b);
         QVERIFY(!(a != b));
-        QT_TEST_EQUALITY_OPS(a, b, true);
+        BOBUI_TEST_EQUALITY_OPS(a, b, true);
 
         a.insert("Goodbye", "cruel world");
         QVERIFY(a != b);
         QVERIFY(!(a == b));
-        QT_TEST_EQUALITY_OPS(a, b, false);
+        BOBUI_TEST_EQUALITY_OPS(a, b, false);
 
         b.insert("Goodbye", "cruel world");
 
@@ -1113,13 +1113,13 @@ void tst_QHash::operator_eq()
         a.insert(QString(), QString());
         QVERIFY(a != b);
         QVERIFY(!(a == b));
-        QT_TEST_EQUALITY_OPS(a, b, false);
+        BOBUI_TEST_EQUALITY_OPS(a, b, false);
 
         // empty keys and null keys match:
         b.insert(QString(""), QString());
         QVERIFY(a == b);
         QVERIFY(!(a != b));
-        QT_TEST_EQUALITY_OPS(a, b, true);
+        BOBUI_TEST_EQUALITY_OPS(a, b, true);
     }
 
     {
@@ -1130,7 +1130,7 @@ void tst_QHash::operator_eq()
         b.insert("willy", 1);
         QVERIFY(a != b);
         QVERIFY(!(a == b));
-        QT_TEST_EQUALITY_OPS(a, b, false);
+        BOBUI_TEST_EQUALITY_OPS(a, b, false);
     }
 
     // unlike multi-maps, multi-hashes should be equal iff their contents are equal,
@@ -1148,7 +1148,7 @@ void tst_QHash::operator_eq()
 
         QVERIFY(a == b);
         QVERIFY(!(a != b));
-        QT_TEST_EQUALITY_OPS(a, b, true);
+        BOBUI_TEST_EQUALITY_OPS(a, b, true);
     }
 
     {
@@ -1169,7 +1169,7 @@ void tst_QHash::operator_eq()
 
         QVERIFY(a == b);
         QVERIFY(!(a != b));
-        QT_TEST_EQUALITY_OPS(a, b, true);
+        BOBUI_TEST_EQUALITY_OPS(a, b, true);
     }
 
     {
@@ -1198,7 +1198,7 @@ void tst_QHash::operator_eq()
 
         QVERIFY(a == b);
         QVERIFY(!(a != b));
-        QT_TEST_EQUALITY_OPS(a, b, true);
+        BOBUI_TEST_EQUALITY_OPS(a, b, true);
     }
 }
 
@@ -1234,10 +1234,10 @@ struct HeterogeneousHashingType
     friend size_t qHash(const HeterogeneousHashingType &tester, size_t seed)
     { return qHash(tester.s, seed); }
 };
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 template <> struct QHashHeterogeneousSearch<QString, HeterogeneousHashingType> : std::true_type {};
 template <> struct QHashHeterogeneousSearch<HeterogeneousHashingType, QString> : std::true_type {};
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 static_assert(QHashPrivate::detail::is_equality_comparable_with<QString, HeterogeneousHashingType>::value);
 static_assert(QHashPrivate::HeterogeneouslySearchableWith<QString, HeterogeneousHashingType>::value);
 static_assert(QHashPrivate::HeterogeneouslySearchableWith<HeterogeneousHashingType, QString>::value);
@@ -1255,8 +1255,8 @@ template <> struct HeterogeneousSearchTestHelper<HeterogeneousHashingType>
     }
     static void checkCounter()
     {
-        QTest::setThrowOnFail(true);
-        auto scopeExit = qScopeGuard([] { QTest::setThrowOnFail(false); });
+        BOBUIest::setThrowOnFail(true);
+        auto scopeExit = qScopeGuard([] { BOBUIest::setThrowOnFail(false); });
         QCOMPARE(HeterogeneousHashingType::conversionCount, 0);
     }
 };
@@ -1398,7 +1398,7 @@ void tst_QHash::heterogeneousSearch()
 
 void tst_QHash::heterogeneousSearchConstKey()
 {
-    // QHash<const QString, X> seen in the wild (e.g. Qt Creator)
+    // QHash<const QString, X> seen in the wild (e.g. BobUI Creator)
     heterogeneousSearchTest<QHash, const QString, HeterogeneousHashingType>({ "Hello", {}, "World" });
 }
 
@@ -1687,7 +1687,7 @@ void iteratorsInEmptyHashTestMethod()
 void tst_QHash::iteratorsInEmptyHash()
 {
     iteratorsInEmptyHashTestMethod<QHash<int, QString>>();
-    if (QTest::currentTestFailed())
+    if (BOBUIest::currentTestFailed())
         return;
 
     iteratorsInEmptyHashTestMethod<QMultiHash<int, QString>>();
@@ -1899,7 +1899,7 @@ void keyValueIteratorInEmptyHashTestMethod()
 void tst_QHash::keyValueIteratorInEmptyHash()
 {
     keyValueIteratorInEmptyHashTestMethod<QHash<int, int>>();
-    if (QTest::currentTestFailed())
+    if (BOBUIest::currentTestFailed())
         return;
 
     keyValueIteratorInEmptyHashTestMethod<QMultiHash<int, int>>();
@@ -3259,7 +3259,7 @@ void valueInEmptyHashTestFunction()
 void tst_QHash::valueInEmptyHash()
 {
     valueInEmptyHashTestFunction<QHash<QString, int>>();
-    if (QTest::currentTestFailed())
+    if (BOBUIest::currentTestFailed())
         return;
 
     valueInEmptyHashTestFunction<QMultiHash<QString, int>>();
@@ -3302,7 +3302,7 @@ void tst_QHash::reserveLessThanCurrentAmount()
         for (int i = 0; i < 1000; ++i)
             hash.insert(i, i * 10);
 
-        // This used to hang in an infinite loop: QTBUG-102067
+        // This used to hang in an infinite loop: BOBUIBUG-102067
         hash.reserve(1);
 
         // Make sure that hash still has all elements
@@ -3316,7 +3316,7 @@ void tst_QHash::reserveLessThanCurrentAmount()
             hash.insert(i, i * 10 + 1);
         }
 
-        // This used to hang in infinite loop: QTBUG-102067
+        // This used to hang in infinite loop: BOBUIBUG-102067
         hash.reserve(1);
 
         // Make sure that hash still has all elements
@@ -3327,9 +3327,9 @@ void tst_QHash::reserveLessThanCurrentAmount()
 
 void tst_QHash::reserveKeepCapacity_data()
 {
-    QTest::addColumn<qsizetype>("requested");
+    BOBUIest::addColumn<qsizetype>("requested");
     auto addRow = [](qsizetype requested) {
-        QTest::addRow("%td", ptrdiff_t(requested)) << requested;
+        BOBUIest::addRow("%td", ptrdiff_t(requested)) << requested;
     };
 
     QHash<int, int> testHash = {{1, 1}};
@@ -3359,7 +3359,7 @@ void tst_QHash::reserveKeepCapacity()
     QCOMPARE(hash.capacity(), initialCapacity);
 }
 
-void tst_QHash::QTBUG98265()
+void tst_QHash::BOBUIBUG98265()
 {
     QMultiHash<QUuid, QByteArray> a;
     QMultiHash<QUuid, QByteArray> b;
@@ -3521,5 +3521,5 @@ void tst_QHash::squeezeShared()
     }
 }
 
-QTEST_APPLESS_MAIN(tst_QHash)
+BOBUIEST_APPLESS_MAIN(tst_QHash)
 #include "tst_qhash.moc"

@@ -1,16 +1,16 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QOPENGLVERSIONPROFILE_H
 #define QOPENGLVERSIONPROFILE_H
 
-#include <QtOpenGL/qtopenglglobal.h>
+#include <BobUIOpenGL/bobuiopenglglobal.h>
 
-#include <QtGui/QSurfaceFormat>
+#include <BobUIGui/QSurfaceFormat>
 
-#include <QtCore/qhashfunctions.h>
+#include <BobUICore/qhashfunctions.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QOpenGLVersionProfilePrivate;
 class QDebug;
@@ -58,10 +58,10 @@ inline size_t qHash(const QOpenGLVersionProfile &v, size_t seed = 0) noexcept
 }
 
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_OPENGL_EXPORT QDebug operator<<(QDebug debug, const QOpenGLVersionProfile &vp);
-#endif // !QT_NO_DEBUG_STREAM
+#endif // !BOBUI_NO_DEBUG_STREAM
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QOPENGLVERSIONPROFILE_H

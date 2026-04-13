@@ -1,5 +1,5 @@
-The command is defined in the \c Widgets component of the \c Qt6 package. Load the package with:
+The command is defined in the \c Widgets component of the \c BobUI6 package. Load the package with:
 
 \code
-find_package(Qt6 REQUIRED COMPONENTS Widgets)
+find_package(BobUI6 REQUIRED COMPONENTS Widgets)
 \endcode

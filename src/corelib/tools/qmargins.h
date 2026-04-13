@@ -1,20 +1,20 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QMARGINS_H
 #define QMARGINS_H
 
-#include <QtCore/qcheckedint_impl.h>
-#include <QtCore/qcompare.h>
-#include <QtCore/qnamespace.h>
+#include <BobUICore/qcheckedint_impl.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qnamespace.h>
 
-#include <QtCore/q20type_traits.h>
-#include <QtCore/q23utility.h>
+#include <BobUICore/q20type_traits.h>
+#include <BobUICore/q23utility.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_ENABLE_P0846_SEMANTICS_FOR(get)
+BOBUI_ENABLE_P0846_SEMANTICS_FOR(get)
 
 class QDataStream;
 class QMarginsF;
@@ -66,7 +66,7 @@ public:
     friend constexpr inline QMargins operator|(const QMargins &m1, const QMargins &m2) noexcept;
 
 private:
-    using Representation = QtPrivate::QCheckedIntegers::QCheckedInt<int>;
+    using Representation = BobUIPrivate::QCheckedIntegers::QCheckedInt<int>;
 
     constexpr QMargins(Representation left,
                        Representation top,
@@ -112,7 +112,7 @@ Q_DECLARE_TYPEINFO(QMargins, Q_RELOCATABLE_TYPE);
 /*****************************************************************************
   QMargins stream functions
  *****************************************************************************/
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QMargins &);
 Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QMargins &);
 #endif
@@ -199,18 +199,18 @@ constexpr inline QMargins operator*(int factor, const QMargins &margins) noexcep
 constexpr inline QMargins operator*(const QMargins &margins, qreal factor) noexcept
 {
     // Deliberately using left(), top() etc. (checked ints don't have FP arithmetic)
-    return QMargins(QtPrivate::qSaturateRound(margins.left() * factor),
-                    QtPrivate::qSaturateRound(margins.top() * factor),
-                    QtPrivate::qSaturateRound(margins.right() * factor),
-                    QtPrivate::qSaturateRound(margins.bottom() * factor));
+    return QMargins(BobUIPrivate::qSaturateRound(margins.left() * factor),
+                    BobUIPrivate::qSaturateRound(margins.top() * factor),
+                    BobUIPrivate::qSaturateRound(margins.right() * factor),
+                    BobUIPrivate::qSaturateRound(margins.bottom() * factor));
 }
 
 constexpr inline QMargins operator*(qreal factor, const QMargins &margins) noexcept
 {
-    return QMargins(QtPrivate::qSaturateRound(margins.left() * factor),
-                    QtPrivate::qSaturateRound(margins.top() * factor),
-                    QtPrivate::qSaturateRound(margins.right() * factor),
-                    QtPrivate::qSaturateRound(margins.bottom() * factor));
+    return QMargins(BobUIPrivate::qSaturateRound(margins.left() * factor),
+                    BobUIPrivate::qSaturateRound(margins.top() * factor),
+                    BobUIPrivate::qSaturateRound(margins.right() * factor),
+                    BobUIPrivate::qSaturateRound(margins.bottom() * factor));
 }
 
 constexpr inline QMargins operator/(const QMargins &margins, int divisor)
@@ -222,10 +222,10 @@ constexpr inline QMargins operator/(const QMargins &margins, int divisor)
 constexpr inline QMargins operator/(const QMargins &margins, qreal divisor)
 {
     Q_ASSERT(!qFuzzyIsNull(divisor));
-    return QMargins(QtPrivate::qSaturateRound(margins.left() / divisor),
-                    QtPrivate::qSaturateRound(margins.top() / divisor),
-                    QtPrivate::qSaturateRound(margins.right() / divisor),
-                    QtPrivate::qSaturateRound(margins.bottom() / divisor));
+    return QMargins(BobUIPrivate::qSaturateRound(margins.left() / divisor),
+                    BobUIPrivate::qSaturateRound(margins.top() / divisor),
+                    BobUIPrivate::qSaturateRound(margins.right() / divisor),
+                    BobUIPrivate::qSaturateRound(margins.bottom() / divisor));
 }
 
 constexpr inline QMargins operator|(const QMargins &m1, const QMargins &m2) noexcept
@@ -292,7 +292,7 @@ constexpr inline QMargins operator-(const QMargins &margins) noexcept
     return QMargins(-margins.left(), -margins.top(), -margins.right(), -margins.bottom());
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QMargins &);
 #endif
 
@@ -336,10 +336,10 @@ private:
 
     friend constexpr bool qFuzzyCompare(const QMarginsF &lhs, const QMarginsF &rhs) noexcept
     {
-        return QtPrivate::fuzzyCompare(lhs.m_left,   rhs.m_left)
-            && QtPrivate::fuzzyCompare(lhs.m_top,    rhs.m_top)
-            && QtPrivate::fuzzyCompare(lhs.m_right,  rhs.m_right)
-            && QtPrivate::fuzzyCompare(lhs.m_bottom, rhs.m_bottom);
+        return BobUIPrivate::fuzzyCompare(lhs.m_left,   rhs.m_left)
+            && BobUIPrivate::fuzzyCompare(lhs.m_top,    rhs.m_top)
+            && BobUIPrivate::fuzzyCompare(lhs.m_right,  rhs.m_right)
+            && BobUIPrivate::fuzzyCompare(lhs.m_bottom, rhs.m_bottom);
     }
     friend constexpr bool qFuzzyIsNull(const QMarginsF &m) noexcept
     {
@@ -380,7 +380,7 @@ Q_DECLARE_TYPEINFO(QMarginsF, Q_RELOCATABLE_TYPE);
   QMarginsF stream functions
  *****************************************************************************/
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QMarginsF &);
 Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QMarginsF &);
 #endif
@@ -533,17 +533,17 @@ constexpr QMarginsF QMargins::toMarginsF() const noexcept { return *this; }
 
 constexpr inline QMargins QMarginsF::toMargins() const noexcept
 {
-    return QMargins(QtPrivate::qSaturateRound(m_left),
-                    QtPrivate::qSaturateRound(m_top),
-                    QtPrivate::qSaturateRound(m_right),
-                    QtPrivate::qSaturateRound(m_bottom));
+    return QMargins(BobUIPrivate::qSaturateRound(m_left),
+                    BobUIPrivate::qSaturateRound(m_top),
+                    BobUIPrivate::qSaturateRound(m_right),
+                    BobUIPrivate::qSaturateRound(m_bottom));
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QMarginsF &);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 /*****************************************************************************
   QMargins/QMarginsF tuple protocol
@@ -551,26 +551,26 @@ QT_END_NAMESPACE
 
 namespace std {
     template <>
-    class tuple_size<QT_PREPEND_NAMESPACE(QMargins)> : public integral_constant<size_t, 4> {};
+    class tuple_size<BOBUI_PREPEND_NAMESPACE(QMargins)> : public integral_constant<size_t, 4> {};
     template <>
-    class tuple_element<0, QT_PREPEND_NAMESPACE(QMargins)> { public: using type = int; };
+    class tuple_element<0, BOBUI_PREPEND_NAMESPACE(QMargins)> { public: using type = int; };
     template <>
-    class tuple_element<1, QT_PREPEND_NAMESPACE(QMargins)> { public: using type = int; };
+    class tuple_element<1, BOBUI_PREPEND_NAMESPACE(QMargins)> { public: using type = int; };
     template <>
-    class tuple_element<2, QT_PREPEND_NAMESPACE(QMargins)> { public: using type = int; };
+    class tuple_element<2, BOBUI_PREPEND_NAMESPACE(QMargins)> { public: using type = int; };
     template <>
-    class tuple_element<3, QT_PREPEND_NAMESPACE(QMargins)> { public: using type = int; };
+    class tuple_element<3, BOBUI_PREPEND_NAMESPACE(QMargins)> { public: using type = int; };
 
     template <>
-    class tuple_size<QT_PREPEND_NAMESPACE(QMarginsF)> : public integral_constant<size_t, 4> {};
+    class tuple_size<BOBUI_PREPEND_NAMESPACE(QMarginsF)> : public integral_constant<size_t, 4> {};
     template <>
-    class tuple_element<0, QT_PREPEND_NAMESPACE(QMarginsF)> { public: using type = QT_PREPEND_NAMESPACE(qreal); };
+    class tuple_element<0, BOBUI_PREPEND_NAMESPACE(QMarginsF)> { public: using type = BOBUI_PREPEND_NAMESPACE(qreal); };
     template <>
-    class tuple_element<1, QT_PREPEND_NAMESPACE(QMarginsF)> { public: using type = QT_PREPEND_NAMESPACE(qreal); };
+    class tuple_element<1, BOBUI_PREPEND_NAMESPACE(QMarginsF)> { public: using type = BOBUI_PREPEND_NAMESPACE(qreal); };
     template <>
-    class tuple_element<2, QT_PREPEND_NAMESPACE(QMarginsF)> { public: using type = QT_PREPEND_NAMESPACE(qreal); };
+    class tuple_element<2, BOBUI_PREPEND_NAMESPACE(QMarginsF)> { public: using type = BOBUI_PREPEND_NAMESPACE(qreal); };
     template <>
-    class tuple_element<3, QT_PREPEND_NAMESPACE(QMarginsF)> { public: using type = QT_PREPEND_NAMESPACE(qreal); };
+    class tuple_element<3, BOBUI_PREPEND_NAMESPACE(QMarginsF)> { public: using type = BOBUI_PREPEND_NAMESPACE(qreal); };
 }
 
 #endif // QMARGINS_H

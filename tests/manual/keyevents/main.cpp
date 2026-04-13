@@ -1,7 +1,7 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 #include <vector>
 #include <memory>
 #include <type_traits>
@@ -51,9 +51,9 @@ public:
         return ColumnCount;
     }
 
-    QVariant headerData(int column, Qt::Orientation orientation, int role) const override
+    QVariant headerData(int column, BobUI::Orientation orientation, int role) const override
     {
-        if (role == Qt::DisplayRole && orientation == Qt::Horizontal) {
+        if (role == BobUI::DisplayRole && orientation == BobUI::Horizontal) {
             switch (column) {
             case Language: return QString("language");
             case Direction: return QString("direction");
@@ -86,9 +86,9 @@ public:
         return buffer;
     }
 
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override
+    QVariant data(const QModelIndex &index, int role = BobUI::DisplayRole) const override
     {
-        if (role == Qt::DisplayRole) {
+        if (role == BobUI::DisplayRole) {
             auto &event = m_events.at(index.row());
             auto *keyEvent = event.keyEvent.get();
             switch (int column = index.column()) {
@@ -98,7 +98,7 @@ public:
             case ScanCode: return keyEvent->nativeScanCode();
             case VirtualKey: return keyEvent->nativeVirtualKey();
             case Modifiers: return toString(keyEvent->modifiers(), QDebug::MinimumVerbosity);
-            case Key: return toString(Qt::Key(keyEvent->key()), QDebug::MinimumVerbosity);
+            case Key: return toString(BobUI::Key(keyEvent->key()), QDebug::MinimumVerbosity);
             case Text: return keyEvent->text();
             case PortableText: return event.keySequence.toString(QKeySequence::PortableText);
             case NativeText: return event.keySequence.toString(QKeySequence::NativeText);
@@ -118,8 +118,8 @@ public:
                 return matches.join(" ");
             }
             }
-        } else if (role == Qt::TextAlignmentRole) {
-            return Qt::AlignCenter;
+        } else if (role == BobUI::TextAlignmentRole) {
+            return BobUI::AlignCenter;
         }
 
         return QVariant();
@@ -128,7 +128,7 @@ public:
     struct Event {
         std::unique_ptr<QKeyEvent> keyEvent;
         QString language;
-        Qt::LayoutDirection layoutDirection;
+        BobUI::LayoutDirection layoutDirection;
         QKeySequence keySequence;
         using PossibleKeysList = decltype(std::declval<QKeyMapper>().possibleKeys(nullptr));
         PossibleKeysList possibleKeyCombinations;
@@ -168,7 +168,7 @@ public:
 
                     QShortcut shortcut(keySequence, object, [&] {
                          event.shortcutMatches[i] = true;
-                    }, Qt::ApplicationShortcut);
+                    }, BobUI::ApplicationShortcut);
                     QShortcutMap &shortcutMap = QGuiApplicationPrivate::instance()->shortcutMap;
                     shortcutMap.tryShortcut(keyEvent);
                 }
@@ -200,7 +200,7 @@ public:
     Q_SLOT void setCustomKeySequence(const QKeySequence &keySequence)
     {
         m_customKeySequence = keySequence;
-        emit headerDataChanged(Qt::Horizontal, KeySequenceEdit, ColumnCount);
+        emit headerDataChanged(BobUI::Horizontal, KeySequenceEdit, ColumnCount);
     }
 
     bool m_enabled = true;
@@ -213,19 +213,19 @@ class KeyEventWindow : public QMainWindow
 public:
     KeyEventWindow()
     {
-        setWindowTitle(QString("Qt %1 on %2").arg(QT_VERSION_STR).arg(QSysInfo::prettyProductName()));
-        auto *tableView = new QTableView(this);
+        setWindowTitle(QString("BobUI %1 on %2").arg(BOBUI_VERSION_STR).arg(QSysInfo::prettyProductName()));
+        auto *tableView = new BOBUIableView(this);
         m_keyEventModel = new KeyEventModel(this);
         tableView->setModel(m_keyEventModel);
         tableView->installEventFilter(m_keyEventModel);
 
-        tableView->setFocusPolicy(Qt::ClickFocus);
+        tableView->setFocusPolicy(BobUI::ClickFocus);
         tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
         tableView->setSelectionMode(QAbstractItemView::NoSelection);
         tableView->setWordWrap(false);
 
         QObject::connect(tableView->model(), &QAbstractItemModel::rowsInserted,
-                         tableView, &QTableView::scrollToBottom);
+                         tableView, &BOBUIableView::scrollToBottom);
 
         QMenu *menu = menuBar()->addMenu("File");
         menu->addAction("Save...", this, &KeyEventWindow::save);
@@ -266,10 +266,10 @@ public:
             QMessageBox::critical(this, "Could not open file", file.errorString());
             return;
         }
-        QTextStream output(&file);
+        BOBUIextStream output(&file);
         const auto columns = m_keyEventModel->columnCount();
         for (int c = 0; c < columns; ++c) {
-            output << m_keyEventModel->headerData(c, Qt::Horizontal, Qt::DisplayRole).toString()
+            output << m_keyEventModel->headerData(c, BobUI::Horizontal, BobUI::DisplayRole).toString()
                    << ((c < columns - 1) ? ";" : "");
         }
         output << "\n";

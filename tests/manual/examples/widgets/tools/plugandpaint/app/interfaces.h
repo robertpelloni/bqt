@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef INTERFACES_H
 #define INTERFACES_H
 
-#include <QtPlugin>
+#include <BobUIPlugin>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QImage;
 class QPainter;
 class QWidget;
@@ -14,7 +14,7 @@ class QPainterPath;
 class QPoint;
 class QRect;
 class QString;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 //! [0]
 class BrushInterface
@@ -56,21 +56,21 @@ public:
 };
 //! [2]
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 //! [3] //! [4]
-#define BrushInterface_iid "org.qt-project.Qt.Examples.PlugAndPaint.BrushInterface/1.0"
+#define BrushInterface_iid "org.bobui-project.BobUI.Examples.PlugAndPaint.BrushInterface/1.0"
 
 Q_DECLARE_INTERFACE(BrushInterface, BrushInterface_iid)
 //! [3]
 
-#define ShapeInterface_iid  "org.qt-project.Qt.Examples.PlugAndPaint.ShapeInterface/1.0"
+#define ShapeInterface_iid  "org.bobui-project.BobUI.Examples.PlugAndPaint.ShapeInterface/1.0"
 
 Q_DECLARE_INTERFACE(ShapeInterface, ShapeInterface_iid)
 //! [5]
-#define FilterInterface_iid "org.qt-project.Qt.Examples.PlugAndPaint.FilterInterface/1.0"
+#define FilterInterface_iid "org.bobui-project.BobUI.Examples.PlugAndPaint.FilterInterface/1.0"
 
 Q_DECLARE_INTERFACE(FilterInterface, FilterInterface_iid)
 //! [4] //! [5]
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

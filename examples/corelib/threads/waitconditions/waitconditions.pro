@@ -1,9 +1,9 @@
-QT = core
+BOBUI = core
 CONFIG -= moc
 CONFIG += cmdline
 
 SOURCES += waitconditions.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/corelib/threads/waitconditions
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/corelib/threads/waitconditions
 INSTALLS += target

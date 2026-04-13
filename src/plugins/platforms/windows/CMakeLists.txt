@@ -1,18 +1,18 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## QWindowsIntegrationPlugin Plugin:
 #####################################################################
 
-qt_internal_add_plugin(QWindowsIntegrationPlugin
+bobui_internal_add_plugin(QWindowsIntegrationPlugin
     OUTPUT_NAME qwindows
     PLUGIN_TYPE platforms
-    DEFAULT_IF "windows" IN_LIST QT_QPA_PLATFORMS
+    DEFAULT_IF "windows" IN_LIST BOBUI_QPA_PLATFORMS
     EXCEPTIONS
     SOURCES
         main.cpp
-        qtwindowsglobal.h
+        bobuiwindowsglobal.h
         qwin10helpers.cpp qwin10helpers.h
         qwindowsapplication.cpp qwindowsapplication.h
         qwindowsbackingstore.cpp qwindowsbackingstore.h
@@ -43,15 +43,15 @@ qt_internal_add_plugin(QWindowsIntegrationPlugin
     NO_UNITY_BUILD_SOURCES
         qwindowspointerhandler.cpp
     DEFINES
-        QT_NO_CAST_FROM_ASCII
-        QT_NO_FOREACH
+        BOBUI_NO_CAST_FROM_ASCII
+        BOBUI_NO_FOREACH
     INCLUDE_DIRECTORIES
         ${CMAKE_CURRENT_SOURCE_DIR}
     LIBRARIES
-        Qt::Core
-        Qt::CorePrivate
-        Qt::Gui
-        Qt::GuiPrivate
+        BobUI::Core
+        BobUI::CorePrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
         advapi32
         dwmapi
         gdi32
@@ -74,15 +74,15 @@ qt_internal_add_plugin(QWindowsIntegrationPlugin
 
 # Resources:
 set_source_files_properties("openglblacklists/default.json"
-    PROPERTIES QT_RESOURCE_ALIAS "default.json"
+    PROPERTIES BOBUI_RESOURCE_ALIAS "default.json"
 )
 set(openglblacklists_resource_files
     "openglblacklists/default.json"
 )
 
-qt_internal_add_resource(QWindowsIntegrationPlugin "openglblacklists"
+bobui_internal_add_resource(QWindowsIntegrationPlugin "openglblacklists"
     PREFIX
-        "/qt-project.org/windows/openglblacklists"
+        "/bobui-project.org/windows/openglblacklists"
     FILES
         ${openglblacklists_resource_files}
 )
@@ -90,61 +90,61 @@ qt_internal_add_resource(QWindowsIntegrationPlugin "openglblacklists"
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(QWindowsIntegrationPlugin CONDITION QT_FEATURE_opengl
+bobui_internal_extend_target(QWindowsIntegrationPlugin CONDITION BOBUI_FEATURE_opengl
     SOURCES
         qwindowsglcontext.cpp qwindowsglcontext.h
         qwindowsopenglcontext.h
     LIBRARIES
-        Qt::OpenGLPrivate
+        BobUI::OpenGLPrivate
 )
 
-qt_internal_extend_target(QWindowsIntegrationPlugin CONDITION QT_FEATURE_opengl AND NOT QT_FEATURE_dynamicgl
+bobui_internal_extend_target(QWindowsIntegrationPlugin CONDITION BOBUI_FEATURE_opengl AND NOT BOBUI_FEATURE_dynamicgl
     LIBRARIES
         opengl32
 )
 
-qt_internal_extend_target(QWindowsIntegrationPlugin CONDITION MINGW
+bobui_internal_extend_target(QWindowsIntegrationPlugin CONDITION MINGW
     LIBRARIES
         uuid
     NO_PCH_SOURCES
         qwindowspointerhandler.cpp
 )
 
-qt_internal_extend_target(QWindowsIntegrationPlugin CONDITION QT_FEATURE_systemtrayicon
+bobui_internal_extend_target(QWindowsIntegrationPlugin CONDITION BOBUI_FEATURE_systemtrayicon
     SOURCES
         qwindowssystemtrayicon.cpp qwindowssystemtrayicon.h
 )
 
-qt_internal_extend_target(QWindowsIntegrationPlugin CONDITION QT_FEATURE_vulkan
+bobui_internal_extend_target(QWindowsIntegrationPlugin CONDITION BOBUI_FEATURE_vulkan
     SOURCES
         qwindowsvulkaninstance.cpp qwindowsvulkaninstance.h
 )
 
-qt_internal_extend_target(QWindowsIntegrationPlugin CONDITION QT_FEATURE_clipboard
+bobui_internal_extend_target(QWindowsIntegrationPlugin CONDITION BOBUI_FEATURE_clipboard
     SOURCES
         qwindowsclipboard.cpp qwindowsclipboard.h
 )
 
-qt_internal_extend_target(QWindowsIntegrationPlugin CONDITION QT_FEATURE_clipboard AND QT_FEATURE_draganddrop
+bobui_internal_extend_target(QWindowsIntegrationPlugin CONDITION BOBUI_FEATURE_clipboard AND BOBUI_FEATURE_draganddrop
     SOURCES
         qwindowsdrag.cpp qwindowsdrag.h
 )
 
-qt_internal_extend_target(QWindowsIntegrationPlugin CONDITION QT_FEATURE_tabletevent
+bobui_internal_extend_target(QWindowsIntegrationPlugin CONDITION BOBUI_FEATURE_tabletevent
     SOURCES
         qwindowstabletsupport.cpp qwindowstabletsupport.h
     INCLUDE_DIRECTORIES
-        ${QtBase_SOURCE_DIR}/src/3rdparty/wintab
+        ${BobUIBase_SOURCE_DIR}/src/3rdparty/wintab
     ATTRIBUTION_FILE_DIR_PATHS
         ../../../3rdparty/wintab
 )
 
-qt_internal_extend_target(QWindowsIntegrationPlugin CONDITION QT_FEATURE_sessionmanager
+bobui_internal_extend_target(QWindowsIntegrationPlugin CONDITION BOBUI_FEATURE_sessionmanager
     SOURCES
         qwindowssessionmanager.cpp qwindowssessionmanager.h
 )
 
-if(QT_FEATURE_imageformat_png)
+if(BOBUI_FEATURE_imageformat_png)
     # Resources:
     set(cursors_resource_files
         "images/closedhandcursor_32.png"
@@ -170,15 +170,15 @@ if(QT_FEATURE_imageformat_png)
         "images/splitvcursor_64.png"
     )
 
-    qt_internal_add_resource(QWindowsIntegrationPlugin "cursors"
+    bobui_internal_add_resource(QWindowsIntegrationPlugin "cursors"
         PREFIX
-            "/qt-project.org/windows/cursors"
+            "/bobui-project.org/windows/cursors"
         FILES
             ${cursors_resource_files}
     )
 endif()
 
-qt_internal_extend_target(QWindowsIntegrationPlugin CONDITION QT_FEATURE_accessibility
+bobui_internal_extend_target(QWindowsIntegrationPlugin CONDITION BOBUI_FEATURE_accessibility
     SOURCES
         uiautomation/qwindowsuiautomation.cpp uiautomation/qwindowsuiautomation.h
         uiautomation/qwindowsuiaaccessibility.cpp uiautomation/qwindowsuiaaccessibility.h
@@ -203,14 +203,14 @@ qt_internal_extend_target(QWindowsIntegrationPlugin CONDITION QT_FEATURE_accessi
 )
 
 # This is loaded dynamically when using MINGW as its import library is incomplete
-qt_internal_extend_target(
+bobui_internal_extend_target(
     QWindowsIntegrationPlugin
-        CONDITION (MSVC OR CMAKE_CXX_SIMULATE_ID STREQUAL "MSVC") AND QT_FEATURE_accessibility
+        CONDITION (MSVC OR CMAKE_CXX_SIMULATE_ID STREQUAL "MSVC") AND BOBUI_FEATURE_accessibility
     LIBRARIES
         uiautomationcore
 )
 
-qt_internal_extend_target(QWindowsIntegrationPlugin CONDITION MINGW AND QT_FEATURE_accessibility
+bobui_internal_extend_target(QWindowsIntegrationPlugin CONDITION MINGW AND BOBUI_FEATURE_accessibility
     LIBRARIES
         uuid
 )

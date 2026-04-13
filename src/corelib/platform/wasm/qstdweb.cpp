@@ -1,14 +1,14 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qstdweb_p.h"
 #include "qwasmsuspendresumecontrol_p.h"
 #include "qwasmglobal_p.h"
 
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qfile.h>
-#include <QtCore/qmimedata.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/qfile.h>
+#include <BobUICore/qmimedata.h>
 
 #include <emscripten/emscripten.h>
 #include <emscripten/bind.h>
@@ -21,9 +21,9 @@
 
 #include <unordered_map>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 using emscripten::val;
 
 namespace qstdweb {
@@ -34,7 +34,7 @@ static void usePotentialyUnusedSymbols()
     // This hack is needed as it is currently impossible to specify a dollar sign in
     // target_link_options. The following is impossible:
     // DEFAULT_LIBRARY_FUNCS_TO_INCLUDE=$JSEvents
-    // TODO(mikolajboc): QTBUG-108444, review this when cmake gets fixed.
+    // TODO(mikolajboc): BOBUIBUG-108444, review this when cmake gets fixed.
     // Volatile is to make this unoptimizable, so that the function is referenced, but is not
     // called at runtime.
     volatile bool doIt = false;
@@ -92,7 +92,7 @@ private:
     File file;
 };
 
-#if defined(QT_STATIC)
+#if defined(BOBUI_STATIC)
 
 EM_JS(bool, jsHaveAsyncify, (), { return typeof Asyncify !== "undefined"; });
 EM_JS(bool, jsHaveJspi, (),
@@ -1013,4 +1013,4 @@ qint64 FileSystemFileIODevice::writeData(const char *data, qint64 size)
 
 } // namespace qstdweb
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

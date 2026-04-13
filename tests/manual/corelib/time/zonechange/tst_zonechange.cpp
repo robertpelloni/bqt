@@ -1,11 +1,11 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/qcoreapplication.h>
+#include <BobUICore/qcoreapplication.h>
 
-#include <QtCore/qdatetime.h>
-#if QT_CONFIG(timezone)
-#include <QtCore/qtimezone.h>
+#include <BobUICore/qdatetime.h>
+#if BOBUI_CONFIG(timezone)
+#include <BobUICore/bobuiimezone.h>
 #endif
 
 #include <chrono>
@@ -32,18 +32,18 @@ int main(int argc, char **argv)
         return 2;
     }
 
-    QDateTime date = QDateTime(QDate(2020, 2, 20), QTime(20, 20, 20));
+    QDateTime date = QDateTime(QDate(2020, 2, 20), BOBUIime(20, 20, 20));
     QDateTime copy = date;
     if (distinct(date, copy))
         return 1;
-#if QT_CONFIG(timezone)
-    const auto prior = QTimeZone::systemTimeZoneId();
+#if BOBUI_CONFIG(timezone)
+    const auto prior = BOBUIimeZone::systemTimeZoneId();
 #endif
 
     qInfo("You have two minutes in which to change the system time-zone setting.");
     std::this_thread::sleep_for(120s);
-#if QT_CONFIG(timezone)
-    if (QTimeZone::systemTimeZoneId() == prior) {
+#if BOBUI_CONFIG(timezone)
+    if (BOBUIimeZone::systemTimeZoneId() == prior) {
         qInfo("Too slow.");
         return 2;
     }

@@ -1,24 +1,24 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qwindowscarootfetcher_p.h"
 #include "qx509_openssl_p.h"
 #include "qopenssl_p.h"
 
-#include <QtCore/QThread>
-#include <QtGlobal>
+#include <BobUICore/BOBUIhread>
+#include <BobUIGlobal>
 
-#include <QtCore/qscopeguard.h>
+#include <BobUICore/qscopeguard.h>
 
 #ifdef QSSLSOCKET_DEBUG
-#include <QtNetwork/private/qtlsbackend_p.h> // for debug categories
-#include <QtCore/QElapsedTimer>
+#include <BobUINetwork/private/bobuilsbackend_p.h> // for debug categories
+#include <BobUICore/QElapsedTimer>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-class QWindowsCaRootFetcherThread : public QThread
+class QWindowsCaRootFetcherThread : public BOBUIhread
 {
 public:
     QWindowsCaRootFetcherThread()
@@ -83,7 +83,7 @@ const QList<QSslCertificate> buildVerifiedChain(const QList<QSslCertificate> &ca
     }
 
     // We rely on OpenSSL's ability to find other problems.
-    const auto tlsErrors = QTlsPrivate::X509CertificateOpenSSL::verify(caCertificates, verifiedChain, peerVerifyName);
+    const auto tlsErrors = BOBUIlsPrivate::X509CertificateOpenSSL::verify(caCertificates, verifiedChain, peerVerifyName);
     if (tlsErrors.size())
         verifiedChain.clear();
 
@@ -183,7 +183,7 @@ void QWindowsCaRootFetcher::start()
             }
         } else if (explicitlyTrustedCAs.size()) {
             // Setting custom CA in configuration, and those CAs are not trusted by MS.
-#if QT_CONFIG(openssl)
+#if BOBUI_CONFIG(openssl)
             const auto verifiedChain = buildVerifiedChain(explicitlyTrustedCAs, chain, peerVerifyName);
             if (verifiedChain.size())
                 trustedRoot = verifiedChain.last();
@@ -245,6 +245,6 @@ QHCertStorePointer QWindowsCaRootFetcher::createAdditionalStore() const
     return customStore;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qwindowscarootfetcher_p.cpp"

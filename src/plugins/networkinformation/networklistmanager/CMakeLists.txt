@@ -1,23 +1,23 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-qt_internal_add_plugin(QNLMNIPlugin
+bobui_internal_add_plugin(QNLMNIPlugin
     OUTPUT_NAME qnetworklistmanager
     CLASS_NAME QNetworkListManagerNetworkInformationBackendFactory
     PLUGIN_TYPE networkinformation
-    DEFAULT_IF WIN32 AND QT_FEATURE_networklistmanager
+    DEFAULT_IF WIN32 AND BOBUI_FEATURE_networklistmanager
     EXCEPTIONS
     SOURCES
         qnetworklistmanagernetworkinformationbackend.cpp
         qnetworklistmanagerevents.h qnetworklistmanagerevents.cpp
     LIBRARIES
-        Qt::NetworkPrivate
+        BobUI::NetworkPrivate
     DEFINES
-        "QT_ENABLE_STRICT_MODE_UP_TO=QT_VERSION_CHECK(6,11,0)"
-        QT_NO_CAST_FROM_ASCII
+        "BOBUI_ENABLE_STRICT_MODE_UP_TO=BOBUI_VERSION_CHECK(6,11,0)"
+        BOBUI_NO_CAST_FROM_ASCII
 )
 
-qt_internal_extend_target(QNLMNIPlugin CONDITION WIN32
+bobui_internal_extend_target(QNLMNIPlugin CONDITION WIN32
     LIBRARIES
         runtimeobject
         oleaut32

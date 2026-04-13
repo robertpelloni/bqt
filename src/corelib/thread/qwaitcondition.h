@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QWAITCONDITION_H
 #define QWAITCONDITION_H
 
-#include <QtCore/QDeadlineTimer>
+#include <BobUICore/QDeadlineTimer>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
 
 class QWaitConditionPrivate;
 class QMutex;
@@ -66,8 +66,8 @@ public:
     void notify_all() { wakeAll(); }
 };
 
-#endif // QT_CONFIG(thread)
+#endif // BOBUI_CONFIG(thread)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWAITCONDITION_H

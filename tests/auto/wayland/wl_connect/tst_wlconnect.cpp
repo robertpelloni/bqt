@@ -1,7 +1,7 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/QtTest>
+#include <BobUITest/BobUITest>
 #include <QGuiApplication>
 #include <qpa/qplatformintegrationfactory_p.h>
 
@@ -16,7 +16,7 @@ private slots:
 
         // Make sure the connection actually fails
         qputenv("XDG_RUNTIME_DIR", "/dev/null"); // a place where there are no Wayland sockets
-        qputenv("WAYLAND_DISPLAY", "qt_invalid_socket"); // just to be sure
+        qputenv("WAYLAND_DISPLAY", "bobui_invalid_socket"); // just to be sure
 
         QStringList arguments;
         QString platformPluginPath;
@@ -29,5 +29,5 @@ private slots:
     }
 };
 
-QTEST_APPLESS_MAIN(tst_WlConnect)
+BOBUIEST_APPLESS_MAIN(tst_WlConnect)
 #include <tst_wlconnect.moc>

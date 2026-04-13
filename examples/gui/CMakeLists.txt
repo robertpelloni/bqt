@@ -1,8 +1,8 @@
-# Copyright (C) 2022 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+# Copyright (C) 2022 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-if(NOT TARGET Qt6::Gui)
+if(NOT TARGET BobUI6::Gui)
     return()
 endif()
-qt_internal_add_example(rasterwindow)
-qt_internal_add_example(rhiwindow)
+bobui_internal_add_example(rasterwindow)
+bobui_internal_add_example(rhiwindow)

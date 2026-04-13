@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include <qpa/qplatformintegrationplugin.h>
-#include <QtWaylandClient/private/qwaylandintegration_p.h>
-#include <QtWaylandClient/private/qtwaylandclientglobal_p.h>
+#include <BobUIWaylandClient/private/qwaylandintegration_p.h>
+#include <BobUIWaylandClient/private/bobuiwaylandclientglobal_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 class QWaylandIntegrationPlugin : public QPlatformIntegrationPlugin
 {
@@ -20,11 +20,11 @@ public:
 QPlatformIntegration *QWaylandIntegrationPlugin::create(const QString& system, const QStringList& paramList)
 {
     Q_UNUSED(paramList)
-#if !QT_CONFIG(wayland_egl)
+#if !BOBUI_CONFIG(wayland_egl)
     if (system == "wayland-egl")
         return nullptr;
 #endif
-#if !QT_CONFIG(wayland_brcm)
+#if !BOBUI_CONFIG(wayland_brcm)
     if (system == "wayland-brcm")
         return nullptr;
 #endif
@@ -38,8 +38,8 @@ QPlatformIntegration *QWaylandIntegrationPlugin::create(const QString& system, c
     return integration;
 }
 
-} // namespace QtWaylandClient
+} // namespace BobUIWaylandClient
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "main.moc"

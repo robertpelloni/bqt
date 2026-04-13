@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QPLATFORMINTEGRATION_UIKIT_H
 #define QPLATFORMINTEGRATION_UIKIT_H
@@ -9,7 +9,7 @@
 #include <qpa/qplatformnativeinterface.h>
 #include <qpa/qwindowsysteminterface.h>
 
-#include <QtCore/private/qfactoryloader_p.h>
+#include <BobUICore/private/qfactoryloader_p.h>
 
 #include "qiosapplicationstate.h"
 
@@ -21,7 +21,7 @@
 #include <swift/bridging>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace QNativeInterface;
 
@@ -49,7 +49,7 @@ public:
     QPlatformWindow *createForeignWindow(QWindow *window, WId nativeHandle) const override;
     QPlatformBackingStore *createPlatformBackingStore(QWindow *window) const override;
 
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
     QPlatformOpenGLContext *createPlatformOpenGLContext(QOpenGLContext *context) const override;
 #endif
 
@@ -57,7 +57,7 @@ public:
 
     QPlatformFontDatabase *fontDatabase() const override;
 
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
     QPlatformClipboard *clipboard() const override;
 #endif
 
@@ -73,10 +73,10 @@ public:
     QPlatformNativeInterface *nativeInterface() const override;
 
     QPointingDevice *touchDevice();
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
     QPointingDevice *pencilDevice();
 #endif
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     QPlatformAccessibility *accessibility() const override;
 #endif
 
@@ -108,12 +108,12 @@ public:
 
 private:
     QPlatformFontDatabase *m_fontDatabase;
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
     QPlatformClipboard *m_clipboard;
 #endif
     QPlatformInputContext *m_inputContext;
     QPointingDevice *m_touchDevice;
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
     QPointingDevice *m_pencilDevice = nullptr;
 #endif
     mutable QIOSServices *m_platformServices = nullptr;
@@ -128,6 +128,6 @@ private:
 #endif
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

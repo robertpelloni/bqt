@@ -1,5 +1,5 @@
 // Copyright (C) 2024 Christian Ehrlicher <ch.ehrlicher@gmx.de>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 #include <QPaintEvent>
 #include <QPainter>
 #include <QPainterStateGuard>
@@ -24,12 +24,12 @@ struct MyGuardWidget : public QWidget
 void MyWidget::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
-    painter.setPen(Qt::red);
+    painter.setPen(BobUI::red);
     if (drawText) {
         painter.save();
-        painter.setPen(Qt::blue);
+        painter.setPen(BobUI::blue);
         painter.setFont(QFont("Arial", 30));
-        painter.drawText(rect(), Qt::AlignCenter, "Qt");
+        painter.drawText(rect(), BobUI::AlignCenter, "BobUI");
         painter.restore();  // don't forget to restore previous painter state
     }
     painter.drawLine(line);
@@ -40,12 +40,12 @@ void MyWidget::paintEvent(QPaintEvent *)
 void MyGuardWidget::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
-    painter.setPen(Qt::red);
+    painter.setPen(BobUI::red);
     if (drawText) {
         QPainterStateGuard guard(&painter);
-        painter.setPen(Qt::blue);
+        painter.setPen(BobUI::blue);
         painter.setFont(QFont("Arial", 30));
-        painter.drawText(rect(), Qt::AlignCenter, "Qt");
+        painter.drawText(rect(), BobUI::AlignCenter, "BobUI");
     }
     painter.drawLine(line);
 }

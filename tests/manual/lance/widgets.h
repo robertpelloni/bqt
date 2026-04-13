@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 #ifndef WIDGETS_H
 #define WIDGETS_H
 
@@ -11,12 +11,12 @@
 #include <QPainter>
 #include <QPaintEvent>
 #include <QListWidgetItem>
-#include <QTextEdit>
+#include <BOBUIextEdit>
 #include <QHBoxLayout>
 #include <QSplitter>
 #include <QPushButton>
 #include <QFileDialog>
-#include <QTextStream>
+#include <BOBUIextStream>
 #include <QPaintEngine>
 #include <QAction>
 #include <QDebug>
@@ -41,7 +41,7 @@ public:
           m_filename(file),
           m_view_mode(RenderView)
     {
-        QSettings settings("QtProject", "lance");
+        QSettings settings("BobUIProject", "lance");
         for (int i=0; i<10; ++i) {
             QPointF suggestion(100 + i * 40, 100 + 100 * qSin(i * 3.1415 / 10.0));
             m_controlPoints << settings.value("cp" + QString::number(i), suggestion).toPointF();
@@ -64,17 +64,17 @@ public:
             T::setWindowTitle("Rendering: '" + file + "'. Shortcuts: 1=render, 2=baseline, 3=difference");
 
             QAction *renderViewAction = new QAction("Render View", this);
-            renderViewAction->setShortcut(Qt::Key_1);
+            renderViewAction->setShortcut(BobUI::Key_1);
             T::connect(renderViewAction, &QAction::triggered, [&] { setMode(RenderView); });
             T::addAction(renderViewAction);
 
             QAction *baselineAction = new QAction("Baseline", this);
-            baselineAction->setShortcut(Qt::Key_2);
+            baselineAction->setShortcut(BobUI::Key_2);
             T::connect(baselineAction, &QAction::triggered, [&] { setMode(BaselineView); });
             T::addAction(baselineAction);
 
             QAction *differenceAction = new QAction("Difference View", this);
-            differenceAction->setShortcut(Qt::Key_3);
+            differenceAction->setShortcut(BobUI::Key_3);
             T::connect(differenceAction, &QAction::triggered, [&] { setMode(DifferenceView); });
             T::addAction(differenceAction);
         }
@@ -83,7 +83,7 @@ public:
 
     ~OnScreenWidget()
     {
-        QSettings settings("QtProject", "lance");
+        QSettings settings("BobUIProject", "lance");
         for (int i=0; i<10; ++i) {
             settings.setValue("cp" + QString::number(i), m_controlPoints.at(i));
         }
@@ -140,13 +140,13 @@ public:
         paintCommands.setControlPoints(m_controlPoints);
         paintCommands.setFilePath(QFileInfo(m_filename).absolutePath());
 #ifdef DO_QWS_DEBUGGING
-        qt_show_painter_debug_output = true;
+        bobui_show_painter_debug_output = true;
 #endif
         pt.save();
         paintCommands.runCommands();
         pt.restore();
 #ifdef DO_QWS_DEBUGGING
-        qt_show_painter_debug_output = false;
+        bobui_show_painter_debug_output = false;
 #endif
 
         pt.end();
@@ -168,12 +168,12 @@ public:
                     QRectF rect(cp.x() - CP_RADIUS, cp.y() - CP_RADIUS,
                                 CP_RADIUS * 2, CP_RADIUS * 2);
                     pt.drawEllipse(rect);
-                    pt.drawText(rect, Qt::AlignCenter, QString::number(i));
+                    pt.drawText(rect, BobUI::AlignCenter, QString::number(i));
                 }
             }
         }
 #if 0
-        // ### TBD: Make this work with Qt5
+        // ### TBD: Make this work with BobUI5
         if (m_render_view.isNull()) {
             m_render_view = QPixmap::grabWidget(this);
             m_render_view.save("renderView.png");
@@ -185,7 +185,7 @@ public:
         QPainter p(this);
 
         if (m_baseline.isNull()) {
-            p.drawText(T::rect(), Qt::AlignCenter,
+            p.drawText(T::rect(), BobUI::AlignCenter,
                        "No baseline found\n"
                        "file '" + m_baseline_name + "' does not exist...");
             return;
@@ -218,13 +218,13 @@ public:
     void paintDifferenceView() {
         QPainter p(this);
         if (m_baseline.isNull()) {
-            p.drawText(T::rect(), Qt::AlignCenter,
+            p.drawText(T::rect(), BobUI::AlignCenter,
                        "No baseline found\n"
                        "file '" + m_baseline_name + "' does not exist...");
             return;
         }
 
-        p.fillRect(T::rect(), Qt::black);
+        p.fillRect(T::rect(), BobUI::black);
         p.drawPixmap(0, 0, generateDifference());
     }
 
@@ -240,11 +240,11 @@ public:
 
     void mousePressEvent(QMouseEvent *e) override
     {
-        if (e->button() == Qt::RightButton) {
+        if (e->button() == BobUI::RightButton) {
             m_showControlPoints = true;
         }
 
-        if (e->button() == Qt::LeftButton) {
+        if (e->button() == BobUI::LeftButton) {
             for (int i=0; i<m_controlPoints.size(); ++i) {
                 if (QLineF(m_controlPoints.at(i), e->pos()).length() < CP_RADIUS) {
                     m_currentPoint = i;
@@ -257,9 +257,9 @@ public:
 
     void mouseReleaseEvent(QMouseEvent *e) override
     {
-        if (e->button() == Qt::LeftButton)
+        if (e->button() == BobUI::LeftButton)
             m_currentPoint = -1;
-        if (e->button() == Qt::RightButton)
+        if (e->button() == BobUI::RightButton)
             m_showControlPoints = false;
         T::update();
     }

@@ -1,12 +1,12 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qprint_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
 
 // Note: PPD standard does not define a standard set of InputSlot keywords,
 // it is a free form text field left to the PPD writer to decide,
@@ -104,7 +104,7 @@ QPrint::InputSlot paperBinToInputSlot(int windowsId, const QString &name)
     return slot;
 }
 
-#if (defined Q_OS_MACOS) || (defined Q_OS_UNIX && QT_CONFIG(cups))
+#if (defined Q_OS_MACOS) || (defined Q_OS_UNIX && BOBUI_CONFIG(cups))
 
 // PPD utilities shared by CUPS and Mac plugins requiring CUPS headers
 // May turn into a proper internal QPpd class if enough shared between Mac and CUPS,
@@ -155,6 +155,6 @@ QPrint::DuplexMode ppdChoiceToDuplexMode(const QByteArray &choice)
 
 }
 
-#endif // QT_NO_PRINTER
+#endif // BOBUI_NO_PRINTER
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

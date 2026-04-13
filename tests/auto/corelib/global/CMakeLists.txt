@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 add_subdirectory(qcheckedint)
@@ -17,11 +17,11 @@ if(NOT INTEGRITY)
     add_subdirectory(qnativeinterface)
 endif()
 add_subdirectory(qrandomgenerator)
-if (QT_FEATURE_settings)
+if (BOBUI_FEATURE_settings)
     add_subdirectory(qlibraryinfo)
 endif()
 add_subdirectory(qlogging)
-add_subdirectory(qtendian)
+add_subdirectory(bobuiendian)
 add_subdirectory(qglobalstatic)
 add_subdirectory(qhooks)
 add_subdirectory(qoperatingsystemversion)

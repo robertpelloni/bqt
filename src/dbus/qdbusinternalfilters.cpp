@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qdbusconnection_p.h"
 
 #include "qdbus_symbols_p.h"
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qmetaobject.h>
-#include <QtCore/qstringlist.h>
-#include <QtCore/qthread.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/qmetaobject.h>
+#include <BobUICore/qstringlist.h>
+#include <BobUICore/bobuihread.h>
 
 #include "qdbusabstractadaptor.h"
 #include "qdbusabstractadaptor_p.h"
@@ -24,11 +24,11 @@
 
 #include <algorithm>
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
 BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 // defined in qdbusxmlgenerator.cpp
 extern Q_DBUS_EXPORT QString qDBusGenerateMetaObjectXml(QString interface, const QMetaObject *mo,
@@ -56,12 +56,20 @@ static const char propertiesInterfaceXml[] =
     "    <method name=\"GetAll\">\n"
     "      <arg name=\"interface_name\" type=\"s\" direction=\"in\"/>\n"
     "      <arg name=\"values\" type=\"a{sv}\" direction=\"out\"/>\n"
+<<<<<<< HEAD
     "      <annotation name=\"org.qtproject.BobUIDBus.QtTypeName.Out0\" value=\"QVariantMap\"/>\n"
+=======
+    "      <annotation name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\" value=\"QVariantMap\"/>\n"
+>>>>>>> origin/dev
     "    </method>\n"
     "    <signal name=\"PropertiesChanged\">\n"
     "      <arg name=\"interface_name\" type=\"s\" direction=\"out\"/>\n"
     "      <arg name=\"changed_properties\" type=\"a{sv}\" direction=\"out\"/>\n"
+<<<<<<< HEAD
     "      <annotation name=\"org.qtproject.BobUIDBus.QtTypeName.Out1\" value=\"QVariantMap\"/>\n"
+=======
+    "      <annotation name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out1\" value=\"QVariantMap\"/>\n"
+>>>>>>> origin/dev
     "      <arg name=\"invalidated_properties\" type=\"as\" direction=\"out\"/>\n"
     "    </signal>\n"
     "  </interface>\n";
@@ -95,7 +103,7 @@ QString qDBusIntrospectObject(const QDBusConnectionPrivate::ObjectTreeNode &node
     xml_data += "<node>\n"_L1;
 
     if (node.obj) {
-        Q_ASSERT_X(QThread::currentThread() == node.obj->thread(),
+        Q_ASSERT_X(BOBUIhread::currentThread() == node.obj->thread(),
                    "QDBusConnection: internal threading error",
                    "function called for an object that is in another thread!!");
 
@@ -185,7 +193,7 @@ QDBusMessage qDBusPropertyGet(const QDBusConnectionPrivate::ObjectTreeNode &node
                               const QDBusMessage &msg)
 {
     Q_ASSERT(msg.arguments().size() == 2);
-    Q_ASSERT_X(!node.obj || QThread::currentThread() == node.obj->thread(),
+    Q_ASSERT_X(!node.obj || BOBUIhread::currentThread() == node.obj->thread(),
                "QDBusConnection: internal threading error",
                "function called for an object that is in another thread!!");
 
@@ -342,7 +350,7 @@ QDBusMessage qDBusPropertySet(const QDBusConnectionPrivate::ObjectTreeNode &node
                               const QDBusMessage &msg)
 {
     Q_ASSERT(msg.arguments().size() == 3);
-    Q_ASSERT_X(!node.obj || QThread::currentThread() == node.obj->thread(),
+    Q_ASSERT_X(!node.obj || BOBUIhread::currentThread() == node.obj->thread(),
                "QDBusConnection: internal threading error",
                "function called for an object that is in another thread!!");
 
@@ -440,7 +448,7 @@ QDBusMessage qDBusPropertyGetAll(const QDBusConnectionPrivate::ObjectTreeNode &n
                                  const QDBusMessage &msg)
 {
     Q_ASSERT(msg.arguments().size() == 1);
-    Q_ASSERT_X(!node.obj || QThread::currentThread() == node.obj->thread(),
+    Q_ASSERT_X(!node.obj || BOBUIhread::currentThread() == node.obj->thread(),
                "QDBusConnection: internal threading error",
                "function called for an object that is in another thread!!");
 
@@ -489,4 +497,4 @@ QDBusMessage qDBusPropertyGetAll(const QDBusConnectionPrivate::ObjectTreeNode &n
 
 BOBUI_END_NAMESPACE
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS

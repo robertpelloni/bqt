@@ -1,5 +1,5 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "mainwindow.h"
 #include "vulkanwindow.h"
@@ -13,33 +13,33 @@
 MainWindow::MainWindow(VulkanWindow *vulkanWindow)
 {
     QWidget *wrapper = QWidget::createWindowContainer(vulkanWindow);
-    wrapper->setFocusPolicy(Qt::StrongFocus);
+    wrapper->setFocusPolicy(BobUI::StrongFocus);
     wrapper->setFocus();
 
     infoLabel = new QLabel;
     infoLabel->setFrameStyle(QFrame::Box | QFrame::Raised);
-    infoLabel->setAlignment(Qt::AlignCenter);
+    infoLabel->setAlignment(BobUI::AlignCenter);
     infoLabel->setText(tr("This example demonstrates instanced drawing\nof a mesh loaded from a file.\n"
                           "Uses a Phong material with a single light.\n"
-                          "Also demonstrates dynamic uniform buffers\nand a bit of threading with QtConcurrent.\n"
+                          "Also demonstrates dynamic uniform buffers\nand a bit of threading with BobUIConcurrent.\n"
                           "Uses 4x MSAA when available.\n"
                           "Comes with an FPS camera.\n"
                           "Hit [Shift+]WASD to walk and strafe.\nPress and move mouse to look around.\n"
                           "Click Add New to increase the number of instances."));
 
-    meshSwitch = new QCheckBox(tr("&Use Qt logo"));
-    meshSwitch->setFocusPolicy(Qt::NoFocus); // do not interfere with vulkanWindow's keyboard input
+    meshSwitch = new QCheckBox(tr("&Use BobUI logo"));
+    meshSwitch->setFocusPolicy(BobUI::NoFocus); // do not interfere with vulkanWindow's keyboard input
 
     counterLcd = new QLCDNumber(5);
     counterLcd->setSegmentStyle(QLCDNumber::Filled);
     counterLcd->display(m_count);
 
     newButton = new QPushButton(tr("&Add new"));
-    newButton->setFocusPolicy(Qt::NoFocus);
+    newButton->setFocusPolicy(BobUI::NoFocus);
     quitButton = new QPushButton(tr("&Quit"));
-    quitButton->setFocusPolicy(Qt::NoFocus);
+    quitButton->setFocusPolicy(BobUI::NoFocus);
     pauseButton = new QPushButton(tr("&Pause"));
-    pauseButton->setFocusPolicy(Qt::NoFocus);
+    pauseButton->setFocusPolicy(BobUI::NoFocus);
 
     connect(quitButton, &QPushButton::clicked, qApp, &QCoreApplication::quit);
     connect(newButton, &QPushButton::clicked, vulkanWindow, [this, vulkanWindow] {
@@ -65,6 +65,6 @@ MainWindow::MainWindow(VulkanWindow *vulkanWindow)
 QLabel *MainWindow::createLabel(const QString &text)
 {
     QLabel *lbl = new QLabel(text);
-    lbl->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
+    lbl->setAlignment(BobUI::AlignHCenter | BobUI::AlignBottom);
     return lbl;
 }

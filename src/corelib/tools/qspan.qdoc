@@ -1,9 +1,9 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \class QSpan
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 6.7
     \brief A non-owning container over contiguous data.
     \ingroup tools
@@ -108,7 +108,7 @@
     \list
     \li QSpan is using the signed qsizetype as \c{size_type}
         whereas \c{std::span} uses \c{size_t}.
-    \li (since Qt 6.9) \c{QSpan<const T>} doesn't detach Qt containers, \c{std::span} does.
+    \li (since BobUI 6.9) \c{QSpan<const T>} doesn't detach BobUI containers, \c{std::span} does.
     \li All QSpan constructors are implicit;
         many \c{std::span} ones are \c{explicit}.
     \li QSpan can be constructed from rvalue owning containers, \c{std::span} can not.
@@ -116,8 +116,8 @@
 
     The last two are required for source-compatibility when functions that took
     owning containers are converted to take QSpan instead, which is a
-    vitally-important use-case in Qt. The use of qsizetype is for consistency
-    with the rest of Qt containers. QSpan template arguments still use size_t
+    vitally-important use-case in BobUI. The use of qsizetype is for consistency
+    with the rest of BobUI containers. QSpan template arguments still use size_t
     to avoid introducing unnecessary error conditions (negative sizes).
 
     \target span-compatible-iterators
@@ -126,7 +126,7 @@
     QSpan can be constructed from an iterator and size or from an
     iterator pair, provided the iterators are \e{compatible} ones.
     Eventually, this should mean C++20 \c{std::contiguous_iterator} and
-    \c{std::sentinel_for}, but while Qt still supports C++17, only raw pointers
+    \c{std::sentinel_for}, but while BobUI still supports C++17, only raw pointers
     are considered contiguous iterators.
 
     \target span-compatible-ranges
@@ -394,7 +394,7 @@
     Returns whether the span is empty, that is, whether \c{size() == 0}.
 
     These functions do the same thing: empty() is provided for STL
-    compatibility and isEmpty() is provided for Qt compatibility.
+    compatibility and isEmpty() is provided for BobUI compatibility.
 
     \sa size(), size_bytes()
 */
@@ -642,7 +642,7 @@
     size() >= \a pos), otherwise the behavior is undefined.
 
     These functions do the same thing: subspan() is provided for STL
-    compatibility and sliced() is provided for Qt compatibility.
+    compatibility and sliced() is provided for BobUI compatibility.
 
     \sa subspan(), first(QSpan<T,E>::size_type), last(QSpan<T,E>::size_type), chopped(), slice()
 */
@@ -662,7 +662,7 @@
     behavior is undefined.
 
     These functions do the same thing: subspan() is provided for STL
-    compatibility and sliced() is provided for Qt compatibility.
+    compatibility and sliced() is provided for BobUI compatibility.
 
     \sa subspan(), first(QSpan<T,E>::size_type), last(QSpan<T,E>::size_type), chopped(), slice()
 */

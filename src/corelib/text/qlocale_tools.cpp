@@ -1,14 +1,14 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qlocale_tools_p.h"
 #include "qdoublescanprint_p.h"
 #include "qlocale_p.h"
 #include "qstring.h"
 
-#include <private/qtools_p.h>
+#include <private/bobuiools_p.h>
 #include <private/qnumeric_p.h>
 
 #include <cstdio>
@@ -39,13 +39,13 @@
 #   define ULLONG_MAX Q_UINT64_C(0xffffffffffffffff)
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace QtMiscUtils;
+using namespace BobUIMiscUtils;
 
-QT_CLOCALE_HOLDER
+BOBUI_CLOCALE_HOLDER
 
-void qt_doubleToAscii(double d, QLocaleData::DoubleForm form, int precision,
+void bobui_doubleToAscii(double d, QLocaleData::DoubleForm form, int precision,
                       char *buf, qsizetype bufSize,
                       bool &sign, int &length, int &decpt)
 {
@@ -61,7 +61,7 @@ void qt_doubleToAscii(double d, QLocaleData::DoubleForm form, int precision,
     // apply locale-specific formatting, such as decimal points, grouping
     // separators, etc. Because of this, we have to check for infinity and NaN
     // before calling DoubleToAscii.
-    if (qt_is_inf(d)) {
+    if (bobui_is_inf(d)) {
         sign = d < 0;
         if (bufSize >= 3) {
             buf[0] = 'i';
@@ -72,7 +72,7 @@ void qt_doubleToAscii(double d, QLocaleData::DoubleForm form, int precision,
             length = 0;
         }
         return;
-    } else if (qt_is_nan(d)) {
+    } else if (bobui_is_nan(d)) {
         if (bufSize >= 3) {
             buf[0] = 'n';
             buf[1] = 'a';
@@ -87,7 +87,7 @@ void qt_doubleToAscii(double d, QLocaleData::DoubleForm form, int precision,
     if (form == QLocaleData::DFSignificantDigits && precision == 0)
         precision = 1; // 0 significant digits is silently converted to 1
 
-#if !defined(QT_NO_DOUBLECONVERSION) && !defined(QT_BOOTSTRAPPED)
+#if !defined(BOBUI_NO_DOUBLECONVERSION) && !defined(BOBUI_BOOTSTRAPPED)
     // one digit before the decimal dot, counts as significant digit for DoubleToStringConverter
     if (form == QLocaleData::DFExponent && precision >= 0)
         ++precision;
@@ -107,7 +107,7 @@ void qt_doubleToAscii(double d, QLocaleData::DoubleForm form, int precision,
     double_conversion::DoubleToStringConverter::DoubleToAscii(d, mode, precision, buf,
                                                               boundedBufferSize,
                                                               &sign, &length, &decpt);
-#else // QT_NO_DOUBLECONVERSION || QT_BOOTSTRAPPED
+#else // BOBUI_NO_DOUBLECONVERSION || BOBUI_BOOTSTRAPPED
 
     // Cut the precision at 999, to fit it into the format string. We can't get more than 17
     // significant digits, so anything after that is mostly noise. You do get closer to the "middle"
@@ -165,7 +165,7 @@ void qt_doubleToAscii(double d, QLocaleData::DoubleForm form, int precision,
 
     QVarLengthArray<char> target(precision + extraChars);
 
-    length = qDoubleSnprintf(target.data(), target.size(), QT_CLOCALE, format, d);
+    length = qDoubleSnprintf(target.data(), target.size(), BOBUI_CLOCALE, format, d);
     int firstSignificant = 0;
     int decptInTarget = length;
 
@@ -248,12 +248,12 @@ void qt_doubleToAscii(double d, QLocaleData::DoubleForm form, int precision,
             decpt = 1;
         }
     }
-#endif // QT_NO_DOUBLECONVERSION || QT_BOOTSTRAPPED
+#endif // BOBUI_NO_DOUBLECONVERSION || BOBUI_BOOTSTRAPPED
     while (length > 1 && buf[length - 1] == '0') // drop trailing zeroes
         --length;
 }
 
-QSimpleParsedNumber<double> qt_asciiToDouble(const char *num, qsizetype numLen,
+QSimpleParsedNumber<double> bobui_asciiToDouble(const char *num, qsizetype numLen,
                                              StrayCharacterMode strayCharMode)
 {
     if (numLen <= 0)
@@ -288,21 +288,21 @@ QSimpleParsedNumber<double> qt_asciiToDouble(const char *num, qsizetype numLen,
             char c2 = lowered(num[offset + 1]);
             char c3 = lowered(num[offset + 2]);
             if (c == 'i' && c2 == 'n' && c3 == 'f')
-                return { negative ? -qt_inf() : qt_inf(), offset + 3 };
+                return { negative ? -bobui_inf() : bobui_inf(), offset + 3 };
             else if (c == 'n' && c2 == 'a' && c3 == 'n' && !hasSign)
-                return { qt_qnan(), 3 };
+                return { bobui_qnan(), 3 };
             return {};
         }
     }
 
     double d = 0.0;
     int processed;
-#if !defined(QT_NO_DOUBLECONVERSION) && !defined(QT_BOOTSTRAPPED)
+#if !defined(BOBUI_NO_DOUBLECONVERSION) && !defined(BOBUI_BOOTSTRAPPED)
     int conv_flags = double_conversion::StringToDoubleConverter::NO_FLAGS;
     if (strayCharMode == TrailingJunkAllowed) {
         conv_flags = double_conversion::StringToDoubleConverter::ALLOW_TRAILING_JUNK;
     }
-    double_conversion::StringToDoubleConverter conv(conv_flags, 0.0, qt_qnan(), nullptr, nullptr);
+    double_conversion::StringToDoubleConverter conv(conv_flags, 0.0, bobui_qnan(), nullptr, nullptr);
     if (int(numLen) != numLen) {
         // a number over 2 GB in length is silly, just assume it isn't valid
         return {};
@@ -310,8 +310,8 @@ QSimpleParsedNumber<double> qt_asciiToDouble(const char *num, qsizetype numLen,
         d = conv.StringToDouble(num, int(numLen), &processed);
     }
 
-    if (!qt_is_finite(d)) {
-        if (qt_is_nan(d)) {
+    if (!bobui_is_finite(d)) {
+        if (bobui_is_nan(d)) {
             // Garbage found. We don't accept it and return 0.
             return {};
         } else {
@@ -327,15 +327,15 @@ QSimpleParsedNumber<double> qt_asciiToDouble(const char *num, qsizetype numLen,
     std::snprintf(fmt, sizeof fmt, "%s%llu%s",
                   "%", static_cast<unsigned long long>(numLen), "lf%n");
 
-    if (qDoubleSscanf(num, QT_CLOCALE, fmt, &d, &processed) < 1)
+    if (qDoubleSscanf(num, BOBUI_CLOCALE, fmt, &d, &processed) < 1)
         processed = 0;
 
-    if ((strayCharMode == TrailingJunkProhibited && processed != numLen) || qt_is_nan(d)) {
+    if ((strayCharMode == TrailingJunkProhibited && processed != numLen) || bobui_is_nan(d)) {
         // Implementation defined nan symbol or garbage found. We don't accept it.
         return {};
     }
 
-    if (!qt_is_finite(d)) {
+    if (!bobui_is_finite(d)) {
         // Overflow. Check for implementation-defined infinity symbols and reject them.
         // We assume that any infinity symbol has to contain a character that cannot be part of a
         // "normal" number (that is 0-9, ., -, +, e).
@@ -348,7 +348,7 @@ QSimpleParsedNumber<double> qt_asciiToDouble(const char *num, qsizetype numLen,
         }
         return { d, -processed };
     }
-#endif // !defined(QT_NO_DOUBLECONVERSION) && !defined(QT_BOOTSTRAPPED)
+#endif // !defined(BOBUI_NO_DOUBLECONVERSION) && !defined(BOBUI_BOOTSTRAPPED)
 
     // Otherwise we would have gotten NaN or sorted it out above.
     Q_ASSERT(strayCharMode == TrailingJunkAllowed || processed == numLen);
@@ -555,7 +555,7 @@ QString qulltoa(qulonglong number, int base, const QStringView zero)
 
 char *qulltoa2(char *p, qulonglong n, int base)
 {
-#if defined(QT_CHECK_RANGE)
+#if defined(BOBUI_CHECK_RANGE)
     if (base < 2 || base > 36) {
         qWarning("QByteArray::setNum: Invalid base %d", base);
         base = 10;
@@ -574,7 +574,7 @@ char *qulltoa2(char *p, qulonglong n, int base)
  */
 double qstrntod(const char *s00, qsizetype len, const char **se, bool *ok)
 {
-    auto r = qt_asciiToDouble(s00, len, TrailingJunkAllowed);
+    auto r = bobui_asciiToDouble(s00, len, TrailingJunkAllowed);
     if (se)
         *se = s00 + (r.used < 0 ? -r.used : r.used);
     if (ok)
@@ -591,7 +591,7 @@ QString qdtoa(qreal d, int *decpt, int *sign)
     // Some versions of libdouble-conversion like an extra digit, probably for '\0'
     constexpr qsizetype digits = std::numeric_limits<double>::max_digits10 + 1;
     char result[digits];
-    qt_doubleToAscii(d, QLocaleData::DFSignificantDigits, QLocale::FloatingPointShortest,
+    bobui_doubleToAscii(d, QLocaleData::DFSignificantDigits, QLocale::FloatingPointShortest,
                      result, digits, nonNullSign, length, nonNullDecpt);
 
     if (sign)
@@ -664,7 +664,7 @@ static T dtoString(double d, QLocaleData::DoubleForm form, int precision, bool u
     int bufSize = 1;
     if (precision == QLocale::FloatingPointShortest)
         bufSize += D::max_digits10;
-    else if (form == QLocaleData::DFDecimal && qt_is_finite(d))
+    else if (form == QLocaleData::DFDecimal && bobui_is_finite(d))
         bufSize += wholePartSpace(qAbs(d)) + precision;
     else // Add extra digit due to different interpretations of precision.
         bufSize += qMax(2, precision) + 1; // Must also be big enough for "nan" or "inf"
@@ -675,11 +675,11 @@ static T dtoString(double d, QLocaleData::DoubleForm form, int precision, bool u
     bool negative = false;
     int length = 0;
     int decpt = 0;
-    qt_doubleToAscii(d, form, precision, buffer.data(), buffer.size(), negative, length, decpt);
+    bobui_doubleToAscii(d, form, precision, buffer.data(), buffer.size(), negative, length, decpt);
     QLatin1StringView view(buffer.data(), length);
     const bool succinct = form == QLocaleData::DFSignificantDigits;
     qsizetype total = (negative ? 1 : 0) + length;
-    if (qt_is_finite(d)) {
+    if (bobui_is_finite(d)) {
         if (succinct)
             form = resolveFormat(precision, decpt, view.size());
 
@@ -721,7 +721,7 @@ static T dtoString(double d, QLocaleData::DoubleForm form, int precision, bool u
 
     if (negative && !qIsNull(d)) // We don't return "-0"
         result.append(Char('-'));
-    if (!qt_is_finite(d)) {
+    if (!bobui_is_finite(d)) {
         result.append(view);
         if (uppercase)
             result = std::move(result).toUpper();
@@ -808,10 +808,10 @@ QByteArray qdtoAscii(double d, QLocaleData::DoubleForm form, int precision, bool
     return dtoString<QByteArray>(d, form, precision, uppercase);
 }
 
-#if defined(QT_SUPPORTS_INT128) || defined(QT_USE_MSVC_INT128)
+#if defined(BOBUI_SUPPORTS_INT128) || defined(BOBUI_USE_MSVC_INT128)
 static inline quint64 toUInt64(qinternaluint128 v)
 {
-#if defined(QT_USE_MSVC_INT128)
+#if defined(BOBUI_USE_MSVC_INT128)
     return quint64(v._Word[0]);
 #else
     return quint64(v);
@@ -881,6 +881,6 @@ QString qint128toBasicLatin(qinternalint128 number, int base)
         result.prepend(u'-');
     return result;
 }
-#endif // defined(QT_SUPPORTS_INT128) || defined(QT_USE_MSVC_INT128)
+#endif // defined(BOBUI_SUPPORTS_INT128) || defined(BOBUI_USE_MSVC_INT128)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

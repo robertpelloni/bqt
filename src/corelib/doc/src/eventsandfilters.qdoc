@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \group events
@@ -8,7 +8,7 @@
 
     \brief Classes used to create and handle events.
 
-    These \l{Qt Core} classes are used to create and handle events.
+    These \l{BobUI Core} classes are used to create and handle events.
 
     For more information see the \l{The Event System}{Event System} page.
 
@@ -17,12 +17,12 @@
 /*!
     \page eventsandfilters.html
     \title The Event System
-    \ingroup qt-basic-concepts
-    \brief A guide to event handling in Qt.
+    \ingroup bobui-basic-concepts
+    \brief A guide to event handling in BobUI.
 
     \ingroup frameworks-technologies
 
-    In Qt, events are objects, derived from the abstract QEvent class,
+    In BobUI, events are objects, derived from the abstract QEvent class,
     that represent things that have happened either within an application
     or as a result of outside activity that the application needs to know
     about. Events can be received and handled by any instance of a
@@ -32,7 +32,7 @@
 
     \section1 How Events are Delivered
 
-    When an event occurs, Qt creates an event object to represent it by
+    When an event occurs, BobUI creates an event object to represent it by
     constructing an instance of the appropriate QEvent subclass, and
     delivers it to a particular instance of QObject (or one of its
     subclasses) by calling its \l{QObject::}{event()} function.
@@ -47,11 +47,11 @@
     event has occurred, the QEvent indicates precisely what, and the
     QObject needs to respond. Most events are specific to QWidget and its
     subclasses, but there are important events that aren't related to
-    graphics (e.g., \l{QTimer}{timer events}).
+    graphics (e.g., \l{BOBUIimer}{timer events}).
     \endomit
 
     Some events, such as QMouseEvent and QKeyEvent, come from the
-    window system; some, such as QTimerEvent, come from other sources;
+    window system; some, such as BOBUIimerEvent, come from other sources;
     some come from the application itself.
 
     \section1 Event Types
@@ -72,11 +72,11 @@
     quickly determine which subclass a given event object was constructed
     from.
 
-    Since programs need to react in varied and complex ways, Qt's
+    Since programs need to react in varied and complex ways, BobUI's
     event delivery mechanisms are flexible. The documentation for
     QCoreApplication::notify() concisely tells the whole story; the
-    \e{Qt Quarterly} article
-    \l{http://doc.qt.io/archives/qq/qq11-events.html}{Another Look at Events}
+    \e{BobUI Quarterly} article
+    \l{http://doc.bobui.io/archives/qq/qq11-events.html}{Another Look at Events}
     rehashes it less concisely. Here we will explain enough for 95%
     of applications.
 
@@ -163,7 +163,7 @@
     \section1 Sending Events
 
     Many applications want to create and send their own events. You can
-    send events in exactly the same ways as Qt's own event loop by
+    send events in exactly the same ways as BobUI's own event loop by
     constructing suitable event objects and sending them with
     QCoreApplication::sendEvent() and QCoreApplication::postEvent().
 
@@ -174,7 +174,7 @@
     or rejected by the last handler that was called.
 
     \l{QCoreApplication::}{postEvent()} posts the event on a queue for
-    later dispatch. The next time Qt's main event loop runs, it dispatches
+    later dispatch. The next time BobUI's main event loop runs, it dispatches
     all posted events, with some optimization. For example, if there are
     several resize events, they are compressed into one. The same
     applies to paint events: QWidget::update() calls

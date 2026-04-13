@@ -1,18 +1,18 @@
-Qt 5.5.1 is a bug-fix release. It maintains both forward and backward
-compatibility (source and binary) with Qt 5.5.0.
+BobUI 5.5.1 is a bug-fix release. It maintains both forward and backward
+compatibility (source and binary) with BobUI 5.5.0.
 
 For more details, refer to the online documentation included in this
 distribution. The documentation is also available online:
 
-  http://doc.qt.io/qt-5.5/
+  http://doc.bobui.io/bobui-5.5/
 
-The Qt version 5.5 series is binary compatible with the 5.4.x series.
+The BobUI version 5.5 series is binary compatible with the 5.4.x series.
 Applications compiled for 5.4 will continue to run with 5.5.
 
 Some of the changes listed in this file include issue tracking numbers
-corresponding to tasks in the Qt Bug Tracker:
+corresponding to tasks in the BobUI Bug Tracker:
 
-  http://bugreports.qt.io/
+  http://bugreports.bobui.io/
 
 Each of these identifiers can be entered in the bug tracker to obtain more
 information about a particular change.
@@ -21,8 +21,8 @@ information about a particular change.
 *                        Important Behavior Changes                        *
 ****************************************************************************
 
- - [QTBUG-47316] QDebug output for QStrings changed compared to Qt 5.5.0 to
-   more closely match the output of previous Qt versions. Like Qt 5.5.0,
+ - [BOBUIBUG-47316] QDebug output for QStrings changed compared to BobUI 5.5.0 to
+   more closely match the output of previous BobUI versions. Like BobUI 5.5.0,
    QDebug will escape non-printable characters, the backslash and quote
    characters, but will no longer escape the printable characters.
 
@@ -30,11 +30,11 @@ information about a particular change.
 *                          Future Direction Notice                         *
 ****************************************************************************
 
- - Qt 5.7 will begin requiring certain C++11 features in order to
+ - BobUI 5.7 will begin requiring certain C++11 features in order to
    compile. Due to bugs in the Clang compiler that comes with XCode 5.0,
-   that version will not be supported, despite what was noted in the Qt
+   that version will not be supported, despite what was noted in the BobUI
    5.5.0 changelog.
-   The minimum compiler versions for Qt 5.7 release will be:
+   The minimum compiler versions for BobUI 5.7 release will be:
    * Clang 3.3 (XCode 5.1 contains version 3.4)
    * GCC 4.7
    * Intel C++ Composer XE 2013 SP1 (compiler version 14.0) on Linux and OS X
@@ -45,7 +45,7 @@ information about a particular change.
 *                               Library                                    *
 ****************************************************************************
 
-QtCore
+BobUICore
 ------
 
  - Logging framework:
@@ -53,9 +53,9 @@ QtCore
      "%{time boot}" field in the logging framework's pattern to always
      display the same value, instead of the time since boot.
 
- - QDate/QTime:
-   * Fixed a minor source-incompatibility between Qt 5.4 and 5.5.0
-     involving sets of functions overloaded on QTime and some integer or
+ - QDate/BOBUIime:
+   * Fixed a minor source-incompatibility between BobUI 5.4 and 5.5.0
+     involving sets of functions overloaded on BOBUIime and some integer or
      QDate and some integer.
 
  - QDir:
@@ -64,35 +64,35 @@ QtCore
 
  - QLoggingCategory:
    * Fixed behavior of default severity passed to constructor or
-     Q_LOGGING_CATEGORY with regards to QtInfoMsg, which was previously
-     treated as being more severe than QtFatalMsg.
+     Q_LOGGING_CATEGORY with regards to BobUIInfoMsg, which was previously
+     treated as being more severe than BobUIFatalMsg.
 
- - QTimeZone:
-   * [QTBUG-47037] Fixed a wrong timezone conversion when the POSIX
+ - BOBUIimeZone:
+   * [BOBUIBUG-47037] Fixed a wrong timezone conversion when the POSIX
      timezone rule contains a fractional timezone (e.g. VET4:30).
 
-QtNetwork
+BobUINetwork
 ---------
 
- - [QTBUG-47048] Fix HTTP issues with "Unknown Error" and "Connection
+ - [BOBUIBUG-47048] Fix HTTP issues with "Unknown Error" and "Connection
    Closed"
-   [ChangeLog][QtNetwork][Sockets] Read OS/encrypted read buffers when
+   [ChangeLog][BobUINetwork][Sockets] Read OS/encrypted read buffers when
    connection closed by server.
 
-QtSql
+BobUISql
 -----
 
  - QSqlDatabase:
-   * [QTBUG-47784][QTBUG-47452] Fixed a bug where opening a connection to a
+   * [BOBUIBUG-47784][BOBUIBUG-47452] Fixed a bug where opening a connection to a
      MySQL database using the QMYSQL plugin would always return true even
      if the server was unreachable. This bug could also lead to crashes
      depending on the platform used.
 
-QtWidgets
+BobUIWidgets
 ---------
 
  - Important behavior changes:
-   * [QTBUG-46379] Tooltips on OS X are now transparent for mouse events.
+   * [BOBUIBUG-46379] Tooltips on OS X are now transparent for mouse events.
 
 ****************************************************************************
 *                         Platform Specific Changes                        *
@@ -102,7 +102,7 @@ Windows
 -------
 
  - Text:
-   * [QTBUG-46963] Fixed crash in DirectWrite engine when constructing a
+   * [BOBUIBUG-46963] Fixed crash in DirectWrite engine when constructing a
      QRawFont from raw font data.
 
 ****************************************************************************
@@ -112,8 +112,8 @@ Windows
 GCC
 ---
 
- - Fixed a regression introduced Qt 5.5.0 that generated lots of
-   compiler warnings in Qt public headers when using the (deprecated)
+ - Fixed a regression introduced BobUI 5.5.0 that generated lots of
+   compiler warnings in BobUI public headers when using the (deprecated)
    version 4.5 of GCC.
 
 ****************************************************************************
@@ -123,18 +123,18 @@ GCC
 configure & build system
 ------------------------
 
- - [QTBUG-46125] Fixed misuse of target linker features for host tools.
- - [QTBUG-46473] QML plugin DLLs now have version information.
+ - [BOBUIBUG-46125] Fixed misuse of target linker features for host tools.
+ - [BOBUIBUG-46473] QML plugin DLLs now have version information.
 
 qmake
 -----
 
- - [QTBUG-46824][Darwin] Characters in the bundle identifier which
+ - [BOBUIBUG-46824][Darwin] Characters in the bundle identifier which
    the App Store considers invalid are now substituted.
- - [QTBUG-47065][Unix] Fixed use of CONFIG+=separate_debug_info together
+ - [BOBUIBUG-47065][Unix] Fixed use of CONFIG+=separate_debug_info together
    with CONFIG+=unversioned_libname.
- - [QTBUG-47450][Xcode] Fixed Info.plist creation in shadow builds.
- - [QTBUG-47775][Darwin] Fixed Info.plist creation when bundle name
+ - [BOBUIBUG-47450][Xcode] Fixed Info.plist creation in shadow builds.
+ - [BOBUIBUG-47775][Darwin] Fixed Info.plist creation when bundle name
    contains spaces.
- - [QTBUG-48110][VS] Fixed VS2015 solution file generation.
+ - [BOBUIBUG-48110][VS] Fixed VS2015 solution file generation.
  - [MSVC][nmake] Fixed use of VS2013 mkspecs from VS2015 shell.

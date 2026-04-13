@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2017 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qnetworkinterface.h"
 #include "qnetworkinterface_p.h"
 
 #include "qdebug.h"
 #include "qendian.h"
-#include "private/qtools_p.h"
+#include "private/bobuiools_p.h"
 
-#ifndef QT_NO_NETWORKINTERFACE
+#ifndef BOBUI_NO_NETWORKINTERFACE
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_IMPL_METATYPE_EXTERN(QNetworkAddressEntry)
-QT_IMPL_METATYPE_EXTERN(QNetworkInterface)
+BOBUI_IMPL_METATYPE_EXTERN(QNetworkAddressEntry)
+BOBUI_IMPL_METATYPE_EXTERN(QNetworkInterface)
 
 static QList<QNetworkInterfacePrivate *> postProcess(QList<QNetworkInterfacePrivate *> list)
 {
@@ -103,13 +103,13 @@ QList<QSharedDataPointer<QNetworkInterfacePrivate> > QNetworkInterfaceManager::a
 QString QNetworkInterfacePrivate::makeHwAddress(int len, uchar *data)
 {
     const int outLen = qMax(len * 2 + (len - 1) * 1, 0);
-    QString result(outLen, Qt::Uninitialized);
+    QString result(outLen, BobUI::Uninitialized);
     QChar *out = result.data();
     for (int i = 0; i < len; ++i) {
         if (i)
             *out++ = u':';
-        *out++ = QLatin1Char(QtMiscUtils::toHexUpper(data[i] / 16));
-        *out++ = QLatin1Char(QtMiscUtils::toHexUpper(data[i] % 16));
+        *out++ = QLatin1Char(BobUIMiscUtils::toHexUpper(data[i] / 16));
+        *out++ = QLatin1Char(BobUIMiscUtils::toHexUpper(data[i] % 16));
     }
     return result;
 }
@@ -124,7 +124,7 @@ QString QNetworkInterfacePrivate::makeHwAddress(int len, uchar *data)
     \reentrant
     \ingroup network
     \ingroup shared
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     Each network interface can contain zero or more IP addresses, which
     in turn can be associated with a netmask and/or a broadcast
@@ -145,7 +145,7 @@ QString QNetworkInterfacePrivate::makeHwAddress(int len, uchar *data)
     DHCP are often eligible, but cryptographically-generated temporary IPv6
     addresses are not.
 
-    \value DnsEligibilityUnknown    Qt and the operating system could not determine
+    \value DnsEligibilityUnknown    BobUI and the operating system could not determine
                                     whether this address should be published or not.
                                     The application may need to apply further
                                     heuristics if it cannot find any eligible
@@ -491,7 +491,7 @@ bool QNetworkAddressEntry::isPermanent() const
     \reentrant
     \ingroup network
     \ingroup shared
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     QNetworkInterface represents one network interface attached to the
     host where the program is being run. Each network interface may
@@ -545,7 +545,7 @@ bool QNetworkAddressEntry::isPermanent() const
 
     Specifies the type of hardware (PHY layer, OSI level 1) this interface is,
     if it could be determined. Interface types that are not among those listed
-    below will generally be listed as Unknown, though future versions of Qt may
+    below will generally be listed as Unknown, though future versions of BobUI may
     add new enumeration values.
 
     The possible values are:
@@ -874,7 +874,7 @@ QList<QHostAddress> QNetworkInterface::allAddresses()
     return result;
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 static inline QDebug flagsDebug(QDebug debug, QNetworkInterface::InterfaceFlags flags)
 {
     if (flags & QNetworkInterface::IsUp)
@@ -932,8 +932,8 @@ QDebug operator<<(QDebug debug, const QNetworkInterface &networkInterface)
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qnetworkinterface.cpp"
 
-#endif // QT_NO_NETWORKINTERFACE
+#endif // BOBUI_NO_NETWORKINTERFACE

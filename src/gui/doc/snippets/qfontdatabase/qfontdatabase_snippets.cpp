@@ -1,24 +1,24 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 namespace qfontdatabase_snippets {
 void wrapper()
 {
 //! [0]
-QTreeWidget fontTree;
+BOBUIreeWidget fontTree;
 fontTree.setColumnCount(2);
 fontTree.setHeaderLabels(QStringList() << "Font" << "Smooth Sizes");
 
 const QStringList fontFamilies = QFontDatabase::families();
 for (const QString &family : fontFamilies) {
-    QTreeWidgetItem *familyItem = new QTreeWidgetItem(&fontTree);
+    BOBUIreeWidgetItem *familyItem = new BOBUIreeWidgetItem(&fontTree);
     familyItem->setText(0, family);
 
     const QStringList fontStyles = QFontDatabase::styles(family);
     for (const QString &style : fontStyles) {
-        QTreeWidgetItem *styleItem = new QTreeWidgetItem(familyItem);
+        BOBUIreeWidgetItem *styleItem = new BOBUIreeWidgetItem(familyItem);
         styleItem->setText(0, style);
 
         QString sizes;

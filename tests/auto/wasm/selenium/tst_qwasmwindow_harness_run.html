@@ -33,7 +33,7 @@
                     testSandbox.appendChild(screenDiv);
 
                     screenDiv.style.position = 'fixed';
-                    instance.qtAddContainerElement(screenDiv);
+                    instance.bobuiAddContainerElement(screenDiv);
 
                     return screenDiv;
                 },
@@ -42,7 +42,7 @@
                     testSandbox.appendChild(screenDiv);
 
                     screenDiv.style.position = 'relative';
-                    instance.qtAddContainerElement(screenDiv);
+                    instance.bobuiAddContainerElement(screenDiv);
 
                     return screenDiv;
                 },
@@ -57,7 +57,7 @@
                         scrollContainer.appendChild(screenDiv);
                         screenDiv.style.position = 'relative';
 
-                        instance.qtAddContainerElement(screenDiv);
+                        instance.bobuiAddContainerElement(screenDiv);
 
                         return [scrollContainer, screenDiv];
                     },
@@ -68,7 +68,7 @@
                 hitTestPoint: (x, y, screenId) => {
                     return document
                         .querySelector(`#${screenId}`)
-                        .querySelector('#qt-shadow-container')
+                        .querySelector('#bobui-shadow-container')
                         .shadowRoot.elementsFromPoint(x, y);
                 }
             };

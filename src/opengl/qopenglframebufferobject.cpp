@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qopenglframebufferobject.h"
 #include "qopenglframebufferobject_p.h"
@@ -12,23 +12,23 @@
 
 #include <qwindow.h>
 #include <qimage.h>
-#include <QtCore/qbytearray.h>
+#include <BobUICore/qbytearray.h>
 
-#include <qtopengl_tracepoints_p.h>
+#include <bobuiopengl_tracepoints_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_TRACE_PREFIX(qtopengl,
+Q_TRACE_PREFIX(bobuiopengl,
    "#include <private/qopengl2pexvertexarray_p.h>" \
    "#include <private/qopengltextureuploader_p.h>" \
    "#include <qopenglframebufferobject.h>"
 );
 Q_TRACE_PARAM_REPLACE(GLenum, int);
 Q_TRACE_PARAM_REPLACE(GLint, int);
-Q_TRACE_METADATA(qtopengl, "ENUM { } QOpenGLFramebufferObject::Attachment; ");
+Q_TRACE_METADATA(bobuiopengl, "ENUM { } QOpenGLFramebufferObject::Attachment; ");
 
-#ifndef QT_NO_DEBUG
-#define QT_RESET_GLERROR()                                \
+#ifndef BOBUI_NO_DEBUG
+#define BOBUI_RESET_GLERROR()                                \
 {                                                         \
     while (true) {\
         GLenum error = QOpenGLContext::currentContext()->functions()->glGetError(); \
@@ -36,7 +36,7 @@ Q_TRACE_METADATA(qtopengl, "ENUM { } QOpenGLFramebufferObject::Attachment; ");
             break; \
     } \
 }
-#define QT_CHECK_GLERROR()                                \
+#define BOBUI_CHECK_GLERROR()                                \
 {                                                         \
     GLenum err = QOpenGLContext::currentContext()->functions()->glGetError(); \
     if (err != GL_NO_ERROR && err != GL_CONTEXT_LOST) {                             \
@@ -45,8 +45,8 @@ Q_TRACE_METADATA(qtopengl, "ENUM { } QOpenGLFramebufferObject::Attachment; ");
     }                                                     \
 }
 #else
-#define QT_RESET_GLERROR() {}
-#define QT_CHECK_GLERROR() {}
+#define BOBUI_RESET_GLERROR() {}
+#define BOBUI_CHECK_GLERROR() {}
 #endif
 
 #ifndef GL_MAX_SAMPLES
@@ -150,7 +150,7 @@ Q_TRACE_METADATA(qtopengl, "ENUM { } QOpenGLFramebufferObject::Attachment; ");
     \class QOpenGLFramebufferObjectFormat
     \brief The QOpenGLFramebufferObjectFormat class specifies the format of an OpenGL
     framebuffer object.
-    \inmodule QtOpenGL
+    \inmodule BobUIOpenGL
 
     \since 5.0
 
@@ -461,7 +461,7 @@ namespace
     }
 }
 
-void Q_TRACE_INSTRUMENT(qtopengl) QOpenGLFramebufferObjectPrivate::init(
+void Q_TRACE_INSTRUMENT(bobuiopengl) QOpenGLFramebufferObjectPrivate::init(
         QOpenGLFramebufferObject *qfbo, const QSize &size,
         QOpenGLFramebufferObject::Attachment attachment,
         GLenum texture_target, GLenum internal_format,
@@ -496,7 +496,7 @@ void Q_TRACE_INSTRUMENT(qtopengl) QOpenGLFramebufferObjectPrivate::init(
 
     target = texture_target;
 
-    QT_RESET_GLERROR(); // reset error state
+    BOBUI_RESET_GLERROR(); // reset error state
     GLuint fbo = 0;
 
     funcs.glGenFramebuffers(1, &fbo);
@@ -504,7 +504,7 @@ void Q_TRACE_INSTRUMENT(qtopengl) QOpenGLFramebufferObjectPrivate::init(
 
     QOpenGLContextPrivate::get(ctx)->qgl_current_fbo_invalid = true;
 
-    QT_CHECK_GLERROR();
+    BOBUI_CHECK_GLERROR();
 
     format.setTextureTarget(target);
     format.setInternalTextureFormat(internal_format);
@@ -524,7 +524,7 @@ void Q_TRACE_INSTRUMENT(qtopengl) QOpenGLFramebufferObjectPrivate::init(
     else
         funcs.glDeleteFramebuffers(1, &fbo);
 
-    QT_CHECK_GLERROR();
+    BOBUI_CHECK_GLERROR();
 }
 
 void QOpenGLFramebufferObjectPrivate::initTexture(int idx)
@@ -581,7 +581,7 @@ void QOpenGLFramebufferObjectPrivate::initTexture(int idx)
     funcs.glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + idx,
                                  target, texture, 0);
 
-    QT_CHECK_GLERROR();
+    BOBUI_CHECK_GLERROR();
     funcs.glBindTexture(target, 0);
     valid = checkFramebufferStatus(ctx);
     if (valid) {
@@ -618,7 +618,7 @@ void QOpenGLFramebufferObjectPrivate::initColorBuffer(int idx, GLint *samples)
     funcs.glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + idx,
                                     GL_RENDERBUFFER, color_buffer);
 
-    QT_CHECK_GLERROR();
+    BOBUI_CHECK_GLERROR();
     valid = checkFramebufferStatus(ctx);
     if (valid) {
         // Query the actual number of samples. This can be greater than the requested
@@ -662,11 +662,11 @@ void QOpenGLFramebufferObjectPrivate::initDepthStencilAttachments(QOpenGLContext
 
     // In practice, a combined depth-stencil buffer is supported by all desktop platforms, while a
     // separate stencil buffer is not. On embedded devices however, a combined depth-stencil buffer
-    // might not be supported while separate buffers are, according to QTBUG-12861.
+    // might not be supported while separate buffers are, according to BOBUIBUG-12861.
 #ifdef Q_OS_WASM
     // WebGL doesn't allow separately attach buffers to
     // STENCIL_ATTACHMENT and DEPTH_ATTACHMENT
-    // QTBUG-69913
+    // BOBUIBUG-69913
     if (attachment == QOpenGLFramebufferObject::CombinedDepthStencil) {
         funcs.glGenRenderbuffers(1, &depth_buffer);
         funcs.glBindRenderbuffer(GL_RENDERBUFFER, depth_buffer);
@@ -762,7 +762,7 @@ void QOpenGLFramebufferObjectPrivate::initDepthStencilAttachments(QOpenGLContext
         funcs.glBindRenderbuffer(GL_RENDERBUFFER, stencil_buffer);
         Q_ASSERT(funcs.glIsRenderbuffer(stencil_buffer));
 
-#if QT_CONFIG(opengles2)
+#if BOBUI_CONFIG(opengles2)
         GLenum storage = GL_STENCIL_INDEX8;
 #else
         GLenum storage = ctx->isOpenGLES() ? GL_STENCIL_INDEX8 : GL_STENCIL_INDEX;
@@ -813,7 +813,7 @@ void QOpenGLFramebufferObjectPrivate::initDepthStencilAttachments(QOpenGLContext
         if (stencil_buffer && depth_buffer != stencil_buffer)
             funcs.glDeleteRenderbuffers(1, &stencil_buffer);
     }
-    QT_CHECK_GLERROR();
+    BOBUI_CHECK_GLERROR();
 
     format.setAttachment(fbo_attachment);
 }
@@ -822,7 +822,7 @@ void QOpenGLFramebufferObjectPrivate::initDepthStencilAttachments(QOpenGLContext
     \class QOpenGLFramebufferObject
     \brief The QOpenGLFramebufferObject class encapsulates an OpenGL framebuffer object.
     \since 5.0
-    \inmodule QtOpenGL
+    \inmodule BobUIOpenGL
 
     \ingroup painting-3D
 
@@ -889,7 +889,7 @@ void QOpenGLFramebufferObjectPrivate::initDepthStencilAttachments(QOpenGLContext
 static inline GLenum effectiveInternalFormat(GLenum internalFormat)
 {
     if (!internalFormat)
-#if QT_CONFIG(opengles2)
+#if BOBUI_CONFIG(opengles2)
         internalFormat = GL_RGBA;
 #else
         internalFormat = QOpenGLContext::currentContext()->isOpenGLES() ? GL_RGBA : GL_RGBA8;
@@ -1146,7 +1146,7 @@ bool QOpenGLFramebufferObject::bind()
     QOpenGLContext *current = QOpenGLContext::currentContext();
     if (!current)
         return false;
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
     if (current->shareGroup() != d->fbo_guard->group())
         qWarning("QOpenGLFramebufferObject::bind() called from incompatible context");
 #endif
@@ -1186,7 +1186,7 @@ bool QOpenGLFramebufferObject::release()
         return false;
 
     Q_D(QOpenGLFramebufferObject);
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
     if (current->shareGroup() != d->fbo_guard->group())
         qWarning("QOpenGLFramebufferObject::release() called from incompatible context");
 #endif
@@ -1350,7 +1350,7 @@ QOpenGLFramebufferObjectFormat QOpenGLFramebufferObject::format() const
     return d->format;
 }
 
-static inline QImage qt_gl_read_framebuffer_rgba8(const QSize &size, bool include_alpha, QOpenGLContext *context)
+static inline QImage bobui_gl_read_framebuffer_rgba8(const QSize &size, bool include_alpha, QOpenGLContext *context)
 {
     QOpenGLFunctions *funcs = context->functions();
     const int w = size.width();
@@ -1374,7 +1374,7 @@ static inline QImage qt_gl_read_framebuffer_rgba8(const QSize &size, bool includ
     return rgbaImage;
 }
 
-static inline QImage qt_gl_read_framebuffer_rgb10a2(const QSize &size, bool include_alpha, QOpenGLContext *context)
+static inline QImage bobui_gl_read_framebuffer_rgb10a2(const QSize &size, bool include_alpha, QOpenGLContext *context)
 {
     // We assume OpenGL 1.2+ or ES 3.0+ here.
     QImage img(size, include_alpha ? QImage::Format_A2BGR30_Premultiplied : QImage::Format_BGR30);
@@ -1383,7 +1383,7 @@ static inline QImage qt_gl_read_framebuffer_rgb10a2(const QSize &size, bool incl
     return img;
 }
 
-static inline QImage qt_gl_read_framebuffer_rgba16(const QSize &size, bool include_alpha, QOpenGLContext *context)
+static inline QImage bobui_gl_read_framebuffer_rgba16(const QSize &size, bool include_alpha, QOpenGLContext *context)
 {
     // We assume OpenGL 1.2+ or ES 3.0+ here.
     QImage img(size, include_alpha ? QImage::Format_RGBA64_Premultiplied : QImage::Format_RGBX64);
@@ -1392,7 +1392,7 @@ static inline QImage qt_gl_read_framebuffer_rgba16(const QSize &size, bool inclu
     return img;
 }
 
-static inline QImage qt_gl_read_framebuffer_rgba16f(const QSize &size, bool include_alpha, QOpenGLContext *context)
+static inline QImage bobui_gl_read_framebuffer_rgba16f(const QSize &size, bool include_alpha, QOpenGLContext *context)
 {
     // We assume OpenGL (ES) 3.0+ here.
     QImage img(size, include_alpha ? QImage::Format_RGBA16FPx4_Premultiplied : QImage::Format_RGBX16FPx4);
@@ -1401,7 +1401,7 @@ static inline QImage qt_gl_read_framebuffer_rgba16f(const QSize &size, bool incl
     return img;
 }
 
-static inline QImage qt_gl_read_framebuffer_rgba32f(const QSize &size, bool include_alpha, QOpenGLContext *context)
+static inline QImage bobui_gl_read_framebuffer_rgba32f(const QSize &size, bool include_alpha, QOpenGLContext *context)
 {
     QImage img(size, include_alpha ? QImage::Format_RGBA32FPx4_Premultiplied : QImage::Format_RGBX32FPx4);
     if (!img.isNull())
@@ -1409,7 +1409,7 @@ static inline QImage qt_gl_read_framebuffer_rgba32f(const QSize &size, bool incl
     return img;
 }
 
-static QImage qt_gl_read_framebuffer(const QSize &size, GLenum internal_format, bool include_alpha, bool flip)
+static QImage bobui_gl_read_framebuffer(const QSize &size, GLenum internal_format, bool include_alpha, bool flip)
 {
     QOpenGLContext *ctx = QOpenGLContext::currentContext();
     QOpenGLFunctions *funcs = ctx->functions();
@@ -1418,39 +1418,39 @@ static QImage qt_gl_read_framebuffer(const QSize &size, GLenum internal_format, 
         if (error == GL_NO_ERROR || error == GL_CONTEXT_LOST)
             break;
     }
-    Qt::Orientations orient = flip ? Qt::Vertical : Qt::Orientations{};
+    BobUI::Orientations orient = flip ? BobUI::Vertical : BobUI::Orientations{};
     switch (internal_format) {
     case GL_RGB:
     case GL_RGB8:
-        return qt_gl_read_framebuffer_rgba8(size, false, ctx).flipped(orient);
+        return bobui_gl_read_framebuffer_rgba8(size, false, ctx).flipped(orient);
     case GL_RGB10:
-        return qt_gl_read_framebuffer_rgb10a2(size, false, ctx).flipped(orient);
+        return bobui_gl_read_framebuffer_rgb10a2(size, false, ctx).flipped(orient);
     case GL_RGB10_A2:
-        return qt_gl_read_framebuffer_rgb10a2(size, include_alpha, ctx).flipped(orient);
+        return bobui_gl_read_framebuffer_rgb10a2(size, include_alpha, ctx).flipped(orient);
     case GL_RGB16:
-        return qt_gl_read_framebuffer_rgba16(size, false, ctx).flipped(orient);
+        return bobui_gl_read_framebuffer_rgba16(size, false, ctx).flipped(orient);
     case GL_RGBA16:
-        return qt_gl_read_framebuffer_rgba16(size, include_alpha, ctx).flipped(orient);
+        return bobui_gl_read_framebuffer_rgba16(size, include_alpha, ctx).flipped(orient);
     case GL_RGB16F:
-        return qt_gl_read_framebuffer_rgba16f(size, false, ctx).flipped(orient);
+        return bobui_gl_read_framebuffer_rgba16f(size, false, ctx).flipped(orient);
     case GL_RGBA16F:
-        return qt_gl_read_framebuffer_rgba16f(size, include_alpha, ctx).flipped(orient);
+        return bobui_gl_read_framebuffer_rgba16f(size, include_alpha, ctx).flipped(orient);
     case GL_RGB32F:
-        return qt_gl_read_framebuffer_rgba32f(size, false, ctx).flipped(orient);
+        return bobui_gl_read_framebuffer_rgba32f(size, false, ctx).flipped(orient);
     case GL_RGBA32F:
-        return qt_gl_read_framebuffer_rgba32f(size, include_alpha, ctx).flipped(orient);
+        return bobui_gl_read_framebuffer_rgba32f(size, include_alpha, ctx).flipped(orient);
     case GL_RGBA:
     case GL_RGBA8:
     default:
-        return qt_gl_read_framebuffer_rgba8(size, include_alpha, ctx).flipped(orient);
+        return bobui_gl_read_framebuffer_rgba8(size, include_alpha, ctx).flipped(orient);
     }
 
     Q_UNREACHABLE_RETURN(QImage());
 }
 
-Q_OPENGL_EXPORT QImage qt_gl_read_framebuffer(const QSize &size, bool alpha_format, bool include_alpha)
+Q_OPENGL_EXPORT QImage bobui_gl_read_framebuffer(const QSize &size, bool alpha_format, bool include_alpha)
 {
-    return qt_gl_read_framebuffer(size, alpha_format ? GL_RGBA : GL_RGB, include_alpha, true);
+    return bobui_gl_read_framebuffer(size, alpha_format ? GL_RGBA : GL_RGB, include_alpha, true);
 }
 
 /*!
@@ -1463,11 +1463,11 @@ Q_OPENGL_EXPORT QImage qt_gl_read_framebuffer(const QSize &size, bool alpha_form
     of QOpenGLPaintDevice::paintFlipped().
 
     The returned image has a format of premultiplied ARGB32 or RGB32. The latter
-    is used only when internalTextureFormat() is set to \c GL_RGB. Since Qt 5.2
+    is used only when internalTextureFormat() is set to \c GL_RGB. Since BobUI 5.2
     the function will fall back to premultiplied RGBA8888 or RGBx8888 when
-    reading to (A)RGB32 is not supported, and this includes OpenGL ES. Since Qt
+    reading to (A)RGB32 is not supported, and this includes OpenGL ES. Since BobUI
     5.4 an A2BGR30 image is returned if the internal format is RGB10_A2, and since
-    Qt 5.12 a RGBA64 image is return if the internal format is RGBA16.
+    BobUI 5.12 a RGBA64 image is return if the internal format is RGBA16.
 
     If the rendering in the framebuffer was not done with premultiplied alpha in mind,
     create a wrapper QImage with a non-premultiplied format. This is necessary before
@@ -1534,7 +1534,7 @@ QImage QOpenGLFramebufferObject::toImage(bool flipped, int colorAttachmentIndex)
 
     QImage image;
     QOpenGLExtraFunctions *extraFuncs = ctx->extraFunctions();
-    // qt_gl_read_framebuffer doesn't work on a multisample FBO
+    // bobui_gl_read_framebuffer doesn't work on a multisample FBO
     if (format().samples() != 0) {
         QRect rect(QPoint(0, 0), size());
         QOpenGLFramebufferObjectFormat fmt;
@@ -1554,12 +1554,12 @@ QImage QOpenGLFramebufferObject::toImage(bool flipped, int colorAttachmentIndex)
     } else {
         if (extraFuncs->hasOpenGLFeature(QOpenGLFunctions::MultipleRenderTargets)) {
             extraFuncs->glReadBuffer(GL_COLOR_ATTACHMENT0 + colorAttachmentIndex);
-            image = qt_gl_read_framebuffer(d->colorAttachments[colorAttachmentIndex].size,
+            image = bobui_gl_read_framebuffer(d->colorAttachments[colorAttachmentIndex].size,
                                            d->colorAttachments[colorAttachmentIndex].internalFormat,
                                            true, flipped);
             extraFuncs->glReadBuffer(GL_COLOR_ATTACHMENT0);
         } else {
-            image = qt_gl_read_framebuffer(d->colorAttachments[0].size,
+            image = bobui_gl_read_framebuffer(d->colorAttachments[0].size,
                                            d->colorAttachments[0].internalFormat,
                                            true, flipped);
         }
@@ -1589,7 +1589,7 @@ bool QOpenGLFramebufferObject::bindDefault()
         QOpenGLContextPrivate::get(ctx)->qgl_current_fbo_invalid = true;
         QOpenGLContextPrivate::get(ctx)->qgl_current_fbo = nullptr;
     }
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
     else
         qWarning("QOpenGLFramebufferObject::bindDefault() called without current context.");
 #endif
@@ -1652,7 +1652,7 @@ void QOpenGLFramebufferObject::setAttachment(QOpenGLFramebufferObject::Attachmen
     QOpenGLContext *current = QOpenGLContext::currentContext();
     if (!current)
         return;
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
     if (current->shareGroup() != d->fbo_guard->group())
         qWarning("QOpenGLFramebufferObject::setAttachment() called from incompatible context");
 #endif
@@ -1884,4 +1884,4 @@ void QOpenGLFramebufferObject::blitFramebuffer(QOpenGLFramebufferObject *target,
                     RestoreFrameBufferBinding);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

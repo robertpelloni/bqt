@@ -1,16 +1,16 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qpermissions.h"
 #include "qpermissions_p.h"
 #include "qhashfunctions.h"
 
-#include <QtCore/qshareddata.h>
-#include <QtCore/qdebug.h>
+#include <BobUICore/qshareddata.h>
+#include <BobUICore/qdebug.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcPermissions, "qt.permissions", QtWarningMsg);
+Q_LOGGING_CATEGORY(lcPermissions, "bobui.permissions", BobUIWarningMsg);
 
 /*!
     \page permissions.html
@@ -23,7 +23,7 @@ Q_LOGGING_CATEGORY(lcPermissions, "qt.permissions", QtWarningMsg);
     require explicit consent from the user before accessing these
     features.
 
-    The Qt permission APIs allow the application to check or request
+    The BobUI permission APIs allow the application to check or request
     permission for such features in a cross platform manner.
 
     \section1 Usage
@@ -48,14 +48,14 @@ Q_LOGGING_CATEGORY(lcPermissions, "qt.permissions", QtWarningMsg);
     {
         QMicrophonePermission microphonePermission;
         switch (qApp->checkPermission(microphonePermission)) {
-        case Qt::PermissionStatus::Undetermined:
+        case BobUI::PermissionStatus::Undetermined:
             qApp->requestPermission(microphonePermission, this,
                         &VoiceMemoWidget::onRecordingInitiated);
             return;
-        case Qt::PermissionStatus::Denied:
+        case BobUI::PermissionStatus::Denied:
             m_permissionInstructionsDialog->show();
             return;
-        case Qt::PermissionStatus::Granted:
+        case BobUI::PermissionStatus::Granted:
             m_microphone->startRecording();
         }
     }
@@ -117,18 +117,18 @@ Q_LOGGING_CATEGORY(lcPermissions, "qt.permissions", QtWarningMsg);
     \endcode
 
     To ensure the relevant permission backend is included with your
-    application, please \l {QT_ANDROID_PACKAGE_SOURCE_DIR}
+    application, please \l {BOBUI_ANDROID_PACKAGE_SOURCE_DIR}
     {point the build system to your custom \c AndroidManifest.xml}
-    or use \l {qt_add_android_permission}().
+    or use \l {bobui_add_android_permission}().
 
     The relevant permission names are described in the documentation
     for each permission type.
 
     \note When using this API, the \c{<!-- %%INSERT_PERMISSIONS -->} tag must be present in
     the AndroidManifest.xml. For further information on the use of this tag,
-    see \l {Qt Permissions and Features}
+    see \l {BobUI Permissions and Features}
 
-    \sa {Qt Creator: Editing Manifest Files}.
+    \sa {BobUI Creator: Editing Manifest Files}.
 
     \section1 Available Permissions
 
@@ -136,8 +136,8 @@ Q_LOGGING_CATEGORY(lcPermissions, "qt.permissions", QtWarningMsg);
 
     \annotatedlist permissions
 
-    \note The available permission types cover core functionality of Qt modules
-    like Qt Multimedia and Qt Positioning, but do not encompass all platform-specific
+    \note The available permission types cover core functionality of BobUI modules
+    like BobUI Multimedia and BobUI Positioning, but do not encompass all platform-specific
     permissions. Custom permission types are not currently supported.
 
     \section1 Best Practices
@@ -187,7 +187,7 @@ Q_LOGGING_CATEGORY(lcPermissions, "qt.permissions", QtWarningMsg);
 
 /*!
     \class QPermission
-    \inmodule QtCore
+    \inmodule BobUICore
     \inheaderfile QPermissions
     \since 6.5
     \brief An opaque wrapper of a typed permission.
@@ -207,7 +207,7 @@ Q_LOGGING_CATEGORY(lcPermissions, "qt.permissions", QtWarningMsg);
 
     \code
     qApp->requestPermission(QCameraPermission{}, [](const QPermission &permission) {
-        if (permission.status() == Qt::PermissionStatus::Granted)
+        if (permission.status() == BobUI::PermissionStatus::Granted)
             takePhoto();
     });
     \endcode
@@ -224,7 +224,7 @@ Q_LOGGING_CATEGORY(lcPermissions, "qt.permissions", QtWarningMsg);
     \code
     void LocationWidget::permissionUpdated(const QPermission &permission)
     {
-        if (permission.status() != Qt::PermissionStatus::Granted)
+        if (permission.status() != BobUI::PermissionStatus::Granted)
             return;
         auto locationPermission = permission.value<QLocationPermission>();
         if (!locationPermission || locationPermission->accuracy() != QLocationPermission::Precise)
@@ -272,7 +272,7 @@ Q_LOGGING_CATEGORY(lcPermissions, "qt.permissions", QtWarningMsg);
 */
 
 /*!
-    \fn Qt::PermissionStatus QPermission::status() const
+    \fn BobUI::PermissionStatus QPermission::status() const
     Returns the status of the permission.
 */
 
@@ -296,7 +296,7 @@ const void *QPermission::data(QMetaType requestedType) const
 // pointers have different alignment inside structs:
 struct AlignmentCheck { void *p; };
 
-#define QT_PERMISSION_IMPL_COMMON(ClassName) \
+#define BOBUI_PERMISSION_IMPL_COMMON(ClassName) \
     /* Class##Private is unused until we need it: */ \
     static_assert(sizeof(ClassName) == sizeof(void*), \
                   "You have added too many members to " #ClassName "::ShortData. " \
@@ -331,7 +331,7 @@ struct AlignmentCheck { void *p; };
     \include permissions.qdocinc permission-metadata
 */
 
-QT_PERMISSION_IMPL_COMMON(QCameraPermission)
+BOBUI_PERMISSION_IMPL_COMMON(QCameraPermission)
     : u{} // stateless, atm
 {}
 
@@ -355,7 +355,7 @@ QT_PERMISSION_IMPL_COMMON(QCameraPermission)
     \include permissions.qdocinc permission-metadata
 */
 
-QT_PERMISSION_IMPL_COMMON(QMicrophonePermission)
+BOBUI_PERMISSION_IMPL_COMMON(QMicrophonePermission)
     : u{} // stateless, atm
 {}
 
@@ -387,7 +387,7 @@ QT_PERMISSION_IMPL_COMMON(QMicrophonePermission)
             \endlist
     \include permissions.qdocinc end-usage-declarations
 
-    \note Since Qt 6.8.1, the ACCESS_FINE_LOCATION permission is no longer
+    \note Since BobUI 6.8.1, the ACCESS_FINE_LOCATION permission is no longer
     requested if API Level >= 31. This
     \l {Android Bluetooth Permissions}{may limit some Bluetooth scan results}.
     Users needing these results need
@@ -396,12 +396,12 @@ QT_PERMISSION_IMPL_COMMON(QMicrophonePermission)
     \c {BLUETOOTH_SCAN} permission doesn't have the
     \c {android:usesPermissionFlags="neverForLocation"} attribute set.
     For setting and customizing permissions in the application manifest,
-    \l {Qt Permissions and Features}{see this guide}.
+    \l {BobUI Permissions and Features}{see this guide}.
 
     \include permissions.qdocinc permission-metadata
 */
 
-QT_PERMISSION_IMPL_COMMON(QBluetoothPermission)
+BOBUI_PERMISSION_IMPL_COMMON(QBluetoothPermission)
     : u{ShortData{CommunicationMode::Default, {}}}
 {}
 
@@ -490,7 +490,7 @@ QBluetoothPermission::CommunicationModes QBluetoothPermission::communicationMode
     \include permissions.qdocinc permission-metadata
 */
 
-QT_PERMISSION_IMPL_COMMON(QLocationPermission)
+BOBUI_PERMISSION_IMPL_COMMON(QLocationPermission)
     : u{ShortData{Accuracy::Approximate, Availability::WhenInUse, {}}}
 {}
 
@@ -581,7 +581,7 @@ QLocationPermission::Availability QLocationPermission::availability() const
     \sa setAccessMode, accessMode
 */
 
-QT_PERMISSION_IMPL_COMMON(QContactsPermission)
+BOBUI_PERMISSION_IMPL_COMMON(QContactsPermission)
     : u{ShortData{AccessMode::ReadOnly, {}}}
 {}
 
@@ -638,7 +638,7 @@ QContactsPermission::AccessMode QContactsPermission::accessMode() const
     \sa setAccessMode, accessMode
 */
 
-QT_PERMISSION_IMPL_COMMON(QCalendarPermission)
+BOBUI_PERMISSION_IMPL_COMMON(QCalendarPermission)
     : u{ShortData{AccessMode::ReadOnly, {}}}
 {}
 
@@ -666,7 +666,7 @@ QCalendarPermission::AccessMode QCalendarPermission::accessMode() const
 
 QPermissionPlugin::~QPermissionPlugin() = default;
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug debug, const QPermission &permission)
 {
     const auto verbosity = debug.verbosity();
@@ -681,30 +681,30 @@ QDebug operator<<(QDebug debug, const QPermission &permission)
 }
 #endif
 
-#undef QT_PERMISSION_IMPL_COMMON
+#undef BOBUI_PERMISSION_IMPL_COMMON
 
 #if !defined(Q_OS_DARWIN) && !defined(Q_OS_ANDROID) && !defined(Q_OS_WASM)
 // Default backend for platforms without a permission implementation.
 // Always returns Granted, to match behavior when not using permission APIs
-// https://bugreports.qt.io/browse/QTBUG-90498?focusedCommentId=725085#comment-725085
+// https://bugreports.bobui.io/browse/BOBUIBUG-90498?focusedCommentId=725085#comment-725085
 namespace QPermissions::Private
 {
-    Qt::PermissionStatus checkPermission(const QPermission &permission)
+    BobUI::PermissionStatus checkPermission(const QPermission &permission)
     {
         qCDebug(lcPermissions) << "No permission backend on this platform."
             << "Optimistically returning Granted for" << permission;
-        return Qt::PermissionStatus::Granted;
+        return BobUI::PermissionStatus::Granted;
     }
 
     void requestPermission(const QPermission &permission, const PermissionCallback &callback)
     {
         qCDebug(lcPermissions) << "No permission backend on this platform."
             << "Optimistically returning Granted for" << permission;
-        callback(Qt::PermissionStatus::Granted);
+        callback(BobUI::PermissionStatus::Granted);
     }
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qpermissions.cpp"

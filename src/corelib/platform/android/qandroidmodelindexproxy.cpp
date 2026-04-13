@@ -1,17 +1,17 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtCore/private/qandroiditemmodelproxy_p.h>
-#include <QtCore/private/qandroidmodelindexproxy_p.h>
-#include <QtCore/private/qandroidtypeconverter_p.h>
+#include <BobUICore/private/qandroiditemmodelproxy_p.h>
+#include <BobUICore/private/qandroidmodelindexproxy_p.h>
+#include <BobUICore/private/qandroidtypeconverter_p.h>
 
-#include <QtCore/qjniarray.h>
+#include <BobUICore/qjniarray.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace QtJniTypes;
+using namespace BobUIJniTypes;
 
-QModelIndex QAndroidModelIndexProxy::qInstance(JQtModelIndex jModelIndex)
+QModelIndex QAndroidModelIndexProxy::qInstance(JBobUIModelIndex jModelIndex)
 {
     if (!jModelIndex.isValid())
         return QModelIndex();
@@ -30,29 +30,29 @@ QModelIndex QAndroidModelIndexProxy::qInstance(JQtModelIndex jModelIndex)
     QAndroidItemModelProxy *proxyModel = qobject_cast<QAndroidItemModelProxy *>(model);
 
     // If the native model instance is a proxy we have access to the protected function
-    // createIndex(). Else, if the native instance is not a results Java->Qt proxy, we
+    // createIndex(). Else, if the native instance is not a results Java->BobUI proxy, we
     // use index() to get the QModelIndex.
     if (proxyModel) {
         const jint internalId = privateData[2];
         return proxyModel->createIndex(row, column, internalId);
     } else {
-        const JQtModelIndex parent = jModelIndex.getField<JQtModelIndex>("m_parent");
+        const JBobUIModelIndex parent = jModelIndex.getField<JBobUIModelIndex>("m_parent");
         if (parent.isValid())
             return model->index(row, column, QAndroidModelIndexProxy::qInstance(parent));
     }
     return QModelIndex();
 }
 
-JQtModelIndex QAndroidModelIndexProxy::jInstance(QModelIndex modelIndex)
+JBobUIModelIndex QAndroidModelIndexProxy::jInstance(QModelIndex modelIndex)
 {
     if (!modelIndex.isValid())
-        return JQtModelIndex();
+        return JBobUIModelIndex();
     bool isModelProxy = qobject_cast<const QAndroidItemModelProxy *>(modelIndex.model());
     if (isModelProxy)
-        return JQtModelIndex(modelIndex.row(), modelIndex.column(), jlong(modelIndex.internalId()),
+        return JBobUIModelIndex(modelIndex.row(), modelIndex.column(), jlong(modelIndex.internalId()),
                              reinterpret_cast<jlong>(modelIndex.model()));
     else
-        return JQtModelIndex(modelIndex.row(), modelIndex.column(),
+        return JBobUIModelIndex(modelIndex.row(), modelIndex.column(),
                              QAndroidModelIndexProxy::jInstance(modelIndex.parent()),
                              reinterpret_cast<jlong>(modelIndex.model()));
 }
@@ -83,7 +83,7 @@ jboolean QAndroidModelIndexProxy::isValid(JNIEnv *env, jobject object)
     return qInstance(object).isValid();
 }
 
-JQtModelIndex QAndroidModelIndexProxy::parent(JNIEnv *env, jobject object)
+JBobUIModelIndex QAndroidModelIndexProxy::parent(JNIEnv *env, jobject object)
 {
     Q_ASSERT(env);
     Q_ASSERT(object);
@@ -93,11 +93,11 @@ JQtModelIndex QAndroidModelIndexProxy::parent(JNIEnv *env, jobject object)
 bool QAndroidModelIndexProxy::registerNatives(QJniEnvironment &env)
 {
     return env.registerNativeMethods(
-            Traits<JQtModelIndex>::className(),
+            Traits<JBobUIModelIndex>::className(),
             { Q_JNI_NATIVE_SCOPED_METHOD(data, QAndroidModelIndexProxy),
               Q_JNI_NATIVE_SCOPED_METHOD(internalId, QAndroidModelIndexProxy),
               Q_JNI_NATIVE_SCOPED_METHOD(isValid, QAndroidModelIndexProxy),
               Q_JNI_NATIVE_SCOPED_METHOD(parent, QAndroidModelIndexProxy) });
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

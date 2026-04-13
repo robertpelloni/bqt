@@ -1,14 +1,14 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## tst_qcssparser Test:
 #####################################################################
 
-if(NOT QT_BUILD_STANDALONE_TESTS AND NOT QT_BUILDING_QT)
+if(NOT BOBUI_BUILD_STANDALONE_TESTS AND NOT BOBUI_BUILDING_BOBUI)
     cmake_minimum_required(VERSION 3.16)
     project(tst_qcssparser LANGUAGES CXX)
-    find_package(Qt6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
+    find_package(BobUI6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
 endif()
 
 # Collect test data
@@ -17,12 +17,12 @@ file(GLOB_RECURSE test_data
     testdata/*
 )
 
-qt_internal_add_test(tst_qcssparser
+bobui_internal_add_test(tst_qcssparser
     SOURCES
         tst_qcssparser.cpp
     LIBRARIES
-        Qt::Gui
-        Qt::GuiPrivate
-        Qt::Xml
+        BobUI::Gui
+        BobUI::GuiPrivate
+        BobUI::Xml
     TESTDATA ${test_data}
 )

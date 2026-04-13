@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qsharedmemory.h"
 #include "qsharedmemory_p.h"
 
-#include "qtipccommon_p.h"
+#include "bobuiipccommon_p.h"
 
 #include <qdir.h>
 #include <qdebug.h>
 
 #include <errno.h>
 
-#if QT_CONFIG(sharedmemory)
-#if QT_CONFIG(sysv_shm)
+#if BOBUI_CONFIG(sharedmemory)
+#if BOBUI_CONFIG(sysv_shm)
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/mman.h>
@@ -27,15 +27,15 @@
 #include "private/qcore_mac_p.h"
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
-using namespace QtIpcCommon;
+using namespace BobUI::StringLiterals;
+using namespace BobUIIpcCommon;
 
 bool QSharedMemorySystemV::runtimeSupportCheck()
 {
 #if defined(Q_OS_DARWIN)
-    if (qt_apple_isSandboxed())
+    if (bobui_apple_isSandboxed())
         return false;
 #endif
     static const bool result = []() {
@@ -207,7 +207,7 @@ bool QSharedMemorySystemV::detach(QSharedMemoryPrivate *self)
     return cleanHandle(self);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_CONFIG(sysv_shm)
-#endif // QT_CONFIG(sharedmemory)
+#endif // BOBUI_CONFIG(sysv_shm)
+#endif // BOBUI_CONFIG(sharedmemory)

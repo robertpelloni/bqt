@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example graphicsview/elasticnodes
@@ -172,7 +172,7 @@
     to the right from the top-left corner (-10, -10) of the ellipse.
 
     We then draw an ellipse with a radial gradient fill. This fill is either
-    Qt::yellow to Qt::darkYellow when raised, or the opposite when sunken. In
+    BobUI::yellow to BobUI::darkYellow when raised, or the opposite when sunken. In
     sunken state we also shift the center and focal point by (3, 3) to
     emphasize the impression that something has been pushed down.
 

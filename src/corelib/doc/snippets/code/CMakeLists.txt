@@ -13,7 +13,7 @@ add_library(corelib_snippets_code OBJECT
     src_corelib_animation_qparallelanimationgroup.cpp
     src_corelib_animation_qsequentialanimationgroup.cpp
     src_corelib_animation_qvariantanimation.cpp
-    src_corelib_concurrent_qthreadpool.cpp
+    src_corelib_concurrent_bobuihreadpool.cpp
     src_corelib_global_qglobal.cpp
     src_corelib_global_qlogging.cpp
     src_corelib_global_qnumeric.cpp
@@ -29,9 +29,9 @@ add_library(corelib_snippets_code OBJECT
     src_corelib_io_qfileselector.cpp
     src_corelib_io_qsettings.cpp
     src_corelib_io_qstorageinfo.cpp
-    src_corelib_io_qtemporarydir.cpp
-    src_corelib_io_qtemporaryfile.cpp
-    src_corelib_io_qtextstream.cpp
+    src_corelib_io_bobuiemporarydir.cpp
+    src_corelib_io_bobuiemporaryfile.cpp
+    src_corelib_io_bobuiextstream.cpp
     src_corelib_io_qurl.cpp
     src_corelib_kernel_qabstractitemmodel.cpp
     src_corelib_kernel_qabstractnativeeventfilter_win.cpp
@@ -66,7 +66,7 @@ add_library(corelib_snippets_code OBJECT
     src_corelib_thread_qmutex.cpp
     src_corelib_thread_qreadwritelock.cpp
     src_corelib_thread_qsemaphore.cpp
-    src_corelib_thread_qthread.cpp
+    src_corelib_thread_bobuihread.cpp
     src_corelib_thread_qwaitcondition_unix.cpp
     src_corelib_time_qdatetime.cpp
     src_corelib_tools_qbitarray.cpp
@@ -97,7 +97,7 @@ set_target_properties(corelib_snippets_code PROPERTIES
 )
 
 target_link_libraries(corelib_snippets_code PRIVATE
-    Qt::Core
+    BobUI::Core
 )
 
 if(APPLE)
@@ -106,7 +106,7 @@ if(APPLE)
     )
 endif()
 
-if(QT_FEATURE_process)
+if(BOBUI_FEATURE_process)
     target_sources(corelib_snippets_code PRIVATE
         src_corelib_io_qiodevice.cpp
         src_corelib_io_qprocess.cpp
@@ -119,29 +119,29 @@ if(NOT EMSCRIPTEN)
     )
 endif()
 
-if(QT_FEATURE_widgets)
+if(BOBUI_FEATURE_widgets)
     target_link_libraries(corelib_snippets_code PRIVATE
-        Qt::Widgets
+        BobUI::Widgets
     )
     target_sources(corelib_snippets_code PRIVATE
         doc_src_objecttrees.cpp
         src_corelib_animation_qpropertyanimation.cpp
         src_corelib_global_qglobal_widgets.cpp
         src_corelib_kernel_qobject.cpp
-        src_corelib_kernel_qtimer.cpp
-        src_corelib_tools_qtimeline.cpp
+        src_corelib_kernel_bobuiimer.cpp
+        src_corelib_tools_bobuiimeline.cpp
     )
 endif()
 
-if(QT_FEATURE_gui)
+if(BOBUI_FEATURE_gui)
     target_link_libraries(corelib_snippets_code PRIVATE
-        Qt::Gui
+        BobUI::Gui
     )
 endif()
 
-if(QT_FEATURE_concurrent)
+if(BOBUI_FEATURE_concurrent)
     target_link_libraries(corelib_snippets_code PRIVATE
-        Qt::Concurrent
+        BobUI::Concurrent
     )
     target_sources(corelib_snippets_code PRIVATE
         src_corelib_thread_qexception.cpp
@@ -151,9 +151,9 @@ if(QT_FEATURE_concurrent)
     )
 endif()
 
-if(QT_FEATURE_network)
+if(BOBUI_FEATURE_network)
     target_link_libraries(corelib_snippets_code PRIVATE
-        Qt::Network
+        BobUI::Network
     )
 endif()
 

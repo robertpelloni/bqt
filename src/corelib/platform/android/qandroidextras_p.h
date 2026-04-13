@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QANDROIDEXTRAS_H
 #define QANDROIDEXTRAS_H
@@ -8,7 +8,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -18,19 +18,19 @@
 #include <jni.h>
 #include <functional>
 
-#include <QtCore/private/qglobal_p.h>
-#include <QtCore/qjniobject.h>
-#include <QtCore/private/qjnihelpers_p.h>
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qmap.h>
+#include <BobUICore/private/qglobal_p.h>
+#include <BobUICore/qjniobject.h>
+#include <BobUICore/private/qjnihelpers_p.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/qmap.h>
 
-#if QT_CONFIG(future)
-#include <QtCore/qfuture.h>
+#if BOBUI_CONFIG(future)
+#include <BobUICore/qfuture.h>
 #endif
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QAndroidParcel;
 class QAndroidBinderPrivate;
@@ -191,7 +191,7 @@ private:
     static QAndroidActivityCallbackResultReceiver *s_instance;
 };
 
-namespace QtAndroidPrivate
+namespace BobUIAndroidPrivate
 {
     Q_CORE_EXPORT void startIntentSender(const QJniObject &intentSender,
                                          int receiverRequestCode,
@@ -226,24 +226,24 @@ namespace QtAndroidPrivate
                                    const QAndroidServiceConnection &serviceConnection,
                                    BindFlags flags = BindFlag::None);
 
-#if QT_CONFIG(permissions)
-    QT_REQUIRE_CONFIG(future);
+#if BOBUI_CONFIG(permissions)
+    BOBUI_REQUIRE_CONFIG(future);
     enum PermissionResult {
         Undetermined,
         Authorized,
         Denied
     };
 
-    Q_CORE_EXPORT QFuture<QtAndroidPrivate::PermissionResult>
+    Q_CORE_EXPORT QFuture<BobUIAndroidPrivate::PermissionResult>
     requestPermission(const QString &permission);
-    QFuture<QtAndroidPrivate::PermissionResult>
+    QFuture<BobUIAndroidPrivate::PermissionResult>
     requestPermissions(const QStringList &permissions);
-    Q_CORE_EXPORT QFuture<QtAndroidPrivate::PermissionResult>
+    Q_CORE_EXPORT QFuture<BobUIAndroidPrivate::PermissionResult>
     checkPermission(const QString &permission);
 #endif
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QANDROIDEXTRAS_H

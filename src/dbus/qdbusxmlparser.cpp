@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qdbusxmlparser_p.h"
 #include "qdbusutil_p.h"
 
-#include <QtCore/qmap.h>
-#include <QtCore/qvariant.h>
-#include <QtCore/qtextstream.h>
-#include <QtCore/qdebug.h>
+#include <BobUICore/qmap.h>
+#include <BobUICore/qvariant.h>
+#include <BobUICore/bobuiextstream.h>
+#include <BobUICore/qdebug.h>
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
 BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_LOGGING_CATEGORY(dbusParser, "dbus.parser", QtWarningMsg)
+Q_LOGGING_CATEGORY(dbusParser, "dbus.parser", BobUIWarningMsg)
 
 #define qDBusParserWarning(format, ...)                                         \
     do {                                                                        \
@@ -434,4 +434,4 @@ QDBusXmlParser::QDBusXmlParser(const QString &service, const QString &path, cons
 
 BOBUI_END_NAMESPACE
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS

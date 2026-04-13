@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtTest/private/qcomparisontesthelper_p.h>
+#include <BOBUIest>
+#include <BobUITest/private/qcomparisontesthelper_p.h>
 #include <QObject>
 #include <QProcessEnvironment>
 
@@ -27,7 +27,7 @@ private slots:
 
 void tst_QProcessEnvironment::compareCompiles()
 {
-    QTestPrivate::testEqualityOperatorsCompile<QProcessEnvironment>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QProcessEnvironment>();
 }
 
 void tst_QProcessEnvironment::operator_eq()
@@ -42,7 +42,7 @@ void tst_QProcessEnvironment::operator_eq()
     QCOMPARE(e1, e2);
 
     auto parentEnv = QProcessEnvironment(QProcessEnvironment::InheritFromParent);
-    QT_TEST_EQUALITY_OPS(parentEnv, e2, false);
+    BOBUI_TEST_EQUALITY_OPS(parentEnv, e2, false);
 
     e1.clear();
     QCOMPARE(e1, e2);
@@ -51,15 +51,15 @@ void tst_QProcessEnvironment::operator_eq()
     QCOMPARE(e1, e2);
 
     e1.insert("FOO", "bar");
-    QT_TEST_EQUALITY_OPS(e1, e2, false);
+    BOBUI_TEST_EQUALITY_OPS(e1, e2, false);
 
     e2.insert("FOO", "bar");
     QCOMPARE(e1, e2);
 
     e2.insert("FOO", "baz");
-    QT_TEST_EQUALITY_OPS(e1, e2, false);
+    BOBUI_TEST_EQUALITY_OPS(e1, e2, false);
 
-    QT_TEST_EQUALITY_OPS(e2, parentEnv, false);
+    BOBUI_TEST_EQUALITY_OPS(e2, parentEnv, false);
 }
 
 void tst_QProcessEnvironment::clearAndIsEmpty()
@@ -319,6 +319,6 @@ void tst_QProcessEnvironment::putenv()
 # endif
 }
 
-QTEST_MAIN(tst_QProcessEnvironment)
+BOBUIEST_MAIN(tst_QProcessEnvironment)
 
 #include "tst_qprocessenvironment.moc"

@@ -1,24 +1,24 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qopenglwindow.h"
-#include <QtGui/QOpenGLFunctions>
-#include <QtGui/private/qpaintdevicewindow_p.h>
-#include <QtGui/private/qopenglextensions_p.h>
-#include <QtGui/private/qopenglcontext_p.h>
-#include <QtGui/QMatrix4x4>
-#include <QtGui/QOffscreenSurface>
+#include <BobUIGui/QOpenGLFunctions>
+#include <BobUIGui/private/qpaintdevicewindow_p.h>
+#include <BobUIGui/private/qopenglextensions_p.h>
+#include <BobUIGui/private/qopenglcontext_p.h>
+#include <BobUIGui/QMatrix4x4>
+#include <BobUIGui/QOffscreenSurface>
 
-#include <QtOpenGL/private/qopenglframebufferobject_p.h>
-#include <QtOpenGL/QOpenGLFramebufferObject>
-#include <QtOpenGL/QOpenGLTextureBlitter>
-#include <QtOpenGL/QOpenGLPaintDevice>
+#include <BobUIOpenGL/private/qopenglframebufferobject_p.h>
+#include <BobUIOpenGL/QOpenGLFramebufferObject>
+#include <BobUIOpenGL/QOpenGLTextureBlitter>
+#include <BobUIOpenGL/QOpenGLPaintDevice>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
   \class QOpenGLWindow
-  \inmodule QtOpenGL
+  \inmodule BobUIOpenGL
   \since 5.4
   \brief The QOpenGLWindow class is a convenience subclass of QWindow to perform OpenGL painting.
 
@@ -91,11 +91,11 @@ QT_BEGIN_NAMESPACE
   this way they do not have to redraw the entire window content on each
   paintGL() call.
 
-  Similarly to QOpenGLWidget, QOpenGLWindow supports the Qt::AA_ShareOpenGLContexts
+  Similarly to QOpenGLWidget, QOpenGLWindow supports the BobUI::AA_ShareOpenGLContexts
   attribute. When enabled, the OpenGL contexts of all QOpenGLWindow instances will share
   with each other. This allows accessing each other's shareable OpenGL resources.
 
-  For more information on graphics in Qt, see \l {Graphics}.
+  For more information on graphics in BobUI, see \l {Graphics}.
  */
 
 /*!
@@ -514,7 +514,7 @@ QImage QOpenGLWindow::grabFramebuffer()
     makeCurrent();
 
     const bool hasAlpha = format().hasAlpha();
-    QImage img = qt_gl_read_framebuffer(size() * devicePixelRatio(), hasAlpha, hasAlpha);
+    QImage img = bobui_gl_read_framebuffer(size() * devicePixelRatio(), hasAlpha, hasAlpha);
     img.setDevicePixelRatio(devicePixelRatio());
     return img;
 }
@@ -676,6 +676,6 @@ QPaintDevice *QOpenGLWindow::redirected(QPoint *) const
     return nullptr;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qopenglwindow.cpp"

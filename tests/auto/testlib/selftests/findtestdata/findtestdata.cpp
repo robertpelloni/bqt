@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QtCore/QCoreApplication>
-#include <QTest>
+#include <BobUICore/QCoreApplication>
+#include <BOBUIest>
 #include <QLibraryInfo>
 
 #define TESTFILE "testfile"
@@ -23,7 +23,7 @@ private:
 
 void FindTestData::initTestCase()
 {
-    // verify that our qt.conf is working as expected.
+    // verify that our bobui.conf is working as expected.
     QString app_path = QCoreApplication::applicationDirPath();
     QString install_path = app_path
 #ifdef Q_OS_DARWIN
@@ -73,7 +73,7 @@ void FindTestData::paths()
     QString testfile_path1 = app_path + "/" TESTFILE;
     QVERIFY(touch(testfile_path1));
 
-    // 2. at the test install path (faked via qt.conf)
+    // 2. at the test install path (faked via bobui.conf)
     QString testfile_path2 = app_path
 #ifdef Q_OS_DARWIN
         + "/Contents"
@@ -98,15 +98,15 @@ void FindTestData::paths()
 
     // absolute:
 #if defined(Q_OS_WIN)
-    QCOMPARE(QTest::qFindTestData(TESTFILE, qPrintable(app_path + "/fakesrc/fakefile.cpp"), __LINE__).toLower(), testfile_path3.toLower());
+    QCOMPARE(BOBUIest::qFindTestData(TESTFILE, qPrintable(app_path + "/fakesrc/fakefile.cpp"), __LINE__).toLower(), testfile_path3.toLower());
 #else
-    QCOMPARE(QTest::qFindTestData(TESTFILE, qPrintable(app_path + "/fakesrc/fakefile.cpp"), __LINE__), testfile_path3);
+    QCOMPARE(BOBUIest::qFindTestData(TESTFILE, qPrintable(app_path + "/fakesrc/fakefile.cpp"), __LINE__), testfile_path3);
 #endif
     // relative: (pretend that we were compiled within fakebuild directory, pointing at files in ../fakesrc)
 #if defined(Q_OS_WIN)
-    QCOMPARE(QTest::qFindTestData(TESTFILE, "../fakesrc/fakefile.cpp", __LINE__, qPrintable(app_path + "/fakebuild")).toLower(), testfile_path3.toLower());
+    QCOMPARE(BOBUIest::qFindTestData(TESTFILE, "../fakesrc/fakefile.cpp", __LINE__, qPrintable(app_path + "/fakebuild")).toLower(), testfile_path3.toLower());
 #else
-    QCOMPARE(QTest::qFindTestData(TESTFILE, "../fakesrc/fakefile.cpp", __LINE__, qPrintable(app_path + "/fakebuild")), testfile_path3);
+    QCOMPARE(BOBUIest::qFindTestData(TESTFILE, "../fakesrc/fakefile.cpp", __LINE__, qPrintable(app_path + "/fakebuild")), testfile_path3);
 #endif
     QVERIFY(QFile(testfile_path3).remove());
 
@@ -125,7 +125,7 @@ void FindTestData::paths()
     {
         ChdirOnReturn chdirObject{QDir::currentPath()};
         QDir::setCurrent(app_path + "/temp");
-        QCOMPARE(QTest::qFindTestData("usr/",
+        QCOMPARE(BOBUIest::qFindTestData("usr/",
                                       "C:\\path\\to\\source\\source.cpp",
                                       __LINE__,
                                       "C:\\path\\to\\build\\").toLower(),
@@ -141,5 +141,5 @@ void FindTestData::paths()
     QCOMPARE(QFINDTESTDATA(TESTFILE), QString());
 }
 
-QTEST_MAIN(FindTestData)
+BOBUIEST_MAIN(FindTestData)
 #include "findtestdata.moc"

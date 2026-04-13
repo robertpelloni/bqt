@@ -1,27 +1,27 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <qapplication.h>
 #include "qabstractslider.h"
 #include "qevent.h"
 #include "qabstractslider_p.h"
 #include "qdebug.h"
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 #include "qaccessible.h"
 #endif
 #include <limits.h>
 
 #include <private/qapplication_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QAbstractSlider
     \brief The QAbstractSlider class provides an integer value within a range.
 
     \ingroup abstractwidgets
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     The class is designed as a common super class for widgets like
     QScrollBar, QSlider and QDial.
@@ -181,8 +181,8 @@ QAbstractSliderPrivate::QAbstractSliderPrivate()
       singleStep(1), singleStepFromItemView(-1), viewMayChangeSingleStep(true), offset_accumulated(0), tracking(true),
       blocktracking(false), pressed(false),
       invertedAppearance(false), invertedControls(false),
-      orientation(Qt::Horizontal), repeatAction(QAbstractSlider::SliderNoAction)
-#ifdef QT_KEYPAD_NAVIGATION
+      orientation(BobUI::Horizontal), repeatAction(QAbstractSlider::SliderNoAction)
+#ifdef BOBUI_KEYPAD_NAVIGATION
       , isAutoRepeating(false)
       , repeatMultiplier(1)
 {
@@ -259,25 +259,25 @@ QAbstractSlider::~QAbstractSlider()
     \property QAbstractSlider::orientation
     \brief the orientation of the slider
 
-    The orientation must be \l Qt::Vertical (the default) or \l
-    Qt::Horizontal.
+    The orientation must be \l BobUI::Vertical (the default) or \l
+    BobUI::Horizontal.
 */
-void QAbstractSlider::setOrientation(Qt::Orientation orientation)
+void QAbstractSlider::setOrientation(BobUI::Orientation orientation)
 {
     Q_D(QAbstractSlider);
     if (d->orientation == orientation)
         return;
 
     d->orientation = orientation;
-    if (!testAttribute(Qt::WA_WState_OwnSizePolicy)) {
+    if (!testAttribute(BobUI::WA_WState_OwnSizePolicy)) {
         setSizePolicy(sizePolicy().transposed());
-        setAttribute(Qt::WA_WState_OwnSizePolicy, false);
+        setAttribute(BobUI::WA_WState_OwnSizePolicy, false);
     }
     sliderChange(SliderOrientationChange);
     updateGeometry();
 }
 
-Qt::Orientation QAbstractSlider::orientation() const
+BobUI::Orientation QAbstractSlider::orientation() const
 {
     Q_D(const QAbstractSlider);
     return d->orientation;
@@ -509,7 +509,7 @@ void QAbstractSlider::setValue(int value)
         if (d->pressed)
             emit sliderMoved(d->position);
     }
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     QAccessibleValueChangeEvent event(this, d->value);
     QAccessible::updateAccessibility(&event);
 #endif
@@ -637,7 +637,7 @@ QAbstractSlider::SliderAction QAbstractSlider::repeatAction() const
 
 /*!\reimp
  */
-void QAbstractSlider::timerEvent(QTimerEvent *e)
+void QAbstractSlider::timerEvent(BOBUIimerEvent *e)
 {
     Q_D(QAbstractSlider);
     if (e->timerId() == d->repeatActionTimer.timerId()) {
@@ -666,16 +666,16 @@ void QAbstractSlider::sliderChange(SliderChange)
     update();
 }
 
-bool QAbstractSliderPrivate::scrollByDelta(Qt::Orientation orientation, Qt::KeyboardModifiers modifiers, int delta)
+bool QAbstractSliderPrivate::scrollByDelta(BobUI::Orientation orientation, BobUI::KeyboardModifiers modifiers, int delta)
 {
     Q_Q(QAbstractSlider);
     int stepsToScroll = 0;
-    // in Qt scrolling to the right gives negative values.
-    if (orientation == Qt::Horizontal)
+    // in BobUI scrolling to the right gives negative values.
+    if (orientation == BobUI::Horizontal)
         delta = -delta;
     qreal offset = qreal(delta) / 120;
 
-    if ((modifiers & Qt::ControlModifier) || (modifiers & Qt::ShiftModifier)) {
+    if ((modifiers & BobUI::ControlModifier) || (modifiers & BobUI::ShiftModifier)) {
         // Scroll one page regardless of delta:
         stepsToScroll = qBound(-pageStep, int(offset * pageStep), pageStep);
         offset_accumulated = 0;
@@ -684,7 +684,7 @@ bool QAbstractSliderPrivate::scrollByDelta(Qt::Orientation orientation, Qt::Keyb
         // offset), we might end up with a fraction (e.g. scroll 1.3 lines). We can
         // only scroll whole lines, so we keep the reminder until next event.
         qreal stepsToScrollF =
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
                 QApplication::wheelScrollLines() *
 #endif
                 offset * effectiveSingleStep();
@@ -728,7 +728,7 @@ bool QAbstractSliderPrivate::scrollByDelta(Qt::Orientation orientation, Qt::Keyb
 /*!
     \reimp
 */
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
 void QAbstractSlider::wheelEvent(QWheelEvent * e)
 {
     Q_D(QAbstractSlider);
@@ -737,7 +737,7 @@ void QAbstractSlider::wheelEvent(QWheelEvent * e)
     int delta = vertical ? e->angleDelta().y() : e->angleDelta().x();
     if (e->inverted())
         delta = -delta;
-    if (d->scrollByDelta(vertical ? Qt::Vertical : Qt::Horizontal, e->modifiers(), delta))
+    if (d->scrollByDelta(vertical ? BobUI::Vertical : BobUI::Horizontal, e->modifiers(), delta))
         e->accept();
 }
 
@@ -750,7 +750,7 @@ void QAbstractSlider::keyPressEvent(QKeyEvent *ev)
 {
     Q_D(QAbstractSlider);
     SliderAction action = SliderNoAction;
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     if (ev->isAutoRepeat()) {
         if (!d->firstRepeat.isValid())
             d->firstRepeat.start();
@@ -783,14 +783,14 @@ void QAbstractSlider::keyPressEvent(QKeyEvent *ev)
 #endif
 
     switch (ev->key()) {
-#ifdef QT_KEYPAD_NAVIGATION
-        case Qt::Key_Select:
+#ifdef BOBUI_KEYPAD_NAVIGATION
+        case BobUI::Key_Select:
             if (QApplicationPrivate::keypadNavigationEnabled())
                 setEditFocus(!hasEditFocus());
             else
                 ev->ignore();
             break;
-        case Qt::Key_Back:
+        case BobUI::Key_Back:
             if (QApplicationPrivate::keypadNavigationEnabled() && hasEditFocus()) {
                 setValue(d->origValue);
                 setEditFocus(false);
@@ -799,20 +799,20 @@ void QAbstractSlider::keyPressEvent(QKeyEvent *ev)
             break;
 #endif
 
-        case Qt::Key_Left:
-#ifdef QT_KEYPAD_NAVIGATION
+        case BobUI::Key_Left:
+#ifdef BOBUI_KEYPAD_NAVIGATION
             // In QApplication::KeypadNavigationDirectional, we want to change the slider
             // value if there is no left/right navigation possible and if this slider is not
             // inside a tab widget.
             if (QApplicationPrivate::keypadNavigationEnabled()
-                    && (!hasEditFocus() && QApplication::navigationMode() == Qt::NavigationModeKeypadTabOrder
-                    || d->orientation == Qt::Vertical
+                    && (!hasEditFocus() && QApplication::navigationMode() == BobUI::NavigationModeKeypadTabOrder
+                    || d->orientation == BobUI::Vertical
                     || !hasEditFocus()
-                    && (QWidgetPrivate::canKeypadNavigate(Qt::Horizontal) || QWidgetPrivate::inTabWidget(this)))) {
+                    && (QWidgetPrivate::canKeypadNavigate(BobUI::Horizontal) || QWidgetPrivate::inTabWidget(this)))) {
                 ev->ignore();
                 return;
             }
-            if (QApplicationPrivate::keypadNavigationEnabled() && d->orientation == Qt::Vertical)
+            if (QApplicationPrivate::keypadNavigationEnabled() && d->orientation == BobUI::Vertical)
                 action = d->invertedControls ? SliderSingleStepSub : SliderSingleStepAdd;
             else
 #endif
@@ -821,18 +821,18 @@ void QAbstractSlider::keyPressEvent(QKeyEvent *ev)
             else
                 action = !d->invertedControls ? SliderSingleStepSub : SliderSingleStepAdd;
             break;
-        case Qt::Key_Right:
-#ifdef QT_KEYPAD_NAVIGATION
-            // Same logic as in Qt::Key_Left
+        case BobUI::Key_Right:
+#ifdef BOBUI_KEYPAD_NAVIGATION
+            // Same logic as in BobUI::Key_Left
             if (QApplicationPrivate::keypadNavigationEnabled()
-                    && (!hasEditFocus() && QApplication::navigationMode() == Qt::NavigationModeKeypadTabOrder
-                    || d->orientation == Qt::Vertical
+                    && (!hasEditFocus() && QApplication::navigationMode() == BobUI::NavigationModeKeypadTabOrder
+                    || d->orientation == BobUI::Vertical
                     || !hasEditFocus()
-                    && (QWidgetPrivate::canKeypadNavigate(Qt::Horizontal) || QWidgetPrivate::inTabWidget(this)))) {
+                    && (QWidgetPrivate::canKeypadNavigate(BobUI::Horizontal) || QWidgetPrivate::inTabWidget(this)))) {
                 ev->ignore();
                 return;
             }
-            if (QApplicationPrivate::keypadNavigationEnabled() && d->orientation == Qt::Vertical)
+            if (QApplicationPrivate::keypadNavigationEnabled() && d->orientation == BobUI::Vertical)
                 action = d->invertedControls ? SliderSingleStepAdd : SliderSingleStepSub;
             else
 #endif
@@ -841,43 +841,43 @@ void QAbstractSlider::keyPressEvent(QKeyEvent *ev)
             else
                 action = !d->invertedControls ? SliderSingleStepAdd : SliderSingleStepSub;
             break;
-        case Qt::Key_Up:
-#ifdef QT_KEYPAD_NAVIGATION
+        case BobUI::Key_Up:
+#ifdef BOBUI_KEYPAD_NAVIGATION
             // In QApplication::KeypadNavigationDirectional, we want to change the slider
             // value if there is no up/down navigation possible.
             if (QApplicationPrivate::keypadNavigationEnabled()
-                    && (QApplication::navigationMode() == Qt::NavigationModeKeypadTabOrder
-                    || d->orientation == Qt::Horizontal
-                    || !hasEditFocus() && QWidgetPrivate::canKeypadNavigate(Qt::Vertical))) {
+                    && (QApplication::navigationMode() == BobUI::NavigationModeKeypadTabOrder
+                    || d->orientation == BobUI::Horizontal
+                    || !hasEditFocus() && QWidgetPrivate::canKeypadNavigate(BobUI::Vertical))) {
                 ev->ignore();
                 break;
             }
 #endif
             action = d->invertedControls ? SliderSingleStepSub : SliderSingleStepAdd;
             break;
-        case Qt::Key_Down:
-#ifdef QT_KEYPAD_NAVIGATION
-            // Same logic as in Qt::Key_Up
+        case BobUI::Key_Down:
+#ifdef BOBUI_KEYPAD_NAVIGATION
+            // Same logic as in BobUI::Key_Up
             if (QApplicationPrivate::keypadNavigationEnabled()
-                    && (QApplication::navigationMode() == Qt::NavigationModeKeypadTabOrder
-                    || d->orientation == Qt::Horizontal
-                    || !hasEditFocus() && QWidgetPrivate::canKeypadNavigate(Qt::Vertical))) {
+                    && (QApplication::navigationMode() == BobUI::NavigationModeKeypadTabOrder
+                    || d->orientation == BobUI::Horizontal
+                    || !hasEditFocus() && QWidgetPrivate::canKeypadNavigate(BobUI::Vertical))) {
                 ev->ignore();
                 break;
             }
 #endif
             action = d->invertedControls ? SliderSingleStepAdd : SliderSingleStepSub;
             break;
-        case Qt::Key_PageUp:
+        case BobUI::Key_PageUp:
             action = d->invertedControls ? SliderPageStepSub : SliderPageStepAdd;
             break;
-        case Qt::Key_PageDown:
+        case BobUI::Key_PageDown:
             action = d->invertedControls ? SliderPageStepAdd : SliderPageStepSub;
             break;
-        case Qt::Key_Home:
+        case BobUI::Key_Home:
             action = SliderToMinimum;
             break;
-        case Qt::Key_End:
+        case BobUI::Key_End:
             action = SliderToMaximum;
             break;
         default:
@@ -911,7 +911,7 @@ void QAbstractSlider::changeEvent(QEvent *ev)
 */
 bool QAbstractSlider::event(QEvent *e)
 {
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     Q_D(QAbstractSlider);
     switch (e->type()) {
     case QEvent::FocusIn:
@@ -937,6 +937,6 @@ void QAbstractSliderPrivate::itemviewChangeSingleStep(int step)
         setSteps(step, pageStep);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qabstractslider.cpp"

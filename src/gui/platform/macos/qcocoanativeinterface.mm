@@ -1,12 +1,12 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtGui/qtgui-config.h>
-#ifndef QT_NO_OPENGL
-#  include <QtGui/private/qopenglcontext_p.h>
+#include <BobUIGui/bobuigui-config.h>
+#ifndef BOBUI_NO_OPENGL
+#  include <BobUIGui/private/qopenglcontext_p.h>
 #endif
 
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 #include <qpa/qplatformopenglcontext.h>
 #include <qpa/qplatformintegration.h>
 #include <qpa/qplatformwindow_p.h>
@@ -14,7 +14,7 @@
 
 #include <AppKit/AppKit.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace QNativeInterface::Private;
 
@@ -23,11 +23,11 @@ using namespace QNativeInterface::Private;
     \since 6.0
     \internal
     \brief Native interface for QPlatformWindow on \macos.
-    \inmodule QtGui
+    \inmodule BobUIGui
     \ingroup native-interfaces
 */
 
-QT_DEFINE_PRIVATE_NATIVE_INTERFACE(QCocoaWindow);
+BOBUI_DEFINE_PRIVATE_NATIVE_INTERFACE(QCocoaWindow);
 
 
 /*!
@@ -35,12 +35,12 @@ QT_DEFINE_PRIVATE_NATIVE_INTERFACE(QCocoaWindow);
     \since 6.0
     \internal
     \brief Native interface for QPlatformMenu on \macos.
-    \inmodule QtGui
+    \inmodule BobUIGui
     \ingroup native-interfaces
 */
 
-QT_DEFINE_PRIVATE_NATIVE_INTERFACE(QCocoaMenu);
-QT_DEFINE_PRIVATE_NATIVE_INTERFACE(QCocoaMenuBar);
+BOBUI_DEFINE_PRIVATE_NATIVE_INTERFACE(QCocoaMenu);
+BOBUI_DEFINE_PRIVATE_NATIVE_INTERFACE(QCocoaMenuBar);
 
 /*!
     \class QNativeInterface::QCocoaScreen
@@ -48,7 +48,7 @@ QT_DEFINE_PRIVATE_NATIVE_INTERFACE(QCocoaMenuBar);
     \brief Native interface to a screen on \macos.
 
     Accessed through QScreen::nativeInterface().
-    \inmodule QtGui
+    \inmodule BobUIGui
     \ingroup native-interfaces
     \ingroup native-interfaces-qscreen
 */
@@ -56,9 +56,9 @@ QT_DEFINE_PRIVATE_NATIVE_INTERFACE(QCocoaMenuBar);
     \fn NSScreen *QNativeInterface::QCocoaScreen::nativeScreen() const
     \return the underlying NSScreen of this QScreen.
 */
-QT_DEFINE_NATIVE_INTERFACE(QCocoaScreen);
+BOBUI_DEFINE_NATIVE_INTERFACE(QCocoaScreen);
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 
 /*!
     \class QNativeInterface::QCocoaGLContext
@@ -67,7 +67,7 @@ QT_DEFINE_NATIVE_INTERFACE(QCocoaScreen);
 
     Accessed through QOpenGLContext::nativeInterface().
 
-    \inmodule QtGui
+    \inmodule BobUIGui
     \inheaderfile QOpenGLContext
     \ingroup native-interfaces
     \ingroup native-interfaces-qopenglcontext
@@ -88,8 +88,8 @@ QT_DEFINE_NATIVE_INTERFACE(QCocoaScreen);
     \return the underlying NSOpenGLContext.
 */
 
-QT_DEFINE_NATIVE_INTERFACE(QCocoaGLContext);
-QT_DEFINE_PRIVATE_NATIVE_INTERFACE(QCocoaGLIntegration);
+BOBUI_DEFINE_NATIVE_INTERFACE(QCocoaGLContext);
+BOBUI_DEFINE_PRIVATE_NATIVE_INTERFACE(QCocoaGLIntegration);
 
 QOpenGLContext *QNativeInterface::QCocoaGLContext::fromNative(NSOpenGLContext *nativeContext, QOpenGLContext *shareContext)
 {
@@ -97,6 +97,6 @@ QOpenGLContext *QNativeInterface::QCocoaGLContext::fromNative(NSOpenGLContext *n
         &QCocoaGLIntegration::createOpenGLContext>(nativeContext, shareContext);
 }
 
-#endif // QT_NO_OPENGL
+#endif // BOBUI_NO_OPENGL
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

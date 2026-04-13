@@ -1,29 +1,29 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QDial>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QGraphicsView>
-#include <QtWidgets/QGraphicsScene>
-#include <QtWidgets/QGraphicsPixmapItem>
-#include <QtWidgets/QStyle>
-#include <QtWidgets/QStyleFactory>
-#include <QtWidgets/QVBoxLayout>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QDial>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QLineEdit>
+#include <BobUIWidgets/QGraphicsView>
+#include <BobUIWidgets/QGraphicsScene>
+#include <BobUIWidgets/QGraphicsPixmapItem>
+#include <BobUIWidgets/QStyle>
+#include <BobUIWidgets/QStyleFactory>
+#include <BobUIWidgets/QVBoxLayout>
 
-#include <QtGui/QPainterPath>
-#include <QtGui/QScreen>
+#include <BobUIGui/QPainterPath>
+#include <BobUIGui/QScreen>
 
-#include <QTest>
-#include <QTestEventLoop>
+#include <BOBUIest>
+#include <BOBUIestEventLoop>
 #include <QRandomGenerator>
 #include <QSignalSpy>
 #include <QMimeData>
 
-#include <QtCore/QDebug>
-#include <QtCore/QLoggingCategory>
-#include <QtCore/qscopeguard.h>
+#include <BobUICore/QDebug>
+#include <BobUICore/QLoggingCategory>
+#include <BobUICore/qscopeguard.h>
 
 #include <private/qgraphicsscene_p.h>
 #include <private/qgraphicssceneindex_p.h>
@@ -32,10 +32,10 @@
 #include "../../../shared/platforminputcontext.h"
 #include <private/qinputmethod_p.h>
 
-#include <QtWidgets/private/qapplication_p.h>
+#include <BobUIWidgets/private/qapplication_p.h>
 
 #if defined(Q_OS_WIN)
-#include <QtCore/qt_windows.h>
+#include <BobUICore/bobui_windows.h>
 #define Q_CHECK_PAINTEVENTS \
     if (::SwitchDesktop(::GetThreadDesktop(::GetCurrentThreadId())) == 0) \
         QSKIP("The Graphics View doesn't get the paint events");
@@ -43,10 +43,10 @@
 #define Q_CHECK_PAINTEVENTS
 #endif
 
-Q_DECLARE_METATYPE(Qt::FocusReason)
+Q_DECLARE_METATYPE(BobUI::FocusReason)
 Q_DECLARE_METATYPE(QPainterPath)
-Q_DECLARE_METATYPE(Qt::AspectRatioMode)
-Q_DECLARE_METATYPE(Qt::ItemSelectionMode)
+Q_DECLARE_METATYPE(BobUI::AspectRatioMode)
+Q_DECLARE_METATYPE(BobUI::ItemSelectionMode)
 Q_DECLARE_METATYPE(QGraphicsItem::GraphicsItemFlags)
 
 static const int randomX[] = {276, 40, 250, 864, -56, 426, 855, 825, 184, 955, -798, -804, 773,
@@ -92,7 +92,7 @@ static const int randomY[] = {603, 70, -318, 843, 450, -637, 199, -527, 407, 964
                               -588, 864, 234, 225, -303, 493, 246, 153, 338, -378, 377, -819, 140, 136,
                               467, -849, -326, -533, 166, 252, -994, -699, 904, -566, 621, -752};
 
-Q_LOGGING_CATEGORY(lcTests, "qt.widgets.tests")
+Q_LOGGING_CATEGORY(lcTests, "bobui.widgets.tests")
 
 class HoverItem : public QGraphicsRectItem
 {
@@ -109,16 +109,16 @@ protected:
         isHovered = (option->state & QStyle::State_MouseOver);
 
         painter->setOpacity(0.75);
-        painter->setPen(Qt::NoPen);
-        painter->setBrush(Qt::darkGray);
-        painter->drawRoundedRect(boundingRect().adjusted(3, 3, -3, -3), 25, 25, Qt::RelativeSize);
-        painter->setPen(Qt::black);
+        painter->setPen(BobUI::NoPen);
+        painter->setBrush(BobUI::darkGray);
+        painter->drawRoundedRect(boundingRect().adjusted(3, 3, -3, -3), 25, 25, BobUI::RelativeSize);
+        painter->setPen(BobUI::black);
         if (isHovered) {
-            painter->setBrush(QColor(Qt::blue).lighter(120));
+            painter->setBrush(QColor(BobUI::blue).lighter(120));
         } else {
-            painter->setBrush(Qt::gray);
+            painter->setBrush(BobUI::gray);
         }
-        painter->drawRoundedRect(boundingRect().adjusted(0, 0, -5, -5), 25, 25, Qt::RelativeSize);
+        painter->drawRoundedRect(boundingRect().adjusted(0, 0, -5, -5), 25, 25, BobUI::RelativeSize);
     }
 };
 
@@ -212,7 +212,7 @@ private slots:
     void mouseEventPropagation_focus();
     void mouseEventPropagation_doubleclick();
     void mouseEventPropagation_mouseMove();
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     void dragAndDrop_simple();
     void dragAndDrop_disabledOrInvisible();
     void dragAndDrop_propagate();
@@ -220,7 +220,7 @@ private slots:
     void render_data();
     void render();
     void renderItemsWithNegativeWidthOrHeight();
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
     void contextMenuEvent();
     void contextMenuEvent_ItemIgnoresTransformations();
 #endif
@@ -264,14 +264,14 @@ private slots:
     void task176178_itemIndexMethodBreaksSceneRect();
     void task160653_selectionChanged();
     void task250680_childClip();
-    void taskQTBUG_5904_crashWithDeviceCoordinateCache();
-    void taskQT657_paintIntoCacheWithTransparentParts();
-    void taskQTBUG_7863_paintIntoCacheWithTransparentParts();
-    void taskQT_3674_doNotCrash();
-    void taskQTBUG_15977_renderWithDeviceCoordinateCache();
-    void taskQTBUG_16401_focusItem();
-    void taskQTBUG_42915_focusNextPrevChild();
-    void taskQTBUG_85088_previewTextfailWhenLostFocus();
+    void taskBOBUIBUG_5904_crashWithDeviceCoordinateCache();
+    void taskBOBUI657_paintIntoCacheWithTransparentParts();
+    void taskBOBUIBUG_7863_paintIntoCacheWithTransparentParts();
+    void taskBOBUI_3674_doNotCrash();
+    void taskBOBUIBUG_15977_renderWithDeviceCoordinateCache();
+    void taskBOBUIBUG_16401_focusItem();
+    void taskBOBUIBUG_42915_focusNextPrevChild();
+    void taskBOBUIBUG_85088_previewTextfailWhenLostFocus();
 
     void deleteItemsOnChange();
 
@@ -293,7 +293,7 @@ void tst_QGraphicsScene::cleanup()
     QInputMethodPrivate *inputMethodPrivate =
         QInputMethodPrivate::get(QGuiApplication::inputMethod());
     inputMethodPrivate->testContext = nullptr;
-    QTRY_VERIFY(QApplication::topLevelWidgets().isEmpty());
+    BOBUIRY_VERIFY(QApplication::topLevelWidgets().isEmpty());
 }
 
 void tst_QGraphicsScene::construction()
@@ -305,7 +305,7 @@ void tst_QGraphicsScene::construction()
     QVERIFY(scene.items(QRectF()).isEmpty());
     QVERIFY(scene.items(QPolygonF()).isEmpty());
     QVERIFY(scene.items(QPainterPath()).isEmpty());
-    QTest::ignoreMessage(QtWarningMsg, "QGraphicsScene::collidingItems: cannot find collisions for null item");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsScene::collidingItems: cannot find collisions for null item");
     QVERIFY(scene.collidingItems(nullptr).isEmpty());
     QVERIFY(scene.items(QPointF()).isEmpty());
     QVERIFY(scene.selectedItems().isEmpty());
@@ -325,7 +325,7 @@ void tst_QGraphicsScene::sceneRect()
     QCOMPARE(sceneRectChanged.size(), 0);
 
     QGraphicsRectItem *item = scene.addRect(QRectF(0, 0, 10, 10));
-    item->setPen(QPen(Qt::black, 0));
+    item->setPen(QPen(BobUI::black, 0));
     item->setPos(-5, -5);
     QCOMPARE(sceneRectChanged.size(), 0);
 
@@ -422,7 +422,7 @@ void tst_QGraphicsScene::bspTreeDepth()
     QCOMPARE(scene.bspTreeDepth(), 0);
     scene.setBspTreeDepth(1);
     QCOMPARE(scene.bspTreeDepth(), 1);
-    QTest::ignoreMessage(QtWarningMsg, "QGraphicsScene::setBspTreeDepth: invalid depth -1 ignored; must be >= 0");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsScene::setBspTreeDepth: invalid depth -1 ignored; must be >= 0");
     scene.setBspTreeDepth(-1);
     QCOMPARE(scene.bspTreeDepth(), 1);
 }
@@ -461,9 +461,9 @@ void tst_QGraphicsScene::items()
     {
         QGraphicsScene scene;
         QGraphicsLineItem *l1 = scene.addLine(-5, 0, 5, 0);
-        l1->setPen(QPen(Qt::black, 0));
+        l1->setPen(QPen(BobUI::black, 0));
         QGraphicsLineItem *l2 = scene.addLine(0, -5, 0, 5);
-        l2->setPen(QPen(Qt::black, 0));
+        l2->setPen(QPen(BobUI::black, 0));
         QVERIFY(!l1->sceneBoundingRect().intersects(l2->sceneBoundingRect()));
         QVERIFY(!l2->sceneBoundingRect().intersects(l1->sceneBoundingRect()));
         QList<QGraphicsItem *> items;
@@ -476,40 +476,40 @@ void tst_QGraphicsScene::items()
 
 void tst_QGraphicsScene::itemsBoundingRect_data()
 {
-    QTest::addColumn<QList<QRectF> >("rects");
-    QTest::addColumn<QTransform>("transform");
-    QTest::addColumn<QRectF>("boundingRect");
+    BOBUIest::addColumn<QList<QRectF> >("rects");
+    BOBUIest::addColumn<BOBUIransform>("transform");
+    BOBUIest::addColumn<QRectF>("boundingRect");
 
-    QTransform transformation;
+    BOBUIransform transformation;
     transformation.translate(50, -50);
     transformation.scale(2, 2);
     transformation.rotate(90);
 
-    QTest::newRow("none")
+    BOBUIest::newRow("none")
         << QList<QRectF>()
-        << QTransform()
+        << BOBUIransform()
         << QRectF();
-    QTest::newRow("{{0, 0, 10, 10}}")
+    BOBUIest::newRow("{{0, 0, 10, 10}}")
         << (QList<QRectF>() << QRectF(0, 0, 10, 10))
-        << QTransform()
+        << BOBUIransform()
         << QRectF(0, 0, 10, 10);
-    QTest::newRow("{{-10, -10, 10, 10}}")
+    BOBUIest::newRow("{{-10, -10, 10, 10}}")
         << (QList<QRectF>() << QRectF(-10, -10, 10, 10))
-        << QTransform()
+        << BOBUIransform()
         << QRectF(-10, -10, 10, 10);
-    QTest::newRow("{{-1000, -1000, 1, 1}, {-10, -10, 10, 10}}")
+    BOBUIest::newRow("{{-1000, -1000, 1, 1}, {-10, -10, 10, 10}}")
         << (QList<QRectF>() << QRectF(-1000, -1000, 1, 1) << QRectF(-10, -10, 10, 10))
-        << QTransform()
+        << BOBUIransform()
         << QRectF(-1000, -1000, 1000, 1000);
-    QTest::newRow("transformed {{0, 0, 10, 10}}")
+    BOBUIest::newRow("transformed {{0, 0, 10, 10}}")
         << (QList<QRectF>() << QRectF(0, 0, 10, 10))
         << transformation
         << QRectF(30, -50, 20, 20);
-    QTest::newRow("transformed {{-10, -10, 10, 10}}")
+    BOBUIest::newRow("transformed {{-10, -10, 10, 10}}")
         << (QList<QRectF>() << QRectF(-10, -10, 10, 10))
         << transformation
         << QRectF(50, -70, 20, 20);
-    QTest::newRow("transformed {{-1000, -1000, 1, 1}, {-10, -10, 10, 10}}")
+    BOBUIest::newRow("transformed {{-1000, -1000, 1, 1}, {-10, -10, 10, 10}}")
         << (QList<QRectF>() << QRectF(-1000, -1000, 1, 1) << QRectF(-10, -10, 10, 10))
         << transformation
         << QRectF(50, -2050, 2000, 2000);
@@ -517,11 +517,11 @@ void tst_QGraphicsScene::itemsBoundingRect_data()
     QList<QRectF> all;
     for (int i = 0; i < 256; ++i)
         all << QRectF(randomX[i], randomY[i], 10, 10);
-    QTest::newRow("all")
+    BOBUIest::newRow("all")
         << all
-        << QTransform()
+        << BOBUIransform()
         << QRectF(-980, -994, 1988, 1983);
-    QTest::newRow("transformed all")
+    BOBUIest::newRow("transformed all")
         << all
         << transformation
         << QRectF(-1928, -2010, 3966, 3976);
@@ -530,7 +530,7 @@ void tst_QGraphicsScene::itemsBoundingRect_data()
 void tst_QGraphicsScene::itemsBoundingRect()
 {
     QFETCH(QList<QRectF>, rects);
-    QFETCH(QTransform, transform);
+    QFETCH(BOBUIransform, transform);
     QFETCH(QRectF, boundingRect);
 
     QGraphicsScene scene;
@@ -539,7 +539,7 @@ void tst_QGraphicsScene::itemsBoundingRect()
         QPainterPath path;
         path.addRect(rect);
         QGraphicsPathItem *item = scene.addPath(path);
-        item->setPen(QPen(Qt::black, 0));
+        item->setPen(QPen(BobUI::black, 0));
         item->setTransform(transform);
     }
 
@@ -548,43 +548,43 @@ void tst_QGraphicsScene::itemsBoundingRect()
 
 void tst_QGraphicsScene::items_QPointF_data()
 {
-    QTest::addColumn<QList<QRectF> >("items");
-    QTest::addColumn<QPointF>("point");
-    QTest::addColumn<QList<int> >("itemsAtPoint");
+    BOBUIest::addColumn<QList<QRectF> >("items");
+    BOBUIest::addColumn<QPointF>("point");
+    BOBUIest::addColumn<QList<int> >("itemsAtPoint");
 
-    QTest::newRow("empty")
+    BOBUIest::newRow("empty")
         << QList<QRectF>()
         << QPointF()
         << QList<int>();
-    QTest::newRow("1")
+    BOBUIest::newRow("1")
         << (QList<QRectF>() << QRectF(0, 0, 10, 10))
         << QPointF(0, 0)
         << (QList<int>() << 0);
-    QTest::newRow("2")
+    BOBUIest::newRow("2")
         << (QList<QRectF>() << QRectF(0, 0, 10, 10))
         << QPointF(5, 5)
         << (QList<int>() << 0);
-    QTest::newRow("3")
+    BOBUIest::newRow("3")
         << (QList<QRectF>() << QRectF(0, 0, 10, 10))
         << QPointF(9.9, 9.9)
         << (QList<int>() << 0);
-    QTest::newRow("3.5")
+    BOBUIest::newRow("3.5")
         << (QList<QRectF>() << QRectF(0, 0, 10, 10))
         << QPointF(10, 10)
         << QList<int>();
-    QTest::newRow("4")
+    BOBUIest::newRow("4")
         << (QList<QRectF>() << QRectF(0, 0, 10, 10) << QRectF(9.9, 9.9, 10, 10))
         << QPointF(9.9, 9.9)
         << (QList<int>() << 1 << 0);
-    QTest::newRow("4.5")
+    BOBUIest::newRow("4.5")
         << (QList<QRectF>() << QRectF(0, 0, 10, 10) << QRectF(10, 10, 10, 10))
         << QPointF(10, 10)
         << (QList<int>() << 1);
-    QTest::newRow("5")
+    BOBUIest::newRow("5")
         << (QList<QRectF>() << QRectF(5, 5, 10, 10) << QRectF(10, 10, 10, 10))
         << QPointF(10, 10)
         << (QList<int>() << 1 << 0);
-    QTest::newRow("6")
+    BOBUIest::newRow("6")
         << (QList<QRectF>() << QRectF(5, 5, 10, 10) << QRectF(10, 10, 10, 10) << QRectF(0, 0, 20, 30))
         << QPointF(10, 10)
         << (QList<int>() << 2 << 1 << 0);
@@ -605,7 +605,7 @@ void tst_QGraphicsScene::items_QPointF()
         path.addRect(0, 0, rect.width(), rect.height());
 
         QGraphicsPathItem *item = scene.addPath(path);
-        item->setPen(QPen(Qt::black, 0));
+        item->setPen(QPen(BobUI::black, 0));
         item->setZValue(n++);
         item->setPos(rect.topLeft());
         addedItems << item;
@@ -655,78 +655,78 @@ void tst_QGraphicsScene::items_QRectF()
 
 void tst_QGraphicsScene::items_QRectF_2_data()
 {
-    QTest::addColumn<QRectF>("ellipseRect");
-    QTest::addColumn<QRectF>("sceneRect");
-    QTest::addColumn<Qt::ItemSelectionMode>("selectionMode");
-    QTest::addColumn<bool>("contained");
-    QTest::addColumn<bool>("containedRotated");
+    BOBUIest::addColumn<QRectF>("ellipseRect");
+    BOBUIest::addColumn<QRectF>("sceneRect");
+    BOBUIest::addColumn<BobUI::ItemSelectionMode>("selectionMode");
+    BOBUIest::addColumn<bool>("contained");
+    BOBUIest::addColumn<bool>("containedRotated");
 
     // None of the rects contain the ellipse's shape nor bounding rect
-    QTest::newRow("1") << QRectF(0, 0, 100, 100) << QRectF(1, 1, 10, 10) << Qt::ContainsItemShape << false << false;
-    QTest::newRow("2") << QRectF(0, 0, 100, 100) << QRectF(1, 89, 10, 10) << Qt::ContainsItemShape << false << false;
-    QTest::newRow("3") << QRectF(0, 0, 100, 100) << QRectF(89, 1, 10, 10) << Qt::ContainsItemShape << false << false;
-    QTest::newRow("4") << QRectF(0, 0, 100, 100) << QRectF(89, 89, 10, 10) << Qt::ContainsItemShape << false << false;
-    QTest::newRow("5") << QRectF(0, 0, 100, 100) << QRectF(1, 1, 10, 10) << Qt::ContainsItemBoundingRect << false << false;
-    QTest::newRow("6") << QRectF(0, 0, 100, 100) << QRectF(1, 89, 10, 10) << Qt::ContainsItemBoundingRect << false << false;
-    QTest::newRow("7") << QRectF(0, 0, 100, 100) << QRectF(89, 1, 10, 10) << Qt::ContainsItemBoundingRect << false << false;
-    QTest::newRow("8") << QRectF(0, 0, 100, 100) << QRectF(89, 89, 10, 10) << Qt::ContainsItemBoundingRect << false << false;
-    QTest::newRow("9") << QRectF(0, 0, 100, 100) << QRectF(0, 0, 50, 50) << Qt::ContainsItemShape << false << false;
-    QTest::newRow("10") << QRectF(0, 0, 100, 100) << QRectF(0, 50, 50, 50) << Qt::ContainsItemShape << false << false;
-    QTest::newRow("11") << QRectF(0, 0, 100, 100) << QRectF(50, 0, 50, 50) << Qt::ContainsItemShape << false << false;
-    QTest::newRow("12") << QRectF(0, 0, 100, 100) << QRectF(50, 50, 50, 50) << Qt::ContainsItemShape << false << false;
-    QTest::newRow("13") << QRectF(0, 0, 100, 100) << QRectF(0, 0, 50, 50) << Qt::ContainsItemBoundingRect << false << false;
-    QTest::newRow("14") << QRectF(0, 0, 100, 100) << QRectF(0, 50, 50, 50) << Qt::ContainsItemBoundingRect << false << false;
-    QTest::newRow("15") << QRectF(0, 0, 100, 100) << QRectF(50, 0, 50, 50) << Qt::ContainsItemBoundingRect << false << false;
-    QTest::newRow("16") << QRectF(0, 0, 100, 100) << QRectF(50, 50, 50, 50) << Qt::ContainsItemBoundingRect << false << false;
-    QTest::newRow("17") << QRectF(0, 0, 100, 100) << QRectF(-50, -50, 100, 100) << Qt::ContainsItemShape << false << false;
-    QTest::newRow("18") << QRectF(0, 0, 100, 100) << QRectF(0, -50, 100, 100) << Qt::ContainsItemShape << false << false;
-    QTest::newRow("19") << QRectF(0, 0, 100, 100) << QRectF(-50, 0, 100, 100) << Qt::ContainsItemShape << false << false;
-    QTest::newRow("20") << QRectF(0, 0, 100, 100) << QRectF(0, 0, 100, 100) << Qt::ContainsItemShape << false << false;
-    QTest::newRow("21") << QRectF(0, 0, 100, 100) << QRectF(-50, -50, 100, 100) << Qt::ContainsItemBoundingRect << false << false;
-    QTest::newRow("22") << QRectF(0, 0, 100, 100) << QRectF(0, -50, 100, 100) << Qt::ContainsItemBoundingRect << false << false;
-    QTest::newRow("23") << QRectF(0, 0, 100, 100) << QRectF(-50, 0, 100, 100) << Qt::ContainsItemBoundingRect << false << false;
+    BOBUIest::newRow("1") << QRectF(0, 0, 100, 100) << QRectF(1, 1, 10, 10) << BobUI::ContainsItemShape << false << false;
+    BOBUIest::newRow("2") << QRectF(0, 0, 100, 100) << QRectF(1, 89, 10, 10) << BobUI::ContainsItemShape << false << false;
+    BOBUIest::newRow("3") << QRectF(0, 0, 100, 100) << QRectF(89, 1, 10, 10) << BobUI::ContainsItemShape << false << false;
+    BOBUIest::newRow("4") << QRectF(0, 0, 100, 100) << QRectF(89, 89, 10, 10) << BobUI::ContainsItemShape << false << false;
+    BOBUIest::newRow("5") << QRectF(0, 0, 100, 100) << QRectF(1, 1, 10, 10) << BobUI::ContainsItemBoundingRect << false << false;
+    BOBUIest::newRow("6") << QRectF(0, 0, 100, 100) << QRectF(1, 89, 10, 10) << BobUI::ContainsItemBoundingRect << false << false;
+    BOBUIest::newRow("7") << QRectF(0, 0, 100, 100) << QRectF(89, 1, 10, 10) << BobUI::ContainsItemBoundingRect << false << false;
+    BOBUIest::newRow("8") << QRectF(0, 0, 100, 100) << QRectF(89, 89, 10, 10) << BobUI::ContainsItemBoundingRect << false << false;
+    BOBUIest::newRow("9") << QRectF(0, 0, 100, 100) << QRectF(0, 0, 50, 50) << BobUI::ContainsItemShape << false << false;
+    BOBUIest::newRow("10") << QRectF(0, 0, 100, 100) << QRectF(0, 50, 50, 50) << BobUI::ContainsItemShape << false << false;
+    BOBUIest::newRow("11") << QRectF(0, 0, 100, 100) << QRectF(50, 0, 50, 50) << BobUI::ContainsItemShape << false << false;
+    BOBUIest::newRow("12") << QRectF(0, 0, 100, 100) << QRectF(50, 50, 50, 50) << BobUI::ContainsItemShape << false << false;
+    BOBUIest::newRow("13") << QRectF(0, 0, 100, 100) << QRectF(0, 0, 50, 50) << BobUI::ContainsItemBoundingRect << false << false;
+    BOBUIest::newRow("14") << QRectF(0, 0, 100, 100) << QRectF(0, 50, 50, 50) << BobUI::ContainsItemBoundingRect << false << false;
+    BOBUIest::newRow("15") << QRectF(0, 0, 100, 100) << QRectF(50, 0, 50, 50) << BobUI::ContainsItemBoundingRect << false << false;
+    BOBUIest::newRow("16") << QRectF(0, 0, 100, 100) << QRectF(50, 50, 50, 50) << BobUI::ContainsItemBoundingRect << false << false;
+    BOBUIest::newRow("17") << QRectF(0, 0, 100, 100) << QRectF(-50, -50, 100, 100) << BobUI::ContainsItemShape << false << false;
+    BOBUIest::newRow("18") << QRectF(0, 0, 100, 100) << QRectF(0, -50, 100, 100) << BobUI::ContainsItemShape << false << false;
+    BOBUIest::newRow("19") << QRectF(0, 0, 100, 100) << QRectF(-50, 0, 100, 100) << BobUI::ContainsItemShape << false << false;
+    BOBUIest::newRow("20") << QRectF(0, 0, 100, 100) << QRectF(0, 0, 100, 100) << BobUI::ContainsItemShape << false << false;
+    BOBUIest::newRow("21") << QRectF(0, 0, 100, 100) << QRectF(-50, -50, 100, 100) << BobUI::ContainsItemBoundingRect << false << false;
+    BOBUIest::newRow("22") << QRectF(0, 0, 100, 100) << QRectF(0, -50, 100, 100) << BobUI::ContainsItemBoundingRect << false << false;
+    BOBUIest::newRow("23") << QRectF(0, 0, 100, 100) << QRectF(-50, 0, 100, 100) << BobUI::ContainsItemBoundingRect << false << false;
 
     // The rect is the same as the ellipse's bounding rect
-    QTest::newRow("24") << QRectF(0, 0, 100, 100) << QRectF(0, 0, 100, 100) << Qt::ContainsItemBoundingRect << false << false;
+    BOBUIest::newRow("24") << QRectF(0, 0, 100, 100) << QRectF(0, 0, 100, 100) << BobUI::ContainsItemBoundingRect << false << false;
 
     // None intersects with the item's shape, but they all intersects with the
     // item's bounding rect.
-    QTest::newRow("25") << QRectF(0, 0, 100, 100) << QRectF(1, 1, 10, 10) << Qt::IntersectsItemShape << false << false;
-    QTest::newRow("26") << QRectF(0, 0, 100, 100) << QRectF(1, 89, 10, 10) << Qt::IntersectsItemShape << false << true;
-    QTest::newRow("27") << QRectF(0, 0, 100, 100) << QRectF(89, 1, 10, 10) << Qt::IntersectsItemShape << false << false;
-    QTest::newRow("28") << QRectF(0, 0, 100, 100) << QRectF(89, 89, 10, 10) << Qt::IntersectsItemShape << false << false;
-    QTest::newRow("29") << QRectF(0, 0, 100, 100) << QRectF(1, 1, 10, 10) << Qt::IntersectsItemBoundingRect << true << true;
-    QTest::newRow("30") << QRectF(0, 0, 100, 100) << QRectF(1, 89, 10, 10) << Qt::IntersectsItemBoundingRect << true << true;
-    QTest::newRow("31") << QRectF(0, 0, 100, 100) << QRectF(89, 1, 10, 10) << Qt::IntersectsItemBoundingRect << true << false;
-    QTest::newRow("32") << QRectF(0, 0, 100, 100) << QRectF(89, 89, 10, 10) << Qt::IntersectsItemBoundingRect << true << false;
+    BOBUIest::newRow("25") << QRectF(0, 0, 100, 100) << QRectF(1, 1, 10, 10) << BobUI::IntersectsItemShape << false << false;
+    BOBUIest::newRow("26") << QRectF(0, 0, 100, 100) << QRectF(1, 89, 10, 10) << BobUI::IntersectsItemShape << false << true;
+    BOBUIest::newRow("27") << QRectF(0, 0, 100, 100) << QRectF(89, 1, 10, 10) << BobUI::IntersectsItemShape << false << false;
+    BOBUIest::newRow("28") << QRectF(0, 0, 100, 100) << QRectF(89, 89, 10, 10) << BobUI::IntersectsItemShape << false << false;
+    BOBUIest::newRow("29") << QRectF(0, 0, 100, 100) << QRectF(1, 1, 10, 10) << BobUI::IntersectsItemBoundingRect << true << true;
+    BOBUIest::newRow("30") << QRectF(0, 0, 100, 100) << QRectF(1, 89, 10, 10) << BobUI::IntersectsItemBoundingRect << true << true;
+    BOBUIest::newRow("31") << QRectF(0, 0, 100, 100) << QRectF(89, 1, 10, 10) << BobUI::IntersectsItemBoundingRect << true << false;
+    BOBUIest::newRow("32") << QRectF(0, 0, 100, 100) << QRectF(89, 89, 10, 10) << BobUI::IntersectsItemBoundingRect << true << false;
 
     // This rect does not contain the shape nor the bounding rect
-    QTest::newRow("33") << QRectF(0, 0, 100, 100) << QRectF(5, 5, 90, 90) << Qt::ContainsItemShape << false << false;
-    QTest::newRow("34") << QRectF(0, 0, 100, 100) << QRectF(5, 5, 90, 90) << Qt::ContainsItemBoundingRect << false << false;
+    BOBUIest::newRow("33") << QRectF(0, 0, 100, 100) << QRectF(5, 5, 90, 90) << BobUI::ContainsItemShape << false << false;
+    BOBUIest::newRow("34") << QRectF(0, 0, 100, 100) << QRectF(5, 5, 90, 90) << BobUI::ContainsItemBoundingRect << false << false;
 
     // It will, however, intersect with both
-    QTest::newRow("35") << QRectF(0, 0, 100, 100) << QRectF(5, 5, 90, 90) << Qt::IntersectsItemShape << true << true;
-    QTest::newRow("36") << QRectF(0, 0, 100, 100) << QRectF(5, 5, 90, 90) << Qt::IntersectsItemBoundingRect << true << true;
+    BOBUIest::newRow("35") << QRectF(0, 0, 100, 100) << QRectF(5, 5, 90, 90) << BobUI::IntersectsItemShape << true << true;
+    BOBUIest::newRow("36") << QRectF(0, 0, 100, 100) << QRectF(5, 5, 90, 90) << BobUI::IntersectsItemBoundingRect << true << true;
 
     // A rect that contains the whole ellipse will both contain and intersect
     // with both the ellipse's shape and bounding rect.
-    QTest::newRow("37") << QRectF(0, 0, 100, 100) << QRectF(-5, -5, 110, 110) << Qt::IntersectsItemBoundingRect << true << true;
-    QTest::newRow("38") << QRectF(0, 0, 100, 100) << QRectF(-5, -5, 110, 110) << Qt::IntersectsItemShape << true << true;
-    QTest::newRow("39") << QRectF(0, 0, 100, 100) << QRectF(-5, -5, 110, 110) << Qt::ContainsItemBoundingRect << true << false;
-    QTest::newRow("40") << QRectF(0, 0, 100, 100) << QRectF(-5, -5, 110, 110) << Qt::ContainsItemShape << true << false;
+    BOBUIest::newRow("37") << QRectF(0, 0, 100, 100) << QRectF(-5, -5, 110, 110) << BobUI::IntersectsItemBoundingRect << true << true;
+    BOBUIest::newRow("38") << QRectF(0, 0, 100, 100) << QRectF(-5, -5, 110, 110) << BobUI::IntersectsItemShape << true << true;
+    BOBUIest::newRow("39") << QRectF(0, 0, 100, 100) << QRectF(-5, -5, 110, 110) << BobUI::ContainsItemBoundingRect << true << false;
+    BOBUIest::newRow("40") << QRectF(0, 0, 100, 100) << QRectF(-5, -5, 110, 110) << BobUI::ContainsItemShape << true << false;
 
     // A rect that is fully contained within the ellipse will intersect only
-    QTest::newRow("41") << QRectF(0, 0, 100, 100) << QRectF(40, 40, 20, 20) << Qt::ContainsItemShape << false << false;
-    QTest::newRow("42") << QRectF(0, 0, 100, 100) << QRectF(40, 40, 20, 20) << Qt::ContainsItemBoundingRect << false << false;
-    QTest::newRow("43") << QRectF(0, 0, 100, 100) << QRectF(40, 40, 20, 20) << Qt::IntersectsItemShape << true << true;
-    QTest::newRow("44") << QRectF(0, 0, 100, 100) << QRectF(40, 40, 20, 20) << Qt::IntersectsItemBoundingRect << true << true;
+    BOBUIest::newRow("41") << QRectF(0, 0, 100, 100) << QRectF(40, 40, 20, 20) << BobUI::ContainsItemShape << false << false;
+    BOBUIest::newRow("42") << QRectF(0, 0, 100, 100) << QRectF(40, 40, 20, 20) << BobUI::ContainsItemBoundingRect << false << false;
+    BOBUIest::newRow("43") << QRectF(0, 0, 100, 100) << QRectF(40, 40, 20, 20) << BobUI::IntersectsItemShape << true << true;
+    BOBUIest::newRow("44") << QRectF(0, 0, 100, 100) << QRectF(40, 40, 20, 20) << BobUI::IntersectsItemBoundingRect << true << true;
 }
 
 void tst_QGraphicsScene::items_QRectF_2()
 {
     QFETCH(QRectF, ellipseRect);
     QFETCH(QRectF, sceneRect);
-    QFETCH(Qt::ItemSelectionMode, selectionMode);
+    QFETCH(BobUI::ItemSelectionMode, selectionMode);
     QFETCH(bool, contained);
     QFETCH(bool, containedRotated);
 
@@ -734,7 +734,7 @@ void tst_QGraphicsScene::items_QRectF_2()
     QGraphicsItem *item = scene.addEllipse(ellipseRect);
 
     QCOMPARE(!scene.items(sceneRect, selectionMode).isEmpty(), contained);
-    item->setTransform(QTransform().rotate(45), true);
+    item->setTransform(BOBUIransform().rotate(45), true);
     QCOMPARE(!scene.items(sceneRect, selectionMode).isEmpty(), containedRotated);
 }
 
@@ -792,40 +792,40 @@ void tst_QGraphicsScene::items_QPolygonF_2()
     QGraphicsItem *ellipse = scene.addEllipse(QRectF(0, 0, 100, 100));
 
     // None of the rects contain the ellipse's shape nor bounding rect
-    QVERIFY(scene.items(QPolygonF(QRectF(1, 1, 10, 10)), Qt::ContainsItemShape).isEmpty());
-    QVERIFY(scene.items(QPolygonF(QRectF(1, 89, 10, 10)), Qt::ContainsItemShape).isEmpty());
-    QVERIFY(scene.items(QPolygonF(QRectF(89, 1, 10, 10)), Qt::ContainsItemShape).isEmpty());
-    QVERIFY(scene.items(QPolygonF(QRectF(89, 89, 10, 10)), Qt::ContainsItemShape).isEmpty());
-    QVERIFY(scene.items(QPolygonF(QRectF(1, 1, 10, 10)), Qt::ContainsItemBoundingRect).isEmpty());
-    QVERIFY(scene.items(QPolygonF(QRectF(1, 89, 10, 10)), Qt::ContainsItemBoundingRect).isEmpty());
-    QVERIFY(scene.items(QPolygonF(QRectF(89, 1, 10, 10)), Qt::ContainsItemBoundingRect).isEmpty());
-    QVERIFY(scene.items(QPolygonF(QRectF(89, 89, 10, 10)), Qt::ContainsItemBoundingRect).isEmpty());
+    QVERIFY(scene.items(QPolygonF(QRectF(1, 1, 10, 10)), BobUI::ContainsItemShape).isEmpty());
+    QVERIFY(scene.items(QPolygonF(QRectF(1, 89, 10, 10)), BobUI::ContainsItemShape).isEmpty());
+    QVERIFY(scene.items(QPolygonF(QRectF(89, 1, 10, 10)), BobUI::ContainsItemShape).isEmpty());
+    QVERIFY(scene.items(QPolygonF(QRectF(89, 89, 10, 10)), BobUI::ContainsItemShape).isEmpty());
+    QVERIFY(scene.items(QPolygonF(QRectF(1, 1, 10, 10)), BobUI::ContainsItemBoundingRect).isEmpty());
+    QVERIFY(scene.items(QPolygonF(QRectF(1, 89, 10, 10)), BobUI::ContainsItemBoundingRect).isEmpty());
+    QVERIFY(scene.items(QPolygonF(QRectF(89, 1, 10, 10)), BobUI::ContainsItemBoundingRect).isEmpty());
+    QVERIFY(scene.items(QPolygonF(QRectF(89, 89, 10, 10)), BobUI::ContainsItemBoundingRect).isEmpty());
 
     // None intersects with the item's shape, but they all intersects with the
     // item's bounding rect.
-    QVERIFY(scene.items(QPolygonF(QRectF(1, 1, 10, 10)), Qt::IntersectsItemShape).isEmpty());
-    QVERIFY(scene.items(QPolygonF(QRectF(1, 89, 10, 10)), Qt::IntersectsItemShape).isEmpty());
-    QVERIFY(scene.items(QPolygonF(QRectF(89, 1, 10, 10)), Qt::IntersectsItemShape).isEmpty());
-    QVERIFY(scene.items(QPolygonF(QRectF(89, 89, 10, 10)), Qt::IntersectsItemShape).isEmpty());
-    QCOMPARE(scene.items(QPolygonF(QRectF(1, 1, 10, 10)), Qt::IntersectsItemBoundingRect).first(), ellipse);
-    QCOMPARE(scene.items(QPolygonF(QRectF(1, 89, 10, 10)), Qt::IntersectsItemBoundingRect).first(), ellipse);
-    QCOMPARE(scene.items(QPolygonF(QRectF(89, 1, 10, 10)), Qt::IntersectsItemBoundingRect).first(), ellipse);
-    QCOMPARE(scene.items(QPolygonF(QRectF(89, 89, 10, 10)), Qt::IntersectsItemBoundingRect).first(), ellipse);
+    QVERIFY(scene.items(QPolygonF(QRectF(1, 1, 10, 10)), BobUI::IntersectsItemShape).isEmpty());
+    QVERIFY(scene.items(QPolygonF(QRectF(1, 89, 10, 10)), BobUI::IntersectsItemShape).isEmpty());
+    QVERIFY(scene.items(QPolygonF(QRectF(89, 1, 10, 10)), BobUI::IntersectsItemShape).isEmpty());
+    QVERIFY(scene.items(QPolygonF(QRectF(89, 89, 10, 10)), BobUI::IntersectsItemShape).isEmpty());
+    QCOMPARE(scene.items(QPolygonF(QRectF(1, 1, 10, 10)), BobUI::IntersectsItemBoundingRect).first(), ellipse);
+    QCOMPARE(scene.items(QPolygonF(QRectF(1, 89, 10, 10)), BobUI::IntersectsItemBoundingRect).first(), ellipse);
+    QCOMPARE(scene.items(QPolygonF(QRectF(89, 1, 10, 10)), BobUI::IntersectsItemBoundingRect).first(), ellipse);
+    QCOMPARE(scene.items(QPolygonF(QRectF(89, 89, 10, 10)), BobUI::IntersectsItemBoundingRect).first(), ellipse);
 
     // This rect does not contain the shape nor the bounding rect
-    QVERIFY(scene.items(QPolygonF(QRectF(5, 5, 90, 90)), Qt::ContainsItemShape).isEmpty());
-    QVERIFY(scene.items(QPolygonF(QRectF(5, 5, 90, 90)), Qt::ContainsItemBoundingRect).isEmpty());
+    QVERIFY(scene.items(QPolygonF(QRectF(5, 5, 90, 90)), BobUI::ContainsItemShape).isEmpty());
+    QVERIFY(scene.items(QPolygonF(QRectF(5, 5, 90, 90)), BobUI::ContainsItemBoundingRect).isEmpty());
 
     // It will, however, intersect with both
-    QCOMPARE(scene.items(QPolygonF(QRectF(5, 5, 90, 90)), Qt::IntersectsItemShape).first(), ellipse);
-    QCOMPARE(scene.items(QPolygonF(QRectF(5, 5, 90, 90)), Qt::IntersectsItemBoundingRect).first(), ellipse);
+    QCOMPARE(scene.items(QPolygonF(QRectF(5, 5, 90, 90)), BobUI::IntersectsItemShape).first(), ellipse);
+    QCOMPARE(scene.items(QPolygonF(QRectF(5, 5, 90, 90)), BobUI::IntersectsItemBoundingRect).first(), ellipse);
 
     // A rect that contains the whole ellipse will both contain and intersect
     // with both the ellipse's shape and bounding rect.
-    QCOMPARE(scene.items(QPolygonF(QRectF(-5, -5, 110, 110)), Qt::IntersectsItemShape).first(), ellipse);
-    QCOMPARE(scene.items(QPolygonF(QRectF(-5, -5, 110, 110)), Qt::ContainsItemShape).first(), ellipse);
-    QCOMPARE(scene.items(QPolygonF(QRectF(-5, -5, 110, 110)), Qt::IntersectsItemBoundingRect).first(), ellipse);
-    QCOMPARE(scene.items(QPolygonF(QRectF(-5, -5, 110, 110)), Qt::ContainsItemBoundingRect).first(), ellipse);
+    QCOMPARE(scene.items(QPolygonF(QRectF(-5, -5, 110, 110)), BobUI::IntersectsItemShape).first(), ellipse);
+    QCOMPARE(scene.items(QPolygonF(QRectF(-5, -5, 110, 110)), BobUI::ContainsItemShape).first(), ellipse);
+    QCOMPARE(scene.items(QPolygonF(QRectF(-5, -5, 110, 110)), BobUI::IntersectsItemBoundingRect).first(), ellipse);
+    QCOMPARE(scene.items(QPolygonF(QRectF(-5, -5, 110, 110)), BobUI::ContainsItemBoundingRect).first(), ellipse);
 }
 
 void tst_QGraphicsScene::items_QPainterPath()
@@ -887,46 +887,46 @@ void tst_QGraphicsScene::items_QPainterPath_2()
     QPainterPath p4; p4.addRect(QRectF(89, 89, 10, 10));
 
     // None of the rects contain the ellipse's shape nor bounding rect
-    QVERIFY(scene.items(p1, Qt::ContainsItemShape).isEmpty());
-    QVERIFY(scene.items(p2, Qt::ContainsItemShape).isEmpty());
-    QVERIFY(scene.items(p3, Qt::ContainsItemShape).isEmpty());
-    QVERIFY(scene.items(p4, Qt::ContainsItemShape).isEmpty());
-    QVERIFY(scene.items(p1, Qt::ContainsItemBoundingRect).isEmpty());
-    QVERIFY(scene.items(p2, Qt::ContainsItemBoundingRect).isEmpty());
-    QVERIFY(scene.items(p3, Qt::ContainsItemBoundingRect).isEmpty());
-    QVERIFY(scene.items(p4, Qt::ContainsItemBoundingRect).isEmpty());
+    QVERIFY(scene.items(p1, BobUI::ContainsItemShape).isEmpty());
+    QVERIFY(scene.items(p2, BobUI::ContainsItemShape).isEmpty());
+    QVERIFY(scene.items(p3, BobUI::ContainsItemShape).isEmpty());
+    QVERIFY(scene.items(p4, BobUI::ContainsItemShape).isEmpty());
+    QVERIFY(scene.items(p1, BobUI::ContainsItemBoundingRect).isEmpty());
+    QVERIFY(scene.items(p2, BobUI::ContainsItemBoundingRect).isEmpty());
+    QVERIFY(scene.items(p3, BobUI::ContainsItemBoundingRect).isEmpty());
+    QVERIFY(scene.items(p4, BobUI::ContainsItemBoundingRect).isEmpty());
 
     // None intersects with the item's shape, but they all intersects with the
     // item's bounding rect.
-    QVERIFY(scene.items(p1, Qt::IntersectsItemShape).isEmpty());
-    QVERIFY(scene.items(p2, Qt::IntersectsItemShape).isEmpty());
-    QVERIFY(scene.items(p3, Qt::IntersectsItemShape).isEmpty());
-    QVERIFY(scene.items(p4, Qt::IntersectsItemShape).isEmpty());
-    QCOMPARE(scene.items(p1, Qt::IntersectsItemBoundingRect).first(), ellipse);
-    QCOMPARE(scene.items(p2, Qt::IntersectsItemBoundingRect).first(), ellipse);
-    QCOMPARE(scene.items(p3, Qt::IntersectsItemBoundingRect).first(), ellipse);
-    QCOMPARE(scene.items(p4, Qt::IntersectsItemBoundingRect).first(), ellipse);
+    QVERIFY(scene.items(p1, BobUI::IntersectsItemShape).isEmpty());
+    QVERIFY(scene.items(p2, BobUI::IntersectsItemShape).isEmpty());
+    QVERIFY(scene.items(p3, BobUI::IntersectsItemShape).isEmpty());
+    QVERIFY(scene.items(p4, BobUI::IntersectsItemShape).isEmpty());
+    QCOMPARE(scene.items(p1, BobUI::IntersectsItemBoundingRect).first(), ellipse);
+    QCOMPARE(scene.items(p2, BobUI::IntersectsItemBoundingRect).first(), ellipse);
+    QCOMPARE(scene.items(p3, BobUI::IntersectsItemBoundingRect).first(), ellipse);
+    QCOMPARE(scene.items(p4, BobUI::IntersectsItemBoundingRect).first(), ellipse);
 
     QPainterPath p5;
     p5.addRect(QRectF(5, 5, 90, 90));
 
     // This rect does not contain the shape nor the bounding rect
-    QVERIFY(scene.items(p5, Qt::ContainsItemShape).isEmpty());
-    QVERIFY(scene.items(p5, Qt::ContainsItemBoundingRect).isEmpty());
+    QVERIFY(scene.items(p5, BobUI::ContainsItemShape).isEmpty());
+    QVERIFY(scene.items(p5, BobUI::ContainsItemBoundingRect).isEmpty());
 
     // It will, however, intersect with both
-    QCOMPARE(scene.items(p5, Qt::IntersectsItemShape).first(), ellipse);
-    QCOMPARE(scene.items(p5, Qt::IntersectsItemBoundingRect).first(), ellipse);
+    QCOMPARE(scene.items(p5, BobUI::IntersectsItemShape).first(), ellipse);
+    QCOMPARE(scene.items(p5, BobUI::IntersectsItemBoundingRect).first(), ellipse);
 
     QPainterPath p6;
     p6.addRect(QRectF(-5, -5, 110, 110));
 
     // A rect that contains the whole ellipse will both contain and intersect
     // with both the ellipse's shape and bounding rect.
-    QCOMPARE(scene.items(p6, Qt::IntersectsItemShape).first(), ellipse);
-    QCOMPARE(scene.items(p6, Qt::ContainsItemShape).first(), ellipse);
-    QCOMPARE(scene.items(p6, Qt::IntersectsItemBoundingRect).first(), ellipse);
-    QCOMPARE(scene.items(p6, Qt::ContainsItemBoundingRect).first(), ellipse);
+    QCOMPARE(scene.items(p6, BobUI::IntersectsItemShape).first(), ellipse);
+    QCOMPARE(scene.items(p6, BobUI::ContainsItemShape).first(), ellipse);
+    QCOMPARE(scene.items(p6, BobUI::IntersectsItemBoundingRect).first(), ellipse);
+    QCOMPARE(scene.items(p6, BobUI::ContainsItemBoundingRect).first(), ellipse);
 }
 
 class CustomView : public QGraphicsView
@@ -1028,13 +1028,13 @@ void tst_QGraphicsScene::selectionChanged2()
     {
         QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMousePress);
         event.setScenePos(QPointF(50, 50));
-        event.setButton(Qt::LeftButton);
+        event.setButton(BobUI::LeftButton);
         QCoreApplication::sendEvent(&scene, &event);
     }
     {
         QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMouseRelease);
         event.setScenePos(QPointF(50, 50));
-        event.setButton(Qt::LeftButton);
+        event.setButton(BobUI::LeftButton);
         QCoreApplication::sendEvent(&scene, &event);
     }
     QVERIFY(item1->isSelected());
@@ -1043,13 +1043,13 @@ void tst_QGraphicsScene::selectionChanged2()
     {
         QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMousePress);
         event.setScenePos(QPointF(150, 150));
-        event.setButton(Qt::LeftButton);
+        event.setButton(BobUI::LeftButton);
         QCoreApplication::sendEvent(&scene, &event);
     }
     {
         QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMouseRelease);
         event.setScenePos(QPointF(150, 150));
-        event.setButton(Qt::LeftButton);
+        event.setButton(BobUI::LeftButton);
         QCoreApplication::sendEvent(&scene, &event);
     }
     QVERIFY(!item1->isSelected());
@@ -1058,8 +1058,8 @@ void tst_QGraphicsScene::selectionChanged2()
     {
         QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMousePress);
         event.setScenePos(QPointF(50, 50));
-        event.setButton(Qt::LeftButton);
-        event.setModifiers(Qt::ControlModifier);
+        event.setButton(BobUI::LeftButton);
+        event.setModifiers(BobUI::ControlModifier);
         QCoreApplication::sendEvent(&scene, &event);
     }
     QVERIFY(!item1->isSelected());
@@ -1068,7 +1068,7 @@ void tst_QGraphicsScene::selectionChanged2()
     {
         QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMouseRelease);
         event.setScenePos(QPointF(50, 50));
-        event.setButton(Qt::LeftButton);
+        event.setButton(BobUI::LeftButton);
         QCoreApplication::sendEvent(&scene, &event);
     }
     QVERIFY(item1->isSelected());
@@ -1085,18 +1085,18 @@ void tst_QGraphicsScene::addItem()
         QGraphicsScene scene;
 
         CustomView view;
-        view.setWindowTitle(QTest::currentTestFunction());
+        view.setWindowTitle(BOBUIest::currentTestFunction());
         view.setScene(&scene);
         view.resize(m_testSize);
         view.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&view));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
         QCoreApplication::processEvents();
         view.repaints = 0;
 
         scene.addItem(path);
 
         // Adding an item should always issue a repaint.
-        QTRY_VERIFY(view.repaints > 0);
+        BOBUIRY_VERIFY(view.repaints > 0);
         view.repaints = 0;
 
         QCOMPARE(itemAt(scene, 0, 0), path);
@@ -1109,7 +1109,7 @@ void tst_QGraphicsScene::addItem()
         scene.addItem(path2);
 
         // Adding an item should always issue a repaint.
-        QTRY_VERIFY(view.repaints > 0);
+        BOBUIRY_VERIFY(view.repaints > 0);
 
         QCOMPARE(itemAt(scene, 100, 100), path2);
     }
@@ -1132,10 +1132,10 @@ void tst_QGraphicsScene::addEllipse()
 {
     QGraphicsScene scene;
     QGraphicsEllipseItem *ellipse = scene.addEllipse(QRectF(-10, -10, 20, 20),
-                                                     QPen(Qt::red), QBrush(Qt::blue));
+                                                     QPen(BobUI::red), QBrush(BobUI::blue));
     QCOMPARE(ellipse->pos(), QPointF());
-    QCOMPARE(ellipse->pen(), QPen(Qt::red));
-    QCOMPARE(ellipse->brush(), QBrush(Qt::blue));
+    QCOMPARE(ellipse->pen(), QPen(BobUI::red));
+    QCOMPARE(ellipse->brush(), QBrush(BobUI::blue));
     QCOMPARE(ellipse->rect(), QRectF(-10, -10, 20, 20));
     QCOMPARE(itemAt(scene, 0, 0), ellipse);
     QVERIFY(scene.items(QPointF(-10, -10)).isEmpty());
@@ -1151,7 +1151,7 @@ void tst_QGraphicsScene::addEllipse()
 void tst_QGraphicsScene::addLine()
 {
     QGraphicsScene scene;
-    QPen pen(Qt::red);
+    QPen pen(BobUI::red);
     pen.setWidthF(1.0);
     QGraphicsLineItem *line = scene.addLine(QLineF(-10, -10, 20, 20),
                                             pen);
@@ -1176,13 +1176,13 @@ void tst_QGraphicsScene::addPath()
     p.addEllipse(QRectF(-10, -10, 20, 20));
     p.addEllipse(QRectF(-10, 20, 20, 20));
 
-    QGraphicsPathItem *path = scene.addPath(p, QPen(Qt::red), QBrush(Qt::blue));
+    QGraphicsPathItem *path = scene.addPath(p, QPen(BobUI::red), QBrush(BobUI::blue));
     QCOMPARE(path->pos(), QPointF());
-    QCOMPARE(path->pen(), QPen(Qt::red));
+    QCOMPARE(path->pen(), QPen(BobUI::red));
     QCOMPARE(path->path(), p);
-    QCOMPARE(path->brush(), QBrush(Qt::blue));
+    QCOMPARE(path->brush(), QBrush(BobUI::blue));
 
-    path->setPen(QPen(Qt::red, 0));
+    path->setPen(QPen(BobUI::red, 0));
 
     QCOMPARE(itemAt(scene, 0, 0), path);
     QCOMPARE(itemAt(scene, -9.9, 0), path);
@@ -1232,13 +1232,13 @@ void tst_QGraphicsScene::addRect()
 {
     QGraphicsScene scene;
     QGraphicsRectItem *rect = scene.addRect(QRectF(-10, -10, 20, 20),
-                                            QPen(Qt::red), QBrush(Qt::blue));
+                                            QPen(BobUI::red), QBrush(BobUI::blue));
     QCOMPARE(rect->pos(), QPointF());
-    QCOMPARE(rect->pen(), QPen(Qt::red));
-    QCOMPARE(rect->brush(), QBrush(Qt::blue));
+    QCOMPARE(rect->pen(), QPen(BobUI::red));
+    QCOMPARE(rect->brush(), QBrush(BobUI::blue));
     QCOMPARE(rect->rect(), QRectF(-10, -10, 20, 20));
 
-    rect->setPen(QPen(Qt::red, 0));
+    rect->setPen(QPen(BobUI::red, 0));
 
     QCOMPARE(itemAt(scene, 0, 0),rect);
     QCOMPARE(itemAt(scene, -10, -10), rect);
@@ -1254,9 +1254,9 @@ void tst_QGraphicsScene::addRect()
 void tst_QGraphicsScene::addText()
 {
     QGraphicsScene scene;
-    QGraphicsTextItem *text = scene.addText("Qt", QFont());
+    QGraphicsTextItem *text = scene.addText("BobUI", QFont());
     QCOMPARE(text->pos(), QPointF());
-    QCOMPARE(text->toPlainText(), QString("Qt"));
+    QCOMPARE(text->toPlainText(), QString("BobUI"));
     QCOMPARE(text->font(), QFont());
 }
 
@@ -1294,20 +1294,20 @@ void tst_QGraphicsScene::removeItem()
     scene.setSceneRect(-50, -50, 100, 100);
 
     QGraphicsView view(&scene);
-    view.setWindowTitle(QTest::currentTestFunction());
+    view.setWindowTitle(BOBUIest::currentTestFunction());
     view.setFixedSize(150, 150);
     view.show();
-    QVERIFY(QTest::qWaitForWindowActive(&view));
-    QTest::mouseMove(view.windowHandle(), view.mapFromScene(hoverItem->scenePos() + QPointF(20, 20)));
-    QTRY_VERIFY(!hoverItem->isHovered);
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
+    BOBUIest::mouseMove(view.windowHandle(), view.mapFromScene(hoverItem->scenePos() + QPointF(20, 20)));
+    BOBUIRY_VERIFY(!hoverItem->isHovered);
 
-    QTest::mouseMove(view.windowHandle(), view.mapFromScene(hoverItem->scenePos()));
-    QTRY_VERIFY(hoverItem->isHovered);
+    BOBUIest::mouseMove(view.windowHandle(), view.mapFromScene(hoverItem->scenePos()));
+    BOBUIRY_VERIFY(hoverItem->isHovered);
 
     scene.removeItem(hoverItem);
     hoverItem->setAcceptHoverEvents(false);
     scene.addItem(hoverItem);
-    QTRY_VERIFY(!hoverItem->isHovered);
+    BOBUIRY_VERIFY(!hoverItem->isHovered);
 }
 
 void tst_QGraphicsScene::focusItem()
@@ -1317,7 +1317,7 @@ void tst_QGraphicsScene::focusItem()
     QApplication::sendEvent(&scene, &activate);
 
     QVERIFY(!scene.focusItem());
-    QGraphicsItem *item = scene.addText("Qt");
+    QGraphicsItem *item = scene.addText("BobUI");
     QVERIFY(!scene.focusItem());
     item->setFocus();
     QVERIFY(!scene.focusItem());
@@ -1335,7 +1335,7 @@ void tst_QGraphicsScene::focusItem()
     QApplication::sendEvent(&scene, &focusIn);
     QCOMPARE(scene.focusItem(), item);
 
-    QGraphicsItem *item2 = scene.addText("Qt");
+    QGraphicsItem *item2 = scene.addText("BobUI");
     item2->setFlag(QGraphicsItem::ItemIsFocusable);
     QCOMPARE(scene.focusItem(), item);
 
@@ -1378,7 +1378,7 @@ void tst_QGraphicsScene::focusItemLostFocus()
     QApplication::sendEvent(&scene, &activate);
 
     FocusItem *item = new FocusItem;
-    item->setTextInteractionFlags(Qt::TextEditorInteraction);
+    item->setTextInteractionFlags(BobUI::TextEditorInteraction);
     scene.addItem(item);
 
     item->setFocus();
@@ -1399,7 +1399,7 @@ void tst_QGraphicsScene::clear()
     QGraphicsScene scene;
     scene.clear();
     QVERIFY(scene.items().isEmpty());
-    scene.addRect(0, 0, 100, 100)->setPen(QPen(Qt::black, 0));
+    scene.addRect(0, 0, 100, 100)->setPen(QPen(BobUI::black, 0));
     QCOMPARE(scene.sceneRect(), QRectF(0, 0, 100, 100));
     scene.clear();
     QVERIFY(scene.items().isEmpty());
@@ -1430,7 +1430,7 @@ void tst_QGraphicsScene::setFocusItem()
     QEvent activate(QEvent::WindowActivate);
     QApplication::sendEvent(&scene, &activate);
 
-    QGraphicsItem *item = scene.addText("Qt");
+    QGraphicsItem *item = scene.addText("BobUI");
     QVERIFY(!scene.focusItem());
     QVERIFY(!scene.hasFocus());
     scene.setFocusItem(item);
@@ -1445,7 +1445,7 @@ void tst_QGraphicsScene::setFocusItem()
         QVERIFY(item->hasFocus());
     }
 
-    QGraphicsItem *item2 = scene.addText("Qt");
+    QGraphicsItem *item2 = scene.addText("BobUI");
     item2->setFlag(QGraphicsItem::ItemIsFocusable);
 
     scene.setFocusItem(item2);
@@ -1476,7 +1476,7 @@ void tst_QGraphicsScene::setFocusItem()
 void tst_QGraphicsScene::setFocusItem_inactive()
 {
     QGraphicsScene scene;
-    QGraphicsItem *item = scene.addText("Qt");
+    QGraphicsItem *item = scene.addText("BobUI");
     QVERIFY(!scene.focusItem());
     QVERIFY(!scene.hasFocus());
     scene.setFocusItem(item);
@@ -1514,7 +1514,7 @@ void tst_QGraphicsScene::mouseGrabberItem()
         QGraphicsItem *topMostItem = (i & 1) ? item2 : item;
 
         QGraphicsSceneMouseEvent pressEvent(QEvent::GraphicsSceneMousePress);
-        pressEvent.setButton(Qt::LeftButton);
+        pressEvent.setButton(BobUI::LeftButton);
         pressEvent.setScenePos(QPointF(0, 0));
         pressEvent.setScreenPos(QPoint(100, 100));
 
@@ -1523,7 +1523,7 @@ void tst_QGraphicsScene::mouseGrabberItem()
 
         for (int i = 0; i < 1000; ++i) {
             QGraphicsSceneMouseEvent moveEvent(QEvent::GraphicsSceneMouseMove);
-            moveEvent.setButtons(Qt::LeftButton);
+            moveEvent.setButtons(BobUI::LeftButton);
             moveEvent.setScenePos(QPointF(i * 10, i * 10));
             moveEvent.setScreenPos(QPoint(100 + i * 10, 100 + i * 10));
             QApplication::sendEvent(&scene, &moveEvent);
@@ -1549,12 +1549,12 @@ void tst_QGraphicsScene::mouseGrabberItem()
     item2->setPos(0, 0);
     item2->setZValue(0);
     QGraphicsSceneMouseEvent pressEvent(QEvent::GraphicsSceneMousePress);
-    pressEvent.setButton(Qt::LeftButton);
+    pressEvent.setButton(BobUI::LeftButton);
     pressEvent.setScenePos(QPointF(0, 0));
     pressEvent.setScreenPos(QPoint(100, 100));
 
     QGraphicsSceneMouseEvent moveEvent(QEvent::GraphicsSceneMouseMove);
-    moveEvent.setButtons(Qt::LeftButton);
+    moveEvent.setButtons(BobUI::LeftButton);
     moveEvent.setScenePos(QPointF(0, 0));
     moveEvent.setScreenPos(QPoint(100, 100));
 
@@ -1598,14 +1598,14 @@ void tst_QGraphicsScene::hoverEvents_siblings()
     }
 
     QGraphicsView view(&scene);
-    view.setWindowTitle(QTest::currentTestFunction());
+    view.setWindowTitle(BOBUIest::currentTestFunction());
     view.setRenderHint(QPainter::Antialiasing, true);
     view.setMinimumSize(400, 300);
     view.rotate(10);
     view.scale(1.7, 1.7);
     view.show();
     view.activateWindow();
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
 
     QCursor::setPos(view.mapToGlobal(QPoint(-5, -5)));
 
@@ -1613,7 +1613,7 @@ void tst_QGraphicsScene::hoverEvents_siblings()
     mouseEvent.setScenePos(QPointF(-1000, -1000));
     QApplication::sendEvent(&scene, &mouseEvent);
 
-    QTest::qWait(50);
+    BOBUIest::qWait(50);
 
     for (int j = 1; j >= 0; --j) {
         int i = j ? 0 : 14;
@@ -1629,7 +1629,7 @@ void tst_QGraphicsScene::hoverEvents_siblings()
             QCoreApplication::processEvents(); // this posts updates from the scene to the view
             QCoreApplication::processEvents(); // which trigger a repaint here
 
-            QTRY_VERIFY(items.at(i)->isHovered);
+            BOBUIRY_VERIFY(items.at(i)->isHovered);
             if (j && i > 0)
                 QVERIFY(!items.at(i - 1)->isHovered);
             if (!j && i < 14)
@@ -1667,13 +1667,13 @@ void tst_QGraphicsScene::hoverEvents_parentChild()
     }
 
     QGraphicsView view(&scene);
-    view.setWindowTitle(QTest::currentTestFunction());
+    view.setWindowTitle(BOBUIest::currentTestFunction());
     view.setRenderHint(QPainter::Antialiasing, true);
     view.setMinimumSize(400, 300);
     view.rotate(10);
     view.scale(1.7, 1.7);
     view.show();
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
 
     QGraphicsSceneMouseEvent mouseEvent(QEvent::GraphicsSceneMouseMove);
     mouseEvent.setScenePos(QPointF(-1000, -1000));
@@ -1694,7 +1694,7 @@ void tst_QGraphicsScene::hoverEvents_parentChild()
             QCoreApplication::processEvents(); // this posts updates from the scene to the view
             QCoreApplication::processEvents(); // which trigger a repaint here
 
-            QTRY_VERIFY(items.at(i)->isHovered);
+            BOBUIRY_VERIFY(items.at(i)->isHovered);
             if (i < 14)
                 QVERIFY(!items.at(i + 1)->isHovered);
             i += j ? 1 : -1;
@@ -1872,13 +1872,13 @@ void tst_QGraphicsScene::mouseEventPropagation()
 
     // Prepare some events
     QGraphicsSceneMouseEvent pressEvent(QEvent::GraphicsSceneMousePress);
-    pressEvent.setButton(Qt::LeftButton);
+    pressEvent.setButton(BobUI::LeftButton);
     pressEvent.setScenePos(QPointF(0, 0));
     QGraphicsSceneMouseEvent moveEvent(QEvent::GraphicsSceneMouseMove);
-    moveEvent.setButton(Qt::LeftButton);
+    moveEvent.setButton(BobUI::LeftButton);
     moveEvent.setScenePos(QPointF(0, 0));
     QGraphicsSceneMouseEvent releaseEvent(QEvent::GraphicsSceneMouseRelease);
-    releaseEvent.setButton(Qt::LeftButton);
+    releaseEvent.setButton(BobUI::LeftButton);
     releaseEvent.setScenePos(QPointF(0, 0));
 
     // Send a press
@@ -1910,7 +1910,7 @@ void tst_QGraphicsScene::mouseEventPropagation()
     QCOMPARE(a->eventTypes.size(), 0);
     QCOMPARE(scene.mouseGrabberItem(), nullptr);
 
-    d->setAcceptedMouseButtons(Qt::RightButton);
+    d->setAcceptedMouseButtons(BobUI::RightButton);
 
     // Send a press
     QApplication::sendEvent(&scene, &pressEvent);
@@ -1924,7 +1924,7 @@ void tst_QGraphicsScene::mouseEventPropagation()
 
     // Send another press, with a button that isn't actually accepted
     QApplication::sendEvent(&scene, &pressEvent);
-    pressEvent.setButton(Qt::RightButton);
+    pressEvent.setButton(BobUI::RightButton);
     QCOMPARE(d->eventTypes.size(), 5);
     QCOMPARE(c->eventTypes.size(), 3);
     QCOMPARE(c->eventTypes.at(2), QEvent::GraphicsSceneMousePress);
@@ -1953,7 +1953,7 @@ void tst_QGraphicsScene::mouseEventPropagation()
 
     // Disabled items eat events. c should not get this.
     d->setEnabled(false);
-    d->setAcceptedMouseButtons(Qt::RightButton);
+    d->setAcceptedMouseButtons(BobUI::RightButton);
 
     // Send a right press. This disappears in d.
     QApplication::sendEvent(&scene, &pressEvent);
@@ -1964,7 +1964,7 @@ void tst_QGraphicsScene::mouseEventPropagation()
     QCOMPARE(scene.mouseGrabberItem(), nullptr);
 
     // Send a left press. This goes to c.
-    pressEvent.setButton(Qt::LeftButton);
+    pressEvent.setButton(BobUI::LeftButton);
     QApplication::sendEvent(&scene, &pressEvent);
     QCOMPARE(d->eventTypes.size(), 5);
     QCOMPARE(c->eventTypes.size(), 8);
@@ -1998,7 +1998,7 @@ void tst_QGraphicsScene::mouseEventPropagation_ignore()
 
     // Prepare some events
     QGraphicsSceneMouseEvent pressEvent(QEvent::GraphicsSceneMousePress);
-    pressEvent.setButton(Qt::LeftButton);
+    pressEvent.setButton(BobUI::LeftButton);
     pressEvent.setScenePos(QPointF(0, 0));
 
     b->ignoreMouse = true;
@@ -2059,7 +2059,7 @@ void tst_QGraphicsScene::mouseEventPropagation_focus()
 
     // Prepare some events
     QGraphicsSceneMouseEvent pressEvent(QEvent::GraphicsSceneMousePress);
-    pressEvent.setButton(Qt::LeftButton);
+    pressEvent.setButton(BobUI::LeftButton);
     pressEvent.setScenePos(QPointF(0, 0));
 
     a->setFlag(QGraphicsItem::ItemIsFocusable);
@@ -2091,13 +2091,13 @@ void tst_QGraphicsScene::mouseEventPropagation_doubleclick()
 
     // Prepare some events
     QGraphicsSceneMouseEvent pressEvent(QEvent::GraphicsSceneMousePress);
-    pressEvent.setButton(Qt::LeftButton);
+    pressEvent.setButton(BobUI::LeftButton);
     pressEvent.setScenePos(QPointF(0, 0));
     QGraphicsSceneMouseEvent doubleClickEvent(QEvent::GraphicsSceneMouseDoubleClick);
-    doubleClickEvent.setButton(Qt::LeftButton);
+    doubleClickEvent.setButton(BobUI::LeftButton);
     doubleClickEvent.setScenePos(QPointF(0, 0));
     QGraphicsSceneMouseEvent releaseEvent(QEvent::GraphicsSceneMouseRelease);
-    releaseEvent.setButton(Qt::LeftButton);
+    releaseEvent.setButton(BobUI::LeftButton);
     releaseEvent.setScenePos(QPointF(0, 0));
 
     // Send press to A
@@ -2180,7 +2180,7 @@ protected:
         storeLastEvent(event);
         event->setAccepted(!ignoresDragEnter);
         if (!ignoresDragEnter)
-            event->setDropAction(Qt::IgnoreAction);
+            event->setDropAction(BobUI::IgnoreAction);
         eventList << event->type();
     }
 
@@ -2221,7 +2221,7 @@ private:
     }
 };
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 void tst_QGraphicsScene::dragAndDrop_simple()
 {
     DndTester *item = new DndTester(QRectF(-10, -10, 20, 20));
@@ -2235,93 +2235,93 @@ void tst_QGraphicsScene::dragAndDrop_simple()
     QMimeData mimeData;
 
     // Initial drag enter for the scene
-    QDragEnterEvent dragEnter(QPoint(0, 0), Qt::CopyAction, &mimeData, Qt::LeftButton, {});
+    QDragEnterEvent dragEnter(QPoint(0, 0), BobUI::CopyAction, &mimeData, BobUI::LeftButton, {});
     QApplication::sendEvent(view.viewport(), &dragEnter);
     QVERIFY(dragEnter.isAccepted());
-    QCOMPARE(dragEnter.dropAction(), Qt::CopyAction);
+    QCOMPARE(dragEnter.dropAction(), BobUI::CopyAction);
 
     {
         // Move outside the item
-        QDragMoveEvent dragMove(QPoint(0, 0), Qt::CopyAction, &mimeData, Qt::LeftButton, {});
+        QDragMoveEvent dragMove(QPoint(0, 0), BobUI::CopyAction, &mimeData, BobUI::LeftButton, {});
         QApplication::sendEvent(view.viewport(), &dragMove);
         QVERIFY(!dragMove.isAccepted());
-        QCOMPARE(dragMove.dropAction(), Qt::CopyAction);
+        QCOMPARE(dragMove.dropAction(), BobUI::CopyAction);
     }
     {
         // Move inside the item without setAcceptDrops
-        QDragMoveEvent dragMove(view.mapFromScene(item->scenePos()), Qt::CopyAction, &mimeData, Qt::LeftButton, {});
+        QDragMoveEvent dragMove(view.mapFromScene(item->scenePos()), BobUI::CopyAction, &mimeData, BobUI::LeftButton, {});
         QApplication::sendEvent(view.viewport(), &dragMove);
         QVERIFY(!dragMove.isAccepted());
-        QCOMPARE(dragMove.dropAction(), Qt::CopyAction);
+        QCOMPARE(dragMove.dropAction(), BobUI::CopyAction);
         QCOMPARE(item->eventList.size(), 0);
     }
     item->setAcceptDrops(true);
     {
         // Move inside the item with setAcceptDrops
-        QDragMoveEvent dragMove(view.mapFromScene(item->scenePos()), Qt::CopyAction, &mimeData, Qt::LeftButton, {});
+        QDragMoveEvent dragMove(view.mapFromScene(item->scenePos()), BobUI::CopyAction, &mimeData, BobUI::LeftButton, {});
         QApplication::sendEvent(view.viewport(), &dragMove);
         QVERIFY(dragMove.isAccepted());
-        QCOMPARE(dragMove.dropAction(), Qt::IgnoreAction);
+        QCOMPARE(dragMove.dropAction(), BobUI::IgnoreAction);
         QCOMPARE(item->eventList.size(), 2);
         QCOMPARE(item->eventList.at(0), QEvent::GraphicsSceneDragEnter);
         QCOMPARE(item->eventList.at(1), QEvent::GraphicsSceneDragMove);
         QCOMPARE(item->lastEvent->screenPos(), view.mapToGlobal(dragMove.position().toPoint()));
         QCOMPARE(item->lastEvent->scenePos(), view.mapToScene(dragMove.position().toPoint()));
         QVERIFY(item->lastEvent->isAccepted());
-        QCOMPARE(item->lastEvent->dropAction(), Qt::IgnoreAction);
+        QCOMPARE(item->lastEvent->dropAction(), BobUI::IgnoreAction);
     }
     {
         // Another move inside the item
-        QDragMoveEvent dragMove(view.mapFromScene(item->mapToScene(5, 5)), Qt::CopyAction, &mimeData, Qt::LeftButton, {});
+        QDragMoveEvent dragMove(view.mapFromScene(item->mapToScene(5, 5)), BobUI::CopyAction, &mimeData, BobUI::LeftButton, {});
         QApplication::sendEvent(view.viewport(), &dragMove);
         QVERIFY(dragMove.isAccepted());
-        QCOMPARE(dragMove.dropAction(), Qt::IgnoreAction);
+        QCOMPARE(dragMove.dropAction(), BobUI::IgnoreAction);
         QCOMPARE(item->eventList.size(), 3);
         QCOMPARE(item->eventList.at(2), QEvent::GraphicsSceneDragMove);
         QCOMPARE(item->lastEvent->screenPos(), view.mapToGlobal(dragMove.position().toPoint()));
         QCOMPARE(item->lastEvent->scenePos(), view.mapToScene(dragMove.position().toPoint()));
         QVERIFY(item->lastEvent->isAccepted());
-        QCOMPARE(item->lastEvent->dropAction(), Qt::IgnoreAction);
+        QCOMPARE(item->lastEvent->dropAction(), BobUI::IgnoreAction);
     }
     {
         // Move outside the item
-        QDragMoveEvent dragMove(QPoint(0, 0), Qt::CopyAction, &mimeData, Qt::LeftButton, {});
+        QDragMoveEvent dragMove(QPoint(0, 0), BobUI::CopyAction, &mimeData, BobUI::LeftButton, {});
         QApplication::sendEvent(view.viewport(), &dragMove);
         QVERIFY(!dragMove.isAccepted());
-        QCOMPARE(dragMove.dropAction(), Qt::CopyAction);
+        QCOMPARE(dragMove.dropAction(), BobUI::CopyAction);
         QCOMPARE(item->eventList.size(), 4);
         QCOMPARE(item->eventList.at(3), QEvent::GraphicsSceneDragLeave);
         QCOMPARE(item->lastEvent->screenPos(), view.mapToGlobal(dragMove.position().toPoint()));
         QCOMPARE(item->lastEvent->scenePos(), view.mapToScene(dragMove.position().toPoint()));
         QVERIFY(item->lastEvent->isAccepted());
-        QCOMPARE(item->lastEvent->dropAction(), Qt::CopyAction);
+        QCOMPARE(item->lastEvent->dropAction(), BobUI::CopyAction);
     }
     {
         // Move inside the item again
-        QDragMoveEvent dragMove(view.mapFromScene(item->scenePos()), Qt::CopyAction, &mimeData, Qt::LeftButton, {});
+        QDragMoveEvent dragMove(view.mapFromScene(item->scenePos()), BobUI::CopyAction, &mimeData, BobUI::LeftButton, {});
         QApplication::sendEvent(view.viewport(), &dragMove);
         QVERIFY(dragMove.isAccepted());
-        QCOMPARE(dragMove.dropAction(), Qt::IgnoreAction);
+        QCOMPARE(dragMove.dropAction(), BobUI::IgnoreAction);
         QCOMPARE(item->eventList.size(), 6);
         QCOMPARE(item->eventList.at(4), QEvent::GraphicsSceneDragEnter);
         QCOMPARE(item->eventList.at(5), QEvent::GraphicsSceneDragMove);
         QCOMPARE(item->lastEvent->screenPos(), view.mapToGlobal(dragMove.position().toPoint()));
         QCOMPARE(item->lastEvent->scenePos(), view.mapToScene(dragMove.position().toPoint()));
         QVERIFY(item->lastEvent->isAccepted());
-        QCOMPARE(item->lastEvent->dropAction(), Qt::IgnoreAction);
+        QCOMPARE(item->lastEvent->dropAction(), BobUI::IgnoreAction);
     }
     {
         // Drop inside the item
-        QDropEvent drop(view.mapFromScene(item->scenePos()), Qt::CopyAction, &mimeData, Qt::LeftButton, {});
+        QDropEvent drop(view.mapFromScene(item->scenePos()), BobUI::CopyAction, &mimeData, BobUI::LeftButton, {});
         QApplication::sendEvent(view.viewport(), &drop);
         QVERIFY(drop.isAccepted());
-        QCOMPARE(drop.dropAction(), Qt::CopyAction);
+        QCOMPARE(drop.dropAction(), BobUI::CopyAction);
         QCOMPARE(item->eventList.size(), 7);
         QCOMPARE(item->eventList.at(6), QEvent::GraphicsSceneDrop);
         QCOMPARE(item->lastEvent->screenPos(), view.mapToGlobal(drop.position().toPoint()));
         QCOMPARE(item->lastEvent->scenePos(), view.mapToScene(drop.position().toPoint()));
         QVERIFY(item->lastEvent->isAccepted());
-        QCOMPARE(item->lastEvent->dropAction(), Qt::CopyAction);
+        QCOMPARE(item->lastEvent->dropAction(), BobUI::CopyAction);
     }
 }
 
@@ -2339,26 +2339,26 @@ void tst_QGraphicsScene::dragAndDrop_disabledOrInvisible()
     QMimeData mimeData;
 
     // Initial drag enter for the scene
-    QDragEnterEvent dragEnter(QPoint(0, 0), Qt::CopyAction, &mimeData, Qt::LeftButton, {});
+    QDragEnterEvent dragEnter(QPoint(0, 0), BobUI::CopyAction, &mimeData, BobUI::LeftButton, {});
     QApplication::sendEvent(view.viewport(), &dragEnter);
     QVERIFY(dragEnter.isAccepted());
-    QCOMPARE(dragEnter.dropAction(), Qt::CopyAction);
+    QCOMPARE(dragEnter.dropAction(), BobUI::CopyAction);
     {
         // Move inside the item
-        QDragMoveEvent dragMove(view.mapFromScene(item->scenePos()), Qt::CopyAction, &mimeData, Qt::LeftButton, {});
+        QDragMoveEvent dragMove(view.mapFromScene(item->scenePos()), BobUI::CopyAction, &mimeData, BobUI::LeftButton, {});
         QApplication::sendEvent(view.viewport(), &dragMove);
         QVERIFY(dragMove.isAccepted());
-        QCOMPARE(dragMove.dropAction(), Qt::IgnoreAction);
+        QCOMPARE(dragMove.dropAction(), BobUI::IgnoreAction);
         QCOMPARE(item->eventList.size(), 2);
         QCOMPARE(item->eventList.at(0), QEvent::GraphicsSceneDragEnter);
         QCOMPARE(item->eventList.at(1), QEvent::GraphicsSceneDragMove);
     }
     {
         // Move outside the item
-        QDragMoveEvent dragMove(QPoint(0, 0), Qt::CopyAction, &mimeData, Qt::LeftButton, {});
+        QDragMoveEvent dragMove(QPoint(0, 0), BobUI::CopyAction, &mimeData, BobUI::LeftButton, {});
         QApplication::sendEvent(view.viewport(), &dragMove);
         QVERIFY(!dragMove.isAccepted());
-        QCOMPARE(dragMove.dropAction(), Qt::CopyAction);
+        QCOMPARE(dragMove.dropAction(), BobUI::CopyAction);
         QCOMPARE(item->eventList.size(), 3);
         QCOMPARE(item->eventList.at(2), QEvent::GraphicsSceneDragLeave);
     }
@@ -2370,10 +2370,10 @@ void tst_QGraphicsScene::dragAndDrop_disabledOrInvisible()
 
     {
         // Move inside the item
-        QDragMoveEvent dragMove(view.mapFromScene(item->scenePos()), Qt::CopyAction, &mimeData, Qt::LeftButton, {});
+        QDragMoveEvent dragMove(view.mapFromScene(item->scenePos()), BobUI::CopyAction, &mimeData, BobUI::LeftButton, {});
         QApplication::sendEvent(view.viewport(), &dragMove);
         QVERIFY(!dragMove.isAccepted());
-        QCOMPARE(dragMove.dropAction(), Qt::CopyAction);
+        QCOMPARE(dragMove.dropAction(), BobUI::CopyAction);
         QCOMPARE(item->eventList.size(), 3);
         QCOMPARE(item->eventList.at(2), QEvent::GraphicsSceneDragLeave);
     }
@@ -2386,16 +2386,16 @@ void tst_QGraphicsScene::dragAndDrop_disabledOrInvisible()
 
     {
         // Move inside the item
-        QDragMoveEvent dragMove(view.mapFromScene(item->scenePos()), Qt::CopyAction, &mimeData, Qt::LeftButton, {});
+        QDragMoveEvent dragMove(view.mapFromScene(item->scenePos()), BobUI::CopyAction, &mimeData, BobUI::LeftButton, {});
         QApplication::sendEvent(view.viewport(), &dragMove);
         QVERIFY(!dragMove.isAccepted());
-        QCOMPARE(dragMove.dropAction(), Qt::CopyAction);
+        QCOMPARE(dragMove.dropAction(), BobUI::CopyAction);
         QCOMPARE(item->eventList.size(), 3);
         QCOMPARE(item->eventList.at(2), QEvent::GraphicsSceneDragLeave);
     }
 
     // Dummy drop event to keep the Mac from crashing.
-    QDropEvent dropEvent(QPoint(0, 0), Qt::CopyAction, &mimeData, Qt::LeftButton, {});
+    QDropEvent dropEvent(QPoint(0, 0), BobUI::CopyAction, &mimeData, BobUI::LeftButton, {});
     QApplication::sendEvent(view.viewport(), &dropEvent);
 }
 
@@ -2422,26 +2422,26 @@ void tst_QGraphicsScene::dragAndDrop_propagate()
     QMimeData mimeData;
 
     // Initial drag enter for the scene
-    QDragEnterEvent dragEnter(QPoint(0, 0), Qt::CopyAction, &mimeData, Qt::LeftButton, {});
+    QDragEnterEvent dragEnter(QPoint(0, 0), BobUI::CopyAction, &mimeData, BobUI::LeftButton, {});
     QApplication::sendEvent(view.viewport(), &dragEnter);
     QVERIFY(dragEnter.isAccepted());
-    QCOMPARE(dragEnter.dropAction(), Qt::CopyAction);
+    QCOMPARE(dragEnter.dropAction(), BobUI::CopyAction);
 
     {
         // Move outside the items
-        QDragMoveEvent dragMove(QPoint(0, 0), Qt::CopyAction, &mimeData, Qt::LeftButton, {});
+        QDragMoveEvent dragMove(QPoint(0, 0), BobUI::CopyAction, &mimeData, BobUI::LeftButton, {});
         QApplication::sendEvent(view.viewport(), &dragMove);
         QVERIFY(!dragMove.isAccepted());
-        QCOMPARE(dragMove.dropAction(), Qt::CopyAction);
+        QCOMPARE(dragMove.dropAction(), BobUI::CopyAction);
         QVERIFY(item1->eventList.isEmpty());
         QVERIFY(item2->eventList.isEmpty());
     }
     {
         // Move inside item1
-        QDragMoveEvent dragMove(view.mapFromScene(-5, -5), Qt::CopyAction, &mimeData, Qt::LeftButton, {});
+        QDragMoveEvent dragMove(view.mapFromScene(-5, -5), BobUI::CopyAction, &mimeData, BobUI::LeftButton, {});
         QApplication::sendEvent(view.viewport(), &dragMove);
         QVERIFY(dragMove.isAccepted());
-        QCOMPARE(dragMove.dropAction(), Qt::IgnoreAction);
+        QCOMPARE(dragMove.dropAction(), BobUI::IgnoreAction);
         QCOMPARE(item1->eventList.size(), 2);
         QCOMPARE(item1->eventList.at(0), QEvent::GraphicsSceneDragEnter);
         QCOMPARE(item1->eventList.at(1), QEvent::GraphicsSceneDragMove);
@@ -2449,7 +2449,7 @@ void tst_QGraphicsScene::dragAndDrop_propagate()
 
     {
         // Move into the intersection item1-item2
-        QDragMoveEvent dragMove(view.mapFromScene(5, 5), Qt::CopyAction, &mimeData, Qt::LeftButton, {});
+        QDragMoveEvent dragMove(view.mapFromScene(5, 5), BobUI::CopyAction, &mimeData, BobUI::LeftButton, {});
         QApplication::sendEvent(view.viewport(), &dragMove);
         QVERIFY(!dragMove.isAccepted());    // move does not propagate, (ignoresDragMove = true)
         QCOMPARE(item1->eventList.size(), 3);
@@ -2460,20 +2460,20 @@ void tst_QGraphicsScene::dragAndDrop_propagate()
     }
     {
         // Move into the item2
-        QDragMoveEvent dragMove(view.mapFromScene(15, 15), Qt::CopyAction, &mimeData, Qt::LeftButton, {});
+        QDragMoveEvent dragMove(view.mapFromScene(15, 15), BobUI::CopyAction, &mimeData, BobUI::LeftButton, {});
         QApplication::sendEvent(view.viewport(), &dragMove);
         QVERIFY(!dragMove.isAccepted());
-        QCOMPARE(dragMove.dropAction(), Qt::CopyAction);
+        QCOMPARE(dragMove.dropAction(), BobUI::CopyAction);
         QCOMPARE(item1->eventList.size(), 3);
         QCOMPARE(item2->eventList.size(), 3);
         QCOMPARE(item2->eventList.at(2), QEvent::GraphicsSceneDragMove);
     }
     {
         // Move inside item1
-        QDragMoveEvent dragMove(view.mapFromScene(-5, -5), Qt::CopyAction, &mimeData, Qt::LeftButton, {});
+        QDragMoveEvent dragMove(view.mapFromScene(-5, -5), BobUI::CopyAction, &mimeData, BobUI::LeftButton, {});
         QApplication::sendEvent(view.viewport(), &dragMove);
         QVERIFY(dragMove.isAccepted());
-        QCOMPARE(dragMove.dropAction(), Qt::IgnoreAction);
+        QCOMPARE(dragMove.dropAction(), BobUI::IgnoreAction);
         QCOMPARE(item1->eventList.size(), 5);
         QCOMPARE(item1->eventList.at(3), QEvent::GraphicsSceneDragEnter);
         QCOMPARE(item1->eventList.at(4), QEvent::GraphicsSceneDragMove);
@@ -2484,10 +2484,10 @@ void tst_QGraphicsScene::dragAndDrop_propagate()
     {
         item2->ignoresDragEnter = true;
         // Move into the intersection item1-item2
-        QDragMoveEvent dragMove(view.mapFromScene(5, 5), Qt::CopyAction, &mimeData, Qt::LeftButton, {});
+        QDragMoveEvent dragMove(view.mapFromScene(5, 5), BobUI::CopyAction, &mimeData, BobUI::LeftButton, {});
         QApplication::sendEvent(view.viewport(), &dragMove);
         QVERIFY(dragMove.isAccepted());    // dragEnter propagates down to item1, which then accepts the move event.
-        QCOMPARE(dragMove.dropAction(), Qt::IgnoreAction);
+        QCOMPARE(dragMove.dropAction(), BobUI::IgnoreAction);
         QCOMPARE(item1->eventList.size(), 6);
         QCOMPARE(item1->eventList.at(5), QEvent::GraphicsSceneDragMove);
         QCOMPARE(item2->eventList.size(), 5);
@@ -2497,10 +2497,10 @@ void tst_QGraphicsScene::dragAndDrop_propagate()
     {
         item2->ignoresDragEnter = false;
         // Drop on the intersection item1-item2
-        QDropEvent drop(view.mapFromScene(5, 5), Qt::CopyAction, &mimeData, Qt::LeftButton, {});
+        QDropEvent drop(view.mapFromScene(5, 5), BobUI::CopyAction, &mimeData, BobUI::LeftButton, {});
         QApplication::sendEvent(view.viewport(), &drop);
         QVERIFY(drop.isAccepted());
-        QCOMPARE(drop.dropAction(), Qt::CopyAction);
+        QCOMPARE(drop.dropAction(), BobUI::CopyAction);
 
         QCOMPARE(item1->eventList.size(), 7);
         QCOMPARE(item1->eventList.at(6), QEvent::GraphicsSceneDrop);
@@ -2508,18 +2508,18 @@ void tst_QGraphicsScene::dragAndDrop_propagate()
     }
 
     // Dummy drop event to keep the Mac from crashing.
-    QDropEvent dropEvent(QPoint(0, 0), Qt::CopyAction, &mimeData, Qt::LeftButton, {});
+    QDropEvent dropEvent(QPoint(0, 0), BobUI::CopyAction, &mimeData, BobUI::LeftButton, {});
     QApplication::sendEvent(view.viewport(), &dropEvent);
 }
 #endif
 
 void tst_QGraphicsScene::render_data()
 {
-    QTest::addColumn<QRectF>("targetRect");
-    QTest::addColumn<QRectF>("sourceRect");
-    QTest::addColumn<Qt::AspectRatioMode>("aspectRatioMode");
-    QTest::addColumn<QTransform>("transform");
-    QTest::addColumn<QPainterPath>("clip");
+    BOBUIest::addColumn<QRectF>("targetRect");
+    BOBUIest::addColumn<QRectF>("sourceRect");
+    BOBUIest::addColumn<BobUI::AspectRatioMode>("aspectRatioMode");
+    BOBUIest::addColumn<BOBUIransform>("transform");
+    BOBUIest::addColumn<QPainterPath>("clip");
 
     QPainterPath clip_rect;
     clip_rect.addRect(50, 100, 200, 150);
@@ -2527,81 +2527,81 @@ void tst_QGraphicsScene::render_data()
     QPainterPath clip_ellipse;
     clip_ellipse.addEllipse(100,50,150,200);
 
-    QTest::newRow("all-all-untransformed") << QRectF() << QRectF()
-                                           << Qt::IgnoreAspectRatio << QTransform() << QPainterPath();
-    QTest::newRow("all-topleft-untransformed") << QRectF(0, 0, 150, 150)
-                                               << QRectF() << Qt::IgnoreAspectRatio << QTransform() << QPainterPath();
-    QTest::newRow("all-topright-untransformed") << QRectF(150, 0, 150, 150)
-                                                << QRectF() << Qt::IgnoreAspectRatio << QTransform() << QPainterPath();
-    QTest::newRow("all-bottomleft-untransformed") << QRectF(0, 150, 150, 150)
-                                                  << QRectF() << Qt::IgnoreAspectRatio << QTransform() << QPainterPath();
-    QTest::newRow("all-bottomright-untransformed") << QRectF(150, 150, 150, 150)
-                                                   << QRectF() << Qt::IgnoreAspectRatio << QTransform() << QPainterPath();
-    QTest::newRow("topleft-all-untransformed") << QRectF() << QRectF(-10, -10, 10, 10)
-                                               << Qt::IgnoreAspectRatio << QTransform() << QPainterPath();
-    QTest::newRow("topright-all-untransformed") << QRectF() << QRectF(0, -10, 10, 10)
-                                                << Qt::IgnoreAspectRatio << QTransform() << QPainterPath();
-    QTest::newRow("bottomleft-all-untransformed") << QRectF() << QRectF(-10, 0, 10, 10)
-                                                  << Qt::IgnoreAspectRatio << QTransform() << QPainterPath();
-    QTest::newRow("bottomright-all-untransformed") << QRectF() << QRectF(0, 0, 10, 10)
-                                                   << Qt::IgnoreAspectRatio << QTransform() << QPainterPath();
-    QTest::newRow("topleft-topleft-untransformed") << QRectF(0, 0, 150, 150) << QRectF(-10, -10, 10, 10)
-                                                   << Qt::IgnoreAspectRatio << QTransform() << QPainterPath();
-    QTest::newRow("topright-topleft-untransformed") << QRectF(150, 0, 150, 150) << QRectF(-10, -10, 10, 10)
-                                                    << Qt::IgnoreAspectRatio << QTransform() << QPainterPath();
-    QTest::newRow("bottomleft-topleft-untransformed") << QRectF(0, 150, 150, 150) << QRectF(-10, -10, 10, 10)
-                                                      << Qt::IgnoreAspectRatio << QTransform() << QPainterPath();
-    QTest::newRow("bottomright-topleft-untransformed") << QRectF(150, 150, 150, 150) << QRectF(-10, -10, 10, 10)
-                                                       << Qt::IgnoreAspectRatio << QTransform() << QPainterPath();
-    QTest::newRow("top-topleft-untransformed") << QRectF(0, 0, 300, 150) << QRectF(-10, -10, 10, 10)
-                                               << Qt::IgnoreAspectRatio << QTransform() << QPainterPath();
-    QTest::newRow("bottom-topleft-untransformed") << QRectF(0, 150, 300, 150) << QRectF(-10, -10, 10, 10)
-                                                  << Qt::IgnoreAspectRatio << QTransform() << QPainterPath();
-    QTest::newRow("left-topleft-untransformed") << QRectF(0, 0, 150, 300) << QRectF(-10, -10, 10, 10)
-                                                << Qt::IgnoreAspectRatio << QTransform() << QPainterPath();
-    QTest::newRow("right-topleft-untransformed") << QRectF(150, 0, 150, 300) << QRectF(-10, -10, 10, 10)
-                                                 << Qt::IgnoreAspectRatio << QTransform() << QPainterPath();
-    QTest::newRow("top-bottomright-untransformed") << QRectF(0, 0, 300, 150) << QRectF(0, 0, 10, 10)
-                                                   << Qt::IgnoreAspectRatio << QTransform() << QPainterPath();
-    QTest::newRow("bottom-bottomright-untransformed") << QRectF(0, 150, 300, 150) << QRectF(0, 0, 10, 10)
-                                                      << Qt::IgnoreAspectRatio << QTransform() << QPainterPath();
-    QTest::newRow("left-bottomright-untransformed") << QRectF(0, 0, 150, 300) << QRectF(0, 0, 10, 10)
-                                                    << Qt::IgnoreAspectRatio << QTransform() << QPainterPath();
-    QTest::newRow("right-bottomright-untransformed") << QRectF(150, 0, 150, 300) << QRectF(0, 0, 10, 10)
-                                                     << Qt::IgnoreAspectRatio << QTransform() << QPainterPath();
-    QTest::newRow("all-all-45-deg-right") << QRectF() << QRectF()
-                                          << Qt::IgnoreAspectRatio << QTransform().rotate(-45) << QPainterPath();
-    QTest::newRow("all-all-45-deg-left") << QRectF() << QRectF()
-                                         << Qt::IgnoreAspectRatio << QTransform().rotate(45) << QPainterPath();
-    QTest::newRow("all-all-scale-2x") << QRectF() << QRectF()
-                                      << Qt::IgnoreAspectRatio << QTransform::fromScale(2, 2) << QPainterPath();
-    QTest::newRow("all-all-translate-50-0") << QRectF() << QRectF()
-                                            << Qt::IgnoreAspectRatio << QTransform::fromTranslate(50, 0) << QPainterPath();
-    QTest::newRow("all-all-translate-0-50") << QRectF() << QRectF()
-                                            << Qt::IgnoreAspectRatio << QTransform::fromTranslate(0, 50) << QPainterPath();
-    QTest::newRow("all-all-untransformed-clip-rect") << QRectF() << QRectF()
-                                           << Qt::IgnoreAspectRatio << QTransform() << clip_rect;
-    QTest::newRow("all-all-untransformed-clip-ellipse") << QRectF() << QRectF()
-                                           << Qt::IgnoreAspectRatio << QTransform() << clip_ellipse;
+    BOBUIest::newRow("all-all-untransformed") << QRectF() << QRectF()
+                                           << BobUI::IgnoreAspectRatio << BOBUIransform() << QPainterPath();
+    BOBUIest::newRow("all-topleft-untransformed") << QRectF(0, 0, 150, 150)
+                                               << QRectF() << BobUI::IgnoreAspectRatio << BOBUIransform() << QPainterPath();
+    BOBUIest::newRow("all-topright-untransformed") << QRectF(150, 0, 150, 150)
+                                                << QRectF() << BobUI::IgnoreAspectRatio << BOBUIransform() << QPainterPath();
+    BOBUIest::newRow("all-bottomleft-untransformed") << QRectF(0, 150, 150, 150)
+                                                  << QRectF() << BobUI::IgnoreAspectRatio << BOBUIransform() << QPainterPath();
+    BOBUIest::newRow("all-bottomright-untransformed") << QRectF(150, 150, 150, 150)
+                                                   << QRectF() << BobUI::IgnoreAspectRatio << BOBUIransform() << QPainterPath();
+    BOBUIest::newRow("topleft-all-untransformed") << QRectF() << QRectF(-10, -10, 10, 10)
+                                               << BobUI::IgnoreAspectRatio << BOBUIransform() << QPainterPath();
+    BOBUIest::newRow("topright-all-untransformed") << QRectF() << QRectF(0, -10, 10, 10)
+                                                << BobUI::IgnoreAspectRatio << BOBUIransform() << QPainterPath();
+    BOBUIest::newRow("bottomleft-all-untransformed") << QRectF() << QRectF(-10, 0, 10, 10)
+                                                  << BobUI::IgnoreAspectRatio << BOBUIransform() << QPainterPath();
+    BOBUIest::newRow("bottomright-all-untransformed") << QRectF() << QRectF(0, 0, 10, 10)
+                                                   << BobUI::IgnoreAspectRatio << BOBUIransform() << QPainterPath();
+    BOBUIest::newRow("topleft-topleft-untransformed") << QRectF(0, 0, 150, 150) << QRectF(-10, -10, 10, 10)
+                                                   << BobUI::IgnoreAspectRatio << BOBUIransform() << QPainterPath();
+    BOBUIest::newRow("topright-topleft-untransformed") << QRectF(150, 0, 150, 150) << QRectF(-10, -10, 10, 10)
+                                                    << BobUI::IgnoreAspectRatio << BOBUIransform() << QPainterPath();
+    BOBUIest::newRow("bottomleft-topleft-untransformed") << QRectF(0, 150, 150, 150) << QRectF(-10, -10, 10, 10)
+                                                      << BobUI::IgnoreAspectRatio << BOBUIransform() << QPainterPath();
+    BOBUIest::newRow("bottomright-topleft-untransformed") << QRectF(150, 150, 150, 150) << QRectF(-10, -10, 10, 10)
+                                                       << BobUI::IgnoreAspectRatio << BOBUIransform() << QPainterPath();
+    BOBUIest::newRow("top-topleft-untransformed") << QRectF(0, 0, 300, 150) << QRectF(-10, -10, 10, 10)
+                                               << BobUI::IgnoreAspectRatio << BOBUIransform() << QPainterPath();
+    BOBUIest::newRow("bottom-topleft-untransformed") << QRectF(0, 150, 300, 150) << QRectF(-10, -10, 10, 10)
+                                                  << BobUI::IgnoreAspectRatio << BOBUIransform() << QPainterPath();
+    BOBUIest::newRow("left-topleft-untransformed") << QRectF(0, 0, 150, 300) << QRectF(-10, -10, 10, 10)
+                                                << BobUI::IgnoreAspectRatio << BOBUIransform() << QPainterPath();
+    BOBUIest::newRow("right-topleft-untransformed") << QRectF(150, 0, 150, 300) << QRectF(-10, -10, 10, 10)
+                                                 << BobUI::IgnoreAspectRatio << BOBUIransform() << QPainterPath();
+    BOBUIest::newRow("top-bottomright-untransformed") << QRectF(0, 0, 300, 150) << QRectF(0, 0, 10, 10)
+                                                   << BobUI::IgnoreAspectRatio << BOBUIransform() << QPainterPath();
+    BOBUIest::newRow("bottom-bottomright-untransformed") << QRectF(0, 150, 300, 150) << QRectF(0, 0, 10, 10)
+                                                      << BobUI::IgnoreAspectRatio << BOBUIransform() << QPainterPath();
+    BOBUIest::newRow("left-bottomright-untransformed") << QRectF(0, 0, 150, 300) << QRectF(0, 0, 10, 10)
+                                                    << BobUI::IgnoreAspectRatio << BOBUIransform() << QPainterPath();
+    BOBUIest::newRow("right-bottomright-untransformed") << QRectF(150, 0, 150, 300) << QRectF(0, 0, 10, 10)
+                                                     << BobUI::IgnoreAspectRatio << BOBUIransform() << QPainterPath();
+    BOBUIest::newRow("all-all-45-deg-right") << QRectF() << QRectF()
+                                          << BobUI::IgnoreAspectRatio << BOBUIransform().rotate(-45) << QPainterPath();
+    BOBUIest::newRow("all-all-45-deg-left") << QRectF() << QRectF()
+                                         << BobUI::IgnoreAspectRatio << BOBUIransform().rotate(45) << QPainterPath();
+    BOBUIest::newRow("all-all-scale-2x") << QRectF() << QRectF()
+                                      << BobUI::IgnoreAspectRatio << BOBUIransform::fromScale(2, 2) << QPainterPath();
+    BOBUIest::newRow("all-all-translate-50-0") << QRectF() << QRectF()
+                                            << BobUI::IgnoreAspectRatio << BOBUIransform::fromTranslate(50, 0) << QPainterPath();
+    BOBUIest::newRow("all-all-translate-0-50") << QRectF() << QRectF()
+                                            << BobUI::IgnoreAspectRatio << BOBUIransform::fromTranslate(0, 50) << QPainterPath();
+    BOBUIest::newRow("all-all-untransformed-clip-rect") << QRectF() << QRectF()
+                                           << BobUI::IgnoreAspectRatio << BOBUIransform() << clip_rect;
+    BOBUIest::newRow("all-all-untransformed-clip-ellipse") << QRectF() << QRectF()
+                                           << BobUI::IgnoreAspectRatio << BOBUIransform() << clip_ellipse;
 }
 
 void tst_QGraphicsScene::render()
 {
     QFETCH(QRectF, targetRect);
     QFETCH(QRectF, sourceRect);
-    QFETCH(Qt::AspectRatioMode, aspectRatioMode);
-    QFETCH(QTransform, transform);
+    QFETCH(BobUI::AspectRatioMode, aspectRatioMode);
+    QFETCH(BOBUIransform, transform);
     QFETCH(QPainterPath, clip);
 
     QPixmap pix(30, 30);
-    pix.fill(Qt::blue);
+    pix.fill(BobUI::blue);
 
     QGraphicsView view;
-    view.setWindowTitle(QTest::currentTestFunction());
+    view.setWindowTitle(BOBUIest::currentTestFunction());
     view.resize(m_testSize);
     QGraphicsScene scene(&view);
-    scene.addEllipse(QRectF(-10, -10, 20, 20), QPen(Qt::black, 0), QBrush(Qt::white));
-    scene.addEllipse(QRectF(-2, -7, 4, 4), QPen(Qt::black, 0), QBrush(Qt::yellow))->setZValue(1);
+    scene.addEllipse(QRectF(-10, -10, 20, 20), QPen(BobUI::black, 0), QBrush(BobUI::white));
+    scene.addEllipse(QRectF(-2, -7, 4, 4), QPen(BobUI::black, 0), QBrush(BobUI::yellow))->setZValue(1);
     QGraphicsPixmapItem *item = scene.addPixmap(pix);
     item->setZValue(2);
     item->setOffset(QPointF(3, 3));
@@ -2612,12 +2612,12 @@ void tst_QGraphicsScene::render()
     QImage bigImage(300, 300, QImage::Format_RGB32);
     bigImage.fill(0);
     QPainter painter(&bigImage);
-    painter.setPen(Qt::lightGray);
+    painter.setPen(BobUI::lightGray);
     for (int i = 0; i <= 300; i += 25) {
         painter.drawLine(0, i, 300, i);
         painter.drawLine(i, 0, i, 300);
     }
-    painter.setPen(QPen(Qt::darkGray, 2));
+    painter.setPen(QPen(BobUI::darkGray, 2));
     painter.drawLine(0, 150, 300, 150);
     painter.drawLine(150, 0, 150, 300);
     painter.setTransform(transform);
@@ -2625,7 +2625,7 @@ void tst_QGraphicsScene::render()
     scene.render(&painter, targetRect, sourceRect, aspectRatioMode);
     painter.end();
 
-    QString fileName = QFINDTESTDATA(QString("/testData/render/%1.png").arg(QTest::currentDataTag()));
+    QString fileName = QFINDTESTDATA(QString("/testData/render/%1.png").arg(BOBUIest::currentDataTag()));
     QImage original(fileName);
     QVERIFY(!original.isNull());
 
@@ -2654,23 +2654,23 @@ void tst_QGraphicsScene::render()
         newLabel->setPixmap(QPixmap::fromImage(bigImage));
 
         QGridLayout *gridLayout = new QGridLayout;
-        gridLayout->addWidget(new QLabel(tr("MISMATCH: %1").arg(QTest::currentDataTag())), 0, 0, 1, 2);
+        gridLayout->addWidget(new QLabel(tr("MISMATCH: %1").arg(BOBUIest::currentDataTag())), 0, 0, 1, 2);
         gridLayout->addWidget(new QLabel(tr("Current")), 1, 0);
         gridLayout->addWidget(new QLabel(tr("Expected")), 1, 1);
         gridLayout->addWidget(expectedLabel, 2, 1);
         gridLayout->addWidget(newLabel, 2, 0);
 
         QWidget widget;
-        widget.setWindowTitle(QTest::currentTestFunction());
+        widget.setWindowTitle(BOBUIest::currentTestFunction());
         widget.setLayout(gridLayout);
         widget.show();
 
-        QTestEventLoop::instance().enterLoop(1);
+        BOBUIestEventLoop::instance().enterLoop(1);
 
         QFAIL("Images are not identical.");
 #else
         // generate
-        qDebug() << "Updating" << QTest::currentDataTag() << ":" << bigImage.save(fileName, "png");
+        qDebug() << "Updating" << BOBUIest::currentDataTag() << ":" << bigImage.save(fileName, "png");
 #endif
     }
 }
@@ -2680,28 +2680,28 @@ void tst_QGraphicsScene::renderItemsWithNegativeWidthOrHeight()
 #ifdef Q_OS_ANDROID
     QSKIP("Test only works on platforms with resizable windows");
 #endif
-    if (QGuiApplication::platformName().startsWith(QLatin1String("eglfs"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("eglfs"), BobUI::CaseInsensitive))
         QSKIP("EGLFS does not allow resizing on top window");
 
     QGraphicsScene scene(0, 0, m_testSize.width(), m_testSize.height());
 
     // Add item with negative width.
     QGraphicsRectItem *item1 = new QGraphicsRectItem(0, 0, -m_testSize.width(), 50);
-    item1->setBrush(Qt::red);
+    item1->setBrush(BobUI::red);
     item1->setPos(m_testSize.width(), 50);
     scene.addItem(item1);
 
     // Add item with negative height.
     QGraphicsRectItem *item2 = new QGraphicsRectItem(0, 0, 50, -m_testSize.height());
-    item2->setBrush(Qt::blue);
+    item2->setBrush(BobUI::blue);
     item2->setPos(50, m_testSize.height());
     scene.addItem(item2);
 
     QGraphicsView view(&scene);
-    view.setWindowTitle(QTest::currentTestFunction());
+    view.setWindowTitle(BOBUIest::currentTestFunction());
     view.setFrameStyle(QFrame::NoFrame);
     view.show();
-    QTRY_COMPARE(view.viewport()->size(), m_testSize);
+    BOBUIRY_COMPARE(view.viewport()->size(), m_testSize);
 
     QImage expected(view.viewport()->size(), QImage::Format_RGB32);
     view.viewport()->render(&expected);
@@ -2716,7 +2716,7 @@ void tst_QGraphicsScene::renderItemsWithNegativeWidthOrHeight()
     QCOMPARE(actual, expected);
 }
 
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
 void tst_QGraphicsScene::contextMenuEvent()
 {
     QGraphicsScene scene;
@@ -2732,11 +2732,11 @@ void tst_QGraphicsScene::contextMenuEvent()
     QVERIFY(scene.hasFocus());
 
     QGraphicsView view(&scene);
-    view.setWindowTitle(QTest::currentTestFunction());
+    view.setWindowTitle(BOBUIest::currentTestFunction());
     view.resize(m_testSize);
     view.show();
     view.activateWindow();
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
     view.centerOn(item);
 
     {
@@ -2751,7 +2751,7 @@ class ContextMenuItem : public QGraphicsRectItem
 {
 public:
     ContextMenuItem(const QSize &s) : QGraphicsRectItem(0, 0, s.width(), s.height())
-    { setBrush(Qt::red); }
+    { setBrush(BobUI::red); }
 
 protected:
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *) override
@@ -2761,7 +2761,7 @@ protected:
 void tst_QGraphicsScene::contextMenuEvent_ItemIgnoresTransformations()
 {
 #ifdef Q_OS_ANDROID
-    QSKIP("Test fails on some Android devices (QTBUG-44430)");
+    QSKIP("Test fails on some Android devices (BOBUIBUG-44430)");
 #endif
 
     QGraphicsScene scene(0, 0, m_testSize.width(), m_testSize.height());
@@ -2771,11 +2771,11 @@ void tst_QGraphicsScene::contextMenuEvent_ItemIgnoresTransformations()
     scene.addItem(item);
 
     QWidget topLevel;
-    topLevel.setWindowTitle(QTest::currentTestFunction());
+    topLevel.setWindowTitle(BOBUIest::currentTestFunction());
     topLevel.resize(m_testSize);
     QGraphicsView view(&scene, &topLevel);
     topLevel.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&topLevel));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&topLevel));
 
 
 
@@ -2809,14 +2809,14 @@ void tst_QGraphicsScene::contextMenuEvent_ItemIgnoresTransformations()
         QVERIFY(!event.isAccepted());
     }
 }
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
 
 void tst_QGraphicsScene::update()
 {
     QGraphicsScene scene;
 
     QGraphicsRectItem *rect = new QGraphicsRectItem(0, 0, 100, 100);
-    rect->setPen(QPen(Qt::black, 0));
+    rect->setPen(QPen(BobUI::black, 0));
     scene.addItem(rect);
     QCoreApplication::processEvents();
     rect->setPos(-100, -100);
@@ -2850,19 +2850,19 @@ void tst_QGraphicsScene::update2()
     QGraphicsScene scene;
     scene.setSceneRect(-200, -200, 200, 200);
     CustomView view;
-    view.setWindowTitle(QTest::currentTestFunction());
+    view.setWindowTitle(BOBUIest::currentTestFunction());
     view.resize(m_testSize);
     view.setScene(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowActive(&view));
-    QTRY_VERIFY(view.repaints >= 1);
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
+    BOBUIRY_VERIFY(view.repaints >= 1);
     view.repaints = 0;
 
     // Make sure QGraphicsScene::update only requires one event-loop iteration
     // before the view is updated.
     scene.update();
     QCoreApplication::processEvents();
-    QTRY_COMPARE(view.repaints, 1);
+    BOBUIRY_COMPARE(view.repaints, 1);
     view.repaints = 0;
 
     // The same for partial scene updates.
@@ -2906,7 +2906,7 @@ public:
 
     bool gotTimerEvent = false;
 protected:
-    void timerEvent(QTimerEvent *) override
+    void timerEvent(BOBUIimerEvent *) override
     {
         gotTimerEvent = true;
     }
@@ -2916,7 +2916,7 @@ void tst_QGraphicsScene::testEvent()
 {
     // Test that QGraphicsScene properly propagates events to QObject.
     CustomScene scene;
-    QTestEventLoop::instance().enterLoop(1);
+    BOBUIestEventLoop::instance().enterLoop(1);
     QVERIFY(scene.gotTimerEvent);
 }
 
@@ -2963,7 +2963,7 @@ void tst_QGraphicsScene::eventsToDisabledItems()
     QVERIFY(item2->receivedSceneEventFilters.isEmpty());
 
     QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMousePress);
-    event.setButton(Qt::LeftButton);
+    event.setButton(BobUI::LeftButton);
     QApplication::sendEvent(&scene, &event);
 
     // First item2 receives a scene event filter. Then item1 receives the
@@ -2981,7 +2981,7 @@ void tst_QGraphicsScene::eventsToDisabledItems()
 
     item1->setEnabled(false); // disable the topmost item, eat mouse events
 
-    event.setButton(Qt::LeftButton);
+    event.setButton(BobUI::LeftButton);
     event.setAccepted(false);
     QApplication::sendEvent(&scene, &event);
 
@@ -3041,23 +3041,23 @@ void tst_QGraphicsScene::tabFocus_emptyScene()
 
     QWidget widget;
     widget.setLayout(layout);
-    widget.setWindowTitle(QTest::currentTestFunction());
+    widget.setWindowTitle(BOBUIest::currentTestFunction());
     widget.show();
     widget.activateWindow();
-    QVERIFY(QTest::qWaitForWindowFocused(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowFocused(&widget));
 
     dial1->setFocus();
     QVERIFY(dial1->hasFocus());
-    QTest::keyPress(QApplication::focusWidget(), Qt::Key_Tab);
+    BOBUIest::keyPress(QApplication::focusWidget(), BobUI::Key_Tab);
     QVERIFY(!dial1->hasFocus());
     QVERIFY(view->hasFocus());
-    QTest::keyPress(QApplication::focusWidget(), Qt::Key_Tab);
+    BOBUIest::keyPress(QApplication::focusWidget(), BobUI::Key_Tab);
     QVERIFY(!view->hasFocus());
     QVERIFY(dial2->hasFocus());
-    QTest::keyPress(QApplication::focusWidget(), Qt::Key_Backtab);
+    BOBUIest::keyPress(QApplication::focusWidget(), BobUI::Key_Backtab);
     QVERIFY(!dial2->hasFocus());
     QVERIFY(view->hasFocus());
-    QTest::keyPress(QApplication::focusWidget(), Qt::Key_Backtab);
+    BOBUIest::keyPress(QApplication::focusWidget(), BobUI::Key_Backtab);
     QVERIFY(dial1->hasFocus());
     QVERIFY(!dial2->hasFocus());
 }
@@ -3068,16 +3068,16 @@ void tst_QGraphicsScene::tabFocus_sceneWithFocusableItems()
         QSKIP("Window activation is not supported");
 
     QGraphicsScene scene;
-    QGraphicsTextItem *item = scene.addText("Qt rocks!");
+    QGraphicsTextItem *item = scene.addText("BobUI rocks!");
     item->setTabChangesFocus(true);
-    item->setTextInteractionFlags(Qt::TextEditorInteraction);
+    item->setTextInteractionFlags(BobUI::TextEditorInteraction);
     QVERIFY(item->flags() & QGraphicsItem::ItemIsFocusable);
     item->setFocus();
     item->clearFocus();
 
-    QGraphicsTextItem *item2 = scene.addText("Qt rocks!");
+    QGraphicsTextItem *item2 = scene.addText("BobUI rocks!");
     item2->setTabChangesFocus(true);
-    item2->setTextInteractionFlags(Qt::TextEditorInteraction);
+    item2->setTextInteractionFlags(BobUI::TextEditorInteraction);
     item2->setPos(0, item->boundingRect().bottom());
     QVERIFY(item2->flags() & QGraphicsItem::ItemIsFocusable);
 
@@ -3091,55 +3091,55 @@ void tst_QGraphicsScene::tabFocus_sceneWithFocusableItems()
     layout->addWidget(dial2);
 
     QWidget widget;
-    widget.setWindowTitle(QTest::currentTestFunction());
+    widget.setWindowTitle(BOBUIest::currentTestFunction());
     widget.setLayout(layout);
     widget.show();
     widget.activateWindow();
-    QVERIFY(QTest::qWaitForWindowActive(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&widget));
 
     dial1->setFocus();
-    QTRY_VERIFY(dial1->hasFocus());
-    QTest::keyPress(QApplication::focusWidget(), Qt::Key_Tab);
+    BOBUIRY_VERIFY(dial1->hasFocus());
+    BOBUIest::keyPress(QApplication::focusWidget(), BobUI::Key_Tab);
     QApplication::processEvents();
-    QTRY_VERIFY(view->hasFocus());
+    BOBUIRY_VERIFY(view->hasFocus());
     QVERIFY(view->viewport()->hasFocus());
     QVERIFY(scene.hasFocus());
     QVERIFY(item->hasFocus());
 
-    QTest::keyPress(QApplication::focusWidget(), Qt::Key_Tab);
+    BOBUIest::keyPress(QApplication::focusWidget(), BobUI::Key_Tab);
     QApplication::processEvents();
-    QTRY_VERIFY(dial2->hasFocus());
+    BOBUIRY_VERIFY(dial2->hasFocus());
 
-    QTest::keyPress(QApplication::focusWidget(), Qt::Key_Backtab);
+    BOBUIest::keyPress(QApplication::focusWidget(), BobUI::Key_Backtab);
     QApplication::processEvents();
-    QTRY_VERIFY(view->hasFocus());
-    QTRY_VERIFY(view->viewport()->hasFocus());
-    QTRY_VERIFY(scene.hasFocus());
-    QTRY_VERIFY(item->hasFocus());
+    BOBUIRY_VERIFY(view->hasFocus());
+    BOBUIRY_VERIFY(view->viewport()->hasFocus());
+    BOBUIRY_VERIFY(scene.hasFocus());
+    BOBUIRY_VERIFY(item->hasFocus());
 
-    QTest::keyPress(QApplication::focusWidget(), Qt::Key_Backtab);
+    BOBUIest::keyPress(QApplication::focusWidget(), BobUI::Key_Backtab);
     QApplication::processEvents();
-    QTRY_VERIFY(dial1->hasFocus());
+    BOBUIRY_VERIFY(dial1->hasFocus());
 
     // If the item requests input focus, it can only ensure that the scene
     // sets focus on itself, but the scene cannot request focus from any view.
     item->setFocus();
     QApplication::processEvents();
-    QTRY_VERIFY(!view->hasFocus());
+    BOBUIRY_VERIFY(!view->hasFocus());
     QVERIFY(!view->viewport()->hasFocus());
-    QTRY_VERIFY(scene.hasFocus());
+    BOBUIRY_VERIFY(scene.hasFocus());
     QVERIFY(item->hasFocus());
 
     view->setFocus();
     QApplication::processEvents();
-    QTRY_VERIFY(view->hasFocus());
-    QTRY_VERIFY(view->viewport()->hasFocus());
-    QTRY_VERIFY(scene.hasFocus());
-    QTRY_VERIFY(item->hasFocus());
+    BOBUIRY_VERIFY(view->hasFocus());
+    BOBUIRY_VERIFY(view->viewport()->hasFocus());
+    BOBUIRY_VERIFY(scene.hasFocus());
+    BOBUIRY_VERIFY(item->hasFocus());
 
     // Check that everyone loses focus when the widget is hidden.
     widget.hide();
-    QTRY_VERIFY(!view->hasFocus());
+    BOBUIRY_VERIFY(!view->hasFocus());
     QVERIFY(!view->viewport()->hasFocus());
     QVERIFY(!scene.hasFocus());
     QVERIFY(!item->hasFocus());
@@ -3149,9 +3149,9 @@ void tst_QGraphicsScene::tabFocus_sceneWithFocusableItems()
     widget.show();
     QApplicationPrivate::setActiveWindow(&widget);
     widget.activateWindow();
-    QVERIFY(QTest::qWaitForWindowActive(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&widget));
     QVERIFY(view->hasFocus());
-    QTRY_VERIFY(scene.isActive());
+    BOBUIRY_VERIFY(scene.isActive());
     QVERIFY(view->viewport()->hasFocus());
     QVERIFY(scene.hasFocus());
     QCOMPARE(scene.focusItem(), item);
@@ -3164,20 +3164,20 @@ class FocusWidget : public QGraphicsWidget
 public:
     FocusWidget(QGraphicsItem *parent = nullptr) : QGraphicsWidget(parent)
     {
-        setFocusPolicy(Qt::StrongFocus);
+        setFocusPolicy(BobUI::StrongFocus);
         resize(100, 100);
     }
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *) override
     {
         if (option->state & QStyle::State_HasFocus) {
-            painter->fillRect(rect(), Qt::blue);
+            painter->fillRect(rect(), BobUI::blue);
         }
-        painter->setBrush(Qt::green);
+        painter->setBrush(BobUI::green);
         painter->drawEllipse(rect());
         if (option->state & QStyle::State_HasFocus) {
-            painter->setPen(QPen(Qt::black, 1, Qt::DashLine));
-            painter->setBrush(Qt::NoBrush);
+            painter->setPen(QPen(BobUI::black, 1, BobUI::DashLine));
+            painter->setBrush(BobUI::NoBrush);
             painter->drawEllipse(rect().adjusted(5, 5, -5, -5));
         }
     }
@@ -3190,9 +3190,9 @@ protected:
     {
         if (event->type() == QEvent::KeyPress) {
             QKeyEvent *k = static_cast<QKeyEvent *>(event);
-            if (k->key() == Qt::Key_Tab)
+            if (k->key() == BobUI::Key_Tab)
                 ++tabs;
-            if (k->key() == Qt::Key_Backtab)
+            if (k->key() == BobUI::Key_Backtab)
                 ++backTabs;
         }
         return QGraphicsWidget::sceneEvent(event);
@@ -3228,52 +3228,52 @@ void tst_QGraphicsScene::tabFocus_sceneWithFocusWidgets()
     layout->addWidget(dial2);
 
     QWidget widget;
-    widget.setWindowTitle(QTest::currentTestFunction());
+    widget.setWindowTitle(BOBUIest::currentTestFunction());
     widget.setLayout(layout);
     widget.show();
     QApplicationPrivate::setActiveWindow(&widget);
     widget.activateWindow();
-    QVERIFY(QTest::qWaitForWindowActive(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&widget));
 
     dial1->setFocus();
-    QTRY_VERIFY(dial1->hasFocus());
+    BOBUIRY_VERIFY(dial1->hasFocus());
 
-    QTest::keyPress(QApplication::focusWidget(), Qt::Key_Tab);
+    BOBUIest::keyPress(QApplication::focusWidget(), BobUI::Key_Tab);
     QApplication::processEvents();
-    QTRY_VERIFY(view->hasFocus());
-    QTRY_VERIFY(view->viewport()->hasFocus());
-    QTRY_VERIFY(scene.hasFocus());
+    BOBUIRY_VERIFY(view->hasFocus());
+    BOBUIRY_VERIFY(view->viewport()->hasFocus());
+    BOBUIRY_VERIFY(scene.hasFocus());
     QCOMPARE(widget1->tabs, 0);
     QVERIFY(widget1->hasFocus());
-    QTest::keyPress(QApplication::focusWidget(), Qt::Key_Tab);
+    BOBUIest::keyPress(QApplication::focusWidget(), BobUI::Key_Tab);
     QApplication::processEvents();
-    QTRY_COMPARE(widget1->tabs, 1);
-    QTRY_VERIFY(widget2->hasFocus());
-    QTest::keyPress(QApplication::focusWidget(), Qt::Key_Tab);
+    BOBUIRY_COMPARE(widget1->tabs, 1);
+    BOBUIRY_VERIFY(widget2->hasFocus());
+    BOBUIest::keyPress(QApplication::focusWidget(), BobUI::Key_Tab);
     QApplication::processEvents();
-    QTRY_COMPARE(widget2->tabs, 1);
-    QTRY_VERIFY(dial2->hasFocus());
-    QTest::keyPress(QApplication::focusWidget(), Qt::Key_Backtab);
+    BOBUIRY_COMPARE(widget2->tabs, 1);
+    BOBUIRY_VERIFY(dial2->hasFocus());
+    BOBUIest::keyPress(QApplication::focusWidget(), BobUI::Key_Backtab);
     QApplication::processEvents();
-    QTRY_VERIFY(widget2->hasFocus());
-    QTest::keyPress(QApplication::focusWidget(), Qt::Key_Backtab);
+    BOBUIRY_VERIFY(widget2->hasFocus());
+    BOBUIest::keyPress(QApplication::focusWidget(), BobUI::Key_Backtab);
     QApplication::processEvents();
-    QTRY_COMPARE(widget2->backTabs, 1);
-    QTRY_VERIFY(widget1->hasFocus());
-    QTest::keyPress(QApplication::focusWidget(), Qt::Key_Backtab);
+    BOBUIRY_COMPARE(widget2->backTabs, 1);
+    BOBUIRY_VERIFY(widget1->hasFocus());
+    BOBUIest::keyPress(QApplication::focusWidget(), BobUI::Key_Backtab);
     QApplication::processEvents();
-    QTRY_COMPARE(widget1->backTabs, 1);
-    QTRY_VERIFY(dial1->hasFocus());
+    BOBUIRY_COMPARE(widget1->backTabs, 1);
+    BOBUIRY_VERIFY(dial1->hasFocus());
 
     widget1->setFocus();
     view->viewport()->setFocus();
     widget.hide();
-    QTest::qWait(15);
+    BOBUIest::qWait(15);
     widget.show();
     QApplicationPrivate::setActiveWindow(&widget);
     widget.activateWindow();
-    QVERIFY(QTest::qWaitForWindowActive(&widget));
-    QTRY_VERIFY(widget1->hasFocus());
+    QVERIFY(BOBUIest::qWaitForWindowActive(&widget));
+    BOBUIRY_VERIFY(widget1->hasFocus());
 }
 
 void tst_QGraphicsScene::tabFocus_sceneWithNestedFocusWidgets()
@@ -3287,7 +3287,7 @@ void tst_QGraphicsScene::tabFocus_sceneWithNestedFocusWidgets()
     FocusWidget *widget1_1 = new FocusWidget;
     FocusWidget *widget1_2 = new FocusWidget;
     widget1_1->setParentItem(widget1);
-    const QTransform scale(QTransform::fromScale(0.5, 0.5));
+    const BOBUIransform scale(BOBUIransform::fromScale(0.5, 0.5));
     widget1_1->setTransform(scale, true);
     widget1_1->setPos(0, widget1->boundingRect().height() / 2);
     widget1_2->setParentItem(widget1);
@@ -3316,15 +3316,15 @@ void tst_QGraphicsScene::tabFocus_sceneWithNestedFocusWidgets()
     layout->addWidget(dial2);
 
     QWidget widget;
-    widget.setWindowTitle(QTest::currentTestFunction());
+    widget.setWindowTitle(BOBUIest::currentTestFunction());
     widget.setLayout(layout);
     widget.show();
     QApplicationPrivate::setActiveWindow(&widget);
     widget.activateWindow();
-    QVERIFY(QTest::qWaitForWindowActive(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&widget));
 
     dial1->setFocus();
-    QTRY_VERIFY(dial1->hasFocus());
+    BOBUIRY_VERIFY(dial1->hasFocus());
 
     EventSpy focusInSpy_1(widget1, QEvent::FocusIn);
     EventSpy focusOutSpy_1(widget1, QEvent::FocusOut);
@@ -3335,79 +3335,79 @@ void tst_QGraphicsScene::tabFocus_sceneWithNestedFocusWidgets()
     EventSpy focusInSpy_2(widget2, QEvent::FocusIn);
     EventSpy focusOutSpy_2(widget2, QEvent::FocusOut);
 
-    QTest::keyPress(QApplication::focusWidget(), Qt::Key_Tab);
+    BOBUIest::keyPress(QApplication::focusWidget(), BobUI::Key_Tab);
     QApplication::processEvents();
-    QTRY_VERIFY(widget1->hasFocus());
+    BOBUIRY_VERIFY(widget1->hasFocus());
     QCOMPARE(focusInSpy_1.count(), 1);
 
-    QTest::keyPress(QApplication::focusWidget(), Qt::Key_Tab);
+    BOBUIest::keyPress(QApplication::focusWidget(), BobUI::Key_Tab);
     QApplication::processEvents();
-    QTRY_VERIFY(!widget1->hasFocus());
+    BOBUIRY_VERIFY(!widget1->hasFocus());
     QVERIFY(widget1_1->hasFocus());
     QCOMPARE(focusOutSpy_1.count(), 1);
     QCOMPARE(focusInSpy_1_1.count(), 1);
 
-    QTest::keyPress(QApplication::focusWidget(), Qt::Key_Tab);
+    BOBUIest::keyPress(QApplication::focusWidget(), BobUI::Key_Tab);
     QApplication::processEvents();
-    QTRY_VERIFY(!widget1_1->hasFocus());
+    BOBUIRY_VERIFY(!widget1_1->hasFocus());
     QVERIFY(widget1_2->hasFocus());
     QCOMPARE(focusOutSpy_1_1.count(), 1);
     QCOMPARE(focusInSpy_1_2.count(), 1);
 
-    QTest::keyPress(QApplication::focusWidget(), Qt::Key_Tab);
+    BOBUIest::keyPress(QApplication::focusWidget(), BobUI::Key_Tab);
     QApplication::processEvents();
-    QTRY_VERIFY(!widget1_2->hasFocus());
+    BOBUIRY_VERIFY(!widget1_2->hasFocus());
     QVERIFY(widget2->hasFocus());
     QCOMPARE(focusOutSpy_1_2.count(), 1);
     QCOMPARE(focusInSpy_2.count(), 1);
 
-    QTest::keyPress(QApplication::focusWidget(), Qt::Key_Tab);
+    BOBUIest::keyPress(QApplication::focusWidget(), BobUI::Key_Tab);
     QApplication::processEvents();
-    QTRY_VERIFY(!widget2->hasFocus());
+    BOBUIRY_VERIFY(!widget2->hasFocus());
     QVERIFY(dial2->hasFocus());
     QCOMPARE(focusOutSpy_2.count(), 1);
 
-    QTest::keyPress(QApplication::focusWidget(), Qt::Key_Backtab);
+    BOBUIest::keyPress(QApplication::focusWidget(), BobUI::Key_Backtab);
     QApplication::processEvents();
-    QTRY_VERIFY(widget2->hasFocus());
+    BOBUIRY_VERIFY(widget2->hasFocus());
     QCOMPARE(focusInSpy_2.count(), 2);
 
-    QTest::keyPress(QApplication::focusWidget(), Qt::Key_Backtab);
+    BOBUIest::keyPress(QApplication::focusWidget(), BobUI::Key_Backtab);
     QApplication::processEvents();
-    QTRY_VERIFY(!widget2->hasFocus());
-    QTRY_VERIFY(widget1_2->hasFocus());
+    BOBUIRY_VERIFY(!widget2->hasFocus());
+    BOBUIRY_VERIFY(widget1_2->hasFocus());
     QCOMPARE(focusOutSpy_2.count(), 2);
     QCOMPARE(focusInSpy_1_2.count(), 2);
 
-    QTest::keyPress(QApplication::focusWidget(), Qt::Key_Backtab);
+    BOBUIest::keyPress(QApplication::focusWidget(), BobUI::Key_Backtab);
     QApplication::processEvents();
-    QTRY_VERIFY(!widget1_2->hasFocus());
-    QTRY_VERIFY(widget1_1->hasFocus());
+    BOBUIRY_VERIFY(!widget1_2->hasFocus());
+    BOBUIRY_VERIFY(widget1_1->hasFocus());
     QCOMPARE(focusOutSpy_1_2.count(), 2);
     QCOMPARE(focusInSpy_1_1.count(), 2);
 
-    QTest::keyPress(QApplication::focusWidget(), Qt::Key_Backtab);
+    BOBUIest::keyPress(QApplication::focusWidget(), BobUI::Key_Backtab);
     QApplication::processEvents();
-    QTRY_VERIFY(!widget1_1->hasFocus());
-    QTRY_VERIFY(widget1->hasFocus());
+    BOBUIRY_VERIFY(!widget1_1->hasFocus());
+    BOBUIRY_VERIFY(widget1->hasFocus());
     QCOMPARE(focusOutSpy_1_1.count(), 2);
     QCOMPARE(focusInSpy_1.count(), 2);
 
-    QTest::keyPress(QApplication::focusWidget(), Qt::Key_Backtab);
+    BOBUIest::keyPress(QApplication::focusWidget(), BobUI::Key_Backtab);
     QApplication::processEvents();
-    QTRY_VERIFY(!widget1->hasFocus());
-    QTRY_VERIFY(dial1->hasFocus());
+    BOBUIRY_VERIFY(!widget1->hasFocus());
+    BOBUIRY_VERIFY(dial1->hasFocus());
     QCOMPARE(focusOutSpy_1.count(), 2);
 
     widget1->setFocus();
     view->viewport()->setFocus();
     widget.hide();
-    QTest::qWait(12);
+    BOBUIest::qWait(12);
     widget.show();
     QApplicationPrivate::setActiveWindow(&widget);
     widget.activateWindow();
-    QVERIFY(QTest::qWaitForWindowActive(&widget));
-    QTRY_VERIFY(widget1->hasFocus());
+    QVERIFY(BOBUIest::qWaitForWindowActive(&widget));
+    BOBUIRY_VERIFY(widget1->hasFocus());
 }
 
 void tst_QGraphicsScene::style()
@@ -3491,13 +3491,13 @@ void tst_QGraphicsScene::task139782_containsItemBoundingRect()
     item->setPos(10.0, 10.0);
 
     // The (0, 0, 50, 50) scene rect should not include the item's bounding rect
-    QVERIFY(!scene.items(QRectF(0.0, 0.0, 50.0, 50.0), Qt::ContainsItemBoundingRect).contains(item));
+    QVERIFY(!scene.items(QRectF(0.0, 0.0, 50.0, 50.0), BobUI::ContainsItemBoundingRect).contains(item));
 
     // The (9, 9, 500, 500) scene rect _should_ include the item's bounding rect
-    QVERIFY(scene.items(QRectF(9.0, 9.0, 500.0, 500.0), Qt::ContainsItemBoundingRect).contains(item));
+    QVERIFY(scene.items(QRectF(9.0, 9.0, 500.0, 500.0), BobUI::ContainsItemBoundingRect).contains(item));
 
     // The (25, 25, 5, 5) scene rect should not include the item's bounding rect
-    QVERIFY(!scene.items(QRectF(25.0, 25.0, 5.0, 5.0), Qt::ContainsItemBoundingRect).contains(item));
+    QVERIFY(!scene.items(QRectF(25.0, 25.0, 5.0, 5.0), BobUI::ContainsItemBoundingRect).contains(item));
 }
 
 void tst_QGraphicsScene::task176178_itemIndexMethodBreaksSceneRect()
@@ -3505,7 +3505,7 @@ void tst_QGraphicsScene::task176178_itemIndexMethodBreaksSceneRect()
     QGraphicsScene scene;
     scene.setItemIndexMethod(QGraphicsScene::NoIndex);
     QGraphicsRectItem *rect = new QGraphicsRectItem;
-    rect->setPen(QPen(Qt::black, 0));
+    rect->setPen(QPen(BobUI::black, 0));
     rect->setRect(0,0,100,100);
     scene.addItem(rect);
     QCOMPARE(scene.sceneRect(), rect->rect());
@@ -3527,12 +3527,12 @@ void tst_QGraphicsScene::task160653_selectionChanged()
 
     QSignalSpy spy(&scene, &QGraphicsScene::selectionChanged);
     QGraphicsView view(&scene);
-    view.setWindowTitle(QTest::currentTestFunction());
+    view.setWindowTitle(BOBUIest::currentTestFunction());
     view.resize(m_testSize);
     view.show();
-    QVERIFY(QTest::qWaitForWindowActive(&view));
-    QTest::mouseClick(
-                view.viewport(), Qt::LeftButton, {}, view.mapFromScene(scene.items().first()->scenePos()));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
+    BOBUIest::mouseClick(
+                view.viewport(), BobUI::LeftButton, {}, view.mapFromScene(scene.items().first()->scenePos()));
     QCOMPARE(spy.size(), 1);
 }
 
@@ -3540,11 +3540,11 @@ void tst_QGraphicsScene::task250680_childClip()
 {
     QGraphicsRectItem *clipper = new QGraphicsRectItem;
     clipper->setFlag(QGraphicsItem::ItemClipsChildrenToShape);
-    clipper->setPen(QPen(Qt::green, 0));
+    clipper->setPen(QPen(BobUI::green, 0));
     clipper->setRect(200, 200, 640, 480);
 
     QGraphicsRectItem *rect = new QGraphicsRectItem(clipper);
-    rect->setPen(QPen(Qt::red, 0));
+    rect->setPen(QPen(BobUI::red, 0));
     rect->setBrush(QBrush(QColor(255, 0, 0, 75)));
     rect->setPos(320, 240);
     rect->setRect(-25, -25, 50, 50);
@@ -3557,7 +3557,7 @@ void tst_QGraphicsScene::task250680_childClip()
     QVERIFY(QPathCompare::comparePaths(rect->clipPath().simplified(), path));
 
     QCOMPARE(scene.items(QRectF(320, 240, 5, 5)).size(), 2);
-    rect->setTransform(QTransform().rotate(45), true);
+    rect->setTransform(BOBUIransform().rotate(45), true);
     QCOMPARE(scene.items(QRectF(320, 240, 5, 5)).size(), 2);
 }
 
@@ -3700,10 +3700,10 @@ public slots:
 
 void tst_QGraphicsScene::changedSignal_data()
 {
-    QTest::addColumn<bool>("withView");
+    BOBUIest::addColumn<bool>("withView");
 
-    QTest::newRow("without view") << false;
-    QTest::newRow("with view") << true;
+    BOBUIest::newRow("without view") << false;
+    BOBUIest::newRow("with view") << true;
 }
 
 void tst_QGraphicsScene::changedSignal()
@@ -3718,11 +3718,11 @@ void tst_QGraphicsScene::changedSignal()
         view.reset(new QGraphicsView(&scene));
 
     QGraphicsRectItem *rect = new QGraphicsRectItem(0, 0, 10, 10);
-    rect->setPen(QPen(Qt::black, 0));
+    rect->setPen(QPen(BobUI::black, 0));
     scene.addItem(rect);
 
     QCOMPARE(cl.changes.size(), 0);
-    QTRY_COMPARE(cl.changes.size(), 1);
+    BOBUIRY_COMPARE(cl.changes.size(), 1);
     QCOMPARE(cl.changes.at(0).size(), 1);
     QCOMPARE(cl.changes.at(0).first(), QRectF(0, 0, 10, 10));
 
@@ -3738,9 +3738,9 @@ void tst_QGraphicsScene::changedSignal()
 
 void tst_QGraphicsScene::stickyFocus_data()
 {
-    QTest::addColumn<bool>("sticky");
-    QTest::newRow("sticky") << true;
-    QTest::newRow("not sticky") << false;
+    BOBUIest::addColumn<bool>("sticky");
+    BOBUIest::newRow("sticky") << true;
+    BOBUIest::newRow("not sticky") << false;
 }
 
 void tst_QGraphicsScene::stickyFocus()
@@ -3752,14 +3752,14 @@ void tst_QGraphicsScene::stickyFocus()
     QApplication::sendEvent(&scene, &activate);
 
     QGraphicsTextItem *text = scene.addText("Hei");
-    text->setTextInteractionFlags(Qt::TextEditorInteraction);
+    text->setTextInteractionFlags(BobUI::TextEditorInteraction);
     text->setFocus();
 
     scene.setStickyFocus(sticky);
 
     QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMousePress);
     event.setScenePos(QPointF(-10, -10)); // outside item
-    event.setButton(Qt::LeftButton);
+    event.setButton(BobUI::LeftButton);
     QCoreApplication::sendEvent(&scene, &event);
 
     QCOMPARE(text->hasFocus(), sticky);
@@ -3778,19 +3778,19 @@ void tst_QGraphicsScene::sendEvent()
 
 void tst_QGraphicsScene::inputMethod_data()
 {
-    QTest::addColumn<QGraphicsItem::GraphicsItemFlags>("flags");
-    QTest::addColumn<bool>("callFocusItem");
-    QTest::newRow("0") << QGraphicsItem::GraphicsItemFlags() << false;
-    QTest::newRow("1") << QGraphicsItem::GraphicsItemFlags(QGraphicsItem::ItemAcceptsInputMethod) << false;
-    QTest::newRow("2") << QGraphicsItem::GraphicsItemFlags(QGraphicsItem::ItemIsFocusable) << false;
-    QTest::newRow("3") <<
+    BOBUIest::addColumn<QGraphicsItem::GraphicsItemFlags>("flags");
+    BOBUIest::addColumn<bool>("callFocusItem");
+    BOBUIest::newRow("0") << QGraphicsItem::GraphicsItemFlags() << false;
+    BOBUIest::newRow("1") << QGraphicsItem::GraphicsItemFlags(QGraphicsItem::ItemAcceptsInputMethod) << false;
+    BOBUIest::newRow("2") << QGraphicsItem::GraphicsItemFlags(QGraphicsItem::ItemIsFocusable) << false;
+    BOBUIest::newRow("3") <<
         (QGraphicsItem::ItemAcceptsInputMethod|QGraphicsItem::ItemIsFocusable) << true;
 }
 
 class InputMethodTester : public QGraphicsRectItem
 {
     void inputMethodEvent(QInputMethodEvent *) override { ++eventCalls; }
-    QVariant inputMethodQuery(Qt::InputMethodQuery) const override
+    QVariant inputMethodQuery(BobUI::InputMethodQuery) const override
     {
         ++queryCalls;
         return QVariant();
@@ -3803,7 +3803,7 @@ public:
 
 void tst_QGraphicsScene::inputMethod()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     PlatformInputContext inputContext;
@@ -3821,9 +3821,9 @@ void tst_QGraphicsScene::inputMethod()
     QGraphicsView view(&scene);
     view.resize(m_testSize);
     view.show();
-    view.setWindowTitle(QTest::currentTestFunction());
+    view.setWindowTitle(BOBUIest::currentTestFunction());
     view.setFocus();
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
     QCOMPARE(QApplication::activeWindow(), &view);
 
     inputContext.m_resetCallCount = 0;
@@ -3840,12 +3840,12 @@ void tst_QGraphicsScene::inputMethod()
     QCOMPARE(item->eventCalls, callFocusItem ? 1 : 0);
 
     item->queryCalls = 0;
-    scene.inputMethodQuery(Qt::InputMethodQuery(0));
+    scene.inputMethodQuery(BobUI::InputMethodQuery(0));
     QCOMPARE(item->queryCalls, callFocusItem ? 1 : 0);
 
     scene.setFocusItem(nullptr);
     // the input context is reset twice, once because an item has lost focus and again because
-    // the Qt::WA_InputMethodEnabled flag is cleared because no item has focus.
+    // the BobUI::WA_InputMethodEnabled flag is cleared because no item has focus.
     QCOMPARE(inputContext.m_resetCallCount + inputContext.m_commitCallCount, callFocusItem ? 2 : 0);
     QCOMPARE(item->queryCalls, callFocusItem ? 1 : 0); // verify that value is unaffected
 
@@ -3854,7 +3854,7 @@ void tst_QGraphicsScene::inputMethod()
     QCOMPARE(item->eventCalls, callFocusItem ? 1 : 0);
 
     item->queryCalls = 0;
-    scene.inputMethodQuery(Qt::InputMethodQuery(0));
+    scene.inputMethodQuery(BobUI::InputMethodQuery(0));
     QCOMPARE(item->queryCalls, 0);
 }
 
@@ -3882,10 +3882,10 @@ void tst_QGraphicsScene::dispatchHoverOnPress()
 
     {
         QGraphicsSceneMouseEvent me(QEvent::GraphicsSceneMousePress);
-        me.setButton(Qt::LeftButton);
-        me.setButtons(Qt::LeftButton);
+        me.setButton(BobUI::LeftButton);
+        me.setButtons(BobUI::LeftButton);
         QGraphicsSceneMouseEvent me2(QEvent::GraphicsSceneMouseRelease);
-        me2.setButton(Qt::LeftButton);
+        me2.setButton(BobUI::LeftButton);
         QCoreApplication::sendEvent(&scene, &me);
         QCoreApplication::sendEvent(&scene, &me2);
         QCOMPARE(tester1->eventTypes, initialExpected);
@@ -3897,11 +3897,11 @@ void tst_QGraphicsScene::dispatchHoverOnPress()
     {
         QGraphicsSceneMouseEvent me(QEvent::GraphicsSceneMousePress);
         me.setScenePos(QPointF(30, 30));
-        me.setButton(Qt::LeftButton);
-        me.setButtons(Qt::LeftButton);
+        me.setButton(BobUI::LeftButton);
+        me.setButtons(BobUI::LeftButton);
         QGraphicsSceneMouseEvent me2(QEvent::GraphicsSceneMouseRelease);
         me2.setScenePos(QPointF(30, 30));
-        me2.setButton(Qt::LeftButton);
+        me2.setButton(BobUI::LeftButton);
         tester1->eventTypes.clear();
         QCoreApplication::sendEvent(&scene, &me);
         QCoreApplication::sendEvent(&scene, &me2);
@@ -3917,19 +3917,19 @@ void tst_QGraphicsScene::dispatchHoverOnPress()
 
 void tst_QGraphicsScene::initialFocus_data()
 {
-    QTest::addColumn<bool>("activeScene");
-    QTest::addColumn<bool>("explicitSetFocus");
-    QTest::addColumn<bool>("isPanel");
-    QTest::addColumn<bool>("shouldHaveFocus");
+    BOBUIest::addColumn<bool>("activeScene");
+    BOBUIest::addColumn<bool>("explicitSetFocus");
+    BOBUIest::addColumn<bool>("isPanel");
+    BOBUIest::addColumn<bool>("shouldHaveFocus");
 
-    QTest::newRow("inactive scene, normal item") << false << false << false << false;
-    QTest::newRow("inactive scene, panel item") << false << false << true << true;
-    QTest::newRow("inactive scene, normal item, explicit focus") << false << true << false << true;
-    QTest::newRow("inactive scene, panel, explicit focus") << false << true << true << true;
-    QTest::newRow("active scene, normal item") << true << false << false << false;
-    QTest::newRow("active scene, panel item") << true << false << true << true;
-    QTest::newRow("active scene, normal item, explicit focus") << true << true << false << true;
-    QTest::newRow("active scene, panel, explicit focus") << true << true << true << true;
+    BOBUIest::newRow("inactive scene, normal item") << false << false << false << false;
+    BOBUIest::newRow("inactive scene, panel item") << false << false << true << true;
+    BOBUIest::newRow("inactive scene, normal item, explicit focus") << false << true << false << true;
+    BOBUIest::newRow("inactive scene, panel, explicit focus") << false << true << true << true;
+    BOBUIest::newRow("active scene, normal item") << true << false << false << false;
+    BOBUIest::newRow("active scene, panel item") << true << false << true << true;
+    BOBUIest::newRow("active scene, normal item, explicit focus") << true << true << false << true;
+    BOBUIest::newRow("active scene, panel, explicit focus") << true << true << true << true;
 }
 
 void tst_QGraphicsScene::initialFocus()
@@ -4038,7 +4038,7 @@ void tst_QGraphicsScene::polishItems2()
 void tst_QGraphicsScene::isActive()
 {
 #ifdef Q_OS_ANDROID
-    QSKIP("Fails on Android (QTBUG-44430)");
+    QSKIP("Fails on Android (BOBUIBUG-44430)");
 #endif
     if (!QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::WindowActivation))
         QSKIP("Window activation is not supported");
@@ -4050,7 +4050,7 @@ void tst_QGraphicsScene::isActive()
 
     {
         QWidget toplevel1;
-        toplevel1.setWindowTitle(QTest::currentTestFunction());
+        toplevel1.setWindowTitle(BOBUIest::currentTestFunction());
         toplevel1.resize(m_testSize);
         QHBoxLayout *layout = new QHBoxLayout;
         toplevel1.setLayout(layout);
@@ -4065,7 +4065,7 @@ void tst_QGraphicsScene::isActive()
         view1->setVisible(false);
 
         toplevel1.show();
-        QVERIFY(QTest::qWaitForWindowActive(&toplevel1));
+        QVERIFY(BOBUIest::qWaitForWindowActive(&toplevel1));
         QCOMPARE(QApplication::activeWindow(), &toplevel1);
 
         QVERIFY(!scene1.isActive()); //it is hidden;
@@ -4087,18 +4087,18 @@ void tst_QGraphicsScene::isActive()
         QVERIFY(!scene2.hasFocus());
 
         toplevel1.hide();
-        QTRY_VERIFY(!scene1.isActive());
-        QTRY_VERIFY(!scene2.isActive());
+        BOBUIRY_VERIFY(!scene1.isActive());
+        BOBUIRY_VERIFY(!scene2.isActive());
         QVERIFY(!scene1.hasFocus());
         QVERIFY(!scene2.hasFocus());
 
         toplevel1.show();
         QApplicationPrivate::setActiveWindow(&toplevel1);
-        QVERIFY(QTest::qWaitForWindowActive(&toplevel1));
+        QVERIFY(BOBUIest::qWaitForWindowActive(&toplevel1));
         QCOMPARE(QApplication::activeWindow(), &toplevel1);
 
-        QTRY_VERIFY(scene1.isActive());
-        QTRY_VERIFY(!scene2.isActive());
+        BOBUIRY_VERIFY(scene1.isActive());
+        BOBUIRY_VERIFY(!scene2.isActive());
         QVERIFY(scene1.hasFocus());
         QVERIFY(!scene2.hasFocus());
 
@@ -4117,7 +4117,7 @@ void tst_QGraphicsScene::isActive()
 
     {
         QWidget toplevel2;
-        toplevel2.setWindowTitle(QTest::currentTestFunction());
+        toplevel2.setWindowTitle(BOBUIest::currentTestFunction());
         toplevel2.resize(m_testSize);
         QHBoxLayout *layout = new QHBoxLayout;
         toplevel2.setLayout(layout);
@@ -4134,10 +4134,10 @@ void tst_QGraphicsScene::isActive()
         toplevel2.move(m_availableGeometry.topLeft() + QPoint(50, 50));
         toplevel2.show();
         QApplicationPrivate::setActiveWindow(&toplevel2);
-        QVERIFY(QTest::qWaitForWindowActive(&toplevel2));
+        QVERIFY(BOBUIest::qWaitForWindowActive(&toplevel2));
         QCOMPARE(QApplication::activeWindow(), &toplevel2);
 
-        QTRY_VERIFY(scene1.isActive());
+        BOBUIRY_VERIFY(scene1.isActive());
         QVERIFY(!scene2.isActive());
         QVERIFY(scene1.hasFocus());
         QVERIFY(!scene2.hasFocus());
@@ -4185,7 +4185,7 @@ void tst_QGraphicsScene::isActive()
         topLevelView.show();
         QApplicationPrivate::setActiveWindow(&topLevelView);
         topLevelView.setFocus();
-        QVERIFY(QTest::qWaitForWindowActive(&topLevelView));
+        QVERIFY(BOBUIest::qWaitForWindowActive(&topLevelView));
         QCOMPARE(QApplication::activeWindow(), &topLevelView);
 
         QVERIFY(!scene1.isActive());
@@ -4212,7 +4212,7 @@ void tst_QGraphicsScene::isActive()
         QVERIFY(!scene2.hasFocus());
 
         QApplicationPrivate::setActiveWindow(&toplevel2);
-        QVERIFY(QTest::qWaitForWindowActive(&toplevel2));
+        QVERIFY(BOBUIest::qWaitForWindowActive(&toplevel2));
 
         QVERIFY(!scene1.isActive());
         QVERIFY(scene2.isActive());
@@ -4241,7 +4241,7 @@ void tst_QGraphicsScene::isActive()
 
 
         toplevel3.show();
-        QVERIFY(QTest::qWaitForWindowActive(&toplevel3));
+        QVERIFY(BOBUIest::qWaitForWindowActive(&toplevel3));
         QCOMPARE(QApplication::activeWindow(), &toplevel3);
 
         QVERIFY(scene1.isActive());
@@ -4291,7 +4291,7 @@ void tst_QGraphicsScene::siblingIndexAlwaysValid()
     child->setParentItem(nullptr);
 
     //This is trigerred by a repaint...
-    QGraphicsScenePrivate::get(&scene)->index->estimateTopLevelItems(QRectF(), Qt::AscendingOrder);
+    QGraphicsScenePrivate::get(&scene)->index->estimateTopLevelItems(QRectF(), BobUI::AscendingOrder);
 
     delete child;
 
@@ -4304,19 +4304,19 @@ void tst_QGraphicsScene::siblingIndexAlwaysValid()
     scene2.setItemIndexMethod(QGraphicsScene::NoIndex);
 
     QGraphicsView view2(&scene2);
-    view2.setWindowTitle(QTest::currentTestFunction());
+    view2.setWindowTitle(BOBUIest::currentTestFunction());
     view2.resize(m_testSize);
 
     // first add the blue rect
     QGraphicsRectItem* const item1 = new QGraphicsRectItem(QRect( 10, 10, 10, 10 ));
-    item1->setPen(QPen(Qt::blue, 0));
-    item1->setBrush(Qt::blue);
+    item1->setPen(QPen(BobUI::blue, 0));
+    item1->setBrush(BobUI::blue);
     scene2.addItem(item1);
 
     // then add the red rect
     QGraphicsRectItem* const item2 = new QGraphicsRectItem(5, 5, 10, 10);
-    item2->setPen(QPen(Qt::red, 0));
-    item2->setBrush(Qt::red);
+    item2->setPen(QPen(BobUI::red, 0));
+    item2->setBrush(BobUI::red);
     scene2.addItem(item2);
 
     // now the blue one is visible on top of the red one -> swap them (important for the bug)
@@ -4349,11 +4349,11 @@ void tst_QGraphicsScene::removeFullyTransparentItem()
     child->setParentItem(parent);
 
     CustomView view;
-    view.setWindowTitle(QTest::currentTestFunction());
+    view.setWindowTitle(BOBUIest::currentTestFunction());
     view.resize(m_testSize);
     view.setScene(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
     QCoreApplication::processEvents(); // Process all queued paint events
 
     // NB! The parent has the ItemHasNoContents flag set, which means
@@ -4365,7 +4365,7 @@ void tst_QGraphicsScene::removeFullyTransparentItem()
     QVERIFY(qFuzzyIsNull(child->effectiveOpacity()));
     scene.removeItem(child);
     QVERIFY(!scene.items().contains(child));
-    QTRY_VERIFY(view.repaints > 0);
+    BOBUIRY_VERIFY(view.repaints > 0);
 
     // Re-add child. There's nothing new to display (child is still
     // effectively hidden), so it shouldn't trigger an update.
@@ -4383,10 +4383,10 @@ void tst_QGraphicsScene::removeFullyTransparentItem()
     delete child;
 }
 
-void tst_QGraphicsScene::taskQTBUG_5904_crashWithDeviceCoordinateCache()
+void tst_QGraphicsScene::taskBOBUIBUG_5904_crashWithDeviceCoordinateCache()
 {
     QGraphicsScene scene;
-    QGraphicsRectItem *rectItem = scene.addRect(QRectF(0, 0, 100, 200), QPen(Qt::black), QBrush(Qt::green));
+    QGraphicsRectItem *rectItem = scene.addRect(QRectF(0, 0, 100, 200), QPen(BobUI::black), QBrush(BobUI::green));
 
     rectItem->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 
@@ -4398,7 +4398,7 @@ void tst_QGraphicsScene::taskQTBUG_5904_crashWithDeviceCoordinateCache()
     // No crash, then it passed!
 }
 
-void tst_QGraphicsScene::taskQT657_paintIntoCacheWithTransparentParts()
+void tst_QGraphicsScene::taskBOBUI657_paintIntoCacheWithTransparentParts()
 {
     // Test using DeviceCoordinateCache and opaque item
     auto w = std::make_unique<QWidget>();
@@ -4408,24 +4408,24 @@ void tst_QGraphicsScene::taskQT657_paintIntoCacheWithTransparentParts()
     QGraphicsScene scene;
     CustomView view;
     view.resize(m_testSize);
-    view.setWindowTitle(QTest::currentTestFunction());
+    view.setWindowTitle(BOBUIest::currentTestFunction());
     view.setScene(&scene);
 
     QGraphicsProxyWidget *proxy = scene.addWidget(w.release());
     proxy->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-    proxy->setTransform(QTransform().rotate(15), true);
+    proxy->setTransform(BOBUIransform().rotate(15), true);
 
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     view.repaints = 0;
     proxy->update(10, 10, 10, 10);
-    QTRY_VERIFY(view.repaints > 0);
+    BOBUIRY_VERIFY(view.repaints > 0);
 
     QPixmap pix;
     QGraphicsItemPrivate* itemp = QGraphicsItemPrivate::get(proxy);
-    QTRY_VERIFY(QPixmapCache::find(itemp->extraItemCache()->deviceData.value(view.viewport()).key, &pix));
+    BOBUIRY_VERIFY(QPixmapCache::find(itemp->extraItemCache()->deviceData.value(view.viewport()).key, &pix));
 
-    QTransform t = proxy->sceneTransform();
+    BOBUIransform t = proxy->sceneTransform();
     // Map from scene coordinates to pixmap coordinates.
     // X origin in the pixmap is the most-left point
     // of the item's boundingRect in the scene.
@@ -4440,7 +4440,7 @@ void tst_QGraphicsScene::taskQT657_paintIntoCacheWithTransparentParts()
     }
 }
 
-void tst_QGraphicsScene::taskQTBUG_7863_paintIntoCacheWithTransparentParts()
+void tst_QGraphicsScene::taskBOBUIBUG_7863_paintIntoCacheWithTransparentParts()
 {
     // Test using DeviceCoordinateCache and semi-transparent item
     {
@@ -4453,24 +4453,24 @@ void tst_QGraphicsScene::taskQTBUG_7863_paintIntoCacheWithTransparentParts()
         QGraphicsScene scene;
         CustomView view;
         view.resize(m_testSize);
-        view.setWindowTitle(QTest::currentTestFunction());
+        view.setWindowTitle(BOBUIest::currentTestFunction());
         view.setScene(&scene);
 
         scene.addItem(backItem);
         rectItem->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-        backItem->setTransform(QTransform().rotate(15), true);
+        backItem->setTransform(BOBUIransform().rotate(15), true);
 
         view.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&view));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
         view.repaints = 0;
         rectItem->update(10, 10, 10, 10);
-        QTRY_VERIFY(view.repaints > 0);
+        BOBUIRY_VERIFY(view.repaints > 0);
 
         QPixmap pix;
         QGraphicsItemPrivate* itemp = QGraphicsItemPrivate::get(rectItem);
-        QTRY_VERIFY(QPixmapCache::find(itemp->extraItemCache()->deviceData.value(view.viewport()).key, &pix));
+        BOBUIRY_VERIFY(QPixmapCache::find(itemp->extraItemCache()->deviceData.value(view.viewport()).key, &pix));
 
-        QTransform t = rectItem->sceneTransform();
+        BOBUIransform t = rectItem->sceneTransform();
         // Map from scene coordinates to pixmap coordinates.
         // X origin in the pixmap is the most-left point
         // of the item's boundingRect in the scene.
@@ -4493,25 +4493,25 @@ void tst_QGraphicsScene::taskQTBUG_7863_paintIntoCacheWithTransparentParts()
 
         QGraphicsScene scene;
         CustomView view;
-        view.setWindowTitle(QTest::currentTestFunction());
+        view.setWindowTitle(BOBUIest::currentTestFunction());
         view.resize(m_testSize);
         view.setScene(&scene);
 
         scene.addItem(rectItem);
         rectItem->setCacheMode(QGraphicsItem::ItemCoordinateCache);
-        rectItem->setTransform(QTransform().rotate(15), true);
+        rectItem->setTransform(BOBUIransform().rotate(15), true);
 
         view.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&view));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
         view.repaints = 0;
         rectItem->update(10, 10, 10, 10);
-        QTRY_VERIFY(view.repaints > 0);
+        BOBUIRY_VERIFY(view.repaints > 0);
 
         QPixmap pix;
         QGraphicsItemPrivate* itemp = QGraphicsItemPrivate::get(rectItem);
-        QTRY_VERIFY(QPixmapCache::find(itemp->extraItemCache()->key, &pix));
+        BOBUIRY_VERIFY(QPixmapCache::find(itemp->extraItemCache()->key, &pix));
 
-        QTransform t = rectItem->sceneTransform();
+        BOBUIransform t = rectItem->sceneTransform();
         // Map from scene coordinates to pixmap coordinates.
         // X origin in the pixmap is the most-left point
         // of the item's boundingRect in the scene.
@@ -4533,25 +4533,25 @@ void tst_QGraphicsScene::taskQTBUG_7863_paintIntoCacheWithTransparentParts()
 
         QGraphicsScene scene;
         CustomView view;
-        view.setWindowTitle(QTest::currentTestFunction());
+        view.setWindowTitle(BOBUIest::currentTestFunction());
         view.resize(m_testSize);
         view.setScene(&scene);
 
         scene.addItem(rectItem);
         rectItem->setCacheMode(QGraphicsItem::ItemCoordinateCache);
-        rectItem->setTransform(QTransform().rotate(15), true);
+        rectItem->setTransform(BOBUIransform().rotate(15), true);
 
         view.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&view));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
         view.repaints = 0;
         rectItem->update(10, 10, 10, 10);
-        QTRY_VERIFY(view.repaints > 0);
+        BOBUIRY_VERIFY(view.repaints > 0);
 
         QPixmap pix;
         QGraphicsItemPrivate* itemp = QGraphicsItemPrivate::get(rectItem);
-        QTRY_VERIFY(QPixmapCache::find(itemp->extraItemCache()->key, &pix));
+        BOBUIRY_VERIFY(QPixmapCache::find(itemp->extraItemCache()->key, &pix));
 
-        QTransform t = rectItem->sceneTransform();
+        BOBUIransform t = rectItem->sceneTransform();
         // Map from scene coordinates to pixmap coordinates.
         // X origin in the pixmap is the most-left point
         // of the item's boundingRect in the scene.
@@ -4567,7 +4567,7 @@ void tst_QGraphicsScene::taskQTBUG_7863_paintIntoCacheWithTransparentParts()
     }
 }
 
-void tst_QGraphicsScene::taskQT_3674_doNotCrash()
+void tst_QGraphicsScene::taskBOBUI_3674_doNotCrash()
 {
     QGraphicsScene scene;
 
@@ -4580,7 +4580,7 @@ void tst_QGraphicsScene::taskQT_3674_doNotCrash()
     painter.end();
 
     scene.addItem(new QGraphicsWidget);
-    scene.setBackgroundBrush(Qt::green);
+    scene.setBackgroundBrush(BobUI::green);
 
     QApplication::processEvents();
     QApplication::processEvents();
@@ -4602,19 +4602,19 @@ void tst_QGraphicsScene::zeroScale()
     rect1->setScale(0.00000001);
 
     QApplication::processEvents();
-    QTRY_COMPARE(cl.changes.size(), 1);
+    BOBUIRY_COMPARE(cl.changes.size(), 1);
     QGraphicsRectItem *rect2 = new QGraphicsRectItem(-0.0000001, -0.0000001, 0.0000001, 0.0000001);
     rect2->setScale(0.00000001);
     scene.addItem(rect2);
     rect1->setPos(20,20);
     QApplication::processEvents();
-    QTRY_COMPARE(cl.changes.size(), 2);
+    BOBUIRY_COMPARE(cl.changes.size(), 2);
 }
 
 void tst_QGraphicsScene::focusItemChangedSignal()
 {
     qRegisterMetaType<QGraphicsItem *>("QGraphicsItem *");
-    qRegisterMetaType<Qt::FocusReason>("Qt::FocusReason");
+    qRegisterMetaType<BobUI::FocusReason>("BobUI::FocusReason");
 
     QGraphicsScene scene;
     QSignalSpy spy(&scene, &QGraphicsScene::focusItemChanged);
@@ -4642,7 +4642,7 @@ void tst_QGraphicsScene::focusItemChangedSignal()
     QCOMPARE(arguments.size(), 3);
     QCOMPARE(qvariant_cast<QGraphicsItem *>(arguments.at(0)), topLevelItem2);
     QCOMPARE(qvariant_cast<QGraphicsItem *>(arguments.at(1)), nullptr);
-    QCOMPARE(qvariant_cast<Qt::FocusReason>(arguments.at(2)), Qt::OtherFocusReason);
+    QCOMPARE(qvariant_cast<BobUI::FocusReason>(arguments.at(2)), BobUI::OtherFocusReason);
     QVERIFY(topLevelItem2->hasFocus());
 
     scene.clearFocus();
@@ -4651,41 +4651,41 @@ void tst_QGraphicsScene::focusItemChangedSignal()
     QCOMPARE(arguments.size(), 3);
     QCOMPARE(qvariant_cast<QGraphicsItem *>(arguments.at(0)), nullptr);
     QCOMPARE(qvariant_cast<QGraphicsItem *>(arguments.at(1)), topLevelItem2);
-    QCOMPARE(qvariant_cast<Qt::FocusReason>(arguments.at(2)), Qt::OtherFocusReason);
+    QCOMPARE(qvariant_cast<BobUI::FocusReason>(arguments.at(2)), BobUI::OtherFocusReason);
 
-    scene.setFocus(Qt::MenuBarFocusReason);
+    scene.setFocus(BobUI::MenuBarFocusReason);
     QCOMPARE(spy.size(), 1);
     arguments = spy.takeFirst();
     QCOMPARE(arguments.size(), 3);
     QCOMPARE(qvariant_cast<QGraphicsItem *>(arguments.at(0)), topLevelItem2);
     QCOMPARE(qvariant_cast<QGraphicsItem *>(arguments.at(1)), nullptr);
-    QCOMPARE(qvariant_cast<Qt::FocusReason>(arguments.at(2)), Qt::MenuBarFocusReason);
+    QCOMPARE(qvariant_cast<BobUI::FocusReason>(arguments.at(2)), BobUI::MenuBarFocusReason);
 
     for (int i = 0; i < 3; ++i) {
-        topLevelItem1->setFocus(Qt::TabFocusReason);
+        topLevelItem1->setFocus(BobUI::TabFocusReason);
         arguments = spy.takeFirst();
         QCOMPARE(arguments.size(), 3);
         QCOMPARE(qvariant_cast<QGraphicsItem *>(arguments.at(0)), topLevelItem1);
         QCOMPARE(qvariant_cast<QGraphicsItem *>(arguments.at(1)), topLevelItem2);
-        QCOMPARE(qvariant_cast<Qt::FocusReason>(arguments.at(2)), Qt::TabFocusReason);
+        QCOMPARE(qvariant_cast<BobUI::FocusReason>(arguments.at(2)), BobUI::TabFocusReason);
 
-        topLevelItem2->setFocus(Qt::TabFocusReason);
+        topLevelItem2->setFocus(BobUI::TabFocusReason);
         arguments = spy.takeFirst();
         QCOMPARE(arguments.size(), 3);
         QCOMPARE(qvariant_cast<QGraphicsItem *>(arguments.at(0)), topLevelItem2);
         QCOMPARE(qvariant_cast<QGraphicsItem *>(arguments.at(1)), topLevelItem1);
-        QCOMPARE(qvariant_cast<Qt::FocusReason>(arguments.at(2)), Qt::TabFocusReason);
+        QCOMPARE(qvariant_cast<BobUI::FocusReason>(arguments.at(2)), BobUI::TabFocusReason);
     }
 
     // The following two are unexpected, but fixing this (i.e., losing and gaining focus
     // when the scene activation changes) breaks quite a few tests so leave this fix
-    // for some future release. See QTBUG-28346.
+    // for some future release. See BOBUIBUG-28346.
     QEvent deactivateEvent(QEvent::WindowDeactivate);
     QCoreApplication::sendEvent(&scene, &deactivateEvent);
-    QEXPECT_FAIL("", "QTBUG-28346", Continue);
+    QEXPECT_FAIL("", "BOBUIBUG-28346", Continue);
     QCOMPARE(spy.size(), 1);
     QCoreApplication::sendEvent(&scene, &activateEvent);
-    QEXPECT_FAIL("", "QTBUG-28346", Continue);
+    QEXPECT_FAIL("", "BOBUIBUG-28346", Continue);
     QCOMPARE(spy.size(), 1);
 
     QGraphicsRectItem *panel1 = new QGraphicsRectItem;
@@ -4697,7 +4697,7 @@ void tst_QGraphicsScene::focusItemChangedSignal()
     QCOMPARE(arguments.size(), 3);
     QCOMPARE(qvariant_cast<QGraphicsItem *>(arguments.at(0)), panel1);
     QCOMPARE(qvariant_cast<QGraphicsItem *>(arguments.at(1)), topLevelItem2);
-    QCOMPARE(qvariant_cast<Qt::FocusReason>(arguments.at(2)), Qt::ActiveWindowFocusReason);
+    QCOMPARE(qvariant_cast<BobUI::FocusReason>(arguments.at(2)), BobUI::ActiveWindowFocusReason);
 
     QGraphicsRectItem *panel2 = new QGraphicsRectItem;
     panel2->setFlags(QGraphicsItem::ItemIsPanel | QGraphicsItem::ItemIsFocusable);
@@ -4711,7 +4711,7 @@ void tst_QGraphicsScene::focusItemChangedSignal()
         QCOMPARE(arguments.size(), 3);
         QCOMPARE(qvariant_cast<QGraphicsItem *>(arguments.at(0)), panel2);
         QCOMPARE(qvariant_cast<QGraphicsItem *>(arguments.at(1)), panel1);
-        QCOMPARE(qvariant_cast<Qt::FocusReason>(arguments.at(2)), Qt::ActiveWindowFocusReason);
+        QCOMPARE(qvariant_cast<BobUI::FocusReason>(arguments.at(2)), BobUI::ActiveWindowFocusReason);
 
         scene.setActivePanel(panel1);
         QCOMPARE(spy.size(), 1);
@@ -4719,7 +4719,7 @@ void tst_QGraphicsScene::focusItemChangedSignal()
         QCOMPARE(arguments.size(), 3);
         QCOMPARE(qvariant_cast<QGraphicsItem *>(arguments.at(0)), panel1);
         QCOMPARE(qvariant_cast<QGraphicsItem *>(arguments.at(1)), panel2);
-        QCOMPARE(qvariant_cast<Qt::FocusReason>(arguments.at(2)), Qt::ActiveWindowFocusReason);
+        QCOMPARE(qvariant_cast<BobUI::FocusReason>(arguments.at(2)), BobUI::ActiveWindowFocusReason);
     }
 
 }
@@ -4749,16 +4749,16 @@ void tst_QGraphicsScene::minimumRenderSize()
     scene.addItem(bigParent);
 
     CustomView view;
-    view.setWindowTitle(QTest::currentTestFunction());
+    view.setWindowTitle(BOBUIest::currentTestFunction());
     view.resize(m_testSize);
     view.setScene(&scene);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     QCoreApplication::processEvents();
 
     // Initially, everything should be repainted the same number of times
     int viewRepaints = 0;
-    QTRY_VERIFY(view.repaints > viewRepaints);
+    BOBUIRY_VERIFY(view.repaints > viewRepaints);
     viewRepaints = view.repaints;
 
     QCOMPARE(viewRepaints, bigParent->repaints);
@@ -4769,7 +4769,7 @@ void tst_QGraphicsScene::minimumRenderSize()
     scene.setMinimumRenderSize(0.5);
     QCoreApplication::processEvents();
 
-    QTRY_VERIFY(view.repaints > viewRepaints);
+    BOBUIRY_VERIFY(view.repaints > viewRepaints);
     viewRepaints = view.repaints;
 
     QCOMPARE(viewRepaints, bigParent->repaints);
@@ -4780,7 +4780,7 @@ void tst_QGraphicsScene::minimumRenderSize()
     view.scale(0.1, 0.1);
     QCoreApplication::processEvents();
 
-    QTRY_VERIFY(view.repaints > viewRepaints);
+    BOBUIRY_VERIFY(view.repaints > viewRepaints);
     viewRepaints = view.repaints;
 
     QCOMPARE(viewRepaints, bigParent->repaints);
@@ -4791,7 +4791,7 @@ void tst_QGraphicsScene::minimumRenderSize()
     view.scale(0.1, 0.1); // Stacks with previous scale
     QCoreApplication::processEvents();
 
-    QTRY_VERIFY(view.repaints > viewRepaints);
+    BOBUIRY_VERIFY(view.repaints > viewRepaints);
     viewRepaints = view.repaints;
 
     QCOMPARE(viewRepaints, bigParent->repaints);
@@ -4803,14 +4803,14 @@ void tst_QGraphicsScene::focusOnTouch()
 {
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    view.setWindowTitle(QTest::currentTestFunction());
+    view.setWindowTitle(BOBUIest::currentTestFunction());
     view.resize(m_testSize);
     scene.setSceneRect(0, 0, 100, 100);
     QGraphicsRectItem *rect = scene.addRect(0, 0, 100, 100);
     rect->setFlag(QGraphicsItem::ItemIsFocusable, true);
 
     view.show();
-    QVERIFY(QTest::qWaitForWindowFocused(&view));
+    QVERIFY(BOBUIest::qWaitForWindowFocused(&view));
 
     QVERIFY(!rect->hasFocus());
 
@@ -4821,7 +4821,7 @@ void tst_QGraphicsScene::focusOnTouch()
 
     auto touchPoints = QList<QEventPoint>() <<
         QEventPoint(0, QEventPoint::State::Pressed, {10, 10}, {});
-    QTouchEvent event(QEvent::TouchBegin, &device, Qt::NoModifier, touchPoints);
+    BOBUIouchEvent event(QEvent::TouchBegin, &device, BobUI::NoModifier, touchPoints);
 
     QApplication::sendEvent(&scene, &event);
 
@@ -4879,13 +4879,13 @@ void tst_QGraphicsScene::clearSelection()
     QCOMPARE(spy.size(), 4);
 }
 
-void tst_QGraphicsScene::taskQTBUG_15977_renderWithDeviceCoordinateCache()
+void tst_QGraphicsScene::taskBOBUIBUG_15977_renderWithDeviceCoordinateCache()
 {
     QGraphicsScene scene;
     scene.setSceneRect(0, 0, 100, 100);
     QGraphicsRectItem *rect = scene.addRect(0, 0, 100, 100);
-    rect->setPen(Qt::NoPen);
-    rect->setBrush(Qt::red);
+    rect->setPen(BobUI::NoPen);
+    rect->setBrush(BobUI::red);
     rect->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 
     QImage image(100, 100, QImage::Format_RGB32);
@@ -4895,13 +4895,13 @@ void tst_QGraphicsScene::taskQTBUG_15977_renderWithDeviceCoordinateCache()
 
     QImage expected(100, 100, QImage::Format_RGB32);
     p.begin(&expected);
-    p.fillRect(expected.rect(), Qt::red);
+    p.fillRect(expected.rect(), BobUI::red);
     p.end();
 
     QCOMPARE(image, expected);
 }
 
-void tst_QGraphicsScene::taskQTBUG_16401_focusItem()
+void tst_QGraphicsScene::taskBOBUIBUG_16401_focusItem()
 {
     QGraphicsScene scene;
     QGraphicsView view(&scene);
@@ -4910,7 +4910,7 @@ void tst_QGraphicsScene::taskQTBUG_16401_focusItem()
     rect->setFlag(QGraphicsItem::ItemIsFocusable);
 
     view.show();
-    QVERIFY(QTest::qWaitForWindowFocused(&view));
+    QVERIFY(BOBUIest::qWaitForWindowFocused(&view));
 
     QVERIFY(!scene.focusItem());
 
@@ -4931,32 +4931,32 @@ void tst_QGraphicsScene::taskQTBUG_16401_focusItem()
     QVERIFY(!scene.focusItem());
 }
 
-void tst_QGraphicsScene::taskQTBUG_42915_focusNextPrevChild()
+void tst_QGraphicsScene::taskBOBUIBUG_42915_focusNextPrevChild()
 {
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    view.setWindowTitle(QTest::currentTestFunction());
+    view.setWindowTitle(BOBUIest::currentTestFunction());
     view.resize(m_testSize);
     scene.setSceneRect(1, 1, 198, 198);
     view.setFocus();
 
     QGraphicsWidget *widget1 = new QGraphicsWidget();
     QGraphicsRectItem *rect1 = new QGraphicsRectItem(-50, -50, 100, 100, widget1);
-    rect1->setBrush(Qt::blue);
+    rect1->setBrush(BobUI::blue);
     scene.addItem(widget1);
     widget1->setPos(100, 100);
     widget1->setFlags(QGraphicsItem::ItemIsPanel);
 
     QGraphicsWidget *widget2 = new QGraphicsWidget(widget1);
-    widget2->setFocusPolicy(Qt::NoFocus);
+    widget2->setFocusPolicy(BobUI::NoFocus);
 
     view.show();
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
 
-    QTest::keyEvent(QTest::Click, &view, Qt::Key_Tab);
+    BOBUIest::keyEvent(BOBUIest::Click, &view, BobUI::Key_Tab);
 }
 
-void tst_QGraphicsScene::taskQTBUG_85088_previewTextfailWhenLostFocus()
+void tst_QGraphicsScene::taskBOBUIBUG_85088_previewTextfailWhenLostFocus()
 {
     QString str = "simpleTextItem";
     QGraphicsScene scene;
@@ -4964,7 +4964,7 @@ void tst_QGraphicsScene::taskQTBUG_85088_previewTextfailWhenLostFocus()
 
     QGraphicsTextItem *simpleTextItem = new QGraphicsTextItem;
     simpleTextItem->setFlag(QGraphicsTextItem::ItemIsFocusScope);
-    simpleTextItem->setTextInteractionFlags(Qt::TextEditorInteraction);
+    simpleTextItem->setTextInteractionFlags(BobUI::TextEditorInteraction);
     simpleTextItem->setPlainText(str);
     scene.addItem(simpleTextItem);
 
@@ -4981,7 +4981,7 @@ void tst_QGraphicsScene::taskQTBUG_85088_previewTextfailWhenLostFocus()
     // focusItem will lose focus
     QMouseEvent pressEvent(QEvent::MouseButtonPress, QPointF(0, 0),
                            view.viewport()->mapToGlobal(QPointF()),
-                           Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
+                           BobUI::LeftButton, BobUI::NoButton, BobUI::NoModifier);
     QApplication::sendEvent(view.viewport(), &pressEvent);
 
     preedictStr.clear();
@@ -5015,7 +5015,7 @@ void tst_QGraphicsScene::deleteItemsOnChange()
     protected:
         void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override
         {
-            painter->fillRect(boundingRect().toRect(), isSelected() ? Qt::yellow : Qt::cyan);
+            painter->fillRect(boundingRect().toRect(), isSelected() ? BobUI::yellow : BobUI::cyan);
         }
 
         QVariant itemChange(GraphicsItemChange change, const QVariant &value) override
@@ -5027,7 +5027,7 @@ void tst_QGraphicsScene::deleteItemsOnChange()
                 scene()->addItem(selectionRect);
             } else {
                 // this recreates the selectedItems QSet inside of QGraphicsScene,
-                // invalidating iterators. See QTBUG-101651.
+                // invalidating iterators. See BOBUIBUG-101651.
                 scene()->selectedItems();
                 delete selectionRect;
                 selectionRect = nullptr;
@@ -5050,12 +5050,12 @@ void tst_QGraphicsScene::deleteItemsOnChange()
     view.setScene(&scene);
     view.show();
 
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
-    // this should not crash - see QTBUG-101651
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, {}, QPoint(120, 120));
-    QTest::mouseClick(view.viewport(), Qt::LeftButton, {}, QPoint(25, 25));
+    // this should not crash - see BOBUIBUG-101651
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, {}, QPoint(120, 120));
+    BOBUIest::mouseClick(view.viewport(), BobUI::LeftButton, {}, QPoint(25, 25));
 }
 
-QTEST_MAIN(tst_QGraphicsScene)
+BOBUIEST_MAIN(tst_QGraphicsScene)
 #include "tst_qgraphicsscene.moc"

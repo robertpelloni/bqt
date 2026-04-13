@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2018 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:execute-external-code
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:execute-external-code
 
 #include "qpluginloader.h"
 
@@ -12,33 +12,33 @@
 #include "qfileinfo.h"
 #include "qjsondocument.h"
 
-#if QT_CONFIG(library)
+#if BOBUI_CONFIG(library)
 #  include "qlibrary_p.h"
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-#if QT_CONFIG(library)
+#if BOBUI_CONFIG(library)
 
 /*!
     \class QPluginLoader
-    \inmodule QtCore
+    \inmodule BobUICore
     \reentrant
     \brief The QPluginLoader class loads a plugin at run-time.
 
 
     \ingroup plugins
 
-    QPluginLoader provides access to a \l{How to Create Qt
-    Plugins}{Qt plugin}. A Qt plugin is stored in a shared library (a
+    QPluginLoader provides access to a \l{How to Create BobUI
+    Plugins}{BobUI plugin}. A BobUI plugin is stored in a shared library (a
     DLL) and offers these benefits over shared libraries accessed
     using QLibrary:
 
     \list
     \li QPluginLoader checks that a plugin is linked against the same
-       version of Qt as the application.
+       version of BobUI as the application.
     \li QPluginLoader provides direct access to a root component object
        (instance()), instead of forcing you to resolve a C function manually.
     \endlist
@@ -64,11 +64,11 @@ using namespace Qt::StringLiterals;
     every instance has called unload(). Right before the unloading
     happens, the root component will also be deleted.
 
-    See \l{How to Create Qt Plugins} for more information about
+    See \l{How to Create BobUI Plugins} for more information about
     how to make your application extensible through plugins.
 
     Note that the QPluginLoader cannot be used if your application is
-    statically linked against Qt. In this case, you will also have to
+    statically linked against BobUI. In this case, you will also have to
     link to plugins statically. You can use QLibrary if you need to
     load dynamic libraries in a statically linked application.
 
@@ -220,7 +220,7 @@ bool QPluginLoader::isLoaded() const
     return d && d->pHnd && d->instanceFactory.loadRelaxed();
 }
 
-#if defined(QT_SHARED)
+#if defined(BOBUI_SHARED)
 static QString locatePlugin(const QString& fileName)
 {
     const bool isAbsolute = QDir::isAbsolutePath(fileName);
@@ -253,19 +253,19 @@ static QString locatePlugin(const QString& fileName)
                 {
                     QString pluginPath = basePath + prefix + baseName + suffix;
                     const QString fn = path + "/lib"_L1 + pluginPath.replace(u'/', u'_');
-                    qCDebug(qt_lcDebugPlugins) << "Trying..." << fn;
+                    qCDebug(bobui_lcDebugPlugins) << "Trying..." << fn;
                     if (QFileInfo(fn).isFile())
                         return fn;
                 }
 #endif
                 const QString fn = path + u'/' + basePath + prefix + baseName + suffix;
-                qCDebug(qt_lcDebugPlugins) << "Trying..." << fn;
+                qCDebug(bobui_lcDebugPlugins) << "Trying..." << fn;
                 if (QFileInfo(fn).isFile())
                     return fn;
             }
         }
     }
-    qCDebug(qt_lcDebugPlugins) << fileName << "not found";
+    qCDebug(bobui_lcDebugPlugins) << fileName << "not found";
     return QString();
 }
 #endif
@@ -294,7 +294,7 @@ static QString locatePlugin(const QString& fileName)
 */
 void QPluginLoader::setFileName(const QString &fileName)
 {
-#if defined(QT_SHARED)
+#if defined(BOBUI_SHARED)
     QLibrary::LoadHints lh = defaultLoadHints;
     if (d) {
         lh = d->loadHints();
@@ -310,7 +310,7 @@ void QPluginLoader::setFileName(const QString &fileName)
         d->updatePluginState();
 
 #else
-    qCWarning(qt_lcDebugPlugins, "Cannot load '%ls' into a statically linked Qt library.",
+    qCWarning(bobui_lcDebugPlugins, "Cannot load '%ls' into a statically linked BobUI library.",
               qUtf16Printable(fileName));
 #endif
 }
@@ -338,7 +338,7 @@ QString QPluginLoader::errorString() const
     \brief Give the load() function some hints on how it should behave.
 
     You can give hints on how the symbols in the plugin are
-    resolved. By default since Qt 5.7, QLibrary::PreventUnloadHint is set.
+    resolved. By default since BobUI 5.7, QLibrary::PreventUnloadHint is set.
 
     See the documentation of QLibrary::loadHints for a complete
     description of how this property works.
@@ -366,7 +366,7 @@ QLibrary::LoadHints QPluginLoader::loadHints() const
     return d ? d->loadHints() : defaultLoadHints;
 }
 
-#endif // QT_CONFIG(library)
+#endif // BOBUI_CONFIG(library)
 
 typedef QList<QStaticPlugin> StaticPluginList;
 Q_GLOBAL_STATIC(StaticPluginList, staticPluginList)
@@ -429,17 +429,17 @@ QList<QStaticPlugin> QPluginLoader::staticPlugins()
 
 /*!
     \class QStaticPlugin
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 5.2
 
     \brief QStaticPlugin is a struct containing a reference to a
     static plugin instance together with its meta data.
 
-    \sa QPluginLoader, {How to Create Qt Plugins}
+    \sa QPluginLoader, {How to Create BobUI Plugins}
 */
 
 /*!
-    \fn QStaticPlugin::QStaticPlugin(QtPluginInstanceFunction i, QtPluginMetaDataFunction m)
+    \fn QStaticPlugin::QStaticPlugin(BobUIPluginInstanceFunction i, BobUIPluginMetaDataFunction m)
     \internal
 */
 
@@ -464,6 +464,6 @@ QJsonObject QStaticPlugin::metaData() const
     return parsed.toJson();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qpluginloader.cpp"

@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef MOCKCOMPOSITOR_XDGOUTPUTV1_H
 #define MOCKCOMPOSITOR_XDGOUTPUTV1_H
@@ -10,7 +10,7 @@
 
 namespace MockCompositor {
 
-class XdgOutputV1 : public QObject, public QtWaylandServer::zxdg_output_v1
+class XdgOutputV1 : public QObject, public BobUIWaylandServer::zxdg_output_v1
 {
 public:
     explicit XdgOutputV1(Output *output)
@@ -32,12 +32,12 @@ public:
     static int s_nextId;
 };
 
-class XdgOutputManagerV1 : public Global, public QtWaylandServer::zxdg_output_manager_v1
+class XdgOutputManagerV1 : public Global, public BobUIWaylandServer::zxdg_output_manager_v1
 {
     Q_OBJECT
 public:
     explicit XdgOutputManagerV1(CoreCompositor *compositor, int version = 3)
-        : QtWaylandServer::zxdg_output_manager_v1(compositor->m_display, version)
+        : BobUIWaylandServer::zxdg_output_manager_v1(compositor->m_display, version)
         , m_version(version)
     {}
     int m_version = 1; // TODO: remove on libwayland upgrade

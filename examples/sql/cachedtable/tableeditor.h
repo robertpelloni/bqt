@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef TABLEEDITOR_H
 #define TABLEEDITOR_H
 
 #include <QDialog>
 
-QT_FORWARD_DECLARE_CLASS(QDialogButtonBox)
-QT_FORWARD_DECLARE_CLASS(QPushButton)
-QT_FORWARD_DECLARE_CLASS(QSqlTableModel)
+BOBUI_FORWARD_DECLARE_CLASS(QDialogButtonBox)
+BOBUI_FORWARD_DECLARE_CLASS(QPushButton)
+BOBUI_FORWARD_DECLARE_CLASS(QSqlTableModel)
 
 //! [0]
 class TableEditor : public QWidget

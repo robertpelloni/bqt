@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qabstractitemmodeltester.h"
 
 #include <private/qobject_p.h>
 #include <private/qabstractitemmodel_p.h>
-#include <QtCore/qmetatype.h>
-#include <QtCore/QPointer>
-#include <QtCore/QAbstractItemModel>
-#include <QtCore/QStack>
-#include <QTest>
+#include <BobUICore/qmetatype.h>
+#include <BobUICore/QPointer>
+#include <BobUICore/QAbstractItemModel>
+#include <BobUICore/QStack>
+#include <BOBUIest>
 #include <QLoggingCategory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_STATIC_LOGGING_CATEGORY(lcModelTest, "qt.modeltest")
+Q_STATIC_LOGGING_CATEGORY(lcModelTest, "bobui.modeltest")
 
 #define MODELTESTER_VERIFY(statement) \
 do { \
@@ -68,7 +68,7 @@ public:
     void rowsAboutToBeRemoved(const QModelIndex &parent, int start, int end);
     void rowsRemoved(const QModelIndex &parent, int start, int end);
     void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
-    void headerDataChanged(Qt::Orientation orientation, int start, int end);
+    void headerDataChanged(BobUI::Orientation orientation, int start, int end);
 
 private:
     void checkChildren(const QModelIndex &parent, int currentDepth = 0);
@@ -115,7 +115,7 @@ private:
 /*!
     \class QAbstractItemModelTester
     \since 5.11
-    \inmodule QtTest
+    \inmodule BobUITest
 
     \brief The QAbstractItemModelTester class helps testing QAbstractItemModel subclasses.
 
@@ -143,7 +143,7 @@ private:
 
     \section1 Usage
 
-    Using QAbstractItemModelTester is straightforward. In a \l{Qt Test Overview}{test case}
+    Using QAbstractItemModelTester is straightforward. In a \l{BobUI Test Overview}{test case}
     it is sufficient to create an instance, passing the model that
     needs to be tested to the constructor:
 
@@ -153,7 +153,7 @@ private:
     \endcode
 
     QAbstractItemModelTester will report testing failures through the
-    Qt Test logging mechanisms.
+    BobUI Test logging mechanisms.
 
     It is also possible to use QAbstractItemModelTester outside of a test case.
     For instance, it may be useful to test an item model used by an application
@@ -164,7 +164,7 @@ private:
     be logged.
 
     QAbstractItemModelTester may also report additional debugging information
-    as logging messages under the \c qt.modeltest logging category. Such
+    as logging messages under the \c bobui.modeltest logging category. Such
     debug logging is disabled by default; refer to the
     QLoggingCategory documentation to learn how to enable it.
 
@@ -183,10 +183,10 @@ private:
     This enumeration specifies how QAbstractItemModelTester should report
     a failure when it tests a QAbstractItemModel subclass.
 
-    \value QtTest The failures will be reported as QtTest test failures.
+    \value BobUITest The failures will be reported as BobUITest test failures.
 
     \value Warning The failures will be reported as
-    warning messages in the \c{qt.modeltest} logging category.
+    warning messages in the \c{bobui.modeltest} logging category.
 
     \value Fatal A failure will cause immediate and
     abnormal program termination. The reason for the failure will be reported
@@ -197,10 +197,10 @@ private:
     Creates a model tester instance, with the given \a parent, that will test
     the model \a model.
 
-    The failure reporting mode is set to FailureReportingMode::QtTest.
+    The failure reporting mode is set to FailureReportingMode::BobUITest.
 */
 QAbstractItemModelTester::QAbstractItemModelTester(QAbstractItemModel *model, QObject *parent)
-    : QAbstractItemModelTester(model, FailureReportingMode::QtTest, parent)
+    : QAbstractItemModelTester(model, FailureReportingMode::BobUITest, parent)
 {
 }
 
@@ -295,7 +295,7 @@ QAbstractItemModelTester::QAbstractItemModelTester(QAbstractItemModel *model, Fa
     connect(model, &QAbstractItemModel::dataChanged,
             this, [d](const QModelIndex &topLeft, const QModelIndex &bottomRight) { d->dataChanged(topLeft, bottomRight); });
     connect(model, &QAbstractItemModel::headerDataChanged,
-            this, [d](Qt::Orientation orientation, int start, int end) { d->headerDataChanged(orientation, start, end); });
+            this, [d](BobUI::Orientation orientation, int start, int end) { d->headerDataChanged(orientation, start, end); });
 
     runAllTests();
 }
@@ -373,8 +373,8 @@ void QAbstractItemModelTesterPrivate::nonDestructiveBasicTest()
         model->fetchMore(QModelIndex());
         fetchingMore = false;
     }
-    Qt::ItemFlags flags = model->flags(QModelIndex());
-    MODELTESTER_VERIFY(flags == Qt::ItemIsDropEnabled || flags == 0);
+    BobUI::ItemFlags flags = model->flags(QModelIndex());
+    MODELTESTER_VERIFY(flags == BobUI::ItemIsDropEnabled || flags == 0);
     model->hasChildren(QModelIndex());
     const bool hasRow = model->hasIndex(0, 0);
     QVariant cache;
@@ -645,7 +645,7 @@ void QAbstractItemModelTesterPrivate::testDataGuiRoles(QAbstractItemModelTester 
     static const QMetaType brushType = QMetaType(QMetaType::QBrush);
     static const QMetaType fontType = QMetaType(QMetaType::QFont);
 
-    QVariant variant = model->data(model->index(0, 0), Qt::DecorationRole);
+    QVariant variant = model->data(model->index(0, 0), BobUI::DecorationRole);
     if (variant.isValid()) {
         MODELTESTER_VERIFY(variant.canConvert(pixmapType)
                            || variant.canConvert(imageType)
@@ -655,16 +655,16 @@ void QAbstractItemModelTesterPrivate::testDataGuiRoles(QAbstractItemModelTester 
     }
 
     // General Purpose roles that should return a QFont
-    variant = model->data(model->index(0, 0), Qt::FontRole);
+    variant = model->data(model->index(0, 0), BobUI::FontRole);
     if (variant.isValid())
         MODELTESTER_VERIFY(variant.canConvert(fontType));
 
     // General Purpose roles that should return a QColor or a QBrush
-    variant = model->data(model->index(0, 0), Qt::BackgroundRole);
+    variant = model->data(model->index(0, 0), BobUI::BackgroundRole);
     if (variant.isValid())
         MODELTESTER_VERIFY(variant.canConvert(colorType) || variant.canConvert(brushType));
 
-    variant = model->data(model->index(0, 0), Qt::ForegroundRole);
+    variant = model->data(model->index(0, 0), BobUI::ForegroundRole);
     if (variant.isValid())
         MODELTESTER_VERIFY(variant.canConvert(colorType) || variant.canConvert(brushType));
 }
@@ -681,41 +681,41 @@ void QAbstractItemModelTesterPrivate::data()
 
     // General Purpose roles that should return a QString
     QVariant variant;
-    variant = model->data(model->index(0, 0), Qt::DisplayRole);
+    variant = model->data(model->index(0, 0), BobUI::DisplayRole);
     if (variant.isValid())
         MODELTESTER_VERIFY(variant.canConvert<QString>());
-    variant = model->data(model->index(0, 0), Qt::ToolTipRole);
+    variant = model->data(model->index(0, 0), BobUI::ToolTipRole);
     if (variant.isValid())
         MODELTESTER_VERIFY(variant.canConvert<QString>());
-    variant = model->data(model->index(0, 0), Qt::StatusTipRole);
+    variant = model->data(model->index(0, 0), BobUI::StatusTipRole);
     if (variant.isValid())
         MODELTESTER_VERIFY(variant.canConvert<QString>());
-    variant = model->data(model->index(0, 0), Qt::WhatsThisRole);
+    variant = model->data(model->index(0, 0), BobUI::WhatsThisRole);
     if (variant.isValid())
         MODELTESTER_VERIFY(variant.canConvert<QString>());
 
     // General Purpose roles that should return a QSize
-    variant = model->data(model->index(0, 0), Qt::SizeHintRole);
+    variant = model->data(model->index(0, 0), BobUI::SizeHintRole);
     if (variant.isValid())
         MODELTESTER_VERIFY(variant.canConvert<QSize>());
 
     // Check that the alignment is one we know about
-    QVariant textAlignmentVariant = model->data(model->index(0, 0), Qt::TextAlignmentRole);
+    QVariant textAlignmentVariant = model->data(model->index(0, 0), BobUI::TextAlignmentRole);
     if (textAlignmentVariant.isValid()) {
-        Qt::Alignment alignment = QtPrivate::legacyFlagValueFromModelData<Qt::Alignment>(textAlignmentVariant);
-        MODELTESTER_COMPARE(alignment, (alignment & (Qt::AlignHorizontal_Mask | Qt::AlignVertical_Mask)));
+        BobUI::Alignment alignment = BobUIPrivate::legacyFlagValueFromModelData<BobUI::Alignment>(textAlignmentVariant);
+        MODELTESTER_COMPARE(alignment, (alignment & (BobUI::AlignHorizontal_Mask | BobUI::AlignVertical_Mask)));
     }
 
     // Check that the "check state" is one we know about.
-    QVariant checkStateVariant = model->data(model->index(0, 0), Qt::CheckStateRole);
+    QVariant checkStateVariant = model->data(model->index(0, 0), BobUI::CheckStateRole);
     if (checkStateVariant.isValid()) {
-        Qt::CheckState state = QtPrivate::legacyEnumValueFromModelData<Qt::CheckState>(checkStateVariant);
-        MODELTESTER_VERIFY(state == Qt::Unchecked
-                || state == Qt::PartiallyChecked
-                || state == Qt::Checked);
+        BobUI::CheckState state = BobUIPrivate::legacyEnumValueFromModelData<BobUI::CheckState>(checkStateVariant);
+        MODELTESTER_VERIFY(state == BobUI::Unchecked
+                || state == BobUI::PartiallyChecked
+                || state == BobUI::Checked);
     }
 
-    QVariant sizeHintVariant = model->data(model->index(0, 0), Qt::SizeHintRole);
+    QVariant sizeHintVariant = model->data(model->index(0, 0), BobUI::SizeHintRole);
     if (sizeHintVariant.isValid())
         MODELTESTER_VERIFY(sizeHintVariant.canConvert<QSize>());
 
@@ -1005,12 +1005,12 @@ void QAbstractItemModelTesterPrivate::dataChanged(const QModelIndex &topLeft, co
     MODELTESTER_VERIFY(bottomRight.column() < columnCount);
 }
 
-void QAbstractItemModelTesterPrivate::headerDataChanged(Qt::Orientation orientation, int start, int end)
+void QAbstractItemModelTesterPrivate::headerDataChanged(BobUI::Orientation orientation, int start, int end)
 {
     MODELTESTER_VERIFY(start >= 0);
     MODELTESTER_VERIFY(end >= 0);
     MODELTESTER_VERIFY(start <= end);
-    int itemCount = orientation == Qt::Vertical ? model->rowCount() : model->columnCount();
+    int itemCount = orientation == BobUI::Vertical ? model->rowCount() : model->columnCount();
     MODELTESTER_VERIFY(start < itemCount);
     MODELTESTER_VERIFY(end < itemCount);
 }
@@ -1022,8 +1022,8 @@ bool QAbstractItemModelTesterPrivate::verify(bool statement,
     static const char formatString[] = "FAIL! %s (%s) returned FALSE (%s:%d)";
 
     switch (failureReportingMode) {
-    case QAbstractItemModelTester::FailureReportingMode::QtTest:
-        return QTest::qVerify(statement, statementStr, description, file, line);
+    case QAbstractItemModelTester::FailureReportingMode::BobUITest:
+        return BOBUIest::qVerify(statement, statementStr, description, file, line);
         break;
 
     case QAbstractItemModelTester::FailureReportingMode::Warning:
@@ -1051,14 +1051,14 @@ bool QAbstractItemModelTesterPrivate::compare(const T1 &t1, const T2 &t2,
     static const char formatString[] = "FAIL! Compared values are not the same:\n   Actual (%s) %s\n   Expected (%s) %s\n   (%s:%d)";
 
     switch (failureReportingMode) {
-    case QAbstractItemModelTester::FailureReportingMode::QtTest:
-        return QTest::qCompare(t1, t2, actual, expected, file, line);
+    case QAbstractItemModelTester::FailureReportingMode::BobUITest:
+        return BOBUIest::qCompare(t1, t2, actual, expected, file, line);
         break;
 
     case QAbstractItemModelTester::FailureReportingMode::Warning:
         if (!result) {
-            auto t1string = QTest::toString(t1);
-            auto t2string = QTest::toString(t2);
+            auto t1string = BOBUIest::toString(t1);
+            auto t2string = BOBUIest::toString(t2);
             qCWarning(lcModelTest, formatString, actual, t1string ? t1string : "(nullptr)",
                                                  expected, t2string ? t2string : "(nullptr)",
                                                  file, line);
@@ -1069,8 +1069,8 @@ bool QAbstractItemModelTesterPrivate::compare(const T1 &t1, const T2 &t2,
 
     case QAbstractItemModelTester::FailureReportingMode::Fatal:
         if (!result) {
-            auto t1string = QTest::toString(t1);
-            auto t2string = QTest::toString(t2);
+            auto t1string = BOBUIest::toString(t1);
+            auto t2string = BOBUIest::toString(t2);
             qFatal(formatString, actual, t1string ? t1string : "(nullptr)",
                                  expected, t2string ? t2string : "(nullptr)",
                                  file, line);
@@ -1084,6 +1084,6 @@ bool QAbstractItemModelTesterPrivate::compare(const T1 &t1, const T2 &t2,
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qabstractitemmodeltester.cpp"

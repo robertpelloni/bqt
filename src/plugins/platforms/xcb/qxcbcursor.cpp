@@ -1,6 +1,6 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qxcbcursor.h"
 #include "qxcbconnection.h"
@@ -8,12 +8,12 @@
 #include "qxcbimage.h"
 #include "qxcbxsettings.h"
 
-#include <QtGui/QWindow>
-#include <QtGui/QBitmap>
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/QWindow>
+#include <BobUIGui/QBitmap>
+#include <BobUIGui/private/qguiapplication_p.h>
 #include <qpa/qplatformtheme.h>
 
-#if QT_CONFIG(xcb_xlib)
+#if BOBUI_CONFIG(xcb_xlib)
 #include <X11/cursorfont.h>
 #else
 #include "qxcbcursorfont.h"
@@ -22,14 +22,14 @@
 #include <xcb/xfixes.h>
 #include <xcb/xcb_image.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static xcb_font_t cursorFont = 0;
 static int cursorCount = 0;
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 
 static uint8_t cur_blank_bits[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -208,7 +208,7 @@ static const uint8_t * const cursor_bits20[] = {
     forbidden_bits, forbiddenm_bits
 };
 
-// ### FIXME This mapping is incomplete - QTBUG-71423
+// ### FIXME This mapping is incomplete - BOBUIBUG-71423
 static const std::vector<const char *> cursorNames[] = {
     { "left_ptr", "default", "top_left_arrow", "left_arrow" },
     { "up_arrow" },
@@ -237,7 +237,7 @@ static const std::vector<const char *> cursorNames[] = {
 QXcbCursorCacheKey::QXcbCursorCacheKey(const QCursor &c)
     : shape(c.shape()), bitmapCacheKey(0), maskCacheKey(0)
 {
-    if (shape == Qt::BitmapCursor) {
+    if (shape == BobUI::BitmapCursor) {
         const qint64 pixmapCacheKey = c.pixmap().cacheKey();
         if (pixmapCacheKey) {
             bitmapCacheKey = pixmapCacheKey;
@@ -252,12 +252,12 @@ QXcbCursorCacheKey::QXcbCursorCacheKey(const QCursor &c)
     hotspotCacheKey.y = c.hotSpot().y();
 }
 
-#endif // !QT_NO_CURSOR
+#endif // !BOBUI_NO_CURSOR
 
 QXcbCursor::QXcbCursor(QXcbConnection *conn, QXcbScreen *screen)
     : QXcbObject(conn), m_screen(screen), m_cursorContext(nullptr), m_callbackForPropertyRegistered(false)
 {
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
     // see NUM_BITMAPS in libXcursor/src/xcursorint.h
     m_bitmapCache.setMaxCost(8);
 #endif
@@ -283,7 +283,7 @@ QXcbCursor::~QXcbCursor()
     if (!--cursorCount)
         xcb_close_font(conn, cursorFont);
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     for (xcb_cursor_t cursor : std::as_const(m_cursorHash))
         xcb_free_cursor(conn, cursor);
 #endif
@@ -313,7 +313,7 @@ void QXcbCursor::updateContext()
     }
 }
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 void QXcbCursor::changeCursor(QCursor *cursor, QWindow *window)
 {
     if (!window || !window->handle())
@@ -322,9 +322,9 @@ void QXcbCursor::changeCursor(QCursor *cursor, QWindow *window)
     xcb_cursor_t c = XCB_CURSOR_NONE;
     if (cursor) {
         const QXcbCursorCacheKey key(*cursor);
-        const Qt::CursorShape shape = cursor->shape();
+        const BobUI::CursorShape shape = cursor->shape();
 
-        if (shape == Qt::BitmapCursor) {
+        if (shape == BobUI::BitmapCursor) {
             auto *bitmap = m_bitmapCache.object(key);
             if (bitmap) {
                 c = bitmap->cursor;
@@ -352,48 +352,48 @@ static int cursorIdForShape(int cshape)
 {
     int cursorId = 0;
     switch (cshape) {
-    case Qt::ArrowCursor:
+    case BobUI::ArrowCursor:
         cursorId = XC_left_ptr;
         break;
-    case Qt::UpArrowCursor:
+    case BobUI::UpArrowCursor:
         cursorId = XC_center_ptr;
         break;
-    case Qt::CrossCursor:
+    case BobUI::CrossCursor:
         cursorId = XC_crosshair;
         break;
-    case Qt::WaitCursor:
+    case BobUI::WaitCursor:
         cursorId = XC_watch;
         break;
-    case Qt::IBeamCursor:
+    case BobUI::IBeamCursor:
         cursorId = XC_xterm;
         break;
-    case Qt::SizeAllCursor:
+    case BobUI::SizeAllCursor:
         cursorId = XC_fleur;
         break;
-    case Qt::PointingHandCursor:
+    case BobUI::PointingHandCursor:
         cursorId = XC_hand2;
         break;
-    case Qt::SizeBDiagCursor:
+    case BobUI::SizeBDiagCursor:
         cursorId = XC_top_right_corner;
         break;
-    case Qt::SizeFDiagCursor:
+    case BobUI::SizeFDiagCursor:
         cursorId = XC_bottom_right_corner;
         break;
-    case Qt::SizeVerCursor:
-    case Qt::SplitVCursor:
+    case BobUI::SizeVerCursor:
+    case BobUI::SplitVCursor:
         cursorId = XC_sb_v_double_arrow;
         break;
-    case Qt::SizeHorCursor:
-    case Qt::SplitHCursor:
+    case BobUI::SizeHorCursor:
+    case BobUI::SplitHCursor:
         cursorId = XC_sb_h_double_arrow;
         break;
-    case Qt::WhatsThisCursor:
+    case BobUI::WhatsThisCursor:
         cursorId = XC_question_arrow;
         break;
-    case Qt::ForbiddenCursor:
+    case BobUI::ForbiddenCursor:
         cursorId = XC_circle;
         break;
-    case Qt::BusyCursor:
+    case BobUI::BusyCursor:
         cursorId = XC_watch;
         break;
     default:
@@ -407,15 +407,15 @@ xcb_cursor_t QXcbCursor::createNonStandardCursor(int cshape)
     xcb_cursor_t cursor = 0;
     xcb_connection_t *conn = xcb_connection();
 
-    if (cshape == Qt::BlankCursor) {
+    if (cshape == BobUI::BlankCursor) {
         xcb_pixmap_t cp = xcb_create_pixmap_from_bitmap_data(conn, m_screen->root(), cur_blank_bits, 16, 16,
                                                              1, 0, 0, nullptr);
         xcb_pixmap_t mp = xcb_create_pixmap_from_bitmap_data(conn, m_screen->root(), cur_blank_bits, 16, 16,
                                                              1, 0, 0, nullptr);
         cursor = xcb_generate_id(conn);
         xcb_create_cursor(conn, cursor, cp, mp, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF, 8, 8);
-    } else if (cshape >= Qt::SizeVerCursor && cshape < Qt::SizeAllCursor) {
-        int i = (cshape - Qt::SizeVerCursor) * 2;
+    } else if (cshape >= BobUI::SizeVerCursor && cshape < BobUI::SizeAllCursor) {
+        int i = (cshape - BobUI::SizeVerCursor) * 2;
         xcb_pixmap_t pm = xcb_create_pixmap_from_bitmap_data(conn, m_screen->root(),
                                                              const_cast<uint8_t*>(cursor_bits16[i]),
                                                              16, 16, 1, 0, 0, nullptr);
@@ -424,21 +424,21 @@ xcb_cursor_t QXcbCursor::createNonStandardCursor(int cshape)
                                                               16, 16, 1, 0, 0, nullptr);
         cursor = xcb_generate_id(conn);
         xcb_create_cursor(conn, cursor, pm, pmm, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF, 8, 8);
-    } else if ((cshape >= Qt::SplitVCursor && cshape <= Qt::SplitHCursor)
-               || cshape == Qt::WhatsThisCursor || cshape == Qt::BusyCursor) {
-        int i = (cshape - Qt::SplitVCursor) * 2;
+    } else if ((cshape >= BobUI::SplitVCursor && cshape <= BobUI::SplitHCursor)
+               || cshape == BobUI::WhatsThisCursor || cshape == BobUI::BusyCursor) {
+        int i = (cshape - BobUI::SplitVCursor) * 2;
         xcb_pixmap_t pm = xcb_create_pixmap_from_bitmap_data(conn, m_screen->root(),
                                                              const_cast<uint8_t*>(cursor_bits32[i]),
                                                              32, 32, 1, 0, 0, nullptr);
         xcb_pixmap_t pmm = xcb_create_pixmap_from_bitmap_data(conn, m_screen->root(),
                                                               const_cast<uint8_t*>(cursor_bits32[i + 1]),
                                                               32, 32, 1, 0, 0, nullptr);
-        int hs = (cshape == Qt::PointingHandCursor || cshape == Qt::WhatsThisCursor
-                  || cshape == Qt::BusyCursor) ? 0 : 16;
+        int hs = (cshape == BobUI::PointingHandCursor || cshape == BobUI::WhatsThisCursor
+                  || cshape == BobUI::BusyCursor) ? 0 : 16;
         cursor = xcb_generate_id(conn);
         xcb_create_cursor(conn, cursor, pm, pmm, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF, hs, hs);
-    } else if (cshape == Qt::ForbiddenCursor) {
-        int i = (cshape - Qt::ForbiddenCursor) * 2;
+    } else if (cshape == BobUI::ForbiddenCursor) {
+        int i = (cshape - BobUI::ForbiddenCursor) * 2;
         xcb_pixmap_t pm = xcb_create_pixmap_from_bitmap_data(conn, m_screen->root(),
                                                              const_cast<uint8_t*>(cursor_bits20[i]),
                                                              20, 20, 1, 0, 0, nullptr);
@@ -447,8 +447,8 @@ xcb_cursor_t QXcbCursor::createNonStandardCursor(int cshape)
                                                               20, 20, 1, 0, 0, nullptr);
         cursor = xcb_generate_id(conn);
         xcb_create_cursor(conn, cursor, pm, pmm, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF, 10, 10);
-    } else if (cshape == Qt::OpenHandCursor || cshape == Qt::ClosedHandCursor) {
-        bool open = cshape == Qt::OpenHandCursor;
+    } else if (cshape == BobUI::OpenHandCursor || cshape == BobUI::ClosedHandCursor) {
+        bool open = cshape == BobUI::OpenHandCursor;
         xcb_pixmap_t pm = xcb_create_pixmap_from_bitmap_data(conn, m_screen->root(),
                                                              const_cast<uint8_t*>(open ? openhand_bits : closedhand_bits),
                                                              16, 16, 1, 0, 0, nullptr);
@@ -457,12 +457,12 @@ xcb_cursor_t QXcbCursor::createNonStandardCursor(int cshape)
                                                              16, 16, 1, 0, 0, nullptr);
         cursor = xcb_generate_id(conn);
         xcb_create_cursor(conn, cursor, pm, pmm, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF, 8, 8);
-    } else if (cshape == Qt::DragCopyCursor || cshape == Qt::DragMoveCursor
-               || cshape == Qt::DragLinkCursor) {
-        QImage image = QGuiApplicationPrivate::instance()->getPixmapCursor(static_cast<Qt::CursorShape>(cshape)).toImage();
+    } else if (cshape == BobUI::DragCopyCursor || cshape == BobUI::DragMoveCursor
+               || cshape == BobUI::DragLinkCursor) {
+        QImage image = QGuiApplicationPrivate::instance()->getPixmapCursor(static_cast<BobUI::CursorShape>(cshape)).toImage();
         if (!image.isNull()) {
-            xcb_pixmap_t pm = qt_xcb_XPixmapFromBitmap(m_screen, image);
-            xcb_pixmap_t pmm = qt_xcb_XPixmapFromBitmap(m_screen, image.createAlphaMask());
+            xcb_pixmap_t pm = bobui_xcb_XPixmapFromBitmap(m_screen, image);
+            xcb_pixmap_t pmm = bobui_xcb_XPixmapFromBitmap(m_screen, image.createAlphaMask());
             cursor = xcb_generate_id(conn);
             xcb_create_cursor(conn, cursor, pm, pmm, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF, 8, 8);
             xcb_free_pixmap(conn, pm);
@@ -499,7 +499,7 @@ xcb_cursor_t QXcbCursor::createFontCursor(int cshape)
     }
 
     // Try xcb-cursor first
-    if (cshape >= 0 && cshape <= Qt::LastCursor) {
+    if (cshape >= 0 && cshape <= BobUI::LastCursor) {
         for (const char *cursorName : cursorNames[cshape]) {
             cursor = xcb_cursor_load_cursor(m_cursorContext, cursorName);
             if (cursor != XCB_NONE)
@@ -518,7 +518,7 @@ xcb_cursor_t QXcbCursor::createFontCursor(int cshape)
                                 0xFFFF, 0xFFFF, 0xFFFF, 0, 0, 0);
     }
 
-    if (cursor && cshape >= 0 && cshape < Qt::LastCursor && connection()->hasXFixes()) {
+    if (cursor && cshape >= 0 && cshape < BobUI::LastCursor && connection()->hasXFixes()) {
         const char *name = cursorNames[cshape].front();
         xcb_xfixes_set_cursor_name(conn, cursor, strlen(name), name);
     }
@@ -532,13 +532,13 @@ xcb_cursor_t QXcbCursor::createBitmapCursor(QCursor *cursor)
     xcb_cursor_t c = XCB_NONE;
     if (cursor->pixmap().depth() > 1) {
         if (connection()->hasXRender(0, 5))
-            c = qt_xcb_createCursorXRender(m_screen, cursor->pixmap().toImage(), spot);
+            c = bobui_xcb_createCursorXRender(m_screen, cursor->pixmap().toImage(), spot);
         else
             qCWarning(lcQpaXcb, "xrender >= 0.5 required to create pixmap cursors");
     } else {
         xcb_connection_t *conn = xcb_connection();
-        xcb_pixmap_t cp = qt_xcb_XPixmapFromBitmap(m_screen, cursor->bitmap().toImage());
-        xcb_pixmap_t mp = qt_xcb_XPixmapFromBitmap(m_screen, cursor->mask().toImage());
+        xcb_pixmap_t cp = bobui_xcb_XPixmapFromBitmap(m_screen, cursor->bitmap().toImage());
+        xcb_pixmap_t mp = bobui_xcb_XPixmapFromBitmap(m_screen, cursor->mask().toImage());
         c = xcb_generate_id(conn);
         xcb_create_cursor(conn, c, cp, mp, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF,
                           spot.x(), spot.y());
@@ -597,4 +597,4 @@ void QXcbCursor::setPos(const QPoint &pos)
     xcb_flush(xcb_connection());
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

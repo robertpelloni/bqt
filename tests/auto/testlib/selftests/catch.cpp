@@ -1,18 +1,18 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #define CATCH_CONFIG_RUNNER
 #define CATCH_CLARA_CONFIG_CONSOLE_WIDTH 1000
 
-#if defined(QT_NO_EXCEPTIONS)
+#if defined(BOBUI_NO_EXCEPTIONS)
 #define CATCH_CONFIG_DISABLE_EXCEPTIONS
 #endif
 
 #include "catch_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QTestPrivate {
+namespace BOBUIestPrivate {
 
 int catchMain(int argc, char **argv)
 {
@@ -24,7 +24,7 @@ int catchMain(int argc, char **argv)
     return session.run();
 }
 
-} // namespace QTestPrivate
+} // namespace BOBUIestPrivate
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 

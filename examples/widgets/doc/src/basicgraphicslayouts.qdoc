@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example graphicsview/basicgraphicslayouts
@@ -60,7 +60,7 @@
     and \l{QGraphicsWidget::}{minimumHeight()} are set to be equal so that
     they do not expand vertically. As a result, these items will not
     fit vertically in their cells. So, we specify that they should be
-    vertically aligned in the center of the cell using Qt::AlignVCenter.
+    vertically aligned in the center of the cell using BobUI::AlignVCenter.
 
     Finally, \c grid itself is added to \c windowLayout. Unlike
     QGridLayout::addItem(), QGraphicsGridLayout::addItem() requires a row

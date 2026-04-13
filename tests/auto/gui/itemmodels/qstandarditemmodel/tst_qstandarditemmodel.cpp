@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <QStandardItemModel>
-#include <QTreeView>
+#include <BOBUIreeView>
 #include <QMap>
 #include <QSignalSpy>
 #include <QAbstractItemModelTester>
 
 #include <private/qabstractitemmodel_p.h>
 #include <private/qpropertytesthelper_p.h>
-#include <private/qtreeview_p.h>
+#include <private/bobuireeview_p.h>
 
 #include <algorithm>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class tst_QStandardItemModel : public QObject
 {
@@ -108,7 +108,7 @@ private slots:
     void deleteChild();
 
     void rootItemFlags();
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     void treeDragAndDrop();
 #endif
     void removeRowsAndColumns();
@@ -118,7 +118,7 @@ private slots:
     void getMimeDataWithInvalidModelIndex();
     void supportedDragDropActions();
 
-    void taskQTBUG_45114_setItemData();
+    void taskBOBUIBUG_45114_setItemData();
     void setItemPersistentIndex();
     void signalsOnTakeItem();
     void takeChild();
@@ -140,12 +140,12 @@ private:
 static constexpr int defaultSize = 3;
 
 Q_DECLARE_METATYPE(QStandardItem*)
-Q_DECLARE_METATYPE(Qt::Orientation)
+Q_DECLARE_METATYPE(BobUI::Orientation)
 
 tst_QStandardItemModel::tst_QStandardItemModel()
 {
     qRegisterMetaType<QStandardItem*>("QStandardItem*");
-    qRegisterMetaType<Qt::Orientation>("Qt::Orientation");
+    qRegisterMetaType<BobUI::Orientation>("BobUI::Orientation");
     qRegisterMetaType<QAbstractItemModel::LayoutChangeHint>("QAbstractItemModel::LayoutChangeHint");
     qRegisterMetaType<QList<QPersistentModelIndex>>("QList<QPersistentModelIndex>");
 }
@@ -199,14 +199,14 @@ void tst_QStandardItemModel::cleanup()
 
 void tst_QStandardItemModel::insertRow_data()
 {
-    QTest::addColumn<int>("insertRow");
-    QTest::addColumn<int>("expectedRow");
+    BOBUIest::addColumn<int>("insertRow");
+    BOBUIest::addColumn<int>("expectedRow");
 
-    QTest::newRow("Insert less then 0") << -1 << 0;
-    QTest::newRow("Insert at 0")  << 0 << 0;
-    QTest::newRow("Insert beyond count")  << defaultSize+1 << defaultSize;
-    QTest::newRow("Insert at count") << defaultSize << defaultSize;
-    QTest::newRow("Insert in the middle") << 1 << 1;
+    BOBUIest::newRow("Insert less then 0") << -1 << 0;
+    BOBUIest::newRow("Insert at 0")  << 0 << 0;
+    BOBUIest::newRow("Insert beyond count")  << defaultSize+1 << defaultSize;
+    BOBUIest::newRow("Insert at count") << defaultSize << defaultSize;
+    BOBUIest::newRow("Insert in the middle") << 1 << 1;
 }
 
 void tst_QStandardItemModel::insertRow()
@@ -218,7 +218,7 @@ void tst_QStandardItemModel::insertRow()
     // default all initial items to DisplayRole: "initalitem"
     for (int  r = 0; r < m_model->rowCount(); ++r) {
         for (int c = 0; c < m_model->columnCount(); ++c) {
-            m_model->setData(m_model->index(r, c), "initialitem", Qt::DisplayRole);
+            m_model->setData(m_model->index(r, c), "initialitem", BobUI::DisplayRole);
         }
     }
 
@@ -235,7 +235,7 @@ void tst_QStandardItemModel::insertRow()
         QCOMPARE(rcLast[RowsInserted], expectedRow);
 
         //check that the inserted item has different DisplayRole than initial items
-        QVERIFY(m_model->data(m_model->index(expectedRow, 0), Qt::DisplayRole).toString() != QLatin1String("initialitem"));
+        QVERIFY(m_model->data(m_model->index(expectedRow, 0), BobUI::DisplayRole).toString() != QLatin1String("initialitem"));
     } else {
         // We inserted something outside the bounds, do nothing
         QCOMPARE(m_model->rowCount(), defaultSize);
@@ -253,7 +253,7 @@ void tst_QStandardItemModel::insertRows()
 
     // insert custom header label
     QString headerLabel = "custom";
-    m_model->setHeaderData(0, Qt::Vertical, headerLabel);
+    m_model->setHeaderData(0, BobUI::Vertical, headerLabel);
 
     // insert one row
     m_model->insertRows(0, 1);
@@ -261,14 +261,14 @@ void tst_QStandardItemModel::insertRows()
     rowCount = m_model->rowCount();
 
     // check header data has moved
-    QCOMPARE(m_model->headerData(1, Qt::Vertical).toString(), headerLabel);
+    QCOMPARE(m_model->headerData(1, BobUI::Vertical).toString(), headerLabel);
 
     // insert two rows
     m_model->insertRows(0, 2);
     QCOMPARE(m_model->rowCount(), rowCount + 2);
 
     // check header data has moved
-    QCOMPARE(m_model->headerData(3, Qt::Vertical).toString(), headerLabel);
+    QCOMPARE(m_model->headerData(3, BobUI::Vertical).toString(), headerLabel);
 
     // do not assert on empty list
     QStandardItem *si = m_model->invisibleRootItem();
@@ -349,14 +349,14 @@ void tst_QStandardItemModel::insertRowInHierarcy()
 
 void tst_QStandardItemModel::insertColumn_data()
 {
-    QTest::addColumn<int>("insertColumn");
-    QTest::addColumn<int>("expectedColumn");
+    BOBUIest::addColumn<int>("insertColumn");
+    BOBUIest::addColumn<int>("expectedColumn");
 
-    QTest::newRow("Insert less then 0") << -1 << 0;
-    QTest::newRow("Insert at 0")  << 0 << 0;
-    QTest::newRow("Insert beyond count")  << defaultSize+1 << defaultSize;
-    QTest::newRow("Insert at count") << defaultSize << defaultSize;
-    QTest::newRow("Insert in the middle") << 1 << 1;
+    BOBUIest::newRow("Insert less then 0") << -1 << 0;
+    BOBUIest::newRow("Insert at 0")  << 0 << 0;
+    BOBUIest::newRow("Insert beyond count")  << defaultSize+1 << defaultSize;
+    BOBUIest::newRow("Insert at count") << defaultSize << defaultSize;
+    BOBUIest::newRow("Insert in the middle") << 1 << 1;
 }
 
 void tst_QStandardItemModel::insertColumn()
@@ -367,7 +367,7 @@ void tst_QStandardItemModel::insertColumn()
     // default all initial items to DisplayRole: "initalitem"
     for (int r = 0; r < m_model->rowCount(); ++r) {
         for (int c = 0; c < m_model->columnCount(); ++c) {
-            m_model->setData(m_model->index(r, c), "initialitem", Qt::DisplayRole);
+            m_model->setData(m_model->index(r, c), "initialitem", BobUI::DisplayRole);
         }
     }
 
@@ -383,7 +383,7 @@ void tst_QStandardItemModel::insertColumn()
         QCOMPARE(rcLast[ColumnsInserted], expectedColumn);
 
         //check that the inserted item has different DisplayRole than initial items
-        QVERIFY(m_model->data(m_model->index(0, expectedColumn), Qt::DisplayRole).toString() != QLatin1String("initialitem"));
+        QVERIFY(m_model->data(m_model->index(0, expectedColumn), BobUI::DisplayRole).toString() != QLatin1String("initialitem"));
     } else {
         // We inserted something outside the bounds, do nothing
         QCOMPARE(m_model->columnCount(), defaultSize);
@@ -402,7 +402,7 @@ void tst_QStandardItemModel::insertColumns()
 
     // insert custom header label
     QString headerLabel = "custom";
-    m_model->setHeaderData(0, Qt::Horizontal, headerLabel);
+    m_model->setHeaderData(0, BobUI::Horizontal, headerLabel);
 
     // insert one column
     m_model->insertColumns(0, 1);
@@ -410,14 +410,14 @@ void tst_QStandardItemModel::insertColumns()
     columnCount = m_model->columnCount();
 
     // check header data has moved
-    QCOMPARE(m_model->headerData(1, Qt::Horizontal).toString(), headerLabel);
+    QCOMPARE(m_model->headerData(1, BobUI::Horizontal).toString(), headerLabel);
 
     // insert two columns
     m_model->insertColumns(0, 2);
     QCOMPARE(m_model->columnCount(), columnCount + 2);
 
     // check header data has moved
-    QCOMPARE(m_model->headerData(3, Qt::Horizontal).toString(), headerLabel);
+    QCOMPARE(m_model->headerData(3, BobUI::Horizontal).toString(), headerLabel);
 
     // do not assert on empty list
     QStandardItem *si = m_model->invisibleRootItem();
@@ -432,7 +432,7 @@ void tst_QStandardItemModel::removeRows()
 
     // insert custom header label
     QString headerLabel = "custom";
-    m_model->setHeaderData(rowCount - 1, Qt::Vertical, headerLabel);
+    m_model->setHeaderData(rowCount - 1, BobUI::Vertical, headerLabel);
 
     // remove one row
     m_model->removeRows(0, 1);
@@ -440,7 +440,7 @@ void tst_QStandardItemModel::removeRows()
     rowCount = m_model->rowCount();
 
     // check header data has moved
-    QCOMPARE(m_model->headerData(rowCount - 1, Qt::Vertical).toString(), headerLabel);
+    QCOMPARE(m_model->headerData(rowCount - 1, BobUI::Vertical).toString(), headerLabel);
 
     // remove two rows
     m_model->removeRows(0, 2);
@@ -454,7 +454,7 @@ void tst_QStandardItemModel::removeColumns()
 
     // insert custom header label
     QString headerLabel = "custom";
-    m_model->setHeaderData(columnCount - 1, Qt::Horizontal, headerLabel);
+    m_model->setHeaderData(columnCount - 1, BobUI::Horizontal, headerLabel);
 
     // remove one column
     m_model->removeColumns(0, 1);
@@ -462,7 +462,7 @@ void tst_QStandardItemModel::removeColumns()
     columnCount = m_model->columnCount();
 
     // check header data has moved
-    QCOMPARE(m_model->headerData(columnCount - 1, Qt::Horizontal).toString(), headerLabel);
+    QCOMPARE(m_model->headerData(columnCount - 1, BobUI::Horizontal).toString(), headerLabel);
 
     // remove two columns
     m_model->removeColumns(0, 2);
@@ -476,7 +476,7 @@ void tst_QStandardItemModel::setHeaderData()
         bool vertical = (x == 0);
         int count = vertical ? m_model->rowCount() : m_model->columnCount();
         QCOMPARE(count, defaultSize);
-        Qt::Orientation orient = vertical ? Qt::Vertical : Qt::Horizontal;
+        BobUI::Orientation orient = vertical ? BobUI::Vertical : BobUI::Horizontal;
 
         // check default values are ok
         for (int i = 0; i < count; ++i)
@@ -493,7 +493,7 @@ void tst_QStandardItemModel::setHeaderData()
             QCOMPARE(headerDataChangedSpy.size(), 1);
             QCOMPARE(dataChangedSpy.size(), 0);
             QVariantList args = headerDataChangedSpy.takeFirst();
-            QCOMPARE(qvariant_cast<Qt::Orientation>(args.at(0)), orient);
+            QCOMPARE(qvariant_cast<BobUI::Orientation>(args.at(0)), orient);
             QCOMPARE(args.at(1).toInt(), i);
             QCOMPARE(args.at(2).toInt(), i);
             QCOMPARE(m_model->headerData(i, orient).toString(), customString);
@@ -742,27 +742,27 @@ void tst_QStandardItemModel::data()
 {
     currentRoles.clear();
     // bad args
-    m_model->setData(QModelIndex(), "bla", Qt::DisplayRole);
+    m_model->setData(QModelIndex(), "bla", BobUI::DisplayRole);
     QVERIFY(currentRoles.isEmpty());
 
     QIcon icon;
     for (int r = 0; r < m_model->rowCount(); ++r) {
         for (int c = 0; c < m_model->columnCount(); ++c) {
-            m_model->setData(m_model->index(r,c), "initialitem", Qt::DisplayRole);
-            QCOMPARE(currentRoles, QList<int>({ Qt::DisplayRole, Qt::EditRole }));
-            m_model->setData(m_model->index(r,c), "tooltip", Qt::ToolTipRole);
-            QCOMPARE(currentRoles, QList<int> { Qt::ToolTipRole });
-            m_model->setData(m_model->index(r,c), icon, Qt::DecorationRole);
-            QCOMPARE(currentRoles, QList<int> { Qt::DecorationRole });
+            m_model->setData(m_model->index(r,c), "initialitem", BobUI::DisplayRole);
+            QCOMPARE(currentRoles, QList<int>({ BobUI::DisplayRole, BobUI::EditRole }));
+            m_model->setData(m_model->index(r,c), "tooltip", BobUI::ToolTipRole);
+            QCOMPARE(currentRoles, QList<int> { BobUI::ToolTipRole });
+            m_model->setData(m_model->index(r,c), icon, BobUI::DecorationRole);
+            QCOMPARE(currentRoles, QList<int> { BobUI::DecorationRole });
         }
     }
 
-    QCOMPARE(m_model->data(m_model->index(0, 0), Qt::DisplayRole).toString(), QLatin1String("initialitem"));
-    QCOMPARE(m_model->data(m_model->index(0, 0), Qt::ToolTipRole).toString(), QLatin1String("tooltip"));
+    QCOMPARE(m_model->data(m_model->index(0, 0), BobUI::DisplayRole).toString(), QLatin1String("initialitem"));
+    QCOMPARE(m_model->data(m_model->index(0, 0), BobUI::ToolTipRole).toString(), QLatin1String("tooltip"));
     const QMap<int, QVariant> itmData = m_model->itemData(m_model->index(0, 0));
-    QCOMPARE(itmData.value(Qt::DisplayRole), QLatin1String("initialitem"));
-    QCOMPARE(itmData.value(Qt::ToolTipRole), QLatin1String("tooltip"));
-    QVERIFY(!itmData.contains(Qt::StandardItemFlagsRole));
+    QCOMPARE(itmData.value(BobUI::DisplayRole), QLatin1String("initialitem"));
+    QCOMPARE(itmData.value(BobUI::ToolTipRole), QLatin1String("tooltip"));
+    QVERIFY(!itmData.contains(BobUI::StandardItemFlagsRole));
     QVERIFY(m_model->itemData(QModelIndex()).isEmpty());
 }
 
@@ -773,15 +773,15 @@ void tst_QStandardItemModel::clearItemData()
     QVERIFY(currentRoles.isEmpty());
     const QModelIndex idx = m_model->index(0, 0);
     const QMap<int, QVariant> oldData = m_model->itemData(idx);
-    m_model->setData(idx, QLatin1String("initialitem"), Qt::DisplayRole);
-    m_model->setData(idx, QLatin1String("tooltip"), Qt::ToolTipRole);
-    m_model->setData(idx, 5, Qt::UserRole);
+    m_model->setData(idx, QLatin1String("initialitem"), BobUI::DisplayRole);
+    m_model->setData(idx, QLatin1String("tooltip"), BobUI::ToolTipRole);
+    m_model->setData(idx, 5, BobUI::UserRole);
     currentRoles.clear();
     QVERIFY(m_model->clearItemData(idx));
-    QCOMPARE(idx.data(Qt::UserRole), QVariant());
-    QCOMPARE(idx.data(Qt::ToolTipRole), QVariant());
-    QCOMPARE(idx.data(Qt::DisplayRole), QVariant());
-    QCOMPARE(idx.data(Qt::EditRole), QVariant());
+    QCOMPARE(idx.data(BobUI::UserRole), QVariant());
+    QCOMPARE(idx.data(BobUI::ToolTipRole), QVariant());
+    QCOMPARE(idx.data(BobUI::DisplayRole), QVariant());
+    QCOMPARE(idx.data(BobUI::EditRole), QVariant());
     QVERIFY(currentRoles.isEmpty());
     m_model->setItemData(idx, oldData);
     currentRoles.clear();
@@ -814,9 +814,9 @@ void tst_QStandardItemModel::clear()
 
 void tst_QStandardItemModel::sort_data()
 {
-    QTest::addColumn<Qt::SortOrder>("sortOrder");
-    QTest::addColumn<QStringList>("initial");
-    QTest::addColumn<QStringList>("expected");
+    BOBUIest::addColumn<BobUI::SortOrder>("sortOrder");
+    BOBUIest::addColumn<QStringList>("initial");
+    BOBUIest::addColumn<QStringList>("expected");
 
     const QStringList unsorted(
         {"delta", "yankee", "bravo", "lima", "charlie", "juliet",
@@ -827,22 +827,22 @@ void tst_QStandardItemModel::sort_data()
     QStringList sorted = unsorted;
 
     std::sort(sorted.begin(), sorted.end());
-    QTest::newRow("flat ascending") <<  Qt::AscendingOrder
+    BOBUIest::newRow("flat ascending") <<  BobUI::AscendingOrder
                                  << unsorted
                                  << sorted;
     std::reverse(sorted.begin(), sorted.end());
-    QTest::newRow("flat descending") << Qt::DescendingOrder
+    BOBUIest::newRow("flat descending") << BobUI::DescendingOrder
                                   << unsorted
                                   << sorted;
     QStringList list;
     for (int i = 1000; i < 2000; ++i)
         list.append(QStringLiteral("Number: ") + QString::number(i));
-    QTest::newRow("large set ascending") <<  Qt::AscendingOrder << list << list;
+    BOBUIest::newRow("large set ascending") <<  BobUI::AscendingOrder << list << list;
 }
 
 void tst_QStandardItemModel::sort()
 {
-    QFETCH(Qt::SortOrder, sortOrder);
+    QFETCH(BobUI::SortOrder, sortOrder);
     QFETCH(QStringList, initial);
     QFETCH(QStringList, expected);
     // prepare model
@@ -853,7 +853,7 @@ void tst_QStandardItemModel::sort()
     QCOMPARE(model.columnCount(QModelIndex()), 1);
     for (int row = 0; row < model.rowCount(QModelIndex()); ++row) {
         QModelIndex index = model.index(row, 0, QModelIndex());
-        model.setData(index, initial.at(row), Qt::DisplayRole);
+        model.setData(index, initial.at(row), BobUI::DisplayRole);
     }
 
     QSignalSpy layoutAboutToBeChangedSpy(
@@ -870,31 +870,31 @@ void tst_QStandardItemModel::sort()
     // make sure the model is sorted
     for (int row = 0; row < model.rowCount(QModelIndex()); ++row) {
         QModelIndex index = model.index(row, 0, QModelIndex());
-        QCOMPARE(model.data(index, Qt::DisplayRole).toString(), expected.at(row));
+        QCOMPARE(model.data(index, BobUI::DisplayRole).toString(), expected.at(row));
     }
 }
 
 void tst_QStandardItemModel::sortRole_data()
 {
-    QTest::addColumn<QStringList>("initialText");
-    QTest::addColumn<QVariantList>("initialData");
-    QTest::addColumn<Qt::ItemDataRole>("sortRole");
-    QTest::addColumn<Qt::SortOrder>("sortOrder");
-    QTest::addColumn<QStringList>("expectedText");
-    QTest::addColumn<QVariantList>("expectedData");
+    BOBUIest::addColumn<QStringList>("initialText");
+    BOBUIest::addColumn<QVariantList>("initialData");
+    BOBUIest::addColumn<BobUI::ItemDataRole>("sortRole");
+    BOBUIest::addColumn<BobUI::SortOrder>("sortOrder");
+    BOBUIest::addColumn<QStringList>("expectedText");
+    BOBUIest::addColumn<QVariantList>("expectedData");
 
-    QTest::newRow("sort ascending with Qt::DisplayRole")
+    BOBUIest::newRow("sort ascending with BobUI::DisplayRole")
         << (QStringList() << "b" << "a" << "c")
         << (QVariantList() << 2 << 3 << 1)
-        << Qt::DisplayRole
-        << Qt::AscendingOrder
+        << BobUI::DisplayRole
+        << BobUI::AscendingOrder
         << (QStringList() << "a" << "b" << "c")
         << (QVariantList() << 3 << 2 << 1);
-    QTest::newRow("sort ascending with Qt::UserRole")
+    BOBUIest::newRow("sort ascending with BobUI::UserRole")
         << (QStringList() << "a" << "b" << "c")
         << (QVariantList() << 3 << 2 << 1)
-        << Qt::UserRole
-        << Qt::AscendingOrder
+        << BobUI::UserRole
+        << BobUI::AscendingOrder
         << (QStringList() << "c" << "b" << "a")
         << (QVariantList() << 1 << 2 << 3);
 }
@@ -903,8 +903,8 @@ void tst_QStandardItemModel::sortRole()
 {
     QFETCH(QStringList, initialText);
     QFETCH(QVariantList, initialData);
-    QFETCH(Qt::ItemDataRole, sortRole);
-    QFETCH(Qt::SortOrder, sortOrder);
+    QFETCH(BobUI::ItemDataRole, sortRole);
+    QFETCH(BobUI::SortOrder, sortOrder);
     QFETCH(QStringList, expectedText);
     QFETCH(QVariantList, expectedData);
 
@@ -912,7 +912,7 @@ void tst_QStandardItemModel::sortRole()
     for (int i = 0; i < initialText.size(); ++i) {
         QStandardItem *item = new QStandardItem;
         item->setText(initialText.at(i));
-        item->setData(initialData.at(i), Qt::UserRole);
+        item->setData(initialData.at(i), BobUI::UserRole);
         model.appendRow(item);
     }
     model.setSortRole(sortRole);
@@ -920,27 +920,27 @@ void tst_QStandardItemModel::sortRole()
     for (int i = 0; i < expectedText.size(); ++i) {
         QStandardItem *item = model.item(i);
         QCOMPARE(item->text(), expectedText.at(i));
-        QCOMPARE(item->data(Qt::UserRole), expectedData.at(i));
+        QCOMPARE(item->data(BobUI::UserRole), expectedData.at(i));
     }
 }
 
 void tst_QStandardItemModel::sortRoleBindings()
 {
     QStandardItemModel model;
-    QCOMPARE(model.sortRole(), Qt::DisplayRole);
+    QCOMPARE(model.sortRole(), BobUI::DisplayRole);
 
     QProperty<int> sortRole;
-    model.bindableSortRole().setBinding(Qt::makePropertyBinding(sortRole));
-    sortRole = Qt::UserRole;
-    QCOMPARE(model.sortRole(), Qt::UserRole);
+    model.bindableSortRole().setBinding(BobUI::makePropertyBinding(sortRole));
+    sortRole = BobUI::UserRole;
+    QCOMPARE(model.sortRole(), BobUI::UserRole);
 
     QProperty<int> sortRoleObserver;
     sortRoleObserver.setBinding([&] { return model.sortRole(); });
-    model.setSortRole(Qt::EditRole);
-    QCOMPARE(sortRoleObserver, Qt::EditRole);
+    model.setSortRole(BobUI::EditRole);
+    QCOMPARE(sortRoleObserver, BobUI::EditRole);
 
-    QTestPrivate::testReadWritePropertyBasics(model, static_cast<int>(Qt::DisplayRole),
-                                              static_cast<int>(Qt::EditRole), "sortRole");
+    BOBUIestPrivate::testReadWritePropertyBasics(model, static_cast<int>(BobUI::DisplayRole),
+                                              static_cast<int>(BobUI::EditRole), "sortRole");
 }
 
 void tst_QStandardItemModel::findItems()
@@ -950,15 +950,15 @@ void tst_QStandardItemModel::findItems()
     model.appendRow(new QStandardItem(QLatin1String("bar")));
     model.item(1)->appendRow(new QStandardItem(QLatin1String("foo")));
     QList<QStandardItem*> matches;
-    matches = model.findItems(QLatin1String("foo"), Qt::MatchExactly|Qt::MatchRecursive, 0);
+    matches = model.findItems(QLatin1String("foo"), BobUI::MatchExactly|BobUI::MatchRecursive, 0);
     QCOMPARE(matches.size(), 2);
-    matches = model.findItems(QLatin1String("foo"), Qt::MatchExactly, 0);
+    matches = model.findItems(QLatin1String("foo"), BobUI::MatchExactly, 0);
     QCOMPARE(matches.size(), 1);
-    matches = model.findItems(QLatin1String("food"), Qt::MatchExactly|Qt::MatchRecursive, 0);
+    matches = model.findItems(QLatin1String("food"), BobUI::MatchExactly|BobUI::MatchRecursive, 0);
     QCOMPARE(matches.size(), 0);
-    matches = model.findItems(QLatin1String("foo"), Qt::MatchExactly|Qt::MatchRecursive, -1);
+    matches = model.findItems(QLatin1String("foo"), BobUI::MatchExactly|BobUI::MatchRecursive, -1);
     QCOMPARE(matches.size(), 0);
-    matches = model.findItems(QLatin1String("foo"), Qt::MatchExactly|Qt::MatchRecursive, 1);
+    matches = model.findItems(QLatin1String("foo"), BobUI::MatchExactly|BobUI::MatchRecursive, 1);
     QCOMPARE(matches.size(), 0);
 }
 
@@ -1076,35 +1076,35 @@ using RoleList = QList<int>;
 static RoleMap getSetItemDataRoleMap(int textRole)
 {
     return {{textRole, "text"_L1},
-            {Qt::StatusTipRole, "statusTip"_L1},
-            {Qt::ToolTipRole, "toolTip"_L1},
-            {Qt::WhatsThisRole, "whatsThis"_L1},
-            {Qt::SizeHintRole, QSize{64, 48}},
-            {Qt::FontRole, QFont{}},
-            {Qt::TextAlignmentRole, int(Qt::AlignLeft|Qt::AlignVCenter)},
-            {Qt::BackgroundRole, QColor(Qt::blue)},
-            {Qt::ForegroundRole, QColor(Qt::green)},
-            {Qt::CheckStateRole, int(Qt::PartiallyChecked)},
-            {Qt::AccessibleTextRole, "accessibleText"_L1},
-            {Qt::AccessibleDescriptionRole, "accessibleDescription"_L1}};
+            {BobUI::StatusTipRole, "statusTip"_L1},
+            {BobUI::ToolTipRole, "toolTip"_L1},
+            {BobUI::WhatsThisRole, "whatsThis"_L1},
+            {BobUI::SizeHintRole, QSize{64, 48}},
+            {BobUI::FontRole, QFont{}},
+            {BobUI::TextAlignmentRole, int(BobUI::AlignLeft|BobUI::AlignVCenter)},
+            {BobUI::BackgroundRole, QColor(BobUI::blue)},
+            {BobUI::ForegroundRole, QColor(BobUI::green)},
+            {BobUI::CheckStateRole, int(BobUI::PartiallyChecked)},
+            {BobUI::AccessibleTextRole, "accessibleText"_L1},
+            {BobUI::AccessibleDescriptionRole, "accessibleDescription"_L1}};
 }
 
 void tst_QStandardItemModel::getSetItemData_data()
 {
-    QTest::addColumn<RoleMap>("itemData");
-    QTest::addColumn<RoleMap>("expectedItemData");
-    QTest::addColumn<RoleList>("expectedRoles");
+    BOBUIest::addColumn<RoleMap>("itemData");
+    BOBUIest::addColumn<RoleMap>("expectedItemData");
+    BOBUIest::addColumn<RoleList>("expectedRoles");
 
-    // QTBUG-112326: verify that text data set using Qt::EditRole is mapped to
-    // Qt::DisplayRole and both roles are in the changed signal
-    const RoleMap expectedItemData =  getSetItemDataRoleMap(Qt::DisplayRole);
-    RoleList expectedRoles = expectedItemData.keys() << Qt::EditRole;
+    // BOBUIBUG-112326: verify that text data set using BobUI::EditRole is mapped to
+    // BobUI::DisplayRole and both roles are in the changed signal
+    const RoleMap expectedItemData =  getSetItemDataRoleMap(BobUI::DisplayRole);
+    RoleList expectedRoles = expectedItemData.keys() << BobUI::EditRole;
     std::sort(expectedRoles.begin(), expectedRoles.end());
 
-    QTest::newRow("DisplayRole") << expectedItemData
+    BOBUIest::newRow("DisplayRole") << expectedItemData
                                  << expectedItemData << expectedRoles;
 
-    QTest::newRow("EditRole") << getSetItemDataRoleMap(Qt::EditRole)
+    BOBUIest::newRow("EditRole") << getSetItemDataRoleMap(BobUI::EditRole)
                               << expectedItemData << expectedRoles;
 }
 
@@ -1136,46 +1136,46 @@ void tst_QStandardItemModel::getSetItemData()
 
 void tst_QStandardItemModel::setHeaderLabels_data()
 {
-    QTest::addColumn<int>("rows");
-    QTest::addColumn<int>("columns");
-    QTest::addColumn<Qt::Orientation>("orientation");
-    QTest::addColumn<QStringList>("labels");
-    QTest::addColumn<QStringList>("expectedLabels");
+    BOBUIest::addColumn<int>("rows");
+    BOBUIest::addColumn<int>("columns");
+    BOBUIest::addColumn<BobUI::Orientation>("orientation");
+    BOBUIest::addColumn<QStringList>("labels");
+    BOBUIest::addColumn<QStringList>("expectedLabels");
 
-    QTest::newRow("horizontal labels")
+    BOBUIest::newRow("horizontal labels")
         << 1
         << 4
-        << Qt::Horizontal
+        << BobUI::Horizontal
         << (QStringList() << "a" << "b" << "c" << "d")
         << (QStringList() << "a" << "b" << "c" << "d");
-    QTest::newRow("vertical labels")
+    BOBUIest::newRow("vertical labels")
         << 4
         << 1
-        << Qt::Vertical
+        << BobUI::Vertical
         << (QStringList() << "a" << "b" << "c" << "d")
         << (QStringList() << "a" << "b" << "c" << "d");
-    QTest::newRow("too few (horizontal)")
+    BOBUIest::newRow("too few (horizontal)")
         << 1
         << 4
-        << Qt::Horizontal
+        << BobUI::Horizontal
         << (QStringList() << "a" << "b")
         << (QStringList() << "a" << "b" << "3" << "4");
-    QTest::newRow("too few (vertical)")
+    BOBUIest::newRow("too few (vertical)")
         << 4
         << 1
-        << Qt::Vertical
+        << BobUI::Vertical
         << (QStringList() << "a" << "b")
         << (QStringList() << "a" << "b" << "3" << "4");
-    QTest::newRow("too many (horizontal)")
+    BOBUIest::newRow("too many (horizontal)")
         << 1
         << 2
-        << Qt::Horizontal
+        << BobUI::Horizontal
         << (QStringList() << "a" << "b" << "c" << "d")
         << (QStringList() << "a" << "b" << "c" << "d");
-    QTest::newRow("too many (vertical)")
+    BOBUIest::newRow("too many (vertical)")
         << 2
         << 1
-        << Qt::Vertical
+        << BobUI::Vertical
         << (QStringList() << "a" << "b" << "c" << "d")
         << (QStringList() << "a" << "b" << "c" << "d");
 }
@@ -1184,22 +1184,22 @@ void tst_QStandardItemModel::setHeaderLabels()
 {
     QFETCH(int, rows);
     QFETCH(int, columns);
-    QFETCH(Qt::Orientation, orientation);
+    QFETCH(BobUI::Orientation, orientation);
     QFETCH(QStringList, labels);
     QFETCH(QStringList, expectedLabels);
     QStandardItemModel model(rows, columns);
     QSignalSpy columnsInsertedSpy(&model, &QAbstractItemModel::columnsInserted);
     QSignalSpy rowsInsertedSpy(&model, &QAbstractItemModel::rowsInserted);
-    if (orientation == Qt::Horizontal)
+    if (orientation == BobUI::Horizontal)
         model.setHorizontalHeaderLabels(labels);
     else
         model.setVerticalHeaderLabels(labels);
     for (int i = 0; i < expectedLabels.size(); ++i)
         QCOMPARE(model.headerData(i, orientation).toString(), expectedLabels.at(i));
     QCOMPARE(columnsInsertedSpy.size(),
-             (orientation == Qt::Vertical) ? 0 : labels.size() > columns);
+             (orientation == BobUI::Vertical) ? 0 : labels.size() > columns);
     QCOMPARE(rowsInsertedSpy.size(),
-             (orientation == Qt::Horizontal) ? 0 : labels.size() > rows);
+             (orientation == BobUI::Horizontal) ? 0 : labels.size() > rows);
 }
 
 void tst_QStandardItemModel::itemDataChanged()
@@ -1220,7 +1220,7 @@ void tst_QStandardItemModel::itemDataChanged()
     args = itemChangedSpy.takeFirst();
     QCOMPARE(qvariant_cast<QStandardItem*>(args.at(0)), &item);
 
-    item.setData(QLatin1String("foo"), Qt::DisplayRole);
+    item.setData(QLatin1String("foo"), BobUI::DisplayRole);
     QCOMPARE(dataChangedSpy.size(), 1);
     QCOMPARE(itemChangedSpy.size(), 1);
     args = dataChangedSpy.takeFirst();
@@ -1229,11 +1229,11 @@ void tst_QStandardItemModel::itemDataChanged()
     args = itemChangedSpy.takeFirst();
     QCOMPARE(qvariant_cast<QStandardItem*>(args.at(0)), &item);
 
-    item.setData(item.data(Qt::DisplayRole), Qt::DisplayRole);
+    item.setData(item.data(BobUI::DisplayRole), BobUI::DisplayRole);
     QCOMPARE(dataChangedSpy.size(), 0);
     QCOMPARE(itemChangedSpy.size(), 0);
 
-    item.setFlags(Qt::ItemIsEnabled);
+    item.setFlags(BobUI::ItemIsEnabled);
     QCOMPARE(dataChangedSpy.size(), 1);
     QCOMPARE(itemChangedSpy.size(), 1);
     args = dataChangedSpy.takeFirst();
@@ -1391,17 +1391,17 @@ void tst_QStandardItemModel::rootItemFlags()
 {
     QStandardItemModel model(6, 4);
     QCOMPARE(model.invisibleRootItem()->flags() , model.flags(QModelIndex()));
-    QCOMPARE(model.invisibleRootItem()->flags() , Qt::ItemIsDropEnabled);
+    QCOMPARE(model.invisibleRootItem()->flags() , BobUI::ItemIsDropEnabled);
 
-    Qt::ItemFlags f = Qt::ItemIsDropEnabled | Qt::ItemIsEnabled;
+    BobUI::ItemFlags f = BobUI::ItemIsDropEnabled | BobUI::ItemIsEnabled;
     model.invisibleRootItem()->setFlags(f);
     QCOMPARE(model.invisibleRootItem()->flags() , f);
     QCOMPARE(model.invisibleRootItem()->flags() , model.flags(QModelIndex()));
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     model.invisibleRootItem()->setDropEnabled(false);
 #endif
-    QCOMPARE(model.invisibleRootItem()->flags() , Qt::ItemIsEnabled);
+    QCOMPARE(model.invisibleRootItem()->flags() , BobUI::ItemIsEnabled);
     QCOMPARE(model.invisibleRootItem()->flags() , model.flags(QModelIndex()));
 }
 
@@ -1437,7 +1437,7 @@ bool tst_QStandardItemModel::compareItems(QStandardItem *item1, QStandardItem *i
     return true;
 }
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 static QStandardItem *itemFromText(QStandardItem *parent, const QString &text)
 {
     QStandardItem *item = nullptr;
@@ -1472,10 +1472,10 @@ static QModelIndex indexFromText(QStandardItemModel *model, const QString &text)
 }
 
 
-struct FriendlyTreeView : public QTreeView
+struct FriendlyTreeView : public BOBUIreeView
 {
     friend class tst_QStandardItemModel;
-    Q_DECLARE_PRIVATE(QTreeView)
+    Q_DECLARE_PRIVATE(BOBUIreeView)
 };
 
 static void populateDragAndDropModel(QStandardItemModel &model, int nRow, int nCol)
@@ -1526,7 +1526,7 @@ void tst_QStandardItemModel::treeDragAndDrop()
     view.setModel(&model);
     view.expandAll();
     view.show();
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     view.setDragDropMode(QAbstractItemView::InternalMove);
 #endif
     view.setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -1547,7 +1547,7 @@ void tst_QStandardItemModel::treeDragAndDrop()
         //code based from QAbstractItemView::startDrag and QAbstractItemView::dropEvent
         QModelIndexList indexes = view.selectedIndexes();
         QMimeData *data = model.mimeData(indexes);
-        if(model.dropMimeData(data, Qt::MoveAction, 0, 0, indexFromText(&model, "item 4 - 0")))
+        if(model.dropMimeData(data, BobUI::MoveAction, 0, 0, indexFromText(&model, "item 4 - 0")))
             view.d_func()->clearOrRemove();
         delete data;
 
@@ -1572,7 +1572,7 @@ void tst_QStandardItemModel::treeDragAndDrop()
         //code based from QAbstractItemView::startDrag and QAbstractItemView::dropEvent
         QModelIndexList indexes = view.selectedIndexes();
         QMimeData *data = model.mimeData(indexes);
-        if(model.dropMimeData(data, Qt::MoveAction, 0, 0, indexFromText(&model, "item 4 - 0")))
+        if(model.dropMimeData(data, BobUI::MoveAction, 0, 0, indexFromText(&model, "item 4 - 0")))
         view.d_func()->clearOrRemove();
         delete data;
 
@@ -1598,7 +1598,7 @@ void tst_QStandardItemModel::treeDragAndDrop()
         //code based from QAbstractItemView::startDrag and QAbstractItemView::dropEvent
         QModelIndexList indexes = view.selectedIndexes();
         QMimeData *data = model.mimeData(indexes);
-        if(model.dropMimeData(data, Qt::MoveAction, 0, 0, indexFromText(&model, "item 0/2 - 0")))
+        if(model.dropMimeData(data, BobUI::MoveAction, 0, 0, indexFromText(&model, "item 0/2 - 0")))
         view.d_func()->clearOrRemove();
         delete data;
 
@@ -1681,8 +1681,8 @@ void tst_QStandardItemModel::itemRoleNames()
     VERIFY_MODEL
 
     QHash<int, QByteArray> newRoleNames;
-    newRoleNames.insert(Qt::DisplayRole, "Name");
-    newRoleNames.insert(Qt::DecorationRole, "Avatar");
+    newRoleNames.insert(BobUI::DisplayRole, "Name");
+    newRoleNames.insert(BobUI::DecorationRole, "Avatar");
     model.setItemRoleNames(newRoleNames);
     QCOMPARE(model.roleNames(), newRoleNames);
     VERIFY_MODEL
@@ -1691,7 +1691,7 @@ void tst_QStandardItemModel::itemRoleNames()
 void tst_QStandardItemModel::getMimeDataWithInvalidModelIndex()
 {
     QStandardItemModel model;
-    QTest::ignoreMessage(QtWarningMsg, "QStandardItemModel::mimeData: No item associated with invalid index");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QStandardItemModel::mimeData: No item associated with invalid index");
     QMimeData *data = model.mimeData(QModelIndexList() << QModelIndex());
     QVERIFY(!data);
 }
@@ -1699,18 +1699,18 @@ void tst_QStandardItemModel::getMimeDataWithInvalidModelIndex()
 void tst_QStandardItemModel::supportedDragDropActions()
 {
     QStandardItemModel model;
-    QCOMPARE(model.supportedDragActions(), Qt::CopyAction | Qt::MoveAction);
-    QCOMPARE(model.supportedDropActions(), Qt::CopyAction | Qt::MoveAction);
+    QCOMPARE(model.supportedDragActions(), BobUI::CopyAction | BobUI::MoveAction);
+    QCOMPARE(model.supportedDropActions(), BobUI::CopyAction | BobUI::MoveAction);
 }
 
-void tst_QStandardItemModel::taskQTBUG_45114_setItemData()
+void tst_QStandardItemModel::taskBOBUIBUG_45114_setItemData()
 {
     QStandardItemModel model;
     QSignalSpy spy(&model, &QStandardItemModel::itemChanged);
 
     QStandardItem *item = new QStandardItem("item");
-    item->setData(1, Qt::UserRole + 1);
-    item->setData(2, Qt::UserRole + 2);
+    item->setData(1, BobUI::UserRole + 1);
+    item->setData(2, BobUI::UserRole + 2);
     model.appendRow(item);
 
     QModelIndex index = item->index();
@@ -1720,47 +1720,47 @@ void tst_QStandardItemModel::taskQTBUG_45114_setItemData()
 
     QMap<int, QVariant> roles;
 
-    roles.insert(Qt::UserRole + 1, 1);
-    roles.insert(Qt::UserRole + 2, 2);
+    roles.insert(BobUI::UserRole + 1, 1);
+    roles.insert(BobUI::UserRole + 2, 2);
     model.setItemData(index, roles);
 
     QCOMPARE(spy.size(), 0);
 
-    roles.insert(Qt::UserRole + 1, 1);
-    roles.insert(Qt::UserRole + 2, 2);
-    roles.insert(Qt::UserRole + 3, QVariant());
+    roles.insert(BobUI::UserRole + 1, 1);
+    roles.insert(BobUI::UserRole + 2, 2);
+    roles.insert(BobUI::UserRole + 3, QVariant());
     model.setItemData(index, roles);
 
     QCOMPARE(spy.size(), 0);
 
     roles.clear();
-    roles.insert(Qt::UserRole + 1, 10);
-    roles.insert(Qt::UserRole + 3, 12);
+    roles.insert(BobUI::UserRole + 1, 10);
+    roles.insert(BobUI::UserRole + 3, 12);
     model.setItemData(index, roles);
 
     QCOMPARE(spy.size(), 1);
     QMap<int, QVariant> itemRoles = model.itemData(index);
 
     QCOMPARE(itemRoles.size(), 4);
-    QCOMPARE(itemRoles[Qt::UserRole + 1].toInt(), 10);
-    QCOMPARE(itemRoles[Qt::UserRole + 2].toInt(), 2);
-    QCOMPARE(itemRoles[Qt::UserRole + 3].toInt(), 12);
+    QCOMPARE(itemRoles[BobUI::UserRole + 1].toInt(), 10);
+    QCOMPARE(itemRoles[BobUI::UserRole + 2].toInt(), 2);
+    QCOMPARE(itemRoles[BobUI::UserRole + 3].toInt(), 12);
 
     roles.clear();
-    roles.insert(Qt::UserRole + 3, 1);
+    roles.insert(BobUI::UserRole + 3, 1);
     model.setItemData(index, roles);
 
     QCOMPARE(spy.size(), 2);
 
     roles.clear();
-    roles.insert(Qt::UserRole + 3, QVariant());
+    roles.insert(BobUI::UserRole + 3, QVariant());
     model.setItemData(index, roles);
 
     QCOMPARE(spy.size(), 3);
 
     itemRoles = model.itemData(index);
     QCOMPARE(itemRoles.size(), 3);
-    QVERIFY(!itemRoles.keys().contains(Qt::UserRole + 3));
+    QVERIFY(!itemRoles.keys().contains(BobUI::UserRole + 3));
 }
 
 void tst_QStandardItemModel::setItemPersistentIndex()
@@ -1784,7 +1784,7 @@ void tst_QStandardItemModel::setItemPersistentIndex()
     QVERIFY(!persistentIndex.isValid());
 }
 
-void tst_QStandardItemModel::signalsOnTakeItem() // QTBUG-89145
+void tst_QStandardItemModel::signalsOnTakeItem() // BOBUIBUG-89145
 {
     QStandardItemModel m;
     m.insertColumns(0, 2);
@@ -1819,12 +1819,12 @@ void tst_QStandardItemModel::signalsOnTakeItem() // QTBUG-89145
     const auto dataChangedSpyArgs = dataChangedSpy.takeFirst();
     QCOMPARE(dataChangedSpyArgs.at(0).value<QModelIndex>(), m.index(1, 0));
     QCOMPARE(dataChangedSpyArgs.at(1).value<QModelIndex>(), m.index(1, 0));
-    QCOMPARE(takenItem->data(Qt::EditRole).toInt(), 1);
+    QCOMPARE(takenItem->data(BobUI::EditRole).toInt(), 1);
     QCOMPARE(takenItem->rowCount(), 2);
     QCOMPARE(takenItem->columnCount(), 2);
     for (int i = 0; i < 2; ++i) {
         for (int j = 0; j < 2; ++j)
-            QCOMPARE(takenItem->child(i, j)->data(Qt::EditRole).toInt(), i + j + 100);
+            QCOMPARE(takenItem->child(i, j)->data(BobUI::EditRole).toInt(), i + j + 100);
     }
     QCOMPARE(takenItem->model(), nullptr);
     QCOMPARE(takenItem->child(0, 0)->model(), nullptr);
@@ -1832,7 +1832,7 @@ void tst_QStandardItemModel::signalsOnTakeItem() // QTBUG-89145
     delete takenItem;
 }
 
-void tst_QStandardItemModel::createPersistentOnLayoutAboutToBeChanged() // QTBUG-93466
+void tst_QStandardItemModel::createPersistentOnLayoutAboutToBeChanged() // BOBUIBUG-93466
 {
     QStandardItemModel model;
     QAbstractItemModelTester mTester(&model, nullptr);
@@ -1867,7 +1867,7 @@ void tst_QStandardItemModel::createPersistentOnLayoutAboutToBeChanged() // QTBUG
     QCOMPARE(layoutChangedSpy.size(), 1);
 }
 
-void tst_QStandardItemModel::takeChild()  // QTBUG-117900
+void tst_QStandardItemModel::takeChild()  // BOBUIBUG-117900
 {
   {
       // with model
@@ -1898,5 +1898,5 @@ void tst_QStandardItemModel::takeChild()  // QTBUG-117900
 }
 
 
-QTEST_MAIN(tst_QStandardItemModel)
+BOBUIEST_MAIN(tst_QStandardItemModel)
 #include "tst_qstandarditemmodel.moc"

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #ifndef QMAKE_PCH_H
 #define QMAKE_PCH_H
@@ -20,7 +20,7 @@
 //#include "meta.h"
 #include <qfile.h>
 //#include "winmakefile.h"
-//#include <qtextstream.h>
+//#include <bobuiextstream.h>
 //#include "project.h"
 #include <qstring.h>
 #include <qstringlist.h>
@@ -31,7 +31,7 @@
 //#include <qdir.h>
 //#include "option.h"
 
-QT_BEGIN_NAMESPACE
-QT_END_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

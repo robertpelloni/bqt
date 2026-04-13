@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2013 Aleix Pol Gonzalez <aleixpol@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:trivial-impl-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:trivial-impl-only
 
 #ifndef QCOLLATOR_P_H
 #define QCOLLATOR_P_H
@@ -10,27 +10,27 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/private/qglobal_p.h>
+#include <BobUICore/private/qglobal_p.h>
 #include "qcollator.h"
 #include <QList>
-#if QT_CONFIG(icu)
+#if BOBUI_CONFIG(icu)
 #include <unicode/ucol.h>
 #elif defined(Q_OS_MACOS)
 #include <CoreServices/CoreServices.h>
 #elif defined(Q_OS_WIN)
-#include <qt_windows.h>
+#include <bobui_windows.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if QT_CONFIG(icu)
+#if BOBUI_CONFIG(icu)
 typedef UCollator *CollatorType;
 typedef QByteArray CollatorKeyType;
 const CollatorType NoCollator = nullptr;
@@ -56,10 +56,10 @@ class QCollatorPrivate
 public:
     QAtomicInt ref = 1;
     QLocale locale;
-#if defined(Q_OS_WIN) && !QT_CONFIG(icu)
+#if defined(Q_OS_WIN) && !BOBUI_CONFIG(icu)
     LCID localeID;
 #endif
-    Qt::CaseSensitivity caseSensitivity = Qt::CaseSensitive;
+    BobUI::CaseSensitivity caseSensitivity = BobUI::CaseSensitive;
     bool numericMode = false;
     bool ignorePunctuation = false;
     bool dirty = true;
@@ -107,6 +107,6 @@ private:
 };
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCOLLATOR_P_H

@@ -1,29 +1,29 @@
-# Copyright (C) 2022 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+# Copyright (C) 2022 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 cmake_minimum_required(VERSION 3.16)
-project(qttablet LANGUAGES CXX)
+project(bobuitablet LANGUAGES CXX)
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
+find_package(BobUI6 REQUIRED COMPONENTS Core Gui Widgets)
 
-qt_standard_project_setup()
+bobui_standard_project_setup()
 
-qt_add_executable(qttablet
+bobui_add_executable(bobuitablet
     main.cpp
     mainwindow.cpp mainwindow.h
     tabletapplication.cpp tabletapplication.h
     tabletcanvas.cpp tabletcanvas.h
 )
 
-set_target_properties(qttablet PROPERTIES
+set_target_properties(bobuitablet PROPERTIES
     WIN32_EXECUTABLE TRUE
     MACOSX_BUNDLE TRUE
 )
 
-target_link_libraries(qttablet PRIVATE
-    Qt6::Core
-    Qt6::Gui
-    Qt6::Widgets
+target_link_libraries(bobuitablet PRIVATE
+    BobUI6::Core
+    BobUI6::Gui
+    BobUI6::Widgets
 )
 
 # Resources:
@@ -34,21 +34,21 @@ set(images_resource_files
     "images/cursor-pencil.png"
 )
 
-qt_add_resources(qttablet "images"
+bobui_add_resources(bobuitablet "images"
     PREFIX
         "/"
     FILES
         ${images_resource_files}
 )
 
-install(TARGETS qttablet
+install(TARGETS bobuitablet
     BUNDLE  DESTINATION .
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
 
-qt_generate_deploy_app_script(
-    TARGET qttablet
+bobui_generate_deploy_app_script(
+    TARGET bobuitablet
     OUTPUT_SCRIPT deploy_script
     NO_UNSUPPORTED_PLATFORM_ERROR
 )

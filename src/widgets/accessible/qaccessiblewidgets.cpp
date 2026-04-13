@@ -1,70 +1,70 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qaccessiblewidgets_p.h"
 #include "qabstracttextdocumentlayout.h"
 #include "qapplication.h"
 #include "qclipboard.h"
-#include "qtextdocument.h"
-#include "qtextobject.h"
-#if QT_CONFIG(textedit)
+#include "bobuiextdocument.h"
+#include "bobuiextobject.h"
+#if BOBUI_CONFIG(textedit)
 #include "qplaintextedit.h"
-#include "qtextedit.h"
-#include "private/qtextedit_p.h"
+#include "bobuiextedit.h"
+#include "private/bobuiextedit_p.h"
 #endif
-#include "qtextboundaryfinder.h"
-#if QT_CONFIG(scrollbar)
+#include "bobuiextboundaryfinder.h"
+#if BOBUI_CONFIG(scrollbar)
 #include "qscrollbar.h"
 #endif
 #include "qdebug.h"
 #include <QApplication>
-#if QT_CONFIG(stackedwidget)
+#if BOBUI_CONFIG(stackedwidget)
 #include <QStackedWidget>
 #endif
-#if QT_CONFIG(toolbox)
-#include <QToolBox>
+#if BOBUI_CONFIG(toolbox)
+#include <BOBUIoolBox>
 #endif
-#if QT_CONFIG(mdiarea)
+#if BOBUI_CONFIG(mdiarea)
 #include <QMdiArea>
 #include <QMdiSubWindow>
 #endif
-#if QT_CONFIG(dialogbuttonbox)
+#if BOBUI_CONFIG(dialogbuttonbox)
 #include <QDialogButtonBox>
 #endif
 #include <limits.h>
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
 #include <QRubberBand>
 #endif
-#if QT_CONFIG(textbrowser)
-#include <QTextBrowser>
+#if BOBUI_CONFIG(textbrowser)
+#include <BOBUIextBrowser>
 #endif
-#if QT_CONFIG(calendarwidget)
+#if BOBUI_CONFIG(calendarwidget)
 #include <QCalendarWidget>
 #endif
-#if QT_CONFIG(itemviews)
+#if BOBUI_CONFIG(itemviews)
 #include <QAbstractItemView>
 #endif
-#if QT_CONFIG(dockwidget)
+#if BOBUI_CONFIG(dockwidget)
 #include <QDockWidget>
 #include <private/qdockwidget_p.h>
 #endif
-#if QT_CONFIG(mainwindow)
+#if BOBUI_CONFIG(mainwindow)
 #include <QMainWindow>
 #endif
 #include <QFocusFrame>
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
 #include <QMenu>
 #endif
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 
-#include <QtGui/private/qaccessiblehelper_p.h>
+#include <BobUIGui/private/qaccessiblehelper_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-QString qt_accHotKey(const QString &text);
+QString bobui_accHotKey(const QString &text);
 
 QWidgetList _q_ac_childWidgets(const QWidget *widget)
 {
@@ -78,20 +78,20 @@ QWidgetList _q_ac_childWidgets(const QWidget *widget)
         QString objectName = w->objectName();
         if (!w->isWindow()
               && !qobject_cast<QFocusFrame*>(w)
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
               && !qobject_cast<QMenu*>(w)
 #endif
               // Exclude widgets used as implementation details
-              && objectName != "qt_rubberband"_L1
-              && objectName != "qt_qmainwindow_extended_splitter"_L1
-              && objectName != "qt_spinbox_lineedit"_L1) {
+              && objectName != "bobui_rubberband"_L1
+              && objectName != "bobui_qmainwindow_extended_splitter"_L1
+              && objectName != "bobui_spinbox_lineedit"_L1) {
             widgets.append(w);
         }
     }
     return widgets;
 }
 
-#if QT_CONFIG(textedit) && !defined(QT_NO_CURSOR)
+#if BOBUI_CONFIG(textedit) && !defined(BOBUI_NO_CURSOR)
 
 QAccessiblePlainTextEdit::QAccessiblePlainTextEdit(QWidget* o)
   :QAccessibleTextWidget(o)
@@ -151,17 +151,17 @@ QPoint QAccessiblePlainTextEdit::scrollBarPosition() const
     return result;
 }
 
-QTextCursor QAccessiblePlainTextEdit::textCursor() const
+BOBUIextCursor QAccessiblePlainTextEdit::textCursor() const
 {
     return plainTextEdit()->textCursor();
 }
 
-void QAccessiblePlainTextEdit::setTextCursor(const QTextCursor &textCursor)
+void QAccessiblePlainTextEdit::setTextCursor(const BOBUIextCursor &textCursor)
 {
     plainTextEdit()->setTextCursor(textCursor);
 }
 
-QTextDocument* QAccessiblePlainTextEdit::textDocument() const
+BOBUIextDocument* QAccessiblePlainTextEdit::textDocument() const
 {
     return plainTextEdit()->document();
 }
@@ -193,26 +193,26 @@ void QAccessiblePlainTextEdit::scrollToSubstring(int startIndex, int endIndex)
 QAccessibleTextEdit::QAccessibleTextEdit(QWidget *o)
 : QAccessibleTextWidget(o, QAccessible::EditableText)
 {
-    Q_ASSERT(qobject_cast<QTextEdit *>(widget()));
+    Q_ASSERT(qobject_cast<BOBUIextEdit *>(widget()));
 }
 
 /*! Returns the text edit. */
-QTextEdit *QAccessibleTextEdit::textEdit() const
+BOBUIextEdit *QAccessibleTextEdit::textEdit() const
 {
-    return static_cast<QTextEdit *>(widget());
+    return static_cast<BOBUIextEdit *>(widget());
 }
 
-QTextCursor QAccessibleTextEdit::textCursor() const
+BOBUIextCursor QAccessibleTextEdit::textCursor() const
 {
     return textEdit()->textCursor();
 }
 
-QTextDocument *QAccessibleTextEdit::textDocument() const
+BOBUIextDocument *QAccessibleTextEdit::textDocument() const
 {
     return textEdit()->document();
 }
 
-void QAccessibleTextEdit::setTextCursor(const QTextCursor &textCursor)
+void QAccessibleTextEdit::setTextCursor(const BOBUIextCursor &textCursor)
 {
     textEdit()->setTextCursor(textCursor);
 }
@@ -271,9 +271,9 @@ void *QAccessibleTextEdit::interface_cast(QAccessible::InterfaceType t)
 
 void QAccessibleTextEdit::scrollToSubstring(int startIndex, int endIndex)
 {
-    QTextEdit *edit = textEdit();
+    BOBUIextEdit *edit = textEdit();
 
-    QTextCursor cursor = textCursor();
+    BOBUIextCursor cursor = textCursor();
     cursor.setPosition(startIndex);
     QRect r = edit->cursorRect(cursor);
 
@@ -288,9 +288,9 @@ void QAccessibleTextEdit::scrollToSubstring(int startIndex, int endIndex)
         qWarning("AccessibleTextEdit::scrollToSubstring failed!");
 }
 
-#endif // QT_CONFIG(textedit) && QT_NO_CURSOR
+#endif // BOBUI_CONFIG(textedit) && BOBUI_NO_CURSOR
 
-#if QT_CONFIG(stackedwidget)
+#if BOBUI_CONFIG(stackedwidget)
 // ======================= QAccessibleStackedWidget ======================
 QAccessibleStackedWidget::QAccessibleStackedWidget(QWidget *widget)
     : QAccessibleWidgetV2(widget, QAccessible::LayeredPane)
@@ -336,24 +336,24 @@ QStackedWidget *QAccessibleStackedWidget::stackedWidget() const
 {
     return static_cast<QStackedWidget *>(object());
 }
-#endif // QT_CONFIG(stackedwidget)
+#endif // BOBUI_CONFIG(stackedwidget)
 
-#if QT_CONFIG(toolbox)
+#if BOBUI_CONFIG(toolbox)
 // ======================= QAccessibleToolBox ======================
 QAccessibleToolBox::QAccessibleToolBox(QWidget *widget)
     : QAccessibleWidgetV2(widget, QAccessible::LayeredPane)
 {
-    Q_ASSERT(qobject_cast<QToolBox *>(widget));
+    Q_ASSERT(qobject_cast<BOBUIoolBox *>(widget));
 }
 
-QToolBox * QAccessibleToolBox::toolBox() const
+BOBUIoolBox * QAccessibleToolBox::toolBox() const
 {
-    return static_cast<QToolBox *>(object());
+    return static_cast<BOBUIoolBox *>(object());
 }
-#endif // QT_CONFIG(toolbox)
+#endif // BOBUI_CONFIG(toolbox)
 
 // ======================= QAccessibleMdiArea ======================
-#if QT_CONFIG(mdiarea)
+#if BOBUI_CONFIG(mdiarea)
 QAccessibleMdiArea::QAccessibleMdiArea(QWidget *widget)
     : QAccessibleWidgetV2(widget, QAccessible::LayeredPane)
 {
@@ -473,9 +473,9 @@ QMdiSubWindow *QAccessibleMdiSubWindow::mdiSubWindow() const
 {
     return static_cast<QMdiSubWindow *>(object());
 }
-#endif // QT_CONFIG(mdiarea)
+#endif // BOBUI_CONFIG(mdiarea)
 
-#if QT_CONFIG(dialogbuttonbox)
+#if BOBUI_CONFIG(dialogbuttonbox)
 // ======================= QAccessibleDialogButtonBox ======================
 QAccessibleDialogButtonBox::QAccessibleDialogButtonBox(QWidget *widget)
     : QAccessibleWidgetV2(widget, QAccessible::Grouping)
@@ -483,22 +483,22 @@ QAccessibleDialogButtonBox::QAccessibleDialogButtonBox(QWidget *widget)
     Q_ASSERT(qobject_cast<QDialogButtonBox*>(widget));
 }
 
-#endif // QT_CONFIG(dialogbuttonbox)
+#endif // BOBUI_CONFIG(dialogbuttonbox)
 
-#if QT_CONFIG(textbrowser) && !defined(QT_NO_CURSOR)
+#if BOBUI_CONFIG(textbrowser) && !defined(BOBUI_NO_CURSOR)
 QAccessibleTextBrowser::QAccessibleTextBrowser(QWidget *widget)
     : QAccessibleTextEdit(widget)
 {
-    Q_ASSERT(qobject_cast<QTextBrowser *>(widget));
+    Q_ASSERT(qobject_cast<BOBUIextBrowser *>(widget));
 }
 
 QAccessible::Role QAccessibleTextBrowser::role() const
 {
     return QAccessible::StaticText;
 }
-#endif // QT_CONFIG(textbrowser) && QT_NO_CURSOR
+#endif // BOBUI_CONFIG(textbrowser) && BOBUI_NO_CURSOR
 
-#if QT_CONFIG(calendarwidget)
+#if BOBUI_CONFIG(calendarwidget)
 // ===================== QAccessibleCalendarWidget ========================
 QAccessibleCalendarWidget::QAccessibleCalendarWidget(QWidget *widget)
     : QAccessibleWidgetV2(widget, QAccessible::Table)
@@ -539,7 +539,7 @@ QCalendarWidget *QAccessibleCalendarWidget::calendarWidget() const
 QAbstractItemView *QAccessibleCalendarWidget::calendarView() const
 {
     for (QObject *child : calendarWidget()->children()) {
-        if (child->objectName() == "qt_calendar_calendarview"_L1)
+        if (child->objectName() == "bobui_calendar_calendarview"_L1)
             return static_cast<QAbstractItemView *>(child);
     }
     return nullptr;
@@ -548,14 +548,14 @@ QAbstractItemView *QAccessibleCalendarWidget::calendarView() const
 QWidget *QAccessibleCalendarWidget::navigationBar() const
 {
     for (QObject *child : calendarWidget()->children()) {
-        if (child->objectName() == "qt_calendar_navigationbar"_L1)
+        if (child->objectName() == "bobui_calendar_navigationbar"_L1)
             return static_cast<QWidget *>(child);
     }
     return nullptr;
 }
-#endif // QT_CONFIG(calendarwidget)
+#endif // BOBUI_CONFIG(calendarwidget)
 
-#if QT_CONFIG(dockwidget)
+#if BOBUI_CONFIG(dockwidget)
 
 // Dock Widget - order of children:
 // - Content widget
@@ -630,9 +630,9 @@ QDockWidget *QAccessibleDockWidget::dockWidget() const
 QString QAccessibleDockWidget::text(QAccessible::Text t) const
 {
     if (t == QAccessible::Name) {
-        return qt_accStripAmp(dockWidget()->windowTitle());
+        return bobui_accStripAmp(dockWidget()->windowTitle());
     } else if (t == QAccessible::Accelerator) {
-        return qt_accHotKey(dockWidget()->windowTitle());
+        return bobui_accHotKey(dockWidget()->windowTitle());
     }
     return QString();
 }
@@ -645,9 +645,9 @@ QAccessible::Role QAccessibleDockWidget::role() const
     return QAccessible::Pane;
 }
 
-#endif // QT_CONFIG(dockwidget)
+#endif // BOBUI_CONFIG(dockwidget)
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 
 QAccessibleTextWidget::QAccessibleTextWidget(QWidget *o, QAccessible::Role r, const QString &name)
     : QAccessibleWidgetV2(o, r, name)
@@ -665,22 +665,22 @@ QAccessible::State QAccessibleTextWidget::state() const
 
 QRect QAccessibleTextWidget::characterRect(int offset) const
 {
-    QTextBlock block = textDocument()->findBlock(offset);
+    BOBUIextBlock block = textDocument()->findBlock(offset);
     if (!block.isValid())
         return QRect();
 
-    QTextLayout *layout = block.layout();
+    BOBUIextLayout *layout = block.layout();
     QPointF layoutPosition = layout->position();
     int relativeOffset = offset - block.position();
-    QTextLine line = layout->lineForTextPosition(relativeOffset);
+    BOBUIextLine line = layout->lineForTextPosition(relativeOffset);
 
     QRect r;
 
     if (line.isValid()) {
         qreal x = line.cursorToX(relativeOffset);
 
-        QTextCharFormat format;
-        QTextBlock::iterator iter = block.begin();
+        BOBUIextCharFormat format;
+        BOBUIextBlock::iterator iter = block.begin();
         if (iter.atEnd())
             format = block.charFormat();
         else {
@@ -711,7 +711,7 @@ int QAccessibleTextWidget::offsetAtPoint(const QPoint &point) const
     QPoint p = viewport()->mapFromGlobal(point);
     // convert to document coordinates
     p += scrollBarPosition();
-    return textDocument()->documentLayout()->hitTest(p, Qt::ExactHit);
+    return textDocument()->documentLayout()->hitTest(p, BobUI::ExactHit);
 }
 
 int QAccessibleTextWidget::selectionCount() const
@@ -790,26 +790,26 @@ QString QAccessibleTextWidget::attributes(int offset, int *startOffset, int *end
     }
 
 
-    QTextCursor cursor = textCursor();
+    BOBUIextCursor cursor = textCursor();
     cursor.setPosition(offset);
-    QTextBlock block = cursor.block();
+    BOBUIextBlock block = cursor.block();
 
     int blockStart = block.position();
     int blockEnd = blockStart + block.length();
 
-    QTextBlock::iterator iter = block.begin();
+    BOBUIextBlock::iterator iter = block.begin();
     int lastFragmentIndex = blockStart;
     while (!iter.atEnd()) {
-        QTextFragment f = iter.fragment();
+        BOBUIextFragment f = iter.fragment();
         if (f.contains(offset))
             break;
         lastFragmentIndex = f.position() + f.length();
         ++iter;
     }
 
-    QTextCharFormat charFormat;
+    BOBUIextCharFormat charFormat;
     if (!iter.atEnd()) {
-        QTextFragment fragment = iter.fragment();
+        BOBUIextFragment fragment = iter.fragment();
         charFormat = fragment.charFormat();
         int pos = fragment.position();
         // text block and fragment may overlap, use the smallest common range
@@ -823,7 +823,7 @@ QString QAccessibleTextWidget::attributes(int offset, int *startOffset, int *end
     Q_ASSERT(*startOffset <= offset);
     Q_ASSERT(*endOffset >= offset);
 
-    QTextBlockFormat blockFormat = cursor.blockFormat();
+    BOBUIextBlockFormat blockFormat = cursor.blockFormat();
 
     const QFont charFormatFont = charFormat.font();
 
@@ -851,70 +851,70 @@ QString QAccessibleTextWidget::attributes(int offset, int *startOffset, int *end
 
     attrs["text-line-through-type"] = charFormatFont.strikeOut() ? "single"_L1 : "none"_L1;
 
-    QTextCharFormat::UnderlineStyle underlineStyle = charFormat.underlineStyle();
-    if (underlineStyle == QTextCharFormat::NoUnderline && charFormatFont.underline()) // underline could still be set in the default font
-        underlineStyle = QTextCharFormat::SingleUnderline;
+    BOBUIextCharFormat::UnderlineStyle underlineStyle = charFormat.underlineStyle();
+    if (underlineStyle == BOBUIextCharFormat::NoUnderline && charFormatFont.underline()) // underline could still be set in the default font
+        underlineStyle = BOBUIextCharFormat::SingleUnderline;
     QString underlineStyleValue;
     switch (underlineStyle) {
-        case QTextCharFormat::NoUnderline:
+        case BOBUIextCharFormat::NoUnderline:
             break;
-        case QTextCharFormat::SingleUnderline:
+        case BOBUIextCharFormat::SingleUnderline:
             underlineStyleValue = QStringLiteral("solid");
             break;
-        case QTextCharFormat::DashUnderline:
+        case BOBUIextCharFormat::DashUnderline:
             underlineStyleValue = QStringLiteral("dash");
             break;
-        case QTextCharFormat::DotLine:
+        case BOBUIextCharFormat::DotLine:
             underlineStyleValue = QStringLiteral("dash");
             break;
-        case QTextCharFormat::DashDotLine:
+        case BOBUIextCharFormat::DashDotLine:
             underlineStyleValue = QStringLiteral("dot-dash");
             break;
-        case QTextCharFormat::DashDotDotLine:
+        case BOBUIextCharFormat::DashDotDotLine:
             underlineStyleValue = QStringLiteral("dot-dot-dash");
             break;
-        case QTextCharFormat::WaveUnderline:
+        case BOBUIextCharFormat::WaveUnderline:
             underlineStyleValue = QStringLiteral("wave");
             break;
-        case QTextCharFormat::SpellCheckUnderline:
+        case BOBUIextCharFormat::SpellCheckUnderline:
             underlineStyleValue = QStringLiteral("wave"); // this is not correct, but provides good approximation at least
             break;
         default:
-            qWarning() << "Unknown QTextCharFormat::UnderlineStyle value " << underlineStyle << " could not be translated to IAccessible2 value";
+            qWarning() << "Unknown BOBUIextCharFormat::UnderlineStyle value " << underlineStyle << " could not be translated to IAccessible2 value";
             break;
     }
     if (!underlineStyleValue.isNull()) {
         attrs["text-underline-style"] = underlineStyleValue;
-        attrs["text-underline-type"] = QStringLiteral("single"); // if underlineStyleValue is set, there is an underline, and Qt does not support other than single ones
+        attrs["text-underline-type"] = QStringLiteral("single"); // if underlineStyleValue is set, there is an underline, and BobUI does not support other than single ones
     } // else both are "none" which is the default - no need to set them
 
-    if (block.textDirection() == Qt::RightToLeft)
+    if (block.textDirection() == BobUI::RightToLeft)
         attrs["writing-mode"] = QStringLiteral("rl");
 
-    QTextCharFormat::VerticalAlignment alignment = charFormat.verticalAlignment();
-    attrs["text-position"] = QString::fromLatin1((alignment == QTextCharFormat::AlignSubScript) ? "sub" : ((alignment == QTextCharFormat::AlignSuperScript) ? "super" : "baseline" ));
+    BOBUIextCharFormat::VerticalAlignment alignment = charFormat.verticalAlignment();
+    attrs["text-position"] = QString::fromLatin1((alignment == BOBUIextCharFormat::AlignSubScript) ? "sub" : ((alignment == BOBUIextCharFormat::AlignSuperScript) ? "super" : "baseline" ));
 
     QBrush background = charFormat.background();
-    if (background.style() == Qt::SolidPattern) {
+    if (background.style() == BobUI::SolidPattern) {
         attrs["background-color"] = QString::fromLatin1("rgb(%1,%2,%3)").arg(background.color().red()).arg(background.color().green()).arg(background.color().blue());
     }
 
     QBrush foreground = charFormat.foreground();
-    if (foreground.style() == Qt::SolidPattern) {
+    if (foreground.style() == BobUI::SolidPattern) {
         attrs["color"] = QString::fromLatin1("rgb(%1,%2,%3)").arg(foreground.color().red()).arg(foreground.color().green()).arg(foreground.color().blue());
     }
 
-    switch (blockFormat.alignment() & (Qt::AlignLeft | Qt::AlignRight | Qt::AlignHCenter | Qt::AlignJustify)) {
-    case Qt::AlignLeft:
+    switch (blockFormat.alignment() & (BobUI::AlignLeft | BobUI::AlignRight | BobUI::AlignHCenter | BobUI::AlignJustify)) {
+    case BobUI::AlignLeft:
         attrs["text-align"] = QStringLiteral("left");
         break;
-    case Qt::AlignRight:
+    case BobUI::AlignRight:
         attrs["text-align"] = QStringLiteral("right");
         break;
-    case Qt::AlignHCenter:
+    case BobUI::AlignHCenter:
         attrs["text-align"] = QStringLiteral("center");
         break;
-    case Qt::AlignJustify:
+    case BobUI::AlignJustify:
         attrs["text-align"] = QStringLiteral("justify");
         break;
     }
@@ -930,7 +930,7 @@ int QAccessibleTextWidget::cursorPosition() const
 void QAccessibleTextWidget::selection(int selectionIndex, int *startOffset, int *endOffset) const
 {
     *startOffset = *endOffset = 0;
-    QTextCursor cursor = textCursor();
+    BOBUIextCursor cursor = textCursor();
 
     if (selectionIndex != 0 || !cursor.hasSelection())
         return;
@@ -941,10 +941,10 @@ void QAccessibleTextWidget::selection(int selectionIndex, int *startOffset, int 
 
 QString QAccessibleTextWidget::text(int startOffset, int endOffset) const
 {
-    QTextCursor cursor(textCursor());
+    BOBUIextCursor cursor(textCursor());
 
-    cursor.setPosition(startOffset, QTextCursor::MoveAnchor);
-    cursor.setPosition(endOffset, QTextCursor::KeepAnchor);
+    cursor.setPosition(startOffset, BOBUIextCursor::MoveAnchor);
+    cursor.setPosition(endOffset, BOBUIextCursor::KeepAnchor);
 
     return cursor.selectedText().replace(QChar(QChar::ParagraphSeparator), u'\n');
 }
@@ -958,27 +958,27 @@ QPoint QAccessibleTextWidget::scrollBarPosition() const
 QString QAccessibleTextWidget::textBeforeOffset(int offset, QAccessible::TextBoundaryType boundaryType,
                                                 int *startOffset, int *endOffset) const
 {
-    return qt_accTextBeforeOffsetHelper(*this, textCursor(), offset, boundaryType, startOffset,
+    return bobui_accTextBeforeOffsetHelper(*this, textCursor(), offset, boundaryType, startOffset,
                                         endOffset);
 }
 
 QString QAccessibleTextWidget::textAfterOffset(int offset, QAccessible::TextBoundaryType boundaryType,
                                               int *startOffset, int *endOffset) const
 {
-    return qt_accTextAfterOffsetHelper(*this, textCursor(), offset, boundaryType, startOffset,
+    return bobui_accTextAfterOffsetHelper(*this, textCursor(), offset, boundaryType, startOffset,
                                        endOffset);
 }
 
 QString QAccessibleTextWidget::textAtOffset(int offset, QAccessible::TextBoundaryType boundaryType,
                                             int *startOffset, int *endOffset) const
 {
-    return qt_accTextAtOffsetHelper(*this, textCursor(), offset, boundaryType, startOffset,
+    return bobui_accTextAtOffsetHelper(*this, textCursor(), offset, boundaryType, startOffset,
                                     endOffset);
 }
 
 void QAccessibleTextWidget::setCursorPosition(int position)
 {
-    QTextCursor cursor = textCursor();
+    BOBUIextCursor cursor = textCursor();
     cursor.setPosition(position);
     setTextCursor(cursor);
 }
@@ -993,7 +993,7 @@ void QAccessibleTextWidget::removeSelection(int selectionIndex)
     if (selectionIndex != 0)
         return;
 
-    QTextCursor cursor = textCursor();
+    BOBUIextCursor cursor = textCursor();
     cursor.clearSelection();
     setTextCursor(cursor);
 }
@@ -1003,51 +1003,51 @@ void QAccessibleTextWidget::setSelection(int selectionIndex, int startOffset, in
     if (selectionIndex != 0)
         return;
 
-    QTextCursor cursor = textCursor();
-    cursor.setPosition(startOffset, QTextCursor::MoveAnchor);
-    cursor.setPosition(endOffset, QTextCursor::KeepAnchor);
+    BOBUIextCursor cursor = textCursor();
+    cursor.setPosition(startOffset, BOBUIextCursor::MoveAnchor);
+    cursor.setPosition(endOffset, BOBUIextCursor::KeepAnchor);
     setTextCursor(cursor);
 }
 
 int QAccessibleTextWidget::characterCount() const
 {
-    QTextCursor cursor = textCursor();
-    cursor.movePosition(QTextCursor::End);
+    BOBUIextCursor cursor = textCursor();
+    cursor.movePosition(BOBUIextCursor::End);
     return cursor.position();
 }
 
-QTextCursor QAccessibleTextWidget::textCursorForRange(int startOffset, int endOffset) const
+BOBUIextCursor QAccessibleTextWidget::textCursorForRange(int startOffset, int endOffset) const
 {
-    QTextCursor cursor = textCursor();
-    cursor.setPosition(startOffset, QTextCursor::MoveAnchor);
-    cursor.setPosition(endOffset, QTextCursor::KeepAnchor);
+    BOBUIextCursor cursor = textCursor();
+    cursor.setPosition(startOffset, BOBUIextCursor::MoveAnchor);
+    cursor.setPosition(endOffset, BOBUIextCursor::KeepAnchor);
 
     return cursor;
 }
 
 void QAccessibleTextWidget::deleteText(int startOffset, int endOffset)
 {
-    QTextCursor cursor = textCursorForRange(startOffset, endOffset);
+    BOBUIextCursor cursor = textCursorForRange(startOffset, endOffset);
     cursor.removeSelectedText();
 }
 
 void QAccessibleTextWidget::insertText(int offset, const QString &text)
 {
-    QTextCursor cursor = textCursor();
+    BOBUIextCursor cursor = textCursor();
     cursor.setPosition(offset);
     cursor.insertText(text);
 }
 
 void QAccessibleTextWidget::replaceText(int startOffset, int endOffset, const QString &text)
 {
-    QTextCursor cursor = textCursorForRange(startOffset, endOffset);
+    BOBUIextCursor cursor = textCursorForRange(startOffset, endOffset);
     cursor.removeSelectedText();
     cursor.insertText(text);
 }
-#endif // QT_NO_CURSOR
+#endif // BOBUI_NO_CURSOR
 
 
-#if QT_CONFIG(mainwindow)
+#if BOBUI_CONFIG(mainwindow)
 QAccessibleMainWindow::QAccessibleMainWindow(QWidget *widget)
     : QAccessibleWidgetV2(widget, QAccessible::Window) { }
 
@@ -1096,8 +1096,8 @@ QMainWindow *QAccessibleMainWindow::mainWindow() const
     return qobject_cast<QMainWindow *>(object());
 }
 
-#endif // QT_CONFIG(mainwindow)
+#endif // BOBUI_CONFIG(mainwindow)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)

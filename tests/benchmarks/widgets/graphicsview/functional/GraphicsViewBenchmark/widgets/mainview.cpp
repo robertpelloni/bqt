@@ -1,11 +1,11 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QDebug>
 #include <QApplication>
 #include <QGraphicsLinearLayout>
-#ifndef QT_NO_OPENGL
-#include <QtOpenGLWidgets/QOpenGLWidget>
+#ifndef BOBUI_NO_OPENGL
+#include <BobUIOpenGLWidgets/QOpenGLWidget>
 #endif
 #include <QObject>
 
@@ -107,7 +107,7 @@ qreal MainView::fps()
 void MainView::fpsReset()
 {
     m_frameCount = 0;
-    m_fpsFirstTs = QTime::currentTime();
+    m_fpsFirstTs = BOBUIime::currentTime();
     m_fpsLatestTs = m_fpsFirstTs;
     m_fpsUpdated.start();
 }
@@ -176,7 +176,7 @@ void MainView::paintEvent (QPaintEvent *event)
         emit repainted();
 
     m_frameCount++;
-    m_fpsLatestTs = QTime::currentTime();
+    m_fpsLatestTs = BOBUIime::currentTime();
     if(m_fpsUpdated.elapsed() > 2000) {
         updateFps();
         m_fpsUpdated.start();
@@ -185,7 +185,7 @@ void MainView::paintEvent (QPaintEvent *event)
 
 void MainView::keyPressEvent(QKeyEvent *event)
 {
-    if (event->key() == Qt::Key_F) {
+    if (event->key() == BobUI::Key_F) {
         if (isFullScreen())
             showNormal();
         else
@@ -224,12 +224,12 @@ void MainView::construct()
 {
     m_scene = new QGraphicsScene;
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     if (m_enableOpenGL) {
         qDebug() << "OpenGL enabled";
         setViewport(new QOpenGLWidget);
 
-        // Qt doc says: This is the preferred update mode for
+        // BobUI doc says: This is the preferred update mode for
         // viewports that do not support partial updates, such as QOpenGLWidget...
         setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
     } else
@@ -240,11 +240,11 @@ void MainView::construct()
     m_scene->setItemIndexMethod(QGraphicsScene::NoIndex);
 
     //setCacheMode(QGraphicsView::CacheBackground);
-    setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    setAlignment(BobUI::AlignLeft | BobUI::AlignTop);
 
     // Turn off automatic background
-    setAttribute(Qt::WA_OpaquePaintEvent);
-    setAttribute(Qt::WA_NoSystemBackground);
+    setAttribute(BobUI::WA_OpaquePaintEvent);
+    setAttribute(BobUI::WA_NoSystemBackground);
     setAutoFillBackground(false);
 
     //Background
@@ -257,7 +257,7 @@ void MainView::construct()
     m_scene->addItem(m_menu); //Add menu to the scene directly
     m_menu->setZValue(10); //Bring to front
 
-    m_mainLayout = new QGraphicsLinearLayout(Qt::Vertical);
+    m_mainLayout = new QGraphicsLinearLayout(BobUI::Vertical);
     m_mainLayout->setContentsMargins(0,0,0,0);
     m_mainLayout->setSpacing(0);
 
@@ -272,8 +272,8 @@ void MainView::construct()
     m_topBar->setZValue(1);
     connect(m_topBar, SIGNAL(clicked(bool)), m_menu, SLOT(menuShowHide()));
 
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setHorizontalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
+    setVerticalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
     setContentsMargins(0,0,0,0);
     setViewportMargins(0,0,0,0);
     setFrameShape(QFrame::NoFrame);

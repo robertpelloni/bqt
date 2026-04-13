@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "diagramtextitem.h"
 #include "diagramscene.h"
@@ -26,7 +26,7 @@ QVariant DiagramTextItem::itemChange(GraphicsItemChange change,
 //! [2]
 void DiagramTextItem::focusOutEvent(QFocusEvent *event)
 {
-    setTextInteractionFlags(Qt::NoTextInteraction);
+    setTextInteractionFlags(BobUI::NoTextInteraction);
     emit lostFocus(this);
     QGraphicsTextItem::focusOutEvent(event);
 }
@@ -35,8 +35,8 @@ void DiagramTextItem::focusOutEvent(QFocusEvent *event)
 //! [5]
 void DiagramTextItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (textInteractionFlags() == Qt::NoTextInteraction)
-        setTextInteractionFlags(Qt::TextEditorInteraction);
+    if (textInteractionFlags() == BobUI::NoTextInteraction)
+        setTextInteractionFlags(BobUI::TextEditorInteraction);
     QGraphicsTextItem::mouseDoubleClickEvent(event);
 }
 //! [5]

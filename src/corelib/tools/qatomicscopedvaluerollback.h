@@ -1,20 +1,20 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QATOMICSCOPEDVALUEROLLBACK_H
 #define QATOMICSCOPEDVALUEROLLBACK_H
 
-#include <QtCore/qassert.h>
-#include <QtCore/qatomic.h>
-#include <QtCore/qcompilerdetection.h>
-#include <QtCore/qtclasshelpermacros.h>
-#include <QtCore/qtconfigmacros.h>
+#include <BobUICore/qassert.h>
+#include <BobUICore/qatomic.h>
+#include <BobUICore/qcompilerdetection.h>
+#include <BobUICore/bobuiclasshelpermacros.h>
+#include <BobUICore/bobuiconfigmacros.h>
 
 #include <atomic>
 #include <type_traits>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 template <typename T>
 class QAtomicScopedValueRollback
@@ -37,7 +37,7 @@ class QAtomicScopedValueRollback
         }
         // GCC 8.x does not treat __builtin_unreachable() as constexpr
 #if !defined(Q_CC_GNU_ONLY) || (Q_CC_GNU >= 900)
-        // NOLINTNEXTLINE(qt-use-unreachable-return): Triggers on Clang, breaking GCC 8
+        // NOLINTNEXTLINE(bobui-use-unreachable-return): Triggers on Clang, breaking GCC 8
         Q_UNREACHABLE();
 #endif
         return std::memory_order_seq_cst;
@@ -55,7 +55,7 @@ class QAtomicScopedValueRollback
         }
         // GCC 8.x does not treat __builtin_unreachable() as constexpr
 #if !defined(Q_CC_GNU_ONLY) || (Q_CC_GNU >= 900)
-        // NOLINTNEXTLINE(qt-use-unreachable-return): Triggers on Clang, breaking GCC 8
+        // NOLINTNEXTLINE(bobui-use-unreachable-return): Triggers on Clang, breaking GCC 8
         Q_UNREACHABLE();
 #endif
         return std::memory_order_seq_cst;
@@ -151,6 +151,6 @@ template <typename T, typename V,
 QAtomicScopedValueRollback(QBasicAtomicPointer<T>&, V, std::memory_order)
     -> QAtomicScopedValueRollback<T*>;
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QATOMICASCOPEDVALUEROLLBACK_H

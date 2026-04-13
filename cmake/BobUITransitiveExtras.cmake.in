@@ -1,0 +1,38 @@
+# Copyright (C) 2025 The BobUI Company Ltd.
+# SPDX-License-Identifier: BSD-3-Clause
+
+# This file sets the transitive properties supported by BobUI Libraries.
+if(NOT BOBUI_NO_CREATE_TARGETS AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.30)
+    foreach(_bobui_@target@_transitive_property_type COMPILE LINK)
+        string(TOLOWER "${_bobui_@target@_transitive_property_type}"
+            _bobui_@target@_transitive_property_type_lower)
+
+        get_target_property(_bobui_@target@_transitive_properties @BOBUI_CMAKE_EXPORT_NAMESPACE@::@target@
+            _bobui_transitive_${_bobui_@target@_transitive_property_type_lower}_properties)
+        if(NOT _bobui_@target@_transitive_properties)
+            continue()
+        endif()
+
+        foreach(_bobui_@target@_transitive_property IN LISTS _bobui_@target@_transitive_properties)
+            string(TOLOWER "_bobui_internal_${_bobui_@target@_transitive_property}"
+                _bobui_@target@_transitive_property_internal)
+            get_target_property(_bobui_@target@_transitive_property_value
+                @BOBUI_CMAKE_EXPORT_NAMESPACE@::@target@ ${_bobui_@target@_transitive_property_internal})
+
+            if(_bobui_@target@_transitive_property_value)
+                _bobui_internal_add_transitive_property(@BOBUI_CMAKE_EXPORT_NAMESPACE@::@target@
+                    ${_bobui_@target@_transitive_property_type} ${_bobui_@target@_transitive_property})
+
+                set_property(TARGET @BOBUI_CMAKE_EXPORT_NAMESPACE@::@target@ PROPERTY
+                    INTERFACE_${_bobui_@target@_transitive_property}
+                    "${_bobui_@target@_transitive_property_value}")
+            endif()
+        endforeach()
+    endforeach()
+    unset(_bobui_@target@_transitive_property_value)
+    unset(_bobui_@target@_transitive_property_internal)
+    unset(_bobui_@target@_transitive_property)
+    unset(_bobui_@target@_transitive_properties)
+    unset(_bobui_@target@_transitive_property_type_lower)
+    unset(_bobui_@target@_transitive_property_type)
+endif()

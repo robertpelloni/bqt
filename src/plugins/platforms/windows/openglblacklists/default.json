@@ -1,10 +1,10 @@
 {
-    "name": "Qt built-in GPU driver blacklist",
+    "name": "BobUI built-in GPU driver blacklist",
     "version": "5.6",
     "entries": [
         {
             "id": 1,
-            "description": "Desktop OpenGL is unreliable on some Intel HD laptops (QTBUG-43263)",
+            "description": "Desktop OpenGL is unreliable on some Intel HD laptops (BOBUIBUG-43263)",
             "vendor_id": "0x8086",
             "device_id": [ "0x0A16" ],
             "os": {
@@ -33,7 +33,7 @@
        },
        {
            "id": 3,
-           "description": "No OpenGL on Intel G33/G31 (QTBUG-47522)",
+           "description": "No OpenGL on Intel G33/G31 (BOBUIBUG-47522)",
            "vendor_id": "0x8086",
            "device_id": [ "0x29C2" ],
            "os": {
@@ -45,7 +45,7 @@
        },
        {
            "id": 4,
-          "description": "Intel HD Graphics 3000 crashes when initializing the OpenGL driver (QTBUG-42240)",
+          "description": "Intel HD Graphics 3000 crashes when initializing the OpenGL driver (BOBUIBUG-42240)",
           "vendor_id": "0x8086",
           "device_id": [ "0x0102", "0x0106", "0x010A", "0x0112", "0x0116", "0x0122", "0x0126" ],
           "os": {
@@ -57,7 +57,7 @@
        },
        {
            "id": 5,
-           "description": "Intel GMA 3150 (QTBUG-43243), Mobile Intel 945GM (QTBUG-47435) crash",
+           "description": "Intel GMA 3150 (BOBUIBUG-43243), Mobile Intel 945GM (BOBUIBUG-47435) crash",
            "vendor_id": "0x8086",
            "device_id": [ "0xA001", "0xA011", "0x27A0" ],
            "os": {
@@ -69,7 +69,7 @@
         },
         {
            "id": 6,
-           "description": "Intel(R) HD Graphics 4000 / 5500 cause crashes on orientation changes in fullscreen mode (QTBUG-49541)",
+           "description": "Intel(R) HD Graphics 4000 / 5500 cause crashes on orientation changes in fullscreen mode (BOBUIBUG-49541)",
            "vendor_id": "0x8086",
            "device_id": [ "0x0166", "0x1616" ],
            "os": {
@@ -105,7 +105,7 @@
         },
         {
            "id": 9,
-           "description": "Intel 945 crash (QTBUG-40991)",
+           "description": "Intel 945 crash (BOBUIBUG-40991)",
            "vendor_id": "0x8086",
            "device_id": [ "0x27A2" ],
            "os": {
@@ -117,7 +117,7 @@
         },
         {
           "id": 10,
-          "description": "Intel(R) HD Graphics IronLake (Arrandale) crashes on makeCurrent QTBUG-53888",
+          "description": "Intel(R) HD Graphics IronLake (Arrandale) crashes on makeCurrent BOBUIBUG-53888",
           "vendor_id": "0x8086",
           "device_id": [ "0x0046" ],
           "os": {
@@ -129,7 +129,7 @@
         },
         {
           "id": 11,
-          "description": "Intel driver version 8.15.10.1749 causes GPU process hangs (QTBUG-56360)",
+          "description": "Intel driver version 8.15.10.1749 causes GPU process hangs (BOBUIBUG-56360)",
           "vendor_id": "0x8086",
           "os": {
             "type": "win"
@@ -144,7 +144,7 @@
         },
         {
            "id": 12,
-           "description": "Intel HD Graphics crash in conjunction with shader caches (QTBUG-64697) - disable for all Intel GPUs with older drivers",
+           "description": "Intel HD Graphics crash in conjunction with shader caches (BOBUIBUG-64697) - disable for all Intel GPUs with older drivers",
            "vendor_id": "0x8086",
            "os": {
                "type": "win"
@@ -159,7 +159,7 @@
         },
         {
            "id": 13,
-           "description": "Disable DesktopGL on Windows with Mobile Intel(R) 4 Series Express Chipset Family graphics card (QTBUG-58772)",
+           "description": "Disable DesktopGL on Windows with Mobile Intel(R) 4 Series Express Chipset Family graphics card (BOBUIBUG-58772)",
            "vendor_id": "0x8086",
            "device_id": [ "0x2A42" ],
            "os": {

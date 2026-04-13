@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qgraphicsitemanimation.h>
-#include <QtCore/qtimeline.h>
+#include <BobUICore/bobuiimeline.h>
 
 class tst_QGraphicsItemAnimation : public QObject
 {
@@ -28,9 +28,9 @@ void tst_QGraphicsItemAnimation::construction()
     QCOMPARE(animation.posAt(0), QPointF());
     QCOMPARE(animation.posAt(0.5), QPointF());
     QCOMPARE(animation.posAt(1), QPointF());
-    QCOMPARE(animation.transformAt(0), QTransform());
-    QCOMPARE(animation.transformAt(0.5), QTransform());
-    QCOMPARE(animation.transformAt(1), QTransform());
+    QCOMPARE(animation.transformAt(0), BOBUIransform());
+    QCOMPARE(animation.transformAt(0.5), BOBUIransform());
+    QCOMPARE(animation.transformAt(1), BOBUIransform());
     QCOMPARE(animation.rotationAt(0), qreal(0.0));
     QCOMPARE(animation.rotationAt(0.5), qreal(0.0));
     QCOMPARE(animation.rotationAt(1), qreal(0.0));
@@ -127,24 +127,24 @@ void tst_QGraphicsItemAnimation::setTimeLine()
     QGraphicsItemAnimation animation;
     QCOMPARE(animation.timeLine(), nullptr);
 
-    QPointer<QTimeLine> line1 = new QTimeLine;
+    QPointer<BOBUIimeLine> line1 = new BOBUIimeLine;
     animation.setTimeLine(line1);
-    QCOMPARE(animation.timeLine(), (QTimeLine *)line1);
+    QCOMPARE(animation.timeLine(), (BOBUIimeLine *)line1);
     animation.setTimeLine(line1);
     QVERIFY(line1);
-    QCOMPARE(animation.timeLine(), (QTimeLine *)line1);
+    QCOMPARE(animation.timeLine(), (BOBUIimeLine *)line1);
 
     animation.setTimeLine(0);
     QCOMPARE(animation.timeLine(), nullptr);
     QVERIFY(!line1);
 
-    QTimeLine *line2 = new QTimeLine;
+    BOBUIimeLine *line2 = new BOBUIimeLine;
     animation.setTimeLine(line2);
-    QCOMPARE(animation.timeLine(), (QTimeLine *)line2);
+    QCOMPARE(animation.timeLine(), (BOBUIimeLine *)line2);
 
     delete line2;
     QCOMPARE(animation.timeLine(), nullptr);
 }
 
-QTEST_MAIN(tst_QGraphicsItemAnimation)
+BOBUIEST_MAIN(tst_QGraphicsItemAnimation)
 #include "tst_qgraphicsitemanimation.moc"

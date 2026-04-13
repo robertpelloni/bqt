@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QApplication>
 #include <QAction>
@@ -20,8 +20,8 @@
 #include <QSharedPointer>
 #include <QSplitter>
 #include <QStatusBar>
-#include <QTextStream>
-#include <QToolBar>
+#include <BOBUIextStream>
+#include <BOBUIoolBar>
 #include <QWindow>
 
 #ifdef Q_OS_WIN
@@ -29,12 +29,12 @@
 #  include <QDialog>
 #  include <QDialogButtonBox>
 #  include <QVBoxLayout>
-#  include <QtGui/private/qguiapplication_p.h>
-#  include <QtGui/qpa/qplatformintegration.h>
+#  include <BobUIGui/private/qguiapplication_p.h>
+#  include <BobUIGui/qpa/qplatformintegration.h>
 #endif
 
 static bool optIgnoreTouch = false;
-static QList<Qt::GestureType> optGestures;
+static QList<BobUI::GestureType> optGestures;
 
 static QWidgetList mainWindows;
 
@@ -96,7 +96,7 @@ protected:
     }
 
 private:
-    Qt::GestureType m_type;
+    BobUI::GestureType m_type;
     QPointF m_hotSpot;
     bool m_hasHotSpot;
 };
@@ -150,25 +150,25 @@ void SwipeGesture::draw(const QRectF &rect, QPainter &painter) const
 {
     enum { arrowLength = 50, arrowHeadSize = 10 };
     const QPointF hotSpot = drawHotSpot(rect, painter);
-    drawArrow(hotSpot, arrowLength, swipeDirectionAngle(m_horizontal), Qt::red, arrowHeadSize, painter);
-    drawArrow(hotSpot, arrowLength, swipeDirectionAngle(m_vertical), Qt::green, arrowHeadSize, painter);
-    drawArrow(hotSpot, arrowLength, m_angle, Qt::blue, arrowHeadSize, painter);
+    drawArrow(hotSpot, arrowLength, swipeDirectionAngle(m_horizontal), BobUI::red, arrowHeadSize, painter);
+    drawArrow(hotSpot, arrowLength, swipeDirectionAngle(m_vertical), BobUI::green, arrowHeadSize, painter);
+    drawArrow(hotSpot, arrowLength, m_angle, BobUI::blue, arrowHeadSize, painter);
 }
 
 Gesture *Gesture::fromQGesture(const QWidget *w, const QGesture *source)
 {
     Gesture *result = nullptr;
     switch (source->gestureType()) {
-    case Qt::TapGesture:
-    case Qt::TapAndHoldGesture:
-    case Qt::PanGesture:
+    case BobUI::TapGesture:
+    case BobUI::TapAndHoldGesture:
+    case BobUI::PanGesture:
         result = new PanGesture(w, static_cast<const QPanGesture *>(source));
         break;
-    case Qt::PinchGesture:
-    case Qt::CustomGesture:
-    case Qt::LastGestureType:
+    case BobUI::PinchGesture:
+    case BobUI::CustomGesture:
+    case BobUI::LastGestureType:
         break;
-    case Qt::SwipeGesture:
+    case BobUI::SwipeGesture:
         result = new SwipeGesture(w, static_cast<const QSwipeGesture *>(source));
         break;
     }
@@ -227,7 +227,7 @@ enum PointType {
 struct Point
 {
     Point(const QPointF &p = QPoint(), PointType t = TouchPoint,
-          Qt::MouseEventSource s = Qt::MouseEventNotSynthesized, QSizeF diameters = QSizeF(4, 4)) :
+          BobUI::MouseEventSource s = BobUI::MouseEventNotSynthesized, QSizeF diameters = QSizeF(4, 4)) :
             pos(p), horizontalDiameter(qMax(2., diameters.width())),
             verticalDiameter(qMax(2., diameters.height())), type(t), source(s) {}
 
@@ -237,24 +237,24 @@ struct Point
     qreal horizontalDiameter;
     qreal verticalDiameter;
     PointType type;
-    Qt::MouseEventSource source;
+    BobUI::MouseEventSource source;
 };
 
 QColor Point::color() const
 {
-    Qt::GlobalColor globalColor = Qt::black;
+    BobUI::GlobalColor globalColor = BobUI::black;
     if (type != TouchPoint) {
         switch (source) {
-        case Qt::MouseEventSynthesizedBySystem:
-            globalColor = Qt::red;
+        case BobUI::MouseEventSynthesizedBySystem:
+            globalColor = BobUI::red;
             break;
-        case Qt::MouseEventSynthesizedByQt:
-            globalColor = Qt::blue;
+        case BobUI::MouseEventSynthesizedByBobUI:
+            globalColor = BobUI::blue;
             break;
-        case Qt::MouseEventSynthesizedByApplication:
-            globalColor = Qt::green;
+        case BobUI::MouseEventSynthesizedByApplication:
+            globalColor = BobUI::green;
             break;
-        case Qt::MouseEventNotSynthesized:
+        case BobUI::MouseEventNotSynthesized:
             break;
         }
     }
@@ -268,8 +268,8 @@ class TouchTestWidget : public QWidget {
 public:
     explicit TouchTestWidget(QWidget *parent = nullptr) : QWidget(parent), m_drawPoints(true)
     {
-        setAttribute(Qt::WA_AcceptTouchEvents);
-        for (Qt::GestureType t : optGestures)
+        setAttribute(BobUI::WA_AcceptTouchEvents);
+        for (BobUI::GestureType t : optGestures)
             grabGesture(t);
     }
 
@@ -329,7 +329,7 @@ bool TouchTestWidget::event(QEvent *event)
     case QEvent::TouchUpdate:
         if (m_drawPoints) {
             for (const QEventPoint &p : static_cast<const QPointerEvent *>(event)->points())
-                m_points.append(Point(p.position(), TouchPoint, Qt::MouseEventNotSynthesized, p.ellipseDiameters()));
+                m_points.append(Point(p.position(), TouchPoint, BobUI::MouseEventNotSynthesized, p.ellipseDiameters()));
             update();
         }
         Q_FALLTHROUGH();
@@ -354,21 +354,21 @@ void TouchTestWidget::handleGestureEvent(QGestureEvent *gestureEvent)
     for (QGesture *gesture : gestures) {
         if (optGestures.contains(gesture->gestureType())) {
             switch (gesture->state()) {
-            case Qt::NoGesture:
+            case BobUI::NoGesture:
                 break;
-            case Qt::GestureStarted:
-            case Qt::GestureUpdated:
+            case BobUI::GestureStarted:
+            case BobUI::GestureUpdated:
                 gestureEvent->accept(gesture);
                 break;
-            case Qt::GestureFinished:
+            case BobUI::GestureFinished:
                 gestureEvent->accept(gesture);
                 if (Gesture *g = Gesture::fromQGesture(this, gesture)) {
                     m_gestures.append(GesturePtr(g));
                     update();
                 }
                 break;
-            case Qt::GestureCanceled:
-                emit logMessage(QLatin1String("=== Qt::GestureCanceled ==="));
+            case BobUI::GestureCanceled:
+                emit logMessage(QLatin1String("=== BobUI::GestureCanceled ==="));
                 break;
             }
         }
@@ -380,7 +380,7 @@ void TouchTestWidget::paintEvent(QPaintEvent *)
     // Draw touch points as dots, mouse press as light filled circles, mouse release as circles.
     QPainter painter(this);
     const QRectF geom = QRectF(QPointF(0, 0), QSizeF(size()));
-    painter.fillRect(geom, Qt::white);
+    painter.fillRect(geom, BobUI::white);
     painter.drawRect(QRectF(geom.topLeft(), geom.bottomRight() - QPointF(1, 1)));
     for (const Point &point : std::as_const(m_points)) {
         if (geom.contains(point.pos)) {
@@ -504,24 +504,24 @@ MainWindow::MainWindow()
     , m_screenLabel(new QLabel)
 {
     QString title;
-    QTextStream(&title) << "Touch Event Tester " << QT_VERSION_STR << ' '
+    BOBUIextStream(&title) << "Touch Event Tester " << BOBUI_VERSION_STR << ' '
         << qApp->platformName() << " #" << (mainWindows.size() + 1);
     setWindowTitle(title);
 
     setObjectName("MainWin");
-    QToolBar *toolBar = new QToolBar(this);
-    addToolBar(Qt::TopToolBarArea, toolBar);
+    BOBUIoolBar *toolBar = new BOBUIoolBar(this);
+    addToolBar(BobUI::TopToolBarArea, toolBar);
     QMenu *fileMenu = menuBar()->addMenu("File");
     QAction *newWindowAction = fileMenu->addAction(QStringLiteral("New Window"), this, &MainWindow::newWindow);
-    newWindowAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_N));
+    newWindowAction->setShortcut(QKeySequence(BobUI::CTRL | BobUI::Key_N));
     toolBar->addAction(newWindowAction);
     fileMenu->addSeparator();
     QAction *dumpDeviceAction = fileMenu->addAction(QStringLiteral("Dump devices"));
-    dumpDeviceAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_D));
+    dumpDeviceAction->setShortcut(QKeySequence(BobUI::CTRL | BobUI::Key_D));
     connect(dumpDeviceAction, &QAction::triggered, this, &MainWindow::dumpTouchDevices);
     toolBar->addAction(dumpDeviceAction);
     QAction *clearLogAction = fileMenu->addAction(QStringLiteral("Clear Log"));
-    clearLogAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_L));
+    clearLogAction->setShortcut(QKeySequence(BobUI::CTRL | BobUI::Key_L));
     connect(clearLogAction, &QAction::triggered, m_logTextEdit, &QPlainTextEdit::clear);
     toolBar->addAction(clearLogAction);
     QAction *toggleDrawPointAction = fileMenu->addAction(QStringLiteral("Draw Points"));
@@ -530,11 +530,11 @@ MainWindow::MainWindow()
     connect(toggleDrawPointAction, &QAction::toggled, m_touchWidget, &TouchTestWidget::setDrawPoints);
     toolBar->addAction(toggleDrawPointAction);
     QAction *clearPointAction = fileMenu->addAction(QStringLiteral("Clear Points"));
-    clearPointAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_P));
+    clearPointAction->setShortcut(QKeySequence(BobUI::CTRL | BobUI::Key_P));
     connect(clearPointAction, &QAction::triggered, m_touchWidget, &TouchTestWidget::clearPoints);
     toolBar->addAction(clearPointAction);
     QAction *quitAction = fileMenu->addAction(QStringLiteral("Quit"));
-    quitAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Q));
+    quitAction->setShortcut(QKeySequence(BobUI::CTRL | BobUI::Key_Q));
     connect(quitAction, &QAction::triggered, qApp, &QCoreApplication::quit);
     toolBar->addAction(quitAction);
 
@@ -547,7 +547,7 @@ MainWindow::MainWindow()
     settingsAction->setEnabled(false);
 #endif
 
-    QSplitter *mainSplitter = new QSplitter(Qt::Vertical, this);
+    QSplitter *mainSplitter = new QSplitter(BobUI::Vertical, this);
 
     m_touchWidget->setObjectName(QStringLiteral("TouchWidget"));
     mainSplitter->addWidget(m_touchWidget);
@@ -580,12 +580,12 @@ void MainWindow::setVisible(bool visible)
 void MainWindow::updateScreenLabel()
 {
     QString text;
-    QTextStream str(&text);
+    BOBUIextStream str(&text);
     const QScreen *screen = windowHandle()->screen();
     const QRect geometry = screen->geometry();
     const qreal dpr = screen->devicePixelRatio();
     str << '"' << screen->name() << "\" " << geometry.width() << 'x' << geometry.height()
-        << Qt::forcesign << geometry.x() << geometry.y() << Qt::noforcesign;
+        << BobUI::forcesign << geometry.x() << geometry.y() << BobUI::noforcesign;
     if (!qFuzzyCompare(dpr, qreal(1)))
         str << ", dpr=" << dpr;
     m_screenLabel->setText(text);
@@ -639,15 +639,15 @@ int main(int argc, char *argv[])
     parser.process(QApplication::arguments());
     optIgnoreTouch = parser.isSet(ignoreTouchOption);
     if (parser.isSet(tapGestureOption))
-        optGestures.append(Qt::TapGesture);
+        optGestures.append(BobUI::TapGesture);
     if (parser.isSet(tapAndHoldGestureOption))
-        optGestures.append(Qt::TapAndHoldGesture);
+        optGestures.append(BobUI::TapAndHoldGesture);
     if (parser.isSet(panGestureOption))
-        optGestures.append(Qt::PanGesture);
+        optGestures.append(BobUI::PanGesture);
     if (parser.isSet(pinchGestureOption))
-        optGestures.append(Qt::PinchGesture);
+        optGestures.append(BobUI::PinchGesture);
     if (parser.isSet(swipeGestureOption))
-        optGestures.append(Qt::SwipeGesture);
+        optGestures.append(BobUI::SwipeGesture);
 
     if (!parser.isSet(noMouseLogOption))
         eventTypes << QEvent::MouseButtonPress << QEvent::MouseButtonRelease << QEvent::MouseButtonDblClick;

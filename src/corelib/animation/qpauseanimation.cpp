@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 /*!
     \class QPauseAnimation
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QPauseAnimation class provides a pause for QSequentialAnimationGroup.
     \since 4.6
     \ingroup animation
@@ -30,7 +30,7 @@
 #include "qabstractanimation_p.h"
 #include "private/qproperty_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QPauseAnimationPrivate : public QAbstractAnimationPrivate
 {
@@ -124,6 +124,6 @@ void QPauseAnimation::updateCurrentTime(int)
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qpauseanimation.cpp"

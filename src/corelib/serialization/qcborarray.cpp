@@ -1,20 +1,20 @@
 // Copyright (C) 2018 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qcborarray.h"
 #include "qcborvalue_p.h"
 #include "qdatastream.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace QtCbor;
+using namespace BobUICbor;
 
 /*!
     \class QCborArray
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup cbor
-    \ingroup qtserialization
+    \ingroup bobuiserialization
     \reentrant
     \since 5.12
 
@@ -471,7 +471,7 @@ bool QCborArray::contains(const QCborValue &value) const
     Compares \a lhs and \a rhs arrays, comparing each element in sequence, and
     returns true if both arrays contains the same elements, false otherwise.
 
-    For more information on CBOR equality in Qt, see, QCborValue::compare().
+    For more information on CBOR equality in BobUI, see, QCborValue::compare().
 
     \sa compare(), QCborValue::operator==(), QCborMap::operator==(),
         operator!=(), operator<()
@@ -483,7 +483,7 @@ bool QCborArray::contains(const QCborValue &value) const
     Compares \a lhs and \a rhs arrays, comparing each element in sequence, and
     returns true if the two arrays' contents are different, false otherwise.
 
-    For more information on CBOR equality in Qt, see, QCborValue::compare().
+    For more information on CBOR equality in BobUI, see, QCborValue::compare().
 
     \sa compare(), QCborValue::operator==(), QCborMap::operator==(),
         operator==(), operator<()
@@ -736,7 +736,7 @@ void QCborArray::detach(qsizetype reserved)
 
 /*!
     \class QCborArray::Iterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup cbor
     \since 5.12
 
@@ -995,7 +995,7 @@ void QCborArray::detach(qsizetype reserved)
 
 /*!
     \class QCborArray::ConstIterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup cbor
     \since 5.12
 
@@ -1236,7 +1236,7 @@ size_t qHash(const QCborArray &array, size_t seed)
     return qHashRange(array.begin(), array.end(), seed);
 }
 
-#if !defined(QT_NO_DEBUG_STREAM)
+#if !defined(BOBUI_NO_DEBUG_STREAM)
 QDebug operator<<(QDebug dbg, const QCborArray &a)
 {
     QDebugStateSaver saver(dbg);
@@ -1250,8 +1250,8 @@ QDebug operator<<(QDebug dbg, const QCborArray &a)
 }
 #endif
 
-#ifndef QT_NO_DATASTREAM
-#if QT_CONFIG(cborstreamwriter)
+#ifndef BOBUI_NO_DATASTREAM
+#if BOBUI_CONFIG(cborstreamwriter)
 QDataStream &operator<<(QDataStream &stream, const QCborArray &value)
 {
     stream << value.toCborValue().toCbor();
@@ -1271,4 +1271,4 @@ QDataStream &operator>>(QDataStream &stream, QCborArray &value)
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

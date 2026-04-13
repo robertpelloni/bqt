@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QGROUPBOX_H
 #define QGROUPBOX_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qframe.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qframe.h>
 
-QT_REQUIRE_CONFIG(groupbox);
+BOBUI_REQUIRE_CONFIG(groupbox);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QGroupBoxPrivate;
 class QStyleOptionGroupBox;
@@ -19,7 +19,7 @@ class Q_WIDGETS_EXPORT QGroupBox : public QWidget
     Q_OBJECT
 
     Q_PROPERTY(QString title READ title WRITE setTitle)
-    Q_PROPERTY(Qt::Alignment alignment READ alignment WRITE setAlignment)
+    Q_PROPERTY(BobUI::Alignment alignment READ alignment WRITE setAlignment)
     Q_PROPERTY(bool flat READ isFlat WRITE setFlat)
     Q_PROPERTY(bool checkable READ isCheckable WRITE setCheckable)
     Q_PROPERTY(bool checked READ isChecked WRITE setChecked NOTIFY toggled USER true)
@@ -31,7 +31,7 @@ public:
     QString title() const;
     void setTitle(const QString &title);
 
-    Qt::Alignment alignment() const;
+    BobUI::Alignment alignment() const;
     void setAlignment(int alignment);
 
     QSize minimumSizeHint() const override;
@@ -68,6 +68,6 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_setChildrenEnabled(bool b))
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QGROUPBOX_H

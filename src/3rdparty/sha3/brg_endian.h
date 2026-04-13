@@ -16,7 +16,7 @@ in respect of its operation, including, but not limited to, correctness
 and fitness for purpose.
 ---------------------------------------------------------------------------
 Issue Date: 20/12/2007
-Changes for ARM 9/9/2010 [Downstream relative to Gladman's GitHub, upstream to Qt]
+Changes for ARM 9/9/2010 [Downstream relative to Gladman's GitHub, upstream to BobUI]
 */
 
 #ifndef _BRG_ENDIAN_H

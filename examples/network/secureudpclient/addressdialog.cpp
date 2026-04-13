@@ -1,12 +1,12 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "addressdialog.h"
 #include "ui_addressdialog.h"
 
-#include <QtCore>
-#include <QtNetwork>
-#include <QtWidgets>
+#include <BobUICore>
+#include <BobUINetwork>
+#include <BobUIWidgets>
 
 #include <limits>
 

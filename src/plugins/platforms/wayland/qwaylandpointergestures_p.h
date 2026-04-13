@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWAYLANDPOINTERGESTURES_P_H
 #define QWAYLANDPOINTERGESTURES_P_H
@@ -8,23 +8,23 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWaylandClient/private/qwayland-pointer-gestures-unstable-v1.h>
+#include <BobUIWaylandClient/private/qwayland-pointer-gestures-unstable-v1.h>
 
-#include <QtWaylandClient/private/qtwaylandclientglobal_p.h>
+#include <BobUIWaylandClient/private/bobuiwaylandclientglobal_p.h>
 
-#include <QtCore/QObject>
-#include <QtCore/QPointer>
+#include <BobUICore/QObject>
+#include <BobUICore/QPointer>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 class QWaylandDisplay;
 class QWaylandWindow;
@@ -32,7 +32,7 @@ class QWaylandInputDevice;
 class QWaylandPointerGestureSwipe;
 class QWaylandPointerGesturePinch;
 
-class Q_WAYLANDCLIENT_EXPORT QWaylandPointerGestures : public QtWayland::zwp_pointer_gestures_v1
+class Q_WAYLANDCLIENT_EXPORT QWaylandPointerGestures : public BobUIWayland::zwp_pointer_gestures_v1
 {
 public:
     explicit QWaylandPointerGestures(QWaylandDisplay *display, uint id, uint version);
@@ -43,7 +43,7 @@ public:
 };
 
 class Q_WAYLANDCLIENT_EXPORT QWaylandPointerGestureSwipe :
-        public QtWayland::zwp_pointer_gesture_swipe_v1
+        public BobUIWayland::zwp_pointer_gesture_swipe_v1
 {
 public:
     QWaylandPointerGestureSwipe(QWaylandInputDevice *p);
@@ -64,7 +64,7 @@ public:
 
     struct ::zwp_pointer_gesture_swipe_v1 *zwp_pointer_gesture_swipe_v1()
     {
-        return QtWayland::zwp_pointer_gesture_swipe_v1::object();
+        return BobUIWayland::zwp_pointer_gesture_swipe_v1::object();
     }
 
     QWaylandInputDevice *mParent = nullptr;
@@ -73,7 +73,7 @@ public:
 };
 
 class Q_WAYLANDCLIENT_EXPORT QWaylandPointerGesturePinch :
-        public QtWayland::zwp_pointer_gesture_pinch_v1
+        public BobUIWayland::zwp_pointer_gesture_pinch_v1
 {
 public:
     QWaylandPointerGesturePinch(QWaylandInputDevice *p);
@@ -96,7 +96,7 @@ public:
 
     struct ::zwp_pointer_gesture_pinch_v1 *zwp_pointer_gesture_pinch_v1()
     {
-        return QtWayland::zwp_pointer_gesture_pinch_v1::object();
+        return BobUIWayland::zwp_pointer_gesture_pinch_v1::object();
     }
 
     QWaylandInputDevice *mParent = nullptr;
@@ -104,12 +104,12 @@ public:
     uint mFingers = 0;
 
     // We need to convert between absolute scale provided by wayland/libinput and zoom deltas
-    // that Qt expects. This stores the scale of the last pinch event or 1.0 if there was none.
+    // that BobUI expects. This stores the scale of the last pinch event or 1.0 if there was none.
     qreal mLastScale = 1;
 };
 
-} // namespace QtWaylandClient
+} // namespace BobUIWaylandClient
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWAYLANDPOINTERGESTURES_P_H

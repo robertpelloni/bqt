@@ -1,13 +1,13 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #define Q_ASSERT(cond) ((cond) ? static_cast<void>(0) : qCritical(#cond))
 
-#include <QTest>
+#include <BOBUIest>
 
-#include <QtGui/qpixmap.h>
-#include <QtGui/qpainter.h>
-#include <QtGui/qpainterstateguard.h>
+#include <BobUIGui/qpixmap.h>
+#include <BobUIGui/qpainter.h>
+#include <BobUIGui/qpainterstateguard.h>
 
 class tst_QPainterStateGuard : public QObject
 {
@@ -20,11 +20,11 @@ private slots:
 
 void tst_QPainterStateGuard::basics_data()
 {
-    QTest::addColumn<QPainterStateGuard::InitialState>("initialState");
-    QTest::addColumn<bool>("expectWarning");
+    BOBUIest::addColumn<QPainterStateGuard::InitialState>("initialState");
+    BOBUIest::addColumn<bool>("expectWarning");
 
-    QTest::addRow("Save") << QPainterStateGuard::InitialState::Save << false;
-    QTest::addRow("NoSave") << QPainterStateGuard::InitialState::NoSave << true;
+    BOBUIest::addRow("Save") << QPainterStateGuard::InitialState::Save << false;
+    BOBUIest::addRow("NoSave") << QPainterStateGuard::InitialState::NoSave << true;
 }
 
 void tst_QPainterStateGuard::basics()
@@ -33,10 +33,10 @@ void tst_QPainterStateGuard::basics()
     QFETCH(const bool, expectWarning);
 
     if (expectWarning) {
-        QTest::ignoreMessage(QtCriticalMsg, "m_level > 0");
-        QTest::ignoreMessage(QtWarningMsg, "QPainter::restore: Unbalanced save/restore");
+        BOBUIest::ignoreMessage(BobUICriticalMsg, "m_level > 0");
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QPainter::restore: Unbalanced save/restore");
     } else {
-        QTest::failOnWarning("QPainter::restore: Unbalanced save/restore");
+        BOBUIest::failOnWarning("QPainter::restore: Unbalanced save/restore");
     }
     QPixmap pixmap(100, 100);
     QPainter painter(&pixmap);
@@ -48,12 +48,12 @@ void tst_QPainterStateGuard::basics()
         };
         QPainterStateGuard guard = makeGuard(&painter);
 
-        painter.setPen(Qt::red);
-        QCOMPARE(painter.pen().color(), Qt::red);
+        painter.setPen(BobUI::red);
+        QCOMPARE(painter.pen().color(), BobUI::red);
 
         QPainterStateGuard guard2 = std::move(guard);
 
-        QCOMPARE(painter.pen().color(), Qt::red);
+        QCOMPARE(painter.pen().color(), BobUI::red);
 
         guard2.restore();
     }
@@ -64,6 +64,6 @@ void tst_QPainterStateGuard::basics()
         QCOMPARE(painter.pen(), defaultPen);
 }
 
-QTEST_MAIN(tst_QPainterStateGuard)
+BOBUIEST_MAIN(tst_QPainterStateGuard)
 
 #include "tst_qpainterstateguard.moc"

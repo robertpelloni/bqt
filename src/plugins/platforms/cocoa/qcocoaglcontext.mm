@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <AppKit/AppKit.h>
 
@@ -9,7 +9,7 @@
 #include "qcocoahelpers.h"
 #include "qcocoascreen.h"
 
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
 #include <qdebug.h>
 #include <dlfcn.h>
@@ -21,9 +21,9 @@ static inline QByteArray getGlString(GLenum param)
     return QByteArray();
 }
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcQpaOpenGLContext, "qt.qpa.openglcontext", QtWarningMsg);
+Q_LOGGING_CATEGORY(lcQpaOpenGLContext, "bobui.qpa.openglcontext", BobUIWarningMsg);
 
 QCocoaGLContext::QCocoaGLContext(QOpenGLContext *context)
     : QPlatformOpenGLContext()
@@ -110,7 +110,7 @@ void QCocoaGLContext::initialize()
 
     // OpenGL surfaces can be ordered either above(default) or below the NSWindow
     // FIXME: Promote to QSurfaceFormat option or property
-    const GLint order = qt_mac_resolveOption(1, "QT_MAC_OPENGL_SURFACE_ORDER");
+    const GLint order = bobui_mac_resolveOption(1, "BOBUI_MAC_OPENGL_SURFACE_ORDER");
     [m_context setValues:&order forParameter:NSOpenGLContextParameterSurfaceOrder];
 
     updateSurfaceFormat();
@@ -175,13 +175,13 @@ NSOpenGLPixelFormat *QCocoaGLContext::pixelFormatForSurfaceFormat(const QSurface
 
     //Workaround for problems with Chromium and offline renderers on the lat 2013 MacPros.
     //FIXME: Think if this could be solved via QSurfaceFormat in the future.
-    static bool offlineRenderersAllowed = qEnvironmentVariableIsEmpty("QT_MAC_PRO_WEBENGINE_WORKAROUND");
+    static bool offlineRenderersAllowed = qEnvironmentVariableIsEmpty("BOBUI_MAC_PRO_WEBENGINE_WORKAROUND");
     if (offlineRenderersAllowed) {
         // Allow rendering on GPUs without a connected display
         attrs << NSOpenGLPFAAllowOfflineRenderers;
     }
 
-    if (qGuiApp->testAttribute(Qt::AA_UseSoftwareOpenGL)) {
+    if (qGuiApp->testAttribute(BobUI::AA_UseSoftwareOpenGL)) {
         // kCGLRendererGenericFloatID is the modern software renderer on macOS,
         // as opposed to kCGLRendererGenericID, which is deprecated.
         attrs << NSOpenGLPFARendererID << kCGLRendererGenericFloatID;
@@ -242,7 +242,7 @@ void QCocoaGLContext::updateSurfaceFormat()
 
     GLint virtualScreen = [&, this]() {
         auto *platformScreen = static_cast<QCocoaScreen*>(context()->screen()->handle());
-        auto displayId = platformScreen->nativeScreen().qt_displayId;
+        auto displayId = platformScreen->nativeScreen().bobui_displayId;
         auto requestedDisplay = CGDisplayIDToOpenGLDisplayMask(displayId);
         for (int i = 0; i < pixelFormat.numberOfVirtualScreens; ++i) {
             GLint supportedDisplays;
@@ -326,7 +326,7 @@ bool QCocoaGLContext::makeCurrent(QPlatformSurface *surface)
     QMacAutoReleasePool pool;
 
     qCDebug(lcQpaOpenGLContext) << "Making" << this << "current"
-        << "in" << QThread::currentThread() << "for" << surface;
+        << "in" << BOBUIhread::currentThread() << "for" << surface;
 
     Q_ASSERT(surface->surface()->supportsOpenGL());
 
@@ -352,7 +352,7 @@ void QCocoaGLContext::beginFrame()
     Q_ASSERT(surface);
 
     qCDebug(lcQpaOpenGLContext) << "Beginning frame for" << this
-        << "in" << QThread::currentThread() << "for" << surface;
+        << "in" << BOBUIhread::currentThread() << "for" << surface;
 
     Q_ASSERT(surface->surface()->supportsOpenGL());
 
@@ -377,7 +377,7 @@ bool QCocoaGLContext::setDrawable(QPlatformSurface *surface)
         // Clear the current drawable and reset the active window, so that GL
         // commands that don't target a specific FBO will not end up stomping
         // on the previously set drawable.
-        qCDebug(lcQpaOpenGLContext) << "Clearing current drawable" << QT_IGNORE_DEPRECATIONS(m_context.view) << "for" << m_context;
+        qCDebug(lcQpaOpenGLContext) << "Clearing current drawable" << BOBUI_IGNORE_DEPRECATIONS(m_context.view) << "for" << m_context;
         [m_context clearDrawable];
         return true;
     }
@@ -386,16 +386,16 @@ bool QCocoaGLContext::setDrawable(QPlatformSurface *surface)
     auto *cocoaWindow = static_cast<QCocoaWindow *>(surface);
     QNSView *view = qnsview_cast(cocoaWindow->view());
 
-    if (view == QT_IGNORE_DEPRECATIONS(m_context.view))
+    if (view == BOBUI_IGNORE_DEPRECATIONS(m_context.view))
         return true;
 
     // We generally want high-DPI GL surfaces, unless the user has explicitly disabled them.
     // According to the documentation, layer-backed views ignore wantsBestResolutionOpenGLSurface
     // and configure their own backing surface at an appropriate resolution, but in some cases
     // we've seen this fail (plugin views embedded in surface-backed hosts), so we do it anyways.
-    QT_IGNORE_DEPRECATIONS(view.wantsBestResolutionOpenGLSurface) = qt_mac_resolveOption(YES,
+    BOBUI_IGNORE_DEPRECATIONS(view.wantsBestResolutionOpenGLSurface) = bobui_mac_resolveOption(YES,
         cocoaWindow->window(), "_q_mac_wantsBestResolutionOpenGLSurface",
-        "QT_MAC_WANTS_BEST_RESOLUTION_OPENGL_SURFACE");
+        "BOBUI_MAC_WANTS_BEST_RESOLUTION_OPENGL_SURFACE");
 
     // Setting the drawable may happen on a separate thread as a result of
     // a call to makeCurrent, so we need to set up the observers before we
@@ -404,8 +404,8 @@ bool QCocoaGLContext::setDrawable(QPlatformSurface *surface)
     // any updates to the view that require surface invalidation.
 
     auto updateCallback = [this, view]() {
-        Q_ASSERT(QThread::currentThread() == qApp->thread());
-        if (QT_IGNORE_DEPRECATIONS(m_context.view) != view)
+        Q_ASSERT(BOBUIhread::currentThread() == qApp->thread());
+        if (BOBUI_IGNORE_DEPRECATIONS(m_context.view) != view)
             return;
         m_needsUpdate = true;
     };
@@ -420,7 +420,7 @@ bool QCocoaGLContext::setDrawable(QPlatformSurface *surface)
 
     m_updateObservers.append(QMacNotificationObserver(view,
         QCocoaWindowWillReleaseQNSViewNotification, [this, view] {
-            if (QT_IGNORE_DEPRECATIONS(m_context.view) != view)
+            if (BOBUI_IGNORE_DEPRECATIONS(m_context.view) != view)
                 return;
             qCDebug(lcQpaOpenGLContext) << view << "about to be released."
                 << "Clearing current drawable for" << m_context;
@@ -433,14 +433,14 @@ bool QCocoaGLContext::setDrawable(QPlatformSurface *surface)
     // have the same effect as an update.
 
     // Now we are ready to associate the view with the context
-    QT_IGNORE_DEPRECATIONS(m_context.view) = view;
-    if (QT_IGNORE_DEPRECATIONS(m_context.view) != view) {
+    BOBUI_IGNORE_DEPRECATIONS(m_context.view) = view;
+    if (BOBUI_IGNORE_DEPRECATIONS(m_context.view) != view) {
         qCInfo(lcQpaOpenGLContext) << "Failed to set" << view << "as drawable for" << m_context;
         m_updateObservers.clear();
         return false;
     }
 
-    qCInfo(lcQpaOpenGLContext) << "Set drawable for" << m_context << "to" << QT_IGNORE_DEPRECATIONS(m_context.view);
+    qCInfo(lcQpaOpenGLContext) << "Set drawable for" << m_context << "to" << BOBUI_IGNORE_DEPRECATIONS(m_context.view);
     return true;
 }
 
@@ -457,7 +457,7 @@ void QCocoaGLContext::update()
     QMacAutoReleasePool pool;
 
     QMutexLocker locker(&s_reentrancyMutex);
-    qCInfo(lcQpaOpenGLContext) << "Updating" << m_context << "for" << QT_IGNORE_DEPRECATIONS(m_context.view);
+    qCInfo(lcQpaOpenGLContext) << "Updating" << m_context << "for" << BOBUI_IGNORE_DEPRECATIONS(m_context.view);
     [m_context update];
 }
 
@@ -466,7 +466,7 @@ void QCocoaGLContext::swapBuffers(QPlatformSurface *surface)
     QMacAutoReleasePool pool;
 
     qCDebug(lcQpaOpenGLContext) << "Swapping" << m_context
-        << "in" << QThread::currentThread() << "to" << surface;
+        << "in" << BOBUIhread::currentThread() << "to" << surface;
 
     if (surface->surface()->surfaceClass() == QSurface::Offscreen)
         return; // Nothing to do
@@ -499,7 +499,7 @@ void QCocoaGLContext::doneCurrent()
     QMacAutoReleasePool pool;
 
     qCDebug(lcQpaOpenGLContext) << "Clearing current context"
-        << [NSOpenGLContext currentContext] << "in" << QThread::currentThread();
+        << [NSOpenGLContext currentContext] << "in" << BOBUIhread::currentThread();
 
     // Note: We do not need to clear the current drawable here.
     // As long as there is no current context, GL calls will
@@ -538,7 +538,7 @@ QFunctionPointer QCocoaGLContext::getProcAddress(const char *procName)
     return (QFunctionPointer)dlsym(RTLD_NEXT, procName);
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug debug, const QCocoaGLContext *context)
 {
     QDebugStateSaver saver(debug);
@@ -552,6 +552,6 @@ QDebug operator<<(QDebug debug, const QCocoaGLContext *context)
     debug << ')';
     return debug;
 }
-#endif // !QT_NO_DEBUG_STREAM
+#endif // !BOBUI_NO_DEBUG_STREAM
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

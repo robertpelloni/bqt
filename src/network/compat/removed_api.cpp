@@ -1,13 +1,13 @@
 // Copyright (c) 2023 LLC «V Kontakte»
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#define QT_NETWORK_BUILD_REMOVED_API
+#define BOBUI_NETWORK_BUILD_REMOVED_API
 
-#include "qtnetworkglobal.h"
+#include "bobuinetworkglobal.h"
 
-QT_USE_NAMESPACE
+BOBUI_USE_NAMESPACE
 
-#if QT_NETWORK_REMOVED_SINCE(6, 7)
+#if BOBUI_NETWORK_REMOVED_SINCE(6, 7)
 
 #include "qhostinfo.h"
 
@@ -54,19 +54,19 @@ QList<QNetworkCookie> QNetworkCookie::parseCookies(const QByteArray &cookieStrin
 // // implement removed functions from qotherheader.h
 // order sections alphabetically
 
-#endif // QT_NETWORK_REMOVED_SINCE(6, 7)
+#endif // BOBUI_NETWORK_REMOVED_SINCE(6, 7)
 
-#if QT_NETWORK_REMOVED_SINCE(6, 8)
+#if BOBUI_NETWORK_REMOVED_SINCE(6, 8)
 
-#if QT_CONFIG(dnslookup)
+#if BOBUI_CONFIG(dnslookup)
 #  include "qdnslookup.h" // inlined API
 #endif
 #include "qnetworkrequest.h" // inlined API
 
 #include "qsslerror.h"
 
-#ifndef QT_NO_DEBUG_STREAM
-#if QT_CONFIG(ssl)
+#ifndef BOBUI_NO_DEBUG_STREAM
+#if BOBUI_CONFIG(ssl)
 
 #include "qdebug.h"
 
@@ -81,11 +81,11 @@ QDebug operator<<(QDebug debug, const QSslError::SslError &error)
 // // implement removed functions from qotherheader.h
 // order sections alphabetically
 
-#endif // QT_NETWORK_REMOVED_SINCE(6, 8)
+#endif // BOBUI_NETWORK_REMOVED_SINCE(6, 8)
 
-#if QT_NETWORK_REMOVED_SINCE(6, 12)
+#if BOBUI_NETWORK_REMOVED_SINCE(6, 12)
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 #include "qdebug.h"
 
 #include "qabstractsocket.h"
@@ -99,12 +99,12 @@ QDebug operator<<(QDebug debug, QAbstractSocket::SocketState state)
 {
     return operator<< <QAbstractSocket::SocketState>(std::move(debug), state);
 }
-#endif // !QT_NO_DEBUG_STREAM
+#endif // !BOBUI_NO_DEBUG_STREAM
 
-#if QT_CONFIG(localserver)
+#if BOBUI_CONFIG(localserver)
 #include "qlocalsocket.h"
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 #include "qdebug.h"
 
 QDebug operator<<(QDebug debug, QLocalSocket::LocalSocketError error)
@@ -116,12 +116,12 @@ QDebug operator<<(QDebug debug, QLocalSocket::LocalSocketState state)
 {
     return operator<< <QLocalSocket::LocalSocketState>(std::move(debug), state);
 }
-#endif // !QT_NO_DEBUG_STREAM
-#endif // QT_CONFIG(localserver)
+#endif // !BOBUI_NO_DEBUG_STREAM
+#endif // BOBUI_CONFIG(localserver)
 
 
 // #include "qotherheader.h"
 // // implement removed functions from qotherheader.h
 // order sections alphabetically
 
-#endif // QT_NETWORK_REMOVED_SINCE(6, 12)
+#endif // BOBUI_NETWORK_REMOVED_SINCE(6, 12)

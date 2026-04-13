@@ -1,38 +1,38 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qopenglshaderprogram.h"
 #include "qopenglextrafunctions.h"
 #include "private/qopenglcontext_p.h"
-#include <QtOpenGL/QOpenGLVersionFunctionsFactory>
-#include <QtCore/private/qobject_p.h>
-#include <QtCore/qdebug.h>
-#include <QtCore/qfile.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qloggingcategory.h>
-#include <QtCore/qvarlengtharray.h>
-#include <QtGui/private/qopenglprogrambinarycache_p.h>
-#include <QtGui/qtransform.h>
-#include <QtGui/QColor>
-#include <QtGui/QSurfaceFormat>
+#include <BobUIOpenGL/QOpenGLVersionFunctionsFactory>
+#include <BobUICore/private/qobject_p.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qfile.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUICore/qvarlengtharray.h>
+#include <BobUIGui/private/qopenglprogrambinarycache_p.h>
+#include <BobUIGui/bobuiransform.h>
+#include <BobUIGui/QColor>
+#include <BobUIGui/QSurfaceFormat>
 
-#if !QT_CONFIG(opengles2)
-#include <QtOpenGL/qopenglfunctions_4_0_core.h>
+#if !BOBUI_CONFIG(opengles2)
+#include <BobUIOpenGL/qopenglfunctions_4_0_core.h>
 #endif
 
 #include <algorithm>
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*!
     \class QOpenGLShaderProgram
     \brief The QOpenGLShaderProgram class allows OpenGL shader programs to be linked and used.
     \since 5.0
     \ingroup painting-3D
-    \inmodule QtOpenGL
+    \inmodule BobUIOpenGL
 
     \section1 Introduction
 
@@ -98,7 +98,7 @@ using namespace Qt::StringLiterals;
 
     \section2 Caching Program Binaries
 
-    As of Qt 5.9, support for caching program binaries on disk is built in. To
+    As of BobUI 5.9, support for caching program binaries on disk is built in. To
     enable this, switch to using addCacheableShaderFromSourceCode() and
     addCacheableShaderFromSourceFile(). With an OpenGL ES 3.x context or support
     for \c{GL_ARB_get_program_binary}, this will transparently cache program
@@ -115,7 +115,7 @@ using namespace Qt::StringLiterals;
     All data consumed by QOpenGLShaderProgram is expected to be trusted content.
     Shader source code is passed, possibly after minimal modifications, on to
     the underlying OpenGL implementation's compiler, which is a black box from
-    Qt's perspective.
+    BobUI's perspective.
 
     \warning Application developers are advised to carefully consider the
     potential implications before passing in user-provided content to functions
@@ -129,7 +129,7 @@ using namespace Qt::StringLiterals;
     \brief The QOpenGLShader class allows OpenGL shaders to be compiled.
     \since 5.0
     \ingroup painting-3D
-    \inmodule QtOpenGL
+    \inmodule BobUIOpenGL
 
     This class supports shaders written in the OpenGL Shading Language (GLSL)
     and in the OpenGL/ES Shading Language (GLSL/ES).
@@ -139,7 +139,7 @@ using namespace Qt::StringLiterals;
 
     All data consumed by QOpenGLShader is expected to be trusted content. Shader
     source code is passed, possibly after minimal modifications, on to the
-    underlying OpenGL implementation's compiler, which is a black box from Qt's
+    underlying OpenGL implementation's compiler, which is a black box from BobUI's
     perspective.
 
     \warning Application developers are advised to carefully consider the
@@ -194,7 +194,7 @@ using namespace Qt::StringLiterals;
 #define GL_PATCH_DEFAULT_INNER_LEVEL  0x8E73
 #endif
 
-#if !QT_CONFIG(opengles2)
+#if !BOBUI_CONFIG(opengles2)
 static inline bool isFormatGLES(const QSurfaceFormat &f)
 {
     return (f.renderableType() == QSurfaceFormat::OpenGLES);
@@ -208,7 +208,7 @@ static inline bool supportsGeometry(const QSurfaceFormat &f)
 
 static inline bool supportsCompute(const QSurfaceFormat &f)
 {
-#if !QT_CONFIG(opengles2)
+#if !BOBUI_CONFIG(opengles2)
     if (!isFormatGLES(f))
         return f.version() >= std::pair(4, 3);
     else
@@ -220,7 +220,7 @@ static inline bool supportsCompute(const QSurfaceFormat &f)
 
 static inline bool supportsTessellation(const QSurfaceFormat &f)
 {
-#if !QT_CONFIG(opengles2)
+#if !BOBUI_CONFIG(opengles2)
     if (!isFormatGLES(f))
         return f.version() >= std::pair(4, 0);
     else
@@ -457,7 +457,7 @@ static const char qualifierDefines[] =
     "#define mediump\n"
     "#define highp\n";
 
-#if QT_CONFIG(opengles2) && !defined(QT_OPENGL_FORCE_SHADER_DEFINES)
+#if BOBUI_CONFIG(opengles2) && !defined(BOBUI_OPENGL_FORCE_SHADER_DEFINES)
 // The "highp" qualifier doesn't exist in fragment shaders
 // on all ES platforms.  When it doesn't exist, use "mediump".
 #define QOpenGL_REDEFINE_HIGHP 1
@@ -604,7 +604,7 @@ bool QOpenGLShader::compileSourceCode(const char *source)
             sourceChunks.append(source);
             sourceChunkLengths.append(GLint(versionDirectivePosition.position));
         } else {
-            // QTBUG-55733: Intel on Windows with Compatibility profile requires a #version always
+            // BOBUIBUG-55733: Intel on Windows with Compatibility profile requires a #version always
             if (ctx->format().profile() == QSurfaceFormat::CompatibilityProfile) {
                 const char *vendor = reinterpret_cast<const char *>(ctx->functions()->glGetString(GL_VENDOR));
                 if (vendor && !strcmp(vendor, "Intel")) {
@@ -625,7 +625,7 @@ bool QOpenGLShader::compileSourceCode(const char *source)
         QOpenGLContextPrivate *ctx_d = QOpenGLContextPrivate::get(QOpenGLContext::currentContext());
         if (currentSurfaceFormat.renderableType() == QSurfaceFormat::OpenGL
                 || ctx_d->workaround_missingPrecisionQualifiers
-#ifdef QT_OPENGL_FORCE_SHADER_DEFINES
+#ifdef BOBUI_OPENGL_FORCE_SHADER_DEFINES
                 || true
 #endif
                 ) {
@@ -774,7 +774,7 @@ public:
         , inited(false)
         , removingShaders(false)
         , glfuncs(new QOpenGLExtraFunctions)
-#if !QT_CONFIG(opengles2)
+#if !BOBUI_CONFIG(opengles2)
         , tessellationFuncs(nullptr)
 #endif
         , linkBinaryRecursion(false)
@@ -792,7 +792,7 @@ public:
     QList<QOpenGLShader *> anonShaders;
 
     QOpenGLExtraFunctions *glfuncs;
-#if !QT_CONFIG(opengles2)
+#if !BOBUI_CONFIG(opengles2)
     // for tessellation features not in GLES 3.2
     QOpenGLFunctions_4_0_Core *tessellationFuncs;
 #endif
@@ -882,7 +882,7 @@ bool QOpenGLShaderProgram::init()
         return false;
     d->glfuncs->initializeOpenGLFunctions();
 
-#if !QT_CONFIG(opengles2)
+#if !BOBUI_CONFIG(opengles2)
     if (!context->isOpenGLES() && context->format().version() >= std::pair(4, 0)) {
         d->tessellationFuncs = QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_4_0_Core>(context);
         d->tessellationFuncs->initializeOpenGLFunctions();
@@ -1036,14 +1036,14 @@ bool QOpenGLShaderProgram::addShaderFromSourceFile
     Registers the shader of the specified \a type and \a source to this
     program. Unlike addShaderFromSourceCode(), this function does not perform
     compilation. Compilation is deferred to link(), and may not happen at all,
-    because link() may potentially use a program binary from Qt's shader disk
+    because link() may potentially use a program binary from BobUI's shader disk
     cache. This will typically lead to a significant increase in performance.
 
     \return true if the shader has been registered or, in the non-cached case,
     compiled successfully; false if there was an error. The compilation error
     messages can be retrieved via log().
 
-    When the disk cache is disabled, via Qt::AA_DisableShaderDiskCache for
+    When the disk cache is disabled, via BobUI::AA_DisableShaderDiskCache for
     example, or the OpenGL context has no support for context binaries, calling
     this function is equivalent to addShaderFromSourceCode().
 
@@ -1061,7 +1061,7 @@ bool QOpenGLShaderProgram::addCacheableShaderFromSourceCode(QOpenGLShader::Shade
     return addCacheableShaderFromSourceCode(type, QByteArray(source));
 }
 
-static inline QShader::Stage qt_shaderTypeToStage(QOpenGLShader::ShaderType type)
+static inline QShader::Stage bobui_shaderTypeToStage(QOpenGLShader::ShaderType type)
 {
     switch (type) {
     case QOpenGLShader::Vertex:
@@ -1080,7 +1080,7 @@ static inline QShader::Stage qt_shaderTypeToStage(QOpenGLShader::ShaderType type
     return QShader::VertexStage;
 }
 
-static inline QOpenGLShader::ShaderType qt_shaderStageToType(QShader::Stage stage)
+static inline QOpenGLShader::ShaderType bobui_shaderStageToType(QShader::Stage stage)
 {
     switch (stage) {
     case QShader::VertexStage:
@@ -1105,14 +1105,14 @@ static inline QOpenGLShader::ShaderType qt_shaderStageToType(QShader::Stage stag
     Registers the shader of the specified \a type and \a source to this
     program. Unlike addShaderFromSourceCode(), this function does not perform
     compilation. Compilation is deferred to link(), and may not happen at all,
-    because link() may potentially use a program binary from Qt's shader disk
+    because link() may potentially use a program binary from BobUI's shader disk
     cache. This will typically lead to a significant increase in performance.
 
     \return true if the shader has been registered or, in the non-cached case,
     compiled successfully; false if there was an error. The compilation error
     messages can be retrieved via log().
 
-    When the disk cache is disabled, via Qt::AA_DisableShaderDiskCache for
+    When the disk cache is disabled, via BobUI::AA_DisableShaderDiskCache for
     example, or the OpenGL context has no support for context binaries, calling
     this function is equivalent to addShaderFromSourceCode().
 
@@ -1127,7 +1127,7 @@ bool QOpenGLShaderProgram::addCacheableShaderFromSourceCode(QOpenGLShader::Shade
     if (d->isCacheDisabled())
         return addShaderFromSourceCode(type, source);
 
-    d->binaryProgram.shaders.append(QOpenGLProgramBinaryCache::ShaderDesc(qt_shaderTypeToStage(type), source));
+    d->binaryProgram.shaders.append(QOpenGLProgramBinaryCache::ShaderDesc(bobui_shaderTypeToStage(type), source));
     return true;
 }
 
@@ -1137,10 +1137,10 @@ bool QOpenGLShaderProgram::addCacheableShaderFromSourceCode(QOpenGLShader::Shade
     Registers the shader of the specified \a type and \a source to this
     program. Unlike addShaderFromSourceCode(), this function does not perform
     compilation. Compilation is deferred to link(), and may not happen at all,
-    because link() may potentially use a program binary from Qt's shader disk
+    because link() may potentially use a program binary from BobUI's shader disk
     cache. This will typically lead to a significant increase in performance.
 
-    When the disk cache is disabled, via Qt::AA_DisableShaderDiskCache for
+    When the disk cache is disabled, via BobUI::AA_DisableShaderDiskCache for
     example, or the OpenGL context has no support for context binaries, calling
     this function is equivalent to addShaderFromSourceCode().
 
@@ -1162,14 +1162,14 @@ bool QOpenGLShaderProgram::addCacheableShaderFromSourceCode(QOpenGLShader::Shade
     Registers the shader of the specified \a type and \a fileName to this
     program. Unlike addShaderFromSourceFile(), this function does not perform
     compilation. Compilation is deferred to link(), and may not happen at all,
-    because link() may potentially use a program binary from Qt's shader disk
+    because link() may potentially use a program binary from BobUI's shader disk
     cache. This will typically lead to a significant increase in performance.
 
     \return true if the file has been read successfully, false if the file could
     not be opened or the normal, non-cached compilation of the shader has
     failed. The compilation error messages can be retrieved via log().
 
-    When the disk cache is disabled, via Qt::AA_DisableShaderDiskCache for
+    When the disk cache is disabled, via BobUI::AA_DisableShaderDiskCache for
     example, or the OpenGL context has no support for context binaries, calling
     this function is equivalent to addShaderFromSourceFile().
 
@@ -1184,13 +1184,13 @@ bool QOpenGLShaderProgram::addCacheableShaderFromSourceFile(QOpenGLShader::Shade
     if (d->isCacheDisabled())
         return addShaderFromSourceFile(type, fileName);
 
-    QOpenGLProgramBinaryCache::ShaderDesc shader(qt_shaderTypeToStage(type));
+    QOpenGLProgramBinaryCache::ShaderDesc shader(bobui_shaderTypeToStage(type));
     // NB! It could be tempting to defer reading the file contents and just
     // hash the filename as the cache key, perhaps combined with last-modified
     // timestamp checks. However, this would raise a number of issues (no
     // timestamps for files in the resource system; preference for global, not
     // per-application cache items (where filenames may clash); resource-based
-    // shaders from libraries like Qt Quick; etc.), so just avoid it.
+    // shaders from libraries like BobUI Quick; etc.), so just avoid it.
     QFile f(fileName);
     if (f.open(QIODevice::ReadOnly | QIODevice::Text)) {
         shader.source = f.readAll();
@@ -1380,7 +1380,7 @@ bool QOpenGLShaderProgram::bind()
         return false;
     if (!d->linked && !link())
         return false;
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (d->programGuard->group() != QOpenGLContextGroup::currentContextGroup()) {
         qWarning("QOpenGLShaderProgram::bind: program is not valid in the current context.");
         return false;
@@ -1399,7 +1399,7 @@ bool QOpenGLShaderProgram::bind()
 void QOpenGLShaderProgram::release()
 {
     Q_D(QOpenGLShaderProgram);
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (d->programGuard && d->programGuard->group() != QOpenGLContextGroup::currentContextGroup())
         qWarning("QOpenGLShaderProgram::release: program is not valid in the current context.");
 #endif
@@ -2981,12 +2981,12 @@ void QOpenGLShaderProgram::setUniformValue(const char *name, const GLfloat value
 
 /*!
     Sets the uniform variable at \a location in the current context to a
-    3x3 transformation matrix \a value that is specified as a QTransform value.
+    3x3 transformation matrix \a value that is specified as a BOBUIransform value.
 
-    To set a QTransform value as a 4x4 matrix in a shader, use
+    To set a BOBUIransform value as a 4x4 matrix in a shader, use
     \c{setUniformValue(location, QMatrix4x4(value))}.
 */
-void QOpenGLShaderProgram::setUniformValue(int location, const QTransform& value)
+void QOpenGLShaderProgram::setUniformValue(int location, const BOBUIransform& value)
 {
     Q_D(QOpenGLShaderProgram);
     Q_UNUSED(d);
@@ -3004,13 +3004,13 @@ void QOpenGLShaderProgram::setUniformValue(int location, const QTransform& value
     \overload
 
     Sets the uniform variable called \a name in the current context to a
-    3x3 transformation matrix \a value that is specified as a QTransform value.
+    3x3 transformation matrix \a value that is specified as a BOBUIransform value.
 
-    To set a QTransform value as a 4x4 matrix in a shader, use
+    To set a BOBUIransform value as a 4x4 matrix in a shader, use
     \c{setUniformValue(name, QMatrix4x4(value))}.
 */
 void QOpenGLShaderProgram::setUniformValue
-        (const char *name, const QTransform& value)
+        (const char *name, const BOBUIransform& value)
 {
     setUniformValue(uniformLocation(name), value);
 }
@@ -3555,7 +3555,7 @@ int QOpenGLShaderProgram::patchVertexCount() const
 */
 void QOpenGLShaderProgram::setDefaultOuterTessellationLevels(const QList<float> &levels)
 {
-#if !QT_CONFIG(opengles2)
+#if !BOBUI_CONFIG(opengles2)
     Q_D(QOpenGLShaderProgram);
     if (d->tessellationFuncs) {
         QList<float> tessLevels = levels;
@@ -3595,7 +3595,7 @@ void QOpenGLShaderProgram::setDefaultOuterTessellationLevels(const QList<float> 
 */
 QList<float> QOpenGLShaderProgram::defaultOuterTessellationLevels() const
 {
-#if !QT_CONFIG(opengles2)
+#if !BOBUI_CONFIG(opengles2)
     QList<float> tessLevels(4, 1.0f);
     Q_D(const QOpenGLShaderProgram);
     if (d->tessellationFuncs)
@@ -3628,7 +3628,7 @@ QList<float> QOpenGLShaderProgram::defaultOuterTessellationLevels() const
 */
 void QOpenGLShaderProgram::setDefaultInnerTessellationLevels(const QList<float> &levels)
 {
-#if !QT_CONFIG(opengles2)
+#if !BOBUI_CONFIG(opengles2)
     Q_D(QOpenGLShaderProgram);
     if (d->tessellationFuncs) {
         QList<float> tessLevels = levels;
@@ -3668,7 +3668,7 @@ void QOpenGLShaderProgram::setDefaultInnerTessellationLevels(const QList<float> 
 */
 QList<float> QOpenGLShaderProgram::defaultInnerTessellationLevels() const
 {
-#if !QT_CONFIG(opengles2)
+#if !BOBUI_CONFIG(opengles2)
     QList<float> tessLevels(2, 1.0f);
     Q_D(const QOpenGLShaderProgram);
     if (d->tessellationFuncs)
@@ -3748,7 +3748,7 @@ bool QOpenGLShaderProgramPrivate::compileCacheable()
 {
     Q_Q(QOpenGLShaderProgram);
     for (const QOpenGLProgramBinaryCache::ShaderDesc &shader : std::as_const(binaryProgram.shaders)) {
-        auto s = std::make_unique<QOpenGLShader>(qt_shaderStageToType(shader.stage), q);
+        auto s = std::make_unique<QOpenGLShader>(bobui_shaderStageToType(shader.stage), q);
         if (!s->compileSourceCode(shader.source)) {
             log = s->log();
             return false;
@@ -3767,7 +3767,7 @@ bool QOpenGLShaderProgramPrivate::linkBinary()
     Q_Q(QOpenGLShaderProgram);
 
     const QByteArray cacheKey = binaryProgram.cacheKey();
-    if (lcOpenGLProgramDiskCache().isEnabled(QtDebugMsg))
+    if (lcOpenGLProgramDiskCache().isEnabled(BobUIDebugMsg))
         qCDebug(lcOpenGLProgramDiskCache, "program with %d shaders, cache key %s",
                 int(binaryProgram.shaders.size()), cacheKey.constData());
 
@@ -3795,6 +3795,6 @@ bool QOpenGLShaderProgramPrivate::linkBinary()
     return ok;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qopenglshaderprogram.cpp"

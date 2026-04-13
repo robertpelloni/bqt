@@ -1,19 +1,19 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qconnmannetworkinformationbackend.h"
 
-#include <QtCore/qglobal.h>
-#include <QtCore/private/qobject_p.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/private/qobject_p.h>
 
-#include <QtDBus/qdbusmessage.h>
+#include <BobUIDBus/qdbusmessage.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 Q_DECLARE_LOGGING_CATEGORY(lcNetInfoConnman)
-Q_LOGGING_CATEGORY(lcNetInfoConnman, "qt.network.info.connman")
+Q_LOGGING_CATEGORY(lcNetInfoConnman, "bobui.network.info.connman")
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 namespace {
 QNetworkInformation::Reachability reachabilityFromState(const QString &state)
@@ -109,7 +109,7 @@ void QConnManNetworkInformationBackend::onTypeChanged(const QString &type)
     setTransportMedium(medium);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "qconnmannetworkinformationbackend.moc"
 #include "moc_qconnmannetworkinformationbackend.cpp"

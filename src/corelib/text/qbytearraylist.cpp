@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2014 by Southwest Research Institute (R)
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <qbytearraylist.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*! \typedef QByteArrayListIterator
     \relates QByteArrayList
@@ -35,7 +35,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \class QByteArrayList
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 5.4
     \brief The QByteArrayList class provides a list of byte arrays.
 
@@ -103,7 +103,7 @@ static qsizetype QByteArrayList_joinedSize(const QByteArrayList *that, qsizetype
     return totalLength;
 }
 
-QByteArray QtPrivate::QByteArrayList_join(const QByteArrayList *that, const char *sep, qsizetype seplen)
+QByteArray BobUIPrivate::QByteArrayList_join(const QByteArrayList *that, const char *sep, qsizetype seplen)
 {
     QByteArray res;
     if (const qsizetype joinedSize = QByteArrayList_joinedSize(that, seplen))
@@ -117,4 +117,4 @@ QByteArray QtPrivate::QByteArrayList_join(const QByteArrayList *that, const char
     return res;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

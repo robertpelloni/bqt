@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'languagesdialog.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,30 +9,30 @@
 #ifndef LANGUAGESDIALOG_H
 #define LANGUAGESDIALOG_H
 
-#include <QtCore/QVariant>
-#include <QtGui/QIcon>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QTreeWidget>
-#include <QtWidgets/QVBoxLayout>
+#include <BobUICore/QVariant>
+#include <BobUIGui/QIcon>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QDialog>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QHeaderView>
+#include <BobUIWidgets/QPushButton>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/BOBUIoolButton>
+#include <BobUIWidgets/BOBUIreeWidget>
+#include <BobUIWidgets/QVBoxLayout>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_LanguagesDialog
 {
 public:
     QVBoxLayout *verticalLayout;
-    QTreeWidget *languagesList;
+    BOBUIreeWidget *languagesList;
     QHBoxLayout *hboxLayout;
-    QToolButton *upButton;
-    QToolButton *downButton;
-    QToolButton *removeButton;
-    QToolButton *openFileButton;
+    BOBUIoolButton *upButton;
+    BOBUIoolButton *downButton;
+    BOBUIoolButton *removeButton;
+    BOBUIoolButton *openFileButton;
     QSpacerItem *spacerItem;
     QPushButton *okButton;
 
@@ -43,7 +43,7 @@ public:
         LanguagesDialog->resize(400, 300);
         verticalLayout = new QVBoxLayout(LanguagesDialog);
         verticalLayout->setObjectName("verticalLayout");
-        languagesList = new QTreeWidget(LanguagesDialog);
+        languagesList = new BOBUIreeWidget(LanguagesDialog);
         languagesList->setObjectName("languagesList");
         languagesList->setIndentation(0);
 
@@ -51,7 +51,7 @@ public:
 
         hboxLayout = new QHBoxLayout();
         hboxLayout->setObjectName("hboxLayout");
-        upButton = new QToolButton(LanguagesDialog);
+        upButton = new BOBUIoolButton(LanguagesDialog);
         upButton->setObjectName("upButton");
         upButton->setEnabled(false);
         QIcon icon;
@@ -60,7 +60,7 @@ public:
 
         hboxLayout->addWidget(upButton);
 
-        downButton = new QToolButton(LanguagesDialog);
+        downButton = new BOBUIoolButton(LanguagesDialog);
         downButton->setObjectName("downButton");
         downButton->setEnabled(false);
         QIcon icon1;
@@ -69,7 +69,7 @@ public:
 
         hboxLayout->addWidget(downButton);
 
-        removeButton = new QToolButton(LanguagesDialog);
+        removeButton = new BOBUIoolButton(LanguagesDialog);
         removeButton->setObjectName("removeButton");
         removeButton->setEnabled(false);
         QIcon icon2;
@@ -78,7 +78,7 @@ public:
 
         hboxLayout->addWidget(removeButton);
 
-        openFileButton = new QToolButton(LanguagesDialog);
+        openFileButton = new BOBUIoolButton(LanguagesDialog);
         openFileButton->setObjectName("openFileButton");
         openFileButton->setEnabled(true);
         QIcon icon3;
@@ -109,36 +109,36 @@ public:
     void retranslateUi(QDialog *LanguagesDialog)
     {
         LanguagesDialog->setWindowTitle(QCoreApplication::translate("LanguagesDialog", "Auxiliary Languages", nullptr));
-        QTreeWidgetItem *___qtreewidgetitem = languagesList->headerItem();
-        ___qtreewidgetitem->setText(1, QCoreApplication::translate("LanguagesDialog", "File", nullptr));
-        ___qtreewidgetitem->setText(0, QCoreApplication::translate("LanguagesDialog", "Locale", nullptr));
-#if QT_CONFIG(tooltip)
+        BOBUIreeWidgetItem *___bobuireewidgetitem = languagesList->headerItem();
+        ___bobuireewidgetitem->setText(1, QCoreApplication::translate("LanguagesDialog", "File", nullptr));
+        ___bobuireewidgetitem->setText(0, QCoreApplication::translate("LanguagesDialog", "Locale", nullptr));
+#if BOBUI_CONFIG(tooltip)
         upButton->setToolTip(QCoreApplication::translate("LanguagesDialog", "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Move selected language up</p></body></html>", nullptr));
-#endif // QT_CONFIG(tooltip)
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -bobui-block-indent:0; text-indent:0px;\">Move selected language up</p></body></html>", nullptr));
+#endif // BOBUI_CONFIG(tooltip)
         upButton->setText(QCoreApplication::translate("LanguagesDialog", "up", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         downButton->setToolTip(QCoreApplication::translate("LanguagesDialog", "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;\">Move selected language down</p></body></html>", nullptr));
-#endif // QT_CONFIG(tooltip)
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -bobui-block-indent:0; text-indent:0px; font-size:8pt;\">Move selected language down</p></body></html>", nullptr));
+#endif // BOBUI_CONFIG(tooltip)
         downButton->setText(QCoreApplication::translate("LanguagesDialog", "down", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         removeButton->setToolTip(QCoreApplication::translate("LanguagesDialog", "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Remove selected language</p></body></html>", nullptr));
-#endif // QT_CONFIG(tooltip)
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -bobui-block-indent:0; text-indent:0px;\">Remove selected language</p></body></html>", nullptr));
+#endif // BOBUI_CONFIG(tooltip)
         removeButton->setText(QCoreApplication::translate("LanguagesDialog", "remove", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         openFileButton->setToolTip(QCoreApplication::translate("LanguagesDialog", "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Open auxiliary language files</p></body></html>", nullptr));
-#endif // QT_CONFIG(tooltip)
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -bobui-block-indent:0; text-indent:0px;\">Open auxiliary language files</p></body></html>", nullptr));
+#endif // BOBUI_CONFIG(tooltip)
         openFileButton->setText(QCoreApplication::translate("LanguagesDialog", "...", nullptr));
         okButton->setText(QCoreApplication::translate("LanguagesDialog", "OK", nullptr));
     } // retranslateUi
@@ -149,6 +149,6 @@ namespace Ui {
     class LanguagesDialog: public Ui_LanguagesDialog {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // LANGUAGESDIALOG_H

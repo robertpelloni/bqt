@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 #include <QLinearGradient>
 #include <QPainter>
 #include <QPainterPath>
@@ -31,9 +31,9 @@ path.cubicTo(99, 0,  50, 50,  99, 99);
 path.cubicTo(0, 99,  50, 50,  0, 0);
 
 QPainter painter(this);
-painter.fillRect(0, 0, 100, 100, Qt::white);
-painter.setPen(QPen(QColor(79, 106, 25), 1, Qt::SolidLine,
-                    Qt::FlatCap, Qt::MiterJoin));
+painter.fillRect(0, 0, 100, 100, BobUI::white);
+painter.setPen(QPen(QColor(79, 106, 25), 1, BobUI::SolidLine,
+                    BobUI::FlatCap, BobUI::MiterJoin));
 painter.setBrush(QColor(122, 163, 39));
 
 painter.drawPath(path);
@@ -153,7 +153,7 @@ QFont myFont;
 QPointF baseline(x, y);
 
 QPainterPath myPath;
-myPath.addText(baseline, myFont, tr("Qt"));
+myPath.addText(baseline, myFont, tr("BobUI"));
 
 QPainter painter(this);
 painter.setBrush(myGradient);

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "tablemodel.h"
 
@@ -36,7 +36,7 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
     if (index.row() >= contacts.size() || index.row() < 0)
         return QVariant();
 
-    if (role == Qt::DisplayRole) {
+    if (role == BobUI::DisplayRole) {
         const auto &contact = contacts.at(index.row());
 
         switch (index.column()) {
@@ -53,12 +53,12 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 //! [2]
 
 //! [3]
-QVariant TableModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant TableModel::headerData(int section, BobUI::Orientation orientation, int role) const
 {
-    if (role != Qt::DisplayRole)
+    if (role != BobUI::DisplayRole)
         return QVariant();
 
-    if (orientation == Qt::Horizontal) {
+    if (orientation == BobUI::Horizontal) {
         switch (section) {
             case 0:
                 return tr("Name");
@@ -103,7 +103,7 @@ bool TableModel::removeRows(int position, int rows, const QModelIndex &index)
 //! [6]
 bool TableModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    if (index.isValid() && role == Qt::EditRole) {
+    if (index.isValid() && role == BobUI::EditRole) {
         const int row = index.row();
         auto contact = contacts.value(row);
 
@@ -118,7 +118,7 @@ bool TableModel::setData(const QModelIndex &index, const QVariant &value, int ro
                 return false;
         }
         contacts.replace(row, contact);
-        emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
+        emit dataChanged(index, index, {BobUI::DisplayRole, BobUI::EditRole});
 
         return true;
     }
@@ -128,12 +128,12 @@ bool TableModel::setData(const QModelIndex &index, const QVariant &value, int ro
 //! [6]
 
 //! [7]
-Qt::ItemFlags TableModel::flags(const QModelIndex &index) const
+BobUI::ItemFlags TableModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return Qt::ItemIsEnabled;
+        return BobUI::ItemIsEnabled;
 
-    return QAbstractTableModel::flags(index) | Qt::ItemIsEditable;
+    return QAbstractTableModel::flags(index) | BobUI::ItemIsEditable;
 }
 //! [7]
 

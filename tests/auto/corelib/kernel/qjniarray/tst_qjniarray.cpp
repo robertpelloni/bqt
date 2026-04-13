@@ -1,14 +1,14 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
-#include <QtCore/qjnitypes.h>
-#include <QtCore/qjniarray.h>
+#include <BobUICore/qjnitypes.h>
+#include <BobUICore/qjniarray.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class tst_QJniArray : public QObject
 {
@@ -29,10 +29,10 @@ private slots:
     void mutate();
 };
 
-using namespace QtJniTypes;
+using namespace BobUIJniTypes;
 
 // fake type so that we can compile-time test and assert correct type mappings
-Q_DECLARE_JNI_CLASS(List, "qt/test/List");
+Q_DECLARE_JNI_CLASS(List, "bobui/test/List");
 
 // verify that we get the return type we expect for the specified return type
 #define VERIFY_RETURN_FOR_TYPE(In, Out) \
@@ -503,8 +503,8 @@ void tst_QJniArray::mutate()
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QTEST_MAIN(tst_QJniArray)
+BOBUIEST_MAIN(tst_QJniArray)
 
 #include "tst_qjniarray.moc"

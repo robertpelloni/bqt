@@ -5,7 +5,7 @@ OmniDash is an IoT dashboard demonstrating mobile sensor access and cloud connec
 ## Features
 - **Mobile Sensors**: Displays Accelerometer and GPS data using `OmniMobile`.
 - **Data Visualization**: Real-time charts using `OmniCharts`.
-- **Cloud Control**: Publishes MQTT messages via `OmniCloud`.
+- **Cloud Control**: Publishes MBOBUIT messages via `OmniCloud`.
 
 ## Architecture
 - **Connectivity**: `OmniPubSub` handles real-time messaging.

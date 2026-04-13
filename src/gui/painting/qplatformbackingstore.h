@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPLATFORMBACKINGSTORE_H
 #define QPLATFORMBACKINGSTORE_H
@@ -10,20 +10,20 @@
 //
 // This file is part of the QPA API and is not meant to be used
 // in applications. Usage of this API may make your code
-// source and binary incompatible with future versions of Qt.
+// source and binary incompatible with future versions of BobUI.
 //
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qloggingcategory.h>
-#include <QtCore/qrect.h>
-#include <QtCore/qobject.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUICore/qrect.h>
+#include <BobUICore/qobject.h>
 
-#include <QtGui/qwindow.h>
-#include <QtGui/qregion.h>
+#include <BobUIGui/qwindow.h>
+#include <BobUIGui/qregion.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_DECLARE_EXPORTED_QT_LOGGING_CATEGORY(lcQpaBackingStore, Q_GUI_EXPORT)
+BOBUI_DECLARE_EXPORTED_BOBUI_LOGGING_CATEGORY(lcQpaBackingStore, Q_GUI_EXPORT)
 
 class QRegion;
 class QRect;
@@ -189,6 +189,6 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QPlatformBackingStore::TextureFlags)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPLATFORMBACKINGSTORE_H

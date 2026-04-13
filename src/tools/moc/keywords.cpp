@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 // auto generated
 // DO NOT EDIT.
@@ -879,7 +879,7 @@ static const struct
     {CHARACTER, 0, 82, 422, CHARACTER},
     {CHARACTER, 0, 84, 423, CHARACTER},
     {CHARACTER, 0, 89, 424, CHARACTER},
-    {QT_ANONYMOUS_PROPERTY_TOKEN, 0, 0, 0, CHARACTER},
+    {BOBUI_ANONYMOUS_PROPERTY_TOKEN, 0, 0, 0, CHARACTER},
     {CHARACTER, 0, 85, 426, CHARACTER},
     {CHARACTER, 0, 71, 427, CHARACTER},
     {CHARACTER, 0, 73, 428, CHARACTER},
@@ -1054,7 +1054,7 @@ static const struct
     {CHARACTER, 0, 82, 597, CHARACTER},
     {CHARACTER, 0, 84, 598, CHARACTER},
     {CHARACTER, 0, 89, 599, CHARACTER},
-    {QT_ANONYMOUS_PRIVATE_PROPERTY_TOKEN, 0, 0, 0, CHARACTER},
+    {BOBUI_ANONYMOUS_PRIVATE_PROPERTY_TOKEN, 0, 0, 0, CHARACTER},
     {CHARACTER, 0, 69, 601, CHARACTER},
     {CHARACTER, 0, 86, 602, CHARACTER},
     {CHARACTER, 0, 73, 603, CHARACTER},

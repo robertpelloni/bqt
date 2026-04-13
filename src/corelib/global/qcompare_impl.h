@@ -1,22 +1,22 @@
 // Copyright (C) 2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QCOMPARE_IMPL_H
 #define QCOMPARE_IMPL_H
 
 #if 0
-#pragma qt_sync_skip_header_check
-#pragma qt_sync_stop_processing
+#pragma bobui_sync_skip_header_check
+#pragma bobui_sync_stop_processing
 #endif
 
-#include <QtCore/qtconfigmacros.h>
-#include <QtCore/qcompilerdetection.h>
+#include <BobUICore/bobuiconfigmacros.h>
+#include <BobUICore/qcompilerdetection.h>
 
 #include <type_traits>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 // [cmp.categories.pre] / 3, but using a safe bool trick
 // and also rejecting std::nullptr_t (unlike the example)
@@ -29,8 +29,8 @@ public:
     CompareAgainstLiteralZero(T) = delete;
 };
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCOMPARE_IMPL_H

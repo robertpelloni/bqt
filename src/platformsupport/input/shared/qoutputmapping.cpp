@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qoutputmapping_p.h"
 #include <QFile>
@@ -9,9 +9,9 @@
 #include <QJsonObject>
 #include <QJsonArray>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static QOutputMapping *s_outputMapping = nullptr;
 
@@ -52,7 +52,7 @@ void QOutputMapping::set(QOutputMapping *mapping)
 
 bool QDefaultOutputMapping::load()
 {
-    static QString configFile = qEnvironmentVariable("QT_QPA_EGLFS_KMS_CONFIG");
+    static QString configFile = qEnvironmentVariable("BOBUI_QPA_EGLFS_KMS_CONFIG");
     if (configFile.isEmpty())
         return false;
 
@@ -92,4 +92,4 @@ QString QDefaultOutputMapping::screenNameForDeviceNode(const QString &deviceNode
     return m_screenTable.value(deviceNode);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

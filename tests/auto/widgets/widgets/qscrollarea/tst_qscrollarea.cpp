@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qcoreapplication.h>
 #include <qdebug.h>
@@ -62,16 +62,16 @@ public:
         setBackgroundRole(QPalette::Dark);
     }
 protected:
-    QVariant inputMethodQuery(Qt::InputMethodQuery query) const override
+    QVariant inputMethodQuery(BobUI::InputMethodQuery query) const override
     {
-        if (query == Qt::ImCursorRectangle)
+        if (query == BobUI::ImCursorRectangle)
             return QRect(width() / 2, height() / 2, 5, 5);
         return QWidget::inputMethodQuery(query);
     }
 //     void paintEvent(QPaintEvent *event)
 //     {
 //         QPainter painter(this);
-//         painter.fillRect(rect(), QBrush(Qt::red));
+//         painter.fillRect(rect(), QBrush(BobUI::red));
 //     }
 };
 
@@ -87,7 +87,7 @@ void tst_QScrollArea::ensureMicroFocusVisible_Task_167838()
     parent->resize(300, 300);
     scrollArea.setWidget(parent);
     scrollArea.ensureWidgetVisible(child, 10, 10);
-    QRect microFocus = child->inputMethodQuery(Qt::ImCursorRectangle).toRect();
+    QRect microFocus = child->inputMethodQuery(BobUI::ImCursorRectangle).toRect();
     QPoint p = child->mapTo(scrollArea.viewport(), microFocus.topLeft());
     microFocus.translate(p - microFocus.topLeft());
     QVERIFY(scrollArea.viewport()->rect().contains(microFocus));
@@ -148,7 +148,7 @@ void tst_QScrollArea::checkHFW_Task_197736()
     implementation of the widget, the vertical scrollbar is needed only
     if the vertical scrollbar is visible, then we don't want it to flip
     back and forth, but rather constrain the width of the widget.
-    See QTBUG-92958.
+    See BOBUIBUG-92958.
 */
 void tst_QScrollArea::stableHeightForWidth()
 {
@@ -192,11 +192,11 @@ void tst_QScrollArea::stableHeightForWidth()
     // be less than 499, so no scrollbars would be needed anymore.
     area.resize(501, 499);
     area.show();
-    QTest::qWait(500);
+    BOBUIest::qWait(500);
     // if the scrollbar got hidden more than once, then the layout
     // isn't stable.
     QVERIFY(area.m_hideCount <= 1);
 }
 
-QTEST_MAIN(tst_QScrollArea)
+BOBUIEST_MAIN(tst_QScrollArea)
 #include "tst_qscrollarea.moc"

@@ -1,10 +1,10 @@
-# Copyright (C) 2023 The Qt Company Ltd.
+# Copyright (C) 2023 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-if(NOT QT_BUILD_STANDALONE_TESTS AND NOT QT_BUILDING_QT)
+if(NOT BOBUI_BUILD_STANDALONE_TESTS AND NOT BOBUI_BUILDING_BOBUI)
     cmake_minimum_required(VERSION 3.16)
     project(tst_qrhiwidget LANGUAGES CXX)
-    find_package(Qt6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
+    find_package(BobUI6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
 endif()
 
 file(GLOB_RECURSE qrhiwidget_resource_files
@@ -12,14 +12,14 @@ file(GLOB_RECURSE qrhiwidget_resource_files
     data/*
 )
 
-qt_internal_add_test(tst_qrhiwidget
+bobui_internal_add_test(tst_qrhiwidget
     SOURCES
         tst_qrhiwidget.cpp
     LIBRARIES
-        Qt::CorePrivate
-        Qt::Gui
-        Qt::GuiPrivate
-        Qt::Widgets
+        BobUI::CorePrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
+        BobUI::Widgets
     TESTDATA ${qrhiwidget_resource_files}
     BUILTIN_TESTDATA
 )

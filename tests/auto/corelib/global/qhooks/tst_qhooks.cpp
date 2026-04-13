@@ -1,9 +1,9 @@
 // Copyright (C) 2014 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Volker Krause <volker.krause@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
-#include <QtCore/private/qhooks_p.h>
+#include <BOBUIest>
+#include <BobUICore/private/qhooks_p.h>
 
 class tst_QHooks: public QObject
 {
@@ -18,15 +18,15 @@ private slots:
 
 void tst_QHooks::cleanup()
 {
-    qtHookData[QHooks::AddQObject] = 0;
-    qtHookData[QHooks::RemoveQObject] = 0;
+    bobuiHookData[QHooks::AddQObject] = 0;
+    bobuiHookData[QHooks::RemoveQObject] = 0;
 }
 
 void tst_QHooks::testVersion()
 {
-    QVERIFY(qtHookData[QHooks::HookDataVersion] >= 3);
-    QCOMPARE(qtHookData[QHooks::HookDataSize], (quintptr)QHooks::LastHookIndex);
-    QCOMPARE(qtHookData[QHooks::QtVersion], (quintptr)QT_VERSION);
+    QVERIFY(bobuiHookData[QHooks::HookDataVersion] >= 3);
+    QCOMPARE(bobuiHookData[QHooks::HookDataSize], (quintptr)QHooks::LastHookIndex);
+    QCOMPARE(bobuiHookData[QHooks::BobUIVersion], (quintptr)BOBUI_VERSION);
 }
 
 static int objectCount = 0;
@@ -43,11 +43,11 @@ static void objectRemoveHook(QObject*)
 
 void tst_QHooks::testAddRemoveObject()
 {
-    QCOMPARE(qtHookData[QHooks::AddQObject], (quintptr)0);
-    QCOMPARE(qtHookData[QHooks::RemoveQObject], (quintptr)0);
+    QCOMPARE(bobuiHookData[QHooks::AddQObject], (quintptr)0);
+    QCOMPARE(bobuiHookData[QHooks::RemoveQObject], (quintptr)0);
 
-    qtHookData[QHooks::AddQObject] = (quintptr)&objectAddHook;
-    qtHookData[QHooks::RemoveQObject] = (quintptr)&objectRemoveHook;
+    bobuiHookData[QHooks::AddQObject] = (quintptr)&objectAddHook;
+    bobuiHookData[QHooks::RemoveQObject] = (quintptr)&objectRemoveHook;
 
     QCOMPARE(objectCount, 0);
     QObject *obj = new QObject;
@@ -90,21 +90,21 @@ static void secondRemoveHook(QObject *object)
 // Tests that it's possible to "chain" hooks together (i.e. have multiple hooks)
 void tst_QHooks::testChaining()
 {
-    QCOMPARE(qtHookData[QHooks::AddQObject], (quintptr)0);
-    QCOMPARE(qtHookData[QHooks::RemoveQObject], (quintptr)0);
+    QCOMPARE(bobuiHookData[QHooks::AddQObject], (quintptr)0);
+    QCOMPARE(bobuiHookData[QHooks::RemoveQObject], (quintptr)0);
 
     // Set the add and remove hooks (could just skip this and go straight to the next step,
     // but it's for illustrative purposes).
-    qtHookData[QHooks::AddQObject] = (quintptr)&firstAddHook;
-    qtHookData[QHooks::RemoveQObject] = (quintptr)&firstRemoveHook;
+    bobuiHookData[QHooks::AddQObject] = (quintptr)&firstAddHook;
+    bobuiHookData[QHooks::RemoveQObject] = (quintptr)&firstRemoveHook;
 
     // Store them so that we can call them later.
-    existingAddHook = reinterpret_cast<QHooks::AddQObjectCallback>(qtHookData[QHooks::AddQObject]);
-    existingRemoveHook = reinterpret_cast<QHooks::RemoveQObjectCallback>(qtHookData[QHooks::RemoveQObject]);
+    existingAddHook = reinterpret_cast<QHooks::AddQObjectCallback>(bobuiHookData[QHooks::AddQObject]);
+    existingRemoveHook = reinterpret_cast<QHooks::RemoveQObjectCallback>(bobuiHookData[QHooks::RemoveQObject]);
 
     // Overide them with hooks that call them first.
-    qtHookData[QHooks::AddQObject] = (quintptr)&secondAddHook;
-    qtHookData[QHooks::RemoveQObject] = (quintptr)&secondRemoveHook;
+    bobuiHookData[QHooks::AddQObject] = (quintptr)&secondAddHook;
+    bobuiHookData[QHooks::RemoveQObject] = (quintptr)&secondRemoveHook;
 
     QObject *obj = new QObject;
     QCOMPARE(hookOrder.size(), 2);
@@ -118,5 +118,5 @@ void tst_QHooks::testChaining()
     hookOrder.clear();
 }
 
-QTEST_APPLESS_MAIN(tst_QHooks)
+BOBUIEST_APPLESS_MAIN(tst_QHooks)
 #include "tst_qhooks.moc"

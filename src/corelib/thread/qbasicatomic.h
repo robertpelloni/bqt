@@ -1,23 +1,23 @@
 // Copyright (C) 2011 Thiago Macieira <thiago@kde.org>
 // Copyright (C) 2018 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QBASICATOMIC_H
 #define QBASICATOMIC_H
 
-#include <QtCore/qatomic_cxx11.h>
+#include <BobUICore/qatomic_cxx11.h>
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_MSVC(4522)
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_MSVC(4522)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #if 0
-// silence syncqt warnings
-QT_END_NAMESPACE
-#pragma qt_no_master_include
-#pragma qt_sync_stop_processing
+// silence syncbobui warnings
+BOBUI_END_NAMESPACE
+#pragma bobui_no_master_include
+#pragma bobui_sync_stop_processing
 #endif
 
 template <typename T>
@@ -257,8 +257,8 @@ public:
 #  define Q_BASIC_ATOMIC_INITIALIZER(a) { (a) }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
 #endif // QBASICATOMIC_H

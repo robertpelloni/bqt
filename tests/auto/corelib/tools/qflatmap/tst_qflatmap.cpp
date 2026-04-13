@@ -1,9 +1,9 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#define QT_USE_QSTRINGBUILDER
+#define BOBUI_USE_QSTRINGBUILDER
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <private/qflatmap_p.h>
 #include <qbytearray.h>
@@ -101,11 +101,11 @@ void tst_QFlatMap::constructing()
         mv.push_back(it->second);
         sv.push_back(*it);
     }
-    auto fmFromSortedVectorCopy = Map(Qt::OrderedUniqueRange, kv, mv);
-    auto fmFromSortedVectorMove = Map(Qt::OrderedUniqueRange, Map::key_container_type(kv),
+    auto fmFromSortedVectorCopy = Map(BobUI::OrderedUniqueRange, kv, mv);
+    auto fmFromSortedVectorMove = Map(BobUI::OrderedUniqueRange, Map::key_container_type(kv),
                                       Map::mapped_container_type(mv));
-    auto fmFromSortedInitList = Map(Qt::OrderedUniqueRange, { { 1, "foo" }, { 2, "bar" } });
-    auto fmFromSortedRange = Map(Qt::OrderedUniqueRange, sv.begin(), sv.end());
+    auto fmFromSortedInitList = Map(BobUI::OrderedUniqueRange, { { 1, "foo" }, { 2, "bar" } });
+    auto fmFromSortedRange = Map(BobUI::OrderedUniqueRange, sv.begin(), sv.end());
 }
 
 void tst_QFlatMap::constAccess()
@@ -153,7 +153,7 @@ void tst_QFlatMap::insertion()
                              { "narf", "NARFFFFF" },
                              { "narf", "NARFFFFFF" } };
     m.insert(std::begin(a1), std::end(a1));
-    m.insert(Qt::OrderedUniqueRange, std::begin(a2), std::end(a2));
+    m.insert(BobUI::OrderedUniqueRange, std::begin(a2), std::end(a2));
     QCOMPARE(m.size(), 10);
     QCOMPARE(m.value("narf").data(), "NARF");
     QCOMPARE(m.value("gnampf").data(), "GNAMPF");
@@ -200,7 +200,7 @@ void tst_QFlatMap::extraction()
     using Map = QFlatMap<int, QByteArray>;
     Map::key_container_type expectedKeys = { 1, 2, 3 };
     Map::mapped_container_type expectedValues = { "een", "twee", "dree" };
-    Map m(Qt::OrderedUniqueRange, expectedKeys, expectedValues);
+    Map m(BobUI::OrderedUniqueRange, expectedKeys, expectedValues);
     auto keys = m.keys();
     auto values = m.values();
     QCOMPARE(keys, expectedKeys);
@@ -213,7 +213,7 @@ void tst_QFlatMap::extraction()
 void tst_QFlatMap::iterators()
 {
     using Map = QFlatMap<int, QByteArray>;
-    auto m = Map{ Qt::OrderedUniqueRange, { { 1, "foo" }, { 2, "bar" }, { 3, "baz" } } };
+    auto m = Map{ BobUI::OrderedUniqueRange, { { 1, "foo" }, { 2, "bar" }, { 3, "baz" } } };
     {
         // forward / backward
         Map::iterator a = m.begin();
@@ -719,7 +719,7 @@ void tst_QFlatMap::viewIterators()
 void tst_QFlatMap::varLengthArray()
 {
     using Map = QVarLengthFlatMap<int, QByteArray, 1024>;
-    Map m(Qt::OrderedUniqueRange, { { 2, "twee" } });
+    Map m(BobUI::OrderedUniqueRange, { { 2, "twee" } });
     m.insert_or_assign(1, "een");
     m.remove(1);
     QVERIFY(!m.isEmpty());
@@ -727,5 +727,5 @@ void tst_QFlatMap::varLengthArray()
     QVERIFY(m.isEmpty());
 }
 
-QTEST_APPLESS_MAIN(tst_QFlatMap)
+BOBUIEST_APPLESS_MAIN(tst_QFlatMap)
 #include "tst_qflatmap.moc"

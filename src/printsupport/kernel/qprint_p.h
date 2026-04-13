@@ -1,7 +1,7 @@
-// Copyright (C) 2022 The Qt Company Ltd.
+// Copyright (C) 2022 The BobUI Company Ltd.
 // Copyright (C) 2014 John Layt <jlayt@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QPRINT_P_H
 #define QPRINT_P_H
@@ -10,28 +10,28 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtPrintSupport/private/qtprintsupportglobal_p.h>
-#include <QtPrintSupport/qprinter.h>
+#include <BobUIPrintSupport/private/bobuiprintsupportglobal_p.h>
+#include <BobUIPrintSupport/qprinter.h>
 
-#include <QtCore/qstring.h>
-#include <QtCore/qlist.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qlist.h>
 
-#if (defined Q_OS_MACOS) || (defined Q_OS_UNIX && QT_CONFIG(cups))
+#if (defined Q_OS_MACOS) || (defined Q_OS_UNIX && BOBUI_CONFIG(cups))
 #include <cups/ppd.h>  // Use for type defs only, don't want to actually link in main module
-// ### QT_DECL_METATYPE_EXTERN_TAGGED once there's a qprint.cpp TU
+// ### BOBUI_DECL_METATYPE_EXTERN_TAGGED once there's a qprint.cpp TU
 Q_DECLARE_METATYPE(ppd_file_t *)
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
 
 // From windgdi.h
 #define DMBIN_UPPER           1
@@ -143,7 +143,7 @@ Q_PRINTSUPPORT_EXPORT QPrint::OutputBinId outputBinKeyToOutputBinId(const QByteA
 Q_PRINTSUPPORT_EXPORT QByteArray outputBinIdToOutputBinKey(QPrint::OutputBinId id);
 Q_PRINTSUPPORT_EXPORT QPrint::InputSlot paperBinToInputSlot(int windowsId, const QString &name);
 
-#    if (defined Q_OS_MACOS) || (defined Q_OS_UNIX && QT_CONFIG(cups))
+#    if (defined Q_OS_MACOS) || (defined Q_OS_UNIX && BOBUI_CONFIG(cups))
 // PPD utilities shared by CUPS and Mac plugins requiring CUPS headers
 // May turn into a proper internal QPpd class if enough shared between Mac and CUPS,
 // but where would it live?  Not in base module as don't want to link to CUPS.
@@ -155,8 +155,8 @@ Q_PRINTSUPPORT_EXPORT QPrint::DuplexMode ppdChoiceToDuplexMode(const QByteArray 
 #    endif // Mac and CUPS PPD Utilities
 };
 
-#endif // QT_NO_PRINTER
+#endif // BOBUI_NO_PRINTER
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPRINT_P_H

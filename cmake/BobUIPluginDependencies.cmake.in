@@ -1,0 +1,30 @@
+# Copyright (C) 2024 The BobUI Company Ltd.
+# SPDX-License-Identifier: BSD-3-Clause
+
+set(@target@_FOUND TRUE)
+
+# note: _third_party_deps example: "ICU\\;FALSE\\;1.0\\;i18n uc data;ZLIB\\;FALSE\\;\\;"
+set(__bobui_@target@_third_party_deps "@third_party_deps@")
+if(__bobui_@target@_third_party_deps)
+    _bobui_internal_find_third_party_dependencies("@target@" __bobui_@target@_third_party_deps)
+endif()
+unset(__bobui_@target@_third_party_deps)
+
+set(__bobui_use_no_default_path_for_bobui_packages "NO_DEFAULT_PATH")
+if(BOBUI_DISABLE_NO_DEFAULT_PATH_IN_BOBUI_PACKAGES)
+    set(__bobui_use_no_default_path_for_bobui_packages "")
+endif()
+
+# note: target_deps example: "BobUI6Core\;5.12.0;BobUI6Gui\;5.12.0"
+set(__bobui_@target@_target_deps "@target_deps@")
+set(__bobui_@target@_find_dependency_paths "@find_dependency_paths@")
+if(__bobui_@target@_target_deps)
+    _bobui_internal_find_bobui_dependencies("@target@" __bobui_@target@_target_deps
+                                      __bobui_@target@_find_dependency_paths)
+endif()
+unset(__bobui_@target@_target_deps)
+unset(__bobui_@target@_find_dependency_paths)
+
+if(__bobui_${target}_missing_deps)
+    set(@target@_FOUND FALSE)
+endif()

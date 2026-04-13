@@ -6,14 +6,14 @@
   <method name="RegisterKeystrokeListener">
     <arg direction="in" name="listener" type="o"/>
     <arg direction="in" name="keys" type="a(iisi)">
-      <annotation name="com.trolltech.QtDBus.QtTypeName.In1" value="QSpiKeyTypeArray"/>
+      <annotation name="com.trolltech.BobUIDBus.BobUITypeName.In1" value="QSpiKeyTypeArray"/>
     </arg>
     <arg direction="in" name="mask" type="u"/>
     <arg direction="in" name="type" type="au">
-      <annotation name="com.trolltech.QtDBus.QtTypeName.In3" value="QSpiEventTypeArray"/>
+      <annotation name="com.trolltech.BobUIDBus.BobUITypeName.In3" value="QSpiEventTypeArray"/>
     </arg>
     <arg direction="in" name="mode" type="(bbb)">
-      <annotation name="com.trolltech.QtDBus.QtTypeName.In4" value="QSpiEventMode"/>
+      <annotation name="com.trolltech.BobUIDBus.BobUITypeName.In4" value="QSpiEventMode"/>
     </arg>
     <arg direction="out" type="b"/>
   </method>
@@ -21,7 +21,7 @@
   <method name="DeregisterKeystrokeListener">
     <arg direction="in" name="listener" type="o"/>
     <arg direction="in" name="keys" type="a(iisi)">
-      <annotation name="com.trolltech.QtDBus.QtTypeName.In1" value="QSpiKeyTypeArray"/>
+      <annotation name="com.trolltech.BobUIDBus.BobUITypeName.In1" value="QSpiKeyTypeArray"/>
     </arg>
     <arg direction="in" name="mask" type="u"/>
     <arg direction="in" name="type" type="u"/>
@@ -54,12 +54,12 @@
   <method name="NotifyListenersSync">
     <arg direction="in" name="event" type="(uinnisb)"/>
     <arg direction="out" type="b"/>
-    <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="QSpiDeviceEvent"/>
+    <annotation name="org.bobuiproject.BobUIDBus.BobUITypeName.In0" value="QSpiDeviceEvent"/>
   </method>
 
   <method name="NotifyListenersAsync">
     <arg direction="in" name="event" type="(uinnisb)"/>
-    <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="QSpiDeviceEvent"/>
+    <annotation name="org.bobuiproject.BobUIDBus.BobUITypeName.In0" value="QSpiDeviceEvent"/>
   </method>
 
 </interface>

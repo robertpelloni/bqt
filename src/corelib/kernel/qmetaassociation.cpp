@@ -1,14 +1,14 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtCore/qmetaassociation.h>
-#include <QtCore/qmetatype.h>
+#include <BobUICore/qmetaassociation.h>
+#include <BobUICore/qmetatype.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QMetaAssociation
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 6.0
     \brief The QMetaAssociation class allows type erased access to associative containers.
 
@@ -298,7 +298,7 @@ QMetaType QMetaAssociation::mappedMetaType() const
     \class QMetaAssociation::Iterable
     \inherits QIterable
     \since 6.11
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief QMetaAssociation::Iterable is an iterable interface for an associative container in a QVariant.
 
     This class allows several methods of accessing the elements of an
@@ -358,7 +358,7 @@ QMetaType QMetaAssociation::mappedMetaType() const
     \class QMetaAssociation::Iterable::ConstIterator
     \inherits QConstIterator
     \since 6.11
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief QMetaAssociation::Iterable::ConstIterator allows iteration over a container in a QVariant.
 
     A QMetaAssociation::Iterable::ConstIterator can only be created by a
@@ -374,7 +374,7 @@ QMetaType QMetaAssociation::mappedMetaType() const
     \class QMetaAssociation::Iterable::Iterator
     \inherits QIterator
     \since 6.11
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QMetaAssociation::Iterable::Iterator allows iteration over a container in a QVariant.
 
     A QMetaAssociation::Iterable::Iterator can only be created by a
@@ -487,4 +487,4 @@ QMetaType QMetaAssociation::mappedMetaType() const
     iterator if there is one, or otherwise the key.
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

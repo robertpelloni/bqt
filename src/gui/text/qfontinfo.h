@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QFONTINFO_H
 #define QFONTINFO_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtGui/qfont.h>
-#include <QtGui/qfontvariableaxis.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUIGui/qfont.h>
+#include <BobUIGui/qfontvariableaxis.h>
 
-#include <QtCore/qshareddata.h>
+#include <BobUICore/qshareddata.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class Q_GUI_EXPORT QFontInfo
@@ -41,8 +41,8 @@ public:
 
     QList<QFontVariableAxis> variableAxes() const;
 
-#if QT_DEPRECATED_SINCE(6, 0)
-    QT_DEPRECATED_VERSION_X_6_0("Use weight() instead") int legacyWeight() const;
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use weight() instead") int legacyWeight() const;
 #endif
 
     bool exactMatch() const;
@@ -53,6 +53,6 @@ private:
 
 Q_DECLARE_SHARED(QFontInfo)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QFONTINFO_H

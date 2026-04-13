@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'qprintpropertieswidget.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,29 +9,29 @@
 #ifndef QPRINTPROPERTIESWIDGET_H
 #define QPRINTPROPERTIESWIDGET_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QTabWidget>
-#include <QtWidgets/QTreeView>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QHeaderView>
+#include <BobUIWidgets/BOBUIabWidget>
+#include <BobUIWidgets/BOBUIreeView>
+#include <BobUIWidgets/QVBoxLayout>
+#include <BobUIWidgets/QWidget>
 #include "qpagesetupdialog_unix_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_QPrintPropertiesWidget
 {
 public:
     QVBoxLayout *verticalLayout_4;
-    QTabWidget *tabs;
+    BOBUIabWidget *tabs;
     QWidget *tabPage;
     QHBoxLayout *horizontalLayout;
     QPageSetupWidget *pageSetup;
     QWidget *cupsPropertiesPage;
     QHBoxLayout *horizontalLayout_2;
-    QTreeView *treeView;
+    BOBUIreeView *treeView;
 
     void setupUi(QWidget *QPrintPropertiesWidget)
     {
@@ -41,7 +41,7 @@ public:
         verticalLayout_4 = new QVBoxLayout(QPrintPropertiesWidget);
         verticalLayout_4->setContentsMargins(0, 0, 0, 0);
         verticalLayout_4->setObjectName("verticalLayout_4");
-        tabs = new QTabWidget(QPrintPropertiesWidget);
+        tabs = new BOBUIabWidget(QPrintPropertiesWidget);
         tabs->setObjectName("tabs");
         tabPage = new QWidget();
         tabPage->setObjectName("tabPage");
@@ -57,7 +57,7 @@ public:
         cupsPropertiesPage->setObjectName("cupsPropertiesPage");
         horizontalLayout_2 = new QHBoxLayout(cupsPropertiesPage);
         horizontalLayout_2->setObjectName("horizontalLayout_2");
-        treeView = new QTreeView(cupsPropertiesPage);
+        treeView = new BOBUIreeView(cupsPropertiesPage);
         treeView->setObjectName("treeView");
         treeView->setAlternatingRowColors(true);
 
@@ -89,6 +89,6 @@ namespace Ui {
     class QPrintPropertiesWidget: public Ui_QPrintPropertiesWidget {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPRINTPROPERTIESWIDGET_H

@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QLIBRARY_H
 #define QLIBRARY_H
 
-#include <QtCore/qobject.h>
-#include <QtCore/qtaggedpointer.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/bobuiaggedpointer.h>
 
-QT_REQUIRE_CONFIG(library);
+BOBUI_REQUIRE_CONFIG(library);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QLibraryPrivate;
 
@@ -64,12 +64,12 @@ private:
     };
 
     friend class QLibraryPrivate;
-    QTaggedPointer<QLibraryPrivate, LoadStatusTag> d = nullptr;
+    BOBUIaggedPointer<QLibraryPrivate, LoadStatusTag> d = nullptr;
     Q_DISABLE_COPY(QLibrary)
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QLibrary::LoadHints)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif //QLIBRARY_H

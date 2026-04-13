@@ -1,30 +1,30 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandglcontext_p.h"
 
-#include <QtWaylandClient/private/qwaylanddisplay_p.h>
-#include <QtWaylandClient/private/qwaylandwindow_p.h>
-#include <QtWaylandClient/private/qwaylandsubsurface_p.h>
-#include <QtWaylandClient/private/qwaylandabstractdecoration_p.h>
-#include <QtWaylandClient/private/qwaylandintegration_p.h>
+#include <BobUIWaylandClient/private/qwaylanddisplay_p.h>
+#include <BobUIWaylandClient/private/qwaylandwindow_p.h>
+#include <BobUIWaylandClient/private/qwaylandsubsurface_p.h>
+#include <BobUIWaylandClient/private/qwaylandabstractdecoration_p.h>
+#include <BobUIWaylandClient/private/qwaylandintegration_p.h>
 #include "qwaylandeglwindow_p.h"
 
 #include <QDebug>
-#include <QtGui/private/qeglconvenience_p.h>
-#include <QtGui/private/qopenglcontext_p.h>
-#include <QtOpenGL/private/qopengltexturecache_p.h>
-#include <QtGui/private/qguiapplication_p.h>
-#include <QtGui/private/qeglpbuffer_p.h>
+#include <BobUIGui/private/qeglconvenience_p.h>
+#include <BobUIGui/private/qopenglcontext_p.h>
+#include <BobUIOpenGL/private/qopengltexturecache_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qeglpbuffer_p.h>
 
 
 #include <qpa/qplatformopenglcontext.h>
-#include <QtGui/QSurfaceFormat>
-#include <QtOpenGL/QOpenGLShaderProgram>
-#include <QtGui/QOpenGLFunctions>
+#include <BobUIGui/QSurfaceFormat>
+#include <BobUIOpenGL/QOpenGLShaderProgram>
+#include <BobUIGui/QOpenGLFunctions>
 #include <QOpenGLBuffer>
 
-#include <QtCore/qmutex.h>
+#include <BobUICore/qmutex.h>
 
 #include <dlfcn.h>
 
@@ -96,9 +96,9 @@
 #define EGL_GENERATE_RESET_ON_VIDEO_MEMORY_PURGE_NV 0x334C
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 class DecorationsBlitter : public QOpenGLFunctions
 {
@@ -254,7 +254,7 @@ QWaylandGLContext::QWaylandGLContext(EGLDisplay eglDisplay, QWaylandDisplay *dis
     }
     {
         bool ok;
-        int supportNonBlockingSwap = qEnvironmentVariableIntValue("QT_WAYLAND_FORCE_NONBLOCKING_SWAP_SUPPORT", &ok);
+        int supportNonBlockingSwap = qEnvironmentVariableIntValue("BOBUI_WAYLAND_FORCE_NONBLOCKING_SWAP_SUPPORT", &ok);
         if (ok)
             m_supportNonBlockingSwap = supportNonBlockingSwap != 0;
     }
@@ -269,7 +269,7 @@ EGLSurface QWaylandGLContext::createTemporaryOffscreenSurface()
 {
     m_wlSurface = m_display->createSurface(nullptr);
     m_eglWindow = wl_egl_window_create(m_wlSurface, 1, 1);
-#if QT_CONFIG(egl_extension_platform_wayland)
+#if BOBUI_CONFIG(egl_extension_platform_wayland)
     EGLSurface eglSurface =
             eglCreatePlatformWindowSurface(eglDisplay(), eglConfig(), m_eglWindow, nullptr);
 #else
@@ -290,7 +290,7 @@ void QWaylandGLContext::destroyTemporaryOffscreenSurface(EGLSurface eglSurface)
 void QWaylandGLContext::runGLChecks()
 {
     bool ok;
-    const int doneCurrentWorkAround = qEnvironmentVariableIntValue("QT_WAYLAND_ENABLE_DONECURRENT_WORKAROUND", &ok);
+    const int doneCurrentWorkAround = qEnvironmentVariableIntValue("BOBUI_WAYLAND_ENABLE_DONECURRENT_WORKAROUND", &ok);
     if (ok) {
         m_doneCurrentWorkAround = doneCurrentWorkAround != 0;
         if (m_doneCurrentWorkAround)
@@ -304,7 +304,7 @@ void QWaylandGLContext::runGLChecks()
         const char *renderer = reinterpret_cast<const char *>(glGetString(GL_RENDERER));
         if (renderer && strstr(renderer, "Mali")) {
             qCDebug(lcQpaWayland) << "Enabling doneCurrent() workaround for Mali GPU."
-                                  << "Set QT_WAYLAND_ENABLE_DONECURRENT_WORKAROUND=0 to disable.";
+                                  << "Set BOBUI_WAYLAND_ENABLE_DONECURRENT_WORKAROUND=0 to disable.";
             m_doneCurrentWorkAround = true;
         }
     }
@@ -515,4 +515,4 @@ EGLSurface QWaylandGLContext::eglSurfaceForPlatformSurface(QPlatformSurface *sur
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

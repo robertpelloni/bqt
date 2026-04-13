@@ -1,13 +1,13 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtTest/private/qabstracttestlogger_p.h>
-#include <QtTest/qtestassert.h>
+#include <BobUITest/private/qabstracttestlogger_p.h>
+#include <BobUITest/bobuiestassert.h>
 #include <qbenchmark_p.h>
-#include <qtestresult_p.h>
+#include <bobuiestresult_p.h>
 
-#include <QtCore/qbytearray.h>
-#include <QtCore/qstring.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qstring.h>
 
 #include <cstdio>
 
@@ -27,17 +27,17 @@
 #include <sys/stat.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 /*!
     \internal
     \class QAbstractTestLogger
-    \inmodule QtTest
+    \inmodule BobUITest
     \brief Base class for test loggers
 
-    Implementations of logging for QtTest should implement all pure virtual
+    Implementations of logging for BobUITest should implement all pure virtual
     methods of this class and may implement the other virtual methods. This
     class's documentation of each virtual method sets out how those
-    implementations are invoked by the QtTest code and offers guidance on how
+    implementations are invoked by the BobUITest code and offers guidance on how
     the logging class should use the data. Actual implementations may have
     different requirements - such as a file format with a defined schema, or a
     target audience to serve - that affect how it interprets that guidance.
@@ -71,7 +71,7 @@ QT_BEGIN_NAMESPACE
     unreliably. When testing is used to decide whether a change to the code
     under test is acceptable, such failures are not automatic grounds for
     rejecting the change, if the unreliable failure was known before the
-    change. QTest::qExec(), as a result, only returns a failing status code if
+    change. BOBUIest::qExec(), as a result, only returns a failing status code if
     some non-blacklisted test failed. Logging backends may reasonably report a
     blacklisted result just as they would report the non-blacklisted equivalent,
     optionally with some annotation to indicate that the result should not be
@@ -84,27 +84,27 @@ QT_BEGIN_NAMESPACE
     \enum QAbstractTestLogger::MessageTypes
 
     The members whose names begin with \c Q describe messages that originate in
-    calls, by the test or code under test, to Qt logging functions (implemented
+    calls, by the test or code under test, to BobUI logging functions (implemented
     as macros) whose names are similar, with a \c q in place of the leading \c
-    Q. The other members describe messages generated internally by QtTest.
+    Q. The other members describe messages generated internally by BobUITest.
 
     \value QInfo An informational message from qInfo().
     \value QWarning A warning from qWarning().
     \value QDebug A debug message from qDebug().
     \value QCritical A critical error from qCritical().
     \value QFatal A fatal error from qFatal(), or an unrecognised message from
-           the Qt logging functions.
-    \value Info Messages QtTest generates as requested by the \c{-v1} or \c{-v2}
+           the BobUI logging functions.
+    \value Info Messages BobUITest generates as requested by the \c{-v1} or \c{-v2}
            command-line option being specified when running the test.
-    \value Warn A warning generated internally by QtTest
+    \value Warn A warning generated internally by BobUITest
 
-    \note For these purposes, some utilities provided by QtTestlib as helper
+    \note For these purposes, some utilities provided by BobUITestlib as helper
     functions to facilitate testing - such as \l QSignalSpy, \l
-    QTestAccessibility, \l QTest::qExtractTestData(), and the facilities to
+    BOBUIestAccessibility, \l BOBUIest::qExtractTestData(), and the facilities to
     deliver artificial mouse and keyboard events - are treated as test code,
-    rather than internal to QtTest; they call \l qWarning() and friends rather
+    rather than internal to BobUITest; they call \l qWarning() and friends rather
     than using the internal logging infrastructure, so that \l
-    QTest::ignoreMessage() can be used to anticipate the messages.
+    BOBUIest::ignoreMessage() can be used to anticipate the messages.
 
     \sa QAbstractTestLogger::addMessage()
 */
@@ -147,7 +147,7 @@ QAbstractTestLogger::QAbstractTestLogger(const char *filename)
 */
 QAbstractTestLogger::~QAbstractTestLogger()
 {
-    QTEST_ASSERT(stream);
+    BOBUIEST_ASSERT(stream);
     if (stream != stdout)
         fclose(stream);
     stream = nullptr;
@@ -201,8 +201,8 @@ void QAbstractTestLogger::filterUnprintable(char *str) const
 */
 void QAbstractTestLogger::outputString(const char *msg)
 {
-    QTEST_ASSERT(stream);
-    QTEST_ASSERT(msg);
+    BOBUIEST_ASSERT(stream);
+    BOBUIEST_ASSERT(msg);
 
 #if defined(Q_OS_WINDOWS)
 #define isatty _isatty
@@ -233,7 +233,7 @@ void QAbstractTestLogger::outputString(const char *msg)
     This virtual method is called before the first tests are run. A logging
     implementation might open a file, write some preamble, or prepare in other
     ways, such as setting up initial values of variables. It can use the usual
-    Qt logging infrastucture, since it is also called before QtTest installs its
+    BobUI logging infrastucture, since it is also called before BobUITest installs its
     own custom message handler.
 
     \sa stopLogging()
@@ -247,8 +247,8 @@ void QAbstractTestLogger::startLogging()
 
     This virtual method is called after all tests have run. A logging
     implementation might collate information gathered from the run, write a
-    summary, or close a file. It can use the usual Qt logging infrastucture,
-    since it is also called after QtTest has restored the default message
+    summary, or close a file. It can use the usual BobUI logging infrastucture,
+    since it is also called after BobUITest has restored the default message
     handler it replaced with its own custom message handler.
 
     \sa startLogging()
@@ -298,7 +298,7 @@ void QAbstractTestLogger::addBenchmarkResults(const QList<QBenchmarkResult> &res
     \sa enterTestFunction(), enterTestData()
 */
 /*!
-    \fn void QAbstractTestLogger::enterTestData(QTestData *)
+    \fn void QAbstractTestLogger::enterTestData(BOBUIestData *)
 
     This virtual method is called before and after each call to a test
     function. For a data-driven test, the call before is passed the name of the
@@ -328,7 +328,7 @@ void QAbstractTestLogger::addBenchmarkResults(const QList<QBenchmarkResult> &res
     a single run of a test on a single dataset. It is the implementation's
     responsibility to recognize such cases and decide what to do about them. For
     purposes of counting resolutions of tests in the "Totals" report at the end
-    of a test run, QtTest considers the first incident (excluding XFail and its
+    of a test run, BobUITest considers the first incident (excluding XFail and its
     blacklisted variant) decisive.
 
     \sa addMessage(), addBenchmarkResult()
@@ -348,10 +348,10 @@ void QAbstractTestLogger::addBenchmarkResults(const QList<QBenchmarkResult> &res
     \overload
     \fn void QAbstractTestLogger::addMessage(MessageTypes type, const QString &message, const char *file, int line)
 
-    This virtual method is called, via its \c QtMsgType overload, from the
-    custom message handler QtTest installs. It is also used to
-    warn about various situations detected by QtTest itself, such
-    as \e failure to see a message anticipated by QTest::ignoreMessage() and,
+    This virtual method is called, via its \c BobUIMsgType overload, from the
+    custom message handler BobUITest installs. It is also used to
+    warn about various situations detected by BobUITest itself, such
+    as \e failure to see a message anticipated by BOBUIest::ignoreMessage() and,
     particularly when verbosity options have been enabled via the command-line,
     to log some extra information.
 
@@ -361,15 +361,15 @@ void QAbstractTestLogger::addBenchmarkResults(const QList<QBenchmarkResult> &res
     \a file and \a line number within it are also supplied; otherwise, these are
     \nullptr and 0, respectively.
 
-    \sa QTest::ignoreMessage(), addIncident()
+    \sa BOBUIest::ignoreMessage(), addIncident()
 */
 
 /*!
     \overload
 
-    This virtual method is called from the custom message handler QtTest
-    installs in place of Qt's default message handler for the duration of
-    testing, unless QTest::ignoreMessage() was used to ignore it, or too many
+    This virtual method is called from the custom message handler BobUITest
+    installs in place of BobUI's default message handler for the duration of
+    testing, unless BOBUIest::ignoreMessage() was used to ignore it, or too many
     messages have previously been processed. (The limiting number of messages is
     controlled by the -maxwarnings option to a test and defaults to 2002.)
 
@@ -379,18 +379,18 @@ void QAbstractTestLogger::addBenchmarkResults(const QList<QBenchmarkResult> &res
     forwards the converted type and formatted message to the overload that takes
     MessageType and QString.
 
-    \sa QTest::ignoreMessage(), addIncident()
+    \sa BOBUIest::ignoreMessage(), addIncident()
 */
-void QAbstractTestLogger::addMessage(QtMsgType type, const QMessageLogContext &context,
+void QAbstractTestLogger::addMessage(BobUIMsgType type, const QMessageLogContext &context,
                                      const QString &message)
 {
     QAbstractTestLogger::MessageTypes messageType = [=]() {
         switch (type) {
-        case QtDebugMsg: return QAbstractTestLogger::QDebug;
-        case QtInfoMsg: return QAbstractTestLogger::QInfo;
-        case QtCriticalMsg: return QAbstractTestLogger::QCritical;
-        case QtWarningMsg: return QAbstractTestLogger::QWarning;
-        case QtFatalMsg: return QAbstractTestLogger::QFatal;
+        case BobUIDebugMsg: return QAbstractTestLogger::QDebug;
+        case BobUIInfoMsg: return QAbstractTestLogger::QInfo;
+        case BobUICriticalMsg: return QAbstractTestLogger::QCritical;
+        case BobUIWarningMsg: return QAbstractTestLogger::QWarning;
+        case BobUIFatalMsg: return QAbstractTestLogger::QFatal;
         }
         Q_UNREACHABLE_RETURN(QAbstractTestLogger::QFatal);
     }();
@@ -398,7 +398,7 @@ void QAbstractTestLogger::addMessage(QtMsgType type, const QMessageLogContext &c
     QString formattedMessage = qFormatLogMessage(type, context, message);
 
     // Note that we explicitly ignore the file and line of the context here,
-    // as that's what QTest::messageHandler used to do when calling the same
+    // as that's what BOBUIest::messageHandler used to do when calling the same
     // overload directly.
     addMessage(messageType, formattedMessage);
 }
@@ -408,14 +408,14 @@ namespace
     constexpr int MAXSIZE = 1024 * 1024 * 2;
 }
 
-namespace QTest
+namespace BOBUIest
 {
 
 /*!
-    \fn int QTest::qt_asprintf(QTestCharBuffer *buf, const char *format, ...);
+    \fn int BOBUIest::bobui_asprintf(BOBUIestCharBuffer *buf, const char *format, ...);
     \internal
  */
-int qt_asprintf(QTestCharBuffer *str, const char *format, ...)
+int bobui_asprintf(BOBUIestCharBuffer *str, const char *format, ...)
 {
     Q_ASSERT(str);
     int size = str->size();
@@ -444,30 +444,30 @@ int qt_asprintf(QTestCharBuffer *str, const char *format, ...)
 
 }
 
-namespace QTestPrivate
+namespace BOBUIestPrivate
 {
 
-void generateTestIdentifier(QTestCharBuffer *identifier, int parts)
+void generateTestIdentifier(BOBUIestCharBuffer *identifier, int parts)
 {
-    const char *testObject = parts & TestObject ? QTestResult::currentTestObjectName() : "";
-    const char *testFunction = parts & TestFunction ? (QTestResult::currentTestFunction() ? QTestResult::currentTestFunction() : "UnknownTestFunc") : "";
+    const char *testObject = parts & TestObject ? BOBUIestResult::currentTestObjectName() : "";
+    const char *testFunction = parts & TestFunction ? (BOBUIestResult::currentTestFunction() ? BOBUIestResult::currentTestFunction() : "UnknownTestFunc") : "";
     const char *objectFunctionFiller = parts & TestObject && parts & (TestFunction | TestDataTag) ? "::" : "";
     const char *testFuctionStart = parts & TestFunction ? "(" : "";
     const char *testFuctionEnd = parts & TestFunction ? ")" : "";
 
-    const char *dataTag = (parts & TestDataTag) && QTestResult::currentDataTag() ? QTestResult::currentDataTag() : "";
-    const char *globalDataTag = (parts & TestDataTag) && QTestResult::currentGlobalDataTag() ? QTestResult::currentGlobalDataTag() : "";
+    const char *dataTag = (parts & TestDataTag) && BOBUIestResult::currentDataTag() ? BOBUIestResult::currentDataTag() : "";
+    const char *globalDataTag = (parts & TestDataTag) && BOBUIestResult::currentGlobalDataTag() ? BOBUIestResult::currentGlobalDataTag() : "";
     const char *tagFiller = (dataTag[0] && globalDataTag[0]) ? ":" : "";
 
-    QTest::qt_asprintf(identifier, "%s%s%s%s%s%s%s%s",
+    BOBUIest::bobui_asprintf(identifier, "%s%s%s%s%s%s%s%s",
         testObject, objectFunctionFiller, testFunction, testFuctionStart,
         globalDataTag, tagFiller, dataTag, testFuctionEnd);
 }
 
-// strcat() for QTestCharBuffer objects:
-bool appendCharBuffer(QTestCharBuffer *accumulator, const QTestCharBuffer &more)
+// strcat() for BOBUIestCharBuffer objects:
+bool appendCharBuffer(BOBUIestCharBuffer *accumulator, const BOBUIestCharBuffer &more)
 {
-    const auto bufsize = [](const QTestCharBuffer &buf) -> int {
+    const auto bufsize = [](const BOBUIestCharBuffer &buf) -> int {
         const int max = buf.size();
         return max > 0 ? int(qstrnlen(buf.constData(), max)) : 0;
     };
@@ -488,4 +488,4 @@ bool appendCharBuffer(QTestCharBuffer *accumulator, const QTestCharBuffer &more)
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

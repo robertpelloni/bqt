@@ -1,24 +1,24 @@
 // Copyright (C) 2014 BogDan Vatra <bogdan@kde.org>
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef ANDROIDPLATFORMWINDOW_H
 #define ANDROIDPLATFORMWINDOW_H
 #include <qobject.h>
 #include <qrect.h>
 #include <qpa/qplatformwindow.h>
-#include <QtCore/qjnienvironment.h>
-#include <QtCore/qjniobject.h>
-#include <QtCore/qjnitypes.h>
-#include <QtCore/qloggingcategory.h>
-#include <QtCore/qmutex.h>
-#include <QtCore/qwaitcondition.h>
+#include <BobUICore/qjnienvironment.h>
+#include <BobUICore/qjniobject.h>
+#include <BobUICore/qjnitypes.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUICore/qmutex.h>
+#include <BobUICore/qwaitcondition.h>
 #include <jni.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcQpaWindow)
-Q_DECLARE_JNI_CLASS(QtWindow, "org/qtproject/qt/android/QtWindow")
+Q_DECLARE_JNI_CLASS(BobUIWindow, "org/bobuiproject/bobui/android/BobUIWindow")
 Q_DECLARE_JNI_CLASS(Surface, "android/view/Surface")
 Q_DECLARE_JNI_CLASS(Insets, "android/graphics/Insets")
 
@@ -41,8 +41,8 @@ public:
 
     void setVisible(bool visible) override;
 
-    void setWindowState(Qt::WindowStates state) override;
-    void setWindowFlags(Qt::WindowFlags flags) override;
+    void setWindowState(BobUI::WindowStates state) override;
+    void setWindowFlags(BobUI::WindowFlags flags) override;
     void setParent(const QPlatformWindow *window) override;
 
     WId winId() const override;
@@ -57,17 +57,17 @@ public:
 
     void propagateSizeHints() override;
     void requestActivateWindow() override;
-    void updateSystemUiVisibility(Qt::WindowStates states, Qt::WindowFlags flags);
+    void updateSystemUiVisibility(BobUI::WindowStates states, BobUI::WindowFlags flags);
     void updateFocusedEditText();
     inline bool isRaster() const { return m_isRaster; }
     bool isExposed() const override;
-    QtJniTypes::QtWindow nativeWindow() const { return m_nativeQtWindow; }
+    BobUIJniTypes::BobUIWindow nativeWindow() const { return m_nativeBobUIWindow; }
 
-    virtual void applicationStateChanged(Qt::ApplicationState);
+    virtual void applicationStateChanged(BobUI::ApplicationState);
     int nativeViewId() const { return m_nativeViewId; }
 
     static bool registerNatives(QJniEnvironment &env);
-    void onSurfaceChanged(QtJniTypes::Surface surface);
+    void onSurfaceChanged(BobUIJniTypes::Surface surface);
 
     void lockSurface() { m_surfaceMutex.lock(); }
     void unlockSurface() { m_surfaceMutex.unlock(); }
@@ -88,15 +88,15 @@ protected:
     bool m_isRaster;
 
     int m_nativeViewId = -1;
-    QtJniTypes::QtWindow m_nativeQtWindow;
+    BobUIJniTypes::BobUIWindow m_nativeBobUIWindow;
     SurfaceContainer m_surfaceContainerType = SurfaceContainer::SurfaceView;
-    QtJniTypes::QtWindow m_nativeParentQtWindow;
+    BobUIJniTypes::BobUIWindow m_nativeParentBobUIWindow;
     // The Android Surface, accessed from multiple threads, guarded by m_surfaceMutex.
-    // If the window is using QtSurface, which is a SurfaceView subclass, this Surface will be
-    // automatically created by Android when QtSurface is in a layout and visible. If the
-    // QtSurface is detached or hidden (app goes to background), Android will automatically
+    // If the window is using BobUISurface, which is a SurfaceView subclass, this Surface will be
+    // automatically created by Android when BobUISurface is in a layout and visible. If the
+    // BobUISurface is detached or hidden (app goes to background), Android will automatically
     // destroy the Surface.
-    QtJniTypes::Surface m_androidSurfaceObject;
+    BobUIJniTypes::Surface m_androidSurfaceObject;
     QWaitCondition m_surfaceWaitCondition;
     bool m_androidSurfaceCreated = false;
     QMutex m_surfaceMutex;
@@ -105,15 +105,15 @@ protected:
     QMargins m_safeAreaMargins;
 
 private:
-    static void setSurface(JNIEnv *env, jobject obj, jint windowId, QtJniTypes::Surface surface);
+    static void setSurface(JNIEnv *env, jobject obj, jint windowId, BobUIJniTypes::Surface surface);
     Q_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE(setSurface)
     static void windowFocusChanged(JNIEnv *env, jobject object, jboolean focus, jint windowId);
     Q_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE(windowFocusChanged)
-    static void safeAreaMarginsChanged(JNIEnv *env, jobject obj, QtJniTypes::Insets insets, jint  id);
+    static void safeAreaMarginsChanged(JNIEnv *env, jobject obj, BobUIJniTypes::Insets insets, jint  id);
     Q_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE(safeAreaMarginsChanged)
 
     [[nodiscard]] QMutexLocker<QMutex> destructionGuard();
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 #endif // ANDROIDPLATFORMWINDOW_H

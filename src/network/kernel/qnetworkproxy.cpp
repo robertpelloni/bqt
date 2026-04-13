@@ -1,6 +1,6 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 
 /*!
@@ -13,11 +13,11 @@
     \reentrant
     \ingroup network
     \ingroup shared
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     QNetworkProxy provides the method for configuring network layer
-    proxy support to the Qt network classes. The currently supported
-    classes are QAbstractSocket, QTcpSocket, QUdpSocket, QTcpServer
+    proxy support to the BobUI network classes. The currently supported
+    classes are QAbstractSocket, BOBUIcpSocket, QUdpSocket, BOBUIcpServer
     and QNetworkAccessManager. The proxy support is designed to
     be as transparent as possible. This means that existing
     network-enabled applications that you have written should
@@ -27,7 +27,7 @@
 
     An alternative to setting an application wide proxy is to specify
     the proxy for individual sockets using QAbstractSocket::setProxy()
-    and QTcpServer::setProxy(). In this way, it is possible to disable
+    and BOBUIcpServer::setProxy(). In this way, it is possible to disable
     the use of a proxy for specific sockets using the following code:
 
     \snippet code/src_network_kernel_qnetworkproxy.cpp 1
@@ -35,7 +35,7 @@
     Network proxy is not used if the address used in \l
     {QAbstractSocket::connectToHost()}{connectToHost()}, \l
     {QUdpSocket::bind()}{bind()} or \l
-    {QTcpServer::listen()}{listen()} is equivalent to
+    {BOBUIcpServer::listen()}{listen()} is equivalent to
     QHostAddress::LocalHost or QHostAddress::LocalHostIPv6.
 
     Each type of proxy support has certain restrictions associated with it.
@@ -47,7 +47,7 @@
 
     \section1 SOCKS5
 
-    The SOCKS5 support since Qt 4 is based on
+    The SOCKS5 support since BobUI 4 is based on
     \l{http://www.rfc-editor.org/rfc/rfc1928.txt}{RFC 1928} and
     \l{http://www.rfc-editor.org/rfc/rfc1929.txt}{RFC 1929}.
     The supported authentication methods are no authentication and
@@ -56,7 +56,7 @@
     the QNetworkProxy::HostNameLookupCapability is enabled, otherwise
     they are resolved locally and the IP address is sent to the
     server. There are several things to remember when using SOCKS5
-    with QUdpSocket and QTcpServer:
+    with QUdpSocket and BOBUIcpServer:
 
     With QUdpSocket, a call to \l {QUdpSocket::bind()}{bind()} may fail
     with a timeout error. If a port number other than 0 is passed to
@@ -67,26 +67,26 @@
     address and port number in use. Because proxied UDP goes through
     two UDP connections, it is more likely that packets will be dropped.
 
-    With QTcpServer a call to \l{QTcpServer::listen()}{listen()} may
+    With BOBUIcpServer a call to \l{BOBUIcpServer::listen()}{listen()} may
     fail with a timeout error. If a port number other than 0 is passed
-    to \l{QTcpServer::listen()}{listen()}, then it is not guaranteed
+    to \l{BOBUIcpServer::listen()}{listen()}, then it is not guaranteed
     that it is the specified port that will be used.
-    Use \l{QTcpServer::serverPort()}{serverPort()} and
-    \l{QTcpServer::serverAddress()}{serverAddress()} to get the actual
+    Use \l{BOBUIcpServer::serverPort()}{serverPort()} and
+    \l{BOBUIcpServer::serverAddress()}{serverAddress()} to get the actual
     address and port used to listen for connections. SOCKS5 only supports
-    one accepted connection per call to \l{QTcpServer::listen()}{listen()},
+    one accepted connection per call to \l{BOBUIcpServer::listen()}{listen()},
     and each call is likely to result in a different
-    \l{QTcpServer::serverPort()}{serverPort()} being used.
+    \l{BOBUIcpServer::serverPort()}{serverPort()} being used.
 
-    \sa QAbstractSocket, QTcpServer
+    \sa QAbstractSocket, BOBUIcpServer
 */
 
 /*!
     \enum QNetworkProxy::ProxyType
 
-    This enum describes the types of network proxying provided in Qt.
+    This enum describes the types of network proxying provided in BobUI.
 
-    There are two types of proxies that Qt understands:
+    There are two types of proxies that BobUI understands:
     transparent proxies and caching proxies. The first group consists
     of proxies that can handle any arbitrary data transfer, while the
     second can only handle specific requests. The caching proxies only
@@ -139,7 +139,7 @@
 
     Also note that you shouldn't set the application default proxy
     (setApplicationProxy()) to a proxy that doesn't have the
-    TunnelingCapability capability. If you do, QTcpSocket will not
+    TunnelingCapability capability. If you do, BOBUIcpSocket will not
     know how to open connections.
 
     \sa setType(), type(), capabilities(), setCapabilities()
@@ -189,14 +189,14 @@
 
 #include "qnetworkproxy.h"
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
 
 #include "private/qnetworkrequest_p.h"
-#if QT_CONFIG(socks5)
+#if BOBUI_CONFIG(socks5)
 #include "private/qsocks5socketengine_p.h"
 #endif
 
-#if QT_CONFIG(http)
+#if BOBUI_CONFIG(http)
 #include "private/qhttpsocketengine_p.h"
 #endif
 
@@ -206,11 +206,11 @@
 #include "qstringlist.h"
 #include "qurl.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-QT_IMPL_METATYPE_EXTERN(QNetworkProxy)
+BOBUI_IMPL_METATYPE_EXTERN(QNetworkProxy)
 
 class QSocks5SocketEngineHandler;
 class QHttpSocketEngineHandler;
@@ -221,22 +221,22 @@ public:
     QGlobalNetworkProxy()
         : applicationLevelProxy(nullptr)
         , applicationLevelProxyFactory(nullptr)
-#if QT_CONFIG(socks5)
+#if BOBUI_CONFIG(socks5)
         , socks5SocketEngineHandler(nullptr)
 #endif
-#if QT_CONFIG(http)
+#if BOBUI_CONFIG(http)
         , httpSocketEngineHandler(nullptr)
 #endif
-#ifdef QT_USE_SYSTEM_PROXIES
+#ifdef BOBUI_USE_SYSTEM_PROXIES
         , useSystemProxies(true)
 #else
         , useSystemProxies(false)
 #endif
     {
-#if QT_CONFIG(socks5)
+#if BOBUI_CONFIG(socks5)
         socks5SocketEngineHandler = new QSocks5SocketEngineHandler();
 #endif
-#if QT_CONFIG(http)
+#if BOBUI_CONFIG(http)
         httpSocketEngineHandler = new QHttpSocketEngineHandler();
 #endif
     }
@@ -245,10 +245,10 @@ public:
     {
         delete applicationLevelProxy;
         delete applicationLevelProxyFactory;
-#if QT_CONFIG(socks5)
+#if BOBUI_CONFIG(socks5)
         delete socks5SocketEngineHandler;
 #endif
-#if QT_CONFIG(http)
+#if BOBUI_CONFIG(http)
         delete httpSocketEngineHandler;
 #endif
     }
@@ -305,10 +305,10 @@ private:
     QRecursiveMutex mutex;
     QNetworkProxy *applicationLevelProxy;
     QNetworkProxyFactory *applicationLevelProxyFactory;
-#if QT_CONFIG(socks5)
+#if BOBUI_CONFIG(socks5)
     QSocks5SocketEngineHandler *socks5SocketEngineHandler;
 #endif
-#if QT_CONFIG(http)
+#if BOBUI_CONFIG(http)
     QHttpSocketEngineHandler *httpSocketEngineHandler;
 #endif
     bool useSystemProxies;
@@ -336,7 +336,7 @@ QList<QNetworkProxy> QGlobalNetworkProxy::proxyForQuery(const QNetworkProxyQuery
         } else if (useSystemProxies) {
             result = QNetworkProxyFactory::systemProxyForQuery(query);
 
-            // Make sure NoProxy is in the list, so that QTcpServer can work:
+            // Make sure NoProxy is in the list, so that BOBUIcpServer can work:
             // it searches for the first proxy that can has the ListeningCapability capability
             // if none have (as is the case with HTTP proxies), it fails to bind.
             // NoProxy allows it to fallback to the 'no proxy' case and bind.
@@ -364,8 +364,8 @@ namespace {
     template<> struct StaticAssertTest<true> { enum { Value = 1 }; };
 }
 
-static inline void qt_noop_with_arg(int) {}
-#define q_static_assert(expr)   qt_noop_with_arg(sizeof(StaticAssertTest< expr >::Value))
+static inline void bobui_noop_with_arg(int) {}
+#define q_static_assert(expr)   bobui_noop_with_arg(sizeof(StaticAssertTest< expr >::Value))
 
 static QNetworkProxy::Capabilities defaultCapabilitiesForType(QNetworkProxy::ProxyType type)
 {
@@ -599,7 +599,7 @@ QNetworkProxy::Capabilities QNetworkProxy::capabilities() const
     Returns \c true if this proxy supports the
     QNetworkProxy::CachingCapability capability.
 
-    In Qt 4.4, the capability was tied to the proxy type, but since Qt
+    In BobUI 4.4, the capability was tied to the proxy type, but since BobUI
     4.5 it is possible to remove the capability of caching from a
     proxy by calling setCapabilities().
 
@@ -617,7 +617,7 @@ bool QNetworkProxy::isCachingProxy() const
     connections. This matches the QNetworkProxy::TunnelingCapability
     capability.
 
-    In Qt 4.4, the capability was tied to the proxy type, but since Qt
+    In BobUI 4.4, the capability was tied to the proxy type, but since BobUI
     4.5 it is possible to remove the capability of caching from a
     proxy by calling setCapabilities().
 
@@ -711,7 +711,7 @@ quint16 QNetworkProxy::port() const
 /*!
     Sets the application level network proxying to be \a networkProxy.
 
-    If a QAbstractSocket or QTcpSocket has the
+    If a QAbstractSocket or BOBUIcpSocket has the
     QNetworkProxy::DefaultProxy type, then the QNetworkProxy set with
     this function is used. If you want more flexibility in determining
     which proxy is used, use the QNetworkProxyFactory class.
@@ -721,7 +721,7 @@ quint16 QNetworkProxy::port() const
     QNetworkProxyFactory::setApplicationProxyFactory, and disable the
     use of a system proxy.
 
-    \sa QNetworkProxyFactory, applicationProxy(), QAbstractSocket::setProxy(), QTcpServer::setProxy()
+    \sa QNetworkProxyFactory, applicationProxy(), QAbstractSocket::setProxy(), BOBUIcpServer::setProxy()
 */
 void QNetworkProxy::setApplicationProxy(const QNetworkProxy &networkProxy)
 {
@@ -737,11 +737,11 @@ void QNetworkProxy::setApplicationProxy(const QNetworkProxy &networkProxy)
 /*!
     Returns the application level network proxying.
 
-    If a QAbstractSocket or QTcpSocket has the
+    If a QAbstractSocket or BOBUIcpSocket has the
     QNetworkProxy::DefaultProxy type, then the QNetworkProxy returned
     by this function is used.
 
-    \sa QNetworkProxyFactory, setApplicationProxy(), QAbstractSocket::proxy(), QTcpServer::proxy()
+    \sa QNetworkProxyFactory, setApplicationProxy(), QAbstractSocket::proxy(), BOBUIcpServer::proxy()
 */
 QNetworkProxy QNetworkProxy::applicationProxy()
 {
@@ -944,7 +944,7 @@ template<> void QSharedDataPointer<QNetworkProxyQueryPrivate>::detach()
     \class QNetworkProxyQuery
     \since 4.5
     \ingroup shared
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
     \brief The QNetworkProxyQuery class is used to query the proxy
     settings for a socket.
 
@@ -970,14 +970,14 @@ template<> void QSharedDataPointer<QNetworkProxyQueryPrivate>::detach()
 
     The destination host name is the host in the connection in the
     case of outgoing connection sockets. It is the \c hostName
-    parameter passed to QTcpSocket::connectToHost() or the host
+    parameter passed to BOBUIcpSocket::connectToHost() or the host
     component of a URL requested with QNetworkRequest.
 
     The destination port number is the requested port to connect to in
     the case of outgoing sockets, while the local port number is the
     port the socket wishes to use locally before attempting the
     external connection. In most cases, the local port number is used
-    by listening sockets only (QTcpSocket) or by datagram sockets
+    by listening sockets only (BOBUIcpSocket) or by datagram sockets
     (QUdpSocket).
 
     The protocol name is an arbitrary string that indicates the type
@@ -1000,8 +1000,8 @@ template<> void QSharedDataPointer<QNetworkProxyQueryPrivate>::detach()
     \row
       \li TcpSocket
       \li Normal sockets requesting a connection to a remote server,
-         like QTcpSocket. The peer hostname and peer port match the
-         values passed to QTcpSocket::connectToHost(). The local port
+         like BOBUIcpSocket. The peer hostname and peer port match the
+         values passed to BOBUIcpSocket::connectToHost(). The local port
          is usually -1, indicating the socket has no preference in
          which port should be used. The URL component is not used.
 
@@ -1358,7 +1358,7 @@ void QNetworkProxyQuery::setUrl(const QUrl &url)
     \since 4.5
 
     \ingroup network
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     QNetworkProxyFactory is an extension to QNetworkProxy, allowing
     applications to have a more fine-grained control over which proxy
@@ -1369,7 +1369,7 @@ void QNetworkProxyQuery::setUrl(const QUrl &url)
     QNetworkProxyFactory can be set globally for an application, in
     which case it will override any global proxies set with
     QNetworkProxy::setApplicationProxy(). If set globally, any sockets
-    created with Qt will query the factory to determine the proxy to
+    created with BobUI will query the factory to determine the proxy to
     be used.
 
     A factory can also be set in certain frameworks that support
@@ -1446,8 +1446,8 @@ void QNetworkProxyFactory::setUseSystemConfiguration(bool enable)
 
     The application-wide proxy is used as a last-resort when all other
     proxy selection requests returned QNetworkProxy::DefaultProxy. For
-    example, QTcpSocket objects can have a proxy set with
-    QTcpSocket::setProxy, but if none is set, the proxy factory class
+    example, BOBUIcpSocket objects can have a proxy set with
+    BOBUIcpSocket::setProxy, but if none is set, the proxy factory class
     set with this function will be queried.
 
     If you set a proxy factory with this function, any application
@@ -1525,7 +1525,7 @@ void QNetworkProxyFactory::setApplicationProxyFactory(QNetworkProxyFactory *fact
     \section1 Limitations
 
     These are the limitations for the current version of this
-    function. Future versions of Qt may lift some of the limitations
+    function. Future versions of BobUI may lift some of the limitations
     listed here.
 
     \list
@@ -1547,7 +1547,7 @@ QList<QNetworkProxy> QNetworkProxyFactory::proxyForQuery(const QNetworkProxyQuer
     return globalNetworkProxy()->proxyForQuery(query);
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug debug, const QNetworkProxy &proxy)
 {
     QDebugStateSaver saver(debug);
@@ -1613,8 +1613,8 @@ QDebug operator<<(QDebug debug, const QNetworkProxyQuery &proxyQuery)
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qnetworkproxy.cpp"
 
-#endif // QT_NO_NETWORKPROXY
+#endif // BOBUI_NO_NETWORKPROXY

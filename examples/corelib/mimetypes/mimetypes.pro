@@ -1,4 +1,4 @@
 TEMPLATE = subdirs
 
-qtHaveModule(widgets): SUBDIRS += \
+bobuiHaveModule(widgets): SUBDIRS += \
     mimetypebrowser

@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "characterwidget.h"
 
 #include <QFontDatabase>
 #include <QMouseEvent>
 #include <QPainter>
-#include <QToolTip>
+#include <BOBUIoolTip>
 
 //! [0]
 CharacterWidget::CharacterWidget(QWidget *parent)
@@ -79,14 +79,14 @@ void CharacterWidget::mouseMoveEvent(QMouseEvent *event)
                   + QChar(key)
                   + QString::fromLatin1("</span><p>Value: 0x")
                   + QString::number(key, 16);
-    QToolTip::showText(event->globalPosition().toPoint(), text, this);
+    BOBUIoolTip::showText(event->globalPosition().toPoint(), text, this);
 }
 //! [4]
 
 //! [5]
 void CharacterWidget::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton) {
+    if (event->button() == BobUI::LeftButton) {
         lastKey = (event->position().toPoint().y() / squareSize) * columns + event->position().toPoint().x() / squareSize;
         if (QChar(lastKey).category() != QChar::Other_NotAssigned)
             emit characterSelected(QString(QChar(lastKey)));
@@ -101,7 +101,7 @@ void CharacterWidget::mousePressEvent(QMouseEvent *event)
 void CharacterWidget::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
-    painter.fillRect(event->rect(), QBrush(Qt::white));
+    painter.fillRect(event->rect(), QBrush(BobUI::white));
     painter.setFont(displayFont);
 //! [6]
 
@@ -114,7 +114,7 @@ void CharacterWidget::paintEvent(QPaintEvent *event)
 //! [7]
 
 //! [8]
-    painter.setPen(QPen(Qt::gray));
+    painter.setPen(QPen(BobUI::gray));
     for (int row = beginRow; row <= endRow; ++row) {
         for (int column = beginColumn; column <= endColumn; ++column) {
             painter.drawRect(column * squareSize, row * squareSize, squareSize, squareSize);
@@ -125,7 +125,7 @@ void CharacterWidget::paintEvent(QPaintEvent *event)
 
 //! [10]
     QFontMetrics fontMetrics(displayFont);
-    painter.setPen(QPen(Qt::black));
+    painter.setPen(QPen(BobUI::black));
     for (int row = beginRow; row <= endRow; ++row) {
         for (int column = beginColumn; column <= endColumn; ++column) {
             int key = row * columns + column;
@@ -133,7 +133,7 @@ void CharacterWidget::paintEvent(QPaintEvent *event)
 
             if (key == lastKey)
                 painter.fillRect(column * squareSize + 1, row * squareSize + 1,
-                                 squareSize, squareSize, QBrush(Qt::red));
+                                 squareSize, squareSize, QBrush(BobUI::red));
 
             painter.drawText(column * squareSize + (squareSize / 2) -
                                  fontMetrics.horizontalAdvance(QChar(key)) / 2,

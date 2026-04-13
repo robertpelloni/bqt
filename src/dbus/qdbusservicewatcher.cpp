@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qdbusservicewatcher.h"
 #include "qdbusconnection.h"
@@ -12,7 +12,7 @@
 #include <private/qobject_p.h>
 #include <private/qdbusconnection_p.h>
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
 BOBUI_BEGIN_NAMESPACE
 
@@ -381,6 +381,6 @@ void QDBusServiceWatcher::setConnection(const QDBusConnection &connection)
 
 BOBUI_END_NAMESPACE
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS
 
 #include "moc_qdbusservicewatcher.cpp"

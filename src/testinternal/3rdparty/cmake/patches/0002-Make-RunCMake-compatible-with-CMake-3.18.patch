@@ -1,5 +1,5 @@
 From 3617409325fb3757d9126e72d4b852fa571f42f7 Mon Sep 17 00:00:00 2001
-From: Cristian Le <cristian.le@qt.io>
+From: Cristian Le <cristian.le@bobui.io>
 Date: Fri, 7 Mar 2025 18:20:08 +0100
 Subject: [PATCH] Make RunCMake compatible with CMake<3.18
 
@@ -10,7 +10,7 @@ https://gitlab.kitware.com/cmake/cmake/-/commit/67f97f54789413f47a0f03a36c3bb325
 
 Pick-to: 6.9 6.8
 Change-Id: I8311508c904cbc66aa663a0b62f861b7b056b526
-Reviewed-by: Alexey Edelev <alexey.edelev@qt.io>
+Reviewed-by: Alexey Edelev <alexey.edelev@bobui.io>
 ---
  .../3rdparty/cmake/RunCMake.cmake             | 19 ++++---------------
  1 file changed, 4 insertions(+), 15 deletions(-)

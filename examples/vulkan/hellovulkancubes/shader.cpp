@@ -1,8 +1,8 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "shader.h"
-#include <QtConcurrentRun>
+#include <BobUIConcurrentRun>
 #include <QFile>
 #include <QVulkanDeviceFunctions>
 
@@ -10,7 +10,7 @@ void Shader::load(QVulkanInstance *inst, VkDevice dev, const QString &fn)
 {
     reset();
     m_maybeRunning = true;
-    m_future = QtConcurrent::run([inst, dev, fn]() {
+    m_future = BobUIConcurrent::run([inst, dev, fn]() {
         ShaderData sd;
         QFile f(fn);
         if (!f.open(QIODevice::ReadOnly)) {

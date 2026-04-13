@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QApplication>
 #include <QInputDialog>
@@ -21,7 +21,7 @@ ChatMainWindow::ChatMainWindow()
     });
     connect(actionChangeNickname, &QAction::triggered,
             this, &ChatMainWindow::changeNickname);
-    connect(actionAboutQt, &QAction::triggered, this, [this]() { QMessageBox::aboutQt(this); });
+    connect(actionAboutBobUI, &QAction::triggered, this, [this]() { QMessageBox::aboutBobUI(this); });
     connect(qApp, &QApplication::lastWindowClosed, this,
             [this]() { emit action(m_nickname, tr("leaves the chat")); });
 
@@ -42,7 +42,7 @@ ChatMainWindow::ChatMainWindow()
     });
 
     if (!changeNickname(true))
-        QMetaObject::invokeMethod(qApp, &QApplication::quit, Qt::QueuedConnection);
+        QMetaObject::invokeMethod(qApp, &QApplication::quit, BobUI::QueuedConnection);
 }
 
 void ChatMainWindow::displayMessage(const QString &message)

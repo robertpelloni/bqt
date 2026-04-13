@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 //! [0]
-#include <QtWidgets>
-#if defined(QT_PRINTSUPPORT_LIB)
-#include <QtPrintSupport/qtprintsupportglobal.h>
-#if QT_CONFIG(printdialog)
-#include <QtPrintSupport>
+#include <BobUIWidgets>
+#if defined(BOBUI_PRINTSUPPORT_LIB)
+#include <BobUIPrintSupport/bobuiprintsupportglobal.h>
+#if BOBUI_CONFIG(printdialog)
+#include <BobUIPrintSupport>
 #endif
 #endif
 
@@ -15,7 +15,7 @@
 
 //! [1]
 MainWindow::MainWindow()
-    : textEdit(new QTextEdit)
+    : textEdit(new BOBUIextEdit)
 {
     setCentralWidget(textEdit);
 
@@ -35,23 +35,23 @@ void MainWindow::newLetter()
 {
     textEdit->clear();
 
-    QTextCursor cursor(textEdit->textCursor());
-    cursor.movePosition(QTextCursor::Start);
-    QTextFrame *topFrame = cursor.currentFrame();
-    QTextFrameFormat topFrameFormat = topFrame->frameFormat();
+    BOBUIextCursor cursor(textEdit->textCursor());
+    cursor.movePosition(BOBUIextCursor::Start);
+    BOBUIextFrame *topFrame = cursor.currentFrame();
+    BOBUIextFrameFormat topFrameFormat = topFrame->frameFormat();
     topFrameFormat.setPadding(16);
     topFrame->setFrameFormat(topFrameFormat);
 
-    QTextCharFormat textFormat;
-    QTextCharFormat boldFormat;
+    BOBUIextCharFormat textFormat;
+    BOBUIextCharFormat boldFormat;
     boldFormat.setFontWeight(QFont::Bold);
-    QTextCharFormat italicFormat;
+    BOBUIextCharFormat italicFormat;
     italicFormat.setFontItalic(true);
 
-    QTextTableFormat tableFormat;
+    BOBUIextTableFormat tableFormat;
     tableFormat.setBorder(1);
     tableFormat.setCellPadding(16);
-    tableFormat.setAlignment(Qt::AlignRight);
+    tableFormat.setAlignment(BobUI::AlignRight);
     cursor.insertTable(1, 1, tableFormat);
     cursor.insertText("The Firm", boldFormat);
     cursor.insertBlock();
@@ -81,8 +81,8 @@ void MainWindow::newLetter()
 //! [3]
 void MainWindow::print()
 {
-#if defined(QT_PRINTSUPPORT_LIB) && QT_CONFIG(printdialog)
-    QTextDocument *document = textEdit->document();
+#if defined(BOBUI_PRINTSUPPORT_LIB) && BOBUI_CONFIG(printdialog)
+    BOBUIextDocument *document = textEdit->document();
     QPrinter printer;
 
     QPrintDialog dlg(&printer, this);
@@ -113,8 +113,8 @@ void MainWindow::save()
         return;
     }
 
-    QTextStream out(&file);
-    QGuiApplication::setOverrideCursor(Qt::WaitCursor);
+    BOBUIextStream out(&file);
+    QGuiApplication::setOverrideCursor(BobUI::WaitCursor);
     out << textEdit->toHtml();
     QGuiApplication::restoreOverrideCursor();
 
@@ -125,7 +125,7 @@ void MainWindow::save()
 //! [5]
 void MainWindow::undo()
 {
-    QTextDocument *document = textEdit->document();
+    BOBUIextDocument *document = textEdit->document();
     document->undo();
 }
 //! [5]
@@ -136,12 +136,12 @@ void MainWindow::insertCustomer(const QString &customer)
     if (customer.isEmpty())
         return;
     QStringList customerList = customer.split(", ");
-    QTextDocument *document = textEdit->document();
-    QTextCursor cursor = document->find("NAME");
+    BOBUIextDocument *document = textEdit->document();
+    BOBUIextCursor cursor = document->find("NAME");
     if (!cursor.isNull()) {
         cursor.beginEditBlock();
         cursor.insertText(customerList.at(0));
-        QTextCursor oldcursor = cursor;
+        BOBUIextCursor oldcursor = cursor;
         cursor = document->find("ADDRESS");
         if (!cursor.isNull()) {
             for (int i = 1; i < customerList.size(); ++i) {
@@ -161,12 +161,12 @@ void MainWindow::addParagraph(const QString &paragraph)
 {
     if (paragraph.isEmpty())
         return;
-    QTextDocument *document = textEdit->document();
-    QTextCursor cursor = document->find(tr("Yours sincerely,"));
+    BOBUIextDocument *document = textEdit->document();
+    BOBUIextCursor cursor = document->find(tr("Yours sincerely,"));
     if (cursor.isNull())
         return;
     cursor.beginEditBlock();
-    cursor.movePosition(QTextCursor::PreviousBlock, QTextCursor::MoveAnchor, 2);
+    cursor.movePosition(BOBUIextCursor::PreviousBlock, BOBUIextCursor::MoveAnchor, 2);
     cursor.insertBlock();
     cursor.insertText(paragraph);
     cursor.insertBlock();
@@ -179,7 +179,7 @@ void MainWindow::about()
 {
    QMessageBox::about(this, tr("About Dock Widgets"),
             tr("The <b>Dock Widgets</b> example demonstrates how to "
-               "use Qt's dock widgets. You can enter your own text, "
+               "use BobUI's dock widgets. You can enter your own text, "
                "click a customer to add a customer name and "
                "address, and click standard paragraphs to add them."));
 }
@@ -187,7 +187,7 @@ void MainWindow::about()
 void MainWindow::createActions()
 {
     QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
-    QToolBar *fileToolBar = addToolBar(tr("File"));
+    BOBUIoolBar *fileToolBar = addToolBar(tr("File"));
 
     const QIcon newIcon = QIcon::fromTheme("document-new", QIcon(":/images/new.png"));
     QAction *newLetterAct = new QAction(newIcon, tr("&New Letter"), this);
@@ -220,7 +220,7 @@ void MainWindow::createActions()
     quitAct->setStatusTip(tr("Quit the application"));
 
     QMenu *editMenu = menuBar()->addMenu(tr("&Edit"));
-    QToolBar *editToolBar = addToolBar(tr("Edit"));
+    BOBUIoolBar *editToolBar = addToolBar(tr("Edit"));
     const QIcon undoIcon = QIcon::fromTheme("edit-undo", QIcon(":/images/undo.png"));
     QAction *undoAct = new QAction(undoIcon, tr("&Undo"), this);
     undoAct->setShortcuts(QKeySequence::Undo);
@@ -238,8 +238,8 @@ void MainWindow::createActions()
     QAction *aboutAct = helpMenu->addAction(tr("&About"), this, &MainWindow::about);
     aboutAct->setStatusTip(tr("Show the application's About box"));
 
-    QAction *aboutQtAct = helpMenu->addAction(tr("About &Qt"), qApp, &QApplication::aboutQt);
-    aboutQtAct->setStatusTip(tr("Show the Qt library's About box"));
+    QAction *aboutBobUIAct = helpMenu->addAction(tr("About &BobUI"), qApp, &QApplication::aboutBobUI);
+    aboutBobUIAct->setStatusTip(tr("Show the BobUI library's About box"));
 }
 
 //! [8]
@@ -253,7 +253,7 @@ void MainWindow::createStatusBar()
 void MainWindow::createDockWindows()
 {
     QDockWidget *dock = new QDockWidget(tr("Customers"), this);
-    dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    dock->setAllowedAreas(BobUI::LeftDockWidgetArea | BobUI::RightDockWidgetArea);
     customerList = new QListWidget(dock);
     customerList->addItems(QStringList()
             << "John Doe, Harmony Enterprises, 12 Lakeside, Ambleton"
@@ -263,7 +263,7 @@ void MainWindow::createDockWindows()
             << "Sol Harvey, Chicos Coffee, 53 New Springs, Eccleston"
             << "Sally Hobart, Tiroli Tea, 67 Long River, Fedula");
     dock->setWidget(customerList);
-    addDockWidget(Qt::RightDockWidgetArea, dock);
+    addDockWidget(BobUI::RightDockWidgetArea, dock);
     viewMenu->addAction(dock->toggleViewAction());
 
     dock = new QDockWidget(tr("Paragraphs"), this);
@@ -287,7 +287,7 @@ void MainWindow::createDockWindows()
             << "You made an overpayment (more than $5). Do you wish to "
                "buy more items, or should we return the excess to you?");
     dock->setWidget(paragraphsList);
-    addDockWidget(Qt::RightDockWidgetArea, dock);
+    addDockWidget(BobUI::RightDockWidgetArea, dock);
     viewMenu->addAction(dock->toggleViewAction());
 
     connect(customerList, &QListWidget::currentTextChanged,

@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:network-protocol
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:network-protocol
 
 #include "access/http2/http2protocol_p.h"
 #include "access/qhttp2connection_p.h"
@@ -12,19 +12,19 @@
 #include <private/qnoncontiguousbytedevice_p.h>
 #include <private/qsocketabstraction_p.h>
 
-#include <QtNetwork/qabstractsocket.h>
+#include <BobUINetwork/qabstractsocket.h>
 
-#include <QtCore/qloggingcategory.h>
-#include <QtCore/qendian.h>
-#include <QtCore/qdebug.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qnumeric.h>
-#include <QtCore/qurl.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUICore/qendian.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qnumeric.h>
+#include <BobUICore/qurl.h>
 
 #include <qhttp2configuration.h>
 
-#ifndef QT_NO_NETWORKPROXY
-#  include <QtNetwork/qnetworkproxy.h>
+#ifndef BOBUI_NO_NETWORKPROXY
+#  include <BobUINetwork/qnetworkproxy.h>
 #endif
 
 #include <qcoreapplication.h>
@@ -33,9 +33,9 @@
 #include <vector>
 #include <optional>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 namespace
 {
@@ -279,7 +279,7 @@ bool QHttp2ProtocolHandler::sendHEADERS(QHttp2Stream *stream, QHttpNetworkReques
     using namespace HPack;
 
     bool useProxy = false;
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     useProxy = m_connection->d_func()->networkProxy.type() != QNetworkProxy::NoProxy;
 #endif
     if (request.withCredentials()) {
@@ -390,9 +390,9 @@ void QHttp2ProtocolHandler::handleHeadersReceived(const HPack::HttpHeader &heade
         }
     }
 
-    QMetaObject::invokeMethod(httpReply, &QHttpNetworkReply::headerChanged, Qt::QueuedConnection);
+    QMetaObject::invokeMethod(httpReply, &QHttpNetworkReply::headerChanged, BobUI::QueuedConnection);
     if (endStream)
-        finishStream(stream, Qt::QueuedConnection);
+        finishStream(stream, BobUI::QueuedConnection);
 }
 
 void QHttp2ProtocolHandler::handleDataReceived(const QByteArray &data, bool endStream)
@@ -413,15 +413,15 @@ void QHttp2ProtocolHandler::handleDataReceived(const QByteArray &data, bool endS
 
         if (replyPrivate->shouldEmitSignals()) {
             QMetaObject::invokeMethod(httpReply, &QHttpNetworkReply::readyRead,
-                                      Qt::QueuedConnection);
+                                      BobUI::QueuedConnection);
             QMetaObject::invokeMethod(httpReply, &QHttpNetworkReply::dataReadProgress,
-                                      Qt::QueuedConnection, replyPrivate->totalProgress,
+                                      BobUI::QueuedConnection, replyPrivate->totalProgress,
                                       replyPrivate->bodyLength);
         }
     }
     stream->clearDownloadBuffer();
     if (endStream)
-        finishStream(stream, Qt::QueuedConnection);
+        finishStream(stream, BobUI::QueuedConnection);
 }
 
 // After calling this function, either the request will be re-sent or
@@ -509,7 +509,7 @@ void QHttp2ProtocolHandler::handleAuthorization(QHttp2Stream *stream)
 }
 
 // Called when we have received a frame with the END_STREAM flag set
-void QHttp2ProtocolHandler::finishStream(QHttp2Stream *stream, Qt::ConnectionType connectionType)
+void QHttp2ProtocolHandler::finishStream(QHttp2Stream *stream, BobUI::ConnectionType connectionType)
 {
     if (stream->state() != QHttp2Stream::State::Closed)
         stream->sendRST_STREAM(CANCEL);
@@ -529,20 +529,20 @@ void QHttp2ProtocolHandler::finishStream(QHttp2Stream *stream, Qt::ConnectionTyp
         httpReply->disconnect(this);
 
         if (!pair.first.d->needResendWithCredentials) {
-            if (connectionType == Qt::DirectConnection)
+            if (connectionType == BobUI::DirectConnection)
                 emit httpReply->finished();
             else
                 QMetaObject::invokeMethod(httpReply, &QHttpNetworkReply::finished, connectionType);
         }
     }
 
-    qCDebug(QT_HTTP2) << "stream" << stream->streamID() << "closed";
+    qCDebug(BOBUI_HTTP2) << "stream" << stream->streamID() << "closed";
     stream->deleteLater();
 }
 
 void QHttp2ProtocolHandler::handleGOAWAY(Http2Error errorCode, quint32 lastStreamID)
 {
-    qCDebug(QT_HTTP2) << "GOAWAY received, error code:" << errorCode << "last stream ID:"
+    qCDebug(BOBUI_HTTP2) << "GOAWAY received, error code:" << errorCode << "last stream ID:"
                       << lastStreamID;
 
     // For the requests (and streams) we did not start yet, we have to report an
@@ -554,7 +554,7 @@ void QHttp2ProtocolHandler::handleGOAWAY(Http2Error errorCode, quint32 lastStrea
 
     QNetworkReply::NetworkError error = QNetworkReply::NoError;
     QString message;
-    qt_error(errorCode, error, message);
+    bobui_error(errorCode, error, message);
 
     // Even if the GOAWAY frame contains NO_ERROR we must send an error
     // when terminating streams to ensure users can distinguish from a
@@ -569,7 +569,7 @@ void QHttp2ProtocolHandler::finishStreamWithError(QHttp2Stream *stream, Http2Err
 {
     QNetworkReply::NetworkError error = QNetworkReply::NoError;
     QString message;
-    qt_error(errorCode, error, message);
+    bobui_error(errorCode, error, message);
     finishStreamWithError(stream, error, message);
 }
 
@@ -585,7 +585,7 @@ void QHttp2ProtocolHandler::finishStreamWithError(QHttp2Stream *stream,
         emit httpReply->finishedWithError(error, message);
     }
 
-    qCWarning(QT_HTTP2) << "stream" << stream->streamID() << "finished with error:" << message;
+    qCWarning(BOBUI_HTTP2) << "stream" << stream->streamID() << "finished with error:" << message;
 }
 
 /*!
@@ -612,7 +612,7 @@ QHttp2Stream *QHttp2ProtocolHandler::createNewStream(const HttpMessagePair &mess
             // we just return nullptr, the caller should not remove it from the queue.
             return nullptr;
         }
-        qCDebug(QT_HTTP2) << "failed to create new stream:" << streamResult.error();
+        qCDebug(BOBUI_HTTP2) << "failed to create new stream:" << streamResult.error();
         auto *reply = message.second;
         const char *cstr = "Failed to initialize HTTP/2 stream with errorcode: %1";
         const QString errorString = QCoreApplication::tr("QHttp", cstr)
@@ -630,7 +630,7 @@ QHttp2Stream *QHttp2ProtocolHandler::createNewStream(const HttpMessagePair &mess
     }
 
     auto *reply = message.second;
-    QMetaObject::invokeMethod(reply, &QHttpNetworkReply::requestSent, Qt::QueuedConnection);
+    QMetaObject::invokeMethod(reply, &QHttpNetworkReply::requestSent, BobUI::QueuedConnection);
 
     connectStream(message, stream);
     return stream;
@@ -656,7 +656,7 @@ void QHttp2ProtocolHandler::connectStream(const HttpMessagePair &message, QHttp2
                      &QHttp2ProtocolHandler::handleDataReceived);
     QObject::connect(stream, &QHttp2Stream::errorOccurred, this,
                      [this, stream](Http2Error errorCode, const QString &errorString) {
-                         qCWarning(QT_HTTP2)
+                         qCWarning(BOBUI_HTTP2)
                                  << "stream" << stream->streamID() << "error:" << errorString;
                          finishStreamWithError(stream, errorCode);
                      });
@@ -666,7 +666,7 @@ void QHttp2ProtocolHandler::connectStream(const HttpMessagePair &message, QHttp2
             // Try to send more requests if we have any
             if (!m_channel->h2RequestsToSend.empty()) {
                 QMetaObject::invokeMethod(this, &QHttp2ProtocolHandler::sendRequest,
-                                          Qt::QueuedConnection);
+                                          BobUI::QueuedConnection);
             }
         }
     });
@@ -680,7 +680,7 @@ void QHttp2ProtocolHandler::initReplyFromPushPromise(const HttpMessagePair &mess
     Q_ASSERT(message.second);
     message.second->setHttp2WasUsed(true);
 
-    qCDebug(QT_HTTP2) << "found cached/promised response on stream" << promise->streamID();
+    qCDebug(BOBUI_HTTP2) << "found cached/promised response on stream" << promise->streamID();
 
     const bool replyFinished = promise->state() == QHttp2Stream::State::Closed;
 
@@ -705,9 +705,9 @@ void QHttp2ProtocolHandler::connectionError(Http2::Http2Error errorCode, const Q
 {
     Q_ASSERT(!message.isNull());
 
-    qCCritical(QT_HTTP2) << "connection error:" << message;
+    qCCritical(BOBUI_HTTP2) << "connection error:" << message;
 
-    const auto error = qt_error(errorCode);
+    const auto error = bobui_error(errorCode);
     m_channel->emitFinishedWithError(error, qPrintable(message));
 
     closeSession();
@@ -718,6 +718,6 @@ void QHttp2ProtocolHandler::closeSession()
     m_channel->close();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qhttp2protocolhandler_p.cpp"

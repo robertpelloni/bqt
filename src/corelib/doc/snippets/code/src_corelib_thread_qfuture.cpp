@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QFuture>
-#include <QtConcurrent>
+#include <BobUIConcurrent>
 #include <QNetworkReply>
 #include <QException>
 #include <QImage>
@@ -79,7 +79,7 @@ void examples(QFuture<QString> someQStringFuture,
         //! [3]
 
         //! [4]
-        QFuture<IOResult> future = QtConcurrent::run([url] {
+        QFuture<IOResult> future = BobUIConcurrent::run([url] {
                 //...
                 return NetworkReply(QNetworkReply::TimeoutError);
         }).then([](NetworkReply reply) {
@@ -197,18 +197,18 @@ void examples(QFuture<QString> someQStringFuture,
     {
         //! [11]
         Object object;
-        QFuture<void> voidFuture = QtFuture::connect(&object, &Object::noArgSignal);
-        QFuture<int> intFuture = QtFuture::connect(&object, &Object::singleArgSignal);
+        QFuture<void> voidFuture = BobUIFuture::connect(&object, &Object::noArgSignal);
+        QFuture<int> intFuture = BobUIFuture::connect(&object, &Object::singleArgSignal);
 
         using Args = std::tuple<int, double, QString>;
-        QFuture<Args> tupleFuture = QtFuture::connect(&object, &Object::multipleArgs);
+        QFuture<Args> tupleFuture = BobUIFuture::connect(&object, &Object::multipleArgs);
         //! [11]
     }
 
     {
         Object object;
         //! [12]
-        QtFuture::connect(&object, &Object::singleArgSignal).then([](int value) {
+        BobUIFuture::connect(&object, &Object::singleArgSignal).then([](int value) {
             // do something with the value
         });
         //! [12]
@@ -217,7 +217,7 @@ void examples(QFuture<QString> someQStringFuture,
     {
         Object object;
         //! [13]
-        QtFuture::connect(&object, &Object::singleArgSignal).then(QtFuture::Launch::Async, [](int value) {
+        BobUIFuture::connect(&object, &Object::singleArgSignal).then(BobUIFuture::Launch::Async, [](int value) {
             // this will run in a new thread
         });
         //! [13]
@@ -226,7 +226,7 @@ void examples(QFuture<QString> someQStringFuture,
     {
         Object object;
         //! [14]
-        QtFuture::connect(&object, &Object::singleArgSignal).then([](int value) {
+        BobUIFuture::connect(&object, &Object::singleArgSignal).then([](int value) {
             //...
             throw std::exception();
             //...
@@ -280,8 +280,8 @@ void examples(QFuture<QString> someQStringFuture,
 
         //! [20]
         QObject *context /*...*/;
-        auto future = cachedResultsReady ? QtFuture::makeReadyVoidFuture()
-                                        : QtConcurrent::run([] { /* compute result */});
+        auto future = cachedResultsReady ? BobUIFuture::makeReadyVoidFuture()
+                                        : BobUIConcurrent::run([] { /* compute result */});
         auto continuation = future.then(context, [] {
             // Runs in the context's thread
         }).then([] {
@@ -314,11 +314,11 @@ void examples(QFuture<QString> someQStringFuture,
         QList<QFuture<int>> inputFutures {/*...*/};
 
         // whenAll has type QFuture<QList<QFuture<int>>>
-        auto whenAll = QtFuture::whenAll(inputFutures.begin(), inputFutures.end());
+        auto whenAll = BobUIFuture::whenAll(inputFutures.begin(), inputFutures.end());
 
         // whenAllVector has type QFuture<std::vector<QFuture<int>>>
         auto whenAllVector =
-                QtFuture::whenAll<std::vector<QFuture<int>>>(inputFutures.begin(), inputFutures.end());
+                BobUIFuture::whenAll<std::vector<QFuture<int>>>(inputFutures.begin(), inputFutures.end());
         //! [22]
     }
 
@@ -326,7 +326,7 @@ void examples(QFuture<QString> someQStringFuture,
         //! [23]
         QList<QFuture<int>> inputFutures {/*...*/};
 
-        QtFuture::whenAll(inputFutures.begin(), inputFutures.end())
+        BobUIFuture::whenAll(inputFutures.begin(), inputFutures.end())
                 .then([](const QList<QFuture<int>> &results) {
                     for (auto future : results) {
                         if (future.isCanceled())
@@ -351,11 +351,11 @@ void examples(QFuture<QString> someQStringFuture,
         using FuturesVariant = std::variant<QFuture<int>, QFuture<QString>, QFuture<void>>;
 
         // whenAll has type QFuture<QList<FuturesVariant>>
-        auto whenAll = QtFuture::whenAll(intFuture, stringFuture, voidFuture);
+        auto whenAll = BobUIFuture::whenAll(intFuture, stringFuture, voidFuture);
 
         // whenAllVector has type QFuture<std::vector<FuturesVariant>>
         auto whenAllVector =
-                QtFuture::whenAll<std::vector<FuturesVariant>>(intFuture, stringFuture, voidFuture);
+                BobUIFuture::whenAll<std::vector<FuturesVariant>>(intFuture, stringFuture, voidFuture);
         //! [24]
     }
 
@@ -367,7 +367,7 @@ void examples(QFuture<QString> someQStringFuture,
 
         using FuturesVariant = std::variant<QFuture<int>, QFuture<QString>, QFuture<void>>;
 
-        QtFuture::whenAll(intFuture, stringFuture, voidFuture)
+        BobUIFuture::whenAll(intFuture, stringFuture, voidFuture)
                 .then([](const QList<FuturesVariant> &results) {
                     //...
                     for (auto result : results)
@@ -384,8 +384,8 @@ void examples(QFuture<QString> someQStringFuture,
         //! [26]
         QList<QFuture<int>> inputFutures /*...*/;
 
-        QtFuture::whenAny(inputFutures.begin(), inputFutures.end())
-                .then([](const QtFuture::WhenAnyResult<int> &result) {
+        BobUIFuture::whenAny(inputFutures.begin(), inputFutures.end())
+                .then([](const BobUIFuture::WhenAnyResult<int> &result) {
                     qsizetype index = result.index;
                     QFuture<int> future = result.future;
                     //...
@@ -401,7 +401,7 @@ void examples(QFuture<QString> someQStringFuture,
 
         using FuturesVariant = std::variant<QFuture<int>, QFuture<QString>, QFuture<void>>;
 
-        QtFuture::whenAny(intFuture, stringFuture, voidFuture).then([](const FuturesVariant &result) {
+        BobUIFuture::whenAny(intFuture, stringFuture, voidFuture).then([](const FuturesVariant &result) {
             //...
             // assuming handleResult() is overloaded based on the QFuture type
             std::visit([](auto &&future) { handleResult(future); }, result);
@@ -429,12 +429,12 @@ void examples(QFuture<QString> someQStringFuture,
         };
 
         auto processImages = [scale, reduceImages](const QList<QImage> &images) {
-            return QtConcurrent::mappedReduced(images, scale, reduceImages);
+            return BobUIConcurrent::mappedReduced(images, scale, reduceImages);
         };
 
         auto show = [](const QImage &image) { /*...*/ };
 
-        auto future = QtConcurrent::run(downloadImages, url)
+        auto future = BobUIConcurrent::run(downloadImages, url)
                     .then(processImages)
                     .unwrap()
                     .then(show);
@@ -467,18 +467,18 @@ void examples(QFuture<QString> someQStringFuture,
     {
         //! [32]
         const std::vector<int> values{1, 2, 3};
-        auto f = QtFuture::makeReadyRangeFuture(values);
+        auto f = BobUIFuture::makeReadyRangeFuture(values);
         //! [32]
     }
 
     {
         //! [33]
-        auto f = QtFuture::makeReadyRangeFuture({1, 2, 3});
+        auto f = BobUIFuture::makeReadyRangeFuture({1, 2, 3});
         //! [33]
     }
 
     {
-        auto f = QtFuture::makeReadyRangeFuture({1, 2, 3});
+        auto f = BobUIFuture::makeReadyRangeFuture({1, 2, 3});
         //! [34]
         const int count = f.resultCount(); // count == 3
         const auto results = f.results(); // results == { 1, 2, 3 }
@@ -487,7 +487,7 @@ void examples(QFuture<QString> someQStringFuture,
 
     {
         //! [35]
-        auto f = QtFuture::makeReadyValueFuture(std::make_unique<int>(42));
+        auto f = BobUIFuture::makeReadyValueFuture(std::make_unique<int>(42));
         //...
         const int result = *f.takeResult(); // result == 42
         //! [35]
@@ -495,7 +495,7 @@ void examples(QFuture<QString> someQStringFuture,
 
     {
         //! [36]
-        auto f = QtFuture::makeReadyVoidFuture();
+        auto f = BobUIFuture::makeReadyVoidFuture();
         //...
         const bool started = f.isStarted(); // started == true
         const bool running = f.isRunning(); // running == false
@@ -520,7 +520,7 @@ void examples(QFuture<QString> someQStringFuture,
 
     {
         //! [38]
-        auto f = QtConcurrent::run([] {/*...*/})
+        auto f = BobUIConcurrent::run([] {/*...*/})
                         .then([]{
                             // Then 1
                         })
@@ -545,8 +545,8 @@ void examples(QFuture<QString> someQStringFuture,
     }
 
     {
-        auto createFuture = [] { return QtFuture::makeReadyVoidFuture(); };
-        auto runNestedComputation = [] { return QtFuture::makeReadyVoidFuture(); };
+        auto createFuture = [] { return BobUIFuture::makeReadyVoidFuture(); };
+        auto runNestedComputation = [] { return BobUIFuture::makeReadyVoidFuture(); };
         //! [39]
         QFuture<void> nested;
         auto f = createFuture()
@@ -579,7 +579,7 @@ public:
         {
             //! [17]
             // somewhere in the main thread
-            auto future = QtConcurrent::run([] {
+            auto future = BobUIConcurrent::run([] {
                 // This will run in a separate thread
                 //...
             }).then(this, [] {
@@ -590,7 +590,7 @@ public:
 
         {
             //! [18]
-            auto future = QtConcurrent::run([] {
+            auto future = BobUIConcurrent::run([] {
                 //...
             }).then(this, [] {
                 // Update UI elements
@@ -603,7 +603,7 @@ public:
         {
             //! [19]
             // somewhere in the main thread
-            auto future = QtConcurrent::run([] {
+            auto future = BobUIConcurrent::run([] {
                 // This will run in a separate thread
                 //...
                 throw std::exception();

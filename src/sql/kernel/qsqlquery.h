@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSQLQUERY_H
 #define QSQLQUERY_H
 
-#include <QtSql/qtsqlglobal.h>
-#include <QtSql/qsqldatabase.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qvariant.h>
+#include <BobUISql/bobuisqlglobal.h>
+#include <BobUISql/qsqldatabase.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qvariant.h>
 
 // clazy:excludeall=qproperty-without-notify
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QSqlDriver;
@@ -33,10 +33,10 @@ public:
     explicit QSqlQuery(const QString& query = QString(), const QSqlDatabase &db = QSqlDatabase());
     explicit QSqlQuery(const QSqlDatabase &db);
 
-#if QT_REMOVAL_QT7_DEPRECATED_SINCE(6, 2)
-    QT_DEPRECATED_VERSION_X_6_2("QSqlQuery is not meant to be copied. Use move construction instead.")
+#if BOBUI_REMOVAL_BOBUI7_DEPRECATED_SINCE(6, 2)
+    BOBUI_DEPRECATED_VERSION_X_6_2("QSqlQuery is not meant to be copied. Use move construction instead.")
     QSqlQuery(const QSqlQuery &other);
-    QT_DEPRECATED_VERSION_X_6_2("QSqlQuery is not meant to be copied. Use move assignment instead.")
+    BOBUI_DEPRECATED_VERSION_X_6_2("QSqlQuery is not meant to be copied. Use move assignment instead.")
     QSqlQuery& operator=(const QSqlQuery &other);
 #else
     QSqlQuery(const QSqlQuery &other) = delete;
@@ -46,17 +46,17 @@ public:
     QSqlQuery(QSqlQuery &&other) noexcept
         : d(std::exchange(other.d, nullptr))
     {}
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QSqlQuery)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QSqlQuery)
 
     ~QSqlQuery();
 
     void swap(QSqlQuery &other) noexcept
-    { qt_ptr_swap(d, other.d); }
+    { bobui_ptr_swap(d, other.d); }
 
     bool isValid() const;
     bool isActive() const;
     bool isNull(int field) const;
-#if QT_SQL_REMOVED_SINCE(6, 8)
+#if BOBUI_SQL_REMOVED_SINCE(6, 8)
     bool isNull(const QString &name) const;
 #endif
     bool isNull(QAnyStringView name) const;
@@ -74,7 +74,7 @@ public:
     void setForwardOnly(bool forward);
     bool exec(const QString& query);
     QVariant value(int i) const;
-#if QT_SQL_REMOVED_SINCE(6, 8)
+#if BOBUI_SQL_REMOVED_SINCE(6, 8)
     QVariant value(const QString &name) const;
 #endif
     QVariant value(QAnyStringView name) const;
@@ -112,14 +112,14 @@ public:
     void finish();
     bool nextResult();
 
-#if QT_REMOVAL_QT7_DEPRECATED_SINCE(6, 2)
-    // Avoid raising warnings in QMetaType, cf. QTBUG-132752
+#if BOBUI_REMOVAL_BOBUI7_DEPRECATED_SINCE(6, 2)
+    // Avoid raising warnings in QMetaType, cf. BOBUIBUG-132752
     using _q_hasDeprecatedCopyConstructor = void;
 #endif
 private:
     QSqlQueryPrivate* d;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSQLQUERY_H

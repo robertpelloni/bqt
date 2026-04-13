@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
-#include <QTextEdit>
-#include <QTextList>
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
+#include <BOBUIextEdit>
+#include <BOBUIextList>
 
 namespace textdocument_lists {
 struct MainWindow
@@ -9,22 +9,22 @@ struct MainWindow
     void insertList();
 
 private:
-    QTextEdit *editor = nullptr;
+    BOBUIextEdit *editor = nullptr;
 };
 
 void MainWindow::insertList()
 {
-    QTextCursor cursor = editor->textCursor();
-    QTextList *list = cursor.currentList();
+    BOBUIextCursor cursor = editor->textCursor();
+    BOBUIextList *list = cursor.currentList();
 
 //! [0]
-    QTextListFormat listFormat;
+    BOBUIextListFormat listFormat;
     if (list) {
         listFormat = list->format();
         listFormat.setIndent(listFormat.indent() + 1);
     }
 
-    listFormat.setStyle(QTextListFormat::ListDisc);
+    listFormat.setStyle(BOBUIextListFormat::ListDisc);
     cursor.insertList(listFormat);
 //! [0]
 }

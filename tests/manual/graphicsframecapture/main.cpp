@@ -1,5 +1,5 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 // This is a compact, minimal demo of deciding the backend at runtime while
 // using the exact same shaders and rendering code without any branching
@@ -25,7 +25,7 @@ int main(int argc, char **argv)
 
     ExampleWindow w(graphicsApi);
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     QVulkanInstance inst;
     if (graphicsApi == QRhi::Vulkan) {
         inst.setLayers({ "VK_LAYER_KHRONOS_validation" });
@@ -37,7 +37,7 @@ int main(int argc, char **argv)
     }
 #endif
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     if (graphicsApi == QRhi::Vulkan)
         w.setVulkanInstance(&inst);
 #endif
@@ -84,9 +84,9 @@ QRhi::Implementation graphicsApiFromCmd(const QGuiApplication &app) {
     QRhi::Implementation graphicsApi;
 #if defined(Q_OS_WIN)
     graphicsApi = QRhi::D3D11;
-#elif QT_CONFIG(metal)
+#elif BOBUI_CONFIG(metal)
     graphicsApi = QRhi::Metal;
-#elif QT_CONFIG(vulkan)
+#elif BOBUI_CONFIG(vulkan)
     graphicsApi = QRhi::Vulkan;
 #else
     graphicsApi = QRhi::OpenGLES2;

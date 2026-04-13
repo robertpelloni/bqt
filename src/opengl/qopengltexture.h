@@ -1,18 +1,18 @@
 // Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB).
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QOPENGLABSTRACTTEXTURE_H
 #define QOPENGLABSTRACTTEXTURE_H
 
-#include <QtOpenGL/qtopenglglobal.h>
+#include <BobUIOpenGL/bobuiopenglglobal.h>
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 
-#include <QtGui/qopengl.h>
-#include <QtGui/qimage.h>
-#include <QtCore/QScopedPointer>
+#include <BobUIGui/qopengl.h>
+#include <BobUIGui/qimage.h>
+#include <BobUICore/QScopedPointer>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDebug;
 class QOpenGLTexturePrivate;
@@ -518,7 +518,7 @@ public:
         CompareAlways       = 0x0207,   // GL_ALWAYS
         CompareNever        = 0x0200,   // GL_NEVER
 
-#if QT_DEPRECATED_SINCE(6, 1)
+#if BOBUI_DEPRECATED_SINCE(6, 1)
         CommpareNotEqual Q_DECL_ENUMERATOR_DEPRECATED_X(
             "Use CompareNotEqual instead.") = CompareNotEqual
 #endif
@@ -580,7 +580,7 @@ public:
     void setLevelofDetailBias(float bias);
     float levelofDetailBias() const;
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
     friend Q_OPENGL_EXPORT QDebug operator<<(QDebug dbg, const QOpenGLTexture *t);
 #endif
 
@@ -592,12 +592,12 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QOpenGLTexture::Features)
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_OPENGL_EXPORT QDebug operator<<(QDebug debug, const QOpenGLTexture *t);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_OPENGL
+#endif // BOBUI_NO_OPENGL
 
 #endif // QOPENGLABSTRACTTEXTURE_H

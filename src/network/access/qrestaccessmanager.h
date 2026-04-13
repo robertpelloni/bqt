@@ -1,17 +1,17 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QRESTACCESSMANAGER_H
 #define QRESTACCESSMANAGER_H
 
 #if 0
-#pragma qt_class(QRestAccessManager)
+#pragma bobui_class(QRestAccessManager)
 #endif
 
-#include <QtNetwork/qnetworkaccessmanager.h>
+#include <BobUINetwork/qnetworkaccessmanager.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDebug;
 class QRestReply;
@@ -24,7 +24,7 @@ QNetworkReply *METHOD(const QNetworkRequest &request, DATA data,                
        Functor &&callback)                                                                       \
 {                                                                                                \
     return METHOD##WithDataImpl(request, data, context,                                          \
-           QtPrivate::makeCallableObject<CallbackPrototype>(std::forward<Functor>(callback)));   \
+           BobUIPrivate::makeCallableObject<CallbackPrototype>(std::forward<Functor>(callback)));   \
 }                                                                                                \
 QNetworkReply *METHOD(const QNetworkRequest &request, DATA data)                                 \
 {                                                                                                \
@@ -32,7 +32,7 @@ QNetworkReply *METHOD(const QNetworkRequest &request, DATA data)                
 }                                                                                                \
 private:                                                                                         \
 QNetworkReply *METHOD##WithDataImpl(const QNetworkRequest &request, DATA data,                   \
-                                 const QObject *context, QtPrivate::QSlotObjectBase *slot);      \
+                                 const QObject *context, BobUIPrivate::QSlotObjectBase *slot);      \
 /* end */
 
 #define QREST_METHOD_NO_DATA(METHOD)                                                             \
@@ -43,7 +43,7 @@ QNetworkReply *METHOD(const QNetworkRequest &request,                           
        Functor &&callback)                                                                       \
 {                                                                                                \
     return METHOD##NoDataImpl(request, context,                                                  \
-           QtPrivate::makeCallableObject<CallbackPrototype>(std::forward<Functor>(callback)));   \
+           BobUIPrivate::makeCallableObject<CallbackPrototype>(std::forward<Functor>(callback)));   \
 }                                                                                                \
 QNetworkReply *METHOD(const QNetworkRequest &request)                                            \
 {                                                                                                \
@@ -51,7 +51,7 @@ QNetworkReply *METHOD(const QNetworkRequest &request)                           
 }                                                                                                \
 private:                                                                                         \
 QNetworkReply *METHOD##NoDataImpl(const QNetworkRequest &request,                                \
-                               const QObject *context, QtPrivate::QSlotObjectBase *slot);        \
+                               const QObject *context, BobUIPrivate::QSlotObjectBase *slot);        \
 /* end */
 
 #define QREST_METHOD_CUSTOM_WITH_DATA(DATA)                                                      \
@@ -62,7 +62,7 @@ QNetworkReply *sendCustomRequest(const QNetworkRequest& request, const QByteArra
        Functor &&callback)                                                                       \
 {                                                                                                \
     return customWithDataImpl(request, method, data, context,                                    \
-           QtPrivate::makeCallableObject<CallbackPrototype>(std::forward<Functor>(callback)));   \
+           BobUIPrivate::makeCallableObject<CallbackPrototype>(std::forward<Functor>(callback)));   \
 }                                                                                                \
 QNetworkReply *sendCustomRequest(const QNetworkRequest& request, const QByteArray &method, DATA data) \
 {                                                                                                \
@@ -71,7 +71,7 @@ QNetworkReply *sendCustomRequest(const QNetworkRequest& request, const QByteArra
 private:                                                                                         \
 QNetworkReply *customWithDataImpl(const QNetworkRequest& request, const QByteArray &method,      \
                                DATA data, const QObject* context,                                \
-                               QtPrivate::QSlotObjectBase *slot);                                \
+                               BobUIPrivate::QSlotObjectBase *slot);                                \
 /* end */
 
 class QRestAccessManagerPrivate;
@@ -80,10 +80,10 @@ class Q_NETWORK_EXPORT QRestAccessManager : public QObject
     Q_OBJECT
     using CallbackPrototype = void(*)(QRestReply&);
     template <typename Functor>
-    using ContextTypeForFunctor = typename QtPrivate::ContextTypeForFunctor<Functor>::ContextType;
+    using ContextTypeForFunctor = typename BobUIPrivate::ContextTypeForFunctor<Functor>::ContextType;
     template <typename Functor>
     using if_compatible_callback = std::enable_if_t<
-                     QtPrivate::AreFunctionsCompatible<CallbackPrototype, Functor>::value, bool>;
+                     BobUIPrivate::AreFunctionsCompatible<CallbackPrototype, Functor>::value, bool>;
 public:
     explicit QRestAccessManager(QNetworkAccessManager *manager, QObject *parent = nullptr);
     ~QRestAccessManager() override;
@@ -123,6 +123,6 @@ private:
 #undef QREST_METHOD_WITH_DATA
 #undef QREST_METHOD_CUSTOM_WITH_DATA
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

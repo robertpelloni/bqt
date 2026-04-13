@@ -1,5 +1,5 @@
 // Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #ifndef SPECPARSER_H
 #define SPECPARSER_H
@@ -7,7 +7,7 @@
 #include <QStringList>
 #include <QVariant>
 
-class QTextStream;
+class BOBUIextStream;
 class QXmlStreamReader;
 
 struct Version {

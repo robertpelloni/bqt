@@ -1,34 +1,34 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qwindowsfontenginedirectwrite_p.h"
 #include "qwindowsfontdatabase_p.h"
 
-#include <QtCore/QtEndian>
-#include <QtCore/QVarLengthArray>
-#include <QtCore/QFile>
+#include <BobUICore/BobUIEndian>
+#include <BobUICore/QVarLengthArray>
+#include <BobUICore/QFile>
 #include <private/qstringiterator_p.h>
-#include <QtCore/private/qsystemlibrary_p.h>
-#include <QtCore/private/qwinregistry_p.h>
-#include <QtCore/private/qcomptr_p.h>
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUICore/private/qsystemlibrary_p.h>
+#include <BobUICore/private/qwinregistry_p.h>
+#include <BobUICore/private/qcomptr_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 #include <qpa/qplatformintegration.h>
-#include <QtGui/qpainterpath.h>
+#include <BobUIGui/qpainterpath.h>
 
 #include <private/qcolrpaintgraphrenderer_p.h>
 
-#if QT_CONFIG(directwrite3)
+#if BOBUI_CONFIG(directwrite3)
 #  include "qwindowsdirectwritefontdatabase_p.h"
 #  include <dwrite_3.h>
 #endif
 
 #include <d2d1.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // Clang does not consider __declspec(nothrow) as nothrow
-QT_WARNING_DISABLE_CLANG("-Wmicrosoft-exception-spec")
+BOBUI_WARNING_DISABLE_CLANG("-Wmicrosoft-exception-spec")
 
 // Convert from design units to logical pixels
 #define DESIGN_TO_LOGICAL(DESIGN_UNIT_VALUE) \
@@ -109,8 +109,8 @@ namespace {
     void GeometrySink::SetFillMode(D2D1_FILL_MODE fillMode) noexcept
     {
         m_path->setFillRule(fillMode == D2D1_FILL_MODE_ALTERNATE
-                            ? Qt::OddEvenFill
-                            : Qt::WindingFill);
+                            ? BobUI::OddEvenFill
+                            : BobUI::WindingFill);
     }
 
     void GeometrySink::SetSegmentFlags(D2D1_PATH_SEGMENT /*vertexFlags*/) noexcept
@@ -398,7 +398,7 @@ void QWindowsFontEngineDirectWrite::collectMetrics()
 
     loadKerningPairs(emSquareSize() / QFixed::fromReal(fontDef.pixelSize));
 
-#if QT_CONFIG(directwrite3)
+#if BOBUI_CONFIG(directwrite3)
     IDWriteFontFace5 *face5;
     if (SUCCEEDED(m_directWriteFontFace->QueryInterface(__uuidof(IDWriteFontFace5),
                                        reinterpret_cast<void **>(&face5)))) {
@@ -660,7 +660,7 @@ void QWindowsFontEngineDirectWrite::getUnscaledGlyph(glyph_t glyph,
 }
 
 void QWindowsFontEngineDirectWrite::addGlyphsToPath(glyph_t *glyphs, QFixedPoint *positions, int nglyphs,
-                                             QPainterPath *path, QTextItem::RenderFlags flags)
+                                             QPainterPath *path, BOBUIextItem::RenderFlags flags)
 {
     Q_UNUSED(flags);
     QVarLengthArray<UINT16> glyphIndices(nglyphs);
@@ -752,7 +752,7 @@ qreal QWindowsFontEngineDirectWrite::maxCharWidth() const
 
 QImage QWindowsFontEngineDirectWrite::alphaMapForGlyph(glyph_t glyph,
                                                        const QFixedPoint &subPixelPosition,
-                                                       const QTransform &t)
+                                                       const BOBUIransform &t)
 {
     QImage im = imageForGlyph(glyph, subPixelPosition, glyphMargin(Format_A8), t);
 
@@ -778,7 +778,7 @@ QImage QWindowsFontEngineDirectWrite::alphaMapForGlyph(glyph_t glyph,
 QImage QWindowsFontEngineDirectWrite::alphaMapForGlyph(glyph_t glyph,
                                                        const QFixedPoint &subPixelPosition)
 {
-    return alphaMapForGlyph(glyph, subPixelPosition, QTransform());
+    return alphaMapForGlyph(glyph, subPixelPosition, BOBUIransform());
 }
 
 bool QWindowsFontEngineDirectWrite::supportsHorizontalSubPixelPositions() const
@@ -865,11 +865,11 @@ bool QWindowsFontEngineDirectWrite::renderColr0GlyphRun(QImage *image,
     return true;
 }
 
-#if QT_CONFIG(directwritecolrv1)
-static inline QTransform matrixToTransform(const DWRITE_MATRIX &matrix,
+#if BOBUI_CONFIG(directwritecolrv1)
+static inline BOBUIransform matrixToTransform(const DWRITE_MATRIX &matrix,
                                            int unitsPerEm = 1)
 {
-    return QTransform(matrix.m11, matrix.m12,
+    return BOBUIransform(matrix.m11, matrix.m12,
                       matrix.m21, matrix.m22,
                       matrix.dx * unitsPerEm, matrix.dy * unitsPerEm);
 }
@@ -968,12 +968,12 @@ static inline QPainter::CompositionMode compositeToCompositionMode(DWRITE_COLOR_
         return QPainter::CompositionMode_SourceOver;
     };
 }
-#endif // QT_CONFIG(directwritecolrv1)
+#endif // BOBUI_CONFIG(directwritecolrv1)
 
 QRect QWindowsFontEngineDirectWrite::paintGraphBounds(glyph_t glyph,
                                                       const DWRITE_MATRIX &matrix) const
 {
-#if QT_CONFIG(directwritecolrv1)
+#if BOBUI_CONFIG(directwritecolrv1)
     ComPtr<IDWriteFontFace7> face7;
     HRESULT hr = m_directWriteFontFace->QueryInterface(__uuidof(IDWriteFontFace7),
                                                        &face7);
@@ -1016,11 +1016,11 @@ QRect QWindowsFontEngineDirectWrite::paintGraphBounds(glyph_t glyph,
                 boundingRect = boundingRectCalculator.boundingRect();
         }
 
-        QTransform initialTransform;
+        BOBUIransform initialTransform;
         initialTransform.scale(fontDef.pixelSize, fontDef.pixelSize);
         boundingRect = initialTransform.mapRect(boundingRect);
 
-        QTransform originalXform = matrixToTransform(matrix);
+        BOBUIransform originalXform = matrixToTransform(matrix);
         boundingRect = originalXform.mapRect(boundingRect);
 
         return boundingRect.toAlignedRect();
@@ -1035,7 +1035,7 @@ QRect QWindowsFontEngineDirectWrite::paintGraphBounds(glyph_t glyph,
     return QRect{};
 }
 
-#if QT_CONFIG(directwritecolrv1)
+#if BOBUI_CONFIG(directwritecolrv1)
 bool QWindowsFontEngineDirectWrite::traverseColr1(IDWritePaintReader *paintReader,
                                                   IDWriteFontFace7 *face7,
                                                   const DWRITE_PAINT_ELEMENT *paintElement,
@@ -1248,7 +1248,7 @@ bool QWindowsFontEngineDirectWrite::traverseColr1(IDWritePaintReader *paintReade
         QRect clipBox = QRectF(QPointF(rect.left, rect.top),
                                QPointF(rect.right, rect.bottom)).toAlignedRect();
         if (!clipBox.isEmpty()) {
-            QTransform coordinatesTransform;
+            BOBUIransform coordinatesTransform;
             coordinatesTransform.scale(m_unitsPerEm, m_unitsPerEm);
             clipBox = coordinatesTransform.mapRect(clipBox);
 
@@ -1270,7 +1270,7 @@ bool QWindowsFontEngineDirectWrite::traverseColr1(IDWritePaintReader *paintReade
 
     case DWRITE_PAINT_TYPE_TRANSFORM:
     {
-        QTransform transform = matrixToTransform(paintElement->paint.transform, m_unitsPerEm);
+        BOBUIransform transform = matrixToTransform(paintElement->paint.transform, m_unitsPerEm);
         paintGraphRenderer->prependTransform(transform);
         if (!traverseChildren(1))
             return false;
@@ -1348,11 +1348,11 @@ bool QWindowsFontEngineDirectWrite::renderColr1GlyphRun(QImage *image,
                 boundingRect = boundingRectCalculator.boundingRect();
         }
 
-        QTransform initialTransform;
+        BOBUIransform initialTransform;
         initialTransform.scale(fontDef.pixelSize, fontDef.pixelSize);
         boundingRect = initialTransform.mapRect(boundingRect);
 
-        QTransform originalXform = matrixToTransform(matrix);
+        BOBUIransform originalXform = matrixToTransform(matrix);
         boundingRect = originalXform.mapRect(boundingRect);
 
         qCDebug(lcColrv1).noquote() << "Bounds of"
@@ -1373,7 +1373,7 @@ bool QWindowsFontEngineDirectWrite::renderColr1GlyphRun(QImage *image,
 
     return true;
 }
-#endif // QT_CONFIG(directwritecolrv1)
+#endif // BOBUI_CONFIG(directwritecolrv1)
 
 QImage QWindowsFontEngineDirectWrite::renderColorGlyph(DWRITE_GLYPH_RUN *glyphRun,
                                                        const DWRITE_MATRIX &transform,
@@ -1385,13 +1385,13 @@ QImage QWindowsFontEngineDirectWrite::renderColorGlyph(DWRITE_GLYPH_RUN *glyphRu
 {
     QImage ret;
 
-#if QT_CONFIG(directwritecolrv1)
+#if BOBUI_CONFIG(directwritecolrv1)
     // Start by trying COLRv1 glyph, where we need to get the paint nodes ourselves and render
     // them.
     renderColr1GlyphRun(&ret, glyphRun, transform, color);
-#endif // QT_CONFIG(directwritecolrv1)
+#endif // BOBUI_CONFIG(directwritecolrv1)
 
-#if QT_CONFIG(directwrite3)
+#if BOBUI_CONFIG(directwrite3)
     // If not successful, we try the modern API that supports both embedded pixmaps or COLRv0
     // glyphs, or a combination.
     if (ret.isNull()) {
@@ -1502,7 +1502,7 @@ QImage QWindowsFontEngineDirectWrite::renderColorGlyph(DWRITE_GLYPH_RUN *glyphRu
                                                    data.imageDataSize,
                                                    format);
 
-                            QTransform matrix(transform.m11, transform.m12,
+                            BOBUIransform matrix(transform.m11, transform.m12,
                                               transform.m21, transform.m22,
                                               transform.dx, transform.dy);
 
@@ -1510,7 +1510,7 @@ QImage QWindowsFontEngineDirectWrite::renderColorGlyph(DWRITE_GLYPH_RUN *glyphRu
                             matrix.scale(scale, scale);
 
                             if (!matrix.isIdentity())
-                                ret = ret.transformed(matrix, Qt::SmoothTransformation);
+                                ret = ret.transformed(matrix, BobUI::SmoothTransformation);
 
                             break;
                         }
@@ -1523,7 +1523,7 @@ QImage QWindowsFontEngineDirectWrite::renderColorGlyph(DWRITE_GLYPH_RUN *glyphRu
             }
         }
     }
-#endif // QT_CONFIG(directwrite3)
+#endif // BOBUI_CONFIG(directwrite3)
 
     // If all else fails, we go through the pre-dwrite3 version, which just supports COLRv0.
     if (ret.isNull()) {
@@ -1585,7 +1585,7 @@ QImage QWindowsFontEngineDirectWrite::renderColorGlyph(DWRITE_GLYPH_RUN *glyphRu
 QImage QWindowsFontEngineDirectWrite::imageForGlyph(glyph_t t,
                                                     const QFixedPoint &subPixelPosition,
                                                     int margin,
-                                                    const QTransform &originalTransform,
+                                                    const BOBUIransform &originalTransform,
                                                     const QColor &color)
 {
     UINT16 glyphIndex = t;
@@ -1605,7 +1605,7 @@ QImage QWindowsFontEngineDirectWrite::imageForGlyph(glyph_t t,
     glyphRun.bidiLevel = 0;
     glyphRun.glyphOffsets = &glyphOffset;
 
-    QTransform xform = originalTransform;
+    BOBUIransform xform = originalTransform;
     if (fontDef.stretch != 100 && fontDef.stretch != QFont::AnyStretch)
         xform.scale(fontDef.stretch / 100.0, 1.0);
 
@@ -1681,7 +1681,7 @@ QImage QWindowsFontEngineDirectWrite::imageForGlyph(glyph_t t,
 
         // Not a color glyph, fall back to regular glyph rendering
         if (image.isNull()) {
-            // -1 due to Qt's off-by-one definition of a QRect
+            // -1 due to BobUI's off-by-one definition of a QRect
             image = QImage(boundingRect.width() - 1,
                            boundingRect.height() - 1,
                            glyphFormat == QFontEngine::Format_ARGB
@@ -1808,7 +1808,7 @@ void QWindowsFontEngineDirectWrite::renderGlyphRun(QImage *destination,
 
 QImage QWindowsFontEngineDirectWrite::alphaRGBMapForGlyph(glyph_t t,
                                                           const QFixedPoint &subPixelPosition,
-                                                          const QTransform &xform)
+                                                          const BOBUIransform &xform)
 {
     QImage mask = imageForGlyph(t,
                                 subPixelPosition,
@@ -1816,7 +1816,7 @@ QImage QWindowsFontEngineDirectWrite::alphaRGBMapForGlyph(glyph_t t,
                                 xform);
 
     if (mask.isNull()) {
-        mask = QFontEngine::renderedPathForGlyph(t, Qt::white);
+        mask = QFontEngine::renderedPathForGlyph(t, BobUI::white);
         if (!xform.isIdentity())
             mask = mask.transformed(xform);
     }
@@ -1843,7 +1843,7 @@ QFontEngine *QWindowsFontEngineDirectWrite::cloneWithSize(qreal pixelSize) const
     return fontEngine;
 }
 
-Qt::HANDLE QWindowsFontEngineDirectWrite::handle() const
+BobUI::HANDLE QWindowsFontEngineDirectWrite::handle() const
 {
     return m_directWriteFontFace;
 }
@@ -1860,7 +1860,7 @@ void QWindowsFontEngineDirectWrite::initFontInfo(const QFontDef &request,
 
     m_faceId.variableAxes = request.variableAxisValues;
 
-#if QT_CONFIG(directwrite3)
+#if BOBUI_CONFIG(directwrite3)
     IDWriteFontFace3 *face3 = nullptr;
     if (SUCCEEDED(m_directWriteFontFace->QueryInterface(__uuidof(IDWriteFontFace3),
                                                         reinterpret_cast<void **>(&face3)))) {
@@ -1960,7 +1960,7 @@ QRect QWindowsFontEngineDirectWrite::alphaTextureBounds(glyph_t glyph,
 
 QRect QWindowsFontEngineDirectWrite::colorBitmapBounds(glyph_t glyph, const DWRITE_MATRIX &transform)
 {
-#if QT_CONFIG(directwrite3)
+#if BOBUI_CONFIG(directwrite3)
     ComPtr<IDWriteFontFace4> face4;
     if (SUCCEEDED(m_directWriteFontFace->QueryInterface(__uuidof(IDWriteFontFace4),
                                                         &face4))) {
@@ -1997,7 +1997,7 @@ QRect QWindowsFontEngineDirectWrite::colorBitmapBounds(glyph_t glyph, const DWRI
                        data.pixelSize.width,
                        data.pixelSize.height);
 
-            QTransform matrix(transform.m11, transform.m12,
+            BOBUIransform matrix(transform.m11, transform.m12,
                               transform.m21, transform.m22,
                               transform.dx, transform.dy);
 
@@ -2015,15 +2015,15 @@ QRect QWindowsFontEngineDirectWrite::colorBitmapBounds(glyph_t glyph, const DWRI
     Q_UNUSED(glyph);
     Q_UNUSED(transform);
     return QRect{};
-#endif // QT_CONFIG(directwrite3)
+#endif // BOBUI_CONFIG(directwrite3)
 }
 
 glyph_metrics_t QWindowsFontEngineDirectWrite::alphaMapBoundingBox(glyph_t glyph,
                                                                    const QFixedPoint &subPixelPosition,
-                                                                   const QTransform &originalTransform,
+                                                                   const BOBUIransform &originalTransform,
                                                                    GlyphFormat format)
 {
-    QTransform matrix = originalTransform;
+    BOBUIransform matrix = originalTransform;
     if (fontDef.stretch != 100 && fontDef.stretch != QFont::AnyStretch)
         matrix.scale(fontDef.stretch / 100.0, 1.0);
 
@@ -2062,7 +2062,7 @@ glyph_metrics_t QWindowsFontEngineDirectWrite::alphaMapBoundingBox(glyph_t glyph
 
 QImage QWindowsFontEngineDirectWrite::bitmapForGlyph(glyph_t glyph,
                                                      const QFixedPoint &subPixelPosition,
-                                                     const QTransform &t,
+                                                     const BOBUIransform &t,
                                                      const QColor &color)
 {
     return imageForGlyph(glyph, subPixelPosition, glyphMargin(QFontEngine::Format_ARGB), t, color);
@@ -2073,4 +2073,4 @@ QList<QFontVariableAxis> QWindowsFontEngineDirectWrite::variableAxes() const
     return m_variableAxes;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

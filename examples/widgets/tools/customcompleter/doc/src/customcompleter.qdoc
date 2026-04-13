@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example tools/customcompleter
@@ -13,7 +13,7 @@
     facilities for an input widget based on data provided by a model. The
     completer pops up suggestions for possible words based on the first three
     characters input by the user and the user's choice of word is inserted
-    into the \c TextEdit using QTextCursor.
+    into the \c TextEdit using BOBUIextCursor.
 
     \image customcompleter-example.png {Text editor with the autocomplete feature}
 
@@ -27,7 +27,7 @@
 
     \section1 TextEdit Class Definition
 
-    The \c TextEdit class is a subclass of QTextEdit with a custom
+    The \c TextEdit class is a subclass of BOBUIextEdit with a custom
     \c insertCompletion() slot and it reimplements the
     \l{QAbstractScrollArea::keyPressEvent()}{keyPressEvent()} and the
     \l{QWidget::focusInEvent()}{focusInEvent()} functions. \c TextEdit also
@@ -41,7 +41,7 @@
     The constructor for \c TextEdit constructs a \c TextEdit with a parent and
     initializes \c c. The instructions to use the completer is displayed on
     the \c TextEdit object, using the
-    \l{QTextEdit::setPlainText()}{setPlainText()} function.
+    \l{BOBUIextEdit::setPlainText()}{setPlainText()} function.
 
     \snippet tools/customcompleter/textedit.cpp 0
 
@@ -75,7 +75,7 @@
     by the completer's \l{QCompleter::activated()}{activated()} signal.
 
     The \c insertCompletion() function is responsible for completing the word
-    using a QTextCursor object, \c tc. It validates to ensure that the
+    using a BOBUIextCursor object, \c tc. It validates to ensure that the
     completer's widget is \c TextEdit before using \c tc to insert the extra
     characters to complete the word.
 
@@ -94,7 +94,7 @@
     means that the last three characters from the right, "U", "A", and "L",
     will be inserted by \c tc.
 
-    The \c textUnderCursor() function uses a QTextCursor, \c tc, to select a
+    The \c textUnderCursor() function uses a BOBUIextCursor, \c tc, to select a
     word under the cursor and return it.
 
     \snippet tools/customcompleter/textedit.cpp 5
@@ -106,8 +106,8 @@
     \snippet tools/customcompleter/textedit.cpp 6
 
     The \l{QAbstractScrollArea::keyPressEvent()}{keyPressEvent()} is
-    reimplemented to ignore key events like Qt::Key_Enter, Qt::Key_Return,
-    Qt::Key_Escape, Qt::Key_Tab, and Qt::Key_Backtab so the completer can
+    reimplemented to ignore key events like BobUI::Key_Enter, BobUI::Key_Return,
+    BobUI::Key_Escape, BobUI::Key_Tab, and BobUI::Key_Backtab so the completer can
     handle them.
 
     If there is an active completer, we cannot process the shortcut, Ctrl+E.
@@ -143,13 +143,13 @@
     The \c createMenu() function creates the necessary QAction objects needed
     for the "File" and "Help" menu and their \l{QAction::triggered()}
     {triggered()} signals are connected to the \c quit(), \c about(), and
-    \c aboutQt() slots respectively.
+    \c aboutBobUI() slots respectively.
 
     \snippet tools/customcompleter/mainwindow.cpp 1
 
     The \c modelFromFile() function accepts a \a fileName and attempts to
     extract the contents of this file into a QStringListModel. We display the
-    Qt::WaitCursor when we are populating the QStringList, \c words, and
+    BobUI::WaitCursor when we are populating the QStringList, \c words, and
     restore the mouse cursor when we are done.
 
     \snippet tools/customcompleter/mainwindow.cpp 2

@@ -1,5 +1,5 @@
 // Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB).
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QOPENGLTEXTUREHELPER_P_H
 #define QOPENGLTEXTUREHELPER_P_H
@@ -8,24 +8,24 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtOpenGL/qtopenglglobal.h>
-#include <QtCore/private/qglobal_p.h>
+#include <BobUIOpenGL/bobuiopenglglobal.h>
+#include <BobUICore/private/qglobal_p.h>
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 
 #include "qopengl.h"
 #include "qopenglpixeltransferoptions.h"
 #include "qopengltexture.h"
 #include "qopenglfunctions.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // Constants for OpenGL and OpenGL ES 3.0+ which are not available with OpenGL ES 2.0.
 #ifndef GL_TEXTURE_BASE_LEVEL
@@ -355,92 +355,92 @@ private:
                                       GLint border, GLsizei imageSize, const GLvoid *bits);
 
     // DSA emulation API
-    void qt_TextureParameteri(GLuint texture, GLenum target, GLenum bindingTarget, GLenum pname, GLint param);
+    void bobui_TextureParameteri(GLuint texture, GLenum target, GLenum bindingTarget, GLenum pname, GLint param);
 
-    void qt_TextureParameteriv(GLuint texture, GLenum target, GLenum bindingTarget, GLenum pname, const GLint *params);
+    void bobui_TextureParameteriv(GLuint texture, GLenum target, GLenum bindingTarget, GLenum pname, const GLint *params);
 
-    void qt_TextureParameterf(GLuint texture, GLenum target, GLenum bindingTarget, GLenum pname, GLfloat param);
+    void bobui_TextureParameterf(GLuint texture, GLenum target, GLenum bindingTarget, GLenum pname, GLfloat param);
 
-    void qt_TextureParameterfv(GLuint texture, GLenum target, GLenum bindingTarget, GLenum pname, const GLfloat *params);
+    void bobui_TextureParameterfv(GLuint texture, GLenum target, GLenum bindingTarget, GLenum pname, const GLfloat *params);
 
-    void qt_GenerateTextureMipmap(GLuint texture, GLenum target, GLenum bindingTarget);
+    void bobui_GenerateTextureMipmap(GLuint texture, GLenum target, GLenum bindingTarget);
 
-    void qt_TextureStorage3D(GLuint texture, GLenum target, GLenum bindingTarget, GLsizei levels,
+    void bobui_TextureStorage3D(GLuint texture, GLenum target, GLenum bindingTarget, GLsizei levels,
                              GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth);
 
-    void qt_TextureStorage2D(GLuint texture, GLenum target, GLenum bindingTarget, GLsizei levels,
+    void bobui_TextureStorage2D(GLuint texture, GLenum target, GLenum bindingTarget, GLsizei levels,
                              GLenum internalFormat, GLsizei width, GLsizei height);
 
-    void qt_TextureStorage1D(GLuint texture, GLenum target, GLenum bindingTarget, GLsizei levels,
+    void bobui_TextureStorage1D(GLuint texture, GLenum target, GLenum bindingTarget, GLsizei levels,
                              GLenum internalFormat, GLsizei width);
 
-    void qt_TextureStorage3DMultisample(GLuint texture, GLenum target, GLenum bindingTarget, GLsizei samples,
+    void bobui_TextureStorage3DMultisample(GLuint texture, GLenum target, GLenum bindingTarget, GLsizei samples,
                                         GLenum internalFormat, GLsizei width, GLsizei height,
                                         GLsizei depth, GLboolean fixedSampleLocations);
 
-    void qt_TextureStorage2DMultisample(GLuint texture, GLenum target, GLenum bindingTarget, GLsizei samples,
+    void bobui_TextureStorage2DMultisample(GLuint texture, GLenum target, GLenum bindingTarget, GLsizei samples,
                                         GLenum internalFormat, GLsizei width, GLsizei height,
                                         GLboolean fixedSampleLocations);
 
-    void qt_TextureImage3D(GLuint texture, GLenum target, GLenum bindingTarget, GLint level, GLenum internalFormat,
+    void bobui_TextureImage3D(GLuint texture, GLenum target, GLenum bindingTarget, GLint level, GLenum internalFormat,
                            GLsizei width, GLsizei height, GLsizei depth,
                            GLint border, GLenum format, GLenum type,
                            const GLvoid *pixels);
 
-    void qt_TextureImage2D(GLuint texture, GLenum target, GLenum bindingTarget, GLint level, GLenum internalFormat,
+    void bobui_TextureImage2D(GLuint texture, GLenum target, GLenum bindingTarget, GLint level, GLenum internalFormat,
                            GLsizei width, GLsizei height,
                            GLint border, GLenum format, GLenum type,
                            const GLvoid *pixels);
 
-    void qt_TextureImage1D(GLuint texture, GLenum target, GLenum bindingTarget, GLint level, GLenum internalFormat,
+    void bobui_TextureImage1D(GLuint texture, GLenum target, GLenum bindingTarget, GLint level, GLenum internalFormat,
                            GLsizei width, GLint border, GLenum format, GLenum type,
                            const GLvoid *pixels);
 
-    void qt_TextureSubImage3D(GLuint texture, GLenum target, GLenum bindingTarget, GLint level,
+    void bobui_TextureSubImage3D(GLuint texture, GLenum target, GLenum bindingTarget, GLint level,
                               GLint xoffset, GLint yoffset, GLint zoffset,
                               GLsizei width, GLsizei height, GLsizei depth,
                               GLenum format, GLenum type, const GLvoid *pixels);
 
-    void qt_TextureSubImage2D(GLuint texture, GLenum target, GLenum bindingTarget, GLint level,
+    void bobui_TextureSubImage2D(GLuint texture, GLenum target, GLenum bindingTarget, GLint level,
                               GLint xoffset, GLint yoffset,
                               GLsizei width, GLsizei height,
                               GLenum format, GLenum type, const GLvoid *pixels);
 
-    void qt_TextureSubImage1D(GLuint texture, GLenum target, GLenum bindingTarget, GLint level,
+    void bobui_TextureSubImage1D(GLuint texture, GLenum target, GLenum bindingTarget, GLint level,
                               GLint xoffset, GLsizei width,
                               GLenum format, GLenum type, const GLvoid *pixels);
 
-    void qt_TextureImage3DMultisample(GLuint texture, GLenum target, GLenum bindingTarget, GLsizei samples,
+    void bobui_TextureImage3DMultisample(GLuint texture, GLenum target, GLenum bindingTarget, GLsizei samples,
                                       GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth,
                                       GLboolean fixedSampleLocations);
 
-    void qt_TextureImage2DMultisample(GLuint texture, GLenum target, GLenum bindingTarget, GLsizei samples,
+    void bobui_TextureImage2DMultisample(GLuint texture, GLenum target, GLenum bindingTarget, GLsizei samples,
                                       GLint internalFormat, GLsizei width, GLsizei height,
                                       GLboolean fixedSampleLocations);
 
-    void qt_CompressedTextureSubImage1D(GLuint texture, GLenum target, GLenum bindingTarget, GLint level,
+    void bobui_CompressedTextureSubImage1D(GLuint texture, GLenum target, GLenum bindingTarget, GLint level,
                                         GLint xoffset, GLsizei width, GLenum format,
                                         GLsizei imageSize, const GLvoid *bits);
 
-    void qt_CompressedTextureSubImage2D(GLuint texture, GLenum target, GLenum bindingTarget, GLint level,
+    void bobui_CompressedTextureSubImage2D(GLuint texture, GLenum target, GLenum bindingTarget, GLint level,
                                         GLint xoffset, GLint yoffset,
                                         GLsizei width, GLsizei height,
                                         GLenum format, GLsizei imageSize, const GLvoid *bits);
 
-    void qt_CompressedTextureSubImage3D(GLuint texture, GLenum target, GLenum bindingTarget, GLint level,
+    void bobui_CompressedTextureSubImage3D(GLuint texture, GLenum target, GLenum bindingTarget, GLint level,
                                         GLint xoffset, GLint yoffset, GLint zoffset,
                                         GLsizei width, GLsizei height, GLsizei depth,
                                         GLenum format, GLsizei imageSize, const GLvoid *bits);
 
-    void qt_CompressedTextureImage1D(GLuint texture, GLenum target, GLenum bindingTarget, GLint level, GLenum internalFormat,
+    void bobui_CompressedTextureImage1D(GLuint texture, GLenum target, GLenum bindingTarget, GLint level, GLenum internalFormat,
                                      GLsizei width, GLint border,
                                      GLsizei imageSize, const GLvoid *bits);
 
-    void qt_CompressedTextureImage2D(GLuint texture, GLenum target, GLenum bindingTarget, GLint level, GLenum internalFormat,
+    void bobui_CompressedTextureImage2D(GLuint texture, GLenum target, GLenum bindingTarget, GLint level, GLenum internalFormat,
                                      GLsizei width, GLsizei height, GLint border,
                                      GLsizei imageSize, const GLvoid *bits);
 
-    void qt_CompressedTextureImage3D(GLuint texture, GLenum target, GLenum bindingTarget, GLint level, GLenum internalFormat,
+    void bobui_CompressedTextureImage3D(GLuint texture, GLenum target, GLenum bindingTarget, GLint level, GLenum internalFormat,
                                      GLsizei width, GLsizei height, GLsizei depth, GLint border,
                                      GLsizei imageSize, const GLvoid *bits);
 
@@ -593,7 +593,7 @@ public:
         int val = 0;
         functions->glGetIntegerv(GL_UNPACK_ALIGNMENT, &val);
         options.setAlignment(val);
-#if !QT_CONFIG(opengles2)
+#if !BOBUI_CONFIG(opengles2)
         functions->glGetIntegerv(GL_UNPACK_SKIP_IMAGES, &val);
         options.setSkipImages(val);
         functions->glGetIntegerv(GL_UNPACK_SKIP_ROWS, &val);
@@ -616,7 +616,7 @@ public:
     inline void setPixelUploadOptions(const QOpenGLPixelTransferOptions &options)
     {
         functions->glPixelStorei(GL_UNPACK_ALIGNMENT, options.alignment());
-#if !QT_CONFIG(opengles2)
+#if !BOBUI_CONFIG(opengles2)
         functions->glPixelStorei(GL_UNPACK_SKIP_IMAGES, options.skipImages());
         functions->glPixelStorei(GL_UNPACK_SKIP_ROWS, options.skipRows());
         functions->glPixelStorei(GL_UNPACK_SKIP_PIXELS, options.skipPixels());
@@ -753,10 +753,10 @@ private:
     void (QOPENGLF_APIENTRYP TextureView)(GLuint texture, GLenum target, GLuint origtexture, GLenum internalformat, GLuint minlevel, GLuint numlevels, GLuint minlayer, GLuint numlayers);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #undef Q_CALL_MEMBER_FUNCTION
 
-#endif // QT_NO_OPENGL
+#endif // BOBUI_NO_OPENGL
 
 #endif // QOPENGLTEXTUREHELPER_P_H

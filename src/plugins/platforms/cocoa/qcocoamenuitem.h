@@ -1,22 +1,22 @@
-// Copyright (C) 2018 The Qt Company Ltd.
+// Copyright (C) 2018 The BobUI Company Ltd.
 // Copyright (C) 2012 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author James Turner <james.turner@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QCOCOAMENUITEM_H
 #define QCOCOAMENUITEM_H
 
 #include <qpa/qplatformmenu.h>
-#include <QtGui/QImage>
+#include <BobUIGui/QImage>
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
 Q_FORWARD_DECLARE_OBJC_CLASS(NSMenuItem);
 Q_FORWARD_DECLARE_OBJC_CLASS(NSMenu);
 Q_FORWARD_DECLARE_OBJC_CLASS(NSObject);
 Q_FORWARD_DECLARE_OBJC_CLASS(NSView);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 enum {
     AboutAppMenuItem = 0,
@@ -28,7 +28,7 @@ enum {
     QuitAppMenuItem
 };
 
-QString qt_mac_applicationmenu_string(int type);
+QString bobui_mac_applicationmenu_string(int type);
 
 class QCocoaMenu;
 
@@ -62,7 +62,7 @@ public:
     void setIsSeparator(bool isSeparator) override;
     void setFont(const QFont &font) override;
     void setRole(MenuRole role) override;
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     void setShortcut(const QKeySequence& shortcut) override;
 #endif
     void setCheckable(bool) override {}
@@ -99,7 +99,7 @@ private:
     QPointer<QCocoaMenu> m_menu;
     MenuRole m_role;
     MenuRole m_detectedRole;
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     QKeySequence m_shortcut;
 #endif
     int m_iconSize;
@@ -112,6 +112,6 @@ private:
     bool m_merged:1;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

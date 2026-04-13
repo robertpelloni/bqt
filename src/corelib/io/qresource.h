@@ -1,18 +1,18 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2019 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QRESOURCE_H
 #define QRESOURCE_H
 
-#include <QtCore/qstring.h>
-#include <QtCore/qlocale.h>
-#include <QtCore/qstringlist.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qscopedpointer.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qlocale.h>
+#include <BobUICore/qstringlist.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qscopedpointer.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QResourcePrivate;
@@ -65,6 +65,6 @@ private:
     Q_DECLARE_PRIVATE(QResource)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QRESOURCE_H

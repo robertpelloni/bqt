@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
@@ -9,14 +9,14 @@
 #include <QMainWindow>
 #include <QPixmap>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QAction;
 class QActionGroup;
 class QLabel;
 class QButtonGroup;
-class QTableWidget;
+class BOBUIableWidget;
 class QAbstractButton;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 class IconPreviewArea;
 class IconSizeSpinBox;
 
@@ -54,7 +54,7 @@ private:
 
     IconPreviewArea *previewArea;
 
-    QTableWidget *imagesTable;
+    BOBUIableWidget *imagesTable;
 
     QButtonGroup *sizeButtonGroup;
     IconSizeSpinBox *otherSpinBox;

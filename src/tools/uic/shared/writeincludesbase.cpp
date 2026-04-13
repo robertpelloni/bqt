@@ -1,17 +1,17 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "writeincludesbase.h"
 #include "ui4.h"
 #include <uic.h>
 #include <databaseinfo.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static const ClassInfoEntry qclass_lib_map[] = {
-#define QT_CLASS_LIB(klass, module, header) { #klass, #module, #header },
+#define BOBUI_CLASS_LIB(klass, module, header) { #klass, #module, #header },
 #include "qclass_lib_map.h"
-#undef QT_CLASS_LIB
+#undef BOBUI_CLASS_LIB
 };
 
 ClassInfoEntries classInfoEntries()
@@ -87,14 +87,14 @@ void WriteIncludesBase::add(const QString &className, const DomCustomWidget *dcw
 
     const CustomWidgetsInfo *cwi = m_uic->customWidgetsInfo();
     static const QStringList treeViewsWithHeaders = {
-        QStringLiteral("QTreeView"), QStringLiteral("QTreeWidget"),
-        QStringLiteral("QTableView"), QStringLiteral("QTableWidget")
+        QStringLiteral("BOBUIreeView"), QStringLiteral("BOBUIreeWidget"),
+        QStringLiteral("BOBUIableView"), QStringLiteral("BOBUIableWidget")
     };
     if (cwi->extendsOneOf(className, treeViewsWithHeaders))
         add(QStringLiteral("QHeaderView"));
 
-    if (!m_laidOut && cwi->extends(className, "QToolBox"))
-        add(QStringLiteral("QLayout")); // spacing property of QToolBox)
+    if (!m_laidOut && cwi->extends(className, "BOBUIoolBox"))
+        add(QStringLiteral("QLayout")); // spacing property of BOBUIoolBox)
 
     if (className == QStringLiteral("Line")) { // ### hmm, deprecate me!
         add(QStringLiteral("QFrame"));
@@ -132,4 +132,4 @@ void WriteIncludesBase::acceptActionRef(DomActionRef *node)
     TreeWalker::acceptActionRef(node);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

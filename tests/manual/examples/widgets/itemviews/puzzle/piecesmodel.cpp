@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "piecesmodel.h"
 
@@ -17,12 +17,12 @@ QVariant PiecesModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
-    if (role == Qt::DecorationRole)
+    if (role == BobUI::DecorationRole)
         return QIcon(pixmaps.value(index.row()).scaled(m_PieceSize, m_PieceSize,
-                         Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    else if (role == Qt::UserRole)
+                         BobUI::KeepAspectRatio, BobUI::SmoothTransformation));
+    else if (role == BobUI::UserRole)
         return pixmaps.value(index.row());
-    else if (role == Qt::UserRole + 1)
+    else if (role == BobUI::UserRole + 1)
         return locations.value(index.row());
 
     return QVariant();
@@ -42,12 +42,12 @@ void PiecesModel::addPiece(const QPixmap &pixmap, const QPoint &location)
     endInsertRows();
 }
 
-Qt::ItemFlags PiecesModel::flags(const QModelIndex &index) const
+BobUI::ItemFlags PiecesModel::flags(const QModelIndex &index) const
 {
     if (index.isValid())
-        return (QAbstractListModel::flags(index)|Qt::ItemIsDragEnabled);
+        return (QAbstractListModel::flags(index)|BobUI::ItemIsDragEnabled);
 
-    return Qt::ItemIsDropEnabled;
+    return BobUI::ItemIsDropEnabled;
 }
 
 bool PiecesModel::removeRows(int row, int count, const QModelIndex &parent)
@@ -89,8 +89,8 @@ QMimeData *PiecesModel::mimeData(const QModelIndexList &indexes) const
 
     for (const QModelIndex &index : indexes) {
         if (index.isValid()) {
-            QPixmap pixmap = qvariant_cast<QPixmap>(data(index, Qt::UserRole));
-            QPoint location = data(index, Qt::UserRole+1).toPoint();
+            QPixmap pixmap = qvariant_cast<QPixmap>(data(index, BobUI::UserRole));
+            QPoint location = data(index, BobUI::UserRole+1).toPoint();
             stream << pixmap << location;
         }
     }
@@ -99,13 +99,13 @@ QMimeData *PiecesModel::mimeData(const QModelIndexList &indexes) const
     return mimeData;
 }
 
-bool PiecesModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
+bool PiecesModel::dropMimeData(const QMimeData *data, BobUI::DropAction action,
                                int row, int column, const QModelIndex &parent)
 {
     if (!data->hasFormat("image/x-puzzle-piece"))
         return false;
 
-    if (action == Qt::IgnoreAction)
+    if (action == BobUI::IgnoreAction)
         return true;
 
     if (column > 0)
@@ -146,9 +146,9 @@ int PiecesModel::rowCount(const QModelIndex &parent) const
     return parent.isValid() ? 0 : pixmaps.size();
 }
 
-Qt::DropActions PiecesModel::supportedDropActions() const
+BobUI::DropActions PiecesModel::supportedDropActions() const
 {
-    return Qt::CopyAction | Qt::MoveAction;
+    return BobUI::CopyAction | BobUI::MoveAction;
 }
 
 void PiecesModel::addPieces(const QPixmap &pixmap)

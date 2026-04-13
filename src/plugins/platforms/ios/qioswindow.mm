@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qioswindow.h"
 
@@ -12,23 +12,23 @@
 #include "quiview.h"
 #include "qiosinputcontext.h"
 
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
-#include <QtGui/private/qwindow_p.h>
-#include <QtGui/private/qhighdpiscaling_p.h>
+#include <BobUIGui/private/qwindow_p.h>
+#include <BobUIGui/private/qhighdpiscaling_p.h>
 #include <qpa/qplatformintegration.h>
 
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
 #import <QuartzCore/CAEAGLLayer.h>
 #endif
 
-#if QT_CONFIG(metal)
+#if BOBUI_CONFIG(metal)
 #import <QuartzCore/CAMetalLayer.h>
 #endif
 
-#include <QtDebug>
+#include <BobUIDebug>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 enum {
     defaultWindowWidth = 160,
@@ -42,7 +42,7 @@ QIOSWindow::QIOSWindow(QWindow *window, WId nativeHandle)
         m_view = reinterpret_cast<UIView *>(nativeHandle);
         [m_view retain];
     } else {
-#if QT_CONFIG(metal)
+#if BOBUI_CONFIG(metal)
         if (window->surfaceType() == QSurface::RasterSurface)
             window->setSurfaceType(QSurface::MetalSurface);
 
@@ -74,8 +74,8 @@ QIOSWindow::QIOSWindow(QWindow *window, WId nativeHandle)
         QPlatformWindow::setGeometry(QRectF::fromCGRect(m_view.frame).toRect());
     }
 
-    Qt::ScreenOrientation initialOrientation = window->contentOrientation();
-    if (initialOrientation != Qt::PrimaryOrientation) {
+    BobUI::ScreenOrientation initialOrientation = window->contentOrientation();
+    if (initialOrientation != BobUI::PrimaryOrientation) {
         // Start up in portrait, then apply possible content orientation,
         // as per Apple's documentation.
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -89,7 +89,7 @@ QIOSWindow::~QIOSWindow()
     // According to the UIResponder documentation, Cocoa Touch should react to system interruptions
     // that "might cause the view to be removed from the window" by sending touchesCancelled, but in
     // practice this doesn't seem to happen when removing the view from its superview. To ensure that
-    // Qt's internal state for touch and mouse handling is kept consistent, we therefore have to force
+    // BobUI's internal state for touch and mouse handling is kept consistent, we therefore have to force
     // cancellation of all touch events.
     [m_view touchesCancelled:[NSSet set] withEvent:0];
 
@@ -98,8 +98,8 @@ QIOSWindow::~QIOSWindow()
     quiview_cast(m_view).platformWindow = nullptr;
 
     // Remove from superview, unless we're a foreign window without a
-    // Qt window parent, in which case the foreign window is used as
-    // a window container for a Qt UI hierarchy inside a native UI.
+    // BobUI window parent, in which case the foreign window is used as
+    // a window container for a BobUI UI hierarchy inside a native UI.
     if (!(isForeignWindow() && !QPlatformWindow::parent()))
         [m_view removeFromSuperview];
 
@@ -124,7 +124,7 @@ void QIOSWindow::setVisible(bool visible)
     m_view.hidden = !visible;
     [m_view setNeedsDisplay];
 
-    if (!isQtApplication() || !window()->isTopLevel())
+    if (!isBobUIApplication() || !window()->isTopLevel())
         return;
 
     if (blockedByModal()) {
@@ -167,8 +167,8 @@ bool QIOSWindow::shouldAutoActivateWindow() const
     // We don't want to do automatic window activation for popup windows
     // that are unlikely to contain editable controls (to avoid hiding
     // the keyboard while the popup is showing)
-    const Qt::WindowType type = window()->type();
-    return (type != Qt::Popup && type != Qt::ToolTip) || !window()->isActive();
+    const BobUI::WindowType type = window()->type();
+    return (type != BobUI::Popup && type != BobUI::ToolTip) || !window()->isActive();
 }
 
 void QIOSWindow::setOpacity(qreal level)
@@ -180,7 +180,7 @@ void QIOSWindow::setGeometry(const QRect &rect)
 {
     m_normalGeometry = rect;
 
-    if (window()->windowState() != Qt::WindowNoState) {
+    if (window()->windowState() != BobUI::WindowNoState) {
         QPlatformWindow::setGeometry(rect);
 
         // The layout will realize the requested geometry was not applied, and
@@ -189,7 +189,7 @@ void QIOSWindow::setGeometry(const QRect &rect)
 
         if (window()->inherits("QWidgetWindow")) {
             // QWidget wrongly assumes that setGeometry resets the window
-            // state back to Qt::NoWindowState, so we need to inform it that
+            // state back to BobUI::NoWindowState, so we need to inform it that
             // that his is not the case by re-issuing the current window state.
             QWindowSystemInterface::handleWindowStateChanged(window(), window()->windowState());
 
@@ -232,23 +232,23 @@ QMargins QIOSWindow::safeAreaMargins() const
 
 bool QIOSWindow::isExposed() const
 {
-    return qApp->applicationState() != Qt::ApplicationSuspended
+    return qApp->applicationState() != BobUI::ApplicationSuspended
         && window()->isVisible() && !window()->geometry().isEmpty();
 }
 
-void QIOSWindow::setWindowState(Qt::WindowStates state)
+void QIOSWindow::setWindowState(BobUI::WindowStates state)
 {
     // Update the QWindow representation straight away, so that
     // we can update the statusbar visibility based on the new
     // state before applying geometry changes.
-    qt_window_private(window())->windowState = state;
+    bobui_window_private(window())->windowState = state;
 
     if (window()->isTopLevel() && window()->isVisible() && window()->isActive())
-        [m_view.qtViewController updateStatusBarProperties];
+        [m_view.bobuiViewController updateStatusBarProperties];
 
-    if (state & Qt::WindowMinimized) {
+    if (state & BobUI::WindowMinimized) {
         applyGeometry(QRect());
-    } else if (state & (Qt::WindowFullScreen | Qt::WindowMaximized)) {
+    } else if (state & (BobUI::WindowFullScreen | BobUI::WindowMaximized)) {
         QRect uiWindowBounds = QRectF::fromCGRect(m_view.window.bounds).toRect();
         if (NSProcessInfo.processInfo.iOSAppOnMac) {
             // iOS apps running as "Designed for iPad" on macOS do not match
@@ -269,7 +269,7 @@ void QIOSWindow::setWindowState(Qt::WindowStates state)
             QRect maximizedGeometry = fullscreenGeometry;
 
 #if !defined(Q_OS_VISIONOS)
-            if (!(window()->flags() & Qt::ExpandedClientAreaHint)) {
+            if (!(window()->flags() & BobUI::ExpandedClientAreaHint)) {
                 // If the safe area margins reflect the screen's outer edges,
                 // then reduce the maximized geometry accordingly. Otherwise
                 // leave it as is, and assume the client will take the safe
@@ -293,7 +293,7 @@ void QIOSWindow::setWindowState(Qt::WindowStates state)
                 maximizedGeometry = maximizedGeometry.intersected(uiWindowBounds);
             }
 
-            if (state & Qt::WindowFullScreen)
+            if (state & BobUI::WindowFullScreen)
                 applyGeometry(fullscreenGeometry);
             else
                 applyGeometry(maximizedGeometry);
@@ -308,7 +308,7 @@ void QIOSWindow::setParent(const QPlatformWindow *parentWindow)
     UIView *superview = nullptr;
     if (parentWindow)
         superview = reinterpret_cast<UIView *>(parentWindow->winId());
-    else if (isQtApplication() && !isForeignWindow())
+    else if (isBobUIApplication() && !isForeignWindow())
         superview = rootViewForScreen(window()->screen()->handle());
 
     if (superview)
@@ -334,14 +334,14 @@ void QIOSWindow::requestActivateWindow()
 
 void QIOSWindow::raiseOrLower(bool raise)
 {
-    if (!isQtApplication())
+    if (!isBobUIApplication())
         return;
 
     NSArray<UIView *> *subviews = m_view.superview.subviews;
     if (subviews.count == 1)
         return;
 
-    if (m_view.superview == m_view.qtViewController.view) {
+    if (m_view.superview == m_view.bobuiViewController.view) {
         // We're a top level window, so we need to take window
         // levels into account.
         for (int i = int(subviews.count) - 1; i >= 0; --i) {
@@ -356,7 +356,7 @@ void QIOSWindow::raiseOrLower(bool raise)
         }
         [m_view.superview insertSubview:m_view atIndex:0];
     } else {
-        // Child window, or embedded into a non-Qt view controller
+        // Child window, or embedded into a non-BobUI view controller
         if (raise)
             [m_view.superview bringSubviewToFront:m_view];
         else
@@ -366,21 +366,21 @@ void QIOSWindow::raiseOrLower(bool raise)
 
 int QIOSWindow::windowLevel() const
 {
-    Qt::WindowType type = window()->type();
+    BobUI::WindowType type = window()->type();
 
     int level = 0;
 
-    if (type == Qt::ToolTip)
+    if (type == BobUI::ToolTip)
         level = 120;
-    else if (window()->flags() & Qt::WindowStaysOnTopHint)
+    else if (window()->flags() & BobUI::WindowStaysOnTopHint)
         level = 100;
     else if (window()->isModal())
         level = 40;
-    else if (type == Qt::Popup)
+    else if (type == BobUI::Popup)
         level = 30;
-    else if (type == Qt::SplashScreen)
+    else if (type == BobUI::SplashScreen)
         level = 20;
-    else if (type == Qt::Tool)
+    else if (type == BobUI::Tool)
         level = 10;
     else
         level = 0;
@@ -394,7 +394,7 @@ int QIOSWindow::windowLevel() const
     return level;
 }
 
-void QIOSWindow::applicationStateChanged(Qt::ApplicationState)
+void QIOSWindow::applicationStateChanged(BobUI::ApplicationState)
 {
     if (isForeignWindow())
         return;
@@ -444,7 +444,7 @@ void QIOSWindow::setMask(const QRegion &region)
     }
 }
 
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
 CAEAGLLayer *QIOSWindow::eaglLayer() const
 {
     Q_ASSERT([m_view.layer isKindOfClass:[CAEAGLLayer class]]);
@@ -452,7 +452,7 @@ CAEAGLLayer *QIOSWindow::eaglLayer() const
 }
 #endif
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug debug, const QIOSWindow *window)
 {
     QDebugStateSaver saver(debug);
@@ -463,7 +463,7 @@ QDebug operator<<(QDebug debug, const QIOSWindow *window)
     debug << ')';
     return debug;
 }
-#endif // !QT_NO_DEBUG_STREAM
+#endif // !BOBUI_NO_DEBUG_STREAM
 
 /*!
     Returns the view cast to a QUIview if possible.
@@ -483,7 +483,7 @@ QDebug operator<<(QDebug debug, const QIOSWindow *window)
 */
 QUIView *quiview_cast(UIView *view)
 {
-    return qt_objc_cast<QUIView *>(view);
+    return bobui_objc_cast<QUIView *>(view);
 }
 
 bool QIOSWindow::isForeignWindow() const
@@ -496,6 +496,6 @@ UIView *QIOSWindow::view() const
     return m_view;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qioswindow.cpp"

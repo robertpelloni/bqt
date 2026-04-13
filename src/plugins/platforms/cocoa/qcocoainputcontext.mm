@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <AppKit/AppKit.h>
 
@@ -12,11 +12,11 @@
 
 #include <Carbon/Carbon.h>
 
-#include <QtCore/QRect>
-#include <QtGui/QGuiApplication>
-#include <QtGui/QWindow>
+#include <BobUICore/QRect>
+#include <BobUIGui/QGuiApplication>
+#include <BobUIGui/QWindow>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QCocoaInputContext
@@ -165,4 +165,4 @@ void QCocoaInputContext::updateLocale()
     firstUpdate = false;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

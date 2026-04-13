@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
-#include <QtNetwork/QNetworkAccessManager>
-#include <QtNetwork/QNetworkReply>
+#include <BobUINetwork/QNetworkAccessManager>
+#include <BobUINetwork/QNetworkReply>
 
-#include <QtCore/QDebug>
+#include <BobUICore/QDebug>
 
 class tst_QNetworkAccessManager : public QObject
 {
@@ -34,5 +34,5 @@ void tst_QNetworkAccessManager::alwaysCacheRequest()
     delete reply;
 }
 
-QTEST_MAIN(tst_QNetworkAccessManager)
+BOBUIEST_MAIN(tst_QNetworkAccessManager)
 #include "tst_qnetworkaccessmanager.moc"

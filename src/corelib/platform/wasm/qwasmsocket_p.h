@@ -1,5 +1,5 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWASMSOCKET_P_H
 #define QWASMSOCKET_P_H
@@ -8,14 +8,14 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include "QtCore/private/qeventdispatcher_wasm_p.h"
+#include "BobUICore/private/qeventdispatcher_wasm_p.h"
 
 class QWasmSocket
 {
@@ -39,7 +39,7 @@ public:
         bool checkRead, bool checkWrite, bool *selectForRead, bool *selectForWrite, bool *socketDisconnect);
 private:
 
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
     Q_CONSTINIT static std::mutex g_socketDataMutex;
 #endif
     static std::multimap<int, QSocketNotifier *> g_socketNotifiers;

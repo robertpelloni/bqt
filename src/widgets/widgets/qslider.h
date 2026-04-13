@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSLIDER_H
 #define QSLIDER_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
 
-#include <QtWidgets/qabstractslider.h>
+#include <BobUIWidgets/qabstractslider.h>
 
-QT_REQUIRE_CONFIG(slider);
+BOBUI_REQUIRE_CONFIG(slider);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QSliderPrivate;
 class QStyleOptionSlider;
@@ -34,7 +34,7 @@ public:
     Q_ENUM(TickPosition)
 
     explicit QSlider(QWidget *parent = nullptr);
-    explicit QSlider(Qt::Orientation orientation, QWidget *parent = nullptr);
+    explicit QSlider(BobUI::Orientation orientation, QWidget *parent = nullptr);
 
     ~QSlider();
 
@@ -58,12 +58,12 @@ protected:
 
 
 private:
-    friend Q_WIDGETS_EXPORT QStyleOptionSlider qt_qsliderStyleOption(QSlider *slider);
+    friend Q_WIDGETS_EXPORT QStyleOptionSlider bobui_qsliderStyleOption(QSlider *slider);
 
     Q_DISABLE_COPY(QSlider)
     Q_DECLARE_PRIVATE(QSlider)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSLIDER_H

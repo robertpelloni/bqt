@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 #include "qpalette.h"
 
@@ -28,34 +28,34 @@ private Q_SLOTS:
 
 void tst_QPalette::roleValues_data()
 {
-    QTest::addColumn<int>("role");
-    QTest::addColumn<int>("value");
+    BOBUIest::addColumn<int>("role");
+    BOBUIest::addColumn<int>("value");
 
-    QTest::newRow("QPalette::WindowText") << int(QPalette::WindowText) << 0;
-    QTest::newRow("QPalette::Button") << int(QPalette::Button) << 1;
-    QTest::newRow("QPalette::Light") << int(QPalette::Light) << 2;
-    QTest::newRow("QPalette::Midlight") << int(QPalette::Midlight) << 3;
-    QTest::newRow("QPalette::Dark") << int(QPalette::Dark) << 4;
-    QTest::newRow("QPalette::Mid") << int(QPalette::Mid) << 5;
-    QTest::newRow("QPalette::Text") << int(QPalette::Text) << 6;
-    QTest::newRow("QPalette::BrightText") << int(QPalette::BrightText) << 7;
-    QTest::newRow("QPalette::ButtonText") << int(QPalette::ButtonText) << 8;
-    QTest::newRow("QPalette::Base") << int(QPalette::Base) << 9;
-    QTest::newRow("QPalette::Window") << int(QPalette::Window) << 10;
-    QTest::newRow("QPalette::Shadow") << int(QPalette::Shadow) << 11;
-    QTest::newRow("QPalette::Highlight") << int(QPalette::Highlight) << 12;
-    QTest::newRow("QPalette::HighlightedText") << int(QPalette::HighlightedText) << 13;
-    QTest::newRow("QPalette::Link") << int(QPalette::Link) << 14;
-    QTest::newRow("QPalette::LinkVisited") << int(QPalette::LinkVisited) << 15;
-    QTest::newRow("QPalette::AlternateBase") << int(QPalette::AlternateBase) << 16;
-    QTest::newRow("QPalette::NoRole") << int(QPalette::NoRole) << 17;
-    QTest::newRow("QPalette::ToolTipBase") << int(QPalette::ToolTipBase) << 18;
-    QTest::newRow("QPalette::ToolTipText") << int(QPalette::ToolTipText) << 19;
-    QTest::newRow("QPalette::PlaceholderText") << int(QPalette::PlaceholderText) << 20;
-    QTest::newRow("QPalette::Accent") << int(QPalette::Accent) << 21;
+    BOBUIest::newRow("QPalette::WindowText") << int(QPalette::WindowText) << 0;
+    BOBUIest::newRow("QPalette::Button") << int(QPalette::Button) << 1;
+    BOBUIest::newRow("QPalette::Light") << int(QPalette::Light) << 2;
+    BOBUIest::newRow("QPalette::Midlight") << int(QPalette::Midlight) << 3;
+    BOBUIest::newRow("QPalette::Dark") << int(QPalette::Dark) << 4;
+    BOBUIest::newRow("QPalette::Mid") << int(QPalette::Mid) << 5;
+    BOBUIest::newRow("QPalette::Text") << int(QPalette::Text) << 6;
+    BOBUIest::newRow("QPalette::BrightText") << int(QPalette::BrightText) << 7;
+    BOBUIest::newRow("QPalette::ButtonText") << int(QPalette::ButtonText) << 8;
+    BOBUIest::newRow("QPalette::Base") << int(QPalette::Base) << 9;
+    BOBUIest::newRow("QPalette::Window") << int(QPalette::Window) << 10;
+    BOBUIest::newRow("QPalette::Shadow") << int(QPalette::Shadow) << 11;
+    BOBUIest::newRow("QPalette::Highlight") << int(QPalette::Highlight) << 12;
+    BOBUIest::newRow("QPalette::HighlightedText") << int(QPalette::HighlightedText) << 13;
+    BOBUIest::newRow("QPalette::Link") << int(QPalette::Link) << 14;
+    BOBUIest::newRow("QPalette::LinkVisited") << int(QPalette::LinkVisited) << 15;
+    BOBUIest::newRow("QPalette::AlternateBase") << int(QPalette::AlternateBase) << 16;
+    BOBUIest::newRow("QPalette::NoRole") << int(QPalette::NoRole) << 17;
+    BOBUIest::newRow("QPalette::ToolTipBase") << int(QPalette::ToolTipBase) << 18;
+    BOBUIest::newRow("QPalette::ToolTipText") << int(QPalette::ToolTipText) << 19;
+    BOBUIest::newRow("QPalette::PlaceholderText") << int(QPalette::PlaceholderText) << 20;
+    BOBUIest::newRow("QPalette::Accent") << int(QPalette::Accent) << 21;
 
     // Change this value as you add more roles.
-    QTest::newRow("QPalette::NColorRoles") << int(QPalette::NColorRoles) << 22;
+    BOBUIest::newRow("QPalette::NColorRoles") << int(QPalette::NColorRoles) << 22;
 }
 
 void tst_QPalette::roleValues()
@@ -68,14 +68,14 @@ void tst_QPalette::roleValues()
 void tst_QPalette::resolve()
 {
     QPalette p1;
-    p1.setBrush(QPalette::WindowText, Qt::green);
-    p1.setBrush(QPalette::Button, Qt::green);
+    p1.setBrush(QPalette::WindowText, BobUI::green);
+    p1.setBrush(QPalette::Button, BobUI::green);
 
     QVERIFY(p1.isBrushSet(QPalette::Active, QPalette::WindowText));
     QVERIFY(p1.isBrushSet(QPalette::Active, QPalette::Button));
 
     QPalette p2;
-    p2.setBrush(QPalette::WindowText, Qt::red);
+    p2.setBrush(QPalette::WindowText, BobUI::red);
 
     QVERIFY(p2.isBrushSet(QPalette::Active, QPalette::WindowText));
     QVERIFY(!p2.isBrushSet(QPalette::Active, QPalette::Button));
@@ -104,7 +104,7 @@ void tst_QPalette::resolve()
     QPalette p3;
     // ensure the resolve mask is full
     for (int r = 0; r < QPalette::NColorRoles; ++r)
-        p3.setBrush(QPalette::All, QPalette::ColorRole(r), Qt::red);
+        p3.setBrush(QPalette::All, QPalette::ColorRole(r), BobUI::red);
     const QPalette::ResolveMask fullMask = p3.resolveMask();
 
     QPalette p3ResolvedToP1 = p3.resolve(p1);
@@ -131,7 +131,7 @@ static void compareAllPaletteData(const QPalette &firstPalette, const QPalette &
 
 void tst_QPalette::copySemantics()
 {
-    QPalette src(Qt::red), dst;
+    QPalette src(BobUI::red), dst;
     const QPalette control = src; // copy construction
     QVERIFY(src != dst);
     QVERIFY(!src.isCopyOf(dst));
@@ -142,7 +142,7 @@ void tst_QPalette::copySemantics()
     compareAllPaletteData(dst, control);
     QVERIFY(dst.isCopyOf(src));
 
-    dst = QPalette(Qt::green);
+    dst = QPalette(BobUI::green);
     QVERIFY(dst != src);
     QVERIFY(dst != control);
     compareAllPaletteData(src, control);
@@ -152,7 +152,7 @@ void tst_QPalette::copySemantics()
 
 void tst_QPalette::moveSemantics()
 {
-    QPalette src(Qt::red), dst;
+    QPalette src(BobUI::red), dst;
     const QPalette control = src;
     QVERIFY(src != dst);
     compareAllPaletteData(src, control);
@@ -177,12 +177,12 @@ void tst_QPalette::moveSemantics()
 
 void tst_QPalette::setBrush()
 {
-    QPalette p(Qt::red);
+    QPalette p(BobUI::red);
     const QPalette q = p;
     QVERIFY(q.isCopyOf(p));
 
     // Setting a different brush will detach
-    p.setBrush(QPalette::Disabled, QPalette::Button, Qt::green);
+    p.setBrush(QPalette::Disabled, QPalette::Button, BobUI::green);
     QVERIFY(!q.isCopyOf(p));
     QVERIFY(q != p);
 
@@ -193,7 +193,7 @@ void tst_QPalette::setBrush()
             const auto r = QPalette::ColorRole(j);
             const auto b = p.brush(g, r);
             if (g == QPalette::Disabled && r == QPalette::Button)
-                QCOMPARE(b, QBrush(Qt::green));
+                QCOMPARE(b, QBrush(BobUI::green));
             else
                 QCOMPARE(b, q.brush(g, r));
         }
@@ -207,18 +207,18 @@ void tst_QPalette::isBrushSet()
     QPalette p;
 
     // Set only one color group
-    p.setBrush(QPalette::Active, QPalette::Mid, QBrush(Qt::red));
+    p.setBrush(QPalette::Active, QPalette::Mid, QBrush(BobUI::red));
     QVERIFY(p.isBrushSet(QPalette::Active, QPalette::Mid));
     QVERIFY(!p.isBrushSet(QPalette::Inactive, QPalette::Mid));
     QVERIFY(!p.isBrushSet(QPalette::Disabled, QPalette::Mid));
 
     // Set all color groups
-    p.setBrush(QPalette::LinkVisited, QBrush(Qt::green));
+    p.setBrush(QPalette::LinkVisited, QBrush(BobUI::green));
     QVERIFY(p.isBrushSet(QPalette::Active, QPalette::LinkVisited));
     QVERIFY(p.isBrushSet(QPalette::Inactive, QPalette::LinkVisited));
     QVERIFY(p.isBrushSet(QPalette::Disabled, QPalette::LinkVisited));
 
-    // Don't set flag when brush doesn't change (and also don't detach - QTBUG-98762)
+    // Don't set flag when brush doesn't change (and also don't detach - BOBUIBUG-98762)
     QPalette p2;
     QPalette p3;
     QVERIFY(!p2.isBrushSet(QPalette::Active, QPalette::Dark));
@@ -234,7 +234,7 @@ void tst_QPalette::setAllPossibleBrushes()
     QCOMPARE(p.resolveMask(), QPalette::ResolveMask(0));
 
     for (int r = 0; r < QPalette::NColorRoles; ++r) {
-        p.setBrush(QPalette::All, QPalette::ColorRole(r), Qt::red);
+        p.setBrush(QPalette::All, QPalette::ColorRole(r), BobUI::red);
     }
 
     for (int r = 0; r < QPalette::NColorRoles; ++r) {
@@ -257,7 +257,7 @@ void tst_QPalette::noBrushesSetForDefaultPalette()
 
 void tst_QPalette::cannotCheckIfInvalidBrushSet()
 {
-    QPalette p(Qt::red);
+    QPalette p(BobUI::red);
 
     QVERIFY(!p.isBrushSet(QPalette::All, QPalette::LinkVisited));
     QVERIFY(!p.isBrushSet(QPalette::Active, QPalette::NColorRoles));
@@ -268,7 +268,7 @@ void tst_QPalette::checkIfBrushForCurrentGroupSet()
     QPalette p;
 
     p.setCurrentColorGroup(QPalette::Disabled);
-    p.setBrush(QPalette::Current, QPalette::Link, QBrush(Qt::yellow));
+    p.setBrush(QPalette::Current, QPalette::Link, QBrush(BobUI::yellow));
 
     QVERIFY(p.isBrushSet(QPalette::Current, QPalette::Link));
 }
@@ -283,10 +283,10 @@ void tst_QPalette::cacheKey()
     const auto defaultDetachNo = defaultCacheKey & 0xffffffff;
 
     QPalette changeTwicePalette(defaultPalette);
-    changeTwicePalette.setBrush(QPalette::All, QPalette::ButtonText, Qt::red);
+    changeTwicePalette.setBrush(QPalette::All, QPalette::ButtonText, BobUI::red);
     const auto firstChangeCacheKey = changeTwicePalette.cacheKey();
     QCOMPARE_NE(firstChangeCacheKey, defaultCacheKey);
-    changeTwicePalette.setBrush(QPalette::All, QPalette::ButtonText, Qt::green);
+    changeTwicePalette.setBrush(QPalette::All, QPalette::ButtonText, BobUI::green);
     const auto secondChangeCacheKey = changeTwicePalette.cacheKey();
     QCOMPARE_NE(firstChangeCacheKey, secondChangeCacheKey);
 
@@ -357,36 +357,36 @@ void tst_QPalette::dataStream()
     palette.setBrush(QPalette::Highlight, highlight);
     palette.setBrush(QPalette::Accent, accent);
 
-    // When saved with Qt_6_5 or earlier, Accent defaults to Highlight
+    // When saved with BobUI_6_5 or earlier, Accent defaults to Highlight
     {
         QByteArray b;
         {
             QDataStream stream(&b, QIODevice::WriteOnly);
-            stream.setVersion(QDataStream::Qt_6_5);
+            stream.setVersion(QDataStream::BobUI_6_5);
             stream << palette;
         }
         QPalette test;
         QDataStream stream (&b, QIODevice::ReadOnly);
-        stream.setVersion(QDataStream::Qt_6_5);
+        stream.setVersion(QDataStream::BobUI_6_5);
         stream >> test;
         QCOMPARE(test.accent().color(), highlight);
     }
 
-    // When saved with Qt_6_6 or later, Accent is saved explicitly
+    // When saved with BobUI_6_6 or later, Accent is saved explicitly
     {
         QByteArray b;
         {
             QDataStream stream(&b, QIODevice::WriteOnly);
-            stream.setVersion(QDataStream::Qt_6_6);
+            stream.setVersion(QDataStream::BobUI_6_6);
             stream << palette;
         }
         QPalette test;
         QDataStream stream (&b, QIODevice::ReadOnly);
-        stream.setVersion(QDataStream::Qt_6_6);
+        stream.setVersion(QDataStream::BobUI_6_6);
         stream >> test;
         QCOMPARE(test.accent().color(), accent);
     }
 }
 
-QTEST_MAIN(tst_QPalette)
+BOBUIEST_MAIN(tst_QPalette)
 #include "tst_qpalette.moc"

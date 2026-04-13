@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QGRIDLAYOUTENGINE_P_H
 #define QGRIDLAYOUTENGINE_P_H
@@ -9,22 +9,22 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of the graphics view layout classes.  This header
 // file may change from version to version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
 
-#include <QtCore/qalgorithms.h>
-#include <QtCore/qbitarray.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qmap.h>
-#include <QtCore/qsize.h>
-#include <QtCore/qrect.h>
-#include <QtCore/qdebug.h>
+#include <BobUICore/qalgorithms.h>
+#include <BobUICore/qbitarray.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qmap.h>
+#include <BobUICore/qsize.h>
+#include <BobUICore/qrect.h>
+#include <BobUICore/qdebug.h>
 
 #include <float.h>
 #include "qlayoutpolicy_p.h"
@@ -32,16 +32,16 @@
 
 // #define QGRIDLAYOUTENGINE_DEBUG
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QStyle;
 class QWidget;
 
 // ### deal with Descent in a similar way
 enum {
-    MinimumSize = Qt::MinimumSize,
-    PreferredSize = Qt::PreferredSize,
-    MaximumSize = Qt::MaximumSize,
+    MinimumSize = BobUI::MinimumSize,
+    PreferredSize = BobUI::PreferredSize,
+    MaximumSize = BobUI::MaximumSize,
     NSizes
 };
 
@@ -62,25 +62,25 @@ enum {
 };
 
 /*
-    Minimal container to store Qt::Orientation-discriminated values.
+    Minimal container to store BobUI::Orientation-discriminated values.
 
     The salient feature is the indexing operator, which takes
-    Qt::Orientation (and assumes it's passed only Qt::Horizontal or Qt::Vertical).
+    BobUI::Orientation (and assumes it's passed only BobUI::Horizontal or BobUI::Vertical).
 */
 template <typename T>
 class QHVContainer {
     T m_data[2];
 
-    static_assert(Qt::Horizontal == 0x1);
-    static_assert(Qt::Vertical == 0x2);
-    static constexpr int map(Qt::Orientation o)
+    static_assert(BobUI::Horizontal == 0x1);
+    static_assert(BobUI::Vertical == 0x2);
+    static constexpr int map(BobUI::Orientation o)
     {
-        Q_ASSERT(o == Qt::Horizontal || o == Qt::Vertical); // Q_PRE
+        Q_ASSERT(o == BobUI::Horizontal || o == BobUI::Vertical); // Q_PRE
         return int(o) - 1;
     }
-    static constexpr int mapOther(Qt::Orientation o)
+    static constexpr int mapOther(BobUI::Orientation o)
     {
-        Q_ASSERT(o == Qt::Horizontal || o == Qt::Vertical); // Q_PRE
+        Q_ASSERT(o == BobUI::Horizontal || o == BobUI::Vertical); // Q_PRE
         return 2 - int(o);
     }
 public:
@@ -89,11 +89,11 @@ public:
         : m_data{h, v} {}
     QHVContainer() = default;
 
-    constexpr T &operator[](Qt::Orientation o) { return m_data[map(o)]; }
-    constexpr const T &operator[](Qt::Orientation o) const { return m_data[map(o)]; }
+    constexpr T &operator[](BobUI::Orientation o) { return m_data[map(o)]; }
+    constexpr const T &operator[](BobUI::Orientation o) const { return m_data[map(o)]; }
 
-    constexpr T &other(Qt::Orientation o) { return m_data[mapOther(o)]; }
-    constexpr const T &other(Qt::Orientation o) const { return m_data[mapOther(o)]; }
+    constexpr T &other(BobUI::Orientation o) { return m_data[mapOther(o)]; }
+    constexpr const T &other(BobUI::Orientation o) const { return m_data[mapOther(o)]; }
 
     constexpr void transpose() noexcept { qSwap(m_data[0], m_data[1]); }
     constexpr QHVContainer transposed() const
@@ -166,15 +166,15 @@ public:
     inline const qreal &q_sizes(int which) const
     {
         switch (which) {
-        case Qt::MinimumSize:
+        case BobUI::MinimumSize:
             return q_minimumSize;
-        case Qt::PreferredSize:
+        case BobUI::PreferredSize:
             return q_preferredSize;
-        case Qt::MaximumSize:
+        case BobUI::MaximumSize:
             return q_maximumSize;
-        case Qt::MinimumDescent:
+        case BobUI::MinimumDescent:
             return q_minimumDescent;
-        case (Qt::MinimumDescent + 1):
+        case (BobUI::MinimumDescent + 1):
             return q_minimumAscent;
         default:
             Q_UNREACHABLE();
@@ -237,7 +237,7 @@ public:
     int count;
     QList<QStretchParameter> stretches;
     QList<QLayoutParameter<qreal>> spacings;
-    QList<Qt::Alignment> alignments;
+    QList<BobUI::Alignment> alignments;
     QList<QGridLayoutBox> boxes;
 };
 
@@ -246,33 +246,33 @@ class Q_GUI_EXPORT QGridLayoutItem
 {
 public:
     QGridLayoutItem(int row, int column, int rowSpan = 1, int columnSpan = 1,
-                    Qt::Alignment alignment = { });
+                    BobUI::Alignment alignment = { });
     virtual ~QGridLayoutItem() {}
 
-    inline int firstRow() const { return q_firstRows[Qt::Vertical]; }
-    inline int firstColumn() const { return q_firstRows[Qt::Horizontal]; }
-    inline int rowSpan() const { return q_rowSpans[Qt::Vertical]; }
-    inline int columnSpan() const { return q_rowSpans[Qt::Horizontal]; }
+    inline int firstRow() const { return q_firstRows[BobUI::Vertical]; }
+    inline int firstColumn() const { return q_firstRows[BobUI::Horizontal]; }
+    inline int rowSpan() const { return q_rowSpans[BobUI::Vertical]; }
+    inline int columnSpan() const { return q_rowSpans[BobUI::Horizontal]; }
     inline int lastRow() const { return firstRow() + rowSpan() - 1; }
     inline int lastColumn() const { return firstColumn() + columnSpan() - 1; }
 
-    int firstRow(Qt::Orientation orientation) const;
-    int firstColumn(Qt::Orientation orientation) const;
-    int lastRow(Qt::Orientation orientation) const;
-    int lastColumn(Qt::Orientation orientation) const;
-    int rowSpan(Qt::Orientation orientation) const;
-    int columnSpan(Qt::Orientation orientation) const;
-    void setFirstRow(int row, Qt::Orientation orientation = Qt::Vertical);
-    void setRowSpan(int rowSpan, Qt::Orientation orientation = Qt::Vertical);
+    int firstRow(BobUI::Orientation orientation) const;
+    int firstColumn(BobUI::Orientation orientation) const;
+    int lastRow(BobUI::Orientation orientation) const;
+    int lastColumn(BobUI::Orientation orientation) const;
+    int rowSpan(BobUI::Orientation orientation) const;
+    int columnSpan(BobUI::Orientation orientation) const;
+    void setFirstRow(int row, BobUI::Orientation orientation = BobUI::Vertical);
+    void setRowSpan(int rowSpan, BobUI::Orientation orientation = BobUI::Vertical);
 
-    int stretchFactor(Qt::Orientation orientation) const;
-    void setStretchFactor(int stretch, Qt::Orientation orientation);
+    int stretchFactor(BobUI::Orientation orientation) const;
+    void setStretchFactor(int stretch, BobUI::Orientation orientation);
 
-    inline Qt::Alignment alignment() const { return q_alignment; }
-    inline void setAlignment(Qt::Alignment alignment) { q_alignment = alignment; }
+    inline BobUI::Alignment alignment() const { return q_alignment; }
+    inline void setAlignment(BobUI::Alignment alignment) { q_alignment = alignment; }
 
-    virtual QLayoutPolicy::Policy sizePolicy(Qt::Orientation orientation) const = 0;
-    virtual QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint) const = 0;
+    virtual QLayoutPolicy::Policy sizePolicy(BobUI::Orientation orientation) const = 0;
+    virtual QSizeF sizeHint(BobUI::SizeHint which, const QSizeF &constraint) const = 0;
     virtual bool isEmpty() const { return false; }
 
     virtual void setGeometry(const QRectF &rect) = 0;
@@ -281,19 +281,19 @@ public:
       or hasWidthForHeight()
      */
     virtual bool hasDynamicConstraint() const { return false; }
-    virtual Qt::Orientation dynamicConstraintOrientation() const { return Qt::Horizontal; }
+    virtual BobUI::Orientation dynamicConstraintOrientation() const { return BobUI::Horizontal; }
 
 
     virtual QLayoutPolicy::ControlTypes controlTypes(LayoutSide side) const;
 
     inline virtual QString toString() const { return QDebug::toString(this); }
 
-    QRectF geometryWithin(qreal x, qreal y, qreal width, qreal height, qreal rowDescent, Qt::Alignment align, bool snapToPixelGrid) const;
-    QGridLayoutBox box(Qt::Orientation orientation, bool snapToPixelGrid, qreal constraint = -1.0) const;
+    QRectF geometryWithin(qreal x, qreal y, qreal width, qreal height, qreal rowDescent, BobUI::Alignment align, bool snapToPixelGrid) const;
+    QGridLayoutBox box(BobUI::Orientation orientation, bool snapToPixelGrid, qreal constraint = -1.0) const;
 
 
     void transpose();
-    void insertOrRemoveRows(int row, int delta, Qt::Orientation orientation = Qt::Vertical);
+    void insertOrRemoveRows(int row, int delta, BobUI::Orientation orientation = BobUI::Vertical);
     QSizeF effectiveMaxSize(const QSizeF &constraint) const;
 
 #ifdef QGRIDLAYOUTENGINE_DEBUG
@@ -304,40 +304,40 @@ private:
     QHVContainer<int> q_firstRows;
     QHVContainer<int> q_rowSpans;
     QHVContainer<int> q_stretches;
-    Qt::Alignment q_alignment;
+    BobUI::Alignment q_alignment;
 
 };
 
 class Q_GUI_EXPORT QGridLayoutEngine
 {
 public:
-    QGridLayoutEngine(Qt::Alignment defaultAlignment = { }, bool snapToPixelGrid = false);
+    QGridLayoutEngine(BobUI::Alignment defaultAlignment = { }, bool snapToPixelGrid = false);
     inline ~QGridLayoutEngine() { qDeleteAll(q_items); }
 
-    int rowCount(Qt::Orientation orientation) const;
-    int columnCount(Qt::Orientation orientation) const;
-    inline int rowCount() const { return q_infos[Qt::Vertical].count; }
-    inline int columnCount() const { return q_infos[Qt::Horizontal].count; }
+    int rowCount(BobUI::Orientation orientation) const;
+    int columnCount(BobUI::Orientation orientation) const;
+    inline int rowCount() const { return q_infos[BobUI::Vertical].count; }
+    inline int columnCount() const { return q_infos[BobUI::Horizontal].count; }
     // returns the number of items inserted, which may be less than (rowCount * columnCount)
     int itemCount() const;
     QGridLayoutItem *itemAt(int index) const;
 
-    int effectiveFirstRow(Qt::Orientation orientation = Qt::Vertical) const;
-    int effectiveLastRow(Qt::Orientation orientation = Qt::Vertical) const;
+    int effectiveFirstRow(BobUI::Orientation orientation = BobUI::Vertical) const;
+    int effectiveLastRow(BobUI::Orientation orientation = BobUI::Vertical) const;
 
-    void setSpacing(qreal spacing, Qt::Orientations orientations);
-    qreal spacing(Qt::Orientation orientation, const QAbstractLayoutStyleInfo *styleInfo) const;
+    void setSpacing(qreal spacing, BobUI::Orientations orientations);
+    qreal spacing(BobUI::Orientation orientation, const QAbstractLayoutStyleInfo *styleInfo) const;
     // ### setSpacingAfterRow(), spacingAfterRow()
-    void setRowSpacing(int row, qreal spacing, Qt::Orientation orientation = Qt::Vertical);
-    qreal rowSpacing(int row, Qt::Orientation orientation = Qt::Vertical) const;
+    void setRowSpacing(int row, qreal spacing, BobUI::Orientation orientation = BobUI::Vertical);
+    qreal rowSpacing(int row, BobUI::Orientation orientation = BobUI::Vertical) const;
 
-    void setRowStretchFactor(int row, int stretch, Qt::Orientation orientation = Qt::Vertical);
-    int rowStretchFactor(int row, Qt::Orientation orientation = Qt::Vertical) const;
+    void setRowStretchFactor(int row, int stretch, BobUI::Orientation orientation = BobUI::Vertical);
+    int rowStretchFactor(int row, BobUI::Orientation orientation = BobUI::Vertical) const;
 
-    void setRowSizeHint(Qt::SizeHint which, int row, qreal size,
-                        Qt::Orientation orientation = Qt::Vertical);
-    qreal rowSizeHint(Qt::SizeHint which, int row,
-                      Qt::Orientation orientation = Qt::Vertical) const;
+    void setRowSizeHint(BobUI::SizeHint which, int row, qreal size,
+                        BobUI::Orientation orientation = BobUI::Vertical);
+    qreal rowSizeHint(BobUI::SizeHint which, int row,
+                      BobUI::Orientation orientation = BobUI::Vertical) const;
 
     bool uniformCellWidths() const;
     void setUniformCellWidths(bool uniformCellWidths);
@@ -345,10 +345,10 @@ public:
     bool uniformCellHeights() const;
     void setUniformCellHeights(bool uniformCellHeights);
 
-    void setRowAlignment(int row, Qt::Alignment alignment, Qt::Orientation orientation);
-    Qt::Alignment rowAlignment(int row, Qt::Orientation orientation) const;
+    void setRowAlignment(int row, BobUI::Alignment alignment, BobUI::Orientation orientation);
+    BobUI::Alignment rowAlignment(int row, BobUI::Orientation orientation) const;
 
-    Qt::Alignment effectiveAlignment(const QGridLayoutItem *layoutItem) const;
+    BobUI::Alignment effectiveAlignment(const QGridLayoutItem *layoutItem) const;
 
 
     void insertItem(QGridLayoutItem *item, int index);
@@ -359,37 +359,37 @@ public:
         const QList<QGridLayoutItem *> oldItems = q_items;
         q_items.clear();    // q_items are used as input when the grid is regenerated in removeRows
         // The following calls to removeRows are suboptimal
-        int rows = rowCount(Qt::Vertical);
-        removeRows(0, rows, Qt::Vertical);
-        rows = rowCount(Qt::Horizontal);
-        removeRows(0, rows, Qt::Horizontal);
+        int rows = rowCount(BobUI::Vertical);
+        removeRows(0, rows, BobUI::Vertical);
+        rows = rowCount(BobUI::Horizontal);
+        removeRows(0, rows, BobUI::Horizontal);
         qDeleteAll(oldItems);
     }
 
-    QGridLayoutItem *itemAt(int row, int column, Qt::Orientation orientation = Qt::Vertical) const;
-    inline void insertRow(int row, Qt::Orientation orientation = Qt::Vertical)
+    QGridLayoutItem *itemAt(int row, int column, BobUI::Orientation orientation = BobUI::Vertical) const;
+    inline void insertRow(int row, BobUI::Orientation orientation = BobUI::Vertical)
         { insertOrRemoveRows(row, +1, orientation); }
-    inline void removeRows(int row, int count, Qt::Orientation orientation)
+    inline void removeRows(int row, int count, BobUI::Orientation orientation)
         { insertOrRemoveRows(row, -count, orientation); }
 
     void invalidate();
     void setGeometries(const QRectF &contentsGeometry, const QAbstractLayoutStyleInfo *styleInfo);
     QRectF cellRect(const QRectF &contentsGeometry, int row, int column, int rowSpan, int columnSpan,
                     const QAbstractLayoutStyleInfo *styleInfo) const;
-    QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint,
+    QSizeF sizeHint(BobUI::SizeHint which, const QSizeF &constraint,
                     const QAbstractLayoutStyleInfo *styleInfo) const;
 
     // heightForWidth / widthForHeight support
-    QSizeF dynamicallyConstrainedSizeHint(Qt::SizeHint which, const QSizeF &constraint) const;
+    QSizeF dynamicallyConstrainedSizeHint(BobUI::SizeHint which, const QSizeF &constraint) const;
     bool ensureDynamicConstraint() const;
     bool hasDynamicConstraint() const;
-    Qt::Orientation constraintOrientation() const;
+    BobUI::Orientation constraintOrientation() const;
 
 
     QLayoutPolicy::ControlTypes controlTypes(LayoutSide side) const;
     void transpose();
-    void setVisualDirection(Qt::LayoutDirection direction);
-    Qt::LayoutDirection visualDirection() const;
+    void setVisualDirection(BobUI::LayoutDirection direction);
+    BobUI::LayoutDirection visualDirection() const;
 #ifdef QGRIDLAYOUTENGINE_DEBUG
     void dump(int indent = 0) const;
 #endif
@@ -397,20 +397,20 @@ public:
 private:
     static int grossRoundUp(int n) { return ((n + 2) | 0x3) - 2; }
 
-    void maybeExpandGrid(int row, int column, Qt::Orientation orientation = Qt::Vertical);
+    void maybeExpandGrid(int row, int column, BobUI::Orientation orientation = BobUI::Vertical);
     void regenerateGrid();
     inline int internalGridRowCount() const { return grossRoundUp(rowCount()); }
     inline int internalGridColumnCount() const { return grossRoundUp(columnCount()); }
     void setItemAt(int row, int column, QGridLayoutItem *item);
-    void insertOrRemoveRows(int row, int delta, Qt::Orientation orientation = Qt::Vertical);
+    void insertOrRemoveRows(int row, int delta, BobUI::Orientation orientation = BobUI::Vertical);
     void fillRowData(QGridLayoutRowData *rowData,
                      const qreal *colPositions, const qreal *colSizes,
-                     Qt::Orientation orientation,
+                     BobUI::Orientation orientation,
                      const QAbstractLayoutStyleInfo *styleInfo) const;
     void ensureEffectiveFirstAndLastRows() const;
     void ensureColumnAndRowData(QGridLayoutRowData *rowData, QGridLayoutBox *totalBox,
                                             const qreal *colPositions, const qreal *colSizes,
-                                            Qt::Orientation orientation,
+                                            BobUI::Orientation orientation,
                                             const QAbstractLayoutStyleInfo *styleInfo) const;
 
     void ensureGeometries(const QSizeF &size, const QAbstractLayoutStyleInfo *styleInfo) const;
@@ -421,10 +421,10 @@ private:
     QList<QGridLayoutItem *> q_grid;
     QHVContainer<QLayoutParameter<qreal>> q_defaultSpacings;
     QHVContainer<QGridLayoutRowInfo> q_infos;
-    Qt::LayoutDirection m_visualDirection;
+    BobUI::LayoutDirection m_visualDirection;
 
     // Configuration
-    Qt::Alignment m_defaultAlignment;
+    BobUI::Alignment m_defaultAlignment;
     unsigned m_snapToPixelGrid : 1;
     unsigned m_uniformCellWidths : 1;
     unsigned m_uniformCellHeights : 1;
@@ -458,6 +458,6 @@ private:
     friend class QGridLayoutItem;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

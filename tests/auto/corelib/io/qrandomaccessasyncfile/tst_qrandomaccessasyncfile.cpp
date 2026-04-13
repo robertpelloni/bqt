@@ -1,15 +1,15 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/private/qrandomaccessasyncfile_p.h>
+#include <BobUICore/private/qrandomaccessasyncfile_p.h>
 
-#include <QtCore/qrandom.h>
-#include <QtCore/qtemporaryfile.h>
+#include <BobUICore/qrandom.h>
+#include <BobUICore/bobuiemporaryfile.h>
 
-#include <QtTest/qsignalspy.h>
-#include <QtTest/qtest.h>
+#include <BobUITest/qsignalspy.h>
+#include <BobUITest/bobuiest.h>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 template <typename T>
 static bool spanIsEqualToByteArray(QSpan<T> lhs, QByteArrayView rhs) noexcept
@@ -70,14 +70,14 @@ private:
     // We use such a large amount, because some of the backends will report
     // the progress of async operations in chunks, and we want to test it.
     static constexpr qint64 FileSize = 100 * 1024 * 1024;
-    QTemporaryFile m_file;
+    BOBUIemporaryFile m_file;
 };
 
 void tst_QRandomAccessAsyncFile::initTestCase()
 {
     QVERIFY(m_file.open());
 
-    QByteArray data(FileSize, Qt::Uninitialized);
+    QByteArray data(FileSize, BobUI::Uninitialized);
     auto *ptr = data.data();
     for (qsizetype i = 0; i < FileSize; ++i)
         ptr[i] = char(i % 256);
@@ -94,7 +94,7 @@ void tst_QRandomAccessAsyncFile::cleanupTestCase()
     // Loop a little bit in case there is an access race on Windows:
     bool success = false;
     while (!(success = m_file.remove()) && !dt.hasExpired())
-        QThread::msleep(100);
+        BOBUIhread::msleep(100);
     QVERIFY2(success, qPrintable(m_file.errorString()));
 }
 
@@ -106,7 +106,7 @@ void tst_QRandomAccessAsyncFile::size()
     QCOMPARE_EQ(file.size(), -1);
 
     QIOOperation *openOp = file.open(m_file.fileName(), QIODeviceBase::ReadOnly);
-    QTRY_COMPARE(openOp->isFinished(), true);
+    BOBUIRY_COMPARE(openOp->isFinished(), true);
     QCOMPARE_EQ(openOp->error(), QIOOperation::Error::None);
 
     QCOMPARE(file.size(), FileSize);
@@ -116,7 +116,7 @@ void tst_QRandomAccessAsyncFile::roundtripOwning()
 {
     QRandomAccessAsyncFile file;
     QIOOperation *openOp = file.open(m_file.fileName(), QIODeviceBase::ReadWrite);
-    QTRY_COMPARE(openOp->isFinished(), true);
+    BOBUIRY_COMPARE(openOp->isFinished(), true);
     QCOMPARE_EQ(openOp->error(), QIOOperation::Error::None);
 
     // All operations will be deleted together with the file
@@ -140,14 +140,14 @@ void tst_QRandomAccessAsyncFile::roundtripOwning()
     QSignalSpy write2Spy(write2, &QIOOperation::finished);
     QSignalSpy write2ErrorSpy(write2, &QIOOperation::errorOccurred);
 
-    QTRY_COMPARE_EQ(write1Spy.size(), 1);
+    BOBUIRY_COMPARE_EQ(write1Spy.size(), 1);
     QCOMPARE_EQ(write1ErrorSpy.size(), 0);
     QCOMPARE_EQ(write1->error(), QIOOperation::Error::None);
     QCOMPARE_EQ(write1->isFinished(), true);
     QCOMPARE_EQ(write1->offset(), offset1);
     QCOMPARE_EQ(write1->numBytesProcessed(), size1);
 
-    QTRY_COMPARE_EQ(write2Spy.size(), 1);
+    BOBUIRY_COMPARE_EQ(write2Spy.size(), 1);
     QCOMPARE_EQ(write2ErrorSpy.size(), 0);
     QCOMPARE_EQ(write2->error(), QIOOperation::Error::None);
     QCOMPARE_EQ(write2->isFinished(), true);
@@ -164,14 +164,14 @@ void tst_QRandomAccessAsyncFile::roundtripOwning()
     QSignalSpy read2Spy(read2, &QIOOperation::finished);
     QSignalSpy read2ErrorSpy(read2, &QIOOperation::errorOccurred);
 
-    QTRY_COMPARE_EQ(read1Spy.size(), 1);
+    BOBUIRY_COMPARE_EQ(read1Spy.size(), 1);
     QCOMPARE_EQ(read1ErrorSpy.size(), 0);
     QCOMPARE_EQ(read1->error(), QIOOperation::Error::None);
     QCOMPARE_EQ(read1->isFinished(), true);
     QCOMPARE_EQ(read1->offset(), offset1);
     QCOMPARE_EQ(read1->data(), dataToWrite);
 
-    QTRY_COMPARE_EQ(read2Spy.size(), 1);
+    BOBUIRY_COMPARE_EQ(read2Spy.size(), 1);
     QCOMPARE_EQ(read2ErrorSpy.size(), 0);
     QCOMPARE_EQ(read2->error(), QIOOperation::Error::None);
     QCOMPARE_EQ(read2->isFinished(), true);
@@ -183,7 +183,7 @@ void tst_QRandomAccessAsyncFile::roundtripNonOwning()
 {
     QRandomAccessAsyncFile file;
     QIOOperation *openOp = file.open(m_file.fileName(), QIODeviceBase::ReadWrite);
-    QTRY_COMPARE(openOp->isFinished(), true);
+    BOBUIRY_COMPARE(openOp->isFinished(), true);
     QCOMPARE_EQ(openOp->error(), QIOOperation::Error::None);
 
     // All operations will be deleted together with the file
@@ -210,14 +210,14 @@ void tst_QRandomAccessAsyncFile::roundtripNonOwning()
     QSignalSpy write2Spy(write2, &QIOOperation::finished);
     QSignalSpy write2ErrorSpy(write2, &QIOOperation::errorOccurred);
 
-    QTRY_COMPARE_EQ(write1Spy.size(), 1);
+    BOBUIRY_COMPARE_EQ(write1Spy.size(), 1);
     QCOMPARE_EQ(write1ErrorSpy.size(), 0);
     QCOMPARE_EQ(write1->error(), QIOOperation::Error::None);
     QCOMPARE_EQ(write1->isFinished(), true);
     QCOMPARE_EQ(write1->offset(), offset1);
     QCOMPARE_EQ(write1->numBytesProcessed(), size1);
 
-    QTRY_COMPARE_EQ(write2Spy.size(), 1);
+    BOBUIRY_COMPARE_EQ(write2Spy.size(), 1);
     QCOMPARE_EQ(write2ErrorSpy.size(), 0);
     QCOMPARE_EQ(write2->error(), QIOOperation::Error::None);
     QCOMPARE_EQ(write2->isFinished(), true);
@@ -227,27 +227,27 @@ void tst_QRandomAccessAsyncFile::roundtripNonOwning()
     // Now read what we have written
 
     // QSpan is an lvalue
-    QByteArray buffer1(size1, Qt::Uninitialized);
+    QByteArray buffer1(size1, BobUI::Uninitialized);
     QSpan<std::byte> spanToRead = as_writable_bytes(QSpan{buffer1});
     QIOVectoredReadOperation *read1 = file.readInto(offset1, spanToRead);
     QSignalSpy read1Spy(read1, &QIOOperation::finished);
     QSignalSpy read1ErrorSpy(read1, &QIOOperation::errorOccurred);
 
     // QSpan is an rvalue
-    QByteArray buffer2(size2, Qt::Uninitialized);
+    QByteArray buffer2(size2, BobUI::Uninitialized);
     QIOVectoredReadOperation *read2 =
             file.readInto(offset2, as_writable_bytes(QSpan{buffer2}));
     QSignalSpy read2Spy(read2, &QIOOperation::finished);
     QSignalSpy read2ErrorSpy(read2, &QIOOperation::errorOccurred);
 
-    QTRY_COMPARE_EQ(read1Spy.size(), 1);
+    BOBUIRY_COMPARE_EQ(read1Spy.size(), 1);
     QCOMPARE_EQ(read1ErrorSpy.size(), 0);
     QCOMPARE_EQ(read1->error(), QIOOperation::Error::None);
     QCOMPARE_EQ(read1->isFinished(), true);
     QCOMPARE_EQ(read1->offset(), offset1);
     QVERIFY(spanIsEqualToByteArray(read1->data().front(), dataToWrite));
 
-    QTRY_COMPARE_EQ(read2Spy.size(), 1);
+    BOBUIRY_COMPARE_EQ(read2Spy.size(), 1);
     QCOMPARE_EQ(read2ErrorSpy.size(), 0);
     QCOMPARE_EQ(read2->error(), QIOOperation::Error::None);
     QCOMPARE_EQ(read2->isFinished(), true);
@@ -259,7 +259,7 @@ void tst_QRandomAccessAsyncFile::roundtripVectored()
 {
     QRandomAccessAsyncFile file;
     QIOOperation *openOp = file.open(m_file.fileName(), QIODeviceBase::ReadWrite);
-    QTRY_COMPARE(openOp->isFinished(), true);
+    BOBUIRY_COMPARE(openOp->isFinished(), true);
     QCOMPARE_EQ(openOp->error(), QIOOperation::Error::None);
 
     // All operations will be deleted together with the file
@@ -280,7 +280,7 @@ void tst_QRandomAccessAsyncFile::roundtripVectored()
     QSignalSpy writeSpy(write, &QIOOperation::finished);
     QSignalSpy writeErrorSpy(write, &QIOOperation::errorOccurred);
 
-    QTRY_COMPARE_EQ(writeSpy.size(), 1);
+    BOBUIRY_COMPARE_EQ(writeSpy.size(), 1);
     QCOMPARE_EQ(writeErrorSpy.size(), 0);
     QCOMPARE_EQ(write->error(), QIOOperation::Error::None);
     QCOMPARE_EQ(write->isFinished(), true);
@@ -289,8 +289,8 @@ void tst_QRandomAccessAsyncFile::roundtripVectored()
 
     // Now read what we have written
 
-    QByteArray buffer1(size1, Qt::Uninitialized);
-    QByteArray buffer2(size2, Qt::Uninitialized);
+    QByteArray buffer1(size1, BobUI::Uninitialized);
+    QByteArray buffer2(size2, BobUI::Uninitialized);
 
     QIOVectoredReadOperation *read =
             file.readInto(offset, { as_writable_bytes(QSpan{buffer1}),
@@ -298,7 +298,7 @@ void tst_QRandomAccessAsyncFile::roundtripVectored()
     QSignalSpy readSpy(read, &QIOOperation::finished);
     QSignalSpy readErrorSpy(read, &QIOOperation::errorOccurred);
 
-    QTRY_COMPARE_EQ(readSpy.size(), 1);
+    BOBUIRY_COMPARE_EQ(readSpy.size(), 1);
     QCOMPARE_EQ(readErrorSpy.size(), 0);
     QCOMPARE_EQ(read->error(), QIOOperation::Error::None);
     QCOMPARE_EQ(read->isFinished(), true);
@@ -316,7 +316,7 @@ void tst_QRandomAccessAsyncFile::readLessThanMax()
 {
     QRandomAccessAsyncFile file;
     QIOOperation *openOp = file.open(m_file.fileName(), QIODeviceBase::ReadOnly);
-    QTRY_COMPARE(openOp->isFinished(), true);
+    BOBUIRY_COMPARE(openOp->isFinished(), true);
     QCOMPARE_EQ(openOp->error(), QIOOperation::Error::None);
 
     constexpr qint64 offsetFromEnd = 100;
@@ -326,7 +326,7 @@ void tst_QRandomAccessAsyncFile::readLessThanMax()
         QIOReadOperation *op = file.read(FileSize - offsetFromEnd, 1024);
         QSignalSpy spy(op, &QIOOperation::finished);
 
-        QTRY_COMPARE_EQ(spy.size(), 1);
+        BOBUIRY_COMPARE_EQ(spy.size(), 1);
         QCOMPARE_EQ(op->error(), QIOOperation::Error::None);
         QCOMPARE_EQ(op->numBytesProcessed(), offsetFromEnd);
         // we only read what we could
@@ -335,12 +335,12 @@ void tst_QRandomAccessAsyncFile::readLessThanMax()
 
     // non-owning single buffer
     {
-        QByteArray buffer(1024, Qt::Uninitialized);
+        QByteArray buffer(1024, BobUI::Uninitialized);
         QIOVectoredReadOperation *op =
                 file.readInto(FileSize - offsetFromEnd, as_writable_bytes(QSpan{buffer}));
         QSignalSpy spy(op, &QIOOperation::finished);
 
-        QTRY_COMPARE_EQ(spy.size(), 1);
+        BOBUIRY_COMPARE_EQ(spy.size(), 1);
         QCOMPARE_EQ(op->error(), QIOOperation::Error::None);
         QCOMPARE_EQ(op->numBytesProcessed(), offsetFromEnd);
         // we only read what we could
@@ -353,9 +353,9 @@ void tst_QRandomAccessAsyncFile::readLessThanMax()
         constexpr qsizetype size2 = 150;
         constexpr qsizetype size3 = size2;
 
-        QByteArray buffer1(50, Qt::Uninitialized);
-        QByteArray buffer2(size2, Qt::Uninitialized);
-        QByteArray buffer3(size3, Qt::Uninitialized);
+        QByteArray buffer1(50, BobUI::Uninitialized);
+        QByteArray buffer2(size2, BobUI::Uninitialized);
+        QByteArray buffer3(size3, BobUI::Uninitialized);
 
         std::array<QSpan<std::byte>, 3> buffers{ as_writable_bytes(QSpan{buffer1}),
                                                  as_writable_bytes(QSpan{buffer2}),
@@ -364,7 +364,7 @@ void tst_QRandomAccessAsyncFile::readLessThanMax()
         QIOVectoredReadOperation *op =
                 file.readInto(FileSize - offsetFromEnd, buffers);
         QSignalSpy spy(op, &QIOOperation::finished);
-        QTRY_COMPARE_EQ(spy.size(), 1);
+        BOBUIRY_COMPARE_EQ(spy.size(), 1);
         QCOMPARE_EQ(op->error(), QIOOperation::Error::None);
         QCOMPARE_EQ(op->numBytesProcessed(), offsetFromEnd);
 
@@ -387,7 +387,7 @@ void tst_QRandomAccessAsyncFile::flushIsBarrier()
 {
     QRandomAccessAsyncFile file;
     QIOOperation *openOp = file.open(m_file.fileName(), QIODeviceBase::ReadWrite);
-    QTRY_COMPARE(openOp->isFinished(), true);
+    BOBUIRY_COMPARE(openOp->isFinished(), true);
     QCOMPARE_EQ(openOp->error(), QIOOperation::Error::None);
 
     // All operations will be deleted together with the file
@@ -435,7 +435,7 @@ void tst_QRandomAccessAsyncFile::flushIsBarrier()
     QSignalSpy readSpy(read, &QIOOperation::finished);
 
     // Wait until the read() operation completes
-    QTRY_COMPARE_EQ(readSpy.size(), 1);
+    BOBUIRY_COMPARE_EQ(readSpy.size(), 1);
 
     // Make sure that all operations have successfully finished.
     QCOMPARE_EQ(write1->isFinished(), true);
@@ -461,15 +461,15 @@ void tst_QRandomAccessAsyncFile::flushIsBarrier()
 
 void tst_QRandomAccessAsyncFile::errorHandling_data()
 {
-    QTest::addColumn<QIOOperation::Type>("operation");
-    QTest::addColumn<QIODeviceBase::OpenModeFlag>("openMode");
-    QTest::addColumn<qint64>("offset");
-    QTest::addColumn<QIOOperation::Error>("expectedError");
+    BOBUIest::addColumn<QIOOperation::Type>("operation");
+    BOBUIest::addColumn<QIODeviceBase::OpenModeFlag>("openMode");
+    BOBUIest::addColumn<qint64>("offset");
+    BOBUIest::addColumn<QIOOperation::Error>("expectedError");
 
-    QTest::newRow("read_not_open")
+    BOBUIest::newRow("read_not_open")
             << QIOOperation::Type::Read << QIODeviceBase::ReadWrite
             << qint64(0) << QIOOperation::Error::FileNotOpen;
-    QTest::newRow("read_writeonly")
+    BOBUIest::newRow("read_writeonly")
             << QIOOperation::Type::Read << QIODeviceBase::WriteOnly
             << qint64(0)
 #ifdef Q_OS_DARWIN
@@ -477,18 +477,18 @@ void tst_QRandomAccessAsyncFile::errorHandling_data()
 #else
             << QIOOperation::Error::Read;
 #endif
-    QTest::newRow("read_negative_offset")
+    BOBUIest::newRow("read_negative_offset")
             << QIOOperation::Type::Read << QIODeviceBase::ReadOnly
             << qint64(-1) << QIOOperation::Error::IncorrectOffset;
     // lseek() allows it. Other backends might behave differently
-    // QTest::newRow("read_past_the_end")
+    // BOBUIest::newRow("read_past_the_end")
     //         << QIOOperationBase::Type::Read << QIODeviceBase::ReadOnly
     //         << qint64(FileSize + 1) << QIOOperationBase::Error::IncorrectOffset;
 
-    QTest::newRow("write_not_open")
+    BOBUIest::newRow("write_not_open")
             << QIOOperation::Type::Write << QIODeviceBase::ReadWrite
             << qint64(0) << QIOOperation::Error::FileNotOpen;
-    QTest::newRow("write_readonly")
+    BOBUIest::newRow("write_readonly")
             << QIOOperation::Type::Write << QIODeviceBase::ReadOnly
             << qint64(0)
 #ifdef Q_OS_DARWIN
@@ -496,15 +496,15 @@ void tst_QRandomAccessAsyncFile::errorHandling_data()
 #else
             << QIOOperation::Error::Write;
 #endif
-    QTest::newRow("write_negative_offset")
+    BOBUIest::newRow("write_negative_offset")
             << QIOOperation::Type::Write << QIODeviceBase::WriteOnly
             << qint64(-1) << QIOOperation::Error::IncorrectOffset;
     // lseek() allows it. Other backends might behave differently
-    // QTest::newRow("write_past_the_end")
+    // BOBUIest::newRow("write_past_the_end")
     //         << QIOOperationBase::Type::Write << QIODeviceBase::ReadWrite
     //         << qint64(FileSize + 1) << QIOOperationBase::Error::IncorrectOffset;
 
-    QTest::newRow("flush_not_open")
+    BOBUIest::newRow("flush_not_open")
             << QIOOperation::Type::Flush << QIODeviceBase::ReadWrite
             << qint64(0) << QIOOperation::Error::FileNotOpen;
 }
@@ -519,7 +519,7 @@ void tst_QRandomAccessAsyncFile::errorHandling()
     QRandomAccessAsyncFile file;
     if (expectedError != QIOOperation::Error::FileNotOpen) {
         QIOOperation *openOp = file.open(m_file.fileName(), openMode);
-        QTRY_COMPARE(openOp->isFinished(), true);
+        BOBUIRY_COMPARE(openOp->isFinished(), true);
         QCOMPARE_EQ(openOp->error(), QIOOperation::Error::None);
     }
 
@@ -537,7 +537,7 @@ void tst_QRandomAccessAsyncFile::errorHandling()
     QSignalSpy errorSpy(op, &QIOOperation::errorOccurred);
 
     // error should always come before finished
-    QTRY_COMPARE_EQ(finishedSpy.size(), 1);
+    BOBUIRY_COMPARE_EQ(finishedSpy.size(), 1);
     QCOMPARE_EQ(errorSpy.size(), 1);
 
     QCOMPARE_EQ(errorSpy.at(0).at(0).value<QIOOperation::Error>(), expectedError);
@@ -557,7 +557,7 @@ void tst_QRandomAccessAsyncFile::fileClosedInProgress()
     QRandomAccessAsyncFile file;
     if (operation != QIOOperation::Type::Open) {
         QIOOperation *openOp = file.open(m_file.fileName(), QIODeviceBase::ReadWrite);
-        QTRY_COMPARE(openOp->isFinished(), true);
+        BOBUIRY_COMPARE(openOp->isFinished(), true);
         QCOMPARE_EQ(openOp->error(), QIOOperation::Error::None);
     }
 
@@ -599,7 +599,7 @@ void tst_QRandomAccessAsyncFile::fileClosedInProgress()
                 || op->error() == QIOOperation::Error::None; // Completed
     };
     for (auto op : operations) {
-        QTRY_VERIFY(op->isFinished());
+        BOBUIRY_VERIFY(op->isFinished());
         QVERIFY2(isAbortedOrCompleteOrFailedToOpen(op),
                  qPrintable("Expected Aborted, Open or None, got %1"_L1.arg(
                          QDebug::toString(op->error()))));
@@ -625,7 +625,7 @@ void tst_QRandomAccessAsyncFile::fileRemovedInProgress()
         QRandomAccessAsyncFile file;
         if (operation != QIOOperation::Type::Open) {
             QIOOperation *openOp = file.open(m_file.fileName(), QIODeviceBase::ReadWrite);
-            QTRY_COMPARE(openOp->isFinished(), true);
+            BOBUIRY_COMPARE(openOp->isFinished(), true);
             QCOMPARE_EQ(openOp->error(), QIOOperation::Error::None);
         }
 
@@ -672,7 +672,7 @@ void tst_QRandomAccessAsyncFile::operationsDeletedInProgress()
     QRandomAccessAsyncFile file;
     if (operation != QIOOperation::Type::Open) {
         QIOOperation *openOp = file.open(m_file.fileName(), QIODeviceBase::ReadWrite);
-        QTRY_COMPARE(openOp->isFinished(), true);
+        BOBUIRY_COMPARE(openOp->isFinished(), true);
         QCOMPARE_EQ(openOp->error(), QIOOperation::Error::None);
     }
 
@@ -717,8 +717,8 @@ void tst_QRandomAccessAsyncFile::operationsDeletedInProgress()
 
 void tst_QRandomAccessAsyncFile::generateOperationColumns()
 {
-    QTest::addColumn<Ownership>("ownership");
-    QTest::addColumn<QIOOperation::Type>("operation");
+    BOBUIest::addColumn<Ownership>("ownership");
+    BOBUIest::addColumn<QIOOperation::Type>("operation");
 
     constexpr struct OwnershipInfo {
         Ownership own;
@@ -729,25 +729,25 @@ void tst_QRandomAccessAsyncFile::generateOperationColumns()
     };
 
     for (const auto &v : values) {
-        QTest::addRow("read_%s", v.name) << v.own << QIOOperation::Type::Read;
-        QTest::addRow("write_%s", v.name) << v.own << QIOOperation::Type::Write;
+        BOBUIest::addRow("read_%s", v.name) << v.own << QIOOperation::Type::Read;
+        BOBUIest::addRow("write_%s", v.name) << v.own << QIOOperation::Type::Write;
     }
-    QTest::newRow("flush") << Ownership::NonOwning /* ignored */ << QIOOperation::Type::Flush;
-    QTest::newRow("open") << Ownership::NonOwning /* ignored */ << QIOOperation::Type::Open;
+    BOBUIest::newRow("flush") << Ownership::NonOwning /* ignored */ << QIOOperation::Type::Flush;
+    BOBUIest::newRow("open") << Ownership::NonOwning /* ignored */ << QIOOperation::Type::Open;
 }
 
 void tst_QRandomAccessAsyncFile::readWriteNoBuffers_data()
 {
-    QTest::addColumn<ReadWriteOp>("op");
-    QTest::addColumn<qint64>("maxSize"); // for owning read only
+    BOBUIest::addColumn<ReadWriteOp>("op");
+    BOBUIest::addColumn<qint64>("maxSize"); // for owning read only
 
-    QTest::newRow("OwningRead_zero") << ReadWriteOp::OwningRead << 0LL;
-    QTest::newRow("OwningRead_negative") << ReadWriteOp::OwningRead << -1LL;
-    QTest::newRow("OwningWrite") << ReadWriteOp::OwningWrite << 0LL;
-    QTest::newRow("SingleSpanRead") << ReadWriteOp::SingleSpanRead << 0LL;
-    QTest::newRow("SingleSpanWrite") << ReadWriteOp::SingleSpanWrite << 0LL;
-    QTest::newRow("MultiSpanRead") << ReadWriteOp::MultiSpanRead << 0LL;
-    QTest::newRow("MultiSpanWrite") << ReadWriteOp::MultiSpanWrite << 0LL;
+    BOBUIest::newRow("OwningRead_zero") << ReadWriteOp::OwningRead << 0LL;
+    BOBUIest::newRow("OwningRead_negative") << ReadWriteOp::OwningRead << -1LL;
+    BOBUIest::newRow("OwningWrite") << ReadWriteOp::OwningWrite << 0LL;
+    BOBUIest::newRow("SingleSpanRead") << ReadWriteOp::SingleSpanRead << 0LL;
+    BOBUIest::newRow("SingleSpanWrite") << ReadWriteOp::SingleSpanWrite << 0LL;
+    BOBUIest::newRow("MultiSpanRead") << ReadWriteOp::MultiSpanRead << 0LL;
+    BOBUIest::newRow("MultiSpanWrite") << ReadWriteOp::MultiSpanWrite << 0LL;
 }
 
 void tst_QRandomAccessAsyncFile::readWriteNoBuffers()
@@ -757,7 +757,7 @@ void tst_QRandomAccessAsyncFile::readWriteNoBuffers()
 
     QRandomAccessAsyncFile file;
     QIOOperation *openOp = file.open(m_file.fileName(), QIODeviceBase::ReadWrite);
-    QTRY_COMPARE(openOp->isFinished(), true);
+    BOBUIRY_COMPARE(openOp->isFinished(), true);
     QCOMPARE_EQ(openOp->error(), QIOOperation::Error::None);
 
     constexpr qint64 offset = 1024 * 1024;
@@ -766,7 +766,7 @@ void tst_QRandomAccessAsyncFile::readWriteNoBuffers()
     switch (op) {
     case ReadWriteOp::OwningRead:
         if (maxSize < 0) {
-            QTest::ignoreMessage(QtWarningMsg,
+            BOBUIest::ignoreMessage(BobUIWarningMsg,
                                  "Using a negative maxSize in QRandomAccessAsyncFile::read() "
                                  "is incorrect. Resetting to zero!");
         }
@@ -795,7 +795,7 @@ void tst_QRandomAccessAsyncFile::readWriteNoBuffers()
     QSignalSpy finishedSpy(opBase, &QIOOperation::finished);
     QSignalSpy errorSpy(opBase, &QIOOperation::errorOccurred);
 
-    QTRY_COMPARE_EQ(finishedSpy.size(), 1);
+    BOBUIRY_COMPARE_EQ(finishedSpy.size(), 1);
     QCOMPARE_EQ(errorSpy.size(), 0);
     QCOMPARE_EQ(opBase->error(), QIOOperation::Error::None);
     QCOMPARE_EQ(opBase->isFinished(), true);
@@ -820,7 +820,7 @@ void tst_QRandomAccessAsyncFile::asyncOpenErrors()
     // open with incorrect filename
     {
         auto *op = file.open(QString(), QIODeviceBase::ReadWrite);
-        QTRY_COMPARE_EQ(op->isFinished(), true);
+        BOBUIRY_COMPARE_EQ(op->isFinished(), true);
         QCOMPARE_EQ(op->error(), QIOOperation::Error::Open);
     }
 
@@ -829,10 +829,10 @@ void tst_QRandomAccessAsyncFile::asyncOpenErrors()
         auto *op1 = file.open(m_file.fileName(), QIODeviceBase::ReadOnly);
         auto *op2 = file.open(m_file.fileName(), QIODeviceBase::WriteOnly);
 
-        QTRY_COMPARE_EQ(op1->isFinished(), true);
+        BOBUIRY_COMPARE_EQ(op1->isFinished(), true);
         QCOMPARE_EQ(op1->error(), QIOOperation::Error::None);
 
-        QTRY_COMPARE_EQ(op2->isFinished(), true);
+        BOBUIRY_COMPARE_EQ(op2->isFinished(), true);
         QCOMPARE_EQ(op2->error(), QIOOperation::Error::Open);
     }
 }
@@ -849,17 +849,17 @@ void tst_QRandomAccessAsyncFile::closeCornerCases()
     {
         QRandomAccessAsyncFile file;
         auto *op = file.open(m_file.fileName(), QIODeviceBase::ReadWrite);
-        QTRY_COMPARE_EQ(op->isFinished(), true);
+        BOBUIRY_COMPARE_EQ(op->isFinished(), true);
         QCOMPARE_EQ(op->error(), QIOOperation::Error::None);
 
         file.close();
 
         op = file.open(m_file.fileName(), QIODeviceBase::ReadWrite);
-        QTRY_COMPARE_EQ(op->isFinished(), true);
+        BOBUIRY_COMPARE_EQ(op->isFinished(), true);
         QCOMPARE_EQ(op->error(), QIOOperation::Error::None);
     }
 }
 
-QTEST_MAIN(tst_QRandomAccessAsyncFile)
+BOBUIEST_MAIN(tst_QRandomAccessAsyncFile)
 
 #include "tst_qrandomaccessasyncfile.moc"

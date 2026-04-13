@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 add_subdirectory(qabstractbutton)
@@ -33,30 +33,30 @@ add_subdirectory(qsplashscreen)
 add_subdirectory(qsplitter)
 add_subdirectory(qstackedwidget)
 add_subdirectory(qstatusbar)
-add_subdirectory(qtabbar)
-add_subdirectory(qtabwidget)
-add_subdirectory(qtextbrowser)
-add_subdirectory(qtoolbox)
-add_subdirectory(qtoolbutton)
-if(QT_FEATURE_private_tests)
+add_subdirectory(bobuiabbar)
+add_subdirectory(bobuiabwidget)
+add_subdirectory(bobuiextbrowser)
+add_subdirectory(bobuioolbox)
+add_subdirectory(bobuioolbutton)
+if(BOBUI_FEATURE_private_tests)
     add_subdirectory(qabstractspinbox)
     add_subdirectory(qcombobox)
     add_subdirectory(qmainwindow)
-    add_subdirectory(qtextedit)
-    add_subdirectory(qtoolbar)
+    add_subdirectory(bobuiextedit)
+    add_subdirectory(bobuioolbar)
 endif()
-if(QT_FEATURE_shortcut)
+if(BOBUI_FEATURE_shortcut)
     add_subdirectory(qkeysequenceedit)
 endif()
 add_subdirectory(qmenu)
 add_subdirectory(qlineedit)
 if(NOT ANDROID)
-    # QTBUG-87420
+    # BOBUIBUG-87420
     add_subdirectory(qmdiarea)
-    # QTBUG-87421
+    # BOBUIBUG-87421
     add_subdirectory(qmenubar)
 endif()
-if(QT_FEATURE_opengl)
+if(BOBUI_FEATURE_opengl)
     add_subdirectory(qopenglwidget)
 endif()
 add_subdirectory(qrhiwidget)

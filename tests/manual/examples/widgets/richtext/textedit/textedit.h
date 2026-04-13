@@ -1,20 +1,20 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef TEXTEDIT_H
 #define TEXTEDIT_H
 
 #include <QMainWindow>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QAction;
 class QComboBox;
 class QFontComboBox;
-class QTextEdit;
-class QTextCharFormat;
+class BOBUIextEdit;
+class BOBUIextCharFormat;
 class QMenu;
 class QPrinter;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 class TextEdit : public QMainWindow
 {
@@ -53,7 +53,7 @@ private slots:
     void indent();
     void unindent();
 
-    void currentCharFormatChanged(const QTextCharFormat &format);
+    void currentCharFormatChanged(const BOBUIextCharFormat &format);
     void cursorPositionChanged();
 
     void clipboardDataChanged();
@@ -67,10 +67,10 @@ private:
     void setCurrentFileName(const QString &fileName);
     void modifyIndentation(int amount);
 
-    void mergeFormatOnWordOrSelection(const QTextCharFormat &format);
+    void mergeFormatOnWordOrSelection(const BOBUIextCharFormat &format);
     void fontChanged(const QFont &f);
     void colorChanged(const QColor &c);
-    void alignmentChanged(Qt::Alignment a);
+    void alignmentChanged(BobUI::Alignment a);
 
     void fileSave(SaveContinuation continuation);
     void fileSaveAs(SaveContinuation continuation);
@@ -91,7 +91,7 @@ private:
     QAction *actionToggleCheckState;
     QAction *actionUndo;
     QAction *actionRedo;
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     QAction *actionCut;
     QAction *actionCopy;
     QAction *actionPaste;
@@ -102,7 +102,7 @@ private:
     QComboBox *comboSize;
 
     QString fileName;
-    QTextEdit *textEdit;
+    BOBUIextEdit *textEdit;
 
     bool closeAccepted = false;
 };

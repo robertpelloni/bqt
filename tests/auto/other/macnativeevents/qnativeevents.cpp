@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "qnativeevents.h"
 
@@ -47,7 +47,7 @@ void QNativeInput::nativeEvent(QNativeEvent *event)
     }
 }
 
-Qt::Native::Status QNativeInput::sendNativeEvent(const QNativeEvent &event)
+BobUI::Native::Status QNativeInput::sendNativeEvent(const QNativeEvent &event)
 {
     switch (event.id()){
         case QNativeMouseMoveEvent::eventId:
@@ -65,47 +65,47 @@ Qt::Native::Status QNativeInput::sendNativeEvent(const QNativeEvent &event)
         case QNativeEvent::eventId:
             qWarning() << "Warning: Cannot send a pure native event. Use a sub class.";
         default:
-            return Qt::Native::Failure;
+            return BobUI::Native::Failure;
     }
 }
 
-QNativeEvent::QNativeEvent(Qt::KeyboardModifiers modifiers)
+QNativeEvent::QNativeEvent(BobUI::KeyboardModifiers modifiers)
     : modifiers(modifiers){}
 
-QNativeMouseEvent::QNativeMouseEvent(QPoint pos, Qt::KeyboardModifiers modifiers)
+QNativeMouseEvent::QNativeMouseEvent(QPoint pos, BobUI::KeyboardModifiers modifiers)
     : QNativeEvent(modifiers), globalPos(pos){}
 
-QNativeMouseMoveEvent::QNativeMouseMoveEvent(QPoint pos, Qt::KeyboardModifiers modifiers)
+QNativeMouseMoveEvent::QNativeMouseMoveEvent(QPoint pos, BobUI::KeyboardModifiers modifiers)
     : QNativeMouseEvent(pos, modifiers){}
 
-QNativeMouseButtonEvent::QNativeMouseButtonEvent(QPoint globalPos, Qt::MouseButton button, int clickCount, Qt::KeyboardModifiers modifiers)
+QNativeMouseButtonEvent::QNativeMouseButtonEvent(QPoint globalPos, BobUI::MouseButton button, int clickCount, BobUI::KeyboardModifiers modifiers)
     : QNativeMouseEvent(globalPos, modifiers), button(button), clickCount(clickCount){}
 
-QNativeMouseDragEvent::QNativeMouseDragEvent(QPoint globalPos, Qt::MouseButton button, Qt::KeyboardModifiers modifiers)
+QNativeMouseDragEvent::QNativeMouseDragEvent(QPoint globalPos, BobUI::MouseButton button, BobUI::KeyboardModifiers modifiers)
     : QNativeMouseButtonEvent(globalPos, button, true, modifiers){}
 
-QNativeMouseWheelEvent::QNativeMouseWheelEvent(QPoint globalPos, int delta, Qt::KeyboardModifiers modifiers)
+QNativeMouseWheelEvent::QNativeMouseWheelEvent(QPoint globalPos, int delta, BobUI::KeyboardModifiers modifiers)
     : QNativeMouseEvent(globalPos, modifiers), delta(delta){}
 
-QNativeKeyEvent::QNativeKeyEvent(int nativeKeyCode, bool press, Qt::KeyboardModifiers modifiers)
+QNativeKeyEvent::QNativeKeyEvent(int nativeKeyCode, bool press, BobUI::KeyboardModifiers modifiers)
     : QNativeEvent(modifiers), nativeKeyCode(nativeKeyCode), press(press), character(QChar()){}
 
-QNativeModifierEvent::QNativeModifierEvent(Qt::KeyboardModifiers modifiers, int nativeKeyCode)
+QNativeModifierEvent::QNativeModifierEvent(BobUI::KeyboardModifiers modifiers, int nativeKeyCode)
     : QNativeEvent(modifiers), nativeKeyCode(nativeKeyCode){}
 
-QNativeKeyEvent::QNativeKeyEvent(int nativeKeyCode, bool press, QChar character, Qt::KeyboardModifiers modifiers)
+QNativeKeyEvent::QNativeKeyEvent(int nativeKeyCode, bool press, QChar character, BobUI::KeyboardModifiers modifiers)
     : QNativeEvent(modifiers), nativeKeyCode(nativeKeyCode), press(press), character(character){}
 
 static QString getButtonAsString(const QNativeMouseButtonEvent *e)
 {
     switch (e->button){
-        case Qt::LeftButton:
+        case BobUI::LeftButton:
             return "button = LeftButton";
             break;
-        case Qt::RightButton:
+        case BobUI::RightButton:
             return "button = RightButton";
             break;
-        case Qt::MiddleButton:
+        case BobUI::MiddleButton:
             return "button = MiddleButton";
             break;
         default:
@@ -120,13 +120,13 @@ static QString getModifiersAsString(const QNativeEvent *e)
         return "modifiers = none";
 
     QString tmp = "modifiers = ";
-    if (e->modifiers.testFlag(Qt::ShiftModifier))
+    if (e->modifiers.testFlag(BobUI::ShiftModifier))
         tmp += "Shift";
-    if (e->modifiers.testFlag(Qt::ControlModifier))
+    if (e->modifiers.testFlag(BobUI::ControlModifier))
         tmp += "Control";
-    if (e->modifiers.testFlag(Qt::AltModifier))
+    if (e->modifiers.testFlag(BobUI::AltModifier))
         tmp += "Alt";
-    if (e->modifiers.testFlag(Qt::MetaModifier))
+    if (e->modifiers.testFlag(BobUI::MetaModifier))
         tmp += "Meta";
     return tmp;
 }
@@ -190,46 +190,46 @@ QDebug operator<<(QDebug d, const QNativeEvent &e)
     return d << e.toString();
 }
 
-QTextStream &operator<<(QTextStream &s, QNativeEvent *e)
+BOBUIextStream &operator<<(BOBUIextStream &s, QNativeEvent *e)
 {
     return s << e->eventId << ' ' << e->modifiers << " QNativeEvent";
 }
 
-QTextStream &operator<<(QTextStream &s, QNativeMouseEvent *e)
+BOBUIextStream &operator<<(BOBUIextStream &s, QNativeMouseEvent *e)
 {
     return s << e->eventId << ' ' << e->globalPos.x() << ' ' << e->globalPos.y() << ' ' << e->modifiers << ' ' << e->toString();
 }
 
-QTextStream &operator<<(QTextStream &s, QNativeMouseMoveEvent *e)
+BOBUIextStream &operator<<(BOBUIextStream &s, QNativeMouseMoveEvent *e)
 {
     return s << e->eventId << ' ' << e->globalPos.x() << ' ' << e->globalPos.y() << ' ' << e->modifiers << ' ' << e->toString();
 }
 
-QTextStream &operator<<(QTextStream &s, QNativeMouseButtonEvent *e)
+BOBUIextStream &operator<<(BOBUIextStream &s, QNativeMouseButtonEvent *e)
 {
     return s << e->eventId << ' ' << e->globalPos.x() << ' ' << e->globalPos.y() << ' ' << e->button
         << ' ' << e->clickCount << ' ' << e->modifiers << ' ' << e->toString();
 }
 
-QTextStream &operator<<(QTextStream &s, QNativeMouseDragEvent *e)
+BOBUIextStream &operator<<(BOBUIextStream &s, QNativeMouseDragEvent *e)
 {
     return s << e->eventId << ' ' << e->globalPos.x() << ' ' << e->globalPos.y() << ' ' << e->button << ' ' << e->clickCount
         << ' ' << e->modifiers << ' ' << e->toString();
 }
 
-QTextStream &operator<<(QTextStream &s, QNativeMouseWheelEvent *e)
+BOBUIextStream &operator<<(BOBUIextStream &s, QNativeMouseWheelEvent *e)
 {
     return s << e->eventId << ' ' << e->globalPos.x() << ' ' << e->globalPos.y() << ' ' << e->delta
         << ' ' << e->modifiers << ' ' << e->toString();
 }
 
-QTextStream &operator<<(QTextStream &s, QNativeKeyEvent *e)
+BOBUIextStream &operator<<(BOBUIextStream &s, QNativeKeyEvent *e)
 {
     return s << e->eventId << ' ' << e->press << ' ' << e->nativeKeyCode << ' ' << e->character
         << ' ' << e->modifiers << ' ' << e->toString();
 }
 
-QTextStream &operator<<(QTextStream &s, QNativeModifierEvent *e)
+BOBUIextStream &operator<<(BOBUIextStream &s, QNativeModifierEvent *e)
 {
     return s << e->eventId << ' ' << e->modifiers << ' ' << e->nativeKeyCode << ' ' << e->toString();
 }
@@ -237,7 +237,7 @@ QTextStream &operator<<(QTextStream &s, QNativeModifierEvent *e)
 
 
 
-QTextStream &operator>>(QTextStream &s, QNativeMouseMoveEvent *e)
+BOBUIextStream &operator>>(BOBUIextStream &s, QNativeMouseMoveEvent *e)
 {
     // Skip reading eventId.
     QString humanReadable;
@@ -245,11 +245,11 @@ QTextStream &operator>>(QTextStream &s, QNativeMouseMoveEvent *e)
     s >> x >> y >> modifiers >> humanReadable;
     e->globalPos.setX(x);
     e->globalPos.setY(y);
-    e->modifiers = Qt::KeyboardModifiers(modifiers);
+    e->modifiers = BobUI::KeyboardModifiers(modifiers);
     return s;
 }
 
-QTextStream &operator>>(QTextStream &s, QNativeMouseButtonEvent *e)
+BOBUIextStream &operator>>(BOBUIextStream &s, QNativeMouseButtonEvent *e)
 {
     // Skip reading eventId.
     QString humanReadable;
@@ -258,25 +258,25 @@ QTextStream &operator>>(QTextStream &s, QNativeMouseButtonEvent *e)
     e->globalPos.setX(x);
     e->globalPos.setY(y);
     e->clickCount = clickCount;
-    e->modifiers = Qt::KeyboardModifiers(modifiers);
+    e->modifiers = BobUI::KeyboardModifiers(modifiers);
     switch (button){
         case 1:
-            e->button = Qt::LeftButton;
+            e->button = BobUI::LeftButton;
             break;
         case 2:
-            e->button = Qt::RightButton;
+            e->button = BobUI::RightButton;
             break;
         case 3:
-            e->button = Qt::MiddleButton;
+            e->button = BobUI::MiddleButton;
             break;
         default:
-            e->button = Qt::NoButton;
+            e->button = BobUI::NoButton;
             break;
     }
     return s;
 }
 
-QTextStream &operator>>(QTextStream &s, QNativeMouseDragEvent *e)
+BOBUIextStream &operator>>(BOBUIextStream &s, QNativeMouseDragEvent *e)
 {
     // Skip reading eventId.
     QString humanReadable;
@@ -285,25 +285,25 @@ QTextStream &operator>>(QTextStream &s, QNativeMouseDragEvent *e)
     e->globalPos.setX(x);
     e->globalPos.setY(y);
     e->clickCount = clickCount;
-    e->modifiers = Qt::KeyboardModifiers(modifiers);
+    e->modifiers = BobUI::KeyboardModifiers(modifiers);
     switch (button){
         case 1:
-            e->button = Qt::LeftButton;
+            e->button = BobUI::LeftButton;
             break;
         case 2:
-            e->button = Qt::RightButton;
+            e->button = BobUI::RightButton;
             break;
         case 3:
-            e->button = Qt::MiddleButton;
+            e->button = BobUI::MiddleButton;
             break;
         default:
-            e->button = Qt::NoButton;
+            e->button = BobUI::NoButton;
             break;
     }
     return s;
 }
 
-QTextStream &operator>>(QTextStream &s, QNativeMouseWheelEvent *e)
+BOBUIextStream &operator>>(BOBUIextStream &s, QNativeMouseWheelEvent *e)
 {
     // Skip reading eventId.
     QString humanReadable;
@@ -311,11 +311,11 @@ QTextStream &operator>>(QTextStream &s, QNativeMouseWheelEvent *e)
     s >> x >> y >> e->delta >> modifiers >> humanReadable;
     e->globalPos.setX(x);
     e->globalPos.setY(y);
-    e->modifiers = Qt::KeyboardModifiers(modifiers);
+    e->modifiers = BobUI::KeyboardModifiers(modifiers);
     return s;
 }
 
-QTextStream &operator>>(QTextStream &s, QNativeKeyEvent *e)
+BOBUIextStream &operator>>(BOBUIextStream &s, QNativeKeyEvent *e)
 {
     // Skip reading eventId.
     QString humanReadable;
@@ -324,17 +324,17 @@ QTextStream &operator>>(QTextStream &s, QNativeKeyEvent *e)
     s >> press >> e->nativeKeyCode >> character >> modifiers >> humanReadable;
     e->press = bool(press);
     e->character = character[0];
-    e->modifiers = Qt::KeyboardModifiers(modifiers);
+    e->modifiers = BobUI::KeyboardModifiers(modifiers);
     return s;
 }
 
-QTextStream &operator>>(QTextStream &s, QNativeModifierEvent *e)
+BOBUIextStream &operator>>(BOBUIextStream &s, QNativeModifierEvent *e)
 {
     // Skip reading eventId.
     QString humanReadable;
     int modifiers;
     s >> modifiers >> e->nativeKeyCode >> humanReadable;
-    e->modifiers = Qt::KeyboardModifiers(modifiers);
+    e->modifiers = BobUI::KeyboardModifiers(modifiers);
     return s;
 }
 

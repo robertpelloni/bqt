@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QDebug>
 #include <QPainter>
@@ -44,11 +44,11 @@ Theme* Theme::p()
 
 void Theme::setTheme(const QString theme)
 {
-    if (theme.compare("blue", Qt::CaseInsensitive) == 0)
+    if (theme.compare("blue", BobUI::CaseInsensitive) == 0)
     {
         setTheme(Theme::Blue);
     }
-    else if (theme.compare("lime", Qt::CaseInsensitive) == 0)
+    else if (theme.compare("lime", BobUI::CaseInsensitive) == 0)
     {
         setTheme(Theme::Lime);
     }
@@ -108,12 +108,12 @@ void Theme::setBlueTheme()
 
     m_pixmapPath = ":/themes/blue/";
 
-    m_listItemBackgroundBrushEven = QBrush(Qt::NoBrush);
+    m_listItemBackgroundBrushEven = QBrush(BobUI::NoBrush);
     m_listItemBackgroundOpacityEven = 1.0;
-    m_listItemBackgroundBrushOdd = QBrush(QColor(44,214,250), Qt::SolidPattern);
+    m_listItemBackgroundBrushOdd = QBrush(QColor(44,214,250), BobUI::SolidPattern);
     m_listItemBackgroundOpacityOdd = 1.0;
 
-    m_listItemBorderPen = QPen(Qt::NoPen);
+    m_listItemBorderPen = QPen(BobUI::NoPen);
     m_listItemRounding = QSize(0.0, 0.0);
 
     m_iconOpacityEffectEnabled[ListItem::LeftIcon] = false;
@@ -163,7 +163,7 @@ void Theme::setLimeTheme()
     m_listItemBackgroundBrushOdd = QBrush(QPixmap(":/avatars/avatar_012.png"));
     m_listItemBackgroundOpacityOdd = 0.15;
 
-    m_listItemBorderPen = QPen(QColor(0,0,0,55), 3, Qt::SolidLine);
+    m_listItemBorderPen = QPen(QColor(0,0,0,55), 3, BobUI::SolidLine);
     m_listItemRounding = QSize(12.0, 12.0);
 
     m_iconOpacityEffectEnabled[ListItem::LeftIcon] = true;
@@ -178,13 +178,13 @@ void Theme::setLimeTheme()
 
 QPixmap Theme::pixmap(const QString filename, QSize size)
 {
-    if (filename.endsWith(".svg", Qt::CaseInsensitive))
+    if (filename.endsWith(".svg", BobUI::CaseInsensitive))
     {
         QSvgRenderer doc(m_pixmapPath+filename);
         if (size == QSize(0,0))
             size = doc.defaultSize();
         QPixmap pix(size.width(),size.height());
-        pix.fill(Qt::transparent);
+        pix.fill(BobUI::transparent);
         QPainter painter(&pix);
         painter.setViewport(0, 0, size.width(), size.height());
         doc.render(&painter);

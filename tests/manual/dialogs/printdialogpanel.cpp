@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#undef QT_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
+#undef BOBUI_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
 
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
 
 #include "printdialogpanel.h"
 #include "utils.h"
@@ -28,7 +28,7 @@
 #include <QFontMetrics>
 #include <QDateTime>
 #include <QDebug>
-#include <QTextStream>
+#include <BOBUIextStream>
 #include <QDir>
 #include <QScreen>
 
@@ -119,20 +119,20 @@ const FlagData printDialogOptions[] =
     {"PrintCurrentPage", QPrintDialog::PrintCurrentPage}
 };
 
-QTextStream &operator<<(QTextStream &s, const QSizeF &size)
+BOBUIextStream &operator<<(BOBUIextStream &s, const QSizeF &size)
 {
     s << size.width() << 'x' << size.height();
     return s;
 }
 
-QTextStream &operator<<(QTextStream &s, const QRectF &rect)
+BOBUIextStream &operator<<(BOBUIextStream &s, const QRectF &rect)
 {
-    s << rect.width() << 'x' << rect.height() << Qt::forcesign << rect.x() << rect.y()
-      << Qt::noforcesign;
+    s << rect.width() << 'x' << rect.height() << BobUI::forcesign << rect.x() << rect.y()
+      << BobUI::noforcesign;
     return s;
 }
 
-QTextStream &operator<<(QTextStream &s, const QPrinter &printer)
+BOBUIextStream &operator<<(BOBUIextStream &s, const QPrinter &printer)
 {
     const auto pageLayout = printer.pageLayout();
     const auto pageSize = pageLayout.pageSize();
@@ -224,8 +224,8 @@ static bool print(QPrinter *printer, QString *errorMessage)
     // Format message.
     const int charHeight = QFontMetrics(font).boundingRect('X').height();
     QString msg;
-    QTextStream str(&msg);
-    str << "Qt "<< QT_VERSION_STR;
+    BOBUIextStream str(&msg);
+    str << "BobUI "<< BOBUI_VERSION_STR;
     str << ' ' << QGuiApplication::platformName();
     str << ' ' << QDateTime::currentDateTime().toString()
         << "\nFont: " << font.family() << ' ' << font.pointSize() << '\n'
@@ -581,4 +581,4 @@ void PrintDialogPanel::directPrint()
 #include "moc_printdialogpanel.cpp"
 #include "printdialogpanel.moc"
 
-#endif // !QT_NO_PRINTER
+#endif // !BOBUI_NO_PRINTER

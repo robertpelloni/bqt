@@ -10,7 +10,7 @@ OmniDial::OmniDial(QQuickItem *parent)
     : QQuickPaintedItem(parent), m_value(0.0), m_minimum(0.0), m_maximum(100.0),
       m_accentColor(QColor("#0078D7")), m_isDragging(false)
 {
-    setAcceptedMouseButtons(Qt::LeftButton);
+    setAcceptedMouseButtons(BobUI::LeftButton);
     setWidth(60); setHeight(60);
     connect(OmniThemeManager::instance(), &OmniThemeManager::themeChanged, this, [this]() { update(); });
 }
@@ -82,7 +82,7 @@ void OmniDial::paint(QPainter *painter) {
     painter->drawEllipse(dialRect);
 
     qreal ratio = (m_value - m_minimum) / (m_maximum - m_minimum);
-    painter->setPen(QPen(m_accentColor, 4, Qt::SolidLine, Qt::RoundCap));
+    painter->setPen(QPen(m_accentColor, 4, BobUI::SolidLine, BobUI::RoundCap));
     painter->drawArc(dialRect, 225*16, -ratio*270*16);
 }
 

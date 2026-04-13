@@ -1,6 +1,6 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qioseventdispatcher.h"
 #include "qiosapplicationdelegate.h"
@@ -10,10 +10,10 @@
 #include "qiosswiftintegration.h"
 #endif
 
-#include <QtCore/qprocessordetection.h>
-#include <QtCore/private/qcoreapplication_p.h>
-#include <QtCore/private/qsystemerror_p.h>
-#include <QtCore/private/qthread_p.h>
+#include <BobUICore/qprocessordetection.h>
+#include <BobUICore/private/qcoreapplication_p.h>
+#include <BobUICore/private/qsystemerror_p.h>
+#include <BobUICore/private/bobuihread_p.h>
 
 #include <qpa/qwindowsysteminterface.h>
 
@@ -35,7 +35,7 @@
 static const size_t kBytesPerKiloByte = 1024;
 static const long kPageSize = sysconf(_SC_PAGESIZE);
 
-using namespace QT_PREPEND_NAMESPACE(QtPrivate);
+using namespace BOBUI_PREPEND_NAMESPACE(BobUIPrivate);
 
 /*
     The following diagram shows the layout of the reserved
@@ -47,7 +47,7 @@ using namespace QT_PREPEND_NAMESPACE(QtPrivate);
     same level (UIApplicationMain) as iOS nativly does.
 
         +-----------------------------+
-        |            qtmn()           |
+        |            bobuimn()           |
         |     +--------------------+ <-- base
         | +---->      main()       |  |
         | |   +--------------------+  |
@@ -184,7 +184,7 @@ namespace
         QAppleLogActivity applicationDidFinishLaunching;
     } logActivity;
 
-    static bool s_isQtApplication = false;
+    static bool s_isBobUIApplication = false;
 
     void updateStackLimit()
     {
@@ -211,9 +211,9 @@ namespace
     }
 }
 
-extern "C" int qt_main_wrapper(int argc, char *argv[])
+extern "C" int bobui_main_wrapper(int argc, char *argv[])
 {
-    s_isQtApplication = true;
+    s_isBobUIApplication = true;
 
     @autoreleasepool {
         if (Q_UNLIKELY(getrlimit(RLIMIT_STACK, &stackLimit) != 0))
@@ -223,31 +223,31 @@ extern "C" int qt_main_wrapper(int argc, char *argv[])
 
         size_t defaultStackSize = 512 * kBytesPerKiloByte; // Same as secondary threads
 
-        uint requestedStackSize = qMax(0, infoPlistValue(@"QtRunLoopIntegrationStackSize", defaultStackSize));
+        uint requestedStackSize = qMax(0, infoPlistValue(@"BobUIRunLoopIntegrationStackSize", defaultStackSize));
 
-        if (infoPlistValue(@"QtRunLoopIntegrationDisableSeparateStack", false))
+        if (infoPlistValue(@"BobUIRunLoopIntegrationDisableSeparateStack", false))
             requestedStackSize = 0;
 
-        QT_WARNING_PUSH
+        BOBUI_WARNING_PUSH
 #if Q_CC_CLANG >= 1800
-        QT_WARNING_DISABLE_CLANG("-Wvla-cxx-extension")
+        BOBUI_WARNING_DISABLE_CLANG("-Wvla-cxx-extension")
 #endif
         // The user-main stack _must_ live on the stack, so that the stack pointer
         // during user-main is within pthread_get_stackaddr_np/pthread_get_stacksize_np.
         char reservedStack[Stack::computeSize(requestedStackSize)];
-        QT_WARNING_POP
+        BOBUI_WARNING_POP
 
         if (sizeof(reservedStack) > 0) {
             userMainStack.adopt(reservedStack, sizeof(reservedStack));
 
-            if (infoPlistValue(@"QtRunLoopIntegrationDebugStackUsage", false)) {
+            if (infoPlistValue(@"BobUIRunLoopIntegrationDebugStackUsage", false)) {
                 debugStackUsage = true;
                 userMainStack.scribble();
                 qDebug("Effective stack size is %lu bytes", userMainStack.size());
             }
         }
 
-        logActivity.UIApplicationMain = QT_APPLE_LOG_ACTIVITY(
+        logActivity.UIApplicationMain = BOBUI_APPLE_LOG_ACTIVITY(
             lcEventDispatcher().isDebugEnabled(), "UIApplicationMain").enter();
 
 #if defined(Q_OS_VISIONOS)
@@ -359,18 +359,18 @@ static bool rootLevelRunLoopIntegration()
 
 + (void)applicationDidFinishLaunching:(NSNotification *)notification
 {
-    logActivity.applicationDidFinishLaunching = QT_APPLE_LOG_ACTIVITY_WITH_PARENT(
+    logActivity.applicationDidFinishLaunching = BOBUI_APPLE_LOG_ACTIVITY_WITH_PARENT(
         lcEventDispatcher().isDebugEnabled(), "applicationDidFinishLaunching", logActivity.UIApplicationMain).enter();
 
     qCDebug(lcEventDispatcher) << "Application launched with options" << notification.userInfo;
 
-    if (!isQtApplication())
+    if (!isBobUIApplication())
         return;
 
     if (!rootLevelRunLoopIntegration()) {
         // We schedule the main-redirection for the next run-loop pass, so that we
         // can return from this function and let UIApplicationMain finish its job.
-        // This results in running Qt's application eventloop as a nested runloop.
+        // This results in running BobUI's application eventloop as a nested runloop.
         qCDebug(lcEventDispatcher) << "Scheduling main() on next run-loop pass";
         CFRunLoopTimerRef userMainTimer = CFRunLoopTimerCreateWithHandler(kCFAllocatorDefault,
              CFAbsoluteTimeGetCurrent(), 0, 0, 0, ^(CFRunLoopTimerRef) { user_main_trampoline(); });
@@ -382,11 +382,11 @@ static bool rootLevelRunLoopIntegration()
     switch (setjmp(processEventEnterJumpPoint)) {
     case kJumpPointSetSuccessfully: {
         qCDebug(lcEventDispatcher) << "Running main() on separate stack";
-        QT_APPLE_SCOPED_LOG_ACTIVITY(lcEventDispatcher().isDebugEnabled(), "main()");
+        BOBUI_APPLE_SCOPED_LOG_ACTIVITY(lcEventDispatcher().isDebugEnabled(), "main()");
 
         // Redirect the stack pointer to the start of the reserved stack. This ensures
         // that when we longjmp out of the event dispatcher and continue execution, the
-        // 'Qt main' call-stack will not be smashed, as it lives in a part of the stack
+        // 'BobUI main' call-stack will not be smashed, as it lives in a part of the stack
         // that was allocated back in main().
         __asm__ __volatile__(
             SET_STACK_POINTER
@@ -423,11 +423,11 @@ static const char kApplicationWillTerminateExitCode = char(SIGTERM | 0x80);
 
 + (void)applicationWillTerminate
 {
-    QAppleLogActivity applicationWillTerminateActivity = QT_APPLE_LOG_ACTIVITY_WITH_PARENT(
+    QAppleLogActivity applicationWillTerminateActivity = BOBUI_APPLE_LOG_ACTIVITY_WITH_PARENT(
         lcEventDispatcher().isDebugEnabled(), "applicationWillTerminate", logActivity.UIApplicationMain).enter();
     qCDebug(lcEventDispatcher) << "Application about to be terminated by iOS";
 
-    if (!isQtApplication())
+    if (!isBobUIApplication())
         return;
 
     if (!rootLevelRunLoopIntegration())
@@ -437,7 +437,7 @@ static const char kApplicationWillTerminateExitCode = char(SIGTERM | 0x80);
     // no chance for us to clean up anything, but in some rare cases iOS will tell
     // us that the application is about to be terminated.
 
-    // We try to play nice with Qt by ending the main event loop, which will result
+    // We try to play nice with BobUI by ending the main event loop, which will result
     // in QCoreApplication::aboutToQuit() being emitted, and main() returning to the
     // trampoline. The trampoline then redirects us back here, so that we can return
     // to UIApplicationMain instead of calling exit().
@@ -468,12 +468,12 @@ static const char kApplicationWillTerminateExitCode = char(SIGTERM | 0x80);
 
 @end
 
-QT_BEGIN_NAMESPACE
-QT_USE_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
+BOBUI_USE_NAMESPACE
 
 QIOSEventDispatcher *QIOSEventDispatcher::create()
 {
-    if (isQtApplication() && rootLevelRunLoopIntegration())
+    if (isBobUIApplication() && rootLevelRunLoopIntegration())
         return new QIOSJumpingEventDispatcher;
 
     return new QIOSEventDispatcher;
@@ -486,15 +486,15 @@ QIOSEventDispatcher::QIOSEventDispatcher(QObject *parent)
     QWindowSystemInterface::setSynchronousWindowSystemEvents(true);
 }
 
-bool QIOSEventDispatcher::isQtApplication()
+bool QIOSEventDispatcher::isBobUIApplication()
 {
-    return s_isQtApplication;
+    return s_isBobUIApplication;
 }
 
 /*!
     Override of the CoreFoundation posted events runloop source callback
     so that we can send window system (QPA) events in addition to sending
-    normal Qt events.
+    normal BobUI events.
 */
 bool QIOSEventDispatcher::processPostedEvents()
 {
@@ -503,7 +503,7 @@ bool QIOSEventDispatcher::processPostedEvents()
     if (!QEventDispatcherCoreFoundation::processPostedEvents())
         return false;
 
-    QT_APPLE_SCOPED_LOG_ACTIVITY(lcEventDispatcher().isDebugEnabled(), "sendWindowSystemEvents");
+    BOBUI_APPLE_SCOPED_LOG_ACTIVITY(lcEventDispatcher().isDebugEnabled(), "sendWindowSystemEvents");
     QEventLoop::ProcessEventsFlags flags
         = QEventLoop::ProcessEventsFlags(m_processEvents.flags.loadRelaxed());
     qCDebug(lcEventDispatcher) << "Sending window system events for" << flags;
@@ -529,7 +529,7 @@ bool __attribute__((returns_twice)) QIOSJumpingEventDispatcher::processEvents(QE
     }
 
     if (!m_processEventLevel && (flags & QEventLoop::EventLoopExec)) {
-        QT_APPLE_SCOPED_LOG_ACTIVITY(lcEventDispatcher().isDebugEnabled(), "processEvents");
+        BOBUI_APPLE_SCOPED_LOG_ACTIVITY(lcEventDispatcher().isDebugEnabled(), "processEvents");
         qCDebug(lcEventDispatcher) << "Processing events with flags" << flags;
 
         ++m_processEventLevel;
@@ -602,4 +602,4 @@ void QIOSJumpingEventDispatcher::interruptEventLoopExec()
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

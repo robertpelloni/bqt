@@ -1,6 +1,6 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QLOCALE_TOOLS_P_H
 #define QLOCALE_TOOLS_P_H
@@ -9,7 +9,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of internal files.  This header file may change from version to version
 // without notice, or even be removed.
 //
@@ -19,17 +19,17 @@
 #include "qlocale_p.h"
 #include "qstring.h"
 
-#if !defined(QT_SUPPORTS_INT128) && (defined(Q_CC_MSVC) && (_MSC_VER >= 1930) && __has_include(<__msvc_int128.hpp>))
+#if !defined(BOBUI_SUPPORTS_INT128) && (defined(Q_CC_MSVC) && (_MSC_VER >= 1930) && __has_include(<__msvc_int128.hpp>))
 #include <__msvc_int128.hpp>
-#define QT_USE_MSVC_INT128
+#define BOBUI_USE_MSVC_INT128
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if defined(QT_SUPPORTS_INT128)
+#if defined(BOBUI_SUPPORTS_INT128)
 using qinternalint128 = qint128;
 using qinternaluint128 = quint128;
-#elif defined(QT_USE_MSVC_INT128)
+#elif defined(BOBUI_USE_MSVC_INT128)
 using qinternalint128 = std::_Signed128;
 using qinternaluint128 = std::_Unsigned128;
 #endif
@@ -41,9 +41,9 @@ enum StrayCharacterMode {
 
 // API note: this function can't process a number with more than 2.1 billion digits
 [[nodiscard]] QSimpleParsedNumber<double>
-qt_asciiToDouble(const char *num, qsizetype numLen,
+bobui_asciiToDouble(const char *num, qsizetype numLen,
                  StrayCharacterMode strayCharMode = TrailingJunkProhibited);
-void qt_doubleToAscii(double d, QLocaleData::DoubleForm form, int precision,
+void bobui_doubleToAscii(double d, QLocaleData::DoubleForm form, int precision,
                       char *buf, qsizetype bufSize,
                       bool &sign, int &length, int &decpt);
 
@@ -56,14 +56,14 @@ void qt_doubleToAscii(double d, QLocaleData::DoubleForm form, int precision,
 [[nodiscard]] QByteArray qdtoAscii(double d, QLocaleData::DoubleForm form,
                                    int precision, bool uppercase);
 
-#if defined(QT_SUPPORTS_INT128) || defined(QT_USE_MSVC_INT128)
+#if defined(BOBUI_SUPPORTS_INT128) || defined(BOBUI_USE_MSVC_INT128)
 [[nodiscard]] Q_CORE_EXPORT QString quint128toBasicLatin(qinternaluint128 number,
                                                          int base = 10);
 [[nodiscard]] Q_CORE_EXPORT QString qint128toBasicLatin(qinternalint128 number,
                                                         int base = 10);
 #endif
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 12, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(6, 12, 0)
 [[deprecated("Use qIsNull(double) instead.")]]
 [[nodiscard]] constexpr inline bool isZero(double d)
 {
@@ -89,7 +89,7 @@ template <typename UcsInt>
     if (!digit)
         return zero;
 
-    // See QTBUG-85409: Suzhou's digits are U+3007, U+3021, ..., U+3029
+    // See BOBUIBUG-85409: Suzhou's digits are U+3007, U+3021, ..., U+3029
     if (zero == u'\u3007')
         return u'\u3020' + digit;
     // In util/locale_database/ldml.py, LocaleScanner.numericData() asserts no
@@ -110,6 +110,6 @@ template <typename UcsInt>
 QSimpleParsedNumber<qlonglong> qstrntoll(const char *nptr, qsizetype size, int base);
 [[nodiscard]] QSimpleParsedNumber<qulonglong> qstrntoull(const char *nptr, qsizetype size, int base);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

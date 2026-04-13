@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSPLASHSCREEN_H
 #define QSPLASHSCREEN_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtGui/qpixmap.h>
-#include <QtWidgets/qwidget.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIGui/qpixmap.h>
+#include <BobUIWidgets/qwidget.h>
 
-QT_REQUIRE_CONFIG(splashscreen);
+BOBUI_REQUIRE_CONFIG(splashscreen);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QSplashScreenPrivate;
 
@@ -19,8 +19,8 @@ class Q_WIDGETS_EXPORT QSplashScreen : public QWidget
 {
     Q_OBJECT
 public:
-    explicit QSplashScreen(const QPixmap &pixmap = QPixmap(), Qt::WindowFlags f = Qt::WindowFlags());
-    QSplashScreen(QScreen *screen, const QPixmap &pixmap = QPixmap(), Qt::WindowFlags f = Qt::WindowFlags());
+    explicit QSplashScreen(const QPixmap &pixmap = QPixmap(), BobUI::WindowFlags f = BobUI::WindowFlags());
+    QSplashScreen(QScreen *screen, const QPixmap &pixmap = QPixmap(), BobUI::WindowFlags f = BobUI::WindowFlags());
     virtual ~QSplashScreen();
 
     void setPixmap(const QPixmap &pixmap);
@@ -30,8 +30,8 @@ public:
     QString message() const;
 
 public Q_SLOTS:
-    void showMessage(const QString &message, int alignment = Qt::AlignLeft,
-                  const QColor &color = Qt::black);
+    void showMessage(const QString &message, int alignment = BobUI::AlignLeft,
+                  const QColor &color = BobUI::black);
     void clearMessage();
 
 Q_SIGNALS:
@@ -47,6 +47,6 @@ private:
     Q_DECLARE_PRIVATE(QSplashScreen)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSPLASHSCREEN_H

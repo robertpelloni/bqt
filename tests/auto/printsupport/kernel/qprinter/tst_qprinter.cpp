@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qprinter.h>
 #include <qpagesetupdialog.h>
@@ -15,15 +15,15 @@
 #include <qprintengine.h>
 #include <qpagelayout.h>
 #include <qsharedpointer.h>
-#include <qtemporarydir.h>
+#include <bobuiemporarydir.h>
 
 #include <math.h>
 
 #ifdef Q_OS_WIN
-#include <qt_windows.h>
+#include <bobui_windows.h>
 #endif
 
-#if QT_CONFIG(printer)
+#if BOBUI_CONFIG(printer)
 typedef QSharedPointer<QPrinter> PrinterPtr;
 
 Q_DECLARE_METATYPE(PrinterPtr)
@@ -37,7 +37,7 @@ class tst_QPrinter : public QObject
 
 private slots:
     void initTestCase();
-#if QT_CONFIG(printer)
+#if BOBUI_CONFIG(printer)
     void testPageRectAndPaperRect();
     void testPageRectAndPaperRect_data();
     void testMargins_data();
@@ -54,11 +54,11 @@ private slots:
     void customPaperSizeAndMargins_data();
     void customPaperSizeAndMargins();
     void customPaperNameSettingBySize();
-#if QT_CONFIG(completer) && QT_CONFIG(filedialog)
+#if BOBUI_CONFIG(completer) && BOBUI_CONFIG(filedialog)
     void printDialogCompleter();
 #endif
     void testCurrentPage();
-    void taskQTBUG4497_reusePrinterOnDifferentFiles();
+    void taskBOBUIBUG4497_reusePrinterOnDifferentFiles();
     void testPdfTitle();
 
     // Test QPrintEngine keys and their QPrinter setters/getters
@@ -96,18 +96,18 @@ private:
     QString testFileName(const QString &prefix, const QString &suffix);
     QString testPdfFileName(const QString &prefix) { return testFileName(prefix, QStringLiteral("pdf")); }
 
-    QTemporaryDir m_tempDir;
+    BOBUIemporaryDir m_tempDir;
 };
 
 void tst_QPrinter::initTestCase()
 {
-#if !QT_CONFIG(printer)
+#if !BOBUI_CONFIG(printer)
     QSKIP("This test requires printing support");
 #endif
     QVERIFY2(m_tempDir.isValid(), qPrintable(m_tempDir.errorString()));
 }
 
-#if QT_CONFIG(printer)
+#if BOBUI_CONFIG(printer)
 
 void tst_QPrinter::testPageSetupDialog()
 {
@@ -139,7 +139,7 @@ void MyPreviewDialog::slotPaintRequested(QPrinter *p)
     painter.begin(p);
     for (int i = 0; i < pageCount; ++i) {
         const QRect f = p->pageRect(QPrinter::DevicePixel).toRect();
-        painter.fillRect(f, Qt::white);
+        painter.fillRect(f, BobUI::white);
         painter.drawText(f.center(), QString::fromLatin1("Page %1").arg(i + 1));
         if (i != pageCount - 1)
             p->newPage();
@@ -149,13 +149,13 @@ void MyPreviewDialog::slotPaintRequested(QPrinter *p)
 
 void tst_QPrinter::testPrintPreviewDialog()
 {
-    // QTBUG-14517: Showing the dialog with Qt::WindowMaximized caused it to switch to
+    // BOBUIBUG-14517: Showing the dialog with BobUI::WindowMaximized caused it to switch to
     // page 2 due to the scrollbar logic (besides testing for crashes).
     QPrinter printer;
     MyPreviewDialog dialog(&printer);
-    dialog.setWindowState(Qt::WindowMaximized);
+    dialog.setWindowState(BobUI::WindowMaximized);
     dialog.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&dialog));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&dialog));
     QPrintPreviewWidget *widget = dialog.findChild<QPrintPreviewWidget *>();
     QVERIFY(widget);
     QCOMPARE(widget->currentPage(), 1);
@@ -163,40 +163,40 @@ void tst_QPrinter::testPrintPreviewDialog()
 
 void tst_QPrinter::testPageRectAndPaperRect_data()
 {
-    QTest::addColumn<PrinterPtr>("printer");
-    QTest::addColumn<QPageLayout::Orientation>("orientation");
-    QTest::addColumn<bool>("withPainter");
-    QTest::addColumn<int>("resolution");
-    QTest::addColumn<bool>("doPaperRect");
+    BOBUIest::addColumn<PrinterPtr>("printer");
+    BOBUIest::addColumn<QPageLayout::Orientation>("orientation");
+    BOBUIest::addColumn<bool>("withPainter");
+    BOBUIest::addColumn<int>("resolution");
+    BOBUIest::addColumn<bool>("doPaperRect");
 
     const PrinterPtr printer(new QPrinter(QPrinter::HighResolution));
     // paperrect
-    QTest::newRow("paperRect0") << printer << QPageLayout::Portrait << true << 300 << true;
-    QTest::newRow("paperRect1") << printer << QPageLayout::Portrait << false << 300 << true;
-    QTest::newRow("paperRect2") << printer << QPageLayout::Landscape << true << 300 << true;
-    QTest::newRow("paperRect3") << printer << QPageLayout::Landscape << false << 300 << true;
-    QTest::newRow("paperRect4") << printer << QPageLayout::Portrait << true << 600 << true;
-    QTest::newRow("paperRect5") << printer << QPageLayout::Portrait << false << 600 << true;
-    QTest::newRow("paperRect6") << printer << QPageLayout::Landscape << true << 600 << true;
-    QTest::newRow("paperRect7") << printer << QPageLayout::Landscape << false << 600 << true;
-    QTest::newRow("paperRect8") << printer << QPageLayout::Portrait << true << 1200 << true;
-    QTest::newRow("paperRect9") << printer << QPageLayout::Portrait << false << 1200 << true;
-    QTest::newRow("paperRect10") << printer << QPageLayout::Landscape << true << 1200 << true;
-    QTest::newRow("paperRect11") << printer << QPageLayout::Landscape << false << 1200 << true;
+    BOBUIest::newRow("paperRect0") << printer << QPageLayout::Portrait << true << 300 << true;
+    BOBUIest::newRow("paperRect1") << printer << QPageLayout::Portrait << false << 300 << true;
+    BOBUIest::newRow("paperRect2") << printer << QPageLayout::Landscape << true << 300 << true;
+    BOBUIest::newRow("paperRect3") << printer << QPageLayout::Landscape << false << 300 << true;
+    BOBUIest::newRow("paperRect4") << printer << QPageLayout::Portrait << true << 600 << true;
+    BOBUIest::newRow("paperRect5") << printer << QPageLayout::Portrait << false << 600 << true;
+    BOBUIest::newRow("paperRect6") << printer << QPageLayout::Landscape << true << 600 << true;
+    BOBUIest::newRow("paperRect7") << printer << QPageLayout::Landscape << false << 600 << true;
+    BOBUIest::newRow("paperRect8") << printer << QPageLayout::Portrait << true << 1200 << true;
+    BOBUIest::newRow("paperRect9") << printer << QPageLayout::Portrait << false << 1200 << true;
+    BOBUIest::newRow("paperRect10") << printer << QPageLayout::Landscape << true << 1200 << true;
+    BOBUIest::newRow("paperRect11") << printer << QPageLayout::Landscape << false << 1200 << true;
 
     // page rect
-    QTest::newRow("pageRect0") << printer << QPageLayout::Portrait << true << 300 << false;
-    QTest::newRow("pageRect1") << printer << QPageLayout::Portrait << false << 300 << false;
-    QTest::newRow("pageRect2") << printer << QPageLayout::Landscape << true << 300 << false;
-    QTest::newRow("pageRect3") << printer << QPageLayout::Landscape << false << 300 << false;
-    QTest::newRow("pageRect4") << printer << QPageLayout::Portrait << true << 600 << false;
-    QTest::newRow("pageRect5") << printer << QPageLayout::Portrait << false << 600 << false;
-    QTest::newRow("pageRect6") << printer << QPageLayout::Landscape << true << 600 << false;
-    QTest::newRow("pageRect7") << printer << QPageLayout::Landscape << false << 600 << false;
-    QTest::newRow("pageRect8") << printer << QPageLayout::Portrait << true << 1200 << false;
-    QTest::newRow("pageRect9") << printer << QPageLayout::Portrait << false << 1200 << false;
-    QTest::newRow("pageRect10") << printer << QPageLayout::Landscape << true << 1200 << false;
-    QTest::newRow("pageRect11") << printer << QPageLayout::Landscape << false << 1200 << false;
+    BOBUIest::newRow("pageRect0") << printer << QPageLayout::Portrait << true << 300 << false;
+    BOBUIest::newRow("pageRect1") << printer << QPageLayout::Portrait << false << 300 << false;
+    BOBUIest::newRow("pageRect2") << printer << QPageLayout::Landscape << true << 300 << false;
+    BOBUIest::newRow("pageRect3") << printer << QPageLayout::Landscape << false << 300 << false;
+    BOBUIest::newRow("pageRect4") << printer << QPageLayout::Portrait << true << 600 << false;
+    BOBUIest::newRow("pageRect5") << printer << QPageLayout::Portrait << false << 600 << false;
+    BOBUIest::newRow("pageRect6") << printer << QPageLayout::Landscape << true << 600 << false;
+    BOBUIest::newRow("pageRect7") << printer << QPageLayout::Landscape << false << 600 << false;
+    BOBUIest::newRow("pageRect8") << printer << QPageLayout::Portrait << true << 1200 << false;
+    BOBUIest::newRow("pageRect9") << printer << QPageLayout::Portrait << false << 1200 << false;
+    BOBUIest::newRow("pageRect10") << printer << QPageLayout::Landscape << true << 1200 << false;
+    BOBUIest::newRow("pageRect11") << printer << QPageLayout::Landscape << false << 1200 << false;
 }
 
 void tst_QPrinter::testPageRectAndPaperRect()
@@ -233,21 +233,21 @@ void tst_QPrinter::testPageRectAndPaperRect()
 
 void tst_QPrinter::testMargins_data()
 {
-    QTest::addColumn<PrinterPtr>("printer");
-    QTest::addColumn<QPageLayout::Orientation>("orientation");
-    QTest::addColumn<bool>("fullpage");
-    QTest::addColumn<QPageSize::PageSizeId>("pagesize");
-    QTest::addColumn<bool>("withPainter");
+    BOBUIest::addColumn<PrinterPtr>("printer");
+    BOBUIest::addColumn<QPageLayout::Orientation>("orientation");
+    BOBUIest::addColumn<bool>("fullpage");
+    BOBUIest::addColumn<QPageSize::PageSizeId>("pagesize");
+    BOBUIest::addColumn<bool>("withPainter");
 
     const PrinterPtr printer(new QPrinter);
-    QTest::newRow("data0") << printer << QPageLayout::Portrait << true << QPageSize::A4 << false;
-    QTest::newRow("data1") << printer << QPageLayout::Landscape << true << QPageSize::A4 << false;
-    QTest::newRow("data2") << printer << QPageLayout::Landscape << false << QPageSize::A4 << false;
-    QTest::newRow("data3") << printer << QPageLayout::Portrait << false << QPageSize::A4 << false;
-    QTest::newRow("data4") << printer << QPageLayout::Portrait << true << QPageSize::A4 << true;
-    QTest::newRow("data5") << printer << QPageLayout::Landscape << true << QPageSize::A4 << true;
-    QTest::newRow("data6") << printer << QPageLayout::Landscape << false << QPageSize::A4 << true;
-    QTest::newRow("data7") << printer << QPageLayout::Portrait << false << QPageSize::A4 << true;
+    BOBUIest::newRow("data0") << printer << QPageLayout::Portrait << true << QPageSize::A4 << false;
+    BOBUIest::newRow("data1") << printer << QPageLayout::Landscape << true << QPageSize::A4 << false;
+    BOBUIest::newRow("data2") << printer << QPageLayout::Landscape << false << QPageSize::A4 << false;
+    BOBUIest::newRow("data3") << printer << QPageLayout::Portrait << false << QPageSize::A4 << false;
+    BOBUIest::newRow("data4") << printer << QPageLayout::Portrait << true << QPageSize::A4 << true;
+    BOBUIest::newRow("data5") << printer << QPageLayout::Landscape << true << QPageSize::A4 << true;
+    BOBUIest::newRow("data6") << printer << QPageLayout::Landscape << false << QPageSize::A4 << true;
+    BOBUIest::newRow("data7") << printer << QPageLayout::Portrait << false << QPageSize::A4 << true;
 }
 
 void tst_QPrinter::testMargins()
@@ -271,21 +271,21 @@ void tst_QPrinter::testMargins()
 
 void tst_QPrinter::testMultipleSets_data()
 {
-    QTest::addColumn<int>("resolution");
-    QTest::addColumn<QPageSize::PageSizeId>("pageSize");
-    QTest::addColumn<int>("widthMMAfter");
-    QTest::addColumn<int>("heightMMAfter");
+    BOBUIest::addColumn<int>("resolution");
+    BOBUIest::addColumn<QPageSize::PageSizeId>("pageSize");
+    BOBUIest::addColumn<int>("widthMMAfter");
+    BOBUIest::addColumn<int>("heightMMAfter");
 
 
-    QTest::newRow("lowRes") << int(QPrinter::ScreenResolution) << QPageSize::A4 << 210 << 297;
-    QTest::newRow("lowResLetter") << int(QPrinter::ScreenResolution) << QPageSize::Letter << 216 << 279;
-    QTest::newRow("lowResA5") << int(QPrinter::ScreenResolution) << QPageSize::A5 << 148 << 210;
-    QTest::newRow("midRes") << int(QPrinter::PrinterResolution) << QPageSize::A4 << 210 << 297;
-    QTest::newRow("midResLetter") << int(QPrinter::PrinterResolution) << QPageSize::Letter << 216 << 279;
-    QTest::newRow("midResA5") << int(QPrinter::PrinterResolution) << QPageSize::A5 << 148 << 210;
-    QTest::newRow("highRes") << int(QPrinter::HighResolution) << QPageSize::A4 << 210 << 297;
-    QTest::newRow("highResLetter") << int(QPrinter::HighResolution) << QPageSize::Letter << 216 << 279;
-    QTest::newRow("highResA5") << int(QPrinter::HighResolution) << QPageSize::A5 << 148 << 210;
+    BOBUIest::newRow("lowRes") << int(QPrinter::ScreenResolution) << QPageSize::A4 << 210 << 297;
+    BOBUIest::newRow("lowResLetter") << int(QPrinter::ScreenResolution) << QPageSize::Letter << 216 << 279;
+    BOBUIest::newRow("lowResA5") << int(QPrinter::ScreenResolution) << QPageSize::A5 << 148 << 210;
+    BOBUIest::newRow("midRes") << int(QPrinter::PrinterResolution) << QPageSize::A4 << 210 << 297;
+    BOBUIest::newRow("midResLetter") << int(QPrinter::PrinterResolution) << QPageSize::Letter << 216 << 279;
+    BOBUIest::newRow("midResA5") << int(QPrinter::PrinterResolution) << QPageSize::A5 << 148 << 210;
+    BOBUIest::newRow("highRes") << int(QPrinter::HighResolution) << QPageSize::A4 << 210 << 297;
+    BOBUIest::newRow("highResLetter") << int(QPrinter::HighResolution) << QPageSize::Letter << 216 << 279;
+    BOBUIest::newRow("highResA5") << int(QPrinter::HighResolution) << QPageSize::A5 << 148 << 210;
 }
 
 void tst_QPrinter::testMultipleSets()
@@ -355,19 +355,19 @@ void tst_QPrinter::outputFormatFromSuffix()
 
 void tst_QPrinter::testPageMargins_data()
 {
-    QTest::addColumn<qreal>("left");
-    QTest::addColumn<qreal>("top");
-    QTest::addColumn<qreal>("right");
-    QTest::addColumn<qreal>("bottom");
-    QTest::addColumn<QPageLayout::Unit>("unit");
+    BOBUIest::addColumn<qreal>("left");
+    BOBUIest::addColumn<qreal>("top");
+    BOBUIest::addColumn<qreal>("right");
+    BOBUIest::addColumn<qreal>("bottom");
+    BOBUIest::addColumn<QPageLayout::Unit>("unit");
 
     // Use custom margins that will exceed most printers minimum allowed
-    QTest::newRow("data0") << qreal(25.5) << qreal(26.5) << qreal(27.5) << qreal(28.5) << QPageLayout::Millimeter;
-    QTest::newRow("data1") << qreal(55.5) << qreal(56.5) << qreal(57.5) << qreal(58.5) << QPageLayout::Point;
-    QTest::newRow("data2") << qreal(5.5) << qreal(6.5) << qreal(7.5) << qreal(8.5) << QPageLayout::Inch;
-    QTest::newRow("data3") << qreal(5.5) << qreal(6.5) << qreal(7.5) << qreal(8.5) << QPageLayout::Pica;
-    QTest::newRow("data4") << qreal(55.5) << qreal(56.5) << qreal(57.5) << qreal(58.5) << QPageLayout::Didot;
-    QTest::newRow("data5") << qreal(5.5) << qreal(6.5) << qreal(7.5) << qreal(8.5) << QPageLayout::Cicero;
+    BOBUIest::newRow("data0") << qreal(25.5) << qreal(26.5) << qreal(27.5) << qreal(28.5) << QPageLayout::Millimeter;
+    BOBUIest::newRow("data1") << qreal(55.5) << qreal(56.5) << qreal(57.5) << qreal(58.5) << QPageLayout::Point;
+    BOBUIest::newRow("data2") << qreal(5.5) << qreal(6.5) << qreal(7.5) << qreal(8.5) << QPageLayout::Inch;
+    BOBUIest::newRow("data3") << qreal(5.5) << qreal(6.5) << qreal(7.5) << qreal(8.5) << QPageLayout::Pica;
+    BOBUIest::newRow("data4") << qreal(55.5) << qreal(56.5) << qreal(57.5) << qreal(58.5) << QPageLayout::Didot;
+    BOBUIest::newRow("data5") << qreal(5.5) << qreal(6.5) << qreal(7.5) << qreal(8.5) << QPageLayout::Cicero;
 }
 
 void tst_QPrinter::testPageMargins()
@@ -445,18 +445,18 @@ void tst_QPrinter::testCustomPageSizes()
 
 void tst_QPrinter::customPaperSizeAndMargins_data()
 {
-    QTest::addColumn<bool>("pdf");
-    QTest::addColumn<bool>("before");
-    QTest::addColumn<qreal>("left");
-    QTest::addColumn<qreal>("top");
-    QTest::addColumn<qreal>("right");
-    QTest::addColumn<qreal>("bottom");
+    BOBUIest::addColumn<bool>("pdf");
+    BOBUIest::addColumn<bool>("before");
+    BOBUIest::addColumn<qreal>("left");
+    BOBUIest::addColumn<qreal>("top");
+    BOBUIest::addColumn<qreal>("right");
+    BOBUIest::addColumn<qreal>("bottom");
 
     // Use custom margins that will exceed most printers minimum allowed
-    QTest::newRow("beforeNoPDF")   << false << true  << qreal(30) << qreal(30) << qreal(30) << qreal(30);
-    QTest::newRow("beforePDF")     << true  << true  << qreal(30) << qreal(30) << qreal(30) << qreal(30);
-    QTest::newRow("afterNoPDF")    << false << false << qreal(30) << qreal(30) << qreal(30) << qreal(30);
-    QTest::newRow("afterAfterPDF") << true  << false << qreal(30) << qreal(30) << qreal(30) << qreal(30);
+    BOBUIest::newRow("beforeNoPDF")   << false << true  << qreal(30) << qreal(30) << qreal(30) << qreal(30);
+    BOBUIest::newRow("beforePDF")     << true  << true  << qreal(30) << qreal(30) << qreal(30) << qreal(30);
+    BOBUIest::newRow("afterNoPDF")    << false << false << qreal(30) << qreal(30) << qreal(30) << qreal(30);
+    BOBUIest::newRow("afterAfterPDF") << true  << false << qreal(30) << qreal(30) << qreal(30) << qreal(30);
 }
 
 void tst_QPrinter::customPaperSizeAndMargins()
@@ -492,7 +492,7 @@ void tst_QPrinter::customPaperSizeAndMargins()
     QVERIFY(fabs(bottom - actual.bottom()) < tolerance);
 }
 
-#if QT_CONFIG(completer) && QT_CONFIG(filedialog)
+#if BOBUI_CONFIG(completer) && BOBUI_CONFIG(filedialog)
 void tst_QPrinter::printDialogCompleter()
 {
     QPrintDialog dialog;
@@ -504,21 +504,21 @@ void tst_QPrinter::printDialogCompleter()
     dialog.setOption(QAbstractPrintDialog::PrintToFile);
     dialog.show();
 
-    QVERIFY(QTest::qWaitForWindowActive(&dialog));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&dialog));
 
-    QTest::keyClick(&dialog, Qt::Key_Tab);
-    QTest::keyClick(&dialog, 'P');
+    BOBUIest::keyClick(&dialog, BobUI::Key_Tab);
+    BOBUIest::keyClick(&dialog, 'P');
     // The test passes if it doesn't crash.
 }
 #endif
 
 static void printPage(QPainter *painter)
 {
-    painter->setPen(QPen(Qt::black, 4));
+    painter->setPen(QPen(BobUI::black, 4));
     painter->drawRect(50, 60, 70, 80);
 }
 
-void tst_QPrinter::taskQTBUG4497_reusePrinterOnDifferentFiles()
+void tst_QPrinter::taskBOBUIBUG4497_reusePrinterOnDifferentFiles()
 {
     const QString fileName1 = testPdfFileName(QLatin1String("out1_"));
     const QString fileName2 = testPdfFileName(QLatin1String("out2_"));
@@ -639,7 +639,7 @@ void tst_QPrinter::customPaperNameSettingBySize()
         // Fail with the original values
         if (!paperNameFound) {
             qDebug() << "supportedPageSizes() = " << sizes;
-            QEXPECT_FAIL("", "Paper Name mismatch: please report this failure at bugreports.qt.io", Continue);
+            QEXPECT_FAIL("", "Paper Name mismatch: please report this failure at bugreports.bobui.io", Continue);
             QCOMPARE(pageSize.name(), printer.pageLayout().pageSize().name());
         }
     }
@@ -1523,29 +1523,29 @@ void tst_QPrinter::fromToPage()
 
 void tst_QPrinter::testPageMetrics_data()
 {
-    QTest::addColumn<int>("outputFormat");
-    QTest::addColumn<int>("pageSize");
-    QTest::addColumn<qreal>("widthMMf");
-    QTest::addColumn<qreal>("heightMMf");
-    QTest::addColumn<bool>("setMargins");
-    QTest::addColumn<qreal>("leftMMf");
-    QTest::addColumn<qreal>("rightMMf");
-    QTest::addColumn<qreal>("topMMf");
-    QTest::addColumn<qreal>("bottomMMf");
+    BOBUIest::addColumn<int>("outputFormat");
+    BOBUIest::addColumn<int>("pageSize");
+    BOBUIest::addColumn<qreal>("widthMMf");
+    BOBUIest::addColumn<qreal>("heightMMf");
+    BOBUIest::addColumn<bool>("setMargins");
+    BOBUIest::addColumn<qreal>("leftMMf");
+    BOBUIest::addColumn<qreal>("rightMMf");
+    BOBUIest::addColumn<qreal>("topMMf");
+    BOBUIest::addColumn<qreal>("bottomMMf");
 
-    QTest::newRow("PDF A4")            << int(QPrinter::PdfFormat)    << int(QPageSize::A4) << 210.0 << 297.0 << false <<  0.0 <<  0.0 <<  0.0 <<  0.0;
-    QTest::newRow("PDF A4 Margins")    << int(QPrinter::PdfFormat)    << int(QPageSize::A4) << 210.0 << 297.0 << true  << 20.0 << 30.0 << 40.0 << 50.0;
-    QTest::newRow("Native A4")         << int(QPrinter::NativeFormat) << int(QPageSize::A4) << 210.0 << 297.0 << false <<  0.0 <<  0.0 <<  0.0 <<  0.0;
-    QTest::newRow("Native A4 Margins") << int(QPrinter::NativeFormat) << int(QPageSize::A4) << 210.0 << 297.0 << true  << 20.0 << 30.0 << 40.0 << 50.0;
+    BOBUIest::newRow("PDF A4")            << int(QPrinter::PdfFormat)    << int(QPageSize::A4) << 210.0 << 297.0 << false <<  0.0 <<  0.0 <<  0.0 <<  0.0;
+    BOBUIest::newRow("PDF A4 Margins")    << int(QPrinter::PdfFormat)    << int(QPageSize::A4) << 210.0 << 297.0 << true  << 20.0 << 30.0 << 40.0 << 50.0;
+    BOBUIest::newRow("Native A4")         << int(QPrinter::NativeFormat) << int(QPageSize::A4) << 210.0 << 297.0 << false <<  0.0 <<  0.0 <<  0.0 <<  0.0;
+    BOBUIest::newRow("Native A4 Margins") << int(QPrinter::NativeFormat) << int(QPageSize::A4) << 210.0 << 297.0 << true  << 20.0 << 30.0 << 40.0 << 50.0;
 
-    QTest::newRow("PDF Portrait")             << int(QPrinter::PdfFormat)    << -1 << 200.0 << 300.0 << false <<  0.0 <<  0.0 <<  0.0 <<  0.0;
-    QTest::newRow("PDF Portrait Margins")     << int(QPrinter::PdfFormat)    << -1 << 200.0 << 300.0 << true  << 20.0 << 30.0 << 40.0 << 50.0;
-    QTest::newRow("PDF Landscape")            << int(QPrinter::PdfFormat)    << -1 << 300.0 << 200.0 << false <<  0.0 <<  0.0 <<  0.0 <<  0.0;
-    QTest::newRow("PDF Landscape Margins")    << int(QPrinter::PdfFormat)    << -1 << 300.0 << 200.0 << true  << 20.0 << 30.0 << 40.0 << 50.0;
-    QTest::newRow("Native Portrait")          << int(QPrinter::NativeFormat) << -1 << 200.0 << 300.0 << false <<  0.0 <<  0.0 <<  0.0 <<  0.0;
-    QTest::newRow("Native Portrait Margins")  << int(QPrinter::NativeFormat) << -1 << 200.0 << 300.0 << true  << 20.0 << 30.0 << 40.0 << 50.0;
-    QTest::newRow("Native Landscape")         << int(QPrinter::NativeFormat) << -1 << 300.0 << 200.0 << false <<  0.0 <<  0.0 <<  0.0 <<  0.0;
-    QTest::newRow("Native Landscape Margins") << int(QPrinter::NativeFormat) << -1 << 300.0 << 200.0 << true  << 20.0 << 30.0 << 40.0 << 50.0;
+    BOBUIest::newRow("PDF Portrait")             << int(QPrinter::PdfFormat)    << -1 << 200.0 << 300.0 << false <<  0.0 <<  0.0 <<  0.0 <<  0.0;
+    BOBUIest::newRow("PDF Portrait Margins")     << int(QPrinter::PdfFormat)    << -1 << 200.0 << 300.0 << true  << 20.0 << 30.0 << 40.0 << 50.0;
+    BOBUIest::newRow("PDF Landscape")            << int(QPrinter::PdfFormat)    << -1 << 300.0 << 200.0 << false <<  0.0 <<  0.0 <<  0.0 <<  0.0;
+    BOBUIest::newRow("PDF Landscape Margins")    << int(QPrinter::PdfFormat)    << -1 << 300.0 << 200.0 << true  << 20.0 << 30.0 << 40.0 << 50.0;
+    BOBUIest::newRow("Native Portrait")          << int(QPrinter::NativeFormat) << -1 << 200.0 << 300.0 << false <<  0.0 <<  0.0 <<  0.0 <<  0.0;
+    BOBUIest::newRow("Native Portrait Margins")  << int(QPrinter::NativeFormat) << -1 << 200.0 << 300.0 << true  << 20.0 << 30.0 << 40.0 << 50.0;
+    BOBUIest::newRow("Native Landscape")         << int(QPrinter::NativeFormat) << -1 << 300.0 << 200.0 << false <<  0.0 <<  0.0 <<  0.0 <<  0.0;
+    BOBUIest::newRow("Native Landscape Margins") << int(QPrinter::NativeFormat) << -1 << 300.0 << 200.0 << true  << 20.0 << 30.0 << 40.0 << 50.0;
 }
 
 void tst_QPrinter::testPageMetrics()
@@ -1745,7 +1745,7 @@ void tst_QPrinter::reusePageMetrics()
     QCOMPARE(defaultP.pageLayout().pageSize().sizePoints(), unavailableSizeToSet.sizePoints());
 }
 
-#endif // QT_CONFIG(printer)
+#endif // BOBUI_CONFIG(printer)
 
-QTEST_MAIN(tst_QPrinter)
+BOBUIEST_MAIN(tst_QPrinter)
 #include "tst_qprinter.moc"

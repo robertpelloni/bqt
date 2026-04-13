@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2015 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author David Faure <david.faure@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include <qplatformdefs.h> // always first
 
@@ -14,20 +14,20 @@
 #include <private/qduplicatetracker_p.h>
 #include <private/qfilesystementry_p.h>
 
-#include <QtCore/QFile>
-#include <QtCore/QFileInfo>
-#include <QtCore/QStandardPaths>
-#include <QtCore/QBuffer>
-#include <QtCore/QUrl>
-#include <QtCore/QDebug>
+#include <BobUICore/QFile>
+#include <BobUICore/QFileInfo>
+#include <BobUICore/QStandardPaths>
+#include <BobUICore/QBuffer>
+#include <BobUICore/QUrl>
+#include <BobUICore/QDebug>
 
 #include <algorithm>
 #include <functional>
 #include <stack>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static QString directoryMimeType()
 {
@@ -55,7 +55,7 @@ QMimeDatabasePrivate::~QMimeDatabasePrivate()
 }
 
 Q_CONSTINIT
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 Q_CORE_EXPORT
 #else
 static const
@@ -75,12 +75,12 @@ static QStringList locateMimeDirectories()
     QStringList dirs =
             QStandardPaths::locateAll(QStandardPaths::GenericDataLocation, QStringLiteral("mime"),
                                       QStandardPaths::LocateDirectory);
-    dirs.append(u":/qt-project.org/qmime"_s);
+    dirs.append(u":/bobui-project.org/qmime"_s);
     return dirs;
 }
 
 #if defined(Q_OS_UNIX) && !defined(Q_OS_INTEGRITY)
-#  define QT_USE_MMAP
+#  define BOBUI_USE_MMAP
 #endif
 
 void QMimeDatabasePrivate::loadProviders()
@@ -108,8 +108,8 @@ void QMimeDatabasePrivate::loadProviders()
         const auto it = std::find_if(currentProviders.begin(), currentProviders.end(), predicate);
         if (it == currentProviders.end()) {
             std::unique_ptr<QMimeProviderBase> provider;
-#if defined(QT_USE_MMAP)
-            if (qEnvironmentVariableIsEmpty("QT_NO_MIME_CACHE") && QFileInfo::exists(cacheFile)) {
+#if defined(BOBUI_USE_MMAP)
+            if (qEnvironmentVariableIsEmpty("BOBUI_NO_MIME_CACHE") && QFileInfo::exists(cacheFile)) {
                 provider.reset(new QMimeBinaryProvider(this, mimeDir));
                 //qDebug() << "Created binary provider for" << mimeDir;
                 if (!provider->isValid()) {
@@ -158,7 +158,7 @@ void QMimeDatabasePrivate::loadProviders()
 
 const QMimeDatabasePrivate::Providers &QMimeDatabasePrivate::providers()
 {
-#if QT_CONFIG(thread) // stub implementation always returns true
+#if BOBUI_CONFIG(thread) // stub implementation always returns true
     Q_ASSERT(!mutex.tryLock()); // caller should have locked mutex
 #endif
     if (m_providers.empty()) {
@@ -289,7 +289,7 @@ QStringList QMimeDatabasePrivate::mimeParents(const QString &mimeName)
 
 QStringList QMimeDatabasePrivate::parents(const QString &mimeName)
 {
-#if QT_CONFIG(thread) // stub implementation always returns true
+#if BOBUI_CONFIG(thread) // stub implementation always returns true
     Q_ASSERT(!mutex.tryLock());
 #endif
     QStringList result;
@@ -467,8 +467,8 @@ QMimeType QMimeDatabasePrivate::mimeTypeForFile(const QString &fileName,
         // If this is a local file, we'll want to do a stat() ourselves so we can
         // detect additional inode types. In addition we want to follow symlinks.
         const QByteArray nativeFilePath = QFile::encodeName(fileName);
-        QT_STATBUF statBuffer;
-        if (QT_STAT(nativeFilePath.constData(), &statBuffer) == 0) {
+        BOBUI_STATBUF statBuffer;
+        if (BOBUI_STAT(nativeFilePath.constData(), &statBuffer) == 0) {
             if (S_ISDIR(statBuffer.st_mode))
                 return mimeTypeForName(directoryMimeType());
             if (S_ISCHR(statBuffer.st_mode))
@@ -530,14 +530,14 @@ bool QMimeDatabasePrivate::inherits(const QString &mime, const QString &parent)
 
 /*!
     \class QMimeDatabase
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QMimeDatabase class maintains a database of MIME types.
 
     \since 5.0
 
     The MIME type database is provided by the freedesktop.org shared-mime-info
     project. If the MIME type database cannot be found on the system, as is the case
-    on most Windows, \macos, and iOS systems, Qt will use its own copy of it.
+    on most Windows, \macos, and iOS systems, BobUI will use its own copy of it.
 
     Applications which want to define custom MIME types need to install an
     XML file into the locations searched for MIME definitions.
@@ -829,4 +829,4 @@ QList<QMimeType> QMimeDatabase::allMimeTypes() const
     \value MatchContent The file content is used to look for a match
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

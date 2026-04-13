@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "tst_bench_qhash.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-size_t qHash(const Qt4String &str, size_t /* never used */)
+size_t qHash(const BobUI4String &str, size_t /* never used */)
 {
     qsizetype n = str.size();
     const QChar *p = str.unicode();
@@ -19,7 +19,7 @@ size_t qHash(const Qt4String &str, size_t /* never used */)
     return h;
 }
 
-size_t qHash(const Qt50String &key, size_t seed)
+size_t qHash(const BobUI50String &key, size_t seed)
 {
     const QChar *p = key.unicode();
     qsizetype len = key.size();
@@ -53,4 +53,4 @@ size_t qHash(const JavaString &str, size_t /* never used */)
     return h;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

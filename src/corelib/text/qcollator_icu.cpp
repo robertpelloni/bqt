@@ -1,7 +1,7 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2013 Aleix Pol Gonzalez <aleixpol@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qcollator_p.h"
 #include "qlocale_p.h"
@@ -15,7 +15,7 @@
 
 #include "qdebug.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 void QCollatorPrivate::init()
 {
@@ -43,7 +43,7 @@ void QCollatorPrivate::init()
     // and does case sensitive comparison.
     // UCOL_QUATERNARY is used as default in a few languages such as Japanese to take care of some
     // additional differences in those languages.
-    UColAttributeValue val = (caseSensitivity == Qt::CaseSensitive)
+    UColAttributeValue val = (caseSensitivity == BobUI::CaseSensitive)
         ? UCOL_DEFAULT_STRENGTH : UCOL_SECONDARY;
 
     status = U_ZERO_ERROR;
@@ -82,13 +82,13 @@ int QCollator::compare(QStringView s1, QStringView s2) const
     d->ensureInitialized();
 
     if (d->collator) {
-        // truncating sizes (QTBUG-105038)
+        // truncating sizes (BOBUIBUG-105038)
         return ucol_strcoll(d->collator,
                             reinterpret_cast<const UChar *>(s1.data()), s1.size(),
                             reinterpret_cast<const UChar *>(s2.data()), s2.size());
     }
 
-    return QtPrivate::compareStrings(s1, s2, d->caseSensitivity);
+    return BobUIPrivate::compareStrings(s1, s2, d->caseSensitivity);
 }
 
 QCollatorSortKey QCollator::sortKey(const QString &string) const
@@ -99,8 +99,8 @@ QCollatorSortKey QCollator::sortKey(const QString &string) const
         return QCollatorSortKey(new QCollatorSortKeyPrivate(string.toUtf8()));
 
     if (d->collator) {
-        QByteArray result(16 + string.size() + (string.size() >> 2), Qt::Uninitialized);
-        // truncating sizes (QTBUG-105038)
+        QByteArray result(16 + string.size() + (string.size() >> 2), BobUI::Uninitialized);
+        // truncating sizes (BOBUIBUG-105038)
         int size = ucol_getSortKey(d->collator, (const UChar *)string.constData(),
                                    string.size(), (uint8_t *)result.data(), result.size());
         if (size > result.size()) {
@@ -120,4 +120,4 @@ int QCollatorSortKey::compare(const QCollatorSortKey &otherKey) const
     return qstrcmp(d->m_key, otherKey.d->m_key);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

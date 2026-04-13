@@ -1,18 +1,18 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:trusted-data-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:trusted-data-only
 
 #include "qsettings.h"
-#ifndef QT_NO_SETTINGS
+#ifndef BOBUI_NO_SETTINGS
 
 #include "qsettings_p.h"
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 #include "qcoreapplication.h"
 #include <QFile>
-#endif // QT_NO_QOBJECT
+#endif // BOBUI_NO_QOBJECT
 #include <QDebug>
-#include <QtCore/private/qstdweb_p.h>
-#include <QtCore/private/qwasmglobal_p.h>
+#include <BobUICore/private/qstdweb_p.h>
+#include <BobUICore/private/qwasmglobal_p.h>
 
 #include <QFileInfo>
 #include <QDir>
@@ -24,10 +24,10 @@
 #  include <emscripten/threading.h>
 #  include <emscripten/val.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using emscripten::val;
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 namespace {
 QStringView keyNameFromPrefixedStorageName(QStringView prefix, QStringView prefixedStorageName)
@@ -75,7 +75,7 @@ QWasmLocalStorageSettingsPrivate::QWasmLocalStorageSettingsPrivate(QSettings::Sc
         return;
     }
 
-    // The key prefix contians "qt" to separate Qt keys from other keys on localStorage, a
+    // The key prefix contians "bobui" to separate BobUI keys from other keys on localStorage, a
     // version tag to allow for making changes to the key format in the future, the org
     // and app names.
     //
@@ -85,7 +85,7 @@ QWasmLocalStorageSettingsPrivate::QWasmLocalStorageSettingsPrivate(QSettings::Sc
     // to the key prefix to differentiate, even if that leads to keys with redundant sections
     // for the common case of a single org and app name.
     //
-    // Also, the common Qt mechanism for user/system scope and all-application settings are
+    // Also, the common BobUI mechanism for user/system scope and all-application settings are
     // implemented, using different prefixes.
     const QString allAppsSetting = QStringLiteral("all-apps");
     const QString systemSetting = QStringLiteral("sys-tem");
@@ -94,7 +94,7 @@ QWasmLocalStorageSettingsPrivate::QWasmLocalStorageSettingsPrivate(QSettings::Sc
     const QLatin1String doubleSeparator("--");
     const QString escapedOrganization = QString(organization).replace(separator, doubleSeparator);
     const QString escapedApplication = QString(application).replace(separator, doubleSeparator);
-    const QString prefix = "qt-v0-" + escapedOrganization + separator;
+    const QString prefix = "bobui-v0-" + escapedOrganization + separator;
     if (scope == QSettings::Scope::UserScope) {
         if (!escapedApplication.isEmpty())
             m_keyPrefixes.push_back(prefix + escapedApplication + separator);
@@ -164,7 +164,7 @@ QStringList QWasmLocalStorageSettingsPrivate::children(const QString &prefix, Ch
 {
     return qwasmglobal::runTaskOnMainThread<QStringList>([this, &prefix, &spec]() -> QStringList {
         QSet<QString> nodes;
-        // Loop through all keys on window.localStorage, return Qt keys belonging to
+        // Loop through all keys on window.localStorage, return BobUI keys belonging to
         // this application, with the correct prefix, and according to ChildSpec.
         QStringList children;
         const int length = val::global("window")["localStorage"]["length"].as<int>();
@@ -195,7 +195,7 @@ QStringList QWasmLocalStorageSettingsPrivate::children(const QString &prefix, Ch
 void QWasmLocalStorageSettingsPrivate::clear()
 {
     qwasmglobal::runTaskOnMainThread<void>([this]() {
-        // Get all Qt keys from window.localStorage
+        // Get all BobUI keys from window.localStorage
         const int length = val::global("window")["localStorage"]["length"].as<int>();
         QStringList keys;
         keys.reserve(length);
@@ -203,7 +203,7 @@ void QWasmLocalStorageSettingsPrivate::clear()
             keys.append(QString::fromStdString(
                     (val::global("window")["localStorage"].call<val>("key", i).as<std::string>())));
 
-        // Remove all Qt keys. Note that localStorage does not guarantee a stable
+        // Remove all BobUI keys. Note that localStorage does not guarantee a stable
         // iteration order when the storage is mutated, which is why removal is done
         // in a second step after getting all keys.
         for (const QString &key : keys) {
@@ -401,5 +401,5 @@ QSettingsPrivate *QSettingsPrivate::create(QSettings::Format format, QSettings::
     }
 }
 
-QT_END_NAMESPACE
-#endif // QT_NO_SETTINGS
+BOBUI_END_NAMESPACE
+#endif // BOBUI_NO_SETTINGS

@@ -39,7 +39,7 @@ mouse and touch events:
 
 If the input device cannot be accessed, set up a udev rule.
 For example:
-  sudo cp 70-qtouchscreen.rules /etc/udev/rules.d
+  sudo cp 70-bobuiouchscreen.rules /etc/udev/rules.d
   sudo udevadm trigger --subsystem-match=input
 The sample udev rule matches any touchpad or touchscreen device.
 If there are multiple ones, specify the device manually as described above.

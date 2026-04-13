@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qregion.h"
 #include "qpainterpath.h"
@@ -10,22 +10,22 @@
 #include "qvarlengtharray.h"
 #include "qimage.h"
 #include "qbitmap.h"
-#include "qtransform.h"
+#include "bobuiransform.h"
 
 #include <memory>
 #include <private/qdebug_p.h>
 
 #ifdef Q_OS_WIN
-#  include <qt_windows.h>
+#  include <bobui_windows.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QRegion
     \brief The QRegion class specifies a clip region for a painter.
 
-    \inmodule QtGui
+    \inmodule BobUIGui
     \ingroup painting
     \ingroup shared
 
@@ -107,13 +107,13 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn QRegion::QRegion(const QPolygon &a, Qt::FillRule fillRule)
+    \fn QRegion::QRegion(const QPolygon &a, BobUI::FillRule fillRule)
 
     Constructs a polygon region from the point array \a a with the fill rule
     specified by \a fillRule.
 
-    If \a fillRule is \l{Qt::WindingFill}, the polygon region is defined
-    using the winding algorithm; if it is \l{Qt::OddEvenFill}, the odd-even fill
+    If \a fillRule is \l{BobUI::WindingFill}, the polygon region is defined
+    using the winding algorithm; if it is \l{BobUI::OddEvenFill}, the odd-even fill
     algorithm is used.
 
     \warning This constructor can be used to create complex regions that will
@@ -142,7 +142,7 @@ QT_BEGIN_NAMESPACE
     Constructs a region from the bitmap \a bm.
 
     The resulting region consists of the pixels in bitmap \a bm that
-    are Qt::color1, as if each pixel was a 1 by 1 rectangle.
+    are BobUI::color1, as if each pixel was a 1 by 1 rectangle.
 
     This constructor may create complex regions that will slow down
     painting when used. Note that drawing masked pixmaps can be done
@@ -190,7 +190,7 @@ void QRegion::detach()
 #define QRGN_RECTS            10
 
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 
 /*
     Executes region commands in the internal buffer and rebuilds the
@@ -209,7 +209,7 @@ void QRegion::exec(const QByteArray &buffer, int ver, QDataStream::ByteOrder byt
         s.setVersion(ver);
     s.setByteOrder(byteOrder);
     QRegion rgn;
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     int test_cnt = 0;
 #endif
     while (!s.atEnd()) {
@@ -221,7 +221,7 @@ void QRegion::exec(const QByteArray &buffer, int ver, QDataStream::ByteOrder byt
         } else {
             s >> id;
         }
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
         if (test_cnt > 0 && id != QRGN_TRANSLATE)
             qWarning("QRegion::exec: Internal error");
         test_cnt++;
@@ -233,7 +233,7 @@ void QRegion::exec(const QByteArray &buffer, int ver, QDataStream::ByteOrder byt
         } else if (id == QRGN_SETPTARRAY_ALT || id == QRGN_SETPTARRAY_WIND) {
             QPolygon a;
             s >> a;
-            rgn = QRegion(a, id == QRGN_SETPTARRAY_WIND ? Qt::WindingFill : Qt::OddEvenFill);
+            rgn = QRegion(a, id == QRGN_SETPTARRAY_WIND ? BobUI::WindingFill : BobUI::OddEvenFill);
         } else if (id == QRGN_TRANSLATE) {
             QPoint p;
             s >> p;
@@ -261,7 +261,7 @@ void QRegion::exec(const QByteArray &buffer, int ver, QDataStream::ByteOrder byt
                     break;
             }
         } else if (id == QRGN_RECTS) {
-            // (This is the only form used in Qt 2.0)
+            // (This is the only form used in BobUI 2.0)
             quint32 n;
             s >> n;
             QRect r;
@@ -305,7 +305,7 @@ void QRegion::exec(const QByteArray &buffer, int ver, QDataStream::ByteOrder byt
     Writes the region \a r to the stream \a s and returns a reference
     to the stream.
 
-    \sa{Serializing Qt Data Types}{Format of the QDataStream operators}
+    \sa{Serializing BobUI Data Types}{Format of the QDataStream operators}
 */
 
 QDataStream &operator<<(QDataStream &s, const QRegion &r)
@@ -339,7 +339,7 @@ QDataStream &operator<<(QDataStream &s, const QRegion &r)
     Reads a region from the stream \a s into \a r and returns a
     reference to the stream.
 
-    \sa{Serializing Qt Data Types}{Format of the QDataStream operators}
+    \sa{Serializing BobUI Data Types}{Format of the QDataStream operators}
 */
 
 QDataStream &operator>>(QDataStream &s, QRegion &r)
@@ -349,9 +349,9 @@ QDataStream &operator>>(QDataStream &s, QRegion &r)
     r.exec(b, s.version(), s.byteOrder());
     return s;
 }
-#endif //QT_NO_DATASTREAM
+#endif //BOBUI_NO_DATASTREAM
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug s, const QRegion &r)
 {
     QDebugStateSaver saver(s);
@@ -365,7 +365,7 @@ QDebug operator<<(QDebug s, const QRegion &r)
         const int count = r.rectCount();
         if (count > 1)
             s << "size=" << count << ", bounds=(";
-        QtDebugUtils::formatQRect(s, r.boundingRect());
+        BobUIDebugUtils::formatQRect(s, r.boundingRect());
         if (count > 1) {
             s << ") - [";
             bool first = true;
@@ -373,7 +373,7 @@ QDebug operator<<(QDebug s, const QRegion &r)
                 if (!first)
                     s << ", ";
                 s << '(';
-                QtDebugUtils::formatQRect(s, rect);
+                BobUIDebugUtils::formatQRect(s, rect);
                 s << ')';
                 first = false;
             }
@@ -888,7 +888,7 @@ QRegion QRegion::intersect(const QRect &r) const
        sort key and X as the minor sort key.
     \endlist
     \omit
-    Only some platforms have these restrictions (Qt for Embedded Linux, X11 and \macos).
+    Only some platforms have these restrictions (BobUI for Embedded Linux, X11 and \macos).
     \endomit
 
     \note For historical reasons, \c{rects.size()} must be less than \c{INT_MAX}
@@ -1003,11 +1003,11 @@ void addSegmentsToPath(Segment *segment, QPainterPath &path)
 // reference each other by address. For the same reason, they aren't even copyable,
 // but the code works with the compiler-generated (wrong) copy and move special
 // members, so use this as an optimization. The only container these are used in
-// (a QVarLengthArray in qt_regionToPath()) is resized once up-front, so doesn't
+// (a QVarLengthArray in bobui_regionToPath()) is resized once up-front, so doesn't
 // have a problem with this, but benefits from not having to run Segment ctors:
 Q_DECLARE_TYPEINFO(Segment, Q_PRIMITIVE_TYPE);
 
-Q_GUI_EXPORT QPainterPath qt_regionToPath(const QRegion &region)
+Q_GUI_EXPORT QPainterPath bobui_regionToPath(const QRegion &region)
 {
     QPainterPath result;
     if (region.rectCount() == 1) {
@@ -1063,7 +1063,7 @@ Q_GUI_EXPORT QPainterPath qt_regionToPath(const QRegion &region)
     return result;
 }
 
-//#define QT_REGION_DEBUG
+//#define BOBUI_REGION_DEBUG
 /*
  *   clip region
  */
@@ -1149,7 +1149,7 @@ struct QRegionPrivate {
                                const QRect *nextToBottom,
                                const QRect *nextToTop);
 
-#ifdef QT_REGION_DEBUG
+#ifdef BOBUI_REGION_DEBUG
     void selfTest() const;
 #endif
 };
@@ -1229,7 +1229,7 @@ bool QRegionPrivate::mergeFromAbove(QRect *bottom, const QRect *top,
     return false;
 }
 
-static inline QRect qt_rect_intersect_normalized(const QRect &r1,
+static inline QRect bobui_rect_intersect_normalized(const QRect &r1,
                                                  const QRect &r2)
 {
     QRect r;
@@ -1245,7 +1245,7 @@ void QRegionPrivate::intersect(const QRect &rect)
     Q_ASSERT(extents.intersects(rect));
     Q_ASSERT(numRects > 1);
 
-#ifdef QT_REGION_DEBUG
+#ifdef BOBUI_REGION_DEBUG
     selfTest();
 #endif
 
@@ -1259,7 +1259,7 @@ void QRegionPrivate::intersect(const QRect &rect)
     int n = numRects;
     numRects = 0;
     while (n--) {
-        *dest = qt_rect_intersect_normalized(*src++, r);
+        *dest = bobui_rect_intersect_normalized(*src++, r);
         if (dest->isEmpty())
             continue;
 
@@ -1288,7 +1288,7 @@ void QRegionPrivate::intersect(const QRect &rect)
         ++dest;
         ++numRects;
     }
-#ifdef QT_REGION_DEBUG
+#ifdef BOBUI_REGION_DEBUG
     selfTest();
 #endif
 }
@@ -1319,7 +1319,7 @@ void QRegionPrivate::append(const QRect *r)
                       qMax(extents.right(), r->right()),
                       qMax(extents.bottom(), r->bottom()));
 
-#ifdef QT_REGION_DEBUG
+#ifdef BOBUI_REGION_DEBUG
     selfTest();
 #endif
 }
@@ -1392,7 +1392,7 @@ void QRegionPrivate::append(const QRegionPrivate *r)
                       qMax(destRect->right(), srcRect->right()),
                       qMax(destRect->bottom(), srcRect->bottom()));
 
-#ifdef QT_REGION_DEBUG
+#ifdef BOBUI_REGION_DEBUG
     selfTest();
 #endif
 }
@@ -1465,7 +1465,7 @@ void QRegionPrivate::prepend(const QRegionPrivate *r)
                       qMax(extents.right(), r->extents.right()),
                       qMax(extents.bottom(), r->extents.bottom()));
 
-#ifdef QT_REGION_DEBUG
+#ifdef BOBUI_REGION_DEBUG
     selfTest();
 #endif
 }
@@ -1497,7 +1497,7 @@ void QRegionPrivate::prepend(const QRect *r)
                       qMax(extents.right(), r->right()),
                       qMax(extents.bottom(), r->bottom()));
 
-#ifdef QT_REGION_DEBUG
+#ifdef BOBUI_REGION_DEBUG
     selfTest();
 #endif
 }
@@ -1546,7 +1546,7 @@ bool QRegionPrivate::canPrepend(const QRegionPrivate *r) const
     return canPrepend(r->numRects == 1 ? &r->extents : r->rects.constData() + r->numRects - 1);
 }
 
-#ifdef QT_REGION_DEBUG
+#ifdef BOBUI_REGION_DEBUG
 void QRegionPrivate::selfTest() const
 {
     if (numRects == 0) {
@@ -1582,7 +1582,7 @@ void QRegionPrivate::selfTest() const
         r = r2;
     }
 }
-#endif // QT_REGION_DEBUG
+#endif // BOBUI_REGION_DEBUG
 
 Q_CONSTINIT static QRegionPrivate qrp;
 Q_CONSTINIT const QRegion::QRegionData QRegion::shared_empty = {Q_REFCOUNT_INITIALIZE_STATIC, &qrp};
@@ -1657,9 +1657,9 @@ SOFTWARE.
 #ifndef _XREGION_H
 #define _XREGION_H
 
-QT_BEGIN_INCLUDE_NAMESPACE
+BOBUI_BEGIN_INCLUDE_NAMESPACE
 #include <limits.h>
-QT_END_INCLUDE_NAMESPACE
+BOBUI_END_INCLUDE_NAMESPACE
 
 /*  1 if two BOXes overlap.
  *  0 if two BOXes do not overlap.
@@ -3581,7 +3581,7 @@ static QRegionPrivate *PolygonRegion(const QPoint *Pts, int Count, int rule)
     // sanity check that the region won't become too big...
     if (ET.ymax - ET.ymin > 100000) {
         // clean up region ptr
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
         qWarning("QRegion: creating region from big polygon failed...!");
 #endif
         delete AET;
@@ -3590,7 +3590,7 @@ static QRegionPrivate *PolygonRegion(const QPoint *Pts, int Count, int rule)
     }
 
 
-    QT_TRY {
+    BOBUI_TRY {
         if (rule == EvenOddRule) {
             /*
              *  for each scanline
@@ -3693,7 +3693,7 @@ static QRegionPrivate *PolygonRegion(const QPoint *Pts, int Count, int rule)
                 }
             }
         }
-    } QT_CATCH(...) {
+    } BOBUI_CATCH(...) {
         FreeStorage(SLLBlock.next);
         PtsToRegion(numFullPtBlocks, iPts, &FirstPtBlock, region);
         for (curPtBlock = FirstPtBlock.next; --numFullPtBlocks >= 0;) {
@@ -3718,7 +3718,7 @@ static QRegionPrivate *PolygonRegion(const QPoint *Pts, int Count, int rule)
 }
 // END OF PolyReg.c extract
 
-QRegionPrivate *qt_bitmapToRegion(const QBitmap& bitmap)
+QRegionPrivate *bobui_bitmapToRegion(const QBitmap& bitmap)
 {
     const QImage image = bitmap.toImage();
 
@@ -3805,24 +3805,24 @@ QRegion::QRegion(const QRect &r, RegionType t)
     } else {
         d = new QRegionData;
         if (t == Rectangle) {
-            d->qt_rgn = new QRegionPrivate(r);
+            d->bobui_rgn = new QRegionPrivate(r);
         } else if (t == Ellipse) {
             QPainterPath path;
             path.addEllipse(r.x(), r.y(), r.width(), r.height());
             QPolygon a = path.toSubpathPolygons().at(0).toPolygon();
-            d->qt_rgn = PolygonRegion(a.constData(), a.size(), EvenOddRule);
+            d->bobui_rgn = PolygonRegion(a.constData(), a.size(), EvenOddRule);
         }
     }
 }
 
-QRegion::QRegion(const QPolygon &a, Qt::FillRule fillRule)
+QRegion::QRegion(const QPolygon &a, BobUI::FillRule fillRule)
 {
     if (a.size() > 2) {
-        QRegionPrivate *qt_rgn = PolygonRegion(a.constData(), a.size(),
-                                               fillRule == Qt::WindingFill ? WindingRule : EvenOddRule);
-        if (qt_rgn) {
+        QRegionPrivate *bobui_rgn = PolygonRegion(a.constData(), a.size(),
+                                               fillRule == BobUI::WindingFill ? WindingRule : EvenOddRule);
+        if (bobui_rgn) {
             d =  new QRegionData;
-            d->qt_rgn = qt_rgn;
+            d->bobui_rgn = bobui_rgn;
         } else {
             d = const_cast<QRegionData*>(&shared_empty);
         }
@@ -3844,13 +3844,13 @@ QRegion::QRegion(const QBitmap &bm)
         d = const_cast<QRegionData*>(&shared_empty);
     } else {
         d = new QRegionData;
-        d->qt_rgn = qt_bitmapToRegion(bm);
+        d->bobui_rgn = bobui_bitmapToRegion(bm);
     }
 }
 
 void QRegion::cleanUp(QRegion::QRegionData *x)
 {
-    delete x->qt_rgn;
+    delete x->bobui_rgn;
     delete x;
 }
 
@@ -3879,10 +3879,10 @@ QRegion QRegion::copy() const
     QRegion r;
     auto x = std::make_unique<QRegionData>();
     x->ref.initializeOwned();
-    if (d->qt_rgn)
-        x->qt_rgn = new QRegionPrivate(*d->qt_rgn);
+    if (d->bobui_rgn)
+        x->bobui_rgn = new QRegionPrivate(*d->bobui_rgn);
     else
-        x->qt_rgn = new QRegionPrivate;
+        x->bobui_rgn = new QRegionPrivate;
     if (!r.d->ref.deref())
         cleanUp(r.d);
     r.d = x.release();
@@ -3891,192 +3891,192 @@ QRegion QRegion::copy() const
 
 bool QRegion::isEmpty() const
 {
-    return d == &shared_empty || d->qt_rgn->numRects == 0;
+    return d == &shared_empty || d->bobui_rgn->numRects == 0;
 }
 
 bool QRegion::isNull() const
 {
-    return d == &shared_empty || d->qt_rgn->numRects == 0;
+    return d == &shared_empty || d->bobui_rgn->numRects == 0;
 }
 
 bool QRegion::contains(const QPoint &p) const
 {
-    return PointInRegion(d->qt_rgn, p.x(), p.y());
+    return PointInRegion(d->bobui_rgn, p.x(), p.y());
 }
 
 bool QRegion::contains(const QRect &r) const
 {
-    return RectInRegion(d->qt_rgn, r.left(), r.top(), r.width(), r.height()) != RectangleOut;
+    return RectInRegion(d->bobui_rgn, r.left(), r.top(), r.width(), r.height()) != RectangleOut;
 }
 
 
 
 void QRegion::translate(int dx, int dy)
 {
-    if ((dx == 0 && dy == 0) || isEmptyHelper(d->qt_rgn))
+    if ((dx == 0 && dy == 0) || isEmptyHelper(d->bobui_rgn))
         return;
 
     detach();
-    OffsetRegion(*d->qt_rgn, dx, dy);
+    OffsetRegion(*d->bobui_rgn, dx, dy);
 }
 
 QRegion QRegion::united(const QRegion &r) const
 {
-    if (isEmptyHelper(d->qt_rgn))
+    if (isEmptyHelper(d->bobui_rgn))
         return r;
-    if (isEmptyHelper(r.d->qt_rgn))
+    if (isEmptyHelper(r.d->bobui_rgn))
         return *this;
     if (d == r.d)
         return *this;
 
-    if (d->qt_rgn->contains(*r.d->qt_rgn)) {
+    if (d->bobui_rgn->contains(*r.d->bobui_rgn)) {
         return *this;
-    } else if (r.d->qt_rgn->contains(*d->qt_rgn)) {
+    } else if (r.d->bobui_rgn->contains(*d->bobui_rgn)) {
         return r;
-    } else if (d->qt_rgn->canAppend(r.d->qt_rgn)) {
+    } else if (d->bobui_rgn->canAppend(r.d->bobui_rgn)) {
         QRegion result(*this);
         result.detach();
-        result.d->qt_rgn->append(r.d->qt_rgn);
+        result.d->bobui_rgn->append(r.d->bobui_rgn);
         return result;
-    } else if (d->qt_rgn->canPrepend(r.d->qt_rgn)) {
+    } else if (d->bobui_rgn->canPrepend(r.d->bobui_rgn)) {
         QRegion result(*this);
         result.detach();
-        result.d->qt_rgn->prepend(r.d->qt_rgn);
+        result.d->bobui_rgn->prepend(r.d->bobui_rgn);
         return result;
-    } else if (EqualRegion(d->qt_rgn, r.d->qt_rgn)) {
+    } else if (EqualRegion(d->bobui_rgn, r.d->bobui_rgn)) {
         return *this;
     } else {
         QRegion result;
         result.detach();
-        UnionRegion(d->qt_rgn, r.d->qt_rgn, *result.d->qt_rgn);
+        UnionRegion(d->bobui_rgn, r.d->bobui_rgn, *result.d->bobui_rgn);
         return result;
     }
 }
 
 QRegion& QRegion::operator+=(const QRegion &r)
 {
-    if (isEmptyHelper(d->qt_rgn))
+    if (isEmptyHelper(d->bobui_rgn))
         return *this = r;
-    if (isEmptyHelper(r.d->qt_rgn))
+    if (isEmptyHelper(r.d->bobui_rgn))
         return *this;
     if (d == r.d)
         return *this;
 
-    if (d->qt_rgn->contains(*r.d->qt_rgn)) {
+    if (d->bobui_rgn->contains(*r.d->bobui_rgn)) {
         return *this;
-    } else if (r.d->qt_rgn->contains(*d->qt_rgn)) {
+    } else if (r.d->bobui_rgn->contains(*d->bobui_rgn)) {
         return *this = r;
-    } else if (d->qt_rgn->canAppend(r.d->qt_rgn)) {
+    } else if (d->bobui_rgn->canAppend(r.d->bobui_rgn)) {
         detach();
-        d->qt_rgn->append(r.d->qt_rgn);
+        d->bobui_rgn->append(r.d->bobui_rgn);
         return *this;
-    } else if (d->qt_rgn->canPrepend(r.d->qt_rgn)) {
+    } else if (d->bobui_rgn->canPrepend(r.d->bobui_rgn)) {
         detach();
-        d->qt_rgn->prepend(r.d->qt_rgn);
+        d->bobui_rgn->prepend(r.d->bobui_rgn);
         return *this;
-    } else if (EqualRegion(d->qt_rgn, r.d->qt_rgn)) {
+    } else if (EqualRegion(d->bobui_rgn, r.d->bobui_rgn)) {
         return *this;
     } else {
         detach();
-        UnionRegion(d->qt_rgn, r.d->qt_rgn, *d->qt_rgn);
+        UnionRegion(d->bobui_rgn, r.d->bobui_rgn, *d->bobui_rgn);
         return *this;
     }
 }
 
 QRegion QRegion::united(const QRect &r) const
 {
-    if (isEmptyHelper(d->qt_rgn))
+    if (isEmptyHelper(d->bobui_rgn))
         return r;
     if (r.isEmpty())
         return *this;
 
-    if (d->qt_rgn->contains(r)) {
+    if (d->bobui_rgn->contains(r)) {
         return *this;
-    } else if (d->qt_rgn->within(r)) {
+    } else if (d->bobui_rgn->within(r)) {
         return r;
-    } else if (d->qt_rgn->numRects == 1 && d->qt_rgn->extents == r) {
+    } else if (d->bobui_rgn->numRects == 1 && d->bobui_rgn->extents == r) {
         return *this;
-    } else if (d->qt_rgn->canAppend(&r)) {
+    } else if (d->bobui_rgn->canAppend(&r)) {
         QRegion result(*this);
         result.detach();
-        result.d->qt_rgn->append(&r);
+        result.d->bobui_rgn->append(&r);
         return result;
-    } else if (d->qt_rgn->canPrepend(&r)) {
+    } else if (d->bobui_rgn->canPrepend(&r)) {
         QRegion result(*this);
         result.detach();
-        result.d->qt_rgn->prepend(&r);
+        result.d->bobui_rgn->prepend(&r);
         return result;
     } else {
         QRegion result;
         result.detach();
         QRegionPrivate rp(r);
-        UnionRegion(d->qt_rgn, &rp, *result.d->qt_rgn);
+        UnionRegion(d->bobui_rgn, &rp, *result.d->bobui_rgn);
         return result;
     }
 }
 
 QRegion& QRegion::operator+=(const QRect &r)
 {
-    if (isEmptyHelper(d->qt_rgn))
+    if (isEmptyHelper(d->bobui_rgn))
         return *this = r;
     if (r.isEmpty())
         return *this;
 
-    if (d->qt_rgn->contains(r)) {
+    if (d->bobui_rgn->contains(r)) {
         return *this;
-    } else if (d->qt_rgn->within(r)) {
+    } else if (d->bobui_rgn->within(r)) {
         return *this = r;
-    } else if (d->qt_rgn->canAppend(&r)) {
+    } else if (d->bobui_rgn->canAppend(&r)) {
         detach();
-        d->qt_rgn->append(&r);
+        d->bobui_rgn->append(&r);
         return *this;
-    } else if (d->qt_rgn->canPrepend(&r)) {
+    } else if (d->bobui_rgn->canPrepend(&r)) {
         detach();
-        d->qt_rgn->prepend(&r);
+        d->bobui_rgn->prepend(&r);
         return *this;
-    } else if (d->qt_rgn->numRects == 1 && d->qt_rgn->extents == r) {
+    } else if (d->bobui_rgn->numRects == 1 && d->bobui_rgn->extents == r) {
         return *this;
     } else {
         detach();
         QRegionPrivate p(r);
-        UnionRegion(d->qt_rgn, &p, *d->qt_rgn);
+        UnionRegion(d->bobui_rgn, &p, *d->bobui_rgn);
         return *this;
     }
 }
 
 QRegion QRegion::intersected(const QRegion &r) const
 {
-    if (isEmptyHelper(d->qt_rgn) || isEmptyHelper(r.d->qt_rgn)
-        || !EXTENTCHECK(&d->qt_rgn->extents, &r.d->qt_rgn->extents))
+    if (isEmptyHelper(d->bobui_rgn) || isEmptyHelper(r.d->bobui_rgn)
+        || !EXTENTCHECK(&d->bobui_rgn->extents, &r.d->bobui_rgn->extents))
         return QRegion();
 
     /* this is fully contained in r */
-    if (r.d->qt_rgn->contains(*d->qt_rgn))
+    if (r.d->bobui_rgn->contains(*d->bobui_rgn))
         return *this;
 
     /* r is fully contained in this */
-    if (d->qt_rgn->contains(*r.d->qt_rgn))
+    if (d->bobui_rgn->contains(*r.d->bobui_rgn))
         return r;
 
-    if (r.d->qt_rgn->numRects == 1 && d->qt_rgn->numRects == 1) {
-        const QRect rect = qt_rect_intersect_normalized(r.d->qt_rgn->extents,
-                                                        d->qt_rgn->extents);
+    if (r.d->bobui_rgn->numRects == 1 && d->bobui_rgn->numRects == 1) {
+        const QRect rect = bobui_rect_intersect_normalized(r.d->bobui_rgn->extents,
+                                                        d->bobui_rgn->extents);
         return QRegion(rect);
-    } else if (r.d->qt_rgn->numRects == 1) {
+    } else if (r.d->bobui_rgn->numRects == 1) {
         QRegion result(*this);
         result.detach();
-        result.d->qt_rgn->intersect(r.d->qt_rgn->extents);
+        result.d->bobui_rgn->intersect(r.d->bobui_rgn->extents);
         return result;
-    } else if (d->qt_rgn->numRects == 1) {
+    } else if (d->bobui_rgn->numRects == 1) {
         QRegion result(r);
         result.detach();
-        result.d->qt_rgn->intersect(d->qt_rgn->extents);
+        result.d->bobui_rgn->intersect(d->bobui_rgn->extents);
         return result;
     }
 
     QRegion result;
     result.detach();
-    miRegionOp(*result.d->qt_rgn, d->qt_rgn, r.d->qt_rgn, miIntersectO, nullptr, nullptr);
+    miRegionOp(*result.d->bobui_rgn, d->bobui_rgn, r.d->bobui_rgn, miIntersectO, nullptr, nullptr);
 
     /*
      * Can't alter dest's extents before we call miRegionOp because
@@ -4085,75 +4085,75 @@ QRegion QRegion::intersected(const QRegion &r) const
      * way there's no checking against rectangles that will be nuked
      * due to coalescing, so we have to examine fewer rectangles.
      */
-    miSetExtents(*result.d->qt_rgn);
+    miSetExtents(*result.d->bobui_rgn);
     return result;
 }
 
 QRegion QRegion::intersected(const QRect &r) const
 {
-    if (isEmptyHelper(d->qt_rgn) || r.isEmpty()
-        || !EXTENTCHECK(&d->qt_rgn->extents, &r))
+    if (isEmptyHelper(d->bobui_rgn) || r.isEmpty()
+        || !EXTENTCHECK(&d->bobui_rgn->extents, &r))
         return QRegion();
 
     /* this is fully contained in r */
-    if (d->qt_rgn->within(r))
+    if (d->bobui_rgn->within(r))
         return *this;
 
     /* r is fully contained in this */
-    if (d->qt_rgn->contains(r))
+    if (d->bobui_rgn->contains(r))
         return r;
 
-    if (d->qt_rgn->numRects == 1) {
-        const QRect rect = qt_rect_intersect_normalized(d->qt_rgn->extents,
+    if (d->bobui_rgn->numRects == 1) {
+        const QRect rect = bobui_rect_intersect_normalized(d->bobui_rgn->extents,
                                                         r.normalized());
         return QRegion(rect);
     }
 
     QRegion result(*this);
     result.detach();
-    result.d->qt_rgn->intersect(r);
+    result.d->bobui_rgn->intersect(r);
     return result;
 }
 
 QRegion QRegion::subtracted(const QRegion &r) const
 {
-    if (isEmptyHelper(d->qt_rgn) || isEmptyHelper(r.d->qt_rgn))
+    if (isEmptyHelper(d->bobui_rgn) || isEmptyHelper(r.d->bobui_rgn))
         return *this;
-    if (r.d->qt_rgn->contains(*d->qt_rgn))
+    if (r.d->bobui_rgn->contains(*d->bobui_rgn))
         return QRegion();
-    if (!EXTENTCHECK(&d->qt_rgn->extents, &r.d->qt_rgn->extents))
+    if (!EXTENTCHECK(&d->bobui_rgn->extents, &r.d->bobui_rgn->extents))
         return *this;
-    if (d == r.d || EqualRegion(d->qt_rgn, r.d->qt_rgn))
+    if (d == r.d || EqualRegion(d->bobui_rgn, r.d->bobui_rgn))
         return QRegion();
 
-#ifdef QT_REGION_DEBUG
-    d->qt_rgn->selfTest();
-    r.d->qt_rgn->selfTest();
+#ifdef BOBUI_REGION_DEBUG
+    d->bobui_rgn->selfTest();
+    r.d->bobui_rgn->selfTest();
 #endif
 
     QRegion result;
     result.detach();
-    SubtractRegion(d->qt_rgn, r.d->qt_rgn, *result.d->qt_rgn);
-#ifdef QT_REGION_DEBUG
-    result.d->qt_rgn->selfTest();
+    SubtractRegion(d->bobui_rgn, r.d->bobui_rgn, *result.d->bobui_rgn);
+#ifdef BOBUI_REGION_DEBUG
+    result.d->bobui_rgn->selfTest();
 #endif
     return result;
 }
 
 QRegion QRegion::xored(const QRegion &r) const
 {
-    if (isEmptyHelper(d->qt_rgn)) {
+    if (isEmptyHelper(d->bobui_rgn)) {
         return r;
-    } else if (isEmptyHelper(r.d->qt_rgn)) {
+    } else if (isEmptyHelper(r.d->bobui_rgn)) {
         return *this;
-    } else if (!EXTENTCHECK(&d->qt_rgn->extents, &r.d->qt_rgn->extents)) {
+    } else if (!EXTENTCHECK(&d->bobui_rgn->extents, &r.d->bobui_rgn->extents)) {
         return (*this + r);
-    } else if (d == r.d || EqualRegion(d->qt_rgn, r.d->qt_rgn)) {
+    } else if (d == r.d || EqualRegion(d->bobui_rgn, r.d->bobui_rgn)) {
         return QRegion();
     } else {
         QRegion result;
         result.detach();
-        XorRegion(d->qt_rgn, r.d->qt_rgn, *result.d->qt_rgn);
+        XorRegion(d->bobui_rgn, r.d->bobui_rgn, *result.d->bobui_rgn);
         return result;
     }
 }
@@ -4162,7 +4162,7 @@ QRect QRegion::boundingRect() const noexcept
 {
     if (isEmpty())
         return QRect();
-    return d->qt_rgn->extents;
+    return d->bobui_rgn->extents;
 }
 
 /*! \internal
@@ -4170,9 +4170,9 @@ QRect QRegion::boundingRect() const noexcept
     A false return value does not guarantee the opposite.
 */
 Q_GUI_EXPORT
-bool qt_region_strictContains(const QRegion &region, const QRect &rect)
+bool bobui_region_strictContains(const QRegion &region, const QRect &rect)
 {
-    if (isEmptyHelper(region.d->qt_rgn) || !rect.isValid())
+    if (isEmptyHelper(region.d->bobui_rgn) || !rect.isValid())
         return false;
 
 #if 0 // TEST_INNERRECT
@@ -4180,36 +4180,36 @@ bool qt_region_strictContains(const QRegion &region, const QRect &rect)
     if (guard)
         return false;
     guard = true;
-    QRegion inner = region.d->qt_rgn->innerRect;
+    QRegion inner = region.d->bobui_rgn->innerRect;
     Q_ASSERT((inner - region).isEmpty());
     guard = false;
 
     int maxArea = 0;
-    for (int i = 0; i < region.d->qt_rgn->numRects; ++i) {
-        const QRect r = region.d->qt_rgn->rects.at(i);
+    for (int i = 0; i < region.d->bobui_rgn->numRects; ++i) {
+        const QRect r = region.d->bobui_rgn->rects.at(i);
         if (r.width() * r.height() > maxArea)
             maxArea = r.width() * r.height();
     }
 
-    if (maxArea > region.d->qt_rgn->innerArea) {
-        qDebug() << "not largest rectangle" << region << region.d->qt_rgn->innerRect;
+    if (maxArea > region.d->bobui_rgn->innerArea) {
+        qDebug() << "not largest rectangle" << region << region.d->bobui_rgn->innerRect;
     }
-    Q_ASSERT(maxArea <= region.d->qt_rgn->innerArea);
+    Q_ASSERT(maxArea <= region.d->bobui_rgn->innerArea);
 #endif
 
-    const QRect r1 = region.d->qt_rgn->innerRect;
+    const QRect r1 = region.d->bobui_rgn->innerRect;
     return (rect.left() >= r1.left() && rect.right() <= r1.right()
             && rect.top() >= r1.top() && rect.bottom() <= r1.bottom());
 }
 
 QRegion::const_iterator QRegion::begin() const noexcept
 {
-    return d->qt_rgn ? d->qt_rgn->begin() : nullptr;
+    return d->bobui_rgn ? d->bobui_rgn->begin() : nullptr;
 }
 
 QRegion::const_iterator QRegion::end() const noexcept
 {
-    return d->qt_rgn ? d->qt_rgn->end() : nullptr;
+    return d->bobui_rgn ? d->bobui_rgn->end() : nullptr;
 }
 
 static Q_DECL_COLD_FUNCTION
@@ -4241,12 +4241,12 @@ void QRegion::setRects(QSpan<const QRect> rects)
 
     detach();
 
-    d->qt_rgn->numRects = num;
+    d->bobui_rgn->numRects = num;
     if (num == 1) {
-        d->qt_rgn->extents = rects.front();
-        d->qt_rgn->innerRect = rects.front();
+        d->bobui_rgn->extents = rects.front();
+        d->bobui_rgn->innerRect = rects.front();
     } else {
-        d->qt_rgn->rects.resize(num);
+        d->bobui_rgn->rects.resize(num);
 
         int left = INT_MAX,
             right = INT_MIN,
@@ -4254,14 +4254,14 @@ void QRegion::setRects(QSpan<const QRect> rects)
             bottom = INT_MIN;
         for (int i = 0; i < num; ++i) {
             const QRect &rect = rects[i];
-            d->qt_rgn->rects[i] = rect;
+            d->bobui_rgn->rects[i] = rect;
             left = qMin(rect.left(), left);
             right = qMax(rect.right(), right);
             top = qMin(rect.top(), top);
             bottom = qMax(rect.bottom(), bottom);
-            d->qt_rgn->updateInnerRect(rect);
+            d->bobui_rgn->updateInnerRect(rect);
         }
-        d->qt_rgn->extents = QRect(QPoint(left, top), QPoint(right, bottom));
+        d->bobui_rgn->extents = QRect(QPoint(left, top), QPoint(right, bottom));
     }
 }
 
@@ -4274,7 +4274,7 @@ void QRegion::setRects(QSpan<const QRect> rects)
 
     The union of all the rectangles is equal to the original region.
 
-    \note This functions existed in Qt 5, too, but returned QVector<QRect>
+    \note This functions existed in BobUI 5, too, but returned QVector<QRect>
     instead.
 
     \sa setRects()
@@ -4286,31 +4286,31 @@ QSpan<const QRect> QRegion::rects() const noexcept
 
 int QRegion::rectCount() const noexcept
 {
-    return (d->qt_rgn ? d->qt_rgn->numRects : 0);
+    return (d->bobui_rgn ? d->bobui_rgn->numRects : 0);
 }
 
 bool QRegion::operator==(const QRegion &r) const
 {
-    if (!d->qt_rgn)
+    if (!d->bobui_rgn)
         return r.isEmpty();
-    if (!r.d->qt_rgn)
+    if (!r.d->bobui_rgn)
         return isEmpty();
 
     if (d == r.d)
         return true;
     else
-        return EqualRegion(d->qt_rgn, r.d->qt_rgn);
+        return EqualRegion(d->bobui_rgn, r.d->bobui_rgn);
 }
 
 bool QRegion::intersects(const QRect &rect) const
 {
-    if (isEmptyHelper(d->qt_rgn) || rect.isNull())
+    if (isEmptyHelper(d->bobui_rgn) || rect.isNull())
         return false;
 
     const QRect r = rect.normalized();
-    if (!rect_intersects(d->qt_rgn->extents, r))
+    if (!rect_intersects(d->bobui_rgn->extents, r))
         return false;
-    if (d->qt_rgn->numRects == 1)
+    if (d->bobui_rgn->numRects == 1)
         return true;
 
     for (const QRect &rect : *this) {
@@ -4322,7 +4322,7 @@ bool QRegion::intersects(const QRect &rect) const
 
 #if defined(Q_OS_WIN) || defined(Q_QDOC)
 
-static inline HRGN qt_RectToHRGN(const QRect &rc)
+static inline HRGN bobui_RectToHRGN(const QRect &rc)
 {
     return CreateRectRgn(rc.left(), rc.top(), rc.right() + 1, rc.bottom() + 1);
 }
@@ -4340,9 +4340,9 @@ HRGN QRegion::toHRGN() const
 
     HRGN resultRgn = nullptr;
     const auto rects = begin();
-    resultRgn = qt_RectToHRGN(rects[0]);
+    resultRgn = bobui_RectToHRGN(rects[0]);
     for (int i = 1; i < size; ++i) {
-        HRGN tmpRgn = qt_RectToHRGN(rects[i]);
+        HRGN tmpRgn = bobui_RectToHRGN(rects[i]);
         int err = CombineRgn(resultRgn, resultRgn, tmpRgn, RGN_OR);
         if (err == ERROR)
             qWarning("Error combining HRGNs.");
@@ -4380,4 +4380,4 @@ QRegion QRegion::fromHRGN(HRGN hrgn)
 }
 #endif // Q_OS_WIN || Q_QDOC
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

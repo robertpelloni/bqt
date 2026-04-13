@@ -1,15 +1,15 @@
 // Copyright (C) 2011 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Stephen Kelly <stephen.kelly@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QIDENTITYPROXYMODEL_H
 #define QIDENTITYPROXYMODEL_H
 
-#include <QtCore/qabstractproxymodel.h>
+#include <BobUICore/qabstractproxymodel.h>
 
-QT_REQUIRE_CONFIG(identityproxymodel);
+BOBUI_REQUIRE_CONFIG(identityproxymodel);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QIdentityProxyModelPrivate;
@@ -28,13 +28,13 @@ public:
     QModelIndex parent(const QModelIndex& child) const override;
     using QObject::parent;
     int rowCount(const QModelIndex& parent = QModelIndex()) const override;
-    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
-    bool dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent) override;
+    QVariant headerData(int section, BobUI::Orientation orientation, int role = BobUI::DisplayRole) const override;
+    bool dropMimeData(const QMimeData* data, BobUI::DropAction action, int row, int column, const QModelIndex& parent) override;
     QModelIndex sibling(int row, int column, const QModelIndex &idx) const override;
 
     QItemSelection mapSelectionFromSource(const QItemSelection& selection) const override;
     QItemSelection mapSelectionToSource(const QItemSelection& selection) const override;
-    QModelIndexList match(const QModelIndex& start, int role, const QVariant& value, int hits = 1, Qt::MatchFlags flags = Qt::MatchFlags(Qt::MatchStartsWith|Qt::MatchWrap)) const override;
+    QModelIndexList match(const QModelIndex& start, int role, const QVariant& value, int hits = 1, BobUI::MatchFlags flags = BobUI::MatchFlags(BobUI::MatchStartsWith|BobUI::MatchWrap)) const override;
     void setSourceModel(QAbstractItemModel* sourceModel) override;
 
     bool insertColumns(int column, int count, const QModelIndex& parent = QModelIndex()) override;
@@ -57,7 +57,7 @@ private:
     Q_DISABLE_COPY(QIdentityProxyModel)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QIDENTITYPROXYMODEL_H
 

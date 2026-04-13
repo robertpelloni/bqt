@@ -1,6 +1,6 @@
-// Copyright (C) 2022 The Qt Company Ltd.
+// Copyright (C) 2022 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qcoreevent.h"
 #include "qcoreevent_p.h"
@@ -9,24 +9,24 @@
 
 #include "qbasicatomic.h"
 
-#include <qtcore_tracepoints_p.h>
+#include <bobuicore_tracepoints_p.h>
 
 #include <limits>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_TRACE_POINT(qtcore, QEvent_ctor, QEvent *event, QEvent::Type type);
-Q_TRACE_POINT(qtcore, QEvent_dtor, QEvent *event, QEvent::Type type);
+Q_TRACE_POINT(bobuicore, QEvent_ctor, QEvent *event, QEvent::Type type);
+Q_TRACE_POINT(bobuicore, QEvent_dtor, QEvent *event, QEvent::Type type);
 
 /*!
     \class QEvent
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QEvent class is the base class of all
     event classes. Event objects contain event parameters.
 
     \ingroup events
 
-    Qt's main event loop (QCoreApplication::exec()) fetches native
+    BobUI's main event loop (QCoreApplication::exec()) fetches native
     window system events from the event queue, translates them into
     QEvents, and sends the translated events to \l{QObject}s.
 
@@ -60,7 +60,7 @@ Q_TRACE_POINT(qtcore, QEvent_dtor, QEvent *event, QEvent::Type type);
 /*!
     \enum QEvent::Type
 
-    This enum type defines the valid event types in Qt. The event
+    This enum type defines the valid event types in BobUI. The event
     types and the specialized classes for each type are as follows:
 
     \value None                             Not an event.
@@ -97,7 +97,7 @@ Q_TRACE_POINT(qtcore, QEvent_dtor, QEvent *event, QEvent::Type type);
     \value DynamicPropertyChange            A dynamic property was added, changed, or removed from the object.
     \value EnabledChange                    Widget's enabled state has changed.
     \value Enter                            Mouse enters widget's boundaries (QEnterEvent).
-    \value EnterEditFocus                   An editor widget gains focus for editing. \c QT_KEYPAD_NAVIGATION must be defined.
+    \value EnterEditFocus                   An editor widget gains focus for editing. \c BOBUI_KEYPAD_NAVIGATION must be defined.
     \value EnterWhatsThisMode               Send to toplevel widgets when the application enters "What's This?" mode.
     \value Expose                           Sent to a window when its on-screen contents are invalidated and need to be flushed from the backing store.
     \value FileOpen                         File open request (QFileOpenEvent).
@@ -142,7 +142,7 @@ Q_TRACE_POINT(qtcore, QEvent_dtor, QEvent *event, QEvent::Type type);
     \value LayoutDirectionChange            The direction of layouts changed.
     \value LayoutRequest                    Widget layout needs to be redone.
     \value Leave                            Mouse leaves widget's boundaries.
-    \value LeaveEditFocus                   An editor widget loses focus for editing. QT_KEYPAD_NAVIGATION must be defined.
+    \value LeaveEditFocus                   An editor widget loses focus for editing. BOBUI_KEYPAD_NAVIGATION must be defined.
     \value LeaveWhatsThisMode               Send to toplevel widgets when the application leaves "What's This?" mode.
     \value LocaleChange                     The system locale has changed.
     \value NonClientAreaMouseButtonDblClick A mouse double click occurred outside the client area (QMouseEvent).
@@ -196,23 +196,23 @@ Q_TRACE_POINT(qtcore, QEvent_dtor, QEvent *event, QEvent::Type type);
     \value StateMachineWrapped              The event is a wrapper for, i.e., contains, another event (QStateMachine::WrappedEvent).
     \value StatusTip                        A status tip is requested (QStatusTipEvent).
     \value StyleChange                      Widget's style has been changed.
-    \value TabletMove                       Wacom tablet move (QTabletEvent).
-    \value TabletPress                      Wacom tablet press (QTabletEvent).
-    \value TabletRelease                    Wacom tablet release (QTabletEvent).
+    \value TabletMove                       Wacom tablet move (BOBUIabletEvent).
+    \value TabletPress                      Wacom tablet press (BOBUIabletEvent).
+    \value TabletRelease                    Wacom tablet release (BOBUIabletEvent).
     \omitvalue OkRequest
-    \value TabletEnterProximity             Wacom tablet enter proximity event (QTabletEvent), sent to QApplication.
-    \value TabletLeaveProximity             Wacom tablet leave proximity event (QTabletEvent), sent to QApplication.
+    \value TabletEnterProximity             Wacom tablet enter proximity event (BOBUIabletEvent), sent to QApplication.
+    \value TabletLeaveProximity             Wacom tablet leave proximity event (BOBUIabletEvent), sent to QApplication.
     \value [since 5.9] TabletTrackingChange The Wacom tablet tracking state has changed.
     \omitvalue ThemeChange
     \value ThreadChange                     The object is moved to another thread. This is the last event sent to this object in the previous thread. See QObject::moveToThread().
-    \value Timer                            Regular timer events (QTimerEvent).
+    \value Timer                            Regular timer events (BOBUIimerEvent).
     \value ToolBarChange                    The toolbar button is toggled on \macos.
     \value ToolTip                          A tooltip was requested (QHelpEvent).
     \value ToolTipChange                    The widget's tooltip has changed.
-    \value TouchBegin                       Beginning of a sequence of touch-screen or track-pad events (QTouchEvent).
-    \value TouchCancel                      Cancellation of touch-event sequence (QTouchEvent).
-    \value TouchEnd                         End of touch-event sequence (QTouchEvent).
-    \value TouchUpdate                      Touch-screen event (QTouchEvent).
+    \value TouchBegin                       Beginning of a sequence of touch-screen or track-pad events (BOBUIouchEvent).
+    \value TouchCancel                      Cancellation of touch-event sequence (BOBUIouchEvent).
+    \value TouchEnd                         End of touch-event sequence (BOBUIouchEvent).
+    \value TouchUpdate                      Touch-screen event (BOBUIouchEvent).
     \value UngrabKeyboard                   Item loses keyboard grab (QGraphicsItem only).
     \value UngrabMouse                      Item loses mouse grab (QGraphicsItem, QQuickItem).
     \value UpdateLater                      The widget should be queued to be repainted at a later time.
@@ -318,7 +318,7 @@ QEvent::QEvent(Type type)
     \internal
     Attempts to copy the \a other event.
 
-    Copying events is a bad idea, yet some Qt 4 code does it (notably,
+    Copying events is a bad idea, yet some BobUI 4 code does it (notably,
     QApplication and the state machine).
  */
 
@@ -510,9 +510,9 @@ int QEvent::registerEventType(int hint) noexcept
 }
 
 /*!
-    \class QTimerEvent
-    \inmodule QtCore
-    \brief The QTimerEvent class contains parameters that describe a
+    \class BOBUIimerEvent
+    \inmodule BobUICore
+    \brief The BOBUIimerEvent class contains parameters that describe a
     timer event.
 
     \ingroup events
@@ -534,8 +534,8 @@ int QEvent::registerEventType(int hint) noexcept
     Constructs a timer event object with the timer identifier set to
     \a timerId.
 */
-QTimerEvent::QTimerEvent(int timerId)
-    : QTimerEvent(Qt::TimerId{timerId})
+BOBUIimerEvent::BOBUIimerEvent(int timerId)
+    : BOBUIimerEvent(BobUI::TimerId{timerId})
 {}
 
 /*!
@@ -544,32 +544,32 @@ QTimerEvent::QTimerEvent(int timerId)
     Constructs a timer event object with the timer identifier set to
     \a timerId.
 */
-QTimerEvent::QTimerEvent(Qt::TimerId timerId)
+BOBUIimerEvent::BOBUIimerEvent(BobUI::TimerId timerId)
     : QEvent(Timer), m_id(timerId)
 {
-    static_assert(sizeof(Qt::TimerId) == sizeof(int));
+    static_assert(sizeof(BobUI::TimerId) == sizeof(int));
 }
 
-Q_IMPL_EVENT_COMMON(QTimerEvent)
+Q_IMPL_EVENT_COMMON(BOBUIimerEvent)
 
 /*!
-    \fn int QTimerEvent::timerId() const
+    \fn int BOBUIimerEvent::timerId() const
 
     Returns the unique timer identifier, which is the same identifier
     as returned from QObject::startTimer().
 */
 
 /*!
-    \fn Qt::TimerId QTimerEvent::id() const
+    \fn BobUI::TimerId BOBUIimerEvent::id() const
     \since 6.8
 
-    Returns the Qt::TimerId of the timer associated with this event, which
+    Returns the BobUI::TimerId of the timer associated with this event, which
     is the same identifier returned by QObject::startTimer() cast to
-    Qt::TimerId.
+    BobUI::TimerId.
 */
 
 /*!
-    \fn QTimerEvent::matches(const QBasicTimer &timer) const
+    \fn BOBUIimerEvent::matches(const QBasicTimer &timer) const
     \since 6.9
 
     Returns \c true if this timer event and \a timer have the same ID,
@@ -578,7 +578,7 @@ Q_IMPL_EVENT_COMMON(QTimerEvent)
 
 /*!
     \class QChildEvent
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QChildEvent class contains event parameters for child object
     events.
 
@@ -641,7 +641,7 @@ Q_IMPL_EVENT_COMMON(QChildEvent)
 
 /*!
     \class QDynamicPropertyChangeEvent
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 4.2
     \brief The QDynamicPropertyChangeEvent class contains event parameters for dynamic
     property change events.
@@ -681,6 +681,6 @@ QDeferredDeleteEvent::QDeferredDeleteEvent(int loopLevel, int scopeLevel)
 
 Q_IMPL_EVENT_COMMON(QDeferredDeleteEvent)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qcoreevent.cpp"

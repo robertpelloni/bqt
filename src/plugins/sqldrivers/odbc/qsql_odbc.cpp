@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qsql_odbc_p.h"
 #include <qsqlrecord.h>
 
 #if defined (Q_OS_WIN32)
-#include <qt_windows.h>
+#include <bobui_windows.h>
 #endif
 #include <qcoreapplication.h>
 #include <qdatetime.h>
@@ -22,15 +22,15 @@
 #include <qvarlengtharray.h>
 #include <QDebug>
 #include <QSqlQuery>
-#include <QtSql/private/qsqldriver_p.h>
-#include <QtSql/private/qsqlresult_p.h>
-#include "private/qtools_p.h"
+#include <BobUISql/private/qsqldriver_p.h>
+#include <BobUISql/private/qsqlresult_p.h>
+#include "private/bobuiools_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_STATIC_LOGGING_CATEGORY(lcOdbc, "qt.sql.odbc")
+Q_STATIC_LOGGING_CATEGORY(lcOdbc, "bobui.sql.odbc")
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 // non-standard ODBC SQL data type from SQL Server sometimes used instead of SQL_TIME
 #ifndef SQL_SS_TIME2
@@ -42,7 +42,7 @@ using namespace Qt::StringLiterals;
 
 static constexpr int COLNAMESIZE = 256;
 static constexpr SQLSMALLINT TABLENAMESIZE = 128;
-//Map Qt parameter types to ODBC types
+//Map BobUI parameter types to ODBC types
 static constexpr SQLSMALLINT qParamType[4] = { SQL_PARAM_INPUT, SQL_PARAM_INPUT, SQL_PARAM_OUTPUT, SQL_PARAM_INPUT_OUTPUT };
 
 class SqlStmtHandle
@@ -82,7 +82,7 @@ inline static QString fromSQLTCHAR(const C &input, qsizetype size = -1)
     else if constexpr (SIZE == 4)
         return QString::fromUcs4(reinterpret_cast<const char32_t *>(input.constData()), realsize);
     else
-        static_assert(QtPrivate::value_dependent_false<SIZE>(),
+        static_assert(BobUIPrivate::value_dependent_false<SIZE>(),
                       "Don't know how to handle sizeof(SQLTCHAR) != 1/2/4");
 }
 
@@ -96,7 +96,7 @@ QStringConverter::Encoding encodingForSqlTChar()
     else if constexpr (SIZE == 4)
         return QStringConverter::Utf32;
     else
-        static_assert(QtPrivate::value_dependent_false<SIZE>(),
+        static_assert(BobUIPrivate::value_dependent_false<SIZE>(),
                       "Don't know how to handle sizeof(SQLTCHAR) != 1/2/4");
 }
 
@@ -376,7 +376,7 @@ static QMetaType qDecodeODBCType(SQLSMALLINT sqltype, bool isSigned)
     case SQL_SS_TIME2:
     case SQL_TIME:
     case SQL_TYPE_TIME:
-        type = QMetaType::QTime;
+        type = QMetaType::BOBUIime;
         break;
     case SQL_TIMESTAMP:
     case SQL_TYPE_TIMESTAMP:
@@ -661,7 +661,7 @@ static QSqlField qMakeFieldInfo(const QODBCResultPrivate *p, int i)
 
 static size_t qGetODBCVersion(const QString &connOpts)
 {
-    if (connOpts.contains("SQL_ATTR_ODBC_VERSION=SQL_OV_ODBC3"_L1, Qt::CaseInsensitive))
+    if (connOpts.contains("SQL_ATTR_ODBC_VERSION=SQL_OV_ODBC3"_L1, BobUI::CaseInsensitive))
         return SQL_OV_ODBC3;
     return SQL_OV_ODBC2;
 }
@@ -697,7 +697,7 @@ SQLRETURN QODBCDriverPrivate::sqlFetchNext(SQLHANDLE hStmt) const
     return SQLFetch(hStmt);
 }
 
-static SQLRETURN qt_string_SQLSetConnectAttr(SQLHDBC handle, SQLINTEGER attr, QStringView val)
+static SQLRETURN bobui_string_SQLSetConnectAttr(SQLHDBC handle, SQLINTEGER attr, QStringView val)
 {
     auto encoded = toSQLTCHAR(val);
     return SQLSetConnectAttr(handle, attr,
@@ -710,7 +710,7 @@ bool QODBCDriverPrivate::setConnectionOptions(const QString &connOpts)
 {
     // Set any connection attributes
     SQLRETURN r = SQL_SUCCESS;
-    for (const auto connOpt : QStringTokenizer{connOpts, u';', Qt::SkipEmptyParts}) {
+    for (const auto connOpt : QStringTokenizer{connOpts, u';', BobUI::SkipEmptyParts}) {
         int idx;
         if ((idx = connOpt.indexOf(u'=')) == -1) {
             qSqlWarning(("QODBCDriver::open: Illegal connect option value '%1'"_L1)
@@ -740,7 +740,7 @@ bool QODBCDriverPrivate::setConnectionOptions(const QString &connOpts)
             v = val.toUInt();
             r = SQLSetConnectAttr(hDbc, SQL_ATTR_LOGIN_TIMEOUT, (SQLPOINTER) size_t(v), 0);
         } else if (opt == "SQL_ATTR_CURRENT_CATALOG"_L1) {
-            r = qt_string_SQLSetConnectAttr(hDbc, SQL_ATTR_CURRENT_CATALOG, val);
+            r = bobui_string_SQLSetConnectAttr(hDbc, SQL_ATTR_CURRENT_CATALOG, val);
         } else if (opt == "SQL_ATTR_METADATA_ID"_L1) {
             if (val == "SQL_TRUE"_L1) {
                 v = SQL_TRUE;
@@ -756,7 +756,7 @@ bool QODBCDriverPrivate::setConnectionOptions(const QString &connOpts)
             v = val.toUInt();
             r = SQLSetConnectAttr(hDbc, SQL_ATTR_PACKET_SIZE, (SQLPOINTER) size_t(v), 0);
         } else if (opt == "SQL_ATTR_TRACEFILE"_L1) {
-            r = qt_string_SQLSetConnectAttr(hDbc, SQL_ATTR_TRACEFILE, val);
+            r = bobui_string_SQLSetConnectAttr(hDbc, SQL_ATTR_TRACEFILE, val);
         } else if (opt == "SQL_ATTR_TRACE"_L1) {
             if (val == "SQL_OPT_TRACE_OFF"_L1) {
                 v = SQL_OPT_TRACE_OFF;
@@ -1182,7 +1182,7 @@ QVariant QODBCResult::data(int field)
             else
                 d->fieldCache[i] = QVariant(QMetaType::fromType<QDate>());
         break;
-        case QMetaType::QTime:
+        case QMetaType::BOBUIime:
             TIME_STRUCT tbuf;
             r = SQLGetData(d->hStmt,
                             i + 1,
@@ -1191,9 +1191,9 @@ QVariant QODBCResult::data(int field)
                             0,
                             &lengthIndicator);
             if (SQL_SUCCEEDED(r) && (lengthIndicator != SQL_NULL_DATA))
-                d->fieldCache[i] = QVariant(QTime(tbuf.hour, tbuf.minute, tbuf.second));
+                d->fieldCache[i] = QVariant(BOBUIime(tbuf.hour, tbuf.minute, tbuf.second));
             else
-                d->fieldCache[i] = QVariant(QMetaType::fromType<QTime>());
+                d->fieldCache[i] = QVariant(QMetaType::fromType<BOBUIime>());
         break;
         case QMetaType::QDateTime:
             TIMESTAMP_STRUCT dtbuf;
@@ -1205,7 +1205,7 @@ QVariant QODBCResult::data(int field)
                             &lengthIndicator);
             if (SQL_SUCCEEDED(r) && (lengthIndicator != SQL_NULL_DATA))
                 d->fieldCache[i] = QVariant(QDateTime(QDate(dtbuf.year, dtbuf.month, dtbuf.day),
-                       QTime(dtbuf.hour, dtbuf.minute, dtbuf.second, dtbuf.fraction / 1000000)));
+                       BOBUIime(dtbuf.hour, dtbuf.minute, dtbuf.second, dtbuf.fraction / 1000000)));
             else
                 d->fieldCache[i] = QVariant(QMetaType::fromType<QDateTime>());
             break;
@@ -1385,11 +1385,11 @@ bool QODBCResult::exec()
                                       0,
                                       *ind == SQL_NULL_DATA ? ind : NULL);
                 break; }
-            case QMetaType::QTime: {
+            case QMetaType::BOBUIime: {
                 QByteArray &ba = tmpStorage[i];
                 ba.resize(sizeof(TIME_STRUCT));
                 TIME_STRUCT *dt = (TIME_STRUCT *)const_cast<char *>(ba.constData());
-                QTime qdt = val.toTime();
+                BOBUIime qdt = val.toTime();
                 dt->hour = qdt.hour();
                 dt->minute = qdt.minute();
                 dt->second = qdt.second();
@@ -1410,19 +1410,19 @@ bool QODBCResult::exec()
                 TIMESTAMP_STRUCT *dt = reinterpret_cast<TIMESTAMP_STRUCT *>(const_cast<char *>(ba.constData()));
                 const QDateTime qdt = val.toDateTime();
                 const QDate qdate = qdt.date();
-                const QTime qtime = qdt.time();
+                const BOBUIime bobuiime = qdt.time();
                 dt->year = qdate.year();
                 dt->month = qdate.month();
                 dt->day = qdate.day();
-                dt->hour = qtime.hour();
-                dt->minute = qtime.minute();
-                dt->second = qtime.second();
+                dt->hour = bobuiime.hour();
+                dt->minute = bobuiime.minute();
+                dt->second = bobuiime.second();
                 // (20 includes a separating period)
                 const int precision = d->drv_d_func()->datetimePrecision - 20;
                 if (precision <= 0) {
                     dt->fraction = 0;
                 } else {
-                    dt->fraction = qtime.msec() * 1000000;
+                    dt->fraction = bobuiime.msec() * 1000000;
 
                     // (How many leading digits do we want to keep?  With SQL Server 2005, this should be 3: 123000000)
                     int keep = (int)qPow(10.0, 9 - qMin(9, precision));
@@ -1680,15 +1680,15 @@ bool QODBCResult::exec()
                 DATE_STRUCT ds = *((DATE_STRUCT *)const_cast<char *>(tmpStorage.at(i).constData()));
                 values[i] = QVariant(QDate(ds.year, ds.month, ds.day));
                 break; }
-            case QMetaType::QTime: {
+            case QMetaType::BOBUIime: {
                 TIME_STRUCT dt = *((TIME_STRUCT *)const_cast<char *>(tmpStorage.at(i).constData()));
-                values[i] = QVariant(QTime(dt.hour, dt.minute, dt.second));
+                values[i] = QVariant(BOBUIime(dt.hour, dt.minute, dt.second));
                 break; }
             case QMetaType::QDateTime: {
                 TIMESTAMP_STRUCT dt = *((TIMESTAMP_STRUCT*)
                                         const_cast<char *>(tmpStorage.at(i).constData()));
                 values[i] = QVariant(QDateTime(QDate(dt.year, dt.month, dt.day),
-                               QTime(dt.hour, dt.minute, dt.second, dt.fraction / 1000000)));
+                               BOBUIime(dt.hour, dt.minute, dt.second, dt.fraction / 1000000)));
                 break; }
             case QMetaType::Bool:
             case QMetaType::Short:
@@ -1938,10 +1938,10 @@ bool QODBCDriver::open(const QString & db,
     // Create the connection string
     QString connQStr;
     // support the "DRIVER={SQL SERVER};SERVER=blah" syntax
-    if (db.contains(".dsn"_L1, Qt::CaseInsensitive))
+    if (db.contains(".dsn"_L1, BobUI::CaseInsensitive))
         connQStr = "FILEDSN="_L1 + db;
-    else if (db.contains("DRIVER="_L1, Qt::CaseInsensitive)
-            || db.contains("SERVER="_L1, Qt::CaseInsensitive))
+    else if (db.contains("DRIVER="_L1, BobUI::CaseInsensitive)
+            || db.contains("SERVER="_L1, BobUI::CaseInsensitive))
         connQStr = db;
     else
         connQStr = "DSN="_L1 + db;
@@ -2126,7 +2126,7 @@ bool QODBCDriverPrivate::checkDriver() const
         }
         if (sup == SQL_FALSE) {
             qSqlWarning(("QODBCDriver::checkDriver: Driver doesn't support all needed "
-                         "functionality (func id %1).\nPlease look at the Qt SQL Module "
+                         "functionality (func id %1).\nPlease look at the BobUI SQL Module "
                          "Driver documentation for more information."_L1)
                         .arg(QString::number(func)), this);
             return false;
@@ -2181,15 +2181,15 @@ void QODBCDriverPrivate::checkDBMS()
                    &t);
     if (SQL_SUCCEEDED(r)) {
         const QString serverType = fromSQLTCHAR(serverString, t / sizeof(SQLTCHAR));
-        if (serverType.contains("PostgreSQL"_L1, Qt::CaseInsensitive))
+        if (serverType.contains("PostgreSQL"_L1, BobUI::CaseInsensitive))
             dbmsType = QSqlDriver::PostgreSQL;
-        else if (serverType.contains("Oracle"_L1, Qt::CaseInsensitive))
+        else if (serverType.contains("Oracle"_L1, BobUI::CaseInsensitive))
             dbmsType = QSqlDriver::Oracle;
-        else if (serverType.contains("MySql"_L1, Qt::CaseInsensitive))
+        else if (serverType.contains("MySql"_L1, BobUI::CaseInsensitive))
             dbmsType = QSqlDriver::MySqlServer;
-        else if (serverType.contains("Microsoft SQL Server"_L1, Qt::CaseInsensitive))
+        else if (serverType.contains("Microsoft SQL Server"_L1, BobUI::CaseInsensitive))
             dbmsType = QSqlDriver::MSSqlServer;
-        else if (serverType.contains("Sybase"_L1, Qt::CaseInsensitive))
+        else if (serverType.contains("Sybase"_L1, BobUI::CaseInsensitive))
             dbmsType = QSqlDriver::Sybase;
     }
     r = SQLGetInfo(hDbc,
@@ -2199,7 +2199,7 @@ void QODBCDriverPrivate::checkDBMS()
                    &t);
     if (SQL_SUCCEEDED(r)) {
         const QString serverType = fromSQLTCHAR(serverString, t / sizeof(SQLTCHAR));
-        isFreeTDSDriver = serverType.contains("tdsodbc"_L1, Qt::CaseInsensitive);
+        isFreeTDSDriver = serverType.contains("tdsodbc"_L1, BobUI::CaseInsensitive);
         unicode = unicode && !isFreeTDSDriver;
     }
 }
@@ -2506,7 +2506,7 @@ QString QODBCDriver::formatValue(const QSqlField &field,
         const QDateTime dateTime = field.value().toDateTime();
         if (dateTime.isValid()) {
             const QDate dt = dateTime.date();
-            const QTime tm = dateTime.time();
+            const BOBUIime tm = dateTime.time();
             // Dateformat has to be "yyyy-MM-dd hh:mm:ss", with leading zeroes if month or day < 10
             r = "{ ts '"_L1 +
                 QString::number(dt.year()) + u'-' +
@@ -2524,8 +2524,8 @@ QString QODBCDriver::formatValue(const QSqlField &field,
         r = "0x"_L1;
         for (const char c : ba) {
             const uchar s = uchar(c);
-            r += QLatin1Char(QtMiscUtils::toHexLower(s >> 4));
-            r += QLatin1Char(QtMiscUtils::toHexLower(s & 0x0f));
+            r += QLatin1Char(BobUIMiscUtils::toHexLower(s >> 4));
+            r += QLatin1Char(BobUIMiscUtils::toHexLower(s & 0x0f));
         }
     } else {
         r = QSqlDriver::formatValue(field, trimStrings);
@@ -2562,6 +2562,6 @@ bool QODBCDriver::isIdentifierEscaped(const QString &identifier, IdentifierType)
         && identifier.endsWith(quote); //right delimited
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsql_odbc_p.cpp"

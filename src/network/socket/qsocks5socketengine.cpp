@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:network-protocol
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:network-protocol
 
 #include "qsocks5socketengine_p.h"
 
-#include "qtcpsocket.h"
+#include "bobuicpsocket.h"
 #include "qudpsocket.h"
-#include "qtcpserver.h"
+#include "bobuicpserver.h"
 #include "qdebug.h"
 #include "qhash.h"
 #include "qqueue.h"
 #include "qdeadlinetimer.h"
 #include "qelapsedtimer.h"
 #include "qmutex.h"
-#include "qthread.h"
+#include "bobuihread.h"
 #include "qcoreapplication.h"
 #include "qurl.h"
 #include "qauthenticator.h"
@@ -22,14 +22,14 @@
 #include <qendian.h>
 #include <qnetworkinterface.h>
 
-#include <QtCore/qbasictimer.h>
-#include <QtCore/qpointer.h>
+#include <BobUICore/qbasictimer.h>
+#include <BobUICore/qpointer.h>
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 using namespace std::chrono_literals;
 
 static const int MaxWriteBufferSize = 128*1024;
@@ -120,7 +120,7 @@ static inline QString dump(const QByteArray &) { return QString(); }
    inserts the host address in buf at pos and updates pos.
    if the func fails the data in buf and the value of pos is undefined
 */
-static bool qt_socks5_set_host_address_and_port(const QHostAddress &address, quint16 port, QByteArray *pBuf)
+static bool bobui_socks5_set_host_address_and_port(const QHostAddress &address, quint16 port, QByteArray *pBuf)
 {
     QSOCKS5_DEBUG << "setting [" << address << ':' << port << ']';
 
@@ -153,7 +153,7 @@ static bool qt_socks5_set_host_address_and_port(const QHostAddress &address, qui
 /*
    like above, but for a hostname
 */
-static bool qt_socks5_set_host_name_and_port(const QString &hostname, quint16 port, QByteArray *pBuf)
+static bool bobui_socks5_set_host_name_and_port(const QString &hostname, quint16 port, QByteArray *pBuf)
 {
     QSOCKS5_DEBUG << "setting [" << hostname << ':' << port << ']';
 
@@ -184,7 +184,7 @@ static bool qt_socks5_set_host_name_and_port(const QString &hostname, quint16 po
    return 1 if OK, 0 if need more data, -1 if error
    if the func fails the value of the address and the pos is undefined
 */
-static int qt_socks5_get_host_address_and_port(const QByteArray &buf, QHostAddress *pAddress, quint16 *pPort, int *pPos)
+static int bobui_socks5_get_host_address_and_port(const QByteArray &buf, QHostAddress *pAddress, quint16 *pPort, int *pPos)
 {
     int ret = -1;
     int pos = *pPos;
@@ -247,7 +247,7 @@ static int qt_socks5_get_host_address_and_port(const QByteArray &buf, QHostAddre
 
 struct QSocks5Data
 {
-    QTcpSocket *controlSocket;
+    BOBUIcpSocket *controlSocket;
     QSocks5Authenticator *authenticator;
 };
 
@@ -272,7 +272,7 @@ struct QSocks5RevivedDatagram
     quint16 port = 0;
 };
 
-#ifndef QT_NO_UDPSOCKET
+#ifndef BOBUI_NO_UDPSOCKET
 struct QSocks5UdpAssociateData : public QSocks5Data
 {
     QUdpSocket *udpSocket = nullptr;
@@ -294,7 +294,7 @@ public:
     QSocks5BindData *retrieve(qintptr socketDescriptor);
 
 protected:
-    void timerEvent(QTimerEvent * event) override;
+    void timerEvent(BOBUIimerEvent * event) override;
 
     QRecursiveMutex mutex;
     QBasicTimer sweepTimer;
@@ -344,7 +344,7 @@ QSocks5BindData *QSocks5BindStore::retrieve(qintptr socketDescriptor)
     QSocks5BindData *bindData = it.value();
     store.erase(it);
     if (bindData) {
-        if (bindData->controlSocket->thread() != QThread::currentThread()) {
+        if (bindData->controlSocket->thread() != BOBUIhread::currentThread()) {
             qWarning("Cannot access socks5 bind data from different thread");
             return nullptr;
         }
@@ -357,7 +357,7 @@ QSocks5BindData *QSocks5BindStore::retrieve(qintptr socketDescriptor)
     return bindData;
 }
 
-void QSocks5BindStore::timerEvent(QTimerEvent * event)
+void QSocks5BindStore::timerEvent(BOBUIimerEvent * event)
 {
     QMutexLocker lock(&mutex);
     if (event->id() == sweepTimer.id()) {
@@ -386,14 +386,14 @@ char QSocks5Authenticator::methodId()
     return 0x00;
 }
 
-bool QSocks5Authenticator::beginAuthenticate(QTcpSocket *socket, bool *completed)
+bool QSocks5Authenticator::beginAuthenticate(BOBUIcpSocket *socket, bool *completed)
 {
     Q_UNUSED(socket);
     *completed = true;
     return true;
 }
 
-bool QSocks5Authenticator::continueAuthenticate(QTcpSocket *socket, bool *completed)
+bool QSocks5Authenticator::continueAuthenticate(BOBUIcpSocket *socket, bool *completed)
 {
     Q_UNUSED(socket);
     *completed = true;
@@ -412,7 +412,7 @@ bool QSocks5Authenticator::unSeal(const QByteArray &sealedBuf, QByteArray *buf)
     return true;
 }
 
-bool QSocks5Authenticator::unSeal(QTcpSocket *sealedSocket, QByteArray *buf)
+bool QSocks5Authenticator::unSeal(BOBUIcpSocket *sealedSocket, QByteArray *buf)
 {
     return unSeal(sealedSocket->readAll(), buf);
 }
@@ -428,7 +428,7 @@ char QSocks5PasswordAuthenticator::methodId()
     return 0x02;
 }
 
-bool QSocks5PasswordAuthenticator::beginAuthenticate(QTcpSocket *socket, bool *completed)
+bool QSocks5PasswordAuthenticator::beginAuthenticate(BOBUIcpSocket *socket, bool *completed)
 {
     *completed = false;
     QByteArray uname = userName.toLatin1();
@@ -445,7 +445,7 @@ bool QSocks5PasswordAuthenticator::beginAuthenticate(QTcpSocket *socket, bool *c
     return socket->write(dataBuf) == dataBuf.size();
 }
 
-bool QSocks5PasswordAuthenticator::continueAuthenticate(QTcpSocket *socket, bool *completed)
+bool QSocks5PasswordAuthenticator::continueAuthenticate(BOBUIcpSocket *socket, bool *completed)
 {
     *completed = false;
 
@@ -478,7 +478,7 @@ QSocks5SocketEnginePrivate::QSocks5SocketEnginePrivate()
     , socketDescriptor(-1)
     , data(nullptr)
     , connectData(nullptr)
-#ifndef QT_NO_UDPSOCKET
+#ifndef BOBUI_NO_UDPSOCKET
     , udpData(nullptr)
 #endif
     , bindData(nullptr)
@@ -503,7 +503,7 @@ void QSocks5SocketEnginePrivate::initialize(Socks5Mode socks5Mode)
     if (mode == ConnectMode) {
         connectData = new QSocks5ConnectData;
         data = connectData;
-#ifndef QT_NO_UDPSOCKET
+#ifndef BOBUI_NO_UDPSOCKET
     } else if (mode == UdpAssociateMode) {
         udpData = new QSocks5UdpAssociateData;
         data = udpData;
@@ -511,29 +511,29 @@ void QSocks5SocketEnginePrivate::initialize(Socks5Mode socks5Mode)
         udpData->udpSocket->setProxy(QNetworkProxy::NoProxy);
         QObject::connect(udpData->udpSocket, SIGNAL(readyRead()),
                          q, SLOT(_q_udpSocketReadNotification()),
-                         Qt::DirectConnection);
-#endif // QT_NO_UDPSOCKET
+                         BobUI::DirectConnection);
+#endif // BOBUI_NO_UDPSOCKET
     } else if (mode == BindMode) {
         bindData = new QSocks5BindData;
         data = bindData;
     }
 
-    data->controlSocket = new QTcpSocket(q);
+    data->controlSocket = new BOBUIcpSocket(q);
     data->controlSocket->setProxy(QNetworkProxy::NoProxy);
     QObject::connect(data->controlSocket, SIGNAL(connected()), q, SLOT(_q_controlSocketConnected()),
-                     Qt::DirectConnection);
+                     BobUI::DirectConnection);
     QObject::connect(data->controlSocket, SIGNAL(readyRead()), q, SLOT(_q_controlSocketReadNotification()),
-                     Qt::DirectConnection);
+                     BobUI::DirectConnection);
     QObject::connect(data->controlSocket, SIGNAL(bytesWritten(qint64)), q, SLOT(_q_controlSocketBytesWritten()),
-                     Qt::DirectConnection);
+                     BobUI::DirectConnection);
     QObject::connect(data->controlSocket, SIGNAL(errorOccurred(QAbstractSocket::SocketError)),
                      q, SLOT(_q_controlSocketErrorOccurred(QAbstractSocket::SocketError)),
-                     Qt::DirectConnection);
+                     BobUI::DirectConnection);
     QObject::connect(data->controlSocket, SIGNAL(disconnected()), q, SLOT(_q_controlSocketDisconnected()),
-                     Qt::DirectConnection);
+                     BobUI::DirectConnection);
     QObject::connect(data->controlSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
                      q, SLOT(_q_controlSocketStateChanged(QAbstractSocket::SocketState)),
-                     Qt::DirectConnection);
+                     BobUI::DirectConnection);
 
     if (!proxyInfo.user().isEmpty() || !proxyInfo.password().isEmpty()) {
         QSOCKS5_D_DEBUG << "using username/password authentication; user =" << proxyInfo.user();
@@ -757,7 +757,7 @@ void QSocks5SocketEnginePrivate::sendRequestMethod()
         address = localAddress;
         port = localPort;
     } else {
-#ifndef QT_NO_UDPSOCKET
+#ifndef BOBUI_NO_UDPSOCKET
         command = S5_UDP_ASSOCIATE;
         address = localAddress; //data->controlSocket->localAddress();
         port = localPort;
@@ -769,11 +769,11 @@ void QSocks5SocketEnginePrivate::sendRequestMethod()
     buf.append(char(S5_VERSION_5));
     buf.append(command);
     buf.append('\0');
-    if (peerName.isEmpty() && !qt_socks5_set_host_address_and_port(address, port, &buf)) {
+    if (peerName.isEmpty() && !bobui_socks5_set_host_address_and_port(address, port, &buf)) {
         QSOCKS5_DEBUG << "error setting address" << address << " : " << port;
         //### set error code ....
         return;
-    } else if (!peerName.isEmpty() && !qt_socks5_set_host_name_and_port(peerName, port, &buf)) {
+    } else if (!peerName.isEmpty() && !bobui_socks5_set_host_name_and_port(peerName, port, &buf)) {
         QSOCKS5_DEBUG << "error setting peer name" << peerName << " : " << port;
         //### set error code ....
         return;
@@ -828,7 +828,7 @@ void QSocks5SocketEnginePrivate::parseRequestMethodReply()
     } else {
         // connection success, retrieve the remote addresses
         int pos = 3;
-        int err = qt_socks5_get_host_address_and_port(inBuf, &address, &port, &pos);
+        int err = bobui_socks5_get_host_address_and_port(inBuf, &address, &port, &pos);
         if (err == -1) {
             QSOCKS5_DEBUG << "error getting address";
             setErrorState(SocksError);
@@ -899,7 +899,7 @@ void QSocks5SocketEnginePrivate::emitReadNotification()
     if (readNotificationEnabled && !readNotificationPending) {
         QSOCKS5_D_DEBUG << "queueing readNotification";
         readNotificationPending = true;
-        QMetaObject::invokeMethod(q, "_q_emitPendingReadNotification", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(q, "_q_emitPendingReadNotification", BobUI::QueuedConnection);
     }
 }
 
@@ -920,7 +920,7 @@ void QSocks5SocketEnginePrivate::emitWriteNotification()
     if (writeNotificationEnabled && !writeNotificationPending) {
         QSOCKS5_D_DEBUG << "queueing writeNotification";
         writeNotificationPending = true;
-        QMetaObject::invokeMethod(q, "_q_emitPendingWriteNotification", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(q, "_q_emitPendingWriteNotification", BobUI::QueuedConnection);
     }
 }
 
@@ -937,7 +937,7 @@ void QSocks5SocketEnginePrivate::emitConnectionNotification()
     Q_Q(QSocks5SocketEngine);
     QSOCKS5_D_DEBUG << "queueing connectionNotification";
     connectionNotificationPending = true;
-    QMetaObject::invokeMethod(q, "_q_emitPendingConnectionNotification", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(q, "_q_emitPendingConnectionNotification", BobUI::QueuedConnection);
 }
 
 QSocks5SocketEngine::QSocks5SocketEngine(QObject *parent)
@@ -955,7 +955,7 @@ QSocks5SocketEngine::~QSocks5SocketEngine()
     }
     if (d->connectData)
         delete d->connectData;
-#ifndef QT_NO_UDPSOCKET
+#ifndef BOBUI_NO_UDPSOCKET
     if (d->udpData) {
         delete d->udpData->udpSocket;
         delete d->udpData;
@@ -1018,18 +1018,18 @@ bool QSocks5SocketEngine::initialize(qintptr socketDescriptor, QAbstractSocket::
         delete bindData;
 
         QObject::connect(d->data->controlSocket, SIGNAL(connected()), this, SLOT(_q_controlSocketConnected()),
-                         Qt::DirectConnection);
+                         BobUI::DirectConnection);
         QObject::connect(d->data->controlSocket, SIGNAL(readyRead()), this, SLOT(_q_controlSocketReadNotification()),
-                         Qt::DirectConnection);
+                         BobUI::DirectConnection);
         QObject::connect(d->data->controlSocket, SIGNAL(bytesWritten(qint64)), this, SLOT(_q_controlSocketBytesWritten()),
-                         Qt::DirectConnection);
+                         BobUI::DirectConnection);
         QObject::connect(d->data->controlSocket, SIGNAL(errorOccurred(QAbstractSocket::SocketError)), this, SLOT(_q_controlSocketErrorOccurred(QAbstractSocket::SocketError)),
-                         Qt::DirectConnection);
+                         BobUI::DirectConnection);
         QObject::connect(d->data->controlSocket, SIGNAL(disconnected()), this, SLOT(_q_controlSocketDisconnected()),
-                         Qt::DirectConnection);
+                         BobUI::DirectConnection);
         QObject::connect(d->data->controlSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
                          this, SLOT(_q_controlSocketStateChanged(QAbstractSocket::SocketState)),
-                         Qt::DirectConnection);
+                         BobUI::DirectConnection);
 
         d->socks5State = QSocks5SocketEnginePrivate::Connected;
 
@@ -1069,7 +1069,7 @@ bool QSocks5SocketEngine::connectInternal()
     if (!d->data) {
         if (socketType() == QAbstractSocket::TcpSocket) {
             d->initialize(QSocks5SocketEnginePrivate::ConnectMode);
-#ifndef QT_NO_UDPSOCKET
+#ifndef BOBUI_NO_UDPSOCKET
         } else if (socketType() == QAbstractSocket::UdpSocket) {
             d->initialize(QSocks5SocketEnginePrivate::UdpAssociateMode);
             // all udp needs to be bound
@@ -1080,7 +1080,7 @@ bool QSocks5SocketEngine::connectInternal()
             return true;
 #endif
         } else {
-            qFatal("QSocks5SocketEngine::connectToHost: in QTcpServer mode");
+            qFatal("QSocks5SocketEngine::connectToHost: in BOBUIcpServer mode");
             return false;
         }
     }
@@ -1239,7 +1239,7 @@ void QSocks5SocketEnginePrivate::_q_controlSocketStateChanged(QAbstractSocket::S
     QSOCKS5_D_DEBUG << "_q_controlSocketStateChanged" << state;
 }
 
-#ifndef QT_NO_UDPSOCKET
+#ifndef BOBUI_NO_UDPSOCKET
 void QSocks5SocketEnginePrivate::_q_udpSocketReadNotification()
 {
     QSOCKS5_D_DEBUG << "_q_udpSocketReadNotification()";
@@ -1275,7 +1275,7 @@ void QSocks5SocketEnginePrivate::_q_udpSocketReadNotification()
             QSOCKS5_D_DEBUG << "don't support fragmentation yet disgarding";
             return;
         }
-        if (qt_socks5_get_host_address_and_port(inBuf, &datagram.address, &datagram.port, &pos) != 1) {
+        if (bobui_socks5_get_host_address_and_port(inBuf, &datagram.address, &datagram.port, &pos) != 1) {
             QSOCKS5_D_DEBUG << "failed to get address from datagram disgarding";
             return;
         }
@@ -1284,7 +1284,7 @@ void QSocks5SocketEnginePrivate::_q_udpSocketReadNotification()
     }
     emitReadNotification();
 }
-#endif // QT_NO_UDPSOCKET
+#endif // BOBUI_NO_UDPSOCKET
 
 bool QSocks5SocketEngine::bind(const QHostAddress &addr, quint16 port)
 {
@@ -1301,7 +1301,7 @@ bool QSocks5SocketEngine::bind(const QHostAddress &addr, quint16 port)
     if (!d->data) {
         if (socketType() == QAbstractSocket::TcpSocket) {
             d->initialize(QSocks5SocketEnginePrivate::BindMode);
-#ifndef QT_NO_UDPSOCKET
+#ifndef BOBUI_NO_UDPSOCKET
         } else if (socketType() == QAbstractSocket::UdpSocket) {
             d->initialize(QSocks5SocketEnginePrivate::UdpAssociateMode);
 #endif
@@ -1311,7 +1311,7 @@ bool QSocks5SocketEngine::bind(const QHostAddress &addr, quint16 port)
         }
     }
 
-#ifndef QT_NO_UDPSOCKET
+#ifndef BOBUI_NO_UDPSOCKET
     if (d->mode == QSocks5SocketEnginePrivate::UdpAssociateMode) {
         if (!d->udpData->udpSocket->bind(address, port)) {
             QSOCKS5_Q_DEBUG << "local udp bind failed";
@@ -1340,7 +1340,7 @@ bool QSocks5SocketEngine::bind(const QHostAddress &addr, quint16 port)
     if (d->socks5State == QSocks5SocketEnginePrivate::BindSuccess) {
         setState(QAbstractSocket::BoundState);
         return true;
-#ifndef QT_NO_UDPSOCKET
+#ifndef BOBUI_NO_UDPSOCKET
     } else if (d->socks5State == QSocks5SocketEnginePrivate::UdpAssociateSuccess) {
         setState(QAbstractSocket::BoundState);
         d->udpData->associateAddress = d->localAddress;
@@ -1348,12 +1348,12 @@ bool QSocks5SocketEngine::bind(const QHostAddress &addr, quint16 port)
         d->udpData->associatePort = d->localPort;
         d->localPort = 0;
         return true;
-#endif // QT_NO_UDPSOCKET
+#endif // BOBUI_NO_UDPSOCKET
     }
 
     // binding timed out
     setError(QAbstractSocket::SocketTimeoutError,
-             QLatin1StringView(QT_TRANSLATE_NOOP("QSocks5SocketEngine", "Network operation timed out")));
+             QLatin1StringView(BOBUI_TRANSLATE_NOOP("QSocks5SocketEngine", "Network operation timed out")));
 
 ///###    delete d->udpSocket;
 ///###    d->udpSocket = 0;
@@ -1431,7 +1431,7 @@ void QSocks5SocketEngine::close()
         d->data->controlSocket->close();
     }
     d->inboundStreamCount = d->outboundStreamCount = 0;
-#ifndef QT_NO_UDPSOCKET
+#ifndef BOBUI_NO_UDPSOCKET
     if (d->udpData && d->udpData->udpSocket)
         d->udpData->udpSocket->close();
 #endif
@@ -1442,7 +1442,7 @@ qint64 QSocks5SocketEngine::bytesAvailable() const
     Q_D(const QSocks5SocketEngine);
     if (d->mode == QSocks5SocketEnginePrivate::ConnectMode)
         return d->connectData->readBuffer.size();
-#ifndef QT_NO_UDPSOCKET
+#ifndef BOBUI_NO_UDPSOCKET
     else if (d->mode == QSocks5SocketEnginePrivate::UdpAssociateMode
              && !d->udpData->pendingDatagrams.isEmpty())
         return d->udpData->pendingDatagrams.constFirst().data.size();
@@ -1470,7 +1470,7 @@ qint64 QSocks5SocketEngine::read(char *data, qint64 maxlen)
         const qint64 copy = d->connectData->readBuffer.read(data, maxlen);
         QSOCKS5_DEBUG << "read" << dump(QByteArray(data, copy));
         return copy;
-#ifndef QT_NO_UDPSOCKET
+#ifndef BOBUI_NO_UDPSOCKET
     } else if (d->mode == QSocks5SocketEnginePrivate::UdpAssociateMode) {
         return readDatagram(data, maxlen);
 #endif
@@ -1507,7 +1507,7 @@ qint64 QSocks5SocketEngine::write(const char *data, qint64 len)
         d->data->controlSocket->waitForBytesWritten(0);
         //NB: returning len rather than written for the OK case, because the "sealing" may increase the length
         return len;
-#ifndef QT_NO_UDPSOCKET
+#ifndef BOBUI_NO_UDPSOCKET
     } else if (d->mode == QSocks5SocketEnginePrivate::UdpAssociateMode) {
         // send to connected address
         return writeDatagram(data, len, QIpPacketHeader(d->peerAddress, d->peerPort));
@@ -1517,8 +1517,8 @@ qint64 QSocks5SocketEngine::write(const char *data, qint64 len)
     return -1;
 }
 
-#ifndef QT_NO_UDPSOCKET
-#ifndef QT_NO_NETWORKINTERFACE
+#ifndef BOBUI_NO_UDPSOCKET
+#ifndef BOBUI_NO_NETWORKINTERFACE
 bool QSocks5SocketEngine::joinMulticastGroup(const QHostAddress &,
                                              const QNetworkInterface &)
 {
@@ -1547,7 +1547,7 @@ bool QSocks5SocketEngine::setMulticastInterface(const QNetworkInterface &)
              "Operation on socket is not supported"_L1);
     return false;
 }
-#endif // QT_NO_NETWORKINTERFACE
+#endif // BOBUI_NO_NETWORKINTERFACE
 
 bool QSocks5SocketEngine::hasPendingDatagrams() const
 {
@@ -1565,11 +1565,11 @@ qint64 QSocks5SocketEngine::pendingDatagramSize() const
         return d->udpData->pendingDatagrams.head().data.size();
     return 0;
 }
-#endif // QT_NO_UDPSOCKET
+#endif // BOBUI_NO_UDPSOCKET
 
 qint64 QSocks5SocketEngine::readDatagram(char *data, qint64 maxlen, QIpPacketHeader *header, PacketHeaderOptions)
 {
-#ifndef QT_NO_UDPSOCKET
+#ifndef BOBUI_NO_UDPSOCKET
     Q_D(QSocks5SocketEngine);
 
     if (d->udpData->pendingDatagrams.isEmpty())
@@ -1588,12 +1588,12 @@ qint64 QSocks5SocketEngine::readDatagram(char *data, qint64 maxlen, QIpPacketHea
     Q_UNUSED(maxlen);
     Q_UNUSED(header);
     return -1;
-#endif // QT_NO_UDPSOCKET
+#endif // BOBUI_NO_UDPSOCKET
 }
 
 qint64 QSocks5SocketEngine::writeDatagram(const char *data, qint64 len, const QIpPacketHeader &header)
 {
-#ifndef QT_NO_UDPSOCKET
+#ifndef BOBUI_NO_UDPSOCKET
     Q_D(QSocks5SocketEngine);
 
     // it is possible to send with out first binding with udp, but socks5 requires a bind.
@@ -1609,7 +1609,7 @@ qint64 QSocks5SocketEngine::writeDatagram(const char *data, qint64 len, const QI
     QByteArray outBuf;
     outBuf.reserve(270 + len);
     outBuf.append(3, '\0');
-    if (!qt_socks5_set_host_address_and_port(header.destinationAddress, header.destinationPort, &outBuf)) {
+    if (!bobui_socks5_set_host_address_and_port(header.destinationAddress, header.destinationPort, &outBuf)) {
         QSOCKS5_DEBUG << "error setting address" << header.destinationAddress << " : "
                       << header.destinationPort;
         //### set error code ....
@@ -1637,7 +1637,7 @@ qint64 QSocks5SocketEngine::writeDatagram(const char *data, qint64 len, const QI
     Q_UNUSED(len);
     Q_UNUSED(header);
     return -1;
-#endif // QT_NO_UDPSOCKET
+#endif // BOBUI_NO_UDPSOCKET
 }
 
 qint64 QSocks5SocketEngine::bytesToWrite() const
@@ -1734,7 +1734,7 @@ bool QSocks5SocketEngine::waitForRead(QDeadlineTimer deadline, bool *timedOut)
                 return false;
             }
         }
-#ifndef QT_NO_UDPSOCKET
+#ifndef BOBUI_NO_UDPSOCKET
     } else {
         while (!d->readNotificationActivated) {
             if (!d->udpData->udpSocket->waitForReadyRead(deadline.remainingTime())) {
@@ -1744,7 +1744,7 @@ bool QSocks5SocketEngine::waitForRead(QDeadlineTimer deadline, bool *timedOut)
                 return false;
             }
         }
-#endif // QT_NO_UDPSOCKET
+#endif // BOBUI_NO_UDPSOCKET
     }
 
 
@@ -1819,7 +1819,7 @@ void QSocks5SocketEngine::setReadNotificationEnabled(bool enable)
         && enable) {
         if (d->mode == QSocks5SocketEnginePrivate::ConnectMode)
             emitSignal = !d->connectData->readBuffer.isEmpty();
-#ifndef QT_NO_UDPSOCKET
+#ifndef BOBUI_NO_UDPSOCKET
         else if (d->mode == QSocks5SocketEnginePrivate::UdpAssociateMode)
             emitSignal = !d->udpData->pendingDatagrams.isEmpty();
 #endif
@@ -1891,6 +1891,6 @@ QAbstractSocketEngine *QSocks5SocketEngineHandler::createSocketEngine(qintptr so
     return nullptr;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsocks5socketengine_p.cpp"

@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef INFORMATIONWINDOW_H
 #define INFORMATIONWINDOW_H
 
-#include <QtWidgets>
-#include <QtSql>
+#include <BobUIWidgets>
+#include <BobUISql>
 
 //! [0]
 class InformationWindow : public QDialog
@@ -36,7 +36,7 @@ private:
 
     QComboBox *imageFileEditor = nullptr;
     QLabel *itemText = nullptr;
-    QTextEdit *descriptionEditor = nullptr;
+    BOBUIextEdit *descriptionEditor = nullptr;
 
     QPushButton *closeButton = nullptr;
     QPushButton *submitButton = nullptr;

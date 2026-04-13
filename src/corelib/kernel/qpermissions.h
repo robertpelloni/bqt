@@ -1,30 +1,30 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPERMISSIONS_H
 #define QPERMISSIONS_H
 
 #if 0
-#pragma qt_class(QPermissions)
+#pragma bobui_class(QPermissions)
 #endif
 
-#include <QtCore/qglobal.h>
-#include <QtCore/qtmetamacros.h>
-#include <QtCore/qvariant.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/bobuimetamacros.h>
+#include <BobUICore/qvariant.h>
 
-#include <QtCore/qshareddata_impl.h>
-#include <QtCore/qtypeinfo.h>
-#include <QtCore/qmetatype.h>
+#include <BobUICore/qshareddata_impl.h>
+#include <BobUICore/bobuiypeinfo.h>
+#include <BobUICore/qmetatype.h>
 
 #include <optional>
 
 #if !defined(Q_QDOC)
-QT_REQUIRE_CONFIG(permissions);
+BOBUI_REQUIRE_CONFIG(permissions);
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 class QDebug;
 #endif
 
@@ -44,7 +44,7 @@ public:
     template <typename T, if_permission<T> = true>
     QPermission(const T &t) : m_data(QVariant::fromValue(t)) {}
 
-    Qt::PermissionStatus status() const { return m_status; }
+    BobUI::PermissionStatus status() const { return m_status; }
 
     QMetaType type() const { return m_data.metaType(); }
 
@@ -56,24 +56,24 @@ public:
         return std::nullopt;
     }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
     friend Q_CORE_EXPORT QDebug operator<<(QDebug debug, const QPermission &);
 #endif
 
 private:
     Q_CORE_EXPORT const void *data(QMetaType id) const;
 
-    Qt::PermissionStatus m_status = Qt::PermissionStatus::Undetermined;
+    BobUI::PermissionStatus m_status = BobUI::PermissionStatus::Undetermined;
     QVariant m_data;
 
     friend class QCoreApplication;
 };
 
 template <typename T>
-constexpr bool QPermission::is_permission_v<T, typename T::QtPermissionHelper> = true;
+constexpr bool QPermission::is_permission_v<T, typename T::BobUIPermissionHelper> = true;
 
-#define QT_PERMISSION(ClassName) \
-    using QtPermissionHelper = void; \
+#define BOBUI_PERMISSION(ClassName) \
+    using BobUIPermissionHelper = void; \
     friend class QPermission; \
     union U { \
         U() : d(nullptr) {} \
@@ -89,7 +89,7 @@ public: \
         : u{other.u} { other.u.d = nullptr; } \
     Q_CORE_EXPORT ~ClassName(); \
     Q_CORE_EXPORT ClassName &operator=(const ClassName &other) noexcept; \
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(ClassName) \
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(ClassName) \
     void swap(ClassName &other) noexcept { std::swap(u, other.u); } \
 private: \
     /*end*/
@@ -123,7 +123,7 @@ private:
         Availability availability;
         char reserved[sizeof(void*) - sizeof(accuracy) - sizeof(availability)];
     };
-    QT_PERMISSION(QLocationPermission)
+    BOBUI_PERMISSION(QLocationPermission)
 };
 Q_DECLARE_SHARED(QLocationPermission)
 
@@ -146,7 +146,7 @@ private:
         AccessMode mode;
         char reserved[sizeof(void*) - sizeof(mode)];
     };
-    QT_PERMISSION(QCalendarPermission)
+    BOBUI_PERMISSION(QCalendarPermission)
 };
 Q_DECLARE_SHARED(QCalendarPermission)
 
@@ -169,7 +169,7 @@ private:
         AccessMode mode;
         char reserved[sizeof(void*) - sizeof(mode)];
     };
-    QT_PERMISSION(QContactsPermission)
+    BOBUI_PERMISSION(QContactsPermission)
 };
 Q_DECLARE_SHARED(QContactsPermission)
 
@@ -194,7 +194,7 @@ private:
         CommunicationMode mode;
         char reserved[sizeof(void*) - sizeof(mode)];
     };
-    QT_PERMISSION(QBluetoothPermission)
+    BOBUI_PERMISSION(QBluetoothPermission)
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS(QBluetoothPermission::CommunicationModes)
 Q_DECLARE_SHARED(QBluetoothPermission)
@@ -204,16 +204,16 @@ Q_DECLARE_SHARED(QBluetoothPermission)
     class ClassName \
     { \
         struct ShortData { char reserved[sizeof(void*)]; }; \
-        QT_PERMISSION(ClassName) \
+        BOBUI_PERMISSION(ClassName) \
     }; \
     Q_DECLARE_SHARED(ClassName)
 
 Q_DECLARE_MINIMAL_PERMISSION(QCameraPermission)
 Q_DECLARE_MINIMAL_PERMISSION(QMicrophonePermission)
 
-#undef QT_PERMISSION
+#undef BOBUI_PERMISSION
 #undef Q_DECLARE_MINIMAL_PERMISSION
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPERMISSIONS_H

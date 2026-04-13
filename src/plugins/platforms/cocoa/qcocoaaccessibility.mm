@@ -1,20 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <AppKit/AppKit.h>
 
 #include "qcocoaaccessibility.h"
 #include "qcocoaaccessibilityelement.h"
-#include <QtGui/qaccessible.h>
-#include <QtCore/qmap.h>
+#include <BobUIGui/qaccessible.h>
+#include <BobUICore/qmap.h>
 #include <private/qcore_mac_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 
 QCocoaAccessibility::QCocoaAccessibility()
 {
@@ -170,27 +170,27 @@ static void populateRoleMap()
 */
 NSString *macRole(QAccessibleInterface *interface)
 {
-    QAccessible::Role qtRole = interface->role();
+    QAccessible::Role bobuiRole = interface->role();
     QMacAccessibiltyRoleMap &roleMap = *qMacAccessibiltyRoleMap();
 
     if (roleMap.isEmpty())
         populateRoleMap();
 
-    // MAC_ACCESSIBILTY_DEBUG() << "role for" << interface.object() << "interface role" << Qt::hex << qtRole;
+    // MAC_ACCESSIBILTY_DEBUG() << "role for" << interface.object() << "interface role" << BobUI::hex << bobuiRole;
 
-    if (roleMap.contains(qtRole)) {
-       // MAC_ACCESSIBILTY_DEBUG() << "return" <<  roleMap[qtRole];
-        if (roleMap[qtRole] == NSAccessibilityComboBoxRole && !interface->state().editable)
+    if (roleMap.contains(bobuiRole)) {
+       // MAC_ACCESSIBILTY_DEBUG() << "return" <<  roleMap[bobuiRole];
+        if (roleMap[bobuiRole] == NSAccessibilityComboBoxRole && !interface->state().editable)
             return NSAccessibilityMenuButtonRole;
-        if (roleMap[qtRole] == NSAccessibilityTextFieldRole && interface->state().multiLine)
+        if (roleMap[bobuiRole] == NSAccessibilityTextFieldRole && interface->state().multiLine)
             return NSAccessibilityTextAreaRole;
-        return roleMap[qtRole];
+        return roleMap[bobuiRole];
     }
 
-    // Treat unknown Qt roles as generic group container items. Returning
+    // Treat unknown BobUI roles as generic group container items. Returning
     // NSAccessibilityUnknownRole is also possible but makes the screen
     // reader focus on the item instead of passing focus to child items.
-    // MAC_ACCESSIBILTY_DEBUG() << "return NSAccessibilityGroupRole for unknown Qt role";
+    // MAC_ACCESSIBILTY_DEBUG() << "return NSAccessibilityGroupRole for unknown BobUI role";
     return NSAccessibilityGroupRole;
 }
 
@@ -250,7 +250,7 @@ bool shouldBeIgnored(QAccessibleInterface *interface)
         // VoiceOver focusing on tool tips can be confusing. The contents of the
         // tool tip is available through the description attribute anyway, so
         // we disable accessibility for tool tips.
-        if (className == "QTipLabel"_ba)
+        if (className == "BOBUIipLabel"_ba)
             return true;
     }
 
@@ -291,27 +291,27 @@ NSArray<QMacAccessibilityElement *> *unignoredChildren(QAccessibleInterface *int
 
 /*
     Translates a predefined QAccessibleActionInterface action to a Mac action constant.
-    Returns 0 if the Qt Action has no mac equivalent. Ownership of the NSString is
+    Returns 0 if the BobUI Action has no mac equivalent. Ownership of the NSString is
     not transferred.
 */
-NSString *getTranslatedAction(const QString &qtAction)
+NSString *getTranslatedAction(const QString &bobuiAction)
 {
-    if (qtAction == QAccessibleActionInterface::pressAction())
+    if (bobuiAction == QAccessibleActionInterface::pressAction())
         return NSAccessibilityPressAction;
-    else if (qtAction == QAccessibleActionInterface::increaseAction())
+    else if (bobuiAction == QAccessibleActionInterface::increaseAction())
         return NSAccessibilityIncrementAction;
-    else if (qtAction == QAccessibleActionInterface::decreaseAction())
+    else if (bobuiAction == QAccessibleActionInterface::decreaseAction())
         return NSAccessibilityDecrementAction;
-    else if (qtAction == QAccessibleActionInterface::showMenuAction())
+    else if (bobuiAction == QAccessibleActionInterface::showMenuAction())
         return NSAccessibilityShowMenuAction;
-    else if (qtAction == QAccessibleActionInterface::setFocusAction()) // Not 100% sure on this one
+    else if (bobuiAction == QAccessibleActionInterface::setFocusAction()) // Not 100% sure on this one
         return NSAccessibilityRaiseAction;
-    else if (qtAction == QAccessibleActionInterface::toggleAction())
+    else if (bobuiAction == QAccessibleActionInterface::toggleAction())
         return NSAccessibilityPressAction;
 
     // Not translated:
     //
-    // Qt:
+    // BobUI:
     //     static const QString &checkAction();
     //     static const QString &uncheckAction();
     //
@@ -327,7 +327,7 @@ NSString *getTranslatedAction(const QString &qtAction)
 
 /*
     Translates between a Mac action constant and a QAccessibleActionInterface action
-    Returns an empty QString if there is no Qt predefined equivalent.
+    Returns an empty QString if there is no BobUI predefined equivalent.
 */
 QString translateAction(NSString *nsAction, QAccessibleInterface *interface)
 {
@@ -355,9 +355,9 @@ QString translateAction(NSString *nsAction, QAccessibleInterface *interface)
 bool hasValueAttribute(QAccessibleInterface *interface)
 {
     Q_ASSERT(interface);
-    const QAccessible::Role qtrole = interface->role();
-    if (qtrole == QAccessible::EditableText
-            || qtrole == QAccessible::StaticText
+    const QAccessible::Role bobuirole = interface->role();
+    if (bobuirole == QAccessible::EditableText
+            || bobuirole == QAccessible::StaticText
             || interface->valueInterface()
             || interface->state().checkable) {
         return true;
@@ -368,11 +368,11 @@ bool hasValueAttribute(QAccessibleInterface *interface)
 
 id getValueAttribute(QAccessibleInterface *interface)
 {
-    const QAccessible::Role qtrole = interface->role();
-    if (qtrole == QAccessible::StaticText) {
+    const QAccessible::Role bobuirole = interface->role();
+    if (bobuirole == QAccessible::StaticText) {
         return interface->text(QAccessible::Name).toNSString();
     }
-    if (qtrole == QAccessible::EditableText) {
+    if (bobuirole == QAccessible::EditableText) {
         if (QAccessibleTextInterface *textInterface = interface->textInterface()) {
 
             int begin = 0;
@@ -410,7 +410,7 @@ id getValueAttribute(QAccessibleInterface *interface)
 
 } // namespace QCocoaAccessible
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPLATFORMSERVICES_H
 #define QPLATFORMSERVICES_H
@@ -10,16 +10,16 @@
 //
 // This file is part of the QPA API and is not meant to be used
 // in applications. Usage of this API may make your code
-// source and binary incompatible with future versions of Qt.
+// source and binary incompatible with future versions of BobUI.
 //
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qloggingcategory.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qloggingcategory.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_DECLARE_EXPORTED_QT_LOGGING_CATEGORY(lcQpaServices, Q_GUI_EXPORT)
+BOBUI_DECLARE_EXPORTED_BOBUI_LOGGING_CATEGORY(lcQpaServices, Q_GUI_EXPORT)
 
 class QUrl;
 class QWindow;
@@ -56,6 +56,6 @@ public:
     virtual QPlatformServiceColorPicker *colorPicker(QWindow *parent = nullptr);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPLATFORMSERVICES_H

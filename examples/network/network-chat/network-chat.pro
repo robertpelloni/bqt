@@ -10,13 +10,13 @@ SOURCES       = chatdialog.cpp \
                 peermanager.cpp \
                 server.cpp
 FORMS         = chatdialog.ui
-QT           += network widgets
-DEFINES      += QT_USE_QSTRINGBUILDER
-requires(qtConfig(udpsocket))
-requires(qtConfig(listwidget))
+BOBUI           += network widgets
+DEFINES      += BOBUI_USE_QSTRINGBUILDER
+requires(bobuiConfig(udpsocket))
+requires(bobuiConfig(listwidget))
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/network/network-chat
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/network/network-chat
 INSTALLS += target
 
 

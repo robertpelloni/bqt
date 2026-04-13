@@ -1,23 +1,23 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef MINIHTTPSERVER_H
 #define MINIHTTPSERVER_H
 
-#include <QtNetwork/qtnetworkglobal.h>
+#include <BobUINetwork/bobuinetworkglobal.h>
 
-#include <QtNetwork/qtcpserver.h>
-#include <QtNetwork/qtcpsocket.h>
-#if QT_CONFIG(ssl)
-#  include <QtNetwork/qsslsocket.h>
+#include <BobUINetwork/bobuicpserver.h>
+#include <BobUINetwork/bobuicpsocket.h>
+#if BOBUI_CONFIG(ssl)
+#  include <BobUINetwork/qsslsocket.h>
 #endif
-#if QT_CONFIG(localserver)
-#  include <QtNetwork/qlocalserver.h>
-#  include <QtNetwork/qlocalsocket.h>
+#if BOBUI_CONFIG(localserver)
+#  include <BobUINetwork/qlocalserver.h>
+#  include <BobUINetwork/qlocalsocket.h>
 #endif
 
-#include <QtCore/qpointer.h>
-#include <QtCore/qhash.h>
+#include <BobUICore/qpointer.h>
+#include <BobUICore/qhash.h>
 
 #include <utility>
 
@@ -36,7 +36,7 @@ class MiniHttpServerV2 : public QObject
 public:
     struct State;
 
-#if QT_CONFIG(localserver)
+#if BOBUI_CONFIG(localserver)
     void bind(QLocalServer *server)
     {
         Q_ASSERT(!localServer);
@@ -46,11 +46,11 @@ public:
     }
 #endif
 
-    void bind(QTcpServer *server)
+    void bind(BOBUIcpServer *server)
     {
         Q_ASSERT(!tcpServer);
         tcpServer = server;
-        connect(server, &QTcpServer::pendingConnectionAvailable, this,
+        connect(server, &BOBUIcpServer::pendingConnectionAvailable, this,
                 &MiniHttpServerV2::incomingConnection);
     }
 
@@ -60,9 +60,9 @@ public:
     {
         auto copy = std::exchange(clientStates, {});
         for (auto [socket, _] : copy.asKeyValueRange()) {
-            if (auto *tcpSocket = qobject_cast<QTcpSocket *>(socket))
+            if (auto *tcpSocket = qobject_cast<BOBUIcpSocket *>(socket))
                 tcpSocket->disconnectFromHost();
-#if QT_CONFIG(localserver)
+#if BOBUI_CONFIG(localserver)
             else if (auto *localSocket = qobject_cast<QLocalSocket *>(socket))
                 localSocket->disconnectFromServer();
 #endif
@@ -75,7 +75,7 @@ public:
     bool hasPendingConnections() const
     {
         return
-#if QT_CONFIG(localserver)
+#if BOBUI_CONFIG(localserver)
                 (localServer && localServer->hasPendingConnections()) ||
 #endif
                 (tcpServer && tcpServer->hasPendingConnections());
@@ -83,9 +83,9 @@ public:
 
     QString addressForScheme(QStringView scheme) const
     {
-        using namespace Qt::StringLiterals;
+        using namespace BobUI::StringLiterals;
         if (scheme.startsWith("unix"_L1) || scheme.startsWith("local"_L1)) {
-#if QT_CONFIG(localserver)
+#if BOBUI_CONFIG(localserver)
             if (localServer)
                 return localServer->serverName();
 #endif
@@ -100,7 +100,7 @@ public:
     QList<State> peerStates() const { return clientStates.values(); }
 
 protected:
-#if QT_CONFIG(localserver)
+#if BOBUI_CONFIG(localserver)
     void incomingLocalConnection()
     {
         auto *socket = localServer->nextPendingConnection();
@@ -131,14 +131,14 @@ private:
         connect(socket, &QIODevice::readyRead, this, [this, socket]() { readyReadSlot(socket); });
         connect(socket, &QIODevice::bytesWritten, this,
                 [this, socket]() { bytesWrittenSlot(socket); });
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
         if (auto *sslSocket = qobject_cast<QSslSocket *>(socket))
             connect(sslSocket, &QSslSocket::sslErrors, this, &MiniHttpServerV2::slotSslErrors);
 #endif
 
-        if (auto *tcpSocket = qobject_cast<QTcpSocket *>(socket)) {
+        if (auto *tcpSocket = qobject_cast<BOBUIcpSocket *>(socket)) {
             connect(tcpSocket, &QAbstractSocket::errorOccurred, this, &MiniHttpServerV2::slotError);
-#if QT_CONFIG(localserver)
+#if BOBUI_CONFIG(localserver)
         } else if (auto *localSocket = qobject_cast<QLocalSocket *>(socket)) {
             connect(localSocket, &QLocalSocket::errorOccurred, this,
                     [this](QLocalSocket::LocalSocketError error) {
@@ -167,17 +167,17 @@ private:
     }
 
 private slots:
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
     void slotSslErrors(const QList<QSslError> &errors)
     {
-        QTcpSocket *currentClient = qobject_cast<QTcpSocket *>(sender());
+        BOBUIcpSocket *currentClient = qobject_cast<BOBUIcpSocket *>(sender());
         Q_ASSERT(currentClient);
         qDebug() << "slotSslErrors" << currentClient->errorString() << errors;
     }
 #endif
     void slotError(QAbstractSocket::SocketError err)
     {
-        QTcpSocket *currentClient = qobject_cast<QTcpSocket *>(sender());
+        BOBUIcpSocket *currentClient = qobject_cast<BOBUIcpSocket *>(sender());
         Q_ASSERT(currentClient);
         qDebug() << "slotError" << err << currentClient->errorString();
     }
@@ -225,8 +225,8 @@ public slots:
 private:
     QByteArray dataToTransmit = default200Response();
 
-    QTcpServer *tcpServer = nullptr;
-#if QT_CONFIG(localserver)
+    BOBUIcpServer *tcpServer = nullptr;
+#if BOBUI_CONFIG(localserver)
     QLocalServer *localServer = nullptr;
 #endif
 

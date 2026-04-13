@@ -1,10 +1,10 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef Q20UTILITY_H
 #define Q20UTILITY_H
 
-#include <QtCore/qttypetraits.h>
+#include <BobUICore/bobuitypetraits.h>
 
 #include <limits>
 #include <utility>
@@ -13,10 +13,10 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. Types and functions defined in this
+// This file is not part of the BobUI API. Types and functions defined in this
 // file can reliably be replaced by their std counterparts, once available.
 // You may use these definitions in your own code, but be aware that we
-// will remove them once Qt depends on the C++ version that supports
+// will remove them once BobUI depends on the C++ version that supports
 // them in namespace std. There will be NO deprecation warning, the
 // definitions will JUST go away.
 //
@@ -25,7 +25,7 @@
 // We mean it.
 //
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace q20 {
 #ifdef __cpp_lib_integer_comparison_functions
@@ -43,9 +43,9 @@ constexpr void checkTypeCompatibility() noexcept
 {
     // Both T and U are standard integer types or extended integer types,
     // see https://eel.is/c++draft/utility.intcmp#1
-    static_assert(QtPrivate::is_standard_or_extended_integer_type_v<T>,
+    static_assert(BobUIPrivate::is_standard_or_extended_integer_type_v<T>,
                   "Integer types should be used for left T class.");
-    static_assert(QtPrivate::is_standard_or_extended_integer_type_v<U>,
+    static_assert(BobUIPrivate::is_standard_or_extended_integer_type_v<U>,
                   "Integer types should be used for right U class.");
 }
 }
@@ -133,6 +133,6 @@ constexpr T exchange(T& obj, U&& newValue)
 #endif
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif /* Q20UTILITY_H */

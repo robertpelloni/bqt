@@ -1,25 +1,25 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QCONTIGUOUSCACHE_H
 #define QCONTIGUOUSCACHE_H
 
-#include <QtCore/qatomic.h>
-#include <QtCore/qassert.h>
-#include <QtCore/qtclasshelpermacros.h>
-#include <QtCore/qtcoreexports.h>
-#include <QtCore/qminmax.h>
-#include <QtCore/qttypetraits.h>
-#include <QtCore/qtypeinfo.h>
+#include <BobUICore/qatomic.h>
+#include <BobUICore/qassert.h>
+#include <BobUICore/bobuiclasshelpermacros.h>
+#include <BobUICore/bobuicoreexports.h>
+#include <BobUICore/qminmax.h>
+#include <BobUICore/bobuitypetraits.h>
+#include <BobUICore/bobuiypeinfo.h>
 
 #include <climits>
 #include <limits>
 #include <new>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#undef QT_QCONTIGUOUSCACHE_DEBUG
+#undef BOBUI_QCONTIGUOUSCACHE_DEBUG
 
 
 struct Q_CORE_EXPORT QContiguousCacheData
@@ -33,7 +33,7 @@ struct Q_CORE_EXPORT QContiguousCacheData
     static QContiguousCacheData *allocateData(qsizetype size, qsizetype alignment);
     static void freeData(QContiguousCacheData *data);
 
-#ifdef QT_QCONTIGUOUSCACHE_DEBUG
+#ifdef BOBUI_QCONTIGUOUSCACHE_DEBUG
     void dump() const;
 #endif
 };
@@ -46,7 +46,7 @@ struct QContiguousCacheTypedData : public QContiguousCacheData
 
 template<typename T>
 class QContiguousCache {
-    static_assert(std::is_nothrow_destructible_v<T>, "Types with throwing destructors are not supported in Qt containers.");
+    static_assert(std::is_nothrow_destructible_v<T>, "Types with throwing destructors are not supported in BobUI containers.");
 
     typedef QContiguousCacheTypedData<T> Data;
     Data *d;
@@ -69,12 +69,12 @@ public:
     inline bool isDetached() const { return d->ref.loadRelaxed() == 1; }
 
     QContiguousCache<T> &operator=(const QContiguousCache<T> &other);
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QContiguousCache)
-    void swap(QContiguousCache &other) noexcept { qt_ptr_swap(d, other.d); }
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QContiguousCache)
+    void swap(QContiguousCache &other) noexcept { bobui_ptr_swap(d, other.d); }
 
 #ifndef Q_QDOC
     template <typename U = T>
-    QTypeTraits::compare_eq_result<U> operator==(const QContiguousCache<T> &other) const
+    BOBUIypeTraits::compare_eq_result<U> operator==(const QContiguousCache<T> &other) const
     {
         if (other.d == d)
             return true;
@@ -89,7 +89,7 @@ public:
         return true;
     }
     template <typename U = T>
-    QTypeTraits::compare_eq_result<U> operator!=(const QContiguousCache<T> &other) const
+    BOBUIypeTraits::compare_eq_result<U> operator!=(const QContiguousCache<T> &other) const
     { return !(*this == other); }
 #else
     bool operator==(const QContiguousCache &other) const;
@@ -139,7 +139,7 @@ public:
 
     inline void normalizeIndexes() { d->offset = d->start; }
 
-#ifdef QT_QCONTIGUOUSCACHE_DEBUG
+#ifdef BOBUI_QCONTIGUOUSCACHE_DEBUG
     void dump() const { d->dump(); }
 #endif
 private:
@@ -216,7 +216,7 @@ template <typename T>
 void QContiguousCache<T>::clear()
 {
     if (d->ref.loadRelaxed() == 1) {
-        if (QTypeInfo<T>::isComplex) {
+        if (BOBUIypeInfo<T>::isComplex) {
             qsizetype oldcount = d->count;
             T * i = d->array + d->start;
             T * e = d->array + d->alloc;
@@ -266,7 +266,7 @@ QContiguousCache<T> &QContiguousCache<T>::operator=(const QContiguousCache<T> &o
 template <typename T>
 void QContiguousCache<T>::freeData(Data *x)
 {
-    if (QTypeInfo<T>::isComplex) {
+    if (BOBUIypeInfo<T>::isComplex) {
         qsizetype oldcount = d->count;
         T * i = d->array + d->start;
         T * e = d->array + d->alloc;
@@ -407,7 +407,7 @@ inline void QContiguousCache<T>::removeFirst()
     Q_ASSERT(d->count > 0);
     detach();
     d->count--;
-    if (QTypeInfo<T>::isComplex)
+    if (BOBUIypeInfo<T>::isComplex)
         (d->array + d->start)->~T();
     d->start = (d->start + 1) % d->alloc;
     d->offset++;
@@ -419,7 +419,7 @@ inline void QContiguousCache<T>::removeLast()
     Q_ASSERT(d->count > 0);
     detach();
     d->count--;
-    if (QTypeInfo<T>::isComplex)
+    if (BOBUIypeInfo<T>::isComplex)
         (d->array + (d->start + d->count) % d->alloc)->~T();
 }
 
@@ -431,6 +431,6 @@ template <typename T>
 inline T QContiguousCache<T>::takeLast()
 { T t = std::move(last()); removeLast(); return t; }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

@@ -19,7 +19,7 @@ OmniMasterClock::OmniMasterClock(QObject *parent)
     setObjectName("OmniMasterClock");
 
     // The UI polls the DSP time every ~16ms (roughly 60fps)
-    connect(&m_uiSyncTimer, &QTimer::timeout, this, &OmniMasterClock::onUiSyncTick);
+    connect(&m_uiSyncTimer, &BOBUIimer::timeout, this, &OmniMasterClock::onUiSyncTick);
 }
 
 OmniMasterClock::~OmniMasterClock() {

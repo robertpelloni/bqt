@@ -1,13 +1,13 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qhttp1configuration.h"
 
-#include <QtCore/private/qnumeric_p.h>
-#include <QtCore/qhashfunctions.h>
+#include <BobUICore/private/qnumeric_p.h>
+#include <BobUICore/qhashfunctions.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // QHttp1ConfigurationPrivate is unused until we need it:
 static_assert(sizeof(QHttp1Configuration) == sizeof(void*),
@@ -20,7 +20,7 @@ static_assert(sizeof(QHttp1Configuration) == sizeof(void*),
     \since 6.5
 
     \reentrant
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
     \ingroup network
     \ingroup shared
 
@@ -89,7 +89,7 @@ QHttp1Configuration::~QHttp1Configuration()
 */
 void QHttp1Configuration::setNumberOfConnectionsPerHost(qsizetype number)
 {
-    auto n = qt_saturate<std::uint8_t>(number);
+    auto n = bobui_saturate<std::uint8_t>(number);
     if (n == 0)
         return;
     u.data.numConnectionsPerHost = n;
@@ -149,4 +149,4 @@ size_t QHttp1Configuration::hash(size_t seed) const noexcept
     return qHash(u.data.numConnectionsPerHost, seed);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

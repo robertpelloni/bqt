@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #ifndef UIC_H
 #define UIC_H
@@ -11,9 +11,9 @@
 #include <qstack.h>
 #include <qxmlstream.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-class QTextStream;
+class BOBUIextStream;
 class QIODevice;
 
 class Driver;
@@ -38,7 +38,7 @@ public:
     inline Driver *driver() const
     { return drv; }
 
-    inline QTextStream &output()
+    inline BOBUIextStream &output()
     { return out; }
 
     inline const Option &option() const
@@ -75,13 +75,13 @@ private:
     void writeHeaderProtectionEnd();
 
     Driver *drv;
-    QTextStream &out;
+    BOBUIextStream &out;
     Option &opt;
     DatabaseInfo info;
     CustomWidgetsInfo cWidgetsInfo;
     QString pixFunction;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // UIC_H

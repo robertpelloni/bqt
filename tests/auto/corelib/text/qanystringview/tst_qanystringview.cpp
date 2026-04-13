@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "../qstringview/arrays_of_unknown_bounds.h"
 
@@ -10,13 +10,13 @@
 #include <QString>
 #include <QStringBuilder>
 #include <QVarLengthArray>
-#if QT_CONFIG(cpp_winrt)
-#  include <private/qt_winrtbase_p.h>
+#if BOBUI_CONFIG(cpp_winrt)
+#  include <private/bobui_winrtbase_p.h>
 #endif
 #include <private/qxmlstream_p.h>
 #include <private/qcomparisontesthelper_p.h>
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <string>
 #include <string_view>
@@ -30,8 +30,8 @@
 #include <deque>
 #include <list>
 
-#ifndef QTEST_THROW_ON_FAIL
-# error This test requires QTEST_THROW_ON_FAIL being active.
+#ifndef BOBUIEST_THROW_ON_FAIL
+# error This test requires BOBUIEST_THROW_ON_FAIL being active.
 #endif
 
 #ifdef __cpp_char8_t
@@ -54,7 +54,7 @@
 #  define ONLY_WIN(expr) QSKIP("This is a Windows-only test")
 #endif
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 template <typename T>
 constexpr inline bool CanConvert = std::is_convertible_v<T, QAnyStringView>;
@@ -193,13 +193,13 @@ static_assert(CanConvert<std::array<char16_t, 123>>);
 static_assert(!CanConvert<std::deque<char16_t>>);
 static_assert(!CanConvert<std::list<char16_t>>);
 
-static_assert(CanConvert<QtPrivate::XmlStringRef>);
+static_assert(CanConvert<BobUIPrivate::XmlStringRef>);
 
 //
 // char32_t
 //
 
-// Qt Policy: char32_t isn't supported
+// BobUI Policy: char32_t isn't supported
 
 static_assert(CanConvert<char32_t>); // ... except here
 
@@ -277,10 +277,10 @@ static_assert(!CanConvert<std::list<wchar_t>>);
 
 static_assert(CanConvert<QStringBuilder<QString, QString>>);
 
-#if QT_CONFIG(cpp_winrt)
+#if BOBUI_CONFIG(cpp_winrt)
 
 //
-// winrt::hstring (QTBUG-111886)
+// winrt::hstring (BOBUIBUG-111886)
 //
 
 static_assert(CanConvert<      winrt::hstring >);
@@ -288,9 +288,9 @@ static_assert(CanConvert<const winrt::hstring >);
 static_assert(CanConvert<      winrt::hstring&>);
 static_assert(CanConvert<const winrt::hstring&>);
 
-#endif // QT_CONFIG(cpp_winrt)
+#endif // BOBUI_CONFIG(cpp_winrt)
 
-// In bootstrapped build and in Qt 7+, two lower bits of size() are used as a
+// In bootstrapped build and in BobUI 7+, two lower bits of size() are used as a
 // mask, so check that it is handled correctly, and the mask does not break the
 // actual size
 template <typename Char> struct SampleStrings
@@ -576,7 +576,7 @@ void tst_QAnyStringView::basics() const
 
 void tst_QAnyStringView::debug() const
 {
-    #ifdef QT_SUPPORTS_IS_CONSTANT_EVALUATED
+    #ifdef BOBUI_SUPPORTS_IS_CONSTANT_EVALUATED
     #  define MAYBE_L1(str) str "_L1"
     #  define VERIFY_L1(s) QVERIFY(s.isLatin1())
     #else
@@ -671,7 +671,7 @@ void tst_QAnyStringView::asciiLiteralIsLatin1() const
 void tst_QAnyStringView::fromCharacterSpecial() const
 {
     // Treating 'ä' as a UTF-8 sequence doesn't make sense, as it would be
-    // invalid. And this is not how legacy Qt APIs handled it, either:
+    // invalid. And this is not how legacy BobUI APIs handled it, either:
     QCOMPARE_NE(QAnyStringView('\xE4').tag(), QAnyStringView::Tag::Utf8);
     QCOMPARE_NE(QAnyStringView(u8' ').tag(), QAnyStringView::Tag::Utf8);
 
@@ -936,28 +936,28 @@ void tst_QAnyStringView::conversion_tests(String string) const
 
 void tst_QAnyStringView::comparisonCompiles()
 {
-    QTestPrivate::testAllComparisonOperatorsCompile<QAnyStringView>();
-    QTestPrivate::testAllComparisonOperatorsCompile<QAnyStringView, char16_t>();
-    QTestPrivate::testAllComparisonOperatorsCompile<QAnyStringView, QChar>();
-    QTestPrivate::testAllComparisonOperatorsCompile<QAnyStringView, const char16_t *>();
-    QTestPrivate::testAllComparisonOperatorsCompile<QAnyStringView, const char *>();
-    QTestPrivate::testAllComparisonOperatorsCompile<QAnyStringView, QByteArray>();
-    QTestPrivate::testAllComparisonOperatorsCompile<QAnyStringView, QByteArrayView>();
-    QTestPrivate::testAllComparisonOperatorsCompile<QAnyStringView, QString>();
-    QTestPrivate::testAllComparisonOperatorsCompile<QAnyStringView, QStringView>();
-    QTestPrivate::testAllComparisonOperatorsCompile<QAnyStringView, QUtf8StringView>();
-    QTestPrivate::testAllComparisonOperatorsCompile<QAnyStringView, QLatin1StringView>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QAnyStringView>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QAnyStringView, char16_t>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QAnyStringView, QChar>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QAnyStringView, const char16_t *>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QAnyStringView, const char *>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QAnyStringView, QByteArray>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QAnyStringView, QByteArrayView>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QAnyStringView, QString>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QAnyStringView, QStringView>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QAnyStringView, QUtf8StringView>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QAnyStringView, QLatin1StringView>();
 }
 
 void tst_QAnyStringView::comparison_data()
 {
-    QTest::addColumn<QAnyStringView>("lhs");
-    QTest::addColumn<QAnyStringView>("rhs");
-    QTest::addColumn<int>("csr"); // case sensitive result
-    QTest::addColumn<int>("cir"); // case insensitive result
+    BOBUIest::addColumn<QAnyStringView>("lhs");
+    BOBUIest::addColumn<QAnyStringView>("rhs");
+    BOBUIest::addColumn<int>("csr"); // case sensitive result
+    BOBUIest::addColumn<int>("cir"); // case insensitive result
 
     auto row = [&](QAnyStringView l, QAnyStringView r, int csr, int cir) {
-        QTest::addRow("%s_vs_%s", qPrintable(l.toString()), qPrintable(r.toString()))
+        BOBUIest::addRow("%s_vs_%s", qPrintable(l.toString()), qPrintable(r.toString()))
                 << l << r << csr << cir;
     };
     row(u"aa", u"aa", 0, 0);
@@ -980,50 +980,50 @@ void tst_QAnyStringView::comparison()
     QFETCH(const int, cir);
 
     QCOMPARE(sign(QAnyStringView::compare(lhs, rhs)), csr);
-    QCOMPARE(sign(QAnyStringView::compare(lhs, rhs, Qt::CaseInsensitive)), cir);
+    QCOMPARE(sign(QAnyStringView::compare(lhs, rhs, BobUI::CaseInsensitive)), cir);
 
-    const Qt::strong_ordering ordering = [&csr] {
+    const BobUI::strong_ordering ordering = [&csr] {
         if (csr == 0)
-            return Qt::strong_ordering::equal;
+            return BobUI::strong_ordering::equal;
         else if (csr < 0)
-            return Qt::strong_ordering::less;
+            return BobUI::strong_ordering::less;
         else
-            return Qt::strong_ordering::greater;
+            return BobUI::strong_ordering::greater;
     }();
-    QT_TEST_ALL_COMPARISON_OPS(lhs, rhs, ordering);
+    BOBUI_TEST_ALL_COMPARISON_OPS(lhs, rhs, ordering);
 
     const QString rhs_str = rhs.toString();
-    QT_TEST_ALL_COMPARISON_OPS(lhs, rhs_str, ordering);
+    BOBUI_TEST_ALL_COMPARISON_OPS(lhs, rhs_str, ordering);
 
     const QStringView rhs_sv(rhs_str);
-    QT_TEST_ALL_COMPARISON_OPS(lhs, rhs_sv, ordering);
+    BOBUI_TEST_ALL_COMPARISON_OPS(lhs, rhs_sv, ordering);
 
     if (!rhs_str.contains(QChar(u'\0'))) {
         const char16_t *utfData = reinterpret_cast<const char16_t*>(rhs_str.constData());
-        QT_TEST_ALL_COMPARISON_OPS(lhs, utfData, ordering);
+        BOBUI_TEST_ALL_COMPARISON_OPS(lhs, utfData, ordering);
     }
 
     if (rhs_str.size() == 1) {
         const QChar ch = rhs_str.front();
-        QT_TEST_ALL_COMPARISON_OPS(lhs, ch, ordering);
+        BOBUI_TEST_ALL_COMPARISON_OPS(lhs, ch, ordering);
     }
 
     if (rhs.isLatin1()) {
         const QLatin1StringView rhs_l1 = rhs.asLatin1StringView();
-        QT_TEST_ALL_COMPARISON_OPS(lhs, rhs_l1, ordering);
+        BOBUI_TEST_ALL_COMPARISON_OPS(lhs, rhs_l1, ordering);
     }
 
     const QByteArray rhs_u8 = rhs_str.toUtf8();
 
     const QUtf8StringView rhs_u8sv(rhs_u8.data(), rhs_u8.size());
-    QT_TEST_ALL_COMPARISON_OPS(lhs, rhs_u8sv, ordering);
+    BOBUI_TEST_ALL_COMPARISON_OPS(lhs, rhs_u8sv, ordering);
 
-    QT_TEST_ALL_COMPARISON_OPS(lhs, rhs_u8, ordering);
+    BOBUI_TEST_ALL_COMPARISON_OPS(lhs, rhs_u8, ordering);
     const QByteArrayView rhs_u8view{rhs_u8.begin(), rhs_u8.size()};
-    QT_TEST_ALL_COMPARISON_OPS(lhs, rhs_u8view, ordering);
+    BOBUI_TEST_ALL_COMPARISON_OPS(lhs, rhs_u8view, ordering);
     if (!rhs_str.contains(QChar(u'\0'))) {
         const char *rhs_u8data = rhs_u8.constData();
-        QT_TEST_ALL_COMPARISON_OPS(lhs, rhs_u8data, ordering);
+        BOBUI_TEST_ALL_COMPARISON_OPS(lhs, rhs_u8data, ordering);
     }
 }
 
@@ -1085,5 +1085,5 @@ void tst_QAnyStringView::arg() const
                 u"ä \r \r—c Ç "_s);
 }
 
-QTEST_APPLESS_MAIN(tst_QAnyStringView)
+BOBUIEST_APPLESS_MAIN(tst_QAnyStringView)
 #include "tst_qanystringview.moc"

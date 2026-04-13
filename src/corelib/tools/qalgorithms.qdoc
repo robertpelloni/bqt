@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
-    \headerfile <QtAlgorithms>
-    \inmodule QtCore
+    \headerfile <BobUIAlgorithms>
+    \inmodule BobUICore
     \title Generic Algorithms
     \ingroup funclists
     \keyword generic algorithms
 
-    \brief The <QtAlgorithms> header includes the generic, template-based algorithms.
+    \brief The <BobUIAlgorithms> header includes the generic, template-based algorithms.
 
-    Qt provides a number of global template functions in \c
-    <QtAlgorithms> that work on containers and perform small tasks to
+    BobUI provides a number of global template functions in \c
+    <BobUIAlgorithms> that work on containers and perform small tasks to
     make life easier, such as qDeleteAll(), which invokes \c{operator delete}
     on all items in a given container or in a given range.
     You can use these algorithms with any \l {container
-    class} that provides STL-style iterators, including Qt's QList,
+    class} that provides STL-style iterators, including BobUI's QList,
     QMap, and QHash classes.
 
     Most algorithms take \l {STL-style iterators} as parameters. The
@@ -37,7 +37,7 @@
     and the compiler will produce an error if a requirement isn't met.
 
     The generic algorithms can be used on other container classes
-    than those provided by Qt and STL. The syntax of STL-style
+    than those provided by BobUI and STL. The syntax of STL-style
     iterators is modeled after C++ pointers, so it's possible to use
     plain arrays as containers and plain pointers as iterators.
 
@@ -56,7 +56,7 @@
     \c{*} for retrieving the value stored in the item, and prefix
     \c{++} for advancing to the next item.
 
-    The Qt containers' iterator types (const and non-const) are all
+    The BobUI containers' iterator types (const and non-const) are all
     input iterators.
 
     \section2 Output Iterators
@@ -67,7 +67,7 @@
     writing a value (i.e., \c{*it = val}) and prefix \c{++} for
     advancing to the next item.
 
-    The Qt containers' non-const iterator types are all output
+    The BobUI containers' non-const iterator types are all output
     iterators.
 
     \section2 Forward Iterators
@@ -75,7 +75,7 @@
     A \e{forward iterator} is an iterator that meets the requirements
     of both input iterators and output iterators.
 
-    The Qt containers' non-const iterator types are all forward
+    The BobUI containers' non-const iterator types are all forward
     iterators.
 
     \section2 Bidirectional Iterators
@@ -84,7 +84,7 @@
     requirements of forward iterators but that in addition supports
     prefix \c{--} for iterating backward.
 
-    The Qt containers' non-const iterator types are all bidirectional
+    The BobUI containers' non-const iterator types are all bidirectional
     iterators.
 
     \section2 Random Access Iterators
@@ -106,12 +106,12 @@
 
     QList's non-const iterator type is random access iterator.
 
-    \sa {container classes}, <QtGlobal>
+    \sa {container classes}, <BobUIGlobal>
 */
 
 /*!
     \fn template <typename ForwardIterator> void qDeleteAll(ForwardIterator begin, ForwardIterator end)
-    \relates <QtAlgorithms>
+    \relates <BobUIAlgorithms>
 
     Deletes all the items in the range [\a begin, \a end) using the
     C++ \c delete operator. The item type must be a pointer type (for
@@ -134,7 +134,7 @@
 
 /*!
     \fn template <typename Container> void qDeleteAll(const Container &c)
-    \relates <QtAlgorithms>
+    \relates <BobUIAlgorithms>
 
     \overload
 
@@ -143,7 +143,7 @@
 
 /*!
     \fn uint qPopulationCount(quint8 v)
-    \relates <QtAlgorithms>
+    \relates <BobUIAlgorithms>
     \since 5.2
 
     Returns the number of bits set in \a v. This number is also called
@@ -152,28 +152,28 @@
 
 /*!
     \fn uint qPopulationCount(quint16 v)
-    \relates <QtAlgorithms>
+    \relates <BobUIAlgorithms>
     \since 5.2
     \overload
  */
 
 /*!
     \fn uint qPopulationCount(quint32 v)
-    \relates <QtAlgorithms>
+    \relates <BobUIAlgorithms>
     \since 5.2
     \overload
  */
 
 /*!
     \fn uint qPopulationCount(quint64 v)
-    \relates <QtAlgorithms>
+    \relates <BobUIAlgorithms>
     \since 5.2
     \overload
  */
 
 /*!
     \fn uint qCountTrailingZeroBits(quint8 v)
-    \relates <QtAlgorithms>
+    \relates <BobUIAlgorithms>
     \since 5.6
 
     Returns the number of consecutive zero bits in \a v, when searching from the LSB.
@@ -182,28 +182,28 @@
 
 /*!
     \fn uint qCountTrailingZeroBits(quint16 v)
-    \relates <QtAlgorithms>
+    \relates <BobUIAlgorithms>
     \since 5.6
     \overload
  */
 
 /*!
     \fn uint qCountTrailingZeroBits(quint32 v)
-    \relates <QtAlgorithms>
+    \relates <BobUIAlgorithms>
     \since 5.6
     \overload
  */
 
 /*!
     \fn uint qCountTrailingZeroBits(quint64 v)
-    \relates <QtAlgorithms>
+    \relates <BobUIAlgorithms>
     \since 5.6
     \overload
  */
 
 /*!
     \fn uint qCountLeadingZeroBits(quint8 v)
-    \relates <QtAlgorithms>
+    \relates <BobUIAlgorithms>
     \since 5.6
 
     Returns the number of consecutive zero bits in \a v, when searching from the MSB.
@@ -213,7 +213,7 @@
 
 /*!
     \fn uint qCountLeadingZeroBits(quint16 v)
-    \relates <QtAlgorithms>
+    \relates <BobUIAlgorithms>
     \since 5.6
 
     Returns the number of consecutive zero bits in \a v, when searching from the MSB.
@@ -223,7 +223,7 @@
 
 /*!
     \fn uint qCountLeadingZeroBits(quint32 v)
-    \relates <QtAlgorithms>
+    \relates <BobUIAlgorithms>
     \since 5.6
 
     Returns the number of consecutive zero bits in \a v, when searching from the MSB.
@@ -233,7 +233,7 @@
 
 /*!
     \fn uint qCountLeadingZeroBits(quint64 v)
-    \relates <QtAlgorithms>
+    \relates <BobUIAlgorithms>
     \since 5.6
 
     Returns the number of consecutive zero bits in \a v, when searching from the MSB.
@@ -243,7 +243,7 @@
 
 /*!
     \fn template <typename InputIterator, typename Result, typename Separator = Result, typename Projection = q20::identity> Result qJoin(InputIterator first, InputIterator last, Result init, const Separator &separator, Projection p)
-    \relates <QtAlgorithms>
+    \relates <BobUIAlgorithms>
     \since 6.10
 
     Starts with initial value \a init and cumulatively adds to it each entry in

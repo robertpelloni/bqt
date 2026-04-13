@@ -1,5 +1,5 @@
-QT += widgets
-requires(qtConfig(filedialog))
+BOBUI += widgets
+requires(bobuiConfig(filedialog))
 
 HEADERS     = mainwindow.h \
               pieceslist.h \
@@ -13,5 +13,5 @@ SOURCES     = main.cpp \
 QMAKE_PROJECT_NAME = dndpuzzle
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/draganddrop/puzzle
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/draganddrop/puzzle
 INSTALLS += target

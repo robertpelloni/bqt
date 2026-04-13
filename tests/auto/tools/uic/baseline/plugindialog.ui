@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <comment>
-* Copyright (C) 2016 The Qt Company Ltd.
-* SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+* Copyright (C) 2016 The BobUI Company Ltd.
+* SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 </comment>
  <class>PluginDialog</class>
  <widget class="QDialog" name="PluginDialog">
@@ -44,9 +44,9 @@
     </widget>
    </item>
    <item>
-    <widget class="QTreeWidget" name="treeWidget">
+    <widget class="BOBUIreeWidget" name="treeWidget">
      <property name="textElideMode">
-      <enum>Qt::TextElideMode::ElideNone</enum>
+      <enum>BobUI::TextElideMode::ElideNone</enum>
      </property>
      <column>
       <property name="text">
@@ -87,7 +87,7 @@
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
-      <enum>Qt::Orientation::Horizontal</enum>
+      <enum>BobUI::Orientation::Horizontal</enum>
      </property>
      <property name="standardButtons">
       <set>QDialogButtonBox::StandardButton::Close</set>

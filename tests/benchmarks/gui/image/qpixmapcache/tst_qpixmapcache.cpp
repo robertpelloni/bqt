@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <qtest.h>
+#include <bobuiest.h>
 #include <QPixmapCache>
 
 class tst_QPixmapCache : public QObject
@@ -43,9 +43,9 @@ void tst_QPixmapCache::cleanup()
 
 void tst_QPixmapCache::insert_data()
 {
-    QTest::addColumn<bool>("cacheType");
-    QTest::newRow("QPixmapCache") << true;
-    QTest::newRow("QPixmapCache (int API)") << false;
+    BOBUIest::addColumn<bool>("cacheType");
+    BOBUIest::newRow("QPixmapCache") << true;
+    BOBUIest::newRow("QPixmapCache (int API)") << false;
 }
 
 QList<QPixmapCache::Key> keys;
@@ -69,9 +69,9 @@ void tst_QPixmapCache::insert()
 
 void tst_QPixmapCache::find_data()
 {
-    QTest::addColumn<bool>("cacheType");
-    QTest::newRow("QPixmapCache") << true;
-    QTest::newRow("QPixmapCache (int API)") << false;
+    BOBUIest::addColumn<bool>("cacheType");
+    BOBUIest::newRow("QPixmapCache") << true;
+    BOBUIest::newRow("QPixmapCache (int API)") << false;
 }
 
 void tst_QPixmapCache::find()
@@ -94,9 +94,9 @@ void tst_QPixmapCache::find()
 
 void tst_QPixmapCache::styleUseCaseComplexKey_data()
 {
-    QTest::addColumn<bool>("cacheType");
-    QTest::newRow("QPixmapCache") << true;
-    QTest::newRow("QPixmapCache (int API)") << false;
+    BOBUIest::addColumn<bool>("cacheType");
+    BOBUIest::newRow("QPixmapCache") << true;
+    BOBUIest::newRow("QPixmapCache (int API)") << false;
 }
 
 struct styleStruct {
@@ -167,5 +167,5 @@ void tst_QPixmapCache::styleUseCaseComplexKey()
 }
 
 
-QTEST_MAIN(tst_QPixmapCache)
+BOBUIEST_MAIN(tst_QPixmapCache)
 #include "tst_qpixmapcache.moc"

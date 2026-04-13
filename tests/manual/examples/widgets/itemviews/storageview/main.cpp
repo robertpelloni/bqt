@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Ivan Komissarov
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QApplication>
 #include <QShortcut>
-#include <QTreeView>
+#include <BOBUIreeView>
 
 #include "storagemodel.h"
 
@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    QTreeView view;
+    BOBUIreeView view;
     view.resize(640, 480);
     view.setWindowTitle("Storage View");
     view.setSelectionBehavior(QAbstractItemView::SelectRows);

@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include <qpdfwriter.h>
 
-#ifndef QT_NO_PDF
+#ifndef BOBUI_NO_PDF
 
 #include "qpagedpaintdevice_p.h"
 #include "qpdf_p.h"
 #include "qpdfoutputintent.h"
 
-#include <QtCore/qfile.h>
-#include <QtCore/private/qobject_p.h>
+#include <BobUICore/qfile.h>
+#include <BobUICore/private/qobject_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QPdfWriterPrivate : public QObjectPrivate
 {
@@ -82,7 +82,7 @@ public:
 };
 
 /*! \class QPdfWriter
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QPdfWriter class is a class to generate PDFs
     that can be used as a paint device.
@@ -357,7 +357,7 @@ bool QPdfWriter::newPage()
 
   \value Auto RGB colors are emitted as RGB; CMYK colors are emitted as
   CMYK. Colors of any other color spec are converted to RGB.
-  This is the default since Qt 6.8.
+  This is the default since BobUI 6.8.
 
   \sa QColor, QGradient
 */
@@ -407,8 +407,8 @@ void QPdfWriter::setOutputIntent(const QPdfOutputIntent &intent)
     d->engine->d_func()->outputIntent = intent;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qpdfwriter.cpp"
 
-#endif // QT_NO_PDF
+#endif // BOBUI_NO_PDF

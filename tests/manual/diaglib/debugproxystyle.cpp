@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "debugproxystyle.h"
 #include "eventfilter.h"
@@ -26,41 +26,41 @@ QDebug operator<<(QDebug debug, const QStyleOption *option)
     } else {
         debug << "QStyleOption(";
     }
-    debug << "rect=" << option->rect.width() << 'x' << option->rect.height() << Qt::forcesign
-          << option->rect.x() << option->rect.y() << Qt::noforcesign;
+    debug << "rect=" << option->rect.width() << 'x' << option->rect.height() << BobUI::forcesign
+          << option->rect.x() << option->rect.y() << BobUI::noforcesign;
     if (option->state != QStyle::State_None)
         debug << ", state=" << option->state;
     if (option->styleObject && !option->styleObject->isWidgetType())
-        debug << ", styleObject=" << QtDiag::formatQObject(option->styleObject);
+        debug << ", styleObject=" << BobUIDiag::formatQObject(option->styleObject);
     debug << ')';
     return debug;
 }
 
-namespace QtDiag {
+namespace BobUIDiag {
 
 DebugProxyStyle::DebugProxyStyle(QStyle *style) : QProxyStyle(style)
 {
     const qreal devicePixelRatio = qApp->devicePixelRatio();
-    qDebug() << __FUNCTION__ << QT_VERSION_STR
+    qDebug() << __FUNCTION__ << BOBUI_VERSION_STR
         << QGuiApplication::platformName()
         << style->objectName() << "devicePixelRatio=" << devicePixelRatio;
 }
 
 void DebugProxyStyle::drawPrimitive(QStyle::PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
 {
-    qDebug() << __FUNCTION__ << "element=" << element << option << QtDiag::formatQObject(widget);
+    qDebug() << __FUNCTION__ << "element=" << element << option << BobUIDiag::formatQObject(widget);
     QProxyStyle::drawPrimitive( element, option, painter, widget);
 }
 
 void DebugProxyStyle::drawControl(QStyle::ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
 {
-    qDebug() << __FUNCTION__ << "element=" << element << option << QtDiag::formatQObject(widget);
+    qDebug() << __FUNCTION__ << "element=" << element << option << BobUIDiag::formatQObject(widget);
     QProxyStyle::drawControl(element, option, painter, widget);
 }
 
 void DebugProxyStyle::drawComplexControl(QStyle::ComplexControl control, const QStyleOptionComplex *option, QPainter *painter, const QWidget *widget) const
 {
-    qDebug() << __FUNCTION__ << "control=" << control << option << QtDiag::formatQObject(widget);
+    qDebug() << __FUNCTION__ << "control=" << control << option << BobUIDiag::formatQObject(widget);
     QProxyStyle::drawComplexControl(control, option, painter, widget);
 }
 
@@ -74,7 +74,7 @@ QSize DebugProxyStyle::sizeFromContents(QStyle::ContentsType type, const QStyleO
 {
     const QSize result = QProxyStyle::sizeFromContents(type, option, size, widget);
     qDebug() << __FUNCTION__ << size << "type=" << type << option
-        << QtDiag::formatQObject(widget) << "returns" << result;
+        << BobUIDiag::formatQObject(widget) << "returns" << result;
     return result;
 }
 
@@ -82,7 +82,7 @@ QRect DebugProxyStyle::subElementRect(QStyle::SubElement element, const QStyleOp
 {
     const QRect result = QProxyStyle::subElementRect(element, option, widget);
     qDebug() << __FUNCTION__ << "element=" << element << option
-        << QtDiag::formatQObject(widget) << "returns" << result;
+        << BobUIDiag::formatQObject(widget) << "returns" << result;
     return result;
 }
 
@@ -90,7 +90,7 @@ QRect DebugProxyStyle::subControlRect(QStyle::ComplexControl cc, const QStyleOpt
 {
     const QRect result = QProxyStyle::subControlRect(cc, opt, sc, widget);
     qDebug() << __FUNCTION__ << "cc=" << cc << "sc=" << sc << opt
-        << QtDiag::formatQObject(widget) << "returns" << result;
+        << BobUIDiag::formatQObject(widget) << "returns" << result;
     return result;
 }
 
@@ -113,7 +113,7 @@ int DebugProxyStyle::styleHint(StyleHint hint, const QStyleOption *option, const
                                QStyleHintReturn *returnData) const
 {
     const int result = QProxyStyle::styleHint(hint, option, widget, returnData);
-    qDebug() << __FUNCTION__ << hint << option << QtDiag::formatQObject(widget) << "returnData="
+    qDebug() << __FUNCTION__ << hint << option << BobUIDiag::formatQObject(widget) << "returnData="
         << returnData << "returns" << result;
     return result;
 }
@@ -122,7 +122,7 @@ int DebugProxyStyle::pixelMetric(QStyle::PixelMetric metric, const QStyleOption 
 {
     const int result = QProxyStyle::pixelMetric(metric, option, widget);
     qDebug() << __FUNCTION__ << "metric=" << metric << option
-        << QtDiag::formatQObject(widget) << "returns" << result;
+        << BobUIDiag::formatQObject(widget) << "returns" << result;
     return result;
 }
 
@@ -140,4 +140,4 @@ QPixmap DebugProxyStyle::generatedIconPixmap(QIcon::Mode iconMode, const QPixmap
     return result;
 }
 
-} // namespace QtDiag
+} // namespace BobUIDiag

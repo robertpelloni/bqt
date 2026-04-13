@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'qpagesetupwidget.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,20 +9,20 @@
 #ifndef QPAGESETUPWIDGET_H
 #define QPAGESETUPWIDGET_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QDoubleSpinBox>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QRadioButton>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QComboBox>
+#include <BobUIWidgets/QDoubleSpinBox>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QGroupBox>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QRadioButton>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/QVBoxLayout>
+#include <BobUIWidgets/QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_QPageSetupWidget
 {
@@ -198,7 +198,7 @@ public:
         gridLayout->setObjectName("gridLayout");
         topMargin = new QDoubleSpinBox(groupBox);
         topMargin->setObjectName("topMargin");
-        topMargin->setAlignment(Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter);
+        topMargin->setAlignment(BobUI::AlignmentFlag::AlignRight|BobUI::AlignmentFlag::AlignTrailing|BobUI::AlignmentFlag::AlignVCenter);
         topMargin->setMaximum(999.990000000000009);
 
         gridLayout->addWidget(topMargin, 0, 1, 1, 1);
@@ -211,7 +211,7 @@ public:
 
         leftMargin = new QDoubleSpinBox(groupBox);
         leftMargin->setObjectName("leftMargin");
-        leftMargin->setAlignment(Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter);
+        leftMargin->setAlignment(BobUI::AlignmentFlag::AlignRight|BobUI::AlignmentFlag::AlignTrailing|BobUI::AlignmentFlag::AlignVCenter);
         leftMargin->setMaximum(999.990000000000009);
 
         horizontalLayout->addWidget(leftMargin);
@@ -222,7 +222,7 @@ public:
 
         rightMargin = new QDoubleSpinBox(groupBox);
         rightMargin->setObjectName("rightMargin");
-        rightMargin->setAlignment(Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter);
+        rightMargin->setAlignment(BobUI::AlignmentFlag::AlignRight|BobUI::AlignmentFlag::AlignTrailing|BobUI::AlignmentFlag::AlignVCenter);
         rightMargin->setMaximum(999.990000000000009);
 
         horizontalLayout->addWidget(rightMargin);
@@ -240,7 +240,7 @@ public:
 
         bottomMargin = new QDoubleSpinBox(groupBox);
         bottomMargin->setObjectName("bottomMargin");
-        bottomMargin->setAlignment(Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter);
+        bottomMargin->setAlignment(BobUI::AlignmentFlag::AlignRight|BobUI::AlignmentFlag::AlignTrailing|BobUI::AlignmentFlag::AlignVCenter);
         bottomMargin->setMaximum(999.990000000000009);
 
         gridLayout->addWidget(bottomMargin, 2, 1, 1, 1);
@@ -290,12 +290,12 @@ public:
 
         gridLayout_3->addItem(verticalSpacer, 6, 0, 1, 1);
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
         pageSizeLabel->setBuddy(pageSizeCombo);
         widthLabel->setBuddy(pageWidth);
         heightLabel->setBuddy(pageHeight);
         paperSourceLabel->setBuddy(paperSource);
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
         retranslateUi(QPageSetupWidget);
 
@@ -316,30 +316,30 @@ public:
         reverseLandscape->setText(QCoreApplication::translate("QPageSetupWidget", "Reverse landscape", nullptr));
         reversePortrait->setText(QCoreApplication::translate("QPageSetupWidget", "Reverse portrait", nullptr));
         groupBox->setTitle(QCoreApplication::translate("QPageSetupWidget", "Margins", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         topMargin->setToolTip(QCoreApplication::translate("QPageSetupWidget", "top margin", nullptr));
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(tooltip)
+#if BOBUI_CONFIG(accessibility)
         topMargin->setAccessibleName(QCoreApplication::translate("QPageSetupWidget", "top margin", nullptr));
-#endif // QT_CONFIG(accessibility)
-#if QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(accessibility)
+#if BOBUI_CONFIG(tooltip)
         leftMargin->setToolTip(QCoreApplication::translate("QPageSetupWidget", "left margin", nullptr));
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(tooltip)
+#if BOBUI_CONFIG(accessibility)
         leftMargin->setAccessibleName(QCoreApplication::translate("QPageSetupWidget", "left margin", nullptr));
-#endif // QT_CONFIG(accessibility)
-#if QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(accessibility)
+#if BOBUI_CONFIG(tooltip)
         rightMargin->setToolTip(QCoreApplication::translate("QPageSetupWidget", "right margin", nullptr));
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(tooltip)
+#if BOBUI_CONFIG(accessibility)
         rightMargin->setAccessibleName(QCoreApplication::translate("QPageSetupWidget", "right margin", nullptr));
-#endif // QT_CONFIG(accessibility)
-#if QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(accessibility)
+#if BOBUI_CONFIG(tooltip)
         bottomMargin->setToolTip(QCoreApplication::translate("QPageSetupWidget", "bottom margin", nullptr));
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(tooltip)
+#if BOBUI_CONFIG(accessibility)
         bottomMargin->setAccessibleName(QCoreApplication::translate("QPageSetupWidget", "bottom margin", nullptr));
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)
         pagesPerSheetButtonGroup->setTitle(QCoreApplication::translate("QPageSetupWidget", "Page Layout", nullptr));
         label->setText(QCoreApplication::translate("QPageSetupWidget", "Page order:", nullptr));
         label_2->setText(QCoreApplication::translate("QPageSetupWidget", "Pages per sheet:", nullptr));
@@ -351,6 +351,6 @@ namespace Ui {
     class QPageSetupWidget: public Ui_QPageSetupWidget {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPAGESETUPWIDGET_H

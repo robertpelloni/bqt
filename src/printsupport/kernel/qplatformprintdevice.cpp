@@ -1,17 +1,17 @@
 // Copyright (C) 2014 John Layt <jlayt@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qplatformprintdevice.h"
 
 #include "qprintdevice_p.h"
 
-#include <QtCore/qcoreapplication.h>
-#include <QtGui/qpagelayout.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUIGui/qpagelayout.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
 
 QPlatformPrintDevice::QPlatformPrintDevice(const QString &id)
     : m_id(id),
@@ -25,7 +25,7 @@ QPlatformPrintDevice::QPlatformPrintDevice(const QString &id)
       m_haveOutputBins(false),
       m_haveDuplexModes(false),
       m_haveColorModes(false)
-#if QT_CONFIG(mimetype)
+#if BOBUI_CONFIG(mimetype)
     , m_haveMimeTypes(false)
 #endif
 {
@@ -322,7 +322,7 @@ QList<QPrint::ColorMode> QPlatformPrintDevice::supportedColorModes() const
     return m_colorModes;
 }
 
-#if QT_CONFIG(mimetype)
+#if BOBUI_CONFIG(mimetype)
 void QPlatformPrintDevice::loadMimeTypes() const
 {
 }
@@ -351,7 +351,7 @@ bool QPlatformPrintDevice::isFeatureAvailable(QPrintDevice::PrintDevicePropertyK
     return false;
 }
 
-#if QT_CONFIG(mimetype)
+#if BOBUI_CONFIG(mimetype)
 QList<QMimeType> QPlatformPrintDevice::supportedMimeTypes() const
 {
     if (!m_haveMimeTypes)
@@ -370,6 +370,6 @@ QPageSize QPlatformPrintDevice::createPageSize(int windowsId, const QSize &size,
     return QPageSize(windowsId, size, localizedName);
 }
 
-#endif // QT_NO_PRINTER
+#endif // BOBUI_NO_PRINTER
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

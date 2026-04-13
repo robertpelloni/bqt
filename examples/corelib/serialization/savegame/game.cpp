@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "game.h"
 
@@ -9,9 +9,9 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QRandomGenerator>
-#include <QTextStream>
+#include <BOBUIextStream>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 Character Game::player() const
 {
@@ -76,7 +76,7 @@ bool Game::loadGame(Game::SaveFormat saveFormat)
 
     read(loadDoc.object());
 
-    QTextStream(stdout) << "Loaded save for " << loadDoc["player"]["name"].toString()
+    BOBUIextStream(stdout) << "Loaded save for " << loadDoc["player"]["name"].toString()
                         << " using " << (saveFormat != Json ? "CBOR" : "JSON") << "...\n";
     return true;
 }
@@ -130,7 +130,7 @@ QJsonObject Game::toJson() const
 }
 //! [toJson]
 
-void Game::print(QTextStream &s, int indentation) const
+void Game::print(BOBUIextStream &s, int indentation) const
 {
     const QString indent(indentation * 2, ' ');
     s << indent << "Player\n";

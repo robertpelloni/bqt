@@ -1,7 +1,7 @@
 #! /bin/sh
 
 # Copyright (C) 2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 #
 # This is a small script to copy the required files from a PCRE2 tarball
 # into 3rdparty/pcre2/ , following the instructions found in the NON-AUTOTOOLS-BUILD
@@ -10,7 +10,7 @@
 set -e
 
 if [ $# -ne 2 ]; then
-    echo "Usage: $0 pcre2_tarball_dir/ \$QTDIR/src/3rdparty/pcre2/"
+    echo "Usage: $0 pcre2_tarball_dir/ \$BOBUIDIR/src/3rdparty/pcre2/"
     exit 1
 fi
 

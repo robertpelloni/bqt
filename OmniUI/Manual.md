@@ -116,7 +116,7 @@ The **OmniOmega** module functions as the overarching Universal Context Hub. In 
 #### Key Enhancements:
 *   **Module Registry**: C++ now actively tracks all other OmniUI sub-modules, logging their internal IDs, operating states (Active, Suspended, Warning), and memory usage.
 *   **Global Variables API**: OmniOmega acts as a singleton key-value store (`setGlobalVar`, `getGlobalVar`), allowing other modules to read shared state data (like "Security Level" or "User ID") without direct code coupling.
-*   **System Event Bus**: The `broadcast(event, data)` function emits a global Qt signal that any other QML or C++ class can listen to, facilitating decoupled interactions across the framework.
+*   **System Event Bus**: The `broadcast(event, data)` function emits a global BobUI signal that any other QML or C++ class can listen to, facilitating decoupled interactions across the framework.
 *   **Emergency Reboot**: Supports a complete wipe of the volatile state, emitting a "rebooting" signal to trigger shutdown sequences in connected modules.
 *   **OmniOmega Nexus UI**: `OmniOmega/assets/main.qml` was rebuilt into a central system dashboard.
     *   **Registry Panel**: An interactive list displaying all tracked modules, color-coded by status, showing live memory usage. Users can click any module to assign it as the "Global Focus."
@@ -241,7 +241,7 @@ The **OmniSynth** module is a Digital Signal Processing (DSP) engine simulating 
 The **OmniDash** module provides local system and hardware monitoring metrics for the host machine running the OmniUI framework.
 
 #### Key Enhancements:
-*   **System Diagnostics Engine**: The C++ `OmniSystem` class tracks simulated CPU, RAM, Disk I/O, Battery Level, and internal thermals using a 1Hz clock loop. It accurately fetches host machine parameters like OS type, host-name, and CPU Architecture using the `QSysInfo` Qt class.
+*   **System Diagnostics Engine**: The C++ `OmniSystem` class tracks simulated CPU, RAM, Disk I/O, Battery Level, and internal thermals using a 1Hz clock loop. It accurately fetches host machine parameters like OS type, host-name, and CPU Architecture using the `QSysInfo` BobUI class.
 *   **Burn-in Testing**: The module allows developers to trigger a simulated 15-second stress test. This forcefully pegs CPU usage above 95%, maximizes RAM consumption, and drives the simulated CPU and GPU thermal sensors into critical (>90°C) territory, triggering UI alarms.
 *   **Power Management**: Simulates battery discharging algorithms. If unplugged and running a stress test, the battery drains much faster.
 *   **System Monitor UI**: `OmniDash/assets/main.qml` was rebuilt as a comprehensive hardware dashboard.
@@ -264,7 +264,7 @@ The **OmniScribe** module provides a dynamic ECMAScript (JavaScript) execution e
 The **OmniStudio** module offers a Visual Logic Editor (Node-Based Workflow Designer) directly within the OmniUI framework, allowing for code-free logic assembly.
 
 #### Key Enhancements:
-*   **Custom QQuickPaintedItem Canvas**: The C++ `OmniNodeCanvas` class was implemented from scratch. It extends standard Qt QML components by overriding native `paint()` methods to draw an infinite grid, floating logic blocks with drop shadows, and mathematically calculated bezier curves connecting the output and input ports of the nodes.
+*   **Custom QQuickPaintedItem Canvas**: The C++ `OmniNodeCanvas` class was implemented from scratch. It extends standard BobUI QML components by overriding native `paint()` methods to draw an infinite grid, floating logic blocks with drop shadows, and mathematically calculated bezier curves connecting the output and input ports of the nodes.
 *   **Interactive Spatial Engine**: The C++ canvas handles complex mouse events seamlessly. Users can Left-Click and Drag to move nodes around the infinite space. Users can Right-Click and Drag to pan the entire camera view. Scroll Wheel events zoom in and out of the grid, adjusting scale and offset dynamically.
 *   **OmniStudio Visual Editor UI**: `OmniStudio/assets/main.qml` was transformed into a sleek logic builder.
     *   **Node Palette**: Allows users to spawn new titled logic nodes into the workspace. Also provides a "Quick Connect" panel to link nodes together via index IDs.
@@ -302,7 +302,7 @@ The **OmniNet** module simulates a WebSocket connection, mimicking bi-directiona
 #### Key Enhancements:
 *   **WebSocket Engine**: The C++ `OmniWebSocket` acts as both the client and a mocked remote server. Calling `open()` simulates a connection attempt with randomized latency. There is a 5% chance the remote host "refuses" the connection.
 *   **Packet Jitter & Ping**: When connected, the engine actively modifies a ping variable to simulate network latency spikes, adding artificial delays when the mock server processes JSON payloads.
-*   **JSON RPC Parsing**: If the client sends a valid JSON string (e.g. `{"type": "auth_request"}`), the C++ engine parses it and sets a `QTimer` based on the current simulated latency. It then fires back an `ACK` response containing the requested type and a mock `200` status code. The mock server will also randomly broadcast `server_load` messages periodically.
+*   **JSON RPC Parsing**: If the client sends a valid JSON string (e.g. `{"type": "auth_request"}`), the C++ engine parses it and sets a `BOBUIimer` based on the current simulated latency. It then fires back an `ACK` response containing the requested type and a mock `200` status code. The mock server will also randomly broadcast `server_load` messages periodically.
 *   **OmniNet Real-Time Packet Streamer UI**: `CollabSpace/assets/main.qml` was transformed into a network diagnostic tool.
     *   **Telemetry Panel**: Contains connection status, endpoint URI inputs, and a live progress-bar mapping the fluctuating simulated Ping in milliseconds.
     *   **JSON Injector**: A text area allowing users to write raw JSON objects and blast them down the open socket.
@@ -335,7 +335,7 @@ The **OmniML** module simulates the training and inference processes of a Deep L
 The **OmniNexus** module represents the final integration phase of the OmniUI project. It acts as the master desktop environment or "Command Bridge" that ties all 30 disparate scientific, cybernetic, and metaphysical simulations together into a single cohesive runtime.
 
 #### Key Enhancements:
-*   **The Master Clock (`OmniSimulationEngine`)**: In prior versions, modules ran on their own internal `QTimer` instances at various frequencies (10Hz, 30Hz, 60Hz). In v42.0.0, the entire framework was unified. `OmniSimulationEngine` emits a `globalTick(double deltaTime)` signal. All modules (like `OmniPhysicsWorld` or `OmniKernel`) subscribe to this signal.
+*   **The Master Clock (`OmniSimulationEngine`)**: In prior versions, modules ran on their own internal `BOBUIimer` instances at various frequencies (10Hz, 30Hz, 60Hz). In v42.0.0, the entire framework was unified. `OmniSimulationEngine` emits a `globalTick(double deltaTime)` signal. All modules (like `OmniPhysicsWorld` or `OmniKernel`) subscribe to this signal.
 *   **Universal Time Dilation**: Because all physics, orbital mechanics, AGI processing, and thermodynamic decays are now bound to the `globalTick(dt)`, altering the `timeDilation` variable in the engine allows the user to universally speed up or slow down the entire simulated universe (from atomic lattice interactions in `OmniNano` up to `OmniGalactic` fleet movements) in perfect synchronization.
 *   **Cross-Module IPC Routing**: Using the `OmniUniversalContext` (OmniOmega), events broadcasted by one module can trigger drastic reactions in another.
     *   **Example 1 (Kernel Panic)**: If a `KERNEL_PANIC` event fires, the IPC router intercepts it and automatically forces the `OmniAGI` module to halt processing (simulating a lack of compute resources) and drops the universal time dilation to `0.1x` to allow operators to debug the physical state of the universe in slow-motion.

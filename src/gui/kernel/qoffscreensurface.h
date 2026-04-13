@@ -1,16 +1,16 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QOFFSCREENSURFACE_H
 #define QOFFSCREENSURFACE_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/QObject>
-#include <QtCore/qnativeinterface.h>
-#include <QtGui/qsurface.h>
-Q_MOC_INCLUDE(<QtGui/qscreen.h>)
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/QObject>
+#include <BobUICore/qnativeinterface.h>
+#include <BobUIGui/qsurface.h>
+Q_MOC_INCLUDE(<BobUIGui/qscreen.h>)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QOffscreenSurfacePrivate;
 
@@ -44,7 +44,7 @@ public:
 
     QPlatformOffscreenSurface *handle() const;
 
-    QT_DECLARE_NATIVE_INTERFACE_ACCESSOR(QOffscreenSurface)
+    BOBUI_DECLARE_NATIVE_INTERFACE_ACCESSOR(QOffscreenSurface)
 
 Q_SIGNALS:
     void screenChanged(QScreen *screen);
@@ -59,8 +59,8 @@ private:
     Q_DISABLE_COPY(QOffscreenSurface)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#include <QtGui/qoffscreensurface_platform.h>
+#include <BobUIGui/qoffscreensurface_platform.h>
 
 #endif // QOFFSCREENSURFACE_H

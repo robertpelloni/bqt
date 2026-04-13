@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qcoreapplication.h>
 #include <qdebug.h>
 #include <qfocusframe.h>
-#include <qtableview.h>
+#include <bobuiableview.h>
 #include <qstandarditemmodel.h>
 
 class tst_QFocusFrame : public QObject
@@ -60,7 +60,7 @@ void tst_QFocusFrame::focusFrameInsideScrollview()
     QWidget window;
     window.setGeometry(100, 100, 500, 500);
 
-    QTableView tableView(&window);
+    BOBUIableView tableView(&window);
     tableView.resize(window.size());
     QStandardItemModel *itemModel = new QStandardItemModel();
     for (int i = 0; i < 50; ++i)
@@ -70,7 +70,7 @@ void tst_QFocusFrame::focusFrameInsideScrollview()
 
     window.show();
     QFocusFrame *focusFrame = nullptr;
-    QTRY_VERIFY((focusFrame = window.findChild<QFocusFrame *>()));
+    BOBUIRY_VERIFY((focusFrame = window.findChild<QFocusFrame *>()));
     const QPoint initialOffset = focusFrame->widget()->mapToGlobal(QPoint()) - focusFrame->mapToGlobal(QPoint());
 
     tableView.scrollTo(itemModel->index(40, 0));
@@ -82,5 +82,5 @@ void tst_QFocusFrame::focusFrameInsideScrollview()
     QCOMPARE(offsetAfterScroll, initialOffset);
 }
 
-QTEST_MAIN(tst_QFocusFrame)
+BOBUIEST_MAIN(tst_QFocusFrame)
 #include "tst_qfocusframe.moc"

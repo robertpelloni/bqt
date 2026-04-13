@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "accessibilityscenemanager.h"
 
@@ -222,9 +222,9 @@ void AccessibilitySceneManager::updateItemFlags(QGraphicsRectItem *item, QAccess
     item->setVisible(shouldShow);
 
     if (interface->object() && interface->object() == m_selectedObject)
-        item->setBrush(QColor(Qt::yellow));
+        item->setBrush(QColor(BobUI::yellow));
     else
-        item->setBrush(QColor(Qt::white));
+        item->setBrush(QColor(BobUI::white));
 
     m_view->update();
 }
@@ -357,13 +357,13 @@ void AccessibilitySceneManager::addGraphicsItems(AccessibilitySceneManager::Tree
     graphicsItem->setFlag(QGraphicsItem::ItemClipsChildrenToShape);
 
     if (item.object && item.object == m_selectedObject)
-        graphicsItem->setBrush(QColor(Qt::yellow));
+        graphicsItem->setBrush(QColor(BobUI::yellow));
     else
-        graphicsItem->setBrush(QColor(Qt::white));
+        graphicsItem->setBrush(QColor(BobUI::white));
 
     if (item.state.offscreen) {
         QPen linePen;
-        linePen.setStyle(Qt::DashLine);
+        linePen.setStyle(BobUI::DashLine);
         graphicsItem->setPen(linePen);
     }
 
@@ -380,7 +380,7 @@ void AccessibilitySceneManager::addGraphicsItems(AccessibilitySceneManager::Tree
     QString text;
     text += item.name + "\n";
     text += item.role + "\n";
-    text += item.description.split(QLatin1Char(' '), Qt::SkipEmptyParts).join("\n") + "\n";
+    text += item.description.split(QLatin1Char(' '), BobUI::SkipEmptyParts).join("\n") + "\n";
     text += "P:" + QString::number(item.rect.x()) + " " + QString::number(item.rect.y()) + " ";
     text += "S:" + QString::number(item.rect.width()) + " " + QString::number(item.rect.height()) + "\n";
 

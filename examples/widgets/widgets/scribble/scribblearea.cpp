@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "scribblearea.h"
 
 #include <QMouseEvent>
 #include <QPainter>
 
-#if defined(QT_PRINTSUPPORT_LIB)
-#include <QtPrintSupport/qtprintsupportglobal.h>
-#if QT_CONFIG(printdialog)
+#if defined(BOBUI_PRINTSUPPORT_LIB)
+#include <BobUIPrintSupport/bobuiprintsupportglobal.h>
+#if BOBUI_CONFIG(printdialog)
 #include <QPrinter>
 #include <QPrintDialog>
 #endif
@@ -18,7 +18,7 @@
 ScribbleArea::ScribbleArea(QWidget *parent)
     : QWidget(parent)
 {
-    setAttribute(Qt::WA_StaticContents);
+    setAttribute(BobUI::WA_StaticContents);
 }
 //! [0]
 
@@ -84,7 +84,7 @@ void ScribbleArea::clearImage()
 void ScribbleArea::mousePressEvent(QMouseEvent *event)
 //! [11] //! [12]
 {
-    if (event->button() == Qt::LeftButton) {
+    if (event->button() == BobUI::LeftButton) {
         lastPoint = event->position().toPoint();
         scribbling = true;
     }
@@ -92,13 +92,13 @@ void ScribbleArea::mousePressEvent(QMouseEvent *event)
 
 void ScribbleArea::mouseMoveEvent(QMouseEvent *event)
 {
-    if ((event->buttons() & Qt::LeftButton) && scribbling)
+    if ((event->buttons() & BobUI::LeftButton) && scribbling)
         drawLineTo(event->position().toPoint());
 }
 
 void ScribbleArea::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton && scribbling) {
+    if (event->button() == BobUI::LeftButton && scribbling) {
         drawLineTo(event->position().toPoint());
         scribbling = false;
     }
@@ -133,8 +133,8 @@ void ScribbleArea::drawLineTo(const QPoint &endPoint)
 //! [17] //! [18]
 {
     QPainter painter(&image);
-    painter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap,
-                        Qt::RoundJoin));
+    painter.setPen(QPen(myPenColor, myPenWidth, BobUI::SolidLine, BobUI::RoundCap,
+                        BobUI::RoundJoin));
     painter.drawLine(lastPoint, endPoint);
     modified = true;
 
@@ -163,7 +163,7 @@ void ScribbleArea::resizeImage(QImage *image, const QSize &newSize)
 //! [21]
 void ScribbleArea::print()
 {
-#if defined(QT_PRINTSUPPORT_LIB) && QT_CONFIG(printdialog)
+#if defined(BOBUI_PRINTSUPPORT_LIB) && BOBUI_CONFIG(printdialog)
     QPrinter printer(QPrinter::HighResolution);
 
     QPrintDialog printDialog(&printer, this);
@@ -172,11 +172,11 @@ void ScribbleArea::print()
         QPainter painter(&printer);
         QRect rect = painter.viewport();
         QSize size = image.size();
-        size.scale(rect.size(), Qt::KeepAspectRatio);
+        size.scale(rect.size(), BobUI::KeepAspectRatio);
         painter.setViewport(rect.x(), rect.y(), size.width(), size.height());
         painter.setWindow(image.rect());
         painter.drawImage(0, 0, image);
     }
-#endif // QT_CONFIG(printdialog)
+#endif // BOBUI_CONFIG(printdialog)
 }
 //! [22]

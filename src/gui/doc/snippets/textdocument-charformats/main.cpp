@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 #include <QApplication>
-#include <QTextEdit>
+#include <BOBUIextEdit>
 
 QString tr(const char *text)
 {
@@ -11,24 +11,24 @@ QString tr(const char *text)
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    QTextEdit *editor = new QTextEdit();
+    BOBUIextEdit *editor = new BOBUIextEdit();
 
-    QTextCursor cursor(editor->textCursor());
-    cursor.movePosition(QTextCursor::Start);
+    BOBUIextCursor cursor(editor->textCursor());
+    cursor.movePosition(BOBUIextCursor::Start);
 
-    QTextCharFormat plainFormat(cursor.charFormat());
+    BOBUIextCharFormat plainFormat(cursor.charFormat());
 
-    QTextCharFormat headingFormat = plainFormat;
+    BOBUIextCharFormat headingFormat = plainFormat;
     headingFormat.setFontWeight(QFont::Bold);
     headingFormat.setFontPointSize(16);
 
-    QTextCharFormat emphasisFormat = plainFormat;
+    BOBUIextCharFormat emphasisFormat = plainFormat;
     emphasisFormat.setFontItalic(true);
 
-    QTextCharFormat qtFormat = plainFormat;
-    qtFormat.setForeground(QColor("#990000"));
+    BOBUIextCharFormat bobuiFormat = plainFormat;
+    bobuiFormat.setForeground(QColor("#990000"));
 
-    QTextCharFormat underlineFormat = plainFormat;
+    BOBUIextCharFormat underlineFormat = plainFormat;
     underlineFormat.setFontUnderline(true);
 
 //! [0]
@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
     cursor.insertText(tr("making it italic"), emphasisFormat);
 //! [0]
     cursor.insertText(tr(", give it a "), plainFormat);
-    cursor.insertText(tr("different color "), qtFormat);
+    cursor.insertText(tr("different color "), bobuiFormat);
     cursor.insertText(tr("to the default text color, "), plainFormat);
     cursor.insertText(tr("underline it"), underlineFormat);
     cursor.insertText(tr(", and use many other effects."), plainFormat);

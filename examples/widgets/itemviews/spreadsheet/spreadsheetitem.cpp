@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "spreadsheetitem.h"
 
-QTableWidgetItem *SpreadSheetItem::clone() const
+BOBUIableWidgetItem *SpreadSheetItem::clone() const
 {
     SpreadSheetItem *item = new SpreadSheetItem;
     *item = *this;
@@ -12,33 +12,33 @@ QTableWidgetItem *SpreadSheetItem::clone() const
 
 QVariant SpreadSheetItem::data(int role) const
 {
-    if (role == Qt::EditRole || role == Qt::StatusTipRole)
+    if (role == BobUI::EditRole || role == BobUI::StatusTipRole)
         return formula();
 
-    if (role == Qt::DisplayRole)
+    if (role == BobUI::DisplayRole)
         return display();
 
     const QString t = display().toString();
 
-    if (role == Qt::ForegroundRole) {
+    if (role == BobUI::ForegroundRole) {
         bool isNumber = false;
         const int number = t.toInt(&isNumber);
-        QColor color = Qt::black;
+        QColor color = BobUI::black;
         if (isNumber)
-            color = (number < 0) ? Qt::red : Qt::blue;
+            color = (number < 0) ? BobUI::red : BobUI::blue;
         return QVariant::fromValue(color);
     }
 
-    if (role == Qt::TextAlignmentRole)
+    if (role == BobUI::TextAlignmentRole)
         if (!t.isEmpty() && (t.at(0).isNumber() || t.at(0) == '-'))
-            return int(Qt::AlignRight | Qt::AlignVCenter);
+            return int(BobUI::AlignRight | BobUI::AlignVCenter);
 
-     return QTableWidgetItem::data(role);
+     return BOBUIableWidgetItem::data(role);
  }
 
 void SpreadSheetItem::setData(int role, const QVariant &value)
 {
-    QTableWidgetItem::setData(role, value);
+    BOBUIableWidgetItem::setData(role, value);
     if (tableWidget())
         tableWidget()->viewport()->update();
 }
@@ -56,8 +56,8 @@ QVariant SpreadSheetItem::display() const
 }
 
 QVariant SpreadSheetItem::computeFormula(const QString &formula,
-                                         const QTableWidget *widget,
-                                         const QTableWidgetItem *self)
+                                         const BOBUIableWidget *widget,
+                                         const BOBUIableWidgetItem *self)
 {
     // check if the string is actually a formula or not
     QStringList list = formula.split(' ');
@@ -77,8 +77,8 @@ QVariant SpreadSheetItem::computeFormula(const QString &formula,
     if (list.count() > 2)
         decode_pos(list.value(2), &secondRow, &secondCol);
 
-    const QTableWidgetItem *start = widget->item(firstRow, firstCol);
-    const QTableWidgetItem *end = widget->item(secondRow, secondCol);
+    const BOBUIableWidgetItem *start = widget->item(firstRow, firstCol);
+    const BOBUIableWidgetItem *end = widget->item(secondRow, secondCol);
 
     int firstVal = start ? start->text().toInt() : 0;
     int secondVal = end ? end->text().toInt() : 0;
@@ -88,7 +88,7 @@ QVariant SpreadSheetItem::computeFormula(const QString &formula,
         int sum = 0;
         for (int r = firstRow; r <= secondRow; ++r) {
             for (int c = firstCol; c <= secondCol; ++c) {
-                const QTableWidgetItem *tableItem = widget->item(r, c);
+                const BOBUIableWidgetItem *tableItem = widget->item(r, c);
                 if (tableItem && tableItem != self)
                     sum += tableItem->text().toInt();
             }

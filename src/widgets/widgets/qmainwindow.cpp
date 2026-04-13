@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qmainwindow.h"
 #include "qmainwindowlayout_p.h"
 
-#if QT_CONFIG(dockwidget)
+#if BOBUI_CONFIG(dockwidget)
 #include "qdockwidget.h"
 #endif
-#if QT_CONFIG(toolbar)
-#include "qtoolbar.h"
+#if BOBUI_CONFIG(toolbar)
+#include "bobuioolbar.h"
 #endif
 
 #include <qapplication.h>
 #include <qmenu.h>
-#if QT_CONFIG(menubar)
+#if BOBUI_CONFIG(menubar)
 #include <qmenubar.h>
 #endif
-#if QT_CONFIG(statusbar)
+#if BOBUI_CONFIG(statusbar)
 #include <qstatusbar.h>
 #endif
 #include <qevent.h>
@@ -27,23 +27,23 @@
 #include <qmimedata.h>
 
 #include <private/qwidget_p.h>
-#if QT_CONFIG(toolbar)
-#include "qtoolbar_p.h"
+#if BOBUI_CONFIG(toolbar)
+#include "bobuioolbar_p.h"
 #endif
 #include "qwidgetanimator_p.h"
-#include <QtGui/qpa/qplatformwindow.h>
-#include <QtGui/qpa/qplatformwindow_p.h>
+#include <BobUIGui/qpa/qplatformwindow.h>
+#include <BobUIGui/qpa/qplatformwindow_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class QMainWindowPrivate : public QWidgetPrivate
 {
     Q_DECLARE_PUBLIC(QMainWindow)
 public:
     inline QMainWindowPrivate()
-        : layout(nullptr), explicitIconSize(false), toolButtonStyle(Qt::ToolButtonIconOnly)
+        : layout(nullptr), explicitIconSize(false), toolButtonStyle(BobUI::ToolButtonIconOnly)
 #ifdef Q_OS_MACOS
             , useUnifiedToolBar(false)
 #endif
@@ -51,7 +51,7 @@ public:
     QPointer<QMainWindowLayout> layout;
     QSize iconSize;
     bool explicitIconSize;
-    Qt::ToolButtonStyle toolButtonStyle;
+    BobUI::ToolButtonStyle toolButtonStyle;
 #ifdef Q_OS_MACOS
     bool useUnifiedToolBar;
 #endif
@@ -63,7 +63,7 @@ public:
     }
 };
 
-QMainWindowLayout *qt_mainwindow_layout(const QMainWindow *mainWindow)
+QMainWindowLayout *bobui_mainwindow_layout(const QMainWindow *mainWindow)
 {
     return QMainWindowPrivate::mainWindowLayout(mainWindow);
 }
@@ -76,7 +76,7 @@ void QMainWindowPrivate::init()
 
     const int metric = q->style()->pixelMetric(QStyle::PM_ToolBarIconSize, nullptr, q);
     iconSize = QSize(metric, metric);
-    q->setAttribute(Qt::WA_Hover);
+    q->setAttribute(BobUI::WA_Hover);
     q->setAcceptDrops(true);
 }
 
@@ -117,15 +117,15 @@ void QMainWindowPrivate::init()
     \brief The QMainWindow class provides a main application
            window.
     \ingroup mainwindow-classes
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
-    \section1 Qt Main Window Framework
+    \section1 BobUI Main Window Framework
 
     A main window provides a framework for building an
-    application's user interface. Qt has QMainWindow and its \l{Main
+    application's user interface. BobUI has QMainWindow and its \l{Main
     Window and Related Classes}{related classes} for main window
     management. QMainWindow has its own layout to which you can add
-    \l{QToolBar}s, \l{QDockWidget}s, a
+    \l{BOBUIoolBar}s, \l{QDockWidget}s, a
     QMenuBar, and a QStatusBar. The layout has a center area that can
     be occupied by any kind of widget. You can see an image of the
     layout below.
@@ -135,13 +135,13 @@ void QMainWindowPrivate::init()
 
     \section1 Creating Main Window Components
 
-    A central widget will typically be a standard Qt widget such
-    as a QTextEdit or a QGraphicsView. Custom widgets can also be
+    A central widget will typically be a standard BobUI widget such
+    as a BOBUIextEdit or a QGraphicsView. Custom widgets can also be
     used for advanced applications. You set the central widget with \c
     setCentralWidget().
 
     Main windows have either a single (SDI) or multiple (MDI)
-    document interface. You create MDI applications in Qt by using a
+    document interface. You create MDI applications in BobUI by using a
     QMdiArea as the central widget.
 
     We will now examine each of the other widgets that can be
@@ -150,7 +150,7 @@ void QMainWindowPrivate::init()
 
     \section2 Creating Menus
 
-    Qt implements menus in QMenu and QMainWindow keeps them in a
+    BobUI implements menus in QMenu and QMainWindow keeps them in a
     QMenuBar. \l{QAction}{QAction}s are added to the menus, which
     display them as menu items.
 
@@ -175,15 +175,15 @@ void QMainWindowPrivate::init()
 
     \section2 Creating Toolbars
 
-    Toolbars are implemented in the QToolBar class.  You add a
+    Toolbars are implemented in the BOBUIoolBar class.  You add a
     toolbar to a main window with \c addToolBar().
 
     You control the initial position of toolbars by assigning them
-    to a specific Qt::ToolBarArea. You can split an area by inserting
+    to a specific BobUI::ToolBarArea. You can split an area by inserting
     a toolbar break - think of this as a line break in text editing -
     with \c addToolBarBreak() or \c insertToolBarBreak(). You can also
-    restrict placement by the user with QToolBar::setAllowedAreas()
-    and QToolBar::setMovable().
+    restrict placement by the user with BOBUIoolBar::setAllowedAreas()
+    and BOBUIoolBar::setMovable().
 
     The size of toolbar icons can be retrieved with \c iconSize().
     The sizes are platform dependent; you can set a fixed size with \c
@@ -201,7 +201,7 @@ void QMainWindowPrivate::init()
     add dock widgets to a main window with \c addDockWidget().
 
     There are four dock widget areas as given by the
-    Qt::DockWidgetArea enum: left, right, top, and bottom. You can
+    BobUI::DockWidgetArea enum: left, right, top, and bottom. You can
     specify which dock widget area that should occupy the corners
     where the areas overlap with \c setCorner(). By default
     each area can only contain one row (vertical or horizontal) of
@@ -210,7 +210,7 @@ void QMainWindowPrivate::init()
     direction.
 
     Two dock widgets may also be stacked on top of each other. A
-    QTabBar is then used to select which of the widgets should be
+    BOBUIabBar is then used to select which of the widgets should be
     displayed.
 
     We give an example of how to create and add dock widgets to a
@@ -232,7 +232,7 @@ void QMainWindowPrivate::init()
     is the position and size (relative to the size of the main window)
     of the toolbars and dock widgets that are stored.
 
-    \sa QMenuBar, QToolBar, QStatusBar, QDockWidget, {Menus Example}
+    \sa QMenuBar, BOBUIoolBar, QStatusBar, QDockWidget, {Menus Example}
 */
 
 /*!
@@ -248,7 +248,7 @@ void QMainWindowPrivate::init()
 */
 
 /*!
-    \fn void QMainWindow::toolButtonStyleChanged(Qt::ToolButtonStyle toolButtonStyle)
+    \fn void QMainWindow::toolButtonStyleChanged(BobUI::ToolButtonStyle toolButtonStyle)
 
     This signal is emitted when the style used for tool buttons in the
     window is changed. The new style is passed in \a toolButtonStyle.
@@ -259,7 +259,7 @@ void QMainWindowPrivate::init()
     \sa setToolButtonStyle()
 */
 
-#if QT_CONFIG(dockwidget)
+#if BOBUI_CONFIG(dockwidget)
 /*!
     \fn void QMainWindow::tabifiedDockWidgetActivated(QDockWidget *dockWidget)
 
@@ -275,11 +275,11 @@ void QMainWindowPrivate::init()
     Constructs a QMainWindow with the given \a parent and the specified
     widget \a flags.
 
-    QMainWindow sets the Qt::Window flag itself, and will hence
+    QMainWindow sets the BobUI::Window flag itself, and will hence
     always be created as a top-level widget.
  */
-QMainWindow::QMainWindow(QWidget *parent, Qt::WindowFlags flags)
-    : QWidget(*(new QMainWindowPrivate()), parent, flags | Qt::Window)
+QMainWindow::QMainWindow(QWidget *parent, BobUI::WindowFlags flags)
+    : QWidget(*(new QMainWindowPrivate()), parent, flags | BobUI::Window)
 {
     d_func()->init();
 }
@@ -336,7 +336,7 @@ QMainWindow::~QMainWindow()
                             that are tabbed with it are going to be dragged.
                             Implies AllowTabbedDocks. Does not work well if
                             some QDockWidgets have restrictions in which area
-                            they are allowed. (This enum value was added in Qt
+                            they are allowed. (This enum value was added in BobUI
                             5.6.)
 
     These options only control how dock widgets may be dropped in a QMainWindow.
@@ -379,17 +379,17 @@ void QMainWindow::setIconSize(const QSize &iconSize)
 /*! \property QMainWindow::toolButtonStyle
     \brief style of toolbar buttons in this mainwindow.
 
-    To have the style of toolbuttons follow the system settings, set this property to Qt::ToolButtonFollowStyle.
+    To have the style of toolbuttons follow the system settings, set this property to BobUI::ToolButtonFollowStyle.
     On Unix, the user settings from the desktop environment will be used.
-    On other platforms, Qt::ToolButtonFollowStyle means icon only.
+    On other platforms, BobUI::ToolButtonFollowStyle means icon only.
 
-    The default is Qt::ToolButtonIconOnly.
+    The default is BobUI::ToolButtonIconOnly.
 */
 
-Qt::ToolButtonStyle QMainWindow::toolButtonStyle() const
+BobUI::ToolButtonStyle QMainWindow::toolButtonStyle() const
 { return d_func()->toolButtonStyle; }
 
-void QMainWindow::setToolButtonStyle(Qt::ToolButtonStyle toolButtonStyle)
+void QMainWindow::setToolButtonStyle(BobUI::ToolButtonStyle toolButtonStyle)
 {
     Q_D(QMainWindow);
     if (d->toolButtonStyle == toolButtonStyle)
@@ -398,7 +398,7 @@ void QMainWindow::setToolButtonStyle(Qt::ToolButtonStyle toolButtonStyle)
     emit toolButtonStyleChanged(d->toolButtonStyle);
 }
 
-#if QT_CONFIG(menubar)
+#if BOBUI_CONFIG(menubar)
 /*!
     Returns the menu bar for the main window. This function creates
     and returns an empty menu bar if the menu bar does not exist.
@@ -442,13 +442,13 @@ void QMainWindow::setMenuBar(QMenuBar *menuBar)
         QMenuBar *oldMenuBar = qobject_cast<QMenuBar *>(existingMenuBar);
         if (oldMenuBar && menuBar) {
             // TopLeftCorner widget.
-            QWidget *cornerWidget = oldMenuBar->cornerWidget(Qt::TopLeftCorner);
+            QWidget *cornerWidget = oldMenuBar->cornerWidget(BobUI::TopLeftCorner);
             if (cornerWidget)
-                menuBar->setCornerWidget(cornerWidget, Qt::TopLeftCorner);
+                menuBar->setCornerWidget(cornerWidget, BobUI::TopLeftCorner);
             // TopRightCorner widget.
-            cornerWidget = oldMenuBar->cornerWidget(Qt::TopRightCorner);
+            cornerWidget = oldMenuBar->cornerWidget(BobUI::TopRightCorner);
             if (cornerWidget)
-                menuBar->setCornerWidget(cornerWidget, Qt::TopRightCorner);
+                menuBar->setCornerWidget(cornerWidget, BobUI::TopRightCorner);
         }
 
         existingMenuBar->hide();
@@ -487,9 +487,9 @@ void QMainWindow::setMenuWidget(QWidget *menuBar)
     }
     d->layout->setMenuBar(menuBar);
 }
-#endif // QT_CONFIG(menubar)
+#endif // BOBUI_CONFIG(menubar)
 
-#if QT_CONFIG(statusbar)
+#if BOBUI_CONFIG(statusbar)
 /*!
     Returns the status bar for the main window. This function creates
     and returns an empty status bar if the status bar does not exist.
@@ -526,7 +526,7 @@ void QMainWindow::setStatusBar(QStatusBar *statusbar)
     }
     d->layout->setStatusBar(statusbar);
 }
-#endif // QT_CONFIG(statusbar)
+#endif // BOBUI_CONFIG(statusbar)
 
 /*!
     Returns the central widget for the main window. This function
@@ -573,28 +573,28 @@ QWidget *QMainWindow::takeCentralWidget()
     return oldcentralwidget;
 }
 
-#if QT_CONFIG(dockwidget)
+#if BOBUI_CONFIG(dockwidget)
 /*!
     Sets the given dock widget \a area to occupy the specified \a
     corner.
 
     \sa corner()
 */
-void QMainWindow::setCorner(Qt::Corner corner, Qt::DockWidgetArea area)
+void QMainWindow::setCorner(BobUI::Corner corner, BobUI::DockWidgetArea area)
 {
     bool valid = false;
     switch (corner) {
-    case Qt::TopLeftCorner:
-        valid = (area == Qt::TopDockWidgetArea || area == Qt::LeftDockWidgetArea);
+    case BobUI::TopLeftCorner:
+        valid = (area == BobUI::TopDockWidgetArea || area == BobUI::LeftDockWidgetArea);
         break;
-    case Qt::TopRightCorner:
-        valid = (area == Qt::TopDockWidgetArea || area == Qt::RightDockWidgetArea);
+    case BobUI::TopRightCorner:
+        valid = (area == BobUI::TopDockWidgetArea || area == BobUI::RightDockWidgetArea);
         break;
-    case Qt::BottomLeftCorner:
-        valid = (area == Qt::BottomDockWidgetArea || area == Qt::LeftDockWidgetArea);
+    case BobUI::BottomLeftCorner:
+        valid = (area == BobUI::BottomDockWidgetArea || area == BobUI::LeftDockWidgetArea);
         break;
-    case Qt::BottomRightCorner:
-        valid = (area == Qt::BottomDockWidgetArea || area == Qt::RightDockWidgetArea);
+    case BobUI::BottomRightCorner:
+        valid = (area == BobUI::BottomDockWidgetArea || area == BobUI::RightDockWidgetArea);
         break;
     }
     if (Q_UNLIKELY(!valid))
@@ -609,19 +609,19 @@ void QMainWindow::setCorner(Qt::Corner corner, Qt::DockWidgetArea area)
 
     \sa setCorner()
 */
-Qt::DockWidgetArea QMainWindow::corner(Qt::Corner corner) const
+BobUI::DockWidgetArea QMainWindow::corner(BobUI::Corner corner) const
 { return d_func()->layout->corner(corner); }
 #endif
 
-#if QT_CONFIG(toolbar)
+#if BOBUI_CONFIG(toolbar)
 
-static bool checkToolBarArea(Qt::ToolBarArea area, const char *where)
+static bool checkToolBarArea(BobUI::ToolBarArea area, const char *where)
 {
     switch (area) {
-    case Qt::LeftToolBarArea:
-    case Qt::RightToolBarArea:
-    case Qt::TopToolBarArea:
-    case Qt::BottomToolBarArea:
+    case BobUI::LeftToolBarArea:
+    case BobUI::RightToolBarArea:
+    case BobUI::TopToolBarArea:
+    case BobUI::BottomToolBarArea:
         return true;
     default:
         break;
@@ -634,7 +634,7 @@ static bool checkToolBarArea(Qt::ToolBarArea area, const char *where)
     Adds a toolbar break to the given \a area after all the other
     objects that are present.
 */
-void QMainWindow::addToolBarBreak(Qt::ToolBarArea area)
+void QMainWindow::addToolBarBreak(BobUI::ToolBarArea area)
 {
     if (!checkToolBarArea(area, "QMainWindow::addToolBarBreak"))
         return;
@@ -644,14 +644,14 @@ void QMainWindow::addToolBarBreak(Qt::ToolBarArea area)
 /*!
     Inserts a toolbar break before the toolbar specified by \a before.
 */
-void QMainWindow::insertToolBarBreak(QToolBar *before)
+void QMainWindow::insertToolBarBreak(BOBUIoolBar *before)
 { d_func()->layout->insertToolBarBreak(before); }
 
 /*!
     Removes a toolbar break previously inserted before the toolbar specified by \a before.
 */
 
-void QMainWindow::removeToolBarBreak(QToolBar *before)
+void QMainWindow::removeToolBarBreak(BOBUIoolBar *before)
 {
     Q_D(QMainWindow);
     d->layout->removeToolBarBreak(before);
@@ -665,7 +665,7 @@ void QMainWindow::removeToolBarBreak(QToolBar *before)
 
     \sa insertToolBar(), addToolBarBreak(), insertToolBarBreak()
 */
-void QMainWindow::addToolBar(Qt::ToolBarArea area, QToolBar *toolbar)
+void QMainWindow::addToolBar(BobUI::ToolBarArea area, BOBUIoolBar *toolbar)
 {
     if (!checkToolBarArea(area, "QMainWindow::addToolBar"))
         return;
@@ -674,17 +674,17 @@ void QMainWindow::addToolBar(Qt::ToolBarArea area, QToolBar *toolbar)
 
     disconnect(this, SIGNAL(iconSizeChanged(QSize)),
                toolbar, SLOT(_q_updateIconSize(QSize)));
-    disconnect(this, SIGNAL(toolButtonStyleChanged(Qt::ToolButtonStyle)),
-               toolbar, SLOT(_q_updateToolButtonStyle(Qt::ToolButtonStyle)));
+    disconnect(this, SIGNAL(toolButtonStyleChanged(BobUI::ToolButtonStyle)),
+               toolbar, SLOT(_q_updateToolButtonStyle(BobUI::ToolButtonStyle)));
 
     if (toolbar->d_func()->state && toolbar->d_func()->state->dragging) {
         //removing a toolbar which is dragging will cause crash
-#if QT_CONFIG(dockwidget)
+#if BOBUI_CONFIG(dockwidget)
         bool animated = isAnimated();
         setAnimated(false);
 #endif
         toolbar->d_func()->endDrag();
-#if QT_CONFIG(dockwidget)
+#if BOBUI_CONFIG(dockwidget)
         setAnimated(animated);
 #endif
     }
@@ -695,29 +695,29 @@ void QMainWindow::addToolBar(Qt::ToolBarArea area, QToolBar *toolbar)
     toolbar->d_func()->_q_updateToolButtonStyle(d->toolButtonStyle);
     connect(this, SIGNAL(iconSizeChanged(QSize)),
             toolbar, SLOT(_q_updateIconSize(QSize)));
-    connect(this, SIGNAL(toolButtonStyleChanged(Qt::ToolButtonStyle)),
-            toolbar, SLOT(_q_updateToolButtonStyle(Qt::ToolButtonStyle)));
+    connect(this, SIGNAL(toolButtonStyleChanged(BobUI::ToolButtonStyle)),
+            toolbar, SLOT(_q_updateToolButtonStyle(BobUI::ToolButtonStyle)));
 
     d->layout->addToolBar(area, toolbar);
 }
 
 /*! \overload
-    Equivalent of calling addToolBar(Qt::TopToolBarArea, \a toolbar)
+    Equivalent of calling addToolBar(BobUI::TopToolBarArea, \a toolbar)
 */
-void QMainWindow::addToolBar(QToolBar *toolbar)
-{ addToolBar(Qt::TopToolBarArea, toolbar); }
+void QMainWindow::addToolBar(BOBUIoolBar *toolbar)
+{ addToolBar(BobUI::TopToolBarArea, toolbar); }
 
 /*!
     \overload
 
-    Creates a QToolBar object, setting its window title to \a title,
+    Creates a BOBUIoolBar object, setting its window title to \a title,
     and inserts it into the top toolbar area.
 
     \sa setWindowTitle()
 */
-QToolBar *QMainWindow::addToolBar(const QString &title)
+BOBUIoolBar *QMainWindow::addToolBar(const QString &title)
 {
-    QToolBar *toolBar = new QToolBar(this);
+    BOBUIoolBar *toolBar = new BOBUIoolBar(this);
     toolBar->setWindowTitle(title);
     addToolBar(toolBar);
     return toolBar;
@@ -731,7 +731,7 @@ QToolBar *QMainWindow::addToolBar(const QString &title)
 
     \sa insertToolBarBreak(), addToolBar(), addToolBarBreak()
 */
-void QMainWindow::insertToolBar(QToolBar *before, QToolBar *toolbar)
+void QMainWindow::insertToolBar(BOBUIoolBar *before, BOBUIoolBar *toolbar)
 {
     Q_D(QMainWindow);
 
@@ -741,8 +741,8 @@ void QMainWindow::insertToolBar(QToolBar *before, QToolBar *toolbar)
     toolbar->d_func()->_q_updateToolButtonStyle(d->toolButtonStyle);
     connect(this, SIGNAL(iconSizeChanged(QSize)),
             toolbar, SLOT(_q_updateIconSize(QSize)));
-    connect(this, SIGNAL(toolButtonStyleChanged(Qt::ToolButtonStyle)),
-            toolbar, SLOT(_q_updateToolButtonStyle(Qt::ToolButtonStyle)));
+    connect(this, SIGNAL(toolButtonStyleChanged(BobUI::ToolButtonStyle)),
+            toolbar, SLOT(_q_updateToolButtonStyle(BobUI::ToolButtonStyle)));
 
     d->layout->insertToolBar(before, toolbar);
 }
@@ -751,7 +751,7 @@ void QMainWindow::insertToolBar(QToolBar *before, QToolBar *toolbar)
     Removes the \a toolbar from the main window layout and hides
     it. Note that the \a toolbar is \e not deleted.
 */
-void QMainWindow::removeToolBar(QToolBar *toolbar)
+void QMainWindow::removeToolBar(BOBUIoolBar *toolbar)
 {
     if (toolbar) {
         d_func()->layout->removeToolBar(toolbar);
@@ -760,13 +760,13 @@ void QMainWindow::removeToolBar(QToolBar *toolbar)
 }
 
 /*!
-    Returns the Qt::ToolBarArea for \a toolbar. If \a toolbar has not
+    Returns the BobUI::ToolBarArea for \a toolbar. If \a toolbar has not
     been added to the main window, this function returns \c
-    Qt::NoToolBarArea.
+    BobUI::NoToolBarArea.
 
-    \sa addToolBar(), addToolBarBreak(), Qt::ToolBarArea
+    \sa addToolBar(), addToolBarBreak(), BobUI::ToolBarArea
 */
-Qt::ToolBarArea QMainWindow::toolBarArea(const QToolBar *toolbar) const
+BobUI::ToolBarArea QMainWindow::toolBarArea(const BOBUIoolBar *toolbar) const
 { return d_func()->layout->toolBarArea(toolbar); }
 
 /*!
@@ -776,14 +776,14 @@ Qt::ToolBarArea QMainWindow::toolBarArea(const QToolBar *toolbar) const
 
     \sa addToolBarBreak(), insertToolBarBreak()
 */
-bool QMainWindow::toolBarBreak(QToolBar *toolbar) const
+bool QMainWindow::toolBarBreak(BOBUIoolBar *toolbar) const
 {
     return d_func()->layout->toolBarBreak(toolbar);
 }
 
-#endif // QT_CONFIG(toolbar)
+#endif // BOBUI_CONFIG(toolbar)
 
-#if QT_CONFIG(dockwidget)
+#if BOBUI_CONFIG(dockwidget)
 
 /*! \property QMainWindow::animated
     \brief whether manipulating dock widgets and tool bars is animated
@@ -884,13 +884,13 @@ void QMainWindow::setVerticalTabsEnabled(bool enabled)
 }
 #endif
 
-static bool checkDockWidgetArea(Qt::DockWidgetArea area, const char *where)
+static bool checkDockWidgetArea(BobUI::DockWidgetArea area, const char *where)
 {
     switch (area) {
-    case Qt::LeftDockWidgetArea:
-    case Qt::RightDockWidgetArea:
-    case Qt::TopDockWidgetArea:
-    case Qt::BottomDockWidgetArea:
+    case BobUI::LeftDockWidgetArea:
+    case BobUI::RightDockWidgetArea:
+    case BobUI::TopDockWidgetArea:
+    case BobUI::BottomDockWidgetArea:
         return true;
     default:
         break;
@@ -899,7 +899,7 @@ static bool checkDockWidgetArea(Qt::DockWidgetArea area, const char *where)
     return false;
 }
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
 /*!
     \property QMainWindow::documentMode
     \brief whether the tab bar for tabbed dockwidgets is set to document mode.
@@ -907,7 +907,7 @@ static bool checkDockWidgetArea(Qt::DockWidgetArea area, const char *where)
 
     The default is false.
 
-    \sa QTabBar::documentMode
+    \sa BOBUIabBar::documentMode
 */
 bool QMainWindow::documentMode() const
 {
@@ -918,24 +918,24 @@ void QMainWindow::setDocumentMode(bool enabled)
 {
     d_func()->layout->setDocumentMode(enabled);
 }
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabbar)
 
-#if QT_CONFIG(tabwidget)
+#if BOBUI_CONFIG(tabwidget)
 /*!
     \property QMainWindow::tabShape
     \brief the tab shape used for tabbed dock widgets.
     \since 4.5
 
-    The default is \l QTabWidget::Rounded.
+    The default is \l BOBUIabWidget::Rounded.
 
     \sa setTabPosition()
 */
-QTabWidget::TabShape QMainWindow::tabShape() const
+BOBUIabWidget::TabShape QMainWindow::tabShape() const
 {
     return d_func()->layout->tabShape();
 }
 
-void QMainWindow::setTabShape(QTabWidget::TabShape tabShape)
+void QMainWindow::setTabShape(BOBUIabWidget::TabShape tabShape)
 {
     d_func()->layout->setTabShape(tabShape);
 }
@@ -950,10 +950,10 @@ void QMainWindow::setTabShape(QTabWidget::TabShape tabShape)
 
     \sa setTabPosition(), tabShape()
 */
-QTabWidget::TabPosition QMainWindow::tabPosition(Qt::DockWidgetArea area) const
+BOBUIabWidget::TabPosition QMainWindow::tabPosition(BobUI::DockWidgetArea area) const
 {
     if (!checkDockWidgetArea(area, "QMainWindow::tabPosition"))
-        return QTabWidget::South;
+        return BOBUIabWidget::South;
     return d_func()->layout->tabPosition(area);
 }
 
@@ -968,30 +968,30 @@ QTabWidget::TabPosition QMainWindow::tabPosition(Qt::DockWidgetArea area) const
 
     \sa tabPosition(), setTabShape()
 */
-void QMainWindow::setTabPosition(Qt::DockWidgetAreas areas, QTabWidget::TabPosition tabPosition)
+void QMainWindow::setTabPosition(BobUI::DockWidgetAreas areas, BOBUIabWidget::TabPosition tabPosition)
 {
     d_func()->layout->setTabPosition(areas, tabPosition);
 }
-#endif // QT_CONFIG(tabwidget)
+#endif // BOBUI_CONFIG(tabwidget)
 
 /*!
     Adds the given \a dockwidget to the specified \a area.
 */
-void QMainWindow::addDockWidget(Qt::DockWidgetArea area, QDockWidget *dockwidget)
+void QMainWindow::addDockWidget(BobUI::DockWidgetArea area, QDockWidget *dockwidget)
 {
     if (!checkDockWidgetArea(area, "QMainWindow::addDockWidget"))
         return;
 
-    Qt::Orientation orientation = Qt::Vertical;
+    BobUI::Orientation orientation = BobUI::Vertical;
     switch (area) {
-    case Qt::TopDockWidgetArea:
-    case Qt::BottomDockWidgetArea:
-        orientation = Qt::Horizontal;
+    case BobUI::TopDockWidgetArea:
+    case BobUI::BottomDockWidgetArea:
+        orientation = BobUI::Horizontal;
         break;
     default:
         break;
     }
-    const Qt::DockWidgetArea oldArea = dockWidgetArea(dockwidget);
+    const BobUI::DockWidgetArea oldArea = dockWidgetArea(dockwidget);
     d_func()->layout->removeWidget(dockwidget); // in case it was already in here
     addDockWidget(area, dockwidget, orientation);
     if (oldArea != area)
@@ -1015,8 +1015,8 @@ bool QMainWindow::restoreDockWidget(QDockWidget *dockwidget)
     Adds \a dockwidget into the given \a area in the direction
     specified by the \a orientation.
 */
-void QMainWindow::addDockWidget(Qt::DockWidgetArea area, QDockWidget *dockwidget,
-                                Qt::Orientation orientation)
+void QMainWindow::addDockWidget(BobUI::DockWidgetArea area, QDockWidget *dockwidget,
+                                BobUI::Orientation orientation)
 {
     if (!checkDockWidgetArea(area, "QMainWindow::addDockWidget"))
         return;
@@ -1026,33 +1026,33 @@ void QMainWindow::addDockWidget(Qt::DockWidgetArea area, QDockWidget *dockwidget
 }
 
 /*!
-    \fn void QMainWindow::splitDockWidget(QDockWidget *first, QDockWidget *second, Qt::Orientation orientation)
+    \fn void QMainWindow::splitDockWidget(QDockWidget *first, QDockWidget *second, BobUI::Orientation orientation)
 
     Splits the space covered by the \a first dock widget into two parts,
     moves the \a first dock widget into the first part, and moves the
     \a second dock widget into the second part.
 
-    The \a orientation specifies how the space is divided: A Qt::Horizontal
+    The \a orientation specifies how the space is divided: A BobUI::Horizontal
     split places the second dock widget to the right of the first; a
-    Qt::Vertical split places the second dock widget below the first.
+    BobUI::Vertical split places the second dock widget below the first.
 
     \e Note: if \a first is currently in a tabbed docked area, \a second will
     be added as a new tab, not as a neighbor of \a first. This is because a
     single tab can contain only one dock widget.
 
-    \e Note: The Qt::LayoutDirection influences the order of the dock widgets
+    \e Note: The BobUI::LayoutDirection influences the order of the dock widgets
     in the two parts of the divided area. When right-to-left layout direction
     is enabled, the placing of the dock widgets will be reversed.
 
     \sa tabifyDockWidget(), addDockWidget(), removeDockWidget()
 */
 void QMainWindow::splitDockWidget(QDockWidget *after, QDockWidget *dockwidget,
-                                  Qt::Orientation orientation)
+                                  BobUI::Orientation orientation)
 {
     d_func()->layout->splitDockWidget(after, dockwidget, orientation);
 }
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
 /*!
     \fn void QMainWindow::tabifyDockWidget(QDockWidget *first, QDockWidget *second)
 
@@ -1081,7 +1081,7 @@ QList<QDockWidget*> QMainWindow::tabifiedDockWidgets(QDockWidget *dockwidget) co
     Q_D(const QMainWindow);
     return d->layout ? d->layout->tabifiedDockWidgets(dockwidget) : QList<QDockWidget *>();
 }
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabbar)
 
 
 /*!
@@ -1097,20 +1097,20 @@ void QMainWindow::removeDockWidget(QDockWidget *dockwidget)
 }
 
 /*!
-    Returns the Qt::DockWidgetArea for \a dockwidget. If \a dockwidget
+    Returns the BobUI::DockWidgetArea for \a dockwidget. If \a dockwidget
     has not been added to the main window, this function returns \c
-    Qt::NoDockWidgetArea.
+    BobUI::NoDockWidgetArea.
 
-    \sa addDockWidget(), splitDockWidget(), Qt::DockWidgetArea
+    \sa addDockWidget(), splitDockWidget(), BobUI::DockWidgetArea
 */
-Qt::DockWidgetArea QMainWindow::dockWidgetArea(QDockWidget *dockwidget) const
+BobUI::DockWidgetArea QMainWindow::dockWidgetArea(QDockWidget *dockwidget) const
 { return d_func()->layout->dockWidgetArea(dockwidget); }
 
 
 /*!
     \since 5.6
     Resizes the dock widgets in the list \a docks to the corresponding size in
-    pixels from the list \a sizes. If \a orientation is Qt::Horizontal, adjusts
+    pixels from the list \a sizes. If \a orientation is BobUI::Horizontal, adjusts
     the width, otherwise adjusts the height of the dock widgets.
     The sizes will be adjusted such that the maximum and the minimum sizes are
     respected and the QMainWindow itself will not be resized.
@@ -1127,14 +1127,14 @@ Qt::DockWidgetArea QMainWindow::dockWidgetArea(QDockWidget *dockwidget) const
     specified. Widgets not in the list might be changed to respect the constraints.
 */
 void QMainWindow::resizeDocks(const QList<QDockWidget *> &docks,
-                              const QList<int> &sizes, Qt::Orientation orientation)
+                              const QList<int> &sizes, BobUI::Orientation orientation)
 {
     d_func()->layout->layoutState.dockAreaLayout.resizeDocks(docks, sizes, orientation);
     d_func()->layout->invalidate();
 }
 
 
-#endif // QT_CONFIG(dockwidget)
+#endif // BOBUI_CONFIG(dockwidget)
 
 /*!
     Saves the current state of this mainwindow's toolbars and
@@ -1143,8 +1143,8 @@ void QMainWindow::resizeDocks(const QList<QDockWidget *> &docks,
     as part of the data.
 
     The \l{QObject::objectName}{objectName} property is used
-    to identify each QToolBar and QDockWidget.  You should make sure
-    that this property is unique for each QToolBar and QDockWidget you
+    to identify each BOBUIoolBar and QDockWidget.  You should make sure
+    that this property is unique for each BOBUIoolBar and QDockWidget you
     add to the QMainWindow
 
     To restore the saved state, pass the return value and \a version
@@ -1161,7 +1161,7 @@ QByteArray QMainWindow::saveState(int version) const
 {
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);
-    stream.setVersion(QDataStream::Qt_5_0);
+    stream.setVersion(QDataStream::BobUI_5_0);
     stream << QMainWindowLayout::VersionMarker;
     stream << version;
     d_func()->layout->saveState(stream);
@@ -1190,7 +1190,7 @@ bool QMainWindow::restoreState(const QByteArray &state, int version)
         return false;
     QByteArray sd = state;
     QDataStream stream(&sd, QIODevice::ReadOnly);
-    stream.setVersion(QDataStream::Qt_5_0);
+    stream.setVersion(QDataStream::BobUI_5_0);
     int marker, v;
     stream >> marker;
     stream >> v;
@@ -1205,14 +1205,14 @@ bool QMainWindow::event(QEvent *event)
 {
     Q_D(QMainWindow);
 
-#if QT_CONFIG(dockwidget)
+#if BOBUI_CONFIG(dockwidget)
     if (d->layout && d->layout->windowEvent(event))
         return true;
 #endif
 
     switch (event->type()) {
 
-#if QT_CONFIG(toolbar)
+#if BOBUI_CONFIG(toolbar)
         case QEvent::ToolBarChange: {
             Q_ASSERT(d->layout);
             d->layout->toggleToolBarsVisible();
@@ -1220,9 +1220,9 @@ bool QMainWindow::event(QEvent *event)
         }
 #endif
 
-#if QT_CONFIG(statustip)
+#if BOBUI_CONFIG(statustip)
         case QEvent::StatusTip:
-#if QT_CONFIG(statusbar)
+#if BOBUI_CONFIG(statusbar)
             Q_ASSERT(d->layout);
             if (QStatusBar *sb = d->layout->statusBar())
                 sb->showMessage(static_cast<QStatusTipEvent*>(event)->tip());
@@ -1230,17 +1230,17 @@ bool QMainWindow::event(QEvent *event)
 #endif
                 static_cast<QStatusTipEvent*>(event)->ignore();
             return true;
-#endif // QT_CONFIG(statustip)
+#endif // BOBUI_CONFIG(statustip)
 
         case QEvent::StyleChange:
-#if QT_CONFIG(dockwidget)
+#if BOBUI_CONFIG(dockwidget)
             Q_ASSERT(d->layout);
             d->layout->layoutState.dockAreaLayout.styleChangedEvent();
 #endif
             if (!d->explicitIconSize)
                 setIconSize(QSize());
             break;
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
         case QEvent::DragEnter:
         case QEvent::Drop:
             if (!d->layout->draggingWidget)
@@ -1269,13 +1269,13 @@ bool QMainWindow::event(QEvent *event)
     return QWidget::event(event);
 }
 
-#if QT_CONFIG(toolbar)
+#if BOBUI_CONFIG(toolbar)
 
 /*!
     \property QMainWindow::unifiedTitleAndToolBarOnMac
     \brief whether the window uses the unified title and toolbar look on \macos
 
-    Note that the Qt 5 implementation has several limitations compared to Qt 4:
+    Note that the BobUI 5 implementation has several limitations compared to BobUI 4:
     \list
         \li Use in windows with OpenGL content is not supported. This includes QOpenGLWidget.
         \li Using dockable or movable toolbars may result in painting errors and is not recommended
@@ -1296,8 +1296,8 @@ void QMainWindow::setUnifiedTitleAndToolBarOnMac(bool enabled)
     // To ensure a suitable surface format is used we need to first create backing
     // QWindow so we have something to update the surface format on, and then let
     // QWidget know about the translucency, which it will propagate to the surface.
-    setAttribute(Qt::WA_NativeWindow);
-    setAttribute(Qt::WA_TranslucentBackground, enabled);
+    setAttribute(BobUI::WA_NativeWindow);
+    setAttribute(BobUI::WA_TranslucentBackground, enabled);
 
     d->create(); // Create first, before querying the platform window
     using namespace QNativeInterface::Private;
@@ -1318,14 +1318,14 @@ bool QMainWindow::unifiedTitleAndToolBarOnMac() const
     return false;
 }
 
-#endif // QT_CONFIG(toolbar)
+#endif // BOBUI_CONFIG(toolbar)
 
 /*!
     \internal
 */
 bool QMainWindow::isSeparator(const QPoint &pos) const
 {
-#if QT_CONFIG(dockwidget)
+#if BOBUI_CONFIG(dockwidget)
     Q_D(const QMainWindow);
     return !d->layout->layoutState.dockAreaLayout.findSeparator(pos).isEmpty();
 #else
@@ -1334,25 +1334,25 @@ bool QMainWindow::isSeparator(const QPoint &pos) const
 #endif
 }
 
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
 /*!
     \reimp
 */
 void QMainWindow::contextMenuEvent(QContextMenuEvent *event)
 {
     event->ignore();
-    // only show the context menu for direct QDockWidget and QToolBar
+    // only show the context menu for direct QDockWidget and BOBUIoolBar
     // children and for the menu bar as well
     QWidget *child = childAt(event->pos());
     while (child && child != this) {
-#if QT_CONFIG(menubar)
+#if BOBUI_CONFIG(menubar)
         if (QMenuBar *mb = qobject_cast<QMenuBar *>(child)) {
             if (mb->parentWidget() != this)
                 return;
             break;
         }
 #endif
-#if QT_CONFIG(dockwidget)
+#if BOBUI_CONFIG(dockwidget)
         if (QDockWidget *dw = qobject_cast<QDockWidget *>(child)) {
             if (dw->parentWidget() != this)
                 return;
@@ -1363,9 +1363,9 @@ void QMainWindow::contextMenuEvent(QContextMenuEvent *event)
             }
             break;
         }
-#endif // QT_CONFIG(dockwidget)
-#if QT_CONFIG(toolbar)
-        if (QToolBar *tb = qobject_cast<QToolBar *>(child)) {
+#endif // BOBUI_CONFIG(dockwidget)
+#if BOBUI_CONFIG(toolbar)
+        if (BOBUIoolBar *tb = qobject_cast<BOBUIoolBar *>(child)) {
             if (tb->parentWidget() != this)
                 return;
             break;
@@ -1376,11 +1376,11 @@ void QMainWindow::contextMenuEvent(QContextMenuEvent *event)
     if (child == this)
         return;
 
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
     QMenu *popup = createPopupMenu();
     if (popup) {
         if (!popup->isEmpty()) {
-            popup->setAttribute(Qt::WA_DeleteOnClose);
+            popup->setAttribute(BobUI::WA_DeleteOnClose);
             popup->popup(event->globalPos());
             event->accept();
         } else {
@@ -1389,9 +1389,9 @@ void QMainWindow::contextMenuEvent(QContextMenuEvent *event)
     }
 #endif
 }
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
 
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
 /*!
     Returns a popup menu containing checkable entries for the toolbars and
     dock widgets present in the main window. If there are no toolbars and
@@ -1411,7 +1411,7 @@ QMenu *QMainWindow::createPopupMenu()
 {
     Q_D(QMainWindow);
     QMenu *menu = nullptr;
-#if QT_CONFIG(dockwidget)
+#if BOBUI_CONFIG(dockwidget)
     QList<QDockWidget *> dockwidgets = findChildren<QDockWidget *>();
     if (dockwidgets.size()) {
         menu = new QMenu(this);
@@ -1434,14 +1434,14 @@ QMenu *QMainWindow::createPopupMenu()
         }
         menu->addSeparator();
     }
-#endif // QT_CONFIG(dockwidget)
-#if QT_CONFIG(toolbar)
-    QList<QToolBar *> toolbars = findChildren<QToolBar *>();
+#endif // BOBUI_CONFIG(dockwidget)
+#if BOBUI_CONFIG(toolbar)
+    QList<BOBUIoolBar *> toolbars = findChildren<BOBUIoolBar *>();
     if (toolbars.size()) {
         if (!menu)
             menu = new QMenu(this);
         for (int i = 0; i < toolbars.size(); ++i) {
-            QToolBar *toolBar = toolbars.at(i);
+            BOBUIoolBar *toolBar = toolbars.at(i);
             if (toolBar->parentWidget() == this
                 && (!d->layout->layoutState.toolBarAreaLayout.indexOf(toolBar).isEmpty())) {
                 menu->addAction(toolbars.at(i)->toggleViewAction());
@@ -1452,8 +1452,8 @@ QMenu *QMainWindow::createPopupMenu()
     Q_UNUSED(d);
     return menu;
 }
-#endif // QT_CONFIG(menu)
+#endif // BOBUI_CONFIG(menu)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qmainwindow.cpp"

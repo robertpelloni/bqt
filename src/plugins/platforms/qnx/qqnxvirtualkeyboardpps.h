@@ -1,15 +1,15 @@
 // Copyright (C) 2011 - 2012 Research In Motion
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef VIRTUALKEYBOARDPPS_H
 #define VIRTUALKEYBOARDPPS_H
 
 #include "qqnxabstractvirtualkeyboard.h"
-#include <QtCore/QLoggingCategory>
+#include <BobUICore/QLoggingCategory>
 
 #include <sys/pps.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcQpaQnxVirtualKeyboard);
 
@@ -58,6 +58,6 @@ private:
     static const size_t ms_bufferSize;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // VIRTUALKEYBOARDPPS_H

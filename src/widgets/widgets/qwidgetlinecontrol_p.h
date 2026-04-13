@@ -1,6 +1,6 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QWIDGETLINECONTROL_P_H
 #define QWIDGETLINECONTROL_P_H
@@ -9,29 +9,29 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 
 #include "private/qwidget_p.h"
-#include "QtWidgets/qlineedit.h"
-#include "QtGui/qtextlayout.h"
-#include "QtWidgets/qstyleoption.h"
-#include "QtCore/qpointer.h"
-#include "QtGui/qclipboard.h"
-#include "QtGui/qinputmethod.h"
-#include "QtCore/qpoint.h"
-#if QT_CONFIG(completer)
-#include "QtWidgets/qcompleter.h"
+#include "BobUIWidgets/qlineedit.h"
+#include "BobUIGui/bobuiextlayout.h"
+#include "BobUIWidgets/qstyleoption.h"
+#include "BobUICore/qpointer.h"
+#include "BobUIGui/qclipboard.h"
+#include "BobUIGui/qinputmethod.h"
+#include "BobUICore/qpoint.h"
+#if BOBUI_CONFIG(completer)
+#include "BobUIWidgets/qcompleter.h"
 #endif
-#include "QtCore/qbasictimer.h"
-#include "QtCore/qthread.h"
-#include "QtGui/private/qinputcontrol_p.h"
+#include "BobUICore/qbasictimer.h"
+#include "BobUICore/bobuihread.h"
+#include "BobUIGui/private/qinputcontrol_p.h"
 
 #include "qplatformdefs.h"
 
@@ -39,15 +39,15 @@
 #include <memory>
 
 #ifdef Q_OS_WIN
-# include <qt_windows.h>
+# include <bobui_windows.h>
 #endif
 #ifdef DrawText
 #  undef DrawText
 #endif
 
-QT_REQUIRE_CONFIG(lineedit);
+BOBUI_REQUIRE_CONFIG(lineedit);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Q_WIDGETS_EXPORT QWidgetLineControl : public QInputControl
 {
@@ -56,7 +56,7 @@ class Q_WIDGETS_EXPORT QWidgetLineControl : public QInputControl
 public:
     QWidgetLineControl(const QString &txt = QString())
         : QInputControl(LineEdit)
-        , m_cursor(0), m_preeditCursor(0), m_cursorWidth(0), m_layoutDirection(Qt::LayoutDirectionAuto),
+        , m_cursor(0), m_preeditCursor(0), m_cursorWidth(0), m_layoutDirection(BobUI::LayoutDirectionAuto),
         m_hideCursor(false), m_separator(0), m_readOnly(0),
         m_dragEnabled(0), m_echoMode(0), m_textDirty(0), m_selDirty(0),
         m_validInput(1), m_blinkStatus(0), m_blinkEnabled(false),
@@ -64,7 +64,7 @@ public:
         m_maskData(nullptr), m_modifiedState(0), m_undoState(0),
         m_selstart(0), m_selend(0), m_passwordEchoEditing(false)
         , m_passwordMaskDelay(-1)
-#if defined(QT_BUILD_INTERNAL)
+#if defined(BOBUI_BUILD_INTERNAL)
         , m_passwordMaskDelayOverride(-1)
 #endif
         , m_keyboardScheme(0)
@@ -139,7 +139,7 @@ public:
     {
         if (m_selstart >= m_selend)
             return false;
-        int pos = xToPos(x, QTextLine::CursorOnCharacter);
+        int pos = xToPos(x, BOBUIextLine::CursorOnCharacter);
         return pos >= m_selstart && pos < m_selend;
     }
 
@@ -153,7 +153,7 @@ public:
     int start() const { return 0; }
     int end() const { return m_text.size(); }
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     void copy(QClipboard::Mode mode = QClipboard::Clipboard) const;
     void paste(QClipboard::Mode mode = QClipboard::Clipboard);
 #endif
@@ -164,8 +164,8 @@ public:
     int cursorWidth() const { return m_cursorWidth; }
     void setCursorWidth(int value) { m_cursorWidth = value; }
 
-    Qt::CursorMoveStyle cursorMoveStyle() const { return m_textLayout.cursorMoveStyle(); }
-    void setCursorMoveStyle(Qt::CursorMoveStyle style) { m_textLayout.setCursorMoveStyle(style); }
+    BobUI::CursorMoveStyle cursorMoveStyle() const { return m_textLayout.cursorMoveStyle(); }
+    void setCursorMoveStyle(BobUI::CursorMoveStyle style) { m_textLayout.setCursorMoveStyle(style); }
 
     void moveCursor(int pos, bool mark = false);
     void cursorForward(bool mark, int steps)
@@ -173,23 +173,23 @@ public:
         int c = m_cursor;
         if (steps > 0) {
             while (steps--)
-                c = cursorMoveStyle() == Qt::VisualMoveStyle ? m_textLayout.rightCursorPosition(c)
+                c = cursorMoveStyle() == BobUI::VisualMoveStyle ? m_textLayout.rightCursorPosition(c)
                                                              : m_textLayout.nextCursorPosition(c);
         } else if (steps < 0) {
             while (steps++)
-                c = cursorMoveStyle() == Qt::VisualMoveStyle ? m_textLayout.leftCursorPosition(c)
+                c = cursorMoveStyle() == BobUI::VisualMoveStyle ? m_textLayout.leftCursorPosition(c)
                                                              : m_textLayout.previousCursorPosition(c);
         }
         moveCursor(c, mark);
     }
 
-    void cursorWordForward(bool mark) { moveCursor(m_textLayout.nextCursorPosition(m_cursor, QTextLayout::SkipWords), mark); }
-    void cursorWordBackward(bool mark) { moveCursor(m_textLayout.previousCursorPosition(m_cursor, QTextLayout::SkipWords), mark); }
+    void cursorWordForward(bool mark) { moveCursor(m_textLayout.nextCursorPosition(m_cursor, BOBUIextLayout::SkipWords), mark); }
+    void cursorWordBackward(bool mark) { moveCursor(m_textLayout.previousCursorPosition(m_cursor, BOBUIextLayout::SkipWords), mark); }
 
     void home(bool mark) { moveCursor(0, mark); }
     void end(bool mark) { moveCursor(m_text.size(), mark); }
 
-    int xToPos(int x, QTextLine::CursorPosition = QTextLine::CursorBetweenCharacters) const;
+    int xToPos(int x, BOBUIextLine::CursorPosition = BOBUIextLine::CursorBetweenCharacters) const;
     QRect rectForPos(int pos) const;
     QRect cursorRect() const;
     QRect anchorRect() const;
@@ -214,7 +214,7 @@ public:
     }
     void setText(const QString &txt)
     {
-#ifndef QT_NO_IM
+#ifndef BOBUI_NO_IM
         if (composeMode())
             QGuiApplication::inputMethod()->reset();
 #endif
@@ -265,12 +265,12 @@ public:
         setText(m_text);
     }
 
-#ifndef QT_NO_VALIDATOR
+#ifndef BOBUI_NO_VALIDATOR
     const QValidator *validator() const { return m_validator; }
     void setValidator(const QValidator *v) { m_validator = const_cast<QValidator*>(v); }
 #endif
 
-#if QT_CONFIG(completer)
+#if BOBUI_CONFIG(completer)
     QCompleter *completer() const { return m_completer; }
     /* Note that you must set the widget for the completer separately */
     void setCompleter(const QCompleter *c) { m_completer = const_cast<QCompleter*>(c); }
@@ -303,7 +303,7 @@ public:
     }
 
     // input methods
-#ifndef QT_NO_IM
+#ifndef BOBUI_NO_IM
     bool composeMode() const { return !m_textLayout.preeditAreaText().isEmpty(); }
     void setPreeditArea(int cursor, const QString &text) { m_textLayout.setPreeditArea(cursor, text); }
 #endif
@@ -323,12 +323,12 @@ public:
     int passwordMaskDelay() const { return m_passwordMaskDelay; }
     void setPasswordMaskDelay(int delay) { m_passwordMaskDelay = delay; }
 
-    Qt::LayoutDirection layoutDirection() const {
-        if (m_layoutDirection == Qt::LayoutDirectionAuto && !m_text.isEmpty())
-            return m_text.isRightToLeft() ? Qt::RightToLeft : Qt::LeftToRight;
+    BobUI::LayoutDirection layoutDirection() const {
+        if (m_layoutDirection == BobUI::LayoutDirectionAuto && !m_text.isEmpty())
+            return m_text.isRightToLeft() ? BobUI::RightToLeft : BobUI::LeftToRight;
         return m_layoutDirection;
     }
-    void setLayoutDirection(Qt::LayoutDirection direction)
+    void setLayoutDirection(BobUI::LayoutDirection direction)
     {
         if (direction != m_layoutDirection) {
             m_layoutDirection = direction;
@@ -361,11 +361,11 @@ public:
     };
     void draw(QPainter *, const QPoint &, const QRect &, int flags = DrawAll);
 
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     void processShortcutOverrideEvent(QKeyEvent *ke);
 #endif
 
-    QTextLayout *textLayout() const
+    BOBUIextLayout *textLayout() const
     {
         return &m_textLayout;
     }
@@ -394,7 +394,7 @@ private:
     int m_cursor;
     int m_preeditCursor;
     int m_cursorWidth;
-    Qt::LayoutDirection m_layoutDirection;
+    BobUI::LayoutDirection m_layoutDirection;
     uint m_hideCursor : 1; // used to hide the m_cursor inside preedit areas
     uint m_separator : 1;
     uint m_readOnly : 1;
@@ -419,11 +419,11 @@ private:
 
     bool finishChange(int validateFromState = -1, bool update = false, bool edited = true);
 
-#ifndef QT_NO_VALIDATOR
+#ifndef BOBUI_NO_VALIDATOR
     QPointer<QValidator> m_validator;
 #endif
     QPointer<QCompleter> m_completer;
-#if QT_CONFIG(completer)
+#if BOBUI_CONFIG(completer)
     bool advanceToEnabledItem(int dir);
 #endif
 
@@ -466,7 +466,7 @@ private:
     int findInMask(int pos, bool forward, bool findSeparator, QChar searchChar = QChar()) const;
 
     // complex text layout (must be mutable so it can be reshaped at will)
-    mutable QTextLayout m_textLayout;
+    mutable BOBUIextLayout m_textLayout;
 
     bool m_passwordEchoEditing;
     QChar m_passwordCharacter;
@@ -480,7 +480,7 @@ private:
     int redoTextLayout() const;
 
 public:
-#if defined(QT_BUILD_INTERNAL)
+#if defined(BOBUI_BUILD_INTERNAL)
     int m_passwordMaskDelayOverride;
 #endif
 
@@ -500,11 +500,11 @@ Q_SIGNALS:
     void updateNeeded(const QRect &);
     void inputRejected();
 
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     void editFocusChange(bool);
 #endif
 protected:
-    virtual void timerEvent(QTimerEvent *event) override;
+    virtual void timerEvent(BOBUIimerEvent *event) override;
 
 private Q_SLOTS:
     void _q_deleteSelected();
@@ -518,6 +518,6 @@ private:
     friend class QLineEdit;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWIDGETLINECONTROL_P_H

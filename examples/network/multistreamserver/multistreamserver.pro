@@ -1,4 +1,4 @@
-QT += network widgets
+BOBUI += network widgets
 
 HEADERS       = server.h \
                 provider.h \
@@ -14,5 +14,5 @@ SOURCES       = server.cpp \
 EXAMPLE_FILES = animation.gif
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/network/multistreamserver
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/network/multistreamserver
 INSTALLS += target

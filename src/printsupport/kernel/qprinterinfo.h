@@ -1,20 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QPRINTERINFO_H
 #define QPRINTERINFO_H
 
-#include <QtPrintSupport/qtprintsupportglobal.h>
-#include <QtPrintSupport/qprinter.h>
+#include <BobUIPrintSupport/bobuiprintsupportglobal.h>
+#include <BobUIPrintSupport/qprinter.h>
 
-#include <QtCore/QList>
-#include <QtGui/qpagesize.h>
+#include <BobUICore/QList>
+#include <BobUIGui/qpagesize.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
 class QPrinterInfoPrivate;
 class QPrinterInfoPrivateDeleter;
 class QDebug;
@@ -68,15 +68,15 @@ private:
 
 private:
     friend class QPlatformPrinterSupport;
-#  ifndef QT_NO_DEBUG_STREAM
+#  ifndef BOBUI_NO_DEBUG_STREAM
     friend Q_PRINTSUPPORT_EXPORT QDebug operator<<(QDebug debug, const QPrinterInfo &);
 #  endif
     Q_DECLARE_PRIVATE(QPrinterInfo)
     QScopedPointer<QPrinterInfoPrivate, QPrinterInfoPrivateDeleter> d_ptr;
 };
 
-#endif // QT_NO_PRINTER
+#endif // BOBUI_NO_PRINTER
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPRINTERINFO_H

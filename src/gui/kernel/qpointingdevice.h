@@ -1,14 +1,14 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPOINTINGDEVICE_H
 #define QPOINTINGDEVICE_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qobject.h>
-#include <QtGui/qinputdevice.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qobject.h>
+#include <BobUIGui/qinputdevice.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDebug;
 class QEventPoint;
@@ -88,12 +88,12 @@ public:
                     QPointingDeviceUniqueId uniqueId = QPointingDeviceUniqueId(),
                     QObject *parent = nullptr);
 
-#if QT_DEPRECATED_SINCE(6, 0)
-    QT_DEPRECATED_VERSION_X_6_0("Use the constructor")
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use the constructor")
     void setType(DeviceType devType);
-    QT_DEPRECATED_VERSION_X_6_0("Use the constructor")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use the constructor")
     void setCapabilities(QInputDevice::Capabilities caps);
-    QT_DEPRECATED_VERSION_X_6_0("Use the constructor")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use the constructor")
     void setMaximumTouchPoints(int c);
 #endif
 
@@ -107,7 +107,7 @@ public:
     bool operator==(const QPointingDevice &other) const;
 
 Q_SIGNALS:
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
     void grabChanged(QObject *grabber, GrabTransition transition,
                      const QPointerEvent *event, const QEventPoint &point) const;
 #else
@@ -123,12 +123,12 @@ protected:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QPointingDevice::PointerTypes)
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QPointingDevice *);
 #endif
 
-//typedef QPointingDevice QTouchDevice; // Qt 5 source compatibility if we need it? or could be "using"
+//typedef QPointingDevice BOBUIouchDevice; // BobUI 5 source compatibility if we need it? or could be "using"
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPOINTINGDEVICE_H

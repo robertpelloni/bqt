@@ -1,13 +1,13 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef QWASMACCESIBILITY_H
 #define QWASMACCESIBILITY_H
 
-#include <QtCore/qtconfigmacros.h>
-#include <QtGui/qtguiglobal.h>
+#include <BobUICore/bobuiconfigmacros.h>
+#include <BobUIGui/bobuiguiglobal.h>
 
-#include <QtCore/qhash.h>
+#include <BobUICore/qhash.h>
 #include <private/qstdweb_p.h>
 #include <qpa/qplatformaccessibility.h>
 
@@ -21,7 +21,7 @@ Q_DECLARE_LOGGING_CATEGORY(lcQpaAccessibility)
 
 void QWasmAccessibilityEnable();
 
-#if !QT_CONFIG(accessibility)
+#if !BOBUI_CONFIG(accessibility)
 class QWasmAccessibility
 {
 public:
@@ -134,6 +134,6 @@ private:
     int m_eventHandlerIndex;
 };
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)
 
 #endif

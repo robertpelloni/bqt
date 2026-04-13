@@ -1,14 +1,14 @@
 // Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB).
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qopenglpixeltransferoptions.h"
 #include <QSharedData>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
  * \class QOpenGLPixelTransferOptions
- * \inmodule QtOpenGL
+ * \inmodule BobUIOpenGL
  *
  * \brief The QOpenGLPixelTransferOptions class describes the pixel storage
  * modes that affect the unpacking of pixels during texture upload.
@@ -225,4 +225,4 @@ bool QOpenGLPixelTransferOptions::isSwapBytesEnabled() const
     return data->swapBytes;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

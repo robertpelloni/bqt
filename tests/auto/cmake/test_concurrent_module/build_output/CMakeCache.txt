@@ -194,8 +194,8 @@ CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO:STRING=
 // Studio IDE projects all commands are done without /nologo.
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 
-//The directory containing a CMake configuration file for Qt6Concurrent.
-Qt6Concurrent_DIR:PATH=Qt6Concurrent_DIR-NOTFOUND
+//The directory containing a CMake configuration file for BobUI6Concurrent.
+BobUI6Concurrent_DIR:PATH=BobUI6Concurrent_DIR-NOTFOUND
 
 //Value Computed by CMake
 test_concurrent_module_BINARY_DIR:STATIC=C:/Users/hyper/workspace/bobui/tests/auto/cmake/test_concurrent_module/build_output

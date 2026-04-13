@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestCase name="tst_Counting">
   <Environment>
-    <QtVersion>@INSERT_QT_VERSION_HERE@</QtVersion>
-    <QtBuild/>
-    <QTestVersion>@INSERT_QT_VERSION_HERE@</QTestVersion>
+    <BobUIVersion>@INSERT_BOBUI_VERSION_HERE@</BobUIVersion>
+    <BobUIBuild/>
+    <BOBUIestVersion>@INSERT_BOBUI_VERSION_HERE@</BOBUIestVersion>
   </Environment>
   <TestFunction name="initTestCase">
     <Incident type="pass" file="" line="0" />
@@ -22,7 +22,7 @@
     <Incident type="pass" file="" line="0">
       <DataTag><![CDATA[row 1]]></DataTag>
     </Incident>
-    <Incident type="skip" file="qtbase/tests/auto/testlib/selftests/counting/tst_counting.cpp" line="0">
+    <Incident type="skip" file="bobuibase/tests/auto/testlib/selftests/counting/tst_counting.cpp" line="0">
       <DataTag><![CDATA[row 2]]></DataTag>
       <Description><![CDATA[Skipping]]></Description>
     </Incident>
@@ -32,14 +32,14 @@
     <Incident type="pass" file="" line="0">
       <DataTag><![CDATA[row 1]]></DataTag>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/counting/tst_counting.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/counting/tst_counting.cpp" line="0">
       <DataTag><![CDATA[row 2]]></DataTag>
       <Description><![CDATA['false' returned FALSE. ()]]></Description>
     </Incident>
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="testSkipPass">
-    <Incident type="skip" file="qtbase/tests/auto/testlib/selftests/counting/tst_counting.cpp" line="0">
+    <Incident type="skip" file="bobuibase/tests/auto/testlib/selftests/counting/tst_counting.cpp" line="0">
       <DataTag><![CDATA[row 1]]></DataTag>
       <Description><![CDATA[Skipping]]></Description>
     </Incident>
@@ -49,29 +49,29 @@
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="testSkipSkip">
-    <Incident type="skip" file="qtbase/tests/auto/testlib/selftests/counting/tst_counting.cpp" line="0">
+    <Incident type="skip" file="bobuibase/tests/auto/testlib/selftests/counting/tst_counting.cpp" line="0">
       <DataTag><![CDATA[row 1]]></DataTag>
       <Description><![CDATA[Skipping]]></Description>
     </Incident>
-    <Incident type="skip" file="qtbase/tests/auto/testlib/selftests/counting/tst_counting.cpp" line="0">
+    <Incident type="skip" file="bobuibase/tests/auto/testlib/selftests/counting/tst_counting.cpp" line="0">
       <DataTag><![CDATA[row 2]]></DataTag>
       <Description><![CDATA[Skipping]]></Description>
     </Incident>
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="testSkipFail">
-    <Incident type="skip" file="qtbase/tests/auto/testlib/selftests/counting/tst_counting.cpp" line="0">
+    <Incident type="skip" file="bobuibase/tests/auto/testlib/selftests/counting/tst_counting.cpp" line="0">
       <DataTag><![CDATA[row 1]]></DataTag>
       <Description><![CDATA[Skipping]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/counting/tst_counting.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/counting/tst_counting.cpp" line="0">
       <DataTag><![CDATA[row 2]]></DataTag>
       <Description><![CDATA['false' returned FALSE. ()]]></Description>
     </Incident>
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="testFailPass">
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/counting/tst_counting.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/counting/tst_counting.cpp" line="0">
       <DataTag><![CDATA[row 1]]></DataTag>
       <Description><![CDATA['false' returned FALSE. ()]]></Description>
     </Incident>
@@ -81,22 +81,22 @@
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="testFailSkip">
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/counting/tst_counting.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/counting/tst_counting.cpp" line="0">
       <DataTag><![CDATA[row 1]]></DataTag>
       <Description><![CDATA['false' returned FALSE. ()]]></Description>
     </Incident>
-    <Incident type="skip" file="qtbase/tests/auto/testlib/selftests/counting/tst_counting.cpp" line="0">
+    <Incident type="skip" file="bobuibase/tests/auto/testlib/selftests/counting/tst_counting.cpp" line="0">
       <DataTag><![CDATA[row 2]]></DataTag>
       <Description><![CDATA[Skipping]]></Description>
     </Incident>
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="testFailFail">
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/counting/tst_counting.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/counting/tst_counting.cpp" line="0">
       <DataTag><![CDATA[row 1]]></DataTag>
       <Description><![CDATA['false' returned FALSE. ()]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/counting/tst_counting.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/counting/tst_counting.cpp" line="0">
       <DataTag><![CDATA[row 2]]></DataTag>
       <Description><![CDATA['false' returned FALSE. ()]]></Description>
     </Incident>
@@ -106,7 +106,7 @@
     <Incident type="pass" file="" line="0">
       <DataTag><![CDATA[before]]></DataTag>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/counting/tst_counting.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/counting/tst_counting.cpp" line="0">
       <DataTag><![CDATA[fail]]></DataTag>
       <Description><![CDATA[Fail in init()]]></Description>
     </Incident>
@@ -123,7 +123,7 @@
     <DataTag><![CDATA[fail]]></DataTag>
     <Description><![CDATA[This test function should execute and then QFAIL in cleanup()]]></Description>
   </Message>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/counting/tst_counting.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/counting/tst_counting.cpp" line="0">
       <DataTag><![CDATA[fail]]></DataTag>
       <Description><![CDATA[Fail in cleanup()]]></Description>
     </Incident>
@@ -136,7 +136,7 @@
     <Incident type="pass" file="" line="0">
       <DataTag><![CDATA[before]]></DataTag>
     </Incident>
-    <Incident type="skip" file="qtbase/tests/auto/testlib/selftests/counting/tst_counting.cpp" line="0">
+    <Incident type="skip" file="bobuibase/tests/auto/testlib/selftests/counting/tst_counting.cpp" line="0">
       <DataTag><![CDATA[skip]]></DataTag>
       <Description><![CDATA[Skip in init()]]></Description>
     </Incident>
@@ -153,7 +153,7 @@
     <DataTag><![CDATA[skip]]></DataTag>
     <Description><![CDATA[This test function should execute and then QSKIP in cleanup()]]></Description>
   </Message>
-    <Incident type="skip" file="qtbase/tests/auto/testlib/selftests/counting/tst_counting.cpp" line="0">
+    <Incident type="skip" file="bobuibase/tests/auto/testlib/selftests/counting/tst_counting.cpp" line="0">
       <DataTag><![CDATA[skip]]></DataTag>
       <Description><![CDATA[Skip in cleanup()]]></Description>
     </Incident>

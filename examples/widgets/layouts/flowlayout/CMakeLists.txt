@@ -1,14 +1,14 @@
-# Copyright (C) 2022 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+# Copyright (C) 2022 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 cmake_minimum_required(VERSION 3.16)
 project(flowlayout LANGUAGES CXX)
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
+find_package(BobUI6 REQUIRED COMPONENTS Core Gui Widgets)
 
-qt_standard_project_setup()
+bobui_standard_project_setup()
 
-qt_add_executable(flowlayout
+bobui_add_executable(flowlayout
     flowlayout.cpp flowlayout.h
     main.cpp
     window.cpp window.h
@@ -20,9 +20,9 @@ set_target_properties(flowlayout PROPERTIES
 )
 
 target_link_libraries(flowlayout PRIVATE
-    Qt6::Core
-    Qt6::Gui
-    Qt6::Widgets
+    BobUI6::Core
+    BobUI6::Gui
+    BobUI6::Widgets
 )
 
 install(TARGETS flowlayout
@@ -31,7 +31,7 @@ install(TARGETS flowlayout
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
 
-qt_generate_deploy_app_script(
+bobui_generate_deploy_app_script(
     TARGET flowlayout
     OUTPUT_SCRIPT deploy_script
     NO_UNSUPPORTED_PLATFORM_ERROR

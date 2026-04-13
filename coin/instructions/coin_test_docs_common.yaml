@@ -11,7 +11,7 @@ instructions:
   - type: ChangeDirectory
     directory: "{{.BuildDir}}"
   - type: ExecuteCommand
-    command: "cp -rfs /opt/qt-doctools/. {{.InstallDir}}"
+    command: "cp -rfs /opt/bobui-doctools/. {{.InstallDir}}"
     userMessageOnFailure: >
       Failed to create links to provisioned binaries.
     enable_if:
@@ -19,30 +19,30 @@ instructions:
       property: features
       not_contains_value: "DocsGenerationV2"
 
-  - !include "{{qt/qtbase}}/coin_fetch_doc_tools.yaml"
+  - !include "{{bobui/bobuibase}}/coin_fetch_doc_tools.yaml"
 
-  - !include "{{qt/qtbase}}/prepare_building_env.yaml"
+  - !include "{{bobui/bobuibase}}/prepare_building_env.yaml"
 
   - type: EnvironmentVariable
     variableName: COIN_CMAKE_ARGS
-    variableValue: "-DQT_BUILD_TESTS=OFF {{.Env.COIN_TEST_DOCS_CONFIGURE_EXTRA_CMAKE_ARGS}}"
+    variableValue: "-DBOBUI_BUILD_TESTS=OFF {{.Env.COIN_TEST_DOCS_CONFIGURE_EXTRA_CMAKE_ARGS}}"
   - type: EnvironmentVariable
     variableName: CONFIGURE_ENV_PREFIX
     variableValue: "{{.Env.ENV_PREFIX}}"
 
   - type: Group
     instructions:
-      - !include "{{qt/qtbase}}/call_configure_qtbase.yaml"
+      - !include "{{bobui/bobuibase}}/call_configure_bobuibase.yaml"
     enable_if:
       condition: runtime
-      env_var: COIN_TEST_DOCS_CALL_QTBASE_CONFIGURE
+      env_var: COIN_TEST_DOCS_CALL_BOBUIBASE_CONFIGURE
       equals_value: "1"
   - type: Group
     instructions:
-      - !include "{{qt/qtbase}}/call_configure_module.yaml"
+      - !include "{{bobui/bobuibase}}/call_configure_module.yaml"
     enable_if:
       condition: runtime
-      env_var: COIN_TEST_DOCS_CALL_QTBASE_CONFIGURE
+      env_var: COIN_TEST_DOCS_CALL_BOBUIBASE_CONFIGURE
       not_equals_value: "1"
 
   - type: ExecuteCommand

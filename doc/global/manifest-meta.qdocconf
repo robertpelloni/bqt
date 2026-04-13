@@ -14,202 +14,202 @@
 # Note: You cannot use operators (+, =, -) in the names.
 #
 # Examples: add a 'isHighlighted' attribute for two 'Analog Clock' examples,
-# add a 'database' tag for QtSql examples, and a 'qt5' tag for all examples
+# add a 'database' tag for BobUISql examples, and a 'bobui5' tag for all examples
 #
 # manifestmeta.filters                = highlighted sql global
 #
-# manifestmeta.highlighted.names      = "QtGui/Analog Clock Window Example" \
-#                                       "QtWidgets/Analog Clock"
+# manifestmeta.highlighted.names      = "BobUIGui/Analog Clock Window Example" \
+#                                       "BobUIWidgets/Analog Clock"
 # manifestmeta.highlighted.attributes = isHighlighted:true
 #
-# manifestmeta.sql.names              = "QtSql/*"
+# manifestmeta.sql.names              = "BobUISql/*"
 # manifestmeta.sql.tags               = database
 #
 # manifestmeta.global.names           = *
-# manifestmeta.global.tags            = qt5
+# manifestmeta.global.tags            = bobui5
 
 manifestmeta.filters                =   highlighted android thumbnail ios
 
 manifestmeta.highlighted.attributes =   isHighlighted:true
 
-manifestmeta.android.names          =   "Qt3D/Qt 3D: Basic Shapes C++ Example" \
-                                        "Qt3D/Qt 3D: Planets QML Example" \
-                                        "Qt3D/Qt 3D: Simple Custom Material QML Example" \
-                                        "QtCore/Qt for Android Notifier" \
-                                        "QtBluetooth/Bluetooth Low Energy Scanner Example" \
-                                        "QtBluetooth/Bluetooth Scanner Example" \
-                                        "QtBluetooth/QML Bluetooth Scanner Example" \
-                                        "QtGui/OpenGL Window Example" \
-                                        "QtGui/Raster Window Example" \
-                                        "QtLinguist/Arrow Pad Example" \
-                                        "QtLinguistManual/Hello tr() Example" \
-                                        "QtLocation/Map Viewer (QML)" \
-                                        "QtLocation/Places Map (QML)" \
-                                        "QtLocation/Plane Spotter (QML)" \
-                                        "QtMultimedia/AudioEngine Example" \
-                                        "QtMultimedia/QML Camera Example" \
-                                        "QtMultimedia/QML Video Example" \
-                                        "QtMultimedia/QML Video Shader Effects Example" \
-                                        "QtNFC/Annotated URL Example" \
-                                        "QtNFC/QML Poster Example" \
-                                        "QtOpenGL/Hello GLES3 Example" \
-                                        "QtPositioning/Satellite Info" \
-                                        "QtPositioning/Weather Info" \
-                                        "QtPurchasing/Qt Purchasing Examples - QtHangman" \
-                                        "QtQML/Extending QML - Attached Properties Example" \
-                                        "QtQML/Extending QML - Grouped Properties Example" \
-                                        "QtQML/Extending QML - Methods Example" \
-                                        "QtQML/Extending QML - Signal Support Example" \
-                                        "QtQML/Qt Quick Examples - XMLHttpRequest" \
-                                        "QtQml/Qt Quick Examples - XMLHttpRequest" \
-                                        "QtQuick/C++ Extensions*" \
-                                        "QtQuick/Models and Views*" \
-                                        "QtQuick/QQuickRenderControl OpenGL Example" \
-                                        "QtQuick/QQuickWidget - QQuickView Comparison Example" \
-                                        "QtQuick/QML*" \
-                                        "QtQuick/Qt Quick*" \
-                                        "QtQuick/Scene Graph - Custom Geometry" \
-                                        "QtQuick/Scene Graph - Custom Material" \
-                                        "QtQuick/Scene Graph - Graph" \
-                                        "QtQuick/Scene Graph - OpenGL Under QML" \
-                                        "QtQuick/Scene Graph - Painted Item" \
-                                        "QtQuick/Scene Graph - Rendering FBOs" \
-                                        "QtQuick/Scene Graph - Two Texture Providers" \
-                                        "QtQuick/Scene Graph - Vulkan Under QML" \
-                                        "QtQuick/Scene Graph - Vulkan Texture Import" \
-                                        "QtQuick/Threaded ListModel Example" \
-                                        "QtQuick/TabWidget Example" \
-                                        "QtQuick/UI Components*" \
-                                        "QtQuickControls/Qt Quick Controls - Attached Style Properties Example" \
-                                        "QtQuickControls/Qt Quick Controls - Chat Tutorial" \
-                                        "QtQuickControls/Qt Quick Controls - Contact List" \
-                                        "QtQuickControls/Qt Quick Controls - Event Calendar" \
-                                        "QtQuickControls/Qt Quick Controls - Flat Style" \
-                                        "QtQuickControls/Qt Quick Controls - Gallery" \
-                                        "QtQuickControls/Qt Quick Controls - Imagine Style Example: Automotive" \
-                                        "QtQuickControls/Qt Quick Controls - Text Editor" \
-                                        "QtQuickControls/Qt Quick Controls - Wearable Demo" \
-                                        "QtQuickDialogs/*" \
-                                        "QtQuickExtras/*" \
-                                        "QtSCXML/Qt SCXML Calculator QML Example" \
-                                        "QtSCXML/Qt SCXML Sudoku Example" \
-                                        "QtSCXML/Qt SCXML Traffic Light Example (Dynamic)" \
-                                        "QtSCXML/Qt SCXML Traffic Light QML Example (Dynamic)" \
-                                        "QtSQL/Master Detail Example" \
-                                        "QtSVG/Text Object Example" \
-                                        "QtUiTools/Text Finder Example" \
-                                        "QtWebView/Qt WebView Examples - Minibrowser"
+manifestmeta.android.names          =   "BobUI3D/BobUI 3D: Basic Shapes C++ Example" \
+                                        "BobUI3D/BobUI 3D: Planets QML Example" \
+                                        "BobUI3D/BobUI 3D: Simple Custom Material QML Example" \
+                                        "BobUICore/BobUI for Android Notifier" \
+                                        "BobUIBluetooth/Bluetooth Low Energy Scanner Example" \
+                                        "BobUIBluetooth/Bluetooth Scanner Example" \
+                                        "BobUIBluetooth/QML Bluetooth Scanner Example" \
+                                        "BobUIGui/OpenGL Window Example" \
+                                        "BobUIGui/Raster Window Example" \
+                                        "BobUILinguist/Arrow Pad Example" \
+                                        "BobUILinguistManual/Hello tr() Example" \
+                                        "BobUILocation/Map Viewer (QML)" \
+                                        "BobUILocation/Places Map (QML)" \
+                                        "BobUILocation/Plane Spotter (QML)" \
+                                        "BobUIMultimedia/AudioEngine Example" \
+                                        "BobUIMultimedia/QML Camera Example" \
+                                        "BobUIMultimedia/QML Video Example" \
+                                        "BobUIMultimedia/QML Video Shader Effects Example" \
+                                        "BobUINFC/Annotated URL Example" \
+                                        "BobUINFC/QML Poster Example" \
+                                        "BobUIOpenGL/Hello GLES3 Example" \
+                                        "BobUIPositioning/Satellite Info" \
+                                        "BobUIPositioning/Weather Info" \
+                                        "BobUIPurchasing/BobUI Purchasing Examples - BobUIHangman" \
+                                        "BobUIQML/Extending QML - Attached Properties Example" \
+                                        "BobUIQML/Extending QML - Grouped Properties Example" \
+                                        "BobUIQML/Extending QML - Methods Example" \
+                                        "BobUIQML/Extending QML - Signal Support Example" \
+                                        "BobUIQML/BobUI Quick Examples - XMLHttpRequest" \
+                                        "BobUIQml/BobUI Quick Examples - XMLHttpRequest" \
+                                        "BobUIQuick/C++ Extensions*" \
+                                        "BobUIQuick/Models and Views*" \
+                                        "BobUIQuick/QQuickRenderControl OpenGL Example" \
+                                        "BobUIQuick/QQuickWidget - QQuickView Comparison Example" \
+                                        "BobUIQuick/QML*" \
+                                        "BobUIQuick/BobUI Quick*" \
+                                        "BobUIQuick/Scene Graph - Custom Geometry" \
+                                        "BobUIQuick/Scene Graph - Custom Material" \
+                                        "BobUIQuick/Scene Graph - Graph" \
+                                        "BobUIQuick/Scene Graph - OpenGL Under QML" \
+                                        "BobUIQuick/Scene Graph - Painted Item" \
+                                        "BobUIQuick/Scene Graph - Rendering FBOs" \
+                                        "BobUIQuick/Scene Graph - Two Texture Providers" \
+                                        "BobUIQuick/Scene Graph - Vulkan Under QML" \
+                                        "BobUIQuick/Scene Graph - Vulkan Texture Import" \
+                                        "BobUIQuick/Threaded ListModel Example" \
+                                        "BobUIQuick/TabWidget Example" \
+                                        "BobUIQuick/UI Components*" \
+                                        "BobUIQuickControls/BobUI Quick Controls - Attached Style Properties Example" \
+                                        "BobUIQuickControls/BobUI Quick Controls - Chat Tutorial" \
+                                        "BobUIQuickControls/BobUI Quick Controls - Contact List" \
+                                        "BobUIQuickControls/BobUI Quick Controls - Event Calendar" \
+                                        "BobUIQuickControls/BobUI Quick Controls - Flat Style" \
+                                        "BobUIQuickControls/BobUI Quick Controls - Gallery" \
+                                        "BobUIQuickControls/BobUI Quick Controls - Imagine Style Example: Automotive" \
+                                        "BobUIQuickControls/BobUI Quick Controls - Text Editor" \
+                                        "BobUIQuickControls/BobUI Quick Controls - Wearable Demo" \
+                                        "BobUIQuickDialogs/*" \
+                                        "BobUIQuickExtras/*" \
+                                        "BobUISCXML/BobUI SCXML Calculator QML Example" \
+                                        "BobUISCXML/BobUI SCXML Sudoku Example" \
+                                        "BobUISCXML/BobUI SCXML Traffic Light Example (Dynamic)" \
+                                        "BobUISCXML/BobUI SCXML Traffic Light QML Example (Dynamic)" \
+                                        "BobUISQL/Master Detail Example" \
+                                        "BobUISVG/Text Object Example" \
+                                        "BobUIUiTools/Text Finder Example" \
+                                        "BobUIWebView/BobUI WebView Examples - Minibrowser"
 
 manifestmeta.android.tags              =   android
 
-manifestmeta.ios.names              =  "QtCore/Contiguous Cache Example" \
-                                       "QtCore/Mandelbrot Example" \
-                                       "QtCore/Queued Custom Type" \
-                                       "QtGui/OpenGL Window Example" \
-                                       "QtGui/Raster Window Example" \
-                                       "QtNetwork/Network Chat Example" \
-                                       "QtNetwork/Torrent Example" \
-                                       "QtOpenGL/2D Painting Example" \
-                                       "QtOpenGL/Textures Example" \
-                                       "QtWidgets/Animated Tiles Example" \
-                                       "QtWidgets/Application Chooser Example" \
-                                       "QtWidgets/Easing Curves Example" \
-                                       "QtWidgets/Move Blocks Example" \
-                                       "QtWidgets/States Example" \
-                                       "QtWidgets/Find Files Example" \
-                                       "QtWidgets/License Wizard Example" \
-                                       "QtWidgets/Standard Dialogs Example" \
-                                       "QtWidgets/Tab Dialog Example" \
-                                       "QtWidgets/Trivial Wizard Example" \
-                                       "QtWidgets/Draggable Text Example" \
-                                       "QtWidgets/Fridge Magnets Example" \
-                                       "QtWidgets/Blur Picker Effect Example" \
-                                       "QtWidgets/Fade Message Effect Example" \
-                                       "QtWidgets/Lighting Effect Example" \
-                                       "QtWidgets/Basic Graphics Layouts Example" \
-                                       "QtWidgets/40000 Chips" \
-                                       "QtWidgets/Colliding Mice Example" \
-                                       "QtWidgets/Diagram Scene Example" \
-                                       "QtWidgets/Elastic Nodes Example" \
-                                       "QtWidgets/Embedded Dialogs" \
-                                       "QtWidgets/Graphics View Flow Layout Example" \
-                                       "QtWidgets/Simple Anchor Layout Example" \
-                                       "QtWidgets/Address Book" \
-                                       "QtWidgets/Basic Sort/Filter Model Example" \
-                                       "QtWidgets/Chart Example" \
-                                       "QtWidgets/Custom Sort/Filter Model Example" \
-                                       "QtWidgets/Dir View Example" \
-                                       "QtWidgets/Editable Tree Model Example" \
-                                       "QtWidgets/Frozen Column Example" \
-                                       "QtWidgets/Interview" \
-                                       "QtWidgets/Simple Tree Model Example" \
-                                       "QtWidgets/Simple Widget Mapper Example" \
-                                       "QtWidgets/Basic Layouts Example" \
-                                       "QtWidgets/Border Layout Example" \
-                                       "QtWidgets/Flow Layout Example" \
-                                       "QtWidgets/Basic Drawing Example" \
-                                       "QtWidgets/Font Sampler Example" \
-                                       "QtWidgets/Gradients" \
-                                       "QtWidgets/Image Composition Example" \
-                                       "QtWidgets/Painter Paths Example" \
-                                       "QtWidgets/Transformations Example" \
-                                       "QtWidgets/Calendar Example" \
-                                       "QtWidgets/Order Form Example" \
-                                       "QtWidgets/Syntax Highlighter Example" \
-                                       "QtWidgets/Text Edit" \
-                                       "QtWidgets/Completer Example" \
-                                       "QtWidgets/Custom Completer Example" \
-                                       "QtWidgets/Undo Framework" \
-                                       "QtWidgets/Analog Clock" \
-                                       "QtWidgets/Calculator Example" \
-                                       "QtWidgets/Calendar Widget Example" \
-                                       "QtWidgets/Character Map Example" \
-                                       "QtWidgets/Code Editor Example" \
-                                       "QtWidgets/Digital Clock Example" \
-                                       "QtWidgets/Elided Label Example" \
-                                       "QtWidgets/Line Edits Example" \
-                                       "QtWidgets/Scribble Example" \
-                                       "QtWidgets/Shaped Clock Example" \
-                                       "QtWidgets/Sliders Example" \
-                                       "QtWidgets/Validators Example" \
-                                       "QtWidgets/Window Flags Example" \
-                                       "QtQuick/Qt Quick Examples - Animation" \
-                                       "QtQuick/Qt Quick Examples - Canvas" \
-                                       "QtQuick/Qt Quick Examples - Drag and Drop" \
-                                       "QtQuick/Qt Quick Examples - Image Elements" \
-                                       "QtQuick/Qt Quick Examples - MouseArea" \
-                                       "QtQuick/Qt Quick Examples - Positioners" \
-                                       "QtQuick/Qt Quick Examples - Right to Left" \
-                                       "QtQuick/Scene Graph - Metal Texture Import" \
-                                       "QtQuick/Scene Graph - Metal Under QML" \
-                                       "QtQuick/Scene Graph - OpenGL Under QML" \
-                                       "QtQuick/Qt Quick Examples - Shader Effects" \
-                                       "QtQuick/Qt Quick Examples - Text" \
-                                       "QtQuick/Qt Quick Examples - Touch Interaction" \
-                                       "QtQuick/Qt Quick Examples - Views" \
-                                       "QtQuick/Qt Quick Examples - Window and Screen" \
-                                       "QtQuickControls/Qt Quick Controls - To Do List"
+manifestmeta.ios.names              =  "BobUICore/Contiguous Cache Example" \
+                                       "BobUICore/Mandelbrot Example" \
+                                       "BobUICore/Queued Custom Type" \
+                                       "BobUIGui/OpenGL Window Example" \
+                                       "BobUIGui/Raster Window Example" \
+                                       "BobUINetwork/Network Chat Example" \
+                                       "BobUINetwork/Torrent Example" \
+                                       "BobUIOpenGL/2D Painting Example" \
+                                       "BobUIOpenGL/Textures Example" \
+                                       "BobUIWidgets/Animated Tiles Example" \
+                                       "BobUIWidgets/Application Chooser Example" \
+                                       "BobUIWidgets/Easing Curves Example" \
+                                       "BobUIWidgets/Move Blocks Example" \
+                                       "BobUIWidgets/States Example" \
+                                       "BobUIWidgets/Find Files Example" \
+                                       "BobUIWidgets/License Wizard Example" \
+                                       "BobUIWidgets/Standard Dialogs Example" \
+                                       "BobUIWidgets/Tab Dialog Example" \
+                                       "BobUIWidgets/Trivial Wizard Example" \
+                                       "BobUIWidgets/Draggable Text Example" \
+                                       "BobUIWidgets/Fridge Magnets Example" \
+                                       "BobUIWidgets/Blur Picker Effect Example" \
+                                       "BobUIWidgets/Fade Message Effect Example" \
+                                       "BobUIWidgets/Lighting Effect Example" \
+                                       "BobUIWidgets/Basic Graphics Layouts Example" \
+                                       "BobUIWidgets/40000 Chips" \
+                                       "BobUIWidgets/Colliding Mice Example" \
+                                       "BobUIWidgets/Diagram Scene Example" \
+                                       "BobUIWidgets/Elastic Nodes Example" \
+                                       "BobUIWidgets/Embedded Dialogs" \
+                                       "BobUIWidgets/Graphics View Flow Layout Example" \
+                                       "BobUIWidgets/Simple Anchor Layout Example" \
+                                       "BobUIWidgets/Address Book" \
+                                       "BobUIWidgets/Basic Sort/Filter Model Example" \
+                                       "BobUIWidgets/Chart Example" \
+                                       "BobUIWidgets/Custom Sort/Filter Model Example" \
+                                       "BobUIWidgets/Dir View Example" \
+                                       "BobUIWidgets/Editable Tree Model Example" \
+                                       "BobUIWidgets/Frozen Column Example" \
+                                       "BobUIWidgets/Interview" \
+                                       "BobUIWidgets/Simple Tree Model Example" \
+                                       "BobUIWidgets/Simple Widget Mapper Example" \
+                                       "BobUIWidgets/Basic Layouts Example" \
+                                       "BobUIWidgets/Border Layout Example" \
+                                       "BobUIWidgets/Flow Layout Example" \
+                                       "BobUIWidgets/Basic Drawing Example" \
+                                       "BobUIWidgets/Font Sampler Example" \
+                                       "BobUIWidgets/Gradients" \
+                                       "BobUIWidgets/Image Composition Example" \
+                                       "BobUIWidgets/Painter Paths Example" \
+                                       "BobUIWidgets/Transformations Example" \
+                                       "BobUIWidgets/Calendar Example" \
+                                       "BobUIWidgets/Order Form Example" \
+                                       "BobUIWidgets/Syntax Highlighter Example" \
+                                       "BobUIWidgets/Text Edit" \
+                                       "BobUIWidgets/Completer Example" \
+                                       "BobUIWidgets/Custom Completer Example" \
+                                       "BobUIWidgets/Undo Framework" \
+                                       "BobUIWidgets/Analog Clock" \
+                                       "BobUIWidgets/Calculator Example" \
+                                       "BobUIWidgets/Calendar Widget Example" \
+                                       "BobUIWidgets/Character Map Example" \
+                                       "BobUIWidgets/Code Editor Example" \
+                                       "BobUIWidgets/Digital Clock Example" \
+                                       "BobUIWidgets/Elided Label Example" \
+                                       "BobUIWidgets/Line Edits Example" \
+                                       "BobUIWidgets/Scribble Example" \
+                                       "BobUIWidgets/Shaped Clock Example" \
+                                       "BobUIWidgets/Sliders Example" \
+                                       "BobUIWidgets/Validators Example" \
+                                       "BobUIWidgets/Window Flags Example" \
+                                       "BobUIQuick/BobUI Quick Examples - Animation" \
+                                       "BobUIQuick/BobUI Quick Examples - Canvas" \
+                                       "BobUIQuick/BobUI Quick Examples - Drag and Drop" \
+                                       "BobUIQuick/BobUI Quick Examples - Image Elements" \
+                                       "BobUIQuick/BobUI Quick Examples - MouseArea" \
+                                       "BobUIQuick/BobUI Quick Examples - Positioners" \
+                                       "BobUIQuick/BobUI Quick Examples - Right to Left" \
+                                       "BobUIQuick/Scene Graph - Metal Texture Import" \
+                                       "BobUIQuick/Scene Graph - Metal Under QML" \
+                                       "BobUIQuick/Scene Graph - OpenGL Under QML" \
+                                       "BobUIQuick/BobUI Quick Examples - Shader Effects" \
+                                       "BobUIQuick/BobUI Quick Examples - Text" \
+                                       "BobUIQuick/BobUI Quick Examples - Touch Interaction" \
+                                       "BobUIQuick/BobUI Quick Examples - Views" \
+                                       "BobUIQuick/BobUI Quick Examples - Window and Screen" \
+                                       "BobUIQuickControls/BobUI Quick Controls - To Do List"
 
 manifestmeta.ios.tags                  = ios
 
 # add a generic thumbnail image to examples that do not have any images in their documentation
-manifestmeta.thumbnail.attributes  = "imageUrl:qthelp\://org.qt-project.qtdoc.$QT_VERSION_TAG/qtdoc/images/qt-codesample.png"
+manifestmeta.thumbnail.attributes  = "imageUrl:bobuihelp\://org.bobui-project.bobuidoc.$BOBUI_VERSION_TAG/bobuidoc/images/bobui-codesample.png"
 
-manifestmeta.thumbnail.names    =      "QtCore/Contiguous Cache Example" \
-                                       "QtCore/Saving and Loading a Game" \
-                                       "QtCore/Producer and Consumer using Semaphores" \
-                                       "QtCore/Producer and Consumer using Wait Conditions" \
-                                       "QtConcurrent/Word Count" \
-                                       "QtGui/Raster Window Example" \
-                                       "QtNetwork/Network Download*" \
-                                       "QtWidgets/Dynamic Layouts Example" \
-                                       "QtWidgets/Validators Example" \
-                                       "QtWidgets/Widgets Gallery Example" \
-                                       "QtDbus/*" \
-                                       "QtHelp/*" \
-                                       "QtMultimedia/AudioEngine Example" \
-                                       "QtQml/Extending QML*" \
-                                       "QtQuick/C++ Extensions: Image Response Provider Example" \
-                                       "QtQuick/Qt Quick Examples - Accessibility" \
-                                       "QtSensors/Qt Sensors - SensorGesture QML Type example" \
-                                       "QtWinExtras/Icon Extractor"
+manifestmeta.thumbnail.names    =      "BobUICore/Contiguous Cache Example" \
+                                       "BobUICore/Saving and Loading a Game" \
+                                       "BobUICore/Producer and Consumer using Semaphores" \
+                                       "BobUICore/Producer and Consumer using Wait Conditions" \
+                                       "BobUIConcurrent/Word Count" \
+                                       "BobUIGui/Raster Window Example" \
+                                       "BobUINetwork/Network Download*" \
+                                       "BobUIWidgets/Dynamic Layouts Example" \
+                                       "BobUIWidgets/Validators Example" \
+                                       "BobUIWidgets/Widgets Gallery Example" \
+                                       "BobUIDbus/*" \
+                                       "BobUIHelp/*" \
+                                       "BobUIMultimedia/AudioEngine Example" \
+                                       "BobUIQml/Extending QML*" \
+                                       "BobUIQuick/C++ Extensions: Image Response Provider Example" \
+                                       "BobUIQuick/BobUI Quick Examples - Accessibility" \
+                                       "BobUISensors/BobUI Sensors - SensorGesture QML Type example" \
+                                       "BobUIWinExtras/Icon Extractor"

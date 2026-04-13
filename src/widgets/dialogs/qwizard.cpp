@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qwizard.h"
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 
-#if QT_CONFIG(spinbox)
+#if BOBUI_CONFIG(spinbox)
 #include "qabstractspinbox.h"
 #endif
 #include "qalgorithms.h"
@@ -15,7 +15,7 @@
 #include "qevent.h"
 #include "qframe.h"
 #include "qlabel.h"
-#if QT_CONFIG(lineedit)
+#if BOBUI_CONFIG(lineedit)
 #include "qlineedit.h"
 #endif
 #include <qpointer.h>
@@ -23,7 +23,7 @@
 #include "qwindow.h"
 #include "qpushbutton.h"
 #include "qset.h"
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 #  include "qshortcut.h"
 #endif
 #include "qstyle.h"
@@ -31,8 +31,8 @@
 #include "qvarlengtharray.h"
 #if defined(Q_OS_MACOS)
 #include <AppKit/AppKit.h>
-#include <QtGui/private/qcoregraphics_p.h>
-#elif QT_CONFIG(style_windowsvista)
+#include <BobUIGui/private/qcoregraphics_p.h>
+#elif BOBUI_CONFIG(style_windowsvista)
 #include "qwizard_win_p.h"
 #endif
 
@@ -42,9 +42,9 @@
 #include <string.h>     // for memset()
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 // These fudge terms were needed a few places to obtain pixel-perfect results
 const int GapBetweenLogoAndRightEdge = 5;
@@ -74,7 +74,7 @@ static QWidget *iWantTheFocus(QWidget *ancestor)
         if (!candidate)
             break;
 
-        if (candidate->focusPolicy() & Qt::TabFocus) {
+        if (candidate->focusPolicy() & BobUI::TabFocus) {
             if (candidate != ancestor && ancestor->isAncestorOf(candidate))
                 return candidate;
         }
@@ -258,12 +258,12 @@ public:
 
     void setup(const QWizardLayoutInfo &info, const QString &title,
                const QString &subTitle, const QPixmap &logo, const QPixmap &banner,
-               Qt::TextFormat titleFormat, Qt::TextFormat subTitleFormat,
+               BobUI::TextFormat titleFormat, BobUI::TextFormat subTitleFormat,
                QWizard::WizardOptions wizardOptions);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
-#if QT_CONFIG(style_windowsvista)
+#if BOBUI_CONFIG(style_windowsvista)
 private:
     bool vistaDisabled() const;
 #endif
@@ -286,7 +286,7 @@ QWizardHeader::QWizardHeader(QWidget *parent)
     titleLabel->setBackgroundRole(QPalette::Base);
 
     subTitleLabel = new QLabel(this);
-    subTitleLabel->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    subTitleLabel->setAlignment(BobUI::AlignTop | BobUI::AlignLeft);
     subTitleLabel->setWordWrap(true);
 
     logoLabel = new QLabel(this);
@@ -311,7 +311,7 @@ QWizardHeader::QWizardHeader(QWidget *parent)
     layout->addWidget(logoLabel, 1, 5, 5, 1);
 }
 
-#if QT_CONFIG(style_windowsvista)
+#if BOBUI_CONFIG(style_windowsvista)
 bool QWizardHeader::vistaDisabled() const
 {
     bool styleDisabled = false;
@@ -328,11 +328,11 @@ bool QWizardHeader::vistaDisabled() const
 
 void QWizardHeader::setup(const QWizardLayoutInfo &info, const QString &title,
                           const QString &subTitle, const QPixmap &logo, const QPixmap &banner,
-                          Qt::TextFormat titleFormat, Qt::TextFormat subTitleFormat,
+                          BobUI::TextFormat titleFormat, BobUI::TextFormat subTitleFormat,
                           QWizard::WizardOptions options)
 {
     bool modern = ((info.wizStyle == QWizard::ModernStyle)
-#if QT_CONFIG(style_windowsvista)
+#if BOBUI_CONFIG(style_windowsvista)
         || vistaDisabled()
 #endif
     );
@@ -497,7 +497,7 @@ void QWizardPagePrivate::_q_updateCachedCompleteState()
 class QWizardAntiFlickerWidget : public QWidget
 {
 public:
-#if QT_CONFIG(style_windowsvista)
+#if BOBUI_CONFIG(style_windowsvista)
     QWizardPrivate *wizardPrivate;
     QWizardAntiFlickerWidget(QWizard *wizard, QWizardPrivate *wizardPrivate)
         : QWidget(wizard)
@@ -542,7 +542,7 @@ public:
     void setButtonLayout(const QWizard::WizardButton *array, int size);
     bool buttonLayoutContains(QWizard::WizardButton which);
     void updatePixmap(QWizard::WizardPixmap which);
-#if QT_CONFIG(style_windowsvista)
+#if BOBUI_CONFIG(style_windowsvista)
     bool vistaDisabled() const;
     bool handleAeroStyleChange();
 #endif
@@ -575,8 +575,8 @@ public:
     QMap<int, QString> buttonCustomTexts;
     bool buttonsHaveCustomLayout = false;
     QList<QWizard::WizardButton> buttonsCustomLayout;
-    Qt::TextFormat titleFmt = Qt::AutoText;
-    Qt::TextFormat subTitleFmt = Qt::AutoText;
+    BobUI::TextFormat titleFmt = BobUI::AutoText;
+    BobUI::TextFormat subTitleFmt = BobUI::AutoText;
     mutable QPixmap defaultPixmaps[QWizard::NPixmaps];
 
     union {
@@ -606,9 +606,9 @@ public:
     QHBoxLayout *buttonLayout = nullptr;
     QGridLayout *mainLayout = nullptr;
 
-#if QT_CONFIG(style_windowsvista)
+#if BOBUI_CONFIG(style_windowsvista)
     QVistaHelper *vistaHelper = nullptr;
-#  if QT_CONFIG(shortcut)
+#  if BOBUI_CONFIG(shortcut)
     QPointer<QShortcut> vistaNextShortcut;
 #  endif
     bool vistaInitPending = true;
@@ -624,7 +624,7 @@ public:
 
 static QString buttonDefaultText(int wstyle, int which, const QWizardPrivate *wizardPrivate)
 {
-#if !QT_CONFIG(style_windowsvista)
+#if !BOBUI_CONFIG(style_windowsvista)
     Q_UNUSED(wizardPrivate);
 #endif
     const bool macStyle = (wstyle == QWizard::MacStyle);
@@ -664,7 +664,7 @@ void QWizardPrivate::init()
         opts = QWizard::HelpButtonOnRight;
     }
 
-#if QT_CONFIG(style_windowsvista)
+#if BOBUI_CONFIG(style_windowsvista)
     vistaHelper = new QVistaHelper(q);
 #endif
 
@@ -884,11 +884,11 @@ QWizardLayoutInfo QWizardPrivate::layoutInfoForCurrentPage()
     info.childMarginTop = style->pixelMetric(QStyle::PM_LayoutTopMargin, nullptr, titleLabel);
     info.childMarginBottom = style->pixelMetric(QStyle::PM_LayoutBottomMargin, nullptr, titleLabel);
     info.hspacing = (layoutHorizontalSpacing == -1)
-        ? style->layoutSpacing(QSizePolicy::DefaultType, QSizePolicy::DefaultType, Qt::Horizontal)
+        ? style->layoutSpacing(QSizePolicy::DefaultType, QSizePolicy::DefaultType, BobUI::Horizontal)
         : layoutHorizontalSpacing;
     info.vspacing = style->pixelMetric(QStyle::PM_LayoutVerticalSpacing, &option, q);
     info.buttonSpacing = (layoutHorizontalSpacing == -1)
-        ? style->layoutSpacing(QSizePolicy::PushButton, QSizePolicy::PushButton, Qt::Horizontal)
+        ? style->layoutSpacing(QSizePolicy::PushButton, QSizePolicy::PushButton, BobUI::Horizontal)
         : layoutHorizontalSpacing;
 
     if (wizStyle == QWizard::MacStyle)
@@ -896,7 +896,7 @@ QWizardLayoutInfo QWizardPrivate::layoutInfoForCurrentPage()
 
     info.wizStyle = wizStyle;
     if (info.wizStyle == QWizard::AeroStyle
-#if QT_CONFIG(style_windowsvista)
+#if BOBUI_CONFIG(style_windowsvista)
         && vistaDisabled()
 #endif
         )
@@ -1111,10 +1111,10 @@ void QWizardPrivate::recreateLayout(const QWizardLayoutInfo &info)
         watermarkLabel->setBackgroundRole(QPalette::Base);
         watermarkLabel->setMinimumHeight(1);
         watermarkLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
-        watermarkLabel->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+        watermarkLabel->setAlignment(BobUI::AlignLeft | BobUI::AlignTop);
     }
 
-    //bool wasSemiTransparent = pageFrame->testAttribute(Qt::WA_SetPalette);
+    //bool wasSemiTransparent = pageFrame->testAttribute(BobUI::WA_SetPalette);
     const bool wasSemiTransparent =
         pageFrame->palette().brush(QPalette::Window).color().alpha() < 255
         || pageFrame->palette().brush(QPalette::Base).color().alpha() < 255;
@@ -1220,7 +1220,7 @@ void QWizardPrivate::updateLayout()
         bool expandPage = !page->layout();
         if (!expandPage) {
             const QLayoutItem *pageItem = pageVBoxLayout->itemAt(pageVBoxLayout->indexOf(page));
-            expandPage = pageItem->expandingDirections() & Qt::Vertical;
+            expandPage = pageItem->expandingDirections() & BobUI::Vertical;
         }
         QSpacerItem *bottomSpacer = pageVBoxLayout->itemAt(pageVBoxLayout->count() -  1)->spacerItem();
         Q_ASSERT(bottomSpacer);
@@ -1290,7 +1290,7 @@ void QWizardPrivate::updateMinMaxSizes(const QWizardLayoutInfo &info)
     Q_Q(QWizard);
 
     int extraHeight = 0;
-#if QT_CONFIG(style_windowsvista)
+#if BOBUI_CONFIG(style_windowsvista)
     if (isVistaThemeEnabled())
         extraHeight = vistaHelper->titleBarSize() + vistaHelper->topOffset(q);
 #endif
@@ -1339,11 +1339,11 @@ static QString object_name_for_button(QWizard::WizardButton which)
 {
     switch (which) {
     case QWizard::CommitButton:
-        return u"qt_wizard_commit"_s;
+        return u"bobui_wizard_commit"_s;
     case QWizard::FinishButton:
-        return u"qt_wizard_finish"_s;
+        return u"bobui_wizard_finish"_s;
     case QWizard::CancelButton:
-        return u"qt_wizard_cancel"_s;
+        return u"bobui_wizard_cancel"_s;
     case QWizard::BackButton:
     case QWizard::NextButton:
     case QWizard::HelpButton:
@@ -1351,7 +1351,7 @@ static QString object_name_for_button(QWizard::WizardButton which)
     case QWizard::CustomButton2:
     case QWizard::CustomButton3:
         // Make navigation buttons detectable as passive interactor in designer
-        return "__qt__passive_wizardbutton"_L1 + QString::number(which);
+        return "__bobui__passive_wizardbutton"_L1 + QString::number(which);
     case QWizard::Stretch:
     case QWizard::NoButton:
     //case QWizard::NStandardButtons:
@@ -1416,11 +1416,11 @@ void QWizardPrivate::updateButtonTexts()
     // Vista: Add shortcut for 'next'. Note: native dialogs use ALT-Right
     // even in RTL mode, so do the same, even if it might be counter-intuitive.
     // The shortcut for 'back' is set in class QVistaBackButton.
-#if QT_CONFIG(shortcut) && QT_CONFIG(style_windowsvista)
+#if BOBUI_CONFIG(shortcut) && BOBUI_CONFIG(style_windowsvista)
     if (btns[QWizard::NextButton] && isVistaThemeEnabled()) {
         if (vistaNextShortcut.isNull()) {
             vistaNextShortcut =
-                new QShortcut(QKeySequence(Qt::ALT | Qt::Key_Right),
+                new QShortcut(QKeySequence(BobUI::ALT | BobUI::Key_Right),
                               btns[QWizard::NextButton], SLOT(animateClick()));
         }
     } else {
@@ -1520,7 +1520,7 @@ void QWizardPrivate::updatePixmap(QWizard::WizardPixmap which)
     }
 }
 
-#if QT_CONFIG(style_windowsvista)
+#if BOBUI_CONFIG(style_windowsvista)
 bool QWizardPrivate::vistaDisabled() const
 {
     Q_Q(const QWizard);
@@ -1569,7 +1569,7 @@ bool QWizardPrivate::handleAeroStyleChange()
         vistaHelper->backButton()->show();
     } else {
         q->setMouseTracking(true); // ### original value possibly different
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
         q->unsetCursor(); // ### ditto
 #endif
         antiFlickerWidget->move(0, 0);
@@ -1589,7 +1589,7 @@ bool QWizardPrivate::handleAeroStyleChange()
 
 bool QWizardPrivate::isVistaThemeEnabled() const
 {
-#if QT_CONFIG(style_windowsvista)
+#if BOBUI_CONFIG(style_windowsvista)
     return wizStyle == QWizard::AeroStyle && !vistaDisabled();
 #else
     return false;
@@ -1666,7 +1666,7 @@ void QWizardPrivate::_q_updateButtonStates()
     if (QPushButton *finishPush = qobject_cast<QPushButton *>(btn.finish))
         finishPush->setDefault(!canContinue && useDefault);
 
-#if QT_CONFIG(style_windowsvista)
+#if BOBUI_CONFIG(style_windowsvista)
     if (isVistaThemeEnabled()) {
         vistaHelper->backButton()->setEnabled(btn.back->isEnabled());
         vistaHelper->backButton()->setVisible(backButtonVisible);
@@ -1724,13 +1724,13 @@ QPixmap QWizardPrivate::findDefaultBackgroundPixmap()
     auto size = QSizeF::fromCGSize(assistantBackground.size);
     static const QSizeF expectedSize(242, 414);
     if (size == expectedSize)
-        return qt_mac_toQPixmap(assistantBackground, size);
+        return bobui_mac_toQPixmap(assistantBackground, size);
 
     return QPixmap();
 }
 #endif
 
-#if QT_CONFIG(style_windowsvista)
+#if BOBUI_CONFIG(style_windowsvista)
 void QWizardAntiFlickerWidget::paintEvent(QPaintEvent *)
 {
     if (wizardPrivate->isVistaThemeEnabled()) {
@@ -1751,7 +1751,7 @@ void QWizardAntiFlickerWidget::paintEvent(QPaintEvent *)
     \class QWizard
     \brief The QWizard class provides a framework for wizards.
 
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     A wizard (also called an assistant on \macos) is a special type
     of input dialog that consists of a sequence of pages. A wizard's
@@ -1801,14 +1801,14 @@ void QWizardAntiFlickerWidget::paintEvent(QPaintEvent *)
             \li ModernStyle
             \li MacStyle
             \li AeroStyle
-    \row    \li \inlineimage qtwizard-classic1.png {Wizard with ClassicStyle}
-            \li \inlineimage qtwizard-modern1.png {Wizard with ModernStyle}
-            \li \inlineimage qtwizard-mac1.png {Wizard with MacStyle}
-            \li \inlineimage qtwizard-aero1.png {Wizard with AeroStyle}
-    \row    \li \inlineimage qtwizard-classic2.png {Wizard with ClassicStyle}
-            \li \inlineimage qtwizard-modern2.png {Wizard with ModernStyle}
-            \li \inlineimage qtwizard-mac2.png {Wizard with MacStyle}
-            \li \inlineimage qtwizard-aero2.png {Wizard with AeroStyle}
+    \row    \li \inlineimage bobuiwizard-classic1.png {Wizard with ClassicStyle}
+            \li \inlineimage bobuiwizard-modern1.png {Wizard with ModernStyle}
+            \li \inlineimage bobuiwizard-mac1.png {Wizard with MacStyle}
+            \li \inlineimage bobuiwizard-aero1.png {Wizard with AeroStyle}
+    \row    \li \inlineimage bobuiwizard-classic2.png {Wizard with ClassicStyle}
+            \li \inlineimage bobuiwizard-modern2.png {Wizard with ModernStyle}
+            \li \inlineimage bobuiwizard-mac2.png {Wizard with MacStyle}
+            \li \inlineimage bobuiwizard-aero2.png {Wizard with AeroStyle}
     \endtable
 
     Note: AeroStyle has effect only on a Windows Vista system with alpha compositing enabled.
@@ -1852,7 +1852,7 @@ void QWizardAntiFlickerWidget::paintEvent(QPaintEvent *)
     The diagram belows shows how QWizard renders these attributes,
     assuming they are all present and ModernStyle is used:
 
-    \image qtwizard-nonmacpage.png {Attributes on a wizard page}
+    \image bobuiwizard-nonmacpage.png {Attributes on a wizard page}
 
     When a \l{QWizardPage::}{subTitle} is set, QWizard displays it
     in a header, in which case it also uses the BannerPixmap and the
@@ -1869,7 +1869,7 @@ void QWizardAntiFlickerWidget::paintEvent(QPaintEvent *)
     If the wizard's style is MacStyle, the page looks radically
     different:
 
-    \image qtwizard-macpage.png {Attributes on a wizard page using MacStyle}
+    \image bobuiwizard-macpage.png {Attributes on a wizard page using MacStyle}
 
     The watermark, banner, and logo pixmaps are ignored by the
     MacStyle. If the BackgroundPixmap is set, it is used as the
@@ -1916,10 +1916,10 @@ void QWizardAntiFlickerWidget::paintEvent(QPaintEvent *)
     contents is returned as a QVariant.
 
     When we create a field using QWizardPage::registerField(), we
-    pass a unique field name and a widget. We can also provide a Qt
+    pass a unique field name and a widget. We can also provide a BobUI
     property name and a "changed" signal (a signal that is emitted
     when the property changes) as third and fourth arguments;
-    however, this is not necessary for the most common Qt widgets,
+    however, this is not necessary for the most common BobUI widgets,
     such as QLineEdit, QCheckBox, and QComboBox, because QWizard
     knows which properties to look for.
 
@@ -2130,7 +2130,7 @@ void QWizardAntiFlickerWidget::paintEvent(QPaintEvent *)
 
     \sa parent(), windowFlags()
 */
-QWizard::QWizard(QWidget *parent, Qt::WindowFlags flags)
+QWizard::QWizard(QWidget *parent, BobUI::WindowFlags flags)
     : QDialog(*new QWizardPrivate, parent, flags)
 {
     Q_D(QWizard);
@@ -2475,7 +2475,7 @@ void QWizard::setWizardStyle(WizardStyle style)
 
     const bool styleChange = style != d->wizStyle;
 
-#if QT_CONFIG(style_windowsvista)
+#if BOBUI_CONFIG(style_windowsvista)
     const bool aeroStyleChange =
         d->vistaInitPending || d->vistaStateChanged || (styleChange && (style == AeroStyle || d->wizStyle == AeroStyle));
     d->vistaStateChanged = false;
@@ -2483,14 +2483,14 @@ void QWizard::setWizardStyle(WizardStyle style)
 #endif
 
     if (styleChange
-#if QT_CONFIG(style_windowsvista)
+#if BOBUI_CONFIG(style_windowsvista)
         || aeroStyleChange
 #endif
         ) {
         d->disableUpdates();
         d->wizStyle = style;
         d->updateButtonTexts();
-#if QT_CONFIG(style_windowsvista)
+#if BOBUI_CONFIG(style_windowsvista)
         if (aeroStyleChange) {
             //Send a resizeevent since the antiflicker widget probably needs a new size
             //because of the backbutton in the window title
@@ -2501,7 +2501,7 @@ void QWizard::setWizardStyle(WizardStyle style)
         d->updateLayout();
         updateGeometry();
         d->enableUpdates();
-#if QT_CONFIG(style_windowsvista)
+#if BOBUI_CONFIG(style_windowsvista)
         // Delay initialization when activating Aero style fails due to missing native window.
         if (aeroStyleChange && !d->handleAeroStyleChange() && d->wizStyle == AeroStyle)
             d->vistaInitPending = true;
@@ -2549,7 +2549,7 @@ bool QWizard::testOption(WizardOption option) const
     \list
     \li Windows: HelpButtonOnRight.
     \li \macos: NoDefaultButton and NoCancelButton.
-    \li X11 and QWS (Qt for Embedded Linux): none.
+    \li X11 and QWS (BobUI for Embedded Linux): none.
     \endlist
 
     \sa wizardStyle
@@ -2735,7 +2735,7 @@ void QWizard::setButton(WizardButton which, QAbstractButton *button)
 QAbstractButton *QWizard::button(WizardButton which) const
 {
     Q_D(const QWizard);
-#if QT_CONFIG(style_windowsvista)
+#if BOBUI_CONFIG(style_windowsvista)
     if (d->wizStyle == AeroStyle && which == BackButton)
         return d->vistaHelper->backButton();
 #endif
@@ -2748,18 +2748,18 @@ QAbstractButton *QWizard::button(WizardButton which) const
     \property QWizard::titleFormat
     \brief the text format used by page titles
 
-    The default format is Qt::AutoText.
+    The default format is BobUI::AutoText.
 
     \sa QWizardPage::title, subTitleFormat
 */
-void QWizard::setTitleFormat(Qt::TextFormat format)
+void QWizard::setTitleFormat(BobUI::TextFormat format)
 {
     Q_D(QWizard);
     d->titleFmt = format;
     d->updateLayout();
 }
 
-Qt::TextFormat QWizard::titleFormat() const
+BobUI::TextFormat QWizard::titleFormat() const
 {
     Q_D(const QWizard);
     return d->titleFmt;
@@ -2769,18 +2769,18 @@ Qt::TextFormat QWizard::titleFormat() const
     \property QWizard::subTitleFormat
     \brief the text format used by page subtitles
 
-    The default format is Qt::AutoText.
+    The default format is BobUI::AutoText.
 
     \sa QWizardPage::title, titleFormat
 */
-void QWizard::setSubTitleFormat(Qt::TextFormat format)
+void QWizard::setSubTitleFormat(BobUI::TextFormat format)
 {
     Q_D(QWizard);
     d->subTitleFmt = format;
     d->updateLayout();
 }
 
-Qt::TextFormat QWizard::subTitleFormat() const
+BobUI::TextFormat QWizard::subTitleFormat() const
 {
     Q_D(const QWizard);
     return d->subTitleFmt;
@@ -2833,7 +2833,7 @@ QPixmap QWizard::pixmap(WizardPixmap which) const
     of one of its subclasses) is passed to
     QWizardPage::registerField() and no property is specified.
 
-    QWizard knows the most common Qt widgets. For these (or their
+    QWizard knows the most common BobUI widgets. For these (or their
     subclasses), you don't need to specify a \a property or a \a
     changedSignal. The table below lists these widgets:
 
@@ -3125,7 +3125,7 @@ bool QWizard::event(QEvent *event)
     } else if (event->type() == QEvent::PaletteChange) { // Emitted on theme change
         d->updatePalette();
     }
-#if QT_CONFIG(style_windowsvista)
+#if BOBUI_CONFIG(style_windowsvista)
     else if (event->type() == QEvent::Show && d->vistaInitPending) {
         d->vistaInitPending = false;
         d->wizStyle = AeroStyle;
@@ -3134,7 +3134,7 @@ bool QWizard::event(QEvent *event)
     else if (d->isVistaThemeEnabled()) {
         if (event->type() == QEvent::Resize
                 || event->type() == QEvent::LayoutDirectionChange) {
-            const int buttonLeft = (layoutDirection() == Qt::RightToLeft
+            const int buttonLeft = (layoutDirection() == BobUI::RightToLeft
                                     ? width() - d->vistaHelper->backButton()->sizeHint().width()
                                     : 0);
 
@@ -3155,14 +3155,14 @@ void QWizard::resizeEvent(QResizeEvent *event)
 {
     Q_D(QWizard);
     int heightOffset = 0;
-#if QT_CONFIG(style_windowsvista)
+#if BOBUI_CONFIG(style_windowsvista)
     if (d->isVistaThemeEnabled()) {
         heightOffset = d->vistaHelper->topOffset(this);
         heightOffset += d->vistaHelper->titleBarSize();
     }
 #endif
     d->antiFlickerWidget->resize(event->size().width(), event->size().height() - heightOffset);
-#if QT_CONFIG(style_windowsvista)
+#if BOBUI_CONFIG(style_windowsvista)
     if (d->isVistaThemeEnabled())
         d->vistaHelper->resizeEvent(event);
 #endif
@@ -3183,7 +3183,7 @@ void QWizard::paintEvent(QPaintEvent * event)
         QStylePainter painter(this);
         painter.drawPixmap(0, (height() - backgroundPixmap.height()) / 2, backgroundPixmap);
     }
-#if QT_CONFIG(style_windowsvista)
+#if BOBUI_CONFIG(style_windowsvista)
     else if (d->isVistaThemeEnabled()) {
         d->vistaHelper->paintEvent(event);
     }
@@ -3198,13 +3198,13 @@ void QWizard::paintEvent(QPaintEvent * event)
 */
 bool QWizard::nativeEvent(const QByteArray &eventType, void *message, qintptr *result)
 {
-#if QT_CONFIG(style_windowsvista)
+#if BOBUI_CONFIG(style_windowsvista)
     Q_D(QWizard);
     if (d->isVistaThemeEnabled() && eventType == "windows_generic_MSG") {
         MSG *windowsMessage = static_cast<MSG *>(message);
         const bool winEventResult = d->vistaHelper->handleWinEvent(windowsMessage, result);
         if (d->vistaDirty) {
-            // QTBUG-78300: When Qt::AA_NativeWindows is set, delay further
+            // BOBUIBUG-78300: When BobUI::AA_NativeWindows is set, delay further
             // window creation until after the platform window creation events.
             if (windowsMessage->message == WM_GETICON) {
                 d->vistaStateChanged = true;
@@ -3333,7 +3333,7 @@ int QWizard::nextId() const
     \class QWizardPage
     \brief The QWizardPage class is the base class for wizard pages.
 
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QWizard represents a wizard. Each page is a QWizardPage. When
     you create your own wizards, you can use QWizardPage directly,
@@ -3600,7 +3600,7 @@ bool QWizardPage::validatePage()
     from the rest of your implementation, whenever the value of isComplete()
     changes. This ensures that QWizard updates the enabled or disabled state of
     its buttons. An example of the reimplementation is
-    available \l{http://doc.qt.io/archives/qq/qq22-qwizard.html#validatebeforeitstoolate}
+    available \l{http://doc.bobui.io/archives/qq/qq22-qwizard.html#validatebeforeitstoolate}
     {here}.
 
     \sa completeChanged(), isFinalPage()
@@ -3621,13 +3621,13 @@ bool QWizardPage::isComplete() const
             if (value == field.initialValue)
                 return false;
 
-#if QT_CONFIG(lineedit)
+#if BOBUI_CONFIG(lineedit)
             if (QLineEdit *lineEdit = qobject_cast<QLineEdit *>(field.object)) {
                 if (!lineEdit->hasAcceptableInput())
                     return false;
             }
 #endif
-#if QT_CONFIG(spinbox)
+#if BOBUI_CONFIG(spinbox)
             if (QAbstractSpinBox *spinBox = qobject_cast<QAbstractSpinBox *>(field.object)) {
                 if (!spinBox->hasAcceptableInput())
                     return false;
@@ -3869,7 +3869,7 @@ QVariant QWizardPage::field(const QString &name) const
     are filled. This requires a \a changedSignal to be specified, to
     tell QWizard to recheck the value stored by the mandatory field.
 
-    QWizard knows the most common Qt widgets. For these (or their
+    QWizard knows the most common BobUI widgets. For these (or their
     subclasses), you don't need to specify a \a property or a \a
     changedSignal. The table below lists these widgets:
 
@@ -3923,6 +3923,6 @@ QWizard *QWizardPage::wizard() const
     return d->wizard;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qwizard.cpp"

@@ -1,6 +1,6 @@
 <!DOCTYPE footype [
- <!ATTLIST foo xmlns CDATA #FIXED "http://qt-project.org">
- <!ATTLIST pre:bar xmlns:pre CDATA #FIXED "http://qt-project.org">
+ <!ATTLIST foo xmlns CDATA #FIXED "http://bobui-project.org">
+ <!ATTLIST pre:bar xmlns:pre CDATA #FIXED "http://bobui-project.org">
 ]>
 <body>
 <foo/>

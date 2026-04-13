@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Pelagicore AG
 // Copyright (C) 2015 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QKMSDEVICE_P_H
 #define QKMSDEVICE_P_H
@@ -10,18 +10,18 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
 #include <qpa/qplatformscreen.h>
-#include <QtCore/QMap>
-#include <QtCore/QVariant>
-#include <QtCore/QThreadStorage>
+#include <BobUICore/QMap>
+#include <BobUICore/QVariant>
+#include <BobUICore/BOBUIhreadStorage>
 
 #include <xf86drm.h>
 #include <xf86drmMode.h>
@@ -62,7 +62,7 @@
 #define DRM_MODE_PROP_SIGNED_RANGE DRM_MODE_PROP_TYPE(2)
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QKmsDevice;
 
@@ -214,7 +214,7 @@ public:
 
     bool hasAtomicSupport();
 
-#if QT_CONFIG(drm_atomic)
+#if BOBUI_CONFIG(drm_atomic)
     drmModeAtomicReq *threadLocalAtomicRequest();
     bool threadLocalAtomicCommit(void *user_data);
     void threadLocalAtomicReset();
@@ -262,12 +262,12 @@ protected:
 
     bool m_has_atomic_support;
 
-#if QT_CONFIG(drm_atomic)
+#if BOBUI_CONFIG(drm_atomic)
     struct AtomicReqs {
         drmModeAtomicReq *request = nullptr;
         drmModeAtomicReq *previous_request = nullptr;
     };
-    QThreadStorage<AtomicReqs> m_atomicReqs;
+    BOBUIhreadStorage<AtomicReqs> m_atomicReqs;
 #endif
     quint32 m_crtc_allocator;
 
@@ -279,6 +279,6 @@ private:
     Q_DISABLE_COPY(QKmsDevice)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

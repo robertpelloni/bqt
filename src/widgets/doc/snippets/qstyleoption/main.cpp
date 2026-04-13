@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtGui>
-#include <QtWidgets>
+#include <BobUIGui>
+#include <BobUIWidgets>
 
 class MyPushButton : public QPushButton
 {

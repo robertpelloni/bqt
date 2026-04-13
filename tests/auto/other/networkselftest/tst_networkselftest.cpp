@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtNetwork/QtNetwork>
-#include <QtCore/QDateTime>
-#include <QtCore/QElapsedTimer>
-#include <QtCore/QTextStream>
-#include <QtCore/QRandomGenerator>
-#include <QtCore/QStandardPaths>
-#include <QtCore/private/qiodevice_p.h>
+#include <BOBUIest>
+#include <BobUINetwork/BobUINetwork>
+#include <BobUICore/QDateTime>
+#include <BobUICore/QElapsedTimer>
+#include <BobUICore/BOBUIextStream>
+#include <BobUICore/QRandomGenerator>
+#include <BobUICore/QStandardPaths>
+#include <BobUICore/private/qiodevice_p.h>
 
 #include "../../network-settings.h"
 
-#ifndef QT_NO_OPENSSL
-QT_BEGIN_NAMESPACE
-void qt_ForceTlsSecurityLevel();
-QT_END_NAMESPACE
+#ifndef BOBUI_NO_OPENSSL
+BOBUI_BEGIN_NAMESPACE
+void bobui_ForceTlsSecurityLevel();
+BOBUI_END_NAMESPACE
 #endif
 
 class tst_NetworkSelfTest: public QObject
@@ -50,7 +50,7 @@ private slots:
     void httpServerFiles();
     void httpServerCGI_data();
     void httpServerCGI();
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     void httpsServer();
 #endif
     void httpProxy();
@@ -137,7 +137,7 @@ static QString prettyByteArray(const QByteArray &array)
 
 enum { defaultReadTimeoutMS = 4000 };
 
-static bool doSocketRead(QTcpSocket *socket, int minBytesAvailable, int timeout = defaultReadTimeoutMS)
+static bool doSocketRead(BOBUIcpSocket *socket, int minBytesAvailable, int timeout = defaultReadTimeoutMS)
 {
     QElapsedTimer timer;
     timer.start();
@@ -149,7 +149,7 @@ static bool doSocketRead(QTcpSocket *socket, int minBytesAvailable, int timeout 
             return false;
         if (!socket->waitForReadyRead(t))
             return false;
-        t = qt_subtract_from_timeout(timeout, timer.elapsed());
+        t = bobui_subtract_from_timeout(timeout, timer.elapsed());
         if (t == 0)
             return false;
     }
@@ -164,9 +164,9 @@ static QByteArray msgDoSocketReadFailed(const QString &host, quint16 port,
         + " in step " + QByteArray::number(step) + ": timeout";
 }
 
-static bool doSocketFlush(QTcpSocket *socket, int timeout = 4000)
+static bool doSocketFlush(BOBUIcpSocket *socket, int timeout = 4000)
 {
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     QSslSocket *sslSocket = qobject_cast<QSslSocket *>(socket);
 #endif
     QElapsedTimer timer;
@@ -174,7 +174,7 @@ static bool doSocketFlush(QTcpSocket *socket, int timeout = 4000)
     int t = timeout;
     forever {
         if (socket->bytesToWrite() == 0
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
             && sslSocket->encryptedBytesToWrite() == 0
 #endif
             )
@@ -183,7 +183,7 @@ static bool doSocketFlush(QTcpSocket *socket, int timeout = 4000)
             return false;
         if (!socket->waitForBytesWritten(t))
             return false;
-        t = qt_subtract_from_timeout(timeout, timer.elapsed());
+        t = bobui_subtract_from_timeout(timeout, timer.elapsed());
         if (t == 0)
             return false;
     }
@@ -191,12 +191,12 @@ static bool doSocketFlush(QTcpSocket *socket, int timeout = 4000)
 
 static void netChat(int port, const QList<Chat> &chat)
 {
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     QSslSocket socket;
 #else
-    QTcpSocket socket;
+    BOBUIcpSocket socket;
 #endif
-    const auto serverName = QtNetworkSettings::hostWithServiceOnPort(port);
+    const auto serverName = BobUINetworkSettings::hostWithServiceOnPort(port);
     socket.connectToHost(serverName, port);
     qDebug() << 0 << "Connecting to server on port" << port;
     QVERIFY2(socket.waitForConnected(10000),
@@ -303,7 +303,7 @@ static void netChat(int port, const QList<Chat> &chat)
                 break;
 
             case Chat::StartEncryption:
-#ifdef QT_NO_SSL
+#ifdef BOBUI_NO_SSL
                 QFAIL("Internal error: SSL required for this test");
 #else
                 qDebug() << i << "Starting client encryption";
@@ -320,8 +320,8 @@ static void netChat(int port, const QList<Chat> &chat)
 
 tst_NetworkSelfTest::tst_NetworkSelfTest()
 {
-#ifndef QT_NO_OPENSSL
-    qt_ForceTlsSecurityLevel();
+#ifndef BOBUI_NO_OPENSSL
+    bobui_ForceTlsSecurityLevel();
 #endif
 }
 
@@ -333,7 +333,7 @@ QHostAddress tst_NetworkSelfTest::serverIpAddress()
 {
     if (cachedIpAddress.protocol() == QAbstractSocket::UnknownNetworkLayerProtocol) {
         // need resolving
-        QHostInfo resolved = QHostInfo::fromName(QtNetworkSettings::httpServerName());
+        QHostInfo resolved = QHostInfo::fromName(BobUINetworkSettings::httpServerName());
         if(resolved.error() != QHostInfo::NoError ||
             resolved.addresses().isEmpty()) {
             qWarning("QHostInfo::fromName failed (%d).", resolved.error());
@@ -346,26 +346,26 @@ QHostAddress tst_NetworkSelfTest::serverIpAddress()
 
 void tst_NetworkSelfTest::initTestCase()
 {
-#if defined(QT_TEST_SERVER)
-    QVERIFY(QtNetworkSettings::verifyConnection(QtNetworkSettings::echoServerName(), 7));
+#if defined(BOBUI_TEST_SERVER)
+    QVERIFY(BobUINetworkSettings::verifyConnection(BobUINetworkSettings::echoServerName(), 7));
     // TODO: 'daytime' , port 13.
-    QVERIFY(QtNetworkSettings::verifyConnection(QtNetworkSettings::ftpServerName(), 21));
-    const QHostInfo resolved = QHostInfo::fromName(QtNetworkSettings::ftpServerName());
+    QVERIFY(BobUINetworkSettings::verifyConnection(BobUINetworkSettings::ftpServerName(), 21));
+    const QHostInfo resolved = QHostInfo::fromName(BobUINetworkSettings::ftpServerName());
     if (resolved.error() == QHostInfo::NoError && !resolved.addresses().isEmpty())
         ftpServerIpAddress = resolved.addresses().first();
     // TODO: 'ssh', port 22.
-    // QVERIFY(QtNetworkSettings::verifyConnection(QtNetworkSettings::ftpProxyServerName(), 2121));
-    QVERIFY(QtNetworkSettings::verifyConnection(QtNetworkSettings::httpServerName(), 80));
+    // QVERIFY(BobUINetworkSettings::verifyConnection(BobUINetworkSettings::ftpProxyServerName(), 2121));
+    QVERIFY(BobUINetworkSettings::verifyConnection(BobUINetworkSettings::httpServerName(), 80));
     // TODO: 'smb', port 139.
-    QVERIFY(QtNetworkSettings::verifyConnection(QtNetworkSettings::imapServerName(), 143));
-    QVERIFY(QtNetworkSettings::verifyConnection(QtNetworkSettings::httpServerName(), 443));
-    QVERIFY(QtNetworkSettings::verifyConnection(QtNetworkSettings::httpProxyServerName(), 3128));
-    QVERIFY(QtNetworkSettings::verifyConnection(QtNetworkSettings::httpProxyServerName(), 3129));
-    QVERIFY(QtNetworkSettings::verifyConnection(QtNetworkSettings::httpProxyServerName(), 3130));
-    QVERIFY(QtNetworkSettings::verifyConnection(QtNetworkSettings::socksProxyServerName(), 1080));
-    QVERIFY(QtNetworkSettings::verifyConnection(QtNetworkSettings::socksProxyServerName(), 1081));
+    QVERIFY(BobUINetworkSettings::verifyConnection(BobUINetworkSettings::imapServerName(), 143));
+    QVERIFY(BobUINetworkSettings::verifyConnection(BobUINetworkSettings::httpServerName(), 443));
+    QVERIFY(BobUINetworkSettings::verifyConnection(BobUINetworkSettings::httpProxyServerName(), 3128));
+    QVERIFY(BobUINetworkSettings::verifyConnection(BobUINetworkSettings::httpProxyServerName(), 3129));
+    QVERIFY(BobUINetworkSettings::verifyConnection(BobUINetworkSettings::httpProxyServerName(), 3130));
+    QVERIFY(BobUINetworkSettings::verifyConnection(BobUINetworkSettings::socksProxyServerName(), 1080));
+    QVERIFY(BobUINetworkSettings::verifyConnection(BobUINetworkSettings::socksProxyServerName(), 1081));
 #else
-    if (!QtNetworkSettings::verifyTestNetworkSettings())
+    if (!BobUINetworkSettings::verifyTestNetworkSettings())
         QSKIP("No network test server available");
 #endif
 }
@@ -377,19 +377,19 @@ void tst_NetworkSelfTest::hostTest()
     QCOMPARE(localhost.error(), QHostInfo::NoError);
     QVERIFY(!localhost.addresses().isEmpty());
 
-    QTcpServer server;
+    BOBUIcpServer server;
     QVERIFY(server.listen());
 
-    QTcpSocket socket;
+    BOBUIcpSocket socket;
     socket.connectToHost("127.0.0.1", server.serverPort());
     QVERIFY(socket.waitForConnected(10000));
 }
 
 void tst_NetworkSelfTest::dnsResolution_data()
 {
-    QTest::addColumn<QString>("hostName");
-    QTest::newRow("local-name") << QtNetworkSettings::serverLocalName();
-    QTest::newRow("fqdn") << QtNetworkSettings::httpServerName();
+    BOBUIest::addColumn<QString>("hostName");
+    BOBUIest::newRow("local-name") << BobUINetworkSettings::serverLocalName();
+    BOBUIest::newRow("fqdn") << BobUINetworkSettings::httpServerName();
 }
 
 void tst_NetworkSelfTest::dnsResolution()
@@ -406,8 +406,8 @@ void tst_NetworkSelfTest::dnsResolution()
 void tst_NetworkSelfTest::serverReachability()
 {
     // check that we get a proper error connecting to port 12346
-    QTcpSocket socket;
-    socket.connectToHost(QtNetworkSettings::httpServerName(), 12346);
+    BOBUIcpSocket socket;
+    socket.connectToHost(BobUINetworkSettings::httpServerName(), 12346);
 
     QElapsedTimer timer;
     timer.start();
@@ -421,33 +421,33 @@ void tst_NetworkSelfTest::serverReachability()
 
 void tst_NetworkSelfTest::remotePortsOpen_data()
 {
-#if defined(QT_TEST_SERVER)
+#if defined(BOBUI_TEST_SERVER)
     QSKIP("Skipping, for the docker test server already tested by initTestCase()");
 #endif
-    QTest::addColumn<int>("portNumber");
+    BOBUIest::addColumn<int>("portNumber");
 
-    QTest::newRow("echo") << 7;
-    QTest::newRow("daytime") << 13;
-    QTest::newRow("ftp") << 21;
-    QTest::newRow("ssh") << 22;
-    QTest::newRow("imap") << 143;
-    QTest::newRow("http") << 80;
-    QTest::newRow("https") << 443;
-    QTest::newRow("http-proxy") << 3128;
-    QTest::newRow("http-proxy-auth-basic") << 3129;
-    QTest::newRow("http-proxy-auth-ntlm") << 3130;
-    QTest::newRow("socks5-proxy") << 1080;
-    QTest::newRow("socks5-proxy-auth") << 1081;
-    QTest::newRow("ftp-proxy") << 2121;
-    QTest::newRow("smb") << 139;
+    BOBUIest::newRow("echo") << 7;
+    BOBUIest::newRow("daytime") << 13;
+    BOBUIest::newRow("ftp") << 21;
+    BOBUIest::newRow("ssh") << 22;
+    BOBUIest::newRow("imap") << 143;
+    BOBUIest::newRow("http") << 80;
+    BOBUIest::newRow("https") << 443;
+    BOBUIest::newRow("http-proxy") << 3128;
+    BOBUIest::newRow("http-proxy-auth-basic") << 3129;
+    BOBUIest::newRow("http-proxy-auth-ntlm") << 3130;
+    BOBUIest::newRow("socks5-proxy") << 1080;
+    BOBUIest::newRow("socks5-proxy-auth") << 1081;
+    BOBUIest::newRow("ftp-proxy") << 2121;
+    BOBUIest::newRow("smb") << 139;
 }
 
 void tst_NetworkSelfTest::remotePortsOpen()
 {
     QFETCH(const int, portNumber);
 
-    QTcpSocket socket;
-    socket.connectToHost(QtNetworkSettings::hostWithServiceOnPort(portNumber), quint16(portNumber));
+    BOBUIcpSocket socket;
+    socket.connectToHost(BobUINetworkSettings::hostWithServiceOnPort(portNumber), quint16(portNumber));
 
     if (!socket.waitForConnected(10000)) {
         if (socket.error() == QAbstractSocket::SocketTimeoutError)
@@ -476,7 +476,7 @@ static QList<Chat> ftpChat(const QByteArray &userSuffix = QByteArray())
        << Chat::expect("550")
        << Chat::discardUntil("\r\n")
        << Chat::send("PWD\r\n")
-#if defined(QT_TEST_SERVER)
+#if defined(BOBUI_TEST_SERVER)
        << Chat::expect("257 \"/pub\" is the current directory\r\n")
 #else
        << Chat::expect("257 \"/pub\"\r\n")
@@ -486,7 +486,7 @@ static QList<Chat> ftpChat(const QByteArray &userSuffix = QByteArray())
        << Chat::send("CWD qxmlquery\r\n")
        << Chat::expect("250")
        << Chat::discardUntil("\r\n")
-       << Chat::send("CWD /qtest\r\n")
+       << Chat::send("CWD /bobuiest\r\n")
        << Chat::expect("250")
        << Chat::discardUntil("\r\n")
        << Chat::send("SIZE bigfile\r\n")
@@ -512,7 +512,7 @@ void tst_NetworkSelfTest::ftpServer()
 void tst_NetworkSelfTest::ftpProxyServer()
 {
     QSKIP("FTP not currently supported.");
-    netChat(2121, ftpChat("@" + QtNetworkSettings::ftpServerName().toLatin1()));
+    netChat(2121, ftpChat("@" + BobUINetworkSettings::ftpServerName().toLatin1()));
 }
 
 void tst_NetworkSelfTest::imapServer()
@@ -544,7 +544,7 @@ void tst_NetworkSelfTest::httpServer()
             // HTTP/1.0 chat:
             << Chat::Reconnect
             << Chat::send("GET / HTTP/1.0\r\n"
-                          "Host: " + QtNetworkSettings::httpServerName().toLatin1() + "\r\n"
+                          "Host: " + BobUINetworkSettings::httpServerName().toLatin1() + "\r\n"
                           "Connection: close\r\n"
                           "\r\n")
             << Chat::expect("HTTP/1.")
@@ -556,7 +556,7 @@ void tst_NetworkSelfTest::httpServer()
             << Chat::Reconnect
             << Chat::send("POST / HTTP/1.0\r\n"
                           "Content-Length: 5\r\n"
-                          "Host: " + QtNetworkSettings::httpServerName().toLatin1() + "\r\n"
+                          "Host: " + BobUINetworkSettings::httpServerName().toLatin1() + "\r\n"
                           "Connection: close\r\n"
                           "\r\n"
                           "Hello")
@@ -567,8 +567,8 @@ void tst_NetworkSelfTest::httpServer()
 
             // HTTP protected area
             << Chat::Reconnect
-            << Chat::send("GET /qtest/protected/rfc3252.txt HTTP/1.0\r\n"
-                          "Host: " + QtNetworkSettings::httpServerName().toLatin1() + "\r\n"
+            << Chat::send("GET /bobuiest/protected/rfc3252.txt HTTP/1.0\r\n"
+                          "Host: " + BobUINetworkSettings::httpServerName().toLatin1() + "\r\n"
                           "Connection: close\r\n"
                           "\r\n")
             << Chat::expect("HTTP/1.")
@@ -577,8 +577,8 @@ void tst_NetworkSelfTest::httpServer()
             << Chat::DiscardUntilDisconnect
 
             << Chat::Reconnect
-            << Chat::send("HEAD /qtest/protected/rfc3252.txt HTTP/1.0\r\n"
-                          "Host: " + QtNetworkSettings::httpServerName().toLatin1() + "\r\n"
+            << Chat::send("HEAD /bobuiest/protected/rfc3252.txt HTTP/1.0\r\n"
+                          "Host: " + BobUINetworkSettings::httpServerName().toLatin1() + "\r\n"
                           "Connection: close\r\n"
                           "Authorization: Basic cXNvY2tzdGVzdDpwYXNzd29yZA==\r\n"
                           "\r\n")
@@ -590,7 +590,7 @@ void tst_NetworkSelfTest::httpServer()
             // DAV area
             << Chat::Reconnect
             << Chat::send("HEAD /dav/ HTTP/1.0\r\n"
-                          "Host: " + QtNetworkSettings::httpServerName().toLatin1() + "\r\n"
+                          "Host: " + BobUINetworkSettings::httpServerName().toLatin1() + "\r\n"
                           "Connection: close\r\n"
                           "\r\n")
             << Chat::expect("HTTP/1.")
@@ -602,7 +602,7 @@ void tst_NetworkSelfTest::httpServer()
             << Chat::Reconnect
             << Chat::send("PUT /dav/networkselftest-" + uniqueExtension + ".txt HTTP/1.0\r\n"
                           "Content-Length: 5\r\n"
-                          "Host: " + QtNetworkSettings::httpServerName().toLatin1() + "\r\n"
+                          "Host: " + BobUINetworkSettings::httpServerName().toLatin1() + "\r\n"
                           "Connection: close\r\n"
                           "\r\n"
                           "Hello")
@@ -614,7 +614,7 @@ void tst_NetworkSelfTest::httpServer()
             // check that the file did get uploaded
             << Chat::Reconnect
             << Chat::send("HEAD /dav/networkselftest-" + uniqueExtension + ".txt HTTP/1.0\r\n"
-                          "Host: " + QtNetworkSettings::httpServerName().toLatin1() + "\r\n"
+                          "Host: " + BobUINetworkSettings::httpServerName().toLatin1() + "\r\n"
                           "Connection: close\r\n"
                           "\r\n")
             << Chat::expect("HTTP/1.")
@@ -626,7 +626,7 @@ void tst_NetworkSelfTest::httpServer()
             // HTTP/1.0 DELETE
             << Chat::Reconnect
             << Chat::send("DELETE /dav/networkselftest-" + uniqueExtension + ".txt HTTP/1.0\r\n"
-                          "Host: " + QtNetworkSettings::httpServerName().toLatin1() + "\r\n"
+                          "Host: " + BobUINetworkSettings::httpServerName().toLatin1() + "\r\n"
                           "Connection: close\r\n"
                           "\r\n")
             << Chat::expect("HTTP/1.")
@@ -638,19 +638,19 @@ void tst_NetworkSelfTest::httpServer()
 
 void tst_NetworkSelfTest::httpServerFiles_data()
 {
-    QTest::addColumn<QString>("uri");
-    QTest::addColumn<int>("size");
+    BOBUIest::addColumn<QString>("uri");
+    BOBUIest::addColumn<int>("size");
 
-    QTest::newRow("fluke.gif") << "/qtest/fluke.gif" << -1;
-    QTest::newRow("bigfile") << "/qtest/bigfile" << 519240;
-    QTest::newRow("rfc3252.txt") << "/qtest/rfc3252.txt" << 25962;
-    QTest::newRow("protected/rfc3252.txt") << "/qtest/protected/rfc3252.txt" << 25962;
-    QTest::newRow("completelyEmptyQuery.xq") << "/qtest/qxmlquery/completelyEmptyQuery.xq" << -1;
-    QTest::newRow("notWellformedViaHttps.xml") << "/qtest/qxmlquery/notWellformedViaHttps.xml" << -1;
-    QTest::newRow("notWellformed.xml") << "/qtest/qxmlquery/notWellformed.xml" << -1;
-    QTest::newRow("viaHttp.xq") << "/qtest/qxmlquery/viaHttp.xq" << -1;
-    QTest::newRow("wellFormedViaHttps.xml") << "/qtest/qxmlquery/wellFormedViaHttps.xml" << -1;
-    QTest::newRow("wellFormed.xml") << "/qtest/qxmlquery/wellFormed.xml" << -1;
+    BOBUIest::newRow("fluke.gif") << "/bobuiest/fluke.gif" << -1;
+    BOBUIest::newRow("bigfile") << "/bobuiest/bigfile" << 519240;
+    BOBUIest::newRow("rfc3252.txt") << "/bobuiest/rfc3252.txt" << 25962;
+    BOBUIest::newRow("protected/rfc3252.txt") << "/bobuiest/protected/rfc3252.txt" << 25962;
+    BOBUIest::newRow("completelyEmptyQuery.xq") << "/bobuiest/qxmlquery/completelyEmptyQuery.xq" << -1;
+    BOBUIest::newRow("notWellformedViaHttps.xml") << "/bobuiest/qxmlquery/notWellformedViaHttps.xml" << -1;
+    BOBUIest::newRow("notWellformed.xml") << "/bobuiest/qxmlquery/notWellformed.xml" << -1;
+    BOBUIest::newRow("viaHttp.xq") << "/bobuiest/qxmlquery/viaHttp.xq" << -1;
+    BOBUIest::newRow("wellFormedViaHttps.xml") << "/bobuiest/qxmlquery/wellFormedViaHttps.xml" << -1;
+    BOBUIest::newRow("wellFormed.xml") << "/bobuiest/qxmlquery/wellFormed.xml" << -1;
 }
 
 void tst_NetworkSelfTest::httpServerFiles()
@@ -661,7 +661,7 @@ void tst_NetworkSelfTest::httpServerFiles()
 
     QList<Chat> chat;
     chat << Chat::send("HEAD " + url.toEncoded() + " HTTP/1.0\r\n"
-                       "Host: " + QtNetworkSettings::httpServerName().toLatin1() + "\r\n"
+                       "Host: " + BobUINetworkSettings::httpServerName().toLatin1() + "\r\n"
                        "Connection: close\r\n"
                        "Authorization: Basic cXNvY2tzdGVzdDpwYXNzd29yZA==\r\n"
                        "\r\n")
@@ -676,19 +676,19 @@ void tst_NetworkSelfTest::httpServerFiles()
 
 void tst_NetworkSelfTest::httpServerCGI_data()
 {
-    QTest::addColumn<QByteArray>("request");
-    QTest::addColumn<QByteArray>("result");
-    QTest::addColumn<QByteArray>("additionalHeader");
+    BOBUIest::addColumn<QByteArray>("request");
+    BOBUIest::addColumn<QByteArray>("result");
+    BOBUIest::addColumn<QByteArray>("additionalHeader");
 
-    QTest::newRow("echo.cgi")
-            << QByteArray("GET /qtest/cgi-bin/echo.cgi?Hello+World HTTP/1.0\r\n"
+    BOBUIest::newRow("echo.cgi")
+            << QByteArray("GET /bobuiest/cgi-bin/echo.cgi?Hello+World HTTP/1.0\r\n"
                           "Connection: close\r\n"
                           "\r\n")
             << QByteArray("Hello+World")
             << QByteArray();
 
-    QTest::newRow("echo.cgi(POST)")
-            << QByteArray("POST /qtest/cgi-bin/echo.cgi?Hello+World HTTP/1.0\r\n"
+    BOBUIest::newRow("echo.cgi(POST)")
+            << QByteArray("POST /bobuiest/cgi-bin/echo.cgi?Hello+World HTTP/1.0\r\n"
                           "Connection: close\r\n"
                           "Content-Length: 15\r\n"
                           "\r\n"
@@ -696,8 +696,8 @@ void tst_NetworkSelfTest::httpServerCGI_data()
             << QByteArray("Hello, World!\r\n")
             << QByteArray();
 
-    QTest::newRow("md5sum.cgi")
-            << QByteArray("POST /qtest/cgi-bin/md5sum.cgi HTTP/1.0\r\n"
+    BOBUIest::newRow("md5sum.cgi")
+            << QByteArray("POST /bobuiest/cgi-bin/md5sum.cgi HTTP/1.0\r\n"
                           "Connection: close\r\n"
                           "Content-Length: 15\r\n"
                           "\r\n"
@@ -705,8 +705,8 @@ void tst_NetworkSelfTest::httpServerCGI_data()
             << QByteArray("29b933a8d9a0fcef0af75f1713f4940e\n")
             << QByteArray();
 
-    QTest::newRow("protected/md5sum.cgi")
-            << QByteArray("POST /qtest/protected/cgi-bin/md5sum.cgi HTTP/1.0\r\n"
+    BOBUIest::newRow("protected/md5sum.cgi")
+            << QByteArray("POST /bobuiest/protected/cgi-bin/md5sum.cgi HTTP/1.0\r\n"
                           "Connection: close\r\n"
                           "Authorization: Basic cXNvY2tzdGVzdDpwYXNzd29yZA==\r\n"
                           "Content-Length: 15\r\n"
@@ -715,8 +715,8 @@ void tst_NetworkSelfTest::httpServerCGI_data()
             << QByteArray("29b933a8d9a0fcef0af75f1713f4940e\n")
             << QByteArray();
 
-    QTest::newRow("set-cookie.cgi")
-            << QByteArray("POST /qtest/cgi-bin/set-cookie.cgi HTTP/1.0\r\n"
+    BOBUIest::newRow("set-cookie.cgi")
+            << QByteArray("POST /bobuiest/cgi-bin/set-cookie.cgi HTTP/1.0\r\n"
                           "Connection: close\r\n"
                           "Content-Length: 8\r\n"
                           "\r\n"
@@ -744,13 +744,13 @@ void tst_NetworkSelfTest::httpServerCGI()
     netChat(80, chat);
 }
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
 void tst_NetworkSelfTest::httpsServer()
 {
     netChat(443, QList<Chat>()
             << Chat::StartEncryption
             << Chat::send("GET / HTTP/1.0\r\n"
-                          "Host: " + QtNetworkSettings::httpServerName().toLatin1() + "\r\n"
+                          "Host: " + BobUINetworkSettings::httpServerName().toLatin1() + "\r\n"
                           "Connection: close\r\n"
                           "\r\n")
             << Chat::expect("HTTP/1.")
@@ -765,7 +765,7 @@ void tst_NetworkSelfTest::httpProxy()
     netChat(3128, QList<Chat>()
             // proxy GET by IP
             << Chat::send("GET http://" + serverIpAddress().toString().toLatin1() + "/ HTTP/1.0\r\n"
-                          "Host: " + QtNetworkSettings::httpServerName().toLatin1() + "\r\n"
+                          "Host: " + BobUINetworkSettings::httpServerName().toLatin1() + "\r\n"
                           "Proxy-connection: close\r\n"
                           "\r\n")
             << Chat::expect("HTTP/1.")
@@ -775,8 +775,8 @@ void tst_NetworkSelfTest::httpProxy()
 
             // proxy GET by hostname
             << Chat::Reconnect
-            << Chat::send("GET http://" + QtNetworkSettings::httpServerName().toLatin1() + "/ HTTP/1.0\r\n"
-                          "Host: " + QtNetworkSettings::httpServerName().toLatin1() + "\r\n"
+            << Chat::send("GET http://" + BobUINetworkSettings::httpServerName().toLatin1() + "/ HTTP/1.0\r\n"
+                          "Host: " + BobUINetworkSettings::httpServerName().toLatin1() + "\r\n"
                           "Proxy-connection: close\r\n"
                           "\r\n")
             << Chat::expect("HTTP/1.")
@@ -786,7 +786,7 @@ void tst_NetworkSelfTest::httpProxy()
 
             // proxy CONNECT by IP
             << Chat::Reconnect
-#if !defined(QT_TEST_SERVER)
+#if !defined(BOBUI_TEST_SERVER)
             << Chat::send("CONNECT " + serverIpAddress().toString().toLatin1() + ":21 HTTP/1.0\r\n"
                           "\r\n")
 #else
@@ -801,7 +801,7 @@ void tst_NetworkSelfTest::httpProxy()
 
             // proxy CONNECT by hostname
             << Chat::Reconnect
-            << Chat::send("CONNECT " + QtNetworkSettings::ftpServerName().toLatin1() + ":21 HTTP/1.0\r\n"
+            << Chat::send("CONNECT " + BobUINetworkSettings::ftpServerName().toLatin1() + ":21 HTTP/1.0\r\n"
                           "\r\n")
             << Chat::expect("HTTP/1.")
             << Chat::discardUntil(" ")
@@ -815,8 +815,8 @@ void tst_NetworkSelfTest::httpProxyBasicAuth()
 {
     netChat(3129, QList<Chat>()
             // test auth required response
-            << Chat::send("GET http://" + QtNetworkSettings::httpServerName().toLatin1() + "/ HTTP/1.0\r\n"
-                          "Host: " + QtNetworkSettings::httpServerName().toLatin1() + "\r\n"
+            << Chat::send("GET http://" + BobUINetworkSettings::httpServerName().toLatin1() + "/ HTTP/1.0\r\n"
+                          "Host: " + BobUINetworkSettings::httpServerName().toLatin1() + "\r\n"
                           "Proxy-connection: close\r\n"
                           "\r\n")
             << Chat::expect("HTTP/1.")
@@ -827,8 +827,8 @@ void tst_NetworkSelfTest::httpProxyBasicAuth()
 
             // now try sending our credentials
             << Chat::Reconnect
-            << Chat::send("GET http://" + QtNetworkSettings::httpServerName().toLatin1() + "/ HTTP/1.0\r\n"
-                          "Host: " + QtNetworkSettings::httpServerName().toLatin1() + "\r\n"
+            << Chat::send("GET http://" + BobUINetworkSettings::httpServerName().toLatin1() + "/ HTTP/1.0\r\n"
+                          "Host: " + BobUINetworkSettings::httpServerName().toLatin1() + "\r\n"
                           "Proxy-connection: close\r\n"
                           "Proxy-Authorization: Basic cXNvY2tzdGVzdDpwYXNzd29yZA==\r\n"
                           "\r\n")
@@ -842,9 +842,9 @@ void tst_NetworkSelfTest::httpProxyNtlmAuth()
 {
     netChat(3130, QList<Chat>()
             // test auth required response
-            << Chat::send("GET http://" + QtNetworkSettings::httpServerName().toLatin1() + "/ HTTP/1.0\r\n"
-                          "Host: " + QtNetworkSettings::httpServerName().toLatin1() + "\r\n"
-#if !defined(QT_TEST_SERVER)
+            << Chat::send("GET http://" + BobUINetworkSettings::httpServerName().toLatin1() + "/ HTTP/1.0\r\n"
+                          "Host: " + BobUINetworkSettings::httpServerName().toLatin1() + "\r\n"
+#if !defined(BOBUI_TEST_SERVER)
                           "Proxy-connection: keep-alive\r\n" // NTLM auth will disconnect
 #else
                           "Proxy-connection: close\r\n" // Well, what do you know? It keeps it alive!
@@ -880,7 +880,7 @@ void tst_NetworkSelfTest::socks5Proxy()
         quint32 data;
     } ip4Address;
     ip4Address.data =
-#if !defined(QT_TEST_SERVER)
+#if !defined(BOBUI_TEST_SERVER)
     qToBigEndian(serverIpAddress().toIPv4Address());
 #else
     qToBigEndian(ftpServerIpAddress.toIPv4Address());
@@ -893,7 +893,7 @@ void tst_NetworkSelfTest::socks5Proxy()
 
     netChat(1080, QList<Chat>()
             // IP address connection
-#if !defined(QT_TEST_SERVER)
+#if !defined(BOBUI_TEST_SERVER)
             // This test relies on the proxy and ftp servers
             // running on the same machine, which is not the
             // case for the docker test server.
@@ -915,7 +915,7 @@ void tst_NetworkSelfTest::socks5Proxy()
             << Chat::expect("\1") // IPv4 address following
             << Chat::skipBytes(6) // the server's local address and port
             << ftpChat()
-#if !defined(QT_TEST_SERVER)
+#if !defined(BOBUI_TEST_SERVER)
             // connect to "localhost" by hostname, the same as above:
             // makes no sense with the docker test server.
             << Chat::Reconnect
@@ -931,7 +931,7 @@ void tst_NetworkSelfTest::socks5Proxy()
             << Chat::Reconnect
             << Chat::send(handshakeNoAuthData)
             << Chat::expect(handshakeOkNoAuthData)
-            << Chat::send(QBA(connect2a) + char(QtNetworkSettings::ftpServerName().size()) + QtNetworkSettings::ftpServerName().toLatin1() + QBA(connect1b))
+            << Chat::send(QBA(connect2a) + char(BobUINetworkSettings::ftpServerName().size()) + BobUINetworkSettings::ftpServerName().toLatin1() + QBA(connect1b))
             << Chat::expect(connectedData)
             << Chat::expect("\1") // IPv4 address following
             << Chat::skipBytes(6) // the server's local address and port
@@ -953,7 +953,7 @@ void tst_NetworkSelfTest::socks5ProxyAuth()
             << Chat::send(handshakeNoAuthData)
             << Chat::expect(handshakeAuthNotOkData)
             << Chat::RemoteDisconnect
-#if !defined(QT_TEST_SERVER)
+#if !defined(BOBUI_TEST_SERVER)
             // now try to connect with authentication,
             // danted is just that, socks 5 proxy and
             // does not have ftp running, skip!
@@ -969,7 +969,7 @@ void tst_NetworkSelfTest::socks5ProxyAuth()
             << Chat::Reconnect
             << Chat::send(handshakeAuthPasswordData)
             << Chat::expect(handshakeOkPasswdAuthData)
-            << Chat::send(QBA(connect2a) + char(QtNetworkSettings::ftpServerName().size()) + QtNetworkSettings::ftpServerName().toLatin1() + QBA(connect1b))
+            << Chat::send(QBA(connect2a) + char(BobUINetworkSettings::ftpServerName().size()) + BobUINetworkSettings::ftpServerName().toLatin1() + QBA(connect1b))
             << Chat::expect(connectedData)
             << Chat::expect("\1") // IPv4 address following
             << Chat::skipBytes(6) // the server's local address and port
@@ -980,18 +980,18 @@ void tst_NetworkSelfTest::socks5ProxyAuth()
 
 void tst_NetworkSelfTest::supportsSsl()
 {
-#ifdef QT_NO_SSL
+#ifdef BOBUI_NO_SSL
     QSKIP("SSL not compiled in");
 #else
     QVERIFY2(QSslSocket::supportsSsl(), "Could not load SSL libraries");
 #endif
 }
 
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
 static const QByteArray msgProcessError(const QProcess &process, const char *what)
 {
     QString result;
-    QTextStream(&result) << what << ": \"" << process.program() << ' '
+    BOBUIextStream(&result) << what << ": \"" << process.program() << ' '
         << process.arguments().join(QLatin1Char(' ')) << "\": " << process.errorString();
     return result.toLocal8Bit();
 }
@@ -1004,19 +1004,19 @@ static void ensureTermination(QProcess &process)
             process.kill();
     }
 }
-#endif // QT_CONFIG(process)
+#endif // BOBUI_CONFIG(process)
 
 void tst_NetworkSelfTest::smbServer()
 {
-#if defined(QT_TEST_SERVER)
+#if defined(BOBUI_TEST_SERVER)
     QSKIP("Not supported by the docker test server");
-#endif // QT_TEST_SERVER
+#endif // BOBUI_TEST_SERVER
     static const char contents[] = "This is 34 bytes. Do not change...";
 #ifdef Q_OS_WIN
     // use Windows's native UNC support to try and open a file on the server
-    QByteArray filepath = "\\\\" + QtNetworkSettings::winServerName().toLatin1() + "\\testshare\\test.pri";
+    QByteArray filepath = "\\\\" + BobUINetworkSettings::winServerName().toLatin1() + "\\testshare\\test.pri";
     FILE *f = fopen(filepath.constData(), "rb");
-    QVERIFY2(f, qt_error_string().toLocal8Bit());
+    QVERIFY2(f, bobui_error_string().toLocal8Bit());
 
     char buf[128];
     size_t ret = fread(buf, 1, sizeof buf, f);
@@ -1025,7 +1025,7 @@ void tst_NetworkSelfTest::smbServer()
     QCOMPARE(ret, strlen(contents));
     QVERIFY(memcmp(buf, contents, strlen(contents)) == 0);
 #else
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
     enum { sambaTimeOutSecs = 5 };
     // try to use Samba
     const QString progname = "smbclient";
@@ -1037,7 +1037,7 @@ void tst_NetworkSelfTest::smbServer()
     const QStringList timeOutArguments = QStringList()
         << "--timeout" << QString::number(sambaTimeOutSecs);
     QStringList arguments = timeOutArguments;
-    arguments << "-g" << "-N" << "-L" << QtNetworkSettings::winServerName();
+    arguments << "-g" << "-N" << "-L" << BobUINetworkSettings::winServerName();
     QProcess smbclient;
     smbclient.start(binary, arguments, QIODevice::ReadOnly);
     QVERIFY2(smbclient.waitForStarted(), msgProcessError(smbclient, "Unable to start"));
@@ -1060,14 +1060,14 @@ void tst_NetworkSelfTest::smbServer()
     smbclient.setProcessEnvironment(env);
     arguments = timeOutArguments;
     arguments << "-N" << "-c" << "more test.pri"
-        << ("\\\\" + QtNetworkSettings::winServerName() + "\\testshare");
+        << ("\\\\" + BobUINetworkSettings::winServerName() + "\\testshare");
     smbclient.start(binary, arguments, QIODevice::ReadOnly);
     const bool fileFinished = smbclient.waitForFinished((1 + sambaTimeOutSecs) * 1000);
     ensureTermination(smbclient);
     QVERIFY2(fileFinished, msgProcessError(smbclient, "Timed out"));
     if (smbclient.exitStatus() != QProcess::NormalExit)
         QSKIP("smbclient crashed");
-    QVERIFY2(smbclient.exitCode() == 0, "File //qt-test-server/testshare/test.pri not found");
+    QVERIFY2(smbclient.exitCode() == 0, "File //bobui-test-server/testshare/test.pri not found");
 
     output = smbclient.readAll();
     QCOMPARE(output.constData(), contents);
@@ -1078,5 +1078,5 @@ void tst_NetworkSelfTest::smbServer()
 #endif
 }
 
-QTEST_MAIN(tst_NetworkSelfTest)
+BOBUIEST_MAIN(tst_NetworkSelfTest)
 #include "tst_networkselftest.moc"

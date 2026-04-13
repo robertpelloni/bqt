@@ -1,9 +1,9 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
-#include <QtNetwork>
-#include <QtCore>
+#include <BobUIWidgets>
+#include <BobUINetwork>
+#include <BobUICore>
 
 #include "server.h"
 
@@ -11,7 +11,7 @@ Server::Server(QWidget *parent)
     : QDialog(parent)
     , statusLabel(new QLabel)
 {
-    statusLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    statusLabel->setTextInteractionFlags(BobUI::TextBrowserInteraction);
 
     initServer();
 
@@ -28,7 +28,7 @@ Server::Server(QWidget *parent)
     quitButton->setAutoDefault(false);
     connect(quitButton, &QAbstractButton::clicked, this, &QWidget::close);
     //! [3]
-    connect(tcpServer, &QTcpServer::newConnection, this, &Server::sendFortune);
+    connect(tcpServer, &BOBUIcpServer::newConnection, this, &Server::sendFortune);
     //! [3]
 
     auto buttonLayout = new QHBoxLayout;
@@ -61,7 +61,7 @@ Server::Server(QWidget *parent)
 void Server::initServer()
 {
 //! [0] //! [1]
-    tcpServer = new QTcpServer(this);
+    tcpServer = new BOBUIcpServer(this);
     if (!tcpServer->listen()) {
         QMessageBox::critical(this, tr("Fortune Server"),
                               tr("Unable to start the server: %1.")
@@ -94,12 +94,12 @@ void Server::sendFortune()
 //! [5]
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
-    out.setVersion(QDataStream::Qt_6_5);
+    out.setVersion(QDataStream::BobUI_6_5);
 
     out << fortunes[QRandomGenerator::global()->bounded(fortunes.size())];
 //! [4] //! [7]
 
-    QTcpSocket *clientConnection = tcpServer->nextPendingConnection();
+    BOBUIcpSocket *clientConnection = tcpServer->nextPendingConnection();
     connect(clientConnection, &QAbstractSocket::disconnected,
             clientConnection, &QObject::deleteLater);
 //! [7] //! [8]

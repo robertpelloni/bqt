@@ -1,7 +1,7 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2021 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QOFFSETSTRINGARRAY_P_H
 #define QOFFSETSTRINGARRAY_P_H
@@ -10,7 +10,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -21,7 +21,7 @@
 
 #include <QByteArrayView>
 
-#include <QtCore/q20algorithm.h>
+#include <BobUICore/q20algorithm.h>
 #include <array>
 #include <limits>
 #include <string_view>
@@ -33,12 +33,12 @@
 
 class tst_QOffsetStringArray;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_WARNING_PUSH
+BOBUI_WARNING_PUSH
 #if defined(Q_CC_GNU_ONLY) && Q_CC_GNU >= 1100
 // we usually don't overread, but GCC has a false positive
-QT_WARNING_DISABLE_GCC("-Wstringop-overread")
+BOBUI_WARNING_DISABLE_GCC("-Wstringop-overread")
 #endif
 
 
@@ -85,7 +85,7 @@ public:
 
     constexpr int count() const { return int(m_offsets.size()) - 1; }
 
-    bool contains(View needle, Qt::CaseSensitivity cs = Qt::CaseSensitive) const noexcept
+    bool contains(View needle, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const noexcept
     {
         for (qsizetype i = 0; i < count(); ++i) {
             if (viewAt(i).compare(needle, cs) == 0)
@@ -100,7 +100,7 @@ private:
     friend tst_QOffsetStringArray;
 };
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 template <size_t Highest> constexpr auto minifyValue()
 {
     constexpr size_t max8 = (std::numeric_limits<quint8>::max)();
@@ -119,7 +119,7 @@ template <typename Char, int... Nx>
 constexpr auto makeOffsetStringArray(const Char (&...entries)[Nx])
 {
     constexpr size_t StringLength = (Nx + ...);
-    using OffsetType = decltype(QtPrivate::minifyValue<StringLength>());
+    using OffsetType = decltype(BobUIPrivate::minifyValue<StringLength>());
 
     // prepend the first offset (zero) pointing to the *start* of the first element
     size_t offset = 0;
@@ -138,7 +138,7 @@ constexpr auto makeOffsetStringArray(const Char (&...entries)[Nx])
 
     return QOffsetStringArray(staticString, offsetList);
 }
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 template<typename Char, int ... Nx>
 #ifdef __cpp_concepts
@@ -149,10 +149,10 @@ requires std::is_same_v<Char, char> || std::is_same_v<Char, char16_t>
 #endif
 constexpr auto qOffsetStringArray(const Char (&...strings)[Nx]) noexcept
 {
-    return QtPrivate::makeOffsetStringArray<Char>(strings...);
+    return BobUIPrivate::makeOffsetStringArray<Char>(strings...);
 }
 
-QT_WARNING_POP
-QT_END_NAMESPACE
+BOBUI_WARNING_POP
+BOBUI_END_NAMESPACE
 
 #endif // QOFFSETSTRINGARRAY_P_H

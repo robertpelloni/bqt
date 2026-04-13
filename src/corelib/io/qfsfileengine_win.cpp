@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qplatformdefs.h"
 #include "private/qabstractfileengine_p.h"
@@ -13,7 +13,7 @@
 #include "qdir.h"
 #include "qvarlengtharray.h"
 #include "qdatetime.h"
-#include "qt_windows.h"
+#include "bobui_windows.h"
 
 #include <sys/types.h>
 #include <direct.h>
@@ -34,9 +34,9 @@
 #define PATH_MAX FILENAME_MAX
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static inline bool isUncPath(const QString &path)
 {
@@ -100,7 +100,7 @@ bool QFSFileEnginePrivate::nativeOpen(QIODevice::OpenMode openMode,
 
     // Bail out on error.
     if (fileHandle == INVALID_HANDLE_VALUE) {
-        q->setError(QFile::OpenError, qt_error_string());
+        q->setError(QFile::OpenError, bobui_error_string());
         return false;
     }
 
@@ -127,7 +127,7 @@ bool QFSFileEnginePrivate::nativeClose()
 
     if (cachedFd != -1) {
         if (::_close(cachedFd) && !::CloseHandle(fileHandle)) {
-            q->setError(QFile::UnspecifiedError, qt_error_string());
+            q->setError(QFile::UnspecifiedError, bobui_error_string());
             ok = false;
         }
 
@@ -139,7 +139,7 @@ bool QFSFileEnginePrivate::nativeClose()
     }
 
     if ((fileHandle == INVALID_HANDLE_VALUE || !::CloseHandle(fileHandle))) {
-        q->setError(QFile::UnspecifiedError, qt_error_string());
+        q->setError(QFile::UnspecifiedError, bobui_error_string());
         ok = false;
     }
     fileHandle = INVALID_HANDLE_VALUE;
@@ -225,7 +225,7 @@ qint64 QFSFileEnginePrivate::nativePos() const
     LARGE_INTEGER offset;
     offset.QuadPart = 0;
     if (!::SetFilePointerEx(fileHandle, offset, &currentFilePos, FILE_CURRENT)) {
-        thatQ->setError(QFile::UnspecifiedError, qt_error_string());
+        thatQ->setError(QFile::UnspecifiedError, bobui_error_string());
         return 0;
     }
 
@@ -248,7 +248,7 @@ bool QFSFileEnginePrivate::nativeSeek(qint64 pos)
     LARGE_INTEGER offset;
     offset.QuadPart = pos;
     if (!::SetFilePointerEx(fileHandle, offset, &currentFilePos, FILE_BEGIN)) {
-        q->setError(QFile::UnspecifiedError, qt_error_string());
+        q->setError(QFile::UnspecifiedError, bobui_error_string());
         return false;
     }
 
@@ -289,7 +289,7 @@ qint64 QFSFileEnginePrivate::nativeRead(char *data, qint64 maxlen)
         if (!ReadFile(fileHandle, data + totalRead, blockSize, &bytesRead, NULL)) {
             if (totalRead == 0) {
                 // Note: only return failure if the first ReadFile fails.
-                q->setError(QFile::ReadError, qt_error_string());
+                q->setError(QFile::ReadError, bobui_error_string());
                 return -1;
             }
             break;
@@ -349,7 +349,7 @@ qint64 QFSFileEnginePrivate::nativeWrite(const char *data, qint64 len)
         if (!WriteFile(fileHandle, data + totalWritten, currentBlockSize, &bytesWritten, NULL)) {
             if (totalWritten == 0) {
                 // Note: Only return error if the first WriteFile failed.
-                q->setError(QFile::WriteError, qt_error_string());
+                q->setError(QFile::WriteError, bobui_error_string());
                 return -1;
             }
             break;
@@ -368,7 +368,7 @@ qint64 QFSFileEnginePrivate::nativeWrite(const char *data, qint64 len)
 int QFSFileEnginePrivate::nativeHandle() const
 {
     if (fh || fd != -1)
-        return fh ? QT_FILENO(fh) : fd;
+        return fh ? BOBUI_FILENO(fh) : fd;
     if (cachedFd != -1)
         return cachedFd;
 
@@ -388,7 +388,7 @@ bool QFSFileEnginePrivate::nativeIsSequential() const
 {
     HANDLE handle = fileHandle;
     if (fh || fd != -1)
-        handle = (HANDLE)_get_osfhandle(fh ? QT_FILENO(fh) : fd);
+        handle = (HANDLE)_get_osfhandle(fh ? BOBUI_FILENO(fh) : fd);
     if (handle == INVALID_HANDLE_VALUE)
         return false;
 
@@ -421,7 +421,7 @@ bool QFSFileEnginePrivate::nativeRenameOverwrite(const QFileSystemEntry &newEntr
                                           DWORD(renameDataSize));
     if (!res) {
         DWORD error = GetLastError();
-        q_func()->setError(QFile::RenameError, qt_error_string(int(error)));
+        q_func()->setError(QFile::RenameError, bobui_error_string(int(error)));
     }
     return res;
 }
@@ -482,7 +482,7 @@ bool QFSFileEnginePrivate::doStat(QFileSystemMetaData::MetaDataFlags flags) cons
 
         int localFd = fd;
         if (fh && fileEntry.isEmpty())
-            localFd = QT_FILENO(fh);
+            localFd = BOBUI_FILENO(fh);
         if (localFd != -1)
             QFileSystemEngine::fillMetaData(localFd, metaData, flags);
         if (metaData.missingFlags(flags) && !fileEntry.isEmpty())
@@ -575,7 +575,7 @@ QByteArray QFSFileEngine::id() const
     if (h == INVALID_HANDLE_VALUE) {
         int localFd = d->fd;
         if (d->fh && d->fileEntry.isEmpty())
-            localFd = QT_FILENO(d->fh);
+            localFd = BOBUI_FILENO(d->fh);
         if (localFd != -1)
             h = HANDLE(_get_osfhandle(localFd));
     }
@@ -703,7 +703,7 @@ bool QFSFileEngine::setSize(qint64 size)
         HANDLE fh = d->fileHandle;
         if (fh == INVALID_HANDLE_VALUE) {
             if (d->fh)
-                fh = (HANDLE)_get_osfhandle(QT_FILENO(d->fh));
+                fh = (HANDLE)_get_osfhandle(BOBUI_FILENO(d->fh));
             else
                 fh = (HANDLE)_get_osfhandle(d->fd);
         }
@@ -738,25 +738,25 @@ bool QFSFileEngine::setFileTime(const QDateTime &newDate, QFile::FileTime time)
     Q_D(QFSFileEngine);
 
     if (d->openMode == QFile::NotOpen) {
-        setError(QFile::PermissionsError, qt_error_string(ERROR_ACCESS_DENIED));
+        setError(QFile::PermissionsError, bobui_error_string(ERROR_ACCESS_DENIED));
         return false;
     }
 
     if (!newDate.isValid() || time == QFile::FileMetadataChangeTime) {
-        setError(QFile::UnspecifiedError, qt_error_string(ERROR_INVALID_PARAMETER));
+        setError(QFile::UnspecifiedError, bobui_error_string(ERROR_INVALID_PARAMETER));
         return false;
     }
 
     HANDLE handle = d->fileHandle;
     if (handle == INVALID_HANDLE_VALUE) {
         if (d->fh)
-            handle = reinterpret_cast<HANDLE>(::_get_osfhandle(QT_FILENO(d->fh)));
+            handle = reinterpret_cast<HANDLE>(::_get_osfhandle(BOBUI_FILENO(d->fh)));
         else if (d->fd != -1)
             handle = reinterpret_cast<HANDLE>(::_get_osfhandle(d->fd));
     }
 
     if (handle == INVALID_HANDLE_VALUE) {
-        setError(QFile::PermissionsError, qt_error_string(ERROR_ACCESS_DENIED));
+        setError(QFile::PermissionsError, bobui_error_string(ERROR_ACCESS_DENIED));
         return false;
     }
 
@@ -776,11 +776,11 @@ uchar *QFSFileEnginePrivate::map(qint64 offset, qint64 size,
     Q_Q(QFSFileEngine);
     Q_UNUSED(flags);
     if (openMode == QFile::NotOpen) {
-        q->setError(QFile::PermissionsError, qt_error_string(ERROR_ACCESS_DENIED));
+        q->setError(QFile::PermissionsError, bobui_error_string(ERROR_ACCESS_DENIED));
         return 0;
     }
     if (offset == 0 && size == 0) {
-        q->setError(QFile::UnspecifiedError, qt_error_string(ERROR_INVALID_PARAMETER));
+        q->setError(QFile::UnspecifiedError, bobui_error_string(ERROR_INVALID_PARAMETER));
         return 0;
     }
 
@@ -804,7 +804,7 @@ uchar *QFSFileEnginePrivate::map(qint64 offset, qint64 size,
         HANDLE handle = fileHandle;
 
         if (handle == INVALID_HANDLE_VALUE && fh)
-            handle = (HANDLE)::_get_osfhandle(QT_FILENO(fh));
+            handle = (HANDLE)::_get_osfhandle(BOBUI_FILENO(fh));
 
 #ifdef Q_USE_DEPRECATED_MAP_API
         nativeClose();
@@ -823,7 +823,7 @@ uchar *QFSFileEnginePrivate::map(qint64 offset, qint64 size,
 #endif
 
         if (handle == INVALID_HANDLE_VALUE) {
-            q->setError(QFile::PermissionsError, qt_error_string(ERROR_ACCESS_DENIED));
+            q->setError(QFile::PermissionsError, bobui_error_string(ERROR_ACCESS_DENIED));
             return 0;
         }
 
@@ -831,7 +831,7 @@ uchar *QFSFileEnginePrivate::map(qint64 offset, qint64 size,
         DWORD protection = (openMode & QIODevice::WriteOnly) ? PAGE_READWRITE : PAGE_READONLY;
         mapHandle = ::CreateFileMapping(handle, 0, protection, 0, 0, 0);
         if (mapHandle == NULL) {
-            q->setError(QFile::PermissionsError, qt_error_string());
+            q->setError(QFile::PermissionsError, bobui_error_string());
 #ifdef Q_USE_DEPRECATED_MAP_API
             ::CloseHandle(handle);
 #endif
@@ -859,12 +859,12 @@ uchar *QFSFileEnginePrivate::map(qint64 offset, qint64 size,
 
     switch(GetLastError()) {
     case ERROR_ACCESS_DENIED:
-        q->setError(QFile::PermissionsError, qt_error_string());
+        q->setError(QFile::PermissionsError, bobui_error_string());
         break;
     case ERROR_INVALID_PARAMETER:
         // size are out of bounds
     default:
-        q->setError(QFile::UnspecifiedError, qt_error_string());
+        q->setError(QFile::UnspecifiedError, bobui_error_string());
     }
 
     ::CloseHandle(mapHandle);
@@ -877,12 +877,12 @@ bool QFSFileEnginePrivate::unmap(uchar *ptr)
     Q_Q(QFSFileEngine);
     const auto it = std::as_const(maps).find(ptr);
     if (it == maps.cend()) {
-        q->setError(QFile::PermissionsError, qt_error_string(ERROR_ACCESS_DENIED));
+        q->setError(QFile::PermissionsError, bobui_error_string(ERROR_ACCESS_DENIED));
         return false;
     }
     uchar *start = ptr - *it;
     if (!UnmapViewOfFile(start)) {
-        q->setError(QFile::PermissionsError, qt_error_string());
+        q->setError(QFile::PermissionsError, bobui_error_string());
         return false;
     }
 
@@ -906,4 +906,4 @@ QAbstractFileEngine::TriStateResult QFSFileEngine::cloneTo(QAbstractFileEngine *
     return TriStateResult::NotSupported;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

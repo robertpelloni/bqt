@@ -7,9 +7,9 @@ include($$SHARED_FOLDER/shared.pri)
 
 RESOURCES += pathstroke.qrc
 
-QT += widgets
+BOBUI += widgets
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/painting/pathstroke
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/painting/pathstroke
 INSTALLS += target
 

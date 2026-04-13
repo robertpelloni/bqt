@@ -1,6 +1,6 @@
 TEMPLATE = app
 TARGET = qvulkaninstance
 
-QT += gui-private
+BOBUI += gui-private
 
 SOURCES += main.cpp

@@ -1,113 +1,113 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QMACSTYLE_MAC_P_P_H
 #define QMACSTYLE_MAC_P_P_H
 
 #include "qmacstyle_mac_p.h"
 
-#include <QtCore/qhash.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qmap.h>
-#include <QtCore/qmath.h>
-#include <QtCore/qpointer.h>
-#include <QtCore/qtextstream.h>
+#include <BobUICore/qhash.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qmap.h>
+#include <BobUICore/qmath.h>
+#include <BobUICore/qpointer.h>
+#include <BobUICore/bobuiextstream.h>
 
-#include <QtGui/private/qpainter_p.h>
+#include <BobUIGui/private/qpainter_p.h>
 
-#include <QtGui/qbitmap.h>
-#include <QtGui/qevent.h>
-#include <QtGui/qpaintdevice.h>
-#include <QtGui/qpainter.h>
-#include <QtGui/qpixmapcache.h>
+#include <BobUIGui/qbitmap.h>
+#include <BobUIGui/qevent.h>
+#include <BobUIGui/qpaintdevice.h>
+#include <BobUIGui/qpainter.h>
+#include <BobUIGui/qpixmapcache.h>
 
-#include <QtWidgets/private/qapplication_p.h>
-#include <QtWidgets/private/qcommonstyle_p.h>
-#include <QtWidgets/private/qstylehelper_p.h>
+#include <BobUIWidgets/private/qapplication_p.h>
+#include <BobUIWidgets/private/qcommonstyle_p.h>
+#include <BobUIWidgets/private/qstylehelper_p.h>
 
-#include <QtWidgets/qapplication.h>
-#include <QtWidgets/qfocusframe.h>
-#include <QtWidgets/qformlayout.h>
-#include <QtWidgets/qlayout.h>
-#include <QtWidgets/qstyleoption.h>
-#include <QtWidgets/qtextedit.h>
+#include <BobUIWidgets/qapplication.h>
+#include <BobUIWidgets/qfocusframe.h>
+#include <BobUIWidgets/qformlayout.h>
+#include <BobUIWidgets/qlayout.h>
+#include <BobUIWidgets/qstyleoption.h>
+#include <BobUIWidgets/bobuiextedit.h>
 
-#if QT_CONFIG(checkbox)
-#include <QtWidgets/qcheckbox.h>
+#if BOBUI_CONFIG(checkbox)
+#include <BobUIWidgets/qcheckbox.h>
 #endif
-#if QT_CONFIG(combobox)
-#include <QtWidgets/private/qcombobox_p.h>
-#include <QtWidgets/qcombobox.h>
+#if BOBUI_CONFIG(combobox)
+#include <BobUIWidgets/private/qcombobox_p.h>
+#include <BobUIWidgets/qcombobox.h>
 #endif
-#if QT_CONFIG(datetimeedit)
-#include <QtWidgets/qdatetimeedit.h>
+#if BOBUI_CONFIG(datetimeedit)
+#include <BobUIWidgets/qdatetimeedit.h>
 #endif
-#if QT_CONFIG(dialogbuttonbox)
-#include <QtWidgets/qdialogbuttonbox.h>
+#if BOBUI_CONFIG(dialogbuttonbox)
+#include <BobUIWidgets/qdialogbuttonbox.h>
 #endif
-#if QT_CONFIG(dockwidget)
-#include <QtWidgets/qdockwidget.h>
+#if BOBUI_CONFIG(dockwidget)
+#include <BobUIWidgets/qdockwidget.h>
 #endif
-#if QT_CONFIG(graphicsview)
-#include <QtWidgets/qgraphicsproxywidget.h>
-#include <QtWidgets/qgraphicsview.h>
+#if BOBUI_CONFIG(graphicsview)
+#include <BobUIWidgets/qgraphicsproxywidget.h>
+#include <BobUIWidgets/qgraphicsview.h>
 #endif
-#if QT_CONFIG(groupbox)
-#include <QtWidgets/qgroupbox.h>
+#if BOBUI_CONFIG(groupbox)
+#include <BobUIWidgets/qgroupbox.h>
 #endif
-#if QT_CONFIG(itemviews)
-#include <QtWidgets/qheaderview.h>
+#if BOBUI_CONFIG(itemviews)
+#include <BobUIWidgets/qheaderview.h>
 #endif
-#if QT_CONFIG(lineedit)
-#include <QtWidgets/qlineedit.h>
+#if BOBUI_CONFIG(lineedit)
+#include <BobUIWidgets/qlineedit.h>
 #endif
-#if QT_CONFIG(listview)
-#include <QtWidgets/qlistview.h>
+#if BOBUI_CONFIG(listview)
+#include <BobUIWidgets/qlistview.h>
 #endif
-#if QT_CONFIG(mainwindow)
-#include <QtWidgets/qmainwindow.h>
+#if BOBUI_CONFIG(mainwindow)
+#include <BobUIWidgets/qmainwindow.h>
 #endif
-#if QT_CONFIG(menubar)
-#include <QtWidgets/qmenubar.h>
+#if BOBUI_CONFIG(menubar)
+#include <BobUIWidgets/qmenubar.h>
 #endif
-#if QT_CONFIG(progressbar)
-#include <QtWidgets/qprogressbar.h>
+#if BOBUI_CONFIG(progressbar)
+#include <BobUIWidgets/qprogressbar.h>
 #endif
-#if QT_CONFIG(pushbutton)
-#include <QtWidgets/qpushbutton.h>
+#if BOBUI_CONFIG(pushbutton)
+#include <BobUIWidgets/qpushbutton.h>
 #endif
-#include <QtWidgets/qradiobutton.h>
-#if QT_CONFIG(rubberband)
-#include <QtWidgets/qrubberband.h>
+#include <BobUIWidgets/qradiobutton.h>
+#if BOBUI_CONFIG(rubberband)
+#include <BobUIWidgets/qrubberband.h>
 #endif
-#if QT_CONFIG(sizegrip)
-#include <QtWidgets/qsizegrip.h>
+#if BOBUI_CONFIG(sizegrip)
+#include <BobUIWidgets/qsizegrip.h>
 #endif
-#if QT_CONFIG(spinbox)
-#include <QtWidgets/qspinbox.h>
+#if BOBUI_CONFIG(spinbox)
+#include <BobUIWidgets/qspinbox.h>
 #endif
-#if QT_CONFIG(splitter)
-#include <QtWidgets/qsplitter.h>
+#if BOBUI_CONFIG(splitter)
+#include <BobUIWidgets/qsplitter.h>
 #endif
-#if QT_CONFIG(tableview)
-#include <QtWidgets/qtableview.h>
+#if BOBUI_CONFIG(tableview)
+#include <BobUIWidgets/bobuiableview.h>
 #endif
-#if QT_CONFIG(toolbar)
-#include <QtWidgets/qtoolbar.h>
+#if BOBUI_CONFIG(toolbar)
+#include <BobUIWidgets/bobuioolbar.h>
 #endif
-#if QT_CONFIG(toolbutton)
-#include <QtWidgets/qtoolbutton.h>
+#if BOBUI_CONFIG(toolbutton)
+#include <BobUIWidgets/bobuioolbutton.h>
 #endif
-#if QT_CONFIG(treeview)
-#include <QtWidgets/qtreeview.h>
+#if BOBUI_CONFIG(treeview)
+#include <BobUIWidgets/bobuireeview.h>
 #endif
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -119,7 +119,7 @@ Q_FORWARD_DECLARE_MUTABLE_CG_TYPE(CGContext);
 Q_FORWARD_DECLARE_OBJC_CLASS(NSView);
 Q_FORWARD_DECLARE_OBJC_CLASS(NSCell);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*
     AHIG:
@@ -157,10 +157,10 @@ public:
         Box,          // QGroupBox
         Box_Dark,     // FIXME See render code in drawPrimitive(PE_FrameTabWidget)
         Button_CheckBox,
-        Button_Disclosure,  // Disclosure triangle, like in QTreeView
+        Button_Disclosure,  // Disclosure triangle, like in BOBUIreeView
         Button_PopupButton,  // Non-editable QComboBox
         Button_PullDown, // QPushButton with menu
-        Button_PushButton, // Plain QPushButton and QTabBar buttons
+        Button_PushButton, // Plain QPushButton and BOBUIabBar buttons
         Button_RadioButton,
         Button_SquareButton, // Oversized QPushButton
         Button_WindowClose,
@@ -171,7 +171,7 @@ public:
         ProgressIndicator_Indeterminate,
         Scroller_Horizontal,
         Scroller_Vertical,
-        SegmentedControl_First, // QTabBar buttons focus ring
+        SegmentedControl_First, // BOBUIabBar buttons focus ring
         SegmentedControl_Middle,
         SegmentedControl_Last,
         SegmentedControl_Single,
@@ -246,9 +246,9 @@ public:
 
     CocoaControlType windowButtonCocoaControl(QStyle::SubControl sc) const;
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     void tabLayout(const QStyleOptionTab *opt, const QWidget *widget, QRect *textRect, QRect *iconRect) const override;
-    static Direction tabDirection(QTabBar::Shape shape);
+    static Direction tabDirection(BOBUIabBar::Shape shape);
     static bool verticalTabs(QMacStylePrivate::Direction tabDirection);
 #endif
 
@@ -265,6 +265,6 @@ public:
 
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QMACSTYLE_MAC_P_P_H

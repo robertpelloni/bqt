@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 #include "window.h"
 
@@ -23,11 +23,11 @@ Window::Window()
 {
     proxyModel = new QSortFilterProxyModel;
 
-    sourceView = new QTreeView;
+    sourceView = new BOBUIreeView;
     sourceView->setRootIsDecorated(false);
     sourceView->setAlternatingRowColors(true);
 
-    proxyView = new QTreeView;
+    proxyView = new BOBUIreeView;
     proxyView->setRootIsDecorated(false);
     proxyView->setAlternatingRowColors(true);
     proxyView->setModel(proxyModel);
@@ -95,7 +95,7 @@ Window::Window()
     setWindowTitle(tr("Basic Sort/Filter Model"));
     resize(500, 450);
 
-    proxyView->sortByColumn(1, Qt::AscendingOrder);
+    proxyView->sortByColumn(1, BobUI::AscendingOrder);
     filterColumnComboBox->setCurrentIndex(1);
 
     filterPatternLineEdit->setText("Andy|Grace");
@@ -136,7 +136,7 @@ void Window::filterRegularExpressionChanged()
     } else {
         filterPatternLineEdit->setToolTip(regularExpression.errorString());
         proxyModel->setFilterRegularExpression(QRegularExpression());
-        setTextColor(filterPatternLineEdit, Qt::red);
+        setTextColor(filterPatternLineEdit, BobUI::red);
     }
 }
 
@@ -148,6 +148,6 @@ void Window::filterColumnChanged()
 void Window::sortChanged()
 {
     proxyModel->setSortCaseSensitivity(
-            sortCaseSensitivityCheckBox->isChecked() ? Qt::CaseSensitive
-                                                     : Qt::CaseInsensitive);
+            sortCaseSensitivityCheckBox->isChecked() ? BobUI::CaseSensitive
+                                                     : BobUI::CaseInsensitive);
 }

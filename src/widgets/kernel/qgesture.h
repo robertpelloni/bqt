@@ -1,28 +1,28 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QGESTURE_H
 #define QGESTURE_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qmap.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qdatetime.h>
-#include <QtCore/qpoint.h>
-#include <QtCore/qrect.h>
-#include <QtCore/qmetatype.h>
-#include <QtGui/qevent.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qmap.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qdatetime.h>
+#include <BobUICore/qpoint.h>
+#include <BobUICore/qrect.h>
+#include <BobUICore/qmetatype.h>
+#include <BobUIGui/qevent.h>
 
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
 
 // ### move to qnamespace.h
-QT_DECL_METATYPE_EXTERN_TAGGED(Qt::GestureState, Qt__GestureState, Q_WIDGETS_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN_TAGGED(BobUI::GestureState, BobUI__GestureState, Q_WIDGETS_EXPORT)
 // ### move to qnamespace.h
-QT_DECL_METATYPE_EXTERN_TAGGED(Qt::GestureType, Qt__GestureType, Q_WIDGETS_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN_TAGGED(BobUI::GestureType, BobUI__GestureType, Q_WIDGETS_EXPORT)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QGesturePrivate;
@@ -31,8 +31,8 @@ class Q_WIDGETS_EXPORT QGesture : public QObject
     Q_OBJECT
     Q_DECLARE_PRIVATE(QGesture)
 
-    Q_PROPERTY(Qt::GestureState state READ state)
-    Q_PROPERTY(Qt::GestureType gestureType READ gestureType)
+    Q_PROPERTY(BobUI::GestureState state READ state)
+    Q_PROPERTY(BobUI::GestureType gestureType READ gestureType)
     Q_PROPERTY(QGesture::GestureCancelPolicy gestureCancelPolicy READ gestureCancelPolicy
                WRITE setGestureCancelPolicy)
     Q_PROPERTY(QPointF hotSpot READ hotSpot WRITE setHotSpot RESET unsetHotSpot)
@@ -42,9 +42,9 @@ public:
     explicit QGesture(QObject *parent = nullptr);
     ~QGesture();
 
-    Qt::GestureType gestureType() const;
+    BobUI::GestureType gestureType() const;
 
-    Qt::GestureState state() const;
+    BobUI::GestureState state() const;
 
     QPointF hotSpot() const;
     void setHotSpot(const QPointF &value);
@@ -166,12 +166,12 @@ public:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QPinchGesture::ChangeFlags)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN_TAGGED(QPinchGesture::ChangeFlags,
+BOBUI_DECL_METATYPE_EXTERN_TAGGED(QPinchGesture::ChangeFlags,
                                QPinchGesture__ChangeFlags, Q_WIDGETS_EXPORT)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QSwipeGesturePrivate;
 class Q_WIDGETS_EXPORT QSwipeGesture : public QGesture
@@ -200,35 +200,35 @@ public:
     friend class QSwipeGestureRecognizer;
 };
 
-class QTapGesturePrivate;
-class Q_WIDGETS_EXPORT QTapGesture : public QGesture
+class BOBUIapGesturePrivate;
+class Q_WIDGETS_EXPORT BOBUIapGesture : public QGesture
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QTapGesture)
+    Q_DECLARE_PRIVATE(BOBUIapGesture)
 
     Q_PROPERTY(QPointF position READ position WRITE setPosition)
 
 public:
-    explicit QTapGesture(QObject *parent = nullptr);
-    ~QTapGesture();
+    explicit BOBUIapGesture(QObject *parent = nullptr);
+    ~BOBUIapGesture();
 
     QPointF position() const;
     void setPosition(const QPointF &pos);
 
-    friend class QTapGestureRecognizer;
+    friend class BOBUIapGestureRecognizer;
 };
 
-class QTapAndHoldGesturePrivate;
-class Q_WIDGETS_EXPORT QTapAndHoldGesture : public QGesture
+class BOBUIapAndHoldGesturePrivate;
+class Q_WIDGETS_EXPORT BOBUIapAndHoldGesture : public QGesture
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QTapAndHoldGesture)
+    Q_DECLARE_PRIVATE(BOBUIapAndHoldGesture)
 
     Q_PROPERTY(QPointF position READ position WRITE setPosition)
 
 public:
-    explicit QTapAndHoldGesture(QObject *parent = nullptr);
-    ~QTapAndHoldGesture();
+    explicit BOBUIapAndHoldGesture(QObject *parent = nullptr);
+    ~BOBUIapAndHoldGesture();
 
     QPointF position() const;
     void setPosition(const QPointF &pos);
@@ -236,7 +236,7 @@ public:
     static void setTimeout(int msecs);
     static int timeout();
 
-    friend class QTapAndHoldGestureRecognizer;
+    friend class BOBUIapAndHoldGestureRecognizer;
 };
 
 class QGesture;
@@ -248,7 +248,7 @@ public:
     ~QGestureEvent();
 
     QList<QGesture *> gestures() const;
-    QGesture *gesture(Qt::GestureType type) const;
+    QGesture *gesture(BobUI::GestureType type) const;
 
     QList<QGesture *> activeGestures() const;
     QList<QGesture *> canceledGestures() const;
@@ -263,38 +263,38 @@ public:
     void ignore(QGesture *);
     bool isAccepted(QGesture *) const;
 
-    void setAccepted(Qt::GestureType, bool);
-    void accept(Qt::GestureType);
-    void ignore(Qt::GestureType);
-    bool isAccepted(Qt::GestureType) const;
+    void setAccepted(BobUI::GestureType, bool);
+    void accept(BobUI::GestureType);
+    void ignore(BobUI::GestureType);
+    bool isAccepted(BobUI::GestureType) const;
 
     void setWidget(QWidget *widget);
     QWidget *widget() const;
 
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
     QPointF mapToGraphicsScene(const QPointF &gesturePoint) const;
 #endif
 
 private:
     QList<QGesture *> m_gestures;
     QWidget *m_widget;
-    QMap<Qt::GestureType, bool> m_accepted;
-    QMap<Qt::GestureType, QWidget *> m_targetWidgets;
+    QMap<BobUI::GestureType, bool> m_accepted;
+    QMap<BobUI::GestureType, QWidget *> m_targetWidgets;
 
     friend class QApplication;
     friend class QGestureManager;
 };
 
-#  ifndef QT_NO_DEBUG_STREAM
+#  ifndef BOBUI_NO_DEBUG_STREAM
 Q_WIDGETS_EXPORT QDebug operator<<(QDebug, const QGesture *);
 Q_WIDGETS_EXPORT QDebug operator<<(QDebug, const QGestureEvent *);
 #  endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN_TAGGED(QGesture::GestureCancelPolicy,
+BOBUI_DECL_METATYPE_EXTERN_TAGGED(QGesture::GestureCancelPolicy,
                                QGesture__GestureCancelPolicy, Q_WIDGETS_EXPORT)
 
-#endif // QT_NO_GESTURES
+#endif // BOBUI_NO_GESTURES
 
 #endif // QGESTURE_H

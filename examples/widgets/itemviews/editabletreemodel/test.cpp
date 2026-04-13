@@ -1,13 +1,13 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "treemodel.h"
 
 #include <QAbstractItemModelTester>
 #include <QObject>
-#include <QTest>
+#include <BOBUIest>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 //! [1]
 class TestEditableTreeModel : public QObject
@@ -31,7 +31,7 @@ void TestEditableTreeModel::testTreeModel()
     QAbstractItemModelTester tester(&model);
 }
 
-QTEST_APPLESS_MAIN(TestEditableTreeModel)
+BOBUIEST_APPLESS_MAIN(TestEditableTreeModel)
 
 #include "test.moc"
 //! [1]

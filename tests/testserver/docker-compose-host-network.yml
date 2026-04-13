@@ -8,31 +8,31 @@ services:
         extends:
             file: ${SHARED_DATA}/docker-compose-common.yml
             service: ${SHARED_SERVICE}
-        container_name: qt-test-server-apache2
+        container_name: bobui-test-server-apache2
         hostname: ${HOST_NAME:-apache2}
         build:
             context: .
             args:
-                provisioningImage: qt-test-server-apache2:latest
+                provisioningImage: bobui-test-server-apache2:latest
                 shareDir: ./common
                 serviceDir: ./apache2
         entrypoint: service/startup.sh
         command: [service/ssl.sh, service/apache2.sh]
         environment:
-            - test_cert="qt-test-server-host-network-cacert.pem"
+            - test_cert="bobui-test-server-host-network-cacert.pem"
 
     squid:
         extends:
             file: ${SHARED_DATA}/docker-compose-common.yml
             service: ${SHARED_SERVICE}
-        container_name: qt-test-server-squid
+        container_name: bobui-test-server-squid
         hostname: ${HOST_NAME:-squid}
         depends_on:
             - apache2
         build:
             context: .
             args:
-                provisioningImage: qt-test-server-squid:latest
+                provisioningImage: bobui-test-server-squid:latest
                 shareDir: ./common
                 serviceDir: ./squid
         entrypoint: service/startup.sh
@@ -42,12 +42,12 @@ services:
         extends:
             file: ${SHARED_DATA}/docker-compose-common.yml
             service: ${SHARED_SERVICE}
-        container_name: qt-test-server-vsftpd
+        container_name: bobui-test-server-vsftpd
         hostname: ${HOST_NAME:-vsftpd}
         build:
             context: .
             args:
-                provisioningImage: qt-test-server-vsftpd:latest
+                provisioningImage: bobui-test-server-vsftpd:latest
                 shareDir: ./common
                 serviceDir: ./vsftpd
         entrypoint: service/startup.sh
@@ -57,14 +57,14 @@ services:
         extends:
             file: ${SHARED_DATA}/docker-compose-common.yml
             service: ${SHARED_SERVICE}
-        container_name: qt-test-server-ftp-proxy
+        container_name: bobui-test-server-ftp-proxy
         hostname: ${HOST_NAME:-ftp-proxy}
         depends_on:
             - vsftpd
         build:
             context: .
             args:
-                provisioningImage: qt-test-server-ftp-proxy:latest
+                provisioningImage: bobui-test-server-ftp-proxy:latest
                 shareDir: ./common
                 serviceDir: ./ftp-proxy
         entrypoint: service/startup.sh
@@ -74,7 +74,7 @@ services:
         extends:
             file: ${SHARED_DATA}/docker-compose-common.yml
             service: ${SHARED_SERVICE}
-        container_name: qt-test-server-danted
+        container_name: bobui-test-server-danted
         hostname: ${HOST_NAME:-danted}
         depends_on:
             - apache2
@@ -83,7 +83,7 @@ services:
         build:
             context: .
             args:
-                provisioningImage: qt-test-server-danted:latest
+                provisioningImage: bobui-test-server-danted:latest
                 shareDir: ./common
                 serviceDir: ./danted
         entrypoint: service/startup.sh

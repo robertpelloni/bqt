@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QHTTPSOCKETENGINE_P_H
 #define QHTTPSOCKETENGINE_P_H
@@ -9,28 +9,28 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtNetwork/private/qtnetworkglobal_p.h>
+#include <BobUINetwork/private/bobuinetworkglobal_p.h>
 
-#include <QtNetwork/qnetworkproxy.h>
+#include <BobUINetwork/qnetworkproxy.h>
 
 #include "qabstractsocket.h"
 #include "private/qauthenticator_p.h"
 #include "private/qabstractsocketengine_p.h"
 
-QT_REQUIRE_CONFIG(http);
+BOBUI_REQUIRE_CONFIG(http);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if !defined(QT_NO_NETWORKPROXY)
+#if !defined(BOBUI_NO_NETWORKPROXY)
 
-class QTcpSocket;
+class BOBUIcpSocket;
 class QHttpNetworkReply;
 class QHttpSocketEnginePrivate;
 
@@ -71,19 +71,19 @@ public:
     qint64 read(char *data, qint64 maxlen) override;
     qint64 write(const char *data, qint64 len) override;
 
-#ifndef QT_NO_UDPSOCKET
-#ifndef QT_NO_NETWORKINTERFACE
+#ifndef BOBUI_NO_UDPSOCKET
+#ifndef BOBUI_NO_NETWORKINTERFACE
     bool joinMulticastGroup(const QHostAddress &groupAddress,
                             const QNetworkInterface &iface) override;
     bool leaveMulticastGroup(const QHostAddress &groupAddress,
                              const QNetworkInterface &iface) override;
     QNetworkInterface multicastInterface() const override;
     bool setMulticastInterface(const QNetworkInterface &iface) override;
-#endif // QT_NO_NETWORKINTERFACE
+#endif // BOBUI_NO_NETWORKINTERFACE
 
     bool hasPendingDatagrams() const override;
     qint64 pendingDatagramSize() const override;
-#endif // QT_NO_UDPSOCKET
+#endif // BOBUI_NO_UDPSOCKET
 
     qint64 readDatagram(char *data, qint64 maxlen, QIpPacketHeader *,
                         PacketHeaderOptions) override;
@@ -146,7 +146,7 @@ public:
 
     QNetworkProxy proxy;
     QString peerName;
-    QTcpSocket *socket;
+    BOBUIcpSocket *socket;
     QHttpNetworkReply *reply; // only used for parsing the proxy response
     QHttpSocketEngine::HttpState state;
     QAuthenticator authenticator;
@@ -169,6 +169,6 @@ public:
 };
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QHTTPSOCKETENGINE_H

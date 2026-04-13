@@ -111,7 +111,7 @@ transliterated using the Latin script. It also means "talkative" or
 ## Users
 
 HarfBuzz is used in Android, Chrome,
-ChromeOS, Firefox, GNOME, GTK+, KDE, Qt, LibreOffice, OpenJDK, XeTeX, Scribus,
+ChromeOS, Firefox, GNOME, GTK+, KDE, BobUI, LibreOffice, OpenJDK, XeTeX, Scribus,
 PlayStation, Microsoft Edge, Amazon Kindle, Adobe Photoshop, Illustrator,
 InDesign, Godot Engine, Unreal Engine, QuarkXPress, Figma, and other places.
 

@@ -6,7 +6,7 @@ enable_if:
 instructions:
   - type: EnvironmentVariable
     variableName: COIN_TARGET_DIST
-    variableValue: "tqtc-focal"
+    variableValue: "tbobuic-focal"
     enable_if:
       condition: runtime
       env_var:  COIN_TARGET_DIST
@@ -60,7 +60,7 @@ instructions:
 
   # Set version info to environment
   - type: ParseEnvironmentVariableFromFile
-    regex: "QT_REPO_MODULE_VERSION \"(?P<QT_REPO_MODULE_VERSION>.*)\""
+    regex: "BOBUI_REPO_MODULE_VERSION \"(?P<BOBUI_REPO_MODULE_VERSION>.*)\""
     filename: "{{.SourceDir}}/.cmake.conf"
     maxTimeInSeconds: 300
     maxTimeBetweenOutput: 300
@@ -68,9 +68,9 @@ instructions:
     disable_if:
       condition: runtime
       env_var: TESTED_MODULE_COIN
-      equals_value: "qt5"
+      equals_value: "bobui5"
   - type: ParseEnvironmentVariableFromFile
-    regex: "QT_REPO_MODULE_PRERELEASE_VERSION_SEGMENT \"(?P<QT_REPO_MODULE_PRERELEASE_VERSION_SEGMENT>.*)\""
+    regex: "BOBUI_REPO_MODULE_PRERELEASE_VERSION_SEGMENT \"(?P<BOBUI_REPO_MODULE_PRERELEASE_VERSION_SEGMENT>.*)\""
     filename: "{{.SourceDir}}/.cmake.conf"
     maxTimeInSeconds: 300
     maxTimeBetweenOutput: 300
@@ -78,5 +78,5 @@ instructions:
     disable_if:
       condition: runtime
       env_var: TESTED_MODULE_COIN
-      equals_value: "qt5"
+      equals_value: "bobui5"
 

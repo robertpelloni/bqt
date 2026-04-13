@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtTest/private/qcomparisontesthelper_p.h>
+#include <BOBUIest>
+#include <BobUITest/private/qcomparisontesthelper_p.h>
 
-#include <QtCore/private/qobject_p.h>
+#include <BobUICore/private/qobject_p.h>
 #include <QRunnable>
 #include <QSemaphore>
-#include <QThreadPool>
+#include <BOBUIhreadPool>
 
 #include <QPointer>
-#ifndef QT_NO_WIDGETS
+#ifndef BOBUI_NO_WIDGETS
 #include <QWidget>
 #endif
 
@@ -231,12 +231,12 @@ void tst_QPointer::assignment_operators()
 
 void tst_QPointer::compareCompiles()
 {
-    QTestPrivate::testEqualityOperatorsCompile<QPointer<QObject>>();
-    QTestPrivate::testEqualityOperatorsCompile<QPointer<QObject>, QObject*>();
-    QTestPrivate::testEqualityOperatorsCompile<QPointer<QObject>, QWidget*>();
-    QTestPrivate::testEqualityOperatorsCompile<QPointer<QObject>, QPointer<QWidget>>();
-    QTestPrivate::testEqualityOperatorsCompile<QPointer<QObject>, std::nullptr_t>();
-    QTestPrivate::testEqualityOperatorsCompile<QPointer<ObjectImplementingInterface>, Interface*>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QPointer<QObject>>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QPointer<QObject>, QObject*>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QPointer<QObject>, QWidget*>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QPointer<QObject>, QPointer<QWidget>>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QPointer<QObject>, std::nullptr_t>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QPointer<ObjectImplementingInterface>, Interface*>();
 }
 
 void tst_QPointer::equality_operators()
@@ -244,23 +244,23 @@ void tst_QPointer::equality_operators()
     QPointer<QObject> p1;
     QPointer<QObject> p2;
 
-    QT_TEST_EQUALITY_OPS(p1, p2, true);
+    BOBUI_TEST_EQUALITY_OPS(p1, p2, true);
 
     QObject *object = nullptr;
-#ifndef QT_NO_WIDGETS
+#ifndef BOBUI_NO_WIDGETS
     QWidget *widget = nullptr;
 #endif
 
     p1 = object;
-    QT_TEST_EQUALITY_OPS(p1, p2, true);
-    QT_TEST_EQUALITY_OPS(p1, object, true);
+    BOBUI_TEST_EQUALITY_OPS(p1, p2, true);
+    BOBUI_TEST_EQUALITY_OPS(p1, object, true);
     p2 = object;
-    QT_TEST_EQUALITY_OPS(p2, p1, true);
-    QT_TEST_EQUALITY_OPS(p2, object, true);
+    BOBUI_TEST_EQUALITY_OPS(p2, p1, true);
+    BOBUI_TEST_EQUALITY_OPS(p2, object, true);
     p1 = this;
-    QT_TEST_EQUALITY_OPS(p1, p2, false);
+    BOBUI_TEST_EQUALITY_OPS(p1, p2, false);
     p2 = p1;
-    QT_TEST_EQUALITY_OPS(p1, p2, true);
+    BOBUI_TEST_EQUALITY_OPS(p1, p2, true);
 
     // compare to zero
     p1 = nullptr;
@@ -268,13 +268,13 @@ void tst_QPointer::equality_operators()
     QVERIFY(0 == p1);
     QVERIFY(p2 != 0);
     QVERIFY(0 != p2);
-    QT_TEST_EQUALITY_OPS(p1, nullptr, true);
-    QT_TEST_EQUALITY_OPS(p2, nullptr, false);
-    QT_TEST_EQUALITY_OPS(p1, object, true);
-    QT_TEST_EQUALITY_OPS(p2, object, false);
-#ifndef QT_NO_WIDGETS
-    QT_TEST_EQUALITY_OPS(p1, widget, true);
-    QT_TEST_EQUALITY_OPS(p2, widget, false);
+    BOBUI_TEST_EQUALITY_OPS(p1, nullptr, true);
+    BOBUI_TEST_EQUALITY_OPS(p2, nullptr, false);
+    BOBUI_TEST_EQUALITY_OPS(p1, object, true);
+    BOBUI_TEST_EQUALITY_OPS(p2, object, false);
+#ifndef BOBUI_NO_WIDGETS
+    BOBUI_TEST_EQUALITY_OPS(p1, widget, true);
+    BOBUI_TEST_EQUALITY_OPS(p2, widget, false);
 #endif
 }
 
@@ -288,13 +288,13 @@ void tst_QPointer::equality_operators_interface()
     Interface *otherI = &otherP;
 
     // things that are equal
-    QT_TEST_EQUALITY_OPS(p, p, true);
-    QT_TEST_EQUALITY_OPS(p, i, true);
+    BOBUI_TEST_EQUALITY_OPS(p, p, true);
+    BOBUI_TEST_EQUALITY_OPS(p, i, true);
 
     // things that are not equal
-    QT_TEST_EQUALITY_OPS(p, nullptr, false);
-    QT_TEST_EQUALITY_OPS(p, &otherP, false);
-    QT_TEST_EQUALITY_OPS(p, otherI, false);
+    BOBUI_TEST_EQUALITY_OPS(p, nullptr, false);
+    BOBUI_TEST_EQUALITY_OPS(p, &otherP, false);
+    BOBUI_TEST_EQUALITY_OPS(p, otherI, false);
 }
 
 void tst_QPointer::swap()
@@ -373,7 +373,7 @@ ChildObject::~ChildObject()
     QCOMPARE(qobject_cast<QObject *>(guardedPointer), static_cast<QObject *>(0));
 }
 
-#ifndef QT_NO_WIDGETS
+#ifndef BOBUI_NO_WIDGETS
 class ChildWidget : public QWidget
 {
     QPointer<QWidget> guardedPointer;
@@ -522,7 +522,7 @@ void tst_QPointer::castDuringDestruction()
         delete parentObject;
     }
 
-#ifndef QT_NO_WIDGETS
+#ifndef BOBUI_NO_WIDGETS
     {
         QWidget *parentWidget = new QWidget();
         (void) new ChildWidget(parentWidget);
@@ -555,10 +555,10 @@ class TestRunnable : public QObject, public QRunnable {
 void tst_QPointer::threadSafety()
 {
 
-    QThread owner;
+    BOBUIhread owner;
     owner.start();
 
-    QThreadPool pool;
+    BOBUIhreadPool pool;
     for (int i = 0; i < 300; i++) {
         QPointer<TestRunnable> task = new TestRunnable;
         task->setAutoDelete(true);
@@ -580,11 +580,11 @@ void tst_QPointer::raceCondition()
 
     QObject targetObject;
 
-    std::array<std::unique_ptr<QThread>, NUM_THREADS> threads;
+    std::array<std::unique_ptr<BOBUIhread>, NUM_THREADS> threads;
 
     for (auto &thread : threads) {
         thread.reset(
-                QThread::create([&] {
+                BOBUIhread::create([&] {
                     startSemaphore.acquire();
 
                     for (int j = 0; j < ITERATIONS_PER_THREAD; ++j) {
@@ -596,7 +596,7 @@ void tst_QPointer::raceCondition()
         thread->start();
     }
 
-    QTest::qWait(100ms);
+    BOBUIest::qWait(100ms);
     startSemaphore.release(threads.size());
 
     bool allJoined = true;
@@ -626,7 +626,7 @@ void tst_QPointer::qvariantCast()
         QCOMPARE(other->objectName(), QString::fromLatin1("A test name"));
     }
     {
-        QPointer<QThread> other = qPointerFromVariant<QThread>(v);
+        QPointer<BOBUIhread> other = qPointerFromVariant<BOBUIhread>(v);
         QVERIFY(!other);
     }
     {
@@ -664,5 +664,5 @@ void tst_QPointer::constQPointer()
 }
 
 
-QTEST_MAIN(tst_QPointer)
+BOBUIEST_MAIN(tst_QPointer)
 #include "tst_qpointer.moc"

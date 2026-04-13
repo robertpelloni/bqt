@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QTextEdit" name="textEdit"/>
+     <widget class="BOBUIextEdit" name="textEdit"/>
     </item>
    </layout>
   </widget>
@@ -63,7 +63,7 @@
    <addaction name="menuEdit"/>
    <addaction name="menuAbout"/>
   </widget>
-  <widget class="QToolBar" name="mainToolBar">
+  <widget class="BOBUIoolBar" name="mainToolBar">
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>

@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "widgetgallery.h"
 
@@ -28,12 +28,12 @@
 #include <QStyle>
 #include <QStyleFactory>
 #include <QStyleHints>
-#include <QTableWidget>
-#include <QTextBrowser>
-#include <QTextEdit>
-#include <QToolBox>
-#include <QToolButton>
-#include <QTreeView>
+#include <BOBUIableWidget>
+#include <BOBUIextBrowser>
+#include <BOBUIextEdit>
+#include <BOBUIoolBox>
+#include <BOBUIoolButton>
+#include <BOBUIreeView>
 
 #include <QDesktopServices>
 #include <QIcon>
@@ -45,10 +45,10 @@
 #include <QLibraryInfo>
 #include <QStringView>
 #include <QSysInfo>
-#include <QTextStream>
-#include <QTimer>
+#include <BOBUIextStream>
+#include <BOBUIimer>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static inline QString className(const QObject *o)
 {
@@ -63,7 +63,7 @@ static inline void setClassNameToolTip(QWidget *w)
 static QString helpUrl(QStringView page)
 {
     QString result;
-    QTextStream(&result) << "https://doc.qt.io/qt-" << QT_VERSION_MAJOR
+    BOBUIextStream(&result) << "https://doc.bobui.io/bobui-" << BOBUI_VERSION_MAJOR
         << '/' << page << ".html";
     return result;
 }
@@ -80,7 +80,7 @@ static void launchHelp(const QWidget *w)
 
 static void launchModuleHelp()
 {
-    QDesktopServices::openUrl(helpUrl(u"qtwidgets-index"));
+    QDesktopServices::openUrl(helpUrl(u"bobuiwidgets-index"));
 }
 
 template <class Widget>
@@ -101,10 +101,10 @@ Widget *createWidget1(const Parameter &p1, QAnyStringView name, QWidget *parent 
     return result;
 }
 
-QTextStream &operator<<(QTextStream &str, const QRect &r)
+BOBUIextStream &operator<<(BOBUIextStream &str, const QRect &r)
 {
-    str << r.width() << 'x' << r.height() << Qt::forcesign << r.x() << r.y()
-        << Qt::noforcesign;
+    str << r.width() << 'x' << r.height() << BobUI::forcesign << r.x() << r.y()
+        << BobUI::noforcesign;
     return str;
 }
 
@@ -124,13 +124,13 @@ WidgetGallery::WidgetGallery(QWidget *parent)
     : QDialog(parent)
     , progressBar(createProgressBar())
 {
-    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+    setWindowFlags(windowFlags() & ~BobUI::WindowContextHelpButtonHint);
 
     auto *styleComboBox = createWidget<QComboBox>("styleComboBox");
     const QString defaultStyleName = QApplication::style()->objectName();
     QStringList styleNames = QStyleFactory::keys();
     for (qsizetype i = 1, size = styleNames.size(); i < size; ++i) {
-        if (defaultStyleName.compare(styleNames.at(i), Qt::CaseInsensitive) == 0) {
+        if (defaultStyleName.compare(styleNames.at(i), BobUI::CaseInsensitive) == 0) {
             styleNames.swapItemsAt(0, i);
             break;
         }
@@ -150,7 +150,7 @@ WidgetGallery::WidgetGallery(QWidget *parent)
     colorSchemeLabel->setBuddy(colorSchemeComboBox);
 
     connect(colorSchemeComboBox, &QComboBox::currentIndexChanged, this, [](int index){
-        QGuiApplication::styleHints()->setColorScheme(static_cast<Qt::ColorScheme>(index));
+        QGuiApplication::styleHints()->setColorScheme(static_cast<BobUI::ColorScheme>(index));
     });
 
     const QKeySequence helpKeySequence(QKeySequence::HelpContents);
@@ -202,7 +202,7 @@ WidgetGallery::WidgetGallery(QWidget *parent)
     mainLayout->addWidget(progressBar, 3, 0, 1, 2);
     mainLayout->addWidget(dialogButtonBox, 4, 0, 1, 2);
 
-    setWindowTitle(tr("Widget Gallery Qt %1").arg(QT_VERSION_STR));
+    setWindowTitle(tr("Widget Gallery BobUI %1").arg(BOBUI_VERSION_STR));
 
     new QShortcut(helpKeySequence, this, this, &WidgetGallery::helpOnCurrentWidget);
 }
@@ -242,13 +242,13 @@ QGroupBox *WidgetGallery::createButtonsGroupBox()
     auto *flatPushButton = createWidget1<QPushButton>(tr("Flat Push Button"), "flatPushButton");
     flatPushButton->setFlat(true);
 
-    auto *toolButton = createWidget<QToolButton>("toolButton");
+    auto *toolButton = createWidget<BOBUIoolButton>("toolButton");
     toolButton->setText(tr("Tool Button"));
 
-    auto *menuToolButton = createWidget<QToolButton>("menuButton");
+    auto *menuToolButton = createWidget<BOBUIoolButton>("menuButton");
     menuToolButton->setText(tr("Menu Button"));
     auto *toolMenu = new QMenu(menuToolButton);
-    menuToolButton->setPopupMode(QToolButton::InstantPopup);
+    menuToolButton->setPopupMode(BOBUIoolButton::InstantPopup);
     toolMenu->addAction("Option");
     toolMenu->addSeparator();
     auto *action = toolMenu->addAction("Checkable Option");
@@ -276,7 +276,7 @@ QGroupBox *WidgetGallery::createButtonsGroupBox()
 
     auto *checkBox =  createWidget1<QCheckBox>(tr("Tri-state check box"), "checkBox");
     checkBox->setTristate(true);
-    checkBox->setCheckState(Qt::PartiallyChecked);
+    checkBox->setCheckState(BobUI::PartiallyChecked);
 
     auto *checkableLayout = new QVBoxLayout;
     checkableLayout->addWidget(radioButton1);
@@ -301,9 +301,9 @@ static QWidget *embedIntoHBoxLayout(QWidget *w, int margin = 5)
     return result;
 }
 
-QToolBox *WidgetGallery::createTextToolBox()
+BOBUIoolBox *WidgetGallery::createTextToolBox()
 {
-    auto *result = createWidget<QToolBox>("toolBox");
+    auto *result = createWidget<BOBUIoolBox>("toolBox");
 
     const QString plainText = tr("Twinkle, twinkle, little star,\n"
                             "How I wonder what you are.\n"
@@ -317,10 +317,10 @@ QToolBox *WidgetGallery::createTextToolBox()
         richText += "<center>"_L1 + line + "</center>"_L1;
     richText += "</i></body></html>"_L1;
 
-    auto *textEdit = createWidget1<QTextEdit>(richText, "textEdit");
+    auto *textEdit = createWidget1<BOBUIextEdit>(richText, "textEdit");
     auto *plainTextEdit = createWidget1<QPlainTextEdit>(plainText, "plainTextEdit");
 
-    systemInfoTextBrowser = createWidget<QTextBrowser>("systemInfoTextBrowser");
+    systemInfoTextBrowser = createWidget<BOBUIextBrowser>("systemInfoTextBrowser");
 
     result->addItem(embedIntoHBoxLayout(textEdit), tr("Text Edit"));
     result->addItem(embedIntoHBoxLayout(plainTextEdit), tr("Plain Text Edit"));
@@ -328,24 +328,24 @@ QToolBox *WidgetGallery::createTextToolBox()
     return result;
 }
 
-QTabWidget *WidgetGallery::createItemViewTabWidget()
+BOBUIabWidget *WidgetGallery::createItemViewTabWidget()
 {
-    auto *result = createWidget<QTabWidget>("bottomLeftTabWidget");
+    auto *result = createWidget<BOBUIabWidget>("bottomLeftTabWidget");
     result->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Ignored);
 
-    auto *treeView = createWidget<QTreeView>("treeView");
+    auto *treeView = createWidget<BOBUIreeView>("treeView");
     auto *fileSystemModel = new QFileSystemModel(treeView);
     fileSystemModel->setRootPath(QDir::rootPath());
     treeView->setModel(fileSystemModel);
 
-    auto *tableWidget = createWidget<QTableWidget>("tableWidget");
+    auto *tableWidget = createWidget<BOBUIableWidget>("tableWidget");
     tableWidget->setRowCount(10);
     tableWidget->setColumnCount(10);
 
     auto *listModel = new QStandardItemModel(0, 1, result);
-    listModel->appendRow(new QStandardItem(QIcon(":/qt-project.org/styles/commonstyle/images/diropen-128.png"_L1),
+    listModel->appendRow(new QStandardItem(QIcon(":/bobui-project.org/styles/commonstyle/images/diropen-128.png"_L1),
                                            tr("Directory")));
-    listModel->appendRow(new QStandardItem(QIcon(":/qt-project.org/styles/commonstyle/images/computer-32.png"_L1),
+    listModel->appendRow(new QStandardItem(QIcon(":/bobui-project.org/styles/commonstyle/images/computer-32.png"_L1),
                                            tr("Computer")));
 
     auto *listView = createWidget<QListView>("listView");
@@ -379,11 +379,11 @@ QGroupBox *WidgetGallery::createSimpleInputWidgetsGroupBox()
     dateTimeEdit->setDateTime(QDateTime::currentDateTime());
 
     auto *slider = createWidget<QSlider>("slider", result);
-    slider->setOrientation(Qt::Horizontal);
+    slider->setOrientation(BobUI::Horizontal);
     slider->setValue(40);
 
     auto *scrollBar = createWidget<QScrollBar>("scrollBar", result);
-    scrollBar->setOrientation(Qt::Horizontal);
+    scrollBar->setOrientation(BobUI::Horizontal);
     setClassNameToolTip(scrollBar);
     scrollBar->setValue(60);
 
@@ -408,8 +408,8 @@ QProgressBar *WidgetGallery::createProgressBar()
     result->setRange(0, 10000);
     result->setValue(0);
 
-    auto *timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, this, &WidgetGallery::advanceProgressBar);
+    auto *timer = new BOBUIimer(this);
+    connect(timer, &BOBUIimer::timeout, this, &WidgetGallery::advanceProgressBar);
     timer->start(1000);
     return result;
 }
@@ -417,7 +417,7 @@ QProgressBar *WidgetGallery::createProgressBar()
 void WidgetGallery::updateSystemInfo()
 {
     QString systemInfo;
-    QTextStream str(&systemInfo);
+    BOBUIextStream str(&systemInfo);
     str << "<html><head/><body><h3>Build</h3><p>" << QLibraryInfo::build() << "</p>"
         << "<h3>Operating System</h3><p>\"" << QSysInfo::prettyProductName() << "\" / "
         << QGuiApplication::platformName() << "</p>"
@@ -445,7 +445,7 @@ void WidgetGallery::helpOnCurrentWidget()
     // Skip over internal widgets
     for (const auto *w = QApplication::widgetAt(QCursor::pos(screen())); w; w = w->parentWidget()) {
         const QString name = w->objectName();
-        if (!name.isEmpty() && !name.startsWith("qt_"_L1)) {
+        if (!name.isEmpty() && !name.startsWith("bobui_"_L1)) {
             launchHelp(w);
             break;
         }

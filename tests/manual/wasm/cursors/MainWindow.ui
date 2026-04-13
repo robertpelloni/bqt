@@ -35,10 +35,10 @@
           <string>Push the button to activate cursor and move mouse th this area.</string>
          </property>
          <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <set>BobUI::AlignCenter</set>
          </property>
          <property name="textInteractionFlags">
-          <set>Qt::NoTextInteraction</set>
+          <set>BobUI::NoTextInteraction</set>
          </property>
         </widget>
        </item>

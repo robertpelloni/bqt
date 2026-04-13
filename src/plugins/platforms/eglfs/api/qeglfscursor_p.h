@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QEGLFSCURSOR_H
 #define QEGLFSCURSOR_H
@@ -8,7 +8,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -18,13 +18,13 @@
 #include "qeglfsglobal_p.h"
 #include <qpa/qplatformcursor.h>
 #include <qpa/qplatformscreen.h>
-#include <QtOpenGL/QOpenGLShaderProgram>
-#include <QtGui/QMatrix4x4>
-#include <QtGui/private/qinputdevicemanager_p.h>
+#include <BobUIOpenGL/QOpenGLShaderProgram>
+#include <BobUIGui/QMatrix4x4>
+#include <BobUIGui/private/qinputdevicemanager_p.h>
 
-#include <QtCore/qlist.h>
+#include <BobUICore/qlist.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QOpenGLShaderProgram;
 class QEglFSCursor;
@@ -45,7 +45,7 @@ private:
     QEglFSCursor *m_cursor;
 };
 
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
 
 struct QEglFSCursorData {
     QScopedPointer<QOpenGLShaderProgram> program;
@@ -63,7 +63,7 @@ public:
     QEglFSCursor(QPlatformScreen *screen);
     ~QEglFSCursor();
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     void changeCursor(QCursor *cursor, QWindow *widget) override;
 #endif
     void pointerEvent(const QMouseEvent &event) override;
@@ -78,7 +78,7 @@ public:
 
 private:
     bool event(QEvent *e) override;
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     bool setCurrentCursor(QCursor *cursor);
 #endif
     void draw(const QRectF &rect);
@@ -89,8 +89,8 @@ private:
 
     // current cursor information
     struct Cursor {
-        Cursor() : shape(Qt::BlankCursor), customCursorPending(false), customCursorKey(0), useCustomCursor(false) { }
-        Qt::CursorShape shape;
+        Cursor() : shape(BobUI::BlankCursor), customCursorPending(false), customCursorKey(0), useCustomCursor(false) { }
+        BobUI::CursorShape shape;
         QRectF textureRect; // normalized rect inside texture
         QSize size; // size of the cursor
         QPoint hotSpot;
@@ -118,8 +118,8 @@ private:
     bool m_updateRequested;
     QMatrix4x4 m_rotationMatrix;
 };
-#endif // QT_CONFIG(opengl)
+#endif // BOBUI_CONFIG(opengl)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QEGLFSCURSOR_H

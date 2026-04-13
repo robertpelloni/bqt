@@ -3,10 +3,10 @@
 
 type: Group
 instructions:
-  - !include "{{qt/qtbase}}/prepare_building_env.yaml"
+  - !include "{{bobui/bobuibase}}/prepare_building_env.yaml"
   - type: Group
     instructions:
-      - !include "{{qt/qtbase}}/cmake_build_and_upload_test_artifacts_host.yaml"
+      - !include "{{bobui/bobuibase}}/cmake_build_and_upload_test_artifacts_host.yaml"
     disable_if:
       condition: or
       conditions:
@@ -18,7 +18,7 @@ instructions:
           contains_value: UseToolchainFromTargetDir
   - type: Group
     instructions:
-      - !include "{{qt/qtbase}}/cmake_build_and_upload_test_artifacts_target.yaml"
+      - !include "{{bobui/bobuibase}}/cmake_build_and_upload_test_artifacts_target.yaml"
     enable_if:
       condition: or
       conditions:

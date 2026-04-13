@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <QElapsedTimer>
 #include <QScrollBar>
 #include <QStyleOptionSlider>
@@ -10,9 +10,9 @@
 #include <QScreen>
 #include <QSignalSpy>
 
-#include <QtTest/private/qtesthelpers_p.h>
+#include <BobUITest/private/bobuiesthelpers_p.h>
 
-using namespace QTestPrivate;
+using namespace BOBUIestPrivate;
 
 class tst_QScrollBar : public QObject
 {
@@ -20,16 +20,16 @@ class tst_QScrollBar : public QObject
 private slots:
     void scrollSingleStep();
     void task_209492();
-#if QT_CONFIG(wheelevent)
-    void QTBUG_27308();
+#if BOBUI_CONFIG(wheelevent)
+    void BOBUIBUG_27308();
 #endif
-    void QTBUG_42871();
+    void BOBUIBUG_42871();
 };
 
 class SingleStepTestScrollBar : public QScrollBar {
     Q_OBJECT
 public:
-    explicit SingleStepTestScrollBar(Qt::Orientation o, QWidget *parent = nullptr) : QScrollBar(o, parent) {}
+    explicit SingleStepTestScrollBar(BobUI::Orientation o, QWidget *parent = nullptr) : QScrollBar(o, parent) {}
 
 public slots:
     void hideAndShow()
@@ -43,29 +43,29 @@ public slots:
 // from a slot connected to the scrollbar's actionTriggered signal.
 void tst_QScrollBar::scrollSingleStep()
 {
-    SingleStepTestScrollBar testWidget(Qt::Horizontal);
+    SingleStepTestScrollBar testWidget(BobUI::Horizontal);
     connect(&testWidget, &QAbstractSlider::actionTriggered, &testWidget, &SingleStepTestScrollBar::hideAndShow);
     testWidget.resize(100, testWidget.height());
     centerOnScreen(&testWidget);
     testWidget.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&testWidget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&testWidget));
 
     testWidget.setValue(testWidget.minimum());
     QCOMPARE(testWidget.value(), testWidget.minimum());
 
     // Get rect for the area to click on
-    const QStyleOptionSlider opt = qt_qscrollbarStyleOption(&testWidget);
+    const QStyleOptionSlider opt = bobui_qscrollbarStyleOption(&testWidget);
     QRect sr = testWidget.style()->subControlRect(QStyle::CC_ScrollBar, &opt,
                                                   QStyle::SC_ScrollBarAddLine, &testWidget);
 
     if (!sr.isValid())
         QSKIP("SC_ScrollBarAddLine not valid");
 
-    QTest::mouseClick(&testWidget, Qt::LeftButton, Qt::NoModifier, QPoint(sr.x(), sr.y()));
-    QTest::qWait(510); // initial delay is 500 for setRepeatAction
+    BOBUIest::mouseClick(&testWidget, BobUI::LeftButton, BobUI::NoModifier, QPoint(sr.x(), sr.y()));
+    BOBUIest::qWait(510); // initial delay is 500 for setRepeatAction
     disconnect(&testWidget, &QAbstractSlider::actionTriggered, &testWidget, &SingleStepTestScrollBar::hideAndShow);
 #ifdef Q_OS_MAC
-    QEXPECT_FAIL("", "This test fails on OS X, see QTBUG-25272", Abort);
+    QEXPECT_FAIL("", "This test fails on OS X, see BOBUIBUG-25272", Abort);
 #endif
     QCOMPARE(testWidget.value(), testWidget.singleStep());
 }
@@ -78,7 +78,7 @@ void tst_QScrollBar::task_209492()
         int scrollCount;
         MyScrollArea(QWidget *parent = nullptr) : QScrollArea(parent), scrollCount(0) {}
     protected:
-        void paintEvent(QPaintEvent *) override { QTest::qSleep(600); }
+        void paintEvent(QPaintEvent *) override { BOBUIest::qSleep(600); }
         void scrollContentsBy(int, int) override { ++scrollCount; viewport()->update(); }
     };
 
@@ -87,7 +87,7 @@ void tst_QScrollBar::task_209492()
     verticalScrollBar->setRange(0, 1000);
     centerOnScreen(&scrollArea);
     scrollArea.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&scrollArea));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&scrollArea));
 
     QSignalSpy spy(verticalScrollBar, SIGNAL(actionTriggered(int)));
     QCOMPARE(scrollArea.scrollCount, 0);
@@ -97,11 +97,11 @@ void tst_QScrollBar::task_209492()
     const QPoint pressPoint(verticalScrollBar->width() / 2, verticalScrollBar->height() - 10);
     const QPoint globalPressPoint = verticalScrollBar->mapToGlobal(pressPoint);
     QMouseEvent mousePressEvent(QEvent::MouseButtonPress, pressPoint, globalPressPoint,
-                                Qt::LeftButton, Qt::LeftButton, {});
+                                BobUI::LeftButton, BobUI::LeftButton, {});
     QApplication::sendEvent(verticalScrollBar, &mousePressEvent);
-    QTest::qWait(1);
+    BOBUIest::qWait(1);
     QMouseEvent mouseReleaseEvent(QEvent::MouseButtonRelease, pressPoint, globalPressPoint,
-                                  Qt::LeftButton, Qt::LeftButton, {});
+                                  BobUI::LeftButton, BobUI::LeftButton, {});
     QApplication::sendEvent(verticalScrollBar, &mouseReleaseEvent);
 
     // Check that the action was triggered once.
@@ -113,50 +113,50 @@ void tst_QScrollBar::task_209492()
     QCOMPARE(spy.size(), 1);
 }
 
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
 #define WHEEL_DELTA 120 // copied from tst_QAbstractSlider / tst_QComboBox
-void tst_QScrollBar::QTBUG_27308()
+void tst_QScrollBar::BOBUIBUG_27308()
 {
-    // QTBUG-27308
+    // BOBUIBUG-27308
     // Check that a disabled scrollbar doesn't react on wheel events anymore
 
-    QScrollBar testWidget(Qt::Horizontal);
+    QScrollBar testWidget(BobUI::Horizontal);
     testWidget.resize(100, testWidget.height());
     centerOnScreen(&testWidget);
     testWidget.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&testWidget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&testWidget));
 
     testWidget.setValue(testWidget.minimum());
     testWidget.setEnabled(false);
     const QPoint wheelPoint = testWidget.rect().center();
-    const QPoint angleDelta(testWidget.orientation() == Qt::Horizontal ? -WHEEL_DELTA : 0,
-                            testWidget.orientation() == Qt::Vertical ? -WHEEL_DELTA : 0);
+    const QPoint angleDelta(testWidget.orientation() == BobUI::Horizontal ? -WHEEL_DELTA : 0,
+                            testWidget.orientation() == BobUI::Vertical ? -WHEEL_DELTA : 0);
     QWheelEvent event(wheelPoint, testWidget.mapToGlobal(wheelPoint), QPoint(), angleDelta,
-                      Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false);
+                      BobUI::NoButton, BobUI::NoModifier, BobUI::NoScrollPhase, false);
     qApp->sendEvent(&testWidget, &event);
     QCOMPARE(testWidget.value(), testWidget.minimum());
 }
 #endif
 
-class QTBUG_42871_Handler : public QObject {
+class BOBUIBUG_42871_Handler : public QObject {
     Q_OBJECT
 public:
     int updatesCount;
-    QTBUG_42871_Handler() : QObject(), updatesCount(0) {}
+    BOBUIBUG_42871_Handler() : QObject(), updatesCount(0) {}
 public slots:
-    void valueUpdated(int) { ++updatesCount; QTest::qSleep(600); }
+    void valueUpdated(int) { ++updatesCount; BOBUIest::qSleep(600); }
 };
 
-void tst_QScrollBar::QTBUG_42871()
+void tst_QScrollBar::BOBUIBUG_42871()
 {
-    QTBUG_42871_Handler myHandler;
-    QScrollBar scrollBarWidget(Qt::Vertical);
+    BOBUIBUG_42871_Handler myHandler;
+    QScrollBar scrollBarWidget(BobUI::Vertical);
     bool connection = connect(&scrollBarWidget, SIGNAL(valueChanged(int)), &myHandler, SLOT(valueUpdated(int)));
     QVERIFY(connection);
     scrollBarWidget.resize(100, scrollBarWidget.height());
     centerOnScreen(&scrollBarWidget);
     scrollBarWidget.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&scrollBarWidget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&scrollBarWidget));
     QSignalSpy spy(&scrollBarWidget, SIGNAL(actionTriggered(int)));
     QVERIFY(spy.isValid());
     QCOMPARE(myHandler.updatesCount, 0);
@@ -166,13 +166,13 @@ void tst_QScrollBar::QTBUG_42871()
     const QPoint pressPoint(scrollBarWidget.width() / 2, scrollBarWidget.height() - 10);
     const QPoint globalPressPoint = scrollBarWidget.mapToGlobal(pressPoint);
     QMouseEvent mousePressEvent(QEvent::MouseButtonPress, pressPoint, globalPressPoint,
-                                Qt::LeftButton, Qt::LeftButton, {});
+                                BobUI::LeftButton, BobUI::LeftButton, {});
     QApplication::sendEvent(&scrollBarWidget, &mousePressEvent);
     QElapsedTimer timer;
     timer.start();
-    QTest::qWait(1);
+    BOBUIest::qWait(1);
     QMouseEvent mouseReleaseEvent(QEvent::MouseButtonRelease, pressPoint, globalPressPoint,
-                                  Qt::LeftButton, Qt::LeftButton, {});
+                                  BobUI::LeftButton, BobUI::LeftButton, {});
     QApplication::sendEvent(&scrollBarWidget, &mouseReleaseEvent);
     if (timer.elapsed() > 40) {
         // took too long, we need to tolerate auto-repeat
@@ -184,5 +184,5 @@ void tst_QScrollBar::QTBUG_42871()
     QCOMPARE(spy.size(), myHandler.updatesCount);
 }
 
-QTEST_MAIN(tst_QScrollBar)
+BOBUIEST_MAIN(tst_QScrollBar)
 #include "tst_qscrollbar.moc"

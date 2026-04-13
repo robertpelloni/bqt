@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'stylesheeteditor.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,18 +9,18 @@
 #ifndef STYLESHEETEDITOR_H
 #define STYLESHEETEDITOR_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QTextEdit>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QComboBox>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QPushButton>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/BOBUIextEdit>
+#include <BobUIWidgets/QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_StyleSheetEditor
 {
@@ -35,7 +35,7 @@ public:
     QHBoxLayout *hboxLayout;
     QSpacerItem *spacerItem3;
     QPushButton *applyButton;
-    QTextEdit *styleTextEdit;
+    BOBUIextEdit *styleTextEdit;
     QLabel *label_8;
 
     void setupUi(QWidget *StyleSheetEditor)
@@ -110,7 +110,7 @@ public:
 
         gridLayout->addLayout(hboxLayout, 2, 0, 1, 7);
 
-        styleTextEdit = new QTextEdit(StyleSheetEditor);
+        styleTextEdit = new BOBUIextEdit(StyleSheetEditor);
         styleTextEdit->setObjectName("styleTextEdit");
 
         gridLayout->addWidget(styleTextEdit, 1, 0, 1, 7);
@@ -146,6 +146,6 @@ namespace Ui {
     class StyleSheetEditor: public Ui_StyleSheetEditor {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // STYLESHEETEDITOR_H

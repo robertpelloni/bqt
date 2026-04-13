@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 #include "mainwindow.h"
 
@@ -21,37 +21,37 @@ MainWindow::MainWindow()
     menuBar()->addMenu(fileMenu);
     menuBar()->addMenu(showMenu);
 
-    editor = new QTextEdit();
+    editor = new BOBUIextEdit();
 
 //! [0] //! [1]
-    QTextCursor cursor(editor->textCursor());
+    BOBUIextCursor cursor(editor->textCursor());
 //! [0]
-    cursor.movePosition(QTextCursor::Start);
+    cursor.movePosition(BOBUIextCursor::Start);
 //! [1]
 
     int rows = 11;
     int columns = 4;
 
 //! [2]
-    QTextTableFormat tableFormat;
+    BOBUIextTableFormat tableFormat;
     tableFormat.setBackground(QColor("#e0e0e0"));
-    QList<QTextLength> constraints;
-    constraints << QTextLength(QTextLength::PercentageLength, 16);
-    constraints << QTextLength(QTextLength::PercentageLength, 28);
-    constraints << QTextLength(QTextLength::PercentageLength, 28);
-    constraints << QTextLength(QTextLength::PercentageLength, 28);
+    QList<BOBUIextLength> constraints;
+    constraints << BOBUIextLength(BOBUIextLength::PercentageLength, 16);
+    constraints << BOBUIextLength(BOBUIextLength::PercentageLength, 28);
+    constraints << BOBUIextLength(BOBUIextLength::PercentageLength, 28);
+    constraints << BOBUIextLength(BOBUIextLength::PercentageLength, 28);
     tableFormat.setColumnWidthConstraints(constraints);
 //! [3]
-    QTextTable *table = cursor.insertTable(rows, columns, tableFormat);
+    BOBUIextTable *table = cursor.insertTable(rows, columns, tableFormat);
 //! [2] //! [3]
 
     int column;
     int row;
-    QTextTableCell cell;
-    QTextCursor cellCursor;
+    BOBUIextTableCell cell;
+    BOBUIextCursor cellCursor;
 
-    QTextCharFormat charFormat;
-    charFormat.setForeground(Qt::black);
+    BOBUIextCharFormat charFormat;
+    charFormat.setForeground(BobUI::black);
 
 //! [4]
     cell = table->cellAt(0, 0);
@@ -75,7 +75,7 @@ MainWindow::MainWindow()
             if ((row-1) % 3 == column-1) {
 //! [5] //! [6]
                 cell = table->cellAt(row, column);
-                QTextCursor cellCursor = cell.firstCursorPosition();
+                BOBUIextCursor cellCursor = cell.firstCursorPosition();
                 cellCursor.insertText(tr("On duty"), charFormat);
             }
 //! [6] //! [7]
@@ -109,27 +109,27 @@ void MainWindow::saveFile()
 
 void MainWindow::showTable()
 {
-    QTextCursor cursor = editor->textCursor();
-    QTextTable *table = cursor.currentTable();
+    BOBUIextCursor cursor = editor->textCursor();
+    BOBUIextTable *table = cursor.currentTable();
 
     if (!table)
         return;
 
-    QTableWidget *tableWidget = new QTableWidget(table->rows(), table->columns());
+    BOBUIableWidget *tableWidget = new BOBUIableWidget(table->rows(), table->columns());
 
 //! [9]
     for (int row = 0; row < table->rows(); ++row) {
         for (int column = 0; column < table->columns(); ++column) {
-            QTextTableCell tableCell = table->cellAt(row, column);
+            BOBUIextTableCell tableCell = table->cellAt(row, column);
 //! [9]
-            QTextFrame::iterator it;
+            BOBUIextFrame::iterator it;
             QString text;
             for (it = tableCell.begin(); !(it.atEnd()); ++it) {
-                QTextBlock childBlock = it.currentBlock();
+                BOBUIextBlock childBlock = it.currentBlock();
                 if (childBlock.isValid())
                     text += childBlock.text();
             }
-            QTableWidgetItem *newItem = new QTableWidgetItem(text);
+            BOBUIableWidgetItem *newItem = new BOBUIableWidgetItem(text);
             tableWidget->setItem(row, column, newItem);
             /*
 //! [10]
@@ -146,26 +146,26 @@ void MainWindow::showTable()
     tableWidget->show();
 }
 
-void MainWindow::processFrame(QTextFrame *)
+void MainWindow::processFrame(BOBUIextFrame *)
 {
 }
 
-void MainWindow::processBlock(QTextBlock)
+void MainWindow::processBlock(BOBUIextBlock)
 {
 }
 
-void MainWindow::processTable(QTextTable *table)
+void MainWindow::processTable(BOBUIextTable *table)
 {
-    QTextFrame *frame = qobject_cast<QTextFrame *>(table);
+    BOBUIextFrame *frame = qobject_cast<BOBUIextFrame *>(table);
 //! [13]
-    QTextFrame::iterator it;
+    BOBUIextFrame::iterator it;
     for (it = frame->begin(); !(it.atEnd()); ++it) {
 
-        QTextFrame *childFrame = it.currentFrame();
-        QTextBlock childBlock = it.currentBlock();
+        BOBUIextFrame *childFrame = it.currentFrame();
+        BOBUIextBlock childBlock = it.currentBlock();
 
         if (childFrame) {
-            QTextTable *childTable = qobject_cast<QTextTable*>(childFrame);
+            BOBUIextTable *childTable = qobject_cast<BOBUIextTable*>(childFrame);
 
             if (childTable)
                 processTable(childTable);

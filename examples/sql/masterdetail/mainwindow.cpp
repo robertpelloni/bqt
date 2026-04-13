@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "mainwindow.h"
 #include "dialog.h"
@@ -17,7 +17,7 @@
 #include <QMessageBox>
 #include <QSqlRecord>
 #include <QSqlRelationalTableModel>
-#include <QTableView>
+#include <BOBUIableView>
 
 MainWindow::MainWindow(const QString &artistTable, const QString &albumTable,
                        QFile *albumDetails, QWidget *parent)
@@ -192,7 +192,7 @@ void MainWindow::removeAlbumFromFile(int id)
     if (!file->open(QIODevice::WriteOnly)) {
         return;
     } else {
-        QTextStream stream(file);
+        BOBUIextStream stream(file);
         albumData.elementsByTagName("archive").item(0).save(stream, 4);
         file->close();
     }
@@ -257,7 +257,7 @@ QGroupBox* MainWindow::createAlbumGroupBox()
 {
     QGroupBox *box = new QGroupBox(tr("Album"));
 
-    albumView = new QTableView;
+    albumView = new BOBUIableView;
     albumView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     albumView->setSortingEnabled(true);
     albumView->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -272,9 +272,9 @@ QGroupBox* MainWindow::createAlbumGroupBox()
     locale.setNumberOptions(QLocale::OmitGroupSeparator);
     albumView->setLocale(locale);
 
-    connect(albumView, &QTableView::clicked,
+    connect(albumView, &BOBUIableView::clicked,
             this, &MainWindow::showAlbumDetails);
-    connect(albumView, &QTableView::activated,
+    connect(albumView, &BOBUIableView::activated,
             this, &MainWindow::showAlbumDetails);
 
     QVBoxLayout *layout = new QVBoxLayout;
@@ -290,19 +290,19 @@ QGroupBox* MainWindow::createDetailsGroupBox()
 
     profileLabel = new QLabel;
     profileLabel->setWordWrap(true);
-    profileLabel->setAlignment(Qt::AlignBottom);
+    profileLabel->setAlignment(BobUI::AlignBottom);
 
     titleLabel = new QLabel;
     titleLabel->setWordWrap(true);
-    titleLabel->setAlignment(Qt::AlignBottom);
+    titleLabel->setAlignment(BobUI::AlignBottom);
 
     iconLabel = new QLabel();
-    iconLabel->setAlignment(Qt::AlignBottom | Qt::AlignRight);
+    iconLabel->setAlignment(BobUI::AlignBottom | BobUI::AlignRight);
     iconLabel->setPixmap(QPixmap(":/images/icon.png"));
 
     imageLabel = new QLabel;
     imageLabel->setWordWrap(true);
-    imageLabel->setAlignment(Qt::AlignCenter);
+    imageLabel->setAlignment(BobUI::AlignCenter);
     imageLabel->setPixmap(QPixmap(":/images/image.png"));
 
     trackList = new QListWidget;
@@ -325,7 +325,7 @@ void MainWindow::createMenuBar()
     QAction *deleteAction = new QAction(tr("&Delete album..."), this);
     QAction *quitAction = new QAction(tr("&Quit"), this);
     QAction *aboutAction = new QAction(tr("&About"), this);
-    QAction *aboutQtAction = new QAction(tr("About &Qt"), this);
+    QAction *aboutBobUIAction = new QAction(tr("About &BobUI"), this);
 
     addAction->setShortcut(tr("Ctrl+A"));
     deleteAction->setShortcut(tr("Ctrl+D"));
@@ -339,7 +339,7 @@ void MainWindow::createMenuBar()
 
     QMenu *helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addAction(aboutAction);
-    helpMenu->addAction(aboutQtAction);
+    helpMenu->addAction(aboutBobUIAction);
 
     connect(addAction, &QAction::triggered,
             this, &MainWindow::addAlbum);
@@ -349,8 +349,8 @@ void MainWindow::createMenuBar()
             qApp, &QCoreApplication::quit);
     connect(aboutAction, &QAction::triggered,
             this, &MainWindow::about);
-    connect(aboutQtAction, &QAction::triggered,
-            qApp, &QApplication::aboutQt);
+    connect(aboutBobUIAction, &QAction::triggered,
+            qApp, &QApplication::aboutBobUI);
 }
 
 void MainWindow::showImageLabel()
@@ -392,6 +392,6 @@ void MainWindow::about()
                "are kept in a database, while each album's tracks are stored "
                "in an XML file. </p><p>The example also shows how to add as "
                "well as remove data from both the database and the "
-               "associated XML file using the API provided by the Qt SQL and "
-               "Qt XML modules, respectively.</p>"));
+               "associated XML file using the API provided by the BobUI SQL and "
+               "BobUI XML modules, respectively.</p>"));
 }

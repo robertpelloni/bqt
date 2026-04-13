@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 
 #include <qpa/qplatformintegrationplugin.h>
 #include "qoffscreenintegration.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class QOffscreenIntegrationPlugin : public QPlatformIntegrationPlugin
 {
@@ -19,12 +19,12 @@ public:
 
 QPlatformIntegration *QOffscreenIntegrationPlugin::create(const QString& system, const QStringList& paramList)
 {
-    if (!system.compare("offscreen"_L1, Qt::CaseInsensitive))
+    if (!system.compare("offscreen"_L1, BobUI::CaseInsensitive))
         return QOffscreenIntegration::createOffscreenIntegration(paramList);
 
     return nullptr;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "main.moc"

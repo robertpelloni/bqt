@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 #include <QChar>
 #include <QList>
 #include <QRegularExpression>
 #include <QSyntaxHighlighter>
-#include <QTextBlockUserData>
-#include <QTextEdit>
-#include <QTextObject>
+#include <BOBUIextBlockUserData>
+#include <BOBUIextEdit>
+#include <BOBUIextObject>
 
 namespace src_gui_text_qsyntaxhighlighter {
 struct MyHighlighter : public QSyntaxHighlighter
 {
-    explicit MyHighlighter(QTextDocument *document) : QSyntaxHighlighter(document) { Q_UNUSED(document); }
+    explicit MyHighlighter(BOBUIextDocument *document) : QSyntaxHighlighter(document) { Q_UNUSED(document); }
 
     void highlightBlock(const QString &text);
     void wrapper();
@@ -20,7 +20,7 @@ struct MyHighlighter : public QSyntaxHighlighter
 };
 
 //! [0]
-QTextEdit *editor = new QTextEdit;
+BOBUIextEdit *editor = new BOBUIextEdit;
 MyHighlighter *highlighter = new MyHighlighter(editor->document());
 //! [0]
 
@@ -28,9 +28,9 @@ MyHighlighter *highlighter = new MyHighlighter(editor->document());
 //! [1]
 void MyHighlighter::highlightBlock(const QString &text)
 {
-    QTextCharFormat myClassFormat;
+    BOBUIextCharFormat myClassFormat;
     myClassFormat.setFontWeight(QFont::Bold);
-    myClassFormat.setForeground(Qt::darkMagenta);
+    myClassFormat.setForeground(BobUI::darkMagenta);
 
     QRegularExpression expression("\\bMy[A-Za-z]+\\b");
     QRegularExpressionMatchIterator i = expression.globalMatch(text);
@@ -43,8 +43,8 @@ void MyHighlighter::highlightBlock(const QString &text)
 
 void MyHighlighter::wrapper() {
 //! [2]
-QTextCharFormat multiLineCommentFormat;
-multiLineCommentFormat.setForeground(Qt::red);
+BOBUIextCharFormat multiLineCommentFormat;
+multiLineCommentFormat.setForeground(BobUI::red);
 
 QRegularExpression startExpression("/\\*");
 QRegularExpression endExpression("\\*/");
@@ -81,7 +81,7 @@ struct ParenthesisInfo
     int position;
 };
 
-struct BlockData : public QTextBlockUserData
+struct BlockData : public BOBUIextBlockUserData
 {
     QList<ParenthesisInfo> parentheses;
 };

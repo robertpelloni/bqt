@@ -1,20 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/qtest.h>
+#include <BobUITest/bobuiest.h>
 
-#include <QtCore/qatomicscopedvaluerollback.h>
+#include <BobUICore/qatomicscopedvaluerollback.h>
 
-#include <QtCore/private/qioring_p.h>
+#include <BobUICore/private/qioring_p.h>
 
 #ifdef Q_OS_WIN
-#include <QtCore/qt_windows.h>
+#include <BobUICore/bobui_windows.h>
 #include <io.h>
 #else
-#include <QtCore/private/qcore_unix_p.h>
+#include <BobUICore/private/qcore_unix_p.h>
 #endif
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 using namespace std::chrono_literals;
 
 class tst_QIORing : public QObject
@@ -58,14 +58,14 @@ void tst_QIORing::closeFile(qintptr fd)
     HANDLE h = HANDLE(fd);
     CloseHandle(h);
 #else
-    QT_CLOSE(fd);
+    BOBUI_CLOSE(fd);
 #endif
 }
 
 qintptr tst_QIORing::openHelper(QIORing *ring, const QString &path, QIODevice::OpenMode flags)
 {
     QIORingRequest<QIORing::Operation::Open> request;
-    request.path = QtPrivate::toFilesystemPath(path);
+    request.path = BobUIPrivate::toFilesystemPath(path);
     request.flags = flags;
     qintptr fd = -1;
     request.setCallback([&fd](const QIORingRequest<QIORing::Operation::Open> &request) {
@@ -114,7 +114,7 @@ void tst_QIORing::open()
     QVERIFY(ring.ensureInitialized());
 
     QIORingRequest<QIORing::Operation::Open> openRequest;
-    openRequest.path = QtPrivate::toFilesystemPath(sourceDir + "/input.txt"_L1);
+    openRequest.path = BobUIPrivate::toFilesystemPath(sourceDir + "/input.txt"_L1);
     openRequest.flags = QIODevice::ReadOnly | QIODevice::ExistingOnly;
     qintptr fd = -1;
     openRequest.setCallback([&fd](const QIORingRequest<QIORing::Operation::Open> &request) {
@@ -168,7 +168,7 @@ void tst_QIORing::write()
     QIORing ring;
     QVERIFY(ring.ensureInitialized());
 
-    QTemporaryDir dir;
+    BOBUIemporaryDir dir;
     auto path = dir.filePath("out");
 
     auto fd = openHelper(&ring, path, QIODevice::ReadWrite);
@@ -219,7 +219,7 @@ void tst_QIORing::vectoredOperations()
     constexpr qsizetype BufferSize = 1024 * 1024;
 #ifdef Q_OS_LINUX
     constexpr qsizetype ReadWriteLimit = BufferSize * 3 / 2;
-    QAtomicScopedValueRollback maxRWLen(QtPrivate::testMaxReadWriteLen,
+    QAtomicScopedValueRollback maxRWLen(BobUIPrivate::testMaxReadWriteLen,
                                         ReadWriteLimit,
                                         std::memory_order_relaxed);
 #endif
@@ -227,7 +227,7 @@ void tst_QIORing::vectoredOperations()
     QIORing ring;
     QVERIFY(ring.ensureInitialized());
 
-    QTemporaryDir dir;
+    BOBUIemporaryDir dir;
     auto path = dir.filePath("out");
 
     auto fd = openHelper(&ring, path, QIODevice::ReadWrite);
@@ -241,7 +241,7 @@ void tst_QIORing::vectoredOperations()
     std::array<QByteArray, 256> buffers;
     constexpr qsizetype TotalWrittenSize = qsizetype(buffers.size()) * BufferSize;
     for (auto &b : buffers)
-        b = QByteArray(BufferSize, Qt::Uninitialized); // Initialize with garbage
+        b = QByteArray(BufferSize, BobUI::Uninitialized); // Initialize with garbage
     std::array<QSpan<const std::byte>, buffers.size()> readonlySpans;
     for (size_t i = 0; i < buffers.size(); ++i)
         readonlySpans[i] = as_bytes(QSpan(buffers[i]));
@@ -290,24 +290,24 @@ void tst_QIORing::vectoredOperations()
 
 void tst_QIORing::vectoredOperationsCornerCases_data()
 {
-    QTest::addColumn<qsizetype>("readWriteLimit");
-    QTest::addColumn<QByteArrayList>("data");
+    BOBUIest::addColumn<qsizetype>("readWriteLimit");
+    BOBUIest::addColumn<QByteArrayList>("data");
 
     constexpr qsizetype SmallPrime = 251;
     constexpr qsizetype BufferSize = 1024;
-    QByteArray inputBuffer(BufferSize, Qt::Uninitialized);
+    QByteArray inputBuffer(BufferSize, BobUI::Uninitialized);
     for (qsizetype i = 0; i < BufferSize; ++i)
         inputBuffer[i] = char(i % SmallPrime);
 
     // First span takes several vectored read operations
-    QTest::addRow("first_span_is_too_large")
+    BOBUIest::addRow("first_span_is_too_large")
             << qsizetype(100) << QList{ inputBuffer, inputBuffer.first(100) };
 
     // 1. First 2.5 spans fit into the first operation
     // 2. The last 0.5 of the third span + other 1.5 spans fit into the second operation
     // 3. The rest fits into the third operation
     const QByteArray largerBuffer = inputBuffer + inputBuffer.first(BufferSize / 2);
-    QTest::addRow("split_spans_in_the_middle")
+    BOBUIest::addRow("split_spans_in_the_middle")
             << qsizetype(BufferSize * 2.5)
             << QList{ inputBuffer, inputBuffer, inputBuffer,
                       largerBuffer, inputBuffer,
@@ -317,10 +317,10 @@ void tst_QIORing::vectoredOperationsCornerCases_data()
     // 1. First 2 spans + a beginning of a third span fit into the first operation
     // 2. The end of the third span takes two operations
     // 3. The rest fits into the last operation
-    QByteArray veryLargeBuffer(5 * BufferSize, Qt::Uninitialized);
+    QByteArray veryLargeBuffer(5 * BufferSize, BobUI::Uninitialized);
     for (qsizetype i = 0; i < 5 * BufferSize; ++i)
         veryLargeBuffer[i] = char(i % SmallPrime);
-    QTest::addRow("large_span_in_the_middle")
+    BOBUIest::addRow("large_span_in_the_middle")
             << qsizetype(BufferSize * 2.5)
             << QList{ inputBuffer, inputBuffer,
                       veryLargeBuffer,
@@ -328,7 +328,7 @@ void tst_QIORing::vectoredOperationsCornerCases_data()
 
     // 1. All spans except the last one fit into the first operation
     // 2. The last one takes several more operations
-    QTest::addRow("large_span_in_the_end")
+    BOBUIest::addRow("large_span_in_the_end")
             << qsizetype(BufferSize)
             << QList{ inputBuffer.first(100), inputBuffer.last(100),
                       inputBuffer.mid(100, 500),
@@ -337,9 +337,9 @@ void tst_QIORing::vectoredOperationsCornerCases_data()
 
 void tst_QIORing::vectoredOperationsCornerCases()
 {
-#if defined(Q_OS_LINUX) && defined(QT_DEBUG)
+#if defined(Q_OS_LINUX) && defined(BOBUI_DEBUG)
     QFETCH(const qsizetype, readWriteLimit);
-    QAtomicScopedValueRollback maxRWLen(QtPrivate::testMaxReadWriteLen,
+    QAtomicScopedValueRollback maxRWLen(BobUIPrivate::testMaxReadWriteLen,
                                         readWriteLimit,
                                         std::memory_order_relaxed);
 
@@ -348,7 +348,7 @@ void tst_QIORing::vectoredOperationsCornerCases()
     QIORing ring;
     QVERIFY(ring.ensureInitialized());
 
-    QTemporaryDir dir;
+    BOBUIemporaryDir dir;
     auto path = dir.filePath("out");
 
     auto fd = openHelper(&ring, path, QIODevice::ReadWrite);
@@ -444,7 +444,7 @@ void tst_QIORing::fiveGiBReadWrite()
     QIORing ring;
     QVERIFY(ring.ensureInitialized());
 
-    QTemporaryDir dir;
+    BOBUIemporaryDir dir;
     auto path = dir.filePath("largefile");
 
     auto fd = openHelper(&ring, path, QIODevice::ReadWrite);
@@ -505,7 +505,7 @@ void tst_QIORing::tenGiBReadWriteVectored()
     QIORing ring;
     QVERIFY(ring.ensureInitialized());
 
-    QTemporaryDir dir;
+    BOBUIemporaryDir dir;
     auto path = dir.filePath("largefile");
 
     auto fd = openHelper(&ring, path, QIODevice::ReadWrite);
@@ -559,7 +559,7 @@ void tst_QIORing::cancel()
     QIORing ring;
     QVERIFY(ring.ensureInitialized());
 
-    QTemporaryDir dir;
+    BOBUIemporaryDir dir;
     auto path = dir.filePath("testfile");
 
     qintptr fd = openHelper(&ring, path, QIODevice::ReadWrite);
@@ -608,7 +608,7 @@ void tst_QIORing::cancelFullQueue()
     // of it
     const quint32 toSubmit = sqSize + cqSize + 1;
 
-    QTemporaryDir dir;
+    BOBUIemporaryDir dir;
     auto path = dir.filePath("testfile");
 
     qintptr fd = openHelper(&ring, path, QIODevice::ReadWrite);
@@ -655,17 +655,17 @@ void tst_QIORing::fireAndForget()
     QIORing ring;
     QVERIFY(ring.ensureInitialized());
 
-    QTemporaryDir dir;
+    BOBUIemporaryDir dir;
     auto path = dir.filePath("empty");
 
     QIORingRequest<QIORing::Operation::Open> openRequest;
     openRequest.flags = QIODevice::ReadOnly;
-    openRequest.path = QtPrivate::toFilesystemPath(path);
+    openRequest.path = BobUIPrivate::toFilesystemPath(path);
     openRequest.callback = nullptr;
 
     ring.queueRequest(std::move(openRequest));
     // Nothing more, let the ring destruct and see what happens
 }
 
-QTEST_MAIN(tst_QIORing)
+BOBUIEST_MAIN(tst_QIORing)
 #include <tst_qioring.moc>

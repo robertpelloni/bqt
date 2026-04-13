@@ -1,7 +1,7 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QWindow>
 
 class tst_standalone_test : public QObject
@@ -13,10 +13,10 @@ private slots:
     {
         QWindow w;
         w.show();
-        QVERIFY(QTest::qWaitForWindowActive(&w));
+        QVERIFY(BOBUIest::qWaitForWindowActive(&w));
     }
 };
 
-QTEST_MAIN(tst_standalone_test)
+BOBUIEST_MAIN(tst_standalone_test)
 
 #include "tst_standalone_test.moc"

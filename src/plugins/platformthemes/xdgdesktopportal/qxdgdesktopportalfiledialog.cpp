@@ -1,6 +1,6 @@
 // Copyright (C) 2017-2018 Red Hat, Inc
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qxdgdesktopportalfiledialog_p.h"
 
@@ -25,9 +25,9 @@
 #include <QWindow>
 #include <QRegularExpression>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QDBusArgument &operator <<(QDBusArgument &arg, const QXdgDesktopPortalFileDialog::FilterCondition &filterCondition)
 {
@@ -154,7 +154,7 @@ void QXdgDesktopPortalFileDialog::initializeDialog()
     setDirectory(options()->initialDirectory());
 }
 
-void QXdgDesktopPortalFileDialog::openPortal(Qt::WindowFlags windowFlags, Qt::WindowModality windowModality, QWindow *parent)
+void QXdgDesktopPortalFileDialog::openPortal(BobUI::WindowFlags windowFlags, BobUI::WindowModality windowModality, QWindow *parent)
 {
     Q_D(QXdgDesktopPortalFileDialog);
 
@@ -166,7 +166,7 @@ void QXdgDesktopPortalFileDialog::openPortal(Qt::WindowFlags windowFlags, Qt::Wi
     if (!d->acceptLabel.isEmpty())
         options.insert("accept_label"_L1, d->acceptLabel);
 
-    options.insert("modal"_L1, windowModality != Qt::NonModal);
+    options.insert("modal"_L1, windowModality != BobUI::NonModal);
     options.insert("multiple"_L1, d->multipleFiles);
     options.insert("directory"_L1, d->directoryMode);
 
@@ -230,7 +230,7 @@ void QXdgDesktopPortalFileDialog::openPortal(Qt::WindowFlags windowFlags, Qt::Wi
             QRegularExpressionMatch match = regexp.match(nameFilter);
             if (match.hasMatch()) {
                 QString userVisibleName = match.captured(1);
-                QStringList filterStrings = match.captured(2).split(u' ', Qt::SkipEmptyParts);
+                QStringList filterStrings = match.captured(2).split(u' ', BobUI::SkipEmptyParts);
 
                 if (filterStrings.isEmpty()) {
                     qWarning() << "Filter " << userVisibleName << " is empty and will be ignored.";
@@ -265,7 +265,7 @@ void QXdgDesktopPortalFileDialog::openPortal(Qt::WindowFlags windowFlags, Qt::Wi
     if (selectedFilterIndex != -1)
         options.insert("current_filter"_L1, QVariant::fromValue(filterList[selectedFilterIndex]));
 
-    options.insert("handle_token"_L1, QStringLiteral("qt%1").arg(QRandomGenerator::global()->generate()));
+    options.insert("handle_token"_L1, QStringLiteral("bobui%1").arg(QRandomGenerator::global()->generate()));
 
     // TODO choices a(ssa(ss)s)
     // List of serialized combo boxes to add to the file chooser.
@@ -420,7 +420,7 @@ void QXdgDesktopPortalFileDialog::hide()
         d->nativeFileDialog->hide();
 }
 
-bool QXdgDesktopPortalFileDialog::show(Qt::WindowFlags windowFlags, Qt::WindowModality windowModality, QWindow *parent)
+bool QXdgDesktopPortalFileDialog::show(BobUI::WindowFlags windowFlags, BobUI::WindowModality windowModality, QWindow *parent)
 {
     Q_D(QXdgDesktopPortalFileDialog);
 
@@ -476,6 +476,6 @@ bool QXdgDesktopPortalFileDialog::useNativeFileDialog(QXdgDesktopPortalFileDialo
     return false;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qxdgdesktopportalfiledialog_p.cpp"

@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qeglfsbrcmintegration.h"
 #include <bcm_host.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static DISPMANX_DISPLAY_HANDLE_T dispman_display = 0;
 
@@ -67,7 +67,7 @@ static int getDisplayId()
     // DISPMANX_ID_FORCE_LCD    4
     // DISPMANX_ID_FORCE_TV     5
     // DISPMANX_ID_FORCE_OTHER  6 /* non-default display */
-    static const int dispmanxId = qEnvironmentVariableIntValue("QT_QPA_EGLFS_DISPMANX_ID");
+    static const int dispmanxId = qEnvironmentVariableIntValue("BOBUI_QPA_EGLFS_DISPMANX_ID");
     return (dispmanxId >= 0 && dispmanxId <= 6) ? dispmanxId : 0;
 }
 
@@ -113,4 +113,4 @@ bool QEglFSBrcmIntegration::hasCapability(QPlatformIntegration::Capability cap) 
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

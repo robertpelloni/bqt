@@ -1,25 +1,25 @@
-// Copyright (C) 2023 The Qt Company Ltd.
+// Copyright (C) 2023 The BobUI Company Ltd.
 // Copyright (C) 2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Marc Mutz <marc.mutz@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef Q20MEMORY_H
 #define Q20MEMORY_H
 
-#include <QtCore/qtconfigmacros.h>
+#include <BobUICore/bobuiconfigmacros.h>
 
-#include <QtCore/q17memory.h>
+#include <BobUICore/q17memory.h>
 
-#include <QtCore/q20type_traits.h>
+#include <BobUICore/q20type_traits.h>
 #include <utility>
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. Types and functions defined in this
+// This file is not part of the BobUI API. Types and functions defined in this
 // file can reliably be replaced by their std counterparts, once available.
 // You may use these definitions in your own code, but be aware that we
-// will remove them once Qt depends on the C++ version that supports
+// will remove them once BobUI depends on the C++ version that supports
 // them in namespace std. There will be NO deprecation warning, the
 // definitions will JUST go away.
 //
@@ -28,7 +28,7 @@
 // We mean it.
 //
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // like std::construct_at (but not whitelisted for constexpr)
 namespace q20 {
@@ -114,6 +114,6 @@ constexpr auto to_address(const Ptr &ptr) noexcept
 #endif // __cpp_lib_to_address
 } // namespace q20
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif /* Q20MEMORY_H */

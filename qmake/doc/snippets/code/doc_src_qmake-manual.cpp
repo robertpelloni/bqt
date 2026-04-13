@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 //! [104]
 // Add C includes here
@@ -9,7 +9,7 @@
 #include <stdlib>
 #include <iostream>
 #include <vector>
-#include <QApplication> // Qt includes
+#include <QApplication> // BobUI includes
 #include <QPushButton>
 #include <QLabel>
 #include "thirdparty/include/libmain.h"

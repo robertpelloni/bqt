@@ -1,6 +1,6 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qguiapplication.h"
 
@@ -19,22 +19,22 @@
 #include <qpa/qplatformintegration.h>
 #include <qpa/qplatformkeymapper.h>
 
-#include <QtCore/QAbstractEventDispatcher>
-#include <QtCore/QFileInfo>
-#include <QtCore/QStandardPaths>
-#include <QtCore/QVariant>
-#include <QtCore/private/qcoreapplication_p.h>
-#include <QtCore/private/qabstracteventdispatcher_p.h>
-#include <QtCore/private/qminimalflatset_p.h>
-#include <QtCore/qmutex.h>
-#include <QtCore/private/qthread_p.h>
-#include <QtCore/private/qlocking_p.h>
-#include <QtCore/private/qflatmap_p.h>
-#include <QtCore/qdir.h>
-#include <QtCore/qlibraryinfo.h>
-#include <QtCore/private/qnumeric_p.h>
-#include <QtDebug>
-#if QT_CONFIG(accessibility)
+#include <BobUICore/QAbstractEventDispatcher>
+#include <BobUICore/QFileInfo>
+#include <BobUICore/QStandardPaths>
+#include <BobUICore/QVariant>
+#include <BobUICore/private/qcoreapplication_p.h>
+#include <BobUICore/private/qabstracteventdispatcher_p.h>
+#include <BobUICore/private/qminimalflatset_p.h>
+#include <BobUICore/qmutex.h>
+#include <BobUICore/private/bobuihread_p.h>
+#include <BobUICore/private/qlocking_p.h>
+#include <BobUICore/private/qflatmap_p.h>
+#include <BobUICore/qdir.h>
+#include <BobUICore/qlibraryinfo.h>
+#include <BobUICore/private/qnumeric_p.h>
+#include <BobUIDebug>
+#if BOBUI_CONFIG(accessibility)
 #include "qaccessible.h"
 #endif
 #include <qpalette.h>
@@ -43,11 +43,11 @@
 #include <private/qcolortrclut_p.h>
 #include <private/qscreen_p.h>
 
-#include <QtGui/qgenericpluginfactory.h>
-#include <QtGui/qstylehints.h>
-#include <QtGui/private/qstylehints_p.h>
-#include <QtGui/qinputmethod.h>
-#include <QtGui/qpixmapcache.h>
+#include <BobUIGui/qgenericpluginfactory.h>
+#include <BobUIGui/qstylehints.h>
+#include <BobUIGui/private/qstylehints_p.h>
+#include <BobUIGui/qinputmethod.h>
+#include <BobUIGui/qpixmapcache.h>
 #include <qpa/qplatforminputcontext.h>
 #include <qpa/qplatforminputcontext_p.h>
 
@@ -56,7 +56,7 @@
 #include "private/qwindow_p.h"
 #include "private/qicon_p.h"
 #include "private/qcursor_p.h"
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
 #  include "private/qopenglcontext_p.h"
 #endif
 #include "private/qinputdevicemanager_p.h"
@@ -65,57 +65,57 @@
 
 #include <qpa/qplatformthemefactory_p.h>
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 #include <qpa/qplatformdrag.h>
 #include <private/qdnd_p.h>
 #endif
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 #include <qpa/qplatformcursor.h>
 #endif
 
-#include <QtGui/QPixmap>
+#include <BobUIGui/QPixmap>
 
-#ifndef QT_NO_CLIPBOARD
-#include <QtGui/QClipboard>
+#ifndef BOBUI_NO_CLIPBOARD
+#include <BobUIGui/QClipboard>
 #endif
 
-#if QT_CONFIG(library)
-#include <QtCore/QLibrary>
+#if BOBUI_CONFIG(library)
+#include <BobUICore/QLibrary>
 #endif
 
 #if defined(Q_OS_MAC)
 #  include "private/qcore_mac_p.h"
 #elif defined(Q_OS_WIN)
-#  include <QtCore/qt_windows.h>
-#  include <QtCore/QLibraryInfo>
+#  include <BobUICore/bobui_windows.h>
+#  include <BobUICore/QLibraryInfo>
 #endif // Q_OS_WIN
 
 #ifdef Q_OS_WASM
 #include <emscripten.h>
 #endif
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
 #include <private/qvulkandefaultinstance_p.h>
 #endif
 
-#if QT_CONFIG(thread)
-#include <QtCore/QThreadPool>
+#if BOBUI_CONFIG(thread)
+#include <BobUICore/BOBUIhreadPool>
 #endif
 
-#include <qtgui_tracepoints_p.h>
+#include <bobuigui_tracepoints_p.h>
 
-#include <private/qtools_p.h>
+#include <private/bobuiools_p.h>
 
 #include <limits>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcPopup, "qt.gui.popup");
-Q_LOGGING_CATEGORY(lcVirtualKeyboard, "qt.gui.virtualkeyboard");
+Q_LOGGING_CATEGORY(lcPopup, "bobui.gui.popup");
+Q_LOGGING_CATEGORY(lcVirtualKeyboard, "bobui.gui.virtualkeyboard");
 
-using namespace Qt::StringLiterals;
-using namespace QtMiscUtils;
+using namespace BobUI::StringLiterals;
+using namespace BobUIMiscUtils;
 
 // Helper macro for static functions to check on the existence of the application class.
 #define CHECK_QAPP_INSTANCE(...) \
@@ -125,11 +125,11 @@ using namespace QtMiscUtils;
         return __VA_ARGS__; \
     }
 
-Q_CORE_EXPORT void qt_call_post_routines();
-Q_CONSTINIT Q_GUI_EXPORT bool qt_is_tty_app = false;
+Q_CORE_EXPORT void bobui_call_post_routines();
+Q_CONSTINIT Q_GUI_EXPORT bool bobui_is_tty_app = false;
 
-Q_CONSTINIT Qt::MouseButtons QGuiApplicationPrivate::mouse_buttons = Qt::NoButton;
-Q_CONSTINIT Qt::KeyboardModifiers QGuiApplicationPrivate::modifier_buttons = Qt::NoModifier;
+Q_CONSTINIT BobUI::MouseButtons QGuiApplicationPrivate::mouse_buttons = BobUI::NoButton;
+Q_CONSTINIT BobUI::KeyboardModifiers QGuiApplicationPrivate::modifier_buttons = BobUI::NoModifier;
 
 Q_CONSTINIT QGuiApplicationPrivate::QLastCursorPosition QGuiApplicationPrivate::lastCursorPosition;
 
@@ -137,10 +137,10 @@ Q_CONSTINIT QWindow *QGuiApplicationPrivate::currentMouseWindow = nullptr;
 
 Q_CONSTINIT QString QGuiApplicationPrivate::styleOverride;
 
-Q_CONSTINIT Qt::ApplicationState QGuiApplicationPrivate::applicationState = Qt::ApplicationInactive;
+Q_CONSTINIT BobUI::ApplicationState QGuiApplicationPrivate::applicationState = BobUI::ApplicationInactive;
 
-Q_CONSTINIT Qt::HighDpiScaleFactorRoundingPolicy QGuiApplicationPrivate::highDpiScaleFactorRoundingPolicy =
-    Qt::HighDpiScaleFactorRoundingPolicy::PassThrough;
+Q_CONSTINIT BobUI::HighDpiScaleFactorRoundingPolicy QGuiApplicationPrivate::highDpiScaleFactorRoundingPolicy =
+    BobUI::HighDpiScaleFactorRoundingPolicy::PassThrough;
 
 Q_CONSTINIT QPointer<QWindow> QGuiApplicationPrivate::currentDragWindow;
 
@@ -166,15 +166,15 @@ Q_CONSTINIT QString *QGuiApplicationPrivate::desktopFileName = nullptr;
 
 Q_CONSTINIT QPalette *QGuiApplicationPrivate::app_pal = nullptr;        // default application palette
 
-Q_CONSTINIT Qt::MouseButton QGuiApplicationPrivate::mousePressButton = Qt::NoButton;
+Q_CONSTINIT BobUI::MouseButton QGuiApplicationPrivate::mousePressButton = BobUI::NoButton;
 
 Q_CONSTINIT static int mouseDoubleClickDistance = 0;
 Q_CONSTINIT static int touchDoubleTapDistance = 0;
 
 Q_CONSTINIT QWindow *QGuiApplicationPrivate::currentMousePressWindow = nullptr;
 
-Q_CONSTINIT static Qt::LayoutDirection layout_direction = Qt::LayoutDirectionAuto;
-Q_CONSTINIT static Qt::LayoutDirection effective_layout_direction = Qt::LeftToRight;
+Q_CONSTINIT static BobUI::LayoutDirection layout_direction = BobUI::LayoutDirectionAuto;
+Q_CONSTINIT static BobUI::LayoutDirection effective_layout_direction = BobUI::LeftToRight;
 Q_CONSTINIT static bool force_reverse = false;
 
 Q_DECL_DEPRECATED_X("Use QGuiApplicationPrivate::instance() instead")
@@ -182,8 +182,8 @@ Q_CONSTINIT QGuiApplicationPrivate *QGuiApplicationPrivate::self = nullptr;
 
 Q_CONSTINIT int QGuiApplicationPrivate::m_fakeMouseSourcePointId = -1;
 
-#ifndef QT_NO_CLIPBOARD
-Q_CONSTINIT QClipboard *QGuiApplicationPrivate::qt_clipboard = nullptr;
+#ifndef BOBUI_NO_CLIPBOARD
+Q_CONSTINIT QClipboard *QGuiApplicationPrivate::bobui_clipboard = nullptr;
 #endif
 
 Q_CONSTINIT QList<QScreen *> QGuiApplicationPrivate::screen_list;
@@ -208,14 +208,14 @@ Q_CONSTINIT static qreal fontSmoothingGamma = 1.7;
 Q_CONSTINIT bool QGuiApplicationPrivate::quitOnLastWindowClosed = true;
 
 extern void qRegisterGuiVariant();
-#if QT_CONFIG(animation)
+#if BOBUI_CONFIG(animation)
 extern void qRegisterGuiGetInterpolator();
 #endif
 
-static bool qt_detectRTLLanguage()
+static bool bobui_detectRTLLanguage()
 {
     return force_reverse ^
-        (QGuiApplication::tr("QT_LAYOUT_DIRECTION",
+        (QGuiApplication::tr("BOBUI_LAYOUT_DIRECTION",
                          "Translate this string to the string 'LTR' in left-to-right"
                          " languages or to 'RTL' in right-to-left languages (such as Hebrew"
                          " and Arabic) to get proper widget layout.") == "RTL"_L1);
@@ -248,16 +248,16 @@ static void initThemeHints()
 #if defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN)
 static bool checkNeedPortalSupport()
 {
-#if QT_CONFIG(dbus)
+#if BOBUI_CONFIG(dbus)
     return QFileInfo::exists("/.flatpak-info"_L1) || qEnvironmentVariableIsSet("SNAP");
 #else
     return false;
-#endif // QT_CONFIG(dbus)
+#endif // BOBUI_CONFIG(dbus)
 }
 #endif
 
 // Using aggregate initialization instead of ctor so we can have a POD global static
-#define Q_WINDOW_GEOMETRY_SPECIFICATION_INITIALIZER { Qt::TopLeftCorner, -1, -1, -1, -1 }
+#define Q_WINDOW_GEOMETRY_SPECIFICATION_INITIALIZER { BobUI::TopLeftCorner, -1, -1, -1, -1 }
 
 // Geometry specification for top level windows following the convention of the
 // -geometry command line arguments in X11 (see XParseGeometry).
@@ -266,7 +266,7 @@ struct QWindowGeometrySpecification
     static QWindowGeometrySpecification fromArgument(const QByteArray &a);
     void applyTo(QWindow *window) const;
 
-    Qt::Corner corner;
+    BobUI::Corner corner;
     int xOffset;
     int yOffset;
     int width;
@@ -315,11 +315,11 @@ QWindowGeometrySpecification QWindowGeometrySpecification::fromArgument(const QB
             if (result.xOffset >= 0) {
                 result.yOffset = value;
                 if (op == '-')
-                    result.corner = result.corner == Qt::TopRightCorner ? Qt::BottomRightCorner : Qt::BottomLeftCorner;
+                    result.corner = result.corner == BobUI::TopRightCorner ? BobUI::BottomRightCorner : BobUI::BottomLeftCorner;
             } else {
                 result.xOffset = value;
                 if (op == '-')
-                    result.corner = Qt::TopRightCorner;
+                    result.corner = BobUI::TopRightCorner;
             }
         }
     }
@@ -343,12 +343,12 @@ void QWindowGeometrySpecification::applyTo(QWindow *window) const
         const QRect availableGeometry = window->screen()->virtualGeometry();
         QPoint topLeft = windowGeometry.topLeft();
         if (xOffset >= 0) {
-            topLeft.setX(corner == Qt::TopLeftCorner || corner == Qt::BottomLeftCorner ?
+            topLeft.setX(corner == BobUI::TopLeftCorner || corner == BobUI::BottomLeftCorner ?
                          xOffset :
                          qMax(availableGeometry.right() - size.width() - xOffset, availableGeometry.left()));
         }
         if (yOffset >= 0) {
-            topLeft.setY(corner == Qt::TopLeftCorner || corner == Qt::TopRightCorner ?
+            topLeft.setY(corner == BobUI::TopLeftCorner || corner == BobUI::TopRightCorner ?
                          yOffset :
                          qMax(availableGeometry.bottom() - size.height() - yOffset, availableGeometry.top()));
         }
@@ -373,7 +373,7 @@ static QWindowGeometrySpecification windowGeometrySpecification = Q_WINDOW_GEOME
     \brief The QGuiApplication class manages the GUI application's control
     flow and main settings.
 
-    \inmodule QtGui
+    \inmodule BobUIGui
     \since 5.0
 
     QGuiApplication contains the main event loop, where all events from the window
@@ -382,10 +382,10 @@ static QWindowGeometrySpecification windowGeometrySpecification = Q_WINDOW_GEOME
     In addition, QGuiApplication handles most of the system-wide and application-wide
     settings.
 
-    For any GUI application using Qt, there is precisely \b one QGuiApplication
+    For any GUI application using BobUI, there is precisely \b one QGuiApplication
     object no matter whether the application has 0, 1, 2 or more windows at
-    any given time. For non-GUI Qt applications, use QCoreApplication instead,
-    as it does not depend on the Qt GUI module. For QWidget based Qt applications,
+    any given time. For non-GUI BobUI applications, use QCoreApplication instead,
+    as it does not depend on the BobUI GUI module. For QWidget based BobUI applications,
     use QApplication instead, as it provides some functionality needed for creating
     QWidget instances.
 
@@ -493,7 +493,7 @@ static QWindowGeometrySpecification windowGeometrySpecification = Q_WINDOW_GEOME
 
 /*!
     \class QGuiApplicationPrivate
-    \inmodule QtGui
+    \inmodule BobUIGui
     \internal
 */
 
@@ -512,13 +512,13 @@ static QWindowGeometrySpecification windowGeometrySpecification = Q_WINDOW_GEOME
     This application object must be constructed before any \l{QPaintDevice}
     {paint devices} (including pixmaps, bitmaps etc.).
 
-    \note \a argc and \a argv might be changed as Qt removes command line
+    \note \a argc and \a argv might be changed as BobUI removes command line
     arguments that it recognizes.
 
     \section1 Supported Command Line Options
 
-    All Qt programs automatically support a set of command-line options that
-    allow modifying the way Qt will interact with the windowing system. Some of
+    All BobUI programs automatically support a set of command-line options that
+    allow modifying the way BobUI will interact with the windowing system. Some of
     the options are also accessible via environment variables, which are the
     preferred form if the application can launch GUI sub-processes or other
     applications (environment variables will be inherited by child processes).
@@ -528,22 +528,22 @@ static QWindowGeometrySpecification windowGeometrySpecification = Q_WINDOW_GEOME
     \list
 
         \li \c{-platform} \e {platformName[:options]}, specifies the
-            \l{Qt Platform Abstraction} (QPA) plugin.
+            \l{BobUI Platform Abstraction} (QPA) plugin.
 
-            Overrides the \c QT_QPA_PLATFORM environment variable.
+            Overrides the \c BOBUI_QPA_PLATFORM environment variable.
         \li \c{-platformpluginpath} \e path, specifies the path to platform
             plugins.
 
-            Overrides the \c QT_QPA_PLATFORM_PLUGIN_PATH environment variable.
+            Overrides the \c BOBUI_QPA_PLATFORM_PLUGIN_PATH environment variable.
 
         \li \c{-platformtheme} \e platformTheme, specifies the platform theme.
 
-            Overrides the \c QT_QPA_PLATFORMTHEME environment variable.
+            Overrides the \c BOBUI_QPA_PLATFORMTHEME environment variable.
 
         \li \c{-plugin} \e plugin, specifies additional plugins to load. The argument
             may appear multiple times.
 
-            Concatenated with the plugins in the \c QT_QPA_GENERIC_PLUGINS environment
+            Concatenated with the plugins in the \c BOBUI_QPA_GENERIC_PLUGINS environment
             variable.
 
         \li \c{-qmljsdebugger=}, activates the QML/JS debugger with a specified port.
@@ -556,7 +556,7 @@ static QWindowGeometrySpecification windowGeometrySpecification = Q_WINDOW_GEOME
         \li \c {-qwindowicon}, sets the default window icon
         \li \c {-qwindowtitle}, sets the title of the first window
         \li \c{-reverse}, sets the application's layout direction to
-            Qt::RightToLeft. This option is intended to aid debugging and should
+            BobUI::RightToLeft. This option is intended to aid debugging and should
             not be used in production. The default value is automatically detected
             from the user's locale (see also QLocale::textDirection()).
         \li \c{-session} \e session, restores the application from an earlier
@@ -583,14 +583,14 @@ static QWindowGeometrySpecification windowGeometrySpecification = Q_WINDOW_GEOME
 
     \list
         \li \c {altgr}, detect the key \c {AltGr} found on some keyboards as
-               Qt::GroupSwitchModifier (since Qt 5.12).
-        \li \c {darkmode=[0|1|2]} controls how Qt responds to the activation
+               BobUI::GroupSwitchModifier (since BobUI 5.12).
+        \li \c {darkmode=[0|1|2]} controls how BobUI responds to the activation
                of the \e{Dark Mode for applications} introduced in Windows 10
-               1903 (since Qt 5.15).
+               1903 (since BobUI 5.15).
 
                A value of 0 disables dark mode support.
 
-               A value of 1 causes Qt to switch the window borders to black
+               A value of 1 causes BobUI to switch the window borders to black
                when \e{Dark Mode for applications} is activated and no High
                Contrast Theme is in use. This is intended for applications
                that implement their own theming.
@@ -601,7 +601,7 @@ static QWindowGeometrySpecification windowGeometrySpecification = Q_WINDOW_GEOME
                experimental pending the introduction of new style that
                properly adapts to dark mode.
 
-               As of Qt 6.5, the default value is 2; to disable dark mode
+               As of BobUI 6.5, the default value is 2; to disable dark mode
                support, set the value to 0 or 1.
 
         \li \c {dialogs=[xp|none]}, \c xp uses XP-style native dialogs and
@@ -611,33 +611,33 @@ static QWindowGeometrySpecification windowGeometrySpecification = Q_WINDOW_GEOME
         \li \c {fontengine=gdi}, uses the legacy GDI-based
                font database and defaults to using the GDI font
                engine (which is otherwise only used for some font types
-               or font properties.) (Since Qt 6.8).
+               or font properties.) (Since BobUI 6.8).
         \li \c {menus=[native|none]}, controls the use of native menus.
 
                Native menus are implemented using Win32 API and are simpler than
                QMenu-based menus in for example that they do allow for placing
                widgets on them or changing properties like fonts and do not
-               provide hover signals. They are mainly intended for Qt Quick.
+               provide hover signals. They are mainly intended for BobUI Quick.
                By default, they will be used if the application is not an
-               instance of QApplication or for Qt Quick Controls 2
-               applications (since Qt 5.10).
+               instance of QApplication or for BobUI Quick Controls 2
+               applications (since BobUI 5.10).
 
         \li \c {nocolorfonts} Turn off DirectWrite Color fonts
-               (since Qt 5.8).
+               (since BobUI 5.8).
 
-        \li \c {nodirectwrite} Turn off DirectWrite fonts (since Qt 5.8). This implicitly
+        \li \c {nodirectwrite} Turn off DirectWrite fonts (since BobUI 5.8). This implicitly
                also selects the GDI font engine.
 
         \li \c {nomousefromtouch} Ignores mouse events synthesized
                from touch events by the operating system.
 
         \li \c {nowmpointer} Switches from Pointer Input Messages handling
-               to legacy mouse handling (since Qt 5.12).
+               to legacy mouse handling (since BobUI 5.12).
         \li \c {reverse} Activates Right-to-left mode (experimental).
                Windows title bars will be shown accordingly in Right-to-left locales
-               (since Qt 5.13).
+               (since BobUI 5.13).
         \li \c {tabletabsoluterange=<value>} Sets a value for mouse mode detection
-               of WinTab tablets (Legacy, since Qt 5.3).
+               of WinTab tablets (Legacy, since BobUI 5.3).
     \endlist
 
     The following parameter is available for \c {-platform cocoa} (on macOS):
@@ -647,7 +647,7 @@ static QWindowGeometrySpecification windowGeometrySpecification = Q_WINDOW_GEOME
     \endlist
 
     For more information about the platform-specific arguments available for
-    embedded Linux platforms, see \l{Qt for Embedded Linux}.
+    embedded Linux platforms, see \l{BobUI for Embedded Linux}.
 
     \sa arguments(), QGuiApplication::platformName
 */
@@ -678,34 +678,34 @@ QGuiApplication::~QGuiApplication()
 {
     Q_D(QGuiApplication);
 
-    qt_call_post_routines();
+    bobui_call_post_routines();
 
     d->eventDispatcher->closingDown();
     d->eventDispatcher = nullptr;
 
-#ifndef QT_NO_CLIPBOARD
-    delete QGuiApplicationPrivate::qt_clipboard;
-    QGuiApplicationPrivate::qt_clipboard = nullptr;
+#ifndef BOBUI_NO_CLIPBOARD
+    delete QGuiApplicationPrivate::bobui_clipboard;
+    QGuiApplicationPrivate::bobui_clipboard = nullptr;
 #endif
 
-#ifndef QT_NO_SESSIONMANAGER
+#ifndef BOBUI_NO_SESSIONMANAGER
     delete d->session_manager;
     d->session_manager = nullptr;
-#endif //QT_NO_SESSIONMANAGER
+#endif //BOBUI_NO_SESSIONMANAGER
 
     QGuiApplicationPrivate::clearPalette();
     QFontDatabase::removeAllApplicationFonts();
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     d->cursor_list.clear();
 #endif
 
-#if QT_CONFIG(qtgui_threadpool)
+#if BOBUI_CONFIG(bobuigui_threadpool)
     // Synchronize and stop the gui thread pool threads.
-    QThreadPool *guiThreadPool = nullptr;
-    QT_TRY {
-        guiThreadPool = QGuiApplicationPrivate::qtGuiThreadPool();
-    } QT_CATCH (...) {
+    BOBUIhreadPool *guiThreadPool = nullptr;
+    BOBUI_TRY {
+        guiThreadPool = QGuiApplicationPrivate::bobuiGuiThreadPool();
+    } BOBUI_CATCH (...) {
         // swallow the exception, since destructors shouldn't throw
     }
     if (guiThreadPool) {
@@ -724,12 +724,12 @@ QGuiApplication::~QGuiApplication()
     QGuiApplicationPrivate::m_inputDeviceManager = nullptr;
     delete QGuiApplicationPrivate::desktopFileName;
     QGuiApplicationPrivate::desktopFileName = nullptr;
-    QGuiApplicationPrivate::mouse_buttons = Qt::NoButton;
-    QGuiApplicationPrivate::modifier_buttons = Qt::NoModifier;
+    QGuiApplicationPrivate::mouse_buttons = BobUI::NoButton;
+    QGuiApplicationPrivate::modifier_buttons = BobUI::NoModifier;
     QGuiApplicationPrivate::lastCursorPosition.reset();
     QGuiApplicationPrivate::currentMousePressWindow = QGuiApplicationPrivate::currentMouseWindow = nullptr;
-    QGuiApplicationPrivate::applicationState = Qt::ApplicationInactive;
-    QGuiApplicationPrivate::highDpiScaleFactorRoundingPolicy = Qt::HighDpiScaleFactorRoundingPolicy::PassThrough;
+    QGuiApplicationPrivate::applicationState = BobUI::ApplicationInactive;
+    QGuiApplicationPrivate::highDpiScaleFactorRoundingPolicy = BobUI::HighDpiScaleFactorRoundingPolicy::PassThrough;
     QGuiApplicationPrivate::currentDragWindow = nullptr;
     QGuiApplicationPrivate::tabletDevicePoints.clear();
 }
@@ -740,10 +740,10 @@ QGuiApplicationPrivate::QGuiApplicationPrivate(int &argc, char **argv)
       lastTouchType(QEvent::TouchEnd)
 {
     // Note: Not same as QCoreApplication::self
-    QT_IGNORE_DEPRECATIONS(QGuiApplicationPrivate::self = this;)
+    BOBUI_IGNORE_DEPRECATIONS(QGuiApplicationPrivate::self = this;)
 
     application_type = QCoreApplicationPrivate::Gui;
-#ifndef QT_NO_SESSIONMANAGER
+#ifndef BOBUI_NO_SESSIONMANAGER
     is_session_restored = false;
     is_saving_session = false;
 #endif
@@ -829,7 +829,7 @@ void QGuiApplication::setDesktopFileName(const QString &name)
     if (!QGuiApplicationPrivate::desktopFileName)
         QGuiApplicationPrivate::desktopFileName = new QString;
     *QGuiApplicationPrivate::desktopFileName = name;
-    if (name.endsWith(QLatin1String(".desktop"))) { // ### Qt 7: remove
+    if (name.endsWith(QLatin1String(".desktop"))) { // ### BobUI 7: remove
         const QString filePath = QStandardPaths::locate(QStandardPaths::ApplicationsLocation, name);
         if (!filePath.isEmpty()) {
             qWarning("QGuiApplication::setDesktopFileName: the specified desktop file name "
@@ -850,14 +850,14 @@ QString QGuiApplication::desktopFileName()
     visible, this function returns zero.
 
     A modal window is a window which has its
-    \l{QWindow::modality}{modality} property set to Qt::WindowModal
-    or Qt::ApplicationModal. A modal window must be closed before the user can
+    \l{QWindow::modality}{modality} property set to BobUI::WindowModal
+    or BobUI::ApplicationModal. A modal window must be closed before the user can
     continue with other parts of the program.
 
     Modal window are organized in a stack. This function returns the modal
     window at the top of the stack.
 
-    \sa Qt::WindowModality, QWindow::setModality()
+    \sa BobUI::WindowModality, QWindow::setModality()
 */
 QWindow *QGuiApplication::modalWindow()
 {
@@ -870,7 +870,7 @@ QWindow *QGuiApplication::modalWindow()
 
 static void updateBlockedStatusRecursion(QWindow *window, bool shouldBeBlocked)
 {
-    QWindowPrivate *p = qt_window_private(window);
+    QWindowPrivate *p = bobui_window_private(window);
     if (p->blockedByModalWindow != shouldBeBlocked) {
         p->blockedByModalWindow = shouldBeBlocked;
         QEvent e(shouldBeBlocked ? QEvent::WindowBlocked : QEvent::WindowUnblocked);
@@ -885,7 +885,7 @@ static void updateBlockedStatusRecursion(QWindow *window, bool shouldBeBlocked)
 void QGuiApplicationPrivate::updateBlockedStatus(QWindow *window)
 {
     bool shouldBeBlocked = false;
-    const bool popupType = (window->type() == Qt::ToolTip) || (window->type() == Qt::Popup);
+    const bool popupType = (window->type() == BobUI::ToolTip) || (window->type() == BobUI::Popup);
     if (!popupType && !QGuiApplicationPrivate::instance()->modalWindowList.isEmpty())
         shouldBeBlocked = QGuiApplicationPrivate::instance()->isWindowBlocked(window);
     updateBlockedStatusRecursion(window, shouldBeBlocked);
@@ -893,7 +893,7 @@ void QGuiApplicationPrivate::updateBlockedStatus(QWindow *window)
 
 // Return whether the window needs to be notified about window blocked events.
 // As opposed to QGuiApplication::topLevelWindows(), embedded windows are
-// included in this list (QTBUG-18099).
+// included in this list (BOBUIBUG-18099).
 static inline bool needsWindowBlockedEvent(const QWindow *w)
 {
     return w->isTopLevel();
@@ -935,9 +935,9 @@ void QGuiApplicationPrivate::hideModalWindow(QWindow *window)
     }
 }
 
-Qt::WindowModality QGuiApplicationPrivate::defaultModality() const
+BobUI::WindowModality QGuiApplicationPrivate::defaultModality() const
 {
-    return Qt::NonModal;
+    return BobUI::NonModal;
 }
 
 bool QGuiApplicationPrivate::windowNeverBlocked(QWindow *window) const
@@ -971,12 +971,12 @@ bool QGuiApplicationPrivate::isWindowBlocked(QWindow *window, QWindow **blocking
         if (window == modalWindow || modalWindow->isAncestorOf(window, QWindow::IncludeTransients))
             return false;
 
-        switch (modalWindow->modality() == Qt::NonModal ? defaultModality()
+        switch (modalWindow->modality() == BobUI::NonModal ? defaultModality()
                                                         : modalWindow->modality()) {
-        case Qt::ApplicationModal:
+        case BobUI::ApplicationModal:
             *blockingWindow = modalWindow;
             return true;
-        case Qt::WindowModal: {
+        case BobUI::WindowModal: {
             // Find the nearest ancestor of window which is also an ancestor of modal window to
             // determine if the modal window blocks the window.
             auto *current = window;
@@ -1173,7 +1173,7 @@ QScreen *QGuiApplication::screenAt(const QPoint &point)
     \fn void QGuiApplication::screenRemoved(QScreen *screen)
 
     This signal is emitted whenever a \a screen is removed from the system. It
-    provides an opportunity to manage the windows on the screen before Qt falls back
+    provides an opportunity to manage the windows on the screen before BobUI falls back
     to moving them to the primary screen.
 
     \sa screens(), screenAdded(), QObject::destroyed(), QWindow::setScreen()
@@ -1189,7 +1189,7 @@ QScreen *QGuiApplication::screenAt(const QPoint &point)
 
     This will be the screen where QWindows are initially shown, unless otherwise specified.
 
-    The primaryScreenChanged signal was introduced in Qt 5.6.
+    The primaryScreenChanged signal was introduced in BobUI 5.6.
 
     \sa screens()
 */
@@ -1237,14 +1237,14 @@ QWindow *QGuiApplication::topLevelAt(const QPoint &pos)
     \property QGuiApplication::platformName
     \brief The name of the underlying platform plugin.
 
-    The QPA platform plugins are located in \c {qtbase\src\plugins\platforms}.
+    The QPA platform plugins are located in \c {bobuibase\src\plugins\platforms}.
     At the time of writing, the following platform plugin names are supported:
 
     \list
         \li \c android
         \li \c cocoa is a platform plugin for \macos.
         \li \c directfb
-        \li \c eglfs is a platform plugin for running Qt5 applications on top of
+        \li \c eglfs is a platform plugin for running BobUI5 applications on top of
             EGL and  OpenGL ES 2.0 without an actual windowing system (like X11
             or Wayland). For more information, see \l{EGLFS}.
         \li \c ios (also used for tvOS)
@@ -1264,17 +1264,17 @@ QWindow *QGuiApplication::topLevelAt(const QPoint &pos)
 
     \note Calling this function without a QGuiApplication will return the default
     platform name, if available. The default platform name is not affected by the
-    \c{-platform} command line option, or the \c QT_QPA_PLATFORM environment variable.
+    \c{-platform} command line option, or the \c BOBUI_QPA_PLATFORM environment variable.
 
     For more information about the platform plugins for embedded Linux devices,
-    see \l{Qt for Embedded Linux}.
+    see \l{BobUI for Embedded Linux}.
 */
 
 QString QGuiApplication::platformName()
 {
     if (!QGuiApplication::instance()) {
-#ifdef QT_QPA_DEFAULT_PLATFORM_NAME
-        return QStringLiteral(QT_QPA_DEFAULT_PLATFORM_NAME);
+#ifdef BOBUI_QPA_DEFAULT_PLATFORM_NAME
+        return QStringLiteral(BOBUI_QPA_DEFAULT_PLATFORM_NAME);
 #else
         return QString();
 #endif
@@ -1284,9 +1284,9 @@ QString QGuiApplication::platformName()
     }
 }
 
-Q_STATIC_LOGGING_CATEGORY(lcQpaPluginLoading, "qt.qpa.plugin");
-Q_STATIC_LOGGING_CATEGORY(lcQpaTheme, "qt.qpa.theme");
-Q_STATIC_LOGGING_CATEGORY(lcPtrDispatch, "qt.pointer.dispatch");
+Q_STATIC_LOGGING_CATEGORY(lcQpaPluginLoading, "bobui.qpa.plugin");
+Q_STATIC_LOGGING_CATEGORY(lcQpaTheme, "bobui.qpa.theme");
+Q_STATIC_LOGGING_CATEGORY(lcPtrDispatch, "bobui.pointer.dispatch");
 
 static void init_platform(const QString &pluginNamesWithArguments, const QString &platformPluginPath, const QString &platformThemeName, int &argc, char **argv)
 {
@@ -1295,12 +1295,12 @@ static void init_platform(const QString &pluginNamesWithArguments, const QString
         << "platformPluginPath" << platformPluginPath
         << "platformThemeName" << platformThemeName;
 
-    QStringList plugins = pluginNamesWithArguments.split(u';', Qt::SkipEmptyParts);
+    QStringList plugins = pluginNamesWithArguments.split(u';', BobUI::SkipEmptyParts);
     QStringList platformArguments;
     QStringList availablePlugins = QPlatformIntegrationFactory::keys(platformPluginPath);
     for (const auto &pluginArgument : std::as_const(plugins)) {
         // Split into platform name and arguments
-        QStringList arguments = pluginArgument.split(u':', Qt::SkipEmptyParts);
+        QStringList arguments = pluginArgument.split(u':', BobUI::SkipEmptyParts);
         if (arguments.isEmpty())
             continue;
         const QString name = arguments.takeFirst().toLower();
@@ -1310,7 +1310,7 @@ static void init_platform(const QString &pluginNamesWithArguments, const QString
         argumentsKey[0] = argumentsKey.at(0).toUpper();
         arguments.append(QLibraryInfo::platformPluginArguments(argumentsKey));
 
-        qCDebug(lcQpaPluginLoading) << "Attempting to load Qt platform plugin" << name << "with arguments" << arguments;
+        qCDebug(lcQpaPluginLoading) << "Attempting to load BobUI platform plugin" << name << "with arguments" << arguments;
 
         // Create the platform integration.
         QGuiApplicationPrivate::platform_integration = QPlatformIntegrationFactory::create(name, arguments, argc, argv, platformPluginPath);
@@ -1318,18 +1318,18 @@ static void init_platform(const QString &pluginNamesWithArguments, const QString
             if (availablePlugins.contains(name)) {
                 if (name == QStringLiteral("xcb") && QVersionNumber::compare(QLibraryInfo::version(), QVersionNumber(6, 5, 0)) >= 0) {
                     qCWarning(lcQpaPluginLoading).nospace().noquote()
-                            << "From 6.5.0, xcb-cursor0 or libxcb-cursor0 is needed to load the Qt xcb platform plugin.";
+                            << "From 6.5.0, xcb-cursor0 or libxcb-cursor0 is needed to load the BobUI xcb platform plugin.";
                 }
                 qCInfo(lcQpaPluginLoading).nospace().noquote()
-                        << "Could not load the Qt platform plugin \"" << name << "\" in \""
+                        << "Could not load the BobUI platform plugin \"" << name << "\" in \""
                         << QDir::toNativeSeparators(platformPluginPath) << "\" even though it was found.";
             } else {
                 qCWarning(lcQpaPluginLoading).nospace().noquote()
-                        << "Could not find the Qt platform plugin \"" << name << "\" in \""
+                        << "Could not find the BobUI platform plugin \"" << name << "\" in \""
                         << QDir::toNativeSeparators(platformPluginPath) << "\"";
             }
         } else {
-            qCDebug(lcQpaPluginLoading) << "Successfully loaded Qt platform plugin" << name;
+            qCDebug(lcQpaPluginLoading) << "Successfully loaded BobUI platform plugin" << name;
             QGuiApplicationPrivate::platform_name = new QString(name);
             platformArguments = arguments;
             break;
@@ -1337,7 +1337,7 @@ static void init_platform(const QString &pluginNamesWithArguments, const QString
     }
 
     if (Q_UNLIKELY(!QGuiApplicationPrivate::platform_integration)) {
-        QString fatalMessage = QStringLiteral("This application failed to start because no Qt platform plugin could be initialized. "
+        QString fatalMessage = QStringLiteral("This application failed to start because no BobUI platform plugin could be initialized. "
                                               "Reinstalling the application may fix this problem.\n");
 
         if (!availablePlugins.isEmpty())
@@ -1415,11 +1415,11 @@ static void init_platform(const QString &pluginNamesWithArguments, const QString
 
     const auto *platformIntegration = QGuiApplicationPrivate::platformIntegration();
     fontSmoothingGamma = platformIntegration->styleHint(QPlatformIntegration::FontSmoothingGamma).toReal();
-    QCoreApplication::setAttribute(Qt::AA_DontShowShortcutsInContextMenus,
+    QCoreApplication::setAttribute(BobUI::AA_DontShowShortcutsInContextMenus,
         !QGuiApplication::styleHints()->showShortcutsInContextMenus());
 
     if (const auto *platformTheme = QGuiApplicationPrivate::platformTheme()) {
-        QCoreApplication::setAttribute(Qt::AA_DontShowIconsInMenus,
+        QCoreApplication::setAttribute(BobUI::AA_DontShowIconsInMenus,
             !platformTheme->themeHint(QPlatformTheme::ShowIconsInMenus).toBool());
     }
 }
@@ -1442,10 +1442,10 @@ static void init_plugins(const QList<QByteArray> &pluginList)
     }
 }
 
-#if QT_CONFIG(commandlineparser)
-void QGuiApplicationPrivate::addQtOptions(QList<QCommandLineOption> *options)
+#if BOBUI_CONFIG(commandlineparser)
+void QGuiApplicationPrivate::addBobUIOptions(QList<QCommandLineOption> *options)
 {
-    QCoreApplicationPrivate::addQtOptions(options);
+    QCoreApplicationPrivate::addBobUIOptions(options);
 
 #if defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN)
     const QByteArray sessionType = qgetenv("XDG_SESSION_TYPE");
@@ -1470,7 +1470,7 @@ void QGuiApplicationPrivate::addQtOptions(QList<QCommandLineOption> *options)
     options->append(QCommandLineOption(QStringLiteral("qwindowtitle"),
                     QGuiApplication::tr("Title of the first window."), QStringLiteral("title")));
     options->append(QCommandLineOption(QStringLiteral("reverse"),
-                    QGuiApplication::tr("Sets the application's layout direction to Qt::RightToLeft (debugging helper).")));
+                    QGuiApplication::tr("Sets the application's layout direction to BobUI::RightToLeft (debugging helper).")));
     options->append(QCommandLineOption(QStringLiteral("session"),
                     QGuiApplication::tr("Restores the application from an earlier session."), QStringLiteral("session")));
 
@@ -1494,19 +1494,19 @@ void QGuiApplicationPrivate::addQtOptions(QList<QCommandLineOption> *options)
                          QGuiApplication::tr("Alias for --qwindowtitle."), QStringLiteral("title")));
     }
 }
-#endif // QT_CONFIG(commandlineparser)
+#endif // BOBUI_CONFIG(commandlineparser)
 
 void QGuiApplicationPrivate::createPlatformIntegration()
 {
     QHighDpiScaling::initHighDpiScaling();
 
     // Load the platform integration
-    QString platformPluginPath = qEnvironmentVariable("QT_QPA_PLATFORM_PLUGIN_PATH");
+    QString platformPluginPath = qEnvironmentVariable("BOBUI_QPA_PLATFORM_PLUGIN_PATH");
 
 
     QByteArray platformName;
-#ifdef QT_QPA_DEFAULT_PLATFORM_NAME
-    platformName = QT_QPA_DEFAULT_PLATFORM_NAME;
+#ifdef BOBUI_QPA_DEFAULT_PLATFORM_NAME
+    platformName = BOBUI_QPA_DEFAULT_PLATFORM_NAME;
 #endif
 #if defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN)
     QList<QByteArray> platformArguments = platformName.split(':');
@@ -1540,13 +1540,13 @@ void QGuiApplicationPrivate::createPlatformIntegration()
 #endif
 
     bool platformExplicitlySelected = false;
-    QByteArray platformNameEnv = qgetenv("QT_QPA_PLATFORM");
+    QByteArray platformNameEnv = qgetenv("BOBUI_QPA_PLATFORM");
     if (!platformNameEnv.isEmpty()) {
         platformName = platformNameEnv;
         platformExplicitlySelected = true;
     }
 
-    QString platformThemeName = QString::fromLocal8Bit(qgetenv("QT_QPA_PLATFORMTHEME"));
+    QString platformThemeName = QString::fromLocal8Bit(qgetenv("BOBUI_QPA_PLATFORMTHEME"));
 
     // Get command line params
 
@@ -1635,7 +1635,7 @@ void QGuiApplicationPrivate::eventDispatcherReady()
     platform_integration->initialize();
 }
 
-void Q_TRACE_INSTRUMENT(qtgui) QGuiApplicationPrivate::init()
+void Q_TRACE_INSTRUMENT(bobuigui) QGuiApplicationPrivate::init()
 {
     Q_TRACE_SCOPE(QGuiApplicationPrivate_init);
 
@@ -1650,7 +1650,7 @@ void Q_TRACE_INSTRUMENT(qtgui) QGuiApplicationPrivate::init()
     bool loadTestability = false;
     QList<QByteArray> pluginList;
     // Get command line params
-#ifndef QT_NO_SESSIONMANAGER
+#ifndef BOBUI_NO_SESSIONMANAGER
     QString session_id;
     QString session_key;
 # if defined(Q_OS_WIN)
@@ -1693,7 +1693,7 @@ void Q_TRACE_INSTRUMENT(qtgui) QGuiApplicationPrivate::init()
                     QDir::setCurrent(qbundlePath.section(u'/', 0, -2));
             }
 #endif
-#ifndef QT_NO_SESSIONMANAGER
+#ifndef BOBUI_NO_SESSIONMANAGER
         } else if (strcmp(arg, "-session") == 0 && i < argc - 1) {
             ++i;
             if (argv[i] && *argv[i]) {
@@ -1726,7 +1726,7 @@ void Q_TRACE_INSTRUMENT(qtgui) QGuiApplicationPrivate::init()
     }
 
     // Load environment exported generic plugins
-    QByteArray envPlugins = qgetenv("QT_QPA_GENERIC_PLUGINS");
+    QByteArray envPlugins = qgetenv("BOBUI_QPA_GENERIC_PLUGINS");
     if (!envPlugins.isEmpty())
         pluginList += envPlugins.split(',');
 
@@ -1737,14 +1737,14 @@ void Q_TRACE_INSTRUMENT(qtgui) QGuiApplicationPrivate::init()
     QFont::initialize();
     initThemeHints();
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     QCursorData::initialize();
 #endif
 
     // trigger registering of QVariant's GUI types
     qRegisterGuiVariant();
 
-#if QT_CONFIG(animation)
+#if BOBUI_CONFIG(animation)
     // trigger registering of animation interpolators
     qRegisterGuiGetInterpolator();
 #endif
@@ -1756,24 +1756,24 @@ void Q_TRACE_INSTRUMENT(qtgui) QGuiApplicationPrivate::init()
     QWindowSystemInterface::flushWindowSystemEvents();
 
     Q_Q(QGuiApplication);
-#ifndef QT_NO_SESSIONMANAGER
+#ifndef BOBUI_NO_SESSIONMANAGER
     // connect to the session manager
     session_manager = new QSessionManager(q, session_id, session_key);
 #endif
 
-#if QT_CONFIG(library)
-    if (qEnvironmentVariableIntValue("QT_LOAD_TESTABILITY") > 0)
+#if BOBUI_CONFIG(library)
+    if (qEnvironmentVariableIntValue("BOBUI_LOAD_TESTABILITY") > 0)
         loadTestability = true;
 
     if (loadTestability) {
-        QLibrary testLib(QStringLiteral("qttestability"));
+        QLibrary testLib(QStringLiteral("bobuitestability"));
         if (Q_UNLIKELY(!testLib.load())) {
-            qCritical() << "Library qttestability load failed:" << testLib.errorString();
+            qCritical() << "Library bobuitestability load failed:" << testLib.errorString();
         } else {
             typedef void (*TasInitialize)(void);
-            TasInitialize initFunction = (TasInitialize)testLib.resolve("qt_testability_init");
+            TasInitialize initFunction = (TasInitialize)testLib.resolve("bobui_testability_init");
             if (Q_UNLIKELY(!initFunction)) {
-                qCritical("Library qttestability resolve failed!");
+                qCritical("Library bobuitestability resolve failed!");
             } else {
                 initFunction();
             }
@@ -1781,7 +1781,7 @@ void Q_TRACE_INSTRUMENT(qtgui) QGuiApplicationPrivate::init()
     }
 #else
     Q_UNUSED(loadTestability);
-#endif // QT_CONFIG(library)
+#endif // BOBUI_CONFIG(library)
 
     // trigger changed signal and event delivery
     QGuiApplication::setLayoutDirection(layout_direction);
@@ -1791,7 +1791,7 @@ void Q_TRACE_INSTRUMENT(qtgui) QGuiApplicationPrivate::init()
                          q, &QGuiApplication::applicationDisplayNameChanged);
 }
 
-extern void qt_cleanupFontDatabase();
+extern void bobui_cleanupFontDatabase();
 
 QGuiApplicationPrivate::~QGuiApplicationPrivate()
 {
@@ -1806,11 +1806,11 @@ QGuiApplicationPrivate::~QGuiApplicationPrivate()
 
     QFont::cleanup();
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     QCursorData::cleanup();
 #endif
 
-    layout_direction = Qt::LayoutDirectionAuto;
+    layout_direction = BobUI::LayoutDirectionAuto;
 
     cleanupThreadData();
 
@@ -1818,18 +1818,18 @@ QGuiApplicationPrivate::~QGuiApplicationPrivate()
     QGuiApplicationPrivate::styleHints = nullptr;
     delete inputMethod;
 
-    qt_cleanupFontDatabase();
+    bobui_cleanupFontDatabase();
 
     QPixmapCache::clear();
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     if (ownGlobalShareContext) {
-        delete qt_gl_global_share_context();
-        qt_gl_set_global_share_context(nullptr);
+        delete bobui_gl_global_share_context();
+        bobui_gl_set_global_share_context(nullptr);
     }
 #endif
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     QVulkanDefaultInstance::cleanup();
 #endif
 
@@ -1845,11 +1845,11 @@ QGuiApplicationPrivate::~QGuiApplicationPrivate()
     screen_list.clear();
 
     // Note: Not same as QCoreApplication::self
-    QT_IGNORE_DEPRECATIONS(QGuiApplicationPrivate::self = nullptr;)
+    BOBUI_IGNORE_DEPRECATIONS(QGuiApplicationPrivate::self = nullptr;)
 }
 
 #if 0
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 QCursor *overrideCursor();
 void setOverrideCursor(const QCursor &);
 void changeOverrideCursor(const QCursor &);
@@ -1862,7 +1862,7 @@ static QFont font(const char *className);
 static void setFont(const QFont &, const char *className = nullptr);
 static QFontMetrics fontMetrics();
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
 static QClipboard *clipboard();
 #endif
 #endif
@@ -1875,18 +1875,18 @@ static QClipboard *clipboard();
 
     It should be noted this may not reflect the actual keys held on the input
     device at the time of calling but rather the modifiers as last reported in
-    one of the above events. If no keys are being held Qt::NoModifier is
+    one of the above events. If no keys are being held BobUI::NoModifier is
     returned.
 
     \sa mouseButtons(), queryKeyboardModifiers()
 */
-Qt::KeyboardModifiers QGuiApplication::keyboardModifiers()
+BobUI::KeyboardModifiers QGuiApplication::keyboardModifiers()
 {
     return QGuiApplicationPrivate::modifier_buttons;
 }
 
 /*!
-    \fn Qt::KeyboardModifiers QGuiApplication::queryKeyboardModifiers()
+    \fn BobUI::KeyboardModifiers QGuiApplication::queryKeyboardModifiers()
 
     Queries and returns the state of the modifier keys on the keyboard.
     Unlike keyboardModifiers, this method returns the actual keys held
@@ -1901,9 +1901,9 @@ Qt::KeyboardModifiers QGuiApplication::keyboardModifiers()
 
     \sa keyboardModifiers()
 */
-Qt::KeyboardModifiers QGuiApplication::queryKeyboardModifiers()
+BobUI::KeyboardModifiers QGuiApplication::queryKeyboardModifiers()
 {
-    CHECK_QAPP_INSTANCE(Qt::KeyboardModifiers{})
+    CHECK_QAPP_INSTANCE(BobUI::KeyboardModifiers{})
     QPlatformIntegration *pi = QGuiApplicationPrivate::platformIntegration();
     return pi->keyMapper()->queryKeyboardModifiers();
 }
@@ -1917,11 +1917,11 @@ Qt::KeyboardModifiers QGuiApplication::queryKeyboardModifiers()
     It should be noted this may not reflect the actual buttons held on the
     input device at the time of calling but rather the mouse buttons as last
     reported in one of the above events. If no mouse buttons are being held
-    Qt::NoButton is returned.
+    BobUI::NoButton is returned.
 
     \sa keyboardModifiers()
 */
-Qt::MouseButtons QGuiApplication::mouseButtons()
+BobUI::MouseButtons QGuiApplication::mouseButtons()
 {
     return QGuiApplicationPrivate::mouse_buttons;
 }
@@ -1978,7 +1978,7 @@ QFunctionPointer QGuiApplication::platformFunction(const QByteArray &function)
 */
 int QGuiApplication::exec()
 {
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     QAccessible::setRootObject(qApp);
 #endif
     return QCoreApplication::exec();
@@ -1988,10 +1988,10 @@ void QGuiApplicationPrivate::captureGlobalModifierState(QEvent *e)
 {
     if (e->spontaneous()) {
         // Capture the current mouse and keyboard states. Doing so here is
-        // required in order to support Qt Test synthesized events. Real mouse
+        // required in order to support BobUI Test synthesized events. Real mouse
         // and keyboard state updates from the platform plugin are managed by
         // QGuiApplicationPrivate::process(Mouse|Wheel|Key|Touch|Tablet)Event();
-        // ### FIXME: Qt Test should not call qapp->notify(), but rather route
+        // ### FIXME: BobUI Test should not call qapp->notify(), but rather route
         // the events through the proper QPA interface. This is required to
         // properly generate all other events such as enter/leave etc.
         switch (e->type()) {
@@ -2016,13 +2016,13 @@ void QGuiApplicationPrivate::captureGlobalModifierState(QEvent *e)
         case QEvent::KeyPress:
         case QEvent::KeyRelease:
         case QEvent::MouseMove:
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
         case QEvent::Wheel:
 #endif
         case QEvent::TouchBegin:
         case QEvent::TouchUpdate:
         case QEvent::TouchEnd:
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
         case QEvent::TabletMove:
         case QEvent::TabletPress:
         case QEvent::TabletRelease:
@@ -2074,7 +2074,7 @@ bool QGuiApplication::event(QEvent *e)
     switch (e->type()) {
     case QEvent::LanguageChange:
         // if the layout direction was set explicitly, then don't override it here
-        if (layout_direction == Qt::LayoutDirectionAuto)
+        if (layout_direction == BobUI::LayoutDirectionAuto)
             setLayoutDirection(layout_direction);
         for (auto *topLevelWindow : QGuiApplication::topLevelWindows())
             postEvent(topLevelWindow, new QEvent(QEvent::LanguageChange));
@@ -2109,13 +2109,13 @@ bool QGuiApplication::event(QEvent *e)
     return QCoreApplication::event(e);
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
 /*!
     \internal
 */
 bool QGuiApplication::compressEvent(QEvent *event, QObject *receiver, QPostEventList *postedEvents)
 {
-    QT_IGNORE_DEPRECATIONS(
+    BOBUI_IGNORE_DEPRECATIONS(
     return QCoreApplication::compressEvent(event, receiver, postedEvents);
     )
 }
@@ -2142,7 +2142,7 @@ bool QGuiApplicationPrivate::processNativeEvent(QWindow *window, const QByteArra
 
 bool QGuiApplicationPrivate::isUsingVirtualKeyboard()
 {
-    static const bool usingVirtualKeyboard = getenv("QT_IM_MODULE") == QByteArray("qtvirtualkeyboard");
+    static const bool usingVirtualKeyboard = getenv("BOBUI_IM_MODULE") == QByteArray("bobuivirtualkeyboard");
     return usingVirtualKeyboard;
 }
 
@@ -2164,7 +2164,7 @@ bool QGuiApplicationPrivate::maybeForwardEventToVirtualKeyboard(QEvent *e)
     // Is there a visible virtual keyboard at event position?
     if (!virtualKeyboard) {
         if (QWindow *win = QGuiApplication::topLevelAt(pos);
-            win->inherits("QtVirtualKeyboard::InputView")) {
+            win->inherits("BobUIVirtualKeyboard::InputView")) {
             virtualKeyboard = win;
         } else {
             qCDebug(lcVirtualKeyboard) << "Virtual keyboard supported, but inactive.";
@@ -2193,7 +2193,7 @@ bool QGuiApplicationPrivate::maybeForwardEventToVirtualKeyboard(QEvent *e)
     return true;
 }
 
-void Q_TRACE_INSTRUMENT(qtgui) QGuiApplicationPrivate::processWindowSystemEvent(QWindowSystemInterfacePrivate::WindowSystemEvent *e)
+void Q_TRACE_INSTRUMENT(bobuigui) QGuiApplicationPrivate::processWindowSystemEvent(QWindowSystemInterfacePrivate::WindowSystemEvent *e)
 {
     Q_TRACE_PARAM_REPLACE(QWindowSystemInterfacePrivate::WindowSystemEvent *, int);
     Q_TRACE_SCOPE(QGuiApplicationPrivate_processWindowSystemEvent, e->type);
@@ -2296,7 +2296,7 @@ void Q_TRACE_INSTRUMENT(qtgui) QGuiApplicationPrivate::processWindowSystemEvent(
         QGuiApplicationPrivate::processTabletLeaveProximityEvent(
                     static_cast<QWindowSystemInterfacePrivate::TabletLeaveProximityEvent *>(e));
         break;
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     case QWindowSystemInterfacePrivate::Gesture:
         QGuiApplicationPrivate::processGestureEvent(
                     static_cast<QWindowSystemInterfacePrivate::GestureEvent *>(e));
@@ -2310,7 +2310,7 @@ void Q_TRACE_INSTRUMENT(qtgui) QGuiApplicationPrivate::processWindowSystemEvent(
         QGuiApplicationPrivate::processFileOpenEvent(
                     static_cast<QWindowSystemInterfacePrivate::FileOpenEvent *>(e));
         break;
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
         case QWindowSystemInterfacePrivate::ContextMenu:
         QGuiApplicationPrivate::processContextMenuEvent(
                     static_cast<QWindowSystemInterfacePrivate::ContextMenuEvent *>(e));
@@ -2327,7 +2327,7 @@ void Q_TRACE_INSTRUMENT(qtgui) QGuiApplicationPrivate::processWindowSystemEvent(
 
 /*! \internal
 
-    History is silent on why Qt splits mouse events that change position and
+    History is silent on why BobUI splits mouse events that change position and
     button state at the same time. We believe that this was done to emulate mouse
     behavior on touch screens. If mouse tracking is enabled, we will get move
     events before the button is pressed. A touch panel does not generally give
@@ -2340,7 +2340,7 @@ void Q_TRACE_INSTRUMENT(qtgui) QGuiApplicationPrivate::processWindowSystemEvent(
 void QGuiApplicationPrivate::processMouseEvent(QWindowSystemInterfacePrivate::MouseEvent *e)
 {
     QEvent::Type type = QEvent::None;
-    Qt::MouseButton button = Qt::NoButton;
+    BobUI::MouseButton button = BobUI::NoButton;
     QWindow *window = e->window.data();
     const QPointingDevice *device = static_cast<const QPointingDevice *>(e->device);
     Q_ASSERT(device);
@@ -2366,7 +2366,7 @@ void QGuiApplicationPrivate::processMouseEvent(QWindowSystemInterfacePrivate::Mo
 
     if (!mouseMove && positionChanged) {
         QWindowSystemInterfacePrivate::MouseEvent moveEvent(window, e->timestamp,
-            e->localPos, e->globalPos, e->buttons ^ button, e->modifiers, Qt::NoButton,
+            e->localPos, e->globalPos, e->buttons ^ button, e->modifiers, BobUI::NoButton,
             e->nonClientArea ? QEvent::NonClientAreaMouseMove : QEvent::MouseMove,
             e->source, e->nonClientArea, device, e->eventPointId);
         if (e->synthetic())
@@ -2398,7 +2398,7 @@ void QGuiApplicationPrivate::processMouseEvent(QWindowSystemInterfacePrivate::Mo
         const auto pressPos = persistentEPD->eventPoint.globalPressPosition();
         if (qAbs(globalPoint.x() - pressPos.x()) > doubleClickDistance ||
             qAbs(globalPoint.y() - pressPos.y()) > doubleClickDistance)
-            mousePressButton = Qt::NoButton;
+            mousePressButton = BobUI::NoButton;
     } else {
         static unsigned long lastPressTimestamp = 0;
         static QPointer<QWindow> lastPressWindow = nullptr;
@@ -2419,7 +2419,7 @@ void QGuiApplicationPrivate::processMouseEvent(QWindowSystemInterfacePrivate::Mo
         if (window) {
             // Moves and the release following a press must go to the same
             // window, even if the cursor has moved on over another window.
-            if (e->buttons != Qt::NoButton) {
+            if (e->buttons != BobUI::NoButton) {
                 if (!currentMousePressWindow)
                     currentMousePressWindow = window;
                 else
@@ -2435,7 +2435,7 @@ void QGuiApplicationPrivate::processMouseEvent(QWindowSystemInterfacePrivate::Mo
     if (!window)
         return;
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     if (!e->synthetic()) {
         if (const QScreen *screen = window->screen())
             if (QPlatformCursor *cursor = screen->handle()->cursor()) {
@@ -2480,7 +2480,7 @@ void QGuiApplicationPrivate::processMouseEvent(QWindowSystemInterfacePrivate::Mo
     }
 
     if (doubleClick && (ev.type() == QEvent::MouseButtonPress)) {
-        // QtBUG-25831, used to suppress delivery in qwidgetwindow.cpp
+        // BobUIBUG-25831, used to suppress delivery in qwidgetwindow.cpp
         QMutableSinglePointEvent::setDoubleClick(&ev, true);
     }
 
@@ -2488,7 +2488,7 @@ void QGuiApplicationPrivate::processMouseEvent(QWindowSystemInterfacePrivate::Mo
     e->eventAccepted = ev.isAccepted();
     if (!e->synthetic() && !ev.isAccepted()
         && !e->nonClientArea
-        && qApp->testAttribute(Qt::AA_SynthesizeTouchForUnhandledMouseEvents)) {
+        && qApp->testAttribute(BobUI::AA_SynthesizeTouchForUnhandledMouseEvents)) {
         QList<QWindowSystemInterface::TouchPoint> points;
         QWindowSystemInterface::TouchPoint point;
         point.id = 1;
@@ -2497,11 +2497,11 @@ void QGuiApplicationPrivate::processMouseEvent(QWindowSystemInterfacePrivate::Mo
         // only translate left button related events to
         // avoid strange touch event sequences when several
         // buttons are pressed
-        if (type == QEvent::MouseButtonPress && button == Qt::LeftButton) {
+        if (type == QEvent::MouseButtonPress && button == BobUI::LeftButton) {
             point.state = QEventPoint::State::Pressed;
-        } else if (type == QEvent::MouseButtonRelease && button == Qt::LeftButton) {
+        } else if (type == QEvent::MouseButtonRelease && button == BobUI::LeftButton) {
             point.state = QEventPoint::State::Released;
-        } else if (type == QEvent::MouseMove && (e->buttons & Qt::LeftButton)) {
+        } else if (type == QEvent::MouseMove && (e->buttons & BobUI::LeftButton)) {
             point.state = QEventPoint::State::Updated;
         } else {
             return;
@@ -2518,8 +2518,8 @@ void QGuiApplicationPrivate::processMouseEvent(QWindowSystemInterfacePrivate::Mo
         processTouchEvent(&fake);
     }
     if (doubleClick) {
-        mousePressButton = Qt::NoButton;
-        if (!e->window.isNull() || e->nullWindow()) { // QTBUG-36364, check if window closed in response to press
+        mousePressButton = BobUI::NoButton;
+        if (!e->window.isNull() || e->nullWindow()) { // BOBUIBUG-36364, check if window closed in response to press
             const QEvent::Type doubleClickType = e->nonClientArea ? QEvent::NonClientAreaMouseButtonDblClick : QEvent::MouseButtonDblClick;
             QMouseEvent dblClickEvent(doubleClickType, localPoint, localPoint, globalPoint,
                                       button, e->buttons, e->modifiers, e->source, device);
@@ -2527,7 +2527,7 @@ void QGuiApplicationPrivate::processMouseEvent(QWindowSystemInterfacePrivate::Mo
             QGuiApplication::sendSpontaneousEvent(window, &dblClickEvent);
         }
     }
-    if (type == QEvent::MouseButtonRelease && e->buttons == Qt::NoButton) {
+    if (type == QEvent::MouseButtonRelease && e->buttons == BobUI::NoButton) {
         popup_closed_on_press = false;
         if (auto *persistentEPD = devPriv->queryPointById(0)) {
             ev.setExclusiveGrabber(persistentEPD->eventPoint, nullptr);
@@ -2538,7 +2538,7 @@ void QGuiApplicationPrivate::processMouseEvent(QWindowSystemInterfacePrivate::Mo
 
 void QGuiApplicationPrivate::processWheelEvent(QWindowSystemInterfacePrivate::WheelEvent *e)
 {
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
     QWindow *window = e->window.data();
     QPointF globalPoint = e->globalPos;
     QPointF localPoint = e->localPos;
@@ -2568,7 +2568,7 @@ void QGuiApplicationPrivate::processWheelEvent(QWindowSystemInterfacePrivate::Wh
     e->eventAccepted = ev.isAccepted();
 #else
      Q_UNUSED(e);
-#endif // QT_CONFIG(wheelevent)
+#endif // BOBUI_CONFIG(wheelevent)
 }
 
 void QGuiApplicationPrivate::processKeyEvent(QWindowSystemInterfacePrivate::KeyEvent *e)
@@ -2577,7 +2577,7 @@ void QGuiApplicationPrivate::processKeyEvent(QWindowSystemInterfacePrivate::KeyE
     modifier_buttons = e->modifiers;
     if (e->nullWindow()
 #ifdef Q_OS_ANDROID
-           || e->key == Qt::Key_Back || e->key == Qt::Key_Menu
+           || e->key == BobUI::Key_Back || e->key == BobUI::Key_Menu
 #endif
             ) {
         window = QGuiApplication::focusWindow();
@@ -2600,8 +2600,8 @@ void QGuiApplicationPrivate::processKeyEvent(QWindowSystemInterfacePrivate::KeyE
         if (QWindowSystemInterface::handleShortcutEvent(window, e->timestamp, e->key, e->modifiers,
             e->nativeScanCode, e->nativeVirtualKey, e->nativeModifiers, e->unicode, e->repeat, e->repeatCount)) {
 #if defined(Q_OS_ANDROID)
-            backKeyPressAccepted = e->key == Qt::Key_Back;
-            menuKeyPressAccepted = e->key == Qt::Key_Menu;
+            backKeyPressAccepted = e->key == BobUI::Key_Back;
+            menuKeyPressAccepted = e->key == BobUI::Key_Menu;
 #endif
             return;
         }
@@ -2629,13 +2629,13 @@ void QGuiApplicationPrivate::processKeyEvent(QWindowSystemInterfacePrivate::KeyE
         ev.setAccepted(false);
 
     if (e->keyType == QEvent::KeyPress) {
-        backKeyPressAccepted = e->key == Qt::Key_Back && ev.isAccepted();
-        menuKeyPressAccepted = e->key == Qt::Key_Menu && ev.isAccepted();
+        backKeyPressAccepted = e->key == BobUI::Key_Back && ev.isAccepted();
+        menuKeyPressAccepted = e->key == BobUI::Key_Menu && ev.isAccepted();
     } else if (e->keyType == QEvent::KeyRelease) {
-        if (e->key == Qt::Key_Back && !backKeyPressAccepted && !ev.isAccepted()) {
+        if (e->key == BobUI::Key_Back && !backKeyPressAccepted && !ev.isAccepted()) {
             if (window)
                 QWindowSystemInterface::handleCloseEvent(window);
-        } else if (e->key == Qt::Key_Menu && !menuKeyPressAccepted && !ev.isAccepted()) {
+        } else if (e->key == BobUI::Key_Menu && !menuKeyPressAccepted && !ev.isAccepted()) {
             platform_theme->showPlatformMenuBar();
         }
     }
@@ -2698,7 +2698,7 @@ void QGuiApplicationPrivate::processFocusWindowEvent(QWindowSystemInterfacePriva
         if (QPlatformWindow *platformWindow = newFocus->handle())
             if (platformWindow->isAlertState())
                 platformWindow->setAlertState(false);
-        activatedPopup = (newFocus->flags() & Qt::WindowType_Mask) == Qt::Popup;
+        activatedPopup = (newFocus->flags() & BobUI::WindowType_Mask) == BobUI::Popup;
         if (activatedPopup)
             activatePopup(newFocus);
     }
@@ -2715,28 +2715,28 @@ void QGuiApplicationPrivate::processFocusWindowEvent(QWindowSystemInterfacePriva
         return;
 
     if (previous) {
-        Qt::FocusReason r = e->reason;
-        if ((r == Qt::OtherFocusReason || r == Qt::ActiveWindowFocusReason) && activatedPopup)
-            r = Qt::PopupFocusReason;
+        BobUI::FocusReason r = e->reason;
+        if ((r == BobUI::OtherFocusReason || r == BobUI::ActiveWindowFocusReason) && activatedPopup)
+            r = BobUI::PopupFocusReason;
         QFocusEvent focusOut(QEvent::FocusOut, r);
         QCoreApplication::sendSpontaneousEvent(previous, &focusOut);
         QObject::disconnect(previous, SIGNAL(focusObjectChanged(QObject*)),
                             qApp, SLOT(_q_updateFocusObject(QObject*)));
     } else if (!platformIntegration()->hasCapability(QPlatformIntegration::ApplicationState)) {
-        setApplicationState(Qt::ApplicationActive);
+        setApplicationState(BobUI::ApplicationActive);
     }
 
     if (QGuiApplicationPrivate::focus_window) {
-        Qt::FocusReason r = e->reason;
-        if ((r == Qt::OtherFocusReason || r == Qt::ActiveWindowFocusReason) &&
-                previous && (previous->flags() & Qt::Popup) == Qt::Popup)
-            r = Qt::PopupFocusReason;
+        BobUI::FocusReason r = e->reason;
+        if ((r == BobUI::OtherFocusReason || r == BobUI::ActiveWindowFocusReason) &&
+                previous && (previous->flags() & BobUI::Popup) == BobUI::Popup)
+            r = BobUI::PopupFocusReason;
         QFocusEvent focusIn(QEvent::FocusIn, r);
         QCoreApplication::sendSpontaneousEvent(QGuiApplicationPrivate::focus_window, &focusIn);
         QObject::connect(QGuiApplicationPrivate::focus_window, SIGNAL(focusObjectChanged(QObject*)),
                          qApp, SLOT(_q_updateFocusObject(QObject*)));
     } else if (!platformIntegration()->hasCapability(QPlatformIntegration::ApplicationState)) {
-        setApplicationState(Qt::ApplicationInactive);
+        setApplicationState(BobUI::ApplicationInactive);
     }
 
     if (auto *guiAppPrivate = QGuiApplicationPrivate::instance()) {
@@ -2763,7 +2763,7 @@ void QGuiApplicationPrivate::processFocusWindowEvent(QWindowSystemInterfacePriva
 void QGuiApplicationPrivate::processWindowStateChangedEvent(QWindowSystemInterfacePrivate::WindowStateChangedEvent *wse)
 {
     if (QWindow *window = wse->window.data()) {
-        QWindowPrivate *windowPrivate = qt_window_private(window);
+        QWindowPrivate *windowPrivate = bobui_window_private(window);
         const auto originalEffectiveState = QWindowPrivate::effectiveState(windowPrivate->windowState);
 
         windowPrivate->windowState = wse->newState;
@@ -2838,7 +2838,7 @@ void QGuiApplicationPrivate::handleThemeChanged()
     QAbstractFileIconProviderPrivate::clearIconTypeCache();
 
     if (!(applicationResourceFlags & ApplicationFontExplicitlySet)) {
-        const auto locker = qt_scoped_lock(applicationFontMutex);
+        const auto locker = bobui_scoped_lock(applicationFontMutex);
         clearFontUnlocked();
         initFontUnlocked();
     }
@@ -2937,7 +2937,7 @@ QGuiApplicationPrivate::TabletPointData &QGuiApplicationPrivate::tabletDevicePoi
 
 void QGuiApplicationPrivate::processTabletEvent(QWindowSystemInterfacePrivate::TabletEvent *e)
 {
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
     const auto device = static_cast<const QPointingDevice *>(e->device);
     TabletPointData &pointData = tabletDevicePoint(device->uniqueId().numericId());
 
@@ -2978,11 +2978,11 @@ void QGuiApplicationPrivate::processTabletEvent(QWindowSystemInterfacePrivate::T
     }
 
     // TODO stop deducing the button state change here: rather require it from the platform plugin, as with mouse events
-    Qt::MouseButtons stateChange = e->buttons ^ pointData.state;
-    Qt::MouseButton button = Qt::NoButton;
-    for (int check = Qt::LeftButton; check <= int(Qt::MaxMouseButton); check = check << 1) {
+    BobUI::MouseButtons stateChange = e->buttons ^ pointData.state;
+    BobUI::MouseButton button = BobUI::NoButton;
+    for (int check = BobUI::LeftButton; check <= int(BobUI::MaxMouseButton); check = check << 1) {
         if (check & stateChange) {
-            button = Qt::MouseButton(check);
+            button = BobUI::MouseButton(check);
             break;
         }
     }
@@ -2993,7 +2993,7 @@ void QGuiApplicationPrivate::processTabletEvent(QWindowSystemInterfacePrivate::T
         return;
     }
 
-    QTabletEvent tabletEvent(type, device, local, e->global,
+    BOBUIabletEvent tabletEvent(type, device, local, e->global,
                              e->pressure, e->xTilt, e->yTilt,
                              e->tangentialPressure, e->rotation, e->z,
                              e->modifiers, button, e->buttons);
@@ -3010,7 +3010,7 @@ void QGuiApplicationPrivate::processTabletEvent(QWindowSystemInterfacePrivate::T
     pointData.state = e->buttons;
     if (!tabletEvent.isAccepted()
         && !QWindowSystemInterfacePrivate::TabletEvent::platformSynthesizesMouse
-        && qApp->testAttribute(Qt::AA_SynthesizeMouseForUnhandledTabletEvents)) {
+        && qApp->testAttribute(BobUI::AA_SynthesizeMouseForUnhandledTabletEvents)) {
 
         const QEvent::Type mouseType = [&]() {
             switch (type) {
@@ -3021,7 +3021,7 @@ void QGuiApplicationPrivate::processTabletEvent(QWindowSystemInterfacePrivate::T
             }
         }();
         QWindowSystemInterfacePrivate::MouseEvent mouseEvent(window, e->timestamp, e->local,
-            e->global, e->buttons, e->modifiers, button, mouseType, Qt::MouseEventNotSynthesized, false, device);
+            e->global, e->buttons, e->modifiers, button, mouseType, BobUI::MouseEventNotSynthesized, false, device);
         mouseEvent.flags |= QWindowSystemInterfacePrivate::WindowSystemEvent::Synthetic;
         qCDebug(lcPtrDispatch) << "synthesizing mouse from tablet event" << mouseType
                                << e->local << button << e->buttons << e->modifiers;
@@ -3034,10 +3034,10 @@ void QGuiApplicationPrivate::processTabletEvent(QWindowSystemInterfacePrivate::T
 
 void QGuiApplicationPrivate::processTabletEnterProximityEvent(QWindowSystemInterfacePrivate::TabletEnterProximityEvent *e)
 {
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
     const QPointingDevice *dev = static_cast<const QPointingDevice *>(e->device);
-    QTabletEvent ev(QEvent::TabletEnterProximity, dev, QPointF(), QPointF(),
-                    0, 0, 0, 0, 0, 0, e->modifiers, Qt::NoButton,
+    BOBUIabletEvent ev(QEvent::TabletEnterProximity, dev, QPointF(), QPointF(),
+                    0, 0, 0, 0, 0, 0, e->modifiers, BobUI::NoButton,
                     tabletDevicePoint(dev->uniqueId().numericId()).state);
     ev.setTimestamp(e->timestamp);
     QGuiApplication::sendSpontaneousEvent(qGuiApp, &ev);
@@ -3048,10 +3048,10 @@ void QGuiApplicationPrivate::processTabletEnterProximityEvent(QWindowSystemInter
 
 void QGuiApplicationPrivate::processTabletLeaveProximityEvent(QWindowSystemInterfacePrivate::TabletLeaveProximityEvent *e)
 {
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
     const QPointingDevice *dev = static_cast<const QPointingDevice *>(e->device);
-    QTabletEvent ev(QEvent::TabletLeaveProximity, dev, QPointF(), QPointF(),
-                    0, 0, 0, 0, 0, 0, e->modifiers, Qt::NoButton,
+    BOBUIabletEvent ev(QEvent::TabletLeaveProximity, dev, QPointF(), QPointF(),
+                    0, 0, 0, 0, 0, 0, e->modifiers, BobUI::NoButton,
                     tabletDevicePoint(dev->uniqueId().numericId()).state);
     ev.setTimestamp(e->timestamp);
     QGuiApplication::sendSpontaneousEvent(qGuiApp, &ev);
@@ -3060,7 +3060,7 @@ void QGuiApplicationPrivate::processTabletLeaveProximityEvent(QWindowSystemInter
 #endif
 }
 
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
 void QGuiApplicationPrivate::processGestureEvent(QWindowSystemInterfacePrivate::GestureEvent *e)
 {
     if (e->window.isNull())
@@ -3072,7 +3072,7 @@ void QGuiApplicationPrivate::processGestureEvent(QWindowSystemInterfacePrivate::
     ev.setTimestamp(e->timestamp);
     QGuiApplication::sendSpontaneousEvent(e->window, &ev);
 }
-#endif // QT_NO_GESTURES
+#endif // BOBUI_NO_GESTURES
 
 void QGuiApplicationPrivate::processPlatformPanelEvent(QWindowSystemInterfacePrivate::PlatformPanelEvent *e)
 {
@@ -3088,7 +3088,7 @@ void QGuiApplicationPrivate::processPlatformPanelEvent(QWindowSystemInterfacePri
     QGuiApplication::sendSpontaneousEvent(e->window.data(), &ev);
 }
 
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
 void QGuiApplicationPrivate::processContextMenuEvent(QWindowSystemInterfacePrivate::ContextMenuEvent *e)
 {
     // Widgets do not care about mouse triggered context menu events. Also, do not forward event
@@ -3116,7 +3116,7 @@ void QGuiApplicationPrivate::processTouchEvent(QWindowSystemInterfacePrivate::To
     if (e->touchType == QEvent::TouchCancel) {
         // The touch sequence has been canceled (e.g. by the compositor).
         // Send the TouchCancel to all windows with active touches and clean up.
-        QTouchEvent touchEvent(QEvent::TouchCancel, device, e->modifiers);
+        BOBUIouchEvent touchEvent(QEvent::TouchCancel, device, e->modifiers);
         touchEvent.setTimestamp(e->timestamp);
         constexpr qsizetype Prealloc = decltype(devPriv->activePoints)::mapped_container_type::PreallocatedSize;
         QMinimalVarLengthFlatSet<QWindow *, Prealloc> windowsNeedingCancel;
@@ -3138,11 +3138,11 @@ void QGuiApplicationPrivate::processTouchEvent(QWindowSystemInterfacePrivate::To
                                                                e->timestamp,
                                                                synthIt->pos,
                                                                synthIt->screenPos,
-                                                               Qt::NoButton,
+                                                               BobUI::NoButton,
                                                                e->modifiers,
-                                                               Qt::LeftButton,
+                                                               BobUI::LeftButton,
                                                                QEvent::MouseButtonRelease,
-                                                               Qt::MouseEventNotSynthesized,
+                                                               BobUI::MouseEventNotSynthesized,
                                                                false,
                                                                device);
                 fake.flags |= QWindowSystemInterfacePrivate::WindowSystemEvent::Synthetic;
@@ -3166,7 +3166,7 @@ void QGuiApplicationPrivate::processTouchEvent(QWindowSystemInterfacePrivate::To
     // For each temporary QEventPoint from the QPA TouchEvent:
     // - update the persistent QEventPoint in QPointingDevicePrivate::activePoints with current values
     // - determine which window to deliver it to
-    // - add it to the QTouchEvent instance for that window (QMutableTouchEvent::target() will be QWindow*, for now)
+    // - add it to the BOBUIouchEvent instance for that window (QMutableTouchEvent::target() will be QWindow*, for now)
     for (auto &tempPt : e->points) {
         // update state
         auto epd = devPriv->pointById(tempPt.id());
@@ -3256,11 +3256,11 @@ void QGuiApplicationPrivate::processTouchEvent(QWindowSystemInterfacePrivate::To
         if (window->d_func()->blockedByModalWindow && !activePopup) {
             // a modal window is blocking this window, don't allow touch events through
 
-            // QTBUG-37371 temporary fix; TODO: revisit when we have a forwarding solution
+            // BOBUIBUG-37371 temporary fix; TODO: revisit when we have a forwarding solution
             if (touchEvent.type() == QEvent::TouchEnd) {
                 // but don't leave dangling state: e.g.
                 // QQuickWindowPrivate::itemForTouchPointId needs to be cleared.
-                QTouchEvent touchEvent(QEvent::TouchCancel, device, e->modifiers);
+                BOBUIouchEvent touchEvent(QEvent::TouchCancel, device, e->modifiers);
                 touchEvent.setTimestamp(e->timestamp);
                 QGuiApplication::sendSpontaneousEvent(window, &touchEvent);
             }
@@ -3278,13 +3278,13 @@ void QGuiApplicationPrivate::processTouchEvent(QWindowSystemInterfacePrivate::To
         // to deliver the touch event to, and will therefore be invalid afterwards.
         QGuiApplication::sendSpontaneousEvent(window, &touchEvent);
 
-        if (!e->synthetic() && !touchEvent.isAccepted() && qApp->testAttribute(Qt::AA_SynthesizeMouseForUnhandledTouchEvents)) {
+        if (!e->synthetic() && !touchEvent.isAccepted() && qApp->testAttribute(BobUI::AA_SynthesizeMouseForUnhandledTouchEvents)) {
             // exclude devices which generate their own mouse events
             if (!(touchEvent.device()->capabilities().testFlag(QInputDevice::Capability::MouseEmulation))) {
 
                 QEvent::Type mouseEventType = QEvent::MouseMove;
-                Qt::MouseButton button = Qt::NoButton;
-                Qt::MouseButtons buttons = Qt::LeftButton;
+                BobUI::MouseButton button = BobUI::NoButton;
+                BobUI::MouseButtons buttons = BobUI::LeftButton;
                 if (eventType == QEvent::TouchBegin || m_fakeMouseSourcePointId < 0) {
                     m_fakeMouseSourcePointId = touchEvent.point(0).id();
                     qCDebug(lcPtrDispatch) << "synthesizing mouse events from touchpoint" << m_fakeMouseSourcePointId;
@@ -3295,12 +3295,12 @@ void QGuiApplicationPrivate::processTouchEvent(QWindowSystemInterfacePrivate::To
                         switch (touchPoint->state()) {
                         case QEventPoint::State::Pressed:
                             mouseEventType = QEvent::MouseButtonPress;
-                            button = Qt::LeftButton;
+                            button = BobUI::LeftButton;
                             break;
                         case QEventPoint::State::Released:
                             mouseEventType = QEvent::MouseButtonRelease;
-                            button = Qt::LeftButton;
-                            buttons = Qt::NoButton;
+                            button = BobUI::LeftButton;
+                            buttons = BobUI::NoButton;
                             Q_ASSERT(m_fakeMouseSourcePointId == touchPoint->id());
                             m_fakeMouseSourcePointId = -1;
                             break;
@@ -3322,7 +3322,7 @@ void QGuiApplicationPrivate::processTouchEvent(QWindowSystemInterfacePrivate::To
                                                                        e->modifiers,
                                                                        button,
                                                                        mouseEventType,
-                                                                       Qt::MouseEventSynthesizedByQt,
+                                                                       BobUI::MouseEventSynthesizedByBobUI,
                                                                        false,
                                                                        device,
                                                                        touchPoint->id());
@@ -3337,7 +3337,7 @@ void QGuiApplicationPrivate::processTouchEvent(QWindowSystemInterfacePrivate::To
     }
 
     // Remove released points from QPointingDevicePrivate::activePoints only after the event is
-    // delivered.  Widgets and Qt Quick are allowed to access them at any time before this.
+    // delivered.  Widgets and BobUI Quick are allowed to access them at any time before this.
     for (const QEventPoint &touchPoint : e->points) {
         if (touchPoint.state() == QEventPoint::State::Released)
             devPriv->removePointById(touchPoint.id());
@@ -3439,7 +3439,7 @@ void QGuiApplicationPrivate::processExposeEvent(QWindowSystemInterfacePrivate::E
     QWindow *window = e->window.data();
     if (!window)
         return;
-    QWindowPrivate *p = qt_window_private(window);
+    QWindowPrivate *p = bobui_window_private(window);
 
     if (e->isExposed) {
         // If the window has been automatically positioned or resized by the
@@ -3462,7 +3462,7 @@ void QGuiApplicationPrivate::processExposeEvent(QWindowSystemInterfacePrivate::E
 
         // FIXME: It would logically make sense to set this _after_ we've sent the
         // expose event to the window, to mark that it now has received an expose.
-        // But some parts of Qt (mis)use this private member to check whether the
+        // But some parts of BobUI (mis)use this private member to check whether the
         // window has been mapped yet, which they do in code that is triggered
         // by the very same expose event we send below. To keep the code working
         // we need to set the variable up front, until the code has been fixed.
@@ -3482,7 +3482,7 @@ void QGuiApplicationPrivate::processExposeEvent(QWindowSystemInterfacePrivate::E
         const bool dprWasChanged = QWindowPrivate::get(window)->updateDevicePixelRatio();
         if (dprWasChanged)
             qWarning() << "The cached device pixel ratio value was stale on window expose. "
-                       << "Please file a QTBUG which explains how to reproduce.";
+                       << "Please file a BOBUIBUG which explains how to reproduce.";
     }
 
     // We treat expose events for an already exposed window as paint events
@@ -3528,43 +3528,43 @@ void QGuiApplicationPrivate::processPaintEvent(QWindowSystemInterfacePrivate::Pa
     e->eventAccepted = paintEvent.isAccepted();
 }
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 
 /*! \internal
 
   This function updates an internal state to keep the source compatibility.
-  ### Qt 6 - Won't need after QTBUG-73829
+  ### BobUI 6 - Won't need after BOBUIBUG-73829
 */
-static void updateMouseAndModifierButtonState(Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers)
+static void updateMouseAndModifierButtonState(BobUI::MouseButtons buttons, BobUI::KeyboardModifiers modifiers)
 {
     QGuiApplicationPrivate::mouse_buttons = buttons;
     QGuiApplicationPrivate::modifier_buttons = modifiers;
 }
 
-QPlatformDragQtResponse QGuiApplicationPrivate::processDrag(QWindow *w, const QMimeData *dropData,
-                                                            const QPoint &p, Qt::DropActions supportedActions,
-                                                            Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers)
+QPlatformDragBobUIResponse QGuiApplicationPrivate::processDrag(QWindow *w, const QMimeData *dropData,
+                                                            const QPoint &p, BobUI::DropActions supportedActions,
+                                                            BobUI::MouseButtons buttons, BobUI::KeyboardModifiers modifiers)
 {
     updateMouseAndModifierButtonState(buttons, modifiers);
 
-    static Qt::DropAction lastAcceptedDropAction = Qt::IgnoreAction;
+    static BobUI::DropAction lastAcceptedDropAction = BobUI::IgnoreAction;
     QPlatformDrag *platformDrag = platformIntegration()->drag();
     if (!platformDrag || (w && w->d_func()->blockedByModalWindow)) {
-        lastAcceptedDropAction = Qt::IgnoreAction;
-        return QPlatformDragQtResponse(false, lastAcceptedDropAction, QRect());
+        lastAcceptedDropAction = BobUI::IgnoreAction;
+        return QPlatformDragBobUIResponse(false, lastAcceptedDropAction, QRect());
     }
 
     if (!dropData) {
         currentDragWindow = nullptr;
         QDragLeaveEvent e;
         QGuiApplication::sendEvent(w, &e);
-        lastAcceptedDropAction = Qt::IgnoreAction;
-        return QPlatformDragQtResponse(false, lastAcceptedDropAction, QRect());
+        lastAcceptedDropAction = BobUI::IgnoreAction;
+        return QPlatformDragBobUIResponse(false, lastAcceptedDropAction, QRect());
     }
     QDragMoveEvent me(p, supportedActions, dropData, buttons, modifiers);
 
     if (w != currentDragWindow) {
-        lastAcceptedDropAction = Qt::IgnoreAction;
+        lastAcceptedDropAction = BobUI::IgnoreAction;
         if (currentDragWindow) {
             QDragLeaveEvent e;
             QGuiApplication::sendEvent(currentDragWindow, &e);
@@ -3572,25 +3572,25 @@ QPlatformDragQtResponse QGuiApplicationPrivate::processDrag(QWindow *w, const QM
         currentDragWindow = w;
         QDragEnterEvent e(p, supportedActions, dropData, buttons, modifiers);
         QGuiApplication::sendEvent(w, &e);
-        if (e.isAccepted() && e.dropAction() != Qt::IgnoreAction)
+        if (e.isAccepted() && e.dropAction() != BobUI::IgnoreAction)
             lastAcceptedDropAction = e.dropAction();
     }
 
     // Handling 'DragEnter' should suffice for the application.
-    if (lastAcceptedDropAction != Qt::IgnoreAction
+    if (lastAcceptedDropAction != BobUI::IgnoreAction
         && (supportedActions & lastAcceptedDropAction)) {
         me.setDropAction(lastAcceptedDropAction);
         me.accept();
     }
     QGuiApplication::sendEvent(w, &me);
     lastAcceptedDropAction = me.isAccepted() ?
-                             me.dropAction() :  Qt::IgnoreAction;
-    return QPlatformDragQtResponse(me.isAccepted(), lastAcceptedDropAction, me.answerRect());
+                             me.dropAction() :  BobUI::IgnoreAction;
+    return QPlatformDragBobUIResponse(me.isAccepted(), lastAcceptedDropAction, me.answerRect());
 }
 
-QPlatformDropQtResponse QGuiApplicationPrivate::processDrop(QWindow *w, const QMimeData *dropData,
-                                                            const QPoint &p, Qt::DropActions supportedActions,
-                                                            Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers)
+QPlatformDropBobUIResponse QGuiApplicationPrivate::processDrop(QWindow *w, const QMimeData *dropData,
+                                                            const QPoint &p, BobUI::DropActions supportedActions,
+                                                            BobUI::MouseButtons buttons, BobUI::KeyboardModifiers modifiers)
 {
     updateMouseAndModifierButtonState(buttons, modifiers);
 
@@ -3599,27 +3599,27 @@ QPlatformDropQtResponse QGuiApplicationPrivate::processDrop(QWindow *w, const QM
     QDropEvent de(p, supportedActions, dropData, buttons, modifiers);
     QGuiApplication::sendEvent(w, &de);
 
-    Qt::DropAction acceptedAction = de.isAccepted() ? de.dropAction() : Qt::IgnoreAction;
-    QPlatformDropQtResponse response(de.isAccepted(),acceptedAction);
+    BobUI::DropAction acceptedAction = de.isAccepted() ? de.dropAction() : BobUI::IgnoreAction;
+    QPlatformDropBobUIResponse response(de.isAccepted(),acceptedAction);
     return response;
 }
 
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
 /*!
     Returns the object for interacting with the clipboard.
 */
 QClipboard * QGuiApplication::clipboard()
 {
-    if (QGuiApplicationPrivate::qt_clipboard == nullptr) {
+    if (QGuiApplicationPrivate::bobui_clipboard == nullptr) {
         if (!qApp) {
             qWarning("QGuiApplication: Must construct a QGuiApplication before accessing a QClipboard");
             return nullptr;
         }
-        QGuiApplicationPrivate::qt_clipboard = new QClipboard(nullptr);
+        QGuiApplicationPrivate::bobui_clipboard = new QClipboard(nullptr);
     }
-    return QGuiApplicationPrivate::qt_clipboard;
+    return QGuiApplicationPrivate::bobui_clipboard;
 }
 #endif
 
@@ -3663,8 +3663,8 @@ void QGuiApplicationPrivate::updatePalette()
 QEvent::Type QGuiApplicationPrivate::contextMenuEventType()
 {
     switch (QGuiApplication::styleHints()->contextMenuTrigger()) {
-    case Qt::ContextMenuTrigger::Press: return QEvent::MouseButtonPress;
-    case Qt::ContextMenuTrigger::Release: return QEvent::MouseButtonRelease;
+    case BobUI::ContextMenuTrigger::Press: return QEvent::MouseButtonPress;
+    case BobUI::ContextMenuTrigger::Release: return QEvent::MouseButtonRelease;
     }
     return QEvent::None;
 }
@@ -3693,7 +3693,7 @@ bool QGuiApplicationPrivate::setPalette(const QPalette &palette)
 {
     // Resolve the palette against the theme palette, filling in
     // any missing roles, while keeping the original resolve mask.
-    QPalette basePalette = qGuiApp ? qGuiApp->d_func()->basePalette() : Qt::gray;
+    QPalette basePalette = qGuiApp ? qGuiApp->d_func()->basePalette() : BobUI::gray;
     basePalette.setResolveMask(0); // The base palette only contributes missing colors roles
     QPalette resolvedPalette = palette.resolve(basePalette);
 
@@ -3705,7 +3705,7 @@ bool QGuiApplicationPrivate::setPalette(const QPalette &palette)
     else
         *app_pal = resolvedPalette;
 
-    QCoreApplication::setAttribute(Qt::AA_SetPalette, app_pal->resolveMask() != 0);
+    QCoreApplication::setAttribute(BobUI::AA_SetPalette, app_pal->resolveMask() != 0);
 
     return true;
 }
@@ -3720,22 +3720,22 @@ bool QGuiApplicationPrivate::setPalette(const QPalette &palette)
 QPalette QGuiApplicationPrivate::basePalette() const
 {
     const auto pf = platformTheme();
-    return pf && pf->palette() ? *pf->palette() : Qt::gray;
+    return pf && pf->palette() ? *pf->palette() : BobUI::gray;
 }
 
 void QGuiApplicationPrivate::handlePaletteChanged(const char *className)
 {
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
     if (!className) {
         Q_ASSERT(app_pal);
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
         emit qGuiApp->paletteChanged(*QGuiApplicationPrivate::app_pal);
-QT_WARNING_POP
+BOBUI_WARNING_POP
     }
 #else
     Q_UNUSED(className);
-#endif // QT_DEPRECATED_SINCE(6, 0)
+#endif // BOBUI_DEPRECATED_SINCE(6, 0)
 
     if (is_app_running && !is_app_closing) {
         QEvent event(QEvent::ApplicationPaletteChange);
@@ -3766,7 +3766,7 @@ void QGuiApplicationPrivate::applyWindowGeometrySpecificationTo(QWindow *window)
 */
 QFont QGuiApplication::font()
 {
-    const auto locker = qt_scoped_lock(applicationFontMutex);
+    const auto locker = bobui_scoped_lock(applicationFontMutex);
     if (!QGuiApplicationPrivate::instance() && !QGuiApplicationPrivate::app_font) {
         qWarning("QGuiApplication::font(): no QGuiApplication instance and no application font set.");
         return QFont();  // in effect: QFont((QFontPrivate*)nullptr), so no recursion
@@ -3782,7 +3782,7 @@ QFont QGuiApplication::font()
 */
 void QGuiApplication::setFont(const QFont &font)
 {
-    auto locker = qt_unique_lock(applicationFontMutex);
+    auto locker = bobui_unique_lock(applicationFontMutex);
     const bool emitChange = !QGuiApplicationPrivate::app_font
                             || (*QGuiApplicationPrivate::app_font != font);
     if (!QGuiApplicationPrivate::app_font)
@@ -3794,14 +3794,14 @@ void QGuiApplication::setFont(const QFont &font)
     if (emitChange && qGuiApp) {
         auto font = *QGuiApplicationPrivate::app_font;
         locker.unlock();
-#if QT_DEPRECATED_SINCE(6, 0)
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
         emit qGuiApp->fontChanged(font);
-QT_WARNING_POP
+BOBUI_WARNING_POP
 #else
         Q_UNUSED(font);
-#endif // QT_DEPRECATED_SINCE(6, 0)
+#endif // BOBUI_DEPRECATED_SINCE(6, 0)
         QEvent event(QEvent::ApplicationFontChange);
         QGuiApplication::sendEvent(qGuiApp, &event);
     }
@@ -3811,7 +3811,7 @@ QT_WARNING_POP
     \fn bool QGuiApplication::isRightToLeft()
 
     Returns \c true if the application's layout direction is
-    Qt::RightToLeft; otherwise returns \c false.
+    BobUI::RightToLeft; otherwise returns \c false.
 
     \sa layoutDirection(), isLeftToRight()
 */
@@ -3820,7 +3820,7 @@ QT_WARNING_POP
     \fn bool QGuiApplication::isLeftToRight()
 
     Returns \c true if the application's layout direction is
-    Qt::LeftToRight; otherwise returns \c false.
+    BobUI::LeftToRight; otherwise returns \c false.
 
     \sa layoutDirection(), isRightToLeft()
 */
@@ -3936,7 +3936,7 @@ void QGuiApplicationPrivate::maybeLastWindowClosed()
 bool QGuiApplicationPrivate::lastWindowClosed() const
 {
     for (auto *window : QGuiApplication::topLevelWindows()) {
-        auto *windowPrivate = qt_window_private(window);
+        auto *windowPrivate = bobui_window_private(window);
         if (!windowPrivate->participatesInLastWindowClosed())
             continue;
 
@@ -3978,7 +3978,7 @@ void QGuiApplicationPrivate::processApplicationTermination(QWindowSystemInterfac
 
 /*!
     \since 5.2
-    \fn Qt::ApplicationState QGuiApplication::applicationState()
+    \fn BobUI::ApplicationState QGuiApplication::applicationState()
 
 
     Returns the current state of the application.
@@ -3988,7 +3988,7 @@ void QGuiApplicationPrivate::processApplicationTermination(QWindowSystemInterfac
     saving/restoring application data.
  */
 
-Qt::ApplicationState QGuiApplication::applicationState()
+BobUI::ApplicationState QGuiApplication::applicationState()
 {
     return QGuiApplicationPrivate::applicationState;
 }
@@ -4008,16 +4008,16 @@ Qt::ApplicationState QGuiApplication::applicationState()
     If rounding is wanted, then which type of rounding should be decided
     next. Mathematically correct rounding is supported but may not give
     the best visual results: Consider if you want to render 1.5x as 1x
-    ("small UI") or as 2x ("large UI"). See the Qt::HighDpiScaleFactorRoundingPolicy
+    ("small UI") or as 2x ("large UI"). See the BobUI::HighDpiScaleFactorRoundingPolicy
     enum for a complete list of all options.
 
     This function must be called before creating the application object.
     The QGuiApplication::highDpiScaleFactorRoundingPolicy()
     accessor will reflect the environment, if set.
 
-    The default value is Qt::HighDpiScaleFactorRoundingPolicy::PassThrough.
+    The default value is BobUI::HighDpiScaleFactorRoundingPolicy::PassThrough.
 */
-void QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy policy)
+void QGuiApplication::setHighDpiScaleFactorRoundingPolicy(BobUI::HighDpiScaleFactorRoundingPolicy policy)
 {
     if (qApp)
         qWarning("setHighDpiScaleFactorRoundingPolicy must be called before creating the QGuiApplication instance");
@@ -4029,21 +4029,21 @@ void QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactor
 
   Returns the high-DPI scale factor rounding policy.
 */
-Qt::HighDpiScaleFactorRoundingPolicy QGuiApplication::highDpiScaleFactorRoundingPolicy()
+BobUI::HighDpiScaleFactorRoundingPolicy QGuiApplication::highDpiScaleFactorRoundingPolicy()
 {
     return QGuiApplicationPrivate::highDpiScaleFactorRoundingPolicy;
 }
 
 /*!
     \since 5.2
-    \fn void QGuiApplication::applicationStateChanged(Qt::ApplicationState state)
+    \fn void QGuiApplication::applicationStateChanged(BobUI::ApplicationState state)
 
     This signal is emitted when the \a state of the application changes.
 
     \sa applicationState()
 */
 
-void QGuiApplicationPrivate::setApplicationState(Qt::ApplicationState state, bool forcePropagate)
+void QGuiApplicationPrivate::setApplicationState(BobUI::ApplicationState state, bool forcePropagate)
 {
     if ((applicationState == state) && !forcePropagate)
         return;
@@ -4051,11 +4051,11 @@ void QGuiApplicationPrivate::setApplicationState(Qt::ApplicationState state, boo
     applicationState = state;
 
     switch (state) {
-    case Qt::ApplicationActive: {
+    case BobUI::ApplicationActive: {
         QEvent appActivate(QEvent::ApplicationActivate);
         QCoreApplication::sendSpontaneousEvent(qApp, &appActivate);
         break; }
-    case Qt::ApplicationInactive: {
+    case BobUI::ApplicationInactive: {
         QEvent appDeactivate(QEvent::ApplicationDeactivate);
         QCoreApplication::sendSpontaneousEvent(qApp, &appDeactivate);
         break; }
@@ -4091,7 +4091,7 @@ void QGuiApplicationPrivate::setApplicationState(Qt::ApplicationState state, boo
     QSessionManager::allowsErrorInteraction() for details and example
     usage.
 
-    \note You should use Qt::DirectConnection when connecting to this signal.
+    \note You should use BobUI::DirectConnection when connecting to this signal.
 
     \sa isSessionRestored(), sessionId(), saveStateRequest(), {Session Management}
 */
@@ -4119,7 +4119,7 @@ void QGuiApplicationPrivate::setApplicationState(Qt::ApplicationState state, boo
     QSessionManager::allowsInteraction() and
     QSessionManager::allowsErrorInteraction() for details.
 
-    \note You should use Qt::DirectConnection when connecting to this signal.
+    \note You should use BobUI::DirectConnection when connecting to this signal.
 
     \sa isSessionRestored(), sessionId(), commitDataRequest(), {Session Management}
 */
@@ -4172,7 +4172,7 @@ void QGuiApplicationPrivate::setApplicationState(Qt::ApplicationState state, boo
 
     \sa isSessionRestored(), sessionId(), commitDataRequest(), saveStateRequest()
 */
-#ifndef QT_NO_SESSIONMANAGER
+#ifndef BOBUI_NO_SESSIONMANAGER
 bool QGuiApplication::isSessionRestored() const
 {
     Q_D(const QGuiApplication);
@@ -4213,15 +4213,15 @@ void QGuiApplicationPrivate::saveState()
     emit q->saveStateRequest(*session_manager);
     is_saving_session = false;
 }
-#endif //QT_NO_SESSIONMANAGER
+#endif //BOBUI_NO_SESSIONMANAGER
 
 /*!
     \since 5.2
 
-    Function that can be used to sync Qt state with the Window Systems state.
+    Function that can be used to sync BobUI state with the Window Systems state.
 
-    This function will first empty Qts events by calling QCoreApplication::processEvents(),
-    then the platform plugin will sync up with the windowsystem, and finally Qts events
+    This function will first empty BobUIs events by calling QCoreApplication::processEvents(),
+    then the platform plugin will sync up with the windowsystem, and finally BobUIs events
     will be delived by another call to QCoreApplication::processEvents();
 
     This function is timeconsuming and its use is discouraged.
@@ -4242,19 +4242,19 @@ void QGuiApplication::sync()
     \brief the default layout direction for this application
 
     On system start-up, or when the direction is explicitly set to
-    Qt::LayoutDirectionAuto, the default layout direction depends on the
+    BobUI::LayoutDirectionAuto, the default layout direction depends on the
     application's language.
 
-    The notifier signal was introduced in Qt 5.4.
+    The notifier signal was introduced in BobUI 5.4.
 
     \sa QWidget::layoutDirection, isLeftToRight(), isRightToLeft()
  */
 
-void QGuiApplication::setLayoutDirection(Qt::LayoutDirection direction)
+void QGuiApplication::setLayoutDirection(BobUI::LayoutDirection direction)
 {
     layout_direction = direction;
-    if (direction == Qt::LayoutDirectionAuto)
-        direction = qt_detectRTLLanguage() ? Qt::RightToLeft : Qt::LeftToRight;
+    if (direction == BobUI::LayoutDirectionAuto)
+        direction = bobui_detectRTLLanguage() ? BobUI::RightToLeft : BobUI::LeftToRight;
 
     // no change to the explicitly set or auto-detected layout direction
     if (direction == effective_layout_direction)
@@ -4267,14 +4267,14 @@ void QGuiApplication::setLayoutDirection(Qt::LayoutDirection direction)
     }
 }
 
-Qt::LayoutDirection QGuiApplication::layoutDirection()
+BobUI::LayoutDirection QGuiApplication::layoutDirection()
 {
     /*
-        effective_layout_direction defaults to Qt::LeftToRight, and is updated with what is
-        auto-detected by a call to setLayoutDirection(Qt::LayoutDirectionAuto). This happens in
+        effective_layout_direction defaults to BobUI::LeftToRight, and is updated with what is
+        auto-detected by a call to setLayoutDirection(BobUI::LayoutDirectionAuto). This happens in
         QGuiApplicationPrivate::init and when the language changes (or before if the application
         calls the static function, but then no translators are installed so the auto-detection
-        always yields Qt::LeftToRight).
+        always yields BobUI::LeftToRight).
         So we can be certain that it's always the right value.
     */
     return effective_layout_direction;
@@ -4290,7 +4290,7 @@ Qt::LayoutDirection QGuiApplication::layoutDirection()
 
     \sa setOverrideCursor(), restoreOverrideCursor()
 */
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 QCursor *QGuiApplication::overrideCursor()
 {
     CHECK_QAPP_INSTANCE(nullptr)
@@ -4316,7 +4316,7 @@ void QGuiApplication::changeOverrideCursor(const QCursor &cursor)
 #endif
 
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 static inline void applyCursor(QWindow *w, QCursor c)
 {
     if (const QScreen *screen = w->screen())
@@ -4361,7 +4361,7 @@ static inline void applyWindowCursor(const QList<QWindow *> &l)
     for (int i = 0; i < l.size(); ++i) {
         QWindow *w = l.at(i);
         if (w->handle()) {
-            if (qt_window_private(w)->hasCursor) {
+            if (bobui_window_private(w)->hasCursor) {
                 applyCursor(w, w->cursor());
             } else {
                 unsetCursor(w);
@@ -4435,7 +4435,7 @@ void QGuiApplication::restoreOverrideCursor()
         applyWindowCursor(QGuiApplicationPrivate::window_list);
     }
 }
-#endif// QT_NO_CURSOR
+#endif// BOBUI_NO_CURSOR
 
 /*!
   Returns the application's style hints.
@@ -4455,7 +4455,7 @@ QStyleHints *QGuiApplication::styleHints()
 }
 
 /*!
-    Sets whether Qt should use the system's standard colors, fonts, etc., to
+    Sets whether BobUI should use the system's standard colors, fonts, etc., to
     \a on. By default, this is \c true.
 
     This function must be called before creating the QGuiApplication object, like
@@ -4471,7 +4471,7 @@ void QGuiApplication::setDesktopSettingsAware(bool on)
 }
 
 /*!
-    Returns \c true if Qt is set to use the system's standard colors, fonts, etc.;
+    Returns \c true if BobUI is set to use the system's standard colors, fonts, etc.;
     otherwise returns \c false. The default is \c true.
 
     \sa setDesktopSettingsAware()
@@ -4512,7 +4512,7 @@ QInputMethod *QGuiApplication::inputMethod()
     QFontDatabase::removeApplicationFont()
 */
 
-QPixmap QGuiApplicationPrivate::getPixmapCursor(Qt::CursorShape cshape)
+QPixmap QGuiApplicationPrivate::getPixmapCursor(BobUI::CursorShape cshape)
 {
     Q_UNUSED(cshape);
     return QPixmap();
@@ -4526,7 +4526,7 @@ QPoint QGuiApplicationPrivate::QLastCursorPosition::toPoint() const noexcept
     return thePoint.toPoint();
 }
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 void QGuiApplicationPrivate::notifyDragStarted(const QDrag *drag)
 {
     Q_UNUSED(drag);
@@ -4585,20 +4585,20 @@ QInputDeviceManager *QGuiApplicationPrivate::inputDeviceManager()
 }
 
 /*!
-    Returns the QThreadPool instance for Qt Gui.
+    Returns the BOBUIhreadPool instance for BobUI Gui.
     \internal
 */
-QThreadPool *QGuiApplicationPrivate::qtGuiThreadPool()
+BOBUIhreadPool *QGuiApplicationPrivate::bobuiGuiThreadPool()
 {
-#if QT_CONFIG(qtgui_threadpool)
-    Q_CONSTINIT static QPointer<QThreadPool> guiInstance;
+#if BOBUI_CONFIG(bobuigui_threadpool)
+    Q_CONSTINIT static QPointer<BOBUIhreadPool> guiInstance;
     Q_CONSTINIT static QBasicMutex theMutex;
-    const static bool runtime_disable = qEnvironmentVariableIsSet("QT_NO_GUI_THREADPOOL");
+    const static bool runtime_disable = qEnvironmentVariableIsSet("BOBUI_NO_GUI_THREADPOOL");
     if (runtime_disable)
         return nullptr;
     const QMutexLocker locker(&theMutex);
     if (guiInstance.isNull() && !QCoreApplication::closingDown()) {
-        guiInstance = new QThreadPool();
+        guiInstance = new BOBUIhreadPool();
         // Limit max thread to avoid too many parallel threads.
         // We are not optimized for much more than 4 or 8 threads.
         if (guiInstance && guiInstance->maxThreadCount() > 4)
@@ -4632,21 +4632,21 @@ void *QGuiApplication::resolveInterface(const char *name, int revision) const
     Q_UNUSED(platformIntegration);
 
 #if defined(Q_OS_WIN)
-    QT_NATIVE_INTERFACE_RETURN_IF(QWindowsApplication, platformIntegration);
+    BOBUI_NATIVE_INTERFACE_RETURN_IF(QWindowsApplication, platformIntegration);
 #endif
-#if QT_CONFIG(xcb)
-    QT_NATIVE_INTERFACE_RETURN_IF(QX11Application, platformNativeInterface());
+#if BOBUI_CONFIG(xcb)
+    BOBUI_NATIVE_INTERFACE_RETURN_IF(QX11Application, platformNativeInterface());
 #endif
-#if QT_CONFIG(wayland)
-    QT_NATIVE_INTERFACE_RETURN_IF(QWaylandApplication, platformNativeInterface());
+#if BOBUI_CONFIG(wayland)
+    BOBUI_NATIVE_INTERFACE_RETURN_IF(QWaylandApplication, platformNativeInterface());
 #endif
 #if defined(Q_OS_VISIONOS)
-    QT_NATIVE_INTERFACE_RETURN_IF(QVisionOSApplication, platformIntegration);
+    BOBUI_NATIVE_INTERFACE_RETURN_IF(QVisionOSApplication, platformIntegration);
 #endif
 
     return QCoreApplication::resolveInterface(name, revision);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qguiapplication.cpp"

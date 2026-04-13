@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
-#if defined(QT_PRINTSUPPORT_LIB)
-#include <QtPrintSupport/qtprintsupportglobal.h>
-#if QT_CONFIG(printdialog)
+#include <BobUIWidgets>
+#if defined(BOBUI_PRINTSUPPORT_LIB)
+#include <BobUIPrintSupport/bobuiprintsupportglobal.h>
+#if BOBUI_CONFIG(printdialog)
 #include <QPrinter>
 #include <QPrintDialog>
 #endif
@@ -325,7 +325,7 @@ void ConclusionPage::setVisible(bool visible)
 
 void ConclusionPage::printButtonClicked()
 {
-#if defined(QT_PRINTSUPPORT_LIB) && QT_CONFIG(printdialog)
+#if defined(BOBUI_PRINTSUPPORT_LIB) && BOBUI_CONFIG(printdialog)
     QPrinter printer;
     QPrintDialog dialog(&printer, this);
     if (dialog.exec())

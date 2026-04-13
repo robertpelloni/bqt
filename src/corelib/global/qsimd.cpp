@@ -1,6 +1,6 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2022 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 // we need ICC to define the prototype for _rdseed64_step
 #define __INTEL_COMPILER_USE_INTRINSIC_PROTOTYPES
@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#if defined(QT_NO_DEBUG) && !defined(NDEBUG)
+#if defined(BOBUI_NO_DEBUG) && !defined(NDEBUG)
 #  define NDEBUG
 #endif
 #include <assert.h>
@@ -21,19 +21,19 @@
 #  include "../testlib/3rdparty/valgrind/valgrind_p.h"
 #endif
 
-#define QT_FUNCTION_TARGET_BASELINE
+#define BOBUI_FUNCTION_TARGET_BASELINE
 
 #if defined(Q_OS_WIN)
 #  if !defined(Q_CC_GNU)
 #    include <intrin.h>
 #  endif
 #  if defined(Q_PROCESSOR_ARM_64)
-#    include <qt_windows.h>
+#    include <bobui_windows.h>
 #    include <processthreadsapi.h>
 #  endif
 #elif defined(Q_OS_LINUX) && defined(Q_PROCESSOR_MIPS_32)
 #  include "private/qcore_unix_p.h"
-#elif QT_CONFIG(getauxval) && (defined(Q_PROCESSOR_ARM) || defined(Q_PROCESSOR_LOONGARCH))
+#elif BOBUI_CONFIG(getauxval) && (defined(Q_PROCESSOR_ARM) || defined(Q_PROCESSOR_LOONGARCH))
 #  include <sys/auxv.h>
 
 // the kernel header definitions for HWCAP_*
@@ -61,12 +61,12 @@
 #  include <sys/sysctl.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-template <typename T, uint N> QT_FUNCTION_TARGET_BASELINE
+template <typename T, uint N> BOBUI_FUNCTION_TARGET_BASELINE
 uint arraysize(T (&)[N])
 {
-    // Same as std::size, but with QT_FUNCTION_TARGET_BASELIE,
+    // Same as std::size, but with BOBUI_FUNCTION_TARGET_BASELIE,
     // otherwise some versions of GCC fail to compile.
     return N;
 }
@@ -124,7 +124,7 @@ static inline quint64 detectProcessorFeatures()
 {
     quint64 features = 0;
 
-#if QT_CONFIG(getauxval)
+#if BOBUI_CONFIG(getauxval)
     unsigned long auxvHwCap = getauxval(AT_HWCAP);
     if (auxvHwCap != 0) {
 #  if defined(Q_PROCESSOR_ARM_64)
@@ -209,7 +209,7 @@ static inline quint64 detectProcessorFeatures()
 static inline quint64 detectProcessorFeatures()
 {
     quint64 features = 0;
-#  if QT_CONFIG(getauxval)
+#  if BOBUI_CONFIG(getauxval)
     quint64 hwcap = getauxval(AT_HWCAP);
 
     if (hwcap & HWCAP_LOONGARCH_LSX)
@@ -254,11 +254,11 @@ static inline quint64 detectProcessorFeatures()
 
 #if defined(Q_CC_GNU) || defined(Q_CC_CLANG)
 // lower the target for functions in this file
-#  undef QT_FUNCTION_TARGET_BASELINE
-#  define QT_FUNCTION_TARGET_BASELINE               __attribute__((target(X86_BASELINE)))
+#  undef BOBUI_FUNCTION_TARGET_BASELINE
+#  define BOBUI_FUNCTION_TARGET_BASELINE               __attribute__((target(X86_BASELINE)))
 #endif
 
-QT_FUNCTION_TARGET_BASELINE
+BOBUI_FUNCTION_TARGET_BASELINE
 static int maxBasicCpuidSupported()
 {
 #if defined(Q_CC_EMSCRIPTEN)
@@ -306,7 +306,7 @@ static int maxBasicCpuidSupported()
 #endif
 }
 
-QT_FUNCTION_TARGET_BASELINE
+BOBUI_FUNCTION_TARGET_BASELINE
 static void cpuidFeatures01(uint &ecx, uint &edx)
 {
 #if defined(Q_CC_GNU) && !defined(Q_CC_EMSCRIPTEN)
@@ -336,7 +336,7 @@ static void cpuidFeatures01(uint &ecx, uint &edx)
 inline void __cpuidex(int info[4], int, __int64) { memset(info, 0, 4*sizeof(int));}
 #endif
 
-QT_FUNCTION_TARGET_BASELINE
+BOBUI_FUNCTION_TARGET_BASELINE
 static void cpuidFeatures07_00(uint &ebx, uint &ecx, uint &edx)
 {
 #if defined(Q_CC_GNU) && !defined(Q_CC_EMSCRIPTEN)
@@ -370,7 +370,7 @@ static void cpuidFeatures07_00(uint &ebx, uint &ecx, uint &edx)
 #endif
 }
 
-QT_FUNCTION_TARGET_BASELINE
+BOBUI_FUNCTION_TARGET_BASELINE
 #if defined(Q_OS_WIN) && !(defined(Q_CC_GNU) || defined(Q_CC_GHS))
 // fallback overload in case this intrinsic does not exist: unsigned __int64 _xgetbv(unsigned int);
 inline quint64 _xgetbv(__int64) { return 0; }
@@ -392,7 +392,7 @@ static void xgetbv(uint in, uint &eax, uint &edx)
 #endif
 }
 
-QT_FUNCTION_TARGET_BASELINE
+BOBUI_FUNCTION_TARGET_BASELINE
 static quint64 adjustedXcr0(quint64 xcr0)
 {
     /*
@@ -418,7 +418,7 @@ static quint64 adjustedXcr0(quint64 xcr0)
     return xcr0;
 }
 
-QT_FUNCTION_TARGET_BASELINE
+BOBUI_FUNCTION_TARGET_BASELINE
 static quint64 detectProcessorFeatures()
 {
     quint64 features = 0;
@@ -541,7 +541,7 @@ static void bufReadLine(int fd, QSimpleBuffer &line, QSimpleBuffer &buffer)
             buffer.size = oldsize;
         }
         ssize_t read_bytes =
-                ::qt_safe_read(fd, buffer.data + buffer.size, QSimpleBuffer::chunk_size);
+                ::bobui_safe_read(fd, buffer.data + buffer.size, QSimpleBuffer::chunk_size);
         if (read_bytes > 0)
             buffer.size += read_bytes;
         else
@@ -555,7 +555,7 @@ static void bufReadLine(int fd, QSimpleBuffer &line, QSimpleBuffer &buffer)
 //
 static bool procCpuinfoContains(const char *prefix, const char *string)
 {
-    int cpuinfo_fd = ::qt_safe_open("/proc/cpuinfo", O_RDONLY);
+    int cpuinfo_fd = ::bobui_safe_open("/proc/cpuinfo", O_RDONLY);
     if (cpuinfo_fd == -1)
         return false;
 
@@ -583,7 +583,7 @@ static bool procCpuinfoContains(const char *prefix, const char *string)
         }
     } while (line.size);
 
-    ::qt_safe_close(cpuinfo_fd);
+    ::bobui_safe_close(cpuinfo_fd);
     return present;
 }
 #endif
@@ -619,14 +619,14 @@ static inline uint detectProcessorFeatures()
 }
 #endif
 
-// record what CPU features were enabled by default in this Qt build
+// record what CPU features were enabled by default in this BobUI build
 static const quint64 minFeature = qCompilerCpuFeatures;
 
 static constexpr auto SimdInitialized = QCpuFeatureType(1) << (sizeof(QCpuFeatureType) * 8 - 1);
-Q_ATOMIC(QCpuFeatureType) QT_MANGLE_NAMESPACE(qt_cpu_features)[1] = { 0 };
+Q_ATOMIC(QCpuFeatureType) BOBUI_MANGLE_NAMESPACE(bobui_cpu_features)[1] = { 0 };
 
-QT_FUNCTION_TARGET_BASELINE
-uint64_t QT_MANGLE_NAMESPACE(qDetectCpuFeatures)()
+BOBUI_FUNCTION_TARGET_BASELINE
+uint64_t BOBUI_MANGLE_NAMESPACE(qDetectCpuFeatures)()
 {
     auto minFeatureTest = minFeature;
 #if defined(Q_PROCESSOR_X86_64) && defined(cpu_feature_shstk)
@@ -638,7 +638,7 @@ uint64_t QT_MANGLE_NAMESPACE(qDetectCpuFeatures)()
     QCpuFeatureType f = detectProcessorFeatures();
 
     // Intentionally NOT qgetenv (this code runs too early)
-    if (char *disable = getenv("QT_NO_CPU_FEATURE"); disable && *disable) {
+    if (char *disable = getenv("BOBUI_NO_CPU_FEATURE"); disable && *disable) {
 #if _POSIX_C_SOURCE >= 200112L
         char *saveptr = nullptr;
         auto strtok = [&saveptr](char *str, const char *delim) {
@@ -661,7 +661,7 @@ uint64_t QT_MANGLE_NAMESPACE(qDetectCpuFeatures)()
 #endif
     if (Q_UNLIKELY(!runningOnValgrind && minFeatureTest != 0 && (f & minFeatureTest) != minFeatureTest)) {
         quint64 missing = minFeatureTest & ~quint64(f);
-        fprintf(stderr, "Incompatible processor. This Qt build requires the following features:\n   ");
+        fprintf(stderr, "Incompatible processor. This BobUI build requires the following features:\n   ");
         for (uint i = 0; i < arraysize(features_indices); ++i) {
             if (missing & (Q_UINT64_C(1) << i))
                 fprintf(stderr, "%s", features_string + features_indices[i]);
@@ -673,11 +673,11 @@ uint64_t QT_MANGLE_NAMESPACE(qDetectCpuFeatures)()
 
     assert((f & SimdInitialized) == 0);
     f |= SimdInitialized;
-    std::atomic_store_explicit(QT_MANGLE_NAMESPACE(qt_cpu_features), f, std::memory_order_relaxed);
+    std::atomic_store_explicit(BOBUI_MANGLE_NAMESPACE(bobui_cpu_features), f, std::memory_order_relaxed);
     return f;
 }
 
-QT_FUNCTION_TARGET_BASELINE
+BOBUI_FUNCTION_TARGET_BASELINE
 void qDumpCPUFeatures()
 {
     quint64 features = detectProcessorFeatures() & ~SimdInitialized;
@@ -698,11 +698,11 @@ void qDumpCPUFeatures()
     puts("");
 }
 
-#if QT_SUPPORTS_INIT_PRIORITY
+#if BOBUI_SUPPORTS_INIT_PRIORITY
 namespace {
 struct QSimdInitializer
 {
-    inline QSimdInitializer() { QT_MANGLE_NAMESPACE(qDetectCpuFeatures)(); }
+    inline QSimdInitializer() { BOBUI_MANGLE_NAMESPACE(qDetectCpuFeatures)(); }
 };
 }
 
@@ -710,4 +710,4 @@ struct QSimdInitializer
 Q_DECL_INIT_PRIORITY(01) static QSimdInitializer initializer;
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

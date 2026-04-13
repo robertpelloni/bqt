@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qgenericmatrix.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_IMPL_METATYPE_EXTERN(QMatrix2x2)
-QT_IMPL_METATYPE_EXTERN(QMatrix2x3)
-QT_IMPL_METATYPE_EXTERN(QMatrix2x4)
-QT_IMPL_METATYPE_EXTERN(QMatrix3x2)
-QT_IMPL_METATYPE_EXTERN(QMatrix3x3)
-QT_IMPL_METATYPE_EXTERN(QMatrix3x4)
-QT_IMPL_METATYPE_EXTERN(QMatrix4x2)
-QT_IMPL_METATYPE_EXTERN(QMatrix4x3)
+BOBUI_IMPL_METATYPE_EXTERN(QMatrix2x2)
+BOBUI_IMPL_METATYPE_EXTERN(QMatrix2x3)
+BOBUI_IMPL_METATYPE_EXTERN(QMatrix2x4)
+BOBUI_IMPL_METATYPE_EXTERN(QMatrix3x2)
+BOBUI_IMPL_METATYPE_EXTERN(QMatrix3x3)
+BOBUI_IMPL_METATYPE_EXTERN(QMatrix3x4)
+BOBUI_IMPL_METATYPE_EXTERN(QMatrix4x2)
+BOBUI_IMPL_METATYPE_EXTERN(QMatrix4x3)
 
 /*!
     \class QGenericMatrix
@@ -20,7 +20,7 @@ QT_IMPL_METATYPE_EXTERN(QMatrix4x3)
     \since 4.6
     \ingroup painting
     \ingroup painting-3D
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     QGenericMatrix\<N, M, T\> is a template class where \a N is the number of
     columns, \a M is the number of rows, and \a T is the element type that is
@@ -36,7 +36,7 @@ QT_IMPL_METATYPE_EXTERN(QMatrix4x3)
 */
 
 /*!
-    \fn template <int N, int M, typename T> QGenericMatrix<N, M, T>::QGenericMatrix(Qt::Initialization)
+    \fn template <int N, int M, typename T> QGenericMatrix<N, M, T>::QGenericMatrix(BobUI::Initialization)
     \since 5.5
     \internal
 
@@ -214,7 +214,7 @@ QT_IMPL_METATYPE_EXTERN(QMatrix4x3)
     \sa data()
 */
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 
 /*!
     \fn template <int N, int M, typename T> QDataStream &operator<<(QDataStream &stream, const QGenericMatrix<N, M, T> &matrix)
@@ -223,7 +223,7 @@ QT_IMPL_METATYPE_EXTERN(QMatrix4x3)
     Writes the given \a N x \a M \a matrix to the given \a stream and returns a
     reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 /*!
@@ -233,7 +233,7 @@ QT_IMPL_METATYPE_EXTERN(QMatrix4x3)
     Reads an \a N x \a M matrix from the given \a stream into the given \a matrix
     and returns a reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 #endif
@@ -310,4 +310,4 @@ QT_IMPL_METATYPE_EXTERN(QMatrix4x3)
     the element type.
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

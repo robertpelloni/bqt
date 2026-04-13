@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'filternamedialog.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,18 +9,18 @@
 #ifndef FILTERNAMEDIALOG_H
 #define FILTERNAMEDIALOG_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QAbstractButton>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QFrame>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QSpacerItem>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QAbstractButton>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QDialog>
+#include <BobUIWidgets/QDialogButtonBox>
+#include <BobUIWidgets/QFrame>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QLineEdit>
+#include <BobUIWidgets/QSpacerItem>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_FilterNameDialogClass
 {
@@ -64,7 +64,7 @@ public:
 
         buttonBox = new QDialogButtonBox(FilterNameDialogClass);
         buttonBox->setObjectName("buttonBox");
-        buttonBox->setOrientation(Qt::Orientation::Horizontal);
+        buttonBox->setOrientation(BobUI::Orientation::Horizontal);
         buttonBox->setStandardButtons(QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok);
 
         gridLayout->addWidget(buttonBox, 2, 2, 1, 1);
@@ -87,6 +87,6 @@ namespace Ui {
     class FilterNameDialogClass: public Ui_FilterNameDialogClass {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // FILTERNAMEDIALOG_H

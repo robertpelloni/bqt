@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example painting/composition
@@ -8,7 +8,7 @@
     \ingroup examples-painting
     \brief Demonstrates how Composition Modes work in QPainter.
 
-    \brief This demo shows some of the more advanced composition modes supported by Qt.
+    \brief This demo shows some of the more advanced composition modes supported by BobUI.
 
     \image composition-demo.png
            {Application that applies composition modes to image layers}
@@ -19,6 +19,6 @@
     In \b{SourceOver} composition mode, the source object is transparent and is
     drawn on top of the destination.
 
-    In addition to these standard modes, Qt defines the complete set of composition modes
+    In addition to these standard modes, BobUI defines the complete set of composition modes
     as defined by T. Porter and T. Duff. See the QPainter documentation for details.
 */

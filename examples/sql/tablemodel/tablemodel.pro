@@ -1,9 +1,9 @@
 HEADERS       = ../connection.h
 SOURCES       = tablemodel.cpp
-QT           += sql widgets
-requires(qtConfig(tableview))
+BOBUI           += sql widgets
+requires(bobuiConfig(tableview))
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/sql/tablemodel
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/sql/tablemodel
 INSTALLS += target
 

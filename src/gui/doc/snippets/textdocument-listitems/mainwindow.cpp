@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 #include "mainwindow.h"
 
 #include <QMenu>
 #include <QMenuBar>
-#include <QTextEdit>
-#include <QTextList>
-#include <QTreeWidget>
+#include <BOBUIextEdit>
+#include <BOBUIextList>
+#include <BOBUIreeWidget>
 
 MainWindow::MainWindow()
 {
@@ -29,8 +29,8 @@ MainWindow::MainWindow()
     menuBar()->addMenu(insertMenu);
     menuBar()->addMenu(actionsMenu);
 
-    editor = new QTextEdit(this);
-    document = new QTextDocument(this);
+    editor = new BOBUIextEdit(this);
+    document = new BOBUIextDocument(this);
     editor->setDocument(document);
 
     setCentralWidget(editor);
@@ -39,8 +39,8 @@ MainWindow::MainWindow()
 
 void MainWindow::highlightListItems()
 {
-    QTextCursor cursor = editor->textCursor();
-    QTextList *list = cursor.currentList();
+    BOBUIextCursor cursor = editor->textCursor();
+    BOBUIextList *list = cursor.currentList();
 
     if (!list)
         return;
@@ -48,15 +48,15 @@ void MainWindow::highlightListItems()
     cursor.beginEditBlock();
 //! [0]
     for (int index = 0; index < list->count(); ++index) {
-        QTextBlock listItem = list->item(index);
+        BOBUIextBlock listItem = list->item(index);
 //! [0]
-        QTextBlockFormat newBlockFormat = listItem.blockFormat();
-        newBlockFormat.setBackground(Qt::lightGray);
-        QTextCursor itemCursor = cursor;
+        BOBUIextBlockFormat newBlockFormat = listItem.blockFormat();
+        newBlockFormat.setBackground(BobUI::lightGray);
+        BOBUIextCursor itemCursor = cursor;
         itemCursor.setPosition(listItem.position());
-        //itemCursor.movePosition(QTextCursor::StartOfBlock);
-        itemCursor.movePosition(QTextCursor::EndOfBlock,
-                                QTextCursor::KeepAnchor);
+        //itemCursor.movePosition(BOBUIextCursor::StartOfBlock);
+        itemCursor.movePosition(BOBUIextCursor::EndOfBlock,
+                                BOBUIextCursor::KeepAnchor);
         itemCursor.setBlockFormat(newBlockFormat);
         /*
 //! [1]
@@ -71,33 +71,33 @@ void MainWindow::highlightListItems()
 
 void MainWindow::showList()
 {
-    QTextCursor cursor = editor->textCursor();
-    QTextFrame *frame = cursor.currentFrame();
+    BOBUIextCursor cursor = editor->textCursor();
+    BOBUIextFrame *frame = cursor.currentFrame();
 
     if (!frame)
         return;
 
-    QTreeWidget *treeWidget = new QTreeWidget;
+    BOBUIreeWidget *treeWidget = new BOBUIreeWidget;
     treeWidget->setColumnCount(1);
     QStringList headerLabels;
     headerLabels << tr("Lists");
     treeWidget->setHeaderLabels(headerLabels);
 
-    QTreeWidgetItem *parentItem = nullptr;
-    QTreeWidgetItem *item;
-    QTreeWidgetItem *lastItem = nullptr;
+    BOBUIreeWidgetItem *parentItem = nullptr;
+    BOBUIreeWidgetItem *item;
+    BOBUIreeWidgetItem *lastItem = nullptr;
     parentItems.clear();
     previousItems.clear();
 
 //! [3]
-    QTextFrame::iterator it;
+    BOBUIextFrame::iterator it;
     for (it = frame->begin(); !(it.atEnd()); ++it) {
 
-        QTextBlock block = it.currentBlock();
+        BOBUIextBlock block = it.currentBlock();
 
         if (block.isValid()) {
 
-            QTextList *list = block.textList();
+            BOBUIextList *list = block.textList();
 
             if (list) {
                 int index = list->itemNumber(block);
@@ -110,9 +110,9 @@ void MainWindow::showList()
                     lastItem = 0;
 
                     if (parentItem != 0)
-                        item = new QTreeWidgetItem(parentItem, lastItem);
+                        item = new BOBUIreeWidgetItem(parentItem, lastItem);
                     else
-                        item = new QTreeWidgetItem(treeWidget, lastItem);
+                        item = new BOBUIreeWidgetItem(treeWidget, lastItem);
 
                 } else {
 
@@ -122,9 +122,9 @@ void MainWindow::showList()
                         lastItem = previousItems.takeLast();
                     }
                     if (parentItem != 0)
-                        item = new QTreeWidgetItem(parentItem, lastItem);
+                        item = new BOBUIreeWidgetItem(parentItem, lastItem);
                     else
-                        item = new QTreeWidgetItem(treeWidget, lastItem);
+                        item = new BOBUIreeWidgetItem(treeWidget, lastItem);
                 }
                 item->setText(0, block.text());
                 lastItem = item;
@@ -147,15 +147,15 @@ void MainWindow::showList()
 
 void MainWindow::insertList()
 {
-    QTextCursor cursor = editor->textCursor();
+    BOBUIextCursor cursor = editor->textCursor();
     cursor.beginEditBlock();
 
-    QTextList *list = cursor.currentList();
-    QTextListFormat listFormat;
+    BOBUIextList *list = cursor.currentList();
+    BOBUIextListFormat listFormat;
     if (list)
         listFormat = list->format();
 
-    listFormat.setStyle(QTextListFormat::ListDisc);
+    listFormat.setStyle(BOBUIextListFormat::ListDisc);
     listFormat.setIndent(listFormat.indent() + 1);
     cursor.insertList(listFormat);
 

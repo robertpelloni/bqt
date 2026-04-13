@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef PREVIEWWINDOW_H
 #define PREVIEWWINDOW_H
@@ -7,9 +7,9 @@
 #include <QDialog>
 #include <QRasterWindow>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QPlainTextEdit;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 class PreviewWindow : public QRasterWindow
 {
@@ -32,7 +32,7 @@ class PreviewWidget : public QWidget
 public:
     PreviewWidget(QWidget *parent = nullptr);
 
-    void setWindowFlags(Qt::WindowFlags flags);
+    void setWindowFlags(BobUI::WindowFlags flags);
 
 public slots:
     void updateInfo();
@@ -51,7 +51,7 @@ class PreviewDialog : public QDialog
 public:
     PreviewDialog(QWidget *parent = nullptr);
 
-    void setWindowFlags(Qt::WindowFlags flags);
+    void setWindowFlags(BobUI::WindowFlags flags);
 
 public slots:
     void updateInfo();

@@ -1,10 +1,10 @@
-# Copyright (C) 2024 The Qt Company Ltd.
+# Copyright (C) 2024 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 #####################################################################
 ## BundledHarfbuzz Generic Library:
 #####################################################################
 
-qt_internal_add_3rdparty_library(BundledHarfbuzz
+bobui_internal_add_3rdparty_library(BundledHarfbuzz
     QMAKE_LIB_NAME harfbuzz
     STATIC
     SKIP_AUTOMOC
@@ -84,7 +84,7 @@ qt_internal_add_3rdparty_library(BundledHarfbuzz
         HB_EXTERN=
         HB_NDEBUG
         HB_NO_UNICODE_FUNCS
-        QT_NO_VERSION_TAGGING
+        BOBUI_NO_VERSION_TAGGING
     INCLUDE_DIRECTORIES
         "${CMAKE_CURRENT_SOURCE_DIR}"
         $<TARGET_PROPERTY:Core,INCLUDE_DIRECTORIES>
@@ -92,32 +92,32 @@ qt_internal_add_3rdparty_library(BundledHarfbuzz
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/harfbuzz>
 )
 
-qt_internal_add_sync_header_dependencies(BundledHarfbuzz Core)
+bobui_internal_add_sync_header_dependencies(BundledHarfbuzz Core)
 
 # GHS compiler doesn't support the __restrict keyword
 if(INTEGRITY)
     target_compile_definitions(BundledHarfbuzz PRIVATE __restrict=)
 endif()
 
-qt_disable_warnings(BundledHarfbuzz)
-qt_set_symbol_visibility_hidden(BundledHarfbuzz)
+bobui_disable_warnings(BundledHarfbuzz)
+bobui_set_symbol_visibility_hidden(BundledHarfbuzz)
 
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(BundledHarfbuzz CONDITION UNIX
+bobui_internal_extend_target(BundledHarfbuzz CONDITION UNIX
     DEFINES
         HAVE_PTHREAD
         HAVE_SCHED_H
         HAVE_SCHED_YIELD
 )
 
-qt_internal_extend_target(BundledHarfbuzz CONDITION WIN32
+bobui_internal_extend_target(BundledHarfbuzz CONDITION WIN32
     DEFINES
         HB_NO_WIN1256
 )
 
-qt_internal_extend_target(BundledHarfbuzz CONDITION TRUE
+bobui_internal_extend_target(BundledHarfbuzz CONDITION TRUE
     SOURCES
         src/hb-ot.h
         src/hb-ot-cff1-std-str.hh
@@ -198,13 +198,13 @@ qt_internal_extend_target(BundledHarfbuzz CONDITION TRUE
         HAVE_OT
 )
 
-qt_internal_extend_target(BundledHarfbuzz CONDITION SHAPERS_ISEMPTY OR SHAPERS___contains___fallback
+bobui_internal_extend_target(BundledHarfbuzz CONDITION SHAPERS_ISEMPTY OR SHAPERS___contains___fallback
     SOURCES
         src/hb-fallback-shape.cc
     DEFINES
         HAVE_FALLBACK
 )
 
-qt_internal_add_3rdparty_header_module(HarfbuzzPrivate
+bobui_internal_add_3rdparty_header_module(HarfbuzzPrivate
     EXTERNAL_HEADERS_DIR include
 )

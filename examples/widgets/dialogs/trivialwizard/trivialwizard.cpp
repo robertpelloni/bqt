@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
-#include <QTranslator>
+#include <BobUIWidgets>
+#include <BOBUIranslator>
 #include <QLocale>
 #include <QLibraryInfo>
 
@@ -78,10 +78,10 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-#ifndef QT_NO_TRANSLATION
-    QString translatorFileName = QLatin1String("qtbase_");
+#ifndef BOBUI_NO_TRANSLATION
+    QString translatorFileName = QLatin1String("bobuibase_");
     translatorFileName += QLocale::system().name();
-    QTranslator *translator = new QTranslator(&app);
+    BOBUIranslator *translator = new BOBUIranslator(&app);
     if (translator->load(translatorFileName, QLibraryInfo::path(QLibraryInfo::TranslationsPath)))
         app.installTranslator(translator);
 #endif

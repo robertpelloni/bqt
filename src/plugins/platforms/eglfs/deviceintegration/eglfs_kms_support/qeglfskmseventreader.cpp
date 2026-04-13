@@ -1,5 +1,5 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qeglfskmseventreader_p.h"
 #include "qeglfskmsdevice_p.h"
@@ -10,13 +10,13 @@
 #include <QCoreApplication>
 #include <QLoggingCategory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static void pageFlipHandler(int fd, unsigned int sequence, unsigned int tv_sec, unsigned int tv_usec, void *user_data)
 {
     Q_UNUSED(fd);
 
-    QEglFSKmsEventReaderThread *t = static_cast<QEglFSKmsEventReaderThread *>(QThread::currentThread());
+    QEglFSKmsEventReaderThread *t = static_cast<QEglFSKmsEventReaderThread *>(BOBUIhread::currentThread());
     t->eventHost()->handlePageFlipCompleted(user_data);
 
     QEglFSKmsScreen *screen = static_cast<QEglFSKmsScreen *>(user_data);
@@ -183,4 +183,4 @@ void QEglFSKmsEventReader::startWaitFlip(void *key, QMutex *mutex, QWaitConditio
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWINDOWSDIRECT2DPAINTENGINE_H
 #define QWINDOWSDIRECT2DPAINTENGINE_H
 
-#include <QtCore/qscopedpointer.h>
-#include <QtGui/private/qpaintengineex_p.h>
+#include <BobUICore/qscopedpointer.h>
+#include <BobUIGui/private/qpaintengineex_p.h>
 
 struct ID2D1Geometry;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QWindowsDirect2DPaintEnginePrivate;
 class QWindowsDirect2DBitmap;
@@ -44,7 +44,7 @@ public:
     void stroke(const QVectorPath &path, const QPen &pen) override;
     void stroke(ID2D1Geometry *geometry, const QPen &pen);
 
-    void clip(const QVectorPath &path, Qt::ClipOperation op) override;
+    void clip(const QVectorPath &path, BobUI::ClipOperation op) override;
 
     void clipEnabledChanged() override;
     void penChanged() override;
@@ -63,11 +63,11 @@ public:
     void drawEllipse(const QRectF &r) override;
     void drawEllipse(const QRect &r) override;
 
-    void drawImage(const QRectF &rectangle, const QImage &image, const QRectF &sr, Qt::ImageConversionFlags flags = Qt::AutoColor) override;
+    void drawImage(const QRectF &rectangle, const QImage &image, const QRectF &sr, BobUI::ImageConversionFlags flags = BobUI::AutoColor) override;
     void drawPixmap(const QRectF &r, const QPixmap &pm, const QRectF &sr) override;
 
     void drawStaticTextItem(QStaticTextItem *staticTextItem) override;
-    void drawTextItem(const QPointF &p, const QTextItem &textItem) override;
+    void drawTextItem(const QPointF &p, const BOBUIextItem &textItem) override;
 
 private:
     void ensureBrush();
@@ -101,6 +101,6 @@ public:
     void resume();
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWINDOWSDIRECT2DPAINTENGINE_H

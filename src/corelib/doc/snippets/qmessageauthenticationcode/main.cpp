@@ -1,8 +1,8 @@
-// Copyright (C) 2023 The Qt Company Ltd.
+// Copyright (C) 2023 The BobUI Company Ltd.
 // Copyright (C) 2016 Ruslan Nigmatullin <euroelessar@yandex.ru>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtCore>
+#include <BobUICore>
 
 int main(int argc, char *argv[])
 {

@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 
 /*!
@@ -12,7 +12,7 @@
     \ingroup network
     \ingroup ssl
     \ingroup shared
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     QSslCertificate stores an X509 certificate, and is commonly used
     to verify the identity and store information about the local host,
@@ -24,7 +24,7 @@
     a QSslCertificate object, or QSslSocket::peerCertificateChain(),
     which returns a list of them. You can also load certificates from
     a DER (binary) or PEM (Base64) encoded bundle, typically stored as
-    one or more local files, or in a Qt Resource.
+    one or more local files, or in a BobUI Resource.
 
     You can call isNull() to check if your certificate is null. By default,
     QSslCertificate constructs a null certificate. A null certificate is
@@ -94,9 +94,9 @@
     default.
 */
 
-#include <QtNetwork/qtnetworkglobal.h>
+#include <BobUINetwork/bobuinetworkglobal.h>
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 #include "qregularexpression.h"
 #endif
 
@@ -105,28 +105,28 @@
 #include "qsslcertificate.h"
 #include "qssl_p.h"
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
 #include "qsslsocket_p.h"
 #include "qsslkey_p.h"
 #endif
 
-#include <QtCore/qdir.h>
-#include <QtCore/qdirlisting.h>
-#include <QtCore/qfile.h>
+#include <BobUICore/qdir.h>
+#include <BobUICore/qdirlisting.h>
+#include <BobUICore/qfile.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-QT_IMPL_METATYPE_EXTERN(QSslCertificate)
+BOBUI_IMPL_METATYPE_EXTERN(QSslCertificate)
 
 QSslCertificatePrivate::QSslCertificatePrivate()
 {
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     QSslSocketPrivate::ensureInitialized();
 #endif
 
-    const QTlsBackend *tlsBackend = QTlsBackend::activeOrAnyBackend();
+    const BOBUIlsBackend *tlsBackend = BOBUIlsBackend::activeOrAnyBackend();
     if (tlsBackend)
         backend.reset(tlsBackend->createCertificate());
     else
@@ -135,7 +135,7 @@ QSslCertificatePrivate::QSslCertificatePrivate()
 
 QSslCertificatePrivate::~QSslCertificatePrivate() = default;
 
-QT_DEFINE_QESDP_SPECIALIZATION_DTOR(QSslCertificatePrivate)
+BOBUI_DEFINE_QESDP_SPECIALIZATION_DTOR(QSslCertificatePrivate)
 
 /*!
     Constructs a QSslCertificate by reading \a format encoded data
@@ -151,7 +151,7 @@ QSslCertificate::QSslCertificate(QIODevice *device, QSsl::EncodingFormat format)
         if (data.isEmpty())
             return;
 
-        const auto *tlsBackend = QTlsBackend::activeOrAnyBackend();
+        const auto *tlsBackend = BOBUIlsBackend::activeOrAnyBackend();
         if (!tlsBackend)
             return;
 
@@ -179,7 +179,7 @@ QSslCertificate::QSslCertificate(const QByteArray &data, QSsl::EncodingFormat fo
     if (data.isEmpty())
         return;
 
-    const auto *tlsBackend = QTlsBackend::activeOrAnyBackend();
+    const auto *tlsBackend = BOBUIlsBackend::activeOrAnyBackend();
     if (!tlsBackend)
         return;
 
@@ -524,7 +524,7 @@ QDateTime QSslCertificate::expiryDate() const
 }
 
 /*!
-    \fn Qt::HANDLE QSslCertificate::handle() const
+    \fn BobUI::HANDLE QSslCertificate::handle() const
     Returns a pointer to the native certificate handle, if there is
     one, else \nullptr.
 
@@ -535,7 +535,7 @@ QDateTime QSslCertificate::expiryDate() const
     non-portable, and its return value may vary from platform to
     platform or change from minor release to minor release.
 */
-Qt::HANDLE QSslCertificate::handle() const
+BobUI::HANDLE QSslCertificate::handle() const
 {
     if (const auto *backend = d->backend.get())
         return backend->handle();
@@ -543,7 +543,7 @@ Qt::HANDLE QSslCertificate::handle() const
     return {};
 }
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
 /*!
     \fn QSslKey QSslCertificate::publicKey() const
     Returns the certificate subject's public key.
@@ -552,11 +552,11 @@ QSslKey QSslCertificate::publicKey() const
 {
     QSslKey key;
     if (const auto *backend = d->backend.get())
-        QTlsBackend::resetBackend(key, backend->publicKey());
+        BOBUIlsBackend::resetBackend(key, backend->publicKey());
 
     return key;
 }
-#endif // QT_NO_SSL
+#endif // BOBUI_NO_SSL
 
 
 /*!
@@ -648,7 +648,7 @@ QList<QSslCertificate> QSslCertificate::fromPath(const QString &path,
     // Check if the path contains any special chars
     int pos = -1;
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     if (syntax == PatternSyntax::Wildcard)
         pos = pathPrefix.indexOf(QRegularExpression("[*?[]"_L1));
     else if (syntax == PatternSyntax::RegularExpression)
@@ -685,7 +685,7 @@ QList<QSslCertificate> QSslCertificate::fromPath(const QString &path,
     // The path can be a file or directory.
     QList<QSslCertificate> certs;
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     if (syntax == PatternSyntax::Wildcard)
         sourcePath = QRegularExpression::wildcardToRegularExpression(sourcePath, QRegularExpression::UnanchoredWildcardConversion);
 
@@ -699,7 +699,7 @@ QList<QSslCertificate> QSslCertificate::fromPath(const QString &path,
         if (startIndex > 0)
             filePath.remove(0, startIndex);
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
         if (!pattern.match(filePath).hasMatch())
             continue;
 #else
@@ -737,7 +737,7 @@ QList<QSslCertificate> QSslCertificate::fromDevice(QIODevice *device, QSsl::Enco
 */
 QList<QSslCertificate> QSslCertificate::fromData(const QByteArray &data, QSsl::EncodingFormat format)
 {
-    const auto *tlsBackend = QTlsBackend::activeOrAnyBackend();
+    const auto *tlsBackend = BOBUIlsBackend::activeOrAnyBackend();
     if (!tlsBackend) {
         qCWarning(lcSsl, "No TLS backend is available");
         return {};
@@ -776,7 +776,7 @@ QList<QSslCertificate> QSslCertificate::fromFile(const QString &filePath,
     return {};
 }
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
 /*!
     Verifies a certificate chain. The chain to be verified is passed in the
     \a certificateChain parameter. The first certificate in the list should
@@ -793,7 +793,7 @@ QList<QSslCertificate> QSslCertificate::fromFile(const QString &filePath,
  */
 QList<QSslError> QSslCertificate::verify(const QList<QSslCertificate> &certificateChain, const QString &hostName)
 {
-    const auto *tlsBackend = QTlsBackend::activeOrAnyBackend();
+    const auto *tlsBackend = BOBUIlsBackend::activeOrAnyBackend();
     if (!tlsBackend) {
         qCWarning(lcSsl, "No TLS backend is available");
         return {};
@@ -826,7 +826,7 @@ bool QSslCertificate::importPkcs12(QIODevice *device,
     if (!device || !key || !certificate)
         return false;
 
-    const auto *tlsBackend = QTlsBackend::activeOrAnyBackend();
+    const auto *tlsBackend = BOBUIlsBackend::activeOrAnyBackend();
     if (!tlsBackend) {
         qCWarning(lcSsl, "No TLS backend is available");
         return false;
@@ -839,7 +839,7 @@ bool QSslCertificate::importPkcs12(QIODevice *device,
 
     return false;
 }
-#endif // QT_NO_SSL
+#endif // BOBUI_NO_SSL
 
 QList<QSslCertificateExtension> QSslCertificatePrivate::extensions() const
 {
@@ -1002,7 +1002,7 @@ size_t qHash(const QSslCertificate &key, size_t seed) noexcept
 
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug debug, const QSslCertificate &certificate)
 {
     QDebugStateSaver saver(debug);
@@ -1014,7 +1014,7 @@ QDebug operator<<(QDebug debug, const QSslCertificate &certificate)
           << ", Issuer=" << certificate.issuerDisplayName()
           << ", Subject=" << certificate.subjectDisplayName()
           << ", AlternativeSubjectNames=" << certificate.subjectAlternativeNames()
-#if QT_CONFIG(datestring)
+#if BOBUI_CONFIG(datestring)
           << ", EffectiveDate=" << certificate.effectiveDate()
           << ", ExpiryDate=" << certificate.expiryDate()
 #endif
@@ -1038,4 +1038,4 @@ QDebug operator<<(QDebug debug, QSslCertificate::SubjectInfo info)
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

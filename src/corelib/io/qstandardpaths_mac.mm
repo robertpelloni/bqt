@@ -1,24 +1,24 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:provides-trusted-directory-paths
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:provides-trusted-directory-paths
 
 #include "qstandardpaths.h"
 
-#ifndef QT_NO_STANDARDPATHS
+#ifndef BOBUI_NO_STANDARDPATHS
 
 #include <qdir.h>
 #include <qurl.h>
 #include <private/qcore_mac_p.h>
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 #include <qcoreapplication.h>
 #endif
 
 #import <Foundation/Foundation.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static QString pathForDirectory(NSSearchPathDirectory directory,
                                 NSSearchPathDomainMask mask)
@@ -62,7 +62,7 @@ static NSSearchPathDirectory searchPathDirectory(QStandardPaths::StandardLocatio
 
 static void appendOrganizationAndApp(QString &path)
 {
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
     const QString org = QCoreApplication::organizationName();
     if (!org.isEmpty())
         path += u'/' + org;
@@ -87,7 +87,7 @@ static QString baseWritableLocation(QStandardPaths::StandardLocation type,
     case QStandardPaths::TempLocation:
         path = QDir::tempPath();
         break;
-#if defined(QT_PLATFORM_UIKIT)
+#if defined(BOBUI_PLATFORM_UIKIT)
     // These locations point to non-existing write-protected paths. Use sensible fallbacks.
     case QStandardPaths::MusicLocation:
         path = pathForDirectory(NSDocumentDirectory, mask) + "/Music"_L1;
@@ -157,7 +157,7 @@ QString QStandardPaths::writableLocation(StandardLocation type)
 {
     QString location = baseWritableLocation(type, NSUserDomainMask, true);
     if (isTestModeEnabled())
-        location = location.replace(QDir::homePath(), QDir::homePath() + "/.qttest"_L1);
+        location = location.replace(QDir::homePath(), QDir::homePath() + "/.bobuitest"_L1);
 
     return location;
 }
@@ -166,7 +166,7 @@ QStringList QStandardPaths::standardLocations(StandardLocation type)
 {
     QStringList dirs;
 
-#if defined(QT_PLATFORM_UIKIT)
+#if defined(BOBUI_PLATFORM_UIKIT)
     if (type == PicturesLocation)
         dirs << writableLocation(PicturesLocation) << "assets-library://"_L1;
 #endif
@@ -207,7 +207,7 @@ QStringList QStandardPaths::standardLocations(StandardLocation type)
     return dirs;
 }
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 QString QStandardPaths::displayName(StandardLocation type)
 {
     // Use "Home" instead of the user's Unix username
@@ -239,6 +239,6 @@ QString QStandardPaths::displayName(StandardLocation type)
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_STANDARDPATHS
+#endif // BOBUI_NO_STANDARDPATHS

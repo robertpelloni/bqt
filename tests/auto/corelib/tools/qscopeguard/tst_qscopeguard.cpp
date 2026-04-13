@@ -1,9 +1,9 @@
 // Copyright (C) 2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Sérgio Martins <sergio.martins@kdab.com>
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtCore/QScopeGuard>
+#include <BOBUIest>
+#include <BobUICore/QScopeGuard>
 
 #include <optional>
 
@@ -172,13 +172,13 @@ void tst_QScopeGuard::leavingScope()
 void tst_QScopeGuard::exceptions()
 {
     bool caught = false;
-    QT_TRY
+    BOBUI_TRY
     {
         auto cleanup = qScopeGuard([] { s_globalState++; });
-        QT_THROW(std::bad_alloc()); //if Qt compiled without exceptions this is noop
+        BOBUI_THROW(std::bad_alloc()); //if BobUI compiled without exceptions this is noop
         s_globalState = 100;
     }
-    QT_CATCH(...)
+    BOBUI_CATCH(...)
     {
         caught = true;
         QCOMPARE(s_globalState, 1);
@@ -193,5 +193,5 @@ void tst_QScopeGuard::init()
     s_globalState = 0;
 }
 
-QTEST_MAIN(tst_QScopeGuard)
+BOBUIEST_MAIN(tst_QScopeGuard)
 #include "tst_qscopeguard.moc"

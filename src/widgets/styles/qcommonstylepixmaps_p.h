@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 
-#ifndef QT_NO_IMAGEFORMAT_XPM
+#ifndef BOBUI_NO_IMAGEFORMAT_XPM
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -125,7 +125,7 @@ static const char * const filedialog_end_xpm[]={
 
 
 /* XPM */
-static const char * const qt_menu_xpm[] = {
+static const char * const bobui_menu_xpm[] = {
 "16 16 72 1",
 "  c None",
 ". c #65AF36",
@@ -216,7 +216,7 @@ static const char * const qt_menu_xpm[] = {
 "++++++FG+++++++.",
 "++++++++++++++. "};
 
-static const char * const qt_close_xpm[] = {
+static const char * const bobui_close_xpm[] = {
 "10 10 2 1",
 "# c #000000",
 ". c None",
@@ -231,7 +231,7 @@ static const char * const qt_close_xpm[] = {
 "..........",
 ".........."};
 
-static const char * const qt_maximize_xpm[]={
+static const char * const bobui_maximize_xpm[]={
 "10 10 2 1",
 "# c #000000",
 ". c None",
@@ -246,7 +246,7 @@ static const char * const qt_maximize_xpm[]={
 "#########.",
 ".........."};
 
-static const char * const qt_minimize_xpm[] = {
+static const char * const bobui_minimize_xpm[] = {
 "10 10 2 1",
 "# c #000000",
 ". c None",
@@ -261,7 +261,7 @@ static const char * const qt_minimize_xpm[] = {
 ".#######..",
 ".........."};
 
-static const char * const qt_normalizeup_xpm[] = {
+static const char * const bobui_normalizeup_xpm[] = {
 "10 10 2 1",
 "# c #000000",
 ". c None",
@@ -276,7 +276,7 @@ static const char * const qt_normalizeup_xpm[] = {
 ".######...",
 ".........."};
 
-static const char * const qt_help_xpm[] = {
+static const char * const bobui_help_xpm[] = {
 "10 10 2 1",
 ". c None",
 "# c #000000",
@@ -291,7 +291,7 @@ static const char * const qt_help_xpm[] = {
 "....##....",
 ".........."};
 
-static const char * const qt_shade_xpm[] = {
+static const char * const bobui_shade_xpm[] = {
 "10 10 2 1",
 "# c #000000",
 ". c None",
@@ -306,7 +306,7 @@ static const char * const qt_shade_xpm[] = {
 "..........",
 ".........."};
 
-static const char * const qt_unshade_xpm[] = {
+static const char * const bobui_unshade_xpm[] = {
 "10 10 2 1",
 "# c #000000",
 ". c None",
@@ -493,4 +493,4 @@ static const char *const question_xpm[] = {
 "..................***...........",
 "...................**..........."};
 
-#endif //QT_NO_IMAGEFORMAT_XPM
+#endif //BOBUI_NO_IMAGEFORMAT_XPM

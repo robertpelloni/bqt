@@ -1,10 +1,10 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/qxptype_traits.h>
-#include <QTest>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/qxptype_traits.h>
+#include <BOBUIest>
 
 class tst_InitMain : public QObject
 {
@@ -20,8 +20,8 @@ private:
     static bool m_initMainCalled;
 };
 
-static_assert(QTest::Internal::hasInitMain<tst_InitMain>);
-static_assert(!QTest::Internal::hasInitMain<QObject>);
+static_assert(BOBUIest::Internal::hasInitMain<tst_InitMain>);
+static_assert(!BOBUIest::Internal::hasInitMain<QObject>);
 
 bool tst_InitMain::m_initMainCalled = false;
 
@@ -30,6 +30,6 @@ void tst_InitMain::testcase()
     QVERIFY(m_initMainCalled);
 }
 
-QTEST_MAIN(tst_InitMain)
+BOBUIEST_MAIN(tst_InitMain)
 
 #include "tst_initmain.moc"

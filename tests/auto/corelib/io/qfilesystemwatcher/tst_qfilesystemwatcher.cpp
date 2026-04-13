@@ -1,22 +1,22 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <QCoreApplication>
 
-#include <QTemporaryDir>
+#include <BOBUIemporaryDir>
 #include <QFileSystemWatcher>
 #include <QElapsedTimer>
-#include <QTextStream>
+#include <BOBUIextStream>
 #include <QMap>
 #include <QString>
 #include <QDir>
 #include <QSignalSpy>
-#include <QTimer>
-#include <QTemporaryFile>
+#include <BOBUIimer>
+#include <BOBUIemporaryFile>
 #if defined(Q_OS_WIN)
-#include <qt_windows.h>
+#include <bobui_windows.h>
 #endif
 
 #ifdef Q_OS_ANDROID
@@ -51,7 +51,7 @@ public:
     tst_QFileSystemWatcher();
 
 private slots:
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     void basicTest_data();
     void basicTest();
 
@@ -65,7 +65,7 @@ private slots:
     void removePaths();
     void removePathsFilesInSameDirectory();
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     void watchFileAndItsDirectory_data() { basicTest_data(); }
     void watchFileAndItsDirectory();
 #endif
@@ -76,9 +76,9 @@ private slots:
 
     void destroyAfterQCoreApplication();
 
-#ifdef QT_BUILD_INTERNAL
-    void QTBUG2331();
-    void QTBUG2331_data() { basicTest_data(); }
+#ifdef BOBUI_BUILD_INTERNAL
+    void BOBUIBUG2331();
+    void BOBUIBUG2331_data() { basicTest_data(); }
 #endif
 
     void signalsEmittedAfterFileMoved();
@@ -104,13 +104,13 @@ tst_QFileSystemWatcher::tst_QFileSystemWatcher()
 #endif
 }
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 void tst_QFileSystemWatcher::basicTest_data()
 {
-    QTest::addColumn<QString>("backend");
-    QTest::addColumn<QString>("testFileName");
+    BOBUIest::addColumn<QString>("backend");
+    BOBUIest::addColumn<QString>("testFileName");
     const QString testFile = QStringLiteral("testfile.txt");
-    // QTBUG-31341: Test the UNICODE capabilities; ensure no QString::toLower()
+    // BOBUIBUG-31341: Test the UNICODE capabilities; ensure no QString::toLower()
     // is in the code path since that will lower case for example
     // LATIN_CAPITAL_LETTER_I_WITH_DOT_ABOVE with context, whereas the Windows file
     // system will not.
@@ -119,11 +119,11 @@ void tst_QFileSystemWatcher::basicTest_data()
         + QChar(ushort(0x00DC)) // LATIN_CAPITAL_LETTER_U_WITH_DIAERESIS
         + QStringLiteral(".txt");
 
-#if !defined(QT_NO_INOTIFY)
-    QTest::newRow("native backend-testfile") << "native" << testFile;
-    QTest::newRow("native backend-specialchars") << "native" << specialCharacterFile;
+#if !defined(BOBUI_NO_INOTIFY)
+    BOBUIest::newRow("native backend-testfile") << "native" << testFile;
+    BOBUIest::newRow("native backend-specialchars") << "native" << specialCharacterFile;
 #endif
-    QTest::newRow("poller backend-testfile") << "poller" << testFile;
+    BOBUIest::newRow("poller backend-testfile") << "poller" << testFile;
 }
 
 void tst_QFileSystemWatcher::basicTest()
@@ -132,7 +132,7 @@ void tst_QFileSystemWatcher::basicTest()
     QFETCH(QString, testFileName);
 
     // create test file
-    QTemporaryDir temporaryDirectory(m_tempDirPattern);
+    BOBUIemporaryDir temporaryDirectory(m_tempDirPattern);
     QVERIFY2(temporaryDirectory.isValid(), qPrintable(temporaryDirectory.errorString()));
     QFile testFile(temporaryDirectory.path() + QLatin1Char('/') + testFileName);
     QVERIFY(testFile.open(QIODevice::WriteOnly | QIODevice::Truncate));
@@ -144,7 +144,7 @@ void tst_QFileSystemWatcher::basicTest()
 
     // create watcher, forcing it to use a specific backend
     QFileSystemWatcher watcher;
-    watcher.setObjectName(QLatin1String("_qt_autotest_force_engine_") + backend);
+    watcher.setObjectName(QLatin1String("_bobui_autotest_force_engine_") + backend);
     QVERIFY(watcher.addPath(testFile.fileName()));
 
     const bool isPollerBackend = backend == u"poller";
@@ -152,21 +152,21 @@ void tst_QFileSystemWatcher::basicTest()
     QSignalSpy changedSpy(&watcher, &QFileSystemWatcher::fileChanged);
     QVERIFY(changedSpy.isValid());
     QEventLoop eventLoop;
-    QTimer timer;
+    BOBUIimer timer;
     timer.setInterval(isPollerBackend ? pollingEngineTimeout : nativeEngineTimeout);
     connect(&timer, SIGNAL(timeout()), &eventLoop, SLOT(quit()));
 
     // modify the file, should get a signal from the watcher
 
     if (isPollerBackend || isQNX)
-        QTest::qWait(pollingEngineTimeout);
+        BOBUIest::qWait(pollingEngineTimeout);
 
     QVERIFY(testFile.open(QIODevice::WriteOnly | QIODevice::Append));
     testFile.write(QByteArray("world"));
     testFile.close();
 
     // waiting max 5 seconds for notification for file modification to trigger
-    QTRY_COMPARE(changedSpy.size(), 1);
+    BOBUIRY_COMPARE(changedSpy.size(), 1);
     QCOMPARE(changedSpy.at(0).size(), 1);
 
     QString fileName = changedSpy.at(0).at(0).toString();
@@ -194,7 +194,7 @@ void tst_QFileSystemWatcher::basicTest()
     testFile.write(QByteArray("hello multiverse!"));
     testFile.close();
 
-    QTRY_VERIFY(changedSpy.size() > 0);
+    BOBUIRY_VERIFY(changedSpy.size() > 0);
 
     QVERIFY(watcher.removePath(relativeTestFileName));
 
@@ -210,7 +210,7 @@ void tst_QFileSystemWatcher::basicTest()
 #if !defined(Q_OS_QNX)
 
     // waiting max 5 seconds for notification for file permission modification to trigger
-    QTRY_COMPARE(changedSpy.size(), 1);
+    BOBUIRY_COMPARE(changedSpy.size(), 1);
     QCOMPARE(changedSpy.at(0).size(), 1);
 
     fileName = changedSpy.at(0).at(0).toString();
@@ -238,8 +238,8 @@ void tst_QFileSystemWatcher::basicTest()
 
     // waiting max 5 seconds for notification for file removal to trigger
     // > 0 && < 3 because some platforms may emit two changes
-    // XXX: which platforms? (QTBUG-23370)
-    QTRY_VERIFY(changedSpy.size() > 0 && changedSpy.size() < 3);
+    // XXX: which platforms? (BOBUIBUG-23370)
+    BOBUIRY_VERIFY(changedSpy.size() > 0 && changedSpy.size() < 3);
     QCOMPARE(changedSpy.at(0).size(), 1);
 
     fileName = changedSpy.at(0).at(0).toString();
@@ -263,21 +263,21 @@ void tst_QFileSystemWatcher::basicTest()
 
 void tst_QFileSystemWatcher::watchDirectory_data()
 {
-    QTest::addColumn<QString>("backend");
-    QTest::addColumn<QStringList>("testDirNames");
+    BOBUIest::addColumn<QString>("backend");
+    BOBUIest::addColumn<QStringList>("testDirNames");
     const QStringList testDirNames = {QStringLiteral("testdir"), QStringLiteral("testdir2")};
 
-#if !defined(QT_NO_INOTIFY)
-    QTest::newRow("native backend") << "native" << testDirNames;
+#if !defined(BOBUI_NO_INOTIFY)
+    BOBUIest::newRow("native backend") << "native" << testDirNames;
 #endif
-    QTest::newRow("poller backend") << "poller" << testDirNames;
+    BOBUIest::newRow("poller backend") << "poller" << testDirNames;
 }
 
 void tst_QFileSystemWatcher::watchDirectory()
 {
     QFETCH(QString, backend);
 
-    QTemporaryDir temporaryDirectory(m_tempDirPattern);
+    BOBUIemporaryDir temporaryDirectory(m_tempDirPattern);
     QVERIFY2(temporaryDirectory.isValid(), qPrintable(temporaryDirectory.errorString()));
 
     QFETCH(QStringList, testDirNames);
@@ -297,7 +297,7 @@ void tst_QFileSystemWatcher::watchDirectory()
     }
 
     QFileSystemWatcher watcher;
-    watcher.setObjectName(QLatin1String("_qt_autotest_force_engine_") + backend);
+    watcher.setObjectName(QLatin1String("_bobui_autotest_force_engine_") + backend);
     QVERIFY(watcher.addPaths(testDirs).isEmpty());
 
     const bool isPollerBackend = backend == u"poller";
@@ -305,12 +305,12 @@ void tst_QFileSystemWatcher::watchDirectory()
     QSignalSpy changedSpy(&watcher, &QFileSystemWatcher::directoryChanged);
     QVERIFY(changedSpy.isValid());
     QEventLoop eventLoop;
-    QTimer timer;
+    BOBUIimer timer;
     timer.setInterval(isPollerBackend ? pollingEngineTimeout : nativeEngineTimeout);
     connect(&timer, SIGNAL(timeout()), &eventLoop, SLOT(quit()));
 
     if (isPollerBackend || isQNX)
-        QTest::qWait(pollingEngineTimeout);
+        BOBUIest::qWait(pollingEngineTimeout);
 
     // remove the watch, should not get notification of a new file
     QVERIFY(watcher.removePaths(testDirs).isEmpty());
@@ -344,7 +344,7 @@ void tst_QFileSystemWatcher::watchDirectory()
         signalCounter[testDirName] = 0;
 
     // waiting max 5 seconds for notification for directory removal to trigger
-    QTRY_COMPARE(changedSpy.size(), testDirs.size() * 2);
+    BOBUIRY_COMPARE(changedSpy.size(), testDirs.size() * 2);
     for (int i = 0; i < changedSpy.size(); i++) {
         const auto &signal = changedSpy.at(i);
         QCOMPARE(signal.size(), 1);
@@ -380,7 +380,7 @@ void tst_QFileSystemWatcher::watchDirectory()
     for (const auto &testDirName : testDirs)
         QVERIFY(temporaryDir.rmdir(testDirName));
 }
-#endif // QT_BUILD_INTERNAL
+#endif // BOBUI_BUILD_INTERNAL
 
 void tst_QFileSystemWatcher::addPath()
 {
@@ -395,7 +395,7 @@ void tst_QFileSystemWatcher::addPath()
     QCOMPARE(watcher.directories().size(), 1);
 
     // With empty string
-    QTest::ignoreMessage(QtWarningMsg, "QFileSystemWatcher::addPath: path is empty");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QFileSystemWatcher::addPath: path is empty");
     QVERIFY(watcher.addPath(QString()));
 }
 
@@ -410,7 +410,7 @@ void tst_QFileSystemWatcher::removePath()
     QCOMPARE(watcher.directories().size(), 0);
 
     // With empty string
-    QTest::ignoreMessage(QtWarningMsg, "QFileSystemWatcher::removePath: path is empty");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QFileSystemWatcher::removePath: path is empty");
     QVERIFY(watcher.removePath(QString()));
 }
 
@@ -430,7 +430,7 @@ void tst_QFileSystemWatcher::addPaths()
 
     // With empty list
     paths.clear();
-    QTest::ignoreMessage(QtWarningMsg, "QFileSystemWatcher::addPaths: list is empty");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QFileSystemWatcher::addPaths: list is empty");
     QCOMPARE(watcher.addPaths(paths), QStringList());
 }
 
@@ -461,7 +461,7 @@ public:
     QByteArray receivedFilesMessage() const
     {
         QString result;
-        QTextStream str(&result);
+        BOBUIextStream str(&result);
         str << "At " << m_elapsedTimer.elapsed() << "ms, received "
             << count() << " changes: ";
         for (int i =0, e = m_entries.size(); i < e; ++i) {
@@ -506,18 +506,18 @@ void tst_QFileSystemWatcher::removePaths()
 
     //With empty list
     paths.clear();
-    QTest::ignoreMessage(QtWarningMsg, "QFileSystemWatcher::removePaths: list is empty");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QFileSystemWatcher::removePaths: list is empty");
     watcher.removePaths(paths);
 }
 
 void tst_QFileSystemWatcher::removePathsFilesInSameDirectory()
 {
-    // QTBUG-46449/Windows: Check the return values of removePaths().
+    // BOBUIBUG-46449/Windows: Check the return values of removePaths().
     // When adding the 1st file, a thread is started to watch the temp path.
     // After adding and removing the 2nd file, the thread is still running and
     // success should be reported.
-    QTemporaryFile file1(m_tempDirPattern);
-    QTemporaryFile file2(m_tempDirPattern);
+    BOBUIemporaryFile file1(m_tempDirPattern);
+    BOBUIemporaryFile file2(m_tempDirPattern);
     QVERIFY2(file1.open(), qPrintable(file1.errorString()));
     QVERIFY2(file2.open(), qPrintable(file1.errorString()));
     const QString path1 = file1.fileName();
@@ -535,7 +535,7 @@ void tst_QFileSystemWatcher::removePathsFilesInSameDirectory()
     QCOMPARE(watcher.files().size(), 0);
 }
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 static QByteArray msgFileOperationFailed(const char *what, const QFile &f)
 {
     return what + QByteArrayLiteral(" failed on \"")
@@ -547,7 +547,7 @@ void tst_QFileSystemWatcher::watchFileAndItsDirectory()
 {
     QFETCH(QString, backend);
 
-    QTemporaryDir temporaryDirectory(m_tempDirPattern);
+    BOBUIemporaryDir temporaryDirectory(m_tempDirPattern);
     QVERIFY2(temporaryDirectory.isValid(), qPrintable(temporaryDirectory.errorString()));
 
     QDir temporaryDir(temporaryDirectory.path());
@@ -565,7 +565,7 @@ void tst_QFileSystemWatcher::watchFileAndItsDirectory()
     testFile.close();
 
     QFileSystemWatcher watcher;
-    watcher.setObjectName(QLatin1String("_qt_autotest_force_engine_") + backend);
+    watcher.setObjectName(QLatin1String("_bobui_autotest_force_engine_") + backend);
 
     QVERIFY(watcher.addPath(testDir.absolutePath()));
     QVERIFY(watcher.addPath(testFileName));
@@ -576,12 +576,12 @@ void tst_QFileSystemWatcher::watchFileAndItsDirectory()
     FileSystemWatcherSpy dirChangedSpy(&watcher, FileSystemWatcherSpy::SpyOnDirectoryChanged);
     QVERIFY(fileChangedSpy.isValid());
     QEventLoop eventLoop;
-    QTimer timer;
+    BOBUIimer timer;
     timer.setInterval(isPollerBackend ? pollingEngineTimeout : nativeEngineTimeout);
     connect(&timer, SIGNAL(timeout()), &eventLoop, SLOT(quit()));
 
     if (isPollerBackend || isQNX)
-        QTest::qWait(pollingEngineTimeout);
+        BOBUIest::qWait(pollingEngineTimeout);
 
     QVERIFY2(testFile.open(QIODevice::WriteOnly | QIODevice::Truncate), msgFileOperationFailed("open", testFile));
     QVERIFY2(testFile.write(QByteArrayLiteral("hello again")), msgFileOperationFailed("write", testFile));
@@ -589,10 +589,10 @@ void tst_QFileSystemWatcher::watchFileAndItsDirectory()
 
 #ifdef Q_OS_DARWIN
     // wait again for the file's atime to be updated
-    QTest::qWait(2000);
+    BOBUIest::qWait(2000);
 #endif
 
-    QTRY_VERIFY(fileChangedSpy.size() > 0);
+    BOBUIRY_VERIFY(fileChangedSpy.size() > 0);
     QVERIFY2(dirChangedSpy.count() == 0, dirChangedSpy.receivedFilesMessage());
 
     fileChangedSpy.clear();
@@ -606,7 +606,7 @@ void tst_QFileSystemWatcher::watchFileAndItsDirectory()
     int fileChangedSpyCount = fileChangedSpy.size();
 #ifdef Q_OS_WIN
     if (fileChangedSpyCount != 0)
-        QEXPECT_FAIL("", "See QTBUG-30943", Continue);
+        QEXPECT_FAIL("", "See BOBUIBUG-30943", Continue);
 #endif
     QCOMPARE(fileChangedSpyCount, 0);
     QCOMPARE(dirChangedSpy.count(), 1);
@@ -615,8 +615,8 @@ void tst_QFileSystemWatcher::watchFileAndItsDirectory()
 
     QVERIFY(QFile::remove(testFileName));
 
-    QTRY_VERIFY(fileChangedSpy.size() > 0);
-    QTRY_COMPARE(dirChangedSpy.count(), 1);
+    BOBUIRY_VERIFY(fileChangedSpy.size() > 0);
+    BOBUIRY_COMPARE(dirChangedSpy.count(), 1);
 
     fileChangedSpy.clear();
     dirChangedSpy.clear();
@@ -630,13 +630,13 @@ void tst_QFileSystemWatcher::watchFileAndItsDirectory()
     QCOMPARE(fileChangedSpy.size(), 0);
     QCOMPARE(dirChangedSpy.count(), 1);
 
-    // QTBUG-61792, removal should succeed (bug on Windows which uses one change
+    // BOBUIBUG-61792, removal should succeed (bug on Windows which uses one change
     // notification per directory).
     QVERIFY(watcher.removePath(testDir.absolutePath()));
 
     QVERIFY(temporaryDir.rmdir(testDirName));
 }
-#endif // QT_BUILD_INTERNAL
+#endif // BOBUI_BUILD_INTERNAL
 
 void tst_QFileSystemWatcher::nonExistingFile()
 {
@@ -649,17 +649,17 @@ void tst_QFileSystemWatcher::nonExistingFile()
                               QStringList() << "../..//./does-not-exist");
 
     // empty path is not actually a failure
-    QTest::ignoreMessage(QtWarningMsg, "QFileSystemWatcher::addPaths: list is empty");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QFileSystemWatcher::addPaths: list is empty");
     QCOMPARE(watcher.addPaths(QStringList() << QString()), QStringList());
 
     // empty path is not actually a failure
-    QTest::ignoreMessage(QtWarningMsg, "QFileSystemWatcher::removePaths: list is empty");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QFileSystemWatcher::removePaths: list is empty");
     QCOMPARE(watcher.removePaths(QStringList() << QString()), QStringList());
 }
 
 void tst_QFileSystemWatcher::removeFileAndUnWatch()
 {
-    QTemporaryDir temporaryDirectory(m_tempDirPattern);
+    BOBUIemporaryDir temporaryDirectory(m_tempDirPattern);
     QVERIFY2(temporaryDirectory.isValid(), qPrintable(temporaryDirectory.errorString()));
 
     const QString filename = temporaryDirectory.path() + QStringLiteral("/foo.txt");
@@ -701,28 +701,28 @@ public:
 
 Q_GLOBAL_STATIC(SomeSingleton, someSingleton)
 
-// This is a regression test for QTBUG-15255, where a deadlock occurred if a
+// This is a regression test for BOBUIBUG-15255, where a deadlock occurred if a
 // QFileSystemWatcher was destroyed after the QCoreApplication instance had
 // been destroyed.  There are no explicit verification steps in this test --
 // it is sufficient that the test terminates.
 void tst_QFileSystemWatcher::destroyAfterQCoreApplication()
 {
     someSingleton()->bla();
-    QTest::qWait(30);
+    BOBUIest::qWait(30);
 }
 
-#ifdef QT_BUILD_INTERNAL
-// regression test for QTBUG2331.
+#ifdef BOBUI_BUILD_INTERNAL
+// regression test for BOBUIBUG2331.
 // essentially, on windows, directories were not unwatched after being deleted
 // from the disk, causing all sorts of interesting problems.
-void tst_QFileSystemWatcher::QTBUG2331()
+void tst_QFileSystemWatcher::BOBUIBUG2331()
 {
     QFETCH(QString, backend);
 
-    QTemporaryDir temporaryDirectory(m_tempDirPattern);
+    BOBUIemporaryDir temporaryDirectory(m_tempDirPattern);
     QVERIFY2(temporaryDirectory.isValid(), qPrintable(temporaryDirectory.errorString()));
     QFileSystemWatcher watcher;
-    watcher.setObjectName(QLatin1String("_qt_autotest_force_engine_") + backend);
+    watcher.setObjectName(QLatin1String("_bobui_autotest_force_engine_") + backend);
     QVERIFY(watcher.addPath(temporaryDirectory.path()));
 
     // watch signal
@@ -732,10 +732,10 @@ void tst_QFileSystemWatcher::QTBUG2331()
     // remove directory, we should get one change signal, and we should no longer
     // be watching the directory.
     QVERIFY(temporaryDirectory.remove());
-    QTRY_COMPARE(changedSpy.size(), 1);
+    BOBUIRY_COMPARE(changedSpy.size(), 1);
     QCOMPARE(watcher.directories(), QStringList());
 }
-#endif // QT_BUILD_INTERNAL
+#endif // BOBUI_BUILD_INTERNAL
 
 class SignalReceiver : public QObject
 {
@@ -774,14 +774,14 @@ private:
     QFileSystemWatcher *watcher;
 };
 
-// regression test for QTBUG-33211.
+// regression test for BOBUIBUG-33211.
 // using inotify backend if a file is moved and then added to the watcher
 // before all the fileChanged signals are emitted the remaining signals are
 // emitted with the destination path instead of the starting path
 void tst_QFileSystemWatcher::signalsEmittedAfterFileMoved()
 {
     const int fileCount = 10;
-    QTemporaryDir temporaryDirectory(m_tempDirPattern);
+    BOBUIemporaryDir temporaryDirectory(m_tempDirPattern);
     QVERIFY2(temporaryDirectory.isValid(), qPrintable(temporaryDirectory.errorString()));
 
     QDir testDir(temporaryDirectory.path());
@@ -820,12 +820,12 @@ void tst_QFileSystemWatcher::signalsEmittedAfterFileMoved()
 
     QCoreApplication::processEvents();
     QVERIFY2(changedSpy.count() <= fileCount, changedSpy.receivedFilesMessage());
-    QTRY_COMPARE(changedSpy.count(), fileCount);
+    BOBUIRY_COMPARE(changedSpy.count(), fileCount);
 }
 
 void tst_QFileSystemWatcher::watchUnicodeCharacters()
 {
-    QTemporaryDir temporaryDirectory(m_tempDirPattern);
+    BOBUIemporaryDir temporaryDirectory(m_tempDirPattern);
     QVERIFY2(temporaryDirectory.isValid(), qPrintable(temporaryDirectory.errorString()));
 
     QDir testDir(temporaryDirectory.path());
@@ -839,13 +839,13 @@ void tst_QFileSystemWatcher::watchUnicodeCharacters()
     FileSystemWatcherSpy changedSpy(&watcher, FileSystemWatcherSpy::SpyOnDirectoryChanged);
     QCOMPARE(changedSpy.count(), 0);
     QVERIFY(testDir.mkdir("creme"));
-    QTRY_COMPARE(changedSpy.count(), 1);
+    BOBUIRY_COMPARE(changedSpy.count(), 1);
 }
 
 #if defined(Q_OS_WIN)
 void tst_QFileSystemWatcher::watchDirectoryAttributeChanges()
 {
-    QTemporaryDir temporaryDirectory(m_tempDirPattern);
+    BOBUIemporaryDir temporaryDirectory(m_tempDirPattern);
     QVERIFY2(temporaryDirectory.isValid(), qPrintable(temporaryDirectory.errorString()));
 
     QDir testDir(temporaryDirectory.path());
@@ -858,11 +858,11 @@ void tst_QFileSystemWatcher::watchDirectoryAttributeChanges()
     FileSystemWatcherSpy changedSpy(&watcher, FileSystemWatcherSpy::SpyOnDirectoryChanged);
     QCOMPARE(changedSpy.count(), 0);
     QVERIFY(SetFileAttributes(reinterpret_cast<LPCWSTR>(testDir.absolutePath().utf16()), FILE_ATTRIBUTE_HIDDEN) != 0);
-    QTRY_COMPARE(changedSpy.count(), 1);
+    BOBUIRY_COMPARE(changedSpy.count(), 1);
     QVERIFY(SetFileAttributes(reinterpret_cast<LPCWSTR>(testDir.absolutePath().utf16()), FILE_ATTRIBUTE_NORMAL) != 0);
-    QTRY_COMPARE(changedSpy.count(), 2);
+    BOBUIRY_COMPARE(changedSpy.count(), 2);
 }
 #endif
 
-QTEST_MAIN(tst_QFileSystemWatcher)
+BOBUIEST_MAIN(tst_QFileSystemWatcher)
 #include "tst_qfilesystemwatcher.moc"

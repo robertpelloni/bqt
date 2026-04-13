@@ -1,16 +1,16 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtCore/qiterable.h>
-#include <QtCore/qloggingcategory.h>
+#include <BobUICore/qiterable.h>
+#include <BobUICore/qloggingcategory.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_STATIC_LOGGING_CATEGORY(lcSynthesizedIterableAccess, "qt.iterable.synthesized", QtWarningMsg);
+Q_STATIC_LOGGING_CATEGORY(lcSynthesizedIterableAccess, "bobui.iterable.synthesized", BobUIWarningMsg);
 
 /*!
     \class QBaseIterator
-    \inmodule QtCore
+    \inmodule BobUICore
     QBaseIterator\<Container\> forms the common base class for all iterators
     operating on subclasses of QIterable, where \a Container is the meta-type
     descriptor.
@@ -117,7 +117,7 @@ Q_STATIC_LOGGING_CATEGORY(lcSynthesizedIterableAccess, "qt.iterable.synthesized"
 /*!
     \class QIterator
     \since 6.0
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QIterator is a template class that allows iteration over a container in a QVariant.
 
     QIterator\<Container\> provides mutable iteration over a container, where
@@ -264,7 +264,7 @@ Q_STATIC_LOGGING_CATEGORY(lcSynthesizedIterableAccess, "qt.iterable.synthesized"
 /*!
     \struct QConstIterator
     \since 6.0
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QConstIterator allows iteration over a container in a QVariant.
 
     QConstIterator\<Container\> provides const iteration over a container, where
@@ -400,7 +400,7 @@ Q_STATIC_LOGGING_CATEGORY(lcSynthesizedIterableAccess, "qt.iterable.synthesized"
 
 /*!
     \class QIterable
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 6.0
     \brief QIterable is a template class that is the base class for QMetaSequence::Iterable and QMetaAssociation::Iterable.
 
@@ -454,7 +454,7 @@ Q_STATIC_LOGGING_CATEGORY(lcSynthesizedIterableAccess, "qt.iterable.synthesized"
 /*!
     \fn template<class Container> QConstIterator<Container> QIterable<Container>::constEnd() const
 
-    Returns a Qterable::QConstIterator for the end of the container. This
+    Returns a BobUIerable::QConstIterator for the end of the container. This
     can be used in stl-style iteration.
 
     \sa constBegin(), mutableEnd()
@@ -486,7 +486,7 @@ Q_STATIC_LOGGING_CATEGORY(lcSynthesizedIterableAccess, "qt.iterable.synthesized"
     \note If the underlying container does not provide a native way to query
           the size, this method will synthesize the access using iterators.
           This behavior is deprecated and will be removed in a future version
-          of Qt.
+          of BobUI.
 */
 
 /*!
@@ -496,12 +496,12 @@ Q_STATIC_LOGGING_CATEGORY(lcSynthesizedIterableAccess, "qt.iterable.synthesized"
 */
 
 /*!
-    \class QTaggedIterator
+    \class BOBUIaggedIterator
     \since 6.0
-    \inmodule QtCore
-    \brief QTaggedIterator is a template class that wraps an iterator and exposes standard iterator traits.
+    \inmodule BobUICore
+    \brief BOBUIaggedIterator is a template class that wraps an iterator and exposes standard iterator traits.
 
-    QTaggedIterator\<Iterator, IteratorCategory\> wraps an iterator, where
+    BOBUIaggedIterator\<Iterator, IteratorCategory\> wraps an iterator, where
     \a Iterator is the underlying iterator type (such as QIterator or
     QConstIterator) and \a IteratorCategory is a standard iterator category tag
     (such as std::forward_iterator_tag or std::random_access_iterator_tag).
@@ -509,20 +509,20 @@ Q_STATIC_LOGGING_CATEGORY(lcSynthesizedIterableAccess, "qt.iterable.synthesized"
     In order to use an iterator any of the standard algorithms, its iterator
     traits need to be known. As QMetaSequence::Iterable can work with many different
     kinds of containers, we cannot declare the traits in the iterator classes
-    themselves. A QTaggedIterator gives you a way to explicitly declare a trait for
+    themselves. A BOBUIaggedIterator gives you a way to explicitly declare a trait for
     a concrete instance of an iterator or QConstIterator.
 */
 
 /*!
-    \fn template<class Iterator, typename IteratorCategory> QTaggedIterator<Iterator, IteratorCategory>::QTaggedIterator(Iterator &&it)
+    \fn template<class Iterator, typename IteratorCategory> BOBUIaggedIterator<Iterator, IteratorCategory>::BOBUIaggedIterator(Iterator &&it)
 
-    Constructs a QTaggedIterator from an iterator or QConstIterator \a it. Checks
+    Constructs a BOBUIaggedIterator from an iterator or QConstIterator \a it. Checks
     whether the IteratorCategory passed as template argument matches the run
     time capabilities of \a it; if there's no match, \a it is refused.
 */
 
 /*!
-    \fn template<class Iterator, typename IteratorCategory> bool QTaggedIterator<Iterator, IteratorCategory>::operator==(const QTaggedIterator<Iterator, IteratorCategory> &other) const
+    \fn template<class Iterator, typename IteratorCategory> bool BOBUIaggedIterator<Iterator, IteratorCategory>::operator==(const BOBUIaggedIterator<Iterator, IteratorCategory> &other) const
 
     Returns \c true if \a other points to the same item as this
     iterator; otherwise returns \c false.
@@ -531,7 +531,7 @@ Q_STATIC_LOGGING_CATEGORY(lcSynthesizedIterableAccess, "qt.iterable.synthesized"
 */
 
 /*!
-    \fn template<class Iterator, typename IteratorCategory> bool QTaggedIterator<Iterator, IteratorCategory>::operator!=(const QTaggedIterator<Iterator, IteratorCategory> &other) const
+    \fn template<class Iterator, typename IteratorCategory> bool BOBUIaggedIterator<Iterator, IteratorCategory>::operator!=(const BOBUIaggedIterator<Iterator, IteratorCategory> &other) const
 
     Returns \c true if \a other points to a different item than this
     iterator; otherwise returns \c false.
@@ -540,7 +540,7 @@ Q_STATIC_LOGGING_CATEGORY(lcSynthesizedIterableAccess, "qt.iterable.synthesized"
 */
 
 /*!
-    \fn template<class Iterator, typename IteratorCategory> QTaggedIterator<Iterator, IteratorCategory> &QTaggedIterator<Iterator, IteratorCategory>::operator++()
+    \fn template<class Iterator, typename IteratorCategory> BOBUIaggedIterator<Iterator, IteratorCategory> &BOBUIaggedIterator<Iterator, IteratorCategory>::operator++()
 
     The prefix \c{++} operator (\c{++it}) advances the iterator to the
     next item in the container and returns an iterator to the new current
@@ -552,7 +552,7 @@ Q_STATIC_LOGGING_CATEGORY(lcSynthesizedIterableAccess, "qt.iterable.synthesized"
 */
 
 /*!
-    \fn template<class Iterator, typename IteratorCategory> QTaggedIterator<Iterator, IteratorCategory> QTaggedIterator<Iterator, IteratorCategory>::operator++(int)
+    \fn template<class Iterator, typename IteratorCategory> BOBUIaggedIterator<Iterator, IteratorCategory> BOBUIaggedIterator<Iterator, IteratorCategory>::operator++(int)
     \overload
 
     The postfix \c{++} operator (\c{it++}) advances the iterator to the
@@ -562,7 +562,7 @@ Q_STATIC_LOGGING_CATEGORY(lcSynthesizedIterableAccess, "qt.iterable.synthesized"
 
 
 /*!
-    \fn template<class Iterator, typename IteratorCategory> QTaggedIterator<Iterator, IteratorCategory> &QTaggedIterator<Iterator, IteratorCategory>::operator--()
+    \fn template<class Iterator, typename IteratorCategory> BOBUIaggedIterator<Iterator, IteratorCategory> &BOBUIaggedIterator<Iterator, IteratorCategory>::operator--()
 
     The prefix \c{--} operator (\c{--it}) makes the preceding item
     current and returns an iterator to the new current item.
@@ -576,7 +576,7 @@ Q_STATIC_LOGGING_CATEGORY(lcSynthesizedIterableAccess, "qt.iterable.synthesized"
 */
 
 /*!
-    \fn template<class Iterator, typename IteratorCategory> QTaggedIterator<Iterator, IteratorCategory> QTaggedIterator<Iterator, IteratorCategory>::operator--(int)
+    \fn template<class Iterator, typename IteratorCategory> BOBUIaggedIterator<Iterator, IteratorCategory> BOBUIaggedIterator<Iterator, IteratorCategory>::operator--(int)
     \overload
 
     The postfix \c{--} operator (\c{it--}) makes the preceding item
@@ -590,7 +590,7 @@ Q_STATIC_LOGGING_CATEGORY(lcSynthesizedIterableAccess, "qt.iterable.synthesized"
 
 
 /*!
-    \fn template<class Iterator, typename IteratorCategory> QTaggedIterator<Iterator, IteratorCategory> &QTaggedIterator<Iterator, IteratorCategory>::operator+=(qsizetype j)
+    \fn template<class Iterator, typename IteratorCategory> BOBUIaggedIterator<Iterator, IteratorCategory> &BOBUIaggedIterator<Iterator, IteratorCategory>::operator+=(qsizetype j)
 
     Advances the iterator by \a j items.
 
@@ -598,7 +598,7 @@ Q_STATIC_LOGGING_CATEGORY(lcSynthesizedIterableAccess, "qt.iterable.synthesized"
 */
 
 /*!
-    \fn template<class Iterator, typename IteratorCategory> QTaggedIterator<Iterator, IteratorCategory> &QTaggedIterator<Iterator, IteratorCategory>::operator-=(qsizetype j)
+    \fn template<class Iterator, typename IteratorCategory> BOBUIaggedIterator<Iterator, IteratorCategory> &BOBUIaggedIterator<Iterator, IteratorCategory>::operator-=(qsizetype j)
 
     Makes the iterator go back by \a j items.
 
@@ -609,7 +609,7 @@ Q_STATIC_LOGGING_CATEGORY(lcSynthesizedIterableAccess, "qt.iterable.synthesized"
 */
 
 /*!
-    \fn template<class Iterator, typename IteratorCategory> QTaggedIterator<Iterator, IteratorCategory> QTaggedIterator<Iterator, IteratorCategory>::operator+(qsizetype j) const
+    \fn template<class Iterator, typename IteratorCategory> BOBUIaggedIterator<Iterator, IteratorCategory> BOBUIaggedIterator<Iterator, IteratorCategory>::operator+(qsizetype j) const
 
     Returns an iterator to the item at \a j positions forward from
     this iterator.
@@ -618,13 +618,13 @@ Q_STATIC_LOGGING_CATEGORY(lcSynthesizedIterableAccess, "qt.iterable.synthesized"
 */
 
 /*!
-    \fn template<class Iterator, typename IteratorCategory> QTaggedIterator<Iterator, IteratorCategory> QTaggedIterator<Iterator, IteratorCategory>::operator+(qsizetype j, const QTaggedIterator &k)
+    \fn template<class Iterator, typename IteratorCategory> BOBUIaggedIterator<Iterator, IteratorCategory> BOBUIaggedIterator<Iterator, IteratorCategory>::operator+(qsizetype j, const BOBUIaggedIterator &k)
 
     Returns an iterator to the item at \a j positions forward from iterator \a k.
 */
 
 /*!
-    \fn template<class Iterator, typename IteratorCategory> QTaggedIterator<Iterator, IteratorCategory> QTaggedIterator<Iterator, IteratorCategory>::operator-(qsizetype j) const
+    \fn template<class Iterator, typename IteratorCategory> BOBUIaggedIterator<Iterator, IteratorCategory> BOBUIaggedIterator<Iterator, IteratorCategory>::operator-(qsizetype j) const
 
     Returns an iterator to the item at \a j positions backward from
     this iterator.
@@ -636,7 +636,7 @@ Q_STATIC_LOGGING_CATEGORY(lcSynthesizedIterableAccess, "qt.iterable.synthesized"
 */
 
 /*!
-    \fn template <class Iterator, typename IteratorCategory> qsizetype QTaggedIterator<Iterator, IteratorCategory>::operator-(const QTaggedIterator<Iterator, IteratorCategory> &j) const
+    \fn template <class Iterator, typename IteratorCategory> qsizetype BOBUIaggedIterator<Iterator, IteratorCategory>::operator-(const BOBUIaggedIterator<Iterator, IteratorCategory> &j) const
 
     Returns the distance between this iterator and \a j.
 
@@ -646,18 +646,18 @@ Q_STATIC_LOGGING_CATEGORY(lcSynthesizedIterableAccess, "qt.iterable.synthesized"
 /*!
     \internal
  */
-void QtPrivate::warnSynthesizedIterableAccess(QtPrivate::SynthesizedAccessFunction function)
+void BobUIPrivate::warnSynthesizedIterableAccess(BobUIPrivate::SynthesizedAccessFunction function)
 {
     switch (function) {
-    case QtPrivate::SynthesizedAccessFunction::IterableSize:
+    case BobUIPrivate::SynthesizedAccessFunction::IterableSize:
         qCWarning(lcSynthesizedIterableAccess,
                   "size() called on an iterable without native size accessor. This is slow");
         break;
-    case QtPrivate::SynthesizedAccessFunction::SequenceAt:
+    case BobUIPrivate::SynthesizedAccessFunction::SequenceAt:
         qCWarning(lcSynthesizedIterableAccess,
                   "at() called on an iterable without native indexed accessors. This is slow");
         break;
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,5 +1,5 @@
 TARGET = qgraphicsitemgroup
-QT += widgets
+BOBUI += widgets
 TEMPLATE = app
 SOURCES += main.cpp \
     widget.cpp \

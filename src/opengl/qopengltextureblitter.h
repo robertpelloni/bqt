@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QOPENGLTEXTUREBLITTER_H
 #define QOPENGLTEXTUREBLITTER_H
 
-#include <QtOpenGL/qtopenglglobal.h>
+#include <BobUIOpenGL/bobuiopenglglobal.h>
 
-#include <QtGui/qopengl.h>
-#include <QtGui/QMatrix3x3>
-#include <QtGui/QMatrix4x4>
+#include <BobUIGui/qopengl.h>
+#include <BobUIGui/QMatrix3x3>
+#include <BobUIGui/QMatrix4x4>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QOpenGLTextureBlitterPrivate;
 
@@ -50,6 +50,6 @@ private:
     QScopedPointer<QOpenGLTextureBlitterPrivate> d_ptr;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif //QOPENGLTEXTUREBLITTER_H

@@ -1,19 +1,19 @@
 // Copyright (C) 2016 Jolla Ltd
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandshellintegrationfactory_p.h"
 #include "qwaylandshellintegrationplugin_p.h"
 #include "qwaylandshellintegration_p.h"
-#include <QtCore/private/qfactoryloader_p.h>
-#include <QtCore/QCoreApplication>
-#include <QtCore/QDir>
+#include <BobUICore/private/qfactoryloader_p.h>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/QDir>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, qwsifLoader,
-    (QWaylandShellIntegrationFactoryInterface_iid, QLatin1String("/wayland-shell-integration"), Qt::CaseInsensitive))
+    (QWaylandShellIntegrationFactoryInterface_iid, QLatin1String("/wayland-shell-integration"), BobUI::CaseInsensitive))
 
 QStringList QWaylandShellIntegrationFactory::keys()
 {
@@ -33,4 +33,4 @@ QWaylandShellIntegration *QWaylandShellIntegrationFactory::create(const QString 
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

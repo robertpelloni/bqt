@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include <qjsondocument.h>
 #include <qjsonobject.h>
@@ -17,13 +17,13 @@
 #include "qjson_p.h"
 #include "qdatastream.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*! \class QJsonDocument
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup json
     \ingroup shared
-    \ingroup qtserialization
+    \ingroup bobuiserialization
     \reentrant
     \since 5.0
 
@@ -37,7 +37,7 @@ QT_BEGIN_NAMESPACE
 
     A JSON document can be converted from its text-based representation to a QJsonDocument
     using QJsonDocument::fromJson(). toJson() converts it back to text. The parser is very
-    fast and efficient and converts the JSON to the binary representation used by Qt.
+    fast and efficient and converts the JSON to the binary representation used by BobUI.
 
     Validity of the parsed document can be queried with !isNull()
 
@@ -45,7 +45,7 @@ QT_BEGIN_NAMESPACE
     and isObject(). The array or object contained in the document can be retrieved using
     array() or object() and then read or manipulated.
 
-    \sa {JSON Support in Qt}, {Saving and Loading a Game}
+    \sa {JSON Support in BobUI}, {Saving and Loading a Game}
 */
 
 
@@ -163,7 +163,7 @@ QJsonDocument &QJsonDocument::operator =(const QJsonDocument &other)
     \memberswap{document}
 */
 
-#ifndef QT_NO_VARIANT
+#ifndef BOBUI_NO_VARIANT
 /*!
  Creates a QJsonDocument from the QVariant \a variant.
 
@@ -214,10 +214,10 @@ QVariant QJsonDocument::toVariant() const
         return QJsonArray(container).toVariantList();
     return QJsonObject(container).toVariantMap();
 }
-#endif // !QT_NO_VARIANT
+#endif // !BOBUI_NO_VARIANT
 
 /*!
-\if !defined(qt7)
+\if !defined(bobui7)
     \enum QJsonDocument::JsonFormat
     \since 5.1
 
@@ -471,7 +471,7 @@ bool QJsonDocument::isNull() const
     return (d == nullptr);
 }
 
-#if !defined(QT_NO_DEBUG_STREAM)
+#if !defined(BOBUI_NO_DEBUG_STREAM)
 QDebug operator<<(QDebug dbg, const QJsonDocument &o)
 {
     QDebugStateSaver saver(dbg);
@@ -488,7 +488,7 @@ QDebug operator<<(QDebug dbg, const QJsonDocument &o)
 }
 #endif
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 QDataStream &operator<<(QDataStream &stream, const QJsonDocument &doc)
 {
     stream << doc.toJson(QJsonDocument::Compact);
@@ -507,4 +507,4 @@ QDataStream &operator>>(QDataStream &stream, QJsonDocument &doc)
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

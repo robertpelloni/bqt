@@ -1,6 +1,6 @@
 // Copyright (C) 2016 Alex Trotsenko <alex1973tr@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSCTPSOCKET_P_H
 #define QSCTPSOCKET_P_H
@@ -9,26 +9,26 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of the QLibrary class.  This header file may change from
 // version to version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtNetwork/qsctpsocket.h>
-#include <private/qtcpsocket_p.h>
-#include <QtCore/qbytearray.h>
-#include <QtCore/qlist.h>
+#include <BobUINetwork/qsctpsocket.h>
+#include <private/bobuicpsocket_p.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qlist.h>
 #include <private/qnetworkdatagram_p.h>
 
 #include <deque>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#ifndef QT_NO_SCTP
+#ifndef BOBUI_NO_SCTP
 
-class QSctpSocketPrivate : public QTcpSocketPrivate
+class QSctpSocketPrivate : public BOBUIcpSocketPrivate
 {
     Q_DECLARE_PUBLIC(QSctpSocket)
 public:
@@ -48,8 +48,8 @@ public:
     void configureCreatedSocket() override;
 };
 
-#endif // QT_NO_SCTP
+#endif // BOBUI_NO_SCTP
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSCTPSOCKET_P_H

@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QPLATFORMTHEME_COCOA_H
 #define QPLATFORMTHEME_COCOA_H
 
-#include <QtCore/QHash>
+#include <BobUICore/QHash>
 #include <qpa/qplatformtheme.h>
 
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QPalette;
 class QCocoaTheme : public QPlatformTheme
@@ -25,7 +25,7 @@ public:
     QPlatformMenu* createPlatformMenu() const override;
     QPlatformMenuBar* createPlatformMenuBar() const override;
 
-#ifndef QT_NO_SYSTEMTRAYICON
+#ifndef BOBUI_NO_SYSTEMTRAYICON
     QPlatformSystemTrayIcon *createPlatformSystemTrayIcon() const override;
 #endif
 
@@ -39,17 +39,17 @@ public:
     QIconEngine *createIconEngine(const QString &iconName) const override;
 
     QVariant themeHint(ThemeHint hint) const override;
-    Qt::ColorScheme colorScheme() const override;
-    Qt::ContrastPreference contrastPreference() const override;
+    BobUI::ColorScheme colorScheme() const override;
+    BobUI::ContrastPreference contrastPreference() const override;
     QString standardButtonText(int button) const override;
     QKeySequence standardButtonShortcut(int button) const override;
 
     static const char *name;
 
-    void requestColorScheme(Qt::ColorScheme scheme) override;
+    void requestColorScheme(BobUI::ColorScheme scheme) override;
     void handleSystemThemeChange();
 
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     QList<QKeySequence> keyBindings(QKeySequence::StandardKey key) const override;
 #endif
 
@@ -59,10 +59,10 @@ private:
     mutable QHash<QPlatformTheme::Palette, QPalette*> m_palettes;
     QMacKeyValueObserver m_appearanceObserver;
 
-    Qt::ColorScheme m_colorScheme = Qt::ColorScheme::Unknown;
+    BobUI::ColorScheme m_colorScheme = BobUI::ColorScheme::Unknown;
     void updateColorScheme();
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

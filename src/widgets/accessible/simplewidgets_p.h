@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef SIMPLEWIDGETS_H
 #define SIMPLEWIDGETS_H
@@ -8,30 +8,30 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
-#include <QtCore/qcoreapplication.h>
-#include <QtWidgets/qaccessiblewidget.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUIWidgets/qaccessiblewidget.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 
 class QAbstractButton;
 class QLineEdit;
-class QToolButton;
+class BOBUIoolButton;
 class QGroupBox;
 class QMenu;
 class QMessageBox;
 class QProgressBar;
 
-#if QT_CONFIG(abstractbutton)
+#if BOBUI_CONFIG(abstractbutton)
 class QAccessibleButton : public QAccessibleWidgetV2
 {
     Q_DECLARE_TR_FUNCTIONS(QAccessibleButton)
@@ -52,7 +52,7 @@ protected:
 };
 #endif
 
-#if QT_CONFIG(toolbutton)
+#if BOBUI_CONFIG(toolbutton)
 class QAccessibleToolButton : public QAccessibleButton
 {
 public:
@@ -69,14 +69,14 @@ public:
     void doAction(const QString &actionName) override;
 
 protected:
-    QToolButton *toolButton() const;
+    BOBUIoolButton *toolButton() const;
 
     bool isSplitButton() const;
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
     QMenu *menu() const;
 #endif
 };
-#endif // QT_CONFIG(toolbutton)
+#endif // BOBUI_CONFIG(toolbutton)
 
 class QAccessibleDisplay : public QAccessibleWidgetV2, public QAccessibleImageInterface
 {
@@ -97,7 +97,7 @@ public:
     QPoint imagePosition() const override;
 };
 
-#if QT_CONFIG(groupbox)
+#if BOBUI_CONFIG(groupbox)
 class QAccessibleGroupBox : public QAccessibleWidgetV2
 {
 public:
@@ -120,7 +120,7 @@ private:
 };
 #endif
 
-#if QT_CONFIG(lineedit)
+#if BOBUI_CONFIG(lineedit)
 class QAccessibleLineEdit : public QAccessibleWidgetV2, public QAccessibleTextInterface, public QAccessibleEditableTextInterface
 {
 public:
@@ -160,9 +160,9 @@ protected:
     QLineEdit *lineEdit() const;
     friend class QAccessibleAbstractSpinBox;
 };
-#endif // QT_CONFIG(lineedit)
+#endif // BOBUI_CONFIG(lineedit)
 
-#if QT_CONFIG(progressbar)
+#if BOBUI_CONFIG(progressbar)
 class QAccessibleProgressBar : public QAccessibleDisplay, public QAccessibleValueInterface
 {
 public:
@@ -195,7 +195,7 @@ private:
     QWindowContainer *container() const;
 };
 
-#if QT_CONFIG(messagebox)
+#if BOBUI_CONFIG(messagebox)
 class QAccessibleMessageBox : public QAccessibleWidgetV2
 {
 public:
@@ -207,8 +207,8 @@ public:
 };
 #endif
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // SIMPLEWIDGETS_H

@@ -1,21 +1,21 @@
-#Include this file to inherit configuration related to Qt Project based modules.
+#Include this file to inherit configuration related to BobUI Project based modules.
 
-dita.metadata.default.author      = Qt Project
+dita.metadata.default.author      = BobUI Project
 dita.metadata.default.permissions = all
-dita.metadata.default.publisher   = Qt Project
+dita.metadata.default.publisher   = BobUI Project
 dita.metadata.default.copyryear = 2025
-dita.metadata.default.copyrholder = The Qt Company Ltd
+dita.metadata.default.copyrholder = The BobUI Company Ltd
 dita.metadata.default.audience = programmer
 
-# Define `productname` such that `\since` prepends version numbers with `Qt`.
-# Required from Qt 6.9 onwards.
-productname = Qt
+# Define `productname` such that `\since` prepends version numbers with `BobUI`.
+# Required from BobUI 6.9 onwards.
+productname = BobUI
 
-#Set the main Qt index.html
+#Set the main BobUI index.html
 navigation.homepage = index.html
-navigation.hometitle = "$productname $QT_VER"
+navigation.hometitle = "$productname $BOBUI_VER"
 
-# Set trademarks page (located in qt/qtdoc)
+# Set trademarks page (located in bobui/bobuidoc)
 navigation.trademarkspage = Trademarks
 
 #Words to ignore for auto-linking
@@ -26,17 +26,17 @@ ignorewords += \
     WebSockets \
     OpenGL
 
-# Omit \since information for items introduced before Qt 6
+# Omit \since information for items introduced before BobUI 6
 ignoresince = 6.0
 
 sourcedirs += includes $$BUILDDIR
 exampledirs += snippets
 
-url = https://doc.qt.io/qt
+url = https://doc.bobui.io/bobui
 
-defines += qt6
+defines += bobui6
 
-# Require Qt modules to define qhp.projects
+# Require BobUI modules to define qhp.projects
 qhp = true
 
 # Disable writing host-specific paths into .index files

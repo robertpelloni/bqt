@@ -1,13 +1,13 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "paintcommands.h"
 
-#include <qtest.h>
+#include <bobuiest.h>
 #include <QDir>
 #include <QPainter>
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 #include <QOpenGLFramebufferObjectFormat>
 #include <QOpenGLContext>
 #include <QOpenGLPaintDevice>
@@ -54,7 +54,7 @@ private slots:
     void testRasterGrayscale8_data();
     void testRasterGrayscale8();
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     void testOpenGL_data();
     void testOpenGL();
     void testCoreOpenGL_data();
@@ -86,7 +86,7 @@ void tst_LanceBench::initTestCase()
         QVERIFY2(file.open(QFile::ReadOnly),
                  qPrintable(QString::fromLatin1("Failed to open %1").arg(fileName)));
         QByteArray cont = file.readAll();
-        scripts.insert(fileName, QString::fromUtf8(cont).split(QLatin1Char('\n'), Qt::SkipEmptyParts));
+        scripts.insert(fileName, QString::fromUtf8(cont).split(QLatin1Char('\n'), BobUI::SkipEmptyParts));
     }
 }
 
@@ -160,7 +160,7 @@ void tst_LanceBench::testRasterGrayscale8()
     runTestSuite(Raster, QImage::Format_Grayscale8);
 }
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 bool tst_LanceBench::checkSystemGLSupport()
 {
     QWindow win;
@@ -237,11 +237,11 @@ void tst_LanceBench::testCoreOpenGL()
 
 void tst_LanceBench::setupTestSuite(const QStringList& blacklist)
 {
-    QTest::addColumn<QString>("qpsFile");
+    BOBUIest::addColumn<QString>("qpsFile");
     for (const QString &fileName : std::as_const(qpsFiles)) {
         if (blacklist.contains(fileName))
             continue;
-        QTest::newRow(fileName.toLatin1()) << fileName;
+        BOBUIest::newRow(fileName.toLatin1()) << fileName;
     }
 }
 
@@ -257,7 +257,7 @@ void tst_LanceBench::runTestSuite(GraphicsEngine engine, QImage::Format format, 
         QImage img(800, 800, format);
         paint(&img, engine, format, script, QFileInfo(filePath).absoluteFilePath());
         rendered = img;
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     } else if (engine == OpenGL) {
         QWindow win;
         win.setSurfaceType(QSurface::OpenGLSurface);
@@ -299,6 +299,6 @@ void tst_LanceBench::paint(QPaintDevice *device, GraphicsEngine engine, QImage::
     }
 }
 
-QTEST_MAIN(tst_LanceBench)
+BOBUIEST_MAIN(tst_LanceBench)
 
 #include "tst_lancebench.moc"

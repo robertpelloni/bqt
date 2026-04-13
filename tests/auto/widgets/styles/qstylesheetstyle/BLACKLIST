@@ -1,12 +1,12 @@
 [task232085_spinBoxLineEditBg]
 osx
 [widgetStylePropagation]
-macos # QTBUG-75786
+macos # BOBUIBUG-75786
 [focusColors]
-ci b2qt 32bit
+ci b2bobui 32bit
 [hoverColors]
-ci b2qt 32bit
+ci b2bobui 32bit
 [task232085_spinBoxLineEditBg]
-ci b2qt 32bit
+ci b2bobui 32bit
 [emptyStyleSheet]
-macos # QTBUG-21468
+macos # BOBUIBUG-21468

@@ -1,5 +1,5 @@
 // Copyright (C) 2018 QNX Software Systems. All rights reserved.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef COLLECTOR_H_
 #define COLLECTOR_H_

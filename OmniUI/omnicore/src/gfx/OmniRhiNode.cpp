@@ -24,7 +24,7 @@ QSGNode* OmniRhiNode::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData*) {
         node = new QSGSimpleTextureNode();
     }
 
-    // In a real Qt 7 implementation, we'd use QQuickWindow::createTextureFromNative()
+    // In a real BobUI 7 implementation, we'd use QQuickWindow::createTextureFromNative()
     // node->setTexture(window()->createTextureFromNative(m_handle, ...));
     
     node->setRect(boundingRect());

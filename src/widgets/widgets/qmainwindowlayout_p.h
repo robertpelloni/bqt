@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QMAINWINDOWLAYOUT_P_H
 #define QMAINWINDOWLAYOUT_P_H
@@ -9,28 +9,28 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 #include "qmainwindow.h"
 
-#include "QtWidgets/qlayout.h"
-#if QT_CONFIG(tabbar)
-#include "QtWidgets/qtabbar.h"
-#include "QtGui/qpainter.h"
-#include "QtGui/qevent.h"
+#include "BobUIWidgets/qlayout.h"
+#if BOBUI_CONFIG(tabbar)
+#include "BobUIWidgets/bobuiabbar.h"
+#include "BobUIGui/qpainter.h"
+#include "BobUIGui/qevent.h"
 #endif
-#include "QtCore/qbasictimer.h"
-#include "QtCore/qlist.h"
-#include "QtCore/qset.h"
+#include "BobUICore/qbasictimer.h"
+#include "BobUICore/qlist.h"
+#include "BobUICore/qset.h"
 #include "private/qlayoutengine_p.h"
 #include "private/qwidgetanimator_p.h"
-#if QT_CONFIG(dockwidget)
+#if BOBUI_CONFIG(dockwidget)
 #include "private/qdockwidget_p.h"
 
 #include "qdockarealayout_p.h"
@@ -42,21 +42,21 @@ struct QDockWidgetPrivate {
     };
 };
 #endif
-#if QT_CONFIG(toolbar)
-#include "qtoolbararealayout_p.h"
-#include "qtoolbar.h"
+#if BOBUI_CONFIG(toolbar)
+#include "bobuioolbararealayout_p.h"
+#include "bobuioolbar.h"
 #endif
 
-#include <QtCore/qloggingcategory.h>
-#include <QtCore/qpointer.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUICore/qpointer.h>
 
-QT_REQUIRE_CONFIG(mainwindow);
+BOBUI_REQUIRE_CONFIG(mainwindow);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcQpaDockWidgets);
 
-class QToolBar;
+class BOBUIoolBar;
 class QRubberBand;
 
 template <typename Layout> // Make use of the "Curiously recurring template pattern"
@@ -74,16 +74,16 @@ public:
     QList<int> hoverSeparator;
     QPoint hoverPos;
 
-#if QT_CONFIG(dockwidget)
+#if BOBUI_CONFIG(dockwidget)
 
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
     QCursor separatorCursor(const QList<int> &path);
     void adjustCursor(const QPoint &pos);
     QCursor oldCursor;
     QCursor adjustedCursor;
     bool hasOldCursor = false;
     bool cursorAdjusted = false;
-#endif // QT_CONFIG(cursor)
+#endif // BOBUI_CONFIG(cursor)
 
     QList<int> movingSeparator;
     QPoint movingSeparatorOrigin, movingSeparatorPos;
@@ -97,13 +97,13 @@ public:
 private:
     QList<int> findSeparator(const QPoint &pos) const;
 
-#endif // QT_CONFIG(dockwidget)
+#endif // BOBUI_CONFIG(dockwidget)
 
 };
 
-#if QT_CONFIG(dockwidget)
+#if BOBUI_CONFIG(dockwidget)
 
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
 template <typename Layout>
 QCursor QMainWindowLayoutSeparatorHelper<Layout>::separatorCursor(const QList<int> &path)
 {
@@ -114,10 +114,10 @@ QCursor QMainWindowLayoutSeparatorHelper<Layout>::separatorCursor(const QList<in
         switch (path.first()) {
         case QInternal::LeftDock:
         case QInternal::RightDock:
-            return Qt::SplitHCursor;
+            return BobUI::SplitHCursor;
         case QInternal::TopDock:
         case QInternal::BottomDock:
-            return Qt::SplitVCursor;
+            return BobUI::SplitVCursor;
         default:
             break;
         }
@@ -125,7 +125,7 @@ QCursor QMainWindowLayoutSeparatorHelper<Layout>::separatorCursor(const QList<in
 
     // no, it's a splitter inside a dock area, separating two dock widgets
 
-    return info->o == Qt::Horizontal ? Qt::SplitHCursor : Qt::SplitVCursor;
+    return info->o == BobUI::Horizontal ? BobUI::SplitHCursor : BobUI::SplitVCursor;
 }
 
 template <typename Layout>
@@ -167,7 +167,7 @@ void QMainWindowLayoutSeparatorHelper<Layout>::adjustCursor(const QPoint &pos)
                 w->update(layout()->dockAreaLayoutInfo()->separatorRect(hoverSeparator));
                 if (!cursorAdjusted) {
                     oldCursor = w->cursor();
-                    hasOldCursor = w->testAttribute(Qt::WA_SetCursor);
+                    hasOldCursor = w->testAttribute(BobUI::WA_SetCursor);
                 }
                 adjustedCursor = separatorCursor(hoverSeparator);
                 w->setCursor(adjustedCursor);
@@ -176,7 +176,7 @@ void QMainWindowLayoutSeparatorHelper<Layout>::adjustCursor(const QPoint &pos)
         }
     }
 }
-#endif // QT_CONFIG(cursor)
+#endif // BOBUI_CONFIG(cursor)
 
 template <typename Layout>
 bool QMainWindowLayoutSeparatorHelper<Layout>::windowEvent(QEvent *event)
@@ -190,7 +190,7 @@ bool QMainWindowLayoutSeparatorHelper<Layout>::windowEvent(QEvent *event)
         break;
     }
 
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
     case QEvent::HoverMove: {
         adjustCursor(static_cast<QHoverEvent *>(event)->position().toPoint());
         break;
@@ -206,11 +206,11 @@ bool QMainWindowLayoutSeparatorHelper<Layout>::windowEvent(QEvent *event)
     case QEvent::ShortcutOverride: // when a menu pops up
         adjustCursor(QPoint(0, 0));
         break;
-#endif // QT_CONFIG(cursor)
+#endif // BOBUI_CONFIG(cursor)
 
     case QEvent::MouseButtonPress: {
         QMouseEvent *e = static_cast<QMouseEvent *>(event);
-        if (e->button() == Qt::LeftButton && startSeparatorMove(e->position().toPoint())) {
+        if (e->button() == BobUI::LeftButton && startSeparatorMove(e->position().toPoint())) {
             // The click was on a separator, eat this event
             e->accept();
             return true;
@@ -221,10 +221,10 @@ bool QMainWindowLayoutSeparatorHelper<Layout>::windowEvent(QEvent *event)
     case QEvent::MouseMove: {
         QMouseEvent *e = static_cast<QMouseEvent *>(event);
 
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
         adjustCursor(e->position().toPoint());
 #endif
-        if (e->buttons() & Qt::LeftButton) {
+        if (e->buttons() & BobUI::LeftButton) {
             if (separatorMove(e->position().toPoint())) {
                 // We're moving a separator, eat this event
                 e->accept();
@@ -245,22 +245,22 @@ bool QMainWindowLayoutSeparatorHelper<Layout>::windowEvent(QEvent *event)
         break;
     }
 
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
     case QEvent::CursorChange:
         // CursorChange events are triggered as mouse moves to new widgets even
         // if the cursor doesn't actually change, so do not change oldCursor if
         // the "changed" cursor has same shape as adjusted cursor.
         if (cursorAdjusted && adjustedCursor.shape() != w->cursor().shape()) {
             oldCursor = w->cursor();
-            hasOldCursor = w->testAttribute(Qt::WA_SetCursor);
+            hasOldCursor = w->testAttribute(BobUI::WA_SetCursor);
 
             // Ensure our adjusted cursor stays visible
             w->setCursor(adjustedCursor);
         }
         break;
-#endif // QT_CONFIG(cursor)
+#endif // BOBUI_CONFIG(cursor)
     case QEvent::Timer:
-        if (static_cast<QTimerEvent *>(event)->timerId() == separatorMoveTimer.timerId()) {
+        if (static_cast<BOBUIimerEvent *>(event)->timerId() == separatorMoveTimer.timerId()) {
             // let's move the separators
             separatorMoveTimer.stop();
             if (movingSeparator.isEmpty())
@@ -288,8 +288,8 @@ template <typename Layout>
 QList<int> QMainWindowLayoutSeparatorHelper<Layout>::findSeparator(const QPoint &pos) const
 {
     Layout *layout = const_cast<Layout*>(this->layout());
-#if QT_CONFIG(toolbar)
-    QToolBarAreaLayout *toolBarAreaLayout = layout->toolBarAreaLayout();
+#if BOBUI_CONFIG(toolbar)
+    BOBUIoolBarAreaLayout *toolBarAreaLayout = layout->toolBarAreaLayout();
     if (toolBarAreaLayout && !toolBarAreaLayout->isEmpty()) {
         // We might have a toolbar that is currently expanded, covering
         // parts of the dock area, in which case we don't want the dock
@@ -298,7 +298,7 @@ QList<int> QMainWindowLayoutSeparatorHelper<Layout>::findSeparator(const QPoint 
         const QWidget *widget = layout->window();
         QWidget *childWidget = widget->childAt(pos);
         while (childWidget && childWidget != widget) {
-            if (auto *toolBar = qobject_cast<QToolBar*>(childWidget)) {
+            if (auto *toolBar = qobject_cast<BOBUIoolBar*>(childWidget)) {
                 if (!toolBarAreaLayout->indexOf(toolBar).isEmpty())
                     return {};
             }
@@ -345,12 +345,12 @@ class Q_AUTOTEST_EXPORT QDockWidgetGroupWindow : public QWidget
 {
     Q_OBJECT
 public:
-    explicit QDockWidgetGroupWindow(QWidget *parent = nullptr, Qt::WindowFlags f = {})
+    explicit QDockWidgetGroupWindow(QWidget *parent = nullptr, BobUI::WindowFlags f = {})
         : QWidget(parent, f)
     {
     }
     QDockAreaLayoutInfo *layoutInfo() const;
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     const QDockAreaLayoutInfo *tabLayoutInfo() const;
     QDockWidget *activeTabbedDockWidget() const;
 #endif
@@ -417,7 +417,7 @@ public:
 private:
     QLayout *lay() const { return const_cast<QDockWidgetGroupWindowItem *>(this)->widget()->layout(); }
 };
-#endif // QT_CONFIG(dockwidget)
+#endif // BOBUI_CONFIG(dockwidget)
 
 /* This data structure represents the state of all the tool-bars and dock-widgets. It's value based
    so it can be easily copied into a temporary variable. All operations are performed without moving
@@ -433,11 +433,11 @@ public:
 
     QMainWindowLayoutState(QMainWindow *win);
 
-#if QT_CONFIG(toolbar)
-    QToolBarAreaLayout toolBarAreaLayout;
+#if BOBUI_CONFIG(toolbar)
+    BOBUIoolBarAreaLayout toolBarAreaLayout;
 #endif
 
-#if QT_CONFIG(dockwidget)
+#if BOBUI_CONFIG(dockwidget)
     QDockAreaLayout dockAreaLayout;
 #else
     QLayoutItem *centralWidgetItem;
@@ -500,7 +500,7 @@ public:
     QLayoutItem *statusbar;
 
     // status bar
-#if QT_CONFIG(statusbar)
+#if BOBUI_CONFIG(statusbar)
     QStatusBar *statusBar() const;
     void setStatusBar(QStatusBar *sb);
 #endif
@@ -510,37 +510,37 @@ public:
     void setCentralWidget(QWidget *cw);
 
     // toolbars
-#if QT_CONFIG(toolbar)
-    void addToolBarBreak(Qt::ToolBarArea area);
-    void insertToolBarBreak(QToolBar *before);
-    void removeToolBarBreak(QToolBar *before);
+#if BOBUI_CONFIG(toolbar)
+    void addToolBarBreak(BobUI::ToolBarArea area);
+    void insertToolBarBreak(BOBUIoolBar *before);
+    void removeToolBarBreak(BOBUIoolBar *before);
 
-    void addToolBar(Qt::ToolBarArea area, QToolBar *toolbar, bool needAddChildWidget = true);
-    void insertToolBar(QToolBar *before, QToolBar *toolbar);
-    Qt::ToolBarArea toolBarArea(const QToolBar *toolbar) const;
-    bool toolBarBreak(QToolBar *toolBar) const;
-    void getStyleOptionInfo(QStyleOptionToolBar *option, QToolBar *toolBar) const;
-    void removeToolBar(QToolBar *toolbar);
+    void addToolBar(BobUI::ToolBarArea area, BOBUIoolBar *toolbar, bool needAddChildWidget = true);
+    void insertToolBar(BOBUIoolBar *before, BOBUIoolBar *toolbar);
+    BobUI::ToolBarArea toolBarArea(const BOBUIoolBar *toolbar) const;
+    bool toolBarBreak(BOBUIoolBar *toolBar) const;
+    void getStyleOptionInfo(QStyleOptionToolBar *option, BOBUIoolBar *toolBar) const;
+    void removeToolBar(BOBUIoolBar *toolbar);
     void toggleToolBarsVisible();
-    void moveToolBar(QToolBar *toolbar, int pos);
-    QToolBarAreaLayout *toolBarAreaLayout() { return &layoutState.toolBarAreaLayout; }
+    void moveToolBar(BOBUIoolBar *toolbar, int pos);
+    BOBUIoolBarAreaLayout *toolBarAreaLayout() { return &layoutState.toolBarAreaLayout; }
 #endif
 
     // dock widgets
-#if QT_CONFIG(dockwidget)
-    void setCorner(Qt::Corner corner, Qt::DockWidgetArea area);
-    Qt::DockWidgetArea corner(Qt::Corner corner) const;
+#if BOBUI_CONFIG(dockwidget)
+    void setCorner(BobUI::Corner corner, BobUI::DockWidgetArea area);
+    BobUI::DockWidgetArea corner(BobUI::Corner corner) const;
     enum DockWidgetAreaSize {Visible, Maximum};
-    QRect dockWidgetAreaRect(Qt::DockWidgetArea area, DockWidgetAreaSize size = Maximum) const;
-    void addDockWidget(Qt::DockWidgetArea area,
+    QRect dockWidgetAreaRect(BobUI::DockWidgetArea area, DockWidgetAreaSize size = Maximum) const;
+    void addDockWidget(BobUI::DockWidgetArea area,
                        QDockWidget *dockwidget,
-                       Qt::Orientation orientation);
+                       BobUI::Orientation orientation);
     void splitDockWidget(QDockWidget *after,
                          QDockWidget *dockwidget,
-                         Qt::Orientation orientation);
-    Qt::DockWidgetArea dockWidgetArea(const QWidget* widget) const;
+                         BobUI::Orientation orientation);
+    BobUI::DockWidgetArea dockWidgetArea(const QWidget* widget) const;
     bool restoreDockWidget(QDockWidget *dockwidget);
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     void tabifyDockWidget(QDockWidget *first, QDockWidget *second);
     void raise(QDockWidget *widget);
     void setVerticalTabsEnabled(bool enabled);
@@ -550,31 +550,31 @@ public:
     bool documentMode() const;
     void setDocumentMode(bool enabled);
 
-    QTabBar *getTabBar();
-    void unuseTabBar(QTabBar *bar);
-    QSet<QTabBar*> usedTabBars;
+    BOBUIabBar *getTabBar();
+    void unuseTabBar(BOBUIabBar *bar);
+    QSet<BOBUIabBar*> usedTabBars;
     bool verticalTabsEnabled;
 
     QWidget *getSeparatorWidget();
     QSet<QWidget*> usedSeparatorWidgets;
     int sep; // separator extent
 
-#if QT_CONFIG(tabwidget)
-    QTabWidget::TabPosition tabPositions[QInternal::DockCount];
-    QTabWidget::TabShape _tabShape;
+#if BOBUI_CONFIG(tabwidget)
+    BOBUIabWidget::TabPosition tabPositions[QInternal::DockCount];
+    BOBUIabWidget::TabShape _tabShape;
 
-    QTabWidget::TabShape tabShape() const;
-    void setTabShape(QTabWidget::TabShape tabShape);
-    QTabWidget::TabPosition tabPosition(Qt::DockWidgetArea area) const;
-    void setTabPosition(Qt::DockWidgetAreas areas, QTabWidget::TabPosition tabPosition);
+    BOBUIabWidget::TabShape tabShape() const;
+    void setTabShape(BOBUIabWidget::TabShape tabShape);
+    BOBUIabWidget::TabPosition tabPosition(BobUI::DockWidgetArea area) const;
+    void setTabPosition(BobUI::DockWidgetAreas areas, BOBUIabWidget::TabPosition tabPosition);
 
     QDockWidgetGroupWindow *createTabbedDockWindow();
-#endif // QT_CONFIG(tabwidget)
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabwidget)
+#endif // BOBUI_CONFIG(tabbar)
 
     QDockAreaLayout *dockAreaLayoutInfo() { return &layoutState.dockAreaLayout; }
     void keepSize(QDockWidget *w);
-#endif // QT_CONFIG(dockwidget)
+#endif // BOBUI_CONFIG(dockwidget)
 
     // save/restore
     enum VersionMarkers { // sentinel values used to validate state data
@@ -602,13 +602,13 @@ public:
     QList<int> currentGapPos;
     QRect currentGapRect;
     QWidget *pluggingWidget;
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
     QPointer<QRubberBand> gapIndicator;
 #endif
-#if QT_CONFIG(dockwidget)
+#if BOBUI_CONFIG(dockwidget)
     QPointer<QDockWidgetGroupWindow> currentHoveredFloat; // set when dragging over a floating dock widget
     void setCurrentHoveredFloat(QDockWidgetGroupWindow *w);
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     bool isDockWidgetTabbed(const QDockWidget *dockWidget) const;
     QList<QDockWidget *> tabifiedDockWidgets(const QDockWidget *dockWidget) const;
     QMainWindowTabBar *findTabBar(const QDockWidget *dockWidget) const;
@@ -625,37 +625,37 @@ public:
     void restore(bool keepSavedState = false);
     void animationFinished(QWidget *widget);
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     static bool needsPlatformDrag();
-    Qt::DropAction performPlatformWidgetDrag(QLayoutItem *widgetItem, const QPoint &pressPosition);
+    BobUI::DropAction performPlatformWidgetDrag(QLayoutItem *widgetItem, const QPoint &pressPosition);
     QLayoutItem *draggingWidget = nullptr;
 #endif
 
 protected:
-    void timerEvent(QTimerEvent *e) override;
+    void timerEvent(BOBUIimerEvent *e) override;
 
 private Q_SLOTS:
     void updateGapIndicator();
-#if QT_CONFIG(dockwidget)
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(dockwidget)
+#if BOBUI_CONFIG(tabbar)
     void tabChanged();
     void tabMoved(int from, int to);
 #endif
 #endif
 private:
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     void showTabBars();
     void updateTabBarShapes();
 #endif
     bool isInRestoreState = false;
 };
 
-#if QT_CONFIG(dockwidget) && !defined(QT_NO_DEBUG_STREAM)
+#if BOBUI_CONFIG(dockwidget) && !defined(BOBUI_NO_DEBUG_STREAM)
 class QDebug;
 QDebug operator<<(QDebug debug, const QDockAreaLayout &layout);
 QDebug operator<<(QDebug debug, const QMainWindowLayout *layout);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QMAINWINDOWLAYOUT_P_H

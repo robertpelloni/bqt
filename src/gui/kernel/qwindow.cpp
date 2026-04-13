@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwindow.h"
 
 #include <qpa/qplatformwindow.h>
 #include <qpa/qplatformintegration.h>
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
 #include <qpa/qplatformtheme.h>
 #endif
 #include "qsurfaceformat.h"
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 #include <qpa/qplatformopenglcontext.h>
 #include "qopenglcontext.h"
 #include "qopenglcontext_p.h"
@@ -18,31 +18,31 @@
 
 #include "qwindow_p.h"
 #include "qguiapplication_p.h"
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 # include "qaccessible.h"
 # include <private/qaccessiblecache_p.h>
 #endif
 #include "qhighdpiscaling_p.h"
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 #include "qshapedpixmapdndwindow_p.h"
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
 
 #include <private/qevent_p.h>
 #include <private/qeventpoint_p.h>
 #include <private/qguiapplication_p.h>
 
-#include <QtCore/QTimer>
-#include <QtCore/QDebug>
+#include <BobUICore/BOBUIimer>
+#include <BobUICore/QDebug>
 
 #include <QStyleHints>
 #include <qpa/qplatformcursor.h>
 #include <qpa/qplatformwindow_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QWindow
-    \inmodule QtGui
+    \inmodule BobUIGui
     \since 5.0
     \brief The QWindow class represents a window in the underlying windowing system.
 
@@ -96,7 +96,7 @@ QT_BEGIN_NAMESPACE
 
     \section1 Rendering
 
-    There are two Qt APIs that can be used to render content into a window,
+    There are two BobUI APIs that can be used to render content into a window,
     QBackingStore for rendering with a QPainter and flushing the contents
     to a window with type QSurface::RasterSurface, and QOpenGLContext for
     rendering with OpenGL to a window with type QSurface::OpenGLSurface.
@@ -176,7 +176,7 @@ QWindow::~QWindow()
 {
     Q_D(QWindow);
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     if (QGuiApplicationPrivate::is_app_running && !QGuiApplicationPrivate::is_app_closing && QAccessible::isActive())
         QAccessibleCache::instance()->sendObjectDestroyedEvent(this);
 #endif
@@ -184,7 +184,7 @@ QWindow::~QWindow()
     // Delete child windows up front, instead of waiting for ~QObject,
     // in case the destruction of the child references its parent as
     // a (no longer valid) QWindow.
-    qDeleteAll(findChildren<QWindow *>(Qt::FindDirectChildrenOnly));
+    qDeleteAll(findChildren<QWindow *>(BobUI::FindDirectChildrenOnly));
 
     d->destroy();
     // Decouple from parent before window goes under
@@ -196,7 +196,7 @@ QWindow::~QWindow()
 
     // thse are normally cleared in destroy(), but the window may in
     // some cases end up becoming the focus window again, or receive an enter
-    // event. Clear it again here as a workaround. See QTBUG-75326.
+    // event. Clear it again here as a workaround. See BOBUIBUG-75326.
     if (QGuiApplicationPrivate::focus_window == this)
         QGuiApplicationPrivate::focus_window = nullptr;
     if (QGuiApplicationPrivate::currentMouseWindow == this)
@@ -384,7 +384,7 @@ void QWindowPrivate::setVisible(bool visible)
         // remove posted quit events when showing a new window
         QCoreApplication::removePostedEvents(qApp, QEvent::Quit);
 
-        if (q->type() == Qt::Window) {
+        if (q->type() == BobUI::Window) {
             QGuiApplicationPrivate *app_priv = QGuiApplicationPrivate::instance();
             QString &firstWindowTitle = app_priv->firstWindowTitle;
             if (!firstWindowTitle.isEmpty()) {
@@ -412,23 +412,23 @@ void QWindowPrivate::setVisible(bool visible)
         else
             QGuiApplicationPrivate::hideModalWindow(q);
     // QShapedPixmapWindow is used on some platforms for showing a drag pixmap, so don't block
-    // input to this window as it is performing a drag - QTBUG-63846
+    // input to this window as it is performing a drag - BOBUIBUG-63846
     } else if (visible && QGuiApplication::modalWindow()
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
                && !qobject_cast<QShapedPixmapWindow *>(q)
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
               ) {
         QGuiApplicationPrivate::updateBlockedStatus(q);
     }
 
-    if (q->type() == Qt::Popup) {
+    if (q->type() == BobUI::Popup) {
         if (visible)
             QGuiApplicationPrivate::activatePopup(q);
         else
             QGuiApplicationPrivate::closePopup(q);
     }
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     if (visible && (hasCursor || QGuiApplication::overrideCursor()))
         applyCursor();
 #endif
@@ -450,11 +450,11 @@ void QWindowPrivate::updateVisibility()
 
     if (!visible)
         visibility = QWindow::Hidden;
-    else if (windowState & Qt::WindowMinimized)
+    else if (windowState & BobUI::WindowMinimized)
         visibility = QWindow::Minimized;
-    else if (windowState & Qt::WindowFullScreen)
+    else if (windowState & BobUI::WindowFullScreen)
         visibility = QWindow::FullScreen;
-    else if (windowState & Qt::WindowMaximized)
+    else if (windowState & BobUI::WindowMaximized)
         visibility = QWindow::Maximized;
     else
         visibility = QWindow::Windowed;
@@ -838,7 +838,7 @@ void QWindow::setParent(QWindow *parent)
 
     QEvent parentChangedEvent(QEvent::ParentWindowChange);
     QCoreApplication::sendEvent(this, &parentChangedEvent);
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     if (QGuiApplicationPrivate::is_app_running && !QGuiApplicationPrivate::is_app_closing) {
         QAccessibleEvent qaEvent(this, QAccessible::ParentChanged);
         QAccessible::updateAccessibility(&qaEvent);
@@ -865,27 +865,27 @@ bool QWindow::isTopLevel() const
 bool QWindow::isModal() const
 {
     Q_D(const QWindow);
-    return d->modality != Qt::NonModal;
+    return d->modality != BobUI::NonModal;
 }
 
 /*! \property QWindow::modality
     \brief the modality of the window
 
-    A modal window prevents other windows from receiving input events. Qt
-    supports two types of modality: Qt::WindowModal and Qt::ApplicationModal.
+    A modal window prevents other windows from receiving input events. BobUI
+    supports two types of modality: BobUI::WindowModal and BobUI::ApplicationModal.
 
-    By default, this property is Qt::NonModal
+    By default, this property is BobUI::NonModal
 
-    \sa Qt::WindowModality
+    \sa BobUI::WindowModality
 */
 
-Qt::WindowModality QWindow::modality() const
+BobUI::WindowModality QWindow::modality() const
 {
     Q_D(const QWindow);
     return d->modality;
 }
 
-void QWindow::setModality(Qt::WindowModality modality)
+void QWindow::setModality(BobUI::WindowModality modality)
 {
     Q_D(QWindow);
     if (d->modality == modality)
@@ -894,7 +894,7 @@ void QWindow::setModality(Qt::WindowModality modality)
     emit modalityChanged(modality);
 }
 
-/*! \fn void QWindow::modalityChanged(Qt::WindowModality modality)
+/*! \fn void QWindow::modalityChanged(BobUI::WindowModality modality)
 
     This signal is emitted when the Qwindow::modality property changes to \a modality.
 */
@@ -985,7 +985,7 @@ QSurfaceFormat QWindow::format() const
 
     \sa setFlag()
 */
-void QWindow::setFlags(Qt::WindowFlags flags)
+void QWindow::setFlags(BobUI::WindowFlags flags)
 {
     Q_D(QWindow);
     if (d->windowFlags == flags)
@@ -998,13 +998,13 @@ void QWindow::setFlags(Qt::WindowFlags flags)
     emit flagsChanged(this->flags());
 }
 
-Qt::WindowFlags QWindow::flags() const
+BobUI::WindowFlags QWindow::flags() const
 {
     Q_D(const QWindow);
-    Qt::WindowFlags flags = d->windowFlags;
+    BobUI::WindowFlags flags = d->windowFlags;
 
     if (d->platformWindow && d->platformWindow->isForeignWindow())
-        flags |= Qt::ForeignWindow;
+        flags |= BobUI::ForeignWindow;
 
     return flags;
 }
@@ -1017,7 +1017,7 @@ Qt::WindowFlags QWindow::flags() const
 
     \sa setFlags(), flags(), type()
 */
-void QWindow::setFlag(Qt::WindowType flag, bool on)
+void QWindow::setFlag(BobUI::WindowType flag, bool on)
 {
     Q_D(QWindow);
     if (on)
@@ -1034,9 +1034,9 @@ void QWindow::setFlag(Qt::WindowType flag, bool on)
 
     \sa flags(), setFlags()
 */
-Qt::WindowType QWindow::type() const
+BobUI::WindowType QWindow::type() const
 {
-    return static_cast<Qt::WindowType>(int(flags() & Qt::WindowType_Mask));
+    return static_cast<BobUI::WindowType>(int(flags() & BobUI::WindowType_Mask));
 }
 
 /*!
@@ -1178,18 +1178,18 @@ void QWindow::lower()
 
     Returns true if the operation was supported by the system.
 */
-bool QWindow::startSystemResize(Qt::Edges edges)
+bool QWindow::startSystemResize(BobUI::Edges edges)
 {
     Q_D(QWindow);
     if (Q_UNLIKELY(!isVisible() || !d->platformWindow || d->maximumSize == d->minimumSize))
         return false;
 
-    const bool isSingleEdge = edges == Qt::TopEdge || edges == Qt::RightEdge || edges == Qt::BottomEdge || edges == Qt::LeftEdge;
+    const bool isSingleEdge = edges == BobUI::TopEdge || edges == BobUI::RightEdge || edges == BobUI::BottomEdge || edges == BobUI::LeftEdge;
     const bool isCorner =
-            edges == (Qt::TopEdge | Qt::LeftEdge) ||
-            edges == (Qt::TopEdge | Qt::RightEdge) ||
-            edges == (Qt::BottomEdge | Qt::RightEdge) ||
-            edges == (Qt::BottomEdge | Qt::LeftEdge);
+            edges == (BobUI::TopEdge | BobUI::LeftEdge) ||
+            edges == (BobUI::TopEdge | BobUI::RightEdge) ||
+            edges == (BobUI::BottomEdge | BobUI::RightEdge) ||
+            edges == (BobUI::BottomEdge | BobUI::LeftEdge);
 
     if (Q_UNLIKELY(!isSingleEdge && !isCorner)) {
         qWarning() << "Invalid edges" << edges << "passed to QWindow::startSystemResize, ignoring.";
@@ -1295,8 +1295,8 @@ QRegion QWindow::mask() const
 void QWindow::requestActivate()
 {
     Q_D(QWindow);
-    if (flags() & Qt::WindowDoesNotAcceptFocus) {
-        qWarning() << "requestActivate() called for " << this << " which has Qt::WindowDoesNotAcceptFocus set.";
+    if (flags() & BobUI::WindowDoesNotAcceptFocus) {
+        qWarning() << "requestActivate() called for " << this << " which has BobUI::WindowDoesNotAcceptFocus set.";
         return;
     }
     if (d->platformWindow)
@@ -1378,9 +1378,9 @@ bool QWindow::isActive() const
     QScreen::transformBetween(), and QScreen::mapBetween() can be used
     to compute the necessary transform.
 
-    The default value is Qt::PrimaryOrientation
+    The default value is BobUI::PrimaryOrientation
 */
-void QWindow::reportContentOrientationChange(Qt::ScreenOrientation orientation)
+void QWindow::reportContentOrientationChange(BobUI::ScreenOrientation orientation)
 {
     Q_D(QWindow);
     if (d->contentOrientation == orientation)
@@ -1391,7 +1391,7 @@ void QWindow::reportContentOrientationChange(Qt::ScreenOrientation orientation)
     emit contentOrientationChanged(orientation);
 }
 
-Qt::ScreenOrientation QWindow::contentOrientation() const
+BobUI::ScreenOrientation QWindow::contentOrientation() const
 {
     Q_D(const QWindow);
     return d->contentOrientation;
@@ -1450,15 +1450,15 @@ bool QWindowPrivate::updateDevicePixelRatio()
     return true;
 }
 
-Qt::WindowState QWindowPrivate::effectiveState(Qt::WindowStates state)
+BobUI::WindowState QWindowPrivate::effectiveState(BobUI::WindowStates state)
 {
-    if (state & Qt::WindowMinimized)
-        return Qt::WindowMinimized;
-    else if (state & Qt::WindowFullScreen)
-        return Qt::WindowFullScreen;
-    else if (state & Qt::WindowMaximized)
-        return Qt::WindowMaximized;
-    return Qt::WindowNoState;
+    if (state & BobUI::WindowMinimized)
+        return BobUI::WindowMinimized;
+    else if (state & BobUI::WindowFullScreen)
+        return BobUI::WindowFullScreen;
+    else if (state & BobUI::WindowMaximized)
+        return BobUI::WindowMaximized;
+    return BobUI::WindowNoState;
 }
 
 /*!
@@ -1467,11 +1467,11 @@ Qt::WindowState QWindowPrivate::effectiveState(Qt::WindowStates state)
     The window \a state represents whether the window appears in the
     windowing system as maximized, minimized, fullscreen, or normal.
 
-    The enum value Qt::WindowActive is not an accepted parameter.
+    The enum value BobUI::WindowActive is not an accepted parameter.
 
     \sa showNormal(), showFullScreen(), showMinimized(), showMaximized(), setWindowStates()
 */
-void QWindow::setWindowState(Qt::WindowState state)
+void QWindow::setWindowState(BobUI::WindowState state)
 {
     setWindowStates(state);
 }
@@ -1488,16 +1488,16 @@ void QWindow::setWindowState(Qt::WindowState state)
     minimized, but clicking on the task bar entry will restore it to the
     maximized state.
 
-    The enum value Qt::WindowActive should not be set.
+    The enum value BobUI::WindowActive should not be set.
 
     \sa showNormal(), showFullScreen(), showMinimized(), showMaximized()
  */
-void QWindow::setWindowStates(Qt::WindowStates state)
+void QWindow::setWindowStates(BobUI::WindowStates state)
 {
     Q_D(QWindow);
-    if (state & Qt::WindowActive) {
-        qWarning("QWindow::setWindowStates does not accept Qt::WindowActive");
-        state &= ~Qt::WindowActive;
+    if (state & BobUI::WindowActive) {
+        qWarning("QWindow::setWindowStates does not accept BobUI::WindowActive");
+        state &= ~BobUI::WindowActive;
     }
 
     if (d->platformWindow)
@@ -1517,7 +1517,7 @@ void QWindow::setWindowStates(Qt::WindowStates state)
 
     \sa setWindowState(), windowStates()
 */
-Qt::WindowState QWindow::windowState() const
+BobUI::WindowState QWindow::windowState() const
 {
     Q_D(const QWindow);
     return QWindowPrivate::effectiveState(d->windowState);
@@ -1534,14 +1534,14 @@ Qt::WindowState QWindow::windowState() const
 
     \sa setWindowStates()
 */
-Qt::WindowStates QWindow::windowStates() const
+BobUI::WindowStates QWindow::windowStates() const
 {
     Q_D(const QWindow);
     return d->windowState;
 }
 
 /*!
-    \fn QWindow::windowStateChanged(Qt::WindowState windowState)
+    \fn QWindow::windowStateChanged(BobUI::WindowState windowState)
 
     This signal is emitted when the \a windowState changes, either
     by being set explicitly with setWindowStates(), or automatically when
@@ -1558,7 +1558,7 @@ Qt::WindowStates QWindow::windowStates() const
 
     In order to cause the window to be centered above its transient \a parent by
     default, depending on the window manager, it may also be necessary to call
-    setFlags() with a suitable \l Qt::WindowType (such as \c Qt::Dialog).
+    setFlags() with a suitable \l BobUI::WindowType (such as \c BobUI::Dialog).
 
     \sa parent()
 */
@@ -1589,7 +1589,7 @@ QWindow *QWindow::transientParent() const
 /*
     The setter for the QWindow::transientParent property.
     The only reason this exists is to set the transientParentPropertySet flag
-    so that Qt Quick knows whether it was set programmatically (because of
+    so that BobUI Quick knows whether it was set programmatically (because of
     Window declaration context) or because the user set the property.
 */
 void QWindowPrivate::setTransientParent(QWindow *parent)
@@ -2144,7 +2144,7 @@ void QWindowPrivate::destroy()
         QObject *object = childrenWindows.at(i);
         if (object->isWindowType()) {
             QWindow *w = static_cast<QWindow*>(object);
-            qt_window_private(w)->destroy();
+            bobui_window_private(w)->destroy();
         }
     }
 
@@ -2333,10 +2333,10 @@ void QWindow::show()
         showNormal();
     } else {
         const auto *platformIntegration = QGuiApplicationPrivate::platformIntegration();
-        Qt::WindowState defaultState = platformIntegration->defaultWindowState(d_func()->windowFlags);
-        if (defaultState == Qt::WindowFullScreen)
+        BobUI::WindowState defaultState = platformIntegration->defaultWindowState(d_func()->windowFlags);
+        if (defaultState == BobUI::WindowFullScreen)
             showFullScreen();
-        else if (defaultState == Qt::WindowMaximized)
+        else if (defaultState == BobUI::WindowMaximized)
             showMaximized();
         else
             showNormal();
@@ -2358,35 +2358,35 @@ void QWindow::hide()
 /*!
     Shows the window as minimized.
 
-    Equivalent to calling setWindowStates(Qt::WindowMinimized) and then
+    Equivalent to calling setWindowStates(BobUI::WindowMinimized) and then
     setVisible(true).
 
     \sa setWindowStates(), setVisible()
 */
 void QWindow::showMinimized()
 {
-    setWindowStates(Qt::WindowMinimized);
+    setWindowStates(BobUI::WindowMinimized);
     setVisible(true);
 }
 
 /*!
     Shows the window as maximized.
 
-    Equivalent to calling setWindowStates(Qt::WindowMaximized) and then
+    Equivalent to calling setWindowStates(BobUI::WindowMaximized) and then
     setVisible(true).
 
     \sa setWindowStates(), setVisible()
 */
 void QWindow::showMaximized()
 {
-    setWindowStates(Qt::WindowMaximized);
+    setWindowStates(BobUI::WindowMaximized);
     setVisible(true);
 }
 
 /*!
     Shows the window as fullscreen.
 
-    Equivalent to calling setWindowStates(Qt::WindowFullScreen) and then
+    Equivalent to calling setWindowStates(BobUI::WindowFullScreen) and then
     setVisible(true).
 
     See the \l{QWidget::showFullScreen()} documentation for platform-specific
@@ -2396,7 +2396,7 @@ void QWindow::showMaximized()
 */
 void QWindow::showFullScreen()
 {
-    setWindowStates(Qt::WindowFullScreen);
+    setWindowStates(BobUI::WindowFullScreen);
     setVisible(true);
 #if !defined Q_OS_QNX // On QNX this window will be activated anyway from libscreen
                       // activating it here before libscreen activates it causes problems
@@ -2407,14 +2407,14 @@ void QWindow::showFullScreen()
 /*!
     Shows the window as normal, i.e. neither maximized, minimized, nor fullscreen.
 
-    Equivalent to calling setWindowStates(Qt::WindowNoState) and then
+    Equivalent to calling setWindowStates(BobUI::WindowNoState) and then
     setVisible(true).
 
     \sa setWindowStates(), setVisible()
 */
 void QWindow::showNormal()
 {
-    setWindowStates(Qt::WindowNoState);
+    setWindowStates(BobUI::WindowNoState);
     setVisible(true);
 }
 
@@ -2463,10 +2463,10 @@ bool QWindowPrivate::participatesInLastWindowClosed() const
     if (!q->isTopLevel())
         return false;
 
-    // Tool-tip widgets do not normally have Qt::WA_QuitOnClose,
+    // Tool-tip widgets do not normally have BobUI::WA_QuitOnClose,
     // but since we do not have a similar flag for non-widget
     // windows we need an explicit exclusion here as well.
-    if (q->type() == Qt::ToolTip)
+    if (q->type() == BobUI::ToolTip)
         return false;
 
     // A window with a transient parent is not a primary window,
@@ -2669,7 +2669,7 @@ bool QWindow::event(QEvent *ev)
     case QEvent::TouchUpdate:
     case QEvent::TouchEnd:
     case QEvent::TouchCancel:
-        touchEvent(static_cast<QTouchEvent *>(ev));
+        touchEvent(static_cast<BOBUIouchEvent *>(ev));
         break;
 
     case QEvent::Move:
@@ -2690,7 +2690,7 @@ bool QWindow::event(QEvent *ev)
 
     case QEvent::FocusIn: {
         focusInEvent(static_cast<QFocusEvent *>(ev));
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
         QAccessible::State state;
         state.active = true;
         QAccessibleStateChangeEvent event(this, state);
@@ -2700,7 +2700,7 @@ bool QWindow::event(QEvent *ev)
 
     case QEvent::FocusOut: {
         focusOutEvent(static_cast<QFocusEvent *>(ev));
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
         QAccessible::State state;
         state.active = true;
         QAccessibleStateChangeEvent event(this, state);
@@ -2708,7 +2708,7 @@ bool QWindow::event(QEvent *ev)
 #endif
         break; }
 
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
     case QEvent::Wheel:
         wheelEvent(static_cast<QWheelEvent*>(ev));
         break;
@@ -2753,17 +2753,17 @@ bool QWindow::event(QEvent *ev)
         setIcon(icon());
         break;
 
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
     case QEvent::TabletPress:
     case QEvent::TabletMove:
     case QEvent::TabletRelease:
-        tabletEvent(static_cast<QTabletEvent *>(ev));
+        tabletEvent(static_cast<BOBUIabletEvent *>(ev));
         break;
 #endif
 
     case QEvent::PlatformSurface: {
         if ((static_cast<QPlatformSurfaceEvent *>(ev))->surfaceEventType() == QPlatformSurfaceEvent::SurfaceAboutToBeDestroyed) {
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
             QOpenGLContext *context = QOpenGLContext::currentContext();
             if (context && context->surface() == static_cast<QSurface *>(this))
                 context->doneCurrent();
@@ -2797,10 +2797,10 @@ bool QWindow::event(QEvent *ev)
     with the mouse events, and then doing something completely different with
     the QContextMenuEvent. In other words, QContextMenuEvent is very different
     from other kinds of optional followup events synthesized from unhandled
-    events (like the way we synthesize a QMouseEvent only if a QTabletEvent was
+    events (like the way we synthesize a QMouseEvent only if a BOBUIabletEvent was
     not handled). Furthermore, there's enough legacy widget code that doesn't
     call ignore() on unhandled mouse events. So it's uncertain whether this can
-    change in Qt 7.
+    change in BobUI 7.
 
     The QContextMenuEvent occurs at the scenePosition(). The position()
     was likely already "localized" during the previous delivery.
@@ -2819,8 +2819,8 @@ bool QWindow::event(QEvent *ev)
 */
 void QWindowPrivate::maybeSynthesizeContextMenuEvent(QMouseEvent *event)
 {
-#ifndef QT_NO_CONTEXTMENU
-    if (event->button() == Qt::RightButton
+#ifndef BOBUI_NO_CONTEXTMENU
+    if (event->button() == BobUI::RightButton
         && event->type() == QGuiApplicationPrivate::contextMenuEventType()) {
         QContextMenuEvent e(QContextMenuEvent::Mouse, event->scenePosition().toPoint(),
                             event->globalPosition().toPoint(), event->modifiers());
@@ -2843,7 +2843,7 @@ void QWindowPrivate::maybeSynthesizeContextMenuEvent(QMouseEvent *event)
     \l{QScreen::refreshRate()}{refresh rate} higher than 60 Hz, the interval is
     scaled down to a value smaller than 5. The additional time is there to give
     the event loop a bit of idle time to gather system events, and can be
-    overridden using the QT_QPA_UPDATE_IDLE_TIME environment variable.
+    overridden using the BOBUI_QPA_UPDATE_IDLE_TIME environment variable.
 
     When driving animations, this function should be called once after drawing
     has completed. Calling this function multiple times will result in a single
@@ -2863,7 +2863,7 @@ void QWindowPrivate::maybeSynthesizeContextMenuEvent(QMouseEvent *event)
 */
 void QWindow::requestUpdate()
 {
-    Q_ASSERT_X(QThread::isMainThread(),
+    Q_ASSERT_X(BOBUIhread::isMainThread(),
         "QWindow", "Updates can only be scheduled from the GUI (main) thread");
 
     Q_D(QWindow);
@@ -2955,7 +2955,7 @@ void QWindow::mouseMoveEvent(QMouseEvent *ev)
     ev->ignore();
 }
 
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
 /*!
     Override this to handle mouse wheel or other wheel events (\a ev).
 */
@@ -2963,24 +2963,24 @@ void QWindow::wheelEvent(QWheelEvent *ev)
 {
     ev->ignore();
 }
-#endif // QT_CONFIG(wheelevent)
+#endif // BOBUI_CONFIG(wheelevent)
 
 /*!
     Override this to handle touch events (\a ev).
 */
-void QWindow::touchEvent(QTouchEvent *ev)
+void QWindow::touchEvent(BOBUIouchEvent *ev)
 {
     ev->ignore();
 }
 
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
 /*!
     Override this to handle tablet press, move, and release events (\a ev).
 
     Proximity enter and leave events are not sent to windows, they are
     delivered to the application instance.
 */
-void QWindow::tabletEvent(QTabletEvent *ev)
+void QWindow::tabletEvent(BOBUIabletEvent *ev)
 {
     ev->ignore();
 }
@@ -3016,7 +3016,7 @@ bool QWindow::nativeEvent(const QByteArray &eventType, void *message, qintptr *r
 QPointF QWindow::mapToGlobal(const QPointF &pos) const
 {
     Q_D(const QWindow);
-    // QTBUG-43252, prefer platform implementation for foreign windows.
+    // BOBUIBUG-43252, prefer platform implementation for foreign windows.
     if (d->platformWindow
         && (d->platformWindow->isForeignWindow() || d->platformWindow->isEmbedded())) {
         return QHighDpi::fromNativeGlobalPosition(d->platformWindow->mapToGlobalF(QHighDpi::toNativeLocalPosition(pos, this)), this);
@@ -3063,7 +3063,7 @@ QPoint QWindow::mapToGlobal(const QPoint &pos) const
 QPointF QWindow::mapFromGlobal(const QPointF &pos) const
 {
     Q_D(const QWindow);
-    // QTBUG-43252, prefer platform implementation for foreign windows.
+    // BOBUIBUG-43252, prefer platform implementation for foreign windows.
     if (d->platformWindow
         && (d->platformWindow->isForeignWindow() || d->platformWindow->isEmbedded())) {
         return QHighDpi::fromNativeLocalPosition(d->platformWindow->mapFromGlobalF(QHighDpi::toNativeGlobalPosition(pos, this)), this);
@@ -3111,7 +3111,7 @@ QPoint QWindowPrivate::globalPosition() const
     return offset;
 }
 
-Q_GUI_EXPORT QWindowPrivate *qt_window_private(QWindow *window)
+Q_GUI_EXPORT QWindowPrivate *bobui_window_private(QWindow *window)
 {
     return window->d_func();
 }
@@ -3135,7 +3135,7 @@ QWindow *QWindowPrivate::topLevelWindow(QWindow::AncestorMode mode) const
 
 /*!
     Creates a local representation of a window created by another process or by
-    using native libraries below Qt.
+    using native libraries below BobUI.
 
     Given the handle \a id to a native window, this method creates a QWindow
     object which can be used to represent the window when invoking methods like
@@ -3194,7 +3194,7 @@ void QWindow::alert(int msec)
         return;
     d->platformWindow->setAlertState(true);
     if (d->platformWindow->isAlertState() && msec)
-        QTimer::singleShot(msec, this, SLOT(_q_clearAlert()));
+        BOBUIimer::singleShot(msec, this, SLOT(_q_clearAlert()));
 }
 
 void QWindowPrivate::_q_clearAlert()
@@ -3203,19 +3203,19 @@ void QWindowPrivate::_q_clearAlert()
         platformWindow->setAlertState(false);
 }
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 /*!
     \brief set the cursor shape for this window
 
     The mouse \a cursor will assume this shape when it is over this
     window, unless an override cursor is set.
-    See the \l{Qt::CursorShape}{list of predefined cursor objects} for a
+    See the \l{BobUI::CursorShape}{list of predefined cursor objects} for a
     range of useful shapes.
 
     If no cursor has been set, or after a call to unsetCursor(), the
     parent window's cursor is used.
 
-    By default, the cursor has the Qt::ArrowCursor shape.
+    By default, the cursor has the BobUI::ArrowCursor shape.
 
     Some underlying window implementations will reset the cursor if it
     leaves a window even if the mouse is grabbed. If you want to have
@@ -3255,15 +3255,15 @@ void QWindowPrivate::setCursor(const QCursor *newCursor)
 
     Q_Q(QWindow);
     if (newCursor) {
-        const Qt::CursorShape newShape = newCursor->shape();
-        if (newShape <= Qt::LastCursor && hasCursor && newShape == cursor.shape())
+        const BobUI::CursorShape newShape = newCursor->shape();
+        if (newShape <= BobUI::LastCursor && hasCursor && newShape == cursor.shape())
             return; // Unchanged and no bitmap/custom cursor.
         cursor = *newCursor;
         hasCursor = true;
     } else {
         if (!hasCursor)
             return;
-        cursor = QCursor(Qt::ArrowCursor);
+        cursor = QCursor(BobUI::ArrowCursor);
         hasCursor = false;
     }
     // Only attempt to emit signal if there is an actual platform cursor
@@ -3292,7 +3292,7 @@ bool QWindowPrivate::applyCursor()
     }
     return false;
 }
-#endif // QT_NO_CURSOR
+#endif // BOBUI_NO_CURSOR
 
 void *QWindow::resolveInterface(const char *name, int revision) const
 {
@@ -3304,29 +3304,29 @@ void *QWindow::resolveInterface(const char *name, int revision) const
     Q_UNUSED(revision);
 
 #if defined(Q_OS_WIN)
-    QT_NATIVE_INTERFACE_RETURN_IF(QWindowsWindow, platformWindow);
+    BOBUI_NATIVE_INTERFACE_RETURN_IF(QWindowsWindow, platformWindow);
 #endif
 
-#if QT_CONFIG(xcb)
-    QT_NATIVE_INTERFACE_RETURN_IF(QXcbWindow, platformWindow);
+#if BOBUI_CONFIG(xcb)
+    BOBUI_NATIVE_INTERFACE_RETURN_IF(QXcbWindow, platformWindow);
 #endif
 
 #if defined(Q_OS_MACOS)
-    QT_NATIVE_INTERFACE_RETURN_IF(QCocoaWindow, platformWindow);
+    BOBUI_NATIVE_INTERFACE_RETURN_IF(QCocoaWindow, platformWindow);
 #endif
 
-#if QT_CONFIG(wayland)
-    QT_NATIVE_INTERFACE_RETURN_IF(QWaylandWindow, platformWindow);
+#if BOBUI_CONFIG(wayland)
+    BOBUI_NATIVE_INTERFACE_RETURN_IF(QWaylandWindow, platformWindow);
 #endif
 
 #if defined(Q_OS_WASM)
-    QT_NATIVE_INTERFACE_RETURN_IF(QWasmWindow, platformWindow);
+    BOBUI_NATIVE_INTERFACE_RETURN_IF(QWasmWindow, platformWindow);
 #endif
 
     return nullptr;
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug debug, const QWindow *window)
 {
     QDebugStateSaver saver(debug);
@@ -3347,7 +3347,7 @@ QDebug operator<<(QDebug debug, const QWindow *window)
             if (window->isTopLevel())
                 debug << ", toplevel";
             debug << ", " << geometry.width() << 'x' << geometry.height()
-                << Qt::forcesign << geometry.x() << geometry.y() << Qt::noforcesign;
+                << BobUI::forcesign << geometry.x() << geometry.y() << BobUI::noforcesign;
             const QMargins margins = window->frameMargins();
             if (!margins.isNull())
                 debug << ", margins=" << margins;
@@ -3356,7 +3356,7 @@ QDebug operator<<(QDebug debug, const QWindow *window)
                 debug << ", safeAreaMargins=" << safeAreaMargins;
             debug << ", devicePixelRatio=" << window->devicePixelRatio();
             if (const QPlatformWindow *platformWindow = window->handle())
-                debug << ", winId=0x" << Qt::hex << platformWindow->winId() << Qt::dec;
+                debug << ", winId=0x" << BobUI::hex << platformWindow->winId() << BobUI::dec;
             if (const QScreen *screen = window->screen())
                 debug << ", on " << screen->name();
         }
@@ -3366,9 +3366,9 @@ QDebug operator<<(QDebug debug, const QWindow *window)
     }
     return debug;
 }
-#endif // !QT_NO_DEBUG_STREAM
+#endif // !BOBUI_NO_DEBUG_STREAM
 
-#if QT_CONFIG(vulkan) || defined(Q_QDOC)
+#if BOBUI_CONFIG(vulkan) || defined(Q_QDOC)
 
 /*!
     Associates this window with the specified Vulkan \a instance.
@@ -3390,8 +3390,8 @@ QVulkanInstance *QWindow::vulkanInstance() const
     return d->vulkanInstance;
 }
 
-#endif // QT_CONFIG(vulkan)
+#endif // BOBUI_CONFIG(vulkan)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qwindow.cpp"

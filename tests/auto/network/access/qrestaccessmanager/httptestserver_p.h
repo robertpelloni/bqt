@@ -1,14 +1,14 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef QRESTACCESSSMANAGER_HTTPTESTSERVER_P_H
 #define QRESTACCESSSMANAGER_HTTPTESTSERVER_P_H
 
-#include <QtNetwork/qtcpserver.h>
-#include <QtNetwork/qhttpheaders.h>
+#include <BobUINetwork/bobuicpserver.h>
+#include <BobUINetwork/qhttpheaders.h>
 
-#include <QtCore/qmap.h>
-#include <QtCore/qurl.h>
+#include <BobUICore/qmap.h>
+#include <BobUICore/qurl.h>
 
 #include <functional>
 
@@ -32,7 +32,7 @@ struct ResponseControl
 };
 
 // Simple HTTP server. Currently supports only one concurrent connection
-class HttpTestServer : public QTcpServer
+class HttpTestServer : public BOBUIcpServer
 {
     Q_OBJECT
 
@@ -64,11 +64,11 @@ public:
     } method = Method::Unknown;
 
     // Parsing helpers for incoming data => HttpData
-    bool readMethod(QTcpSocket *socket);
-    bool readUrl(QTcpSocket *socket);
-    bool readStatus(QTcpSocket *socket);
-    bool readHeaders(QTcpSocket *socket);
-    bool readBody(QTcpSocket *socket);
+    bool readMethod(BOBUIcpSocket *socket);
+    bool readUrl(BOBUIcpSocket *socket);
+    bool readStatus(BOBUIcpSocket *socket);
+    bool readHeaders(BOBUIcpSocket *socket);
+    bool readBody(BOBUIcpSocket *socket);
     // Parsing-time buffer in case data is received a small chunk at a time (readyRead())
     QByteArray fragment;
 
@@ -82,7 +82,7 @@ private slots:
     void handleDataAvailable();
 
 private:
-    QTcpSocket *m_socket = nullptr;
+    BOBUIcpSocket *m_socket = nullptr;
     HttpData m_request;
     Handler m_handler = nullptr;
 };

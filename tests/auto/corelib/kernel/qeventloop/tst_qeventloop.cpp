@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qabstracteventdispatcher.h>
 #include <qcoreapplication.h>
@@ -12,18 +12,18 @@
   #if !defined(Q_OS_WASM)
     #include <private/qeventdispatcher_unix_p.h>
   #endif
-  #include <QtCore/private/qcore_unix_p.h>
+  #include <BobUICore/private/qcore_unix_p.h>
   #if defined(HAVE_GLIB)
     #include <private/qeventdispatcher_glib_p.h>
   #endif
 #endif
 #include <qmutex.h>
-#include <QtCore/qscopeguard.h>
-#include <qthread.h>
-#include <qtimer.h>
+#include <BobUICore/qscopeguard.h>
+#include <bobuihread.h>
+#include <bobuiimer.h>
 #include <qwaitcondition.h>
-#include <QTcpServer>
-#include <QTcpSocket>
+#include <BOBUIcpServer>
+#include <BOBUIcpSocket>
 #include <QSignalSpy>
 
 #include <atomic>
@@ -54,7 +54,7 @@ void EventLoopExiter::exit1()
 void EventLoopExiter::exit2()
 { eventLoop->exit(2); }
 
-class EventLoopThread : public QThread
+class EventLoopThread : public BOBUIhread
 {
     Q_OBJECT
 signals:
@@ -73,7 +73,7 @@ void EventLoopThread::run()
     eventLoop = nullptr;
 }
 
-class MultipleExecThread : public QThread
+class MultipleExecThread : public BOBUIhread
 {
     Q_OBJECT
 signals:
@@ -93,8 +93,8 @@ public:
         cond.wakeOne();
         cond.wait(&mutex);
 
-        QTimer timer;
-        connect(&timer, SIGNAL(timeout()), SLOT(quit()), Qt::DirectConnection);
+        BOBUIimer timer;
+        connect(&timer, SIGNAL(timeout()), SLOT(quit()), BobUI::DirectConnection);
         timer.setInterval(1000);
         timer.start();
         result1 = exec();
@@ -130,14 +130,14 @@ public:
 public slots:
     void exec()
     {
-        QTimer::singleShot(100, eventLoop, SLOT(quit()));
+        BOBUIimer::singleShot(100, eventLoop, SLOT(quit()));
         // this should return immediately, and the timer event should be delivered to
         // tst_QEventLoop::exec() test, letting the test complete
         returnCode = eventLoop->exec();
     }
 };
 
-#ifdef QT_GUI_LIB
+#ifdef BOBUI_GUI_LIB
   #define tst_QEventLoop tst_QGuiEventLoop
 #endif
 
@@ -158,7 +158,7 @@ private slots:
 #endif
     void processEventsExcludeTimers();
     void deliverInDefinedOrder();
-    void canUseQThreadQuitToExitEventLoopInStdThread();
+    void canUseBOBUIhreadQuitToExitEventLoopInStdThread();
 
     // keep this test last:
     void nestedLoops();
@@ -171,12 +171,12 @@ protected:
 
 void tst_QEventLoop::processEvents_data()
 {
-    QTest::addColumn<QString>("mode");
+    BOBUIest::addColumn<QString>("mode");
 
-#ifdef QT_GUI_LIB
-    QTest::addRow("gui") << "gui";
+#ifdef BOBUI_GUI_LIB
+    BOBUIest::addRow("gui") << "gui";
 #else
-    QTest::addRow("core") << "core";
+    BOBUIest::addRow("core") << "core";
 #endif
 }
 
@@ -229,23 +229,23 @@ void tst_QEventLoop::processEvents()
 
 void tst_QEventLoop::exec()
 {
-#if !QT_CONFIG(thread)
-    QSKIP("This test requires QThread");
+#if !BOBUI_CONFIG(thread)
+    QSKIP("This test requires BOBUIhread");
 #endif
     {
         QEventLoop eventLoop;
         EventLoopExiter exiter(&eventLoop);
         int returnCode;
 
-        QTimer::singleShot(EXEC_TIMEOUT, &exiter, SLOT(exit()));
+        BOBUIimer::singleShot(EXEC_TIMEOUT, &exiter, SLOT(exit()));
         returnCode = eventLoop.exec();
         QCOMPARE(returnCode, 0);
 
-        QTimer::singleShot(EXEC_TIMEOUT, &exiter, SLOT(exit1()));
+        BOBUIimer::singleShot(EXEC_TIMEOUT, &exiter, SLOT(exit1()));
         returnCode = eventLoop.exec();
         QCOMPARE(returnCode, 1);
 
-        QTimer::singleShot(EXEC_TIMEOUT, &exiter, SLOT(exit2()));
+        BOBUIimer::singleShot(EXEC_TIMEOUT, &exiter, SLOT(exit2()));
         returnCode = eventLoop.exec();
         QCOMPARE(returnCode, 2);
     }
@@ -285,7 +285,7 @@ void tst_QEventLoop::exec()
         QEventLoop eventLoop;
         EventLoopExecutor executor(&eventLoop);
 
-        QTimer::singleShot(EXEC_TIMEOUT, &executor, SLOT(exec()));
+        BOBUIimer::singleShot(EXEC_TIMEOUT, &executor, SLOT(exec()));
         int returnCode = eventLoop.exec();
         QCOMPARE(returnCode, 0);
         QCOMPARE(executor.returnCode, -1);
@@ -297,11 +297,11 @@ void tst_QEventLoop::reexec()
     QEventLoop loop;
 
     // exec once
-    QMetaObject::invokeMethod(&loop, "quit", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(&loop, "quit", BobUI::QueuedConnection);
     QCOMPARE(loop.exec(), 0);
 
     // and again
-    QMetaObject::invokeMethod(&loop, "quit", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(&loop, "quit", BobUI::QueuedConnection);
     QCOMPARE(loop.exec(), 0);
 }
 
@@ -310,15 +310,15 @@ void tst_QEventLoop::execAfterExit()
     QEventLoop loop;
     EventLoopExiter obj(&loop);
 
-    QMetaObject::invokeMethod(&obj, "exit", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(&obj, "exit", BobUI::QueuedConnection);
     loop.exit(1);
     QCOMPARE(loop.exec(), 0);
 }
 
 void tst_QEventLoop::wakeUp()
 {
-#if !QT_CONFIG(thread)
-    QSKIP("This test requires QThread");
+#if !BOBUI_CONFIG(thread)
+    QSKIP("This test requires BOBUIhread");
 #endif
     EventLoopThread thread;
     QEventLoop eventLoop;
@@ -333,7 +333,7 @@ void tst_QEventLoop::wakeUp()
     thread.eventLoop->wakeUp();
 
     // give the thread time to wake up
-    QTimer::singleShot(1000, &eventLoop, SLOT(quit()));
+    BOBUIimer::singleShot(1000, &eventLoop, SLOT(quit()));
     (void) eventLoop.exec();
 
     QVERIFY(spy.size() > 0);
@@ -347,7 +347,7 @@ void tst_QEventLoop::quit()
     QEventLoop eventLoop;
     int returnCode;
 
-    QTimer::singleShot(100, &eventLoop, SLOT(quit()));
+    BOBUIimer::singleShot(100, &eventLoop, SLOT(quit()));
     returnCode = eventLoop.exec();
     QCOMPARE(returnCode, 0);
 }
@@ -360,7 +360,7 @@ void tst_QEventLoop::nestedLoops()
     QCoreApplication::postEvent(this, new StartStopEvent(QEvent::User));
 
     // without the fix, this will *wedge* and never return
-    QTest::qWait(1000);
+    BOBUIest::qWait(1000);
 }
 
 void tst_QEventLoop::customEvent(QEvent *e)
@@ -396,10 +396,10 @@ public:
     bool init()
     {
         bool ret = false;
-        server = new QTcpServer();
-        socket = new QTcpSocket();
+        server = new BOBUIcpServer();
+        socket = new BOBUIcpSocket();
         connect(server, SIGNAL(newConnection()), this, SLOT(sendHello()));
-        connect(socket, SIGNAL(readyRead()), this, SLOT(sendAck()), Qt::DirectConnection);
+        connect(socket, SIGNAL(readyRead()), this, SLOT(sendAck()), BobUI::DirectConnection);
         if((ret = server->listen(QHostAddress::LocalHost, 0))) {
             socket->connectToHost(server->serverAddress(), server->serverPort());
             socket->waitForConnected();
@@ -407,8 +407,8 @@ public:
         return ret;
     }
 
-    QTcpSocket *socket;
-    QTcpServer *server;
+    BOBUIcpSocket *socket;
+    BOBUIcpServer *server;
     bool dataSent;
     bool dataReadable;
     bool testResult;
@@ -423,14 +423,14 @@ public slots:
         char data[10] ="HELLO";
         qint64 size = sizeof(data);
 
-        QTcpSocket *serverSocket = server->nextPendingConnection();
+        BOBUIcpSocket *serverSocket = server->nextPendingConnection();
         QCoreApplication::processEvents();
         serverSocket->write(data, size);
         dataSent = serverSocket->waitForBytesWritten(-1);
 
         if (dataSent) {
-            pollfd pfd = qt_make_pollfd(int(socket->socketDescriptor()), POLLIN);
-            dataReadable = (1 == qt_safe_poll(&pfd, 1, QDeadlineTimer::Forever));
+            pollfd pfd = bobui_make_pollfd(int(socket->socketDescriptor()), POLLIN);
+            dataReadable = (1 == bobui_safe_poll(&pfd, 1, QDeadlineTimer::Forever));
         }
 
         if (!dataReadable) {
@@ -442,15 +442,15 @@ public slots:
             QCoreApplication::processEvents();
         }
         serverSocket->close();
-        QThread::currentThread()->exit(0);
+        BOBUIhread::currentThread()->exit(0);
     }
 };
 
-class SocketTestThread : public QThread
+class SocketTestThread : public BOBUIhread
 {
     Q_OBJECT
 public:
-    SocketTestThread():QThread(0),testResult(false){};
+    SocketTestThread():BOBUIhread(0),testResult(false){};
     void run() override
     {
         SocketEventsTester *tester = new SocketEventsTester();
@@ -473,8 +473,8 @@ void tst_QEventLoop::processEventsExcludeSocket()
 #ifdef Q_OS_WASM
     QSKIP("This test requires TCP sockets");
 #endif
-#if !QT_CONFIG(thread)
-    QSKIP("This test requires QThread");
+#if !BOBUI_CONFIG(thread)
+    QSKIP("This test requires BOBUIhread");
 #endif
     SocketTestThread thread;
     thread.start();
@@ -494,13 +494,13 @@ void tst_QEventLoop::processEventsExcludeSocket()
 class TimerReceiver : public QObject
 {
 public:
-    Qt::TimerId gotTimerEvent;
+    BobUI::TimerId gotTimerEvent;
 
     TimerReceiver()
-        : QObject(), gotTimerEvent(Qt::TimerId::Invalid)
+        : QObject(), gotTimerEvent(BobUI::TimerId::Invalid)
     { }
 
-    void timerEvent(QTimerEvent *event) override
+    void timerEvent(BOBUIimerEvent *event) override
     {
         gotTimerEvent = event->id();
     }
@@ -509,14 +509,14 @@ public:
 void tst_QEventLoop::processEventsExcludeTimers()
 {
     TimerReceiver timerReceiver;
-    Qt::TimerId timerId = Qt::TimerId{timerReceiver.startTimer(0ns)};
+    BobUI::TimerId timerId = BobUI::TimerId{timerReceiver.startTimer(0ns)};
 
     QEventLoop eventLoop;
 
     // normal process events will send timers
     eventLoop.processEvents();
     QCOMPARE(timerReceiver.gotTimerEvent, timerId);
-    timerReceiver.gotTimerEvent = Qt::TimerId::Invalid;
+    timerReceiver.gotTimerEvent = BobUI::TimerId::Invalid;
 
     // but not if we exclude timers
     eventLoop.processEvents(QEventLoop::X11ExcludeTimers);
@@ -531,12 +531,12 @@ void tst_QEventLoop::processEventsExcludeTimers()
 #endif
         QEXPECT_FAIL("", "X11ExcludeTimers only supported in the UNIX/Glib dispatchers", Continue);
 
-    QCOMPARE(timerReceiver.gotTimerEvent, Qt::TimerId::Invalid);
+    QCOMPARE(timerReceiver.gotTimerEvent, BobUI::TimerId::Invalid);
 
     // resume timer processing
     eventLoop.processEvents();
     QCOMPARE(timerReceiver.gotTimerEvent, timerId);
-    timerReceiver.gotTimerEvent = Qt::TimerId::Invalid;
+    timerReceiver.gotTimerEvent = BobUI::TimerId::Invalid;
 }
 
 namespace DeliverInDefinedOrder {
@@ -567,7 +567,7 @@ namespace DeliverInDefinedOrder {
         }
 
     public slots:
-        void moveToThread(QThread *t) {
+        void moveToThread(BOBUIhread *t) {
             QObject::moveToThread(t);
         }
     };
@@ -576,12 +576,12 @@ namespace DeliverInDefinedOrder {
 
 void tst_QEventLoop::deliverInDefinedOrder()
 {
-#if !QT_CONFIG(thread)
-    QSKIP("This test requires QThread");
+#if !BOBUI_CONFIG(thread)
+    QSKIP("This test requires BOBUIhread");
 #endif
     using namespace DeliverInDefinedOrder;
-    qMetaTypeId<QThread*>();
-    QThread threads[NbThread];
+    qMetaTypeId<BOBUIhread*>();
+    BOBUIhread threads[NbThread];
     // GHS compiler needs the namespace prefix, despite using above.
     DeliverInDefinedOrder::Object objects[NbObject];
     for (int t = 0; t < NbThread; t++) {
@@ -596,12 +596,12 @@ void tst_QEventLoop::deliverInDefinedOrder()
             int q = e % NbEventQueue;
             QCoreApplication::postEvent(&objects[o], new CustomEvent(q, ++event) , q);
             if (e % 7)
-                QMetaObject::invokeMethod(&objects[o], "moveToThread", Qt::QueuedConnection, Q_ARG(QThread*, &threads[(e+o)%NbThread]));
+                QMetaObject::invokeMethod(&objects[o], "moveToThread", BobUI::QueuedConnection, Q_ARG(BOBUIhread*, &threads[(e+o)%NbThread]));
         }
     }
 
     for (int o = 0; o < NbObject; o++) {
-        QTRY_COMPARE(objects[o].count, int(NbEvent));
+        BOBUIRY_COMPARE(objects[o].count, int(NbEvent));
     }
 
     for (int t = 0; t < NbThread; t++) {
@@ -611,26 +611,26 @@ void tst_QEventLoop::deliverInDefinedOrder()
 
 }
 
-void tst_QEventLoop::canUseQThreadQuitToExitEventLoopInStdThread()
+void tst_QEventLoop::canUseBOBUIhreadQuitToExitEventLoopInStdThread()
 {
-#if !QT_CONFIG(thread)
-    QSKIP("This test requires QThread");
+#if !BOBUI_CONFIG(thread)
+    QSKIP("This test requires BOBUIhread");
 #endif
 #ifdef Q_CC_MINGW
-    QSKIP("Disabled for MINGW, due to a runtime bug (QTBUG-131892).");
+    QSKIP("Disabled for MINGW, due to a runtime bug (BOBUIBUG-131892).");
 #endif
-    std::atomic<QThread*> adopted = nullptr;
+    std::atomic<BOBUIhread*> adopted = nullptr;
     std::atomic<bool> called = false;
     std::atomic<bool> timedOut = false;
 
     auto t = std::thread([&] {
-            adopted.store(QThread::currentThread());
+            adopted.store(BOBUIhread::currentThread());
 #ifdef __cpp_lib_atomic_wait
             adopted.notify_one();
 #endif
             QEventLoop loop;
             // fallback in case the invokeMethod() below fails
-            QTimer::singleShot(1s, &loop, [&] { timedOut.store(true); loop.quit(); });
+            BOBUIimer::singleShot(1s, &loop, [&] { timedOut.store(true); loop.quit(); });
             loop.exec();
         });
 
@@ -640,15 +640,15 @@ void tst_QEventLoop::canUseQThreadQuitToExitEventLoopInStdThread()
     adopted.wait(nullptr); // no timed version exists :(
     QVERIFY(adopted.load());
 #else
-    QVERIFY(QTest::qWaitFor([&] { return adopted.load(); }));
+    QVERIFY(BOBUIest::qWaitFor([&] { return adopted.load(); }));
 #endif
     QVERIFY(obj.moveToThread(adopted.load()));
     QCOMPARE(obj.thread(), adopted.load());
     // The lambda will only be executed when `adopted` has an event loop running:
     QVERIFY(QMetaObject::invokeMethod(&obj, [&] {
                                                 called.store(true);
-                                                QThread::currentThread()->quit();
-                                            }, Qt::QueuedConnection));
+                                                BOBUIhread::currentThread()->quit();
+                                            }, BobUI::QueuedConnection));
     joiner.commit();
     QVERIFY(!timedOut.load());
     QVERIFY(called.load());
@@ -672,7 +672,7 @@ public:
 public slots:
     void start(int timeout = 200)
     {
-        QTimer::singleShot(timeout, this, SLOT(timeout()));
+        BOBUIimer::singleShot(timeout, this, SLOT(timeout()));
     }
 
 private slots:
@@ -720,5 +720,5 @@ void tst_QEventLoop::testQuitLock()
     eventLoop.exec();
 }
 
-QTEST_MAIN(tst_QEventLoop)
+BOBUIEST_MAIN(tst_QEventLoop)
 #include "tst_qeventloop.moc"

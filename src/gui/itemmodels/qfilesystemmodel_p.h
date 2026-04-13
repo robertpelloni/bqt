@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QFILESYSTEMMODEL_P_H
 #define QFILESYSTEMMODEL_P_H
@@ -9,14 +9,14 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
 #include "qfilesystemmodel.h"
 
 #include <private/qabstractitemmodel_p.h>
@@ -25,14 +25,14 @@
 #include <qdir.h>
 #include <qicon.h>
 #include <qfileinfo.h>
-#include <qtimer.h>
+#include <bobuiimer.h>
 #include <qhash.h>
 
 #include <vector>
 
-QT_REQUIRE_CONFIG(filesystemmodel);
+BOBUI_REQUIRE_CONFIG(filesystemmodel);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class ExtendedInformation;
 class QFileSystemModelPrivate;
@@ -45,7 +45,7 @@ public:
     QFileSystemModelNodePathKey() {}
     QFileSystemModelNodePathKey(const QString &other) : QString(other) {}
     QFileSystemModelNodePathKey(const QFileSystemModelNodePathKey &other) : QString(other) {}
-    bool operator==(const QFileSystemModelNodePathKey &other) const { return !compare(other, Qt::CaseInsensitive); }
+    bool operator==(const QFileSystemModelNodePathKey &other) const { return !compare(other, BobUI::CaseInsensitive); }
 };
 
 Q_DECLARE_TYPEINFO(QFileSystemModelNodePathKey, Q_RELOCATABLE_TYPE);
@@ -90,7 +90,7 @@ public:
 
         inline qint64 size() const { if (info && !info->isDir()) return info->size(); return 0; }
         inline QString type() const { if (info) return info->displayType; return QLatin1StringView(""); }
-        inline QDateTime lastModified(const QTimeZone &tz) const { return info ? info->lastModified(tz) : QDateTime(); }
+        inline QDateTime lastModified(const BOBUIimeZone &tz) const { return info ? info->lastModified(tz) : QDateTime(); }
         inline QFile::Permissions permissions() const { if (info) return info->permissions(); return { }; }
         inline bool isReadable() const { return ((permissions() & QFile::ReadUser) != 0); }
         inline bool isWritable() const { return ((permissions() & QFile::WriteUser) != 0); }
@@ -113,17 +113,17 @@ public:
         inline bool operator <(const QFileSystemNode &node) const {
             if (caseSensitive() || node.caseSensitive())
                 return fileName < node.fileName;
-            return QString::compare(fileName, node.fileName, Qt::CaseInsensitive) < 0;
+            return QString::compare(fileName, node.fileName, BobUI::CaseInsensitive) < 0;
         }
         inline bool operator >(const QString &name) const {
             if (caseSensitive())
                 return fileName > name;
-            return QString::compare(fileName, name, Qt::CaseInsensitive) > 0;
+            return QString::compare(fileName, name, BobUI::CaseInsensitive) > 0;
         }
         inline bool operator <(const QString &name) const {
             if (caseSensitive())
                 return fileName < name;
-            return QString::compare(fileName, name, Qt::CaseInsensitive) < 0;
+            return QString::compare(fileName, name, BobUI::CaseInsensitive) < 0;
         }
         inline bool operator !=(const QExtendedInformation &fileInfo) const {
             return !operator==(fileInfo);
@@ -131,7 +131,7 @@ public:
         bool operator ==(const QString &name) const {
             if (caseSensitive())
                 return fileName == name;
-            return QString::compare(fileName, name, Qt::CaseInsensitive) == 0;
+            return QString::compare(fileName, name, BobUI::CaseInsensitive) == 0;
         }
         bool operator ==(const QExtendedInformation &fileInfo) const {
             return info && (*info == fileInfo);
@@ -220,7 +220,7 @@ public:
     void sortChildren(int column, const QModelIndex &parent);
 
     inline int translateVisibleLocation(QFileSystemNode *parent, int row) const {
-        if (sortOrder != Qt::AscendingOrder) {
+        if (sortOrder != BobUI::AscendingOrder) {
             if (parent->dirtyChildrenIndex == -1)
                 return parent->visibleChildren.size() - row - 1;
 
@@ -263,16 +263,16 @@ public:
     void resolvedName(const QString &fileName, const QString &resolvedName);
 
     QDir rootDir;
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
 #  ifdef Q_OS_WIN
     QStringList unwatchPathsAt(const QModelIndex &);
     void watchPaths(const QStringList &paths) { fileInfoGatherer->watchPaths(paths); }
 #  endif // Q_OS_WIN
     std::unique_ptr<QFileInfoGatherer> fileInfoGatherer;
 #endif // filesystemwatcher
-    QTimer delayedSortTimer;
+    BOBUIimer delayedSortTimer;
     QHash<const QFileSystemNode*, bool> bypassFilters;
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     QStringList nameFilters;
     std::vector<QRegularExpression> nameFiltersRegexps;
     void rebuildNameFilterRegexps();
@@ -292,7 +292,7 @@ public:
 
     QDir::Filters filters = QDir::AllEntries | QDir::NoDotAndDotDot | QDir::AllDirs;
     int sortColumn = 0;
-    Qt::SortOrder sortOrder = Qt::AscendingOrder;
+    BobUI::SortOrder sortOrder = BobUI::AscendingOrder;
     bool forceSort = true;
     bool readOnly = true;
     bool setRootPath = false;
@@ -303,6 +303,6 @@ public:
 };
 Q_DECLARE_TYPEINFO(QFileSystemModelPrivate::Fetching, Q_RELOCATABLE_TYPE);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

@@ -1,3 +1,3 @@
-#include <QtCore/QString>
+#include <BobUICore/QString>
 
 int foo() { return 1; }

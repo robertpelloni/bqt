@@ -1,25 +1,25 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QNATIVEINTERFACE_H
 #define QNATIVEINTERFACE_H
 
-#include <QtCore/qglobal.h>
+#include <BobUICore/qglobal.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // We declare a virtual non-inline function in the form
 // of the destructor, making it the key function. This
 // ensures that the typeinfo of the class is exported.
 // By being protected, we also ensure that pointers to
 // the interface can't be deleted.
-#define QT_DECLARE_NATIVE_INTERFACE_3(NativeInterface, Revision, BaseType) \
+#define BOBUI_DECLARE_NATIVE_INTERFACE_3(NativeInterface, Revision, BaseType) \
     protected: \
         virtual ~NativeInterface(); \
         \
         struct TypeInfo { \
             using baseType = BaseType; \
-            static constexpr char const *name = QT_STRINGIFY(NativeInterface); \
+            static constexpr char const *name = BOBUI_STRINGIFY(NativeInterface); \
             static constexpr int revision = Revision; \
         }; \
         \
@@ -36,16 +36,16 @@ QT_BEGIN_NAMESPACE
         Q_DISABLE_COPY_MOVE(NativeInterface)
 
 // Revisioned interfaces only make sense when exposed through a base
-// type via QT_DECLARE_NATIVE_INTERFACE_ACCESSOR, as the revision
+// type via BOBUI_DECLARE_NATIVE_INTERFACE_ACCESSOR, as the revision
 // checks happen at that level (and not for normal dynamic_casts).
-#define QT_DECLARE_NATIVE_INTERFACE_2(NativeInterface, Revision) \
+#define BOBUI_DECLARE_NATIVE_INTERFACE_2(NativeInterface, Revision) \
     static_assert(false, "Must provide a base type when specifying revision");
 
-#define QT_DECLARE_NATIVE_INTERFACE_1(NativeInterface) \
-    QT_DECLARE_NATIVE_INTERFACE_3(NativeInterface, 0, void)
+#define BOBUI_DECLARE_NATIVE_INTERFACE_1(NativeInterface) \
+    BOBUI_DECLARE_NATIVE_INTERFACE_3(NativeInterface, 0, void)
 
-#define QT_DECLARE_NATIVE_INTERFACE(...) \
-    QT_OVERLOADED_MACRO(QT_DECLARE_NATIVE_INTERFACE, __VA_ARGS__)
+#define BOBUI_DECLARE_NATIVE_INTERFACE(...) \
+    BOBUI_OVERLOADED_MACRO(BOBUI_DECLARE_NATIVE_INTERFACE, __VA_ARGS__)
 
 namespace QNativeInterface::Private {
 
@@ -126,11 +126,11 @@ namespace QNativeInterface::Private {
 
 // Declares an accessor for the native interface
 #ifdef Q_QDOC
-#define QT_DECLARE_NATIVE_INTERFACE_ACCESSOR(T) \
+#define BOBUI_DECLARE_NATIVE_INTERFACE_ACCESSOR(T) \
     template <typename QNativeInterface> \
     QNativeInterface *nativeInterface() const;
 #else
-#define QT_DECLARE_NATIVE_INTERFACE_ACCESSOR(T) \
+#define BOBUI_DECLARE_NATIVE_INTERFACE_ACCESSOR(T) \
     template <typename NativeInterface, typename TypeInfo = QNativeInterface::Private::NativeInterface<NativeInterface>, \
     typename BaseType = T, std::enable_if_t<TypeInfo::template isCompatibleWith<T>, bool> = true> \
     NativeInterface *nativeInterface() const \
@@ -143,6 +143,6 @@ namespace QNativeInterface::Private {
     public:
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QNATIVEINTERFACE_H

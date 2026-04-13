@@ -1,26 +1,26 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QITERATOR_H
 #define QITERATOR_H
 
-#include <QtCore/qglobal.h>
-#include <QtCore/qcontainertools_impl.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qcontainertools_impl.h>
 
 #ifdef __cpp_lib_ranges
 #include <ranges>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if !defined(QT_NO_JAVA_STYLE_ITERATORS)
+#if !defined(BOBUI_NO_JAVA_STYLE_ITERATORS)
 
 #ifdef Q_QDOC
 #define Q_DISABLE_BACKWARD_ITERATOR
 #else
 #define Q_DISABLE_BACKWARD_ITERATOR \
-        template<typename It = decltype(i), QtPrivate::IfIteratorCanMoveBackwards<It> = true>
+        template<typename It = decltype(i), BobUIPrivate::IfIteratorCanMoveBackwards<It> = true>
 #endif
 
 #define Q_DECLARE_SEQUENTIAL_ITERATOR(C) \
@@ -233,16 +233,16 @@ public: \
 };
 
 
-#else // QT_NO_JAVA_STYLE_ITERATORS
+#else // BOBUI_NO_JAVA_STYLE_ITERATORS
 #define Q_DECLARE_SEQUENTIAL_ITERATOR(C)
 #define Q_DECLARE_MUTABLE_SEQUENTIAL_ITERATOR(C)
 #define Q_DECLARE_ASSOCIATIVE_ITERATOR(C)
 #define Q_DECLARE_MUTABLE_ASSOCIATIVE_ITERATOR(C)
 #define Q_DECLARE_ASSOCIATIVE_FORWARD_ITERATOR(C)
 #define Q_DECLARE_MUTABLE_ASSOCIATIVE_FORWARD_ITERATOR(C)
-#endif // QT_NO_JAVA_STYLE_ITERATORS
+#endif // BOBUI_NO_JAVA_STYLE_ITERATORS
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 template <typename Key, typename T, typename Iterator>
 struct QDefaultKeyValues
@@ -253,10 +253,10 @@ struct QDefaultKeyValues
     static T value(Iterator &it) { return it.value(); }
 };
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 template <typename Key, typename T, class Iterator,
-          class Traits = QtPrivate::QDefaultKeyValues<Key, T, Iterator>>
+          class Traits = BobUIPrivate::QDefaultKeyValues<Key, T, Iterator>>
 class QKeyValueIterator
 {
 public:
@@ -273,7 +273,7 @@ public:
         return std::pair<Key, T>(Traits::key(i), Traits::value(i));
     }
 
-    using pointer = QtPrivate::ArrowProxy<value_type>;
+    using pointer = BobUIPrivate::ArrowProxy<value_type>;
 
     pointer operator->() const {
         return pointer{ std::pair<Key, T>(Traits::key(i), Traits::value(i)) };
@@ -292,7 +292,7 @@ private:
     Iterator i;
 };
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 template <typename Map>
 class QKeyValueRangeStorage
@@ -331,9 +331,9 @@ public:
     auto end() const { return this->map().keyValueEnd(); }
 };
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QITERATOR_H

@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
 // Copyright (C) 2012 Olivier Goffart <ogoffart@woboq.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QMUTEX_P_H
 #define QMUTEX_P_H
@@ -11,18 +11,18 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists for the convenience of
+// This file is not part of the BobUI API. It exists for the convenience of
 // qmutex.cpp and qmutex_unix.cpp. This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/private/qglobal_p.h>
-#include <QtCore/qnamespace.h>
-#include <QtCore/qmutex.h>
-#include <QtCore/qatomic.h>
-#include <QtCore/qdeadlinetimer.h>
+#include <BobUICore/private/qglobal_p.h>
+#include <BobUICore/qnamespace.h>
+#include <BobUICore/qmutex.h>
+#include <BobUICore/qatomic.h>
+#include <BobUICore/qdeadlinetimer.h>
 
 #include "qplatformdefs.h" // _POSIX_VERSION
 
@@ -34,11 +34,11 @@
 
 struct timespec;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-// ### Qt7 remove this comment block
+// ### BobUI7 remove this comment block
 // We manipulate the pointer to this class in inline, atomic code,
-// so syncqt mustn't mark them as private, so ELFVERSION:ignore-next
+// so syncbobui mustn't mark them as private, so ELFVERSION:ignore-next
 class QMutexPrivate
 {
 public:
@@ -91,6 +91,6 @@ public:
 #endif
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QMUTEX_P_H

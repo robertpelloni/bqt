@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (c) 2007-2008, Apple, Inc.
 // SPDX-License-Identifier: BSD-3-Clause
-// Qt-Security score:significant reason:default
+// BobUI-Security score:significant reason:default
 
 #include "qcocoaintrospection.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-void qt_cocoa_change_implementation(Class baseClass, SEL originalSel, Class proxyClass, SEL replacementSel, SEL backupSel)
+void bobui_cocoa_change_implementation(Class baseClass, SEL originalSel, Class proxyClass, SEL replacementSel, SEL backupSel)
 {
     // The following code replaces the _implementation_ for the selector we want to hack
     // (originalSel) with the implementation found in proxyClass. Then it creates
@@ -31,11 +31,11 @@ void qt_cocoa_change_implementation(Class baseClass, SEL originalSel, Class prox
     }
 }
 
-void qt_cocoa_change_back_implementation(Class baseClass, SEL originalSel, SEL backupSel)
+void bobui_cocoa_change_back_implementation(Class baseClass, SEL originalSel, SEL backupSel)
 {
     Method originalMethod = class_getInstanceMethod(baseClass, originalSel);
     Method backupMethodInBaseClass = class_getInstanceMethod(baseClass, backupSel);
     method_setImplementation(originalMethod, method_getImplementation(backupMethodInBaseClass));
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

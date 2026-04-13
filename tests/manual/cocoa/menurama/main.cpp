@@ -1,11 +1,11 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "mainwindow.h"
 #include "menuramaapplication.h"
 
-#include <QtGui/QAction>
-#include <QtWidgets/QMenu>
+#include <BobUIGui/QAction>
+#include <BobUIWidgets/QMenu>
 
 int main(int argc, char *argv[])
 {
@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     dockMenu->setAsDockMenu();
     dockMenu->addAction(QLatin1String("New Window"), [=] {
         auto *w = new MainWindow;
-        w->setAttribute(Qt::WA_DeleteOnClose, true);
+        w->setAttribute(BobUI::WA_DeleteOnClose, true);
         w->show();
     });
     auto *disabledAction = dockMenu->addAction(QLatin1String("Disabled Item"), [=] {

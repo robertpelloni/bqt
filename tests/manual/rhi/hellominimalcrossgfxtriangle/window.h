@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef WINDOW_H
 #define WINDOW_H
@@ -22,7 +22,7 @@ protected:
     // destruction order matters to a certain degree: the fallbackSurface must
     // outlive the rhi, the rhi must outlive all other resources.  The resources
     // need no special order when destroying.
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
     std::unique_ptr<QOffscreenSurface> m_fallbackSurface;
 #endif
     std::unique_ptr<QRhi> m_rhi;

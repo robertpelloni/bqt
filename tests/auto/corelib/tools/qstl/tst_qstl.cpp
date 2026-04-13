@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qstring.h>
 
@@ -29,10 +29,10 @@ static inline std::ostream &operator<<(std::ostream &out, const QString &string)
 
 void tst_QStl::streaming_data()
 {
-    QTest::addColumn<QString>("str");
+    BOBUIest::addColumn<QString>("str");
 
-    QTest::newRow("hello") << "hello";
-    QTest::newRow("empty") << "";
+    BOBUIest::newRow("hello") << "hello";
+    BOBUIest::newRow("empty") << "";
 }
 
 void tst_QStl::streaming()
@@ -56,5 +56,5 @@ void tst_QStl::concatenate()
 }
 
 
-QTEST_APPLESS_MAIN(tst_QStl)
+BOBUIEST_APPLESS_MAIN(tst_QStl)
 #include "tst_qstl.moc"

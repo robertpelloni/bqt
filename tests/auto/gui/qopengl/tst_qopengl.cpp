@@ -1,31 +1,31 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtOpenGL/QOpenGLFramebufferObject>
-#include <QtOpenGL/QOpenGLPaintDevice>
-#include <QtOpenGL/QOpenGLTexture>
-#include <QtOpenGL/qopengltextureblitter.h>
-#include <QtOpenGL/QOpenGLVertexArrayObject>
-#include <QtOpenGL/QOpenGLBuffer>
-#if !QT_CONFIG(opengles2)
-#  include <QtOpenGL/QOpenGLFunctions_4_2_Core>
+#include <BobUIOpenGL/QOpenGLFramebufferObject>
+#include <BobUIOpenGL/QOpenGLPaintDevice>
+#include <BobUIOpenGL/QOpenGLTexture>
+#include <BobUIOpenGL/qopengltextureblitter.h>
+#include <BobUIOpenGL/QOpenGLVertexArrayObject>
+#include <BobUIOpenGL/QOpenGLBuffer>
+#if !BOBUI_CONFIG(opengles2)
+#  include <BobUIOpenGL/QOpenGLFunctions_4_2_Core>
 #endif
-#include <QtOpenGL/QOpenGLVersionFunctionsFactory>
-#include <QtGui/private/qopenglcontext_p.h>
-#include <QtGui/QOpenGLFunctions>
-#include <QtGui/QPainter>
-#include <QtGui/QPainterPath>
-#include <QtGui/QScreen>
-#include <QtGui/QWindow>
-#include <QtGui/QOffscreenSurface>
-#include <QtGui/QGenericMatrix>
-#include <QtGui/QMatrix4x4>
-#include <QtGui/private/qguiapplication_p.h>
-#include <QtGui/private/qopenglextensions_p.h>
+#include <BobUIOpenGL/QOpenGLVersionFunctionsFactory>
+#include <BobUIGui/private/qopenglcontext_p.h>
+#include <BobUIGui/QOpenGLFunctions>
+#include <BobUIGui/QPainter>
+#include <BobUIGui/QPainterPath>
+#include <BobUIGui/QScreen>
+#include <BobUIGui/QWindow>
+#include <BobUIGui/QOffscreenSurface>
+#include <BobUIGui/QGenericMatrix>
+#include <BobUIGui/QMatrix4x4>
+#include <BobUIGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qopenglextensions_p.h>
 #include <qpa/qplatformintegration.h>
 #include <qpa/qplatformnativeinterface.h>
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <QSignalSpy>
 
@@ -63,7 +63,7 @@ private slots:
     void openGLPaintDeviceWithChangingContext();
     void aboutToBeDestroyed();
     void sizeLessWindow();
-    void QTBUG15621_triangulatingStrokerDivZero();
+    void BOBUIBUG15621_triangulatingStrokerDivZero();
     void textureblitterFullSourceRectTransform();
     void textureblitterPartOriginBottomLeftSourceRectTransform();
     void textureblitterPartOriginTopLeftSourceRectTransform();
@@ -78,7 +78,7 @@ private slots:
     void glxContextWrap();
 #endif
 
-#if defined(Q_OS_WIN32) && !QT_CONFIG(opengles2)
+#if defined(Q_OS_WIN32) && !BOBUI_CONFIG(opengles2)
     void wglContextWrap();
 #endif
 
@@ -86,7 +86,7 @@ private slots:
     void bufferCreate();
     void bufferMapRange();
     void defaultQGLCurrentBuffer();
-#if QT_CONFIG(egl)
+#if BOBUI_CONFIG(egl)
     void dontCrashOnInvalidContextThreadTeardown();
 #endif
 };
@@ -191,10 +191,10 @@ void tst_QOpenGL::initTestCase()
 
 static void common_data()
 {
-    QTest::addColumn<int>("surfaceClass");
+    BOBUIest::addColumn<int>("surfaceClass");
 
-    QTest::newRow("Using QWindow") << int(QSurface::Window);
-    QTest::newRow("Using QOffscreenSurface") << int(QSurface::Offscreen);
+    BOBUIest::newRow("Using QWindow") << int(QSurface::Window);
+    BOBUIest::newRow("Using QOffscreenSurface") << int(QSurface::Offscreen);
 }
 
 void tst_QOpenGL::sharedResourceCleanup_data()
@@ -342,7 +342,7 @@ static bool fuzzyComparePixels(const QRgb testPixel, const QRgb refPixel, const 
                             .arg(qRed(refPixel)).arg(qGreen(refPixel)).arg(qBlue(refPixel)).arg(qAlpha(refPixel));
         }
 
-        QTest::qFail(msg.toLatin1(), file, line);
+        BOBUIest::qFail(msg.toLatin1(), file, line);
         return false;
     }
 
@@ -358,7 +358,7 @@ static bool fuzzyComparePixels(const QRgb testPixel, const QRgb refPixel, const 
                       .arg(maxFuzz)
                       .arg(qRed(testPixel)).arg(qGreen(testPixel)).arg(qBlue(testPixel)).arg(qAlpha(testPixel))
                       .arg(qRed(refPixel)).arg(qGreen(refPixel)).arg(qBlue(refPixel)).arg(qAlpha(refPixel));
-        QTest::qFail(msg.toLatin1(), file, line);
+        BOBUIest::qFail(msg.toLatin1(), file, line);
         return false;
     }
     return true;
@@ -388,7 +388,7 @@ static void fuzzyCompareImages(const QImage &testImage, const QImage &referenceI
 #define QFUZZY_COMPARE_PIXELS(A,B) \
             fuzzyComparePixels(A, B, __FILE__, __LINE__)
 
-void qt_opengl_draw_test_pattern(QPainter* painter, int width, int height)
+void bobui_opengl_draw_test_pattern(QPainter* painter, int width, int height)
 {
     QPainterPath intersectingPath;
     intersectingPath.moveTo(0, 0);
@@ -403,17 +403,17 @@ void qt_opengl_draw_test_pattern(QPainter* painter, int width, int height)
     trianglePath.lineTo(0, 100);
     trianglePath.closeSubpath();
 
-    painter->setTransform(QTransform()); // reset xform
-    painter->fillRect(-1, -1, width+2, height+2, Qt::red); // Background
+    painter->setTransform(BOBUIransform()); // reset xform
+    painter->fillRect(-1, -1, width+2, height+2, BobUI::red); // Background
     painter->translate(14, 14);
-    painter->fillPath(intersectingPath, Qt::blue); // Test stencil buffer works
+    painter->fillPath(intersectingPath, BobUI::blue); // Test stencil buffer works
     painter->translate(128, 0);
     painter->setClipPath(trianglePath); // Test depth buffer works
-    painter->setTransform(QTransform()); // reset xform ready for fill
-    painter->fillRect(-1, -1, width+2, height+2, Qt::green);
+    painter->setTransform(BOBUIransform()); // reset xform ready for fill
+    painter->fillRect(-1, -1, width+2, height+2, BobUI::green);
 }
 
-void qt_opengl_check_test_pattern(const QImage& img)
+void bobui_opengl_check_test_pattern(const QImage& img)
 {
     // As we're doing more than trivial painting, we can't just compare to
     // an image rendered with raster. Instead, we sample at well-defined
@@ -422,14 +422,14 @@ void qt_opengl_check_test_pattern(const QImage& img)
     QVERIFY2(img.width() > 217, QByteArray::number(img.width()));
     QVERIFY2(img.height() > 90, QByteArray::number(img.height()));
 
-    QFUZZY_COMPARE_PIXELS(img.pixel(39, 64), QColor(Qt::red).rgb());
-    QFUZZY_COMPARE_PIXELS(img.pixel(89, 64), QColor(Qt::red).rgb());
-    QFUZZY_COMPARE_PIXELS(img.pixel(64, 39), QColor(Qt::blue).rgb());
-    QFUZZY_COMPARE_PIXELS(img.pixel(64, 89), QColor(Qt::blue).rgb());
+    QFUZZY_COMPARE_PIXELS(img.pixel(39, 64), QColor(BobUI::red).rgb());
+    QFUZZY_COMPARE_PIXELS(img.pixel(89, 64), QColor(BobUI::red).rgb());
+    QFUZZY_COMPARE_PIXELS(img.pixel(64, 39), QColor(BobUI::blue).rgb());
+    QFUZZY_COMPARE_PIXELS(img.pixel(64, 89), QColor(BobUI::blue).rgb());
 
-    QFUZZY_COMPARE_PIXELS(img.pixel(167, 39), QColor(Qt::red).rgb());
-    QFUZZY_COMPARE_PIXELS(img.pixel(217, 39), QColor(Qt::red).rgb());
-    QFUZZY_COMPARE_PIXELS(img.pixel(192, 64), QColor(Qt::green).rgb());
+    QFUZZY_COMPARE_PIXELS(img.pixel(167, 39), QColor(BobUI::red).rgb());
+    QFUZZY_COMPARE_PIXELS(img.pixel(217, 39), QColor(BobUI::red).rgb());
+    QFUZZY_COMPARE_PIXELS(img.pixel(192, 64), QColor(BobUI::green).rgb());
 }
 
 void tst_QOpenGL::fboSimpleRendering_data()
@@ -531,7 +531,7 @@ void tst_QOpenGL::fboRendering_data()
 void tst_QOpenGL::fboRendering()
 {
 #if defined(Q_OS_LINUX) && defined(Q_CC_GNU) && !defined(__x86_64__)
-    QSKIP("QTBUG-22617");
+    QSKIP("BOBUIBUG-22617");
 #endif
 
     QFETCH(int, surfaceClass);
@@ -563,14 +563,14 @@ void tst_QOpenGL::fboRendering()
     bool painterBegun = fboPainter.begin(&device);
     QVERIFY(painterBegun);
 
-    qt_opengl_draw_test_pattern(&fboPainter, fbo.width(), fbo.height());
+    bobui_opengl_draw_test_pattern(&fboPainter, fbo.width(), fbo.height());
 
     fboPainter.end();
 
     const QImage fb = fbo.toImage().convertToFormat(QImage::Format_RGB32);
     QCOMPARE(fb.size(), size);
 
-    qt_opengl_check_test_pattern(fb);
+    bobui_opengl_check_test_pattern(fb);
 }
 
 void tst_QOpenGL::fboRenderingRGB30_data()
@@ -606,7 +606,7 @@ static bool supportsInternalFboFormat(QOpenGLContext *ctx, int glFormat)
 {
     if (ctx->format().majorVersion() < 3)
         return false;
-#if !QT_CONFIG(opengles2)
+#if !BOBUI_CONFIG(opengles2)
     if (!ctx->isOpenGLES() && ctx->format().majorVersion() >= 4) {
         GLint value = -1;
         auto *vFuncs = QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_4_2_Core>(ctx);
@@ -626,10 +626,10 @@ void tst_QOpenGL::fboRenderingRGB30()
 {
 #ifdef Q_OS_ANDROID
     if (QNativeInterface::QAndroidApplication::sdkVersion() >= 31)
-        QSKIP("Fails on Android 12 (QTBUG-105738)");
+        QSKIP("Fails on Android 12 (BOBUIBUG-105738)");
 #endif
 #if defined(Q_OS_LINUX) && defined(Q_CC_GNU) && !defined(__x86_64__)
-    QSKIP("QTBUG-22617");
+    QSKIP("BOBUIBUG-22617");
 #endif
 
     QFETCH(int, surfaceClass);
@@ -665,7 +665,7 @@ void tst_QOpenGL::fboRenderingRGB30()
     bool painterBegun = fboPainter.begin(&device);
     QVERIFY(painterBegun);
 
-    qt_opengl_draw_test_pattern(&fboPainter, fbo.width(), fbo.height());
+    bobui_opengl_draw_test_pattern(&fboPainter, fbo.width(), fbo.height());
 
     fboPainter.end();
 
@@ -673,7 +673,7 @@ void tst_QOpenGL::fboRenderingRGB30()
     QCOMPARE(fb.format(), QImage::Format_A2BGR30_Premultiplied);
     QCOMPARE(fb.size(), size);
 
-    qt_opengl_check_test_pattern(fb);
+    bobui_opengl_check_test_pattern(fb);
 
     // Check rendering can handle color values below 1/256.
     fboPainter.begin(&device);
@@ -707,7 +707,7 @@ void tst_QOpenGL::fboRenderingRGB64_data()
 void tst_QOpenGL::fboRenderingRGB64()
 {
 #if defined(Q_OS_LINUX) && defined(Q_CC_GNU) && !defined(__x86_64__)
-    QSKIP("QTBUG-22617");
+    QSKIP("BOBUIBUG-22617");
 #endif
 
     QFETCH(int, surfaceClass);
@@ -743,7 +743,7 @@ void tst_QOpenGL::fboRenderingRGB64()
     bool painterBegun = fboPainter.begin(&device);
     QVERIFY(painterBegun);
 
-    qt_opengl_draw_test_pattern(&fboPainter, fbo.width(), fbo.height());
+    bobui_opengl_draw_test_pattern(&fboPainter, fbo.width(), fbo.height());
 
     fboPainter.end();
 
@@ -751,7 +751,7 @@ void tst_QOpenGL::fboRenderingRGB64()
     QCOMPARE(fb.format(), QImage::Format_RGBA64_Premultiplied);
     QCOMPARE(fb.size(), size);
 
-    qt_opengl_check_test_pattern(fb);
+    bobui_opengl_check_test_pattern(fb);
 
     // Check rendering can handle precise 16 bit color values.
     fboPainter.begin(&device);
@@ -999,28 +999,28 @@ void tst_QOpenGL::imageFormatPainting()
 
 void tst_QOpenGL::openGLPaintDevice_data()
 {
-    QTest::addColumn<int>("surfaceClass");
-    QTest::addColumn<QImage::Format>("imageFormat");
+    BOBUIest::addColumn<int>("surfaceClass");
+    BOBUIest::addColumn<QImage::Format>("imageFormat");
 
-    QTest::newRow("Using QWindow - RGB32") << int(QSurface::Window) << QImage::Format_RGB32;
-    QTest::newRow("Using QOffscreenSurface - RGB32") << int(QSurface::Offscreen) << QImage::Format_RGB32;
-    QTest::newRow("Using QOffscreenSurface - RGBx8888") << int(QSurface::Offscreen) << QImage::Format_RGBX8888;
-    QTest::newRow("Using QOffscreenSurface - RGB888") << int(QSurface::Offscreen) << QImage::Format_RGB888;
-    QTest::newRow("Using QOffscreenSurface - RGB16") << int(QSurface::Offscreen) << QImage::Format_RGB16;
+    BOBUIest::newRow("Using QWindow - RGB32") << int(QSurface::Window) << QImage::Format_RGB32;
+    BOBUIest::newRow("Using QOffscreenSurface - RGB32") << int(QSurface::Offscreen) << QImage::Format_RGB32;
+    BOBUIest::newRow("Using QOffscreenSurface - RGBx8888") << int(QSurface::Offscreen) << QImage::Format_RGBX8888;
+    BOBUIest::newRow("Using QOffscreenSurface - RGB888") << int(QSurface::Offscreen) << QImage::Format_RGB888;
+    BOBUIest::newRow("Using QOffscreenSurface - RGB16") << int(QSurface::Offscreen) << QImage::Format_RGB16;
 }
 
 static void drawColoredRects(QPainter *p, const QSize &size)
 {
-    p->fillRect(0, 0, size.width() / 2, size.height() / 2, Qt::red);
-    p->fillRect(size.width() / 2, 0, size.width() / 2, size.height() / 2, Qt::green);
-    p->fillRect(size.width() / 2, size.height() / 2, size.width() / 2, size.height() / 2, Qt::blue);
-    p->fillRect(0, size.height() / 2, size.width() / 2, size.height() / 2, Qt::white);
+    p->fillRect(0, 0, size.width() / 2, size.height() / 2, BobUI::red);
+    p->fillRect(size.width() / 2, 0, size.width() / 2, size.height() / 2, BobUI::green);
+    p->fillRect(size.width() / 2, size.height() / 2, size.width() / 2, size.height() / 2, BobUI::blue);
+    p->fillRect(0, size.height() / 2, size.width() / 2, size.height() / 2, BobUI::white);
 }
 
 void tst_QOpenGL::openGLPaintDevice()
 {
 #if defined(Q_OS_LINUX) && defined(Q_CC_GNU) && !defined(__x86_64__)
-    QSKIP("QTBUG-22617");
+    QSKIP("BOBUIBUG-22617");
 #endif
 
     QFETCH(int, surfaceClass);
@@ -1055,7 +1055,7 @@ void tst_QOpenGL::openGLPaintDevice()
     QCOMPARE(image, actual);
 
     QVERIFY(p.begin(&device));
-    p.fillRect(0, 0, image.width(), image.height(), Qt::black);
+    p.fillRect(0, 0, image.width(), image.height(), BobUI::black);
     p.drawImage(0, 0, image);
     p.end();
 
@@ -1064,7 +1064,7 @@ void tst_QOpenGL::openGLPaintDevice()
     QCOMPARE(image, actual);
 
     QVERIFY(p.begin(&device));
-    p.fillRect(0, 0, image.width(), image.height(), Qt::black);
+    p.fillRect(0, 0, image.width(), image.height(), BobUI::black);
     p.fillRect(0, 0, image.width(), image.height(), QBrush(image));
     p.end();
 
@@ -1184,10 +1184,10 @@ void tst_QOpenGL::sizeLessWindow()
     QVERIFY(!QOpenGLContext::currentContext());
 }
 
-void tst_QOpenGL::QTBUG15621_triangulatingStrokerDivZero()
+void tst_QOpenGL::BOBUIBUG15621_triangulatingStrokerDivZero()
 {
 #if defined(Q_OS_LINUX) && defined(Q_CC_GNU) && !defined(__x86_64__)
-    QSKIP("QTBUG-22617");
+    QSKIP("BOBUIBUG-22617");
 #endif
 
     const QSize size(128, 128);
@@ -1209,7 +1209,7 @@ void tst_QOpenGL::QTBUG15621_triangulatingStrokerDivZero()
 
     QOpenGLPaintDevice device(size);
 
-    // QTBUG-15621 is only a problem when qreal is double, but do the test anyway.
+    // BOBUIBUG-15621 is only a problem when qreal is double, but do the test anyway.
     qreal delta = sizeof(qreal) == sizeof(float) ? 1e-4 : 1e-8;
     QVERIFY(128 != 128 + delta);
 
@@ -1231,10 +1231,10 @@ void tst_QOpenGL::QTBUG15621_triangulatingStrokerDivZero()
 
     path.closeSubpath();
 
-    QPen pen(Qt::red, 28, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
+    QPen pen(BobUI::red, 28, BobUI::SolidLine, BobUI::FlatCap, BobUI::MiterJoin);
 
     QPainter p(&device);
-    p.fillRect(QRect(QPoint(0, 0), size), Qt::blue);
+    p.fillRect(QRect(QPoint(0, 0), size), BobUI::blue);
     p.strokePath(path, pen);
     p.end();
     const QImage image = fbo.toImage().convertToFormat(QImage::Format_RGB32);
@@ -1464,17 +1464,17 @@ using namespace QNativeInterface;
 #ifdef USE_GLX
 void tst_QOpenGL::glxContextWrap()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("offscreen"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("offscreen"), BobUI::CaseInsensitive))
         QSKIP("Offscreen: This fails.");
 
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Fails on Wayland.");
 
     QWindow *window = new QWindow;
     window->setSurfaceType(QWindow::OpenGLSurface);
     window->setGeometry(0, 0, 10, 10);
     window->show();
-    QVERIFY(QTest::qWaitForWindowExposed(window));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(window));
 
     QPlatformNativeInterface *nativeIf = QGuiApplicationPrivate::instance()->platformIntegration()->nativeInterface();
     QVERIFY(nativeIf);
@@ -1503,7 +1503,7 @@ void tst_QOpenGL::glxContextWrap()
 }
 #endif // USE_GLX
 
-#if defined(Q_OS_WIN32) && !QT_CONFIG(opengles2)
+#if defined(Q_OS_WIN32) && !BOBUI_CONFIG(opengles2)
 void tst_QOpenGL::wglContextWrap()
 {
     QScopedPointer<QOpenGLContext> ctx(new QOpenGLContext);
@@ -1515,7 +1515,7 @@ void tst_QOpenGL::wglContextWrap()
     window->setSurfaceType(QWindow::OpenGLSurface);
     window->setGeometry(0, 0, 256, 256);
     window->show();
-    QVERIFY(QTest::qWaitForWindowExposed(window.data()));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(window.data()));
 
     auto *wglContext = ctx->nativeInterface<QWGLContext>();
     QVERIFY(wglContext);
@@ -1554,7 +1554,7 @@ void tst_QOpenGL::wglContextWrap()
     QVERIFY(adopted->makeCurrent(window.data()));
     adopted->doneCurrent();
 }
-#endif // Q_OS_WIN32 && !QT_CONFIG(opengles2)
+#endif // Q_OS_WIN32 && !BOBUI_CONFIG(opengles2)
 
 void tst_QOpenGL::vaoCreate()
 {
@@ -1693,12 +1693,12 @@ void tst_QOpenGL::nullTextureInitializtion()
     The red outline should be covered by the blue rect on top,
     while it should be clipped on the other edges and thus the red outline be visible
 
-    See: QTBUG-83229, modified by QTBUG-100329
+    See: BOBUIBUG-83229, modified by BOBUIBUG-100329
 */
 void tst_QOpenGL::clipRect()
 {
 #if defined(Q_OS_LINUX) && defined(Q_CC_GNU) && !defined(__x86_64__)
-    QSKIP("QTBUG-22617");
+    QSKIP("BOBUIBUG-22617");
 #endif
 
     QScopedPointer<QSurface> surface(createSurface(int(QSurface::Window)));
@@ -1736,30 +1736,30 @@ void tst_QOpenGL::clipRect()
     QRectF clipRect = QRectF(halfWidth - halfWidth / 2.0, halfHeight - halfHeight / 2.0,
                              halfWidth / 2.0, halfHeight / 2.0);
 
-    fboPainter.fillRect(rect, Qt::white);
-    fboPainter.setPen(Qt::red);
+    fboPainter.fillRect(rect, BobUI::white);
+    fboPainter.setPen(BobUI::red);
     fboPainter.drawRect(clipRect);
 
-    fboPainter.setClipRect(clipRect, Qt::ReplaceClip);
-    fboPainter.fillRect(rect, Qt::blue);
+    fboPainter.setClipRect(clipRect, BobUI::ReplaceClip);
+    fboPainter.fillRect(rect, BobUI::blue);
 
     fboPainter.end();
 
     const QImage fb = fbo.toImage().convertToFormat(QImage::Format_RGB32);
     QCOMPARE(fb.size(), size);
 
-    QCOMPARE(fb.pixelColor(clipRect.left() + 1, clipRect.top()), QColor(Qt::blue));
-    QCOMPARE(fb.pixelColor(clipRect.left(), clipRect.top() + 1), QColor(Qt::red));
-    QCOMPARE(fb.pixelColor(clipRect.left() + 1, clipRect.bottom()), QColor(Qt::red));
+    QCOMPARE(fb.pixelColor(clipRect.left() + 1, clipRect.top()), QColor(BobUI::blue));
+    QCOMPARE(fb.pixelColor(clipRect.left(), clipRect.top() + 1), QColor(BobUI::red));
+    QCOMPARE(fb.pixelColor(clipRect.left() + 1, clipRect.bottom()), QColor(BobUI::red));
 
-    // Enable this once QTBUG-85286 is fixed
-    //QCOMPARE(fb.pixelColor(clipRect.right(), clipRect.top() + 1), QColor(Qt::red));
+    // Enable this once BOBUIBUG-85286 is fixed
+    //QCOMPARE(fb.pixelColor(clipRect.right(), clipRect.top() + 1), QColor(BobUI::red));
 }
 
-#if QT_CONFIG(egl)
+#if BOBUI_CONFIG(egl)
 void tst_QOpenGL::dontCrashOnInvalidContextThreadTeardown()
 {
-    class Thread : public QThread
+    class Thread : public BOBUIhread
     {
         void run() override
         {
@@ -1781,6 +1781,6 @@ void tst_QOpenGL::dontCrashOnInvalidContextThreadTeardown()
 }
 #endif
 
-QTEST_MAIN(tst_QOpenGL)
+BOBUIEST_MAIN(tst_QOpenGL)
 
 #include "tst_qopengl.moc"

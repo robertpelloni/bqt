@@ -1,17 +1,17 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qxcbeventqueue.h"
 #include "qxcbconnection.h"
 
-#include <QtCore/QObject>
-#include <QtCore/QCoreApplication>
-#include <QtCore/QAbstractEventDispatcher>
-#include <QtCore/QMutex>
-#include <QtCore/QDebug>
+#include <BobUICore/QObject>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/QAbstractEventDispatcher>
+#include <BobUICore/QMutex>
+#include <BobUICore/QDebug>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_CONSTINIT static QBasicMutex qAppExiting;
 Q_CONSTINIT static bool dispatcherOwnerDestructing = false;
@@ -84,8 +84,8 @@ QXcbEventQueue::~QXcbEventQueue()
 xcb_generic_event_t *QXcbEventQueue::takeFirst(QEventLoop::ProcessEventsFlags flags)
 {
     // This is the level at which we were moving excluded user input events into
-    // separate queue in Qt 4 (see qeventdispatcher_x11.cpp). In this case
-    // QXcbEventQueue represents Xlib's internal event queue. In Qt 4, Xlib's
+    // separate queue in BobUI 4 (see qeventdispatcher_x11.cpp). In this case
+    // QXcbEventQueue represents Xlib's internal event queue. In BobUI 4, Xlib's
     // event queue peeking APIs would not see these events anymore, the same way
     // our peeking functions do not consider m_inputEvents. This design is
     // intentional to keep the same behavior. We could do filtering directly on
@@ -347,7 +347,7 @@ void QXcbEventQueue::sendCloseConnectionEvent() const
     event.format = 32;
     event.sequence = 0;
     event.window = window;
-    event.type = m_connection->atom(QXcbAtom::Atom_QT_CLOSE_CONNECTION);
+    event.type = m_connection->atom(QXcbAtom::Atom_BOBUI_CLOSE_CONNECTION);
     event.data.data32[0] = 0;
 
     xcb_send_event(c, false, window, XCB_EVENT_MASK_NO_EVENT, reinterpret_cast<const char *>(&event));
@@ -359,12 +359,12 @@ bool QXcbEventQueue::isCloseConnectionEvent(const xcb_generic_event_t *event)
 {
     if (event && (event->response_type & ~0x80) == XCB_CLIENT_MESSAGE) {
         auto clientMessage = reinterpret_cast<const xcb_client_message_event_t *>(event);
-        if (clientMessage->type == m_connection->atom(QXcbAtom::Atom_QT_CLOSE_CONNECTION))
+        if (clientMessage->type == m_connection->atom(QXcbAtom::Atom_BOBUI_CLOSE_CONNECTION))
             m_closeConnectionDetected = true;
     }
     return m_closeConnectionDetected;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qxcbeventqueue.cpp"

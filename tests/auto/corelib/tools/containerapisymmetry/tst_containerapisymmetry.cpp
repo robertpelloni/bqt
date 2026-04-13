@@ -1,7 +1,7 @@
 // Copyright (C) 2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Marc Mutz <marc.mutz@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
 #include "qbytearray.h"
 #include "qdebug.h"
@@ -29,7 +29,7 @@
 #include <unordered_map>
 #include <q20vector.h> // For reference
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 std::ostream &operator<<(std::ostream &os, const QChar &c)
 {
     Q_ASSERT(c == QLatin1Char{c.toLatin1()});
@@ -42,7 +42,7 @@ std::istream &operator>>(std::istream &os, QChar &c)
     c = QLatin1Char{cL1};
     return os;
 }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 struct Movable
 {
@@ -86,9 +86,9 @@ QDebug &operator<<(QDebug &d, Movable m)
     return d.nospace() << "Movable(" << m.i << ")";
 }
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 Q_DECLARE_TYPEINFO(Movable, Q_RELOCATABLE_TYPE);
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 struct Complex
 {
@@ -227,7 +227,7 @@ struct LessOnly
     float val;
 private:
     friend auto compareThreeWay(LessOnly lhs, LessOnly rhs) noexcept
-    { return Qt::compareThreeWay(lhs.val, rhs.val); }
+    { return BobUI::compareThreeWay(lhs.val, rhs.val); }
 
     friend bool operator==(LessOnly lhs, LessOnly rhs) noexcept
     { return lhs.val == rhs.val; }
@@ -480,26 +480,26 @@ private:
 
 private Q_SLOTS:
     void comparisonTest_QList_int()
-    { comparisonTest_impl<QList<int>, Qt::strong_ordering>(); }
+    { comparisonTest_impl<QList<int>, BobUI::strong_ordering>(); }
     void comparisonTest_QList_float()
-    { comparisonTest_impl<QList<float>, Qt::partial_ordering>(); }
+    { comparisonTest_impl<QList<float>, BobUI::partial_ordering>(); }
     void comparisonTest_QList_QDateTime()
-    { comparisonTest_impl<QList<QDateTime>, Qt::weak_ordering>(); }
+    { comparisonTest_impl<QList<QDateTime>, BobUI::weak_ordering>(); }
     void comparisonTest_QList_intptr()
-    { comparisonTest_impl<QList<const int *>, Qt::strong_ordering>(); }
+    { comparisonTest_impl<QList<const int *>, BobUI::strong_ordering>(); }
     void comparisonTest_QList_LessOnly()
-    { comparisonTest_impl<QList<LessOnly>, Qt::weak_ordering>(); }
+    { comparisonTest_impl<QList<LessOnly>, BobUI::weak_ordering>(); }
 
     void comparisonTest_QVarLengthArray_int()
-    { comparisonTest_impl<QVarLengthArray<int>, Qt::strong_ordering>(); }
+    { comparisonTest_impl<QVarLengthArray<int>, BobUI::strong_ordering>(); }
     void comparisonTest_QVarLengthArray_float()
-    { comparisonTest_impl<QVarLengthArray<float>, Qt::partial_ordering>(); }
+    { comparisonTest_impl<QVarLengthArray<float>, BobUI::partial_ordering>(); }
     void comparisonTest_QVarLengthArray_QDateTime()
-    { comparisonTest_impl<QVarLengthArray<QDateTime>, Qt::weak_ordering>(); }
+    { comparisonTest_impl<QVarLengthArray<QDateTime>, BobUI::weak_ordering>(); }
     void comparisonTest_QVarLengthArray_intptr()
-    { comparisonTest_impl<QVarLengthArray<const int *>, Qt::strong_ordering>(); }
+    { comparisonTest_impl<QVarLengthArray<const int *>, BobUI::strong_ordering>(); }
     void comparisonTest_QVarLengthArray_LessOnly()
-    { comparisonTest_impl<QVarLengthArray<LessOnly>, Qt::weak_ordering>(); }
+    { comparisonTest_impl<QVarLengthArray<LessOnly>, BobUI::weak_ordering>(); }
 
 private:
     template <typename Container>
@@ -744,7 +744,7 @@ void tst_ContainerApiSymmetry::ranged_ctor_associative_impl() const
 
     // The double K(0) is deliberate. The order of the elements matters:
     // * for unique-key STL containers, the first one should be the one inserted (cf. LWG 2844)
-    // * for unique-key Qt containers, the last one should be the one inserted
+    // * for unique-key BobUI containers, the last one should be the one inserted
     // * for multi-key sorted containers, the order of insertion of identical keys is also the
     //   iteration order (which establishes the equality of the containers)
     // (although nothing of this is being tested here, that deserves its own testing)
@@ -1169,7 +1169,7 @@ void tst_ContainerApiSymmetry::erase_if_associative_impl() const
     QCOMPARE(result, S(7));
     QCOMPARE(c.size(), S(0));
 
-    // same, but with a predicate taking a Qt iterator
+    // same, but with a predicate taking a BobUI iterator
     c = makeAssociative<Container>(20);
     QCOMPARE(c.size(), S(20));
 
@@ -1496,42 +1496,42 @@ std::vector<ValueType> makeComparisonData(Ordering)
 { return {}; }
 
 template <>
-std::vector<int> makeComparisonData(Qt::strong_ordering order)
+std::vector<int> makeComparisonData(BobUI::strong_ordering order)
 {
-    if (order == Qt::strong_ordering::equivalent)
+    if (order == BobUI::strong_ordering::equivalent)
         return {1, 2, 3, 4};
-    else if (order == Qt::strong_ordering::less)
+    else if (order == BobUI::strong_ordering::less)
         return {1, 2, 1};
     else /* greater */
         return {1, 2, 4};
 }
 
 template <>
-std::vector<float> makeComparisonData(Qt::partial_ordering order)
+std::vector<float> makeComparisonData(BobUI::partial_ordering order)
 {
-    if (order == Qt::partial_ordering::equivalent)
+    if (order == BobUI::partial_ordering::equivalent)
         return {1.f, 2.f, 3.f, 4.f};
-    else if (order == Qt::partial_ordering::less)
+    else if (order == BobUI::partial_ordering::less)
         return {1.f, 2.f, 1.f};
-    else if (order == Qt::partial_ordering::greater)
+    else if (order == BobUI::partial_ordering::greater)
         return {1.f, 2.f, 4.f};
     else /* unordered */
         return {std::numeric_limits<float>::quiet_NaN(), 2.f, 3.f, 4.f};
 }
 
 template <>
-std::vector<QDateTime> makeComparisonData(Qt::weak_ordering order)
+std::vector<QDateTime> makeComparisonData(BobUI::weak_ordering order)
 {
     using namespace std::chrono_literals;
-    QTimeZone utcPlusOne = QTimeZone::fromDurationAheadOfUtc(3600s);
+    BOBUIimeZone utcPlusOne = BOBUIimeZone::fromDurationAheadOfUtc(3600s);
     // These two QDateTimes represent the same moment of time, but using
     // different time zones. So, they are equivalent, but not equal.
-    QDateTime nullUtc = QDateTime::fromMSecsSinceEpoch(0, QTimeZone::UTC);
+    QDateTime nullUtc = QDateTime::fromMSecsSinceEpoch(0, BOBUIimeZone::UTC);
     QDateTime nullUtcPlusOne = QDateTime::fromMSecsSinceEpoch(0, utcPlusOne);
 
-    if (order == Qt::weak_ordering::equivalent)
+    if (order == BobUI::weak_ordering::equivalent)
         return {nullUtc, nullUtc.addDays(1), nullUtc.addDays(2), nullUtc.addDays(3)};
-    else if (order == Qt::weak_ordering::less)
+    else if (order == BobUI::weak_ordering::less)
         return {nullUtcPlusOne, nullUtc.addDays(1), nullUtc};
     else /* greater */
         return {nullUtcPlusOne, nullUtc.addDays(1), nullUtc.addDays(3)};
@@ -1540,22 +1540,22 @@ std::vector<QDateTime> makeComparisonData(Qt::weak_ordering order)
 static constexpr std::array<int, 4> intArray = {0, 0, 0, 0};
 
 template <>
-std::vector<const int *> makeComparisonData(Qt::strong_ordering order)
+std::vector<const int *> makeComparisonData(BobUI::strong_ordering order)
 {
-    if (order == Qt::strong_ordering::equivalent)
+    if (order == BobUI::strong_ordering::equivalent)
         return {&intArray[0], &intArray[1], &intArray[2], &intArray[3]};
-    else if (order == Qt::strong_ordering::less)
+    else if (order == BobUI::strong_ordering::less)
         return {&intArray[0], &intArray[1], &intArray[0]};
     else /* greater */
         return {&intArray[0], &intArray[1], &intArray[3]};
 }
 
 template <>
-std::vector<LessOnly> makeComparisonData(Qt::weak_ordering order)
+std::vector<LessOnly> makeComparisonData(BobUI::weak_ordering order)
 {
-    if (order == Qt::weak_ordering::equivalent)
+    if (order == BobUI::weak_ordering::equivalent)
         return {LessOnly{1.f}, LessOnly{2.f}, LessOnly{3.f}, LessOnly{4.f}};
-    else if (order == Qt::weak_ordering::less)
+    else if (order == BobUI::weak_ordering::less)
         return {LessOnly{1.f}, LessOnly{2.f}, LessOnly{1.f}};
     else /* greater */
         return {LessOnly{1.f}, LessOnly{2.f}, LessOnly{4.f}};
@@ -1564,7 +1564,7 @@ std::vector<LessOnly> makeComparisonData(Qt::weak_ordering order)
 template<typename Container, typename Ordering>
 void tst_ContainerApiSymmetry::comparisonTest_impl()
 {
-    QTestPrivate::testAllComparisonOperatorsCompile<Container>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<Container>();
 
     using V = typename Container::value_type;
     const auto eq_vec = makeComparisonData<V>(Ordering::equivalent);
@@ -1572,25 +1572,25 @@ void tst_ContainerApiSymmetry::comparisonTest_impl()
     Container lhs{eq_vec.begin(), eq_vec.end()};
     Container rhs{eq_vec.begin(), eq_vec.end()};
     QCOMPARE_EQ(compareThreeWay(lhs, rhs), Ordering::equivalent);
-    QT_TEST_ALL_COMPARISON_OPS(lhs, rhs, Ordering::equivalent);
+    BOBUI_TEST_ALL_COMPARISON_OPS(lhs, rhs, Ordering::equivalent);
 
 
     const auto lt_vec = makeComparisonData<V>(Ordering::less);
     rhs = {lt_vec.begin(), lt_vec.end()};
     QCOMPARE_EQ(compareThreeWay(lhs, rhs), Ordering::greater);
-    QT_TEST_ALL_COMPARISON_OPS(lhs, rhs, Ordering::greater);
+    BOBUI_TEST_ALL_COMPARISON_OPS(lhs, rhs, Ordering::greater);
 
     const auto gt_vec = makeComparisonData<V>(Ordering::greater);
     rhs = {gt_vec.begin(), gt_vec.end()};
     QCOMPARE_EQ(compareThreeWay(lhs, rhs), Ordering::less);
-    QT_TEST_ALL_COMPARISON_OPS(lhs, rhs, Ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(lhs, rhs, Ordering::less);
 
-    if constexpr (std::is_same_v<Ordering, Qt::partial_ordering>) {
+    if constexpr (std::is_same_v<Ordering, BobUI::partial_ordering>) {
         const auto un_vec = makeComparisonData<V>(Ordering::unordered);
         rhs = {un_vec.begin(), un_vec.end()};
         QCOMPARE_EQ(compareThreeWay(lhs, rhs), Ordering::unordered);
 #ifdef __cpp_lib_three_way_comparison
-        QT_TEST_ALL_COMPARISON_OPS(lhs, rhs, Ordering::unordered);
+        BOBUI_TEST_ALL_COMPARISON_OPS(lhs, rhs, Ordering::unordered);
 #else
         // partial_ordering::unordered works incorrectly for containers in C++17
         // mode, but that is in line with how std containers behave
@@ -1608,7 +1608,7 @@ void tst_ContainerApiSymmetry::comparisonTest_impl()
         lhs = {un_vec.begin(), un_vec.end()};
         QCOMPARE_EQ(compareThreeWay(lhs, rhs), Ordering::unordered);
 #ifdef __cpp_lib_three_way_comparison
-        QT_TEST_ALL_COMPARISON_OPS(lhs, rhs, Ordering::unordered);
+        BOBUI_TEST_ALL_COMPARISON_OPS(lhs, rhs, Ordering::unordered);
 #else
         // partial_ordering::unordered works incorrectly for containers in C++17
         // mode, but that is in line with how std containers behave
@@ -1651,5 +1651,5 @@ void tst_ContainerApiSymmetry::insert_or_assign_impl() const
     QCOMPARE(it->second, V() + 2);
 }
 
-QTEST_APPLESS_MAIN(tst_ContainerApiSymmetry)
+BOBUIEST_APPLESS_MAIN(tst_ContainerApiSymmetry)
 #include "tst_containerapisymmetry.moc"

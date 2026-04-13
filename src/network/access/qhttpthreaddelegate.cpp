@@ -1,24 +1,24 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 //#define QHTTPTHREADDELEGATE_DEBUG
 #include "qhttpthreaddelegate_p.h"
 
-#include <QThread>
-#include <QTimer>
+#include <BOBUIhread>
+#include <BOBUIimer>
 #include <QAuthenticator>
 #include <QEventLoop>
 #include <QCryptographicHash>
-#include <QtCore/qscopedvaluerollback.h>
+#include <BobUICore/qscopedvaluerollback.h>
 
 #include "private/qhttpnetworkreply_p.h"
 #include "private/qnetworkaccesscache_p.h"
 #include "private/qnoncontiguousbytedevice_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static QNetworkReply::NetworkError statusCodeFromHttp(int httpStatusCode, const QUrl &url)
 {
@@ -107,7 +107,7 @@ static QByteArray makeCacheKey(QUrl &url, QNetworkProxy *proxy, const QString &p
     result = copy.toString(QUrl::RemoveUserInfo | QUrl::RemovePath |
                            QUrl::RemoveQuery | QUrl::RemoveFragment | QUrl::FullyEncoded);
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     if (proxy && proxy->type() != QNetworkProxy::NoProxy) {
         QUrl key;
 
@@ -167,7 +167,7 @@ public:
 };
 
 
-QThreadStorage<QNetworkAccessCache *> QHttpThreadDelegate::connections;
+BOBUIhreadStorage<QNetworkAccessCache *> QHttpThreadDelegate::connections;
 
 
 QHttpThreadDelegate::~QHttpThreadDelegate()
@@ -212,7 +212,7 @@ QHttpThreadDelegate::QHttpThreadDelegate(QObject *parent) :
 void QHttpThreadDelegate::startRequestSynchronously()
 {
 #ifdef QHTTPTHREADDELEGATE_DEBUG
-    qDebug() << "QHttpThreadDelegate::startRequestSynchronously() thread=" << QThread::currentThreadId();
+    qDebug() << "QHttpThreadDelegate::startRequestSynchronously() thread=" << BOBUIhread::currentThreadId();
 #endif
     synchronous = true;
 
@@ -220,16 +220,16 @@ void QHttpThreadDelegate::startRequestSynchronously()
     QScopedValueRollback<QEventLoop*> guard(this->synchronousRequestLoop, &synchronousRequestLoop);
 
     // Worst case timeout
-    QTimer::singleShot(30*1000, this, SLOT(abortRequest()));
+    BOBUIimer::singleShot(30*1000, this, SLOT(abortRequest()));
 
-    QMetaObject::invokeMethod(this, "startRequest", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(this, "startRequest", BobUI::QueuedConnection);
     synchronousRequestLoop.exec();
 
     connections.localData()->releaseEntry(cacheKey);
     connections.setLocalData(nullptr);
 
 #ifdef QHTTPTHREADDELEGATE_DEBUG
-    qDebug() << "QHttpThreadDelegate::startRequestSynchronously() thread=" << QThread::currentThreadId() << "finished";
+    qDebug() << "QHttpThreadDelegate::startRequestSynchronously() thread=" << BOBUIhread::currentThreadId() << "finished";
 #endif
 }
 
@@ -238,9 +238,9 @@ void QHttpThreadDelegate::startRequestSynchronously()
 void QHttpThreadDelegate::startRequest()
 {
 #ifdef QHTTPTHREADDELEGATE_DEBUG
-    qDebug() << "QHttpThreadDelegate::startRequest() thread=" << QThread::currentThreadId();
+    qDebug() << "QHttpThreadDelegate::startRequest() thread=" << BOBUIhread::currentThreadId();
 #endif
-    // Check QThreadStorage for the QNetworkAccessCache
+    // Check BOBUIhreadStorage for the QNetworkAccessCache
     // If not there, create this connection cache
     if (!connections.hasLocalData()) {
         connections.setLocalData(new QNetworkAccessCache());
@@ -266,14 +266,14 @@ void QHttpThreadDelegate::startRequest()
         connectionType = QHttpNetworkConnection::ConnectionTypeHTTP;
     }
 
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
     // See qnetworkreplyhttpimpl, delegate's initialization code.
     Q_ASSERT(!ssl || incomingSslConfiguration);
-#endif // QT_CONFIG(ssl)
+#endif // BOBUI_CONFIG(ssl)
 
     const bool isH2 = httpRequest.isHTTP2Allowed() || httpRequest.isHTTP2Direct();
     if (isH2) {
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
         if (ssl) {
             if (!httpRequest.isHTTP2Direct()) {
                 QList<QByteArray> protocols;
@@ -283,7 +283,7 @@ void QHttpThreadDelegate::startRequest()
             }
             urlCopy.setScheme(QStringLiteral("h2s"));
         } else
-#endif // QT_CONFIG(ssl)
+#endif // BOBUI_CONFIG(ssl)
         {
             if (isLocalSocket)
                 urlCopy.setScheme(QStringLiteral("unix+h2"));
@@ -298,7 +298,7 @@ void QHttpThreadDelegate::startRequest()
             extraData = path;
     }
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     if (transparentProxy.type() != QNetworkProxy::NoProxy)
         cacheKey = makeCacheKey(urlCopy, &transparentProxy, httpRequest.peerVerifyName());
     else if (cacheProxy.type() != QNetworkProxy::NoProxy)
@@ -329,13 +329,13 @@ void QHttpThreadDelegate::startRequest()
         }
 
         httpConnection->setTcpKeepAliveParameters(tcpKeepAliveParameters);
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
         // Set the QSslConfiguration from this QNetworkRequest.
         if (ssl)
             httpConnection->setSslConfiguration(*incomingSslConfiguration);
 #endif
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
         httpConnection->setTransparentProxy(transparentProxy);
         httpConnection->setCacheProxy(cacheProxy);
 #endif
@@ -367,7 +367,7 @@ void QHttpThreadDelegate::startRequest()
 
         connect(httpReply, SIGNAL(authenticationRequired(QHttpNetworkRequest,QAuthenticator*)),
                 this, SLOT(synchronousAuthenticationRequiredSlot(QHttpNetworkRequest,QAuthenticator*)));
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
         connect(httpReply, SIGNAL(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)),
                 this, SLOT(synchronousProxyAuthenticationRequiredSlot(QNetworkProxy,QAuthenticator*)));
 #endif
@@ -383,7 +383,7 @@ void QHttpThreadDelegate::startRequest()
         // some signals are only interesting when normal asynchronous style is used
         connect(httpReply,SIGNAL(readyRead()), this, SLOT(readyReadSlot()));
         connect(httpReply,SIGNAL(dataReadProgress(qint64,qint64)), this, SLOT(dataReadProgressSlot(qint64,qint64)));
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
         connect(httpReply,SIGNAL(encrypted()), this, SLOT(encryptedSlot()));
         connect(httpReply,SIGNAL(sslErrors(QList<QSslError>)), this, SLOT(sslErrorsSlot(QList<QSslError>)));
         connect(httpReply,SIGNAL(preSharedKeyAuthenticationRequired(QSslPreSharedKeyAuthenticator*)),
@@ -394,7 +394,7 @@ void QHttpThreadDelegate::startRequest()
         // Connect the reply signals that we can directly forward
         connect(httpReply, SIGNAL(authenticationRequired(QHttpNetworkRequest,QAuthenticator*)),
                 this, SIGNAL(authenticationRequired(QHttpNetworkRequest,QAuthenticator*)));
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
         connect(httpReply, SIGNAL(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)),
                 this, SIGNAL(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)));
 #endif
@@ -414,7 +414,7 @@ void QHttpThreadDelegate::startRequest()
 void QHttpThreadDelegate::abortRequest()
 {
 #ifdef QHTTPTHREADDELEGATE_DEBUG
-    qDebug() << "QHttpThreadDelegate::abortRequest() thread=" << QThread::currentThreadId() << "sync=" << synchronous;
+    qDebug() << "QHttpThreadDelegate::abortRequest() thread=" << BOBUIhread::currentThreadId() << "sync=" << synchronous;
 #endif
     if (httpReply) {
         httpReply->abort();
@@ -425,7 +425,7 @@ void QHttpThreadDelegate::abortRequest()
     // Got aborted by the timeout timer
     if (synchronous) {
         incomingErrorCode = QNetworkReply::TimeoutError;
-        QMetaObject::invokeMethod(synchronousRequestLoop, "quit", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(synchronousRequestLoop, "quit", BobUI::QueuedConnection);
     } else {
         //only delete this for asynchronous mode or QNetworkAccessHttpBackend will crash - see QNetworkAccessHttpBackend::postRequest()
         this->deleteLater();
@@ -449,7 +449,7 @@ void QHttpThreadDelegate::readBufferFreed(qint64 size)
     if (readBufferMaxSize) {
         bytesEmitted -= size;
 
-        QMetaObject::invokeMethod(this, "readyReadSlot", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this, "readyReadSlot", BobUI::QueuedConnection);
     }
 }
 
@@ -494,11 +494,11 @@ static QString makeServerErrorString(int code, const QUrl &url, const QString &r
 {
     QString msg;
     if (!reasonPhrase.isEmpty()) {
-        msg = QLatin1StringView(QT_TRANSLATE_NOOP("QNetworkReply",
+        msg = QLatin1StringView(BOBUI_TRANSLATE_NOOP("QNetworkReply",
                                                   "Error transferring %1 - server replied: %2"))
                       .arg(url.toString(), reasonPhrase);
     } else {
-        msg = QLatin1StringView(QT_TRANSLATE_NOOP("QNetworkReply",
+        msg = QLatin1StringView(BOBUI_TRANSLATE_NOOP("QNetworkReply",
                                                   "Error transferring %1 - server replied with status code %2"))
                       .arg(url.toString(), QString::number(code));
     }
@@ -511,7 +511,7 @@ void QHttpThreadDelegate::finishedSlot()
         return;
 
 #ifdef QHTTPTHREADDELEGATE_DEBUG
-    qDebug() << "QHttpThreadDelegate::finishedSlot() thread=" << QThread::currentThreadId() << "result=" << httpReply->statusCode();
+    qDebug() << "QHttpThreadDelegate::finishedSlot() thread=" << BOBUIhread::currentThreadId() << "result=" << httpReply->statusCode();
 #endif
 
     // If there is still some data left emit that now
@@ -520,7 +520,7 @@ void QHttpThreadDelegate::finishedSlot()
         emit downloadData(httpReply->readAny());
     }
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     if (ssl)
         emit sslConfigurationChanged(httpReply->sslConfiguration());
 #endif
@@ -537,8 +537,8 @@ void QHttpThreadDelegate::finishedSlot()
 
     emit downloadFinished();
 
-    QMetaObject::invokeMethod(httpReply, "deleteLater", Qt::QueuedConnection);
-    QMetaObject::invokeMethod(this, "deleteLater", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(httpReply, "deleteLater", BobUI::QueuedConnection);
+    QMetaObject::invokeMethod(this, "deleteLater", BobUI::QueuedConnection);
     httpReply = nullptr;
 }
 
@@ -548,7 +548,7 @@ void QHttpThreadDelegate::synchronousFinishedSlot()
         return;
 
 #ifdef QHTTPTHREADDELEGATE_DEBUG
-    qDebug() << "QHttpThreadDelegate::synchronousFinishedSlot() thread=" << QThread::currentThreadId() << "result=" << httpReply->statusCode();
+    qDebug() << "QHttpThreadDelegate::synchronousFinishedSlot() thread=" << BOBUIhread::currentThreadId() << "result=" << httpReply->statusCode();
 #endif
     if (httpReply->statusCode() >= 400) {
         // it's an error reply
@@ -560,8 +560,8 @@ void QHttpThreadDelegate::synchronousFinishedSlot()
     isCompressed = httpReply->isCompressed();
     synchronousDownloadData = httpReply->readAll();
 
-    QMetaObject::invokeMethod(httpReply, "deleteLater", Qt::QueuedConnection);
-    QMetaObject::invokeMethod(synchronousRequestLoop, "quit", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(httpReply, "deleteLater", BobUI::QueuedConnection);
+    QMetaObject::invokeMethod(synchronousRequestLoop, "quit", BobUI::QueuedConnection);
     httpReply = nullptr;
 }
 
@@ -571,10 +571,10 @@ void QHttpThreadDelegate::finishedWithErrorSlot(QNetworkReply::NetworkError erro
         return;
 
 #ifdef QHTTPTHREADDELEGATE_DEBUG
-    qDebug() << "QHttpThreadDelegate::finishedWithErrorSlot() thread=" << QThread::currentThreadId() << "error=" << errorCode << detail;
+    qDebug() << "QHttpThreadDelegate::finishedWithErrorSlot() thread=" << BOBUIhread::currentThreadId() << "error=" << errorCode << detail;
 #endif
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     if (ssl)
         emit sslConfigurationChanged(httpReply->sslConfiguration());
 #endif
@@ -582,8 +582,8 @@ void QHttpThreadDelegate::finishedWithErrorSlot(QNetworkReply::NetworkError erro
     emit downloadFinished();
 
 
-    QMetaObject::invokeMethod(httpReply, "deleteLater", Qt::QueuedConnection);
-    QMetaObject::invokeMethod(this, "deleteLater", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(httpReply, "deleteLater", BobUI::QueuedConnection);
+    QMetaObject::invokeMethod(this, "deleteLater", BobUI::QueuedConnection);
     httpReply = nullptr;
 }
 
@@ -594,15 +594,15 @@ void QHttpThreadDelegate::synchronousFinishedWithErrorSlot(QNetworkReply::Networ
         return;
 
 #ifdef QHTTPTHREADDELEGATE_DEBUG
-    qDebug() << "QHttpThreadDelegate::synchronousFinishedWithErrorSlot() thread=" << QThread::currentThreadId() << "error=" << errorCode << detail;
+    qDebug() << "QHttpThreadDelegate::synchronousFinishedWithErrorSlot() thread=" << BOBUIhread::currentThreadId() << "error=" << errorCode << detail;
 #endif
     incomingErrorCode = errorCode;
     incomingErrorDetail = detail;
 
     synchronousDownloadData = httpReply->readAll();
 
-    QMetaObject::invokeMethod(httpReply, "deleteLater", Qt::QueuedConnection);
-    QMetaObject::invokeMethod(synchronousRequestLoop, "quit", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(httpReply, "deleteLater", BobUI::QueuedConnection);
+    QMetaObject::invokeMethod(synchronousRequestLoop, "quit", BobUI::QueuedConnection);
     httpReply = nullptr;
 }
 
@@ -612,10 +612,10 @@ void QHttpThreadDelegate::headerChangedSlot()
         return;
 
 #ifdef QHTTPTHREADDELEGATE_DEBUG
-    qDebug() << "QHttpThreadDelegate::headerChangedSlot() thread=" << QThread::currentThreadId();
+    qDebug() << "QHttpThreadDelegate::headerChangedSlot() thread=" << BOBUIhread::currentThreadId();
 #endif
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     if (ssl)
         emit sslConfigurationChanged(httpReply->sslConfiguration());
 #endif
@@ -658,7 +658,7 @@ void QHttpThreadDelegate::synchronousHeaderChangedSlot()
         return;
 
 #ifdef QHTTPTHREADDELEGATE_DEBUG
-    qDebug() << "QHttpThreadDelegate::synchronousHeaderChangedSlot() thread=" << QThread::currentThreadId();
+    qDebug() << "QHttpThreadDelegate::synchronousHeaderChangedSlot() thread=" << BOBUIhread::currentThreadId();
 #endif
     // Store the information we need in this object, the QNetworkAccessHttpBackend will later read it
     incomingHeaders = httpReply->header();
@@ -687,7 +687,7 @@ void QHttpThreadDelegate::cacheCredentialsSlot(const QHttpNetworkRequest &reques
 }
 
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
 void QHttpThreadDelegate::encryptedSlot()
 {
     if (!httpReply)
@@ -729,7 +729,7 @@ void QHttpThreadDelegate::synchronousAuthenticationRequiredSlot(const QHttpNetwo
 
     Q_UNUSED(request);
 #ifdef QHTTPTHREADDELEGATE_DEBUG
-    qDebug() << "QHttpThreadDelegate::synchronousAuthenticationRequiredSlot() thread=" << QThread::currentThreadId();
+    qDebug() << "QHttpThreadDelegate::synchronousAuthenticationRequiredSlot() thread=" << BOBUIhread::currentThreadId();
 #endif
 
     // Ask the credential cache
@@ -744,14 +744,14 @@ void QHttpThreadDelegate::synchronousAuthenticationRequiredSlot(const QHttpNetwo
         this, SLOT(synchronousAuthenticationRequiredSlot(QHttpNetworkRequest,QAuthenticator*)));
 }
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
 void  QHttpThreadDelegate::synchronousProxyAuthenticationRequiredSlot(const QNetworkProxy &p, QAuthenticator *a)
 {
     if (!httpReply)
         return;
 
 #ifdef QHTTPTHREADDELEGATE_DEBUG
-    qDebug() << "QHttpThreadDelegate::synchronousProxyAuthenticationRequiredSlot() thread=" << QThread::currentThreadId();
+    qDebug() << "QHttpThreadDelegate::synchronousProxyAuthenticationRequiredSlot() thread=" << BOBUIhread::currentThreadId();
 #endif
     // Ask the credential cache
     QNetworkAuthenticationCredential credential = authenticationManager->fetchCachedProxyCredentials(p, a);
@@ -760,7 +760,7 @@ void  QHttpThreadDelegate::synchronousProxyAuthenticationRequiredSlot(const QNet
         a->setPassword(credential.password);
     }
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     // Disconnect this connection now since we only want to ask the authentication cache once.
     QObject::disconnect(httpReply, SIGNAL(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)),
         this, SLOT(synchronousProxyAuthenticationRequiredSlot(QNetworkProxy,QAuthenticator*)));
@@ -769,6 +769,6 @@ void  QHttpThreadDelegate::synchronousProxyAuthenticationRequiredSlot(const QNet
 
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qhttpthreaddelegate_p.cpp"

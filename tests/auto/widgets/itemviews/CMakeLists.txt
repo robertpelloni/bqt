@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 add_subdirectory(qabstractitemview)
@@ -9,12 +9,12 @@ add_subdirectory(qitemdelegate)
 add_subdirectory(qitemeditorfactory)
 add_subdirectory(qitemview)
 add_subdirectory(qlistview)
-add_subdirectory(qtableview)
-add_subdirectory(qtablewidget)
-add_subdirectory(qtreeview)
-add_subdirectory(qtreewidget)
-add_subdirectory(qtreewidgetitemiterator)
-if(QT_FEATURE_private_tests)
+add_subdirectory(bobuiableview)
+add_subdirectory(bobuiablewidget)
+add_subdirectory(bobuireeview)
+add_subdirectory(bobuireewidget)
+add_subdirectory(bobuireewidgetitemiterator)
+if(BOBUI_FEATURE_private_tests)
     add_subdirectory(qcolumnview)
     add_subdirectory(qlistwidget)
 endif()

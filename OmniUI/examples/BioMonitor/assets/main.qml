@@ -1,6 +1,6 @@
-import QtQuick
-import QtQuick.Controls
-import QtQuick.Layouts
+import BobUIQuick
+import BobUIQuick.Controls
+import BobUIQuick.Layouts
 import OmniUI
 
 ApplicationWindow {

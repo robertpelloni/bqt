@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <string.h>
 
-#ifndef QT_BOOTSTRAPPED
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qmetaobject.h>
-#include <QtCore/qvariant.h>
+#ifndef BOBUI_BOOTSTRAPPED
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qmetaobject.h>
+#include <BobUICore/qvariant.h>
 #include <private/qurl_p.h>
 
 #include "qdbusutil_p.h"
@@ -17,11 +17,11 @@
 #endif
 #include "qdbusmetatype_p.h"
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
 BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 bool qDBusCheckAsyncTag(const char *tag)
 {
@@ -38,7 +38,7 @@ bool qDBusCheckAsyncTag(const char *tag)
     return false;
 }
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 
 QString qDBusInterfaceFromMetaObject(const QMetaObject *mo)
 {
@@ -52,11 +52,15 @@ QString qDBusInterfaceFromMetaObject(const QMetaObject *mo)
         interface.replace("::"_L1, "."_L1);
 
         if (interface.startsWith("QDBus"_L1)) {
+<<<<<<< HEAD
             interface.prepend("org.qtproject.BobUIDBus."_L1);
+=======
+            interface.prepend("org.bobuiproject.BobUIDBus."_L1);
+>>>>>>> origin/dev
         } else if (interface.startsWith(u'Q') &&
                    interface.size() >= 2 && interface.at(1).isUpper()) {
-            // assume it's Qt
-            interface.prepend("org.qtproject.Qt."_L1);
+            // assume it's BobUI
+            interface.prepend("org.bobuiproject.BobUI."_L1);
         } else if (!QCoreApplication::instance()||
                    QCoreApplication::instance()->applicationName().isEmpty()) {
             interface.prepend("local."_L1);
@@ -69,7 +73,7 @@ QString qDBusInterfaceFromMetaObject(const QMetaObject *mo)
                 domainName.append(u'.').append(organizationDomain);
 
             // Domain names used to produce interface names should be IDN-encoded.
-            QString encodedDomainName = qt_ACE_do(domainName, ToAceOnly, ForbidLeadingDot);
+            QString encodedDomainName = bobui_ACE_do(domainName, ToAceOnly, ForbidLeadingDot);
             if (encodedDomainName.isEmpty()) {
                 interface.prepend("local."_L1);
                 return interface;
@@ -79,7 +83,7 @@ QString qDBusInterfaceFromMetaObject(const QMetaObject *mo)
             // by underscores.
             encodedDomainName.replace(u'-', u'_');
 
-            auto nameParts = QStringView{ encodedDomainName }.split(u'.', Qt::SkipEmptyParts);
+            auto nameParts = QStringView{ encodedDomainName }.split(u'.', BobUI::SkipEmptyParts);
 
             QString composedDomain;
             // + 1 for additional dot, e.g. domainName equals "App.example.com",
@@ -139,7 +143,7 @@ int qDBusParametersForMethod(const QMetaMethod &mm, QList<QMetaType> &metaTypes,
     return qDBusParametersForMethod(parameterTypes, metaTypes, errorMsg);
 }
 
-#endif // QT_BOOTSTRAPPED
+#endif // BOBUI_BOOTSTRAPPED
 
 int qDBusParametersForMethod(const QList<QByteArray> &parameterTypes, QList<QMetaType> &metaTypes,
                              QString &errorMsg)
@@ -181,7 +185,7 @@ int qDBusParametersForMethod(const QList<QByteArray> &parameterTypes, QList<QMet
             type = "QList<" + type.mid(sizeof("QVector<") - 1);
 
         QMetaType id = QMetaType::fromName(type);
-#ifdef QT_BOOTSTRAPPED
+#ifdef BOBUI_BOOTSTRAPPED
         // in bootstrap mode QDBusMessage isn't included, thus we need to resolve it manually here
         if (type == "QDBusMessage") {
             id = QDBusMetaTypeId::message();
@@ -209,4 +213,4 @@ int qDBusParametersForMethod(const QList<QByteArray> &parameterTypes, QList<QMet
 
 BOBUI_END_NAMESPACE
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS

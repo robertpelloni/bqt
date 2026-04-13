@@ -1,8 +1,8 @@
 // Copyright (C) 2025 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "private/qlatch_p.h"
-#include <QtTest>
+#include <BobUITest>
 
 #include <thread>
 
@@ -52,7 +52,7 @@ public:
 void maybeSleep(std::chrono::milliseconds ms)
 {
     if (ms > 0s)
-        QTest::qSleep(ms);
+        BOBUIest::qSleep(ms);
 }
 
 void tst_QLatch::basics()
@@ -112,10 +112,10 @@ void tst_QLatch::simple()
 
 void tst_QLatch::multipleWorkersSingleWaiter_data()
 {
-    QTest::addColumn<int>("count");
-    QTest::newRow("1") << 1;
-    QTest::newRow("2") << 2;
-    QTest::newRow("32768") << 32768;
+    BOBUIest::addColumn<int>("count");
+    BOBUIest::newRow("1") << 1;
+    BOBUIest::newRow("2") << 2;
+    BOBUIest::newRow("32768") << 32768;
 }
 
 void tst_QLatch::multipleWorkersSingleWaiter()
@@ -209,7 +209,7 @@ void tst_QLatch::multipleWorkersAndWaiters()
         std::unique_ptr<JThread> waiters[MaxThreads];
         auto waiterCode = [&](int *ptr) {
             if (i > MaxThreads / 2)
-                QTest::qSleep((i * 2 / MaxThreads) * 1ms);
+                BOBUIest::qSleep((i * 2 / MaxThreads) * 1ms);
             latch.wait();
             *ptr = latch.pending();
         };
@@ -256,6 +256,6 @@ void tst_QLatch::multipleWorkersAndWaiters()
     }
 }
 
-QTEST_MAIN(tst_QLatch)
+BOBUIEST_MAIN(tst_QLatch)
 
 #include "tst_qlatch.moc"

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "slidersgroup.h"
 
@@ -13,16 +13,16 @@ SlidersGroup::SlidersGroup(const QString &title, QWidget *parent)
     : QGroupBox(title, parent)
 {
     slider = new QSlider;
-    slider->setFocusPolicy(Qt::StrongFocus);
+    slider->setFocusPolicy(BobUI::StrongFocus);
     slider->setTickPosition(QSlider::TicksBothSides);
     slider->setTickInterval(10);
     slider->setSingleStep(1);
 
     scrollBar = new QScrollBar;
-    scrollBar->setFocusPolicy(Qt::StrongFocus);
+    scrollBar->setFocusPolicy(BobUI::StrongFocus);
 
     dial = new QDial;
-    dial->setFocusPolicy(Qt::StrongFocus);
+    dial->setFocusPolicy(BobUI::StrongFocus);
 
 //! [0] //! [1]
     connect(slider, &QSlider::valueChanged, scrollBar, &QScrollBar::setValue);
@@ -87,9 +87,9 @@ void SlidersGroup::invertKeyBindings(bool invert)
 //! [14]
 
 //! [15]
-void SlidersGroup::setOrientation(Qt::Orientation orientation)
+void SlidersGroup::setOrientation(BobUI::Orientation orientation)
 {
-    slidersLayout->setDirection(orientation == Qt::Horizontal
+    slidersLayout->setDirection(orientation == BobUI::Horizontal
                                 ? QBoxLayout::TopToBottom
                                 : QBoxLayout::LeftToRight);
     scrollBar->setOrientation(orientation);

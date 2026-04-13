@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QGENERICMATRIX_H
 #define QGENERICMATRIX_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qmetatype.h>
-#include <QtCore/qdebug.h>
-#include <QtCore/qdatastream.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qmetatype.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qdatastream.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 template <int N, int M, typename T>
@@ -17,7 +17,7 @@ class QGenericMatrix
 {
 public:
     QGenericMatrix();
-    explicit QGenericMatrix(Qt::Initialization) {}
+    explicit QGenericMatrix(BobUI::Initialization) {}
     explicit QGenericMatrix(const T *values);
 
     const T& operator()(int row, int column) const;
@@ -65,8 +65,8 @@ private:
     friend class QGenericMatrix;
 };
 template <int N, int M, typename T>
-class QTypeInfo<QGenericMatrix<N, M, T> >
-    : public QTypeInfoMerger<QGenericMatrix<N, M, T>, T>
+class BOBUIypeInfo<QGenericMatrix<N, M, T> >
+    : public BOBUIypeInfoMerger<QGenericMatrix<N, M, T>, T>
 {
 };
 
@@ -139,7 +139,7 @@ Q_OUTOFLINE_TEMPLATE void QGenericMatrix<N, M, T>::fill(T value)
 template <int N, int M, typename T>
 Q_OUTOFLINE_TEMPLATE QGenericMatrix<M, N, T> QGenericMatrix<N, M, T>::transposed() const
 {
-    QGenericMatrix<M, N, T> result(Qt::Uninitialized);
+    QGenericMatrix<M, N, T> result(BobUI::Uninitialized);
     for (int row = 0; row < M; ++row)
         for (int col = 0; col < N; ++col)
             result.m[row][col] = m[col][row];
@@ -173,8 +173,8 @@ Q_OUTOFLINE_TEMPLATE QGenericMatrix<N, M, T>& QGenericMatrix<N, M, T>::operator*
     return *this;
 }
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_FLOAT_COMPARE
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_FLOAT_COMPARE
 
 template <int N, int M, typename T>
 Q_OUTOFLINE_TEMPLATE bool QGenericMatrix<N, M, T>::operator==(const QGenericMatrix<N, M, T>& other) const
@@ -193,7 +193,7 @@ Q_OUTOFLINE_TEMPLATE bool QGenericMatrix<N, M, T>::operator!=(const QGenericMatr
     return !(*this == other);
 }
 
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
 template <int N, int M, typename T>
 Q_OUTOFLINE_TEMPLATE QGenericMatrix<N, M, T>& QGenericMatrix<N, M, T>::operator/=(T divisor)
@@ -207,7 +207,7 @@ Q_OUTOFLINE_TEMPLATE QGenericMatrix<N, M, T>& QGenericMatrix<N, M, T>::operator/
 template <int N, int M, typename T>
 Q_OUTOFLINE_TEMPLATE QGenericMatrix<N, M, T> operator+(const QGenericMatrix<N, M, T>& m1, const QGenericMatrix<N, M, T>& m2)
 {
-    QGenericMatrix<N, M, T> result(Qt::Uninitialized);
+    QGenericMatrix<N, M, T> result(BobUI::Uninitialized);
     for (int row = 0; row < M; ++row)
         for (int col = 0; col < N; ++col)
             result.m[col][row] = m1.m[col][row] + m2.m[col][row];
@@ -217,7 +217,7 @@ Q_OUTOFLINE_TEMPLATE QGenericMatrix<N, M, T> operator+(const QGenericMatrix<N, M
 template <int N, int M, typename T>
 Q_OUTOFLINE_TEMPLATE QGenericMatrix<N, M, T> operator-(const QGenericMatrix<N, M, T>& m1, const QGenericMatrix<N, M, T>& m2)
 {
-    QGenericMatrix<N, M, T> result(Qt::Uninitialized);
+    QGenericMatrix<N, M, T> result(BobUI::Uninitialized);
     for (int row = 0; row < M; ++row)
         for (int col = 0; col < N; ++col)
             result.m[col][row] = m1.m[col][row] - m2.m[col][row];
@@ -227,7 +227,7 @@ Q_OUTOFLINE_TEMPLATE QGenericMatrix<N, M, T> operator-(const QGenericMatrix<N, M
 template <int N, int M1, int M2, typename T>
 Q_OUTOFLINE_TEMPLATE QGenericMatrix<M1, M2, T> operator*(const QGenericMatrix<N, M2, T>& m1, const QGenericMatrix<M1, N, T>& m2)
 {
-    QGenericMatrix<M1, M2, T> result(Qt::Uninitialized);
+    QGenericMatrix<M1, M2, T> result(BobUI::Uninitialized);
     for (int row = 0; row < M2; ++row) {
         for (int col = 0; col < M1; ++col) {
             T sum(0.0f);
@@ -242,7 +242,7 @@ Q_OUTOFLINE_TEMPLATE QGenericMatrix<M1, M2, T> operator*(const QGenericMatrix<N,
 template <int N, int M, typename T>
 Q_OUTOFLINE_TEMPLATE QGenericMatrix<N, M, T> operator-(const QGenericMatrix<N, M, T>& matrix)
 {
-    QGenericMatrix<N, M, T> result(Qt::Uninitialized);
+    QGenericMatrix<N, M, T> result(BobUI::Uninitialized);
     for (int row = 0; row < M; ++row)
         for (int col = 0; col < N; ++col)
             result.m[col][row] = -matrix.m[col][row];
@@ -252,7 +252,7 @@ Q_OUTOFLINE_TEMPLATE QGenericMatrix<N, M, T> operator-(const QGenericMatrix<N, M
 template <int N, int M, typename T>
 Q_OUTOFLINE_TEMPLATE QGenericMatrix<N, M, T> operator*(T factor, const QGenericMatrix<N, M, T>& matrix)
 {
-    QGenericMatrix<N, M, T> result(Qt::Uninitialized);
+    QGenericMatrix<N, M, T> result(BobUI::Uninitialized);
     for (int row = 0; row < M; ++row)
         for (int col = 0; col < N; ++col)
             result.m[col][row] = matrix.m[col][row] * factor;
@@ -262,7 +262,7 @@ Q_OUTOFLINE_TEMPLATE QGenericMatrix<N, M, T> operator*(T factor, const QGenericM
 template <int N, int M, typename T>
 Q_OUTOFLINE_TEMPLATE QGenericMatrix<N, M, T> operator*(const QGenericMatrix<N, M, T>& matrix, T factor)
 {
-    QGenericMatrix<N, M, T> result(Qt::Uninitialized);
+    QGenericMatrix<N, M, T> result(BobUI::Uninitialized);
     for (int row = 0; row < M; ++row)
         for (int col = 0; col < N; ++col)
             result.m[col][row] = matrix.m[col][row] * factor;
@@ -272,7 +272,7 @@ Q_OUTOFLINE_TEMPLATE QGenericMatrix<N, M, T> operator*(const QGenericMatrix<N, M
 template <int N, int M, typename T>
 Q_OUTOFLINE_TEMPLATE QGenericMatrix<N, M, T> operator/(const QGenericMatrix<N, M, T>& matrix, T divisor)
 {
-    QGenericMatrix<N, M, T> result(Qt::Uninitialized);
+    QGenericMatrix<N, M, T> result(BobUI::Uninitialized);
     for (int row = 0; row < M; ++row)
         for (int col = 0; col < N; ++col)
             result.m[col][row] = matrix.m[col][row] / divisor;
@@ -297,7 +297,7 @@ typedef QGenericMatrix<3, 4, float> QMatrix3x4;
 typedef QGenericMatrix<4, 2, float> QMatrix4x2;
 typedef QGenericMatrix<4, 3, float> QMatrix4x3;
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 
 template <int N, int M, typename T>
 QDebug operator<<(QDebug dbg, const QGenericMatrix<N, M, T> &m)
@@ -305,11 +305,11 @@ QDebug operator<<(QDebug dbg, const QGenericMatrix<N, M, T> &m)
     QDebugStateSaver saver(dbg);
     dbg.nospace() << "QGenericMatrix<" << N << ", " << M
         << ", " << QMetaType::fromType<T>().name()
-        << ">(" << Qt::endl << qSetFieldWidth(10);
+        << ">(" << BobUI::endl << qSetFieldWidth(10);
     for (int row = 0; row < M; ++row) {
         for (int col = 0; col < N; ++col)
             dbg << m(row, col);
-        dbg << Qt::endl;
+        dbg << BobUI::endl;
     }
     dbg << qSetFieldWidth(0) << ')';
     return dbg;
@@ -317,7 +317,7 @@ QDebug operator<<(QDebug dbg, const QGenericMatrix<N, M, T> &m)
 
 #endif
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 
 template <int N, int M, typename T>
 QDataStream &operator<<(QDataStream &stream, const QGenericMatrix<N, M, T> &matrix)
@@ -343,15 +343,15 @@ QDataStream &operator>>(QDataStream &stream, QGenericMatrix<N, M, T> &matrix)
 
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN(QMatrix2x2, Q_GUI_EXPORT)
-QT_DECL_METATYPE_EXTERN(QMatrix2x3, Q_GUI_EXPORT)
-QT_DECL_METATYPE_EXTERN(QMatrix2x4, Q_GUI_EXPORT)
-QT_DECL_METATYPE_EXTERN(QMatrix3x2, Q_GUI_EXPORT)
-QT_DECL_METATYPE_EXTERN(QMatrix3x3, Q_GUI_EXPORT)
-QT_DECL_METATYPE_EXTERN(QMatrix3x4, Q_GUI_EXPORT)
-QT_DECL_METATYPE_EXTERN(QMatrix4x2, Q_GUI_EXPORT)
-QT_DECL_METATYPE_EXTERN(QMatrix4x3, Q_GUI_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QMatrix2x2, Q_GUI_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QMatrix2x3, Q_GUI_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QMatrix2x4, Q_GUI_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QMatrix3x2, Q_GUI_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QMatrix3x3, Q_GUI_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QMatrix3x4, Q_GUI_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QMatrix4x2, Q_GUI_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QMatrix4x3, Q_GUI_EXPORT)
 
 #endif

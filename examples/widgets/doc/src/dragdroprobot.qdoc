@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example graphicsview/dragdroprobot
@@ -9,7 +9,7 @@
     \brief Demonstrates how to drag and drop items in a graphics view.
 
     The Drag and Drop Robot example shows how to implement Drag and Drop in a
-    QGraphicsItem subclass, as well as how to animate items using Qt's
+    QGraphicsItem subclass, as well as how to animate items using BobUI's
     \l{Animation Framework}.
 
     \image dragdroprobot-example.png
@@ -63,7 +63,7 @@
     \snippet graphicsview/dragdroprobot/robot.cpp 0
 
     \c RobotPart's constructor initializes the dragOver member and sets the
-    color to Qt::lightGray. In the constructor body we enable support for
+    color to BobUI::lightGray. In the constructor body we enable support for
     accepting drop events by calling
     \l{QGraphicsItem::setAcceptDrops()}{setAcceptDrops(true)}.
 
@@ -238,11 +238,11 @@
     member by making use of \l QRandomGenerator. For improved usability, it assigns a
     tooltip that provides a useful hint to the user, and it also sets a
     suitable cursor. This ensures that the cursor will chance to
-    Qt::OpenHandCursor when the mouse pointer hovers over the item.
+    BobUI::OpenHandCursor when the mouse pointer hovers over the item.
 
     Finally, we call
     \l{QGraphicsItem::setAcceptedMouseButtons()}{setAcceptedMouseButtons()} to
-    ensure that this item can only process Qt::LeftButton. This simplifies the
+    ensure that this item can only process BobUI::LeftButton. This simplifies the
     mouse event handlers greatly, as we can always assume that only the left
     mouse button is pressed and released.
 
@@ -264,13 +264,13 @@
 
     The \l{QGraphicsItem::mousePressEvent()}{mousePressEvent()} handler is
     called when you press the mouse button inside the item's area. Our
-    implementation simply sets the cursor to Qt::ClosedHandCursor.
+    implementation simply sets the cursor to BobUI::ClosedHandCursor.
 
     \snippet graphicsview/dragdroprobot/coloritem.cpp 4
 
     The \l{QGraphicsItem::mouseReleaseEvent()}{mouseReleaseEvent()} handler is
     called when you release the mouse button after having pressed it inside an
-    item's area. Our implementation sets the cursor back to Qt::OpenHandCursor.
+    item's area. Our implementation sets the cursor back to BobUI::OpenHandCursor.
     The mouse press and release event handlers together provide useful visual
     feedback to the user: when you move the mouse pointer over a \c CircleItem,
     the cursor changes to an open hand. Pressing the item will show a closed
@@ -289,7 +289,7 @@
 
     Continuing, we create a QDrag object, passing the event
     \l{QGraphicsSceneEvent::widget()}{widget} (i.e., the QGraphicsView
-    viewport) to its constructor. Qt will ensure that this object is deleted at
+    viewport) to its constructor. BobUI will ensure that this object is deleted at
     the right time. We also create a QMimeData instance that can contain our
     color or image data, and assign this to the drag object.
 
@@ -310,7 +310,7 @@
 
     Finally we execute the drag. QDrag::exec() will reenter the event loop, and
     only exit if the drag has either been dropped, or canceled. In any case we
-    reset the cursor to Qt::OpenHandCursor.
+    reset the cursor to BobUI::OpenHandCursor.
 
     \section1 The main() Function
 

@@ -1,17 +1,17 @@
 // Copyright (C) 2015 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
-// Copyright (C) 2017 The Qt Company Ltd.
+// Copyright (C) 2017 The BobUI Company Ltd.
 // Copyright (C) 2016 Pelagicore AG
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qeglfskmsvsp2device.h"
 #include "qeglfskmsvsp2screen.h"
 
 #include "qeglfsintegration_p.h"
 
-#include <QtCore/QLoggingCategory>
-#include <QtCore/private/qcore_unix_p.h>
+#include <BobUICore/QLoggingCategory>
+#include <BobUICore/private/qcore_unix_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(qLcEglfsKmsDebug)
 
@@ -25,7 +25,7 @@ bool QEglFSKmsVsp2Device::open()
     Q_ASSERT(fd() == -1);
     Q_ASSERT(m_gbm_device == nullptr);
 
-    int fd = qt_safe_open(devicePath().toLocal8Bit().constData(), O_RDWR | O_CLOEXEC);
+    int fd = bobui_safe_open(devicePath().toLocal8Bit().constData(), O_RDWR | O_CLOEXEC);
     if (fd == -1) {
         qErrnoWarning("Could not open DRM device %s", qPrintable(devicePath()));
         return false;
@@ -36,7 +36,7 @@ bool QEglFSKmsVsp2Device::open()
     m_gbm_device = gbm_create_device(fd);
     if (!m_gbm_device) {
         qErrnoWarning("Could not create GBM device");
-        qt_safe_close(fd);
+        bobui_safe_close(fd);
         fd = -1;
         return false;
     }
@@ -56,7 +56,7 @@ void QEglFSKmsVsp2Device::close()
     }
 
     if (fd() != -1) {
-        qt_safe_close(fd());
+        bobui_safe_close(fd());
         setFd(-1);
     }
 }
@@ -97,4 +97,4 @@ void QEglFSKmsVsp2Device::registerScreenCloning(QPlatformScreen *screen,
 //    vsp2Screen->initCloning(screenThisScreenClones, screensCloningThisScreen);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,17 +1,17 @@
-# Copyright (C) 2016 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+# Copyright (C) 2016 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 class Converter (object):
-    """Conversion between CLDR and Qt datetime formats.
+    """Conversion between CLDR and BobUI datetime formats.
 
-    Keep in sync with qlocale_mac.mm's macToQtFormat().
+    Keep in sync with qlocale_mac.mm's macToBobUIFormat().
     The definitive source of truth is:
     https://www.unicode.org/reports/tr35/tr35-68/tr35-dates.html#Date_Field_Symbol_Table
 
     See convert() for explanation of the approach taken. Each method
     with a single-letter name is used to scan a prefix of a text,
-    presumed to begin with that letter (or one Qt treats as equivalent
-    to it) and returns a pair (Qt format, length), to use the given Qt
+    presumed to begin with that letter (or one BobUI treats as equivalent
+    to it) and returns a pair (BobUI format, length), to use the given BobUI
     format in place of text[:length]. In all cases, length must be
     positive."""
 
@@ -50,7 +50,7 @@ class Converter (object):
 
     @classmethod
     def c(cls, text): # Stand-alone local day of week
-        # Has length-variants for several cases Qt doesn't support, as
+        # Has length-variants for several cases BobUI doesn't support, as
         # do 'e' and 'E': just map all simply to weekday, abbreviated
         # or full.
         n = cls.__count_first(text)
@@ -81,7 +81,7 @@ class Converter (object):
     def L(cls, text): # Stand-alone month names: treat as plain month names.
         n = cls.__count_first(text)
         # Length five is narrow; treat same as abbreviated; anything
-        # shorter matches Qt's month forms.
+        # shorter matches BobUI's month forms.
         return ('MMM' if n > 4 else 'M' * n), n
 
     m = __verbatim # Minute within the hour.
@@ -107,7 +107,7 @@ class Converter (object):
     @classmethod
     def u(cls, text): # Extended year (numeric)
         # Officially, 'u' is simply the full year number, zero-padded
-        # to the length of the field. Qt's closest to that is four-digit.
+        # to the length of the field. BobUI's closest to that is four-digit.
         # It explicitly has no special case for two-digit year.
         return 'yyyy', cls.__count_first(text)
 
@@ -135,7 +135,7 @@ class Converter (object):
 
     z = v # Specific (i.e. distinguish standard from DST) non-location format.
     @classmethod
-    def Z(cls, text): # Offset format, optionaly with GMT (Qt uses UTC) prefix.
+    def Z(cls, text): # Offset format, optionaly with GMT (BobUI uses UTC) prefix.
         n = cls.__count_first(text)
         return ('tt' if n < 4 else 'ttt' if n > 4 else 't'), n
 
@@ -149,11 +149,11 @@ class Converter (object):
     # Now put all of those to use:
     @classmethod
     def convert(cls, text):
-        """Convert a CLDR datetime format string into a Qt one.
+        """Convert a CLDR datetime format string into a BobUI one.
 
         Presumes that the caller will ''.join() the fragments it
         yields. Each sequence of CLDR field symbols that corresponds
-        to a Qt format token is converted to it; all other CLDR field
+        to a BobUI format token is converted to it; all other CLDR field
         symbols are discarded; the literals in between fields are
         preserved verbatim, except that space and hyphen separators
         immediately before a discarded field are discarded with it.
@@ -170,13 +170,13 @@ class Converter (object):
                 text = text[length:]
                 sep += quoted
             elif hasattr(cls, ch):
-                qtform, length = getattr(cls, ch)(text)
-                assert qtform and length > 0, (ch, text, qtform, length)
+                bobuiform, length = getattr(cls, ch)(text)
+                assert bobuiform and length > 0, (ch, text, bobuiform, length)
                 text = text[length:]
                 if sep:
                     yield sep
                     sep = ''
-                yield qtform
+                yield bobuiform
             elif cls.__is_reserved(ch):
                 text = text[cls.__count_first(text):]
                 # Discard space or dash separator that was only there

@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#include <qtprintsupportglobal.h>
+#include <bobuiprintsupportglobal.h>
 
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
 #include <qdebug.h>
 #include "private/qpaintengine_alpha_p.h"
 
 #include "private/qpainter_p.h"
 #include "private/qpicture_p.h"
 #include "private/qfont_p.h"
-#include "QtGui/qpicture.h"
+#include "BobUIGui/qpicture.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QAlphaPaintEngine::QAlphaPaintEngine(QAlphaPaintEnginePrivate &data, PaintEngineFeatures devcaps)
     : QPaintEngine(data, devcaps)
@@ -51,7 +51,7 @@ bool QAlphaPaintEngine::begin(QPaintDevice *pdev)
     d->m_alphargn = QRegion();
     d->m_cliprgn = QRegion();
     d->m_pen = QPen();
-    d->m_transform = QTransform();
+    d->m_transform = BOBUIransform();
 
     flushAndInit();
 
@@ -78,18 +78,18 @@ void QAlphaPaintEngine::updateState(const QPaintEngineState &state)
     DirtyFlags flags = state.state();
     if (flags & QPaintEngine::DirtyTransform) {
         d->m_transform = state.transform();
-        d->m_complexTransform = (d->m_transform.type() > QTransform::TxScale);
+        d->m_complexTransform = (d->m_transform.type() > BOBUIransform::TxScale);
         d->m_emulateProjectiveTransforms = !(d->m_savedcaps & QPaintEngine::PerspectiveTransform)
                                            && !(d->m_savedcaps & QPaintEngine::AlphaBlend)
-                                           && (d->m_transform.type() >= QTransform::TxProject);
+                                           && (d->m_transform.type() >= BOBUIransform::TxProject);
     }
     if (flags & QPaintEngine::DirtyPen) {
         d->m_pen = state.pen();
-        if (d->m_pen.style() == Qt::NoPen) {
+        if (d->m_pen.style() == BobUI::NoPen) {
             d->m_advancedPen = false;
             d->m_alphaPen = false;
         } else {
-            d->m_advancedPen = (d->m_pen.brush().style() != Qt::SolidPattern);
+            d->m_advancedPen = (d->m_pen.brush().style() != BobUI::SolidPattern);
             d->m_alphaPen = !d->m_pen.brush().isOpaque();
         }
     }
@@ -105,11 +105,11 @@ void QAlphaPaintEngine::updateState(const QPaintEngineState &state)
     }
 
     if (flags & QPaintEngine::DirtyBrush) {
-        if (state.brush().style() == Qt::NoBrush) {
+        if (state.brush().style() == BobUI::NoBrush) {
             d->m_advancedBrush = false;
             d->m_alphaBrush = false;
         } else {
-            d->m_advancedBrush = (state.brush().style() != Qt::SolidPattern);
+            d->m_advancedBrush = (state.brush().style() != BobUI::SolidPattern);
             d->m_alphaBrush = !state.brush().isOpaque();
         }
     }
@@ -203,7 +203,7 @@ void QAlphaPaintEngine::drawPixmap(const QRectF &r, const QPixmap &pm, const QRe
     }
 }
 
-void QAlphaPaintEngine::drawTextItem(const QPointF &p, const QTextItem &textItem)
+void QAlphaPaintEngine::drawTextItem(const QPointF &p, const BOBUIextItem &textItem)
 {
     Q_D(QAlphaPaintEngine);
 
@@ -288,9 +288,9 @@ void QAlphaPaintEngine::flushAndInit(bool init)
         d->resetState(painter());
 
         // make sure the output from QPicture is unscaled
-        QTransform mtx;
-        mtx.scale(1.0f / (qreal(d->m_pdev->logicalDpiX()) / qreal(qt_defaultDpiX())),
-                  1.0f / (qreal(d->m_pdev->logicalDpiY()) / qreal(qt_defaultDpiY())));
+        BOBUIransform mtx;
+        mtx.scale(1.0f / (qreal(d->m_pdev->logicalDpiX()) / qreal(bobui_defaultDpiX())),
+                  1.0f / (qreal(d->m_pdev->logicalDpiY()) / qreal(bobui_defaultDpiY())));
         painter()->setTransform(mtx);
         painter()->drawPicture(0, 0, *d->m_pic);
 
@@ -374,7 +374,7 @@ QRectF QAlphaPaintEnginePrivate::addPenWidth(const QPainterPath &path)
 {
     QPainterPath tmp = path;
 
-    if (m_pen.style() == Qt::NoPen)
+    if (m_pen.style() == BobUI::NoPen)
         return (path.controlPointRect() * m_transform).boundingRect();
     bool cosmetic = m_pen.isCosmetic();
     if (cosmetic)
@@ -420,7 +420,7 @@ void QAlphaPaintEnginePrivate::drawAlphaImage(const QRectF &rect)
     qreal xscale = (dpiX / m_pdev->logicalDpiX());
     qreal yscale = (dpiY / m_pdev->logicalDpiY());
 
-    QTransform picscale;
+    BOBUIransform picscale;
     picscale.scale(xscale, yscale);
 
     const int tileSize = 2048;
@@ -451,7 +451,7 @@ void QAlphaPaintEnginePrivate::drawAlphaImage(const QRectF &rect)
             imgpainter.drawPicture(picpos, *m_pic);
             imgpainter.end();
 
-            q->painter()->setTransform(QTransform());
+            q->painter()->setTransform(BOBUIransform());
             QRect r(xpos, ypos, width, height);
             q->painter()->drawImage(r, img);
         }
@@ -471,18 +471,18 @@ void QAlphaPaintEnginePrivate::resetState(QPainter *p)
     p->setBrushOrigin(0,0);
     p->setBackground(QBrush());
     p->setFont(QFont());
-    p->setTransform(QTransform());
+    p->setTransform(BOBUIransform());
     // The view transform is already recorded and included in the
     // picture we're about to replay. If we don't turn if off,
     // the view matrix will be applied twice.
     p->setViewTransformEnabled(false);
-    p->setClipRegion(QRegion(), Qt::NoClip);
-    p->setClipPath(QPainterPath(), Qt::NoClip);
+    p->setClipRegion(QRegion(), BobUI::NoClip);
+    p->setClipPath(QPainterPath(), BobUI::NoClip);
     p->setClipping(false);
     p->setOpacity(1.0f);
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_PRINTER
+#endif // BOBUI_NO_PRINTER

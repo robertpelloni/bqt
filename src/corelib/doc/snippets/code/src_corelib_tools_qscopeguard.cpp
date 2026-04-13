@@ -1,5 +1,5 @@
 // Copyright (C) 2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Sérgio Martins <sergio.martins@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QScopeGuard>
 

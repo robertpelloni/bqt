@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QABSTRACTPROXYMODEL_P_H
 #define QABSTRACTPROXYMODEL_P_H
@@ -9,7 +9,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of QAbstractItemModel*.  This header file may change from version
 // to version without notice, or even be removed.
 //
@@ -21,9 +21,9 @@
 #include "private/qabstractitemmodel_p.h"
 #include "private/qproperty_p.h"
 
-QT_REQUIRE_CONFIG(proxymodel);
+BOBUI_REQUIRE_CONFIG(proxymodel);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Q_CORE_EXPORT QAbstractProxyModelPrivate : public QAbstractItemModelPrivate
 {
@@ -61,7 +61,7 @@ public:
     void mapDropCoordinatesToSource(int row, int column, const QModelIndex &parent,
                                     int *source_row, int *source_column, QModelIndex *source_parent) const;
 
-    void scheduleHeaderUpdate(Qt::Orientation orientation);
+    void scheduleHeaderUpdate(BobUI::Orientation orientation);
     void emitHeaderDataChanged();
 
     unsigned int sourceHadZeroRows : 1;
@@ -70,6 +70,6 @@ public:
     unsigned int updateHorizontalHeader : 1;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QABSTRACTPROXYMODEL_P_H

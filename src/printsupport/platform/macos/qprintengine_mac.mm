@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <AppKit/AppKit.h>
 #include <ApplicationServices/ApplicationServices.h>
@@ -8,17 +8,17 @@
 #include "qprintengine_mac_p.h"
 #include "qcocoaprintersupport_p.h"
 #include <quuid.h>
-#include <QtGui/qpagelayout.h>
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qdebug.h>
+#include <BobUIGui/qpagelayout.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/qdebug.h>
 
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-extern QMarginsF qt_convertMargins(const QMarginsF &margins, QPageLayout::Unit fromUnits, QPageLayout::Unit toUnits);
+extern QMarginsF bobui_convertMargins(const QMarginsF &margins, QPageLayout::Unit fromUnits, QPageLayout::Unit toUnits);
 
 QMacPrintEngine::QMacPrintEngine(QPrinter::PrinterMode mode, const QString &deviceId)
     : QPaintEngine(*(new QMacPrintEnginePrivate))
@@ -103,7 +103,7 @@ QMacPrintEngine::paintEngine() const
     return d_func()->paintEngine;
 }
 
-Qt::HANDLE QMacPrintEngine::handle() const
+BobUI::HANDLE QMacPrintEngine::handle() const
 {
     QCoreGraphicsPaintEngine *cgEngine = static_cast<QCoreGraphicsPaintEngine*>(paintEngine());
     return cgEngine->d_func()->hd;
@@ -226,7 +226,7 @@ void QMacPrintEnginePrivate::initialize()
         if (resolution.hRes == 0)
             resolution.hRes = resolution.vRes = 600;
     } else {
-        resolution.hRes = resolution.vRes = qt_defaultDpi();
+        resolution.hRes = resolution.vRes = bobui_defaultDpi();
     }
 
     setPageSize(m_pageLayout.pageSize());
@@ -317,7 +317,7 @@ void QMacPrintEnginePrivate::setPageSize(const QPageSize &pageSize)
     }
 
     QMarginsF printable = m_printDevice->printableMargins(usePageSize, m_pageLayout.orientation(), resolution.hRes);
-    m_pageLayout.setPageSize(usePageSize, qt_convertMargins(printable, QPageLayout::Point, m_pageLayout.units()));
+    m_pageLayout.setPageSize(usePageSize, bobui_convertMargins(printable, QPageLayout::Point, m_pageLayout.units()));
 
     // You cannot set the page size on a PMPageFormat, you must create a new PMPageFormat
     PMPageFormat pageFormat;
@@ -376,14 +376,14 @@ void QMacPrintEngine::drawPixmap(const QRectF &r, const QPixmap &pm, const QRect
     d->paintEngine->drawPixmap(r, pm, sr);
 }
 
-void QMacPrintEngine::drawImage(const QRectF &r, const QImage &pm, const QRectF &sr, Qt::ImageConversionFlags flags)
+void QMacPrintEngine::drawImage(const QRectF &r, const QImage &pm, const QRectF &sr, BobUI::ImageConversionFlags flags)
 {
     Q_D(QMacPrintEngine);
     Q_ASSERT(d->state == QPrinter::Active);
     d->paintEngine->drawImage(r, pm, sr, flags);
 }
 
-void QMacPrintEngine::drawTextItem(const QPointF &p, const QTextItem &ti)
+void QMacPrintEngine::drawTextItem(const QPointF &p, const BOBUIextItem &ti)
 {
     Q_D(QMacPrintEngine);
     Q_ASSERT(d->state == QPrinter::Active);
@@ -766,6 +766,6 @@ NSPrintInfo *QMacPrintEngine::printInfo()
     return d->printInfo;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_PRINTER
+#endif // BOBUI_NO_PRINTER

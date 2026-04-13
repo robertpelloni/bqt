@@ -1,6 +1,6 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QGRAPHICSFRAMECAPTURE_P_P_H
 #define QGRAPHICSFRAMECAPTURE_P_P_H
@@ -9,19 +9,19 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/qnamespace.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qloggingcategory.h>
-#include <QtCore/qstringlist.h>
+#include <BobUICore/qnamespace.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUICore/qstringlist.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcGraphicsFrameCapture)
 
@@ -63,6 +63,6 @@ protected:
     QStringList m_capturedFilesNames;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QGRAPHICSFRAMECAPTURE_P_P_H

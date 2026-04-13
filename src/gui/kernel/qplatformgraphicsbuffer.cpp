@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qplatformgraphicsbuffer.h"
-#include <QtGui/QOpenGLContext>
-#include <QtGui/QOpenGLFunctions>
-#include <QtGui/qopengl.h>
-#include <QtCore/QDebug>
+#include <BobUIGui/QOpenGLContext>
+#include <BobUIGui/QOpenGLFunctions>
+#include <BobUIGui/qopengl.h>
+#include <BobUICore/QDebug>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 /*!
     \class QPlatformGraphicsBuffer
-    \inmodule QtGui
+    \inmodule BobUIGui
     \since 5.5
     \brief The QPlatformGraphicsBuffer is a windowsystem abstraction for native graphics buffers
 
@@ -213,7 +213,7 @@ int QPlatformGraphicsBuffer::bytesPerLine() const
     In origin of the content of the graphics buffer.
 
     Default implementation is OriginTopLeft, as this is the coordinate
-    system default for Qt. However, for most regular OpenGL textures
+    system default for BobUI. However, for most regular OpenGL textures
     this will be OriginBottomLeft.
 */
 QPlatformGraphicsBuffer::Origin QPlatformGraphicsBuffer::origin() const
@@ -233,6 +233,6 @@ QPlatformGraphicsBuffer::Origin QPlatformGraphicsBuffer::origin() const
     Accessor for the pixel format of the buffer.
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qplatformgraphicsbuffer.cpp"

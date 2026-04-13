@@ -1,26 +1,26 @@
 type: Group
 instructions:
-  # Only enable building examples if -DQT_BUILD_EXAMPLES=ON was passed to the CMake config in some
-  # form. The variable to check unfortunately depends on host vs target, and qtbase vs non-qtbase.
+  # Only enable building examples if -DBOBUI_BUILD_EXAMPLES=ON was passed to the CMake config in some
+  # form. The variable to check unfortunately depends on host vs target, and bobuibase vs non-bobuibase.
   - type: Group
     instructions:
-      - !include "{{qt/qtbase}}/qmake_examples/build_qmake_examples_inner_instructions.yaml"
+      - !include "{{bobui/bobuibase}}/qmake_examples/build_qmake_examples_inner_instructions.yaml"
     enable_if:
       condition: or
       conditions:
-        # qtbase host case
+        # bobuibase host case
         - condition: runtime
           env_var: CONFIGURE_ARGS
-          contains_value: "QT_BUILD_EXAMPLES=ON"
-        # qtbase target case
+          contains_value: "BOBUI_BUILD_EXAMPLES=ON"
+        # bobuibase target case
         - condition: runtime
           env_var: TARGET_CONFIGURE_ARGS
-          contains_value: "QT_BUILD_EXAMPLES=ON"
-        # non-qtbase host case
-        # non-qtbase target case
+          contains_value: "BOBUI_BUILD_EXAMPLES=ON"
+        # non-bobuibase host case
+        # non-bobuibase target case
         - condition: runtime
           env_var: COIN_CMAKE_ARGS
-          contains_value: "QT_BUILD_EXAMPLES=ON"
+          contains_value: "BOBUI_BUILD_EXAMPLES=ON"
         # host case
         - condition: runtime
           env_var: CONFIGURE_ARGS

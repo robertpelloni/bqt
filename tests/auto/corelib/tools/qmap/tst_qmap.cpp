@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <qmap.h>
-#include <QTest>
+#include <BOBUIest>
 
 #include <QDebug>
 #include <QScopeGuard>
 
 #include <private/qcomparisontesthelper_p.h>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-QT_WARNING_DISABLE_DEPRECATED
+BOBUI_WARNING_DISABLE_DEPRECATED
 
 class tst_QMap : public QObject
 {
@@ -71,11 +71,11 @@ private slots:
     void multiMapStoresInReverseInsertionOrder();
 
     // Tests for deprecated APIs.
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
     void deprecatedInsertMulti();
     void deprecatedIteratorApis();
     void deprecatedInsert();
-#endif // QT_DEPRECATED_SINCE(6, 0)
+#endif // BOBUI_DEPRECATED_SINCE(6, 0)
 };
 
 struct IdentityTracker {
@@ -637,12 +637,12 @@ void tst_QMap::swap()
 
 void tst_QMap::comparisonCompiles()
 {
-    QTestPrivate::testEqualityOperatorsCompile<QMap<int, int>>();
-    QTestPrivate::testEqualityOperatorsCompile<QMap<QString, QString>>();
-    QTestPrivate::testEqualityOperatorsCompile<QMap<QString, int>>();
-    QTestPrivate::testEqualityOperatorsCompile<QMultiMap<int, int>>();
-    QTestPrivate::testEqualityOperatorsCompile<QMultiMap<QString, QString>>();
-    QTestPrivate::testEqualityOperatorsCompile<QMultiMap<QString, int>>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QMap<int, int>>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QMap<QString, QString>>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QMap<QString, int>>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QMultiMap<int, int>>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QMultiMap<QString, QString>>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QMultiMap<QString, int>>();
 }
 
 void tst_QMap::operator_eq()
@@ -655,37 +655,37 @@ void tst_QMap::operator_eq()
         QVERIFY(a == b);
         QCOMPARE(qHash(a), qHash(b));
         QVERIFY(!(a != b));
-        QT_TEST_EQUALITY_OPS(a, b, true);
+        BOBUI_TEST_EQUALITY_OPS(a, b, true);
 
         a.insert(1,1);
         b.insert(1,1);
         QVERIFY(a == b);
         QCOMPARE(qHash(a), qHash(b));
         QVERIFY(!(a != b));
-        QT_TEST_EQUALITY_OPS(a, b, true);
+        BOBUI_TEST_EQUALITY_OPS(a, b, true);
 
         a.insert(0,1);
         b.insert(0,1);
         QVERIFY(a == b);
         QCOMPARE(qHash(a), qHash(b));
         QVERIFY(!(a != b));
-        QT_TEST_EQUALITY_OPS(a, b, true);
+        BOBUI_TEST_EQUALITY_OPS(a, b, true);
 
         // compare for inequality:
         a.insert(42,0);
         QVERIFY(a != b);
         QVERIFY(!(a == b));
-        QT_TEST_EQUALITY_OPS(a, b, false);
+        BOBUI_TEST_EQUALITY_OPS(a, b, false);
 
         a.insert(65, -1);
         QVERIFY(a != b);
         QVERIFY(!(a == b));
-        QT_TEST_EQUALITY_OPS(a, b, false);
+        BOBUI_TEST_EQUALITY_OPS(a, b, false);
 
         b.insert(-1, -1);
         QVERIFY(a != b);
         QVERIFY(!(a == b));
-        QT_TEST_EQUALITY_OPS(a, b, false);
+        BOBUI_TEST_EQUALITY_OPS(a, b, false);
     }
 
     {
@@ -696,23 +696,23 @@ void tst_QMap::operator_eq()
         QVERIFY(a == b);
         QCOMPARE(qHash(a), qHash(b));
         QVERIFY(!(a != b));
-        QT_TEST_EQUALITY_OPS(a, b, true);
+        BOBUI_TEST_EQUALITY_OPS(a, b, true);
 
         a.insert("Hello", "World");
         QVERIFY(a != b);
         QVERIFY(!(a == b));
-        QT_TEST_EQUALITY_OPS(a, b, false);
+        BOBUI_TEST_EQUALITY_OPS(a, b, false);
 
         b.insert("Hello", "World");
         QVERIFY(a == b);
         QCOMPARE(qHash(a), qHash(b));
         QVERIFY(!(a != b));
-        QT_TEST_EQUALITY_OPS(a, b, true);
+        BOBUI_TEST_EQUALITY_OPS(a, b, true);
 
         a.insert("Goodbye", "cruel world");
         QVERIFY(a != b);
         QVERIFY(!(a == b));
-        QT_TEST_EQUALITY_OPS(a, b, false);
+        BOBUI_TEST_EQUALITY_OPS(a, b, false);
 
         b.insert("Goodbye", "cruel world");
 
@@ -720,14 +720,14 @@ void tst_QMap::operator_eq()
         a.insert(QString(), QString());
         QVERIFY(a != b);
         QVERIFY(!(a == b));
-        QT_TEST_EQUALITY_OPS(a, b, false);
+        BOBUI_TEST_EQUALITY_OPS(a, b, false);
 
         // empty keys and null keys match:
         b.insert(QString(""), QString());
         QVERIFY(a == b);
         QCOMPARE(qHash(a), qHash(b));
         QVERIFY(!(a != b));
-        QT_TEST_EQUALITY_OPS(a, b, true);
+        BOBUI_TEST_EQUALITY_OPS(a, b, true);
     }
 
     {
@@ -738,7 +738,7 @@ void tst_QMap::operator_eq()
         b.insert("willy", 1);
         QVERIFY(a != b);
         QVERIFY(!(a == b));
-        QT_TEST_EQUALITY_OPS(a, b, false);
+        BOBUI_TEST_EQUALITY_OPS(a, b, false);
     }
 
     // multimap
@@ -747,68 +747,68 @@ void tst_QMap::operator_eq()
         QMultiMap<int, int> b;
 
         QCOMPARE_EQ(a, b);
-        QT_TEST_EQUALITY_OPS(a, b, true);
+        BOBUI_TEST_EQUALITY_OPS(a, b, true);
 
         a.insert(1, 1);
         b.insert(1, 1);
         QCOMPARE_EQ(a, b);
-        QT_TEST_EQUALITY_OPS(a, b, true);
+        BOBUI_TEST_EQUALITY_OPS(a, b, true);
 
         a.insert(1, 2);
         QCOMPARE_NE(a, b);
-        QT_TEST_EQUALITY_OPS(a, b, false);
+        BOBUI_TEST_EQUALITY_OPS(a, b, false);
 
         b.insert(1, 2);
         QCOMPARE_EQ(a, b);
-        QT_TEST_EQUALITY_OPS(a, b, true);
+        BOBUI_TEST_EQUALITY_OPS(a, b, true);
 
         b.insert(2, 1);
         QCOMPARE_NE(a, b);
-        QT_TEST_EQUALITY_OPS(a, b, false);
+        BOBUI_TEST_EQUALITY_OPS(a, b, false);
 
         a.insert(2, 2);
         QCOMPARE_NE(a, b);
-        QT_TEST_EQUALITY_OPS(a, b, false);
+        BOBUI_TEST_EQUALITY_OPS(a, b, false);
 
         a.insert(2, 1);
         b.insert(2, 2);
         // The insertion order matters!
         QCOMPARE_NE(a, b);
-        QT_TEST_EQUALITY_OPS(a, b, false);
+        BOBUI_TEST_EQUALITY_OPS(a, b, false);
     }
     {
         QMultiMap<QString, int> a;
         QMultiMap<QString, int> b;
 
         QCOMPARE_EQ(a, b);
-        QT_TEST_EQUALITY_OPS(a, b, true);
+        BOBUI_TEST_EQUALITY_OPS(a, b, true);
 
         a.insert("Hello", 1);
         b.insert("Hello", 1);
         QCOMPARE_EQ(a, b);
-        QT_TEST_EQUALITY_OPS(a, b, true);
+        BOBUI_TEST_EQUALITY_OPS(a, b, true);
 
         a.insert("Hello", 2);
         QCOMPARE_NE(a, b);
-        QT_TEST_EQUALITY_OPS(a, b, false);
+        BOBUI_TEST_EQUALITY_OPS(a, b, false);
 
         b.insert("Hello", 2);
         QCOMPARE_EQ(a, b);
-        QT_TEST_EQUALITY_OPS(a, b, true);
+        BOBUI_TEST_EQUALITY_OPS(a, b, true);
 
         b.insert("World", 1);
         QCOMPARE_NE(a, b);
-        QT_TEST_EQUALITY_OPS(a, b, false);
+        BOBUI_TEST_EQUALITY_OPS(a, b, false);
 
         a.insert("World", 2);
         QCOMPARE_NE(a, b);
-        QT_TEST_EQUALITY_OPS(a, b, false);
+        BOBUI_TEST_EQUALITY_OPS(a, b, false);
 
         a.insert("World", 1);
         b.insert("World", 2);
         // The insertion order matters!
         QCOMPARE_NE(a, b);
-        QT_TEST_EQUALITY_OPS(a, b, false);
+        BOBUI_TEST_EQUALITY_OPS(a, b, false);
     }
 }
 
@@ -833,7 +833,7 @@ void emptyTestMethod()
 void tst_QMap::empty()
 {
     emptyTestMethod<QMap<int, QString>>();
-    if (QTest::currentTestFailed())
+    if (BOBUIest::currentTestFailed())
         return;
 
     emptyTestMethod<QMultiMap<int, QString>>();
@@ -1370,7 +1370,7 @@ void iteratorsInEmptyMapTestMethod()
 void tst_QMap::iteratorsInEmptyMap()
 {
     iteratorsInEmptyMapTestMethod<QMap<int, int>>();
-    if (QTest::currentTestFailed())
+    if (BOBUIest::currentTestFailed())
         return;
 
     iteratorsInEmptyMapTestMethod<QMultiMap<int, int>>();
@@ -1598,7 +1598,7 @@ void keyValueIteratorInEmptyMapTestMethod()
 void tst_QMap::keyValueIteratorInEmptyMap()
 {
     keyValueIteratorInEmptyMapTestMethod<QMap<int, int>>();
-    if (QTest::currentTestFailed())
+    if (BOBUIest::currentTestFailed())
         return;
 
     keyValueIteratorInEmptyMapTestMethod<QMultiMap<int, int>>();
@@ -2628,10 +2628,10 @@ void tst_QMap::removeElementsInMap()
     }
 }
 
-template <typename QtMap, typename StdMap>
+template <typename BobUIMap, typename StdMap>
 void toStdMapTestMethod(const StdMap &expectedMap)
 {
-    QtMap map;
+    BobUIMap map;
     QVERIFY(map.isEmpty());
     auto stdMap = map.toStdMap();
     QVERIFY(stdMap.empty());
@@ -2650,7 +2650,7 @@ void tst_QMap::toStdMap()
 {
     const std::map<int, QString> expectedMap { {1, "value0"}, {2, "value2"}, {3, "value3"} };
     toStdMapTestMethod<QMap<int, QString>>(expectedMap);
-    if (QTest::currentTestFailed())
+    if (BOBUIest::currentTestFailed())
         return;
 
     const std::multimap<int, QString> expectedMultiMap {
@@ -2676,7 +2676,7 @@ void tst_QMap::multiMapStoresInReverseInsertionOrder()
     }
 }
 
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
 void tst_QMap::deprecatedInsertMulti()
 {
     QMultiMap<int, QString> referenceMap;
@@ -2688,14 +2688,14 @@ void tst_QMap::deprecatedInsertMulti()
     referenceMap.insert(referenceMap.end(), 1, "value1_3");
 
     QMultiMap<int, QString> deprecatedMap;
-QT_WARNING_PUSH QT_WARNING_DISABLE_DEPRECATED
+BOBUI_WARNING_PUSH BOBUI_WARNING_DISABLE_DEPRECATED
     deprecatedMap.insertMulti(1, "value1");
     deprecatedMap.insertMulti(2, "value2");
     deprecatedMap.insertMulti(3, "value3");
     deprecatedMap.insertMulti(1, "value1_2");
     deprecatedMap.insertMulti(deprecatedMap.find(2), 2, "value2_2");
     deprecatedMap.insertMulti(deprecatedMap.end(), 1, "value1_3");
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
     QCOMPARE(deprecatedMap, referenceMap);
 }
@@ -2709,16 +2709,16 @@ void tst_QMap::deprecatedIteratorApis()
 
     auto it = map.begin();
     QCOMPARE(it.value(), QLatin1String("Teststring 1"));
-    QT_IGNORE_DEPRECATIONS(it += 5;)
+    BOBUI_IGNORE_DEPRECATIONS(it += 5;)
     QCOMPARE(it.value(), QLatin1String("Teststring 6"));
-    QT_IGNORE_DEPRECATIONS(it = it - 3;)
+    BOBUI_IGNORE_DEPRECATIONS(it = it - 3;)
     QCOMPARE(it.value(), QLatin1String("Teststring 3"));
 
     auto cit = map.constBegin();
     QCOMPARE(cit.value(), QLatin1String("Teststring 1"));
-    QT_IGNORE_DEPRECATIONS(cit += 5;)
+    BOBUI_IGNORE_DEPRECATIONS(cit += 5;)
     QCOMPARE(cit.value(), QLatin1String("Teststring 6"));
-    QT_IGNORE_DEPRECATIONS(cit = cit - 3;)
+    BOBUI_IGNORE_DEPRECATIONS(cit = cit - 3;)
     QCOMPARE(cit.value(), QLatin1String("Teststring 3"));
 }
 
@@ -2737,11 +2737,11 @@ void tst_QMap::deprecatedInsert()
     otherMap.insert(4, "value4");
 
     refMap.unite(otherMap);
-    QT_IGNORE_DEPRECATIONS(depMap.insert(otherMap);)
+    BOBUI_IGNORE_DEPRECATIONS(depMap.insert(otherMap);)
 
     QCOMPARE(refMap, depMap);
 }
-#endif // QT_DEPRECATED_SINCE(6, 0)
+#endif // BOBUI_DEPRECATED_SINCE(6, 0)
 
-QTEST_APPLESS_MAIN(tst_QMap)
+BOBUIEST_APPLESS_MAIN(tst_QMap)
 #include "tst_qmap.moc"

@@ -1,22 +1,22 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #pragma once
 
 #include "qxcbatom.h"
 #include "qxcbexport.h"
 
-#include <QtCore/QObject>
-#include <QtCore/QByteArray>
-#include <QtCore/QLoggingCategory>
-#include <QtGui/private/qtguiglobal_p.h>
+#include <BobUICore/QObject>
+#include <BobUICore/QByteArray>
+#include <BobUICore/QLoggingCategory>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
 
 #include <xcb/xcb.h>
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcQpaXcb)
 
@@ -27,7 +27,7 @@ public:
     QXcbBasicConnection(const char *displayName);
     ~QXcbBasicConnection();
 
-#if QT_CONFIG(xcb_xlib)
+#if BOBUI_CONFIG(xcb_xlib)
     void *xlib_display() const { return m_xlibDisplay; }
 #endif
     const char *displayName() const { return m_displayName.constData(); }
@@ -86,7 +86,7 @@ protected:
     void initializeXInput2();
 
 private:
-#if QT_CONFIG(xcb_xlib)
+#if BOBUI_CONFIG(xcb_xlib)
     void *m_xlibDisplay = nullptr;
 #endif
     QByteArray m_displayName;
@@ -137,4 +137,4 @@ struct QStdFreeDeleter {
         call##_reply(Q_XCB_REPLY_CONNECTION_ARG(__VA_ARGS__), call##_unchecked(__VA_ARGS__), nullptr) \
     )
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

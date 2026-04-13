@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QDebug>
 #include <QCoreApplication>
 #include <QVariant>
@@ -68,7 +68,7 @@ private slots:
 class TypesInterface: public QDBusAbstractAdaptor
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "org.qtproject.Qt.Autotests.TypesInterface")
+    Q_CLASSINFO("D-Bus Interface", "org.bobuiproject.BobUI.Autotests.TypesInterface")
 public:
     TypesInterface(QObject *parent)
         : QDBusAbstractAdaptor(parent)
@@ -192,7 +192,7 @@ tst_QDBusReply::tst_QDBusReply()
     QDBusConnection::sessionBus().registerObject("/", this);
 
     iface = new QDBusInterface(QDBusConnection::sessionBus().baseService(), "/",
-                               "org.qtproject.Qt.Autotests.TypesInterface",
+                               "org.bobuiproject.BobUI.Autotests.TypesInterface",
                                QDBusConnection::sessionBus(),
                                this);
 }
@@ -362,6 +362,6 @@ void tst_QDBusReply::error()
     }
 }
 
-QTEST_MAIN(tst_QDBusReply)
+BOBUIEST_MAIN(tst_QDBusReply)
 
 #include "tst_qdbusreply.moc"

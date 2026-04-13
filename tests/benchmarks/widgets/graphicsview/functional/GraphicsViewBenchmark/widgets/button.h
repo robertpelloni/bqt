@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef BUTTON_H
 #define BUTTON_H
@@ -7,7 +7,7 @@
 #include <QGraphicsWidget>
 
 class ButtonPrivate;
-class QTextDocument;
+class BOBUIextDocument;
 
 class QPixmap;
 class QFont;
@@ -45,7 +45,7 @@ private:
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
             QWidget *widget = 0);
-    QSizeF sizeHint(Qt::SizeHint which,
+    QSizeF sizeHint(BobUI::SizeHint which,
         const QSizeF &constraint = QSizeF()) const;
 
     void mousePressEvent(QGraphicsSceneMouseEvent *event);

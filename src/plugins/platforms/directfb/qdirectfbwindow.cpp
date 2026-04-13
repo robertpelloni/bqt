@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qdirectfbwindow.h"
 #include "qdirectfbbackingstore.h"
@@ -11,7 +11,7 @@
 
 #include <directfb.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QDirectFbWindow::QDirectFbWindow(QWindow *tlw, QDirectFbInput *inputhandler)
     : QPlatformWindow(tlw), m_inputHandler(inputhandler)
@@ -93,10 +93,10 @@ void QDirectFbWindow::setVisible(bool visible)
         QPlatformWindow::setVisible(visible);
 }
 
-void QDirectFbWindow::setWindowFlags(Qt::WindowFlags flags)
+void QDirectFbWindow::setWindowFlags(BobUI::WindowFlags flags)
 {
-    switch (flags & Qt::WindowType_Mask) {
-    case Qt::ToolTip: {
+    switch (flags & BobUI::WindowType_Mask) {
+    case BobUI::ToolTip: {
         DFBWindowOptions options;
         m_dfbWindow->GetOptions(m_dfbWindow.data(), &options);
         options = DFBWindowOptions(options | DWOP_GHOST);
@@ -106,7 +106,7 @@ void QDirectFbWindow::setWindowFlags(Qt::WindowFlags flags)
         break;
     }
 
-    m_dfbWindow->SetStackingClass(m_dfbWindow.data(), flags & Qt::WindowStaysOnTopHint ? DWSC_UPPER : DWSC_MIDDLE);
+    m_dfbWindow->SetStackingClass(m_dfbWindow.data(), flags & BobUI::WindowStaysOnTopHint ? DWSC_UPPER : DWSC_MIDDLE);
 }
 
 void QDirectFbWindow::raise()
@@ -166,4 +166,4 @@ IDirectFBSurface *QDirectFbWindow::dfbSurface()
     return m_dfbSurface.data();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

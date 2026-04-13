@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qwidgetanimator_p.h"
 
-#if QT_CONFIG(animation)
-#include <QtCore/qpropertyanimation.h>
+#if BOBUI_CONFIG(animation)
+#include <BobUICore/qpropertyanimation.h>
 #endif
-#include <QtWidgets/qwidget.h>
-#include <QtWidgets/qstyle.h>
-#if QT_CONFIG(mainwindow)
+#include <BobUIWidgets/qwidget.h>
+#include <BobUIWidgets/qstyle.h>
+#if BOBUI_CONFIG(mainwindow)
 #include <private/qmainwindowlayout_p.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QWidgetAnimator::QWidgetAnimator(QMainWindowLayout *layout)
-#if QT_CONFIG(mainwindow)
+#if BOBUI_CONFIG(mainwindow)
 : m_mainWindowLayout(layout)
 #endif
 {
@@ -25,11 +25,11 @@ QWidgetAnimator::QWidgetAnimator(QMainWindowLayout *layout)
 
 void QWidgetAnimator::abort(QWidget *w)
 {
-#if QT_CONFIG(animation)
+#if BOBUI_CONFIG(animation)
     QPropertyAnimation *anim = m_animation_map.take(w);
     if (anim)
         anim->stop();
-#if QT_CONFIG(mainwindow)
+#if BOBUI_CONFIG(mainwindow)
     m_mainWindowLayout->animationFinished(w);
 #endif
 #else
@@ -49,7 +49,7 @@ void QWidgetAnimator::animate(QWidget *widget, const QRect &_final_geometry, boo
     const QRect final_geometry = _final_geometry.isValid() || widget->isWindow() ? _final_geometry :
         QRect(QPoint(-500 - widget->width(), -500 - widget->height()), widget->size());
 
-#if QT_CONFIG(animation)
+#if BOBUI_CONFIG(animation)
     //If the QStyle has animations, animate
     if (const int animationDuration = widget->style()->styleHint(QStyle::SH_Widget_Animation_Duration, nullptr, widget)) {
         AnimationMap::const_iterator it = m_animation_map.constFind(widget);
@@ -68,9 +68,9 @@ void QWidgetAnimator::animate(QWidget *widget, const QRect &_final_geometry, boo
     {
     //we do it in one shot
     widget->setGeometry(final_geometry);
-#if QT_CONFIG(mainwindow)
+#if BOBUI_CONFIG(mainwindow)
     m_mainWindowLayout->animationFinished(widget);
-#endif // QT_CONFIG(mainwindow)
+#endif // BOBUI_CONFIG(mainwindow)
     }
 }
 
@@ -80,6 +80,6 @@ bool QWidgetAnimator::animating() const
     return !std::all_of(m_animation_map.begin(), m_animation_map.end(), isActiveAnimation);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qwidgetanimator_p.cpp"

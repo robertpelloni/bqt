@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWINDOWSDRAG_H
 #define QWINDOWSDRAG_H
@@ -7,13 +7,13 @@
 #include "qwindowsinternalmimedata.h"
 
 #include <qpa/qplatformdrag.h>
-#include <QtGui/qpixmap.h>
-#include <QtGui/qdrag.h>
-#include <QtCore/private/qcomobject_p.h>
+#include <BobUIGui/qpixmap.h>
+#include <BobUIGui/qdrag.h>
+#include <BobUICore/private/qcomobject_p.h>
 
 struct IDropTargetHelper;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QPlatformScreen;
 
@@ -53,7 +53,7 @@ public:
     QWindowsDrag();
     virtual ~QWindowsDrag();
 
-    Qt::DropAction drag(QDrag *drag) override;
+    BobUI::DropAction drag(QDrag *drag) override;
 
     static QWindowsDrag *instance();
     void cancelDrag() override { QWindowsDrag::m_canceled = true; }
@@ -75,6 +75,6 @@ private:
     IDropTargetHelper* m_cachedDropTargetHelper = nullptr;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWINDOWSDRAG_H

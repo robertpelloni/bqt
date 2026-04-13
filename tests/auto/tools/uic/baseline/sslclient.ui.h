@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'sslclient.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,20 +9,20 @@
 #ifndef SSLCLIENT_H
 #define SSLCLIENT_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QSpinBox>
-#include <QtWidgets/QTextEdit>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QGroupBox>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QLineEdit>
+#include <BobUIWidgets/QPushButton>
+#include <BobUIWidgets/QSpinBox>
+#include <BobUIWidgets/BOBUIextEdit>
+#include <BobUIWidgets/QVBoxLayout>
+#include <BobUIWidgets/QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_Form
 {
@@ -39,7 +39,7 @@ public:
     QHBoxLayout *hboxLayout;
     QLabel *cipherText;
     QLabel *cipherLabel;
-    QTextEdit *sessionOutput;
+    BOBUIextEdit *sessionOutput;
     QHBoxLayout *hboxLayout1;
     QLabel *sessionInputLabel;
     QLineEdit *sessionInput;
@@ -100,17 +100,17 @@ public:
 
         cipherLabel = new QLabel(sessionBox);
         cipherLabel->setObjectName("cipherLabel");
-        cipherLabel->setAlignment(Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter);
+        cipherLabel->setAlignment(BobUI::AlignmentFlag::AlignRight|BobUI::AlignmentFlag::AlignTrailing|BobUI::AlignmentFlag::AlignVCenter);
 
         hboxLayout->addWidget(cipherLabel);
 
 
         vboxLayout1->addLayout(hboxLayout);
 
-        sessionOutput = new QTextEdit(sessionBox);
+        sessionOutput = new BOBUIextEdit(sessionBox);
         sessionOutput->setObjectName("sessionOutput");
         sessionOutput->setEnabled(false);
-        sessionOutput->setFocusPolicy(Qt::FocusPolicy::NoFocus);
+        sessionOutput->setFocusPolicy(BobUI::FocusPolicy::NoFocus);
         sessionOutput->setReadOnly(true);
 
         vboxLayout1->addWidget(sessionOutput);
@@ -131,7 +131,7 @@ public:
         sendButton = new QPushButton(sessionBox);
         sendButton->setObjectName("sendButton");
         sendButton->setEnabled(false);
-        sendButton->setFocusPolicy(Qt::FocusPolicy::TabFocus);
+        sendButton->setFocusPolicy(BobUI::FocusPolicy::TabFocus);
 
         hboxLayout1->addWidget(sendButton);
 
@@ -170,7 +170,7 @@ public:
 "li.unchecked::marker { content: \"\\2610\"; }\n"
 "li.checked::marker { content: \"\\2612\"; }\n"
 "</style></head><body style=\" font-family:'Noto Sans'; font-size:12pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans Serif'; font-size:9pt;\"><br /></p></body></html>", nullptr));
+"<p style=\"-bobui-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -bobui-block-indent:0; text-indent:0px; font-family:'Sans Serif'; font-size:9pt;\"><br /></p></body></html>", nullptr));
         sessionInputLabel->setText(QCoreApplication::translate("Form", "Input:", nullptr));
         sendButton->setText(QCoreApplication::translate("Form", "&Send", nullptr));
     } // retranslateUi
@@ -181,6 +181,6 @@ namespace Ui {
     class Form: public Ui_Form {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // SSLCLIENT_H

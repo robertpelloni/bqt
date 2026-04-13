@@ -1,6 +1,6 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qnetworkrequest.h"
 #include "qnetworkrequest_p.h"
@@ -8,42 +8,42 @@
 #include "qnetworkcookie.h"
 #include "qsslconfiguration.h"
 #include "qhttpheadershelper_p.h"
-#if QT_CONFIG(http)
+#if BOBUI_CONFIG(http)
 #include "qhttp1configuration.h"
 #include "qhttp2configuration.h"
 #include "private/http2protocol_p.h"
 #endif
 
-#include "QtCore/qdatetime.h"
-#include "QtCore/qlocale.h"
-#include "QtCore/qshareddata.h"
-#include "QtCore/qtimezone.h"
-#include "QtCore/private/qduplicatetracker_p.h"
-#include "QtCore/private/qtools_p.h"
+#include "BobUICore/qdatetime.h"
+#include "BobUICore/qlocale.h"
+#include "BobUICore/qshareddata.h"
+#include "BobUICore/bobuiimezone.h"
+#include "BobUICore/private/qduplicatetracker_p.h"
+#include "BobUICore/private/bobuiools_p.h"
 
-#if QT_CONFIG(datestring)
+#if BOBUI_CONFIG(datestring)
 # include <stdio.h>
 #endif
 
 #include <algorithm>
 #include <q20algorithm.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 using namespace std::chrono_literals;
 
 constexpr std::chrono::milliseconds QNetworkRequest::DefaultTransferTimeout;
 
-QT_IMPL_METATYPE_EXTERN(QNetworkRequest)
-QT_IMPL_METATYPE_EXTERN_TAGGED(QNetworkRequest::RedirectPolicy, QNetworkRequest__RedirectPolicy)
+BOBUI_IMPL_METATYPE_EXTERN(QNetworkRequest)
+BOBUI_IMPL_METATYPE_EXTERN_TAGGED(QNetworkRequest::RedirectPolicy, QNetworkRequest__RedirectPolicy)
 
 /*!
     \class QNetworkRequest
     \since 4.4
     \ingroup network
     \ingroup shared
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     \brief The QNetworkRequest class holds a request to be sent with QNetworkAccessManager.
 
@@ -210,7 +210,7 @@ QT_IMPL_METATYPE_EXTERN_TAGGED(QNetworkRequest::RedirectPolicy, QNetworkRequest_
     \value CookieLoadControlAttribute
         Requests only, type: QMetaType::Int (default: QNetworkRequest::Automatic)
         Indicates whether to send 'Cookie' headers in the request.
-        This attribute is set to false by Qt WebKit when creating a cross-origin
+        This attribute is set to false by BobUI WebKit when creating a cross-origin
         XMLHttpRequest where withCredentials has not been set explicitly to true by the
         Javascript that created the request.
         See \l{http://www.w3.org/TR/XMLHttpRequest2/#credentials-flag}{here} for more information.
@@ -220,7 +220,7 @@ QT_IMPL_METATYPE_EXTERN_TAGGED(QNetworkRequest::RedirectPolicy, QNetworkRequest_
         Requests only, type: QMetaType::Int (default: QNetworkRequest::Automatic)
         Indicates whether to save 'Cookie' headers received from the server in reply
         to the request.
-        This attribute is set to false by Qt WebKit when creating a cross-origin
+        This attribute is set to false by BobUI WebKit when creating a cross-origin
         XMLHttpRequest where withCredentials has not been set explicitly to true by the
         Javascript that created the request.
         See \l{http://www.w3.org/TR/XMLHttpRequest2/#credentials-flag} {here} for more information.
@@ -230,9 +230,9 @@ QT_IMPL_METATYPE_EXTERN_TAGGED(QNetworkRequest::RedirectPolicy, QNetworkRequest_
         Requests only, type: QMetaType::Int (default: QNetworkRequest::Automatic)
         Indicates whether to use cached authorization credentials in the request,
         if available. If this is set to QNetworkRequest::Manual and the authentication
-        mechanism is 'Basic' or 'Digest', Qt will not send an 'Authorization' HTTP
+        mechanism is 'Basic' or 'Digest', BobUI will not send an 'Authorization' HTTP
         header with any cached credentials it may have for the request's URL.
-        This attribute is set to QNetworkRequest::Manual by Qt WebKit when creating a cross-origin
+        This attribute is set to QNetworkRequest::Manual by BobUI WebKit when creating a cross-origin
         XMLHttpRequest where withCredentials has not been set explicitly to true by the
         Javascript that created the request.
         See \l{http://www.w3.org/TR/XMLHttpRequest2/#credentials-flag} {here} for more information.
@@ -313,8 +313,8 @@ QT_IMPL_METATYPE_EXTERN_TAGGED(QNetworkRequest::RedirectPolicy, QNetworkRequest_
         Requests only, type: QMetaType::Bool (default: false)
         If set, this attribute will tell QNetworkAccessManager to attempt
         an upgrade to HTTP/2 over cleartext (also known as h2c).
-        Until Qt 7 the default value for this attribute can be overridden
-        to true by setting the QT_NETWORK_H2C_ALLOWED environment variable.
+        Until BobUI 7 the default value for this attribute can be overridden
+        to true by setting the BOBUI_NETWORK_H2C_ALLOWED environment variable.
         This attribute is ignored if the Http2AllowedAttribute is not set.
         (This value was introduced in 6.3.)
 
@@ -375,7 +375,7 @@ QT_IMPL_METATYPE_EXTERN_TAGGED(QNetworkRequest::RedirectPolicy, QNetworkRequest_
     \since 4.7
 
     Indicates if an aspect of the request's loading mechanism has been
-    manually overridden, e.g. by Qt WebKit.
+    manually overridden, e.g. by BobUI WebKit.
 
     \value Automatic            default value: indicates default behaviour.
 
@@ -410,7 +410,7 @@ QT_IMPL_METATYPE_EXTERN_TAGGED(QNetworkRequest::RedirectPolicy, QNetworkRequest_
                                        accept the redirect, or to decide
                                        based on some app-specific configuration.
 
-    \note When Qt handles redirects it will, for legacy and compatibility
+    \note When BobUI handles redirects it will, for legacy and compatibility
     reasons, issue the redirected request using GET when the server returns
     a 301 or 302 response, regardless of the original method used, unless it was
     HEAD.
@@ -444,14 +444,14 @@ public:
     static const int maxRedirectCount = 50;
     inline QNetworkRequestPrivate()
         : priority(QNetworkRequest::NormalPriority)
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
         , sslConfiguration(nullptr)
 #endif
         , maxRedirectsAllowed(maxRedirectCount)
     { qRegisterMetaType<QNetworkRequest>(); }
     ~QNetworkRequestPrivate()
     {
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
         delete sslConfiguration;
 #endif
     }
@@ -463,13 +463,13 @@ public:
         url = other.url;
         priority = other.priority;
         maxRedirectsAllowed = other.maxRedirectsAllowed;
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
         sslConfiguration = nullptr;
         if (other.sslConfiguration)
             sslConfiguration = new QSslConfiguration(*other.sslConfiguration);
 #endif
         peerVerifyName = other.peerVerifyName;
-#if QT_CONFIG(http)
+#if BOBUI_CONFIG(http)
         h1Configuration = other.h1Configuration;
         h2Configuration = other.h2Configuration;
         decompressedSafetyCheckThreshold = other.decompressedSafetyCheckThreshold;
@@ -487,7 +487,7 @@ public:
             attributes == other.attributes &&
             maxRedirectsAllowed == other.maxRedirectsAllowed &&
             peerVerifyName == other.peerVerifyName
-#if QT_CONFIG(http)
+#if BOBUI_CONFIG(http)
             && h1Configuration == other.h1Configuration
             && h2Configuration == other.h2Configuration
             && decompressedSafetyCheckThreshold == other.decompressedSafetyCheckThreshold
@@ -503,12 +503,12 @@ public:
 
     QUrl url;
     QNetworkRequest::Priority priority;
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     mutable QSslConfiguration *sslConfiguration;
 #endif
     int maxRedirectsAllowed;
     QString peerVerifyName;
-#if QT_CONFIG(http)
+#if BOBUI_CONFIG(http)
     QHttp1Configuration h1Configuration;
     QHttp2Configuration h2Configuration;
     qint64 decompressedSafetyCheckThreshold = 10ll * 1024ll * 1024ll;
@@ -528,16 +528,16 @@ public:
 QNetworkRequest::QNetworkRequest()
     : d(new QNetworkRequestPrivate)
 {
-#if QT_CONFIG(http)
+#if BOBUI_CONFIG(http)
     // Initial values proposed by RFC 7540 are quite draconian, but we
     // know about servers configured with this value as maximum possible,
     // rejecting our SETTINGS frame and sending us a GOAWAY frame with the
     // flow control error set. If this causes a problem - the app should
     // set a proper configuration. We'll use our defaults, as documented.
-    d->h2Configuration.setStreamReceiveWindowSize(Http2::qtDefaultStreamReceiveWindowSize);
+    d->h2Configuration.setStreamReceiveWindowSize(Http2::bobuiDefaultStreamReceiveWindowSize);
     d->h2Configuration.setSessionReceiveWindowSize(Http2::maxSessionReceiveWindowSize);
     d->h2Configuration.setServerPushEnabled(false);
-#endif // QT_CONFIG(http)
+#endif // BOBUI_CONFIG(http)
 }
 
 /*!
@@ -689,7 +689,7 @@ void QNetworkRequest::setHeader(KnownHeaders header, const QVariant &value)
     network request.
 
     \sa rawHeader(), setRawHeader()
-    \note In Qt versions prior to 6.7, this function took QByteArray only.
+    \note In BobUI versions prior to 6.7, this function took QByteArray only.
 */
 bool QNetworkRequest::hasRawHeader(QAnyStringView headerName) const
 {
@@ -705,7 +705,7 @@ bool QNetworkRequest::hasRawHeader(QAnyStringView headerName) const
     Raw headers can be set with setRawHeader() or with setHeader().
 
     \sa header(), setRawHeader()
-    \note In Qt versions prior to 6.7, this function took QByteArray only.
+    \note In BobUI versions prior to 6.7, this function took QByteArray only.
 */
 QByteArray QNetworkRequest::rawHeader(QAnyStringView headerName) const
 {
@@ -740,7 +740,7 @@ QList<QByteArray> QNetworkRequest::rawHeaderList() const
     the same name, you should concatenate the two values, separating
     them with a comma (",") and set one single raw header.
 
-    \note Since Qt 6.8, the header field names are normalized
+    \note Since BobUI 6.8, the header field names are normalized
     by converting them to lowercase.
 
     \sa KnownHeaders, setHeader(), hasRawHeader(), rawHeader()
@@ -780,7 +780,7 @@ void QNetworkRequest::setAttribute(Attribute code, const QVariant &value)
         d->attributes.remove(code);
 }
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
 /*!
     Returns this network request's SSL configuration. By default this is the same
     as QSslConfiguration::defaultConfiguration().
@@ -817,7 +817,7 @@ void QNetworkRequest::setSslConfiguration(const QSslConfiguration &config)
     Allows setting a reference to the \a object initiating
     the request.
 
-    For example Qt WebKit sets the originating object to the
+    For example BobUI WebKit sets the originating object to the
     QWebFrame that initiated the request.
 
     \sa originatingObject()
@@ -932,7 +932,7 @@ void QNetworkRequest::setPeerVerifyName(const QString &peerName)
     d->peerVerifyName = peerName;
 }
 
-#if QT_CONFIG(http)
+#if BOBUI_CONFIG(http)
 /*!
     \since 6.5
 
@@ -1006,7 +1006,7 @@ void QNetworkRequest::setHttp2Configuration(const QHttp2Configuration &configura
 
     Returns the threshold for archive bomb checks.
 
-    If the decompressed size of a reply is smaller than this, Qt will simply
+    If the decompressed size of a reply is smaller than this, BobUI will simply
     decompress it, without further checking.
 
     \sa setDecompressedSafetyCheckThreshold()
@@ -1031,7 +1031,7 @@ qint64 QNetworkRequest::decompressedSafetyCheckThreshold() const
     best rejected as suspected malware.
 
     If a reply's decompressed size is bigger than this threshold (by default,
-    10 MiB, i.e. 10 * 1024 * 1024), Qt will check the compression ratio: if that
+    10 MiB, i.e. 10 * 1024 * 1024), BobUI will check the compression ratio: if that
     is unreasonably large (40:1 for GZip and Deflate, or 100:1 for Brotli and
     ZStandard), the reply will be treated as an error. Setting the threshold
     to \c{-1} disables this check.
@@ -1042,7 +1042,7 @@ void QNetworkRequest::setDecompressedSafetyCheckThreshold(qint64 threshold)
 {
     d->decompressedSafetyCheckThreshold = threshold;
 }
-#endif // QT_CONFIG(http)
+#endif // BOBUI_CONFIG(http)
 
 /*!
     \since 6.11
@@ -1134,7 +1134,7 @@ void QNetworkRequest::setTcpKeepAliveProbeCount(int probes)
     d->probeCount = probes;
 }
 
-#if QT_CONFIG(http) || defined (Q_OS_WASM)
+#if BOBUI_CONFIG(http) || defined (Q_OS_WASM)
 /*!
     \fn int QNetworkRequest::transferTimeout() const
     \since 5.15
@@ -1190,7 +1190,7 @@ void QNetworkRequest::setTransferTimeout(std::chrono::milliseconds duration)
 {
     d->transferTimeout = duration;
 }
-#endif // QT_CONFIG(http) || defined (Q_OS_WASM)
+#endif // BOBUI_CONFIG(http) || defined (Q_OS_WASM)
 
 namespace  {
 
@@ -1302,7 +1302,7 @@ static QByteArray headerValue(QNetworkRequest::KnownHeaders header, const QVaria
         switch (value.userType()) {
             // Generate RFC 1123/822 dates:
         case QMetaType::QDate:
-            return QNetworkHeadersPrivate::toHttpDate(value.toDate().startOfDay(QTimeZone::UTC));
+            return QNetworkHeadersPrivate::toHttpDate(value.toDate().startOfDay(BOBUIimeZone::UTC));
         case QMetaType::QDateTime:
             return QNetworkHeadersPrivate::toHttpDate(value.toDateTime());
 
@@ -1327,10 +1327,10 @@ static int parseHeaderName(QByteArrayView headerName)
         return -1;
 
     auto is = [headerName](QByteArrayView what) {
-        return headerName.compare(what, Qt::CaseInsensitive) == 0;
+        return headerName.compare(what, BobUI::CaseInsensitive) == 0;
     };
 
-    switch (QtMiscUtils::toAsciiLower(headerName.front())) {
+    switch (BobUIMiscUtils::toAsciiLower(headerName.front())) {
     case 'c':
         if (is("content-type"))
             return QNetworkRequest::ContentTypeHeader;
@@ -1532,7 +1532,7 @@ static QVariant parseHeaderValue(QNetworkRequest::KnownHeaders header, QList<QBy
 static bool isSetCookie(QByteArrayView name)
 {
     return name.compare(QHttpHeaders::wellKnownHeaderName(QHttpHeaders::WellKnownHeader::SetCookie),
-                        Qt::CaseInsensitive) == 0;
+                        BobUI::CaseInsensitive) == 0;
 }
 
 static bool isSetCookie(QHttpHeaders::WellKnownHeader name)
@@ -1593,13 +1593,13 @@ QByteArray QNetworkHeadersPrivate::rawHeader(QAnyStringView headerName) const
 {
     QByteArrayView setCookieStr = QHttpHeaders::wellKnownHeaderName(
             QHttpHeaders::WellKnownHeader::SetCookie);
-    if (QAnyStringView::compare(headerName, setCookieStr, Qt::CaseInsensitive) != 0)
+    if (QAnyStringView::compare(headerName, setCookieStr, BobUI::CaseInsensitive) != 0)
         return httpHeaders.combinedValue(headerName);
 
     QByteArray result;
     const char* separator = "";
     for (qsizetype i = 0; i < httpHeaders.size(); ++i) {
-        if (QAnyStringView::compare(httpHeaders.nameAt(i), headerName, Qt::CaseInsensitive) == 0) {
+        if (QAnyStringView::compare(httpHeaders.nameAt(i), headerName, BobUI::CaseInsensitive) == 0) {
             result.append(separator);
             result.append(httpHeaders.valueAt(i));
             separator = "\n";
@@ -1706,7 +1706,7 @@ void QNetworkHeadersPrivate::parseAndSetHeader(QNetworkRequest::KnownHeaders key
     } else if (key == QNetworkRequest::ContentLengthHeader
                && cookedHeaders.contains(QNetworkRequest::ContentLengthHeader)) {
         // Only set the cooked header "Content-Length" once.
-        // See bug QTBUG-15311
+        // See bug BOBUIBUG-15311
     } else {
         cookedHeaders.insert(key, parseHeaderValue(key, value));
     }
@@ -1772,13 +1772,13 @@ QDateTime QNetworkHeadersPrivate::fromHttpDate(QByteArrayView value)
 
     int pos = value.indexOf(',');
     QDateTime dt;
-#if QT_CONFIG(datestring)
+#if BOBUI_CONFIG(datestring)
     if (pos == -1) {
         // no comma -> asctime(3) format
-        dt = QDateTime::fromString(QString::fromLatin1(value), Qt::TextDate);
+        dt = QDateTime::fromString(QString::fromLatin1(value), BobUI::TextDate);
     } else {
         // Use sscanf over QLocal/QDateTimeParser for speed reasons. See the
-        // Qt WebKit performance benchmarks to get an idea.
+        // BobUI WebKit performance benchmarks to get an idea.
         if (pos == 3) {
             char month_name[4];
             int day, year, hour, minute, second;
@@ -1790,7 +1790,7 @@ QDateTime QNetworkHeadersPrivate::fromHttpDate(QByteArrayView value)
             // In any case this is already safe as field width is specified.
             if (sscanf(value.constData(), "%*3s, %d %3s %d %d:%d:%d 'GMT'", &day, month_name, &year, &hour, &minute, &second) == 6)
 #endif
-                dt = QDateTime(QDate(year, name_to_month(month_name), day), QTime(hour, minute, second));
+                dt = QDateTime(QDate(year, name_to_month(month_name), day), BOBUIime(hour, minute, second));
         } else {
             QLocale c = QLocale::c();
             // eat the weekday, the comma and the space following it
@@ -1802,7 +1802,7 @@ QDateTime QNetworkHeadersPrivate::fromHttpDate(QByteArrayView value)
 #endif // datestring
 
     if (dt.isValid())
-        dt.setTimeZone(QTimeZone::UTC);
+        dt.setTimeZone(BOBUIimeZone::UTC);
     return dt;
 }
 
@@ -1853,7 +1853,7 @@ QHttpHeaders QNetworkHeadersPrivate::fromRawToHttp(const RawHeadersList &raw)
     for (const auto &[key, value] : raw) {
         const bool isSetCookie = key.compare(QHttpHeaders::wellKnownHeaderName(
                                              QHttpHeaders::WellKnownHeader::SetCookie),
-                                             Qt::CaseInsensitive) == 0;
+                                             BobUI::CaseInsensitive) == 0;
         if (isSetCookie) {
             for (auto header : QLatin1StringView(value).tokenize('\n'_L1))
                 headers.append(key, header);
@@ -1942,6 +1942,6 @@ void QNetworkHeadersPrivate::setCookedFromHttp(const QHttpHeaders &newHeaders)
         cookedHeaders.insert(i.key(), parseHeaderValue(i.key(), i.value()));
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qnetworkrequest.cpp"

@@ -11,10 +11,10 @@ instructions:
         directory: "{{.SourceDir}}_qmake/examples"
       - type: ChangeDirectory
         directory: "{{.BuildDir}}"
-      - !include "{{qt/qtbase}}/qmake_examples/get_examples_source_location.yaml"
+      - !include "{{bobui/bobuibase}}/qmake_examples/get_examples_source_location.yaml"
 
       # Setup qemu cross-compiled qmake to work.
-      - !include "{{qt/qtbase}}/coin_module_test_qemu_env_vars.yaml"
+      - !include "{{bobui/bobuibase}}/coin_module_test_qemu_env_vars.yaml"
 
       # Set either host or target env prefix for qmake and make depending on
       # tested configuration.
@@ -82,4 +82,4 @@ instructions:
           Failed to run qmake to build examples.
 
       # Run make to build the examples.
-      - !include "{{qt/qtbase}}/qmake/call_make.yaml"
+      - !include "{{bobui/bobuibase}}/qmake/call_make.yaml"

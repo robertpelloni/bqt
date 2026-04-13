@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QPLATFORMPRINTPLUGIN_H
 #define QPLATFORMPRINTPLUGIN_H
@@ -11,21 +11,21 @@
 //
 // This file is part of the QPA API and is not meant to be used
 // in applications. Usage of this API may make your code
-// source and binary incompatible with future versions of Qt.
+// source and binary incompatible with future versions of BobUI.
 //
 
-#include <QtPrintSupport/qtprintsupportglobal.h>
-#include <QtCore/qplugin.h>
-#include <QtCore/qfactoryinterface.h>
+#include <BobUIPrintSupport/bobuiprintsupportglobal.h>
+#include <BobUICore/qplugin.h>
+#include <BobUICore/qfactoryinterface.h>
 
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QPlatformPrinterSupport;
 
-#define QPlatformPrinterSupportFactoryInterface_iid "org.qt-project.QPlatformPrinterSupportFactoryInterface.5.1"
+#define QPlatformPrinterSupportFactoryInterface_iid "org.bobui-project.QPlatformPrinterSupportFactoryInterface.5.1"
 
 class Q_PRINTSUPPORT_EXPORT QPlatformPrinterSupportPlugin : public QObject
 {
@@ -39,7 +39,7 @@ public:
     static QPlatformPrinterSupport *get();
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif
 

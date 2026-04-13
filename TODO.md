@@ -15,6 +15,7 @@
 - [x] Add focus/activation semantics for managed windows.
 - [x] Add pointer-driven activation/focus routing from direct window clicks.
 - [ ] Add richer focus routing on top of activation state.
+<<<<<<< HEAD
 - [x] Classify the untracked C++ rename artifacts into canonical vs generated vs duplicate buckets before any broad migration work.
 - [x] Choose one safe C++ package/export/header compatibility bucket for the first side-by-side migration implementation.
 - [x] Compare tracked top-level `cmake/` files against renamed copies and mark canonical inputs.
@@ -38,6 +39,10 @@
 - [ ] Run the qtbase-native configure gate in an environment with a visible C/C++ compiler toolchain.
 - [ ] Add stronger native end-to-end qtbase configure/install validation when practical.
 - [ ] Extend BobUI module-package shims to other high-value public modules in small verified slices.
+=======
+- [ ] Classify the untracked C++ rename artifacts into canonical vs generated vs duplicate buckets before any broad migration work.
+- [ ] Choose one safe C++ package/export/header compatibility bucket for the first side-by-side migration implementation.
+>>>>>>> origin/dev
 
 ## Near-Term QML/Quick Focus
 - [x] Upgrade `WebView` JS bridge from compile-safe contract to executable runtime semantics.

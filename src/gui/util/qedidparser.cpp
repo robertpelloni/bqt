@@ -1,10 +1,10 @@
 // Copyright (C) 2017 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
 // Copyright (C) 2021 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
-#include <QtCore/QFile>
-#include <QtCore/QByteArrayView>
+#include <BobUICore/QFile>
+#include <BobUICore/QByteArrayView>
 
 #include "qedidparser_p.h"
 #include "qedidvendortable_p.h"
@@ -24,9 +24,9 @@
 #define EDID_FEATURE_SUPPORT 0x18
 #define EDID_CHROMATICITIES_BLOCK 0x19
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static QString lookupVendorIdInSystemDatabase(QByteArrayView id)
 {
@@ -254,4 +254,4 @@ QString QEdidParser::parseEdidString(const quint8 *data)
     return QString::fromLatin1(buffer);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

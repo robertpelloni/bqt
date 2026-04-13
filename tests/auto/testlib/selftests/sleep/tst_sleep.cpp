@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/QElapsedTimer>
-#include <QTest>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/QElapsedTimer>
+#include <BOBUIest>
 
 #ifdef Q_OS_UNIX
-#include <QtCore/private/qcore_unix_p.h>
-#include <QtCore/qsystemdetection.h>
+#include <BobUICore/private/qcore_unix_p.h>
+#include <BobUICore/qsystemdetection.h>
 
 #include <time.h>
 #endif
@@ -33,13 +33,13 @@ void tst_Sleep::sleep()
     t.start();
 
     // Test qSleep(int) overload, too
-    QTest::qSleep(100);
+    BOBUIest::qSleep(100);
     QCOMPARE_GT(t.durationElapsed(), 100ms - MarginForError);
 
-    QTest::qSleep(1s);
+    BOBUIest::qSleep(1s);
     QCOMPARE_GT(t.durationElapsed(), 1s - MarginForError);
 
-    QTest::qSleep(10s);
+    BOBUIest::qSleep(10s);
     QCOMPARE_GT(t.durationElapsed(), 10s - MarginForError);
 }
 
@@ -48,19 +48,19 @@ void tst_Sleep::wait()
     QElapsedTimer t;
     t.start();
 
-    QTest::qWait(1);
+    BOBUIest::qWait(1);
     QCOMPARE_GE(t.durationElapsed(), 1ms);
 
-    QTest::qWait(10);
+    BOBUIest::qWait(10);
     QCOMPARE_GE(t.durationElapsed(), 11ms);
 
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
     QCOMPARE_GE(t.durationElapsed(), 111ms);
 
-    QTest::qWait(1000);
+    BOBUIest::qWait(1000);
     QCOMPARE_GE(t.durationElapsed(), 1111ms);
 }
 
-QTEST_MAIN(tst_Sleep)
+BOBUIEST_MAIN(tst_Sleep)
 
 #include "tst_sleep.moc"

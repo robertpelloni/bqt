@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 /*!
     \class QGraphicsAnchorLayout
@@ -10,7 +10,7 @@
     \ingroup appearance
     \ingroup geomanagement
     \ingroup graphicsview-api
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     The anchor layout allows developers to specify how widgets should be placed relative to
     each other, and to the layout itself. The specification is made by adding anchors to the
@@ -90,7 +90,7 @@
     \ingroup appearance
     \ingroup geomanagement
     \ingroup graphicsview-api
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     The graphics anchor provides an API that enables you to query and manipulate the
     properties an anchor has. When an anchor is added to the layout with
@@ -103,7 +103,7 @@
 */
 #include "qgraphicsanchorlayout_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QGraphicsAnchor::QGraphicsAnchor(QGraphicsAnchorLayout *parentLayout)
     : QObject(*(new QGraphicsAnchorPrivate))
@@ -201,12 +201,12 @@ QGraphicsAnchorLayout::~QGraphicsAnchorLayout()
         }
     }
 
-    d->removeCenterConstraints(this, Qt::Horizontal);
-    d->removeCenterConstraints(this, Qt::Vertical);
+    d->removeCenterConstraints(this, BobUI::Horizontal);
+    d->removeCenterConstraints(this, BobUI::Vertical);
     d->deleteLayoutEdges();
 
-    Q_ASSERT(d->itemCenterConstraints[Qt::Horizontal].isEmpty());
-    Q_ASSERT(d->itemCenterConstraints[Qt::Vertical].isEmpty());
+    Q_ASSERT(d->itemCenterConstraints[BobUI::Horizontal].isEmpty());
+    Q_ASSERT(d->itemCenterConstraints[BobUI::Vertical].isEmpty());
     Q_ASSERT(d->items.isEmpty());
     Q_ASSERT(d->m_vertexList.isEmpty());
 }
@@ -234,8 +234,8 @@ QGraphicsAnchorLayout::~QGraphicsAnchorLayout()
     \sa addAnchors(), addCornerAnchors()
  */
 QGraphicsAnchor *
-QGraphicsAnchorLayout::addAnchor(QGraphicsLayoutItem *firstItem, Qt::AnchorPoint firstEdge,
-                                 QGraphicsLayoutItem *secondItem, Qt::AnchorPoint secondEdge)
+QGraphicsAnchorLayout::addAnchor(QGraphicsLayoutItem *firstItem, BobUI::AnchorPoint firstEdge,
+                                 QGraphicsLayoutItem *secondItem, BobUI::AnchorPoint secondEdge)
 {
     Q_D(QGraphicsAnchorLayout);
     QGraphicsAnchor *a = d->addAnchor(firstItem, firstEdge, secondItem, secondEdge);
@@ -248,8 +248,8 @@ QGraphicsAnchorLayout::addAnchor(QGraphicsLayoutItem *firstItem, Qt::AnchorPoint
     \a secondItem and \a secondEdge. If there is no such anchor, the function will return 0.
 */
 QGraphicsAnchor *
-QGraphicsAnchorLayout::anchor(QGraphicsLayoutItem *firstItem, Qt::AnchorPoint firstEdge,
-                              QGraphicsLayoutItem *secondItem, Qt::AnchorPoint secondEdge)
+QGraphicsAnchorLayout::anchor(QGraphicsLayoutItem *firstItem, BobUI::AnchorPoint firstEdge,
+                              QGraphicsLayoutItem *secondItem, BobUI::AnchorPoint secondEdge)
 {
     Q_D(QGraphicsAnchorLayout);
     return d->getAnchor(firstItem, firstEdge, secondItem, secondEdge);
@@ -278,19 +278,19 @@ QGraphicsAnchorLayout::anchor(QGraphicsLayoutItem *firstItem, Qt::AnchorPoint fi
     \sa addAnchor(), addAnchors()
 */
 void QGraphicsAnchorLayout::addCornerAnchors(QGraphicsLayoutItem *firstItem,
-                                             Qt::Corner firstCorner,
+                                             BobUI::Corner firstCorner,
                                              QGraphicsLayoutItem *secondItem,
-                                             Qt::Corner secondCorner)
+                                             BobUI::Corner secondCorner)
 {
     Q_D(QGraphicsAnchorLayout);
 
     // Horizontal anchor
-    Qt::AnchorPoint firstEdge = (firstCorner & 1 ? Qt::AnchorRight: Qt::AnchorLeft);
-    Qt::AnchorPoint secondEdge = (secondCorner & 1 ? Qt::AnchorRight: Qt::AnchorLeft);
+    BobUI::AnchorPoint firstEdge = (firstCorner & 1 ? BobUI::AnchorRight: BobUI::AnchorLeft);
+    BobUI::AnchorPoint secondEdge = (secondCorner & 1 ? BobUI::AnchorRight: BobUI::AnchorLeft);
     if (d->addAnchor(firstItem, firstEdge, secondItem, secondEdge)) {
         // Vertical anchor
-        firstEdge = (firstCorner & 2 ? Qt::AnchorBottom: Qt::AnchorTop);
-        secondEdge = (secondCorner & 2 ? Qt::AnchorBottom: Qt::AnchorTop);
+        firstEdge = (firstCorner & 2 ? BobUI::AnchorBottom: BobUI::AnchorTop);
+        secondEdge = (secondCorner & 2 ? BobUI::AnchorBottom: BobUI::AnchorTop);
         d->addAnchor(firstItem, firstEdge, secondItem, secondEdge);
 
         invalidate();
@@ -315,18 +315,18 @@ void QGraphicsAnchorLayout::addCornerAnchors(QGraphicsLayoutItem *firstItem,
 */
 void QGraphicsAnchorLayout::addAnchors(QGraphicsLayoutItem *firstItem,
                                        QGraphicsLayoutItem *secondItem,
-                                       Qt::Orientations orientations)
+                                       BobUI::Orientations orientations)
 {
     bool ok = true;
-    if (orientations & Qt::Horizontal) {
+    if (orientations & BobUI::Horizontal) {
         // Currently, if the first is ok, then the rest of the calls should be ok
-        ok = addAnchor(secondItem, Qt::AnchorLeft, firstItem, Qt::AnchorLeft) != nullptr;
+        ok = addAnchor(secondItem, BobUI::AnchorLeft, firstItem, BobUI::AnchorLeft) != nullptr;
         if (ok)
-            addAnchor(firstItem, Qt::AnchorRight, secondItem, Qt::AnchorRight);
+            addAnchor(firstItem, BobUI::AnchorRight, secondItem, BobUI::AnchorRight);
     }
-    if (orientations & Qt::Vertical && ok) {
-        addAnchor(secondItem, Qt::AnchorTop, firstItem, Qt::AnchorTop);
-        addAnchor(firstItem, Qt::AnchorBottom, secondItem, Qt::AnchorBottom);
+    if (orientations & BobUI::Vertical && ok) {
+        addAnchor(secondItem, BobUI::AnchorTop, firstItem, BobUI::AnchorTop);
+        addAnchor(firstItem, BobUI::AnchorBottom, secondItem, BobUI::AnchorBottom);
     }
 }
 
@@ -339,7 +339,7 @@ void QGraphicsAnchorLayout::setHorizontalSpacing(qreal spacing)
 {
     Q_D(QGraphicsAnchorLayout);
 
-    d->spacings[Qt::Horizontal] = spacing;
+    d->spacings[BobUI::Horizontal] = spacing;
     invalidate();
 }
 
@@ -352,7 +352,7 @@ void QGraphicsAnchorLayout::setVerticalSpacing(qreal spacing)
 {
     Q_D(QGraphicsAnchorLayout);
 
-    d->spacings[Qt::Vertical] = spacing;
+    d->spacings[BobUI::Vertical] = spacing;
     invalidate();
 }
 
@@ -383,7 +383,7 @@ void QGraphicsAnchorLayout::setSpacing(qreal spacing)
 qreal QGraphicsAnchorLayout::horizontalSpacing() const
 {
     Q_D(const QGraphicsAnchorLayout);
-    return d->styleInfo().defaultSpacing(Qt::Horizontal);
+    return d->styleInfo().defaultSpacing(BobUI::Horizontal);
 }
 
 /*!
@@ -394,7 +394,7 @@ qreal QGraphicsAnchorLayout::horizontalSpacing() const
 qreal QGraphicsAnchorLayout::verticalSpacing() const
 {
     Q_D(const QGraphicsAnchorLayout);
-    return d->styleInfo().defaultSpacing(Qt::Vertical);
+    return d->styleInfo().defaultSpacing(BobUI::Vertical);
 }
 
 /*!
@@ -405,8 +405,8 @@ void QGraphicsAnchorLayout::setGeometry(const QRectF &geom)
     Q_D(QGraphicsAnchorLayout);
 
     QGraphicsLayout::setGeometry(geom);
-    d->calculateVertexPositions(Qt::Horizontal);
-    d->calculateVertexPositions(Qt::Vertical);
+    d->calculateVertexPositions(BobUI::Horizontal);
+    d->calculateVertexPositions(BobUI::Vertical);
     d->setItemsGeometries(geom);
 }
 
@@ -427,8 +427,8 @@ void QGraphicsAnchorLayout::removeAt(int index)
         return;
 
     // Removing an item affects both horizontal and vertical graphs
-    d->removeCenterConstraints(item, Qt::Horizontal);
-    d->removeCenterConstraints(item, Qt::Vertical);
+    d->removeCenterConstraints(item, BobUI::Horizontal);
+    d->removeCenterConstraints(item, BobUI::Vertical);
     d->removeAnchors(item);
     d->items.remove(index);
 
@@ -468,7 +468,7 @@ void QGraphicsAnchorLayout::invalidate()
 /*!
     \reimp
 */
-QSizeF QGraphicsAnchorLayout::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const
+QSizeF QGraphicsAnchorLayout::sizeHint(BobUI::SizeHint which, const QSizeF &constraint) const
 {
     Q_UNUSED(constraint);
     Q_D(const QGraphicsAnchorLayout);
@@ -485,8 +485,8 @@ QSizeF QGraphicsAnchorLayout::sizeHint(Qt::SizeHint which, const QSizeF &constra
     const_cast<QGraphicsAnchorLayoutPrivate *>(d)->calculateGraphs();
 
     // ### apply constraint!
-    QSizeF engineSizeHint{d->sizeHints[Qt::Horizontal][which],
-                          d->sizeHints[Qt::Vertical][which]};
+    QSizeF engineSizeHint{d->sizeHints[BobUI::Horizontal][which],
+                          d->sizeHints[BobUI::Vertical][which]};
 
     qreal left, top, right, bottom;
     getContentsMargins(&left, &top, &right, &bottom);
@@ -494,6 +494,6 @@ QSizeF QGraphicsAnchorLayout::sizeHint(Qt::SizeHint which, const QSizeF &constra
     return engineSizeHint + QSizeF(left + right, top + bottom);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qgraphicsanchorlayout.cpp"

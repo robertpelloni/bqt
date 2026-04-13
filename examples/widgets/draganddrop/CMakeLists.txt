@@ -1,6 +1,6 @@
-# Copyright (C) 2022 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+# Copyright (C) 2022 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-qt_internal_add_example(draggableicons)
-qt_internal_add_example(draggabletext)
-qt_internal_add_example(dropsite)
+bobui_internal_add_example(draggableicons)
+bobui_internal_add_example(draggabletext)
+bobui_internal_add_example(dropsite)

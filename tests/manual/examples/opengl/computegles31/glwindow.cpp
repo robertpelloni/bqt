@@ -1,5 +1,5 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "glwindow.h"
 #include <QImage>
@@ -8,9 +8,9 @@
 #include <QOpenGLFunctions>
 #include <QOpenGLExtraFunctions>
 #include <QOpenGLVertexArrayObject>
-#include <QtGui/qopengl.h>
+#include <BobUIGui/qopengl.h>
 #include <QDebug>
-#include <QTimer>
+#include <BOBUIimer>
 #include <math.h>
 
 #ifndef GL_READ_WRITE
@@ -84,7 +84,7 @@ void GLWindow::setAnimating(bool animate)
 
 void GLWindow::keyPressEvent(QKeyEvent *e)
 {
-    if (e->key() == Qt::Key_Space) { // pause
+    if (e->key() == BobUI::Key_Space) { // pause
         setAnimating(!m_animate);
     }
     update();
@@ -124,7 +124,7 @@ static const char *fsDisplaySource =
     "}\n";
 
 static const char *csComputeSourceV =
-        "#define COMPUTEPATCHSIZE 10 // Setting this to 10 to comply with MAX_COMPUTE_WORK_GROUP_INVOCATIONS for both OpenGL and OpenGLES - see QTBUG-79374 \n"
+        "#define COMPUTEPATCHSIZE 10 // Setting this to 10 to comply with MAX_COMPUTE_WORK_GROUP_INVOCATIONS for both OpenGL and OpenGLES - see BOBUIBUG-79374 \n"
         "#define IMGFMT rgba8 \n"
         "layout (local_size_x = COMPUTEPATCHSIZE, local_size_y = COMPUTEPATCHSIZE) in;\n"
         "layout(binding=0, IMGFMT) uniform readonly highp image2D inputImage; // Use a sampler to improve performance  \n"
@@ -268,7 +268,7 @@ void GLWindow::initializeGL()
              << ((ctx->format().renderableType() == QSurfaceFormat::OpenGLES) ? (" GLES") : (" GL"))
              << " context";
 
-    QImage img(":/Qt-logo-medium.png");
+    QImage img(":/BobUI-logo-medium.png");
     Q_ASSERT(!img.isNull());
     delete m_texImageInput;
     m_texImageInput = new QOpenGLTexture(img.convertToFormat(QImage::Format_RGBA8888).flipped());

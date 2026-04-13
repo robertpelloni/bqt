@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QSignalSpy>
-#include <QtCore/qlocale.h>
+#include <BobUICore/qlocale.h>
 #include <private/qmetaobjectbuilder_p.h>
 
 class tst_QMetaObjectBuilder : public QObject
@@ -46,7 +46,7 @@ private slots:
 
     void ownMetaTypeNoProperties();
 
-    // void tooLongParameterNamesList(); // QTBUG-139845
+    // void tooLongParameterNamesList(); // BOBUIBUG-139845
 
 private:
     static bool checkForSideEffects
@@ -868,7 +868,7 @@ void tst_QMetaObjectBuilder::notifySignal()
 
 void tst_QMetaObjectBuilder::enumerator()
 {
-    static const QtPrivate::QMetaTypeInterface fooFlagMetaType = {
+    static const BobUIPrivate::QMetaTypeInterface fooFlagMetaType = {
         0,
         8,
         8,
@@ -1064,10 +1064,10 @@ void tst_QMetaObjectBuilder::enumProperty()
     QMetaObjectBuilder builder;
     builder.setSuperClass(QObject::metaObject());
 
-    auto enumMetaType = QMetaType::fromType<Qt::Orientation>();
+    auto enumMetaType = QMetaType::fromType<BobUI::Orientation>();
     QVERIFY(enumMetaType.isValid());
 
-    builder.addProperty("orientation", "Qt::Orientation", enumMetaType);
+    builder.addProperty("orientation", "BobUI::Orientation", enumMetaType);
 
     auto *mo = builder.toMetaObject();
     QVERIFY(mo != nullptr);
@@ -1448,10 +1448,10 @@ class TestObject : public QObject
 public:
     static QMetaObject staticMetaObject;
     virtual const QMetaObject *metaObject() const override;
-    virtual void *qt_metacast(const char *) override;
-    virtual int qt_metacall(QMetaObject::Call, int, void **) override;
+    virtual void *bobui_metacast(const char *) override;
+    virtual int bobui_metacall(QMetaObject::Call, int, void **) override;
 private:
-    Q_DECL_HIDDEN static void qt_static_metacall(QObject *, QMetaObject::Call, int, void **);
+    Q_DECL_HIDDEN static void bobui_static_metacall(QObject *, QMetaObject::Call, int, void **);
 
     //Q_PROPERTY(int intProp READ intProp WRITE setIntProp NOTIFY intPropChanged)
 public:
@@ -1502,12 +1502,12 @@ TestObject::~TestObject()
 QMetaObject *TestObject::buildMetaObject()
 {
     QMetaObjectBuilder builder;
-    // NOTE: If you change the meta-object, remember to adapt qt_metacall and
+    // NOTE: If you change the meta-object, remember to adapt bobui_metacall and
     // friends below accordingly.
 
     builder.setClassName("TestObject");
 
-    builder.setStaticMetacallFunction(qt_static_metacall);
+    builder.setStaticMetacallFunction(bobui_static_metacall);
 
     QMetaMethodBuilder intPropChanged = builder.addSignal("intPropChanged(int)");
     intPropChanged.setParameterNames(QList<QByteArray>() << "newIntPropValue");
@@ -1561,7 +1561,7 @@ int TestObject::voidSlotIntArgument() const
     return m_voidSlotIntArg;
 }
 
-void TestObject::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+void TestObject::bobui_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
 {
     if (_c == QMetaObject::CreateInstance) {
         switch (_id) {
@@ -1615,24 +1615,24 @@ const QMetaObject *TestObject::metaObject() const
     return m_metaObject;
 }
 
-void *TestObject::qt_metacast(const char *_clname)
+void *TestObject::bobui_metacast(const char *_clname)
 {
     if (!_clname) return 0;
     if (!strcmp(_clname, "TestObject"))
         return static_cast<void*>(const_cast< TestObject*>(this));
-    return QObject::qt_metacast(_clname);
+    return QObject::bobui_metacast(_clname);
 }
 
-int TestObject::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+int TestObject::bobui_metacall(QMetaObject::Call _c, int _id, void **_a)
 {
-    _id = QObject::qt_metacall(_c, _id, _a);
+    _id = QObject::bobui_metacall(_c, _id, _a);
     if (_id < 0)
         return _id;
     int ownMethodCount = m_metaObject->methodCount() - m_metaObject->methodOffset();
     int ownPropertyCount = m_metaObject->propertyCount() - m_metaObject->propertyOffset();
     if (_c == QMetaObject::InvokeMetaMethod) {
         if (_id < ownMethodCount)
-            qt_static_metacall(this, _c, _id, _a);
+            bobui_static_metacall(this, _c, _id, _a);
         _id -= ownMethodCount;
     } else if (_c == QMetaObject::ReadProperty) {
         void *_v = _a[0];
@@ -1769,7 +1769,7 @@ void tst_QMetaObjectBuilder::usage_templateConnect()
                                 testObject.data(), &TestObject::voidSlotInt));
 
     // Something that isn't a signal
-    QTest::ignoreMessage(QtWarningMsg, "QObject::connect(TestObject, TestObject): signal not found");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QObject::connect(TestObject, TestObject): signal not found");
     con = QObject::connect(testObject.data(), &TestObject::setIntProp,
                            testObject.data(), &TestObject::intPropChanged);
     QVERIFY(!con);
@@ -1833,7 +1833,7 @@ void tst_QMetaObjectBuilder::enumCloning()
 // Can't use this unittest on the CI because it hits an assert
 // void tst_QMetaObjectBuilder::tooLongParameterNamesList()
 // {
-//     // QTBUG-139845
+//     // BOBUIBUG-139845
 //     QMetaObjectBuilder builder;
 //
 //     builder.setSuperClass(&QObject::staticMetaObject);
@@ -1876,6 +1876,6 @@ void tst_QMetaObjectBuilder::cleanupTestCase()
         free(obj);
 }
 
-QTEST_MAIN(tst_QMetaObjectBuilder)
+BOBUIEST_MAIN(tst_QMetaObjectBuilder)
 
 #include "tst_qmetaobjectbuilder.moc"

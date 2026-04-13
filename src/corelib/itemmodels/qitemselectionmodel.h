@@ -1,19 +1,19 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QITEMSELECTIONMODEL_H
 #define QITEMSELECTIONMODEL_H
 
-#include <QtCore/qglobal.h>
+#include <BobUICore/qglobal.h>
 
-#include <QtCore/qabstractitemmodel.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qset.h>
+#include <BobUICore/qabstractitemmodel.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qset.h>
 
-QT_REQUIRE_CONFIG(itemmodel);
+BOBUI_REQUIRE_CONFIG(itemmodel);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Q_CORE_EXPORT QItemSelectionRange
 {
@@ -56,7 +56,7 @@ public:
     bool intersects(const QItemSelectionRange &other) const;
     QItemSelectionRange intersected(const QItemSelectionRange &other) const;
 
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
     inline bool operator==(const QItemSelectionRange &other) const
     { return comparesEqual(*this, other); }
     inline bool operator!=(const QItemSelectionRange &other) const
@@ -194,13 +194,13 @@ public:
 };
 Q_DECLARE_SHARED(QItemSelection)
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QItemSelectionRange &);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN(QItemSelectionRange, Q_CORE_EXPORT)
-QT_DECL_METATYPE_EXTERN(QItemSelection, Q_CORE_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QItemSelectionRange, Q_CORE_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QItemSelection, Q_CORE_EXPORT)
 
 #endif // QITEMSELECTIONMODEL_H

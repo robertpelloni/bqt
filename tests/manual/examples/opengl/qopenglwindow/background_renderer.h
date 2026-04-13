@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef FRAGMENT_TOY_H
 #define FRAGMENT_TOY_H
@@ -7,7 +7,7 @@
 #include <QObject>
 #include <QFile>
 #include <QDateTime>
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
 #include <QFileSystemWatcher>
 #endif
 #include <QOpenGLVertexArrayObject>
@@ -29,7 +29,7 @@ public:
 private:
     void fileChanged(const QString &path);
     bool m_recompile_shaders;
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
     QFileSystemWatcher m_watcher;
 #endif
     QString m_fragment_file;

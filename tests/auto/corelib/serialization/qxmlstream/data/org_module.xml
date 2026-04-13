@@ -14,15 +14,15 @@
 <text text-anchor="middle" x="759" y="858">main overview</text>
 <g id="graph2" class="cluster"><title>cluster1</title>
 <polygon style="fill:none;stroke:black;" points="308,825 1184,825 1184,709 308,709 308,825"/>
-<text text-anchor="middle" x="746" y="726">Qt Library</text>
+<text text-anchor="middle" x="746" y="726">BobUI Library</text>
 </g>
 <g id="graph3" class="cluster"><title>cluster1_01</title>
 <polygon style="fill:none;stroke:black;" points="1096,817 1176,817 1176,741 1096,741 1096,817"/>
-<text text-anchor="middle" x="1136" y="758">QtCore.dll</text>
+<text text-anchor="middle" x="1136" y="758">BobUICore.dll</text>
 </g>
 <g id="graph4" class="cluster"><title>cluster1_02</title>
 <polygon style="fill:none;stroke:black;" points="316,817 1088,817 1088,741 316,741 316,817"/>
-<text text-anchor="middle" x="702" y="758">QtGui.dll</text>
+<text text-anchor="middle" x="702" y="758">BobUIGui.dll</text>
 </g>
 <g id="graph5" class="cluster"><title>cluster2</title>
 <polygon style="fill:none;stroke:black;" points="342,561 489,561 489,271 342,271 342,561"/>
@@ -143,15 +143,15 @@
 <polygon style="fill:none;stroke:black;" points="818,773 716,773 716,809 818,809 818,773"/>
 <text text-anchor="middle" x="767" y="796">QMainWindow</text>
 </g>
-<!-- QTabWidget -->
-<g id="node11" class="node"><title>QTabWidget</title>
+<!-- BOBUIabWidget -->
+<g id="node11" class="node"><title>BOBUIabWidget</title>
 <polygon style="fill:none;stroke:black;" points="606,773 520,773 520,809 606,809 606,773"/>
-<text text-anchor="middle" x="563" y="796">QTabWidget</text>
+<text text-anchor="middle" x="563" y="796">BOBUIabWidget</text>
 </g>
-<!-- QTextEdit -->
-<g id="node12" class="node"><title>QTextEdit</title>
+<!-- BOBUIextEdit -->
+<g id="node12" class="node"><title>BOBUIextEdit</title>
 <polygon style="fill:none;stroke:black;" points="698,773 624,773 624,809 698,809 698,773"/>
-<text text-anchor="middle" x="661" y="796">QTextEdit</text>
+<text text-anchor="middle" x="661" y="796">BOBUIextEdit</text>
 </g>
 <!-- AboutDialog -->
 <g id="node15" class="node"><title>AboutDialog</title>
@@ -197,8 +197,8 @@
 <polygon style="fill:black;stroke:black;" points="674,499 670,509 667,499 674,499"/>
 <text text-anchor="middle" x="683" y="402">uses</text>
 </g>
-<!-- TabbedEdits&#45;&gt;QTabWidget -->
-<g id="edge34" class="edge"><title>TabbedEdits&#45;&gt;QTabWidget</title>
+<!-- TabbedEdits&#45;&gt;BOBUIabWidget -->
+<g id="edge34" class="edge"><title>TabbedEdits&#45;&gt;BOBUIabWidget</title>
 <path style="fill:none;stroke:black;" d="M627,543C605,554 580,570 567,593 537,647 547,723 556,763"/>
 <polygon style="fill:black;stroke:black;" points="559,763 558,773 553,764 559,763"/>
 <text text-anchor="middle" x="591" y="648">inherits</text>
@@ -214,8 +214,8 @@
 <polygon style="fill:black;stroke:black;" points="680,615 678,625 674,615 680,615"/>
 <text text-anchor="middle" x="689" y="582">uses</text>
 </g>
-<!-- EditorComponent&#45;&gt;QTextEdit -->
-<g id="edge38" class="edge"><title>EditorComponent&#45;&gt;QTextEdit</title>
+<!-- EditorComponent&#45;&gt;BOBUIextEdit -->
+<g id="edge38" class="edge"><title>EditorComponent&#45;&gt;BOBUIextEdit</title>
 <path style="fill:none;stroke:black;" d="M678,661C674,687 668,733 664,763"/>
 <polygon style="fill:black;stroke:black;" points="667,763 663,773 661,763 667,763"/>
 <text text-anchor="middle" x="697" y="698">inherits</text>

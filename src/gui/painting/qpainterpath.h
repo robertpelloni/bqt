@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPAINTERPATH_H
 #define QPAINTERPATH_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtGui/qtransform.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUIGui/bobuiransform.h>
 
-#include <QtCore/qglobal.h>
-#include <QtCore/qline.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qpoint.h>
-#include <QtCore/qrect.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qline.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qpoint.h>
+#include <BobUICore/qrect.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QFont;
@@ -22,7 +22,7 @@ class QPainterPathStrokerPrivate;
 class QPen;
 class QPolygonF;
 class QRegion;
-class QTransform;
+class BOBUIransform;
 class QVectorPath;
 
 class Q_GUI_EXPORT QPainterPath
@@ -62,10 +62,10 @@ public:
     QPainterPath(QPainterPath &&other) noexcept
         : d_ptr(std::exchange(other.d_ptr, nullptr))
     {}
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QPainterPath)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QPainterPath)
     ~QPainterPath();
 
-    inline void swap(QPainterPath &other) noexcept { qt_ptr_swap(d_ptr, other.d_ptr); }
+    inline void swap(QPainterPath &other) noexcept { bobui_ptr_swap(d_ptr, other.d_ptr); }
 
     void clear();
     void reserve(int size);
@@ -105,10 +105,10 @@ public:
     void addRegion(const QRegion &region);
 
     void addRoundedRect(const QRectF &rect, qreal xRadius, qreal yRadius,
-                        Qt::SizeMode mode = Qt::AbsoluteSize);
+                        BobUI::SizeMode mode = BobUI::AbsoluteSize);
     inline void addRoundedRect(qreal x, qreal y, qreal w, qreal h,
                                qreal xRadius, qreal yRadius,
-                               Qt::SizeMode mode = Qt::AbsoluteSize);
+                               BobUI::SizeMode mode = BobUI::AbsoluteSize);
 
     void connectPath(const QPainterPath &path);
 
@@ -125,16 +125,16 @@ public:
     QRectF boundingRect() const;
     QRectF controlPointRect() const;
 
-    Qt::FillRule fillRule() const;
-    void setFillRule(Qt::FillRule fillRule);
+    BobUI::FillRule fillRule() const;
+    void setFillRule(BobUI::FillRule fillRule);
 
     bool isEmpty() const;
 
     [[nodiscard]] QPainterPath toReversed() const;
 
-    QList<QPolygonF> toSubpathPolygons(const QTransform &matrix = QTransform()) const;
-    QList<QPolygonF> toFillPolygons(const QTransform &matrix = QTransform()) const;
-    QPolygonF toFillPolygon(const QTransform &matrix = QTransform()) const;
+    QList<QPolygonF> toSubpathPolygons(const BOBUIransform &matrix = BOBUIransform()) const;
+    QList<QPolygonF> toFillPolygons(const BOBUIransform &matrix = BOBUIransform()) const;
+    QPolygonF toFillPolygon(const BOBUIransform &matrix = BOBUIransform()) const;
 
     int elementCount() const;
     QPainterPath::Element elementAt(int i) const;
@@ -183,11 +183,11 @@ private:
     friend class QPainterPathStroker;
     friend class QPainterPathStrokerPrivate;
     friend class QPainterPathPrivate;
-    friend class QTransform;
+    friend class BOBUIransform;
     friend class QVectorPath;
-    friend Q_GUI_EXPORT const QVectorPath &qtVectorPathForPath(const QPainterPath &);
+    friend Q_GUI_EXPORT const QVectorPath &bobuiVectorPathForPath(const QPainterPath &);
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
     friend Q_GUI_EXPORT QDataStream &operator<<(QDataStream &, const QPainterPath &);
     friend Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, QPainterPath &);
 #endif
@@ -196,7 +196,7 @@ private:
 Q_DECLARE_SHARED(QPainterPath)
 Q_DECLARE_TYPEINFO(QPainterPath::Element, Q_PRIMITIVE_TYPE);
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_GUI_EXPORT QDataStream &operator<<(QDataStream &, const QPainterPath &);
 Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, QPainterPath &);
 #endif
@@ -212,11 +212,11 @@ public:
     void setWidth(qreal width);
     qreal width() const;
 
-    void setCapStyle(Qt::PenCapStyle style);
-    Qt::PenCapStyle capStyle() const;
+    void setCapStyle(BobUI::PenCapStyle style);
+    BobUI::PenCapStyle capStyle() const;
 
-    void setJoinStyle(Qt::PenJoinStyle style);
-    Qt::PenJoinStyle joinStyle() const;
+    void setJoinStyle(BobUI::PenJoinStyle style);
+    BobUI::PenJoinStyle joinStyle() const;
 
     void setMiterLimit(qreal length);
     qreal miterLimit() const;
@@ -224,7 +224,7 @@ public:
     void setCurveThreshold(qreal threshold);
     qreal curveThreshold() const;
 
-    void setDashPattern(Qt::PenStyle);
+    void setDashPattern(BobUI::PenStyle);
     void setDashPattern(const QList<qreal> &dashPattern);
     QList<qreal> dashPattern() const;
 
@@ -290,7 +290,7 @@ inline void QPainterPath::addRect(qreal x, qreal y, qreal w, qreal h)
 
 inline void QPainterPath::addRoundedRect(qreal x, qreal y, qreal w, qreal h,
                                          qreal xRadius, qreal yRadius,
-                                         Qt::SizeMode mode)
+                                         BobUI::SizeMode mode)
 {
     addRoundedRect(QRectF(x, y, w, h), xRadius, yRadius, mode);
 }
@@ -306,13 +306,13 @@ inline void QPainterPath::translate(const QPointF &offset)
 inline QPainterPath QPainterPath::translated(const QPointF &offset) const
 { return translated(offset.x(), offset.y()); }
 
-inline QPainterPath operator *(const QPainterPath &p, const QTransform &m)
+inline QPainterPath operator *(const QPainterPath &p, const BOBUIransform &m)
 { return m.map(p); }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QPainterPath &);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPAINTERPATH_H

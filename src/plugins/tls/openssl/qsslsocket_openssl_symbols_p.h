@@ -1,12 +1,12 @@
-// Copyright (C) 2017 The Qt Company Ltd.
+// Copyright (C) 2017 The BobUI Company Ltd.
 // Copyright (C) 2014 BlackBerry Limited. All rights reserved.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:execute-external-code
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:execute-external-code
 
 /****************************************************************************
 **
 ** In addition, as a special exception, the copyright holders listed above give
-** permission to link the code of its release of Qt with the OpenSSL project's
+** permission to link the code of its release of BobUI with the OpenSSL project's
 ** "OpenSSL" library (or modified versions of the "OpenSSL" library that use the
 ** same license as the original version), and distribute the linked executables.
 **
@@ -26,28 +26,28 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists purely as an
+// This file is not part of the BobUI API. It exists purely as an
 // implementation detail. This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtNetwork/private/qtnetworkglobal_p.h>
+#include <BobUINetwork/private/bobuinetworkglobal_p.h>
 
 #include "qopenssl_p.h"
 
-#include <QtCore/qglobal.h>
+#include <BobUICore/qglobal.h>
 
-#if QT_CONFIG(ocsp)
-#include <QtNetwork/private/qocsp_p.h>
+#if BOBUI_CONFIG(ocsp)
+#include <BobUINetwork/private/qocsp_p.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #define DUMMYARG
 
-#if !defined QT_LINKED_OPENSSL
+#if !defined BOBUI_LINKED_OPENSSL
 // **************** Shared declarations ******************
 // ret func(arg)
 
@@ -147,7 +147,7 @@ QT_BEGIN_NAMESPACE
     }
 // **************** Shared declarations ******************
 
-#else // !defined QT_LINKED_OPENSSL
+#else // !defined BOBUI_LINKED_OPENSSL
 
 // **************** Static declarations ******************
 
@@ -185,7 +185,7 @@ QT_BEGIN_NAMESPACE
 
 // **************** Static declarations ******************
 
-#endif // !defined QT_LINKED_OPENSSL
+#endif // !defined BOBUI_LINKED_OPENSSL
 #if defined(OPENSSL_VERSION_MAJOR) && OPENSSL_VERSION_MAJOR >= 3
 typedef uint64_t qssloptions;
 #else
@@ -276,7 +276,7 @@ int q_SSL_SESSION_is_resumable(const SSL_SESSION *s);
 
 #endif
 
-#if QT_CONFIG(dtls)
+#if BOBUI_CONFIG(dtls)
 // Functions and types required for DTLS support:
 extern "C"
 {
@@ -314,7 +314,7 @@ void q_BIO_set_init(BIO *a, int init);
 int q_BIO_get_shutdown(BIO *a);
 void q_BIO_set_shutdown(BIO *a, int shut);
 
-#if QT_CONFIG(ocsp)
+#if BOBUI_CONFIG(ocsp)
 const OCSP_CERTID *q_OCSP_SINGLERESP_get0_id(const OCSP_SINGLERESP *x);
 #endif // ocsp
 
@@ -586,7 +586,7 @@ void q_SSL_get0_alpn_selected(const SSL *ssl, const unsigned char **data,
 #endif // !OPENSSL_NO_NEXTPROTONEG
 
 
-#if QT_CONFIG(dtls)
+#if BOBUI_CONFIG(dtls)
 
 extern "C"
 {
@@ -603,7 +603,7 @@ const SSL_METHOD *q_DTLS_client_method();
 void *q_X509_STORE_CTX_get_ex_data(X509_STORE_CTX *ctx, int idx);
 int q_SSL_get_ex_data_X509_STORE_CTX_idx();
 
-#if QT_CONFIG(dtls)
+#if BOBUI_CONFIG(dtls)
 #define q_DTLS_set_link_mtu(ssl, mtu) q_SSL_ctrl((ssl), DTLS_CTRL_SET_LINK_MTU, (mtu), nullptr)
 #define q_DTLSv1_get_timeout(ssl, arg) q_SSL_ctrl(ssl, DTLS_CTRL_GET_TIMEOUT, 0, arg)
 #define q_DTLSv1_handle_timeout(ssl) q_SSL_ctrl(ssl, DTLS_CTRL_HANDLE_TIMEOUT, 0, nullptr)
@@ -623,7 +623,7 @@ int q_BIO_set_ex_data(BIO *b, int idx, void *data);
 #define q_SSL_set_tlsext_status_type(ssl, type) \
     q_SSL_ctrl((ssl), SSL_CTRL_SET_TLSEXT_STATUS_REQ_TYPE, (type), nullptr)
 
-#if QT_CONFIG(ocsp)
+#if BOBUI_CONFIG(ocsp)
 
 OCSP_RESPONSE *q_d2i_OCSP_RESPONSE(OCSP_RESPONSE **a, const unsigned char **in, long len);
 int q_i2d_OCSP_RESPONSE(OCSP_RESPONSE *r, unsigned char **ppout);
@@ -764,6 +764,6 @@ int q_EC_GROUP_get_degree(const EC_GROUP* g);
 
 #endif // OPENSSL_NO_DEPRECATED_3_0
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

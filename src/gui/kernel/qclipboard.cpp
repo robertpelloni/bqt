@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qclipboard.h"
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
 
 #include "qmimedata.h"
 #include "qpixmap.h"
@@ -16,14 +16,14 @@
 #include <qpa/qplatformintegration.h>
 #include <qpa/qplatformclipboard.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*!
     \class QClipboard
     \brief The QClipboard class provides access to the window system clipboard.
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     The clipboard offers a simple mechanism to copy and paste data
     between applications.
@@ -157,7 +157,7 @@ QClipboard::~QClipboard()
 
     This signal is emitted when the clipboard data is changed.
 
-    On \macos and with Qt version 4.3 or higher, clipboard
+    On \macos and with BobUI version 4.3 or higher, clipboard
     changes made by other applications will only be detected
     when the application is activated.
 
@@ -181,7 +181,7 @@ QClipboard::~QClipboard()
     This signal is emitted when the find buffer is changed. This only
     applies to \macos.
 
-    With Qt version 4.3 or higher, clipboard changes made by other
+    With BobUI version 4.3 or higher, clipboard changes made by other
     applications will only be detected when the application is activated.
 
     \sa dataChanged(), selectionChanged(), changed()
@@ -558,8 +558,8 @@ void QClipboard::emitChanged(Mode mode)
     emit changed(mode);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qclipboard.cpp"
 
-#endif // QT_NO_CLIPBOARD
+#endif // BOBUI_NO_CLIPBOARD

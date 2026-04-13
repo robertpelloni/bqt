@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef HIGHLIGHTER_H
 #define HIGHLIGHTER_H
 
 #include <QSyntaxHighlighter>
-#include <QTextCharFormat>
+#include <BOBUIextCharFormat>
 #include <QRegularExpression>
 
-QT_BEGIN_NAMESPACE
-class QTextDocument;
-QT_END_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
+class BOBUIextDocument;
+BOBUI_END_NAMESPACE
 
 //! [0]
 class Highlighter : public QSyntaxHighlighter
@@ -18,7 +18,7 @@ class Highlighter : public QSyntaxHighlighter
     Q_OBJECT
 
 public:
-    Highlighter(QTextDocument *parent = nullptr);
+    Highlighter(BOBUIextDocument *parent = nullptr);
 
 protected:
     void highlightBlock(const QString &text) override;
@@ -27,19 +27,19 @@ private:
     struct HighlightingRule
     {
         QRegularExpression pattern;
-        QTextCharFormat format;
+        BOBUIextCharFormat format;
     };
     QList<HighlightingRule> highlightingRules;
 
     QRegularExpression commentStartExpression;
     QRegularExpression commentEndExpression;
 
-    QTextCharFormat keywordFormat;
-    QTextCharFormat classFormat;
-    QTextCharFormat singleLineCommentFormat;
-    QTextCharFormat multiLineCommentFormat;
-    QTextCharFormat quotationFormat;
-    QTextCharFormat functionFormat;
+    BOBUIextCharFormat keywordFormat;
+    BOBUIextCharFormat classFormat;
+    BOBUIextCharFormat singleLineCommentFormat;
+    BOBUIextCharFormat multiLineCommentFormat;
+    BOBUIextCharFormat quotationFormat;
+    BOBUIextCharFormat functionFormat;
 };
 //! [0]
 

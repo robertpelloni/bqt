@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qcoreapplication.h>
 #include <qdebug.h>
@@ -53,5 +53,5 @@ void tst_QSlider::getSetCheck()
     QCOMPARE(INT_MAX, obj1.tickInterval());
 }
 
-QTEST_MAIN(tst_QSlider)
+BOBUIEST_MAIN(tst_QSlider)
 #include "tst_qslider.moc"

@@ -1,6 +1,6 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 // This file is included from qnsview.mm, and only used to organize the code
 
@@ -101,7 +101,7 @@
         // but we can at least print a warning.
         if ([MTLCreateSystemDefaultDevice() autorelease]) {
             static bool allowPresentsWithTransaction =
-                !qEnvironmentVariableIsSet("QT_MTL_NO_TRANSACTION");
+                !qEnvironmentVariableIsSet("BOBUI_MTL_NO_TRANSACTION");
             return allowPresentsWithTransaction ?
                 [QMetalLayer layer] : [CAMetalLayer layer];
         } else {
@@ -138,13 +138,13 @@
         layer.delegate = self;
     }
 
-    layer.name = @"Qt content layer";
+    layer.name = @"BobUI content layer";
 
-    static const bool containerLayerOptOut = qEnvironmentVariableIsSet("QT_MAC_NO_CONTAINER_LAYER");
+    static const bool containerLayerOptOut = qEnvironmentVariableIsSet("BOBUI_MAC_NO_CONTAINER_LAYER");
     if (m_platformWindow->window()->surfaceType() != QSurface::OpenGLSurface && !containerLayerOptOut) {
         qCDebug(lcQpaDrawing) << "Wrapping content layer" << layer << "in container layer";
         auto *containerLayer = [[[QContainerLayer alloc] initWithContentLayer:layer] autorelease];
-        containerLayer.name = @"Qt container layer";
+        containerLayer.name = @"BobUI container layer";
         containerLayer.delegate = self;
         layer = containerLayer;
     }
@@ -250,7 +250,7 @@
 */
 - (void)displayLayer:(CALayer *)layer
 {
-    if (auto *containerLayer = qt_objc_cast<QContainerLayer*>(layer)) {
+    if (auto *containerLayer = bobui_objc_cast<QContainerLayer*>(layer)) {
         qCDebug(lcQpaDrawing) << "Skipping display of" << containerLayer
             << "as display is handled by content layer" << containerLayer.contentLayer;
         return;
@@ -260,7 +260,7 @@
         return;
 
     if (!NSThread.isMainThread) {
-        // Qt is calling AppKit APIs such as -[NSOpenGLContext setView:] on secondary threads,
+        // BobUI is calling AppKit APIs such as -[NSOpenGLContext setView:] on secondary threads,
         // which we shouldn't do. This may result in AppKit (wrongly) triggering a display on
         // the thread where we made the call, so block it here and defer to the main thread.
         qCWarning(lcQpaDrawing) << "Display non non-main thread! Deferring to main thread";
@@ -274,9 +274,9 @@
         m_platformWindow->handleExposeEvent(bounds);
     };
 
-    if (auto *qtMetalLayer = qt_objc_cast<QMetalLayer*>(layer)) {
-        const bool presentedWithTransaction = qtMetalLayer.presentsWithTransaction;
-        qtMetalLayer.presentsWithTransaction = YES;
+    if (auto *bobuiMetalLayer = bobui_objc_cast<QMetalLayer*>(layer)) {
+        const bool presentedWithTransaction = bobuiMetalLayer.presentsWithTransaction;
+        bobuiMetalLayer.presentsWithTransaction = YES;
 
         handleExposeEvent();
 
@@ -292,23 +292,23 @@
 
             // If the expose event resulted in a secondary thread requesting that its
             // drawable should be presented on the main thread with transaction, do so.
-            if (auto mainThreadPresentation = qtMetalLayer.mainThreadPresentation) {
+            if (auto mainThreadPresentation = bobuiMetalLayer.mainThreadPresentation) {
                 mainThreadPresentation();
-                qtMetalLayer.mainThreadPresentation = nil;
+                bobuiMetalLayer.mainThreadPresentation = nil;
             }
         }
 
-        qtMetalLayer.presentsWithTransaction = presentedWithTransaction;
+        bobuiMetalLayer.presentsWithTransaction = presentedWithTransaction;
 
         // We're done presenting, but we must wait to unlock the display lock
         // until the display cycle finishes, as otherwise the render thread may
         // step in and present before the transaction commits. The display lock
         // is recursive, so setNeedsDisplay can be safely called in the meantime
         // without any issue.
-        QMetaObject::invokeMethod(m_platformWindow, [qtMetalLayer]{
-            qCDebug(lcMetalLayer) << "Unlocking" << qtMetalLayer << "after finishing display-cycle";
-            qtMetalLayer.displayLock.unlock();
-        }, Qt::QueuedConnection);
+        QMetaObject::invokeMethod(m_platformWindow, [bobuiMetalLayer]{
+            qCDebug(lcMetalLayer) << "Unlocking" << bobuiMetalLayer << "after finishing display-cycle";
+            bobuiMetalLayer.displayLock.unlock();
+        }, BobUI::QueuedConnection);
     } else {
         handleExposeEvent();
     }

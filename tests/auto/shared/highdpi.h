@@ -1,13 +1,13 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef HIGHDPI_H
 #define HIGHDPI_H
 
-#include <QtCore/qbytearray.h>
-#include <QtCore/qpoint.h>
-#include <QtCore/qrect.h>
-#include <QtCore/qsize.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qpoint.h>
+#include <BobUICore/qrect.h>
+#include <BobUICore/qsize.h>
 
 // Helpers for comparing geometries a that may go through scaling in the
 // platform plugin with fuzz (pass rounded-down device pixel ratios or

@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <QDebug>
 
@@ -13,19 +13,19 @@
 #undef register
 #include <GL/glx.h>
 
-#if QT_CONFIG(regularexpression)
-#  include <QtCore/QRegularExpression>
+#if BOBUI_CONFIG(regularexpression)
+#  include <BobUICore/QRegularExpression>
 #endif
-#include <QtGui/qguiapplication.h>
-#include <QtGui/QOpenGLContext>
-#include <QtGui/QOffscreenSurface>
+#include <BobUIGui/qguiapplication.h>
+#include <BobUIGui/QOpenGLContext>
+#include <BobUIGui/QOffscreenSurface>
 
 #include "qglxintegration.h"
-#include <QtGui/private/qglxconvenience_p.h>
+#include <BobUIGui/private/qglxconvenience_p.h>
 
 #include "qxcbglintegration.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 typedef GLXContext (*glXCreateContextAttribsARBProc)(Display*, GLXFBConfig, GLXContext, Bool, const int*);
 typedef const GLubyte *(*glGetStringiProc)(GLenum, GLuint);
@@ -87,8 +87,8 @@ static Window createDummyWindow(Display *dpy, XVisualInfo *visualInfo, int scree
                                   0, 0, 100, 100,
                                   0, visualInfo->depth, InputOutput, visualInfo->visual,
                                   CWBackPixel|CWBorderPixel|CWColormap|CWOverrideRedirect, &a);
-#ifndef QT_NO_DEBUG
-    XStoreName(dpy, window, "Qt GLX dummy window");
+#ifndef BOBUI_NO_DEBUG
+    XStoreName(dpy, window, "BobUI GLX dummy window");
 #endif
     XFreeColormap(dpy, cmap);
     return window;
@@ -505,19 +505,19 @@ bool QGLXContext::makeCurrent(QPlatformSurface *surface)
         QXcbWindow *window = static_cast<QXcbWindow *>(surface);
         QXcbScreen *screen = screenForPlatformSurface(surface);
         if (interval >= 0 && interval != window->swapInterval() && screen) {
-            typedef void (*qt_glXSwapIntervalEXT)(Display *, GLXDrawable, int);
-            typedef void (*qt_glXSwapIntervalMESA)(unsigned int);
-            static qt_glXSwapIntervalEXT glXSwapIntervalEXT = nullptr;
-            static qt_glXSwapIntervalMESA glXSwapIntervalMESA = nullptr;
+            typedef void (*bobui_glXSwapIntervalEXT)(Display *, GLXDrawable, int);
+            typedef void (*bobui_glXSwapIntervalMESA)(unsigned int);
+            static bobui_glXSwapIntervalEXT glXSwapIntervalEXT = nullptr;
+            static bobui_glXSwapIntervalMESA glXSwapIntervalMESA = nullptr;
             static bool resolved = false;
             if (!resolved) {
                 resolved = true;
                 QList<QByteArray> glxExt = QByteArray(glXQueryExtensionsString(m_display,
                                                                                screen->screenNumber())).split(' ');
                 if (glxExt.contains("GLX_EXT_swap_control"))
-                    glXSwapIntervalEXT = (qt_glXSwapIntervalEXT) getProcAddress("glXSwapIntervalEXT");
+                    glXSwapIntervalEXT = (bobui_glXSwapIntervalEXT) getProcAddress("glXSwapIntervalEXT");
                 if (glxExt.contains("GLX_MESA_swap_control"))
-                    glXSwapIntervalMESA = (qt_glXSwapIntervalMESA) getProcAddress("glXSwapIntervalMESA");
+                    glXSwapIntervalMESA = (bobui_glXSwapIntervalMESA) getProcAddress("glXSwapIntervalMESA");
             }
             if (glXSwapIntervalEXT)
                 glXSwapIntervalEXT(m_display, glxDrawable, interval);
@@ -586,12 +586,12 @@ bool QGLXContext::m_supportsThreading = true;
 // proper string table and make the implementation below use
 // binary search.
 static const char *qglx_threadedgl_blacklist_renderer[] = {
-    "Chromium",                             // QTBUG-32225 (initialization fails)
+    "Chromium",                             // BOBUIBUG-32225 (initialization fails)
     nullptr
 };
 
 static const char *qglx_threadedgl_blacklist_vendor[] = {
-    "llvmpipe",                             // QTCREATORBUG-10666
+    "llvmpipe",                             // BOBUICREATORBUG-10666
     "nouveau",                              // https://bugs.freedesktop.org/show_bug.cgi?id=91632
     nullptr
 };
@@ -602,7 +602,7 @@ void QGLXContext::queryDummyContext()
         return;
     m_queriedDummyContext = true;
 
-    static bool skip = qEnvironmentVariableIsSet("QT_OPENGL_NO_SANITY_CHECK");
+    static bool skip = qEnvironmentVariableIsSet("BOBUI_OPENGL_NO_SANITY_CHECK");
     if (skip)
         return;
 
@@ -614,7 +614,7 @@ void QGLXContext::queryDummyContext()
     QScopedPointer<QSurface> surface;
     Display *display = glXGetCurrentDisplay();
     if (!display) {
-        // FIXME: Since Qt 5.6 we don't need to check whether primary screen is NULL
+        // FIXME: Since BobUI 5.6 we don't need to check whether primary screen is NULL
         if (QScreen *screen = QGuiApplication::primaryScreen()) {
             QXcbScreen *xcbScreen = static_cast<QXcbScreen *>(screen->handle());
             display = static_cast<Display *>(xcbScreen->connection()->xlib_display());
@@ -668,8 +668,8 @@ void QGLXContext::queryDummyContext()
     }
 
     if (glxvendor && m_supportsThreading) {
-        // Blacklist Mesa drivers due to QTCREATORBUG-10875 (crash in creator),
-        // QTBUG-34492 (flickering in fullscreen) and QTBUG-38221
+        // Blacklist Mesa drivers due to BOBUICREATORBUG-10875 (crash in creator),
+        // BOBUIBUG-34492 (flickering in fullscreen) and BOBUIBUG-38221
         const char *mesaVersionStr = nullptr;
         if (strstr(glxvendor, "Mesa Project") != nullptr) {
             mesaVersionStr = (const char *) glGetString(GL_VERSION);
@@ -680,7 +680,7 @@ void QGLXContext::queryDummyContext()
             // The issue was fixed in Xcb 1.11, but we can't check for that
             // at runtime, so instead assume it fixed with recent Mesa versions
             // released several years after the Xcb fix.
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
             QRegularExpression versionTest(QStringLiteral("Mesa (\\d+)"));
             QRegularExpressionMatch result = versionTest.match(QString::fromLatin1(mesaVersionStr));
             int versionNr = 0;
@@ -698,7 +698,7 @@ void QGLXContext::queryDummyContext()
         }
     }
 
-    static bool nomultithread = qEnvironmentVariableIsSet("QT_XCB_NO_THREADED_OPENGL");
+    static bool nomultithread = qEnvironmentVariableIsSet("BOBUI_XCB_NO_THREADED_OPENGL");
     if (nomultithread)
         m_supportsThreading = false;
 
@@ -708,7 +708,7 @@ void QGLXContext::queryDummyContext()
 
     if (!m_supportsThreading) {
         qCDebug(lcQpaGl) << "Force-enable multithreaded OpenGL by setting "
-                           "environment variable QT_OPENGL_NO_SANITY_CHECK";
+                           "environment variable BOBUI_OPENGL_NO_SANITY_CHECK";
     }
 }
 
@@ -750,4 +750,4 @@ QGLXPbuffer::~QGLXPbuffer()
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QACCESSIBLEWIDGETS_H
 #define QACCESSIBLEWIDGETS_H
@@ -8,39 +8,39 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
-#include <QtWidgets/qaccessiblewidget.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
+#include <BobUIWidgets/qaccessiblewidget.h>
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 
-#include <QtCore/QPointer>
+#include <BobUICore/QPointer>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-class QTextEdit;
+class BOBUIextEdit;
 class QStackedWidget;
-class QToolBox;
+class BOBUIoolBox;
 class QMdiArea;
 class QMdiSubWindow;
 class QRubberBand;
-class QTextBrowser;
+class BOBUIextBrowser;
 class QCalendarWidget;
 class QAbstractItemView;
 class QDockWidget;
 class QDockWidgetLayout;
 class QMainWindow;
 class QPlainTextEdit;
-class QTextCursor;
-class QTextDocument;
+class BOBUIextCursor;
+class BOBUIextDocument;
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 class QAccessibleTextWidget : public QAccessibleWidgetV2,
                               public QAccessibleTextInterface,
                               public QAccessibleEditableTextInterface
@@ -86,16 +86,16 @@ public:
     using QAccessibleWidgetV2::text;
 
 protected:
-    QTextCursor textCursorForRange(int startOffset, int endOffset) const;
+    BOBUIextCursor textCursorForRange(int startOffset, int endOffset) const;
     virtual QPoint scrollBarPosition() const;
     // return the current text cursor at the caret position including a potential selection
-    virtual QTextCursor textCursor() const = 0;
-    virtual void setTextCursor(const QTextCursor &) = 0;
-    virtual QTextDocument *textDocument() const = 0;
+    virtual BOBUIextCursor textCursor() const = 0;
+    virtual void setTextCursor(const BOBUIextCursor &) = 0;
+    virtual BOBUIextDocument *textDocument() const = 0;
     virtual QWidget *viewport() const = 0;
 };
 
-#if QT_CONFIG(textedit)
+#if BOBUI_CONFIG(textedit)
 class QAccessiblePlainTextEdit : public QAccessibleTextWidget
 {
 public:
@@ -116,9 +116,9 @@ protected:
     QPlainTextEdit *plainTextEdit() const;
 
     QPoint scrollBarPosition() const override;
-    QTextCursor textCursor() const override;
-    void setTextCursor(const QTextCursor &textCursor) override;
-    QTextDocument *textDocument() const override;
+    BOBUIextCursor textCursor() const override;
+    void setTextCursor(const BOBUIextCursor &textCursor) override;
+    BOBUIextDocument *textDocument() const override;
     QWidget *viewport() const override;
 };
 
@@ -139,16 +139,16 @@ public:
     using QAccessibleTextWidget::text;
 
 protected:
-    QTextEdit *textEdit() const;
+    BOBUIextEdit *textEdit() const;
 
     QPoint scrollBarPosition() const override;
-    QTextCursor textCursor() const override;
-    void setTextCursor(const QTextCursor &textCursor) override;
-    QTextDocument *textDocument() const override;
+    BOBUIextCursor textCursor() const override;
+    void setTextCursor(const BOBUIextCursor &textCursor) override;
+    BOBUIextDocument *textDocument() const override;
     QWidget *viewport() const override;
 };
-#endif // QT_CONFIG(textedit)
-#endif  //QT_NO_CURSOR
+#endif // BOBUI_CONFIG(textedit)
+#endif  //BOBUI_NO_CURSOR
 
 class QAccessibleStackedWidget : public QAccessibleWidgetV2
 {
@@ -176,10 +176,10 @@ public:
 //    int indexOfChild(const QAccessibleInterface *child) const;
 
 protected:
-    QToolBox *toolBox() const;
+    BOBUIoolBox *toolBox() const;
 };
 
-#if QT_CONFIG(mdiarea)
+#if BOBUI_CONFIG(mdiarea)
 class QAccessibleMdiArea : public QAccessibleWidgetV2
 {
 public:
@@ -209,9 +209,9 @@ public:
 protected:
     QMdiSubWindow *mdiSubWindow() const;
 };
-#endif // QT_CONFIG(mdiarea)
+#endif // BOBUI_CONFIG(mdiarea)
 
-#if QT_CONFIG(dialogbuttonbox)
+#if BOBUI_CONFIG(dialogbuttonbox)
 class QAccessibleDialogButtonBox : public QAccessibleWidgetV2
 {
 public:
@@ -219,7 +219,7 @@ public:
 };
 #endif
 
-#if QT_CONFIG(textbrowser) && !defined(QT_NO_CURSOR)
+#if BOBUI_CONFIG(textbrowser) && !defined(BOBUI_NO_CURSOR)
 class QAccessibleTextBrowser : public QAccessibleTextEdit
 {
 public:
@@ -227,9 +227,9 @@ public:
 
     QAccessible::Role role() const override;
 };
-#endif // QT_CONFIG(textbrowser) && QT_NO_CURSOR
+#endif // BOBUI_CONFIG(textbrowser) && BOBUI_NO_CURSOR
 
-#if QT_CONFIG(calendarwidget)
+#if BOBUI_CONFIG(calendarwidget)
 class QAccessibleCalendarWidget : public QAccessibleWidgetV2
 {
 public:
@@ -247,9 +247,9 @@ private:
     QAbstractItemView *calendarView() const;
     QWidget *navigationBar() const;
 };
-#endif // QT_CONFIG(calendarwidget)
+#endif // BOBUI_CONFIG(calendarwidget)
 
-#if QT_CONFIG(dockwidget)
+#if BOBUI_CONFIG(dockwidget)
 class QAccessibleDockWidget: public QAccessibleWidgetV2
 {
 public:
@@ -266,9 +266,9 @@ protected:
     QDockWidgetLayout *dockWidgetLayout() const;
 };
 
-#endif // QT_CONFIG(dockwidget)
+#endif // BOBUI_CONFIG(dockwidget)
 
-#if QT_CONFIG(mainwindow)
+#if BOBUI_CONFIG(mainwindow)
 class QAccessibleMainWindow : public QAccessibleWidgetV2
 {
 public:
@@ -281,10 +281,10 @@ public:
     QMainWindow *mainWindow() const;
 
 };
-#endif // QT_CONFIG(mainwindow)
+#endif // BOBUI_CONFIG(mainwindow)
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QACESSIBLEWIDGETS_H

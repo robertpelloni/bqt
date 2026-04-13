@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 #include "dragwidget.h"
 
@@ -26,7 +26,7 @@ DragWidget::DragWidget(QWidget *parent)
         qFatal("Could not open the dictionary file: %s",
                qPrintable(dictionaryFile.errorString()));
     }
-    QTextStream inputStream(&dictionaryFile);
+    BOBUIextStream inputStream(&dictionaryFile);
 
     int x = 5;
     int y = 5;
@@ -38,7 +38,7 @@ DragWidget::DragWidget(QWidget *parent)
             QLabel *wordLabel = createDragLabel(word, this);
             wordLabel->move(x, y);
             wordLabel->show();
-            wordLabel->setAttribute(Qt::WA_DeleteOnClose);
+            wordLabel->setAttribute(BobUI::WA_DeleteOnClose);
             x += wordLabel->width() + 2;
             if (x >= 245) {
                 x = 5;
@@ -56,7 +56,7 @@ void DragWidget::dragEnterEvent(QDragEnterEvent *event)
 {
     if (event->mimeData()->hasText()) {
         if (event->source() == this) {
-            event->setDropAction(Qt::MoveAction);
+            event->setDropAction(BobUI::MoveAction);
             event->accept();
         } else {
             event->acceptProposedAction();
@@ -71,7 +71,7 @@ void DragWidget::dropEvent(QDropEvent *event)
     if (event->mimeData()->hasText()) {
         const QMimeData *mime = event->mimeData();
         QStringList pieces = mime->text().split(QRegularExpression(QStringLiteral("\\s+")),
-                                                Qt::SkipEmptyParts);
+                                                BobUI::SkipEmptyParts);
         QPoint position = event->position().toPoint();
         QPoint hotSpot;
 
@@ -85,13 +85,13 @@ void DragWidget::dropEvent(QDropEvent *event)
             QLabel *newLabel = createDragLabel(piece, this);
             newLabel->move(position - hotSpot);
             newLabel->show();
-            newLabel->setAttribute(Qt::WA_DeleteOnClose);
+            newLabel->setAttribute(BobUI::WA_DeleteOnClose);
 
             position += QPoint(newLabel->width(), 0);
         }
 
         if (event->source() == this) {
-            event->setDropAction(Qt::MoveAction);
+            event->setDropAction(BobUI::MoveAction);
             event->accept();
         } else {
             event->acceptProposedAction();
@@ -128,8 +128,8 @@ void DragWidget::mousePressEvent(QMouseEvent *event)
     drag->setPixmap(pixmap);
     drag->setHotSpot(hotSpot);
 
-    Qt::DropAction dropAction = drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction);
+    BobUI::DropAction dropAction = drag->exec(BobUI::CopyAction | BobUI::MoveAction, BobUI::CopyAction);
 
-    if (dropAction == Qt::MoveAction)
+    if (dropAction == BobUI::MoveAction)
         child->close();
 }

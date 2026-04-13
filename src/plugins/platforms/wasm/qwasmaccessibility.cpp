@@ -1,12 +1,12 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "qwasmaccessibility.h"
 #include "qwasmscreen.h"
 #include "qwasmwindow.h"
 #include "qwasmintegration.h"
-#include <QtCore/private/qwasmsuspendresumecontrol_p.h>
-#include <QtGui/qwindow.h>
+#include <BobUICore/private/qwasmsuspendresumecontrol_p.h>
+#include <BobUIGui/qwindow.h>
 
 #include <sstream>
 
@@ -15,11 +15,11 @@ void QWasmAccessibilityEnable()
     QWasmAccessibility::enable();
 }
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 
-#include <QtGui/private/qaccessiblebridgeutils_p.h>
+#include <BobUIGui/private/qaccessiblebridgeutils_p.h>
 
-Q_LOGGING_CATEGORY(lcQpaAccessibility, "qt.qpa.accessibility")
+Q_LOGGING_CATEGORY(lcQpaAccessibility, "bobui.qpa.accessibility")
 
 namespace {
 EM_JS(emscripten::EM_VAL, getActiveElement_js, (emscripten::EM_VAL undefHandle), {
@@ -36,10 +36,10 @@ EM_JS(emscripten::EM_VAL, getActiveElement_js, (emscripten::EM_VAL undefHandle),
 })
 }
 
-// Qt WebAssembly a11y backend
+// BobUI WebAssembly a11y backend
 //
 // This backend implements accessibility support by creating "shadowing" html
-// elements for each Qt UI element. We access the DOM by using Emscripten's
+// elements for each BobUI UI element. We access the DOM by using Emscripten's
 // val.h API.
 //
 // Currently, html elements are created in response to notifyAccessibilityUpdate
@@ -50,7 +50,7 @@ QWasmAccessibility::QWasmAccessibility()
 {
     s_instance = this;
 
-    if (qEnvironmentVariableIntValue("QT_WASM_ENABLE_ACCESSIBILITY") == 1)
+    if (qEnvironmentVariableIntValue("BOBUI_WASM_ENABLE_ACCESSIBILITY") == 1)
         enableAccessibility();
 
     // Register accessibility element event handler
@@ -335,7 +335,7 @@ void QWasmAccessibility::setNamedProperty(QAccessibleInterface *iface, const std
 
 void QWasmAccessibility::addEventListener(QAccessibleInterface *iface, emscripten::val element, const char *eventType)
 {
-    element.set("data-qta11yinterface", reinterpret_cast<size_t>(iface));
+    element.set("data-bobuia11yinterface", reinterpret_cast<size_t>(iface));
     element.call<void>("addEventListener", emscripten::val(eventType),
                        QWasmSuspendResumeControl::get()->jsEventHandlerAt(m_eventHandlerIndex),
                        true);
@@ -363,7 +363,7 @@ emscripten::val QWasmAccessibility::createHtmlElement(QAccessibleInterface *ifac
     // to the global document. TODO: Does using the correct document actually matter?
     emscripten::val document = getDocument(container);
 
-    // Translate the Qt a11y elemen role into html element type + ARIA role.
+    // Translate the BobUI a11y elemen role into html element type + ARIA role.
     // Here we can either create <div> elements with a spesific ARIA role,
     // or create e.g. <button> elements which should have built-in accessibility.
     emscripten::val element = [this, iface, document] {
@@ -663,7 +663,7 @@ void QWasmAccessibility::setHtmlElementGeometry(QAccessibleInterface *iface)
 void QWasmAccessibility::setHtmlElementGeometry(emscripten::val element, QRect geometry)
 {
     // Position the element using "position: absolute" in order to place
-    // it under the corresponding Qt element in the screen.
+    // it under the corresponding BobUI element in the screen.
     emscripten::val style = element["style"];
     style.set("position", std::string("absolute"));
     style.set("z-index", std::string("-1")); // FIXME: "0" should be sufficient to order beheind the
@@ -693,9 +693,9 @@ void QWasmAccessibility::setHtmlElementOrientation(emscripten::val element, QAcc
         const QVariant orientationVariant =
                 attributesIface->attributeValue(QAccessible::Attribute::Orientation);
         if (orientationVariant.isValid()) {
-            Q_ASSERT(orientationVariant.canConvert<Qt::Orientation>());
-            const Qt::Orientation orientation = orientationVariant.value<Qt::Orientation>();
-            const std::string value = orientation == Qt::Horizontal ? "horizontal" : "vertical";
+            Q_ASSERT(orientationVariant.canConvert<BobUI::Orientation>());
+            const BobUI::Orientation orientation = orientationVariant.value<BobUI::Orientation>();
+            const std::string value = orientation == BobUI::Horizontal ? "horizontal" : "vertical";
             setAttribute(element, "aria-orientation", value);
         }
     }
@@ -758,10 +758,10 @@ void QWasmAccessibility::handleEventFromHtmlElement(const emscripten::val event)
     if (event["target"].isNull() || event["target"].isUndefined())
         return;
 
-    if (event["target"]["data-qta11yinterface"].isNull() || event["target"]["data-qta11yinterface"].isUndefined())
+    if (event["target"]["data-bobuia11yinterface"].isNull() || event["target"]["data-bobuia11yinterface"].isUndefined())
         return;
 
-    auto iface = reinterpret_cast<QAccessibleInterface *>(event["target"]["data-qta11yinterface"].as<size_t>());
+    auto iface = reinterpret_cast<QAccessibleInterface *>(event["target"]["data-bobuia11yinterface"].as<size_t>());
     if (m_elements.find(iface) == m_elements.end())
         return;
 
@@ -1218,7 +1218,7 @@ bool QWasmAccessibility::handleUpdateByEventType(QAccessibleEvent *event)
         return false;
 
     // Handle some common event types. See
-    // https://doc.qt.io/qt-5/qaccessible.html#Event-enum
+    // https://doc.bobui.io/bobui-5/qaccessible.html#Event-enum
     switch (event->type()) {
     case QAccessible::StateChanged: {
         QAccessibleStateChangeEvent *stateChangeEvent = (QAccessibleStateChangeEvent *)event;
@@ -1279,7 +1279,7 @@ void QWasmAccessibility::handleUpdateByInterfaceRole(QAccessibleEvent *event)
     }
 
     // Switch on interface role, see
-    // https://doc.qt.io/qt-5/qaccessibleinterface.html#role
+    // https://doc.bobui.io/bobui-5/qaccessibleinterface.html#role
     switch (iface->role()) {
     case QAccessible::StaticText:
         handleStaticTextUpdate(event);
@@ -1351,4 +1351,4 @@ void QWasmAccessibility::cleanup()
 
 }
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)

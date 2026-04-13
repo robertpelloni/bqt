@@ -1,4 +1,4 @@
-// Copyright (C) 2019 The Qt Company Ltd.
+// Copyright (C) 2019 The BobUI Company Ltd.
 // Copyright © 2004-2023 Unicode, Inc.
 // SPDX-License-Identifier: Unicode-3.0
 
@@ -16,9 +16,9 @@
 // We mean it.
 //
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtPrivate::Jalali {
+namespace BobUIPrivate::Jalali {
 
 // GENERATED PART STARTS HERE
 
@@ -30,7 +30,7 @@ namespace QtPrivate::Jalali {
 
     Do not edit this section: instead regenerate it using
     cldr2qlocalexml.py and qlocalexml2cpp.py on updated (or
-    edited) CLDR data; see qtbase/util/locale_database/.
+    edited) CLDR data; see bobuibase/util/locale_database/.
 */
 
 static inline constexpr QCalendarLocale locale_data[] = {
@@ -1209,8 +1209,8 @@ static inline constexpr char16_t months_data[] = {
 };
 // GENERATED PART ENDS HERE
 
-} // namespace QtPrivate::Jalali
+} // namespace BobUIPrivate::Jalali
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QJALALICALENDAR_DATA_P_H

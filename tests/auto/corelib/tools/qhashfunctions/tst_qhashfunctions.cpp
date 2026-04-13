@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2024 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
-#include <QtCore/qmap.h>
+#include <BobUICore/qmap.h>
 #include <qplatformdefs.h>
 #include <QVarLengthArray>
 
@@ -51,8 +51,8 @@ private Q_SLOTS:
     void qhash_of_padded_floating_points_data();
     void qhash_of_padded_floating_points();
     void qmap();
-    void qthash_data();
-    void qthash();
+    void bobuihash_data();
+    void bobuihash();
     void range();
     void rangeCommutative();
 
@@ -67,28 +67,28 @@ private Q_SLOTS:
     void stdPair_string_bytearray() { stdPair_template(QString("Hello"), QByteArray("World")); }
     void stdPair_int_pairIntInt()   { stdPair_template(1, std::make_pair(2, 3)); }
     void stdPair_2x_pairIntInt()    { stdPair_template(std::make_pair(1, 2), std::make_pair(2, 3)); }
-    void stdPair_string_pairIntInt()    { stdPair_template(QString("Hello"), std::make_pair(42, -47)); } // QTBUG-92910
+    void stdPair_string_pairIntInt()    { stdPair_template(QString("Hello"), std::make_pair(42, -47)); } // BOBUIBUG-92910
     void stdPair_int_pairIntPairIntInt() { stdPair_template(1, std::make_pair(2, std::make_pair(3, 4))); }
 
-    void enum_int_consistent_hash_qtbug108032();
+    void enum_int_consistent_hash_bobuibug108032();
 
-#if QT_DEPRECATED_SINCE(6, 6)
+#if BOBUI_DEPRECATED_SINCE(6, 6)
     void setGlobalQHashSeed();
 #endif
 };
 
 void tst_QHashFunctions::initTestCase()
 {
-    QTest::addColumn<quint64>("seedValue");
+    BOBUIest::addColumn<quint64>("seedValue");
 
-    QTest::newRow("zero-seed") << ZeroSeed;
-    QTest::newRow("zero-seed-negated") << ~ZeroSeed;
-    QTest::newRow("non-zero-seed-32bit") << RandomSeed32;
-    QTest::newRow("non-zero-seed-32bit-negated")
+    BOBUIest::newRow("zero-seed") << ZeroSeed;
+    BOBUIest::newRow("zero-seed-negated") << ~ZeroSeed;
+    BOBUIest::newRow("non-zero-seed-32bit") << RandomSeed32;
+    BOBUIest::newRow("non-zero-seed-32bit-negated")
             << quint64{~quint32(RandomSeed32)}; // ensure this->seed gets same value on 32/64-bit
     if constexpr (sizeof(size_t) == sizeof(quint64)) {
-        QTest::newRow("non-zero-seed-64bit") << RandomSeed64;
-        QTest::newRow("non-zero-seed-64bit-negated") << ~RandomSeed64;
+        BOBUIest::newRow("non-zero-seed-64bit") << RandomSeed64;
+        BOBUIest::newRow("non-zero-seed-64bit-negated") << ~RandomSeed64;
     }
 }
 
@@ -100,11 +100,11 @@ void tst_QHashFunctions::init()
 
 void tst_QHashFunctions::boolIntegerConsistency()
 {
-    QT6_ONLY(if (seed) QEXPECT_FAIL("", "QTBUG-126674", Continue));
+    BOBUI6_ONLY(if (seed) QEXPECT_FAIL("", "BOBUIBUG-126674", Continue));
     QCOMPARE(qHash(0, seed), qHash(false, seed));
-    QT6_ONLY(if (seed) QEXPECT_FAIL("", "QTBUG-126674", Continue));
+    BOBUI6_ONLY(if (seed) QEXPECT_FAIL("", "BOBUIBUG-126674", Continue));
     QCOMPARE(qHash(1, seed), qHash(true, seed));
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
     // check consistency with pre-6.9 incidental implementation:
     QCOMPARE(qHash(true,  seed), qHash(int(true)) ^ seed);
     QCOMPARE(qHash(false, seed), qHash(int(false)) ^ seed);
@@ -113,45 +113,45 @@ void tst_QHashFunctions::boolIntegerConsistency()
 
 template <typename T> static void addPositiveCommonRows()
 {
-    QTest::addRow("zero") << T(0);
-    QTest::addRow("positive_7bit") << T(42);
-    QTest::addRow("positive_15bit") << T(0x1f3f);
-    QTest::addRow("positive_31bit") << T(0x4b3d'93c4);
-    QTest::addRow("positive_63bit") << T(Q_INT64_C(0x39df'7338'4b14'fcb0));
+    BOBUIest::addRow("zero") << T(0);
+    BOBUIest::addRow("positive_7bit") << T(42);
+    BOBUIest::addRow("positive_15bit") << T(0x1f3f);
+    BOBUIest::addRow("positive_31bit") << T(0x4b3d'93c4);
+    BOBUIest::addRow("positive_63bit") << T(Q_INT64_C(0x39df'7338'4b14'fcb0));
 
-    QTest::addRow("SCHAR_MAX") << T(SCHAR_MAX);
-    QTest::addRow("SHRT_MAX") << T(SHRT_MAX);
-    QTest::addRow("INT_MAX") << T(INT_MAX);
-    QTest::addRow("LLONG_MAX") << T(LLONG_MAX);
+    BOBUIest::addRow("SCHAR_MAX") << T(SCHAR_MAX);
+    BOBUIest::addRow("SHRT_MAX") << T(SHRT_MAX);
+    BOBUIest::addRow("INT_MAX") << T(INT_MAX);
+    BOBUIest::addRow("LLONG_MAX") << T(LLONG_MAX);
 }
 
 void tst_QHashFunctions::signedIntegerConsistency_data()
 {
-    QTest::addColumn<qint64>("value");
+    BOBUIest::addColumn<qint64>("value");
     addPositiveCommonRows<qint64>();
-    QTest::addRow("negative_7bit") << Q_INT64_C(-28);
-    QTest::addRow("negative_15bit") << Q_INT64_C(-0x387c);
-    QTest::addRow("negative_31bit") << qint64(-0x7713'30f9);
+    BOBUIest::addRow("negative_7bit") << Q_INT64_C(-28);
+    BOBUIest::addRow("negative_15bit") << Q_INT64_C(-0x387c);
+    BOBUIest::addRow("negative_31bit") << qint64(-0x7713'30f9);
 
-    QTest::addRow("SCHAR_MIN") << qint64(SCHAR_MIN);
-    QTest::addRow("SHRT_MIN") << qint64(SHRT_MIN);
-    QTest::addRow("INT_MIN") << qint64(INT_MIN);
-    QTest::addRow("LLONG_MIN") << LLONG_MIN;
+    BOBUIest::addRow("SCHAR_MIN") << qint64(SCHAR_MIN);
+    BOBUIest::addRow("SHRT_MIN") << qint64(SHRT_MIN);
+    BOBUIest::addRow("INT_MIN") << qint64(INT_MIN);
+    BOBUIest::addRow("LLONG_MIN") << LLONG_MIN;
 }
 
 void tst_QHashFunctions::unsignedIntegerConsistency_data()
 {
-    QTest::addColumn<quint64>("value");
+    BOBUIest::addColumn<quint64>("value");
     addPositiveCommonRows<quint64>();
 
-    QTest::addRow("positive_8bit") << Q_UINT64_C(0xE4);
-    QTest::addRow("positive_16bit") << Q_UINT64_C(0xcafe);
-    QTest::addRow("positive_32bit") << quint64(0xcafe'babe);
+    BOBUIest::addRow("positive_8bit") << Q_UINT64_C(0xE4);
+    BOBUIest::addRow("positive_16bit") << Q_UINT64_C(0xcafe);
+    BOBUIest::addRow("positive_32bit") << quint64(0xcafe'babe);
 
-    QTest::addRow("UCHAR_MAX") << quint64(UCHAR_MAX);
-    QTest::addRow("UHRT_MAX") << quint64(USHRT_MAX);
-    QTest::addRow("UINT_MAX") << quint64(UINT_MAX);
-    QTest::addRow("ULLONG_MAX") << ULLONG_MAX;
+    BOBUIest::addRow("UCHAR_MAX") << quint64(UCHAR_MAX);
+    BOBUIest::addRow("UHRT_MAX") << quint64(USHRT_MAX);
+    BOBUIest::addRow("UINT_MAX") << quint64(UINT_MAX);
+    BOBUIest::addRow("ULLONG_MAX") << ULLONG_MAX;
 }
 
 static void unsignedIntegerConsistency(quint64 value, size_t seed)
@@ -172,7 +172,7 @@ static void unsignedIntegerConsistency(quint64 value, size_t seed)
     if (v32 == value)
         QCOMPARE(hu64, hu32);
 
-#ifdef QT_SUPPORTS_INT128
+#ifdef BOBUI_SUPPORTS_INT128
     const auto hu128 = qHash(quint128(value), seed);
     QCOMPARE(hu128, hu64);
 #endif
@@ -213,13 +213,13 @@ void tst_QHashFunctions::signedIntegerConsistency()
     if (v16 == value)
         QCOMPARE(hs16, hs32);
     if (v32 == value) {
-        // because of QTBUG-116080, this may not match, but we can't guarantee
+        // because of BOBUIBUG-116080, this may not match, but we can't guarantee
         // it mismatches 100% of the time either
-        if constexpr (sizeof(size_t) > sizeof(int) || QT_VERSION_MAJOR > 6)
+        if constexpr (sizeof(size_t) > sizeof(int) || BOBUI_VERSION_MAJOR > 6)
             QCOMPARE(hs64, hs32);
     }
 
-#ifdef QT_SUPPORTS_INT128
+#ifdef BOBUI_SUPPORTS_INT128
     const auto hs128 = qHash(qint128(value), seed);
     QCOMPARE(hs128, hs64);
 #endif
@@ -235,7 +235,7 @@ void tst_QHashFunctions::signedIntegerConsistency()
 
 void tst_QHashFunctions::extendedIntegerConsistency()
 {
-#ifdef QT_SUPPORTS_INT128
+#ifdef BOBUI_SUPPORTS_INT128
     // We only need to check qint128 and quint128 consistency here.
     qint128 v65bit = Q_INT128_C(0x1'abea'06b7'dcf5'106a);
     qint128 v127bit = Q_INT128_C(0x387c'ac7a'22a0'5242'9ee9'bcaa'6a53'13af);
@@ -249,23 +249,23 @@ void tst_QHashFunctions::extendedIntegerConsistency()
 
 void tst_QHashFunctions::floatingPointConsistency_data()
 {
-    QTest::addColumn<double>("value");
-    QTest::addRow("zero") << 0.0;
+    BOBUIest::addColumn<double>("value");
+    BOBUIest::addRow("zero") << 0.0;
 
-    QTest::addRow("1.0") << 1.0;
-    QTest::addRow("infinity") << std::numeric_limits<double>::infinity();
+    BOBUIest::addRow("1.0") << 1.0;
+    BOBUIest::addRow("infinity") << std::numeric_limits<double>::infinity();
 
-    QTest::addRow("fp16_epsilon") << double(std::numeric_limits<qfloat16>::epsilon());
-    QTest::addRow("fp16_min") << double(std::numeric_limits<qfloat16>::min());
-    QTest::addRow("fp16_max") << double(std::numeric_limits<qfloat16>::max());
+    BOBUIest::addRow("fp16_epsilon") << double(std::numeric_limits<qfloat16>::epsilon());
+    BOBUIest::addRow("fp16_min") << double(std::numeric_limits<qfloat16>::min());
+    BOBUIest::addRow("fp16_max") << double(std::numeric_limits<qfloat16>::max());
 
-    QTest::addRow("float_epsilon") << double(std::numeric_limits<float>::epsilon());
-    QTest::addRow("float_min") << double(std::numeric_limits<float>::min());
-    QTest::addRow("float_max") << double(std::numeric_limits<float>::max());
+    BOBUIest::addRow("float_epsilon") << double(std::numeric_limits<float>::epsilon());
+    BOBUIest::addRow("float_min") << double(std::numeric_limits<float>::min());
+    BOBUIest::addRow("float_max") << double(std::numeric_limits<float>::max());
 
-    QTest::addRow("double_epsilon") << double(std::numeric_limits<double>::epsilon());
-    QTest::addRow("double_min") << double(std::numeric_limits<double>::min());
-    QTest::addRow("double_max") << double(std::numeric_limits<double>::max());
+    BOBUIest::addRow("double_epsilon") << double(std::numeric_limits<double>::epsilon());
+    BOBUIest::addRow("double_min") << double(std::numeric_limits<double>::min());
+    BOBUIest::addRow("double_max") << double(std::numeric_limits<double>::max());
 }
 
 void tst_QHashFunctions::floatingPointConsistency()
@@ -290,7 +290,7 @@ void tst_QHashFunctions::floatingPointConsistency()
         QCOMPARE(hnf16, hnf32);
     }
 
-    // See QTBUG-116077; the rest isn't guaranteed to match (but we can't
+    // See BOBUIBUG-116077; the rest isn't guaranteed to match (but we can't
     // guarantee it will mismatch either).
     return;
 
@@ -305,22 +305,22 @@ void tst_QHashFunctions::floatingPointConsistency()
 
 void tst_QHashFunctions::stringConsistency_data()
 {
-    QTest::addColumn<QString>("value");
-    QTest::newRow("null") << QString();
-    QTest::newRow("empty") << "";
-    QTest::newRow("withnull") << QStringLiteral("A\0z");
-    QTest::newRow("short-ascii") << "Hello";            // 10 bytes
-    QTest::newRow("medium-ascii") << "Hello, World";    // 24 bytes
-    QTest::newRow("long-ascii") << QStringLiteral("abcdefghijklmnopqrstuvxyz").repeated(16);
+    BOBUIest::addColumn<QString>("value");
+    BOBUIest::newRow("null") << QString();
+    BOBUIest::newRow("empty") << "";
+    BOBUIest::newRow("withnull") << QStringLiteral("A\0z");
+    BOBUIest::newRow("short-ascii") << "Hello";            // 10 bytes
+    BOBUIest::newRow("medium-ascii") << "Hello, World";    // 24 bytes
+    BOBUIest::newRow("long-ascii") << QStringLiteral("abcdefghijklmnopqrstuvxyz").repeated(16);
 
-    QTest::newRow("short-latin1") << "Bokmål";
-    QTest::newRow("medium-latin1") << "Det går bra!";   // 24 bytes
-    QTest::newRow("long-latin1")
+    BOBUIest::newRow("short-latin1") << "Bokmål";
+    BOBUIest::newRow("medium-latin1") << "Det går bra!";   // 24 bytes
+    BOBUIest::newRow("long-latin1")
             << R"(Alle mennesker er født frie og med samme menneskeverd og menneskerettigheter.
  De er utstyrt med fornuft og samvittighet og bør handle mot hverandre i brorskapets ånd.)";
 
-    QTest::newRow("short-nonlatin1") << "Ελληνικά";
-    QTest::newRow("long-nonlatin1")
+    BOBUIest::newRow("short-nonlatin1") << "Ελληνικά";
+    BOBUIest::newRow("long-nonlatin1")
             << R"('Ολοι οι άνθρωποι γεννιούνται ελεύθεροι και ίσοι στην αξιοπρέπεια και τα
  δικαιώματα. Είναι προικισμένοι με λογική και συνείδηση, και οφείλουν να συμπεριφέρονται μεταξύ
  τους με πνεύμα αδελφοσύνης.)";
@@ -421,7 +421,7 @@ void tst_QHashFunctions::qhash()
         std::pair<int, int> p12(1, 2);
         std::pair<int, int> p21(2, 1);
 
-        using QT_PREPEND_NAMESPACE(qHash);
+        using BOBUI_PREPEND_NAMESPACE(qHash);
 
         QVERIFY(qHash(p12, seed) == qHash(p12, seed));
         QVERIFY(qHash(p21, seed) == qHash(p21, seed));
@@ -462,7 +462,7 @@ void tst_QHashFunctions::qhash_of_zero_floating_points()
 static void forceBufferSpill(void *buf)
 {
     std::atomic_signal_fence(std::memory_order_release);
-    QT_WRITE(1, buf, 0);    // we don't actually write anything
+    BOBUI_WRITE(1, buf, 0);    // we don't actually write anything
 }
 
 // Overwrite space in the stack that qHash() calls will use.
@@ -486,16 +486,16 @@ static size_t qHashFloatingPointFromMemory(double v) noexcept
 
 void tst_QHashFunctions::qhash_of_padded_floating_points_data()
 {
-    QTest::addColumn<void *>("wrapper");
+    BOBUIest::addColumn<void *>("wrapper");
 
     // x86 uses IEEE 754 extended double precision with the x87 instructions.
     // The FSTP instruction only writes 10 bytes, so it has padding bits.
-    QTest::newRow("long double") << (void *)qHashFloatingPointFromMemory<long double>;
+    BOBUIest::newRow("long double") << (void *)qHashFloatingPointFromMemory<long double>;
 
     // There are no platforms for which these are known to have padding bits
-    QTest::newRow("double") << (void *)qHashFloatingPointFromMemory<double>;
-    QTest::newRow("float") << (void *)qHashFloatingPointFromMemory<float>;
-    QTest::newRow("qfloat16") << (void *)qHashFloatingPointFromMemory<qfloat16>;
+    BOBUIest::newRow("double") << (void *)qHashFloatingPointFromMemory<double>;
+    BOBUIest::newRow("float") << (void *)qHashFloatingPointFromMemory<float>;
+    BOBUIest::newRow("qfloat16") << (void *)qHashFloatingPointFromMemory<qfloat16>;
 }
 
 void tst_QHashFunctions::qhash_of_padded_floating_points()
@@ -504,7 +504,7 @@ void tst_QHashFunctions::qhash_of_padded_floating_points()
     QFETCH(void *, wrapper);
     auto fn = reinterpret_cast<Wrapper>(wrapper);
 
-    QTest::ThrowOnFailEnabler tof;
+    BOBUIest::ThrowOnFailEnabler tof;
     auto dotest = [fn](double value) {
         useStack(0x55);
         size_t hash1 = fn(value);
@@ -523,41 +523,41 @@ void tst_QHashFunctions::qhash_of_padded_floating_points()
 
 void tst_QHashFunctions::qmap()
 {
-    // QTBUG-126659
+    // BOBUIBUG-126659
     QMap<int, int> map;
     size_t s = seed;
     QCOMPARE(qHash(map, s), seed);
 }
 
-void tst_QHashFunctions::qthash_data()
+void tst_QHashFunctions::bobuihash_data()
 {
-    QTest::addColumn<QString>("key");
-    QTest::addColumn<uint>("hash");
+    BOBUIest::addColumn<QString>("key");
+    BOBUIest::addColumn<uint>("hash");
 
-    QTest::newRow("null") << QString() << 0u;
-    QTest::newRow("empty") << QStringLiteral("") << 0u;
-    QTest::newRow("abcdef") << QStringLiteral("abcdef") << 108567222u;
-    QTest::newRow("tqbfjotld") << QStringLiteral("The quick brown fox jumps over the lazy dog") << 140865879u;
-    QTest::newRow("42") << QStringLiteral("42") << 882u;
+    BOBUIest::newRow("null") << QString() << 0u;
+    BOBUIest::newRow("empty") << QStringLiteral("") << 0u;
+    BOBUIest::newRow("abcdef") << QStringLiteral("abcdef") << 108567222u;
+    BOBUIest::newRow("tqbfjotld") << QStringLiteral("The quick brown fox jumps over the lazy dog") << 140865879u;
+    BOBUIest::newRow("42") << QStringLiteral("42") << 882u;
 }
 
-void tst_QHashFunctions::qthash()
+void tst_QHashFunctions::bobuihash()
 {
     QFETCH(QString, key);
-    const uint result = qt_hash(key);
-    QTEST(result, "hash");
+    const uint result = bobui_hash(key);
+    BOBUIEST(result, "hash");
 }
 
 namespace SomeNamespace {
     struct Hashable { int i; };
     inline size_t qHash(Hashable h, size_t seed = 0)
-    { return QT_PREPEND_NAMESPACE(qHash)(h.i, seed); }
+    { return BOBUI_PREPEND_NAMESPACE(qHash)(h.i, seed); }
 
     struct AdlHashable {
         int i;
     private:
         friend size_t qHash(AdlHashable h, size_t seed = 0)
-        { return QT_PREPEND_NAMESPACE(qHash)(h.i, seed); }
+        { return BOBUI_PREPEND_NAMESPACE(qHash)(h.i, seed); }
     };
 }
 void tst_QHashFunctions::range()
@@ -626,11 +626,11 @@ void tst_QHashFunctions::rangeCommutative()
 }
 
 // QVarLengthArray these days has a qHash() as a hidden friend.
-// This checks that QT_SPECIALIZE_STD_HASH_TO_CALL_QHASH can deal with that:
+// This checks that BOBUI_SPECIALIZE_STD_HASH_TO_CALL_QHASH can deal with that:
 
-QT_BEGIN_NAMESPACE
-QT_SPECIALIZE_STD_HASH_TO_CALL_QHASH_BY_CREF(QVarLengthArray<QVector<int>>)
-QT_END_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
+BOBUI_SPECIALIZE_STD_HASH_TO_CALL_QHASH_BY_CREF(QVarLengthArray<QVector<int>>)
+BOBUI_END_NAMESPACE
 
 void tst_QHashFunctions::stdHash()
 {
@@ -710,7 +710,7 @@ void tst_QHashFunctions::stdPair_template(const T1 &t1, const T2 &t2)
     QCOMPARE(qHash(vpair, seed), qHash(vpair, seed));
 }
 
-void tst_QHashFunctions::enum_int_consistent_hash_qtbug108032()
+void tst_QHashFunctions::enum_int_consistent_hash_bobuibug108032()
 {
     enum E { E1, E2, E3 };
 
@@ -721,10 +721,10 @@ void tst_QHashFunctions::enum_int_consistent_hash_qtbug108032()
     QCOMPARE(qHash(E3, seed), qHash(int(E3), seed));
 }
 
-#if QT_DEPRECATED_SINCE(6, 6)
+#if BOBUI_DEPRECATED_SINCE(6, 6)
 void tst_QHashFunctions::setGlobalQHashSeed()
 {
-QT_WARNING_PUSH QT_WARNING_DISABLE_DEPRECATED
+BOBUI_WARNING_PUSH BOBUI_WARNING_DISABLE_DEPRECATED
     // Setter works as advertised
     qSetGlobalQHashSeed(0);
     QCOMPARE(qGlobalQHashSeed(), 0);
@@ -737,9 +737,9 @@ QT_WARNING_PUSH QT_WARNING_DISABLE_DEPRECATED
     // Reset works as advertised
     qSetGlobalQHashSeed(-1);
     QVERIFY(qGlobalQHashSeed() > 0);
-QT_WARNING_POP
+BOBUI_WARNING_POP
 }
-#endif // QT_DEPRECATED_SINCE(6, 6)
+#endif // BOBUI_DEPRECATED_SINCE(6, 6)
 
-QTEST_APPLESS_MAIN(tst_QHashFunctions)
+BOBUIEST_APPLESS_MAIN(tst_QHashFunctions)
 #include "tst_qhashfunctions.moc"

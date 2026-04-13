@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qopengl2pexvertexarray_p.h"
 
 #include <private/qbezier_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 void QOpenGL2PEXVertexArray::clear()
 {
@@ -99,7 +99,7 @@ void QOpenGL2PEXVertexArray::addPath(const QVectorPath &path, GLfloat curveInver
                                                 points[i+1],
                                                 points[i+2]);
                 QRectF bounds = b.bounds();
-                // threshold based on same algorithm as in qtriangulatingstroker.cpp
+                // threshold based on same algorithm as in bobuiriangulatingstroker.cpp
                 int threshold = qMin<float>(64, qMax(bounds.width(), bounds.height()) * 3.14f / (curveInverseScale * 6));
                 if (threshold < 3) threshold = 3;
                 qreal one_over_threshold_minus_1 = qreal(1) / (threshold - 1);
@@ -134,4 +134,4 @@ void QOpenGL2PEXVertexArray::lineToArray(const GLfloat x, const GLfloat y)
         minY = y;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

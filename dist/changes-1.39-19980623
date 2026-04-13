@@ -34,7 +34,7 @@ examples/application/application.h    1.5  warwick  +2 -1
 examples/dragdrop/.cvsignore    1.1  warwick  initial checkin
 examples/dragdrop/dragdrop.pro    1.1  warwick  initial checkin
 examples/dragdrop/main.cpp    1.6  warwick  +20 -7
-src/qt.pro    2.28  warwick  +3 -3
+src/bobui.pro    2.28  warwick  +3 -3
 
   upd
 
@@ -390,7 +390,7 @@ src/kernel/qwidget.h    2.51  warwick  +3 -1
   Separate sys-dep extra data create/delete.
 
 
-src/qt.pro    2.27  warwick  +1 -0
+src/bobui.pro    2.27  warwick  +1 -0
 src/dialogs/qfiledlg.cpp    2.72  warwick  +2 -1
 src/kernel/qapplication_win.cpp    2.92  warwick  +4 -4
 src/kernel/qdnd_win.cpp    2.8  warwick  +115 -505
@@ -401,7 +401,7 @@ src/kernel/qwidget_win.cpp    2.58  warwick  +3 -1
   Drag&Dropery.
 
 
-src/qt.pro    2.29  warwick  +2 -0
+src/bobui.pro    2.29  warwick  +2 -0
 src/kernel/qfocusdata.cpp    2.1  warwick  initial checkin
 src/kernel/qfocusdata.h    2.4  warwick  +6 -12
 src/kernel/qwidget.cpp    2.114  warwick  +3 -1
@@ -518,12 +518,12 @@ src/widgets/qsplitter.h    1.10  paul  +16 -17
   *** WILL BREAK OLD CODE ***
 
 
-src/widgets/qtooltip.cpp    2.48  agulbra  +4 -4
+src/widgets/bobuiooltip.cpp    2.48  agulbra  +4 -4
 
   tweak periods a bit
 
 
-src/widgets/qtooltip.cpp    2.49  agulbra  +4 -3
+src/widgets/bobuiooltip.cpp    2.49  agulbra  +4 -3
 
   paranoia fix: don't let buggy programs introduce an infinte loop by
   calling tip() with the "wrong" rectangle.

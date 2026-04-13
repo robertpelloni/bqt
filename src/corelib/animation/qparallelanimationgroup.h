@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QPARALLELANIMATIONGROUP_H
 #define QPARALLELANIMATIONGROUP_H
 
-#include <QtCore/qanimationgroup.h>
+#include <BobUICore/qanimationgroup.h>
 
-QT_REQUIRE_CONFIG(animation);
+BOBUI_REQUIRE_CONFIG(animation);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QParallelAnimationGroupPrivate;
 class Q_CORE_EXPORT QParallelAnimationGroup : public QAnimationGroup
@@ -36,6 +36,6 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_uncontrolledAnimationFinished())
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPARALLELANIMATIONGROUP

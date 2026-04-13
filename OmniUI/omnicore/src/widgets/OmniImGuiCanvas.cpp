@@ -13,7 +13,7 @@ OmniImGuiCanvas::OmniImGuiCanvas(QQuickItem *parent)
       m_currentPainter(nullptr)
 {
     setObjectName("OmniImGuiCanvas");
-    setAcceptedMouseButtons(Qt::LeftButton);
+    setAcceptedMouseButtons(BobUI::LeftButton);
     setFlag(ItemHasContents, true);
     setWidth(400);
     setHeight(400);
@@ -70,7 +70,7 @@ bool OmniImGuiCanvas::button(const QString& label) {
     m_currentPainter->fillPath(path, color);
 
     m_currentPainter->setPen(theme->textColor());
-    m_currentPainter->drawText(btnRect, Qt::AlignCenter, label);
+    m_currentPainter->drawText(btnRect, BobUI::AlignCenter, label);
 
     m_currentY += 40; // Advance layout cursor
     return isClicked;
@@ -81,7 +81,7 @@ void OmniImGuiCanvas::text(const QString& label) {
     
     auto theme = OmniThemeManager::instance();
     m_currentPainter->setPen(theme->textColor());
-    m_currentPainter->drawText(QRectF(10, m_currentY, width(), 20), Qt::AlignLeft | Qt::AlignVCenter, label);
+    m_currentPainter->drawText(QRectF(10, m_currentY, width(), 20), BobUI::AlignLeft | BobUI::AlignVCenter, label);
     
     m_currentY += 30; // Advance layout cursor
 }

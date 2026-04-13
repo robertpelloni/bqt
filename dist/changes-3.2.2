@@ -1,5 +1,5 @@
-Qt 3.2.2 is a bugfix release. It maintains both forward and backward
-compatibility (source and binary) with Qt 3.2.1
+BobUI 3.2.2 is a bugfix release. It maintains both forward and backward
+compatibility (source and binary) with BobUI 3.2.1
 
 
 ****************************************************************************
@@ -9,7 +9,7 @@ compatibility (source and binary) with Qt 3.2.1
 Compilers
 ---------
 
-Make Qt work on Windows 9x compiled with Borland.
+Make BobUI work on Windows 9x compiled with Borland.
 
 Meta Object Compiler
 --------------------
@@ -63,17 +63,17 @@ General Fixes
         Support non-'C' locales for string-to-double conversion.
 - QSql
         Oracle crash fix in some really weird situations.
-- QTable
+- BOBUIable
         Handle icons correctly when swapping columns/rows.
         Fix case where a dialog containing a table could hang when
         opening.
-        Do not crash when QTableHeader::updateSelections() is called,
+        Do not crash when BOBUIableHeader::updateSelections() is called,
         without a current selection.
-- QTextEdit
+- BOBUIextEdit
         Fixed crash in setCurrentFont() when in LogText mode.
         Fixed backward searches for the first character or word in a
         document.
-- QTextEngine
+- BOBUIextEngine
         Fix memory leaks.
 - QWidgetResizeHandler
         Improve user interaction.
@@ -108,7 +108,7 @@ Windows:
         Speedup case where tablet support is enabled in library, but
         no tablet device is present.
 - QWindowsXPStyle
-        Fix gradient background of QLabels within QTabWidgets.
+        Fix gradient background of QLabels within BOBUIabWidgets.
         Fix "password" character for systems without extended font
         support.
 
@@ -116,7 +116,7 @@ Mac:
 
         Improved documentation of Mac-specific issues. A number of
         general improvements, style fixes, optimizations and bugfixes
-        have been made for Qt/Mac in 3.2.2. Some of the most visible
+        have been made for BobUI/Mac in 3.2.2. Some of the most visible
         are:
 
 - QSizeGrip

@@ -1,17 +1,17 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qnetworkmanagernetworkinformationbackend.h"
 
-#include <QtCore/qglobal.h>
-#include <QtCore/private/qobject_p.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/private/qobject_p.h>
 
-#include <QtDBus/qdbusmessage.h>
+#include <BobUIDBus/qdbusmessage.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 Q_DECLARE_LOGGING_CATEGORY(lcNetInfoNLM)
-Q_LOGGING_CATEGORY(lcNetInfoNM, "qt.network.info.networkmanager");
+Q_LOGGING_CATEGORY(lcNetInfoNM, "bobui.network.info.networkmanager");
 
 namespace {
 QNetworkInformation::Reachability reachabilityFromNMState(QNetworkManagerInterface::NMState state)
@@ -176,7 +176,7 @@ void QNetworkManagerNetworkInformationBackend::onMeteredChanged(
     setMetered(isMeteredFromNMMetered(metered));
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "qnetworkmanagernetworkinformationbackend.moc"
 #include "moc_qnetworkmanagernetworkinformationbackend.cpp"

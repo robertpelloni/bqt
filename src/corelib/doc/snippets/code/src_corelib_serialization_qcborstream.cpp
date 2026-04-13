@@ -1,12 +1,12 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QFile>
 #include <QCborStreamWriter>
 #include <QCborStreamReader>
 #include <QCborValue>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 void examples(QCborStreamWriter &writer)
 {
@@ -18,7 +18,7 @@ void examples(QCborStreamWriter &writer)
 
     {
         //! [1]
-        using namespace Qt::StringLiterals;
+        using namespace BobUI::StringLiterals;
         // ...
         writer.startMap(4);    // 4 elements in the map
 
@@ -93,7 +93,7 @@ void writeFile(QCborStreamWriter &writer, const QString &fileName)
 void helloWorld(QCborStreamWriter &writer)
 {
     //! [8]
-    using namespace Qt::StringLiterals;
+    using namespace BobUI::StringLiterals;
     // ...
     writer.append("Hello, World"_L1);
     //! [8]

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example itemviews/customsortfiltermodel
@@ -173,13 +173,13 @@
 
     \snippet itemviews/customsortfiltermodel/window.cpp 1
 
-    The QTreeView class provides a default model/view implementation
+    The BOBUIreeView class provides a default model/view implementation
     of a tree view. Our view implements a tree representation of items
     in the application's source model.
 
     \snippet itemviews/customsortfiltermodel/window.cpp 2
 
-    The QTreeView class provides a default model/view implementation
+    The BOBUIreeView class provides a default model/view implementation
     of a tree view; our view implements a tree representation of items
     in the application's source model. We add our view widget to a
     layout that we install on a corresponding group box.
@@ -199,7 +199,7 @@
 
     The sorting will be handled by the view. All we have to do is to
     enable sorting for our proxy view by setting the
-    QTreeView::sortingEnabled property (which is false by
+    BOBUIreeView::sortingEnabled property (which is false by
     default). Then we add all the filtering widgets and the proxy view
     to a layout that we install on a corresponding group box.
 
@@ -260,7 +260,7 @@
     return a model describing a collection of emails. The model is an
     instance of the QStandardItemModel class, i.e., a generic model
     for storing custom data typically used as a repository for
-    standard Qt data types. Each mail description is added to the
+    standard BobUI data types. Each mail description is added to the
     model using \c addMail(), another convenience function. See \c
     {itemviews/customsortfiltermodel/main.cpp} for details.
 */

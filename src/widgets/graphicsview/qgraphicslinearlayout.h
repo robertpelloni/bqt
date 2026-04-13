@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QGRAPHICSLINEARLAYOUT_H
 #define QGRAPHICSLINEARLAYOUT_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qgraphicsitem.h>
-#include <QtWidgets/qgraphicslayout.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qgraphicsitem.h>
+#include <BobUIWidgets/qgraphicslayout.h>
 
-QT_REQUIRE_CONFIG(graphicsview);
+BOBUI_REQUIRE_CONFIG(graphicsview);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QGraphicsLinearLayoutPrivate;
 
@@ -19,11 +19,11 @@ class Q_WIDGETS_EXPORT QGraphicsLinearLayout : public QGraphicsLayout
 {
 public:
     QGraphicsLinearLayout(QGraphicsLayoutItem *parent = nullptr);
-    QGraphicsLinearLayout(Qt::Orientation orientation, QGraphicsLayoutItem *parent = nullptr);
+    QGraphicsLinearLayout(BobUI::Orientation orientation, QGraphicsLayoutItem *parent = nullptr);
     virtual ~QGraphicsLinearLayout();
 
-    void setOrientation(Qt::Orientation orientation);
-    Qt::Orientation orientation() const;
+    void setOrientation(BobUI::Orientation orientation);
+    BobUI::Orientation orientation() const;
 
     inline void addItem(QGraphicsLayoutItem *item) { insertItem(-1, item); }
     inline void addStretch(int stretch = 1) { insertStretch(-1, stretch); }
@@ -42,8 +42,8 @@ public:
     void setStretchFactor(QGraphicsLayoutItem *item, int stretch);
     int stretchFactor(QGraphicsLayoutItem *item) const;
 
-    void setAlignment(QGraphicsLayoutItem *item, Qt::Alignment alignment);
-    Qt::Alignment alignment(QGraphicsLayoutItem *item) const;
+    void setAlignment(QGraphicsLayoutItem *item, BobUI::Alignment alignment);
+    BobUI::Alignment alignment(QGraphicsLayoutItem *item) const;
 
     void setGeometry(const QRectF &rect) override;
 
@@ -51,7 +51,7 @@ public:
     QGraphicsLayoutItem *itemAt(int index) const override;
 
     void invalidate() override;
-    QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const override;
+    QSizeF sizeHint(BobUI::SizeHint which, const QSizeF &constraint = QSizeF()) const override;
 
 #if 0 // ###
     Q5SizePolicy::ControlTypes controlTypes(LayoutSide side) const;
@@ -61,7 +61,7 @@ public:
 
 protected:
 #if 0
-    QSize contentsSizeHint(Qt::SizeHint which, const QSize &constraint = QSize()) const;
+    QSize contentsSizeHint(BobUI::SizeHint which, const QSize &constraint = QSize()) const;
 #endif
 
 private:
@@ -69,6 +69,6 @@ private:
     Q_DECLARE_PRIVATE(QGraphicsLinearLayout)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

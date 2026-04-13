@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #ifndef PARSER_H
 #define PARSER_H
 
 #include "symbols.h"
-#include <QtCore/qbytearrayview.h>
+#include <BobUICore/qbytearrayview.h>
 
 #include <stack>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Parser
 {
@@ -18,7 +18,7 @@ public:
     qsizetype index = 0;
     bool displayWarnings = true;
     bool displayNotes = true;
-    bool activeQtMode = false;
+    bool activeBobUIMode = false;
     bool qmlMacroWarningIsFatal = false;
 
     struct IncludePath
@@ -87,6 +87,6 @@ inline void Parser::next(Token token, const char *msg)
         error(msg);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

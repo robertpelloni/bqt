@@ -1,11 +1,11 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef STORELOADER_H
 #define STORELOADER_H
 
-#include <QtCore/qtconfigmacros.h>
-#include <QtCore/qobject.h>
+#include <BobUICore/bobuiconfigmacros.h>
+#include <BobUICore/qobject.h>
 
 #include <memory>
 
@@ -38,7 +38,7 @@ class StoreLoaderHandlerPrivate;
 class StoreLoaderHandler : public QObject
 {
     Q_OBJECT
-    QT_DEFINE_TAG_STRUCT(PrivateConstructor);
+    BOBUI_DEFINE_TAG_STRUCT(PrivateConstructor);
 
 public:
     explicit StoreLoaderHandler(QObject *parent, PrivateConstructor);

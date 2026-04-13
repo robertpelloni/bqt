@@ -1,5 +1,5 @@
-QT += widgets
-requires(qtConfig(filedialog))
+BOBUI += widgets
+requires(bobuiConfig(filedialog))
 
 SOURCES   = addressbook.cpp \
             finddialog.cpp \
@@ -10,5 +10,5 @@ HEADERS   = addressbook.h \
 QMAKE_PROJECT_NAME = ab_part7
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/tutorials/addressbook/part7
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/tutorials/addressbook/part7
 INSTALLS += target

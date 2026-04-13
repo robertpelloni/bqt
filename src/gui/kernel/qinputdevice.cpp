@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qinputdevice.h"
 #include "qinputdevice_p.h"
@@ -10,15 +10,15 @@
 #include <QMutex>
 #include <QScreen>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*!
     \class QInputDevice
     \brief The QInputDevice class describes a device from which a QInputEvent originates.
     \since 6.0
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     Each QInputEvent contains a QInputDevice pointer to allow accessing
     device-specific properties like type, capabilities and seat. It is the
@@ -79,19 +79,19 @@ using namespace Qt::StringLiterals;
            Indicates that \l {QEventPoint::}{rotation} information is available.
 
     \value XTilt
-           Indicates that \l {QTabletEvent::xTilt()}{tilt} information is
+           Indicates that \l {BOBUIabletEvent::xTilt()}{tilt} information is
            available for the X-axis.
 
     \value YTilt
-           Indicates that \l {QTabletEvent::yTilt()}{tilt} information is
+           Indicates that \l {BOBUIabletEvent::yTilt()}{tilt} information is
            available for the Y-axis.
 
     \value TangentialPressure
-           Indicates that \l {QTabletEvent::tangentialPressure()}
+           Indicates that \l {BOBUIabletEvent::tangentialPressure()}
            {tangential pressure} information is  available.
 
     \value ZPosition
-           Indicates that position information for the \l {QTabletEvent::z()}
+           Indicates that position information for the \l {BOBUIabletEvent::z()}
            {Z-axis} is available.
 
     \value All
@@ -264,14 +264,14 @@ Q_CONSTINIT static QBasicMutex devicesMutex;
     Returns a list of all registered input devices (keyboards and pointing devices).
 
     \note The list of devices is not always complete on all platforms. So far,
-    the most-complete information is available on the \l {Qt for Linux/X11}{X11}
+    the most-complete information is available on the \l {BobUI for Linux/X11}{X11}
     platform, at startup and in response to hot-plugging. Most other platforms
     are only able to provide generic devices of various types, only after receiving
-    events from them; and most platforms do not tell Qt when a device is plugged in,
+    events from them; and most platforms do not tell BobUI when a device is plugged in,
     or when it is unplugged at runtime.
 
     \note The returned list cannot be used to add new devices. To add a simulated
-    touch screen for an autotest, QTest::createTouchDevice() can be used.
+    touch screen for an autotest, BOBUIest::createTouchDevice() can be used.
     Platform plugins should call QWindowSystemInterface::registerInputDevice()
     to add devices as they are discovered.
 */
@@ -397,7 +397,7 @@ bool QInputDevice::operator==(const QInputDevice &other) const
     return systemId() == other.systemId();
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug debug, const QInputDevice *device)
 {
     QDebugStateSaver saver(debug);
@@ -419,8 +419,8 @@ QDebug operator<<(QDebug debug, const QInputDevice *device)
     debug << ')';
     return debug;
 }
-#endif // !QT_NO_DEBUG_STREAM
+#endif // !BOBUI_NO_DEBUG_STREAM
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qinputdevice.cpp"

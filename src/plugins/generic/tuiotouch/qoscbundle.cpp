@@ -1,18 +1,18 @@
 // Copyright (C) 2014 Robin Burchell <robin.burchell@viroteck.net>
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qoscbundle_p.h"
-#include "qtuio_p.h"
+#include "bobuiuio_p.h"
 
-#include <QtEndian>
+#include <BobUIEndian>
 #include <QDebug>
 #include <QLoggingCategory>
 
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcTuioBundle, "qt.qpa.tuio.bundle")
+Q_LOGGING_CATEGORY(lcTuioBundle, "bobui.qpa.tuio.bundle")
 
 QOscBundle::QOscBundle() {}
 
@@ -38,7 +38,7 @@ QOscBundle::QOscBundle(const QByteArray &data)
 
     // "An OSC Bundle consists of the OSC-string "#bundle""
     QByteArray identifier;
-    if (!qt_readOscString(data, identifier, parsedBytes) || identifier != "#bundle")
+    if (!bobui_readOscString(data, identifier, parsedBytes) || identifier != "#bundle")
         return;
 
     // "followed by an OSC Time
@@ -139,5 +139,5 @@ QOscBundle::QOscBundle(const QByteArray &data)
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 

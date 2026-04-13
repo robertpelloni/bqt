@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QRGB_H
 #define QRGB_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qprocessordetection.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qprocessordetection.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 typedef unsigned int QRgb;                        // RGB triplet
 
-// non-namespaced Qt global variable
+// non-namespaced BobUI global variable
  inline constexpr QRgb RGB_MASK = 0x00ffffff;     // masks RGB values
 
 inline constexpr int qRed(QRgb rgb)                     // get red part of RGB
@@ -55,7 +55,7 @@ inline constexpr QRgb qPremultiply(QRgb x)
     return x | t | (a << 24);
 }
 
-Q_GUI_EXPORT extern const uint qt_inv_premul_factor[];
+Q_GUI_EXPORT extern const uint bobui_inv_premul_factor[];
 
 inline QRgb qUnpremultiply(QRgb p)
 {
@@ -66,11 +66,11 @@ inline QRgb qUnpremultiply(QRgb p)
     if (alpha == 0)
         return 0;
     // (p*(0x00ff00ff/alpha)) >> 16 == (p*255)/alpha for all p and alpha <= 256.
-    const uint invAlpha = qt_inv_premul_factor[alpha];
+    const uint invAlpha = bobui_inv_premul_factor[alpha];
     // We add 0x8000 to get even rounding. The rounding also ensures that qPremultiply(qUnpremultiply(p)) == p for all p.
     return qRgba((qRed(p)*invAlpha + 0x8000)>>16, (qGreen(p)*invAlpha + 0x8000)>>16, (qBlue(p)*invAlpha + 0x8000)>>16, alpha);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QRGB_H

@@ -1,8 +1,8 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2014 BogDan Vatra <bogdan@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtCore/QJniEnvironment>
+#include <BobUICore/QJniEnvironment>
 
 #include <alloca.h>
 #include <android/log.h>
@@ -57,7 +57,7 @@ Res_png_9patch* Res_png_9patch::deserialize(const void* inData)
 }
 
 extern "C" JNIEXPORT jintArray JNICALL
-Java_org_qtproject_qt_android_ExtractStyle_extractNativeChunkInfo20(JNIEnv *env, jobject, long addr)
+Java_org_bobuiproject_bobui_android_ExtractStyle_extractNativeChunkInfo20(JNIEnv *env, jobject, long addr)
 {
     Res_png_9patch20* chunk = reinterpret_cast<Res_png_9patch20*>(addr);
     Res_png_9patch20::deserialize(chunk);

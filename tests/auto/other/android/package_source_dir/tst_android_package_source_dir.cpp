@@ -1,9 +1,9 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QCoreApplication>
 #include <QJniObject>
-#include <QTest>
+#include <BOBUIest>
 #include <QDebug>
 
 using namespace QNativeInterface;
@@ -27,14 +27,14 @@ void tst_android_package_source_dir::applicationName()
     QJniObject appCtx = QAndroidApplication::context();
     QVERIFY(appCtx.isValid());
 
-    const auto appInfo = appCtx.callMethod<QtJniTypes::ApplicationInfo>("getApplicationInfo");
+    const auto appInfo = appCtx.callMethod<BobUIJniTypes::ApplicationInfo>("getApplicationInfo");
     QVERIFY(appInfo.isValid());
 
-    const auto packageManager = appCtx.callMethod<QtJniTypes::PackageManager>("getPackageManager");
+    const auto packageManager = appCtx.callMethod<BobUIJniTypes::PackageManager>("getPackageManager");
     QVERIFY(packageManager.isValid());
 
     const auto appNameLabel =
-            appInfo.callMethod<QtJniTypes::CharSequence>("loadLabel", packageManager);
+            appInfo.callMethod<BobUIJniTypes::CharSequence>("loadLabel", packageManager);
     QVERIFY(appNameLabel.isValid());
 
     const auto appName = appNameLabel.callMethod<jstring>("toString").toString();
@@ -42,6 +42,6 @@ void tst_android_package_source_dir::applicationName()
     QCOMPARE_EQ(appName, QString::fromLatin1(EXPECTED_APP_NAME));
 }
 
-QTEST_MAIN(tst_android_package_source_dir);
+BOBUIEST_MAIN(tst_android_package_source_dir);
 
 #include "tst_android_package_source_dir.moc"

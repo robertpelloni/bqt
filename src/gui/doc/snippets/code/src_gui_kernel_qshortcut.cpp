@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QShortcut>
 #include <QKeySequence>
@@ -20,9 +20,9 @@ class MyShortcut : public QShortcut
         setKey(0);                  // no signal emitted
         setKey(QKeySequence());     // no signal emitted
         setKey(0x3b1);              // Greek letter alpha
-        setKey(Qt::Key_D);              // 'd', e.g. to delete
+        setKey(BobUI::Key_D);              // 'd', e.g. to delete
         setKey('q');                // 'q', e.g. to quit
-        setKey(Qt::CTRL | Qt::Key_P);       // Ctrl+P, e.g. to print document
+        setKey(BobUI::CTRL | BobUI::Key_P);       // Ctrl+P, e.g. to print document
         setKey(tr("Ctrl+P"));           // Ctrl+P, e.g. to print document
         //! [1]
     }

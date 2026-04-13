@@ -1,7 +1,7 @@
-# Copyright (C) 2025 The Qt Company Ltd.
+# Copyright (C) 2025 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-include(QtRunCMake)
+include(BobUIRunCMake)
 
 set(build_case "build_and_install_tools_package")
 set(consume_case "consume_tools_package")
@@ -14,17 +14,17 @@ function(run_cmake_and_build case)
     set(cmake_install_prefix ${RunCMake_BINARY_DIR}/installed)
 
     set(options
-        "-DQt6_DIR=${Qt6_DIR}"
-        "-DQT_REPO_MODULE_VERSION=${QT_REPO_MODULE_VERSION}"
+        "-DBobUI6_DIR=${BobUI6_DIR}"
+        "-DBOBUI_REPO_MODULE_VERSION=${BOBUI_REPO_MODULE_VERSION}"
     )
 
-    # For prefix builds, install into a separate dir rather than the Qt one.
-    # For non-prefix, files will end up being copied to the Qt dir.
-    if(QT_WILL_INSTALL)
+    # For prefix builds, install into a separate dir rather than the BobUI one.
+    # For non-prefix, files will end up being copied to the BobUI dir.
+    if(BOBUI_WILL_INSTALL)
         list(APPEND options
             "-DCMAKE_INSTALL_PREFIX=${cmake_install_prefix}"
-            "-DQT_ADDITIONAL_PACKAGES_PREFIX_PATH=${cmake_install_prefix}"
-            "-DQT_ADDITIONAL_HOST_PACKAGES_PREFIX_PATH=${cmake_install_prefix}"
+            "-DBOBUI_ADDITIONAL_PACKAGES_PREFIX_PATH=${cmake_install_prefix}"
+            "-DBOBUI_ADDITIONAL_HOST_PACKAGES_PREFIX_PATH=${cmake_install_prefix}"
         )
     endif()
 
@@ -41,7 +41,7 @@ function(run_cmake_and_build case)
     # Build and install
     run_cmake_command(${case}-build "${CMAKE_COMMAND}" --build .)
 
-    if(QT_WILL_INSTALL)
+    if(BOBUI_WILL_INSTALL)
         run_cmake_command(${case}-install "${CMAKE_COMMAND}" --install .)
     endif()
 endfunction()

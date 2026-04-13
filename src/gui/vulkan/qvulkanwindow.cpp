@@ -1,20 +1,20 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qvulkanwindow_p.h"
 #include "qvulkanfunctions.h"
 #include "qvulkandefaultinstance_p.h"
 #include <QLoggingCategory>
-#include <QTimer>
-#include <QThread>
+#include <BOBUIimer>
+#include <BOBUIhread>
 #include <QCoreApplication>
 #include <qevent.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
   \class QVulkanWindow
-  \inmodule QtGui
+  \inmodule BobUIGui
   \since 5.10
   \brief The QVulkanWindow class is a convenience subclass of QWindow to perform Vulkan rendering.
 
@@ -91,7 +91,7 @@ QT_BEGIN_NAMESPACE
 
   \endlist
 
-  For troubleshooting, enable the logging category \c{qt.vulkan}. Critical
+  For troubleshooting, enable the logging category \c{bobui.vulkan}. Critical
   errors are printed via qWarning() automatically.
 
   \section1 Coordinate system differences between OpenGL and Vulkan
@@ -188,7 +188,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
   \class QVulkanWindowRenderer
-  \inmodule QtGui
+  \inmodule BobUIGui
   \since 5.10
 
   \brief The QVulkanWindowRenderer class is used to implement the
@@ -628,10 +628,10 @@ void QVulkanWindowPrivate::init()
         status = StatusFail;
         return;
     }
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
     // allow testing the separate present queue case in debug builds on AMD cards
-    if (qEnvironmentVariableIsSet("QT_VK_PRESENT_QUEUE_INDEX"))
-        presQueueFamilyIdx = qEnvironmentVariableIntValue("QT_VK_PRESENT_QUEUE_INDEX");
+    if (qEnvironmentVariableIsSet("BOBUI_VK_PRESENT_QUEUE_INDEX"))
+        presQueueFamilyIdx = qEnvironmentVariableIntValue("BOBUI_VK_PRESENT_QUEUE_INDEX");
 #endif
     qCDebug(lcGuiVk, "Using queue families: graphics = %u present = %u", gfxQueueFamilyIdx, presQueueFamilyIdx);
 
@@ -678,7 +678,7 @@ void QVulkanWindowPrivate::init()
     QByteArrayList reqExts = requestedDevExtensions;
     reqExts.append("VK_KHR_swapchain");
 
-    QByteArray envExts = qgetenv("QT_VULKAN_DEVICE_EXTENSIONS");
+    QByteArray envExts = qgetenv("BOBUI_VULKAN_DEVICE_EXTENSIONS");
     if (!envExts.isEmpty()) {
         QByteArrayList envExtList =  envExts.split(';');
         for (auto ext : reqExts)
@@ -758,7 +758,7 @@ void QVulkanWindowPrivate::init()
         physDevProps.clear();
         status = StatusUninitialized;
         qCDebug(lcGuiVk, "Attempting to restart in 2 seconds");
-        QTimer::singleShot(2000, q, [this]() { ensureStarted(); });
+        BOBUIimer::singleShot(2000, q, [this]() { ensureStarted(); });
         return;
     }
     if (err != VK_SUCCESS) {
@@ -871,7 +871,7 @@ void QVulkanWindowPrivate::init()
         }
     }
 
-#if QT_CONFIG(wayland)
+#if BOBUI_CONFIG(wayland)
     // On Wayland, only one color management surface can be created at a time without
     // triggering a protocol error, and we create one ourselves in some situations.
     // To avoid this problem, use VK_COLOR_SPACE_PASS_THROUGH_EXT when supported,
@@ -1600,7 +1600,7 @@ bool QVulkanWindow::event(QEvent *e)
     the additional queues.
     The renderer can subsequently request the actual queue in initResources().
 
-    \note When requesting additional graphics queues, Qt itself always requests
+    \note When requesting additional graphics queues, BobUI itself always requests
     a graphics queue. You'll need to search queueCreateInfo for the appropriate
     entry and manipulate it to obtain the additional queue.
 
@@ -2146,7 +2146,7 @@ void QVulkanWindowPrivate::endFrame()
  */
 void QVulkanWindow::frameReady()
 {
-    Q_ASSERT_X(QThread::isMainThread(),
+    Q_ASSERT_X(BOBUIhread::isMainThread(),
         "QVulkanWindow", "frameReady() can only be called from the GUI (main) thread");
 
     Q_D(QVulkanWindow);
@@ -2842,6 +2842,6 @@ QMatrix4x4 QVulkanWindow::clipCorrectionMatrix()
     return d->m_clipCorrect;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qvulkanwindow.cpp"

@@ -1,17 +1,17 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qrhiwidget_p.h"
 #include <private/qguiapplication_p.h>
 #include <qpa/qplatformintegration.h>
 #include <private/qwidgetrepaintmanager_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QRhiWidget
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
     \since 6.7
 
     \brief The QRhiWidget class is a widget for rendering 3D graphics via an
@@ -45,16 +45,16 @@ QT_BEGIN_NAMESPACE
     window's widget hierarchy request different APIs, only one of them will
     function correctly.
 
-    \note While QRhiWidget is a public Qt API, the QRhi family of classes in
-    the Qt Gui module, including QRhi, QShader and QShaderDescription, offer
+    \note While QRhiWidget is a public BobUI API, the QRhi family of classes in
+    the BobUI Gui module, including QRhi, QShader and QShaderDescription, offer
     limited compatibility guarantees. There are no source or binary
     compatibility guarantees for these classes, meaning the API is only
-    guaranteed to work with the Qt version the application was developed
+    guaranteed to work with the BobUI version the application was developed
     against. Source incompatible changes are however aimed to be kept at a
     minimum and will only be made in minor releases (6.7, 6.8, and so on).
     \c{qrhiwidget.h} does not directly include any QRhi-related headers. To use
     those classes when implementing a QRhiWidget subclass, link to
-    \c{Qt::GuiPrivate} (if using CMake), and include the appropriate headers
+    \c{BobUI::GuiPrivate} (if using CMake), and include the appropriate headers
     with the \c rhi prefix, for example \c{#include <rhi/qrhi.h>}.
 
     An example of a simple QRhiWidget subclass rendering a triangle is the
@@ -72,12 +72,12 @@ QT_BEGIN_NAMESPACE
     sufficient.
 
     The vertex and fragment shaders are provided as Vulkan-style GLSL and must
-    be processed first by the Qt shader infrastructure first. This is achieved
+    be processed first by the BobUI shader infrastructure first. This is achieved
     either by running the \c qsb command-line tool manually, or by using the
-    \l{Qt Shader Tools Build System Integration}{qt_add_shaders()} function in
+    \l{BobUI Shader Tools Build System Integration}{bobui_add_shaders()} function in
     CMake. The QRhiWidget implementation loads these pre-processed \c{.qsb}
-    files that are shipped with the application. See \l{Qt Shader Tools} for
-    more information about Qt's shader translation infrastructure.
+    files that are shipped with the application. See \l{BobUI Shader Tools} for
+    more information about BobUI's shader translation infrastructure.
 
     The source code for these shaders could be the following:
 
@@ -166,7 +166,7 @@ QT_BEGIN_NAMESPACE
 /*!
     Constructs a widget which is a child of \a parent, with widget flags set to \a f.
  */
-QRhiWidget::QRhiWidget(QWidget *parent, Qt::WindowFlags f)
+QRhiWidget::QRhiWidget(QWidget *parent, BobUI::WindowFlags f)
     : QWidget(*(new QRhiWidgetPrivate), parent, f)
 {
     Q_D(QRhiWidget);
@@ -176,7 +176,7 @@ QRhiWidget::QRhiWidget(QWidget *parent, Qt::WindowFlags f)
 /*!
  *  \internal
  */
-QRhiWidget::QRhiWidget(QRhiWidgetPrivate &dd, QWidget *parent, Qt::WindowFlags f)
+QRhiWidget::QRhiWidget(QRhiWidgetPrivate &dd, QWidget *parent, BobUI::WindowFlags f)
     : QWidget(dd, parent, f)
 {
     Q_D(QRhiWidget);
@@ -1332,8 +1332,8 @@ QRhiRenderTarget *QRhiWidget::renderTarget() const
     use, likely due to issues related to graphics configuration.
 
     This signal may be emitted multiple times when a problem arises. Do not
-    assume it is emitted only once. Connect with Qt::SingleShotConnection if
+    assume it is emitted only once. Connect with BobUI::SingleShotConnection if
     the error handling code is to be notified only once.
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

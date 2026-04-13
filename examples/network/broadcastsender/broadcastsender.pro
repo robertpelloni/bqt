@@ -1,10 +1,10 @@
-QT += network widgets
-requires(qtConfig(udpsocket))
+BOBUI += network widgets
+requires(bobuiConfig(udpsocket))
 
 HEADERS       = sender.h
 SOURCES       = sender.cpp \
                 main.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/network/broadcastsender
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/network/broadcastsender
 INSTALLS += target

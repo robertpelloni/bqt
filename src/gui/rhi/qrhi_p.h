@@ -1,5 +1,5 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QRHI_P_H
 #define QRHI_P_H
@@ -8,7 +8,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -20,11 +20,11 @@
 #include <QAtomicInt>
 #include <QElapsedTimer>
 #include <QLoggingCategory>
-#include <QtCore/qset.h>
-#include <QtCore/qvarlengtharray.h>
-#include <QtCore/private/qflatmap_p.h>
+#include <BobUICore/qset.h>
+#include <BobUICore/qvarlengtharray.h>
+#include <BobUICore/private/qflatmap_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #define QRHI_RES(t, x) static_cast<t *>(x)
 #define QRHI_RES_RHI(t) t *rhiD = static_cast<t *>(m_rhi)
@@ -204,7 +204,7 @@ public:
 
     quint32 pipelineCacheRhiId() const
     {
-        const quint32 ver = (QT_VERSION_MAJOR << 16) | (QT_VERSION_MINOR << 8) | (QT_VERSION_PATCH);
+        const quint32 ver = (BOBUI_VERSION_MAJOR << 16) | (BOBUI_VERSION_MINOR << 8) | (BOBUI_VERSION_PATCH);
         return (quint32(implType) << 24) | ver;
     }
 
@@ -258,7 +258,7 @@ public:
 
 private:
     QRhi::Implementation implType;
-    QThread *implThread;
+    BOBUIhread *implThread;
     QVarLengthArray<QRhiResourceUpdateBatch *, 4> resUpdPool;
     quint64 resUpdPoolMap = 0;
     int lastResUpdIdx = -1;
@@ -865,6 +865,6 @@ inline T *qrhi_objectFromProxyData(QRhiSwapChainProxyData *pd, QWindow *window, 
     return static_cast<T *>(pd->reserved[objectIndex]);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

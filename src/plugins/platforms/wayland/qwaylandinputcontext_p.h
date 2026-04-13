@@ -1,5 +1,5 @@
 // Copyright (C) 2016 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 
 #ifndef QWAYLANDINPUTCONTEXT_H
@@ -9,7 +9,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -22,19 +22,19 @@
 #include <QPointer>
 
 #include "qwaylandtextinputinterface_p.h"
-#include <qtwaylandclientglobal_p.h>
-#if QT_CONFIG(xkbcommon)
+#include <bobuiwaylandclientglobal_p.h>
+#if BOBUI_CONFIG(xkbcommon)
 #include <xkbcommon/xkbcommon-compose.h>
 #endif
 
 struct wl_callback;
 struct wl_callback_listener;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(qLcQpaInputMethods)
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 class QWaylandDisplay;
 
@@ -49,7 +49,7 @@ public:
 
     void reset() override;
     void commit() override;
-    void update(Qt::InputMethodQueries) override;
+    void update(BobUI::InputMethodQueries) override;
 
     void invokeAction(QInputMethod::Action, int cursorPosition) override;
 
@@ -59,11 +59,11 @@ public:
     QRectF keyboardRect() const override;
 
     QLocale locale() const override;
-    Qt::LayoutDirection inputDirection() const override;
+    BobUI::LayoutDirection inputDirection() const override;
 
     void setFocusObject(QObject *object) override;
 
-#if QT_CONFIG(xkbcommon)
+#if BOBUI_CONFIG(xkbcommon)
     bool filterEvent(const QEvent *event) override;
 
     // This invokable is called from QXkbCommon::setXkbContext().
@@ -76,7 +76,7 @@ private:
     QWaylandDisplay *mDisplay = nullptr;
     QPointer<QWindow> mCurrentWindow;
 
-#if QT_CONFIG(xkbcommon)
+#if BOBUI_CONFIG(xkbcommon)
     void ensureInitialized();
 
     bool m_initialized = false;
@@ -89,6 +89,6 @@ private:
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWAYLANDINPUTCONTEXT_H

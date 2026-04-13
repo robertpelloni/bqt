@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "arthurwidgets.h"
 #include "hoverpoints.h"
@@ -12,7 +12,7 @@ HoverPoints::HoverPoints(QWidget *widget, PointShape shape)
       m_shape(shape)
 {
     widget->installEventFilter(this);
-    widget->setAttribute(Qt::WA_AcceptTouchEvents);
+    widget->setAttribute(BobUI::WA_AcceptTouchEvents);
 
     connect(this, &HoverPoints::pointsChanged,
             m_widget, QOverload<>::of(&QWidget::update));
@@ -53,7 +53,7 @@ bool HoverPoints::eventFilter(QObject *object, QEvent *event)
             }
         }
 
-        if (me->button() == Qt::LeftButton) {
+        if (me->button() == BobUI::LeftButton) {
             if (index == -1) {
                 if (!m_editable)
                     return false;
@@ -89,7 +89,7 @@ bool HoverPoints::eventFilter(QObject *object, QEvent *event)
             }
             return true;
 
-        } else if (me->button() == Qt::RightButton) {
+        } else if (me->button() == BobUI::RightButton) {
             if (index >= 0 && m_editable) {
                 if (m_locks[index] == 0) {
                     m_locks.remove(index);
@@ -120,7 +120,7 @@ bool HoverPoints::eventFilter(QObject *object, QEvent *event)
     case QEvent::TouchBegin:
     case QEvent::TouchUpdate:
     {
-        auto *touchEvent = static_cast<const QTouchEvent*>(event);
+        auto *touchEvent = static_cast<const BOBUIouchEvent*>(event);
         const auto points = touchEvent->points();
         const qreal pointSize = qMax(m_pointSize.width(), m_pointSize.height());
         for (const auto &point : points) {
@@ -233,7 +233,7 @@ void HoverPoints::paintPoints()
 
     p.setRenderHint(QPainter::Antialiasing);
 
-    if (m_connectionPen.style() != Qt::NoPen && m_connectionType != NoConnection) {
+    if (m_connectionPen.style() != BobUI::NoPen && m_connectionType != NoConnection) {
         p.setPen(m_connectionPen);
 
         if (m_connectionType == CurveConnection) {

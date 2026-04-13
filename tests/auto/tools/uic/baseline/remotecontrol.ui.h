@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'remotecontrol.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,26 +9,26 @@
 #ifndef REMOTECONTROL_H
 #define REMOTECONTROL_H
 
-#include <QtCore/QVariant>
-#include <QtGui/QAction>
-#include <QtGui/QIcon>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QMenuBar>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QStatusBar>
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIGui/QAction>
+#include <BobUIGui/QIcon>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QCheckBox>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QGroupBox>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QLineEdit>
+#include <BobUIWidgets/QMainWindow>
+#include <BobUIWidgets/QMenu>
+#include <BobUIWidgets/QMenuBar>
+#include <BobUIWidgets/QPushButton>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/QStatusBar>
+#include <BobUIWidgets/BOBUIoolButton>
+#include <BobUIWidgets/QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_RemoteControlClass
 {
@@ -46,15 +46,15 @@ public:
     QLabel *label_2;
     QHBoxLayout *hboxLayout;
     QLineEdit *indexLineEdit;
-    QToolButton *indexButton;
+    BOBUIoolButton *indexButton;
     QLabel *label_4;
     QHBoxLayout *hboxLayout1;
     QLineEdit *identifierLineEdit;
-    QToolButton *identifierButton;
+    BOBUIoolButton *identifierButton;
     QLabel *label_3;
     QHBoxLayout *hboxLayout2;
     QLineEdit *urlLineEdit;
-    QToolButton *urlButton;
+    BOBUIoolButton *urlButton;
     QPushButton *syncContentsButton;
     QSpacerItem *spacerItem2;
     QCheckBox *contentsCheckBox;
@@ -120,7 +120,7 @@ public:
 
         hboxLayout->addWidget(indexLineEdit);
 
-        indexButton = new QToolButton(actionGroupBox);
+        indexButton = new BOBUIoolButton(actionGroupBox);
         indexButton->setObjectName("indexButton");
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/remotecontrol/enter.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
@@ -144,7 +144,7 @@ public:
 
         hboxLayout1->addWidget(identifierLineEdit);
 
-        identifierButton = new QToolButton(actionGroupBox);
+        identifierButton = new BOBUIoolButton(actionGroupBox);
         identifierButton->setObjectName("identifierButton");
         identifierButton->setIcon(icon);
 
@@ -166,7 +166,7 @@ public:
 
         hboxLayout2->addWidget(urlLineEdit);
 
-        urlButton = new QToolButton(actionGroupBox);
+        urlButton = new BOBUIoolButton(actionGroupBox);
         urlButton->setObjectName("urlButton");
         urlButton->setIcon(icon);
 
@@ -226,7 +226,7 @@ public:
         RemoteControlClass->setWindowTitle(QCoreApplication::translate("RemoteControlClass", "RemoteControl", nullptr));
         actionQuit->setText(QCoreApplication::translate("RemoteControlClass", "Quit", nullptr));
         label->setText(QCoreApplication::translate("RemoteControlClass", "Start URL:", nullptr));
-        launchButton->setText(QCoreApplication::translate("RemoteControlClass", "Launch Qt HelpViewer", nullptr));
+        launchButton->setText(QCoreApplication::translate("RemoteControlClass", "Launch BobUI HelpViewer", nullptr));
         actionGroupBox->setTitle(QCoreApplication::translate("RemoteControlClass", "Actions", nullptr));
         label_2->setText(QCoreApplication::translate("RemoteControlClass", "Search in Index:", nullptr));
         indexButton->setText(QString());
@@ -247,6 +247,6 @@ namespace Ui {
     class RemoteControlClass: public Ui_RemoteControlClass {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // REMOTECONTROL_H

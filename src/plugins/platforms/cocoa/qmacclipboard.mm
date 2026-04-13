@@ -1,31 +1,31 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <AppKit/AppKit.h>
 
 #include "qmacclipboard.h"
-#include <QtGui/private/qmacmimeregistry_p.h>
-#include <QtGui/qutimimeconverter.h>
-#include <QtGui/qclipboard.h>
-#include <QtGui/qguiapplication.h>
-#include <QtGui/qbitmap.h>
-#include <QtCore/qdatetime.h>
-#include <QtCore/qmetatype.h>
-#include <QtCore/qmimedata.h>
-#include <QtCore/qdebug.h>
-#include <QtCore/private/qcore_mac_p.h>
-#include <QtGui/qguiapplication.h>
-#include <QtGui/qevent.h>
-#include <QtCore/qurl.h>
+#include <BobUIGui/private/qmacmimeregistry_p.h>
+#include <BobUIGui/qutimimeconverter.h>
+#include <BobUIGui/qclipboard.h>
+#include <BobUIGui/qguiapplication.h>
+#include <BobUIGui/qbitmap.h>
+#include <BobUICore/qdatetime.h>
+#include <BobUICore/qmetatype.h>
+#include <BobUICore/qmimedata.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/private/qcore_mac_p.h>
+#include <BobUIGui/qguiapplication.h>
+#include <BobUIGui/qevent.h>
+#include <BobUICore/qurl.h>
 #include <stdlib.h>
 #include <string.h>
 #include "qcocoahelpers.h"
 #include <type_traits>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*****************************************************************************
    QMacPasteboard code
@@ -153,9 +153,9 @@ OSStatus QMacPasteboard::promiseKeeper(PasteboardRef paste, PasteboardItemID id,
         }
     }
 
-    if (!promise.itemId && utiAsQString == "com.trolltech.qt.MimeTypeName"_L1) {
+    if (!promise.itemId && utiAsQString == "com.trolltech.bobui.MimeTypeName"_L1) {
         // we have promised this data, but won't be able to convert, so return null data.
-        // This helps in making the application/x-qt-mime-type-name hidden from normal use.
+        // This helps in making the application/x-bobui-mime-type-name hidden from normal use.
         QByteArray ba;
         const QCFType<CFDataRef> data = CFDataCreate(nullptr, (UInt8*)ba.constData(), ba.size());
         PasteboardPutItemFlavor(paste, id, uti, data, kPasteboardFlavorNoFlags);
@@ -266,9 +266,9 @@ void QMacPasteboard::setMimeData(QMimeData *mime_src, DataRequestType dataReques
         QStringList formats = mime_src->formats();
 
         // QMimeData sub classes reimplementing the formats() might not expose the
-        // temporary "application/x-qt-mime-type-name" mimetype. So check the existence
+        // temporary "application/x-bobui-mime-type-name" mimetype. So check the existence
         // of this mime type while doing drag and drop.
-        QString dummyMimeType("application/x-qt-mime-type-name"_L1);
+        QString dummyMimeType("application/x-bobui-mime-type-name"_L1);
         if (!formats.contains(dummyMimeType)) {
             QByteArray dummyType = mime_src->data(dummyMimeType);
             if (!dummyType.isEmpty())
@@ -398,7 +398,7 @@ QVariant QMacPasteboard::retrieveData(const QString &format) const
             if (c_uti == "com.apple.traditional-mac-plain-text"_L1
              || c_uti == "public.utf8-plain-text"_L1
              || c_uti == "public.utf16-plain-text"_L1) {
-                const QString str = qt_mac_get_pasteboardString(paste);
+                const QString str = bobui_mac_get_pasteboardString(paste);
                 if (!str.isEmpty())
                     return str;
             }
@@ -474,7 +474,7 @@ bool QMacPasteboard::sync() const
 }
 
 
-QString qt_mac_get_pasteboardString(PasteboardRef paste)
+QString bobui_mac_get_pasteboardString(PasteboardRef paste)
 {
     QMacAutoReleasePool pool;
     NSPasteboard *pb = nil;
@@ -493,4 +493,4 @@ QString qt_mac_get_pasteboardString(PasteboardRef paste)
     return QString();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

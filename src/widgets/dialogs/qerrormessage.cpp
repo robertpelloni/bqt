@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qerrormessage.h"
 
@@ -8,16 +8,16 @@
 #include "qcheckbox.h"
 #include "qlabel.h"
 #include "qlayout.h"
-#if QT_CONFIG(messagebox)
+#if BOBUI_CONFIG(messagebox)
 #include "qmessagebox.h"
 #endif
 #include "qpushbutton.h"
 #include "qstringlist.h"
-#include "qtextedit.h"
+#include "bobuiextedit.h"
 #include "qdialog_p.h"
 #include "qpixmap.h"
 #include "qmetaobject.h"
-#include "qthread.h"
+#include "bobuihread.h"
 #include "qset.h"
 
 #include <queue>
@@ -25,9 +25,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class QErrorMessagePrivate : public QDialogPrivate
 {
@@ -40,7 +40,7 @@ public:
 
     QPushButton * ok;
     QCheckBox * again;
-    QTextEdit * errors;
+    BOBUIextEdit * errors;
     QLabel * icon;
     std::queue<Message> pending;
     QSet<QString> doNotShow;
@@ -65,7 +65,7 @@ void QErrorMessagePrivate::initHelper(QPlatformDialogHelper *helper)
     Q_Q(QErrorMessage);
     auto *messageDialogHelper = static_cast<QPlatformMessageDialogHelper *>(helper);
     QObject::connect(messageDialogHelper, &QPlatformMessageDialogHelper::checkBoxStateChanged, q,
-        [this](Qt::CheckState state) {
+        [this](BobUI::CheckState state) {
             again->setCheckState(state);
         }
     );
@@ -92,11 +92,11 @@ void QErrorMessagePrivate::helperPrepareShow(QPlatformDialogHelper *helper)
 }
 
 namespace {
-class QErrorMessageTextView : public QTextEdit
+class QErrorMessageTextView : public BOBUIextEdit
 {
 public:
     QErrorMessageTextView(QWidget *parent)
-        : QTextEdit(parent) { setReadOnly(true); }
+        : BOBUIextEdit(parent) { setReadOnly(true); }
 
     virtual QSize minimumSizeHint() const override;
     virtual QSize sizeHint() const override;
@@ -119,7 +119,7 @@ QSize QErrorMessageTextView::sizeHint() const
     \brief The QErrorMessage class provides an error message display dialog.
 
     \ingroup standard-dialog
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     An error message widget consists of a text label and a checkbox. The
     checkbox lets the user control whether the same error message will be
@@ -132,7 +132,7 @@ QSize QErrorMessageTextView::sizeHint() const
     the dialog in the usual way, and show it by calling the showMessage() slot or
     connecting signals to it.
 
-    The static qtHandler() function installs a message handler
+    The static bobuiHandler() function installs a message handler
     using qInstallMessageHandler() and creates a QErrorMessage that displays
     qDebug(), qWarning() and qFatal() messages. This is most useful in
     environments where no console is available to display warnings and
@@ -145,57 +145,57 @@ QSize QErrorMessageTextView::sizeHint() const
     dialog will show the next appropriate message in the queue.
 
     The \l{dialogs/standarddialogs}{Standard Dialogs} example shows
-    how to use QErrorMessage as well as other built-in Qt dialogs.
+    how to use QErrorMessage as well as other built-in BobUI dialogs.
 
     \image qerrormessage.png {Dialog with a network-related error message}
 
     \sa QMessageBox, QStatusBar::showMessage(), {Standard Dialogs Example}
 */
 
-static QErrorMessage * qtMessageHandler = nullptr;
+static QErrorMessage * bobuiMessageHandler = nullptr;
 
 static void deleteStaticcQErrorMessage() // post-routine
 {
-    if (qtMessageHandler) {
-        delete qtMessageHandler;
-        qtMessageHandler = nullptr;
+    if (bobuiMessageHandler) {
+        delete bobuiMessageHandler;
+        bobuiMessageHandler = nullptr;
     }
 }
 
 static bool metFatal = false;
 
-static QString msgType2i18nString(QtMsgType t)
+static QString msgType2i18nString(BobUIMsgType t)
 {
-    static_assert(QtDebugMsg == 0);
-    static_assert(QtWarningMsg == 1);
-    static_assert(QtCriticalMsg == 2);
-    static_assert(QtFatalMsg == 3);
-    static_assert(QtInfoMsg == 4);
+    static_assert(BobUIDebugMsg == 0);
+    static_assert(BobUIWarningMsg == 1);
+    static_assert(BobUICriticalMsg == 2);
+    static_assert(BobUIFatalMsg == 3);
+    static_assert(BobUIInfoMsg == 4);
 
     // adjust the array below if any of the above fire...
 
     const char * const messages[] = {
-        QT_TRANSLATE_NOOP("QErrorMessage", "Debug Message:"),
-        QT_TRANSLATE_NOOP("QErrorMessage", "Warning:"),
-        QT_TRANSLATE_NOOP("QErrorMessage", "Critical Error:"),
-        QT_TRANSLATE_NOOP("QErrorMessage", "Fatal Error:"),
-        QT_TRANSLATE_NOOP("QErrorMessage", "Information:"),
+        BOBUI_TRANSLATE_NOOP("QErrorMessage", "Debug Message:"),
+        BOBUI_TRANSLATE_NOOP("QErrorMessage", "Warning:"),
+        BOBUI_TRANSLATE_NOOP("QErrorMessage", "Critical Error:"),
+        BOBUI_TRANSLATE_NOOP("QErrorMessage", "Fatal Error:"),
+        BOBUI_TRANSLATE_NOOP("QErrorMessage", "Information:"),
     };
     Q_ASSERT(size_t(t) < sizeof messages / sizeof *messages);
 
     return QCoreApplication::translate("QErrorMessage", messages[t]);
 }
 
-static QtMessageHandler originalMessageHandler = nullptr;
+static BobUIMessageHandler originalMessageHandler = nullptr;
 
-static void jump(QtMsgType t, const QMessageLogContext &context, const QString &m)
+static void jump(BobUIMsgType t, const QMessageLogContext &context, const QString &m)
 {
     const auto forwardToOriginalHandler = qScopeGuard([&] {
        if (originalMessageHandler)
             originalMessageHandler(t, context, m);
     });
 
-    if (!qtMessageHandler)
+    if (!bobuiMessageHandler)
         return;
 
     auto *defaultCategory = QLoggingCategory::defaultCategory();
@@ -204,22 +204,22 @@ static void jump(QtMsgType t, const QMessageLogContext &context, const QString &
         return;
 
     QString rich = "<p><b>"_L1 + msgType2i18nString(t) + "</b></p>"_L1
-                   + Qt::convertFromPlainText(m, Qt::WhiteSpaceNormal);
+                   + BobUI::convertFromPlainText(m, BobUI::WhiteSpaceNormal);
 
     // ### work around text engine quirk
     if (rich.endsWith("</p>"_L1))
         rich.chop(4);
 
     if (!metFatal) {
-        if (QThread::isMainThread()) {
-            qtMessageHandler->showMessage(rich);
+        if (BOBUIhread::isMainThread()) {
+            bobuiMessageHandler->showMessage(rich);
         } else {
-            QMetaObject::invokeMethod(qtMessageHandler,
+            QMetaObject::invokeMethod(bobuiMessageHandler,
                                       "showMessage",
-                                      Qt::QueuedConnection,
+                                      BobUI::QueuedConnection,
                                       Q_ARG(QString, rich));
         }
-        metFatal = (t == QtFatalMsg);
+        metFatal = (t == BobUIFatalMsg);
     }
 }
 
@@ -228,7 +228,7 @@ static void jump(QtMsgType t, const QMessageLogContext &context, const QString &
     Constructs and installs an error handler window with the given \a
     parent.
 
-    The default \l{Qt::WindowModality} {window modality} of the dialog
+    The default \l{BobUI::WindowModality} {window modality} of the dialog
     depends on the platform. The window modality can be overridden via
     setWindowModality() before calling showMessage().
 */
@@ -239,7 +239,7 @@ QErrorMessage::QErrorMessage(QWidget * parent)
     Q_D(QErrorMessage);
 
 #if defined(Q_OS_MACOS)
-    setWindowModality(parent ? Qt::WindowModal : Qt::ApplicationModal);
+    setWindowModality(parent ? BobUI::WindowModal : BobUI::ApplicationModal);
 #endif
 
     d->icon = new QLabel(this);
@@ -250,18 +250,18 @@ QErrorMessage::QErrorMessage(QWidget * parent)
 
     connect(d->ok, SIGNAL(clicked()), this, SLOT(accept()));
 
-    grid->addWidget(d->icon,   0, 0, Qt::AlignTop);
+    grid->addWidget(d->icon,   0, 0, BobUI::AlignTop);
     grid->addWidget(d->errors, 0, 1);
-    grid->addWidget(d->again,  1, 1, Qt::AlignTop);
-    grid->addWidget(d->ok,     2, 0, 1, 2, Qt::AlignCenter);
+    grid->addWidget(d->again,  1, 1, BobUI::AlignTop);
+    grid->addWidget(d->ok,     2, 0, 1, 2, BobUI::AlignCenter);
     grid->setColumnStretch(1, 42);
     grid->setRowStretch(0, 42);
 
-#if QT_CONFIG(messagebox)
+#if BOBUI_CONFIG(messagebox)
     const auto iconSize = style()->pixelMetric(QStyle::PM_MessageBoxIconSize, nullptr, this);
     const auto icon = style()->standardIcon(QStyle::SP_MessageBoxInformation, nullptr, this);
     d->icon->setPixmap(icon.pixmap(QSize(iconSize, iconSize), devicePixelRatio()));
-    d->icon->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
+    d->icon->setAlignment(BobUI::AlignHCenter | BobUI::AlignTop);
 #endif
     d->again->setChecked(true);
     d->ok->setFocus();
@@ -276,9 +276,9 @@ QErrorMessage::QErrorMessage(QWidget * parent)
 
 QErrorMessage::~QErrorMessage()
 {
-    if (this == qtMessageHandler) {
-        qtMessageHandler = nullptr;
-        QtMessageHandler currentMessagHandler = qInstallMessageHandler(nullptr);
+    if (this == bobuiMessageHandler) {
+        bobuiMessageHandler = nullptr;
+        BobUIMessageHandler currentMessagHandler = qInstallMessageHandler(nullptr);
         if (currentMessagHandler != jump)
             qInstallMessageHandler(currentMessagHandler);
         else
@@ -309,7 +309,7 @@ void QErrorMessage::done(int a)
     if (d->nextPending()) {
         show();
     } else {
-        if (this == qtMessageHandler && metFatal)
+        if (this == bobuiMessageHandler && metFatal)
             exit(1);
     }
 }
@@ -317,7 +317,7 @@ void QErrorMessage::done(int a)
 
 /*!
     Returns a pointer to a QErrorMessage object that outputs the
-    default Qt messages. This function creates such an object, if there
+    default BobUI messages. This function creates such an object, if there
     isn't one already.
 
     The object will only output log messages of QLoggingCategory::defaultCategory().
@@ -327,15 +327,15 @@ void QErrorMessage::done(int a)
     \sa qInstallMessageHandler
 */
 
-QErrorMessage * QErrorMessage::qtHandler()
+QErrorMessage * QErrorMessage::bobuiHandler()
 {
-    if (!qtMessageHandler) {
-        qtMessageHandler = new QErrorMessage(nullptr);
+    if (!bobuiMessageHandler) {
+        bobuiMessageHandler = new QErrorMessage(nullptr);
         qAddPostRoutine(deleteStaticcQErrorMessage); // clean up
-        qtMessageHandler->setWindowTitle(QCoreApplication::applicationName());
+        bobuiMessageHandler->setWindowTitle(QCoreApplication::applicationName());
         originalMessageHandler = qInstallMessageHandler(jump);
     }
-    return qtMessageHandler;
+    return bobuiMessageHandler;
 }
 
 
@@ -354,7 +354,7 @@ bool QErrorMessagePrivate::nextPending()
         QString type = std::move(pending.front().type);
         pending.pop();
         if (isMessageToBeShown(message, type)) {
-#ifndef QT_NO_TEXTHTMLPARSER
+#ifndef BOBUI_NO_TEXTHTMLPARSER
             errors->setHtml(message);
 #else
             errors->setPlainText(message);
@@ -418,7 +418,7 @@ void QErrorMessagePrivate::setVisible(bool visible)
     // Update WA_DontShowOnScreen based on whether the native dialog was shown,
     // so that QDialog::setVisible(visible) below updates the QWidget state correctly,
     // but skips showing the non-native version.
-    q->setAttribute(Qt::WA_DontShowOnScreen, nativeDialogInUse);
+    q->setAttribute(BobUI::WA_DontShowOnScreen, nativeDialogInUse);
 
     QDialogPrivate::setVisible(visible);
 }
@@ -441,6 +441,6 @@ void QErrorMessagePrivate::retranslateStrings()
     ok->setText(QErrorMessage::tr("&OK"));
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qerrormessage.cpp"

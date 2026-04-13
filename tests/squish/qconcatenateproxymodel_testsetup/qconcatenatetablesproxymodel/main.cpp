@@ -1,11 +1,11 @@
 // Copyright (C) 2016 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author David Faure <david.faure@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QApplication>
 #include <QConcatenateTablesProxyModel>
 #include <QStandardItemModel>
-#include <QTableView>
-#include <QTreeView>
+#include <BOBUIableView>
+#include <BOBUIreeView>
 
 static void prepareModel(const QString &prefix, QStandardItemModel *model)
 {
@@ -33,28 +33,28 @@ int main(int argc, char *argv[])
 
     prepareModel("Second", &secondModel);
 
-    QTableView tableView;
-    tableView.setWindowTitle("concat proxy, in QTableView");
+    BOBUIableView tableView;
+    tableView.setWindowTitle("concat proxy, in BOBUIableView");
     tableView.setDragDropMode(QAbstractItemView::DragDrop);
     tableView.setModel(&proxy);
     tableView.show();
 
-    QTreeView treeView;
-    treeView.setWindowTitle("concat proxy, in QTreeView");
+    BOBUIreeView treeView;
+    treeView.setWindowTitle("concat proxy, in BOBUIreeView");
     treeView.setDragDropMode(QAbstractItemView::DragDrop);
     treeView.setModel(&proxy);
     treeView.show();
 
     // For comparison, views on top on QStandardItemModel
 
-    QTableView tableViewTest;
-    tableViewTest.setWindowTitle("first model, in QTableView");
+    BOBUIableView tableViewTest;
+    tableViewTest.setWindowTitle("first model, in BOBUIableView");
     tableViewTest.setDragDropMode(QAbstractItemView::DragDrop);
     tableViewTest.setModel(&firstModel);
     tableViewTest.show();
 
-    QTreeView treeViewTest;
-    treeViewTest.setWindowTitle("first model, in QTreeView");
+    BOBUIreeView treeViewTest;
+    treeViewTest.setWindowTitle("first model, in BOBUIreeView");
     treeViewTest.setDragDropMode(QAbstractItemView::DragDrop);
     treeViewTest.setModel(&firstModel);
     treeViewTest.show();

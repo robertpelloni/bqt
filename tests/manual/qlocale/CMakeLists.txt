@@ -1,11 +1,11 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## qlocale Binary:
 #####################################################################
 
-qt_internal_add_manual_test(qlocale
+bobui_internal_add_manual_test(qlocale
     GUI
     SOURCES
         calendar.cpp calendar.h
@@ -18,8 +18,8 @@ qt_internal_add_manual_test(qlocale
         numberformats.cpp numberformats.h
         window.cpp window.h
     NO_PCH_SOURCES
-        languages.cpp # undef QT_NO_FOREACH
+        languages.cpp # undef BOBUI_NO_FOREACH
     LIBRARIES
-        Qt::Gui
-        Qt::Widgets
+        BobUI::Gui
+        BobUI::Widgets
 )

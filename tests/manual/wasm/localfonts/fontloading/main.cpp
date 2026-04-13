@@ -1,8 +1,8 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtGui>
-#include <QtWidgets>
+#include <BobUIGui>
+#include <BobUIWidgets>
 
 #include <emscripten/bind.h>
 #include <emscripten/val.h>
@@ -13,7 +13,7 @@ class FontViewer : public QWidget
 {
 public:
     FontViewer() {
-        QTextEdit *edit = new QTextEdit;
+        BOBUIextEdit *edit = new BOBUIextEdit;
         edit->setPlainText("The quick brown fox jumps over the lazy dog\nHow quickly daft jumping zebras vex\nPack my box with five dozen liquor jugs");
 
         QComboBox *combo = new QComboBox;
@@ -56,7 +56,7 @@ int main(int argc, char **argv)
 
     // Make sure there is one call to fontFamiliesLoaded at startup,
     // even if no further fonts are loaded.
-    QTimer::singleShot(0, [=]() {
+    BOBUIimer::singleShot(0, [=]() {
         emscripten::val window = emscripten::val::global("window");
         window.call<void>("fontFamiliesLoaded", QFontDatabase::families().count());
     });

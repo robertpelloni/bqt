@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qstackedwidget.h"
 
@@ -8,7 +8,7 @@
 #include <qevent.h>
 #include <private/qframe_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QStackedWidgetPrivate : public QFramePrivate
 {
@@ -25,10 +25,10 @@ public:
 
     \ingroup organizers
     \ingroup geomanagement
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QStackedWidget can be used to create a user interface similar to
-    the one provided by QTabWidget. It is a convenience layout widget
+    the one provided by BOBUIabWidget. It is a convenience layout widget
     built on top of the QStackedLayout class.
 
     Like QStackedLayout, QStackedWidget can be constructed and
@@ -65,7 +65,7 @@ public:
     widget is removed from the stacked widget, the currentChanged()
     and widgetRemoved() signals are emitted respectively.
 
-    \sa QStackedLayout, QTabWidget
+    \sa QStackedLayout, BOBUIabWidget
 */
 
 /*!
@@ -269,6 +269,6 @@ bool QStackedWidget::event(QEvent *e)
     return QFrame::event(e);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qstackedwidget.cpp"

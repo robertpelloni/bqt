@@ -1,4 +1,4 @@
-QT += widgets
+BOBUI += widgets
 
 HEADERS   = layoutitem.h \
             window.h
@@ -8,5 +8,5 @@ SOURCES   = layoutitem.cpp \
 RESOURCES = basicgraphicslayouts.qrc
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/graphicsview/basicgraphicslayouts
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/graphicsview/basicgraphicslayouts
 INSTALLS += target

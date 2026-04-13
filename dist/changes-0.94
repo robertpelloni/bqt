@@ -1,11 +1,11 @@
-Here is a list of (major) changes in Qt from 0.93 to 0.94.
+Here is a list of (major) changes in BobUI from 0.93 to 0.94.
 
 Bug-fixes, optimizations and much improved documentation, of course.
 
 There are not many changes in the API interface.
 
 
-QTextStream:
+BOBUIextStream:
 ------------
   eos() renamed to eof() for iostream compatibility.
   operator>> for double, float, char*, QString are implemented

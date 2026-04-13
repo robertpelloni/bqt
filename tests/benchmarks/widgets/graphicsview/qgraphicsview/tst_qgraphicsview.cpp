@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <qtest.h>
-#include <QtCore/QDebug>
-#include <QtWidgets/QGraphicsItem>
-#include <QtWidgets/QGraphicsScene>
-#include <QtWidgets/QGraphicsView>
-#include <QtGui/QImage>
-#include <QtGui/QPixmapCache>
+#include <bobuiest.h>
+#include <BobUICore/QDebug>
+#include <BobUIWidgets/QGraphicsItem>
+#include <BobUIWidgets/QGraphicsScene>
+#include <BobUIWidgets/QGraphicsView>
+#include <BobUIGui/QImage>
+#include <BobUIGui/QPixmapCache>
 
 #include "chiptester/chiptester.h"
 //#define CALLGRIND_DEBUG
@@ -50,7 +50,7 @@ public:
             height = desktopSize.height();
         if (size() != QSize(width, height)) {
             resize(width, height);
-            QTest::qWait(250);
+            BOBUIest::qWait(250);
             processEvents();
         }
     }
@@ -63,7 +63,7 @@ protected:
             eventLoop.exit();
     }
 
-    void timerEvent(QTimerEvent *event) override
+    void timerEvent(BOBUIimerEvent *event) override
     {
         if (event->timerId() == timerId)
             eventLoop.exit();
@@ -130,12 +130,12 @@ tst_QGraphicsView::~tst_QGraphicsView()
 void tst_QGraphicsView::initTestCase()
 {
     mView.setFrameStyle(0);
-    mView.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    mView.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    mView.setHorizontalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
+    mView.setVerticalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
     mView.tryResize(100, 100);
     mView.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&mView));
-    QTest::qWait(300);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&mView));
+    BOBUIest::qWait(300);
     processEvents();
 }
 
@@ -243,21 +243,21 @@ void tst_QGraphicsView::moveSingleItem()
 
 void tst_QGraphicsView::mapPointToScene_data()
 {
-    QTest::addColumn<QTransform>("transform");
-    QTest::addColumn<QPoint>("point");
+    BOBUIest::addColumn<BOBUIransform>("transform");
+    BOBUIest::addColumn<QPoint>("point");
 
-    QTest::newRow("null") << QTransform() << QPoint();
-    QTest::newRow("identity  QPoint(100, 100)") << QTransform() << QPoint(100, 100);
-    QTest::newRow("rotate    QPoint(100, 100)") << QTransform().rotate(90) << QPoint(100, 100);
-    QTest::newRow("scale     QPoint(100, 100)") << QTransform().scale(5, 5) << QPoint(100, 100);
-    QTest::newRow("translate QPoint(100, 100)") << QTransform().translate(5, 5) << QPoint(100, 100);
-    QTest::newRow("shear     QPoint(100, 100)") << QTransform().shear(1.5, 1.5) << QPoint(100, 100);
-    QTest::newRow("perspect  QPoint(100, 100)") << QTransform().rotate(45, Qt::XAxis) << QPoint(100, 100);
+    BOBUIest::newRow("null") << BOBUIransform() << QPoint();
+    BOBUIest::newRow("identity  QPoint(100, 100)") << BOBUIransform() << QPoint(100, 100);
+    BOBUIest::newRow("rotate    QPoint(100, 100)") << BOBUIransform().rotate(90) << QPoint(100, 100);
+    BOBUIest::newRow("scale     QPoint(100, 100)") << BOBUIransform().scale(5, 5) << QPoint(100, 100);
+    BOBUIest::newRow("translate QPoint(100, 100)") << BOBUIransform().translate(5, 5) << QPoint(100, 100);
+    BOBUIest::newRow("shear     QPoint(100, 100)") << BOBUIransform().shear(1.5, 1.5) << QPoint(100, 100);
+    BOBUIest::newRow("perspect  QPoint(100, 100)") << BOBUIransform().rotate(45, BobUI::XAxis) << QPoint(100, 100);
 }
 
 void tst_QGraphicsView::mapPointToScene()
 {
-    QFETCH(QTransform, transform);
+    QFETCH(BOBUIransform, transform);
     QFETCH(QPoint, point);
 
     QGraphicsView view;
@@ -271,21 +271,21 @@ void tst_QGraphicsView::mapPointToScene()
 
 void tst_QGraphicsView::mapPointFromScene_data()
 {
-    QTest::addColumn<QTransform>("transform");
-    QTest::addColumn<QPointF>("point");
+    BOBUIest::addColumn<BOBUIransform>("transform");
+    BOBUIest::addColumn<QPointF>("point");
 
-    QTest::newRow("null") << QTransform() << QPointF();
-    QTest::newRow("identity  QPointF(100, 100)") << QTransform() << QPointF(100, 100);
-    QTest::newRow("rotate    QPointF(100, 100)") << QTransform().rotate(90) << QPointF(100, 100);
-    QTest::newRow("scale     QPointF(100, 100)") << QTransform().scale(5, 5) << QPointF(100, 100);
-    QTest::newRow("translate QPointF(100, 100)") << QTransform().translate(5, 5) << QPointF(100, 100);
-    QTest::newRow("shear     QPointF(100, 100)") << QTransform().shear(1.5, 1.5) << QPointF(100, 100);
-    QTest::newRow("perspect  QPointF(100, 100)") << QTransform().rotate(45, Qt::XAxis) << QPointF(100, 100);
+    BOBUIest::newRow("null") << BOBUIransform() << QPointF();
+    BOBUIest::newRow("identity  QPointF(100, 100)") << BOBUIransform() << QPointF(100, 100);
+    BOBUIest::newRow("rotate    QPointF(100, 100)") << BOBUIransform().rotate(90) << QPointF(100, 100);
+    BOBUIest::newRow("scale     QPointF(100, 100)") << BOBUIransform().scale(5, 5) << QPointF(100, 100);
+    BOBUIest::newRow("translate QPointF(100, 100)") << BOBUIransform().translate(5, 5) << QPointF(100, 100);
+    BOBUIest::newRow("shear     QPointF(100, 100)") << BOBUIransform().shear(1.5, 1.5) << QPointF(100, 100);
+    BOBUIest::newRow("perspect  QPointF(100, 100)") << BOBUIransform().rotate(45, BobUI::XAxis) << QPointF(100, 100);
 }
 
 void tst_QGraphicsView::mapPointFromScene()
 {
-    QFETCH(QTransform, transform);
+    QFETCH(BOBUIransform, transform);
     QFETCH(QPointF, point);
 
     QGraphicsView view;
@@ -299,21 +299,21 @@ void tst_QGraphicsView::mapPointFromScene()
 
 void tst_QGraphicsView::mapRectToScene_data()
 {
-    QTest::addColumn<QTransform>("transform");
-    QTest::addColumn<QRect>("rect");
+    BOBUIest::addColumn<BOBUIransform>("transform");
+    BOBUIest::addColumn<QRect>("rect");
 
-    QTest::newRow("null") << QTransform() << QRect();
-    QTest::newRow("identity  QRect(0, 0, 100, 100)") << QTransform() << QRect(0, 0, 100, 100);
-    QTest::newRow("rotate    QRect(0, 0, 100, 100)") << QTransform().rotate(90) << QRect(0, 0, 100, 100);
-    QTest::newRow("scale     QRect(0, 0, 100, 100)") << QTransform().scale(5, 5) << QRect(0, 0, 100, 100);
-    QTest::newRow("translate QRect(0, 0, 100, 100)") << QTransform().translate(5, 5) << QRect(0, 0, 100, 100);
-    QTest::newRow("shear     QRect(0, 0, 100, 100)") << QTransform().shear(1.5, 1.5) << QRect(0, 0, 100, 100);
-    QTest::newRow("perspect  QRect(0, 0, 100, 100)") << QTransform().rotate(45, Qt::XAxis) << QRect(0, 0, 100, 100);
+    BOBUIest::newRow("null") << BOBUIransform() << QRect();
+    BOBUIest::newRow("identity  QRect(0, 0, 100, 100)") << BOBUIransform() << QRect(0, 0, 100, 100);
+    BOBUIest::newRow("rotate    QRect(0, 0, 100, 100)") << BOBUIransform().rotate(90) << QRect(0, 0, 100, 100);
+    BOBUIest::newRow("scale     QRect(0, 0, 100, 100)") << BOBUIransform().scale(5, 5) << QRect(0, 0, 100, 100);
+    BOBUIest::newRow("translate QRect(0, 0, 100, 100)") << BOBUIransform().translate(5, 5) << QRect(0, 0, 100, 100);
+    BOBUIest::newRow("shear     QRect(0, 0, 100, 100)") << BOBUIransform().shear(1.5, 1.5) << QRect(0, 0, 100, 100);
+    BOBUIest::newRow("perspect  QRect(0, 0, 100, 100)") << BOBUIransform().rotate(45, BobUI::XAxis) << QRect(0, 0, 100, 100);
 }
 
 void tst_QGraphicsView::mapRectToScene()
 {
-    QFETCH(QTransform, transform);
+    QFETCH(BOBUIransform, transform);
     QFETCH(QRect, rect);
 
     QGraphicsView view;
@@ -327,21 +327,21 @@ void tst_QGraphicsView::mapRectToScene()
 
 void tst_QGraphicsView::mapRectFromScene_data()
 {
-    QTest::addColumn<QTransform>("transform");
-    QTest::addColumn<QRectF>("rect");
+    BOBUIest::addColumn<BOBUIransform>("transform");
+    BOBUIest::addColumn<QRectF>("rect");
 
-    QTest::newRow("null") << QTransform() << QRectF();
-    QTest::newRow("identity  QRectF(0, 0, 100, 100)") << QTransform() << QRectF(0, 0, 100, 100);
-    QTest::newRow("rotate    QRectF(0, 0, 100, 100)") << QTransform().rotate(90) << QRectF(0, 0, 100, 100);
-    QTest::newRow("scale     QRectF(0, 0, 100, 100)") << QTransform().scale(5, 5) << QRectF(0, 0, 100, 100);
-    QTest::newRow("translate QRectF(0, 0, 100, 100)") << QTransform().translate(5, 5) << QRectF(0, 0, 100, 100);
-    QTest::newRow("shear     QRectF(0, 0, 100, 100)") << QTransform().shear(1.5, 1.5) << QRectF(0, 0, 100, 100);
-    QTest::newRow("perspect  QRectF(0, 0, 100, 100)") << QTransform().rotate(45, Qt::XAxis) << QRectF(0, 0, 100, 100);
+    BOBUIest::newRow("null") << BOBUIransform() << QRectF();
+    BOBUIest::newRow("identity  QRectF(0, 0, 100, 100)") << BOBUIransform() << QRectF(0, 0, 100, 100);
+    BOBUIest::newRow("rotate    QRectF(0, 0, 100, 100)") << BOBUIransform().rotate(90) << QRectF(0, 0, 100, 100);
+    BOBUIest::newRow("scale     QRectF(0, 0, 100, 100)") << BOBUIransform().scale(5, 5) << QRectF(0, 0, 100, 100);
+    BOBUIest::newRow("translate QRectF(0, 0, 100, 100)") << BOBUIransform().translate(5, 5) << QRectF(0, 0, 100, 100);
+    BOBUIest::newRow("shear     QRectF(0, 0, 100, 100)") << BOBUIransform().shear(1.5, 1.5) << QRectF(0, 0, 100, 100);
+    BOBUIest::newRow("perspect  QRectF(0, 0, 100, 100)") << BOBUIransform().rotate(45, BobUI::XAxis) << QRectF(0, 0, 100, 100);
 }
 
 void tst_QGraphicsView::mapRectFromScene()
 {
-    QFETCH(QTransform, transform);
+    QFETCH(BOBUIransform, transform);
     QFETCH(QRectF, rect);
 
     QGraphicsView view;
@@ -355,14 +355,14 @@ void tst_QGraphicsView::mapRectFromScene()
 
 void tst_QGraphicsView::chipTester_data()
 {
-    QTest::addColumn<bool>("antialias");
-    QTest::addColumn<int>("operation");
-    QTest::newRow("rotate") << false << 0;
-    QTest::newRow("rotate, antialias") << true << 0;
-    QTest::newRow("zoom") << false << 1;
-    QTest::newRow("zoom, antialias") << true << 1;
-    QTest::newRow("translate") << false << 2;
-    QTest::newRow("translate, antialias") << true << 2;
+    BOBUIest::addColumn<bool>("antialias");
+    BOBUIest::addColumn<int>("operation");
+    BOBUIest::newRow("rotate") << false << 0;
+    BOBUIest::newRow("rotate, antialias") << true << 0;
+    BOBUIest::newRow("zoom") << false << 1;
+    BOBUIest::newRow("zoom, antialias") << true << 1;
+    BOBUIest::newRow("translate") << false << 2;
+    BOBUIest::newRow("translate, antialias") << true << 2;
 }
 
 void tst_QGraphicsView::chipTester()
@@ -374,8 +374,8 @@ void tst_QGraphicsView::chipTester()
     tester.setAntialias(antialias);
     tester.setOperation(ChipTester::Operation(operation));
     tester.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&tester));
-    QTest::qWait(250);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&tester));
+    BOBUIest::qWait(250);
     processEvents();
 
     QBENCHMARK {
@@ -390,19 +390,19 @@ static void addChildHelper(QGraphicsItem *parent, int n, bool rotate)
     QGraphicsRectItem *item = new QGraphicsRectItem(QRectF(0, 0, 50, 50), parent);
     item->setPos(10, 10);
     if (rotate)
-        item->setTransform(QTransform().rotate(10), true);
+        item->setTransform(BOBUIransform().rotate(10), true);
     addChildHelper(item, n - 1, rotate);
 }
 
 void tst_QGraphicsView::deepNesting_data()
 {
-    QTest::addColumn<bool>("rotate");
-    QTest::addColumn<bool>("bsp");
+    BOBUIest::addColumn<bool>("rotate");
+    BOBUIest::addColumn<bool>("bsp");
 
-    QTest::newRow("bsp, no transform") << false << true;
-    QTest::newRow("bsp, rotation") << true << true;
-    QTest::newRow("no transform") << false << false;
-    QTest::newRow("rotation") << true << false;
+    BOBUIest::newRow("bsp, no transform") << false << true;
+    BOBUIest::newRow("bsp, rotation") << true << true;
+    BOBUIest::newRow("no transform") << false << false;
+    BOBUIest::newRow("rotation") << true << false;
 }
 
 void tst_QGraphicsView::deepNesting()
@@ -415,7 +415,7 @@ void tst_QGraphicsView::deepNesting()
         for (int x = 0; x < 15; ++x) {
             QGraphicsItem *item1 = scene.addRect(QRectF(0, 0, 50, 50));
             if (rotate)
-                item1->setTransform(QTransform().rotate(10), true);
+                item1->setTransform(BOBUIransform().rotate(10), true);
             item1->setPos(x * 25, y * 25);
             addChildHelper(item1, 30, rotate);
         }
@@ -475,7 +475,7 @@ protected:
 
         if (rotate || scale) {
             qreal s = 0.5 + scaleFactor / 50.0;
-            setTransform(QTransform().rotate(rotateFactor).scale(s, s));
+            setTransform(BOBUIransform().rotate(rotateFactor).scale(s, s));
         }
     }
 
@@ -490,15 +490,15 @@ private:
 
 void tst_QGraphicsView::imageRiver_data()
 {
-    QTest::addColumn<int>("direction");
-    QTest::addColumn<bool>("rotation");
-    QTest::addColumn<bool>("scale");
-    QTest::newRow("horizontal") << 0 << false << false;
-    QTest::newRow("vertical") << 1 << false << false;
-    QTest::newRow("both") << 2 << false << false;
-    QTest::newRow("horizontal rot") << 0 << true << false;
-    QTest::newRow("horizontal scale") << 0 << false << true;
-    QTest::newRow("horizontal rot + scale") << 0 << true << true;
+    BOBUIest::addColumn<int>("direction");
+    BOBUIest::addColumn<bool>("rotation");
+    BOBUIest::addColumn<bool>("scale");
+    BOBUIest::newRow("horizontal") << 0 << false << false;
+    BOBUIest::newRow("vertical") << 1 << false << false;
+    BOBUIest::newRow("both") << 2 << false << false;
+    BOBUIest::newRow("horizontal rot") << 0 << true << false;
+    BOBUIest::newRow("horizontal scale") << 0 << false << true;
+    BOBUIest::newRow("horizontal rot + scale") << 0 << true << true;
 }
 
 void tst_QGraphicsView::imageRiver()
@@ -584,7 +584,7 @@ protected:
 
         if (rotate || scale) {
             qreal s = 0.5 + scaleFactor / 50.0;
-            setTransform(QTransform().rotate(rotateFactor).scale(s, s));
+            setTransform(BOBUIransform().rotate(rotateFactor).scale(s, s));
         }
     }
 
@@ -599,15 +599,15 @@ private:
 
 void tst_QGraphicsView::textRiver_data()
 {
-    QTest::addColumn<int>("direction");
-    QTest::addColumn<bool>("rotation");
-    QTest::addColumn<bool>("scale");
-    QTest::newRow("horizontal") << 0 << false << false;
-    QTest::newRow("vertical") << 1 << false << false;
-    QTest::newRow("both") << 2 << false << false;
-    QTest::newRow("horizontal rot") << 0 << true << false;
-    QTest::newRow("horizontal scale") << 0 << false << true;
-    QTest::newRow("horizontal rot + scale") << 0 << true << true;
+    BOBUIest::addColumn<int>("direction");
+    BOBUIest::addColumn<bool>("rotation");
+    BOBUIest::addColumn<bool>("scale");
+    BOBUIest::newRow("horizontal") << 0 << false << false;
+    BOBUIest::newRow("vertical") << 1 << false << false;
+    BOBUIest::newRow("both") << 2 << false << false;
+    BOBUIest::newRow("horizontal rot") << 0 << true << false;
+    BOBUIest::newRow("horizontal scale") << 0 << false << true;
+    BOBUIest::newRow("horizontal rot + scale") << 0 << true << true;
 }
 
 void tst_QGraphicsView::textRiver()
@@ -673,7 +673,7 @@ public:
     {
         QGraphicsPixmapItem::paint(painter,option,widget);
         //We just want to wait, and we don't want to process the event loop with qWait
-        QTest::qSleep(3);
+        BOBUIest::qSleep(3);
     }
 protected:
     void advance(int i) override
@@ -696,18 +696,18 @@ private:
 
 void tst_QGraphicsView::moveItemCache_data()
 {
-    QTest::addColumn<int>("direction");
-    QTest::addColumn<bool>("rotation");
-    QTest::addColumn<int>("cacheMode");
-    QTest::newRow("Horizontal movement : ItemCoordinate Cache") << 0 << false << (int)QGraphicsItem::ItemCoordinateCache;
-    QTest::newRow("Horizontal movement : DeviceCoordinate Cache") << 0 << false << (int)QGraphicsItem::DeviceCoordinateCache;
-    QTest::newRow("Horizontal movement : No Cache") << 0 << false << (int)QGraphicsItem::NoCache;
-    QTest::newRow("Vertical +  Horizontal movement : ItemCoordinate Cache") << 2 << false <<  (int)QGraphicsItem::ItemCoordinateCache;
-    QTest::newRow("Vertical +  Horizontal movement : DeviceCoordinate Cache") << 2 << false <<  (int)QGraphicsItem::DeviceCoordinateCache;
-    QTest::newRow("Vertical +  Horizontal movement : No Cache") << 2 << false << (int)QGraphicsItem::NoCache;
-    QTest::newRow("Horizontal movement + Rotation : ItemCoordinate Cache") << 0 << true << (int)QGraphicsItem::ItemCoordinateCache;
-    QTest::newRow("Horizontal movement + Rotation : DeviceCoordinate Cache") << 0 << true << (int)QGraphicsItem::DeviceCoordinateCache;
-    QTest::newRow("Horizontal movement + Rotation : No Cache") << 0 << true << (int)QGraphicsItem::NoCache;
+    BOBUIest::addColumn<int>("direction");
+    BOBUIest::addColumn<bool>("rotation");
+    BOBUIest::addColumn<int>("cacheMode");
+    BOBUIest::newRow("Horizontal movement : ItemCoordinate Cache") << 0 << false << (int)QGraphicsItem::ItemCoordinateCache;
+    BOBUIest::newRow("Horizontal movement : DeviceCoordinate Cache") << 0 << false << (int)QGraphicsItem::DeviceCoordinateCache;
+    BOBUIest::newRow("Horizontal movement : No Cache") << 0 << false << (int)QGraphicsItem::NoCache;
+    BOBUIest::newRow("Vertical +  Horizontal movement : ItemCoordinate Cache") << 2 << false <<  (int)QGraphicsItem::ItemCoordinateCache;
+    BOBUIest::newRow("Vertical +  Horizontal movement : DeviceCoordinate Cache") << 2 << false <<  (int)QGraphicsItem::DeviceCoordinateCache;
+    BOBUIest::newRow("Vertical +  Horizontal movement : No Cache") << 2 << false << (int)QGraphicsItem::NoCache;
+    BOBUIest::newRow("Horizontal movement + Rotation : ItemCoordinate Cache") << 0 << true << (int)QGraphicsItem::ItemCoordinateCache;
+    BOBUIest::newRow("Horizontal movement + Rotation : DeviceCoordinate Cache") << 0 << true << (int)QGraphicsItem::DeviceCoordinateCache;
+    BOBUIest::newRow("Horizontal movement + Rotation : No Cache") << 0 << true << (int)QGraphicsItem::NoCache;
 }
 
 void tst_QGraphicsView::moveItemCache()
@@ -733,7 +733,7 @@ void tst_QGraphicsView::moveItemCache()
         item->setPixmap(pix);
         item->setCacheMode((QGraphicsItem::CacheMode)cacheMode);
         if (rotation)
-            item->setTransform(QTransform().rotate(45));
+            item->setTransform(BOBUIransform().rotate(45));
         int rnd1, rnd2;
         str >> rnd1 >> rnd2;
         item->setPos(-pix.width() + rnd1 % (400 + pix.width()),
@@ -789,21 +789,21 @@ private:
 
 void tst_QGraphicsView::paintItemCache_data()
 {
-    QTest::addColumn<bool>("updatePartial");
-    QTest::addColumn<bool>("rotation");
-    QTest::addColumn<int>("cacheMode");
-    QTest::newRow("Partial Update : ItemCoordinate Cache") << true << false << (int)QGraphicsItem::ItemCoordinateCache;
-    QTest::newRow("Partial Update : DeviceCoordinate Cache") << true << false << (int)QGraphicsItem::DeviceCoordinateCache;
-    QTest::newRow("Partial Update : No Cache") << true << false << (int)QGraphicsItem::NoCache;
-    QTest::newRow("Full Update : ItemCoordinate Cache") << false << false << (int)QGraphicsItem::ItemCoordinateCache;
-    QTest::newRow("Full Update : DeviceCoordinate Cache") << false << false << (int)QGraphicsItem::DeviceCoordinateCache;
-    QTest::newRow("Full Update : No Cache") << false << false << (int)QGraphicsItem::NoCache;
-    QTest::newRow("Partial Update : ItemCoordinate Cache item rotated") << true << true << (int)QGraphicsItem::ItemCoordinateCache;
-    QTest::newRow("Partial Update : DeviceCoordinate Cache item rotated") << true << true << (int)QGraphicsItem::DeviceCoordinateCache;
-    QTest::newRow("Partial Update : No Cache item rotated") << true << true << (int)QGraphicsItem::NoCache;
-    QTest::newRow("Full Update : ItemCoordinate Cache item rotated") << false  << true << (int)QGraphicsItem::ItemCoordinateCache;
-    QTest::newRow("Full Update : DeviceCoordinate Cache item rotated") << false << true << (int)QGraphicsItem::DeviceCoordinateCache;
-    QTest::newRow("Full Update : No Cache item rotated") << false << true <<(int)QGraphicsItem::NoCache;
+    BOBUIest::addColumn<bool>("updatePartial");
+    BOBUIest::addColumn<bool>("rotation");
+    BOBUIest::addColumn<int>("cacheMode");
+    BOBUIest::newRow("Partial Update : ItemCoordinate Cache") << true << false << (int)QGraphicsItem::ItemCoordinateCache;
+    BOBUIest::newRow("Partial Update : DeviceCoordinate Cache") << true << false << (int)QGraphicsItem::DeviceCoordinateCache;
+    BOBUIest::newRow("Partial Update : No Cache") << true << false << (int)QGraphicsItem::NoCache;
+    BOBUIest::newRow("Full Update : ItemCoordinate Cache") << false << false << (int)QGraphicsItem::ItemCoordinateCache;
+    BOBUIest::newRow("Full Update : DeviceCoordinate Cache") << false << false << (int)QGraphicsItem::DeviceCoordinateCache;
+    BOBUIest::newRow("Full Update : No Cache") << false << false << (int)QGraphicsItem::NoCache;
+    BOBUIest::newRow("Partial Update : ItemCoordinate Cache item rotated") << true << true << (int)QGraphicsItem::ItemCoordinateCache;
+    BOBUIest::newRow("Partial Update : DeviceCoordinate Cache item rotated") << true << true << (int)QGraphicsItem::DeviceCoordinateCache;
+    BOBUIest::newRow("Partial Update : No Cache item rotated") << true << true << (int)QGraphicsItem::NoCache;
+    BOBUIest::newRow("Full Update : ItemCoordinate Cache item rotated") << false  << true << (int)QGraphicsItem::ItemCoordinateCache;
+    BOBUIest::newRow("Full Update : DeviceCoordinate Cache item rotated") << false << true << (int)QGraphicsItem::DeviceCoordinateCache;
+    BOBUIest::newRow("Full Update : No Cache item rotated") << false << true <<(int)QGraphicsItem::NoCache;
 }
 
 void tst_QGraphicsView::paintItemCache()
@@ -825,7 +825,7 @@ void tst_QGraphicsView::paintItemCache()
     item->setPixmap(pix);
     item->setCacheMode((QGraphicsItem::CacheMode)cacheMode);
     if (rotation)
-        item->setTransform(QTransform().rotate(45));
+        item->setTransform(BOBUIransform().rotate(45));
     item->setPos(-100, -100);
     scene.addItem(item);
 
@@ -834,7 +834,7 @@ void tst_QGraphicsView::paintItemCache()
     item->setPixmap(pix2);
     item->setCacheMode((QGraphicsItem::CacheMode)cacheMode);
     if (rotation)
-        item->setTransform(QTransform().rotate(45));
+        item->setTransform(BOBUIransform().rotate(45));
     item->setPos(0, 0);
     scene.addItem(item);
     scene.setSceneRect(-100, -100, 600, 600);
@@ -857,5 +857,5 @@ void tst_QGraphicsView::paintItemCache()
     }
 }
 
-QTEST_MAIN(tst_QGraphicsView)
+BOBUIEST_MAIN(tst_QGraphicsView)
 #include "tst_qgraphicsview.moc"

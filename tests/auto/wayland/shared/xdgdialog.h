@@ -1,5 +1,5 @@
 // Copyright (C) 2024 David Redondo <kde@david-redondo.de>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef MOCKCOMPOSITOR_XDG_DIALOG_H
 #define MOCKCOMPOSITOR_XDG_DIALOG_H
@@ -12,7 +12,7 @@ namespace MockCompositor {
 class XdgToplevel;
 class XdgWmDialog;
 
-class XdgDialog : public QtWaylandServer::xdg_dialog_v1
+class XdgDialog : public BobUIWaylandServer::xdg_dialog_v1
 {
 public:
     explicit XdgDialog(XdgWmDialog *wm, XdgToplevel *toplevel, wl_client *client, int id,
@@ -30,7 +30,7 @@ private:
     XdgWmDialog *m_wm;
 };
 
-class XdgWmDialog : public Global, public QtWaylandServer::xdg_wm_dialog_v1
+class XdgWmDialog : public Global, public BobUIWaylandServer::xdg_wm_dialog_v1
 {
     Q_OBJECT
 public:

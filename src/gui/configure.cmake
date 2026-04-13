@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 
@@ -7,23 +7,23 @@
 
 # input freetype
 set(INPUT_freetype "undefined" CACHE STRING "")
-set_property(CACHE INPUT_freetype PROPERTY STRINGS undefined no qt system)
+set_property(CACHE INPUT_freetype PROPERTY STRINGS undefined no bobui system)
 
 # input harfbuzz
 set(INPUT_harfbuzz "undefined" CACHE STRING "")
-set_property(CACHE INPUT_harfbuzz PROPERTY STRINGS undefined no qt system)
+set_property(CACHE INPUT_harfbuzz PROPERTY STRINGS undefined no bobui system)
 
 # input libjpeg
 set(INPUT_libjpeg "undefined" CACHE STRING "")
-set_property(CACHE INPUT_libjpeg PROPERTY STRINGS undefined no qt system)
+set_property(CACHE INPUT_libjpeg PROPERTY STRINGS undefined no bobui system)
 
 # input libmd4c
 set(INPUT_libmd4c "undefined" CACHE STRING "")
-set_property(CACHE INPUT_libmd4c PROPERTY STRINGS undefined no qt system)
+set_property(CACHE INPUT_libmd4c PROPERTY STRINGS undefined no bobui system)
 
 # input libpng
 set(INPUT_libpng "undefined" CACHE STRING "")
-set_property(CACHE INPUT_libpng PROPERTY STRINGS undefined no qt system)
+set_property(CACHE INPUT_libpng PROPERTY STRINGS undefined no bobui system)
 
 
 
@@ -33,39 +33,39 @@ if(LINUX OR HPUX OR FREEBSD OR NETBSD OR OPENBSD OR SOLARIS OR HURD)
 else()
     set(X11_SUPPORTED 0)
 endif()
-qt_feature_vcpkg_scope(gui)
-qt_find_package(ATSPI2 MODULE PROVIDED_TARGETS PkgConfig::ATSPI2 MODULE_NAME gui QMAKE_LIB atspi)
-qt_find_package(DirectFB PROVIDED_TARGETS PkgConfig::DirectFB MODULE_NAME gui QMAKE_LIB directfb)
-qt_find_package(Libdrm MODULE PROVIDED_TARGETS Libdrm::Libdrm MODULE_NAME gui QMAKE_LIB drm)
-qt_find_package(PlatformGraphics
+bobui_feature_vcpkg_scope(gui)
+bobui_find_package(ATSPI2 MODULE PROVIDED_TARGETS PkgConfig::ATSPI2 MODULE_NAME gui QMAKE_LIB atspi)
+bobui_find_package(DirectFB PROVIDED_TARGETS PkgConfig::DirectFB MODULE_NAME gui QMAKE_LIB directfb)
+bobui_find_package(Libdrm MODULE PROVIDED_TARGETS Libdrm::Libdrm MODULE_NAME gui QMAKE_LIB drm)
+bobui_find_package(PlatformGraphics
         PROVIDED_TARGETS PlatformGraphics::PlatformGraphics
         MODULE_NAME gui QMAKE_LIB platform_graphics)
-qt_find_package(EGL MODULE PROVIDED_TARGETS EGL::EGL MODULE_NAME gui QMAKE_LIB egl)
+bobui_find_package(EGL MODULE PROVIDED_TARGETS EGL::EGL MODULE_NAME gui QMAKE_LIB egl)
 
-qt_find_package(WrapSystemFreetype 2.2.0 MODULE
+bobui_find_package(WrapSystemFreetype 2.2.0 MODULE
     PROVIDED_TARGETS WrapSystemFreetype::WrapSystemFreetype MODULE_NAME gui QMAKE_LIB freetype
     VCPKG_PORT freetype
     VCPKG_ADD_TO_FEATURE freetype
 )
-if(QT_FEATURE_system_zlib)
-    qt_add_qmake_lib_dependency(freetype zlib)
+if(BOBUI_FEATURE_system_zlib)
+    bobui_add_qmake_lib_dependency(freetype zlib)
 endif()
-qt_find_package(Fontconfig PROVIDED_TARGETS Fontconfig::Fontconfig MODULE_NAME gui
+bobui_find_package(Fontconfig PROVIDED_TARGETS Fontconfig::Fontconfig MODULE_NAME gui
     QMAKE_LIB fontconfig
     VCPKG_PORT fontconfig
     VCPKG_ADD_TO_FEATURE fontconfig
     VCPKG_PLATFORM "linux"
 )
-qt_add_qmake_lib_dependency(fontconfig freetype)
-qt_find_package(gbm MODULE PROVIDED_TARGETS gbm::gbm MODULE_NAME gui QMAKE_LIB gbm)
-qt_find_package(WrapSystemHarfbuzz 2.6.0 MODULE
+bobui_add_qmake_lib_dependency(fontconfig freetype)
+bobui_find_package(gbm MODULE PROVIDED_TARGETS gbm::gbm MODULE_NAME gui QMAKE_LIB gbm)
+bobui_find_package(WrapSystemHarfbuzz 2.6.0 MODULE
     PROVIDED_TARGETS WrapSystemHarfbuzz::WrapSystemHarfbuzz MODULE_NAME gui QMAKE_LIB harfbuzz
     VCPKG_PORT harfbuzz
     VCPKG_ADD_TO_FEATURE harfbuzz
 )
-qt_find_package(Libinput MODULE
+bobui_find_package(Libinput MODULE
     PROVIDED_TARGETS Libinput::Libinput MODULE_NAME gui QMAKE_LIB libinput)
-qt_find_package_extend_sbom(TARGETS Libinput::Libinput
+bobui_find_package_extend_sbom(TARGETS Libinput::Libinput
     COPYRIGHTS
         "Copyright © 2006-2009 Simon Thum"
         "Copyright © 2008-2012 Kristian Høgsberg"
@@ -75,157 +75,157 @@ qt_find_package_extend_sbom(TARGETS Libinput::Libinput
         "Copyright © 2013-2014 Jonas Ådahl"
         "Copyright © 2013-2015 Red Hat, Inc."
 )
-qt_find_package(WrapSystemJpeg MODULE
+bobui_find_package(WrapSystemJpeg MODULE
     PROVIDED_TARGETS WrapSystemJpeg::WrapSystemJpeg MODULE_NAME gui QMAKE_LIB libjpeg
     VCPKG_PORT libjpeg-turbo
     VCPKG_ADD_TO_FEATURE jpeg
 )
-qt_find_package(WrapSystemMd4c MODULE
+bobui_find_package(WrapSystemMd4c MODULE
     PROVIDED_TARGETS WrapSystemMd4c::WrapSystemMd4c MODULE_NAME gui QMAKE_LIB libmd4c
     VCPKG_PORT md4c
     VCPKG_ADD_TO_FEATURE textmarkdownreader
 )
-qt_find_package(WrapSystemPNG MODULE
+bobui_find_package(WrapSystemPNG MODULE
     PROVIDED_TARGETS WrapSystemPNG::WrapSystemPNG MODULE_NAME gui QMAKE_LIB libpng
     VCPKG_PORT libpng
     VCPKG_ADD_TO_FEATURE png
 )
-if(QT_FEATURE_system_zlib)
-    qt_add_qmake_lib_dependency(libpng zlib)
+if(BOBUI_FEATURE_system_zlib)
+    bobui_add_qmake_lib_dependency(libpng zlib)
 endif()
-qt_find_package(Mtdev MODULE PROVIDED_TARGETS PkgConfig::Mtdev MODULE_NAME gui QMAKE_LIB mtdev)
-qt_find_package(WrapOpenGL MODULE PROVIDED_TARGETS WrapOpenGL::WrapOpenGL MODULE_NAME gui QMAKE_LIB opengl)
-qt_find_package(GLESv2 MODULE
+bobui_find_package(Mtdev MODULE PROVIDED_TARGETS PkgConfig::Mtdev MODULE_NAME gui QMAKE_LIB mtdev)
+bobui_find_package(WrapOpenGL MODULE PROVIDED_TARGETS WrapOpenGL::WrapOpenGL MODULE_NAME gui QMAKE_LIB opengl)
+bobui_find_package(GLESv2 MODULE
     PROVIDED_TARGETS GLESv2::GLESv2 MODULE_NAME gui QMAKE_LIB opengl_es2)
-qt_find_package(Tslib MODULE PROVIDED_TARGETS PkgConfig::Tslib MODULE_NAME gui QMAKE_LIB tslib)
-qt_find_package(WrapVulkanHeaders MODULE PROVIDED_TARGETS WrapVulkanHeaders::WrapVulkanHeaders
+bobui_find_package(Tslib MODULE PROVIDED_TARGETS PkgConfig::Tslib MODULE_NAME gui QMAKE_LIB tslib)
+bobui_find_package(WrapVulkanHeaders MODULE PROVIDED_TARGETS WrapVulkanHeaders::WrapVulkanHeaders
     MODULE_NAME gui QMAKE_LIB vulkan MARK_OPTIONAL)
-if(LINUX OR FREEBSD OR QT_FIND_ALL_PACKAGES_ALWAYS)
-    qt_find_package(Wayland MODULE PROVIDED_TARGETS Wayland::Server
+if(LINUX OR FREEBSD OR BOBUI_FIND_ALL_PACKAGES_ALWAYS)
+    bobui_find_package(Wayland MODULE PROVIDED_TARGETS Wayland::Server
                     MODULE_NAME gui QMAKE_LIB wayland_server)
-    qt_find_package(Wayland MODULE PROVIDED_TARGETS Wayland::Client
+    bobui_find_package(Wayland MODULE PROVIDED_TARGETS Wayland::Client
                     MODULE_NAME gui QMAKE_LIB wayland_client)
     # Gui doesn't use these, but the wayland qpa plugin does, and we
     # need to list the rest of the provided targets here, so they are
     # promoted to global, and can be accessed by the SBOM at the root
     # project level. That's not possible to do in the wayland qpa subdir,
     # due to different cmake directory scopes.
-    qt_find_package(Wayland MODULE PROVIDED_TARGETS Wayland::Cursor
+    bobui_find_package(Wayland MODULE PROVIDED_TARGETS Wayland::Cursor
                     MODULE_NAME gui QMAKE_LIB wayland_cursor)
-    qt_find_package(Wayland MODULE PROVIDED_TARGETS Wayland::Egl
+    bobui_find_package(Wayland MODULE PROVIDED_TARGETS Wayland::Egl
                     MODULE_NAME gui QMAKE_LIB wayland_egl)
 endif()
-if((X11_SUPPORTED) OR QT_FIND_ALL_PACKAGES_ALWAYS)
-    qt_find_package(X11 MODULE PROVIDED_TARGETS X11::X11 MODULE_NAME gui QMAKE_LIB xlib)
+if((X11_SUPPORTED) OR BOBUI_FIND_ALL_PACKAGES_ALWAYS)
+    bobui_find_package(X11 MODULE PROVIDED_TARGETS X11::X11 MODULE_NAME gui QMAKE_LIB xlib)
 endif()
-if((X11_SUPPORTED) OR QT_FIND_ALL_PACKAGES_ALWAYS)
-    qt_find_package(X11 MODULE PROVIDED_TARGETS X11::SM X11::ICE MODULE_NAME gui QMAKE_LIB x11sm)
+if((X11_SUPPORTED) OR BOBUI_FIND_ALL_PACKAGES_ALWAYS)
+    bobui_find_package(X11 MODULE PROVIDED_TARGETS X11::SM X11::ICE MODULE_NAME gui QMAKE_LIB x11sm)
 endif()
-if((X11_SUPPORTED) OR QT_FIND_ALL_PACKAGES_ALWAYS)
-    qt_find_package(XCB 1.11 MODULE
+if((X11_SUPPORTED) OR BOBUI_FIND_ALL_PACKAGES_ALWAYS)
+    bobui_find_package(XCB 1.11 MODULE
         COMPONENTS XCB PROVIDED_TARGETS XCB::XCB MODULE_NAME gui QMAKE_LIB xcb)
 endif()
-if((X11_SUPPORTED) OR QT_FIND_ALL_PACKAGES_ALWAYS)
-    qt_find_package(XCB MODULE
+if((X11_SUPPORTED) OR BOBUI_FIND_ALL_PACKAGES_ALWAYS)
+    bobui_find_package(XCB MODULE
         COMPONENTS CURSOR PROVIDED_TARGETS XCB::CURSOR MODULE_NAME gui QMAKE_LIB xcb_cursor)
 endif()
-if((X11_SUPPORTED) OR QT_FIND_ALL_PACKAGES_ALWAYS)
-    qt_find_package(XCB MODULE
+if((X11_SUPPORTED) OR BOBUI_FIND_ALL_PACKAGES_ALWAYS)
+    bobui_find_package(XCB MODULE
         COMPONENTS ICCCM PROVIDED_TARGETS XCB::ICCCM MODULE_NAME gui QMAKE_LIB xcb_icccm)
 endif()
-qt_add_qmake_lib_dependency(xcb_icccm xcb)
-if((X11_SUPPORTED) OR QT_FIND_ALL_PACKAGES_ALWAYS)
-    qt_find_package(XCB MODULE
+bobui_add_qmake_lib_dependency(xcb_icccm xcb)
+if((X11_SUPPORTED) OR BOBUI_FIND_ALL_PACKAGES_ALWAYS)
+    bobui_find_package(XCB MODULE
         COMPONENTS UTIL PROVIDED_TARGETS XCB::UTIL MODULE_NAME gui QMAKE_LIB xcb_util)
 endif()
-qt_add_qmake_lib_dependency(xcb_util xcb)
-if((X11_SUPPORTED) OR QT_FIND_ALL_PACKAGES_ALWAYS)
-    qt_find_package(XCB MODULE
+bobui_add_qmake_lib_dependency(xcb_util xcb)
+if((X11_SUPPORTED) OR BOBUI_FIND_ALL_PACKAGES_ALWAYS)
+    bobui_find_package(XCB MODULE
         COMPONENTS IMAGE PROVIDED_TARGETS XCB::IMAGE MODULE_NAME gui QMAKE_LIB xcb_image)
 endif()
-qt_add_qmake_lib_dependency(xcb_image xcb_shm xcb_util xcb)
-if((X11_SUPPORTED) OR QT_FIND_ALL_PACKAGES_ALWAYS)
-    qt_find_package(XCB MODULE
+bobui_add_qmake_lib_dependency(xcb_image xcb_shm xcb_util xcb)
+if((X11_SUPPORTED) OR BOBUI_FIND_ALL_PACKAGES_ALWAYS)
+    bobui_find_package(XCB MODULE
         COMPONENTS KEYSYMS PROVIDED_TARGETS XCB::KEYSYMS MODULE_NAME gui QMAKE_LIB xcb_keysyms)
 endif()
-qt_add_qmake_lib_dependency(xcb_keysyms xcb)
-if((X11_SUPPORTED) OR QT_FIND_ALL_PACKAGES_ALWAYS)
-    qt_find_package(XCB MODULE
+bobui_add_qmake_lib_dependency(xcb_keysyms xcb)
+if((X11_SUPPORTED) OR BOBUI_FIND_ALL_PACKAGES_ALWAYS)
+    bobui_find_package(XCB MODULE
         COMPONENTS RENDERUTIL PROVIDED_TARGETS XCB::RENDERUTIL MODULE_NAME gui QMAKE_LIB xcb_renderutil)
 endif()
-qt_add_qmake_lib_dependency(xcb_renderutil xcb xcb_render)
-if((X11_SUPPORTED) OR QT_FIND_ALL_PACKAGES_ALWAYS)
-    qt_find_package(XCB MODULE
+bobui_add_qmake_lib_dependency(xcb_renderutil xcb xcb_render)
+if((X11_SUPPORTED) OR BOBUI_FIND_ALL_PACKAGES_ALWAYS)
+    bobui_find_package(XCB MODULE
         COMPONENTS RANDR PROVIDED_TARGETS XCB::RANDR MODULE_NAME gui QMAKE_LIB xcb_randr)
 endif()
-qt_add_qmake_lib_dependency(xcb_randr xcb)
-if((X11_SUPPORTED) OR QT_FIND_ALL_PACKAGES_ALWAYS)
-    qt_find_package(XCB MODULE
+bobui_add_qmake_lib_dependency(xcb_randr xcb)
+if((X11_SUPPORTED) OR BOBUI_FIND_ALL_PACKAGES_ALWAYS)
+    bobui_find_package(XCB MODULE
         COMPONENTS SHAPE PROVIDED_TARGETS XCB::SHAPE MODULE_NAME gui QMAKE_LIB xcb_shape)
 endif()
-qt_add_qmake_lib_dependency(xcb_shape xcb)
-if((X11_SUPPORTED) OR QT_FIND_ALL_PACKAGES_ALWAYS)
-    qt_find_package(XCB MODULE
+bobui_add_qmake_lib_dependency(xcb_shape xcb)
+if((X11_SUPPORTED) OR BOBUI_FIND_ALL_PACKAGES_ALWAYS)
+    bobui_find_package(XCB MODULE
         COMPONENTS SHM PROVIDED_TARGETS XCB::SHM MODULE_NAME gui QMAKE_LIB xcb_shm)
 endif()
-qt_add_qmake_lib_dependency(xcb_shm xcb)
-if((X11_SUPPORTED) OR QT_FIND_ALL_PACKAGES_ALWAYS)
-    qt_find_package(XCB MODULE
+bobui_add_qmake_lib_dependency(xcb_shm xcb)
+if((X11_SUPPORTED) OR BOBUI_FIND_ALL_PACKAGES_ALWAYS)
+    bobui_find_package(XCB MODULE
         COMPONENTS SYNC PROVIDED_TARGETS XCB::SYNC MODULE_NAME gui QMAKE_LIB xcb_sync)
 endif()
-qt_add_qmake_lib_dependency(xcb_sync xcb)
-if((X11_SUPPORTED) OR QT_FIND_ALL_PACKAGES_ALWAYS)
-    qt_find_package(XCB MODULE
+bobui_add_qmake_lib_dependency(xcb_sync xcb)
+if((X11_SUPPORTED) OR BOBUI_FIND_ALL_PACKAGES_ALWAYS)
+    bobui_find_package(XCB MODULE
         COMPONENTS XFIXES PROVIDED_TARGETS XCB::XFIXES MODULE_NAME gui QMAKE_LIB xcb_xfixes)
 endif()
-qt_add_qmake_lib_dependency(xcb_xfixes xcb)
-if((X11_SUPPORTED) OR QT_FIND_ALL_PACKAGES_ALWAYS)
-    qt_find_package(X11_XCB MODULE PROVIDED_TARGETS X11::XCB MODULE_NAME gui QMAKE_LIB xcb_xlib)
+bobui_add_qmake_lib_dependency(xcb_xfixes xcb)
+if((X11_SUPPORTED) OR BOBUI_FIND_ALL_PACKAGES_ALWAYS)
+    bobui_find_package(X11_XCB MODULE PROVIDED_TARGETS X11::XCB MODULE_NAME gui QMAKE_LIB xcb_xlib)
 endif()
-qt_add_qmake_lib_dependency(xcb_xlib xcb xlib)
-if((X11_SUPPORTED) OR QT_FIND_ALL_PACKAGES_ALWAYS)
-    qt_find_package(XCB MODULE
+bobui_add_qmake_lib_dependency(xcb_xlib xcb xlib)
+if((X11_SUPPORTED) OR BOBUI_FIND_ALL_PACKAGES_ALWAYS)
+    bobui_find_package(XCB MODULE
         COMPONENTS XKB PROVIDED_TARGETS XCB::XKB MODULE_NAME gui QMAKE_LIB xcb_xkb)
 endif()
-qt_add_qmake_lib_dependency(xcb_xkb xcb)
-if((X11_SUPPORTED) OR QT_FIND_ALL_PACKAGES_ALWAYS)
-    qt_find_package(XCB MODULE
+bobui_add_qmake_lib_dependency(xcb_xkb xcb)
+if((X11_SUPPORTED) OR BOBUI_FIND_ALL_PACKAGES_ALWAYS)
+    bobui_find_package(XCB MODULE
         COMPONENTS RENDER PROVIDED_TARGETS XCB::RENDER MODULE_NAME gui QMAKE_LIB xcb_render)
 endif()
-qt_add_qmake_lib_dependency(xcb_render xcb)
-if((X11_SUPPORTED) OR QT_FIND_ALL_PACKAGES_ALWAYS)
-    qt_find_package(XCB MODULE
+bobui_add_qmake_lib_dependency(xcb_render xcb)
+if((X11_SUPPORTED) OR BOBUI_FIND_ALL_PACKAGES_ALWAYS)
+    bobui_find_package(XCB MODULE
         COMPONENTS GLX PROVIDED_TARGETS XCB::GLX MODULE_NAME gui QMAKE_LIB xcb_glx)
 endif()
-qt_add_qmake_lib_dependency(xcb_glx xcb)
-if((X11_SUPPORTED) OR QT_FIND_ALL_PACKAGES_ALWAYS)
-    qt_find_package(XCB 1.12 MODULE
+bobui_add_qmake_lib_dependency(xcb_glx xcb)
+if((X11_SUPPORTED) OR BOBUI_FIND_ALL_PACKAGES_ALWAYS)
+    bobui_find_package(XCB 1.12 MODULE
         COMPONENTS XINPUT PROVIDED_TARGETS XCB::XINPUT MODULE_NAME gui QMAKE_LIB xcb_xinput)
 endif()
-qt_add_qmake_lib_dependency(xcb_xinput xcb)
-if((X11_SUPPORTED) OR QT_FIND_ALL_PACKAGES_ALWAYS)
-    qt_find_package(XKB 0.9.0 MODULE PROVIDED_TARGETS XKB::XKB MODULE_NAME gui QMAKE_LIB xkbcommon)
+bobui_add_qmake_lib_dependency(xcb_xinput xcb)
+if((X11_SUPPORTED) OR BOBUI_FIND_ALL_PACKAGES_ALWAYS)
+    bobui_find_package(XKB 0.9.0 MODULE PROVIDED_TARGETS XKB::XKB MODULE_NAME gui QMAKE_LIB xkbcommon)
 endif()
-if((X11_SUPPORTED) OR QT_FIND_ALL_PACKAGES_ALWAYS)
-    qt_find_package(XKB_COMMON_X11 0.9.0 MODULE
+if((X11_SUPPORTED) OR BOBUI_FIND_ALL_PACKAGES_ALWAYS)
+    bobui_find_package(XKB_COMMON_X11 0.9.0 MODULE
         PROVIDED_TARGETS PkgConfig::XKB_COMMON_X11 MODULE_NAME gui QMAKE_LIB xkbcommon_x11)
 endif()
-if((X11_SUPPORTED) OR QT_FIND_ALL_PACKAGES_ALWAYS)
-    qt_find_package(XRender 0.6 MODULE
+if((X11_SUPPORTED) OR BOBUI_FIND_ALL_PACKAGES_ALWAYS)
+    bobui_find_package(XRender 0.6 MODULE
         PROVIDED_TARGETS PkgConfig::XRender MODULE_NAME gui QMAKE_LIB xrender)
 endif()
-qt_add_qmake_lib_dependency(xrender xlib)
+bobui_add_qmake_lib_dependency(xrender xlib)
 
-# qt wayland client
-if(LINUX OR FREEBSD OR QT_FIND_ALL_PACKAGES_ALWAYS)
+# bobui wayland client
+if(LINUX OR FREEBSD OR BOBUI_FIND_ALL_PACKAGES_ALWAYS)
     # EGL
     if(NOT TARGET EGL::EGL)
-        qt_find_package(EGL MODULE
+        bobui_find_package(EGL MODULE
             PROVIDED_TARGETS EGL::EGL MODULE_NAME gui QMAKE_LIB egl MARK_OPTIONAL)
     endif()
     # and Libdrm
     if(NOT TARGET Libdrm::Libdrm)
-        qt_find_package(Libdrm MODULE
+        bobui_find_package(Libdrm MODULE
             PROVIDED_TARGETS Libdrm::Libdrm
             MODULE_NAME gui
             QMAKE_LIB drm
@@ -233,10 +233,10 @@ if(LINUX OR FREEBSD OR QT_FIND_ALL_PACKAGES_ALWAYS)
     endif()
 endif()
 
-qt_find_package(Wayland 1.15 MODULE)
-qt_find_package(WaylandScanner MODULE PROVIDED_TARGETS Wayland::Scanner)
+bobui_find_package(Wayland 1.15 MODULE)
+bobui_find_package(WaylandScanner MODULE PROVIDED_TARGETS Wayland::Scanner)
 
-qt_find_package(RenderDoc MODULE PROVIDED_TARGETS RenderDoc::RenderDoc)
+bobui_find_package(RenderDoc MODULE PROVIDED_TARGETS RenderDoc::RenderDoc)
 
 #### Tests
 
@@ -247,7 +247,7 @@ else()
 endif()
 
 # drm_atomic
-qt_config_compile_test(drm_atomic
+bobui_config_compile_test(drm_atomic
     LABEL "DRM Atomic API"
     LIBRARIES
         Libdrm::Libdrm
@@ -269,7 +269,7 @@ drmModeAtomicReq *request;
 ")
 
 # egl-x11
-qt_config_compile_test(egl_x11
+bobui_config_compile_test(egl_x11
     LABEL "EGL on X11"
     LIBRARIES
         EGL::EGL
@@ -300,7 +300,7 @@ XCloseDisplay(dpy);
 ")
 
 # egl-brcm
-qt_config_compile_test(egl_brcm
+bobui_config_compile_test(egl_brcm
     LABEL "Broadcom EGL (Raspberry Pi)"
     LIBRARIES
         EGL::EGL
@@ -320,7 +320,7 @@ vc_dispmanx_display_open(0);
 )
 
 # egl-egldevice
-qt_config_compile_test(egl_egldevice
+bobui_config_compile_test(egl_egldevice
     LABEL "EGLDevice"
     LIBRARIES
         EGL::EGL
@@ -343,7 +343,7 @@ EGLOutputLayerEXT layer = 0;
 ")
 
 # egl-mali
-qt_config_compile_test(egl_mali
+bobui_config_compile_test(egl_mali
     LABEL "Mali EGL"
     LIBRARIES
         EGL::EGL
@@ -363,7 +363,7 @@ fbdev_window *w = 0;
 ")
 
 # egl-mali-2
-qt_config_compile_test(egl_mali_2
+bobui_config_compile_test(egl_mali_2
     LABEL "Mali 2 EGL"
     LIBRARIES
         EGL::EGL
@@ -383,7 +383,7 @@ mali_native_window *w = 0;
 
 # egl-viv
 
-qt_config_compile_test(egl_viv
+bobui_config_compile_test(egl_viv
     LABEL "i.Mx6 EGL"
     LIBRARIES
         EGL::EGL
@@ -411,7 +411,7 @@ fbGetDisplayByIndex(0);
 )
 
 # egl-openwfd
-qt_config_compile_test(egl_openwfd
+bobui_config_compile_test(egl_openwfd
     LABEL "OpenWFD EGL"
     LIBRARIES
         EGL::EGL
@@ -429,7 +429,7 @@ wfdEnumerateDevices(nullptr, 0, nullptr);
 ")
 
 # egl-rcar
-qt_config_compile_test(egl_rcar
+bobui_config_compile_test(egl_rcar
     LABEL "RCAR EGL"
     LIBRARIES
         EGL::EGL
@@ -451,7 +451,7 @@ PVRGrfxServerInit();
 ")
 
 # evdev
-qt_config_compile_test(evdev
+bobui_config_compile_test(evdev
     LABEL "evdev"
     CODE
 "#if defined(__FreeBSD__)
@@ -478,7 +478,7 @@ input_event buf[32];
 ")
 
 # vxworksevdev
-qt_config_compile_test(vxworksevdev
+bobui_config_compile_test(vxworksevdev
     LABEL "VxWorks evdev"
 "#include <evdevLib.h>
 enum {
@@ -498,7 +498,7 @@ EV_DEV_EVENT buf[32];
 }")
 
 # integrityfb
-qt_config_compile_test(integrityfb
+bobui_config_compile_test(integrityfb
     LABEL "INTEGRITY framebuffer"
     CODE
 "#include <device/fbdriver.h>
@@ -513,7 +513,7 @@ FBDriver *driver = 0;
 ")
 
 # linuxfb
-qt_config_compile_test(linuxfb
+bobui_config_compile_test(linuxfb
     LABEL "LinuxFB"
     CODE
 "#include <linux/fb.h>
@@ -538,7 +538,7 @@ if(WASM)
     set(extra_compiler_options "-s FULL_ES3=1")
 endif()
 
-qt_config_compile_test(opengles3
+bobui_config_compile_test(opengles3
     LABEL "OpenGL ES 3.0"
     LIBRARIES
         GLESv2::GLESv2
@@ -567,7 +567,7 @@ glMapBufferRange(GL_ARRAY_BUFFER, 0, 0, GL_MAP_READ_BIT);
 
 
 # opengles31
-qt_config_compile_test(opengles31
+bobui_config_compile_test(opengles31
     LABEL "OpenGL ES 3.1"
     LIBRARIES
         GLESv2::GLESv2
@@ -586,7 +586,7 @@ glProgramUniform1i(0, 0, 0);
 ")
 
 # opengles32
-qt_config_compile_test(opengles32
+bobui_config_compile_test(opengles32
     LABEL "OpenGL ES 3.2"
     LIBRARIES
         GLESv2::GLESv2
@@ -604,7 +604,7 @@ glFramebufferTexture(GL_TEXTURE_2D, GL_DEPTH_STENCIL_ATTACHMENT, 1, 0);
 ")
 
 # xcb_syslibs
-qt_config_compile_test(xcb_syslibs
+bobui_config_compile_test(xcb_syslibs
     LABEL "XCB (extensions)"
     LIBRARIES
         XCB::CURSOR
@@ -661,7 +661,7 @@ xcb_xkb_get_kbd_by_name_replies_key_names_value_list_sizeof(nullptr, 0, 0, 0, 0,
 ")
 
 # libinput_hires_wheel_support
-qt_config_compile_test(libinput_hires_wheel_support
+bobui_config_compile_test(libinput_hires_wheel_support
     LABEL "libinput hires wheel support"
     LIBRARIES
         Libinput::Libinput
@@ -678,7 +678,7 @@ libinput_event_pointer_get_scroll_value_v120(nullptr, LIBINPUT_POINTER_AXIS_SCRO
 ")
 
 # directwrite (assumes DirectWrite2)
-qt_config_compile_test(directwrite
+bobui_config_compile_test(directwrite
     LABEL "WINDOWS directwrite"
     LIBRARIES
         dwrite
@@ -694,7 +694,7 @@ int main(int, char **)
 ")
 
 # directwrite3 (not present in MinGW)
-qt_config_compile_test(directwrite3
+bobui_config_compile_test(directwrite3
     LABEL "WINDOWS directwrite3"
     LIBRARIES
         dwrite
@@ -710,7 +710,7 @@ int main(int, char **)
 ")
 
 # directwritecolrv1
-qt_config_compile_test(directwritecolrv1
+bobui_config_compile_test(directwritecolrv1
     LABEL "WINDOWS directwritecolrv1"
     LIBRARIES
         dwrite
@@ -739,7 +739,7 @@ int main(int, char **)
 }
 ")
 
-qt_config_compile_test(d2d1
+bobui_config_compile_test(d2d1
     LABEL "WINDOWS Direct2D"
     LIBRARIES
         d2d1
@@ -755,7 +755,7 @@ int main(int, char **)
 }
 ")
 
-qt_config_compile_test(d2d1_1
+bobui_config_compile_test(d2d1_1
     LABEL "WINDOWS Direct2D 1.1"
     LIBRARIES
         d2d1
@@ -769,7 +769,7 @@ int main(int, char **)
 }
 ")
 
-qt_config_compile_test(renderdoc
+bobui_config_compile_test(renderdoc
     LIBRARIES
         RenderDoc::RenderDoc
     LABEL "RenderDoc header check"
@@ -783,9 +783,9 @@ int main(int, char **)
 }
 ")
 
-# qtwayland client
+# bobuiwayland client
 # drm-egl-server
-qt_config_compile_test(drm_egl_server
+bobui_config_compile_test(drm_egl_server
     LABEL "DRM EGL Server"
     LIBRARIES
     EGL::EGL
@@ -810,7 +810,7 @@ return 1;
 ")
 
 # libhybris-egl-server
-qt_config_compile_test(libhybris_egl_server
+bobui_config_compile_test(libhybris_egl_server
     LABEL "libhybris EGL Server"
     LIBRARIES
     EGL::EGL
@@ -836,7 +836,7 @@ return 1;
 ")
 
 # dmabuf-server-buffer
-qt_config_compile_test(dmabuf_server_buffer
+bobui_config_compile_test(dmabuf_server_buffer
     LABEL "Linux dma-buf Buffer Sharing"
     LIBRARIES
     EGL::EGL
@@ -863,7 +863,7 @@ return 1;
 ")
 
 # vulkan-server-buffer
-qt_config_compile_test(vulkan_server_buffer
+bobui_config_compile_test(vulkan_server_buffer
     LABEL "Vulkan Buffer Sharing"
     LIBRARIES
     Wayland::Client
@@ -885,7 +885,7 @@ return 0;
 ")
 
 # egl_1_5-wayland
-qt_config_compile_test(egl_1_5_wayland
+bobui_config_compile_test(egl_1_5_wayland
     LABEL "EGL 1.5 with Wayland Platform"
     LIBRARIES
     EGL::EGL
@@ -908,885 +908,885 @@ eglGetPlatformDisplay(EGL_PLATFORM_WAYLAND_EXT, (struct wl_display *)(nullptr), 
 
 #### Features
 
-qt_feature("accessibility-atspi-bridge" PUBLIC PRIVATE
+bobui_feature("accessibility-atspi-bridge" PUBLIC PRIVATE
     LABEL "ATSPI Bridge"
-    CONDITION QT_FEATURE_accessibility AND QT_FEATURE_dbus AND ATSPI2_FOUND
+    CONDITION BOBUI_FEATURE_accessibility AND BOBUI_FEATURE_dbus AND ATSPI2_FOUND
 )
-qt_feature_definition("accessibility-atspi-bridge" "QT_NO_ACCESSIBILITY_ATSPI_BRIDGE" NEGATE VALUE "1")
-qt_feature("directfb" PRIVATE
+bobui_feature_definition("accessibility-atspi-bridge" "BOBUI_NO_ACCESSIBILITY_ATSPI_BRIDGE" NEGATE VALUE "1")
+bobui_feature("directfb" PRIVATE
     SECTION "Platform plugins"
     LABEL "DirectFB"
     AUTODETECT OFF
     CONDITION DirectFB_FOUND
 )
-qt_feature("directwrite" PRIVATE
+bobui_feature("directwrite" PRIVATE
     LABEL "DirectWrite"
     CONDITION TEST_directwrite
     EMIT_IF WIN32
 )
-qt_feature("directwrite3" PRIVATE
+bobui_feature("directwrite3" PRIVATE
     LABEL "DirectWrite 3"
-    CONDITION QT_FEATURE_directwrite AND TEST_directwrite3
+    CONDITION BOBUI_FEATURE_directwrite AND TEST_directwrite3
     EMIT_IF WIN32
 )
-qt_feature("directwritecolrv1" PRIVATE
+bobui_feature("directwritecolrv1" PRIVATE
     LABEL "DirectWrite COLRv1 Support"
-    CONDITION QT_FEATURE_directwrite3 AND TEST_directwritecolrv1
+    CONDITION BOBUI_FEATURE_directwrite3 AND TEST_directwritecolrv1
     EMIT_IF WIN32
 )
-qt_feature("direct2d" PRIVATE
+bobui_feature("direct2d" PRIVATE
     LABEL "Direct 2D"
     CONDITION WIN32 AND NOT WINRT AND TEST_d2d1
 )
-qt_feature("direct2d1_1" PRIVATE
+bobui_feature("direct2d1_1" PRIVATE
     LABEL "Direct 2D 1.1"
-    CONDITION QT_FEATURE_direct2d AND TEST_d2d1_1
+    CONDITION BOBUI_FEATURE_direct2d AND TEST_d2d1_1
 )
-qt_feature("emojisegmenter" PUBLIC PRIVATE
+bobui_feature("emojisegmenter" PUBLIC PRIVATE
     SECTION "Fonts"
     LABEL "Emoji Segmenter"
     PURPOSE "Supports parsing complex emoji sequences for better font resolution."
 )
-qt_feature_definition("emojisegmenter" "QT_NO_EMOJISEGMENTER" NEGATE VALUE "1")
-qt_feature("evdev" PRIVATE
+bobui_feature_definition("emojisegmenter" "BOBUI_NO_EMOJISEGMENTER" NEGATE VALUE "1")
+bobui_feature("evdev" PRIVATE
     LABEL "evdev"
-    CONDITION QT_FEATURE_thread AND TEST_evdev
+    CONDITION BOBUI_FEATURE_thread AND TEST_evdev
 )
-qt_feature("vxworksevdev" PRIVATE
+bobui_feature("vxworksevdev" PRIVATE
     LABEL "vxworksevdev"
-    CONDITION QT_FEATURE_thread AND TEST_vxworksevdev
+    CONDITION BOBUI_FEATURE_thread AND TEST_vxworksevdev
 )
-qt_feature("freetype" PUBLIC PRIVATE
+bobui_feature("freetype" PUBLIC PRIVATE
     SECTION "Fonts"
     LABEL "FreeType"
     PURPOSE "Supports the FreeType 2 font engine (and its supported font formats)."
 )
-qt_feature_definition("freetype" "QT_NO_FREETYPE" NEGATE VALUE "1")
-qt_feature("system-freetype" PRIVATE SYSTEM_LIBRARY
+bobui_feature_definition("freetype" "BOBUI_NO_FREETYPE" NEGATE VALUE "1")
+bobui_feature("system-freetype" PRIVATE SYSTEM_LIBRARY
     LABEL "  Using system FreeType"
     AUTODETECT NOT MSVC
-    CONDITION QT_FEATURE_freetype AND WrapSystemFreetype_FOUND
+    CONDITION BOBUI_FEATURE_freetype AND WrapSystemFreetype_FOUND
     ENABLE INPUT_freetype STREQUAL 'system'
-    DISABLE INPUT_freetype STREQUAL 'qt'
+    DISABLE INPUT_freetype STREQUAL 'bobui'
 )
-qt_feature("fontconfig" PUBLIC PRIVATE
+bobui_feature("fontconfig" PUBLIC PRIVATE
     LABEL "Fontconfig"
     AUTODETECT NOT APPLE
-    CONDITION NOT APPLE AND NOT WIN32 AND QT_FEATURE_system_freetype AND Fontconfig_FOUND
+    CONDITION NOT APPLE AND NOT WIN32 AND BOBUI_FEATURE_system_freetype AND Fontconfig_FOUND
 )
-qt_feature_definition("fontconfig" "QT_NO_FONTCONFIG" NEGATE VALUE "1")
-qt_feature("gbm"
+bobui_feature_definition("fontconfig" "BOBUI_NO_FONTCONFIG" NEGATE VALUE "1")
+bobui_feature("gbm"
     LABEL "GBM"
     CONDITION gbm_FOUND
 )
-qt_feature_config("gbm" QMAKE_PUBLIC_QT_CONFIG)
-qt_feature("harfbuzz" PUBLIC PRIVATE
+bobui_feature_config("gbm" QMAKE_PUBLIC_BOBUI_CONFIG)
+bobui_feature("harfbuzz" PUBLIC PRIVATE
     LABEL "HarfBuzz"
 )
-qt_feature_definition("harfbuzz" "QT_NO_HARFBUZZ" NEGATE VALUE "1")
-qt_feature("system-harfbuzz" PRIVATE SYSTEM_LIBRARY
+bobui_feature_definition("harfbuzz" "BOBUI_NO_HARFBUZZ" NEGATE VALUE "1")
+bobui_feature("system-harfbuzz" PRIVATE SYSTEM_LIBRARY
     LABEL "  Using system HarfBuzz"
     AUTODETECT NOT APPLE AND NOT WIN32
-    CONDITION QT_FEATURE_harfbuzz AND WrapSystemHarfbuzz_FOUND
+    CONDITION BOBUI_FEATURE_harfbuzz AND WrapSystemHarfbuzz_FOUND
     ENABLE INPUT_harfbuzz STREQUAL 'system'
-    DISABLE INPUT_harfbuzz STREQUAL 'qt'
+    DISABLE INPUT_harfbuzz STREQUAL 'bobui'
 )
-qt_feature("qqnx_imf" PRIVATE
+bobui_feature("qqnx_imf" PRIVATE
     LABEL "IMF"
     CONDITION libs.imf OR FIXME
     EMIT_IF QNX
 )
-qt_feature("integrityfb" PRIVATE
+bobui_feature("integrityfb" PRIVATE
     SECTION "Platform plugins"
     LABEL "INTEGRITY framebuffer"
     CONDITION INTEGRITY AND TEST_integrityfb
 )
-qt_feature("kms" PRIVATE
+bobui_feature("kms" PRIVATE
     LABEL "KMS"
     CONDITION Libdrm_FOUND
 )
-qt_feature_config("kms" QMAKE_PUBLIC_QT_CONFIG)
-qt_feature("drm_atomic" PRIVATE
+bobui_feature_config("kms" QMAKE_PUBLIC_BOBUI_CONFIG)
+bobui_feature("drm_atomic" PRIVATE
     LABEL "DRM Atomic API"
     CONDITION Libdrm_FOUND AND TEST_drm_atomic
 )
-qt_feature("libinput" PRIVATE
+bobui_feature("libinput" PRIVATE
     LABEL "libinput"
-    CONDITION QT_FEATURE_libudev AND Libinput_FOUND
+    CONDITION BOBUI_FEATURE_libudev AND Libinput_FOUND
 )
-qt_feature("integrityhid" PRIVATE
+bobui_feature("integrityhid" PRIVATE
     LABEL "INTEGRITY HID"
     CONDITION INTEGRITY AND libs.integrityhid OR FIXME
 )
-qt_feature("libinput-axis-api" PRIVATE
+bobui_feature("libinput-axis-api" PRIVATE
     LABEL "axis API in libinput"
-    CONDITION QT_FEATURE_libinput AND ON
+    CONDITION BOBUI_FEATURE_libinput AND ON
 )
-qt_feature("libinput-hires-wheel-support" PRIVATE
+bobui_feature("libinput-hires-wheel-support" PRIVATE
     LABEL "HiRes wheel support in libinput"
-    CONDITION QT_FEATURE_libinput AND TEST_libinput_hires_wheel_support
+    CONDITION BOBUI_FEATURE_libinput AND TEST_libinput_hires_wheel_support
 )
-qt_feature("lgmon"
+bobui_feature("lgmon"
     LABEL "lgmon"
     CONDITION libs.lgmon OR FIXME
     EMIT_IF QNX
 )
-qt_feature_config("lgmon" QMAKE_PRIVATE_CONFIG)
-qt_feature("linuxfb" PRIVATE
+bobui_feature_config("lgmon" QMAKE_PRIVATE_CONFIG)
+bobui_feature("linuxfb" PRIVATE
     SECTION "Platform plugins"
     LABEL "LinuxFB"
-    CONDITION TEST_linuxfb AND QT_FEATURE_regularexpression
+    CONDITION TEST_linuxfb AND BOBUI_FEATURE_regularexpression
 )
-qt_feature("vsp2" PRIVATE
+bobui_feature("vsp2" PRIVATE
     LABEL "VSP2"
     AUTODETECT OFF
     CONDITION libs.v4l2 OR FIXME
 )
-qt_feature("vnc" PRIVATE
+bobui_feature("vnc" PRIVATE
     SECTION "Platform plugins"
     LABEL "VNC"
-    CONDITION ( UNIX AND NOT ANDROID AND NOT APPLE AND NOT WASM ) AND ( QT_FEATURE_regularexpression AND QT_FEATURE_network )
+    CONDITION ( UNIX AND NOT ANDROID AND NOT APPLE AND NOT WASM ) AND ( BOBUI_FEATURE_regularexpression AND BOBUI_FEATURE_network )
 )
-qt_feature("mtdev" PRIVATE
+bobui_feature("mtdev" PRIVATE
     LABEL "mtdev"
     CONDITION Mtdev_FOUND
 )
-qt_feature("opengles2" PUBLIC
+bobui_feature("opengles2" PUBLIC
     LABEL "OpenGL ES 2.0"
-    CONDITION NOT WIN32 AND NOT WATCHOS AND NOT QT_FEATURE_opengl_desktop AND GLESv2_FOUND
+    CONDITION NOT WIN32 AND NOT WATCHOS AND NOT BOBUI_FEATURE_opengl_desktop AND GLESv2_FOUND
     ENABLE INPUT_opengl STREQUAL 'es2'
     DISABLE INPUT_opengl STREQUAL 'desktop' OR INPUT_opengl STREQUAL 'dynamic' OR INPUT_opengl STREQUAL 'no'
 )
-qt_feature_config("opengles2" QMAKE_PUBLIC_QT_CONFIG)
-qt_feature("opengles3" PUBLIC
+bobui_feature_config("opengles2" QMAKE_PUBLIC_BOBUI_CONFIG)
+bobui_feature("opengles3" PUBLIC
     LABEL "OpenGL ES 3.0"
-    CONDITION QT_FEATURE_opengles2 AND TEST_opengles3
+    CONDITION BOBUI_FEATURE_opengles2 AND TEST_opengles3
 )
-qt_feature("opengles31" PUBLIC
+bobui_feature("opengles31" PUBLIC
     LABEL "OpenGL ES 3.1"
-    CONDITION QT_FEATURE_opengles3 AND TEST_opengles31
+    CONDITION BOBUI_FEATURE_opengles3 AND TEST_opengles31
 )
-qt_feature("opengles32" PUBLIC
+bobui_feature("opengles32" PUBLIC
     LABEL "OpenGL ES 3.2"
-    CONDITION QT_FEATURE_opengles31 AND TEST_opengles32
+    CONDITION BOBUI_FEATURE_opengles31 AND TEST_opengles32
 )
-qt_feature("opengl-desktop"
+bobui_feature("opengl-desktop"
     LABEL "Desktop OpenGL"
     AUTODETECT NOT WIN32
     CONDITION ( WIN32 AND ( MSVC OR WrapOpenGL_FOUND ) ) OR ( NOT WATCHOS AND NOT WIN32 AND NOT WASM AND WrapOpenGL_FOUND )
     ENABLE INPUT_opengl STREQUAL 'desktop'
     DISABLE INPUT_opengl STREQUAL 'es2' OR INPUT_opengl STREQUAL 'dynamic' OR INPUT_opengl STREQUAL 'no'
 )
-qt_feature("opengl-dynamic"
+bobui_feature("opengl-dynamic"
     LABEL "Dynamic OpenGL"
     CONDITION WIN32
     DISABLE INPUT_opengl STREQUAL 'no' OR INPUT_opengl STREQUAL 'desktop'
 )
-qt_feature("dynamicgl" PUBLIC
+bobui_feature("dynamicgl" PUBLIC
     LABEL "Dynamic OpenGL: dynamicgl"
-    CONDITION QT_FEATURE_opengl_dynamic
+    CONDITION BOBUI_FEATURE_opengl_dynamic
     DISABLE INPUT_opengl STREQUAL 'no' OR INPUT_opengl STREQUAL 'desktop'
 )
-qt_feature_definition("opengl-dynamic" "QT_OPENGL_DYNAMIC")
-qt_feature("opengl" PUBLIC
+bobui_feature_definition("opengl-dynamic" "BOBUI_OPENGL_DYNAMIC")
+bobui_feature("opengl" PUBLIC
     LABEL "OpenGL"
-    CONDITION QT_FEATURE_opengl_desktop OR QT_FEATURE_opengl_dynamic OR QT_FEATURE_opengles2
+    CONDITION BOBUI_FEATURE_opengl_desktop OR BOBUI_FEATURE_opengl_dynamic OR BOBUI_FEATURE_opengles2
 )
-qt_feature_definition("opengl" "QT_NO_OPENGL" NEGATE VALUE "1")
-qt_feature("vkgen" PRIVATE
+bobui_feature_definition("opengl" "BOBUI_NO_OPENGL" NEGATE VALUE "1")
+bobui_feature("vkgen" PRIVATE
     LABEL "vkgen"
-    CONDITION QT_FEATURE_xmlstreamreader
+    CONDITION BOBUI_FEATURE_xmlstreamreader
 )
-qt_feature("vulkan" PUBLIC
+bobui_feature("vulkan" PUBLIC
     LABEL "Vulkan"
-    CONDITION QT_FEATURE_library AND QT_FEATURE_vkgen AND WrapVulkanHeaders_FOUND
+    CONDITION BOBUI_FEATURE_library AND BOBUI_FEATURE_vkgen AND WrapVulkanHeaders_FOUND
 )
-qt_feature("metal" PUBLIC
+bobui_feature("metal" PUBLIC
     LABEL "Metal"
     CONDITION MACOS OR IOS OR VISIONOS
 )
-qt_feature("vkkhrdisplay" PRIVATE
+bobui_feature("vkkhrdisplay" PRIVATE
     SECTION "Platform plugins"
     LABEL "VK_KHR_display"
-    CONDITION NOT ANDROID AND NOT APPLE AND NOT WIN32 AND NOT WASM AND QT_FEATURE_vulkan
+    CONDITION NOT ANDROID AND NOT APPLE AND NOT WIN32 AND NOT WASM AND BOBUI_FEATURE_vulkan
 )
-qt_feature("openvg" PUBLIC
+bobui_feature("openvg" PUBLIC
     LABEL "OpenVG"
     CONDITION libs.openvg OR FIXME
 )
-qt_feature("egl" PUBLIC
+bobui_feature("egl" PUBLIC
     LABEL "EGL"
-    CONDITION ( QT_FEATURE_opengl OR QT_FEATURE_openvg ) AND EGL_FOUND AND ( QT_FEATURE_dlopen OR NOT UNIX OR INTEGRITY OR VXWORKS)
+    CONDITION ( BOBUI_FEATURE_opengl OR BOBUI_FEATURE_openvg ) AND EGL_FOUND AND ( BOBUI_FEATURE_dlopen OR NOT UNIX OR INTEGRITY OR VXWORKS)
 )
-qt_feature_definition("egl" "QT_NO_EGL" NEGATE VALUE "1")
-qt_feature("egl_x11" PRIVATE
+bobui_feature_definition("egl" "BOBUI_NO_EGL" NEGATE VALUE "1")
+bobui_feature("egl_x11" PRIVATE
     LABEL "EGL on X11"
-    CONDITION QT_FEATURE_thread AND QT_FEATURE_egl AND TEST_egl_x11
+    CONDITION BOBUI_FEATURE_thread AND BOBUI_FEATURE_egl AND TEST_egl_x11
 )
-qt_feature("eglfs" PRIVATE
+bobui_feature("eglfs" PRIVATE
     SECTION "Platform plugins"
     LABEL "EGLFS"
-    CONDITION NOT ANDROID AND NOT APPLE AND NOT WIN32 AND NOT WASM AND NOT QNX AND QT_FEATURE_egl
+    CONDITION NOT ANDROID AND NOT APPLE AND NOT WIN32 AND NOT WASM AND NOT QNX AND BOBUI_FEATURE_egl
 )
-qt_feature("eglfs_brcm" PRIVATE
+bobui_feature("eglfs_brcm" PRIVATE
     LABEL "EGLFS Raspberry Pi"
-    CONDITION QT_FEATURE_eglfs AND TEST_egl_brcm
+    CONDITION BOBUI_FEATURE_eglfs AND TEST_egl_brcm
 )
-qt_feature("eglfs_egldevice" PRIVATE
+bobui_feature("eglfs_egldevice" PRIVATE
     LABEL "EGLFS EGLDevice"
-    CONDITION QT_FEATURE_eglfs AND TEST_egl_egldevice AND QT_FEATURE_kms
+    CONDITION BOBUI_FEATURE_eglfs AND TEST_egl_egldevice AND BOBUI_FEATURE_kms
 )
-qt_feature("eglfs_gbm" PRIVATE
+bobui_feature("eglfs_gbm" PRIVATE
     LABEL "EGLFS GBM"
-    CONDITION QT_FEATURE_eglfs AND gbm_FOUND AND QT_FEATURE_kms
+    CONDITION BOBUI_FEATURE_eglfs AND gbm_FOUND AND BOBUI_FEATURE_kms
 )
-qt_feature("eglfs_vsp2" PRIVATE
+bobui_feature("eglfs_vsp2" PRIVATE
     LABEL "EGLFS VSP2"
-    CONDITION QT_FEATURE_eglfs AND gbm_FOUND AND QT_FEATURE_kms AND QT_FEATURE_vsp2
+    CONDITION BOBUI_FEATURE_eglfs AND gbm_FOUND AND BOBUI_FEATURE_kms AND BOBUI_FEATURE_vsp2
 )
-qt_feature("eglfs_mali" PRIVATE
+bobui_feature("eglfs_mali" PRIVATE
     LABEL "EGLFS Mali"
-    CONDITION QT_FEATURE_eglfs AND ( TEST_egl_mali OR TEST_egl_mali_2 )
+    CONDITION BOBUI_FEATURE_eglfs AND ( TEST_egl_mali OR TEST_egl_mali_2 )
 )
-qt_feature("eglfs_viv" PRIVATE
+bobui_feature("eglfs_viv" PRIVATE
     LABEL "EGLFS i.Mx6"
-    CONDITION QT_FEATURE_eglfs AND TEST_egl_viv
+    CONDITION BOBUI_FEATURE_eglfs AND TEST_egl_viv
 )
-qt_feature("eglfs_rcar" PRIVATE
+bobui_feature("eglfs_rcar" PRIVATE
     LABEL "EGLFS RCAR"
-    CONDITION INTEGRITY AND QT_FEATURE_eglfs AND TEST_egl_rcar
+    CONDITION INTEGRITY AND BOBUI_FEATURE_eglfs AND TEST_egl_rcar
 )
-qt_feature("eglfs_viv_wl" PRIVATE
+bobui_feature("eglfs_viv_wl" PRIVATE
     LABEL "EGLFS i.Mx6 Wayland"
-    CONDITION QT_FEATURE_eglfs_viv AND TARGET Wayland::Server
+    CONDITION BOBUI_FEATURE_eglfs_viv AND TARGET Wayland::Server
 )
-qt_feature("eglfs_openwfd" PRIVATE
+bobui_feature("eglfs_openwfd" PRIVATE
     LABEL "EGLFS OpenWFD"
-    CONDITION INTEGRITY AND QT_FEATURE_eglfs AND TEST_egl_openwfd
+    CONDITION INTEGRITY AND BOBUI_FEATURE_eglfs AND TEST_egl_openwfd
 )
-qt_feature("eglfs_x11" PRIVATE
+bobui_feature("eglfs_x11" PRIVATE
     LABEL "EGLFS X11"
-    CONDITION QT_FEATURE_eglfs AND QT_FEATURE_xcb_xlib AND QT_FEATURE_egl_x11
+    CONDITION BOBUI_FEATURE_eglfs AND BOBUI_FEATURE_xcb_xlib AND BOBUI_FEATURE_egl_x11
 )
-qt_feature("gif" PRIVATE
+bobui_feature("gif" PRIVATE
     LABEL "GIF"
-    CONDITION QT_FEATURE_imageformatplugin
+    CONDITION BOBUI_FEATURE_imageformatplugin
 )
-qt_feature_definition("gif" "QT_NO_IMAGEFORMAT_GIF" NEGATE)
-qt_feature("ico" PUBLIC PRIVATE
+bobui_feature_definition("gif" "BOBUI_NO_IMAGEFORMAT_GIF" NEGATE)
+bobui_feature("ico" PUBLIC PRIVATE
     LABEL "ICO"
-    CONDITION QT_FEATURE_imageformatplugin
+    CONDITION BOBUI_FEATURE_imageformatplugin
 )
-qt_feature_definition("ico" "QT_NO_ICO" NEGATE VALUE "1")
-qt_feature("jpeg" PRIVATE
+bobui_feature_definition("ico" "BOBUI_NO_ICO" NEGATE VALUE "1")
+bobui_feature("jpeg" PRIVATE
     LABEL "JPEG"
-    CONDITION QT_FEATURE_imageformatplugin
+    CONDITION BOBUI_FEATURE_imageformatplugin
     DISABLE INPUT_libjpeg STREQUAL 'no'
 )
-qt_feature_definition("jpeg" "QT_NO_IMAGEFORMAT_JPEG" NEGATE VALUE "1")
-qt_feature("system-jpeg" PRIVATE SYSTEM_LIBRARY
+bobui_feature_definition("jpeg" "BOBUI_NO_IMAGEFORMAT_JPEG" NEGATE VALUE "1")
+bobui_feature("system-jpeg" PRIVATE SYSTEM_LIBRARY
     LABEL "  Using system libjpeg"
-    CONDITION QT_FEATURE_jpeg AND JPEG_FOUND
+    CONDITION BOBUI_FEATURE_jpeg AND JPEG_FOUND
     ENABLE INPUT_libjpeg STREQUAL 'system'
-    DISABLE INPUT_libjpeg STREQUAL 'qt'
+    DISABLE INPUT_libjpeg STREQUAL 'bobui'
 )
-qt_feature("png" PRIVATE
+bobui_feature("png" PRIVATE
     LABEL "PNG"
     DISABLE INPUT_libpng STREQUAL 'no'
 )
-qt_feature_definition("png" "QT_NO_IMAGEFORMAT_PNG" NEGATE)
-qt_feature("system-png" PRIVATE SYSTEM_LIBRARY
+bobui_feature_definition("png" "BOBUI_NO_IMAGEFORMAT_PNG" NEGATE)
+bobui_feature("system-png" PRIVATE SYSTEM_LIBRARY
     LABEL "  Using system libpng"
-    AUTODETECT QT_FEATURE_system_zlib
-    CONDITION QT_FEATURE_png AND WrapSystemPNG_FOUND
+    AUTODETECT BOBUI_FEATURE_system_zlib
+    CONDITION BOBUI_FEATURE_png AND WrapSystemPNG_FOUND
     ENABLE INPUT_libpng STREQUAL 'system'
-    DISABLE INPUT_libpng STREQUAL 'qt'
+    DISABLE INPUT_libpng STREQUAL 'bobui'
 )
-qt_feature("imageio-text-loading" PRIVATE
+bobui_feature("imageio-text-loading" PRIVATE
     LABEL "Image Text section loading"
 )
-qt_feature_definition("imageio-text-loading" "QT_NO_IMAGEIO_TEXT_LOADING" NEGATE)
-qt_feature("sessionmanager" PUBLIC
+bobui_feature_definition("imageio-text-loading" "BOBUI_NO_IMAGEIO_TEXT_LOADING" NEGATE)
+bobui_feature("sessionmanager" PUBLIC
     SECTION "Kernel"
     LABEL "Session Management"
     PURPOSE "Provides an interface to the windowing system's session management."
 )
-qt_feature_definition("sessionmanager" "QT_NO_SESSIONMANAGER" NEGATE VALUE "1")
-qt_feature("tslib" PRIVATE
+bobui_feature_definition("sessionmanager" "BOBUI_NO_SESSIONMANAGER" NEGATE VALUE "1")
+bobui_feature("tslib" PRIVATE
     LABEL "tslib"
     CONDITION Tslib_FOUND AND NOT INTEGRITY
 )
-qt_feature("tuiotouch" PRIVATE
+bobui_feature("tuiotouch" PRIVATE
     LABEL "TuioTouch"
     PURPOSE "Provides the TuioTouch input plugin."
-    CONDITION QT_FEATURE_network AND QT_FEATURE_udpsocket
+    CONDITION BOBUI_FEATURE_network AND BOBUI_FEATURE_udpsocket
 )
-qt_feature("xcb" PUBLIC
+bobui_feature("xcb" PUBLIC
     SECTION "Platform plugins"
     LABEL "XCB"
     AUTODETECT NOT APPLE
-    CONDITION QT_FEATURE_thread AND TARGET XCB::XCB AND TEST_xcb_syslibs AND QT_FEATURE_xkbcommon_x11
+    CONDITION BOBUI_FEATURE_thread AND TARGET XCB::XCB AND TEST_xcb_syslibs AND BOBUI_FEATURE_xkbcommon_x11
 )
-qt_feature("xcb-glx-plugin" PUBLIC
+bobui_feature("xcb-glx-plugin" PUBLIC
     LABEL "GLX Plugin"
-    CONDITION QT_FEATURE_xcb_xlib AND QT_FEATURE_opengl AND NOT QT_FEATURE_opengles2
-    EMIT_IF QT_FEATURE_xcb
+    CONDITION BOBUI_FEATURE_xcb_xlib AND BOBUI_FEATURE_opengl AND NOT BOBUI_FEATURE_opengles2
+    EMIT_IF BOBUI_FEATURE_xcb
 )
-qt_feature("xcb-glx" PRIVATE
+bobui_feature("xcb-glx" PRIVATE
     LABEL "  XCB GLX"
     CONDITION XCB_GLX_FOUND
-    EMIT_IF QT_FEATURE_xcb AND QT_FEATURE_xcb_glx_plugin
+    EMIT_IF BOBUI_FEATURE_xcb AND BOBUI_FEATURE_xcb_glx_plugin
 )
-qt_feature("xcb-egl-plugin" PRIVATE
+bobui_feature("xcb-egl-plugin" PRIVATE
     LABEL "EGL-X11 Plugin"
-    CONDITION QT_FEATURE_egl AND QT_FEATURE_opengl
-    EMIT_IF QT_FEATURE_xcb
+    CONDITION BOBUI_FEATURE_egl AND BOBUI_FEATURE_opengl
+    EMIT_IF BOBUI_FEATURE_xcb
 )
-qt_feature("xcb-xlib" PRIVATE
+bobui_feature("xcb-xlib" PRIVATE
     LABEL "XCB Xlib"
-    CONDITION QT_FEATURE_xlib AND X11_XCB_FOUND
+    CONDITION BOBUI_FEATURE_xlib AND X11_XCB_FOUND
 )
-qt_feature("xcb-sm" PRIVATE
+bobui_feature("xcb-sm" PRIVATE
     LABEL "xcb-sm"
-    CONDITION QT_FEATURE_sessionmanager AND X11_SM_FOUND
-    EMIT_IF QT_FEATURE_xcb
+    CONDITION BOBUI_FEATURE_sessionmanager AND X11_SM_FOUND
+    EMIT_IF BOBUI_FEATURE_xcb
 )
-qt_feature("system-xcb-xinput" PRIVATE SYSTEM_LIBRARY
+bobui_feature("system-xcb-xinput" PRIVATE SYSTEM_LIBRARY
     LABEL "Using system-provided xcb-xinput"
     AUTODETECT OFF
     CONDITION XCB_XINPUT_FOUND
     ENABLE INPUT_bundled_xcb_xinput STREQUAL 'no'
     DISABLE INPUT_bundled_xcb_xinput STREQUAL 'yes'
-    EMIT_IF QT_FEATURE_xcb
+    EMIT_IF BOBUI_FEATURE_xcb
 )
-qt_feature("xkbcommon" PUBLIC
+bobui_feature("xkbcommon" PUBLIC
     LABEL "xkbcommon"
     CONDITION XKB_FOUND
 )
-qt_feature("xkbcommon-x11" PRIVATE
+bobui_feature("xkbcommon-x11" PRIVATE
     LABEL "xkbcommon-x11"
-    CONDITION QT_FEATURE_xkbcommon AND XKB_COMMON_X11_FOUND
+    CONDITION BOBUI_FEATURE_xkbcommon AND XKB_COMMON_X11_FOUND
 )
-qt_feature("xlib" PRIVATE
+bobui_feature("xlib" PRIVATE
     LABEL "XLib"
-    AUTODETECT NOT APPLE OR QT_FEATURE_xcb
+    AUTODETECT NOT APPLE OR BOBUI_FEATURE_xcb
     CONDITION X11_FOUND
 )
-qt_feature("texthtmlparser" PUBLIC
+bobui_feature("texthtmlparser" PUBLIC
     SECTION "Kernel"
     LABEL "HtmlParser"
     PURPOSE "Provides a parser for HTML."
 )
-qt_feature_definition("texthtmlparser" "QT_NO_TEXTHTMLPARSER" NEGATE VALUE "1")
-qt_feature("textmarkdownreader" PUBLIC
+bobui_feature_definition("texthtmlparser" "BOBUI_NO_TEXTHTMLPARSER" NEGATE VALUE "1")
+bobui_feature("textmarkdownreader" PUBLIC
     SECTION "Kernel"
     LABEL "MarkdownReader"
     PURPOSE "Provides a Markdown (CommonMark and GitHub) reader"
-    ENABLE INPUT_libmd4c STREQUAL 'system' OR INPUT_libmd4c STREQUAL 'qt' OR INPUT_libmd4c STREQUAL 'yes'
+    ENABLE INPUT_libmd4c STREQUAL 'system' OR INPUT_libmd4c STREQUAL 'bobui' OR INPUT_libmd4c STREQUAL 'yes'
     DISABLE INPUT_libmd4c STREQUAL 'no'
 )
-qt_feature("system-textmarkdownreader" PUBLIC SYSTEM_LIBRARY
+bobui_feature("system-textmarkdownreader" PUBLIC SYSTEM_LIBRARY
     SECTION "Kernel"
     LABEL "  Using system libmd4c"
-    CONDITION QT_FEATURE_textmarkdownreader AND WrapSystemMd4c_FOUND
+    CONDITION BOBUI_FEATURE_textmarkdownreader AND WrapSystemMd4c_FOUND
     ENABLE INPUT_libmd4c STREQUAL 'system'
-    DISABLE INPUT_libmd4c STREQUAL 'qt'
+    DISABLE INPUT_libmd4c STREQUAL 'bobui'
 )
-qt_feature("textmarkdownwriter" PUBLIC
+bobui_feature("textmarkdownwriter" PUBLIC
     SECTION "Kernel"
     LABEL "MarkdownWriter"
-    CONDITION QT_FEATURE_regularexpression
+    CONDITION BOBUI_FEATURE_regularexpression
     PURPOSE "Provides a Markdown (CommonMark and GitHub) writer"
 )
-qt_feature("textodfwriter" PUBLIC
+bobui_feature("textodfwriter" PUBLIC
     SECTION "Kernel"
     LABEL "OdfWriter"
     PURPOSE "Provides an ODF writer."
-    CONDITION QT_FEATURE_xmlstreamwriter
+    CONDITION BOBUI_FEATURE_xmlstreamwriter
 )
-qt_feature_definition("textodfwriter" "QT_NO_TEXTODFWRITER" NEGATE VALUE "1")
-qt_feature("cssparser" PUBLIC
+bobui_feature_definition("textodfwriter" "BOBUI_NO_TEXTODFWRITER" NEGATE VALUE "1")
+bobui_feature("cssparser" PUBLIC
     SECTION "Kernel"
     LABEL "CssParser"
     PURPOSE "Provides a parser for Cascading Style Sheets."
 )
-qt_feature_definition("cssparser" "QT_NO_CSSPARSER" NEGATE VALUE "1")
-qt_feature("draganddrop" PUBLIC
+bobui_feature_definition("cssparser" "BOBUI_NO_CSSPARSER" NEGATE VALUE "1")
+bobui_feature("draganddrop" PUBLIC
     SECTION "Kernel"
     LABEL "Drag and Drop"
     PURPOSE "Supports the drag and drop mechanism."
-    CONDITION QT_FEATURE_imageformat_xpm
+    CONDITION BOBUI_FEATURE_imageformat_xpm
 )
-qt_feature_definition("draganddrop" "QT_NO_DRAGANDDROP" NEGATE VALUE "1")
-qt_feature("action" PUBLIC
+bobui_feature_definition("draganddrop" "BOBUI_NO_DRAGANDDROP" NEGATE VALUE "1")
+bobui_feature("action" PUBLIC
     SECTION "Kernel"
     LABEL "Q(Gui)Action(Group)"
     PURPOSE "Provides abstract user interface actions."
 )
-qt_feature_definition("action" "QT_NO_ACTION" NEGATE VALUE "1")
-qt_feature("cursor" PUBLIC
+bobui_feature_definition("action" "BOBUI_NO_ACTION" NEGATE VALUE "1")
+bobui_feature("cursor" PUBLIC
     SECTION "Kernel"
     LABEL "QCursor"
     PURPOSE "Provides mouse cursors."
 )
-qt_feature_definition("cursor" "QT_NO_CURSOR" NEGATE VALUE "1")
-qt_feature("clipboard" PUBLIC
+bobui_feature_definition("cursor" "BOBUI_NO_CURSOR" NEGATE VALUE "1")
+bobui_feature("clipboard" PUBLIC
     SECTION "Kernel"
     LABEL "QClipboard"
     PURPOSE "Provides cut and paste operations."
     CONDITION NOT INTEGRITY AND NOT QNX AND NOT rtems
 )
-qt_feature_definition("clipboard" "QT_NO_CLIPBOARD" NEGATE VALUE "1")
-qt_feature("wheelevent" PUBLIC
+bobui_feature_definition("clipboard" "BOBUI_NO_CLIPBOARD" NEGATE VALUE "1")
+bobui_feature("wheelevent" PUBLIC
     SECTION "Kernel"
     LABEL "QWheelEvent"
     PURPOSE "Supports wheel events."
 )
-qt_feature_definition("wheelevent" "QT_NO_WHEELEVENT" NEGATE VALUE "1")
-qt_feature("tabletevent" PUBLIC
+bobui_feature_definition("wheelevent" "BOBUI_NO_WHEELEVENT" NEGATE VALUE "1")
+bobui_feature("tabletevent" PUBLIC
     SECTION "Kernel"
-    LABEL "QTabletEvent"
+    LABEL "BOBUIabletEvent"
     PURPOSE "Supports tablet events."
 )
-qt_feature_definition("tabletevent" "QT_NO_TABLETEVENT" NEGATE VALUE "1")
-qt_feature("im" PUBLIC
+bobui_feature_definition("tabletevent" "BOBUI_NO_TABLETEVENT" NEGATE VALUE "1")
+bobui_feature("im" PUBLIC
     SECTION "Kernel"
     LABEL "QInputContext"
     PURPOSE "Provides complex input methods."
 )
-qt_feature_definition("im" "QT_NO_IM" NEGATE VALUE "1")
-qt_feature("highdpiscaling" PUBLIC
+bobui_feature_definition("im" "BOBUI_NO_IM" NEGATE VALUE "1")
+bobui_feature("highdpiscaling" PUBLIC
     SECTION "Kernel"
     LABEL "High DPI Scaling"
     PURPOSE "Provides automatic scaling of DPI-unaware applications on high-DPI displays."
 )
-qt_feature_definition("highdpiscaling" "QT_NO_HIGHDPISCALING" NEGATE VALUE "1")
-qt_feature("validator" PUBLIC
+bobui_feature_definition("highdpiscaling" "BOBUI_NO_HIGHDPISCALING" NEGATE VALUE "1")
+bobui_feature("validator" PUBLIC
     SECTION "Widgets"
     LABEL "QValidator"
     PURPOSE "Supports validation of input text."
 )
-qt_feature_definition("validator" "QT_NO_VALIDATOR" NEGATE VALUE "1")
-qt_feature("standarditemmodel" PUBLIC
+bobui_feature_definition("validator" "BOBUI_NO_VALIDATOR" NEGATE VALUE "1")
+bobui_feature("standarditemmodel" PUBLIC
     SECTION "ItemViews"
     LABEL "QStandardItemModel"
     PURPOSE "Provides a generic model for storing custom data."
-    CONDITION QT_FEATURE_itemmodel
+    CONDITION BOBUI_FEATURE_itemmodel
 )
-qt_feature_definition("standarditemmodel" "QT_NO_STANDARDITEMMODEL" NEGATE VALUE "1")
-qt_feature("filesystemmodel" PUBLIC
+bobui_feature_definition("standarditemmodel" "BOBUI_NO_STANDARDITEMMODEL" NEGATE VALUE "1")
+bobui_feature("filesystemmodel" PUBLIC
     SECTION "File I/O"
     LABEL "QFileSystemModel"
     PURPOSE "Provides a data model for the local filesystem."
-    CONDITION QT_FEATURE_itemmodel
+    CONDITION BOBUI_FEATURE_itemmodel
 )
-qt_feature_definition("filesystemmodel" "QT_NO_FILESYSTEMMODEL" NEGATE VALUE "1")
-qt_feature("imageformatplugin" PUBLIC
+bobui_feature_definition("filesystemmodel" "BOBUI_NO_FILESYSTEMMODEL" NEGATE VALUE "1")
+bobui_feature("imageformatplugin" PUBLIC
     SECTION "Images"
     LABEL "QImageIOPlugin"
     PURPOSE "Provides a base for writing a image format plugins."
 )
-qt_feature_definition("imageformatplugin" "QT_NO_IMAGEFORMATPLUGIN" NEGATE VALUE "1")
-qt_feature("movie" PUBLIC
+bobui_feature_definition("imageformatplugin" "BOBUI_NO_IMAGEFORMATPLUGIN" NEGATE VALUE "1")
+bobui_feature("movie" PUBLIC
     SECTION "Images"
     LABEL "QMovie"
     PURPOSE "Supports animated images."
 )
-qt_feature_definition("movie" "QT_NO_MOVIE" NEGATE VALUE "1")
-qt_feature("imageformat_bmp" PUBLIC
+bobui_feature_definition("movie" "BOBUI_NO_MOVIE" NEGATE VALUE "1")
+bobui_feature("imageformat_bmp" PUBLIC
     SECTION "Images"
     LABEL "BMP Image Format"
     PURPOSE "Supports Microsoft's Bitmap image file format."
 )
-qt_feature_definition("imageformat_bmp" "QT_NO_IMAGEFORMAT_BMP" NEGATE VALUE "1")
-qt_feature("imageformat_ppm" PUBLIC
+bobui_feature_definition("imageformat_bmp" "BOBUI_NO_IMAGEFORMAT_BMP" NEGATE VALUE "1")
+bobui_feature("imageformat_ppm" PUBLIC
     SECTION "Images"
     LABEL "PPM Image Format"
     PURPOSE "Supports the Portable Pixmap image file format."
 )
-qt_feature_definition("imageformat_ppm" "QT_NO_IMAGEFORMAT_PPM" NEGATE VALUE "1")
-qt_feature("imageformat_xbm" PUBLIC
+bobui_feature_definition("imageformat_ppm" "BOBUI_NO_IMAGEFORMAT_PPM" NEGATE VALUE "1")
+bobui_feature("imageformat_xbm" PUBLIC
     SECTION "Images"
     LABEL "XBM Image Format"
     PURPOSE "Supports the X11 Bitmap image file format."
 )
-qt_feature_definition("imageformat_xbm" "QT_NO_IMAGEFORMAT_XBM" NEGATE VALUE "1")
-qt_feature("imageformat_xpm" PUBLIC
+bobui_feature_definition("imageformat_xbm" "BOBUI_NO_IMAGEFORMAT_XBM" NEGATE VALUE "1")
+bobui_feature("imageformat_xpm" PUBLIC
     SECTION "Images"
     LABEL "XPM Image Format"
     PURPOSE "Supports the X11 Pixmap image file format."
 )
-qt_feature_definition("imageformat_xpm" "QT_NO_IMAGEFORMAT_XPM" NEGATE VALUE "1")
-qt_feature("imageformat_png" PUBLIC
+bobui_feature_definition("imageformat_xpm" "BOBUI_NO_IMAGEFORMAT_XPM" NEGATE VALUE "1")
+bobui_feature("imageformat_png" PUBLIC
     SECTION "Images"
     LABEL "PNG Image Format"
     PURPOSE "Supports the Portable Network Graphics image file format."
 )
-qt_feature_definition("imageformat_png" "QT_NO_IMAGEFORMAT_PNG" NEGATE VALUE "1")
-qt_feature("imageformat_jpeg" PUBLIC
+bobui_feature_definition("imageformat_png" "BOBUI_NO_IMAGEFORMAT_PNG" NEGATE VALUE "1")
+bobui_feature("imageformat_jpeg" PUBLIC
     SECTION "Images"
     LABEL "JPEG Image Format"
     PURPOSE "Supports the Joint Photographic Experts Group image file format."
 )
-qt_feature_definition("imageformat_jpeg" "QT_NO_IMAGEFORMAT_JPEG" NEGATE VALUE "1")
-qt_feature("image_heuristic_mask" PUBLIC
+bobui_feature_definition("imageformat_jpeg" "BOBUI_NO_IMAGEFORMAT_JPEG" NEGATE VALUE "1")
+bobui_feature("image_heuristic_mask" PUBLIC
     SECTION "Images"
     LABEL "QImage::createHeuristicMask()"
     PURPOSE "Supports creating a 1-bpp heuristic mask for images."
 )
-qt_feature_definition("image_heuristic_mask" "QT_NO_IMAGE_HEURISTIC_MASK" NEGATE VALUE "1")
-qt_feature("image_text" PUBLIC
+bobui_feature_definition("image_heuristic_mask" "BOBUI_NO_IMAGE_HEURISTIC_MASK" NEGATE VALUE "1")
+bobui_feature("image_text" PUBLIC
     SECTION "Images"
     LABEL "Image Text"
     PURPOSE "Supports image file text strings."
 )
-qt_feature_definition("image_text" "QT_NO_IMAGE_TEXT" NEGATE VALUE "1")
-qt_feature("picture" PUBLIC
+bobui_feature_definition("image_text" "BOBUI_NO_IMAGE_TEXT" NEGATE VALUE "1")
+bobui_feature("picture" PUBLIC
     SECTION "Painting"
     LABEL "QPicture"
     PURPOSE "Supports recording and replaying QPainter commands."
 )
-qt_feature_definition("picture" "QT_NO_PICTURE" NEGATE VALUE "1")
-qt_feature("colornames" PUBLIC
+bobui_feature_definition("picture" "BOBUI_NO_PICTURE" NEGATE VALUE "1")
+bobui_feature("colornames" PUBLIC
     SECTION "Painting"
     LABEL "Color Names"
     PURPOSE "Supports color names such as \"red\", used by QColor and by some HTML documents."
 )
-qt_feature_definition("colornames" "QT_NO_COLORNAMES" NEGATE VALUE "1")
-qt_feature("pdf" PUBLIC
+bobui_feature_definition("colornames" "BOBUI_NO_COLORNAMES" NEGATE VALUE "1")
+bobui_feature("pdf" PUBLIC
     SECTION "Painting"
     LABEL "QPdf"
     PURPOSE "Provides a PDF backend for QPainter."
-    CONDITION QT_FEATURE_temporaryfile
+    CONDITION BOBUI_FEATURE_temporaryfile
 )
-qt_feature_definition("pdf" "QT_NO_PDF" NEGATE VALUE "1")
-qt_feature("desktopservices" PUBLIC
+bobui_feature_definition("pdf" "BOBUI_NO_PDF" NEGATE VALUE "1")
+bobui_feature("desktopservices" PUBLIC
     SECTION "Utilities"
     LABEL "QDesktopServices"
     PURPOSE "Provides methods for accessing common desktop services."
 )
-qt_feature_definition("desktopservices" "QT_NO_DESKTOPSERVICES" NEGATE VALUE "1")
-qt_feature("systemtrayicon" PUBLIC
+bobui_feature_definition("desktopservices" "BOBUI_NO_DESKTOPSERVICES" NEGATE VALUE "1")
+bobui_feature("systemtrayicon" PUBLIC
     SECTION "Utilities"
     LABEL "QSystemTrayIcon"
     PURPOSE "Provides an icon for an application in the system tray."
-    CONDITION QT_FEATURE_temporaryfile
+    CONDITION BOBUI_FEATURE_temporaryfile
 )
-qt_feature_definition("systemtrayicon" "QT_NO_SYSTEMTRAYICON" NEGATE VALUE "1")
-qt_feature("accessibility" PUBLIC
+bobui_feature_definition("systemtrayicon" "BOBUI_NO_SYSTEMTRAYICON" NEGATE VALUE "1")
+bobui_feature("accessibility" PUBLIC
     SECTION "Utilities"
     LABEL "Accessibility"
     PURPOSE "Provides accessibility support."
 )
-qt_feature_definition("accessibility" "QT_NO_ACCESSIBILITY" NEGATE VALUE "1")
-qt_feature("multiprocess" PRIVATE
+bobui_feature_definition("accessibility" "BOBUI_NO_ACCESSIBILITY" NEGATE VALUE "1")
+bobui_feature("multiprocess" PRIVATE
     SECTION "Utilities"
     LABEL "Multi process"
     PURPOSE "Provides support for detecting the desktop environment, launching external processes and opening URLs."
     CONDITION NOT INTEGRITY AND NOT rtems
 )
-qt_feature("whatsthis" PUBLIC
+bobui_feature("whatsthis" PUBLIC
     SECTION "Widget Support"
     LABEL "QWhatsThis"
     PURPOSE "Supports displaying \"What's this\" help."
 )
-qt_feature_definition("whatsthis" "QT_NO_WHATSTHIS" NEGATE VALUE "1")
-qt_feature("raster-64bit" PRIVATE
+bobui_feature_definition("whatsthis" "BOBUI_NO_WHATSTHIS" NEGATE VALUE "1")
+bobui_feature("raster-64bit" PRIVATE
     SECTION "Painting"
     LABEL "QPainter - 64 bit raster"
     PURPOSE "Internal painting support for 64 bit (16 bpc) rasterization."
 )
-qt_feature("raster-fp" PRIVATE
+bobui_feature("raster-fp" PRIVATE
     SECTION "Painting"
     LABEL "QPainter - floating point raster"
     PURPOSE "Internal painting support for floating point rasterization."
-    CONDITION NOT VXWORKS # QTBUG-115777
+    CONDITION NOT VXWORKS # BOBUIBUG-115777
 )
 
-qt_feature("qtgui-threadpool" PRIVATE
+bobui_feature("bobuigui-threadpool" PRIVATE
     SECTION "Painting"
     LABEL "Multi-threaded image and painting helpers"
     PURPOSE "Multi-threaded image transforms and QPainter fills."
-    CONDITION QT_FEATURE_thread AND NOT WASM
+    CONDITION BOBUI_FEATURE_thread AND NOT WASM
 )
 
-qt_feature("undocommand" PUBLIC
+bobui_feature("undocommand" PUBLIC
     SECTION "Utilities"
     LABEL "QUndoCommand"
     PURPOSE "Applies (redo or) undo of a single change in a document."
 )
-qt_feature_definition("undocommand" "QT_NO_UNDOCOMMAND" NEGATE VALUE "1")
-qt_feature("undostack" PUBLIC
+bobui_feature_definition("undocommand" "BOBUI_NO_UNDOCOMMAND" NEGATE VALUE "1")
+bobui_feature("undostack" PUBLIC
     SECTION "Utilities"
     LABEL "QUndoStack"
     PURPOSE "Provides the ability to (redo or) undo a list of changes in a document."
-    CONDITION QT_FEATURE_undocommand
+    CONDITION BOBUI_FEATURE_undocommand
 )
-qt_feature_definition("undostack" "QT_NO_UNDOSTACK" NEGATE VALUE "1")
-qt_feature("undogroup" PUBLIC
+bobui_feature_definition("undostack" "BOBUI_NO_UNDOSTACK" NEGATE VALUE "1")
+bobui_feature("undogroup" PUBLIC
     SECTION "Utilities"
     LABEL "QUndoGroup"
     PURPOSE "Provides the ability to cluster QUndoCommands."
-    CONDITION QT_FEATURE_undostack
+    CONDITION BOBUI_FEATURE_undostack
 )
-qt_feature("graphicsframecapture" PRIVATE
+bobui_feature("graphicsframecapture" PRIVATE
     SECTION "Utilities"
     LABEL "QGraphicsFrameCapture"
     PURPOSE "Provides a way to capture 3D graphics API calls for a rendered frame."
     CONDITION TEST_renderdoc OR (MACOS OR IOS)
 )
-qt_feature_definition("undogroup" "QT_NO_UNDOGROUP" NEGATE VALUE "1")
-qt_feature("wayland" PUBLIC
+bobui_feature_definition("undogroup" "BOBUI_NO_UNDOGROUP" NEGATE VALUE "1")
+bobui_feature("wayland" PUBLIC
     SECTION "Platform plugins"
     LABEL "Wayland"
     CONDITION TARGET Wayland::Client
 )
-qt_feature("waylandscanner" PUBLIC
+bobui_feature("waylandscanner" PUBLIC
     SECTION "Wayland Scanner tool"
     LABEL "Wayland Scanner"
     CONDITION TARGET Wayland::Scanner
 )
 
-# qt wayland client
-qt_feature("wayland-client" PRIVATE
+# bobui wayland client
+bobui_feature("wayland-client" PRIVATE
     LABEL "Client"
-    CONDITION NOT WIN32 AND QT_FEATURE_wayland AND QT_FEATURE_waylandscanner
+    CONDITION NOT WIN32 AND BOBUI_FEATURE_wayland AND BOBUI_FEATURE_waylandscanner
 )
-qt_feature("wayland-server" PRIVATE
-    LABEL "Qt Wayland Compositor"
-    CONDITION NOT WIN32 AND QT_FEATURE_wayland AND QT_FEATURE_waylandscanner
+bobui_feature("wayland-server" PRIVATE
+    LABEL "BobUI Wayland Compositor"
+    CONDITION NOT WIN32 AND BOBUI_FEATURE_wayland AND BOBUI_FEATURE_waylandscanner
 )
-qt_feature("wayland-egl" PRIVATE
+bobui_feature("wayland-egl" PRIVATE
     LABEL "EGL"
-    CONDITION (QT_FEATURE_wayland_client OR QT_FEATURE_wayland_server)
-              AND QT_FEATURE_opengl AND QT_FEATURE_egl
-              AND (NOT QNX OR QT_FEATURE_egl_extension_platform_wayland)
+    CONDITION (BOBUI_FEATURE_wayland_client OR BOBUI_FEATURE_wayland_server)
+              AND BOBUI_FEATURE_opengl AND BOBUI_FEATURE_egl
+              AND (NOT QNX OR BOBUI_FEATURE_egl_extension_platform_wayland)
 )
-qt_feature("wayland-brcm" PRIVATE
+bobui_feature("wayland-brcm" PRIVATE
     LABEL "Raspberry Pi"
-    CONDITION (QT_FEATURE_wayland_client OR QT_FEATURE_wayland_server) AND QT_FEATURE_eglfs_brcm
+    CONDITION (BOBUI_FEATURE_wayland_client OR BOBUI_FEATURE_wayland_server) AND BOBUI_FEATURE_eglfs_brcm
 )
-qt_feature("wayland-drm-egl-server-buffer" PRIVATE
+bobui_feature("wayland-drm-egl-server-buffer" PRIVATE
     LABEL "DRM EGL"
-    CONDITION (QT_FEATURE_wayland_client OR QT_FEATURE_wayland_server) AND QT_FEATURE_opengl
-              AND QT_FEATURE_egl AND TEST_drm_egl_server
-              AND (NOT QNX OR QT_FEATURE_egl_extension_platform_wayland)
+    CONDITION (BOBUI_FEATURE_wayland_client OR BOBUI_FEATURE_wayland_server) AND BOBUI_FEATURE_opengl
+              AND BOBUI_FEATURE_egl AND TEST_drm_egl_server
+              AND (NOT QNX OR BOBUI_FEATURE_egl_extension_platform_wayland)
 )
-qt_feature("wayland-libhybris-egl-server-buffer" PRIVATE
+bobui_feature("wayland-libhybris-egl-server-buffer" PRIVATE
     LABEL "libhybris EGL"
-    CONDITION (QT_FEATURE_wayland_client OR QT_FEATURE_wayland_server) AND QT_FEATURE_opengl
-              AND QT_FEATURE_egl AND TEST_libhybris_egl_server
+    CONDITION (BOBUI_FEATURE_wayland_client OR BOBUI_FEATURE_wayland_server) AND BOBUI_FEATURE_opengl
+              AND BOBUI_FEATURE_egl AND TEST_libhybris_egl_server
 )
-qt_feature("wayland-dmabuf-server-buffer" PRIVATE
+bobui_feature("wayland-dmabuf-server-buffer" PRIVATE
     LABEL "Linux dma-buf server buffer"
-    CONDITION (QT_FEATURE_wayland_client OR QT_FEATURE_wayland_server) AND QT_FEATURE_opengl
-              AND QT_FEATURE_egl AND TEST_dmabuf_server_buffer
+    CONDITION (BOBUI_FEATURE_wayland_client OR BOBUI_FEATURE_wayland_server) AND BOBUI_FEATURE_opengl
+              AND BOBUI_FEATURE_egl AND TEST_dmabuf_server_buffer
 )
-qt_feature("wayland-shm-emulation-server-buffer" PRIVATE
+bobui_feature("wayland-shm-emulation-server-buffer" PRIVATE
     LABEL "Shm emulation server buffer"
-    CONDITION (QT_FEATURE_wayland_client OR QT_FEATURE_wayland_server) AND QT_FEATURE_opengl AND QT_FEATURE_sharedmemory
+    CONDITION (BOBUI_FEATURE_wayland_client OR BOBUI_FEATURE_wayland_server) AND BOBUI_FEATURE_opengl AND BOBUI_FEATURE_sharedmemory
 )
-qt_feature("wayland-vulkan-server-buffer" PRIVATE
+bobui_feature("wayland-vulkan-server-buffer" PRIVATE
     LABEL "Vulkan-based server buffer"
-    CONDITION (QT_FEATURE_wayland_client OR QT_FEATURE_wayland_server) AND QT_FEATURE_vulkan
-              AND QT_FEATURE_opengl AND QT_FEATURE_egl AND TEST_vulkan_server_buffer
+    CONDITION (BOBUI_FEATURE_wayland_client OR BOBUI_FEATURE_wayland_server) AND BOBUI_FEATURE_vulkan
+              AND BOBUI_FEATURE_opengl AND BOBUI_FEATURE_egl AND TEST_vulkan_server_buffer
 )
-qt_feature("wayland-datadevice" PRIVATE
-    CONDITION QT_FEATURE_draganddrop OR QT_FEATURE_clipboard
+bobui_feature("wayland-datadevice" PRIVATE
+    CONDITION BOBUI_FEATURE_draganddrop OR BOBUI_FEATURE_clipboard
 )
-qt_feature("wayland-client-primary-selection" PRIVATE
+bobui_feature("wayland-client-primary-selection" PRIVATE
     LABEL "primary-selection clipboard"
-    CONDITION QT_FEATURE_clipboard
+    CONDITION BOBUI_FEATURE_clipboard
 )
-qt_feature("wayland-client-fullscreen-shell-v1" PRIVATE
+bobui_feature("wayland-client-fullscreen-shell-v1" PRIVATE
     LABEL "fullscreen-shell-v1"
-    CONDITION QT_FEATURE_wayland_client
+    CONDITION BOBUI_FEATURE_wayland_client
 )
-qt_feature("wayland-client-wl-shell" PRIVATE
+bobui_feature("wayland-client-wl-shell" PRIVATE
     LABEL "wl-shell (deprecated)"
-    CONDITION QT_FEATURE_wayland_client
+    CONDITION BOBUI_FEATURE_wayland_client
 )
-qt_feature("wayland-client-xdg-shell" PRIVATE
+bobui_feature("wayland-client-xdg-shell" PRIVATE
     LABEL "xdg-shell"
-    CONDITION QT_FEATURE_wayland_client
+    CONDITION BOBUI_FEATURE_wayland_client
 )
-qt_feature("egl-extension-platform-wayland" PRIVATE
+bobui_feature("egl-extension-platform-wayland" PRIVATE
     LABEL "EGL wayland platform extension"
-    CONDITION QT_FEATURE_wayland_client AND QT_FEATURE_opengl AND QT_FEATURE_egl
+    CONDITION BOBUI_FEATURE_wayland_client AND BOBUI_FEATURE_opengl AND BOBUI_FEATURE_egl
               AND TEST_egl_1_5_wayland
 )
-qt_feature("run-opengl-tests" PRIVATE
+bobui_feature("run-opengl-tests" PRIVATE
     LABEL "Run opengl tests"
     PURPOSE "Provides the ability to skip tests which require opengl to run"
-    CONDITION QT_FEATURE_opengl
+    CONDITION BOBUI_FEATURE_opengl
 )
 
 
-qt_configure_add_summary_section(NAME "Qt Gui")
-qt_configure_add_summary_entry(ARGS "accessibility")
-qt_configure_add_summary_entry(ARGS "emojisegmenter")
-qt_configure_add_summary_entry(ARGS "freetype")
-qt_configure_add_summary_entry(ARGS "system-freetype")
-qt_configure_add_summary_entry(ARGS "harfbuzz")
-qt_configure_add_summary_entry(ARGS "system-harfbuzz")
-qt_configure_add_summary_entry(ARGS "fontconfig")
-qt_configure_add_summary_section(NAME "Image formats")
-qt_configure_add_summary_entry(ARGS "gif")
-qt_configure_add_summary_entry(ARGS "ico")
-qt_configure_add_summary_entry(ARGS "jpeg")
-qt_configure_add_summary_entry(ARGS "system-jpeg")
-qt_configure_add_summary_entry(ARGS "png")
-qt_configure_add_summary_entry(ARGS "system-png")
-qt_configure_end_summary_section() # end of "Image formats" section
-qt_configure_add_summary_section(NAME "Text formats")
-qt_configure_add_summary_entry(ARGS "texthtmlparser")
-qt_configure_add_summary_entry(ARGS "cssparser")
-qt_configure_add_summary_entry(ARGS "textodfwriter")
-qt_configure_add_summary_entry(ARGS "textmarkdownreader")
-qt_configure_add_summary_entry(ARGS "system-textmarkdownreader")
-qt_configure_add_summary_entry(ARGS "textmarkdownwriter")
-qt_configure_end_summary_section() # end of "Text formats" section
-qt_configure_add_summary_entry(ARGS "egl")
-qt_configure_add_summary_entry(ARGS "openvg")
-qt_configure_add_summary_section(NAME "OpenGL")
-qt_configure_add_summary_entry(ARGS "opengl-desktop")
-qt_configure_add_summary_entry(
+bobui_configure_add_summary_section(NAME "BobUI Gui")
+bobui_configure_add_summary_entry(ARGS "accessibility")
+bobui_configure_add_summary_entry(ARGS "emojisegmenter")
+bobui_configure_add_summary_entry(ARGS "freetype")
+bobui_configure_add_summary_entry(ARGS "system-freetype")
+bobui_configure_add_summary_entry(ARGS "harfbuzz")
+bobui_configure_add_summary_entry(ARGS "system-harfbuzz")
+bobui_configure_add_summary_entry(ARGS "fontconfig")
+bobui_configure_add_summary_section(NAME "Image formats")
+bobui_configure_add_summary_entry(ARGS "gif")
+bobui_configure_add_summary_entry(ARGS "ico")
+bobui_configure_add_summary_entry(ARGS "jpeg")
+bobui_configure_add_summary_entry(ARGS "system-jpeg")
+bobui_configure_add_summary_entry(ARGS "png")
+bobui_configure_add_summary_entry(ARGS "system-png")
+bobui_configure_end_summary_section() # end of "Image formats" section
+bobui_configure_add_summary_section(NAME "Text formats")
+bobui_configure_add_summary_entry(ARGS "texthtmlparser")
+bobui_configure_add_summary_entry(ARGS "cssparser")
+bobui_configure_add_summary_entry(ARGS "textodfwriter")
+bobui_configure_add_summary_entry(ARGS "textmarkdownreader")
+bobui_configure_add_summary_entry(ARGS "system-textmarkdownreader")
+bobui_configure_add_summary_entry(ARGS "textmarkdownwriter")
+bobui_configure_end_summary_section() # end of "Text formats" section
+bobui_configure_add_summary_entry(ARGS "egl")
+bobui_configure_add_summary_entry(ARGS "openvg")
+bobui_configure_add_summary_section(NAME "OpenGL")
+bobui_configure_add_summary_entry(ARGS "opengl-desktop")
+bobui_configure_add_summary_entry(
     ARGS "opengl-dynamic"
     CONDITION WIN32
 )
-qt_configure_add_summary_entry(ARGS "opengles2")
-qt_configure_add_summary_entry(ARGS "opengles3")
-qt_configure_add_summary_entry(ARGS "opengles31")
-qt_configure_add_summary_entry(ARGS "opengles32")
-qt_configure_end_summary_section() # end of "OpenGL" section
-qt_configure_add_summary_entry(ARGS "vulkan")
-qt_configure_add_summary_entry(ARGS "metal")
-qt_configure_add_summary_entry(ARGS "graphicsframecapture")
-qt_configure_add_summary_entry(ARGS "sessionmanager")
-qt_configure_add_summary_entry(
-    ARGS "qtgui-threadpool"
-    CONDITION QT_FEATURE_thread
+bobui_configure_add_summary_entry(ARGS "opengles2")
+bobui_configure_add_summary_entry(ARGS "opengles3")
+bobui_configure_add_summary_entry(ARGS "opengles31")
+bobui_configure_add_summary_entry(ARGS "opengles32")
+bobui_configure_end_summary_section() # end of "OpenGL" section
+bobui_configure_add_summary_entry(ARGS "vulkan")
+bobui_configure_add_summary_entry(ARGS "metal")
+bobui_configure_add_summary_entry(ARGS "graphicsframecapture")
+bobui_configure_add_summary_entry(ARGS "sessionmanager")
+bobui_configure_add_summary_entry(
+    ARGS "bobuigui-threadpool"
+    CONDITION BOBUI_FEATURE_thread
 )
-qt_configure_end_summary_section() # end of "Qt Gui" section
-qt_configure_add_summary_section(NAME "Features used by QPA backends")
-qt_configure_add_summary_entry(ARGS "evdev")
-qt_configure_add_summary_entry(ARGS "libinput")
-qt_configure_add_summary_entry(ARGS "libinput_hires_wheel_support")
-qt_configure_add_summary_entry(ARGS "integrityhid")
-qt_configure_add_summary_entry(ARGS "mtdev")
-qt_configure_add_summary_entry(ARGS "tslib")
-qt_configure_add_summary_entry(ARGS "xkbcommon")
-qt_configure_add_summary_entry(ARGS "vxworksevdev")
-qt_configure_add_summary_section(NAME "X11 specific")
-qt_configure_add_summary_entry(ARGS "xlib")
-qt_configure_add_summary_entry(ARGS "xcb-xlib")
-qt_configure_add_summary_entry(ARGS "egl_x11")
-qt_configure_add_summary_entry(ARGS "xkbcommon-x11")
-qt_configure_add_summary_entry(ARGS "xcb-sm")
-qt_configure_end_summary_section() # end of "X11 specific" section
-qt_configure_end_summary_section() # end of "Features used by QPA backends" section
-qt_configure_add_summary_section(NAME "QPA backends")
-qt_configure_add_summary_entry(ARGS "directfb")
-qt_configure_add_summary_entry(ARGS "eglfs")
-qt_configure_add_summary_section(NAME "EGLFS details")
-qt_configure_add_summary_entry(ARGS "eglfs_openwfd")
-qt_configure_add_summary_entry(ARGS "eglfs_viv")
-qt_configure_add_summary_entry(ARGS "eglfs_viv_wl")
-qt_configure_add_summary_entry(ARGS "eglfs_rcar")
-qt_configure_add_summary_entry(ARGS "eglfs_egldevice")
-qt_configure_add_summary_entry(ARGS "eglfs_gbm")
-qt_configure_add_summary_entry(ARGS "eglfs_vsp2")
-qt_configure_add_summary_entry(ARGS "eglfs_mali")
-qt_configure_add_summary_entry(ARGS "eglfs_brcm")
-qt_configure_add_summary_entry(ARGS "eglfs_x11")
-qt_configure_end_summary_section() # end of "EGLFS details" section
-qt_configure_add_summary_entry(ARGS "linuxfb")
-qt_configure_add_summary_entry(ARGS "vnc")
-qt_configure_add_summary_entry(ARGS "vkkhrdisplay")
-qt_configure_add_summary_entry(
+bobui_configure_end_summary_section() # end of "BobUI Gui" section
+bobui_configure_add_summary_section(NAME "Features used by QPA backends")
+bobui_configure_add_summary_entry(ARGS "evdev")
+bobui_configure_add_summary_entry(ARGS "libinput")
+bobui_configure_add_summary_entry(ARGS "libinput_hires_wheel_support")
+bobui_configure_add_summary_entry(ARGS "integrityhid")
+bobui_configure_add_summary_entry(ARGS "mtdev")
+bobui_configure_add_summary_entry(ARGS "tslib")
+bobui_configure_add_summary_entry(ARGS "xkbcommon")
+bobui_configure_add_summary_entry(ARGS "vxworksevdev")
+bobui_configure_add_summary_section(NAME "X11 specific")
+bobui_configure_add_summary_entry(ARGS "xlib")
+bobui_configure_add_summary_entry(ARGS "xcb-xlib")
+bobui_configure_add_summary_entry(ARGS "egl_x11")
+bobui_configure_add_summary_entry(ARGS "xkbcommon-x11")
+bobui_configure_add_summary_entry(ARGS "xcb-sm")
+bobui_configure_end_summary_section() # end of "X11 specific" section
+bobui_configure_end_summary_section() # end of "Features used by QPA backends" section
+bobui_configure_add_summary_section(NAME "QPA backends")
+bobui_configure_add_summary_entry(ARGS "directfb")
+bobui_configure_add_summary_entry(ARGS "eglfs")
+bobui_configure_add_summary_section(NAME "EGLFS details")
+bobui_configure_add_summary_entry(ARGS "eglfs_openwfd")
+bobui_configure_add_summary_entry(ARGS "eglfs_viv")
+bobui_configure_add_summary_entry(ARGS "eglfs_viv_wl")
+bobui_configure_add_summary_entry(ARGS "eglfs_rcar")
+bobui_configure_add_summary_entry(ARGS "eglfs_egldevice")
+bobui_configure_add_summary_entry(ARGS "eglfs_gbm")
+bobui_configure_add_summary_entry(ARGS "eglfs_vsp2")
+bobui_configure_add_summary_entry(ARGS "eglfs_mali")
+bobui_configure_add_summary_entry(ARGS "eglfs_brcm")
+bobui_configure_add_summary_entry(ARGS "eglfs_x11")
+bobui_configure_end_summary_section() # end of "EGLFS details" section
+bobui_configure_add_summary_entry(ARGS "linuxfb")
+bobui_configure_add_summary_entry(ARGS "vnc")
+bobui_configure_add_summary_entry(ARGS "vkkhrdisplay")
+bobui_configure_add_summary_entry(
     ARGS "integrityfb"
     CONDITION INTEGRITY
 )
-qt_configure_add_summary_section(NAME "QNX")
-qt_configure_add_summary_entry(ARGS "lgmon")
-qt_configure_add_summary_entry(ARGS "qqnx_imf")
-qt_configure_end_summary_section() # end of "QNX" section
-qt_configure_add_summary_section(NAME "XCB")
-qt_configure_add_summary_entry(ARGS "system-xcb-xinput")
-qt_configure_add_summary_section(NAME "GL integrations")
-qt_configure_add_summary_entry(ARGS "xcb-glx-plugin")
-qt_configure_add_summary_entry(ARGS "xcb-glx")
-qt_configure_add_summary_entry(ARGS "xcb-egl-plugin")
-qt_configure_end_summary_section() # end of "GL integrations" section
-qt_configure_end_summary_section() # end of "XCB" section
-qt_configure_add_summary_section(NAME "Windows")
-qt_configure_add_summary_entry(ARGS "direct2d")
-qt_configure_add_summary_entry(ARGS "direct2d1_1")
-qt_configure_add_summary_entry(ARGS "directwrite")
-qt_configure_add_summary_entry(ARGS "directwrite3")
-qt_configure_add_summary_entry(ARGS "directwritecolrv1")
-qt_configure_end_summary_section() # end of "Windows" section
-qt_configure_add_summary_section(NAME "Wayland")
-qt_configure_add_summary_entry(ARGS "wayland-client")
-qt_configure_add_summary_section(NAME "Hardware Integrations")
-qt_configure_add_summary_entry(ARGS "wayland-egl")
-qt_configure_add_summary_entry(ARGS "wayland-brcm")
-qt_configure_add_summary_entry(ARGS "wayland-drm-egl-server-buffer")
-qt_configure_add_summary_entry(ARGS "wayland-libhybris-egl-server-buffer")
-qt_configure_add_summary_entry(ARGS "wayland-dmabuf-server-buffer")
-qt_configure_add_summary_entry(ARGS "wayland-shm-emulation-server-buffer")
-qt_configure_add_summary_entry(ARGS "wayland-vulkan-server-buffer")
-qt_configure_end_summary_section() # end of "Qt Wayland Drivers" section
-qt_configure_add_summary_section(NAME "Shell Integrations")
-qt_configure_add_summary_entry(ARGS "wayland-client-xdg-shell")
-qt_configure_add_summary_entry(ARGS "wayland-client-wl-shell")
-qt_configure_end_summary_section() # end of "Shell Integrations" section
-qt_configure_end_summary_section() # end of "Wayland" section
-qt_configure_end_summary_section() # end of "QPA backends" section
-qt_configure_add_report_entry(
+bobui_configure_add_summary_section(NAME "QNX")
+bobui_configure_add_summary_entry(ARGS "lgmon")
+bobui_configure_add_summary_entry(ARGS "qqnx_imf")
+bobui_configure_end_summary_section() # end of "QNX" section
+bobui_configure_add_summary_section(NAME "XCB")
+bobui_configure_add_summary_entry(ARGS "system-xcb-xinput")
+bobui_configure_add_summary_section(NAME "GL integrations")
+bobui_configure_add_summary_entry(ARGS "xcb-glx-plugin")
+bobui_configure_add_summary_entry(ARGS "xcb-glx")
+bobui_configure_add_summary_entry(ARGS "xcb-egl-plugin")
+bobui_configure_end_summary_section() # end of "GL integrations" section
+bobui_configure_end_summary_section() # end of "XCB" section
+bobui_configure_add_summary_section(NAME "Windows")
+bobui_configure_add_summary_entry(ARGS "direct2d")
+bobui_configure_add_summary_entry(ARGS "direct2d1_1")
+bobui_configure_add_summary_entry(ARGS "directwrite")
+bobui_configure_add_summary_entry(ARGS "directwrite3")
+bobui_configure_add_summary_entry(ARGS "directwritecolrv1")
+bobui_configure_end_summary_section() # end of "Windows" section
+bobui_configure_add_summary_section(NAME "Wayland")
+bobui_configure_add_summary_entry(ARGS "wayland-client")
+bobui_configure_add_summary_section(NAME "Hardware Integrations")
+bobui_configure_add_summary_entry(ARGS "wayland-egl")
+bobui_configure_add_summary_entry(ARGS "wayland-brcm")
+bobui_configure_add_summary_entry(ARGS "wayland-drm-egl-server-buffer")
+bobui_configure_add_summary_entry(ARGS "wayland-libhybris-egl-server-buffer")
+bobui_configure_add_summary_entry(ARGS "wayland-dmabuf-server-buffer")
+bobui_configure_add_summary_entry(ARGS "wayland-shm-emulation-server-buffer")
+bobui_configure_add_summary_entry(ARGS "wayland-vulkan-server-buffer")
+bobui_configure_end_summary_section() # end of "BobUI Wayland Drivers" section
+bobui_configure_add_summary_section(NAME "Shell Integrations")
+bobui_configure_add_summary_entry(ARGS "wayland-client-xdg-shell")
+bobui_configure_add_summary_entry(ARGS "wayland-client-wl-shell")
+bobui_configure_end_summary_section() # end of "Shell Integrations" section
+bobui_configure_end_summary_section() # end of "Wayland" section
+bobui_configure_end_summary_section() # end of "QPA backends" section
+bobui_configure_add_report_entry(
     TYPE NOTE
     MESSAGE "XCB support on macOS is minimal and untested. Some features will not work properly or at all (e.g. OpenGL, desktop services or accessibility), or may depend on your system and XQuartz setup."
-    CONDITION QT_FEATURE_xcb AND APPLE
+    CONDITION BOBUI_FEATURE_xcb AND APPLE
 )
-qt_configure_add_report_entry(
+bobui_configure_add_report_entry(
     TYPE NOTE
     MESSAGE "Disabling X11 Accessibility Bridge: D-Bus or AT-SPI is missing."
-    CONDITION QT_FEATURE_accessibility AND QT_FEATURE_xcb AND NOT QT_FEATURE_accessibility_atspi_bridge
+    CONDITION BOBUI_FEATURE_accessibility AND BOBUI_FEATURE_xcb AND NOT BOBUI_FEATURE_accessibility_atspi_bridge
 )
-qt_configure_add_report_entry(
+bobui_configure_add_report_entry(
     TYPE WARNING
-    MESSAGE "No QPA platform plugin enabled! This will produce a Qt that cannot run GUI applications.  See \"Platform backends\" in the output of --help."
-    CONDITION QT_FEATURE_gui AND LINUX AND NOT ANDROID AND NOT QT_FEATURE_xcb AND NOT QT_FEATURE_eglfs AND NOT QT_FEATURE_directfb AND NOT QT_FEATURE_linuxfb
+    MESSAGE "No QPA platform plugin enabled! This will produce a BobUI that cannot run GUI applications.  See \"Platform backends\" in the output of --help."
+    CONDITION BOBUI_FEATURE_gui AND LINUX AND NOT ANDROID AND NOT BOBUI_FEATURE_xcb AND NOT BOBUI_FEATURE_eglfs AND NOT BOBUI_FEATURE_directfb AND NOT BOBUI_FEATURE_linuxfb
 )
-qt_configure_add_report_entry(
+bobui_configure_add_report_entry(
     TYPE ERROR
     MESSAGE "The OpenGL functionality tests failed! You might need to modify the OpenGL package search path by setting the OpenGL_DIR CMake variable to the OpenGL library's installation directory."
-    CONDITION QT_FEATURE_gui AND NOT WATCHOS AND NOT VISIONOS AND ( NOT INPUT_opengl STREQUAL 'no' ) AND NOT QT_FEATURE_opengl_desktop AND NOT QT_FEATURE_opengles2 AND NOT QT_FEATURE_opengl_dynamic
+    CONDITION BOBUI_FEATURE_gui AND NOT WATCHOS AND NOT VISIONOS AND ( NOT INPUT_opengl STREQUAL 'no' ) AND NOT BOBUI_FEATURE_opengl_desktop AND NOT BOBUI_FEATURE_opengles2 AND NOT BOBUI_FEATURE_opengl_dynamic
 )
-qt_configure_add_report_entry(
+bobui_configure_add_report_entry(
     TYPE WARNING
-    MESSAGE "Accessibility disabled. This configuration of Qt is unsupported."
-    CONDITION NOT QT_FEATURE_accessibility
+    MESSAGE "Accessibility disabled. This configuration of BobUI is unsupported."
+    CONDITION NOT BOBUI_FEATURE_accessibility
 )
-qt_configure_add_report_entry(
+bobui_configure_add_report_entry(
     TYPE ERROR
     MESSAGE "XCB plugin requires xkbcommon and xkbcommon-x11, but -no-xkbcommon was provided."
     CONDITION ( NOT INPUT_xcb STREQUAL '' ) AND ( NOT INPUT_xcb STREQUAL 'no' ) AND INPUT_xkbcommon STREQUAL 'no'
 )
-qt_configure_add_report_entry(
+bobui_configure_add_report_entry(
     TYPE ERROR
     MESSAGE "The desktopservices feature is required on macOS and iOS, and cannot be disabled."
-    CONDITION APPLE AND NOT QT_FEATURE_desktopservices
+    CONDITION APPLE AND NOT BOBUI_FEATURE_desktopservices
 )
-qt_configure_add_report_entry(
+bobui_configure_add_report_entry(
     TYPE NOTE
-    MESSAGE "Qt Gui has been built without 'qtwaylandscanner' feature. This feature is required for building Qt Wayland Client."
-    CONDITION NOT QT_FEATURE_waylandscanner AND QT_FEATURE_wayland_client
+    MESSAGE "BobUI Gui has been built without 'bobuiwaylandscanner' feature. This feature is required for building BobUI Wayland Client."
+    CONDITION NOT BOBUI_FEATURE_waylandscanner AND BOBUI_FEATURE_wayland_client
 )
-qt_configure_add_report_entry(
+bobui_configure_add_report_entry(
     TYPE NOTE
-    MESSAGE "Qt Gui has been built without 'wayland' feature. This feature is required for building Qt Wayland Client."
-    CONDITION NOT QT_FEATURE_wayland AND QT_FEATURE_wayland_client
+    MESSAGE "BobUI Gui has been built without 'wayland' feature. This feature is required for building BobUI Wayland Client."
+    CONDITION NOT BOBUI_FEATURE_wayland AND BOBUI_FEATURE_wayland_client
 )
 
 #### Inputs

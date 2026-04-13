@@ -1,16 +1,16 @@
 // Copyright (C) 2016 LG Electronics Inc, author: <mikko.levonmaa@lge.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-#include <QtWaylandClient/private/qwaylandshm_p.h>
-#include <QtWaylandClient/private/qwaylanddisplay_p.h>
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+#include <BobUIWaylandClient/private/qwaylandshm_p.h>
+#include <BobUIWaylandClient/private/qwaylanddisplay_p.h>
 
 #include "qwaylandsharedmemoryformathelper_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 QWaylandShm::QWaylandShm(QWaylandDisplay *display, int version, uint32_t id)
-    : QtWayland::wl_shm(display->wl_registry(), id, qMin(version, 2))
+    : BobUIWayland::wl_shm(display->wl_registry(), id, qMin(version, 2))
 {
 }
 
@@ -51,4 +51,4 @@ QImage::Format QWaylandShm::formatFrom(wl_shm_format format)
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

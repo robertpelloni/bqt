@@ -1,13 +1,13 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QSemaphore>
 #include <qcoreapplication.h>
 #include <qreadwritelock.h>
 #include <qelapsedtimer.h>
 #include <qmutex.h>
-#include <qthread.h>
+#include <bobuihread.h>
 #include <qwaitcondition.h>
 #include <private/qemulationdetector_p.h>
 #include <private/qvolatile_p.h>
@@ -188,7 +188,7 @@ void tst_QReadWriteLock::tryReadLock()
 
     // functionality test
     {
-        class Thread : public QThread
+        class Thread : public BOBUIhread
         {
         public:
             void run() override
@@ -304,7 +304,7 @@ void tst_QReadWriteLock::tryWriteLock()
 
     // functionality test
     {
-        class Thread : public QThread
+        class Thread : public BOBUIhread
         {
         public:
             Thread() : failureCount(0) { }
@@ -388,7 +388,7 @@ static QAtomicInt release;
     unlock
     set threadone
 */
-class WriteLockThread : public QThread
+class WriteLockThread : public BOBUIhread
 {
 public:
     QReadWriteLock &testRwlock;
@@ -406,7 +406,7 @@ public:
     unlock
     set threadone
 */
-class ReadLockThread : public QThread
+class ReadLockThread : public BOBUIhread
 {
 public:
     QReadWriteLock &testRwlock;
@@ -423,7 +423,7 @@ public:
     wait for release==true
     unlock
 */
-class WriteLockReleasableThread : public QThread
+class WriteLockReleasableThread : public BOBUIhread
 {
 public:
     QReadWriteLock &testRwlock;
@@ -443,7 +443,7 @@ public:
     wait for release==true
     unlock
 */
-class ReadLockReleasableThread : public QThread
+class ReadLockReleasableThread : public BOBUIhread
 {
 public:
     QReadWriteLock &testRwlock;
@@ -466,7 +466,7 @@ public:
         release lock
         msleep(waitTime msecs)
 */
-class ReadLockLoopThread : public QThread
+class ReadLockLoopThread : public BOBUIhread
 {
 public:
     QReadWriteLock &testRwlock;
@@ -502,7 +502,7 @@ public:
         release lock
         msleep(waitTime msecs)
 */
-class WriteLockLoopThread : public QThread
+class WriteLockLoopThread : public BOBUIhread
 {
 public:
     QReadWriteLock &testRwlock;
@@ -541,7 +541,7 @@ static volatile int count = 0;
         release lock
         msleep waitTime
 */
-class WriteLockCountThread : public QThread
+class WriteLockCountThread : public BOBUIhread
 {
 public:
     QReadWriteLock &testRwlock;
@@ -564,7 +564,7 @@ public:
                 qFatal("Non-zero count at start of write! (%d)",count );
 //            printf(".");
             for (int i = 0; i < maxval; ++i)
-                QtPrivate::volatilePreIncrement(count);
+                BobUIPrivate::volatilePreIncrement(count);
             count=0;
             testRwlock.unlock();
             sleep(waitTime);
@@ -579,7 +579,7 @@ public:
         release lock
         msleep waitTime
 */
-class ReadLockCountThread : public QThread
+class ReadLockCountThread : public BOBUIhread
 {
 public:
     QReadWriteLock &testRwlock;
@@ -604,7 +604,7 @@ public:
     }
 };
 
-class HeavyLoadLockThread : public QThread
+class HeavyLoadLockThread : public BOBUIhread
 {
 public:
     QReadWriteLock &testRwlock;
@@ -661,7 +661,7 @@ public:
             */
             int prev = counter->fetchAndAddRelaxed(1);
             if (prev == numThreads - 1) {
-#ifdef QT_BUILDING_UNDER_TSAN
+#ifdef BOBUI_BUILDING_UNDER_TSAN
             /*
                 Under TSAN, deleting and freeing an object
                 will trigger a write operation on the memory
@@ -721,7 +721,7 @@ void tst_QReadWriteLock::readLockBlockRelease()
     threadDone=false;
     ReadLockThread rlt(testLock);
     rlt.start();
-    QThread::sleep(1s);
+    BOBUIhread::sleep(1s);
     testLock.unlock();
     rlt.wait();
     QVERIFY(threadDone);
@@ -738,7 +738,7 @@ void tst_QReadWriteLock::writeLockBlockRelease()
     threadDone=false;
     WriteLockThread wlt(testLock);
     wlt.start();
-    QThread::sleep(1s);
+    BOBUIhread::sleep(1s);
     testLock.unlock();
     wlt.wait();
     QVERIFY(threadDone);
@@ -757,10 +757,10 @@ void tst_QReadWriteLock::multipleReadersBlockRelease()
     ReadLockReleasableThread rlt2(testLock);
     rlt1.start();
     rlt2.start();
-    QThread::sleep(1s);
+    BOBUIhread::sleep(1s);
     WriteLockThread wlt(testLock);
     wlt.start();
-    QThread::sleep(1s);
+    BOBUIhread::sleep(1s);
     release.storeRelaxed(true);
     wlt.wait();
     rlt1.wait();
@@ -773,8 +773,8 @@ void tst_QReadWriteLock::multipleReadersBlockRelease()
 */
 void tst_QReadWriteLock::multipleReadersLoop()
 {
-    if (QTestPrivate::isRunningArmOnX86())
-        QSKIP("Flaky on QEMU, QTBUG-96103");
+    if (BOBUIestPrivate::isRunningArmOnX86())
+        QSKIP("Flaky on QEMU, BOBUIBUG-96103");
 
     constexpr int time = 500;
     constexpr int hold = 250;
@@ -842,9 +842,9 @@ void tst_QReadWriteLock::multipleReadersWritersLoop()
     for (auto &thread : writers)
         thread = new WriteLockLoopThread(testLock, time, writerHold, writerWait, false);
     for (auto thread : readers)
-        thread->start(QThread::NormalPriority);
+        thread->start(BOBUIhread::NormalPriority);
     for (auto thread : writers)
-        thread->start(QThread::IdlePriority);
+        thread->start(BOBUIhread::IdlePriority);
 
     for (auto thread : readers)
         thread->wait();
@@ -879,9 +879,9 @@ void tst_QReadWriteLock::countingTest()
     for (auto &thread : writers)
         thread = new WriteLockCountThread(testLock, time,  writerWait, maxval);
     for (auto thread : readers)
-        thread->start(QThread::NormalPriority);
+        thread->start(BOBUIhread::NormalPriority);
     for (auto thread : writers)
-        thread->start(QThread::LowestPriority);
+        thread->start(BOBUIhread::LowestPriority);
 
     for (auto thread : readers)
         thread->wait();
@@ -911,7 +911,7 @@ void tst_QReadWriteLock::limitedReaders()
       |                     delete lock
     deref d inside unlock
 */
-class DeleteOnUnlockThread : public QThread
+class DeleteOnUnlockThread : public BOBUIhread
 {
 public:
     DeleteOnUnlockThread(QReadWriteLock **lock, QWaitCondition *startup, QMutex *waitMutex)
@@ -1008,7 +1008,7 @@ enum { RecursiveLockCount = 10 };
 void tst_QReadWriteLock::recursiveReadLock()
 {
     // thread to attempt locking for writing while the test recursively locks for reading
-    class RecursiveReadLockThread : public QThread
+    class RecursiveReadLockThread : public BOBUIhread
     {
     public:
         QReadWriteLock *lock;
@@ -1103,7 +1103,7 @@ void tst_QReadWriteLock::recursiveReadLock()
 void tst_QReadWriteLock::recursiveWriteLock()
 {
     // thread to attempt locking for reading while the test recursively locks for writing
-    class RecursiveWriteLockThread : public QThread
+    class RecursiveWriteLockThread : public BOBUIhread
     {
     public:
         QReadWriteLock *lock;
@@ -1174,6 +1174,6 @@ void tst_QReadWriteLock::recursiveWriteLock()
     QVERIFY(thread.wait());
 }
 
-QTEST_MAIN(tst_QReadWriteLock)
+BOBUIEST_MAIN(tst_QReadWriteLock)
 
 #include "tst_qreadwritelock.moc"

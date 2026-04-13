@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef INTERFACE_H
 #define INTERFACE_H
@@ -41,7 +41,7 @@ Q_DECLARE_METATYPE(UnregisteredType)
 class Interface: public QObject
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "org.qtproject.QtDBus.Pinger")
+    Q_CLASSINFO("D-Bus Interface", "org.bobuiproject.BobUIDBus.Pinger")
     Q_PROPERTY(QString stringProp READ stringProp WRITE setStringProp SCRIPTABLE true)
     Q_PROPERTY(QDBusVariant variantProp READ variantProp WRITE setVariantProp SCRIPTABLE true)
     Q_PROPERTY(RegisteredType complexProp READ complexProp WRITE setComplexProp SCRIPTABLE true)

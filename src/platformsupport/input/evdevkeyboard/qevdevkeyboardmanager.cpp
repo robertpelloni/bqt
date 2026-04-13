@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qevdevkeyboardmanager_p.h"
 
-#include <QtInputSupport/private/qevdevutil_p.h>
+#include <BobUIInputSupport/private/qevdevutil_p.h>
 
 #include <QStringList>
 #include <QCoreApplication>
@@ -12,9 +12,9 @@
 #include <private/qguiapplication_p.h>
 #include <private/qinputdevicemanager_p_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QEvdevKeyboardManager::QEvdevKeyboardManager(const QString &key, const QString &specification, QObject *parent)
     : QObject(parent)
@@ -22,7 +22,7 @@ QEvdevKeyboardManager::QEvdevKeyboardManager(const QString &key, const QString &
     Q_UNUSED(key);
 
 
-    QString spec = qEnvironmentVariable("QT_QPA_EVDEV_KEYBOARD_PARAMETERS");
+    QString spec = qEnvironmentVariable("BOBUI_QPA_EVDEV_KEYBOARD_PARAMETERS");
 
     if (spec.isEmpty())
         spec = specification;
@@ -111,4 +111,4 @@ void QEvdevKeyboardManager::switchLang()
         keyboard.handler->switchLang();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

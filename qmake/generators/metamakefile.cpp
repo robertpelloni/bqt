@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "metamakefile.h"
 #include "qdir.h"
@@ -15,7 +15,7 @@
 #define BUILDSMETATYPE 1
 #define SUBDIRSMETATYPE 2
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 MetaMakefileGenerator::~MetaMakefileGenerator()
 {
@@ -23,7 +23,7 @@ MetaMakefileGenerator::~MetaMakefileGenerator()
         delete project;
 }
 
-#ifndef QT_QMAKE_PARSER_ONLY
+#ifndef BOBUI_QMAKE_PARSER_ONLY
 
 class BuildsMetaMakefileGenerator : public MetaMakefileGenerator
 {
@@ -423,7 +423,7 @@ SubdirsMetaMakefileGenerator::~SubdirsMetaMakefileGenerator()
 }
 
 //Factory things
-QT_BEGIN_INCLUDE_NAMESPACE
+BOBUI_BEGIN_INCLUDE_NAMESPACE
 #include "unixmake.h"
 #include "mingw_make.h"
 #include "projectgenerator.h"
@@ -431,7 +431,7 @@ QT_BEGIN_INCLUDE_NAMESPACE
 #include "msvc_nmake.h"
 #include "msvc_vcproj.h"
 #include "msvc_vcxproj.h"
-QT_END_INCLUDE_NAMESPACE
+BOBUI_END_INCLUDE_NAMESPACE
 
 MakefileGenerator *
 MetaMakefileGenerator::createMakefileGenerator(QMakeProject *proj, bool noIO)
@@ -455,7 +455,7 @@ MetaMakefileGenerator::createMakefileGenerator(QMakeProject *proj, bool noIO)
         mkfile = new MingwMakefileGenerator;
     } else if(gen == "PROJECTBUILDER" || gen == "XCODE") {
 #ifdef Q_CC_MSVC
-        fprintf(stderr, "Generating Xcode projects is not supported with an MSVC build of Qt.\n");
+        fprintf(stderr, "Generating Xcode projects is not supported with an MSVC build of BobUI.\n");
 #else
         mkfile = new ProjectBuilderMakefileGenerator;
 #endif
@@ -499,6 +499,6 @@ MetaMakefileGenerator::createMetaGenerator(QMakeProject *proj, const QString &na
     return ret;
 }
 
-#endif // QT_QMAKE_PARSER_ONLY
+#endif // BOBUI_QMAKE_PARSER_ONLY
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

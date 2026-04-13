@@ -1,29 +1,29 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWINDOW_H
 #define QWINDOW_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/QObject>
-#include <QtCore/QEvent>
-#include <QtCore/QMargins>
-#include <QtCore/QRect>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/QObject>
+#include <BobUICore/QEvent>
+#include <BobUICore/QMargins>
+#include <BobUICore/QRect>
 
-#include <QtCore/qnamespace.h>
-#include <QtCore/qnativeinterface.h>
+#include <BobUICore/qnamespace.h>
+#include <BobUICore/qnativeinterface.h>
 
-#include <QtGui/qsurface.h>
-#include <QtGui/qsurfaceformat.h>
-#include <QtGui/qwindowdefs.h>
+#include <BobUIGui/qsurface.h>
+#include <BobUIGui/qsurfaceformat.h>
+#include <BobUIGui/qwindowdefs.h>
 
-#include <QtGui/qicon.h>
+#include <BobUIGui/qicon.h>
 
-#ifndef QT_NO_CURSOR
-#include <QtGui/qcursor.h>
+#ifndef BOBUI_NO_CURSOR
+#include <BobUIGui/qcursor.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QWindowPrivate;
@@ -38,12 +38,12 @@ class QHideEvent;
 class QCloseEvent;
 class QKeyEvent;
 class QMouseEvent;
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
 class QWheelEvent;
 #endif
-class QTouchEvent;
-#if QT_CONFIG(tabletevent)
-class QTabletEvent;
+class BOBUIouchEvent;
+#if BOBUI_CONFIG(tabletevent)
+class BOBUIabletEvent;
 #endif
 
 class QPlatformSurface;
@@ -52,10 +52,10 @@ class QBackingStore;
 class QScreen;
 class QAccessibleInterface;
 class QWindowContainer;
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 class QDebug;
 #endif
-#if QT_CONFIG(vulkan) || defined(Q_QDOC)
+#if BOBUI_CONFIG(vulkan) || defined(Q_QDOC)
 class QVulkanInstance;
 #endif
 
@@ -72,11 +72,11 @@ class Q_GUI_EXPORT QWindow : public QObject, public QSurface
 
     // Any new properties which you add here MUST be versioned and MUST be documented both as
     // C++ properties in qwindow.cpp AND as QML properties in qquickwindow.cpp.
-    // https://doc.qt.io/qt/qtqml-cppintegration-definetypes.html#type-revisions-and-versions
+    // https://doc.bobui.io/bobui/bobuiqml-cppintegration-definetypes.html#type-revisions-and-versions
 
     Q_PROPERTY(QString title READ title WRITE setTitle NOTIFY windowTitleChanged)
-    Q_PROPERTY(Qt::WindowModality modality READ modality WRITE setModality NOTIFY modalityChanged)
-    Q_PROPERTY(Qt::WindowFlags flags READ flags WRITE setFlags NOTIFY flagsChanged)
+    Q_PROPERTY(BobUI::WindowModality modality READ modality WRITE setModality NOTIFY modalityChanged)
+    Q_PROPERTY(BobUI::WindowFlags flags READ flags WRITE setFlags NOTIFY flagsChanged)
     Q_PROPERTY(int x READ x WRITE setX NOTIFY xChanged)
     Q_PROPERTY(int y READ y WRITE setY NOTIFY yChanged)
     Q_PROPERTY(int width READ width WRITE setWidth NOTIFY widthChanged)
@@ -91,7 +91,7 @@ class Q_GUI_EXPORT QWindow : public QObject, public QSurface
     Q_PROPERTY(bool active READ isActive NOTIFY activeChanged REVISION(2, 1))
     Q_PROPERTY(Visibility visibility READ visibility WRITE setVisibility NOTIFY visibilityChanged
                REVISION(2, 1))
-    Q_PROPERTY(Qt::ScreenOrientation contentOrientation READ contentOrientation
+    Q_PROPERTY(BobUI::ScreenOrientation contentOrientation READ contentOrientation
                WRITE reportContentOrientationChange NOTIFY contentOrientationChanged)
     Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity NOTIFY opacityChanged REVISION(2, 1))
 #ifdef Q_QDOC
@@ -140,17 +140,17 @@ public:
     bool isTopLevel() const;
 
     bool isModal() const;
-    Qt::WindowModality modality() const;
-    void setModality(Qt::WindowModality modality);
+    BobUI::WindowModality modality() const;
+    void setModality(BobUI::WindowModality modality);
 
     void setFormat(const QSurfaceFormat &format);
     QSurfaceFormat format() const override;
     QSurfaceFormat requestedFormat() const;
 
-    void setFlags(Qt::WindowFlags flags);
-    Qt::WindowFlags flags() const;
-    void setFlag(Qt::WindowType, bool on = true);
-    Qt::WindowType type() const;
+    void setFlags(BobUI::WindowFlags flags);
+    BobUI::WindowFlags flags() const;
+    void setFlag(BobUI::WindowType, bool on = true);
+    BobUI::WindowType type() const;
 
     QString title() const;
 
@@ -162,15 +162,15 @@ public:
 
     bool isActive() const;
 
-    void reportContentOrientationChange(Qt::ScreenOrientation orientation);
-    Qt::ScreenOrientation contentOrientation() const;
+    void reportContentOrientationChange(BobUI::ScreenOrientation orientation);
+    BobUI::ScreenOrientation contentOrientation() const;
 
     qreal devicePixelRatio() const;
 
-    Qt::WindowState windowState() const;
-    Qt::WindowStates windowStates() const;
-    void setWindowState(Qt::WindowState state);
-    void setWindowStates(Qt::WindowStates states);
+    BobUI::WindowState windowState() const;
+    BobUI::WindowStates windowStates() const;
+    void setWindowState(BobUI::WindowState state);
+    void setWindowStates(BobUI::WindowStates states);
 
     void setTransientParent(QWindow *parent);
     QWindow *transientParent() const;
@@ -242,7 +242,7 @@ public:
     QPoint mapToGlobal(const QPoint &pos) const;
     QPoint mapFromGlobal(const QPoint &pos) const;
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     QCursor cursor() const;
     void setCursor(const QCursor &);
     void unsetCursor();
@@ -250,12 +250,12 @@ public:
 
     static QWindow *fromWinId(WId id);
 
-#if QT_CONFIG(vulkan) || defined(Q_QDOC)
+#if BOBUI_CONFIG(vulkan) || defined(Q_QDOC)
     void setVulkanInstance(QVulkanInstance *instance);
     QVulkanInstance *vulkanInstance() const;
 #endif
 
-    QT_DECLARE_NATIVE_INTERFACE_ACCESSOR(QWindow)
+    BOBUI_DECLARE_NATIVE_INTERFACE_ACCESSOR(QWindow)
 
 public Q_SLOTS:
     Q_REVISION(2, 1) void requestActivate();
@@ -273,7 +273,7 @@ public Q_SLOTS:
     bool close();
     void raise();
     void lower();
-    bool startSystemResize(Qt::Edges edges);
+    bool startSystemResize(BobUI::Edges edges);
     bool startSystemMove();
 
     void setTitle(const QString &);
@@ -296,9 +296,9 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     void screenChanged(QScreen *screen);
-    void modalityChanged(Qt::WindowModality modality);
-    Q_REVISION(6, 10) void flagsChanged(Qt::WindowFlags flags);
-    void windowStateChanged(Qt::WindowState windowState);
+    void modalityChanged(BobUI::WindowModality modality);
+    Q_REVISION(6, 10) void flagsChanged(BobUI::WindowFlags flags);
+    void windowStateChanged(BobUI::WindowState windowState);
     Q_REVISION(2, 2) void windowTitleChanged(const QString &title);
 
     void xChanged(int arg);
@@ -317,7 +317,7 @@ Q_SIGNALS:
     void visibleChanged(bool arg);
     Q_REVISION(2, 1) void visibilityChanged(QWindow::Visibility visibility);
     Q_REVISION(2, 1) void activeChanged();
-    void contentOrientationChanged(Qt::ScreenOrientation orientation);
+    void contentOrientationChanged(BobUI::ScreenOrientation orientation);
 
     void focusObjectChanged(QObject *object);
 
@@ -344,12 +344,12 @@ protected:
     virtual void mouseReleaseEvent(QMouseEvent *);
     virtual void mouseDoubleClickEvent(QMouseEvent *);
     virtual void mouseMoveEvent(QMouseEvent *);
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
     virtual void wheelEvent(QWheelEvent *);
 #endif
-    virtual void touchEvent(QTouchEvent *);
-#if QT_CONFIG(tabletevent)
-    virtual void tabletEvent(QTabletEvent *);
+    virtual void touchEvent(BOBUIouchEvent *);
+#if BOBUI_CONFIG(tabletevent)
+    virtual void tabletEvent(BOBUIabletEvent *);
 #endif
     virtual bool nativeEvent(const QByteArray &eventType, void *message, qintptr *result);
 
@@ -364,7 +364,7 @@ private:
     friend class QGuiApplication;
     friend class QGuiApplicationPrivate;
     friend class QWindowContainer;
-    friend Q_GUI_EXPORT QWindowPrivate *qt_window_private(QWindow *window);
+    friend Q_GUI_EXPORT QWindowPrivate *bobui_window_private(QWindow *window);
 };
 
 #ifndef Q_QDOC
@@ -381,10 +381,10 @@ template <> inline const QWindow *qobject_cast<const QWindow*>(const QObject *o)
 }
 #endif // !Q_QDOC
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QWindow *);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWINDOW_H

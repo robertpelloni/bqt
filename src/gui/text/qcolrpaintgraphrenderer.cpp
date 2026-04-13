@@ -1,10 +1,10 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qcolrpaintgraphrenderer_p.h"
 
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QColrPaintGraphRenderer::~QColrPaintGraphRenderer()
 {
@@ -52,7 +52,7 @@ void QColrPaintGraphRenderer::setClip(QRect rect)
         m_painter->setClipRect(rect);
 }
 
-void QColrPaintGraphRenderer::prependTransform(const QTransform &transform)
+void QColrPaintGraphRenderer::prependTransform(const BOBUIransform &transform)
 {
     qCDebug(lcColrv1).noquote().nospace()
         << QByteArray().fill(' ', m_oldPaths.size() * 2)
@@ -107,7 +107,7 @@ void QColrPaintGraphRenderer::setLinearGradient(QPointF p0, QPointF p1, QPointF 
         << ", stop count: " << gradientStops.size()
         << "]";
 
-        // Calculate new start and end point for single vector gradient preferred by Qt
+        // Calculate new start and end point for single vector gradient preferred by BobUI
         // Find vector perpendicular to p0p2 and project p0p1 onto this to find p3 (final
         // stop)
         // https://learn.microsoft.com/en-us/typography/opentype/spec/colr#linear-gradients
@@ -166,7 +166,7 @@ void QColrPaintGraphRenderer::setConicalGradient(QPointF center,
         QConicalGradient conicalGradient(center, startAngle);
         conicalGradient.setSpread(spread);
 
-        // Adapt stops to actual span since Qt always assumes end angle of 360
+        // Adapt stops to actual span since BobUI always assumes end angle of 360
         // Note: This does not give accurate results for the colors outside the angle span.
         // To do this correctly, we would have to insert stops at 0°, 360° and if the spread
         // is reflect/repeat, also throughout the uncovered area to get the correct
@@ -268,7 +268,7 @@ void QColrPaintGraphRenderer::setCompositionMode(QPainter::CompositionMode mode)
         m_painter->setCompositionMode(mode);
 }
 
-void QColrPaintGraphRenderer::beginRender(qreal pixelSizeScale, const QTransform &transform)
+void QColrPaintGraphRenderer::beginRender(qreal pixelSizeScale, const BOBUIransform &transform)
 {
     qCDebug(lcColrv1).noquote().nospace()
         << QByteArray().fill(' ', m_oldPaths.size() * 2)
@@ -282,14 +282,14 @@ void QColrPaintGraphRenderer::beginRender(qreal pixelSizeScale, const QTransform
     QRect alignedRect(m_boundingRect.toAlignedRect());
 
     m_image = QImage(alignedRect.size(), QImage::Format_ARGB32_Premultiplied);
-    m_image.fill(Qt::transparent);
+    m_image.fill(BobUI::transparent);
 
     Q_ASSERT(m_painter == nullptr);
     m_painter = new QPainter;
     m_painter->begin(&m_image);
     m_painter->setRenderHint(QPainter::Antialiasing);
-    m_painter->setPen(Qt::NoPen);
-    m_painter->setBrush(Qt::NoBrush);
+    m_painter->setPen(BobUI::NoPen);
+    m_painter->setBrush(BobUI::NoBrush);
 
     m_painter->translate(-alignedRect.topLeft());
 
@@ -313,4 +313,4 @@ QImage QColrPaintGraphRenderer::endRender()
     return m_image;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

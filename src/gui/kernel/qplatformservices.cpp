@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qplatformservices.h"
 
-#include <QtCore/QUrl>
-#include <QtCore/QString>
-#include <QtCore/QDebug>
+#include <BobUICore/QUrl>
+#include <BobUICore/QString>
+#include <BobUICore/QDebug>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcQpaServices, "qt.qpa.services", QtWarningMsg)
+Q_LOGGING_CATEGORY(lcQpaServices, "bobui.qpa.services", BobUIWarningMsg)
 
 /*!
     \class QPlatformServices
@@ -76,6 +76,6 @@ bool QPlatformServices::hasCapability(Capability capability) const
     return false;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qplatformservices.cpp"

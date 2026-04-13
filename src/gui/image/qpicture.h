@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPICTURE_H
 #define QPICTURE_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qiodevice.h>
-#include <QtCore/qshareddata.h>
-#include <QtCore/qstringlist.h>
-#include <QtGui/qpaintdevice.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qiodevice.h>
+#include <BobUICore/qshareddata.h>
+#include <BobUICore/qstringlist.h>
+#include <BobUIGui/qpaintdevice.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#ifndef QT_NO_PICTURE
+#ifndef BOBUI_NO_PICTURE
 
 class QPicturePrivate;
 class Q_GUI_EXPORT QPicture : public QPaintDevice
@@ -41,7 +41,7 @@ public:
     void setBoundingRect(const QRect &r);
 
     QPicture& operator=(const QPicture &p);
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QPicture)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QPicture)
     inline void swap(QPicture &other) noexcept
     { d_ptr.swap(other.d_ptr); }
     void detach();
@@ -76,13 +76,13 @@ Q_DECLARE_SHARED(QPicture)
   QPicture stream functions
  *****************************************************************************/
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_GUI_EXPORT QDataStream &operator<<(QDataStream &, const QPicture &);
 Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, QPicture &);
 #endif
 
-#endif // QT_NO_PICTURE
+#endif // BOBUI_NO_PICTURE
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPICTURE_H

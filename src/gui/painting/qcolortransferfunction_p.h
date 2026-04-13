@@ -1,5 +1,5 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QCOLORTRANSFERFUNCTION_P_H
 #define QCOLORTRANSFERFUNCTION_P_H
@@ -8,19 +8,19 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
-#include <QtCore/QFlags>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
+#include <BobUICore/QFlags>
 
 #include <cmath>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // Defines a ICC parametric curve type 4
 class QColorTransferFunction
@@ -194,6 +194,6 @@ inline bool operator!=(const QColorTransferFunction &f1, const QColorTransferFun
     return !f1.matches(f2);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCOLORTRANSFERFUNCTION_P_H

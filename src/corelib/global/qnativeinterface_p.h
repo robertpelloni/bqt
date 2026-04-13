@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QNATIVEINTERFACE_P_H
 #define QNATIVEINTERFACE_P_H
@@ -8,30 +8,30 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/private/qglobal_p.h>
-#include <QtCore/qloggingcategory.h>
+#include <BobUICore/private/qglobal_p.h>
+#include <BobUICore/qloggingcategory.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_DECLARE_EXPORTED_QT_LOGGING_CATEGORY(lcNativeInterface, Q_CORE_EXPORT)
+BOBUI_DECLARE_EXPORTED_BOBUI_LOGGING_CATEGORY(lcNativeInterface, Q_CORE_EXPORT)
 
 // Provides a definition for the interface destructor
-#define QT_DEFINE_NATIVE_INTERFACE_2(Namespace, InterfaceClass)                                    \
-    QT_PREPEND_NAMESPACE(Namespace)::InterfaceClass::~InterfaceClass() = default
+#define BOBUI_DEFINE_NATIVE_INTERFACE_2(Namespace, InterfaceClass)                                    \
+    BOBUI_PREPEND_NAMESPACE(Namespace)::InterfaceClass::~InterfaceClass() = default
 
-#define QT_DEFINE_NATIVE_INTERFACE(...)                                                            \
-    QT_OVERLOADED_MACRO(QT_DEFINE_NATIVE_INTERFACE, QNativeInterface, __VA_ARGS__)
-#define QT_DEFINE_PRIVATE_NATIVE_INTERFACE(...)                                                    \
-    QT_OVERLOADED_MACRO(QT_DEFINE_NATIVE_INTERFACE, QNativeInterface::Private, __VA_ARGS__)
+#define BOBUI_DEFINE_NATIVE_INTERFACE(...)                                                            \
+    BOBUI_OVERLOADED_MACRO(BOBUI_DEFINE_NATIVE_INTERFACE, QNativeInterface, __VA_ARGS__)
+#define BOBUI_DEFINE_PRIVATE_NATIVE_INTERFACE(...)                                                    \
+    BOBUI_OVERLOADED_MACRO(BOBUI_DEFINE_NATIVE_INTERFACE, QNativeInterface::Private, __VA_ARGS__)
 
-#define QT_NATIVE_INTERFACE_RETURN_IF(NativeInterface, baseType)                                   \
+#define BOBUI_NATIVE_INTERFACE_RETURN_IF(NativeInterface, baseType)                                   \
     {                                                                                              \
         using QNativeInterface::Private::TypeInfo;                                                 \
         qCDebug(lcNativeInterface, "Comparing requested interface name %s with available %s",      \
@@ -55,6 +55,6 @@ QT_DECLARE_EXPORTED_QT_LOGGING_CATEGORY(lcNativeInterface, Q_CORE_EXPORT)
         }                                                                                          \
     }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QNATIVEINTERFACE_P_H

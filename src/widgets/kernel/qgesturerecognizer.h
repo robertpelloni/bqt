@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QGESTURERECOGNIZER_H
 #define QGESTURERECOGNIZER_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtCore/qnamespace.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUICore/qnamespace.h>
 
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QObject;
@@ -47,14 +47,14 @@ public:
                              QEvent *event) = 0;
     virtual void reset(QGesture *state);
 
-    static Qt::GestureType registerRecognizer(QGestureRecognizer *recognizer);
-    static void unregisterRecognizer(Qt::GestureType type);
+    static BobUI::GestureType registerRecognizer(QGestureRecognizer *recognizer);
+    static void unregisterRecognizer(BobUI::GestureType type);
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QGestureRecognizer::Result)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_GESTURES
+#endif // BOBUI_NO_GESTURES
 
 #endif // QGESTURERECOGNIZER_H

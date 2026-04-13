@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qfbvthandler_p.h"
-#include <QtCore/QSocketNotifier>
-#include <QtCore/private/qglobal_p.h>
+#include <BobUICore/QSocketNotifier>
+#include <BobUICore/private/qglobal_p.h>
 
-#if defined(Q_OS_LINUX) && !defined(Q_OS_ANDROID) && (QT_CONFIG(evdev) || QT_CONFIG(libinput))
+#if defined(Q_OS_LINUX) && !defined(Q_OS_ANDROID) && (BOBUI_CONFIG(evdev) || BOBUI_CONFIG(libinput))
 
 #define VTH_ENABLED
 
@@ -29,24 +29,24 @@
 
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #ifdef VTH_ENABLED
 static void setTTYCursor(bool enable)
 {
-    static bool ignore = qEnvironmentVariableIntValue("QT_QPA_PRESERVE_CONSOLE_STATE");
+    static bool ignore = qEnvironmentVariableIntValue("BOBUI_QPA_PRESERVE_CONSOLE_STATE");
     if (ignore)
         return;
 
     const char * const devs[] = { "/dev/tty0", "/dev/tty", "/dev/console", 0 };
     int fd = -1;
     for (const char * const *dev = devs; *dev; ++dev) {
-        fd = QT_OPEN(*dev, O_RDWR);
+        fd = BOBUI_OPEN(*dev, O_RDWR);
         if (fd != -1) {
             // Enable/disable screen blanking and the blinking cursor.
             const char *termctl = enable ? "\033[9;15]\033[?33h\033[?25h\033[?0c" : "\033[9;0]\033[?33l\033[?25l\033[?1c";
-            QT_WRITE(fd, termctl, strlen(termctl) + 1);
-            QT_CLOSE(fd);
+            BOBUI_WRITE(fd, termctl, strlen(termctl) + 1);
+            BOBUI_CLOSE(fd);
             return;
         }
     }
@@ -59,7 +59,7 @@ static QFbVtHandler *vth;
 void QFbVtHandler::signalHandler(int sigNo)
 {
     char a = sigNo;
-    QT_WRITE(vth->m_sigFd[0], &a, sizeof(a));
+    BOBUI_WRITE(vth->m_sigFd[0], &a, sizeof(a));
 }
 #endif
 
@@ -84,7 +84,7 @@ QFbVtHandler::QFbVtHandler(QObject *parent)
     m_signalNotifier = new QSocketNotifier(m_sigFd[1], QSocketNotifier::Read, this);
     connect(m_signalNotifier, &QSocketNotifier::activated, this, &QFbVtHandler::handleSignal);
 
-    if (!qEnvironmentVariableIntValue("QT_QPA_NO_SIGNAL_HANDLER")) {
+    if (!qEnvironmentVariableIntValue("BOBUI_QPA_NO_SIGNAL_HANDLER")) {
         struct sigaction sa;
         sa.sa_flags = 0;
         sa.sa_handler = signalHandler;
@@ -121,7 +121,7 @@ void QFbVtHandler::setKeyboardEnabled(bool enable)
         ::ioctl(m_tty, KDSKBMODE, m_oldKbdMode);
     } else {
         ::ioctl(m_tty, KDGKBMODE, &m_oldKbdMode);
-        if (!qEnvironmentVariableIntValue("QT_QPA_ENABLE_TERMINAL_KEYBOARD")) {
+        if (!qEnvironmentVariableIntValue("BOBUI_QPA_ENABLE_TERMINAL_KEYBOARD")) {
             ::ioctl(m_tty, KDSKBMUTE, 1);
             ::ioctl(m_tty, KDSKBMODE, KBD_OFF_MODE);
         }
@@ -137,7 +137,7 @@ void QFbVtHandler::handleSignal()
     m_signalNotifier->setEnabled(false);
 
     char sigNo;
-    if (QT_READ(m_sigFd[1], &sigNo, sizeof(sigNo)) == sizeof(sigNo)) {
+    if (BOBUI_READ(m_sigFd[1], &sigNo, sizeof(sigNo)) == sizeof(sigNo)) {
         switch (sigNo) {
         case SIGINT:
         case SIGTERM:
@@ -173,6 +173,6 @@ void QFbVtHandler::handleInt()
 #endif
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qfbvthandler_p.cpp"

@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "highlighter.h"
 
 //! [0]
-Highlighter::Highlighter(QTextDocument *parent)
+Highlighter::Highlighter(BOBUIextDocument *parent)
     : QSyntaxHighlighter(parent)
 {
     HighlightingRule rule;
 
-    keywordFormat.setForeground(Qt::darkBlue);
+    keywordFormat.setForeground(BobUI::darkBlue);
     keywordFormat.setFontWeight(QFont::Bold);
     const QString keywordPatterns[] = {
         QStringLiteral("\\bchar\\b"), QStringLiteral("\\bclass\\b"), QStringLiteral("\\bconst\\b"),
@@ -33,23 +33,23 @@ Highlighter::Highlighter(QTextDocument *parent)
 
 //! [2]
     classFormat.setFontWeight(QFont::Bold);
-    classFormat.setForeground(Qt::darkMagenta);
+    classFormat.setForeground(BobUI::darkMagenta);
     rule.pattern = QRegularExpression(QStringLiteral("\\bQ[A-Za-z]+\\b"));
     rule.format = classFormat;
     highlightingRules.append(rule);
 //! [2]
 
 //! [3]
-    singleLineCommentFormat.setForeground(Qt::red);
+    singleLineCommentFormat.setForeground(BobUI::red);
     rule.pattern = QRegularExpression(QStringLiteral("//[^\n]*"));
     rule.format = singleLineCommentFormat;
     highlightingRules.append(rule);
 
-    multiLineCommentFormat.setForeground(Qt::red);
+    multiLineCommentFormat.setForeground(BobUI::red);
 //! [3]
 
 //! [4]
-    quotationFormat.setForeground(Qt::darkGreen);
+    quotationFormat.setForeground(BobUI::darkGreen);
     rule.pattern = QRegularExpression(QStringLiteral("\".*\""));
     rule.format = quotationFormat;
     highlightingRules.append(rule);
@@ -57,7 +57,7 @@ Highlighter::Highlighter(QTextDocument *parent)
 
 //! [5]
     functionFormat.setFontItalic(true);
-    functionFormat.setForeground(Qt::blue);
+    functionFormat.setForeground(BobUI::blue);
     rule.pattern = QRegularExpression(QStringLiteral("\\b[A-Za-z0-9_]+(?=\\()"));
     rule.format = functionFormat;
     highlightingRules.append(rule);

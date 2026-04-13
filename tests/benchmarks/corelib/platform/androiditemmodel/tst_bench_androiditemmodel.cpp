@@ -1,24 +1,24 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/QTest>
+#include <BobUITest/BOBUIest>
 
-#include <QtCore/private/qandroiditemmodelproxy_p.h>
-#include <QtCore/private/qandroidmodelindexproxy_p.h>
-#include <QtCore/private/qandroidtypes_p.h>
+#include <BobUICore/private/qandroiditemmodelproxy_p.h>
+#include <BobUICore/private/qandroidmodelindexproxy_p.h>
+#include <BobUICore/private/qandroidtypes_p.h>
 
 #include <QGuiApplication>
-#include <QtCore/qabstractitemmodel.h>
-#include <QtCore/qjniobject.h>
-#include <QtCore/qjnitypes.h>
-#include <QtCore/qstring.h>
+#include <BobUICore/qabstractitemmodel.h>
+#include <BobUICore/qjniobject.h>
+#include <BobUICore/qjnitypes.h>
+#include <BobUICore/qstring.h>
 #include <QSignalSpy>
 #include <memory>
 
-using namespace Qt::Literals;
+using namespace BobUI::Literals;
 
-Q_DECLARE_JNI_CLASS(BenchQtAbstractItemModel,
-                    "org/qtproject/qt/android/benchmark/BenchQtAbstractItemModel")
+Q_DECLARE_JNI_CLASS(BenchBobUIAbstractItemModel,
+                    "org/bobuiproject/bobui/android/benchmark/BenchBobUIAbstractItemModel")
 
 class BenchNativeAbstractItemModel : public QAbstractItemModel {
     Q_OBJECT
@@ -60,7 +60,7 @@ class BenchNativeAbstractItemModel : public QAbstractItemModel {
 class tst_BenchAndroidItemModel : public QObject
 {
     Q_OBJECT
-    QtJniTypes::BenchQtAbstractItemModel m_jModel;
+    BobUIJniTypes::BenchBobUIAbstractItemModel m_jModel;
     std::unique_ptr<QAbstractItemModel> qProxy;
     std::unique_ptr<QAbstractItemModel> nativeModel;
 
@@ -82,7 +82,7 @@ private slots:
 
 void tst_BenchAndroidItemModel::init()
 {
-    m_jModel = QJniObject::construct<QtJniTypes::BenchQtAbstractItemModel>();
+    m_jModel = QJniObject::construct<BobUIJniTypes::BenchBobUIAbstractItemModel>();
     QVERIFY(m_jModel.isValid());
     qProxy = std::unique_ptr<QAbstractItemModel>(QAndroidItemModelProxy::createNativeProxy(m_jModel));
     nativeModel = std::make_unique<BenchNativeAbstractItemModel>();
@@ -141,4 +141,4 @@ void tst_BenchAndroidItemModel::nativeIndex()
 
 #include "tst_bench_androiditemmodel.moc"
 
-QTEST_MAIN(tst_BenchAndroidItemModel)
+BOBUIEST_MAIN(tst_BenchAndroidItemModel)

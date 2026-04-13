@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 David Faure <david.faure@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/qtest.h>
+#include <BobUITest/bobuiest.h>
 
-#include <QtGui/qguiapplication.h>
+#include <BobUIGui/qguiapplication.h>
 
-#include <QtGui/private/qtx11extras_p.h>
+#include <BobUIGui/private/bobuix11extras_p.h>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class tst_QX11Info : public QObject
 {
@@ -44,8 +44,8 @@ void tst_QX11Info::staticFunctionsBeforeQGuiApplication()
     QCOMPARE(appDepth, 32);
     int appCells = QX11Info::appCells();
     QCOMPARE(appCells, 0);
-    Qt::HANDLE appColormap = QX11Info::appColormap();
-    QCOMPARE(appColormap, static_cast<Qt::HANDLE>(0));
+    BobUI::HANDLE appColormap = QX11Info::appColormap();
+    QCOMPARE(appColormap, static_cast<BobUI::HANDLE>(0));
     void *appVisual = QX11Info::appVisual();
     QCOMPARE(appVisual, static_cast<void *>(0));
 #endif
@@ -87,9 +87,9 @@ void initialize()
 Q_CONSTRUCTOR_FUNCTION(initialize)
 
 static QString checkSkip() {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         return "This test is only for X11, not Wayland."_L1;
-    if (QGuiApplication::platformName().startsWith(QLatin1String("offscreen"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("offscreen"), BobUI::CaseInsensitive))
         return "This test is only for X11, not offscreen."_L1;
     return ""_L1;
 }
@@ -144,7 +144,7 @@ void tst_QX11Info::appTime()
     // Trigger some X11 events
     QWindow window;
     window.show();
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
     QVERIFY(QX11Info::appTime() > 0);
 
     unsigned long t0 = QX11Info::appTime();
@@ -170,8 +170,8 @@ public:
         QVERIFY(m_peekerSecondId == m_peekerFirstId + 1);
         // Get X atoms
         xcb_connection_t *c = QX11Info::connection();
-        const char *first  = "QT_XCB_PEEKER_TEST_FIRST";
-        const char *second = "QT_XCB_PEEKER_TEST_SECOND";
+        const char *first  = "BOBUI_XCB_PEEKER_TEST_FIRST";
+        const char *second = "BOBUI_XCB_PEEKER_TEST_SECOND";
         xcb_intern_atom_reply_t *reply =
                 xcb_intern_atom_reply(c, xcb_intern_atom(c, false, strlen(first), first), 0);
         QVERIFY2(reply != nullptr, first);
@@ -223,7 +223,7 @@ protected:
                 }
                 m_foundFirstEventAgain = true;
                 // Return so we can fail the test with QVERIFY2, for more details
-                // see QTBUG-62354
+                // see BOBUIBUG-62354
                 return true;
             }
             // Let it peek to the end, even when the second event was found
@@ -231,7 +231,7 @@ protected:
                 m_indexSecond = m_countWithCaching;
                 if (m_indexFirst == -1) {
                     m_foundSecondBeforeFirst = true;
-                    // Same as above, see QTBUG-62354
+                    // Same as above, see BOBUIBUG-62354
                     return true;
                 }
             }
@@ -369,7 +369,7 @@ void tst_QX11Info::peeker()
     PeekerTest test;
     test.show();
 
-    QVERIFY(QTest::qWaitForWindowExposed(&test));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&test));
 }
 
 void tst_QX11Info::isCompositingManagerRunning()
@@ -383,9 +383,9 @@ void tst_QX11Info::isCompositingManagerRunning()
     Q_UNUSED(b);
     const bool b2 = QX11Info::isCompositingManagerRunning(0);
     Q_UNUSED(b2);
-    // just check that it didn't crash (QTBUG-91913)
+    // just check that it didn't crash (BOBUIBUG-91913)
 }
 
-QTEST_APPLESS_MAIN(tst_QX11Info)
+BOBUIEST_APPLESS_MAIN(tst_QX11Info)
 
 #include "tst_qx11info.moc"

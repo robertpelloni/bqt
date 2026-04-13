@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qstylepainter.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QStylePainter
@@ -14,7 +14,7 @@ QT_BEGIN_NAMESPACE
 
     \ingroup appearance
     \ingroup painting
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QStylePainter extends QPainter with a set of high-level \c
     draw...() functions implemented on top of QStyle's API. The
@@ -119,7 +119,7 @@ QT_BEGIN_NAMESPACE
     indicates whether or not the item is enabled; when reimplementing
     this bool should influence how the item is drawn.
 
-    \sa QStyle::drawItemText(), Qt::Alignment
+    \sa QStyle::drawItemText(), BobUI::Alignment
 */
 
 /*!
@@ -128,7 +128,7 @@ QT_BEGIN_NAMESPACE
     Draws the \a pixmap in rectangle \a rect.
     The pixmap is aligned according to \a flags.
 
-    \sa QStyle::drawItemPixmap(), Qt::Alignment
+    \sa QStyle::drawItemPixmap(), BobUI::Alignment
 */
 
 /*!
@@ -137,4 +137,4 @@ QT_BEGIN_NAMESPACE
     Return the current style used by the QStylePainter.
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

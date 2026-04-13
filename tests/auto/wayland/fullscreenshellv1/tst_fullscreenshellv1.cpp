@@ -1,13 +1,13 @@
 // Copyright (C) 2021 David Edmundson <davidedmundson@kde.org>
 // Copyright (C) 2018 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "mockcompositor.h"
 
 #include <QRasterWindow>
 
-#include <QtTest/QtTest>
+#include <BobUITest/BobUITest>
 
 using namespace MockCompositor;
 
@@ -34,16 +34,16 @@ void tst_WaylandClientFullScreenShellV1::createDestroyWindow()
 
 int main(int argc, char **argv)
 {
-    QTemporaryDir tmpRuntimeDir;
+    BOBUIemporaryDir tmpRuntimeDir;
     qputenv("XDG_RUNTIME_DIR", tmpRuntimeDir.path().toLocal8Bit());
-    qputenv("QT_QPA_PLATFORM", "wayland"); // force QGuiApplication to use wayland plugin
-    qputenv("QT_WAYLAND_SHELL_INTEGRATION", "fullscreen-shell-v1");
-    qputenv("QT_WAYLAND_DISABLE_WINDOWDECORATION", "1"); // window decorations don't make much sense here
+    qputenv("BOBUI_QPA_PLATFORM", "wayland"); // force QGuiApplication to use wayland plugin
+    qputenv("BOBUI_WAYLAND_SHELL_INTEGRATION", "fullscreen-shell-v1");
+    qputenv("BOBUI_WAYLAND_DISABLE_WINDOWDECORATION", "1"); // window decorations don't make much sense here
 
     tst_WaylandClientFullScreenShellV1 tc;
     QGuiApplication app(argc, argv);
-    QTEST_SET_MAIN_SOURCE_PATH
-    return QTest::qExec(&tc, argc, argv);
+    BOBUIEST_SET_MAIN_SOURCE_PATH
+    return BOBUIest::qExec(&tc, argc, argv);
 }
 
 #include <tst_fullscreenshellv1.moc>

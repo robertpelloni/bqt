@@ -1,5 +1,5 @@
 ********* Start testing of tst_BenchlibTickCounter *********
-Config: Using QtTest library
+Config: Using BobUITest library
 PASS   : tst_BenchlibTickCounter::initTestCase()
 PASS   : tst_BenchlibTickCounter::threeBillionTicks()
 RESULT : tst_BenchlibTickCounter::threeBillionTicks():

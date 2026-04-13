@@ -1,16 +1,16 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qpageranges.h"
 #include "qpageranges_p.h"
 
-#include <QtCore/qstack.h>
-#include <QtCore/qdebug.h>
-#include <QtCore/qdatastream.h>
+#include <BobUICore/qstack.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qdatastream.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_IMPL_METATYPE_EXTERN(QPageRanges)
+BOBUI_IMPL_METATYPE_EXTERN(QPageRanges)
 
 void QPageRangesPrivate::mergeIntervals()
 {
@@ -36,12 +36,12 @@ void QPageRangesPrivate::mergeIntervals()
     intervals = stack;
 }
 
-QT_DEFINE_QESDP_SPECIALIZATION_DTOR(QPageRangesPrivate)
+BOBUI_DEFINE_QESDP_SPECIALIZATION_DTOR(QPageRangesPrivate)
 
 /*!
     \class QPageRanges
     \brief The QPageRanges class represents a collection of page ranges.
-    \inmodule QtGui
+    \inmodule BobUIGui
     \ingroup painting
     \ingroup printing
     \ingroup shared
@@ -292,7 +292,7 @@ void QPageRanges::detach()
         d.reset(new QPageRangesPrivate);
 }
 
-#if !defined(QT_NO_DATASTREAM)
+#if !defined(BOBUI_NO_DATASTREAM)
 /*!
     \fn QDataStream &operator<<(QDataStream &stream, const QPageRanges &pageRanges)
     \relates QPageRanges
@@ -324,9 +324,9 @@ QDataStream &operator>>(QDataStream &s, QPageRanges &pageRanges)
     pageRanges = QPageRanges::fromString(rangesString);
     return s;
 }
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QPageRanges &pageRanges)
 {
     QDebugStateSaver saver(dbg);
@@ -340,7 +340,7 @@ QDebug operator<<(QDebug dbg, const QPageRanges &pageRanges)
 
 /*!
     \struct QPageRanges::Range
-    \inmodule QtGui
+    \inmodule BobUIGui
     \brief The QPageRanges::Range struct holds the \c from and \c to endpoints of a range.
 
     \sa QPageRanges::toRangeList()
@@ -364,4 +364,4 @@ QDebug operator<<(QDebug dbg, const QPageRanges &pageRanges)
 */
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

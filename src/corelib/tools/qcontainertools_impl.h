@@ -1,30 +1,30 @@
 // Copyright (C) 2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Marc Mutz <marc.mutz@kdab.com>
 // Copyright (C) 2018 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #if 0
-#pragma qt_sync_skip_header_check
-#pragma qt_sync_stop_processing
+#pragma bobui_sync_skip_header_check
+#pragma bobui_sync_stop_processing
 #endif
 
 #ifndef QCONTAINERTOOLS_IMPL_H
 #define QCONTAINERTOOLS_IMPL_H
 
-#include <QtCore/qglobal.h>
-#include <QtCore/qtypeinfo.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/bobuiypeinfo.h>
 
-#include <QtCore/qxptype_traits.h>
+#include <BobUICore/qxptype_traits.h>
 
 #include <cstring>
 #include <iterator>
 #include <memory>
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtPrivate
+namespace BobUIPrivate
 {
 
 /*!
@@ -57,8 +57,8 @@ static constexpr bool q_points_into_range(const T &p, const C &c) noexcept
                                std::data(c) + std::distance(std::begin(c), std::end(c)));
 }
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_GCC("-Wmaybe-uninitialized")
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_GCC("-Wmaybe-uninitialized")
 
 template <typename T, typename N>
 void q_uninitialized_move_if_noexcept_n(T* first, N n, T* out)
@@ -72,7 +72,7 @@ void q_uninitialized_move_if_noexcept_n(T* first, N n, T* out)
 template <typename T, typename N>
 void q_uninitialized_relocate_n(T* first, N n, T* out)
 {
-    if constexpr (QTypeInfo<T>::isRelocatable) {
+    if constexpr (BOBUIypeInfo<T>::isRelocatable) {
         static_assert(std::is_copy_constructible_v<T> || std::is_move_constructible_v<T>,
                       "Refusing to relocate this non-copy/non-move-constructible type.");
         if (n != N(0)) { // even if N == 0, out == nullptr or first == nullptr are UB for memcpy()
@@ -82,12 +82,12 @@ void q_uninitialized_relocate_n(T* first, N n, T* out)
         }
     } else {
         q_uninitialized_move_if_noexcept_n(first, n, out);
-        if constexpr (QTypeInfo<T>::isComplex)
+        if constexpr (BOBUIypeInfo<T>::isComplex)
             std::destroy_n(first, n);
     }
 }
 
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
 /*!
     \internal
@@ -101,7 +101,7 @@ QT_WARNING_POP
 template <typename T>
 void q_rotate(T *first, T *mid, T *last)
 {
-    if constexpr (QTypeInfo<T>::isRelocatable) {
+    if constexpr (BOBUIypeInfo<T>::isRelocatable) {
         const auto cast = [](T *p) { return reinterpret_cast<uchar*>(p); };
         std::rotate(cast(first), cast(mid), cast(last));
     } else {
@@ -129,7 +129,7 @@ T *q_uninitialized_remove_copy_if(T *first, T *last, T *out, Predicate &pred)
     Q_ASSERT(!q_points_into_range(out, first, last));
 
     T *dest_begin = out;
-    QT_TRY {
+    BOBUI_TRY {
         while (first != last) {
             if (!pred(*first)) {
                 new (std::addressof(*out)) T(*first);
@@ -137,9 +137,9 @@ T *q_uninitialized_remove_copy_if(T *first, T *last, T *out, Predicate &pred)
             }
             ++first;
         }
-    } QT_CATCH (...) {
+    } BOBUI_CATCH (...) {
         std::destroy(std::reverse_iterator(out), std::reverse_iterator(dest_begin));
-        QT_RETHROW;
+        BOBUI_RETHROW;
     }
     return out;
 }
@@ -242,7 +242,7 @@ void q_relocate_overlap_n(T *first, N n, T *d_first)
     if (n == N(0) || first == d_first || first == nullptr || d_first == nullptr)
         return;
 
-    if constexpr (QTypeInfo<T>::isRelocatable) {
+    if constexpr (BOBUIypeInfo<T>::isRelocatable) {
         std::memmove(static_cast<void *>(d_first), static_cast<const void *>(first), n * sizeof(T));
     } else { // generic version has to be used
         if (d_first < first) {
@@ -465,8 +465,8 @@ auto associative_erase_if(Container &c, Predicate &pred)
     return result;
 }
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCONTAINERTOOLS_IMPL_H

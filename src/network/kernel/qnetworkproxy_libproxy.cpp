@@ -1,27 +1,27 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2017 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qnetworkproxy.h"
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
 
-#include <QtCore/QByteArray>
-#include <QtCore/QMutex>
-#include <QtCore/QSemaphore>
-#include <QtCore/QUrl>
-#include <QtCore/private/qlatch_p.h>
-#include <QtCore/private/qeventdispatcher_unix_p.h>
-#include <QtCore/private/qthread_p.h>
-#include <QtCore/qapplicationstatic.h>
+#include <BobUICore/QByteArray>
+#include <BobUICore/QMutex>
+#include <BobUICore/QSemaphore>
+#include <BobUICore/QUrl>
+#include <BobUICore/private/qlatch_p.h>
+#include <BobUICore/private/qeventdispatcher_unix_p.h>
+#include <BobUICore/private/bobuihread_p.h>
+#include <BobUICore/qapplicationstatic.h>
 
 #include <proxy.h>
 #include <dlfcn.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static bool isThreadingNeeded()
 {
@@ -222,7 +222,7 @@ QList<QNetworkProxy> QNetworkProxyFactory::systemProxyForQuery(const QNetworkPro
     return proxyList;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "qnetworkproxy_libproxy.moc"
 

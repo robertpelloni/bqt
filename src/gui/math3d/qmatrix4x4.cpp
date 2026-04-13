@@ -1,25 +1,25 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qmatrix4x4.h"
-#include <QtCore/qmath.h>
-#include <QtCore/qvariant.h>
+#include <BobUICore/qmath.h>
+#include <BobUICore/qvariant.h>
 
-#include <QtGui/qquaternion.h>
-#include <QtGui/qtransform.h>
+#include <BobUIGui/qquaternion.h>
+#include <BobUIGui/bobuiransform.h>
 
 #include <cmath>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#ifndef QT_NO_MATRIX4X4
+#ifndef BOBUI_NO_MATRIX4X4
 
 /*!
     \class QMatrix4x4
     \brief The QMatrix4x4 class represents a 4x4 transformation matrix in 3D space.
     \since 4.6
     \ingroup painting-3D
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     The QMatrix4x4 class in general is treated as a row-major matrix, in that the
     constructors and operator() functions take data in row-major format, as is
@@ -47,7 +47,7 @@ static const float inv_dist_to_plane = 1.0f / 1024.0f;
 */
 
 /*!
-    \fn QMatrix4x4::QMatrix4x4(Qt::Initialization)
+    \fn QMatrix4x4::QMatrix4x4(BobUI::Initialization)
     \since 5.5
     \internal
 
@@ -129,7 +129,7 @@ QMatrix4x4::QMatrix4x4(const float *values, int cols, int rows)
 }
 
 /*!
-    Constructs a 4x4 matrix from the conventional Qt 2D
+    Constructs a 4x4 matrix from the conventional BobUI 2D
     transformation matrix \a transform.
 
     If \a transform has a special type (identity, translate, scale, etc),
@@ -139,7 +139,7 @@ QMatrix4x4::QMatrix4x4(const float *values, int cols, int rows)
 
     \sa toTransform(), optimize()
 */
-QMatrix4x4::QMatrix4x4(const QTransform& transform)
+QMatrix4x4::QMatrix4x4(const BOBUIransform& transform)
 {
     m[0][0] = transform.m11();
     m[0][1] = transform.m12();
@@ -360,7 +360,7 @@ QMatrix4x4 QMatrix4x4::inverted(bool *invertible) const
         return orthonormalInverse();
     } else if (flagBits < Perspective) {
         Q_DECL_UNINITIALIZED
-        QMatrix4x4 inv(Qt::Uninitialized);
+        QMatrix4x4 inv(BobUI::Uninitialized);
 
         const Double4x4 mm = copyToDoubles(m);
 
@@ -396,7 +396,7 @@ QMatrix4x4 QMatrix4x4::inverted(bool *invertible) const
     }
 
     Q_DECL_UNINITIALIZED
-    QMatrix4x4 inv(Qt::Uninitialized);
+    QMatrix4x4 inv(BobUI::Uninitialized);
 
     const Double4x4 mm = copyToDoubles(m);
 
@@ -497,7 +497,7 @@ QMatrix3x3 QMatrix4x4::normalMatrix() const
 QMatrix4x4 QMatrix4x4::transposed() const
 {
     Q_DECL_UNINITIALIZED
-    QMatrix4x4 result(Qt::Uninitialized);
+    QMatrix4x4 result(BobUI::Uninitialized);
     for (int row = 0; row < 4; ++row) {
         for (int col = 0; col < 4; ++col) {
             result.m[col][row] = m[row][col];
@@ -595,9 +595,9 @@ QMatrix4x4& QMatrix4x4::operator/=(float divisor)
     Returns the product of \a m1 and \a m2.
 */
 
-#ifndef QT_NO_VECTOR3D
+#ifndef BOBUI_NO_VECTOR3D
 
-#if QT_DEPRECATED_SINCE(6, 1)
+#if BOBUI_DEPRECATED_SINCE(6, 1)
 
 /*!
     \fn QVector3D operator*(const QVector3D& vector, const QMatrix4x4& matrix)
@@ -624,7 +624,7 @@ QMatrix4x4& QMatrix4x4::operator/=(float divisor)
 
 #endif
 
-#ifndef QT_NO_VECTOR4D
+#ifndef BOBUI_NO_VECTOR4D
 
 /*!
     \fn QVector4D operator*(const QVector4D& vector, const QMatrix4x4& matrix)
@@ -660,7 +660,7 @@ QMatrix4x4& QMatrix4x4::operator/=(float divisor)
     with the matrix applied post-point.
 */
 
-#if QT_DEPRECATED_SINCE(6, 1)
+#if BOBUI_DEPRECATED_SINCE(6, 1)
 
 /*!
     \fn QPoint operator*(const QMatrix4x4& matrix, const QPoint& point)
@@ -714,7 +714,7 @@ QMatrix4x4& QMatrix4x4::operator/=(float divisor)
 QMatrix4x4 operator/(const QMatrix4x4& matrix, float divisor)
 {
     Q_DECL_UNINITIALIZED
-    QMatrix4x4 m(Qt::Uninitialized);
+    QMatrix4x4 m(BobUI::Uninitialized);
     m.m[0][0] = matrix.m[0][0] / divisor;
     m.m[0][1] = matrix.m[0][1] / divisor;
     m.m[0][2] = matrix.m[0][2] / divisor;
@@ -743,26 +743,26 @@ QMatrix4x4 operator/(const QMatrix4x4& matrix, float divisor)
 */
 bool qFuzzyCompare(const QMatrix4x4& m1, const QMatrix4x4& m2) noexcept
 {
-    return QtPrivate::fuzzyCompare(m1.m[0][0], m2.m[0][0])
-        && QtPrivate::fuzzyCompare(m1.m[0][1], m2.m[0][1])
-        && QtPrivate::fuzzyCompare(m1.m[0][2], m2.m[0][2])
-        && QtPrivate::fuzzyCompare(m1.m[0][3], m2.m[0][3])
-        && QtPrivate::fuzzyCompare(m1.m[1][0], m2.m[1][0])
-        && QtPrivate::fuzzyCompare(m1.m[1][1], m2.m[1][1])
-        && QtPrivate::fuzzyCompare(m1.m[1][2], m2.m[1][2])
-        && QtPrivate::fuzzyCompare(m1.m[1][3], m2.m[1][3])
-        && QtPrivate::fuzzyCompare(m1.m[2][0], m2.m[2][0])
-        && QtPrivate::fuzzyCompare(m1.m[2][1], m2.m[2][1])
-        && QtPrivate::fuzzyCompare(m1.m[2][2], m2.m[2][2])
-        && QtPrivate::fuzzyCompare(m1.m[2][3], m2.m[2][3])
-        && QtPrivate::fuzzyCompare(m1.m[3][0], m2.m[3][0])
-        && QtPrivate::fuzzyCompare(m1.m[3][1], m2.m[3][1])
-        && QtPrivate::fuzzyCompare(m1.m[3][2], m2.m[3][2])
-        && QtPrivate::fuzzyCompare(m1.m[3][3], m2.m[3][3]);
+    return BobUIPrivate::fuzzyCompare(m1.m[0][0], m2.m[0][0])
+        && BobUIPrivate::fuzzyCompare(m1.m[0][1], m2.m[0][1])
+        && BobUIPrivate::fuzzyCompare(m1.m[0][2], m2.m[0][2])
+        && BobUIPrivate::fuzzyCompare(m1.m[0][3], m2.m[0][3])
+        && BobUIPrivate::fuzzyCompare(m1.m[1][0], m2.m[1][0])
+        && BobUIPrivate::fuzzyCompare(m1.m[1][1], m2.m[1][1])
+        && BobUIPrivate::fuzzyCompare(m1.m[1][2], m2.m[1][2])
+        && BobUIPrivate::fuzzyCompare(m1.m[1][3], m2.m[1][3])
+        && BobUIPrivate::fuzzyCompare(m1.m[2][0], m2.m[2][0])
+        && BobUIPrivate::fuzzyCompare(m1.m[2][1], m2.m[2][1])
+        && BobUIPrivate::fuzzyCompare(m1.m[2][2], m2.m[2][2])
+        && BobUIPrivate::fuzzyCompare(m1.m[2][3], m2.m[2][3])
+        && BobUIPrivate::fuzzyCompare(m1.m[3][0], m2.m[3][0])
+        && BobUIPrivate::fuzzyCompare(m1.m[3][1], m2.m[3][1])
+        && BobUIPrivate::fuzzyCompare(m1.m[3][2], m2.m[3][2])
+        && BobUIPrivate::fuzzyCompare(m1.m[3][3], m2.m[3][3]);
 }
 
 
-#ifndef QT_NO_VECTOR3D
+#ifndef BOBUI_NO_VECTOR3D
 
 /*!
     Multiplies this matrix by another that scales coordinates by
@@ -924,7 +924,7 @@ void QMatrix4x4::scale(float factor)
     flagBits |= Scale;
 }
 
-#ifndef QT_NO_VECTOR3D
+#ifndef BOBUI_NO_VECTOR3D
 /*!
     Multiplies this matrix by another that translates coordinates by
     the components of \a vector.
@@ -1040,7 +1040,7 @@ void QMatrix4x4::translate(float x, float y, float z)
     flagBits |= Translation;
 }
 
-#ifndef QT_NO_VECTOR3D
+#ifndef BOBUI_NO_VECTOR3D
 /*!
     Multiples this matrix by another that rotates coordinates through
     \a angle degrees about \a vector.
@@ -1147,7 +1147,7 @@ void QMatrix4x4::rotate(float angle, float x, float y, float z)
     }
     float ic = 1.0f - c;
     Q_DECL_UNINITIALIZED
-    QMatrix4x4 rot(Qt::Uninitialized);
+    QMatrix4x4 rot(BobUI::Uninitialized);
     rot.m[0][0] = x * x * ic + c;
     rot.m[1][0] = x * y * ic - z * s;
     rot.m[2][0] = x * z * ic + y * s;
@@ -1251,7 +1251,7 @@ void QMatrix4x4::projectedRotate(float angle, float x, float y, float z, float d
     }
     const float ic = 1.0f - c;
     Q_DECL_UNINITIALIZED
-    QMatrix4x4 rot(Qt::Uninitialized);
+    QMatrix4x4 rot(BobUI::Uninitialized);
     rot.m[0][0] = x * x * ic + c;
     rot.m[1][0] = x * y * ic - z * s;
     rot.m[2][0] = 0.0f;
@@ -1272,7 +1272,7 @@ void QMatrix4x4::projectedRotate(float angle, float x, float y, float z, float d
     *this *= rot;
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
 /*!
     \internal
 */
@@ -1299,7 +1299,7 @@ void QMatrix4x4::projectedRotate(float angle, float x, float y, float z)
     \omitvalue General
 */
 
-#ifndef QT_NO_QUATERNION
+#ifndef BOBUI_NO_QUATERNION
 
 /*!
     Multiples this matrix by another that rotates coordinates according
@@ -1314,7 +1314,7 @@ void QMatrix4x4::rotate(const QQuaternion& quaternion)
     // http://www.j3d.org/matrix_faq/matrfaq_latest.html#Q54
 
     Q_DECL_UNINITIALIZED
-    QMatrix4x4 m(Qt::Uninitialized);
+    QMatrix4x4 m(BobUI::Uninitialized);
 
     const float f2x = quaternion.x() + quaternion.x();
     const float f2y = quaternion.y() + quaternion.y();
@@ -1402,7 +1402,7 @@ void QMatrix4x4::ortho(float left, float right, float bottom, float top, float n
     const float invheight = top - bottom;
     const float clip = farPlane - nearPlane;
     Q_DECL_UNINITIALIZED
-    QMatrix4x4 m(Qt::Uninitialized);
+    QMatrix4x4 m(BobUI::Uninitialized);
     m.m[0][0] = 2.0f / width;
     m.m[1][0] = 0.0f;
     m.m[2][0] = 0.0f;
@@ -1441,7 +1441,7 @@ void QMatrix4x4::frustum(float left, float right, float bottom, float top, float
 
     // Construct the projection.
     Q_DECL_UNINITIALIZED
-    QMatrix4x4 m(Qt::Uninitialized);
+    QMatrix4x4 m(BobUI::Uninitialized);
     const float width = right - left;
     const float invheight = top - bottom;
     const float clip = farPlane - nearPlane;
@@ -1485,7 +1485,7 @@ void QMatrix4x4::perspective(float verticalAngle, float aspectRatio, float nearP
 
     // Construct the projection.
     Q_DECL_UNINITIALIZED
-    QMatrix4x4 m(Qt::Uninitialized);
+    QMatrix4x4 m(BobUI::Uninitialized);
     const float radians = qDegreesToRadians(verticalAngle / 2.0f);
     const float sine = std::sin(radians);
     if (sine == 0.0f)
@@ -1514,7 +1514,7 @@ void QMatrix4x4::perspective(float verticalAngle, float aspectRatio, float nearP
     *this *= m;
 }
 
-#ifndef QT_NO_VECTOR3D
+#ifndef BOBUI_NO_VECTOR3D
 
 /*!
     Multiplies this matrix by a viewing matrix derived from an eye
@@ -1536,7 +1536,7 @@ void QMatrix4x4::lookAt(const QVector3D& eye, const QVector3D& center, const QVe
     QVector3D upVector = QVector3D::crossProduct(side, forward);
 
     Q_DECL_UNINITIALIZED
-    QMatrix4x4 m(Qt::Uninitialized);
+    QMatrix4x4 m(BobUI::Uninitialized);
     m.m[0][0] = side.x();
     m.m[1][0] = side.y();
     m.m[2][0] = side.z();
@@ -1586,7 +1586,7 @@ void QMatrix4x4::viewport(float left, float bottom, float width, float height, f
     const float h2 = height / 2.0f;
 
     Q_DECL_UNINITIALIZED
-    QMatrix4x4 m(Qt::Uninitialized);
+    QMatrix4x4 m(BobUI::Uninitialized);
     m.m[0][0] = w2;
     m.m[1][0] = 0.0f;
     m.m[2][0] = 0.0f;
@@ -1652,41 +1652,41 @@ void QMatrix4x4::copyDataTo(float *values) const
 }
 
 /*!
-    Returns the conventional Qt 2D transformation matrix that
+    Returns the conventional BobUI 2D transformation matrix that
     corresponds to this matrix.
 
-    The returned QTransform is formed by simply dropping the
+    The returned BOBUIransform is formed by simply dropping the
     third row and third column of the QMatrix4x4.  This is suitable
     for implementing orthographic projections where the z coordinate
     should be dropped rather than projected.
 */
-QTransform QMatrix4x4::toTransform() const
+BOBUIransform QMatrix4x4::toTransform() const
 {
-    return QTransform(m[0][0], m[0][1], m[0][3],
+    return BOBUIransform(m[0][0], m[0][1], m[0][3],
                       m[1][0], m[1][1], m[1][3],
                       m[3][0], m[3][1], m[3][3]);
 }
 
 /*!
-    Returns the conventional Qt 2D transformation matrix that
+    Returns the conventional BobUI 2D transformation matrix that
     corresponds to this matrix.
 
     If \a distanceToPlane is non-zero, it indicates a projection
     factor to use to adjust for the z coordinate.  The value of
     1024 corresponds to the projection factor used
-    by QTransform::rotate() for the x and y axes.
+    by BOBUIransform::rotate() for the x and y axes.
 
-    If \a distanceToPlane is zero, then the returned QTransform
+    If \a distanceToPlane is zero, then the returned BOBUIransform
     is formed by simply dropping the third row and third column
     of the QMatrix4x4.  This is suitable for implementing
     orthographic projections where the z coordinate should
     be dropped rather than projected.
 */
-QTransform QMatrix4x4::toTransform(float distanceToPlane) const
+BOBUIransform QMatrix4x4::toTransform(float distanceToPlane) const
 {
     if (distanceToPlane == 1024.0f) {
         // Optimize the common case with constants.
-        return QTransform(m[0][0], m[0][1], m[0][3] - m[0][2] * inv_dist_to_plane,
+        return BOBUIransform(m[0][0], m[0][1], m[0][3] - m[0][2] * inv_dist_to_plane,
                           m[1][0], m[1][1], m[1][3] - m[1][2] * inv_dist_to_plane,
                           m[3][0], m[3][1], m[3][3] - m[3][2] * inv_dist_to_plane);
     } else if (distanceToPlane != 0.0f) {
@@ -1696,14 +1696,14 @@ QTransform QMatrix4x4::toTransform(float distanceToPlane) const
         //      | 0 0 1 0 |
         //      | 0 0 d 1 |
         // where d = -1 / distanceToPlane.  After projection, row 3 and
-        // column 3 are dropped to form the final QTransform.
+        // column 3 are dropped to form the final BOBUIransform.
         float d = 1.0f / distanceToPlane;
-        return QTransform(m[0][0], m[0][1], m[0][3] - m[0][2] * d,
+        return BOBUIransform(m[0][0], m[0][1], m[0][3] - m[0][2] * d,
                           m[1][0], m[1][1], m[1][3] - m[1][2] * d,
                           m[3][0], m[3][1], m[3][3] - m[3][2] * d);
     } else {
         // Orthographic projection: drop row 3 and column 3.
-        return QTransform(m[0][0], m[0][1], m[0][3],
+        return BOBUIransform(m[0][0], m[0][1], m[0][3],
                           m[1][0], m[1][1], m[1][3],
                           m[3][0], m[3][1], m[3][3]);
     }
@@ -1727,7 +1727,7 @@ QTransform QMatrix4x4::toTransform(float distanceToPlane) const
     \sa mapRect()
 */
 
-#ifndef QT_NO_VECTOR3D
+#ifndef BOBUI_NO_VECTOR3D
 
 /*!
     \fn QVector3D QMatrix4x4::map(const QVector3D& point) const
@@ -1754,7 +1754,7 @@ QTransform QMatrix4x4::toTransform(float distanceToPlane) const
 
 #endif
 
-#ifndef QT_NO_VECTOR4D
+#ifndef BOBUI_NO_VECTOR4D
 
 /*!
     \fn QVector4D QMatrix4x4::map(const QVector4D& point) const;
@@ -1885,7 +1885,7 @@ QRectF QMatrix4x4::mapRect(const QRectF& rect) const
 QMatrix4x4 QMatrix4x4::orthonormalInverse() const
 {
     Q_DECL_UNINITIALIZED
-    QMatrix4x4 result(Qt::Uninitialized);
+    QMatrix4x4 result(BobUI::Uninitialized);
 
     result.m[0][0] = m[0][0];
     result.m[1][0] = m[0][1];
@@ -1991,7 +1991,7 @@ QMatrix4x4::operator QVariant() const
     return QVariant::fromValue(*this);
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 
 QDebug operator<<(QDebug dbg, const QMatrix4x4 &m)
 {
@@ -2017,19 +2017,19 @@ QDebug operator<<(QDebug dbg, const QMatrix4x4 &m)
     }
 
     // Output in row-major order because it is more human-readable.
-    dbg.nospace() << "QMatrix4x4(type:" << bits.constData() << Qt::endl
+    dbg.nospace() << "QMatrix4x4(type:" << bits.constData() << BobUI::endl
         << qSetFieldWidth(10)
-        << m(0, 0) << m(0, 1) << m(0, 2) << m(0, 3) << Qt::endl
-        << m(1, 0) << m(1, 1) << m(1, 2) << m(1, 3) << Qt::endl
-        << m(2, 0) << m(2, 1) << m(2, 2) << m(2, 3) << Qt::endl
-        << m(3, 0) << m(3, 1) << m(3, 2) << m(3, 3) << Qt::endl
+        << m(0, 0) << m(0, 1) << m(0, 2) << m(0, 3) << BobUI::endl
+        << m(1, 0) << m(1, 1) << m(1, 2) << m(1, 3) << BobUI::endl
+        << m(2, 0) << m(2, 1) << m(2, 2) << m(2, 3) << BobUI::endl
+        << m(3, 0) << m(3, 1) << m(3, 2) << m(3, 3) << BobUI::endl
         << qSetFieldWidth(0) << ')';
     return dbg;
 }
 
 #endif
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 
 /*!
     \fn QDataStream &operator<<(QDataStream &stream, const QMatrix4x4 &matrix)
@@ -2038,7 +2038,7 @@ QDebug operator<<(QDebug dbg, const QMatrix4x4 &m)
     Writes the given \a matrix to the given \a stream and returns a
     reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator<<(QDataStream &stream, const QMatrix4x4 &matrix)
@@ -2056,7 +2056,7 @@ QDataStream &operator<<(QDataStream &stream, const QMatrix4x4 &matrix)
     Reads a 4x4 matrix from the given \a stream into the given \a matrix
     and returns a reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator>>(QDataStream &stream, QMatrix4x4 &matrix)
@@ -2072,8 +2072,8 @@ QDataStream &operator>>(QDataStream &stream, QMatrix4x4 &matrix)
     return stream;
 }
 
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
-#endif // QT_NO_MATRIX4X4
+#endif // BOBUI_NO_MATRIX4X4
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

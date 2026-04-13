@@ -1,5 +1,5 @@
 // Copyright (C) 2012 BogDan Vatra <bogdan@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QANDROIDPLATFORMMENU_H
 #define QANDROIDPLATFORMMENU_H
@@ -9,7 +9,7 @@
 #include <qlist.h>
 #include <qmutex.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QAndroidPlatformMenuItem;
 class QAndroidPlatformMenu: public QPlatformMenu
@@ -56,6 +56,6 @@ private:
     QHash<int, QPlatformMenuItem *> m_menuHash;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QANDROIDPLATFORMMENU_H

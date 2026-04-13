@@ -1,21 +1,21 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QCOLORSPACE_H
 #define QCOLORSPACE_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtGui/qcolortransform.h>
-#include <QtCore/qobjectdefs.h>
-#include <QtCore/qpoint.h>
-#include <QtCore/qshareddata.h>
-#include <QtCore/qvariant.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUIGui/qcolortransform.h>
+#include <BobUICore/qobjectdefs.h>
+#include <BobUICore/qpoint.h>
+#include <BobUICore/qshareddata.h>
+#include <BobUICore/qvariant.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QColorSpacePrivate;
 
-QT_DECLARE_QESDP_SPECIALIZATION_DTOR_WITH_EXPORT(QColorSpacePrivate, Q_GUI_EXPORT)
+BOBUI_DECLARE_QESDP_SPECIALIZATION_DTOR_WITH_EXPORT(QColorSpacePrivate, Q_GUI_EXPORT)
 
 class Q_GUI_EXPORT QColorSpace
 {
@@ -106,7 +106,7 @@ public:
     }
 
     QColorSpace(QColorSpace &&colorSpace) noexcept = default;
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QColorSpace)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QColorSpace)
 
     void swap(QColorSpace &colorSpace) noexcept
     { d_ptr.swap(colorSpace.d_ptr); }
@@ -161,7 +161,7 @@ private:
 
     QExplicitlySharedDataPointer<QColorSpacePrivate> d_ptr;
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
     friend Q_GUI_EXPORT QDebug operator<<(QDebug dbg, const QColorSpace &colorSpace);
 #endif
 };
@@ -169,15 +169,15 @@ private:
 Q_DECLARE_SHARED(QColorSpace)
 
 // QColorSpace stream functions
-#if !defined(QT_NO_DATASTREAM)
+#if !defined(BOBUI_NO_DATASTREAM)
 Q_GUI_EXPORT QDataStream &operator<<(QDataStream &, const QColorSpace &);
 Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, QColorSpace &);
 #endif
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QColorSpace &);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCOLORSPACE_P_H

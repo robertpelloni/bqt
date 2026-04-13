@@ -1,13 +1,13 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-qt_internal_add_manual_test(polygonmode
+bobui_internal_add_manual_test(polygonmode
     GUI
     SOURCES
         polygonmode.cpp
     LIBRARIES
-        Qt::Gui
-        Qt::GuiPrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
 )
 
 set(polygonmode_resource_files
@@ -15,7 +15,7 @@ set(polygonmode_resource_files
     "test.frag.qsb"
 )
 
-qt_internal_add_resource(polygonmode "polygonmode"
+bobui_internal_add_resource(polygonmode "polygonmode"
     PREFIX
         "/"
     FILES

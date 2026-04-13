@@ -1,5 +1,5 @@
-# Copyright (C) 2022 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+# Copyright (C) 2022 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 cmake_minimum_required(VERSION 3.16)
 
@@ -10,6 +10,6 @@ add_executable(mytarget
 )
 
 # ![0]
-find_package(Qt6 REQUIRED COMPONENTS Network)
-target_link_libraries(mytarget PRIVATE Qt6::Network)
+find_package(BobUI6 REQUIRED COMPONENTS Network)
+target_link_libraries(mytarget PRIVATE BobUI6::Network)
 # ![0]

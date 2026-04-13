@@ -1,17 +1,17 @@
 // Based on the public domain implementation of the SHA-1 algorithm by Dominik Reichl
 //
 // Copyright (C) Dominik Reichl <dominik.reichl@t-online.de>
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 //
 // SPDX-License-Identifier: LicenseRef-SHA1-Public-Domain
 
-#include <QtCore/qendian.h>
+#include <BobUICore/qendian.h>
 
 #ifdef Q_CC_MSVC
 #  include <stdlib.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // Test Vectors (from FIPS PUB 180-1)
 //
@@ -222,4 +222,4 @@ static inline void sha1ToHash(Sha1State *state, unsigned char* buffer)
     qToBigEndian(state->h4, buffer + 16);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,15 +1,15 @@
-# Copyright (C) 2024 The Qt Company Ltd.
+# Copyright (C) 2024 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
-qt_internal_add_manual_test(hdr
+bobui_internal_add_manual_test(hdr
     GUI
     SOURCES
         hdr.cpp
     LIBRARIES
-        Qt::Gui
-        Qt::GuiPrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
 )
 
-qt_internal_add_resource(hdr "hdr"
+bobui_internal_add_resource(hdr "hdr"
     PREFIX
         "/"
     FILES

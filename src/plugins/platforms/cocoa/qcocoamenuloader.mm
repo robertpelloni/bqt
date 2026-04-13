@@ -1,6 +1,6 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <AppKit/AppKit.h>
 
@@ -12,10 +12,10 @@
 #include "qcocoamenuitem.h"
 #include "qcocoaintegration.h"
 
-#include <QtCore/private/qcore_mac_p.h>
-#include <QtCore/private/qthread_p.h>
-#include <QtCore/qcoreapplication.h>
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
+#include <BobUICore/private/bobuihread_p.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 
 @implementation QCocoaMenuLoader {
     NSMenu *theMenu;
@@ -23,7 +23,7 @@
     NSMenuItem *quitItem;
     NSMenuItem *preferencesItem;
     NSMenuItem *aboutItem;
-    NSMenuItem *aboutQtItem;
+    NSMenuItem *aboutBobUIItem;
     NSMenuItem *hideItem;
     NSMenuItem *servicesItem;
     NSMenuItem *hideAllOthersItem;
@@ -47,7 +47,7 @@
 - (instancetype)init
 {
     if ((self = [super init])) {
-        NSString *appName = qt_mac_applicationName().toNSString();
+        NSString *appName = bobui_mac_applicationName().toNSString();
 
         // Menubar as menu. Title as set in the NIB file
         theMenu = [[NSMenu alloc] initWithTitle:@"Main Menu"];
@@ -72,13 +72,13 @@
         aboutItem.hidden = YES;
         [appMenu addItem:aboutItem];
 
-        // About Qt (shameless self-promotion)
-        aboutQtItem = [[QCocoaNSMenuItem alloc] init];
-        aboutQtItem.title = @"About Qt";
+        // About BobUI (shameless self-promotion)
+        aboutBobUIItem = [[QCocoaNSMenuItem alloc] init];
+        aboutBobUIItem.title = @"About BobUI";
         // Disable until a QAction is associated
-        aboutQtItem.enabled = NO;
-        aboutQtItem.hidden = YES;
-        [appMenu addItem:aboutQtItem];
+        aboutBobUIItem.enabled = NO;
+        aboutBobUIItem.hidden = YES;
+        [appMenu addItem:aboutBobUIItem];
 
         [appMenu addItem:[NSMenuItem separatorItem]];
 
@@ -149,7 +149,7 @@
     [theMenu release];
     [appMenu release];
     [aboutItem release];
-    [aboutQtItem release];
+    [aboutBobUIItem release];
     [preferencesItem release];
     [servicesItem release];
     [hideItem release];
@@ -170,7 +170,7 @@
     if (mainMenu == menu)
         return; // nothing to do (menu is the current menu bar)!
 
-#ifndef QT_NAMESPACE
+#ifndef BOBUI_NAMESPACE
     Q_ASSERT(mainMenu);
 #endif
     // Grab the app menu out of the current menu.
@@ -218,9 +218,9 @@
     return [[aboutItem retain] autorelease];
 }
 
-- (NSMenuItem *)aboutQtMenuItem
+- (NSMenuItem *)aboutBobUIMenuItem
 {
-    return [[aboutQtItem retain] autorelease];
+    return [[aboutBobUIItem retain] autorelease];
 }
 
 - (NSMenuItem *)hideMenuItem
@@ -232,7 +232,7 @@
 {
     // No reason to create the item if it already exists.
     for (NSMenuItem *item in appMenu.itemArray)
-        if (qt_objc_cast<QCocoaNSMenuItem *>(item).platformMenuItem == platformItem)
+        if (bobui_objc_cast<QCocoaNSMenuItem *>(item).platformMenuItem == platformItem)
             return item;
 
     // Create an App-Specific menu item, insert it into the menu and return
@@ -269,16 +269,16 @@
     [NSApp hide:sender];
 }
 
-- (void)qtTranslateApplicationMenu
+- (void)bobuiTranslateApplicationMenu
 {
-#ifndef QT_NO_TRANSLATION
-    aboutItem.title = qt_mac_applicationmenu_string(AboutAppMenuItem).arg(qt_mac_applicationName()).toNSString();
-    preferencesItem.title = qt_mac_applicationmenu_string(PreferencesAppMenuItem).toNSString();
-    servicesItem.title = qt_mac_applicationmenu_string(ServicesAppMenuItem).toNSString();
-    hideItem.title = qt_mac_applicationmenu_string(HideAppMenuItem).arg(qt_mac_applicationName()).toNSString();
-    hideAllOthersItem.title = qt_mac_applicationmenu_string(HideOthersAppMenuItem).toNSString();
-    showAllItem.title = qt_mac_applicationmenu_string(ShowAllAppMenuItem).toNSString();
-    quitItem.title = qt_mac_applicationmenu_string(QuitAppMenuItem).arg(qt_mac_applicationName()).toNSString();
+#ifndef BOBUI_NO_TRANSLATION
+    aboutItem.title = bobui_mac_applicationmenu_string(AboutAppMenuItem).arg(bobui_mac_applicationName()).toNSString();
+    preferencesItem.title = bobui_mac_applicationmenu_string(PreferencesAppMenuItem).toNSString();
+    servicesItem.title = bobui_mac_applicationmenu_string(ServicesAppMenuItem).toNSString();
+    hideItem.title = bobui_mac_applicationmenu_string(HideAppMenuItem).arg(bobui_mac_applicationName()).toNSString();
+    hideAllOthersItem.title = bobui_mac_applicationmenu_string(HideOthersAppMenuItem).toNSString();
+    showAllItem.title = bobui_mac_applicationmenu_string(ShowAllAppMenuItem).toNSString();
+    quitItem.title = bobui_mac_applicationmenu_string(QuitAppMenuItem).arg(bobui_mac_applicationName()).toNSString();
 #endif
 }
 
@@ -296,7 +296,7 @@
 - (NSArray<NSMenuItem *> *)mergeable
 {
     // Don't include the quitItem here, since we want it always visible and enabled regardless
-    auto items = [NSArray arrayWithObjects:preferencesItem, aboutItem,  aboutQtItem,
+    auto items = [NSArray arrayWithObjects:preferencesItem, aboutItem,  aboutBobUIItem,
                   appMenu.itemArray[[self indexOfLastAppSpecificMenuItem]], nil];
     return items;
 }
@@ -307,8 +307,8 @@
     // else we appended later (thus the reverse order):
     const auto location = [appMenu.itemArray indexOfObjectWithOptions:NSEnumerationReverse
                            passingTest:^BOOL(NSMenuItem *item, NSUInteger, BOOL *) {
-                               if (auto qtItem = qt_objc_cast<QCocoaNSMenuItem*>(item))
-                                   return qtItem != quitItem;
+                               if (auto bobuiItem = bobui_objc_cast<QCocoaNSMenuItem*>(item))
+                                   return bobuiItem != quitItem;
                               return NO;
                            }];
     Q_ASSERT(location != NSNotFound);

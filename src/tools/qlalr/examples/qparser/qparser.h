@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef QPARSER_H
 #define QPARSER_H
 
-#include <QtCore/QSharedDataPointer>
-#include <QtCore/QVarLengthArray>
+#include <BobUICore/QSharedDataPointer>
+#include <BobUICore/QVarLengthArray>
 
 template <typename _Parser, typename _Table, typename _Value = int>
 class QParser: protected _Table

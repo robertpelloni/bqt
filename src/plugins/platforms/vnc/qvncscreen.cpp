@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qvncscreen.h"
 #include "qvnc_p.h"
-#include <QtFbSupport/private/qfbwindow_p.h>
-#include <QtFbSupport/private/qfbcursor_p.h>
+#include <BobUIFbSupport/private/qfbwindow_p.h>
+#include <BobUIFbSupport/private/qfbcursor_p.h>
 
-#include <QtGui/QPainter>
-#include <QtGui/QScreen>
-#include <QtCore/QRegularExpression>
+#include <BobUIGui/QPainter>
+#include <BobUIGui/QScreen>
+#include <BobUICore/QRegularExpression>
 
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 
 QVncScreen::QVncScreen(const QStringList &args)
@@ -24,7 +24,7 @@ QVncScreen::QVncScreen(const QStringList &args)
 
 QVncScreen::~QVncScreen()
 {
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
     if (clientCursor)
         delete clientCursor;
 #endif
@@ -92,7 +92,7 @@ QRegion QVncScreen::doRedraw()
 
 void QVncScreen::enableClientCursor(QVncClient *client)
 {
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
     delete mCursor;
     mCursor = nullptr;
     if (!clientCursor)
@@ -105,7 +105,7 @@ void QVncScreen::enableClientCursor(QVncClient *client)
 
 void QVncScreen::disableClientCursor(QVncClient *client)
 {
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
     if (!clientCursor)
         return;
 
@@ -124,7 +124,7 @@ void QVncScreen::disableClientCursor(QVncClient *client)
 
 QPlatformCursor *QVncScreen::cursor() const
 {
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
     return mCursor ? static_cast<QPlatformCursor *>(mCursor) : static_cast<QPlatformCursor *>(clientCursor);
 #else
     return nullptr;
@@ -179,7 +179,7 @@ QFbScreen::Flags QVncScreen::flags() const
     return QFbScreen::DontForceFirstWindowToFullScreen;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qvncscreen.cpp"
 

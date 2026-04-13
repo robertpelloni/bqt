@@ -1,20 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
 // Copyright (C) 2016 Olivier Goffart <ogoffart@woboq.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qplatformdefs.h"
 #include "qreadwritelock.h"
 
-#include "qthread.h"
+#include "bobuihread.h"
 #include "qreadwritelock_p.h"
 #include "private/qfreelist_p.h"
 #include "private/qlocking_p.h"
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*
  * Implementation details of QReadWriteLock:
@@ -40,7 +40,7 @@ inline bool isUncontendedLocked(const QReadWriteLockPrivate *d)
 }
 
 /*! \class QReadWriteLock
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QReadWriteLock class provides read-write locking.
 
     \threadsafe
@@ -233,7 +233,7 @@ QBasicReadWriteLock::contendedTryLockForRead(QDeadlineTimer timeout, void *dd)
         if (d->recursive)
             return d->recursiveLockForRead(timeout);
 
-        auto lock = qt_unique_lock(d->mutex);
+        auto lock = bobui_unique_lock(d->mutex);
         if (QReadWriteLockPrivate *dd = d_ptr.loadAcquire(); d != dd) {
             // d_ptr has changed: this QReadWriteLock was unlocked before we had
             // time to lock d->mutex.
@@ -339,7 +339,7 @@ QBasicReadWriteLock::contendedTryLockForWrite(QDeadlineTimer timeout, void *dd)
         if (d->recursive)
             return d->recursiveLockForWrite(timeout);
 
-        auto lock = qt_unique_lock(d->mutex);
+        auto lock = bobui_unique_lock(d->mutex);
         if (QReadWriteLockPrivate *dd = d_ptr.loadAcquire(); d != dd) {
             // The mutex was unlocked before we had time to lock the mutex.
             // We are holding to a mutex within a QReadWriteLockPrivate that is already released
@@ -390,7 +390,7 @@ void QBasicReadWriteLock::contendedUnlock(void *dd)
             return;
         }
 
-        const auto lock = qt_scoped_lock(d->mutex);
+        const auto lock = bobui_scoped_lock(d->mutex);
         if (d->writerCount) {
             Q_ASSERT(d->writerCount == 1);
             Q_ASSERT(d->readerCount == 0);
@@ -472,7 +472,7 @@ void QReadWriteLockPrivate::unlock()
         readerCond.notify_all();
 }
 
-static auto handleEquals(Qt::HANDLE handle)
+static auto handleEquals(BobUI::HANDLE handle)
 {
     return [handle](QReadWriteLockPrivate::Reader reader) { return reader.handle == handle; };
 }
@@ -480,9 +480,9 @@ static auto handleEquals(Qt::HANDLE handle)
 bool QReadWriteLockPrivate::recursiveLockForRead(QDeadlineTimer timeout)
 {
     Q_ASSERT(recursive);
-    auto lock = qt_unique_lock(mutex);
+    auto lock = bobui_unique_lock(mutex);
 
-    Qt::HANDLE self = QThread::currentThreadId();
+    BobUI::HANDLE self = BOBUIhread::currentThreadId();
 
     auto it = std::find_if(currentReaders.begin(), currentReaders.end(),
                            handleEquals(self));
@@ -502,9 +502,9 @@ bool QReadWriteLockPrivate::recursiveLockForRead(QDeadlineTimer timeout)
 bool QReadWriteLockPrivate::recursiveLockForWrite(QDeadlineTimer timeout)
 {
     Q_ASSERT(recursive);
-    auto lock = qt_unique_lock(mutex);
+    auto lock = bobui_unique_lock(mutex);
 
-    Qt::HANDLE self = QThread::currentThreadId();
+    BobUI::HANDLE self = BOBUIhread::currentThreadId();
     if (currentWriter == self) {
         writerCount++;
         return true;
@@ -520,9 +520,9 @@ bool QReadWriteLockPrivate::recursiveLockForWrite(QDeadlineTimer timeout)
 void QReadWriteLockPrivate::recursiveUnlock()
 {
     Q_ASSERT(recursive);
-    auto lock = qt_unique_lock(mutex);
+    auto lock = bobui_unique_lock(mutex);
 
-    Qt::HANDLE self = QThread::currentThreadId();
+    BobUI::HANDLE self = BOBUIhread::currentThreadId();
     if (self == currentWriter) {
         if (--writerCount > 0)
             return;
@@ -581,7 +581,7 @@ void QReadWriteLockPrivate::release()
 
 /*!
     \class QReadLocker
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QReadLocker class is a convenience class that
     simplifies locking and unlocking read-write locks for read access.
 
@@ -656,7 +656,7 @@ void QReadWriteLockPrivate::release()
 
 /*!
     \class QWriteLocker
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QWriteLocker class is a convenience class that
     simplifies locking and unlocking read-write locks for write access.
 
@@ -729,4 +729,4 @@ void QReadWriteLockPrivate::release()
     to the constructor.
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 //! [0]
 [...]
@@ -9,14 +9,14 @@ Database options:
   -sql-<driver> ........ Enable SQL <driver> plugin. Supported drivers:
                          db2 ibase mysql oci odbc psql sqlite
                          [all auto]
-  -sqlite .............. Select used sqlite [system/qt]
+  -sqlite .............. Select used sqlite [system/bobui]
 
 [...]
 //! [0]
 
 
 //! [1]
-create procedure qtestproc (OUT param1 INT, OUT param2 INT)
+create procedure bobuiestproc (OUT param1 INT, OUT param2 INT)
 BEGIN
     set param1 = 42;
     set param2 = 43;
@@ -27,7 +27,7 @@ END
 //! [3]
 mkdir build-sqldrivers
 cd build-sqldrivers
-qt-cmake -G Ninja <qt_source_directory>/qtbase/src/plugins/sqldrivers -DCMAKE_INSTALL_PREFIX=<qt_installation_path>/<platform> -DMySQL_ROOT="/usr/local/mysql"
+bobui-cmake -G Ninja <bobui_source_directory>/bobuibase/src/plugins/sqldrivers -DCMAKE_INSTALL_PREFIX=<bobui_installation_path>/<platform> -DMySQL_ROOT="/usr/local/mysql"
 cmake --build .
 cmake --install .
 //! [3]
@@ -36,7 +36,7 @@ cmake --install .
 //! [5]
 mkdir build-sqldrivers
 cd build-sqldrivers
-qt-cmake -G Ninja <qt_installation_path>\Src\qtbase\src\plugins\sqldrivers -DCMAKE_INSTALL_PREFIX=<qt_installation_path>\<platform> -DMySQL_ROOT="C:\mysql-8.0.22-winx64"
+bobui-cmake -G Ninja <bobui_installation_path>\Src\bobuibase\src\plugins\sqldrivers -DCMAKE_INSTALL_PREFIX=<bobui_installation_path>\<platform> -DMySQL_ROOT="C:\mysql-8.0.22-winx64"
 cmake --build .
 cmake --install .
 //! [5]
@@ -45,7 +45,7 @@ cmake --install .
 //! [7]
 mkdir build-sqldrivers
 cd build-sqldrivers
-qt-cmake -G Ninja <qt_source_directory>/qtbase/src/plugins/sqldrivers -DCMAKE_INSTALL_PREFIX=<qt_installation_path>/<platform> -DOracle_ROOT="/usr/include/oracle/21/client64"
+bobui-cmake -G Ninja <bobui_source_directory>/bobuibase/src/plugins/sqldrivers -DCMAKE_INSTALL_PREFIX=<bobui_installation_path>/<platform> -DOracle_ROOT="/usr/include/oracle/21/client64"
 cmake --build .
 cmake --install .
 //! [7]
@@ -54,7 +54,7 @@ cmake --install .
 //! [8]
 mkdir build-sqldrivers
 cd build-sqldrivers
-qt-cmake -G Ninja <qt_installation_path>\Src\qtbase\src\plugins\sqldrivers -DCMAKE_INSTALL_PREFIX=<qt_installation_path>\<platform> -DOracle_ROOT="C:\oracle"
+bobui-cmake -G Ninja <bobui_installation_path>\Src\bobuibase\src\plugins\sqldrivers -DCMAKE_INSTALL_PREFIX=<bobui_installation_path>\<platform> -DOracle_ROOT="C:\oracle"
 cmake --build .
 cmake --install .
 //! [8]
@@ -68,7 +68,7 @@ set PATH=%PATH%;C:\oracle
 //! [11]
 mkdir build-sqldrivers
 cd build-sqldrivers
-qt-cmake -G Ninja <qt_source_directory>/qtbase/src/plugins/sqldrivers -DCMAKE_INSTALL_PREFIX=<qt_installation_path>/<platform> -DODBC_INCLUDE_DIR="/usr/local/unixODBC/include" -DODBC_LIBRARY="/usr/local/unixODBC/lib/libodbc.<so|dylib>"
+bobui-cmake -G Ninja <bobui_source_directory>/bobuibase/src/plugins/sqldrivers -DCMAKE_INSTALL_PREFIX=<bobui_installation_path>/<platform> -DODBC_INCLUDE_DIR="/usr/local/unixODBC/include" -DODBC_LIBRARY="/usr/local/unixODBC/lib/libodbc.<so|dylib>"
 cmake --build .
 cmake --install .
 //! [11]
@@ -77,7 +77,7 @@ cmake --install .
 //! [12]
 mkdir build-sqldrivers
 cd build-sqldrivers
-qt-cmake -G Ninja <qt_installation_path>\Src\qtbase\src\plugins\sqldrivers -DCMAKE_INSTALL_PREFIX=<qt_installation_path>\<platform>
+bobui-cmake -G Ninja <bobui_installation_path>\Src\bobuibase\src\plugins\sqldrivers -DCMAKE_INSTALL_PREFIX=<bobui_installation_path>\<platform>
 cmake --build .
 cmake --install .
 //! [12]
@@ -87,7 +87,7 @@ cmake --install .
 mkdir build-psql-driver
 cd build-psql-driver
 
-qt-cmake -G Ninja <qt_source_directory>/qtbase/src/plugins/sqldrivers-DCMAKE_INSTALL_PREFIX=<qt_installation_path>/<platform> -DPostgreSQL_ROOT="/usr/local/pgsql"
+bobui-cmake -G Ninja <bobui_source_directory>/bobuibase/src/plugins/sqldrivers-DCMAKE_INSTALL_PREFIX=<bobui_installation_path>/<platform> -DPostgreSQL_ROOT="/usr/local/pgsql"
 cmake --build .
 cmake --install .
 //! [13]
@@ -96,7 +96,7 @@ cmake --install .
 //! [15]
 mkdir build-sqldrivers
 cd build-sqldrivers
-qt-cmake -G Ninja <qt_installation_path>\Src\qtbase\src\plugins\sqldrivers -DCMAKE_INSTALL_PREFIX=<qt_installation_path>\<platform> -DPostgreSQL_ROOT="C:\pgsql"
+bobui-cmake -G Ninja <bobui_installation_path>\Src\bobuibase\src\plugins\sqldrivers -DCMAKE_INSTALL_PREFIX=<bobui_installation_path>\<platform> -DPostgreSQL_ROOT="C:\pgsql"
 cmake --build .
 cmake --install .
 //! [15]
@@ -105,7 +105,7 @@ cmake --install .
 //! [18]
 mkdir build-sqldrivers
 cd build-sqldrivers
-qt-cmake -G Ninja <qt_source_directory>/qtbase/src/plugins/sqldrivers -DCMAKE_INSTALL_PREFIX=<qt_installation_path>/<platform> -DDB2_ROOT="/usr/local/db2"
+bobui-cmake -G Ninja <bobui_source_directory>/bobuibase/src/plugins/sqldrivers -DCMAKE_INSTALL_PREFIX=<bobui_installation_path>/<platform> -DDB2_ROOT="/usr/local/db2"
 cmake --build .
 cmake --install .
 //! [18]
@@ -114,7 +114,7 @@ cmake --install .
 //! [20]
 mkdir build-sqldrivers
 cd build-sqldrivers
-qt-cmake -G Ninja <qt_installation_path>\Src\qtbase\src\plugins\sqldrivers -DCMAKE_INSTALL_PREFIX=<qt_installation_path>\<platform> -DDB2_ROOT="C:\db2"
+bobui-cmake -G Ninja <bobui_installation_path>\Src\bobuibase\src\plugins\sqldrivers -DCMAKE_INSTALL_PREFIX=<bobui_installation_path>\<platform> -DDB2_ROOT="C:\db2"
 cmake --build .
 cmake --install .
 //! [20]
@@ -123,7 +123,7 @@ cmake --install .
 //! [21]
 mkdir build-sqldrivers
 cd build-sqldrivers
-qt-cmake -G Ninja <qt_source_directory>/qtbase/src/plugins/sqldrivers -DCMAKE_INSTALL_PREFIX=<qt_installation_path>/<platform> -DFEATURE_system_sqlite=ON -DCMAKE_INCLUDE_PATH="$SQLITE/include" -DCMAKE_LIBRARY_PATH="$SQLITE/lib"
+bobui-cmake -G Ninja <bobui_source_directory>/bobuibase/src/plugins/sqldrivers -DCMAKE_INSTALL_PREFIX=<bobui_installation_path>/<platform> -DFEATURE_system_sqlite=ON -DCMAKE_INCLUDE_PATH="$SQLITE/include" -DCMAKE_LIBRARY_PATH="$SQLITE/lib"
 cmake --build .
 cmake --install .
 //! [21]
@@ -132,7 +132,7 @@ cmake --install .
 //! [23]
 mkdir build-sqldrivers
 cd build-sqldrivers
-qt-cmake -G Ninja <qt_installation_path>\Src\qtbase\src\plugins\sqldrivers -DCMAKE_INSTALL_PREFIX=<qt_installation_path>\<platform> -DFEATURE_system_sqlite=ON -DCMAKE_INCLUDE_PATH="C:\SQLITE\include" -DCMAKE_LIBRARY_PATH="C:\SQLITE\lib"
+bobui-cmake -G Ninja <bobui_installation_path>\Src\bobuibase\src\plugins\sqldrivers -DCMAKE_INSTALL_PREFIX=<bobui_installation_path>\<platform> -DFEATURE_system_sqlite=ON -DCMAKE_INCLUDE_PATH="C:\SQLITE\include" -DCMAKE_LIBRARY_PATH="C:\SQLITE\lib"
 cmake --build .
 cmake --install .
 //! [23]
@@ -141,7 +141,7 @@ cmake --install .
 //! [27]
 mkdir build-sqldrivers
 cd build-sqldrivers
-qt-cmake -G Ninja <qt_source_directory>/qtbase/src/plugins/sqldrivers -DCMAKE_INSTALL_PREFIX=<qt_installation_path>/<platform> -DInterbase_ROOT="/opt/interbase/"
+bobui-cmake -G Ninja <bobui_source_directory>/bobuibase/src/plugins/sqldrivers -DCMAKE_INSTALL_PREFIX=<bobui_installation_path>/<platform> -DInterbase_ROOT="/opt/interbase/"
 cmake --build .
 cmake --install .
 //! [27]
@@ -150,7 +150,7 @@ cmake --install .
 //! [29]
 mkdir build-sqldrivers
 cd build-sqldrivers
-qt-cmake -G Ninja <qt_installation_path>\Src\qtbase\src\plugins\sqldrivers -DCMAKE_INSTALL_PREFIX=<qt_installation_path>\<platform> -DInterbase_ROOT="C:\interbase"
+bobui-cmake -G Ninja <bobui_installation_path>\Src\bobuibase\src\plugins\sqldrivers -DCMAKE_INSTALL_PREFIX=<bobui_installation_path>\<platform> -DInterbase_ROOT="C:\interbase"
 cmake --build .
 cmake --install .
 //! [29]
@@ -160,7 +160,7 @@ cmake --install .
 mkdir build-sqldrivers
 cd build-sqldrivers
 
-qt-cmake -G Ninja <qt_installation_path>\Src\qtbase\src\plugins\sqldrivers -DCMAKE_INSTALL_PREFIX=<qt_installation_path>\<platform> -DMimer_INCLUDE_DIR="/usr/include" -DMimer_LIBRARIES="/usr/lib/libmimer.so"
+bobui-cmake -G Ninja <bobui_installation_path>\Src\bobuibase\src\plugins\sqldrivers -DCMAKE_INSTALL_PREFIX=<bobui_installation_path>\<platform> -DMimer_INCLUDE_DIR="/usr/include" -DMimer_LIBRARIES="/usr/lib/libmimer.so"
 cmake --build .
 cmake --install .
 //! [31]
@@ -169,7 +169,7 @@ cmake --install .
 mkdir build-sqldrivers
 cd build-sqldrivers
 
-qt-cmake -G Ninja <qt_installation_path>\Src\qtbase\src\plugins\sqldrivers -DCMAKE_INSTALL_PREFIX=<qt_installation_path>\<platform> -DMimer_INCLUDE_DIR="C:\Program Files\Mimer SQL Experience 11.0\dev\include" -DMimer_LIBRARIES="C:\Program Files\Mimer SQL Experience 11.0\dev\lib\amd64\mimapi64.lib|C:\Program Files\Mimer SQL Experience 11.0\dev\lib\x86\mimapi32.lib"
+bobui-cmake -G Ninja <bobui_installation_path>\Src\bobuibase\src\plugins\sqldrivers -DCMAKE_INSTALL_PREFIX=<bobui_installation_path>\<platform> -DMimer_INCLUDE_DIR="C:\Program Files\Mimer SQL Experience 11.0\dev\include" -DMimer_LIBRARIES="C:\Program Files\Mimer SQL Experience 11.0\dev\lib\amd64\mimapi64.lib|C:\Program Files\Mimer SQL Experience 11.0\dev\lib\x86\mimapi32.lib"
 cmake --build .
 cmake --install .
 //! [32]
@@ -199,10 +199,10 @@ QSqlRecord rec = database.record(tableString.toLower());
 //! [40]
 
 //! [41]
-C:\Qt\6.0.0\mingw81_64\bin\qt-cmake -G Ninja C:\Qt\6.0.0\Src\qtbase\src\plugins\sqldrivers -DMySQL_INCLUDE_DIR="C:\mysql-8.0.22-winx64\include" -DMySQL_LIBRARY="C:\mysql-8.0.22-winx64\lib\libmysql.lib" -DCMAKE_INSTALL_PREFIX="C:\Qt\6.0.0\mingw81_64"
+C:\BobUI\6.0.0\mingw81_64\bin\bobui-cmake -G Ninja C:\BobUI\6.0.0\Src\bobuibase\src\plugins\sqldrivers -DMySQL_INCLUDE_DIR="C:\mysql-8.0.22-winx64\include" -DMySQL_LIBRARY="C:\mysql-8.0.22-winx64\lib\libmysql.lib" -DCMAKE_INSTALL_PREFIX="C:\BobUI\6.0.0\mingw81_64"
 Configure summary:
 
-Qt Sql Drivers:
+BobUI Sql Drivers:
   DB2 (IBM) .............................. no
   InterBase .............................. no
   Mimer SQL .............................. yes
@@ -215,15 +215,15 @@ Qt Sql Drivers:
 
 -- Configuring done
 -- Generating done
--- Build files have been written to: C:/build-qt6-sqldrivers
+-- Build files have been written to: C:/build-bobui6-sqldrivers
 //! [41]
 
 //! [42]
-C:\Qt\6.0.0\Src\configure.bat -sql-mysql -- -DMySQL_ROOT="C:\mysql-8.0.22-winx64"
+C:\BobUI\6.0.0\Src\configure.bat -sql-mysql -- -DMySQL_ROOT="C:\mysql-8.0.22-winx64"
 Configure summary:
 
 ...
-Qt Sql Drivers:
+BobUI Sql Drivers:
   DB2 (IBM) .............................. no
   InterBase .............................. no
   Mimer SQL .............................. yes

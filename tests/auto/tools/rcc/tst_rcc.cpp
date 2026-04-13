@@ -1,22 +1,22 @@
 // Copyright (C) 2012 Giuseppe D'Angelo <dangelog@gmail.com>
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2024 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QLibraryInfo>
-#include <QtCore/QString>
-#include <QtCore/QCoreApplication>
-#include <QtCore/QByteArray>
-#include <QtCore/QDir>
-#include <QtCore/QFile>
-#include <QtCore/QProcess>
-#include <QtCore/QDirIterator>
-#include <QtCore/QMap>
-#include <QtCore/QList>
-#include <QtCore/QResource>
-#include <QtCore/QLocale>
-#include <QtCore/QtGlobal>
+#include <BobUICore/QString>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/QByteArray>
+#include <BobUICore/QDir>
+#include <BobUICore/QFile>
+#include <BobUICore/QProcess>
+#include <BobUICore/QDirIterator>
+#include <BobUICore/QMap>
+#include <BobUICore/QList>
+#include <BobUICore/QResource>
+#include <BobUICore/QLocale>
+#include <BobUICore/BobUIGlobal>
 
 #include <algorithm>
 
@@ -115,7 +115,7 @@ static QString doCompare(const QStringList &actual, const QStringList &expected,
                 ba.append("File " + fi.absoluteFilePath().toUtf8() + " does not exist!");
                 break;
             }
-            const quint64 timeStamp = quint64(fi.lastModified(QTimeZone::UTC).toMSecsSinceEpoch());
+            const quint64 timeStamp = quint64(fi.lastModified(BOBUIimeZone::UTC).toMSecsSinceEpoch());
             expectedLine.clear();
             for (int shift = 56; shift >= 0; shift -= 8) {
                 expectedLine.append(QLatin1String("0x"));
@@ -136,31 +136,31 @@ static QString doCompare(const QStringList &actual, const QStringList &expected,
 
 void tst_rcc::rcc_data()
 {
-    QTest::addColumn<QString>("directory");
-    QTest::addColumn<QString>("qrcfile");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<QString>("directory");
+    BOBUIest::addColumn<QString>("qrcfile");
+    BOBUIest::addColumn<QString>("expected");
 
     const QString imagesPath = m_dataPath + QLatin1String("/images");
-    QTest::newRow("images") << imagesPath << "images.qrc" <<
+    BOBUIest::newRow("images") << imagesPath << "images.qrc" <<
                                (sizeof(size_t) == 8 ? "images.expected" : "images.expected32");
 
     const QString sizesPath = m_dataPath + QLatin1String("/sizes");
-    QTest::newRow("size-0") << sizesPath << "size-0.qrc" << "size-0.expected";
-    QTest::newRow("size-1") << sizesPath << "size-1.qrc" << "size-1.expected";
-    QTest::newRow("size-2-0-35-1") << sizesPath << "size-2-0-35-1.qrc" <<
+    BOBUIest::newRow("size-0") << sizesPath << "size-0.qrc" << "size-0.expected";
+    BOBUIest::newRow("size-1") << sizesPath << "size-1.qrc" << "size-1.expected";
+    BOBUIest::newRow("size-2-0-35-1") << sizesPath << "size-2-0-35-1.qrc" <<
                                       (sizeof(size_t) == 8 ? "size-2-0-35-1.expected" : "size-2-0-35-1.expected32");
 
-    QTest::newRow("legal") << m_dataPath + QLatin1StringView("/legal")
+    BOBUIest::newRow("legal") << m_dataPath + QLatin1StringView("/legal")
                                << "legal.qrc" << "rcc_legal.cpp";
 
     if (sizeof(size_t) == 8) {
         const QString deduplicationPath = m_dataPath + QLatin1String("/deduplication");
-        QTest::newRow("deduplication") << deduplicationPath << "deduplication.qrc" << "deduplication.expected";
+        BOBUIest::newRow("deduplication") << deduplicationPath << "deduplication.qrc" << "deduplication.expected";
     }
 }
 
 static QStringList readLinesFromFile(const QString &fileName,
-                                     Qt::SplitBehavior splitBehavior)
+                                     BobUI::SplitBehavior splitBehavior)
 {
     QFile file(fileName);
 
@@ -208,7 +208,7 @@ void tst_rcc::rcc()
     const QStringList actualLines = out.split(nl);
 
     const QStringList expectedLines =
-        readLinesFromFile(directory + QLatin1Char('/') + expected, Qt::KeepEmptyParts);
+        readLinesFromFile(directory + QLatin1Char('/') + expected, BobUI::KeepEmptyParts);
     QVERIFY(!expectedLines.isEmpty());
 
     const QString diff = doCompare(actualLines, expectedLines, directory);
@@ -220,7 +220,7 @@ static QStringMap readExpectedFiles(const QString &fileName)
 {
     QStringMap expectedFiles;
 
-    const QStringList lines = readLinesFromFile(fileName, Qt::SkipEmptyParts);
+    const QStringList lines = readLinesFromFile(fileName, BobUI::SkipEmptyParts);
     for (const QString &line : lines) {
         QString resourceFileName = line.section(QLatin1Char(' '), 0, 0, QString::SectionSkipEmpty);
         QString actualFileName = line.section(QLatin1Char(' '), 1, 1, QString::SectionSkipEmpty);
@@ -246,10 +246,10 @@ static QStringMap readExpectedFiles(const QString &fileName)
 
 void tst_rcc::binary_data()
 {
-    QTest::addColumn<QString>("resourceFile");
-    QTest::addColumn<QLocale>("locale");
-    QTest::addColumn<QString>("baseDirectory");
-    QTest::addColumn<QStringMap>("expectedFiles");
+    BOBUIest::addColumn<QString>("resourceFile");
+    BOBUIest::addColumn<QLocale>("locale");
+    BOBUIest::addColumn<QString>("baseDirectory");
+    BOBUIest::addColumn<QStringMap>("expectedFiles");
 
     QString dataPath = m_dataPath + QLatin1String("/binary/");
 
@@ -285,11 +285,11 @@ void tst_rcc::binary_data()
         QString localeFileName = absoluteBaseName + QLatin1String(".locale");
         QFile localeFile(localeFileName);
         if (localeFile.exists()) {
-            const QStringList locales = readLinesFromFile(localeFileName, Qt::SkipEmptyParts);
+            const QStringList locales = readLinesFromFile(localeFileName, BobUI::SkipEmptyParts);
             for (const QString &locale : locales) {
                 QString expectedFileName = QString::fromLatin1("%1.%2.%3").arg(absoluteBaseName, locale, QLatin1String("expected"));
                 QStringMap expectedFiles = readExpectedFiles(expectedFileName);
-                QTest::newRow(qPrintable(qrcFileInfo.baseName() + QLatin1Char('_') + locale)) << rccFileName
+                BOBUIest::newRow(qPrintable(qrcFileInfo.baseName() + QLatin1Char('_') + locale)) << rccFileName
                                                                                               << QLocale(locale)
                                                                                               << dataPath
                                                                                               << expectedFiles;
@@ -299,7 +299,7 @@ void tst_rcc::binary_data()
         // always test for the C locale as well
         QString expectedFileName = absoluteBaseName + QLatin1String(".expected");
         QStringMap expectedFiles = readExpectedFiles(expectedFileName);
-        QTest::newRow(qPrintable(qrcFileInfo.baseName() + QLatin1String("_C"))) << rccFileName
+        BOBUIest::newRow(qPrintable(qrcFileInfo.baseName() + QLatin1String("_C"))) << rccFileName
                                                                                 << QLocale::c()
                                                                                 << dataPath
                                                                                 << expectedFiles;
@@ -371,16 +371,16 @@ void tst_rcc::binary()
 
 void tst_rcc::readback_data()
 {
-    QTest::addColumn<QString>("resourceName");
-    QTest::addColumn<QString>("fileSystemName");
+    BOBUIest::addColumn<QString>("resourceName");
+    BOBUIest::addColumn<QString>("fileSystemName");
 
-    QTest::newRow("data-0")   << ":data/data-0.txt"            << "sizes/data/data-0.txt";
-    QTest::newRow("data-1")   << ":data/data-1.txt"            << "sizes/data/data-1.txt";
-    QTest::newRow("data-2")   << ":data/data-2.txt"            << "sizes/data/data-2.txt";
-    QTest::newRow("data-35")  << ":data/data-35.txt"           << "sizes/data/data-35.txt";
-    QTest::newRow("circle")   << ":images/circle.png"          << "images/images/circle.png";
-    QTest::newRow("square")   << ":images/square.png"          << "images/images/square.png";
-    QTest::newRow("triangle") << ":images/subdir/triangle.png"
+    BOBUIest::newRow("data-0")   << ":data/data-0.txt"            << "sizes/data/data-0.txt";
+    BOBUIest::newRow("data-1")   << ":data/data-1.txt"            << "sizes/data/data-1.txt";
+    BOBUIest::newRow("data-2")   << ":data/data-2.txt"            << "sizes/data/data-2.txt";
+    BOBUIest::newRow("data-35")  << ":data/data-35.txt"           << "sizes/data/data-35.txt";
+    BOBUIest::newRow("circle")   << ":images/circle.png"          << "images/images/circle.png";
+    BOBUIest::newRow("square")   << ":images/square.png"          << "images/images/square.png";
+    BOBUIest::newRow("triangle") << ":images/subdir/triangle.png"
                                   << "images/images/subdir/triangle.png";
 }
 
@@ -404,13 +404,13 @@ void tst_rcc::readback()
 
 void tst_rcc::depFileGeneration_data()
 {
-    QTest::addColumn<QString>("qrcfile");
-    QTest::addColumn<QString>("depfile");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<QString>("qrcfile");
+    BOBUIest::addColumn<QString>("depfile");
+    BOBUIest::addColumn<QString>("expected");
 
-    QTest::newRow("simple") << "simple.qrc" << "simple.d"
+    BOBUIest::newRow("simple") << "simple.qrc" << "simple.d"
                             << (sizeof(size_t) == 8 ? "simple.d.expected" : "simple.d.expected32");
-    QTest::newRow("specialchar") << "specialchar.qrc" << "specialchar.d" << "specialchar.d.expected";
+    BOBUIest::newRow("specialchar") << "specialchar.qrc" << "specialchar.d" << "specialchar.d.expected";
 }
 
 void tst_rcc::depFileGeneration()
@@ -469,9 +469,9 @@ void tst_rcc::python()
     QVERIFY2(process.exitCode() == 0,
              msgProcessFailed(process).constData());
 
-    const auto actualLines = readLinesFromFile(actualFile, Qt::KeepEmptyParts);
+    const auto actualLines = readLinesFromFile(actualFile, BobUI::KeepEmptyParts);
     QVERIFY(!actualLines.isEmpty());
-    const auto expectedLines = readLinesFromFile(expectedFile, Qt::KeepEmptyParts);
+    const auto expectedLines = readLinesFromFile(expectedFile, BobUI::KeepEmptyParts);
     QVERIFY(!expectedLines.isEmpty());
     const QString diff = doCompare(actualLines, expectedLines, path);
     if (!diff.isEmpty())
@@ -488,6 +488,6 @@ void tst_rcc::cleanupTestCase()
         QFile::remove(entry.absoluteFilePath());
 }
 
-QTEST_MAIN(tst_rcc)
+BOBUIEST_MAIN(tst_rcc)
 
 #include "tst_rcc.moc"

@@ -1,11 +1,11 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2021 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qcoreapplication.h"
 #include "qcoreapplication_p.h"
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 #include "qabstracteventdispatcher.h"
 #include "qcoreevent.h"
 #include "qcoreevent_p.h"
@@ -23,16 +23,16 @@
 #include <private/qloggingregistry_p.h>
 #include <qscopeguard.h>
 #include <qstandardpaths.h>
-#ifndef QT_NO_QOBJECT
-#include <qthread.h>
-#include <qthreadstorage.h>
-#if QT_CONFIG(future)
-#include <QtCore/qpromise.h>
+#ifndef BOBUI_NO_QOBJECT
+#include <bobuihread.h>
+#include <bobuihreadstorage.h>
+#if BOBUI_CONFIG(future)
+#include <BobUICore/qpromise.h>
 #endif
-#include <private/qthread_p.h>
-#if QT_CONFIG(thread)
-#include <qthreadpool.h>
-#include <private/qthreadpool_p.h>
+#include <private/bobuihread_p.h>
+#if BOBUI_CONFIG(thread)
+#include <bobuihreadpool.h>
+#include <private/bobuihreadpool_p.h>
 #endif
 #endif
 #include <qlibraryinfo.h>
@@ -45,16 +45,16 @@
 #include <private/qhooks_p.h>
 #include <private/qnativeinterface_p.h>
 
-#if QT_CONFIG(permissions)
+#if BOBUI_CONFIG(permissions)
 #include <private/qpermissions_p.h>
 #endif
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 #if defined(Q_OS_UNIX)
 # if defined(Q_OS_DARWIN)
 #  include "qeventdispatcher_cf_p.h"
 # else
-#  if !defined(QT_NO_GLIB)
+#  if !defined(BOBUI_NO_GLIB)
 #   include "qeventdispatcher_glib_p.h"
 #  endif
 # endif
@@ -65,10 +65,10 @@
 #ifdef Q_OS_WIN
 #include "qeventdispatcher_win_p.h"
 #endif
-#endif // QT_NO_QOBJECT
+#endif // BOBUI_NO_QOBJECT
 
 #if defined(Q_OS_ANDROID)
-#include <QtCore/qjniobject.h>
+#include <BobUICore/qjniobject.h>
 #endif
 
 #ifdef Q_OS_DARWIN
@@ -100,10 +100,10 @@
 #include <emscripten/val.h>
 #endif
 
-#ifdef QT_BOOTSTRAPPED
-#include <private/qtrace_p.h>
+#ifdef BOBUI_BOOTSTRAPPED
+#include <private/bobuirace_p.h>
 #else
-#include <qtcore_tracepoints_p.h>
+#include <bobuicore_tracepoints_p.h>
 #endif
 
 #include <algorithm>
@@ -111,33 +111,33 @@
 #include <string>
 
 #ifdef Q_OS_WIN
-#  include <qt_windows.h>
+#  include <bobui_windows.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_TRACE_PREFIX(qtcore,
+Q_TRACE_PREFIX(bobuicore,
    "#include <qcoreevent.h>"
 );
-Q_TRACE_METADATA(qtcore, "ENUM { AUTO, RANGE User ... MaxUser } QEvent::Type;");
-Q_TRACE_POINT(qtcore, QCoreApplication_postEvent_entry, QObject *receiver, QEvent *event, QEvent::Type type);
-Q_TRACE_POINT(qtcore, QCoreApplication_postEvent_exit);
-Q_TRACE_POINT(qtcore, QCoreApplication_postEvent_event_compressed, QObject *receiver, QEvent *event);
-Q_TRACE_POINT(qtcore, QCoreApplication_postEvent_event_posted, QObject *receiver, QEvent *event, QEvent::Type type);
-Q_TRACE_POINT(qtcore, QCoreApplication_sendEvent, QObject *receiver, QEvent *event, QEvent::Type type);
-Q_TRACE_POINT(qtcore, QCoreApplication_sendSpontaneousEvent, QObject *receiver, QEvent *event, QEvent::Type type);
-Q_TRACE_POINT(qtcore, QCoreApplication_notify_entry, QObject *receiver, QEvent *event, QEvent::Type type);
-Q_TRACE_POINT(qtcore, QCoreApplication_notify_exit, bool consumed, bool filtered);
+Q_TRACE_METADATA(bobuicore, "ENUM { AUTO, RANGE User ... MaxUser } QEvent::Type;");
+Q_TRACE_POINT(bobuicore, QCoreApplication_postEvent_entry, QObject *receiver, QEvent *event, QEvent::Type type);
+Q_TRACE_POINT(bobuicore, QCoreApplication_postEvent_exit);
+Q_TRACE_POINT(bobuicore, QCoreApplication_postEvent_event_compressed, QObject *receiver, QEvent *event);
+Q_TRACE_POINT(bobuicore, QCoreApplication_postEvent_event_posted, QObject *receiver, QEvent *event, QEvent::Type type);
+Q_TRACE_POINT(bobuicore, QCoreApplication_sendEvent, QObject *receiver, QEvent *event, QEvent::Type type);
+Q_TRACE_POINT(bobuicore, QCoreApplication_sendSpontaneousEvent, QObject *receiver, QEvent *event, QEvent::Type type);
+Q_TRACE_POINT(bobuicore, QCoreApplication_notify_entry, QObject *receiver, QEvent *event, QEvent::Type type);
+Q_TRACE_POINT(bobuicore, QCoreApplication_notify_exit, bool consumed, bool filtered);
 
-#if (defined(Q_OS_WIN) || defined(Q_OS_DARWIN)) && !defined(QT_BOOTSTRAPPED)
+#if (defined(Q_OS_WIN) || defined(Q_OS_DARWIN)) && !defined(BOBUI_BOOTSTRAPPED)
 extern QString qAppFileName();
 #endif
 
 Q_CONSTINIT bool QCoreApplicationPrivate::setuidAllowed = false;
 
-#if QT_VERSION >= QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION >= BOBUI_VERSION_CHECK(7, 0, 0)
 # warning "Audit remaining direct usages of this variable for memory ordering semantics"
 Q_CONSTINIT QBasicAtomicPointer<QCoreApplication> QCoreApplication::self = nullptr;
 #else
@@ -149,12 +149,12 @@ Q_CONSTINIT static QBasicAtomicPointer<QCoreApplication> g_self = nullptr;
 /*!
     \internal
 
-    This function is a Qt 6 thread-safe (no data races) version of:
+    This function is a BobUI 6 thread-safe (no data races) version of:
     \code
         QCoreApplication::instance() != nullptr
     \endcode
 
-    We may remove it in Qt 7.0 because the above will be thread-safe.
+    We may remove it in BobUI 7.0 because the above will be thread-safe.
 */
 bool QCoreApplication::instanceExists() noexcept
 {
@@ -162,7 +162,7 @@ bool QCoreApplication::instanceExists() noexcept
 }
 #endif
 
-#if !defined(Q_OS_WIN) || defined(QT_BOOTSTRAPPED)
+#if !defined(Q_OS_WIN) || defined(BOBUI_BOOTSTRAPPED)
 #ifdef Q_OS_DARWIN
 QString QCoreApplicationPrivate::infoDictionaryStringProperty(const QString &propertyName)
 {
@@ -193,7 +193,7 @@ QString QCoreApplicationPrivate::appVersion() const
     QString applicationVersion;
 #if defined(Q_OS_DARWIN)
     applicationVersion = infoDictionaryStringProperty(QStringLiteral("CFBundleVersion"));
-#elif defined(Q_OS_ANDROID) && !defined(QT_BOOTSTRAPPED)
+#elif defined(Q_OS_ANDROID) && !defined(BOBUI_BOOTSTRAPPED)
     QJniObject context(QNativeInterface::QAndroidApplication::context());
     if (context.isValid()) {
         QJniObject pm = context.callObjectMethod(
@@ -214,7 +214,7 @@ QString QCoreApplicationPrivate::appVersion() const
 #endif
     return applicationVersion;
 }
-#endif // !Q_OS_WIN || QT_BOOTSTRAPPED
+#endif // !Q_OS_WIN || BOBUI_BOOTSTRAPPED
 
 bool QCoreApplicationPrivate::checkInstance(const char *function)
 {
@@ -224,8 +224,8 @@ bool QCoreApplicationPrivate::checkInstance(const char *function)
     return b;
 }
 
-#if QT_CONFIG(commandlineparser)
-void QCoreApplicationPrivate::addQtOptions(QList<QCommandLineOption> *options)
+#if BOBUI_CONFIG(commandlineparser)
+void QCoreApplicationPrivate::addBobUIOptions(QList<QCommandLineOption> *options)
 {
     options->append(QCommandLineOption(QStringLiteral("qmljsdebugger"),
                 QStringLiteral("Activates the QML/JS debugger with a specified port. The value must be of format port:1234[,block]. \"block\" makes the application wait for a connection."),
@@ -265,16 +265,16 @@ void QCoreApplicationPrivate::processCommandLineArguments()
 // Support for introspection
 
 extern "C" void
-#ifdef QT_SHARED
+#ifdef BOBUI_SHARED
 Q_DECL_EXPORT_OVERRIDABLE
 #endif
-QT_MANGLE_NAMESPACE(qt_startup_hook)()
+BOBUI_MANGLE_NAMESPACE(bobui_startup_hook)()
 {
 }
 
-typedef QList<QtStartUpFunction> QStartUpFuncList;
+typedef QList<BobUIStartUpFunction> QStartUpFuncList;
 Q_GLOBAL_STATIC(QStartUpFuncList, preRList)
-typedef QList<QtCleanUpFunction> QVFuncList;
+typedef QList<BobUICleanUpFunction> QVFuncList;
 Q_GLOBAL_STATIC(QVFuncList, postRList)
 Q_CONSTINIT static QBasicMutex globalRoutinesMutex;
 Q_CONSTINIT static bool preRoutinesCalled = false;
@@ -285,7 +285,7 @@ Q_CONSTINIT static bool preRoutinesCalled = false;
     Adds a global routine that will be called from the QCoreApplication
     constructor. The public API is Q_COREAPP_STARTUP_FUNCTION.
 */
-void qAddPreRoutine(QtStartUpFunction p)
+void qAddPreRoutine(BobUIStartUpFunction p)
 {
     QStartUpFuncList *list = preRList();
     if (!list)
@@ -298,49 +298,49 @@ void qAddPreRoutine(QtStartUpFunction p)
 
     // Due to C++11 parallel dynamic initialization, this can be called
     // from multiple threads.
-    const auto locker = qt_scoped_lock(globalRoutinesMutex);
-    list->prepend(p); // in case QCoreApplication is re-created, see qt_call_pre_routines
+    const auto locker = bobui_scoped_lock(globalRoutinesMutex);
+    list->prepend(p); // in case QCoreApplication is re-created, see bobui_call_pre_routines
 }
 
-void qAddPostRoutine(QtCleanUpFunction p)
+void qAddPostRoutine(BobUICleanUpFunction p)
 {
     QVFuncList *list = postRList();
     if (!list)
         return;
-    const auto locker = qt_scoped_lock(globalRoutinesMutex);
+    const auto locker = bobui_scoped_lock(globalRoutinesMutex);
     list->prepend(p);
 }
 
-void qRemovePostRoutine(QtCleanUpFunction p)
+void qRemovePostRoutine(BobUICleanUpFunction p)
 {
     QVFuncList *list = postRList();
     if (!list)
         return;
-    const auto locker = qt_scoped_lock(globalRoutinesMutex);
+    const auto locker = bobui_scoped_lock(globalRoutinesMutex);
     list->removeAll(p);
 }
 
-static void qt_call_pre_routines()
+static void bobui_call_pre_routines()
 {
-    // After will be allowed invoke QtStartUpFunction when calling qAddPreRoutine
+    // After will be allowed invoke BobUIStartUpFunction when calling qAddPreRoutine
     preRoutinesCalled = true;
 
     if (!preRList.exists())
         return;
 
     const QStartUpFuncList list = [] {
-        const auto locker = qt_scoped_lock(globalRoutinesMutex);
-        // Unlike qt_call_post_routines, we don't empty the list, because
+        const auto locker = bobui_scoped_lock(globalRoutinesMutex);
+        // Unlike bobui_call_post_routines, we don't empty the list, because
         // Q_COREAPP_STARTUP_FUNCTION is a macro, so the user expects
         // the function to be executed every time QCoreApplication is created.
         return *preRList;
     }();
 
-    for (QtStartUpFunction f : list)
+    for (BobUIStartUpFunction f : list)
         f();
 }
 
-void Q_CORE_EXPORT qt_call_post_routines()
+void Q_CORE_EXPORT bobui_call_post_routines()
 {
     if (!postRList.exists())
         return;
@@ -349,19 +349,19 @@ void Q_CORE_EXPORT qt_call_post_routines()
         QVFuncList list;
         {
             // extract the current list and make the stored list empty
-            const auto locker = qt_scoped_lock(globalRoutinesMutex);
+            const auto locker = bobui_scoped_lock(globalRoutinesMutex);
             qSwap(*postRList, list);
         }
 
         if (list.isEmpty())
             break;
-        for (QtCleanUpFunction f : std::as_const(list))
+        for (BobUICleanUpFunction f : std::as_const(list))
             f();
     }
 }
 
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 
 // app starting up if false
 Q_CONSTINIT bool QCoreApplicationPrivate::is_app_running = false;
@@ -370,17 +370,17 @@ Q_CONSTINIT bool QCoreApplicationPrivate::is_app_closing = false;
 
 qsizetype qGlobalPostedEventsCount()
 {
-    const QPostEventList &l = QThreadData::current()->postEventList;
+    const QPostEventList &l = BOBUIhreadData::current()->postEventList;
     return l.size() - l.startOffset;
 }
 
 Q_CONSTINIT QAbstractEventDispatcher *QCoreApplicationPrivate::eventDispatcher = nullptr;
 
-#endif // QT_NO_QOBJECT
+#endif // BOBUI_NO_QOBJECT
 
 Q_CONSTINIT uint QCoreApplicationPrivate::attribs =
-    (1 << Qt::AA_SynthesizeMouseForUnhandledTouchEvents) |
-    (1 << Qt::AA_SynthesizeMouseForUnhandledTabletEvents);
+    (1 << BobUI::AA_SynthesizeMouseForUnhandledTouchEvents) |
+    (1 << BobUI::AA_SynthesizeMouseForUnhandledTabletEvents);
 
 struct QCoreApplicationData
 {
@@ -395,7 +395,7 @@ struct QCoreApplicationData
     bool applicationNameSet; // true if setApplicationName was called
     bool applicationVersionSet; // true if setApplicationVersion was called
 
-#if QT_CONFIG(library)
+#if BOBUI_CONFIG(library)
     // QList does not have isNull()
     bool libPathsInitialized() const noexcept
     { return !app_libpaths.data_ptr().isNull(); }
@@ -410,7 +410,7 @@ struct QCoreApplicationData
 
 Q_GLOBAL_STATIC(QCoreApplicationData, coreappdata)
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 Q_CONSTINIT static bool quitLockEnabled = true;
 #endif
 
@@ -459,7 +459,7 @@ QCoreApplicationPrivate::QCoreApplicationPrivate(int &aargc, char **aargv)
     }
 #endif // Q_OS_WIN
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     QCoreApplicationPrivate::is_app_closing = false;
 
 #  if defined(Q_OS_UNIX)
@@ -467,7 +467,7 @@ QCoreApplicationPrivate::QCoreApplicationPrivate(int &aargc, char **aargv)
         qFatal("FATAL: The application binary appears to be running setuid, this is a security hole.");
 #  endif // Q_OS_UNIX
 
-    QThread *cur = QThread::currentThread(); // note: this may end up setting theMainThread!
+    BOBUIhread *cur = BOBUIhread::currentThread(); // note: this may end up setting theMainThread!
     if (cur != theMainThread.loadAcquire())
         qWarning("WARNING: QApplication was not created in the main() thread.");
 #endif
@@ -475,27 +475,27 @@ QCoreApplicationPrivate::QCoreApplicationPrivate(int &aargc, char **aargv)
 
 QCoreApplicationPrivate::~QCoreApplicationPrivate()
 {
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     cleanupThreadData();
 #endif
-#if defined(Q_OS_WIN) && !defined(QT_BOOTSTRAPPED)
+#if defined(Q_OS_WIN) && !defined(BOBUI_BOOTSTRAPPED)
     cleanupDebuggingConsole();
 #endif
 }
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 
 void QCoreApplicationPrivate::cleanupThreadData()
 {
     auto thisThreadData = threadData.loadRelaxed();
 
     if (thisThreadData && !threadData_clean) {
-#if QT_CONFIG(thread)
-        QThreadStoragePrivate::finish(&thisThreadData->tls);
+#if BOBUI_CONFIG(thread)
+        BOBUIhreadStoragePrivate::finish(&thisThreadData->tls);
 #endif
 
         // need to clear the state of the mainData, just in case a new QCoreApplication comes along.
-        const auto locker = qt_scoped_lock(thisThreadData->postEventList.mutex);
+        const auto locker = bobui_scoped_lock(thisThreadData->postEventList.mutex);
         for (const QPostEvent &pe : std::as_const(thisThreadData->postEventList)) {
             if (pe.event) {
                 pe.receiver->d_func()->postedEvents.fetchAndSubAcquire(1);
@@ -513,7 +513,7 @@ void QCoreApplicationPrivate::cleanupThreadData()
 void QCoreApplicationPrivate::createEventDispatcher()
 {
     Q_Q(QCoreApplication);
-    QThreadData *data = QThreadData::current();
+    BOBUIhreadData *data = BOBUIhreadData::current();
     Q_ASSERT(!data->hasEventDispatcher());
     eventDispatcher = data->createEventDispatcher();
     eventDispatcher->setParent(q);
@@ -523,9 +523,9 @@ void QCoreApplicationPrivate::eventDispatcherReady()
 {
 }
 
-Q_CONSTINIT QBasicAtomicPointer<QThread> QCoreApplicationPrivate::theMainThread = Q_BASIC_ATOMIC_INITIALIZER(nullptr);
+Q_CONSTINIT QBasicAtomicPointer<BOBUIhread> QCoreApplicationPrivate::theMainThread = Q_BASIC_ATOMIC_INITIALIZER(nullptr);
 Q_CONSTINIT QBasicAtomicPointer<void> QCoreApplicationPrivate::theMainThreadId = Q_BASIC_ATOMIC_INITIALIZER(nullptr);
-QThread *QCoreApplicationPrivate::mainThread()
+BOBUIhread *QCoreApplicationPrivate::mainThread()
 {
     Q_ASSERT(theMainThread.loadRelaxed() != nullptr);
     return theMainThread.loadRelaxed();
@@ -533,8 +533,8 @@ QThread *QCoreApplicationPrivate::mainThread()
 
 void QCoreApplicationPrivate::checkReceiverThread(QObject *receiver)
 {
-    QThread *currentThread = QThread::currentThread();
-    QThread *thr = receiver->thread();
+    BOBUIhread *currentThread = BOBUIhread::currentThread();
+    BOBUIhread *thr = receiver->thread();
     Q_ASSERT_X(currentThread == thr || !thr,
                "QCoreApplication::sendEvent",
                qPrintable(QString::fromLatin1("Cannot send events to objects owned by a different thread. "
@@ -544,7 +544,7 @@ void QCoreApplicationPrivate::checkReceiverThread(QObject *receiver)
     Q_UNUSED(thr);
 }
 
-#endif // QT_NO_QOBJECT
+#endif // BOBUI_NO_QOBJECT
 
 QString qAppName()
 {
@@ -555,13 +555,13 @@ QString qAppName()
 
 void QCoreApplicationPrivate::initLocale()
 {
-#if defined(QT_BOOTSTRAPPED)
+#if defined(BOBUI_BOOTSTRAPPED)
     // Don't try to control bootstrap library locale or encoding.
 #elif defined(Q_OS_UNIX)
-    Q_CONSTINIT static bool qt_locale_initialized = false;
-    if (qt_locale_initialized)
+    Q_CONSTINIT static bool bobui_locale_initialized = false;
+    if (bobui_locale_initialized)
         return;
-    qt_locale_initialized = true;
+    bobui_locale_initialized = true;
 
     // By default the portable "C"/POSIX locale is selected and active.
     // Apply the locale from the environment, via setlocale(), which will
@@ -617,13 +617,13 @@ void QCoreApplicationPrivate::initLocale()
         if (newLocale.isEmpty()) {
             // Failed to set a UTF-8 locale.
             qWarning("Detected locale \"%s\" with character encoding \"%s\", which is not UTF-8.\n"
-                     "Qt depends on a UTF-8 locale, but has failed to switch to one.\n"
+                     "BobUI depends on a UTF-8 locale, but has failed to switch to one.\n"
                      "If this causes problems, reconfigure your locale. See the locale(1) manual\n"
                      "for more information.", oldLocale.constData(), oldEncoding.data());
         } else if (warnOnOverride) {
             // Let the user know we over-rode their configuration.
             qWarning("Detected locale \"%s\" with character encoding \"%s\", which is not UTF-8.\n"
-                     "Qt depends on a UTF-8 locale, and has switched to \"%s\" instead.\n"
+                     "BobUI depends on a UTF-8 locale, and has switched to \"%s\" instead.\n"
                      "If this causes problems, reconfigure your locale. See the locale(1) manual\n"
                      "for more information.",
                      oldLocale.constData(), oldEncoding.data(), newLocale.constData());
@@ -636,14 +636,14 @@ void QCoreApplicationPrivate::initLocale()
 
 /*!
     \class QCoreApplication
-    \inmodule QtCore
-    \brief The QCoreApplication class provides an event loop for Qt
+    \inmodule BobUICore
+    \brief The QCoreApplication class provides an event loop for BobUI
     applications without UI.
 
     This class is used by non-GUI applications to provide their event
-    loop. For non-GUI application that uses Qt, there should be exactly
+    loop. For non-GUI application that uses BobUI, there should be exactly
     one QCoreApplication object. For GUI applications, see
-    QGuiApplication. For applications that use the Qt Widgets module,
+    QGuiApplication. For applications that use the BobUI Widgets module,
     see QApplication.
 
     QCoreApplication contains the main event loop, where all events
@@ -697,7 +697,7 @@ void QCoreApplicationPrivate::initLocale()
 
     \section1 Locale Settings
 
-    On Unix/Linux Qt is configured to use the system locale settings by
+    On Unix/Linux BobUI is configured to use the system locale settings by
     default. This can cause a conflict when using POSIX functions, for
     instance, when converting between data types such as floats and
     strings, since the notation may differ between locales. To get
@@ -723,7 +723,7 @@ void QCoreApplicationPrivate::initLocale()
     \internal
  */
 QCoreApplication::QCoreApplication(QCoreApplicationPrivate &p)
-#ifdef QT_NO_QOBJECT
+#ifdef BOBUI_NO_QOBJECT
     : d_ptr(&p)
 #else
     : QObject(p, nullptr)
@@ -735,7 +735,7 @@ QCoreApplication::QCoreApplication(QCoreApplicationPrivate &p)
 }
 
 /*!
-    Constructs a Qt core application. Core applications are applications without
+    Constructs a BobUI core application. Core applications are applications without
     a graphical user interface. Such applications are used at the console or as
     server processes.
 
@@ -753,7 +753,7 @@ QCoreApplication::QCoreApplication(int &argc, char **argv
                                    , int
 #endif
                                    )
-#ifdef QT_NO_QOBJECT
+#ifdef BOBUI_NO_QOBJECT
     : d_ptr(new QCoreApplicationPrivate(argc, argv))
 #else
     : QObject(*new QCoreApplicationPrivate(argc, argv))
@@ -761,7 +761,7 @@ QCoreApplication::QCoreApplication(int &argc, char **argv
 {
     d_func()->q_ptr = this;
     d_func()->init();
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     QCoreApplicationPrivate::eventDispatcher->startingUp();
 #endif
 }
@@ -770,10 +770,10 @@ QCoreApplication::QCoreApplication(int &argc, char **argv
   \enum QCoreApplication::anonymous
   \internal
 
-  \value ApplicationFlags QT_VERSION
+  \value ApplicationFlags BOBUI_VERSION
 */
 
-void Q_TRACE_INSTRUMENT(qtcore) QCoreApplicationPrivate::init()
+void Q_TRACE_INSTRUMENT(bobuicore) QCoreApplicationPrivate::init()
 {
     Q_TRACE_SCOPE(QCoreApplicationPrivate_init);
 
@@ -783,27 +783,27 @@ void Q_TRACE_INSTRUMENT(qtcore) QCoreApplicationPrivate::init()
 
     Q_Q(QCoreApplication);
 
-#if defined(Q_OS_WIN) && !defined(QT_BOOTSTRAPPED)
+#if defined(Q_OS_WIN) && !defined(BOBUI_BOOTSTRAPPED)
     initDebuggingConsole();
 #endif
 
     initLocale();
 
     Q_ASSERT_X(!QCoreApplication::self, "QCoreApplication", "there should be only one application object");
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
     QCoreApplication::self = q;
     g_self.storeRelaxed(q);
 #else
     QCoreApplication::self.storeRelaxed(q);
 #endif
 
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
 #ifdef Q_OS_WASM
     emscripten::val hardwareConcurrency = emscripten::val::global("navigator")["hardwareConcurrency"];
     if (hardwareConcurrency.isUndefined())
-        QThreadPrivate::idealThreadCount = 2;
+        BOBUIhreadPrivate::idealThreadCount = 2;
     else
-        QThreadPrivate::idealThreadCount = hardwareConcurrency.as<int>();
+        BOBUIhreadPrivate::idealThreadCount = hardwareConcurrency.as<int>();
 #endif
 #endif
 
@@ -814,15 +814,15 @@ void Q_TRACE_INSTRUMENT(qtcore) QCoreApplicationPrivate::init()
     if (!coreappdata()->applicationVersionSet)
         coreappdata()->applicationVersion = appVersion();
 
-#if defined(Q_OS_ANDROID) && !defined(QT_BOOTSTRAPPED)
+#if defined(Q_OS_ANDROID) && !defined(BOBUI_BOOTSTRAPPED)
     // We've deferred initializing the logging registry due to not being
     // able to guarantee that logging happened on the same thread as the
-    // Qt main thread, but now that the Qt main thread is set up, we can
+    // BobUI main thread, but now that the BobUI main thread is set up, we can
     // enable categorized logging.
     QLoggingRegistry::instance()->initializeRules();
 #endif
 
-#if QT_CONFIG(library)
+#if BOBUI_CONFIG(library)
     // Reset the lib paths, so that they will be recomputed, taking the availability of argv[0]
     // into account. If necessary, recompute right away and replay the manual changes on top of the
     // new lib paths.
@@ -839,7 +839,7 @@ void Q_TRACE_INSTRUMENT(qtcore) QCoreApplicationPrivate::init()
             // have been removed. Once the original list is exhausted we know all the remaining
             // items have been added.
             QStringList newPaths(q->libraryPaths());
-            for (qsizetype i = manualPaths.size(), j = appPaths.size(); i > 0 || j > 0; qt_noop()) {
+            for (qsizetype i = manualPaths.size(), j = appPaths.size(); i > 0 || j > 0; bobui_noop()) {
                 if (--j < 0) {
                     newPaths.prepend(manualPaths[--i]);
                 } else if (--i < 0) {
@@ -854,7 +854,7 @@ void Q_TRACE_INSTRUMENT(qtcore) QCoreApplicationPrivate::init()
     }
 #endif
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     // use the event dispatcher created by the app programmer (if any)
     Q_ASSERT(!eventDispatcher);
     auto thisThreadData = threadData.loadRelaxed();
@@ -876,15 +876,15 @@ void Q_TRACE_INSTRUMENT(qtcore) QCoreApplicationPrivate::init()
 
     processCommandLineArguments();
 
-    qt_call_pre_routines();
-    QT_MANGLE_NAMESPACE(qt_startup_hook)();
-#ifndef QT_BOOTSTRAPPED
-    QtPrivate::initBindingStatusThreadId();
-    if (Q_UNLIKELY(qtHookData[QHooks::Startup]))
-        reinterpret_cast<QHooks::StartupCallback>(qtHookData[QHooks::Startup])();
+    bobui_call_pre_routines();
+    BOBUI_MANGLE_NAMESPACE(bobui_startup_hook)();
+#ifndef BOBUI_BOOTSTRAPPED
+    BobUIPrivate::initBindingStatusThreadId();
+    if (Q_UNLIKELY(bobuiHookData[QHooks::Startup]))
+        reinterpret_cast<QHooks::StartupCallback>(bobuiHookData[QHooks::Startup])();
 #endif
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     is_app_running = true; // No longer starting up.
 #endif
 }
@@ -896,26 +896,26 @@ QCoreApplication::~QCoreApplication()
 {
     preRoutinesCalled = false;
 
-    qt_call_post_routines();
+    bobui_call_post_routines();
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
     self = nullptr;
     g_self.storeRelaxed(nullptr);
 #else
     self.storeRelaxed(nullptr);
 #endif
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     QCoreApplicationPrivate::is_app_closing = true;
     QCoreApplicationPrivate::is_app_running = false;
 #endif
 
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
     // Synchronize and stop the global thread pool threads.
-    QThreadPool *globalThreadPool = nullptr;
-    QT_TRY {
-        globalThreadPool = QThreadPool::globalInstance();
-    } QT_CATCH (...) {
+    BOBUIhreadPool *globalThreadPool = nullptr;
+    BOBUI_TRY {
+        globalThreadPool = BOBUIhreadPool::globalInstance();
+    } BOBUI_CATCH (...) {
         // swallow the exception, since destructors shouldn't throw
     }
     if (globalThreadPool) {
@@ -924,14 +924,14 @@ QCoreApplication::~QCoreApplication()
     }
 #endif
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     d_func()->threadData.loadRelaxed()->eventDispatcher = nullptr;
     if (QCoreApplicationPrivate::eventDispatcher)
         QCoreApplicationPrivate::eventDispatcher->closingDown();
     QCoreApplicationPrivate::eventDispatcher = nullptr;
 #endif
 
-#if QT_CONFIG(library)
+#if BOBUI_CONFIG(library)
     if (coreappdata.exists()) {
         // neither .clear(), .resize(), nor = {} will make isNull() == true
         coreappdata->app_libpaths = QStringList();
@@ -948,15 +948,15 @@ QCoreApplication::~QCoreApplication()
     Allows the application to run setuid on UNIX platforms if \a allow
     is true.
 
-    If \a allow is false (the default) and Qt detects the application is
+    If \a allow is false (the default) and BobUI detects the application is
     running with an effective user id different than the real user id,
     the application will be aborted when a QCoreApplication instance is
     created.
 
-    Qt is not an appropriate solution for setuid programs due to its
+    BobUI is not an appropriate solution for setuid programs due to its
     large attack surface. However some applications may be required
     to run in this manner for historical reasons. This flag will
-    prevent Qt from aborting the application when this is detected,
+    prevent BobUI from aborting the application when this is detected,
     and must be set before a QCoreApplication instance is created.
 
     \note It is strongly recommended not to enable this option since
@@ -988,37 +988,37 @@ bool QCoreApplication::isSetuidAllowed()
     otherwise clears the attribute.
 
     \note Some application attributes must be set \b before creating a
-    QCoreApplication instance. Refer to the Qt::ApplicationAttribute
+    QCoreApplication instance. Refer to the BobUI::ApplicationAttribute
     documentation for more information.
 
     \sa testAttribute()
 */
-void QCoreApplication::setAttribute(Qt::ApplicationAttribute attribute, bool on)
+void QCoreApplication::setAttribute(BobUI::ApplicationAttribute attribute, bool on)
 {
     // Since we bit-shift these values, we can't go higher than 32 on 32 bit operating systems
     // without changing the storage type of QCoreApplicationPrivate::attribs to quint64.
-    static_assert(Qt::AA_AttributeCount <= sizeof(QCoreApplicationPrivate::attribs) * CHAR_BIT);
+    static_assert(BobUI::AA_AttributeCount <= sizeof(QCoreApplicationPrivate::attribs) * CHAR_BIT);
 
     if (on)
         QCoreApplicationPrivate::attribs |= 1 << attribute;
     else
         QCoreApplicationPrivate::attribs &= ~(1 << attribute);
-#if defined(QT_NO_QOBJECT)
+#if defined(BOBUI_NO_QOBJECT)
     if (Q_UNLIKELY(qApp)) {
 #else
     if (Q_UNLIKELY(QCoreApplicationPrivate::is_app_running)) {
 #endif
         switch (attribute) {
-            case Qt::AA_PluginApplication:
-            case Qt::AA_UseDesktopOpenGL:
-            case Qt::AA_UseOpenGLES:
-            case Qt::AA_UseSoftwareOpenGL:
-#ifdef QT_BOOTSTRAPPED
+            case BobUI::AA_PluginApplication:
+            case BobUI::AA_UseDesktopOpenGL:
+            case BobUI::AA_UseOpenGLES:
+            case BobUI::AA_UseSoftwareOpenGL:
+#ifdef BOBUI_BOOTSTRAPPED
                 qWarning("Attribute %d must be set before QCoreApplication is created.",
                          attribute);
 #else
-                qWarning("Attribute Qt::%s must be set before QCoreApplication is created.",
-                         QMetaEnum::fromType<Qt::ApplicationAttribute>().valueToKey(attribute));
+                qWarning("Attribute BobUI::%s must be set before QCoreApplication is created.",
+                         QMetaEnum::fromType<BobUI::ApplicationAttribute>().valueToKey(attribute));
 #endif
                 break;
             default:
@@ -1033,12 +1033,12 @@ void QCoreApplication::setAttribute(Qt::ApplicationAttribute attribute, bool on)
 
   \sa setAttribute()
  */
-bool QCoreApplication::testAttribute(Qt::ApplicationAttribute attribute)
+bool QCoreApplication::testAttribute(BobUI::ApplicationAttribute attribute)
 {
     return QCoreApplicationPrivate::testAttribute(attribute);
 }
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 
 /*!
     \property QCoreApplication::quitLockEnabled
@@ -1075,22 +1075,22 @@ void QCoreApplication::setQuitLockEnabled(bool enabled)
   \internal
   \since 5.6
 
-  This function is here to make it possible for Qt extensions to
+  This function is here to make it possible for BobUI extensions to
   hook into event notification without subclassing QApplication.
 */
 bool QCoreApplication::notifyInternal2(QObject *receiver, QEvent *event)
 {
-    // Qt enforces the rule that events can only be sent to objects in
+    // BobUI enforces the rule that events can only be sent to objects in
     // the current thread, so receiver->d_func()->threadData is
-    // equivalent to QThreadData::current(), just without the function
+    // equivalent to BOBUIhreadData::current(), just without the function
     // call overhead.
     QObjectPrivate *d = receiver->d_func();
-    QThreadData *threadData = d->threadData.loadAcquire();
+    BOBUIhreadData *threadData = d->threadData.loadAcquire();
     bool selfRequired = threadData->requiresCoreApplication;
     if (selfRequired && !qApp)
         return false;
 
-    // Make it possible for Qt Script to hook into events even
+    // Make it possible for BobUI Script to hook into events even
     // though QApplication is subclassed...
     bool result = false;
     void *cbdata[] = { receiver, event, &result };
@@ -1102,8 +1102,8 @@ bool QCoreApplication::notifyInternal2(QObject *receiver, QEvent *event)
     if (!selfRequired)
         return doNotify(receiver, event);
 
-#if QT_VERSION >= QT_VERSION_CHECK(7, 0, 0)
-    if (!QThread::isMainThread())
+#if BOBUI_VERSION >= BOBUI_VERSION_CHECK(7, 0, 0)
+    if (!BOBUIhread::isMainThread())
         return false;
 #endif
     return qApp->notify(receiver, event);
@@ -1164,7 +1164,7 @@ bool QCoreApplication::forwardEvent(QObject *receiver, QEvent *event, QEvent *or
   \endlist
 
   \b{Future direction:} This function will not be called for objects that live
-  outside the main thread in Qt 7. Applications that need that functionality
+  outside the main thread in BobUI 7. Applications that need that functionality
   should find other solutions for their event inspection needs in the meantime.
   The change may be extended to the main thread, causing this function to be
   deprecated.
@@ -1172,7 +1172,7 @@ bool QCoreApplication::forwardEvent(QObject *receiver, QEvent *event, QEvent *or
   \warning If you override this function, you must ensure all threads that
   process events stop doing so before your application object begins
   destruction. This includes threads started by other libraries that you may be
-  using, but does not apply to Qt's own threads.
+  using, but does not apply to BobUI's own threads.
 
   \sa QObject::event(), installNativeEventFilter()
 */
@@ -1182,7 +1182,7 @@ bool QCoreApplication::notify(QObject *receiver, QEvent *event)
     Q_ASSERT(receiver);
     Q_ASSERT(event);
 
-#if QT_VERSION >= QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION >= BOBUI_VERSION_CHECK(7, 0, 0)
     Q_ASSERT(receiver->d_func()->threadData.loadAcquire()->thread.loadRelaxed()
              == QCoreApplicationPrivate::mainThread());
 #endif
@@ -1197,13 +1197,13 @@ static bool doNotify(QObject *receiver, QEvent *event)
 {
     Q_ASSERT(event);
 
-    // ### Qt 7: turn into an assert
+    // ### BobUI 7: turn into an assert
     if (receiver == nullptr) {                        // serious error
         qWarning("QCoreApplication::notify: Unexpected null receiver");
         return true;
     }
 
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     QCoreApplicationPrivate::checkReceiverThread(receiver);
 #endif
 
@@ -1213,7 +1213,7 @@ static bool doNotify(QObject *receiver, QEvent *event)
 bool QCoreApplicationPrivate::sendThroughApplicationEventFilters(QObject *receiver, QEvent *event)
 {
     // We can't access the application event filters outside of the main thread (race conditions)
-    Q_ASSERT(QThread::isMainThread());
+    Q_ASSERT(BOBUIhread::isMainThread());
 
     if (extraData) {
         // application event filters are only called for objects in the GUI thread
@@ -1265,7 +1265,7 @@ bool QCoreApplicationPrivate::notify_helper(QObject *receiver, QEvent * event)
     Q_TRACE_EXIT(QCoreApplication_notify_exit, consumed, filtered);
 
     // send to all application event filters (only does anything in the main thread)
-    if (QThread::isMainThread()
+    if (BOBUIhread::isMainThread()
             && QCoreApplication::self
             && QCoreApplication::self->d_func()->sendThroughApplicationEventFilters(receiver, event)) {
         filtered = true;
@@ -1320,7 +1320,7 @@ bool QCoreApplication::closingDown()
     continuously, without an event loop, the
     \l{QEvent::DeferredDelete}{DeferredDelete} events will
     not be processed. This can affect the behaviour of widgets,
-    e.g. QToolTip, that rely on \l{QEvent::DeferredDelete}{DeferredDelete}
+    e.g. BOBUIoolTip, that rely on \l{QEvent::DeferredDelete}{DeferredDelete}
     events to function properly. An alternative would be to call
     \l{QCoreApplication::sendPostedEvents()}{sendPostedEvents()} from
     within that local loop.
@@ -1333,12 +1333,12 @@ bool QCoreApplication::closingDown()
 
     \threadsafe
 
-    \sa exec(), QTimer, QChronoTimer, QEventLoop::processEvents(),
+    \sa exec(), BOBUIimer, QChronoTimer, QEventLoop::processEvents(),
     sendPostedEvents()
 */
 void QCoreApplication::processEvents(QEventLoop::ProcessEventsFlags flags)
 {
-    QThreadData *data = QThreadData::current();
+    BOBUIhreadData *data = BOBUIhreadData::current();
     if (!data->hasEventDispatcher())
         return;
     data->eventDispatcher.loadRelaxed()->processEvents(flags);
@@ -1383,14 +1383,14 @@ void QCoreApplication::processEvents(QEventLoop::ProcessEventsFlags flags, int m
 
     \threadsafe
 
-    \sa exec(), QTimer, QChronoTimer, QEventLoop::processEvents()
+    \sa exec(), BOBUIimer, QChronoTimer, QEventLoop::processEvents()
 */
 void QCoreApplication::processEvents(QEventLoop::ProcessEventsFlags flags, QDeadlineTimer deadline)
 {
     // ### TODO: consider splitting this method into a public and a private
     //           one, so that a user-invoked processEvents can be detected
     //           and handled properly.
-    QThreadData *data = QThreadData::current();
+    BOBUIhreadData *data = BOBUIhreadData::current();
     if (!data->hasEventDispatcher())
         return;
 
@@ -1422,7 +1422,7 @@ void QCoreApplication::processEvents(QEventLoop::ProcessEventsFlags flags, QDead
     \l{QCoreApplication::}{aboutToQuit()} signal, instead of putting it in
     your application's \c{main()} function because on some platforms the
     exec() call may not return. For example, on Windows
-    when the user logs off, the system terminates the process after Qt
+    when the user logs off, the system terminates the process after BobUI
     closes all top-level windows. Hence, there is no guarantee that the
     application will have time to exit its event loop and execute code at
     the end of the \c{main()} function after the exec()
@@ -1435,8 +1435,8 @@ int QCoreApplication::exec()
     if (!QCoreApplicationPrivate::checkInstance("exec"))
         return -1;
 
-    QThreadData *threadData = self->d_func()->threadData.loadAcquire();
-    if (threadData != QThreadData::current()) {
+    BOBUIhreadData *threadData = self->d_func()->threadData.loadAcquire();
+    if (threadData != BOBUIhreadData::current()) {
         qWarning("%s::exec: Must be called from the main thread", self->metaObject()->className());
         return -1;
     }
@@ -1484,7 +1484,7 @@ void QCoreApplicationPrivate::execCleanup()
   value indicates an error.
 
   It's good practice to always connect signals to this slot using a
-  \l{Qt::}{QueuedConnection}. If a signal connected (non-queued) to this slot
+  \l{BobUI::}{QueuedConnection}. If a signal connected (non-queued) to this slot
   is emitted before control enters the main event loop (such as before
   "int main" calls \l{QCoreApplication::}{exec()}), the slot has no effect
   and the application never exits. Using a queued connection ensures that the
@@ -1511,7 +1511,7 @@ void QCoreApplication::exit(int returnCode)
         emit self->aboutToQuit(QCoreApplication::QPrivateSignal());
         d->aboutToQuitEmitted = true;
     }
-    QThreadData *data = d->threadData.loadRelaxed();
+    BOBUIhreadData *data = d->threadData.loadRelaxed();
     data->quitNow = true;
     for (qsizetype i = 0; i < data->eventLoops.size(); ++i) {
         QEventLoop *eventLoop = data->eventLoops.at(i);
@@ -1523,7 +1523,7 @@ void QCoreApplication::exit(int returnCode)
   QCoreApplication management of posted events
  *****************************************************************************/
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 /*!
     \fn bool QCoreApplication::sendEvent(QObject *receiver, QEvent *event)
 
@@ -1563,15 +1563,15 @@ bool QCoreApplication::sendSpontaneousEvent(QObject *receiver, QEvent *event)
     return notifyInternal2(receiver, event);
 }
 
-#endif // QT_NO_QOBJECT
+#endif // BOBUI_NO_QOBJECT
 
 QCoreApplicationPrivate::QPostEventListLocker QCoreApplicationPrivate::lockThreadPostEventList(QObject *object)
 {
     QPostEventListLocker locker;
 
     if (!object) {
-        locker.threadData = QThreadData::current();
-        locker.locker = qt_unique_lock(locker.threadData->postEventList.mutex);
+        locker.threadData = BOBUIhreadData::current();
+        locker.locker = bobui_unique_lock(locker.threadData->postEventList.mutex);
         return locker;
     }
 
@@ -1586,7 +1586,7 @@ QCoreApplicationPrivate::QPostEventListLocker QCoreApplicationPrivate::lockThrea
             return locker;
         }
 
-        auto temporaryLocker = qt_unique_lock(locker.threadData->postEventList.mutex);
+        auto temporaryLocker = bobui_unique_lock(locker.threadData->postEventList.mutex);
         if (locker.threadData == threadData.loadAcquire()) {
             locker.locker = std::move(temporaryLocker);
             break;
@@ -1614,7 +1614,7 @@ QCoreApplicationPrivate::QPostEventListLocker QCoreApplicationPrivate::lockThrea
     Events are sorted in descending \a priority order, i.e. events
     with a high \a priority are queued before events with a lower \a
     priority. The \a priority can be any integer value, i.e. between
-    INT_MAX and INT_MIN, inclusive; see Qt::EventPriority for more
+    INT_MAX and INT_MIN, inclusive; see BobUI::EventPriority for more
     details. Events with equal \a priority will be processed in the
     order posted.
 
@@ -1626,12 +1626,12 @@ QCoreApplicationPrivate::QPostEventListLocker QCoreApplicationPrivate::lockThrea
     object's deleteLater() slot:
 
     \code
-    QObject::connect(thread, &QThread::finished, worker, &QObject::deleteLater);
+    QObject::connect(thread, &BOBUIhread::finished, worker, &QObject::deleteLater);
     \endcode
 
     \threadsafe
 
-    \sa sendEvent(), notify(), sendPostedEvents(), Qt::EventPriority
+    \sa sendEvent(), notify(), sendPostedEvents(), BobUI::EventPriority
 */
 void QCoreApplication::postEvent(QObject *receiver, QEvent *event, int priority)
 {
@@ -1639,7 +1639,7 @@ void QCoreApplication::postEvent(QObject *receiver, QEvent *event, int priority)
 
     Q_TRACE_SCOPE(QCoreApplication_postEvent, receiver, event, event->type());
 
-    // ### Qt 7: turn into an assert
+    // ### BobUI 7: turn into an assert
     if (receiver == nullptr) {
         qWarning("QCoreApplication::postEvent: Unexpected null receiver");
         delete event;
@@ -1653,17 +1653,17 @@ void QCoreApplication::postEvent(QObject *receiver, QEvent *event, int priority)
         return;
     }
 
-    QThreadData *data = locker.threadData;
+    BOBUIhreadData *data = locker.threadData;
 
-    QT_WARNING_PUSH
-    QT_WARNING_DISABLE_DEPRECATED // compressEvent()
+    BOBUI_WARNING_PUSH
+    BOBUI_WARNING_DISABLE_DEPRECATED // compressEvent()
     // if this is one of the compressible events, do compression
     if (receiver->d_func()->postedEvents.loadAcquire()
         && self && self->compressEvent(event, receiver, &data->postEventList)) {
         Q_TRACE(QCoreApplication_postEvent_event_compressed, receiver, event);
         return;
     }
-    QT_WARNING_POP
+    BOBUI_WARNING_POP
 
     // delete the event on exceptions to protect against memory leaks till the event is
     // properly owned in the postEventList
@@ -1685,7 +1685,7 @@ void QCoreApplication::postEvent(QObject *receiver, QEvent *event, int priority)
   \internal
   Returns \c true if \a event was compressed away (possibly deleted) and should not be added to the list.
 */
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
 bool QCoreApplication::compressEvent(QEvent *event, QObject *receiver, QPostEventList *postedEvents)
 {
     return d_func()->compressEvent(event, receiver, postedEvents);
@@ -1700,12 +1700,12 @@ bool QCoreApplicationPrivate::compressEvent(QEvent *event, QObject *receiver, QP
 
     // compress posted timers to this object.
     if (event->type() == QEvent::Timer) {
-        const int timerId = static_cast<QTimerEvent *>(event)->timerId();
+        const int timerId = static_cast<BOBUIimerEvent *>(event)->timerId();
         auto it = postedEvents->cbegin();
         const auto end = postedEvents->cend();
         while (it != end) {
             if (it->event && it->event->type() == QEvent::Timer && it->receiver == receiver) {
-                if (static_cast<QTimerEvent *>(it->event)->timerId() == timerId) {
+                if (static_cast<BOBUIimerEvent *>(it->event)->timerId() == timerId) {
                     delete event;
                     return true;
                 }
@@ -1752,13 +1752,13 @@ void QCoreApplication::sendPostedEvents(QObject *receiver, int event_type)
     // ### TODO: consider splitting this method into a public and a private
     //           one, so that a user-invoked sendPostedEvents can be detected
     //           and handled properly.
-    QThreadData *data = QThreadData::current();
+    BOBUIhreadData *data = BOBUIhreadData::current();
 
     QCoreApplicationPrivate::sendPostedEvents(receiver, event_type, data);
 }
 
 void QCoreApplicationPrivate::sendPostedEvents(QObject *receiver, int event_type,
-                                               QThreadData *data)
+                                               BOBUIhreadData *data)
 {
     if (event_type == -1) {
         // we were called by an obsolete event dispatcher.
@@ -1773,7 +1773,7 @@ void QCoreApplicationPrivate::sendPostedEvents(QObject *receiver, int event_type
 
     ++data->postEventList.recursion;
 
-    auto locker = qt_unique_lock(data->postEventList.mutex);
+    auto locker = bobui_unique_lock(data->postEventList.mutex);
 
     // by default, we assume that the event dispatcher can go to sleep after
     // processing all events. if any new events are posted while we send
@@ -1800,10 +1800,10 @@ void QCoreApplicationPrivate::sendPostedEvents(QObject *receiver, int event_type
 
         QObject *receiver;
         int event_type;
-        QThreadData *data;
+        BOBUIhreadData *data;
         bool exceptionCaught;
 
-        inline CleanUp(QObject *receiver, int event_type, QThreadData *data) :
+        inline CleanUp(QObject *receiver, int event_type, BOBUIhreadData *data) :
             receiver(receiver), event_type(event_type), data(data), exceptionCaught(true)
         {}
         inline ~CleanUp()
@@ -1933,7 +1933,7 @@ void QCoreApplicationPrivate::sendPostedEvents(QObject *receiver, int event_type
 void QCoreApplication::removePostedEvents(QObject *receiver, int eventType)
 {
     auto locker = QCoreApplicationPrivate::lockThreadPostEventList(receiver);
-    QThreadData *data = locker.threadData;
+    BOBUIhreadData *data = locker.threadData;
 
     // the QObject destructor calls this function directly.  this can
     // happen while the event loop is in the middle of posting events,
@@ -1964,7 +1964,7 @@ void QCoreApplication::removePostedEvents(QObject *receiver, int eventType)
         }
     }
 
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
     if (receiver && eventType == 0) {
         Q_ASSERT(!receiver->d_func()->postedEvents.loadRelaxed());
     }
@@ -1995,12 +1995,12 @@ void QCoreApplicationPrivate::removePostedEvent(QEvent * event)
     if (!event || !event->m_posted)
         return;
 
-    QThreadData *data = QThreadData::current();
+    BOBUIhreadData *data = BOBUIhreadData::current();
 
-    const auto locker = qt_scoped_lock(data->postEventList.mutex);
+    const auto locker = bobui_scoped_lock(data->postEventList.mutex);
 
     if (data->postEventList.size() == 0) {
-#if defined(QT_DEBUG)
+#if defined(BOBUI_DEBUG)
         qDebug("QCoreApplication::removePostedEvent: Internal error: %p %d is posted",
                 (void*)event, event->type());
         return;
@@ -2009,7 +2009,7 @@ void QCoreApplicationPrivate::removePostedEvent(QEvent * event)
 
     for (const QPostEvent &pe : std::as_const(data->postEventList)) {
         if (pe.event == event) {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
             qWarning("QCoreApplication::removePostedEvent: Event of type %d deleted while posted to %s %s",
                      event->type(),
                      pe.receiver->metaObject()->className(),
@@ -2096,7 +2096,7 @@ void QCoreApplicationPrivate::quitAutomatically()
     exit() directly. Note that method is not thread-safe.
 
     It's good practice to always connect signals to this slot using a
-    \l{Qt::}{QueuedConnection}. If a signal connected (non-queued) to this slot
+    \l{BobUI::}{QueuedConnection}. If a signal connected (non-queued) to this slot
     is emitted before control enters the main event loop (such as before
     "int main" calls \l{QCoreApplication::}{exec()}), the slot has no effect
     and the application never exits. Using a queued connection ensures that the
@@ -2128,7 +2128,7 @@ void QCoreApplicationPrivate::quit()
 {
     Q_Q(QCoreApplication);
 
-    if (QThread::isMainThread()) {
+    if (BOBUIhread::isMainThread()) {
         QEvent quitEvent(QEvent::Quit);
         QCoreApplication::sendEvent(q, &quitEvent);
     } else {
@@ -2157,9 +2157,9 @@ void QCoreApplicationPrivate::quit()
   \sa quit()
 */
 
-#endif // QT_NO_QOBJECT
+#endif // BOBUI_NO_QOBJECT
 
-#ifndef QT_NO_TRANSLATION
+#ifndef BOBUI_NO_TRANSLATION
 /*!
     Adds the translation file \a translationFile to the list of
     translation files to be used for translations.
@@ -2171,7 +2171,7 @@ void QCoreApplicationPrivate::quit()
     The search stops as soon as a translation containing a matching
     string is found.
 
-    Installing or removing a QTranslator, or changing an installed QTranslator
+    Installing or removing a BOBUIranslator, or changing an installed BOBUIranslator
     generates a \l{QEvent::LanguageChange}{LanguageChange} event for the
     QCoreApplication instance. A QApplication instance will propagate the event
     to all toplevel widgets, where a reimplementation of changeEvent can
@@ -2187,11 +2187,11 @@ void QCoreApplicationPrivate::quit()
     function returned \c true, the \a translationFile object is alive until
     either \l removeTranslator() is called for it, or the application exits.
 
-    \sa removeTranslator(), translate(), QTranslator::load(),
+    \sa removeTranslator(), translate(), BOBUIranslator::load(),
         {Writing Source Code for Translation#Prepare for Dynamic Language Changes}{Prepare for Dynamic Language Changes}
 */
 
-bool QCoreApplication::installTranslator(QTranslator *translationFile)
+bool QCoreApplication::installTranslator(BOBUIranslator *translationFile)
 {
     if (!translationFile)
         return false;
@@ -2208,7 +2208,7 @@ bool QCoreApplication::installTranslator(QTranslator *translationFile)
     if (translationFile->isEmpty())
         return true;
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     QEvent ev(QEvent::LanguageChange);
     QCoreApplication::sendEvent(self, &ev);
 #endif
@@ -2226,7 +2226,7 @@ bool QCoreApplication::installTranslator(QTranslator *translationFile)
     \sa installTranslator(), translate(), QObject::tr()
 */
 
-bool QCoreApplication::removeTranslator(QTranslator *translationFile)
+bool QCoreApplication::removeTranslator(BOBUIranslator *translationFile)
 {
     if (!translationFile)
         return false;
@@ -2235,7 +2235,7 @@ bool QCoreApplication::removeTranslator(QTranslator *translationFile)
     QCoreApplicationPrivate *d = self->d_func();
     QWriteLocker locker(&d->translateMutex);
     if (d->translators.removeAll(translationFile)) {
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
         locker.unlock();
         if (!self->closingDown()) {
             QEvent ev(QEvent::LanguageChange);
@@ -2292,7 +2292,7 @@ static void replacePercentN(QString *result, int n)
     sourceText is used in different roles within the same context. By
     default, it is \nullptr.
 
-    See the \l QTranslator and \l QObject::tr() documentation for
+    See the \l BOBUIranslator and \l QObject::tr() documentation for
     more information about contexts, disambiguations and comments.
 
     \a n is used in conjunction with \c %n to support plural forms.
@@ -2303,7 +2303,7 @@ static void replacePercentN(QString *result, int n)
     equivalent of \a sourceText.
 
     This function is not virtual. You can use alternative translation
-    techniques by subclassing \l QTranslator.
+    techniques by subclassing \l BOBUIranslator.
 
     \sa QObject::tr(), installTranslator(), removeTranslator(),
         {Internationalization and Translations}
@@ -2320,8 +2320,8 @@ QString QCoreApplication::translate(const char *context, const char *sourceText,
         QCoreApplicationPrivate *d = self->d_func();
         QReadLocker locker(&d->translateMutex);
         if (!d->translators.isEmpty()) {
-            QList<QTranslator*>::ConstIterator it;
-            QTranslator *translationFile;
+            QList<BOBUIranslator*>::ConstIterator it;
+            BOBUIranslator *translationFile;
             for (it = d->translators.constBegin(); it != d->translators.constEnd(); ++it) {
                 translationFile = *it;
                 result = translationFile->translate(context, sourceText, disambiguation, n);
@@ -2339,17 +2339,17 @@ QString QCoreApplication::translate(const char *context, const char *sourceText,
 }
 
 // Declared in qglobal.h
-QString qtTrId(const char *id, int n)
+QString bobuiTrId(const char *id, int n)
 {
     return QCoreApplication::translate(nullptr, id, nullptr, n);
 }
 
 QString qTrId(const char *id, int n)
 {
-    return qtTrId(id, n);
+    return bobuiTrId(id, n);
 }
 
-bool QCoreApplicationPrivate::isTranslatorInstalled(QTranslator *translator)
+bool QCoreApplicationPrivate::isTranslatorInstalled(BOBUIranslator *translator)
 {
     if (!QCoreApplication::self)
         return false;
@@ -2371,15 +2371,15 @@ QString QCoreApplication::translate(const char *context, const char *sourceText,
     return ret;
 }
 
-#endif //QT_NO_TRANSLATION
+#endif //BOBUI_NO_TRANSLATION
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 /*!
     Returns the directory that contains the application executable.
 
-    For example, if you have installed Qt in the \c{C:\Qt}
+    For example, if you have installed BobUI in the \c{C:\BobUI}
     directory, and you run the \c{regexp} example, this function will
-    return "C:/Qt/examples/tools/regexp".
+    return "C:/BobUI/examples/tools/regexp".
 
     On \macos and iOS this will point to the directory actually containing
     the executable, which may be inside an application bundle (if the
@@ -2417,7 +2417,7 @@ static QString qAppFileName()
     return QString();
 #  elif defined(Q_OS_LINUX)
     // this includes the Embedded Android builds
-    return QFile::decodeName(qt_readlink("/proc/self/exe"));
+    return QFile::decodeName(bobui_readlink("/proc/self/exe"));
 #  elif defined(AT_EXECPATH)
     // seen on FreeBSD, but I suppose the other BSDs could adopt this API
     char execfn[PATH_MAX];
@@ -2436,9 +2436,9 @@ static QString qAppFileName()
 /*!
     Returns the file path of the application executable.
 
-    For example, if you have installed Qt in the \c{/usr/local/qt}
+    For example, if you have installed BobUI in the \c{/usr/local/bobui}
     directory, and you run the \c{regexp} example, this function will
-    return "/usr/local/qt/examples/tools/regexp/regexp".
+    return "/usr/local/bobui/examples/tools/regexp/regexp".
 
     \warning On Linux, this function will try to get the path from the
     \c {/proc} file system. If that fails, it assumes that \c
@@ -2505,7 +2505,7 @@ QString QCoreApplication::applicationFilePath()
     }
     return QString();
 }
-#endif // !QT_BOOTSTRAPPED
+#endif // !BOBUI_BOOTSTRAPPED
 
 /*!
     \since 4.4
@@ -2651,7 +2651,7 @@ void QCoreApplication::setOrganizationName(const QString &orgName)
     if (coreappdata()->orgName == orgName)
         return;
     coreappdata()->orgName = orgName;
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     if (QCoreApplication::self)
         emit QCoreApplication::self->organizationNameChanged();
 #endif
@@ -2688,7 +2688,7 @@ void QCoreApplication::setOrganizationDomain(const QString &orgDomain)
     if (coreappdata()->orgDomain == orgDomain)
         return;
     coreappdata()->orgDomain = orgDomain;
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     if (QCoreApplication::self)
         emit QCoreApplication::self->organizationDomainChanged();
 #endif
@@ -2703,12 +2703,12 @@ QString QCoreApplication::organizationDomain()
     \property QCoreApplication::applicationName
     \brief the name of this application
 
-    The application name is used in various Qt classes and modules,
+    The application name is used in various BobUI classes and modules,
     most prominently in \l{QSettings} when it is constructed using the default constructor.
     Other uses are in formatted logging output (see \l{qSetMessagePattern()}),
-    in output by \l{QCommandLineParser}, in \l{QTemporaryDir} and \l{QTemporaryFile}
+    in output by \l{QCommandLineParser}, in \l{BOBUIemporaryDir} and \l{BOBUIemporaryFile}
     default paths, and in some file locations of \l{QStandardPaths}.
-    \l{Qt D-Bus}, \l{Accessibility}, and the XCB platform integration make use
+    \l{BobUI D-Bus}, \l{Accessibility}, and the XCB platform integration make use
     of the application name, too.
 
     If not set, the application name defaults to the executable name.
@@ -2730,7 +2730,7 @@ void QCoreApplication::setApplicationName(const QString &application)
     if (coreappdata()->application == newAppName)
         return;
     coreappdata()->application = newAppName;
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     if (QCoreApplication::self)
         emit QCoreApplication::self->applicationNameChanged();
 #endif
@@ -2747,7 +2747,7 @@ QString QCoreApplication::applicationName()
     \brief the version of this application
 
     If not set, the application version defaults to a platform-specific value
-    determined from the main application executable or package (since Qt 5.9):
+    determined from the main application executable or package (since BobUI 5.9):
 
     \table
     \header
@@ -2783,7 +2783,7 @@ void QCoreApplication::setApplicationVersion(const QString &version)
     if (coreappdata()->applicationVersion == newVersion)
         return;
     coreappdata()->applicationVersion = newVersion;
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     if (QCoreApplication::self)
         emit QCoreApplication::self->applicationVersionChanged();
 #endif
@@ -2794,18 +2794,18 @@ QString QCoreApplication::applicationVersion()
     return coreappdata() ? coreappdata()->applicationVersion : QString();
 }
 
-#if QT_CONFIG(permissions) || defined(Q_QDOC)
+#if BOBUI_CONFIG(permissions) || defined(Q_QDOC)
 
 /*!
     Checks the status of the given \a permission
 
-    If the result is Qt::PermissionStatus::Undetermined then permission should be
+    If the result is BobUI::PermissionStatus::Undetermined then permission should be
     requested via requestPermission() to determine the user's intent.
 
     \since 6.5
     \sa requestPermission(), {Application Permissions}
 */
-Qt::PermissionStatus QCoreApplication::checkPermission(const QPermission &permission)
+BobUI::PermissionStatus QCoreApplication::checkPermission(const QPermission &permission)
 {
     return QPermissions::Private::checkPermission(permission);
 }
@@ -2885,12 +2885,12 @@ Qt::PermissionStatus QCoreApplication::checkPermission(const QPermission &permis
     (which may be \c nullptr).
 */
 void QCoreApplication::requestPermissionImpl(const QPermission &requestedPermission,
-    QtPrivate::QSlotObjectBase *slotObjRaw, const QObject *context)
+    BobUIPrivate::QSlotObjectBase *slotObjRaw, const QObject *context)
 {
-    QtPrivate::SlotObjUniquePtr slotObj{slotObjRaw}; // adopts
+    BobUIPrivate::SlotObjUniquePtr slotObj{slotObjRaw}; // adopts
     Q_ASSERT(slotObj);
 
-    if (!QThread::isMainThread()) {
+    if (!BOBUIhread::isMainThread()) {
         qCWarning(lcPermissions, "Permissions can only be requested from the GUI (main) thread");
         return;
     }
@@ -2898,7 +2898,7 @@ void QCoreApplication::requestPermissionImpl(const QPermission &requestedPermiss
     class PermissionReceiver : public QObject
     {
     public:
-        explicit PermissionReceiver(QtPrivate::SlotObjUniquePtr &&slotObject, const QObject *context)
+        explicit PermissionReceiver(BobUIPrivate::SlotObjUniquePtr &&slotObject, const QObject *context)
             : slotObject(std::move(slotObject)), context(context ? context : this)
         {
             Q_ASSERT(this->context);
@@ -2916,7 +2916,7 @@ void QCoreApplication::requestPermissionImpl(const QPermission &requestedPermiss
         }
 
     private:
-        QtPrivate::SlotObjUniquePtr slotObject;
+        BobUIPrivate::SlotObjUniquePtr slotObject;
         QPointer<const QObject> context;
     };
 
@@ -2924,11 +2924,11 @@ void QCoreApplication::requestPermissionImpl(const QPermission &requestedPermiss
     auto receiver = std::make_shared<PermissionReceiver>(std::move(slotObj), context);
 
     QPermissions::Private::requestPermission(requestedPermission,
-                         [=, receiver = std::move(receiver)](Qt::PermissionStatus status) mutable {
-        if (status == Qt::PermissionStatus::Undetermined) {
+                         [=, receiver = std::move(receiver)](BobUI::PermissionStatus status) mutable {
+        if (status == BobUI::PermissionStatus::Undetermined) {
             Q_ASSERT_X(false, "QPermission",
                 "Internal error: requestPermission() should never return Undetermined");
-            status = Qt::PermissionStatus::Denied;
+            status = BobUI::PermissionStatus::Denied;
         }
 
         if (QCoreApplication::self) {
@@ -2938,14 +2938,14 @@ void QCoreApplication::requestPermissionImpl(const QPermission &requestedPermiss
             QMetaObject::invokeMethod(receiverObject,
                                       [receiver = std::move(receiver), permission] {
                 receiver->finalizePermissionRequest(permission);
-            }, Qt::QueuedConnection);
+            }, BobUI::QueuedConnection);
         }
     });
 }
 
-#endif // QT_CONFIG(permissions)
+#endif // BOBUI_CONFIG(permissions)
 
-#if QT_CONFIG(library)
+#if BOBUI_CONFIG(library)
 static QStringList libraryPathsLocked();
 
 /*!
@@ -2959,23 +2959,23 @@ static QStringList libraryPathsLocked();
     to make it known a QCoreApplication has to be constructed as it will
     use \c {argv[0]} to find it.
 
-    Qt provides default library paths, but they can also be set using
-    a \l{Using qt.conf}{qt.conf} file. Paths specified in this file
-    will override default values. Note that if the qt.conf file is in
+    BobUI provides default library paths, but they can also be set using
+    a \l{Using bobui.conf}{bobui.conf} file. Paths specified in this file
+    will override default values. Note that if the bobui.conf file is in
     the directory of the application executable, it may not be found
     until a QCoreApplication is created. If it is not found when calling
     this function, the default library paths will be used.
 
     The list will include the installation directory for plugins if
     it exists (the default installation directory for plugins is \c
-    INSTALL/plugins, where \c INSTALL is the directory where Qt was
-    installed). The colon separated entries of the \c QT_PLUGIN_PATH
+    INSTALL/plugins, where \c INSTALL is the directory where BobUI was
+    installed). The colon separated entries of the \c BOBUI_PLUGIN_PATH
     environment variable are always added. The plugin installation
     directory (and its existence) may change when the directory of
     the application executable becomes known.
 
     \sa setLibraryPaths(), addLibraryPath(), removeLibraryPath(), QLibrary,
-        {How to Create Qt Plugins}
+        {How to Create BobUI Plugins}
 */
 QStringList QCoreApplication::libraryPaths()
 {
@@ -2997,7 +2997,7 @@ static QStringList libraryPathsLocked()
 
         auto setPathsFromEnv = [&](QString libPathEnv) {
             if (!libPathEnv.isEmpty()) {
-                QStringList paths = libPathEnv.split(QDir::listSeparator(), Qt::SkipEmptyParts);
+                QStringList paths = libPathEnv.split(QDir::listSeparator(), BobUI::SkipEmptyParts);
                 for (QStringList::const_iterator it = paths.constBegin(); it != paths.constEnd(); ++it) {
                     QString canonicalPath = QDir(*it).canonicalPath();
                     if (!canonicalPath.isEmpty()
@@ -3007,7 +3007,7 @@ static QStringList libraryPathsLocked()
                 }
             }
         };
-        setPathsFromEnv(qEnvironmentVariable("QT_PLUGIN_PATH"));
+        setPathsFromEnv(qEnvironmentVariable("BOBUI_PLUGIN_PATH"));
 #ifdef Q_OS_DARWIN
         // Check the main bundle's PlugIns directory as this is a standard location for Apple OSes.
         // Note that the QLibraryInfo::PluginsPath below will coincidentally be the same as this value
@@ -3093,7 +3093,7 @@ void QCoreApplication::setLibraryPaths(const QStringList &paths)
 
   The default path list consists of one or two entries. The first is the
   installation directory for plugins, which is \c INSTALL/plugins, where \c
-  INSTALL is the directory where Qt was installed. The second is the
+  INSTALL is the directory where BobUI was installed. The second is the
   application's own directory (\b not the current directory), but only after
   the QCoreApplication object is instantiated.
 
@@ -3175,9 +3175,9 @@ void QCoreApplication::removeLibraryPath(const QString &path)
     QFactoryLoader::refreshAll();
 }
 
-#endif // QT_CONFIG(library)
+#endif // BOBUI_CONFIG(library)
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 
 /*!
     Installs an event filter \a filterObj for all native events
@@ -3188,9 +3188,9 @@ void QCoreApplication::removeLibraryPath(const QString &path)
 
     The QAbstractNativeEventFilter::nativeEventFilter() function should
     return true if the event should be filtered, i.e. stopped. It should
-    return false to allow normal Qt processing to continue: the native
+    return false to allow normal BobUI processing to continue: the native
     event can then be translated into a QEvent and handled by the standard
-    Qt \l{QEvent} {event} filtering, e.g. QObject::installEventFilter().
+    BobUI \l{QEvent} {event} filtering, e.g. QObject::installEventFilter().
 
     If multiple event filters are installed, the filter that was
     installed last is activated first.
@@ -3199,7 +3199,7 @@ void QCoreApplication::removeLibraryPath(const QString &path)
     i.e. MSG or XCB event structs.
 
     \note Native event filters will be disabled in the application when the
-    Qt::AA_PluginApplication attribute is set.
+    BobUI::AA_PluginApplication attribute is set.
 
     For maximum portability, you should always try to use QEvent
     and QObject::installEventFilter() whenever possible.
@@ -3210,8 +3210,8 @@ void QCoreApplication::removeLibraryPath(const QString &path)
 */
 void QCoreApplication::installNativeEventFilter(QAbstractNativeEventFilter *filterObj)
 {
-    if (QCoreApplication::testAttribute(Qt::AA_PluginApplication)) {
-        qWarning("Native event filters are not applied when the Qt::AA_PluginApplication attribute is set");
+    if (QCoreApplication::testAttribute(BobUI::AA_PluginApplication)) {
+        qWarning("Native event filters are not applied when the BobUI::AA_PluginApplication attribute is set");
         return;
     }
 
@@ -3261,16 +3261,16 @@ QAbstractEventDispatcher *QCoreApplication::eventDispatcher()
 */
 void QCoreApplication::setEventDispatcher(QAbstractEventDispatcher *eventDispatcher)
 {
-    QThread *mainThread = QCoreApplicationPrivate::theMainThread.loadAcquire();
+    BOBUIhread *mainThread = QCoreApplicationPrivate::theMainThread.loadAcquire();
     if (!mainThread)
-        mainThread = QThread::currentThread(); // will also setup theMainThread
+        mainThread = BOBUIhread::currentThread(); // will also setup theMainThread
     mainThread->setEventDispatcher(eventDispatcher);
 }
 
-#endif // QT_NO_QOBJECT
+#endif // BOBUI_NO_QOBJECT
 
 /*!
-    \macro Q_COREAPP_STARTUP_FUNCTION(QtStartUpFunction ptr)
+    \macro Q_COREAPP_STARTUP_FUNCTION(BobUIStartUpFunction ptr)
     \since 5.1
     \relates QCoreApplication
     \reentrant
@@ -3299,7 +3299,7 @@ void QCoreApplication::setEventDispatcher(QAbstractEventDispatcher *eventDispatc
 */
 
 /*!
-    \fn void qAddPostRoutine(QtCleanUpFunction ptr)
+    \fn void qAddPostRoutine(BobUICleanUpFunction ptr)
     \threadsafe
     \relates QCoreApplication
 
@@ -3323,7 +3323,7 @@ void QCoreApplication::setEventDispatcher(QAbstractEventDispatcher *eventDispatc
     routine was called before the module was unloaded.
 
     For modules and libraries, using a reference-counted
-    initialization manager or Qt's parent-child deletion mechanism may
+    initialization manager or BobUI's parent-child deletion mechanism may
     be better. Here is an example of a private class that uses the
     parent-child mechanism to call a cleanup function at the right
     time:
@@ -3333,13 +3333,13 @@ void QCoreApplication::setEventDispatcher(QAbstractEventDispatcher *eventDispatc
     By selecting the right parent object, this can often be made to
     clean up the module's data at the right moment.
 
-    \note This function has been thread-safe since Qt 5.10.
+    \note This function has been thread-safe since BobUI 5.10.
 
     \sa qRemovePostRoutine()
 */
 
 /*!
-    \fn void qRemovePostRoutine(QtCleanUpFunction ptr)
+    \fn void qRemovePostRoutine(BobUICleanUpFunction ptr)
     \threadsafe
     \relates QCoreApplication
     \since 5.3
@@ -3349,7 +3349,7 @@ void QCoreApplication::setEventDispatcher(QAbstractEventDispatcher *eventDispatc
     must have been previously added to the list by a call to
     qAddPostRoutine(), otherwise this function has no effect.
 
-    \note This function has been thread-safe since Qt 5.10.
+    \note This function has been thread-safe since BobUI 5.10.
 
     \sa qAddPostRoutine()
 */
@@ -3382,20 +3382,20 @@ void *QCoreApplication::resolveInterface(const char *name, int revision) const
 {
 #if defined(Q_OS_ANDROID)
     // The QAndroidApplication is wrongly using static methods for
-    // its native interface (QTBUG-128796). Until we fix that we at
+    // its native interface (BOBUIBUG-128796). Until we fix that we at
     // least want the preferred way of resolving a native interface
     // to work, so provide a minimal subclass of the interface.
     using namespace QNativeInterface;
     struct AndroidApplication : public QAndroidApplication {};
     static AndroidApplication androidApplication;
-    QT_NATIVE_INTERFACE_RETURN_IF(QAndroidApplication, &androidApplication);
+    BOBUI_NATIVE_INTERFACE_RETURN_IF(QAndroidApplication, &androidApplication);
 #endif
     Q_UNUSED(name); Q_UNUSED(revision);
     return nullptr;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 #include "moc_qcoreapplication.cpp"
 #endif

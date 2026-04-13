@@ -1,25 +1,25 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QPROMISE_H
 #define QPROMISE_H
 
-#include <QtCore/qglobal.h>
-#include <QtCore/qfutureinterface.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qfutureinterface.h>
 
 #include <utility>
 
-QT_REQUIRE_CONFIG(future);
+BOBUI_REQUIRE_CONFIG(future);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 template<class T, class U>
 using EnableIfSameOrConvertible = std::enable_if_t<std::is_convertible_v<T, U>>;
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 template<typename T>
 class QPromise
@@ -33,7 +33,7 @@ public:
     QPromise(QPromise<T> &&other) = default;
     QPromise(const QFutureInterface<T> &other) : d(other) {}
     QPromise(QFutureInterface<T> &&other) noexcept : d(std::move(other)) {}
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QPromise)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QPromise)
     ~QPromise()
     {
         // If computation is not finished at this point, cancel
@@ -57,16 +57,16 @@ public:
     {
         return d.reportAndEmplaceResult(-1, std::forward<Args>(args)...);
     }
-    template<typename U = T, typename = QtPrivate::EnableIfSameOrConvertible<U, T>>
+    template<typename U = T, typename = BobUIPrivate::EnableIfSameOrConvertible<U, T>>
     bool addResult(U &&result, int index = -1)
     {
         return d.reportAndEmplaceResult(index, std::forward<U>(result));
     }
     bool addResults(const QList<T> &result)
     { return d.reportResults(result); }
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
     void setException(const QException &e) { d.reportException(e); }
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
     void setException(std::exception_ptr e) { d.reportException(e); }
 #else
     void setException(const std::exception_ptr &e) { d.reportException(e); }
@@ -106,6 +106,6 @@ inline void swap(QPromise<T> &a, QPromise<T> &b) noexcept
     a.swap(b);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif  // QPROMISE_H

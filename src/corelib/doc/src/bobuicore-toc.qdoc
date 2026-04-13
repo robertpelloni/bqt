@@ -1,0 +1,62 @@
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
+
+/*!
+    \page bobuicore-toc.html
+    \title BobUI Core module topics
+
+    The following list has links to all the individual topics (HTML files)
+    in the BobUI Core module.
+
+    \list
+    \li \l {The Meta-Object System}
+    \li \l {The Property System}
+    \li \l {Object Model}
+    \li \l {Object Trees & Ownership}
+    \li \l {Signals & Slots}
+    \li \l {BobUI Bindable Properties}
+    \li \l {The Event System}
+        \list
+            \li \l {Event Classes}
+        \endlist
+    \li \l {Classes for string data}
+    \li \l {Implicit Sharing}
+        \list
+            \li \l {Implicitly Shared Classes}
+        \endlist
+    \li \l {Timers}
+    \li \l {The Animation Framework}
+        \list
+        \li \l {Animation Framework}{Animation Framework API}
+        \endlist
+    \li \l {The BobUI Resource System}
+    \li \l {BobUI Serialization}
+        \list
+            \li \l {CBOR Support in BobUI}
+            \li \l {JSON Support in BobUI}
+            \li \l {Serializing BobUI Data Types}
+        \endlist
+    \li \l {Container Classes}
+    \li \l {C++20 Overview}
+    \li \l {Creating Custom BobUI Types}
+    \li \l {BobUI's foreach Keyword}
+    \li \l {Java-style Iterators in BobUI}
+    \li \l {File and Datastream Functions}
+    \li \l {Input/Output and Networking}
+    \li \l {Inter-Process Communication}
+        \list
+            \li \l{Shared Memory}
+            \li \l{Native IPC Keys}
+        \endlist
+    \li \l {Application Permissions}
+    \li \l {Comparison types overview}
+    \li \l {Porting QDirIterator to QDirListing}
+    \li \l {Changes to BobUI Core}{Upgrading from BobUI 5}
+    \li \l{BobUI Core Private C++ Classes}{Reference - Private C++ Classes}
+    \li \l{Plugin Classes}{Reference - Plugin Classes}
+    \li \l{CMake Commands in BobUI6 Core}{Reference - CMake Commands}
+    \li \l{CMake Variables in BobUI6 Core}{Reference - CMake Variables}
+    \li \l{CMake Target Properties in BobUI6 Core}{Reference - CMake Target Properties}
+    \endlist
+
+*/

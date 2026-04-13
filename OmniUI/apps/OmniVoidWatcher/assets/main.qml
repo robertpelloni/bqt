@@ -1,6 +1,6 @@
-import QtQuick 2.15
-import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.15
+import BobUIQuick 2.15
+import BobUIQuick.Controls 2.15
+import BobUIQuick.Layouts 1.15
 import Omni.Void 1.0
 
 ApplicationWindow {
@@ -72,7 +72,7 @@ ApplicationWindow {
             Label {
                 text: "Your mass has been added to the singularity."
                 color: "#71717a"
-                Layout.alignment: Qt.AlignHCenter
+                Layout.alignment: BobUI.AlignHCenter
             }
         }
     }
@@ -227,12 +227,12 @@ ApplicationWindow {
                 anchors.right: parent.right
                 anchors.margins: 10
 
-                Label { text: "Recently Consumed:"; color: "#52525b"; font.bold: true; Layout.alignment: Qt.AlignRight }
+                Label { text: "Recently Consumed:"; color: "#52525b"; font.bold: true; Layout.alignment: BobUI.AlignRight }
 
                 ListView {
                     Layout.preferredWidth: 200
                     Layout.preferredHeight: 150
-                    Layout.alignment: Qt.AlignRight
+                    Layout.alignment: BobUI.AlignRight
                     model: OmniAbyss.consumedEntities
                     interactive: false
 

@@ -24,7 +24,7 @@
        <number>1</number>
       </property>
       <property name="orientation">
-       <enum>Qt::Vertical</enum>
+       <enum>BobUI::Vertical</enum>
       </property>
       <widget class="QLabel" name="label">
        <property name="frameShape">
@@ -42,7 +42,7 @@
         <number>1</number>
        </property>
        <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+        <enum>BobUI::Horizontal</enum>
        </property>
        <widget class="QLabel" name="label_2">
         <property name="cursor">
@@ -81,7 +81,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="QToolBar" name="mainToolBar">
+  <widget class="BOBUIoolBar" name="mainToolBar">
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>

@@ -1,14 +1,14 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "qwasmfiledialoghelper.h"
 
-#include <QtCore/QDebug>
-#include <QtCore/QUrl>
-#include <QtGui/private/qwasmlocalfileaccess_p.h>
-#include <QtCore/private/qwasmlocalfileengine_p.h>
+#include <BobUICore/QDebug>
+#include <BobUICore/QUrl>
+#include <BobUIGui/private/qwasmlocalfileaccess_p.h>
+#include <BobUICore/private/qwasmlocalfileengine_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QWasmFileDialogHelper::QWasmFileDialogHelper()
     : m_eventLoop(nullptr)
@@ -71,7 +71,7 @@ void QWasmFileDialogHelper::exec()
     m_eventLoop = nullptr;
 }
 
-bool QWasmFileDialogHelper::show(Qt::WindowFlags flags, Qt::WindowModality modality, QWindow *parent)
+bool QWasmFileDialogHelper::show(BobUI::WindowFlags flags, BobUI::WindowModality modality, QWindow *parent)
 {
     Q_UNUSED(flags)
     Q_UNUSED(modality)
@@ -154,4 +154,4 @@ void QWasmFileDialogHelper::onSaveDialogClosed(bool accepted, qstdweb::FileSyste
         m_eventLoop->quit();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

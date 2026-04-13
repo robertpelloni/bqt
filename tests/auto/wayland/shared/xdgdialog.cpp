@@ -1,5 +1,5 @@
 // Copyright (C) 2024 David Redondo <kde@david-redondo.de>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 #include "xdgdialog.h"
 
 #include "xdgshell.h"
@@ -7,7 +7,7 @@
 namespace MockCompositor {
 
 XdgDialog::XdgDialog(XdgWmDialog *wm, XdgToplevel *toplevel, wl_client *client, int id, int version)
-    : QtWaylandServer::xdg_dialog_v1(client, id, version),
+    : BobUIWaylandServer::xdg_dialog_v1(client, id, version),
       toplevel(toplevel),
       modal(false),
       m_wm(wm)
@@ -39,7 +39,7 @@ void XdgDialog::xdg_dialog_v1_destroy_resource(Resource *resource)
 }
 
 XdgWmDialog::XdgWmDialog(CoreCompositor *compositor, int version)
-    : QtWaylandServer::xdg_wm_dialog_v1(compositor->m_display, version)
+    : BobUIWaylandServer::xdg_wm_dialog_v1(compositor->m_display, version)
 {
 }
 

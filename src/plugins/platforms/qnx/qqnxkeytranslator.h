@@ -1,75 +1,75 @@
 // Copyright (C) 2011 - 2012 Research In Motion
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QQNXKEYTRANSLATOR_H
 #define QQNXKEYTRANSLATOR_H
 
 #include <sys/keycodes.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-int qtKeyForPrivateUseQnxKey( int key )
+int bobuiKeyForPrivateUseQnxKey( int key )
 {
     switch (key) {
-    case KEYCODE_PAUSE:       return Qt::Key_Pause;
-    case KEYCODE_SCROLL_LOCK: return Qt::Key_ScrollLock;
-    case KEYCODE_PRINT:       return Qt::Key_Print;
-    case KEYCODE_SYSREQ:      return Qt::Key_SysReq;
+    case KEYCODE_PAUSE:       return BobUI::Key_Pause;
+    case KEYCODE_SCROLL_LOCK: return BobUI::Key_ScrollLock;
+    case KEYCODE_PRINT:       return BobUI::Key_Print;
+    case KEYCODE_SYSREQ:      return BobUI::Key_SysReq;
 //    case KEYCODE_BREAK:
-    case KEYCODE_ESCAPE:      return Qt::Key_Escape;
-    case KEYCODE_BACKSPACE:   return Qt::Key_Backspace;
-    case KEYCODE_TAB:         return Qt::Key_Tab;
-    case KEYCODE_BACK_TAB:    return Qt::Key_Backtab;
-    case KEYCODE_RETURN:      return Qt::Key_Return;
-    case KEYCODE_CAPS_LOCK:   return Qt::Key_CapsLock;
-    case KEYCODE_LEFT_SHIFT:  return Qt::Key_Shift;
-    case KEYCODE_RIGHT_SHIFT: return Qt::Key_Shift;
-    case KEYCODE_LEFT_CTRL:   return Qt::Key_Control;
-    case KEYCODE_RIGHT_CTRL:  return Qt::Key_Control;
-    case KEYCODE_LEFT_ALT:    return Qt::Key_Alt;
-    case KEYCODE_RIGHT_ALT:   return Qt::Key_Alt;
-    case KEYCODE_MENU:        return Qt::Key_Menu;
-    case KEYCODE_LEFT_HYPER:  return Qt::Key_Hyper_L;
-    case KEYCODE_RIGHT_HYPER: return Qt::Key_Hyper_R;
-    case KEYCODE_INSERT:      return Qt::Key_Insert;
-    case KEYCODE_HOME:        return Qt::Key_Home;
-    case KEYCODE_PG_UP:       return Qt::Key_PageUp;
-    case KEYCODE_DELETE:      return Qt::Key_Delete;
-    case KEYCODE_END:         return Qt::Key_End;
-    case KEYCODE_PG_DOWN:     return Qt::Key_PageDown;
-    case KEYCODE_LEFT:        return Qt::Key_Left;
-    case KEYCODE_RIGHT:       return Qt::Key_Right;
-    case KEYCODE_UP:          return Qt::Key_Up;
-    case KEYCODE_DOWN:        return Qt::Key_Down;
-    case KEYCODE_NUM_LOCK:    return Qt::Key_NumLock;
-    case KEYCODE_KP_PLUS:     return Qt::Key_Plus;
-    case KEYCODE_KP_MINUS:    return Qt::Key_Minus;
-    case KEYCODE_KP_MULTIPLY: return Qt::Key_Asterisk;
-    case KEYCODE_KP_DIVIDE:   return Qt::Key_Slash;
-    case KEYCODE_KP_ENTER:    return Qt::Key_Enter;
-    case KEYCODE_KP_HOME:     return Qt::Key_Home;
-    case KEYCODE_KP_UP:       return Qt::Key_Up;
-    case KEYCODE_KP_PG_UP:    return Qt::Key_PageUp;
-    case KEYCODE_KP_LEFT:     return Qt::Key_Left;
-    case KEYCODE_KP_FIVE:     return Qt::Key_Clear;
-    case KEYCODE_KP_RIGHT:    return Qt::Key_Right;
-    case KEYCODE_KP_END:      return Qt::Key_End;
-    case KEYCODE_KP_DOWN:     return Qt::Key_Down;
-    case KEYCODE_KP_PG_DOWN:  return Qt::Key_PageDown;
-    case KEYCODE_KP_INSERT:   return Qt::Key_Insert;
-    case KEYCODE_KP_DELETE:   return Qt::Key_Delete;
-    case KEYCODE_F1:          return Qt::Key_F1;
-    case KEYCODE_F2:          return Qt::Key_F2;
-    case KEYCODE_F3:          return Qt::Key_F3;
-    case KEYCODE_F4:          return Qt::Key_F4;
-    case KEYCODE_F5:          return Qt::Key_F5;
-    case KEYCODE_F6:          return Qt::Key_F6;
-    case KEYCODE_F7:          return Qt::Key_F7;
-    case KEYCODE_F8:          return Qt::Key_F8;
-    case KEYCODE_F9:          return Qt::Key_F9;
-    case KEYCODE_F10:         return Qt::Key_F10;
-    case KEYCODE_F11:         return Qt::Key_F11;
-    case KEYCODE_F12:         return Qt::Key_F12;
+    case KEYCODE_ESCAPE:      return BobUI::Key_Escape;
+    case KEYCODE_BACKSPACE:   return BobUI::Key_Backspace;
+    case KEYCODE_TAB:         return BobUI::Key_Tab;
+    case KEYCODE_BACK_TAB:    return BobUI::Key_Backtab;
+    case KEYCODE_RETURN:      return BobUI::Key_Return;
+    case KEYCODE_CAPS_LOCK:   return BobUI::Key_CapsLock;
+    case KEYCODE_LEFT_SHIFT:  return BobUI::Key_Shift;
+    case KEYCODE_RIGHT_SHIFT: return BobUI::Key_Shift;
+    case KEYCODE_LEFT_CTRL:   return BobUI::Key_Control;
+    case KEYCODE_RIGHT_CTRL:  return BobUI::Key_Control;
+    case KEYCODE_LEFT_ALT:    return BobUI::Key_Alt;
+    case KEYCODE_RIGHT_ALT:   return BobUI::Key_Alt;
+    case KEYCODE_MENU:        return BobUI::Key_Menu;
+    case KEYCODE_LEFT_HYPER:  return BobUI::Key_Hyper_L;
+    case KEYCODE_RIGHT_HYPER: return BobUI::Key_Hyper_R;
+    case KEYCODE_INSERT:      return BobUI::Key_Insert;
+    case KEYCODE_HOME:        return BobUI::Key_Home;
+    case KEYCODE_PG_UP:       return BobUI::Key_PageUp;
+    case KEYCODE_DELETE:      return BobUI::Key_Delete;
+    case KEYCODE_END:         return BobUI::Key_End;
+    case KEYCODE_PG_DOWN:     return BobUI::Key_PageDown;
+    case KEYCODE_LEFT:        return BobUI::Key_Left;
+    case KEYCODE_RIGHT:       return BobUI::Key_Right;
+    case KEYCODE_UP:          return BobUI::Key_Up;
+    case KEYCODE_DOWN:        return BobUI::Key_Down;
+    case KEYCODE_NUM_LOCK:    return BobUI::Key_NumLock;
+    case KEYCODE_KP_PLUS:     return BobUI::Key_Plus;
+    case KEYCODE_KP_MINUS:    return BobUI::Key_Minus;
+    case KEYCODE_KP_MULTIPLY: return BobUI::Key_Asterisk;
+    case KEYCODE_KP_DIVIDE:   return BobUI::Key_Slash;
+    case KEYCODE_KP_ENTER:    return BobUI::Key_Enter;
+    case KEYCODE_KP_HOME:     return BobUI::Key_Home;
+    case KEYCODE_KP_UP:       return BobUI::Key_Up;
+    case KEYCODE_KP_PG_UP:    return BobUI::Key_PageUp;
+    case KEYCODE_KP_LEFT:     return BobUI::Key_Left;
+    case KEYCODE_KP_FIVE:     return BobUI::Key_Clear;
+    case KEYCODE_KP_RIGHT:    return BobUI::Key_Right;
+    case KEYCODE_KP_END:      return BobUI::Key_End;
+    case KEYCODE_KP_DOWN:     return BobUI::Key_Down;
+    case KEYCODE_KP_PG_DOWN:  return BobUI::Key_PageDown;
+    case KEYCODE_KP_INSERT:   return BobUI::Key_Insert;
+    case KEYCODE_KP_DELETE:   return BobUI::Key_Delete;
+    case KEYCODE_F1:          return BobUI::Key_F1;
+    case KEYCODE_F2:          return BobUI::Key_F2;
+    case KEYCODE_F3:          return BobUI::Key_F3;
+    case KEYCODE_F4:          return BobUI::Key_F4;
+    case KEYCODE_F5:          return BobUI::Key_F5;
+    case KEYCODE_F6:          return BobUI::Key_F6;
+    case KEYCODE_F7:          return BobUI::Key_F7;
+    case KEYCODE_F8:          return BobUI::Key_F8;
+    case KEYCODE_F9:          return BobUI::Key_F9;
+    case KEYCODE_F10:         return BobUI::Key_F10;
+    case KEYCODE_F11:         return BobUI::Key_F11;
+    case KEYCODE_F12:         return BobUI::Key_F12;
 
     // See keycodes.h for more, but these are all the basics. And printables are already included.
 
@@ -80,7 +80,7 @@ int qtKeyForPrivateUseQnxKey( int key )
         break;
     }
 
-    return Qt::Key_unknown;
+    return BobUI::Key_unknown;
 }
 
 QString keyStringForPrivateUseQnxKey( int key )
@@ -125,6 +125,6 @@ bool isKeypadKey( int key )
     return false;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QQNXKEYTRANSLATOR_H

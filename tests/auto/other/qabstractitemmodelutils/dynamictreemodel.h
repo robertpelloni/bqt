@@ -1,13 +1,13 @@
 // Copyright (C) 2009 Stephen Kelly <steveire@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef DYNAMICTREEMODEL_H
 #define DYNAMICTREEMODEL_H
 
-#include <QtCore/QAbstractItemModel>
+#include <BobUICore/QAbstractItemModel>
 
-#include <QtCore/QHash>
-#include <QtCore/QList>
+#include <BobUICore/QHash>
+#include <BobUICore/QList>
 
 class DynamicTreeModel : public QAbstractItemModel
 {
@@ -21,7 +21,7 @@ public:
     int rowCount(const QModelIndex &index = QModelIndex()) const override;
     int columnCount(const QModelIndex &index = QModelIndex()) const override;
 
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    QVariant data(const QModelIndex &index, int role = BobUI::DisplayRole) const override;
 
     void clear();
 

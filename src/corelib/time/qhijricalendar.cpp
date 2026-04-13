@@ -1,18 +1,18 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qglobal.h"
 #include "qhijricalendar_p.h"
 #include "qhijricalendar_data_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \since 5.14
     \internal
 
     \class QHijriCalendar
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QHijriCalendar class supports Islamic (Hijri) calendar implementations.
 
     \section1 Islamic Calendar System
@@ -79,12 +79,12 @@ int QHijriCalendar::daysInYear(int year) const
 
 const QCalendarLocale *QHijriCalendar::localeMonthIndexData() const
 {
-    return QtPrivate::Hijri::locale_data;
+    return BobUIPrivate::Hijri::locale_data;
 }
 
 const char16_t *QHijriCalendar::localeMonthData() const
 {
-    return QtPrivate::Hijri::months_data;
+    return BobUIPrivate::Hijri::months_data;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

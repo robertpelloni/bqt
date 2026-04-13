@@ -1,12 +1,12 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of Qt Designer.  This header
+// This file is not part of the BobUI API.  It exists for the convenience
+// of BobUI Designer.  This header
 // file may change from version to version without notice, or even be removed.
 //
 // We mean it.
@@ -23,12 +23,12 @@
 #include <qxmlstream.h>
 #include <qglobal.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #define QDESIGNER_UILIB_EXTERN Q_DECL_EXPORT
 #define QDESIGNER_UILIB_IMPORT Q_DECL_IMPORT
 
-#if defined(QT_DESIGNER_STATIC) || defined(QT_UIC) || defined(QT_UIC3)
+#if defined(BOBUI_DESIGNER_STATIC) || defined(BOBUI_UIC) || defined(BOBUI_UIC3)
 #  define QDESIGNER_UILIB_EXPORT
 #elif defined(QDESIGNER_UILIB_LIBRARY)
 #  define QDESIGNER_UILIB_EXPORT QDESIGNER_UILIB_EXTERN
@@ -2936,6 +2936,6 @@ private:
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // UI4_H

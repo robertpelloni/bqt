@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDYNAMICDOCKWIDGET_P_H
 #define QDYNAMICDOCKWIDGET_P_H
@@ -9,26 +9,26 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
-#include "QtWidgets/qstyleoption.h"
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
+#include "BobUIWidgets/qstyleoption.h"
 #include "private/qwidget_p.h"
-#include "QtWidgets/qboxlayout.h"
-#include "QtWidgets/qdockwidget.h"
+#include "BobUIWidgets/qboxlayout.h"
+#include "BobUIWidgets/qdockwidget.h"
 
-#if QT_CONFIG(tabwidget)
-#  include "QtWidgets/qtabwidget.h"
+#if BOBUI_CONFIG(tabwidget)
+#  include "BobUIWidgets/bobuiabwidget.h"
 #endif
 
-QT_REQUIRE_CONFIG(dockwidget);
+BOBUI_REQUIRE_CONFIG(dockwidget);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QGridLayout;
 class QWidgetResizeHandler;
@@ -73,21 +73,21 @@ public:
     void toggleTopLevel();
 
     void updateButtons();
-    static Qt::DockWidgetArea toDockWidgetArea(QInternal::DockPosition pos);
+    static BobUI::DockWidgetArea toDockWidgetArea(QInternal::DockPosition pos);
 
-#if QT_CONFIG(tabwidget)
-    QTabWidget::TabPosition tabPosition = QTabWidget::North;
+#if BOBUI_CONFIG(tabwidget)
+    BOBUIabWidget::TabPosition tabPosition = BOBUIabWidget::North;
 #endif
 
     DragState *state = nullptr;
 
     QDockWidget::DockWidgetFeatures features = QDockWidget::DockWidgetClosable
         | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable;
-    Qt::DockWidgetAreas allowedAreas = Qt::AllDockWidgetAreas;
+    BobUI::DockWidgetAreas allowedAreas = BobUI::AllDockWidgetAreas;
 
     QFont font;
 
-#ifndef QT_NO_ACTION
+#ifndef BOBUI_NO_ACTION
     QAction *toggleViewAction = nullptr;
 #endif
 
@@ -193,6 +193,6 @@ inline QDockWidgetLayout *QDockWidgetItem::dockWidgetLayout() const
     return nullptr;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QDYNAMICDOCKWIDGET_P_H

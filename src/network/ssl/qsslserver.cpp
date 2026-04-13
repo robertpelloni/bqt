@@ -1,19 +1,19 @@
-// Copyright (C) 2022 The Qt Company Ltd.
+// Copyright (C) 2022 The BobUI Company Ltd.
 // Copyright (C) 2016 Kurt Pattyn <pattyn.kurt@gmail.com>.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 /*!
     \class QSslServer
 
     \ingroup network
     \ingroup ssl
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
     \since 6.4
 
     \brief Implements an encrypted, secure TCP server over TLS.
 
-    Class to use in place of QTcpServer to implement TCP server using
+    Class to use in place of BOBUIcpServer to implement TCP server using
     Transport Layer Security (TLS).
 
     To configure the secure handshake settings, use the applicable setter
@@ -22,8 +22,8 @@
     connections handled will use these settings.
 
     To start listening to incoming connections use the listen() function
-    inherited from QTcpServer. Other settings can be configured by using the
-    setter functions inherited from the QTcpServer class.
+    inherited from BOBUIcpServer. Other settings can be configured by using the
+    setter functions inherited from the BOBUIcpServer class.
 
     Connect to the signals of this class to respond to the incoming connection
     attempts. They are the same as the signals on QSslSocket, but also
@@ -36,7 +36,7 @@
     still a good idea to destroy the object explicitly when you are done
     with it, to avoid wasting memory.
 
-    \sa QTcpServer, QSslConfiguration, QSslSocket
+    \sa BOBUIcpServer, QSslConfiguration, QSslSocket
 */
 
 /*!
@@ -74,7 +74,7 @@
     \a errors contains one or more errors that prevent QSslSocket from
     verifying the identity of the peer.
 
-    \note You cannot use Qt::QueuedConnection when connecting to this signal,
+    \note You cannot use BobUI::QueuedConnection when connecting to this signal,
     or calling QSslSocket::ignoreSslErrors() will have no effect.
 
     \sa peerVerifyError()
@@ -90,13 +90,13 @@
     socket handshake has not reached encrypted state. But if the \a socket is
     successfully encrypted, it is inserted into the QSslServer's pending
     connections queue. When the user has called
-    QTcpServer::nextPendingConnection() it is the user's responsibility to
+    BOBUIcpServer::nextPendingConnection() it is the user's responsibility to
     destroy the \a socket or the \a socket will not be destroyed until the
     QSslServer object is destroyed. If an error occurs on a \a socket after
     it has been inserted into the pending connections queue, this signal
     will not be emitted, and the \a socket will not be removed or destroyed.
 
-    \note You cannot use Qt::QueuedConnection when connecting to this signal,
+    \note You cannot use BobUI::QueuedConnection when connecting to this signal,
     or the \a socket will have been already destroyed when the signal is
     handled.
 
@@ -182,10 +182,10 @@
 #include "qsslserver.h"
 #include "qsslserver_p.h"
 
-#include <QtNetwork/QSslSocket>
-#include <QtNetwork/QSslCipher>
+#include <BobUINetwork/QSslSocket>
+#include <BobUINetwork/QSslCipher>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \internal
@@ -199,7 +199,7 @@ QSslServerPrivate::QSslServerPrivate() :
     Constructs a new QSslServer with the given \a parent.
 */
 QSslServer::QSslServer(QObject *parent) :
-    QTcpServer(QAbstractSocket::TcpSocket, *new QSslServerPrivate, parent)
+    BOBUIcpServer(QAbstractSocket::TcpSocket, *new QSslServerPrivate, parent)
 {
 }
 
@@ -340,7 +340,7 @@ void QSslServerPrivate::initializeHandshakeProcess(QSslSocket *socket)
                 // QObject dtor, but we only use the pointer value!
                 removeSocketData(quintptr(obj));
             });
-    auto it = socketData.emplace(quintptr(socket), readyRead, destroyed, std::make_shared<QTimer>());
+    auto it = socketData.emplace(quintptr(socket), readyRead, destroyed, std::make_shared<BOBUIimer>());
     it->timeoutTimer->setSingleShot(true);
     it->timeoutTimer->callOnTimeout(q, [this, socket]() { handleHandshakeTimedOut(socket); });
     it->timeoutTimer->setInterval(handshakeTimeout);
@@ -361,7 +361,7 @@ void QSslServerPrivate::removeSocketData(quintptr socket)
 int QSslServerPrivate::totalPendingConnections() const
 {
     // max pending connections is int, so this cannot exceed that
-    return QTcpServerPrivate::totalPendingConnections() + int(socketData.size());
+    return BOBUIcpServerPrivate::totalPendingConnections() + int(socketData.size());
 }
 
 void QSslServerPrivate::checkClientHelloAndContinue()
@@ -408,6 +408,6 @@ void QSslServerPrivate::handleHandshakeTimedOut(QSslSocket *socket)
         q->resumeAccepting();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsslserver.cpp"

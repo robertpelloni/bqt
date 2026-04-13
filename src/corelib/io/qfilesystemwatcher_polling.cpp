@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qfilesystemwatcher_polling_p.h"
 
-#include <QtCore/qlatin1stringview.h>
-#include <QtCore/qscopeguard.h>
+#include <BobUICore/qlatin1stringview.h>
+#include <BobUICore/qscopeguard.h>
 
 #include <chrono>
 
 using namespace std::chrono_literals;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static constexpr auto PollingInterval = 1s;
 
@@ -49,8 +49,8 @@ QStringList QPollingFileSystemWatcherEngine::addPaths(const QStringList &paths,
     }
 
     std::chrono::milliseconds interval = PollingInterval;
-#ifdef QT_BUILD_INTERNAL
-    if (Q_UNLIKELY(parent()->objectName().startsWith("_qt_autotest_force_engine_"_L1))) {
+#ifdef BOBUI_BUILD_INTERNAL
+    if (Q_UNLIKELY(parent()->objectName().startsWith("_bobui_autotest_force_engine_"_L1))) {
         interval = 10ms; // Special case to speed up the unittests
     }
 #endif
@@ -87,7 +87,7 @@ QStringList QPollingFileSystemWatcherEngine::removePaths(const QStringList &path
     return unhandled;
 }
 
-void QPollingFileSystemWatcherEngine::timerEvent(QTimerEvent *e)
+void QPollingFileSystemWatcherEngine::timerEvent(BOBUIimerEvent *e)
 {
     if (e->id() != timer.id())
         return QFileSystemWatcherEngine::timerEvent(e);
@@ -130,6 +130,6 @@ void QPollingFileSystemWatcherEngine::timerEvent(QTimerEvent *e)
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qfilesystemwatcher_polling_p.cpp"

@@ -1,16 +1,16 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QBUTTONGROUP_H
 #define QBUTTONGROUP_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtCore/qobject.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUICore/qobject.h>
 
-QT_REQUIRE_CONFIG(buttongroup);
+BOBUI_REQUIRE_CONFIG(buttongroup);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QAbstractButton;
 class QAbstractButtonPrivate;
@@ -58,6 +58,6 @@ private:
     friend class QAbstractButtonPrivate;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QBUTTONGROUP_H

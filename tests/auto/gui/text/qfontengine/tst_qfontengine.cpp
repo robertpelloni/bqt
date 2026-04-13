@@ -1,15 +1,15 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
-#include <QtGui/qfont.h>
-#include <QtGui/qfontdatabase.h>
-#include <QtGui/qfontinfo.h>
-#include <QtGui/private/qfont_p.h>
-#include <QtGui/private/qfontengine_p.h>
+#include <BobUIGui/qfont.h>
+#include <BobUIGui/qfontdatabase.h>
+#include <BobUIGui/qfontinfo.h>
+#include <BobUIGui/private/qfont_p.h>
+#include <BobUIGui/private/qfontengine_p.h>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class tst_QFontEngine : public QObject
 {
@@ -81,9 +81,9 @@ private:
     std::unique_ptr<QGuiApplication> theApp;
     int argc = -1;
 
-    int QtsSpecialTestFont = -1;
-    int QtBidiTestFont = -1;
-    int QtTestVariableFont = -1;
+    int BobUIsSpecialTestFont = -1;
+    int BobUIBidiTestFont = -1;
+    int BobUITestVariableFont = -1;
 };
 
 // The tst_bench_QFontEngine benchmark project shares the test class declaration
@@ -94,19 +94,19 @@ private:
 
 void tst_QFontEngine::initTestCase_data()
 {
-    QTest::addColumn<QByteArray>("platform");
-    QTest::addColumn<QByteArray>("engine");
-    QTest::addColumn<QFontEngine::Type>("engineType");
+    BOBUIest::addColumn<QByteArray>("platform");
+    BOBUIest::addColumn<QByteArray>("engine");
+    BOBUIest::addColumn<QFontEngine::Type>("engineType");
 
 #if defined(Q_OS_WIN)
-    QTest::addRow("DirectWrite") << ""_ba << ""_ba << QFontEngine::DirectWrite;
-    QTest::addRow("GDI") << "windows"_ba << "gdi"_ba << QFontEngine::Win;
-    QTest::addRow("Freetype") << "windows"_ba << "freetype"_ba << QFontEngine::Freetype;
+    BOBUIest::addRow("DirectWrite") << ""_ba << ""_ba << QFontEngine::DirectWrite;
+    BOBUIest::addRow("GDI") << "windows"_ba << "gdi"_ba << QFontEngine::Win;
+    BOBUIest::addRow("Freetype") << "windows"_ba << "freetype"_ba << QFontEngine::Freetype;
 #elif defined(Q_OS_DARWIN)
-    QTest::addRow("CoreText") << ""_ba << ""_ba << QFontEngine::Mac;
-    QTest::addRow("Freetype") << "cocoa"_ba << "freetype"_ba << QFontEngine::Freetype;
+    BOBUIest::addRow("CoreText") << ""_ba << ""_ba << QFontEngine::Mac;
+    BOBUIest::addRow("Freetype") << "cocoa"_ba << "freetype"_ba << QFontEngine::Freetype;
 #else
-    QTest::addRow("freetype") << ""_ba << ""_ba << QFontEngine::Freetype;
+    BOBUIest::addRow("freetype") << ""_ba << ""_ba << QFontEngine::Freetype;
 #endif
 }
 
@@ -115,30 +115,30 @@ void tst_QFontEngine::init()
     setupApplication();
 
 #if !defined(QFONTENGINE_BENCHMARK)
-    QtsSpecialTestFont = QFontDatabase::addApplicationFont(QFINDTESTDATA("test.ttf"));
-    QVERIFY(QtsSpecialTestFont >= 0);
-    QCOMPARE(QFontDatabase::applicationFontFamilies(QtsSpecialTestFont),
-             QStringList{u"QtsSpecialTestFont"_s});
-    QtBidiTestFont = QFontDatabase::addApplicationFont(QFINDTESTDATA("testfont.ttf"));
-    QVERIFY(QtBidiTestFont >= 0);
-    QCOMPARE(QFontDatabase::applicationFontFamilies(QtBidiTestFont),
-             QStringList{u"QtBidiTestFont"_s});
+    BobUIsSpecialTestFont = QFontDatabase::addApplicationFont(QFINDTESTDATA("test.ttf"));
+    QVERIFY(BobUIsSpecialTestFont >= 0);
+    QCOMPARE(QFontDatabase::applicationFontFamilies(BobUIsSpecialTestFont),
+             QStringList{u"BobUIsSpecialTestFont"_s});
+    BobUIBidiTestFont = QFontDatabase::addApplicationFont(QFINDTESTDATA("testfont.ttf"));
+    QVERIFY(BobUIBidiTestFont >= 0);
+    QCOMPARE(QFontDatabase::applicationFontFamilies(BobUIBidiTestFont),
+             QStringList{u"BobUIBidiTestFont"_s});
     // This font comes with two font faces, so we get multiple entries (which
     // might be a bug, esp since on macOS we get two, on Windows we get three
     // identical families).
-    QtTestVariableFont = QFontDatabase::addApplicationFont(QFINDTESTDATA("testfont_variable.ttf"));
-    QVERIFY(QtTestVariableFont >= 0);
-    QVERIFY(QFontDatabase::applicationFontFamilies(QtTestVariableFont)
-                            .contains(u"QtTestVariableFont"_s));
+    BobUITestVariableFont = QFontDatabase::addApplicationFont(QFINDTESTDATA("testfont_variable.ttf"));
+    QVERIFY(BobUITestVariableFont >= 0);
+    QVERIFY(QFontDatabase::applicationFontFamilies(BobUITestVariableFont)
+                            .contains(u"BobUITestVariableFont"_s));
 #endif
 }
 
 void tst_QFontEngine::cleanup()
 {
 #if !defined(QFONTENGINE_BENCHMARK)
-    QFontDatabase::removeApplicationFont(QtTestVariableFont);
-    QFontDatabase::removeApplicationFont(QtBidiTestFont);
-    QFontDatabase::removeApplicationFont(QtsSpecialTestFont);
+    QFontDatabase::removeApplicationFont(BobUITestVariableFont);
+    QFontDatabase::removeApplicationFont(BobUIBidiTestFont);
+    QFontDatabase::removeApplicationFont(BobUIsSpecialTestFont);
 #endif
 
     theApp.reset();
@@ -167,45 +167,45 @@ void tst_QFontEngine::setupApplication()
 // only called once per test function, even if the global data (i.e. font engine) changed!
 void tst_QFontEngine::data()
 {
-    QTest::addColumn<Candidate>("candidate");
+    BOBUIest::addColumn<Candidate>("candidate");
 
     const std::initializer_list<Candidate> candidates = {
 #if !defined(QFONTENGINE_BENCHMARK)
         // our own testfonts
         {
-            ".notdef@QtsSpecialTestFont"_L1,
+            ".notdef@BobUIsSpecialTestFont"_L1,
             6, 0x0000, 0,
         },
         {
-            "Dotty@QtsSpecialTestFont"_L1,
+            "Dotty@BobUIsSpecialTestFont"_L1,
             6, 0xe000, 1,
         },
         {
-            "A@QtsSpecialTestFont"_L1,
+            "A@BobUIsSpecialTestFont"_L1,
             6, 0x0041, 2,
         },
         {
-            "one@QtsSpecialTestFont"_L1,
+            "one@BobUIsSpecialTestFont"_L1,
             6, 0x0031, 3,
         },
         {
-            "uni200D@QtsSpecialTestFont"_L1,
+            "uni200D@BobUIsSpecialTestFont"_L1,
             6, 0x200d, 4,
         },
         {
-            "uniFFFC@QtsSpecialTestFont"_L1,
+            "uniFFFC@BobUIsSpecialTestFont"_L1,
             6, 0xfffc, 5,
         },
         {
-            "percent@QtBidiTestFont"_L1,
+            "percent@BobUIBidiTestFont"_L1,
             150, 0x0025, 13,
         },
         { // up arrow, beyond 0xFFFF
-            "u1034A@QtBidiTestFont"_L1,
+            "u1034A@BobUIBidiTestFont"_L1,
             150, 0x1034A, 149,
         },
         {
-            "peseta@QtTestVariableFont"_L1,
+            "peseta@BobUITestVariableFont"_L1,
             235, 0x20a7, 218,
         },
 #else // some typical icon fonts that might be present on the system, but also change frequently
@@ -229,11 +229,11 @@ void tst_QFontEngine::data()
     };
 
     for (auto candidate : candidates)
-        QTest::addRow("%s", candidate.rowName.constData()) << candidate;
+        BOBUIest::addRow("%s", candidate.rowName.constData()) << candidate;
 }
 
 #include "tst_qfontengine.moc"
-QTEST_APPLESS_MAIN(tst_QFontEngine)
+BOBUIEST_APPLESS_MAIN(tst_QFontEngine)
 
 #endif // !defined(QFONTENGINE_BENCHMARK) || defined(QFONTENGINE_COMMON)
 

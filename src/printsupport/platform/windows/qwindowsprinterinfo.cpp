@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qprinterinfo.h"
 #include "qprinterinfo_p.h"
 
 #include <qstringlist.h>
 
-#include <qt_windows.h>
+#include <bobui_windows.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
 
 extern QPrinter::PaperSize mapDevmodePaperSize(int s);
 
@@ -44,7 +44,7 @@ extern QPrinter::PaperSize mapDevmodePaperSize(int s);
 
 //QPrinterInfo QPrinterInfo::defaultPrinter()
 //{
-//    QString noPrinters("qt_no_printers"_L1);
+//    QString noPrinters("bobui_no_printers"_L1);
 //    wchar_t buffer[256];
 //    GetProfileString(L"windows", L"device", (wchar_t*)noPrinters.utf16(), buffer, 256);
 //    QString output = QString::fromWCharArray(buffer);
@@ -81,6 +81,6 @@ extern QPrinter::PaperSize mapDevmodePaperSize(int s);
 //    return paperSizes;
 //}
 
-#endif // QT_NO_PRINTER
+#endif // BOBUI_NO_PRINTER
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

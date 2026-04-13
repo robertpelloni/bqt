@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef INITDB_H
 #define INITDB_H
@@ -69,8 +69,8 @@ QSqlError initDb()
         return db.lastError();
 
     QStringList tables = db.tables();
-    if (tables.contains("books", Qt::CaseInsensitive)
-        && tables.contains("authors", Qt::CaseInsensitive))
+    if (tables.contains("books", BobUI::CaseInsensitive)
+        && tables.contains("authors", BobUI::CaseInsensitive))
         return QSqlError();
 
     QSqlQuery q;

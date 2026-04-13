@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QWIDGETACTION_H
 #define QWIDGETACTION_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtGui/qaction.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIGui/qaction.h>
 
-QT_REQUIRE_CONFIG(action);
+BOBUI_REQUIRE_CONFIG(action);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QWidgetActionPrivate;
 
@@ -38,9 +38,9 @@ protected:
 
 private:
     Q_DISABLE_COPY(QWidgetAction)
-    friend class QToolBar;
+    friend class BOBUIoolBar;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWIDGETACTION_H

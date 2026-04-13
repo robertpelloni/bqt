@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2023 David Edmundson <davidedmundson@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandcursor_p.h"
 
@@ -9,19 +9,19 @@
 #include "qwaylandshmbackingstore_p.h"
 #include "qwayland-pointer-warp-v1.h"
 
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 #include <qpa/qplatformtheme.h>
 
-#include <QtGui/QImageReader>
+#include <BobUIGui/QImageReader>
 #include <QDebug>
 
 #include <wayland-cursor.h>
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 std::unique_ptr<QWaylandCursorTheme> QWaylandCursorTheme::create(QWaylandShm *shm, int size, const QString &themeName)
 {
@@ -190,13 +190,13 @@ wl_cursor *QWaylandCursorTheme::requestCursor(WaylandCursor shape)
     return nullptr;
 }
 
-::wl_cursor *QWaylandCursorTheme::cursor(Qt::CursorShape shape)
+::wl_cursor *QWaylandCursorTheme::cursor(BobUI::CursorShape shape)
 {
     struct wl_cursor *waylandCursor = nullptr;
 
-    if (shape < Qt::BitmapCursor) {
+    if (shape < BobUI::BitmapCursor) {
         waylandCursor = requestCursor(WaylandCursor(shape));
-    } else if (shape == Qt::BitmapCursor) {
+    } else if (shape == BobUI::BitmapCursor) {
         qCWarning(lcQpaWayland) << "cannot create a wl_cursor_image for a CursorShape";
         return nullptr;
     } else {
@@ -212,7 +212,7 @@ wl_cursor *QWaylandCursorTheme::requestCursor(WaylandCursor shape)
 }
 
 QWaylandCursorShape::QWaylandCursorShape(::wp_cursor_shape_device_v1 *object)
-    : QtWayland::wp_cursor_shape_device_v1(object)
+    : BobUIWayland::wp_cursor_shape_device_v1(object)
 {}
 
 QWaylandCursorShape::~QWaylandCursorShape()
@@ -220,66 +220,66 @@ QWaylandCursorShape::~QWaylandCursorShape()
     destroy();
 }
 
-static QtWayland::wp_cursor_shape_device_v1::shape qtCursorShapeToWaylandShape(Qt::CursorShape cursorShape)
+static BobUIWayland::wp_cursor_shape_device_v1::shape bobuiCursorShapeToWaylandShape(BobUI::CursorShape cursorShape)
 {
-    using QtWayland::wp_cursor_shape_device_v1;
+    using BobUIWayland::wp_cursor_shape_device_v1;
 
     switch (cursorShape) {
-    case Qt::BlankCursor:
-    case Qt::CustomCursor:
-    case Qt::BitmapCursor:
+    case BobUI::BlankCursor:
+    case BobUI::CustomCursor:
+    case BobUI::BitmapCursor:
         // these should have been handled separately before using the shape protocol
         Q_ASSERT(false);
         break;
-    case Qt::ArrowCursor:
+    case BobUI::ArrowCursor:
         return wp_cursor_shape_device_v1::shape_default;
-    case Qt::SizeVerCursor:
+    case BobUI::SizeVerCursor:
         return wp_cursor_shape_device_v1::shape_ns_resize;
-    case Qt::UpArrowCursor:
+    case BobUI::UpArrowCursor:
         return wp_cursor_shape_device_v1::shape_n_resize;
-    case Qt::SizeHorCursor:
+    case BobUI::SizeHorCursor:
         return wp_cursor_shape_device_v1::shape_ew_resize;
-    case Qt::CrossCursor:
+    case BobUI::CrossCursor:
         return wp_cursor_shape_device_v1::shape_crosshair;
-    case Qt::SizeBDiagCursor:
+    case BobUI::SizeBDiagCursor:
         return wp_cursor_shape_device_v1::shape_nesw_resize;
-    case Qt::IBeamCursor:
+    case BobUI::IBeamCursor:
         return wp_cursor_shape_device_v1::shape_text;
-    case Qt::SizeFDiagCursor:
+    case BobUI::SizeFDiagCursor:
         return wp_cursor_shape_device_v1::shape_nwse_resize;
-    case Qt::WaitCursor:
+    case BobUI::WaitCursor:
         return wp_cursor_shape_device_v1::shape_wait;
-    case Qt::SizeAllCursor:
+    case BobUI::SizeAllCursor:
         return wp_cursor_shape_device_v1::shape_all_scroll;
-    case Qt::BusyCursor:
+    case BobUI::BusyCursor:
         return wp_cursor_shape_device_v1::shape_progress;
-    case Qt::SplitVCursor:
+    case BobUI::SplitVCursor:
         return wp_cursor_shape_device_v1::shape_row_resize;
-    case Qt::ForbiddenCursor:
+    case BobUI::ForbiddenCursor:
         return wp_cursor_shape_device_v1::shape_not_allowed;
-    case Qt::SplitHCursor:
+    case BobUI::SplitHCursor:
         return wp_cursor_shape_device_v1::shape_col_resize;
-    case Qt::PointingHandCursor:
+    case BobUI::PointingHandCursor:
         return wp_cursor_shape_device_v1::shape_pointer;
-    case Qt::OpenHandCursor:
+    case BobUI::OpenHandCursor:
         return wp_cursor_shape_device_v1::shape_grab;
-    case Qt::WhatsThisCursor:
+    case BobUI::WhatsThisCursor:
         return wp_cursor_shape_device_v1::shape_help;
-    case Qt::ClosedHandCursor:
+    case BobUI::ClosedHandCursor:
         return wp_cursor_shape_device_v1::shape_grabbing;
-    case Qt::DragMoveCursor:
+    case BobUI::DragMoveCursor:
         return wp_cursor_shape_device_v1::shape_move;
-    case Qt::DragCopyCursor:
+    case BobUI::DragCopyCursor:
         return wp_cursor_shape_device_v1::shape_copy;
-    case Qt::DragLinkCursor:
+    case BobUI::DragLinkCursor:
         return wp_cursor_shape_device_v1::shape_alias;
     }
     return wp_cursor_shape_device_v1::shape_default;
 }
 
-void QWaylandCursorShape::setShape(uint32_t serial, Qt::CursorShape shape)
+void QWaylandCursorShape::setShape(uint32_t serial, BobUI::CursorShape shape)
 {
-    set_shape(serial, qtCursorShapeToWaylandShape(shape));
+    set_shape(serial, bobuiCursorShapeToWaylandShape(shape));
 }
 
 QWaylandCursor::QWaylandCursor(QWaylandDisplay *display)
@@ -289,7 +289,7 @@ QWaylandCursor::QWaylandCursor(QWaylandDisplay *display)
 
 QSharedPointer<QWaylandBuffer> QWaylandCursor::cursorBitmapBuffer(QWaylandDisplay *display, const QCursor *cursor)
 {
-    Q_ASSERT(cursor->shape() == Qt::BitmapCursor);
+    Q_ASSERT(cursor->shape() == BobUI::BitmapCursor);
     QImage img = !cursor->pixmap().isNull() ? cursor->pixmap().toImage() : cursor->bitmap().toImage();
 
     // convert to supported format if necessary
@@ -316,7 +316,7 @@ void QWaylandCursor::changeCursor(QCursor *cursor, QWindow *window)
         return;
     // Create the buffer here so we don't have to create one per input device
     QSharedPointer<QWaylandBuffer> bitmapBuffer;
-    if (cursor && cursor->shape() == Qt::BitmapCursor)
+    if (cursor && cursor->shape() == BobUI::BitmapCursor)
         bitmapBuffer = cursorBitmapBuffer(mDisplay, cursor);
 
     QWaylandWindow *waylandWindow = static_cast<QWaylandWindow*>(window->handle());
@@ -378,6 +378,6 @@ QSize QWaylandCursor::size() const
     return QSize(24, 24);
 }
 
-} // namespace QtWaylandClient
+} // namespace BobUIWaylandClient
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

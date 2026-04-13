@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QABSTRACTSPINBOX_H
 #define QABSTRACTSPINBOX_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qwidget.h>
-#include <QtGui/qvalidator.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qwidget.h>
+#include <BobUIGui/qvalidator.h>
 
-QT_REQUIRE_CONFIG(spinbox);
+BOBUI_REQUIRE_CONFIG(spinbox);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QLineEdit;
 
@@ -24,7 +24,7 @@ class Q_WIDGETS_EXPORT QAbstractSpinBox : public QWidget
 
     Q_PROPERTY(bool wrapping READ wrapping WRITE setWrapping)
     Q_PROPERTY(bool frame READ hasFrame WRITE setFrame)
-    Q_PROPERTY(Qt::Alignment alignment READ alignment WRITE setAlignment)
+    Q_PROPERTY(BobUI::Alignment alignment READ alignment WRITE setAlignment)
     Q_PROPERTY(bool readOnly READ isReadOnly WRITE setReadOnly)
     Q_PROPERTY(ButtonSymbols buttonSymbols READ buttonSymbols WRITE setButtonSymbols)
     Q_PROPERTY(QString specialValueText READ specialValueText WRITE setSpecialValueText)
@@ -69,8 +69,8 @@ public:
     void setKeyboardTracking(bool kt);
     bool keyboardTracking() const;
 
-    void setAlignment(Qt::Alignment flag);
-    Qt::Alignment alignment() const;
+    void setAlignment(BobUI::Alignment flag);
+    BobUI::Alignment alignment() const;
 
     void setFrame(bool);
     bool hasFrame() const;
@@ -86,7 +86,7 @@ public:
     void interpretText();
     bool event(QEvent *event) override;
 
-    QVariant inputMethodQuery(Qt::InputMethodQuery) const override;
+    QVariant inputMethodQuery(BobUI::InputMethodQuery) const override;
 
     virtual QValidator::State validate(QString &input, int &pos) const;
     virtual void fixup(QString &input) const;
@@ -108,12 +108,12 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
     void wheelEvent(QWheelEvent *event) override;
 #endif
     void focusInEvent(QFocusEvent *event) override;
     void focusOutEvent(QFocusEvent *event) override;
-#if QT_CONFIG(contextmenu)
+#if BOBUI_CONFIG(contextmenu)
     void contextMenuEvent(QContextMenuEvent *event) override;
 #endif
     void changeEvent(QEvent *event) override;
@@ -122,7 +122,7 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
-    void timerEvent(QTimerEvent *event) override;
+    void timerEvent(BOBUIimerEvent *event) override;
     void paintEvent(QPaintEvent *event) override;
     void showEvent(QShowEvent *event) override;
     virtual void initStyleOption(QStyleOptionSpinBox *option) const;
@@ -144,6 +144,6 @@ private:
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS(QAbstractSpinBox::StepEnabled)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QABSTRACTSPINBOX_H

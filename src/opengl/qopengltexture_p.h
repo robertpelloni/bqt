@@ -1,5 +1,5 @@
 // Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB).
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QABSTRACTOPENGLTEXTURE_P_H
 #define QABSTRACTOPENGLTEXTURE_P_H
@@ -8,16 +8,16 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 
-#include <QtOpenGL/qtopenglglobal.h>
+#include <BobUIOpenGL/bobuiopenglglobal.h>
 #include "private/qobject_p.h"
 #include "qopengltexture.h"
 #include "qopengl.h"
@@ -31,7 +31,7 @@ inline double qLog2(const double x)
 }
 }
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QOpenGLContext;
 class QOpenGLTextureHelper;
@@ -139,10 +139,10 @@ public:
     QOpenGLTexture::Features features;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #undef Q_CALL_MEMBER_FUNCTION
 
-#endif // QT_NO_OPENGL
+#endif // BOBUI_NO_OPENGL
 
 #endif // QABSTRACTOPENGLTEXTURE_P_H

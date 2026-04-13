@@ -1,11 +1,11 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "tst_qmetatype.h"
 #include "tst_qmetatype_libs.h"
 
-#include <QtCore/private/qmetaobjectbuilder_p.h>
-#include <QtTest/private/qcomparisontesthelper_p.h>
+#include <BobUICore/private/qmetaobjectbuilder_p.h>
+#include <BobUITest/private/qcomparisontesthelper_p.h>
 
 void tst_QMetaType::constRefs()
 {
@@ -142,7 +142,7 @@ void registerCustomTypeConversions()
     QVERIFY((QMetaType::registerConverter<CustomConvertibleType, std::optional<CustomConvertibleType>>(OptionalWrapper<CustomConvertibleType>())));
 
     QVERIFY((QMetaType::registerConverter<CustomConvertibleType, CustomConvertibleType2>()));
-    QTest::ignoreMessage(QtWarningMsg, "Type conversion already registered from type CustomConvertibleType to type CustomConvertibleType2");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "Type conversion already registered from type CustomConvertibleType to type CustomConvertibleType2");
     QVERIFY((!QMetaType::registerConverter<CustomConvertibleType, CustomConvertibleType2>()));
 }
 
@@ -156,25 +156,25 @@ void tst_QMetaType::convertCustomType_data()
     customTypeNotYetConvertible();
     registerCustomTypeConversions();
 
-    QTest::addColumn<bool>("ok");
-    QTest::addColumn<QString>("testQString");
-    QTest::addColumn<bool>("testBool");
-    QTest::addColumn<int>("testInt");
-    QTest::addColumn<double>("testDouble");
-    QTest::addColumn<float>("testFloat");
-    QTest::addColumn<QRect>("testQRect");
-    QTest::addColumn<QRectF>("testQRectF");
-    QTest::addColumn<QPoint>("testQPoint");
-    QTest::addColumn<QPointF>("testQPointF");
-    QTest::addColumn<QSize>("testQSize");
-    QTest::addColumn<QSizeF>("testQSizeF");
-    QTest::addColumn<QLine>("testQLine");
-    QTest::addColumn<QLineF>("testQLineF");
-    QTest::addColumn<QChar>("testQChar");
-    QTest::addColumn<CustomConvertibleType>("testCustom");
-    QTest::addColumn<DerivedGadgetType>("testDerived");
+    BOBUIest::addColumn<bool>("ok");
+    BOBUIest::addColumn<QString>("testQString");
+    BOBUIest::addColumn<bool>("testBool");
+    BOBUIest::addColumn<int>("testInt");
+    BOBUIest::addColumn<double>("testDouble");
+    BOBUIest::addColumn<float>("testFloat");
+    BOBUIest::addColumn<QRect>("testQRect");
+    BOBUIest::addColumn<QRectF>("testQRectF");
+    BOBUIest::addColumn<QPoint>("testQPoint");
+    BOBUIest::addColumn<QPointF>("testQPointF");
+    BOBUIest::addColumn<QSize>("testQSize");
+    BOBUIest::addColumn<QSizeF>("testQSizeF");
+    BOBUIest::addColumn<QLine>("testQLine");
+    BOBUIest::addColumn<QLineF>("testQLineF");
+    BOBUIest::addColumn<QChar>("testQChar");
+    BOBUIest::addColumn<CustomConvertibleType>("testCustom");
+    BOBUIest::addColumn<DerivedGadgetType>("testDerived");
 
-    QTest::newRow("default") << true
+    BOBUIest::newRow("default") << true
                              << QString::fromLatin1("string") << true << 15
                              << double(3.14) << float(3.6) << QRect(1, 2, 3, 4)
                              << QRectF(1.4, 1.9, 10.9, 40.2) << QPoint(12, 34)
@@ -182,7 +182,7 @@ void tst_QMetaType::convertCustomType_data()
                              << QLine(3, 9, 29, 4) << QLineF(38.9, 28.9, 102.3, 0.0)
                              << QChar('Q') << CustomConvertibleType(QString::fromLatin1("test"))
                              << DerivedGadgetType(QString::fromLatin1("test"));
-    QTest::newRow("not ok") << false
+    BOBUIest::newRow("not ok") << false
                             << QString::fromLatin1("string") << true << 15
                             << double(3.14) << float(3.6) << QRect(1, 2, 3, 4)
                             << QRectF(1.4, 1.9, 10.9, 40.2) << QPoint(12, 34)
@@ -431,29 +431,29 @@ struct CharTemplate
 
 void tst_QMetaType::compareCompiles()
 {
-    QTestPrivate::testEqualityOperatorsCompile<QMetaType>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QMetaType>();
 }
 
 void tst_QMetaType::operatorEq_data()
 {
-    QTest::addColumn<QMetaType>("typeA");
-    QTest::addColumn<QMetaType>("typeB");
-    QTest::addColumn<bool>("eq");
-    QTest::newRow("String") << QMetaType(QMetaType::QString)
+    BOBUIest::addColumn<QMetaType>("typeA");
+    BOBUIest::addColumn<QMetaType>("typeB");
+    BOBUIest::addColumn<bool>("eq");
+    BOBUIest::newRow("String") << QMetaType(QMetaType::QString)
                             << QMetaType::fromType<const QString &>() << true;
-    QTest::newRow("void1")  << QMetaType(QMetaType::UnknownType) << QMetaType::fromType<void>()
+    BOBUIest::newRow("void1")  << QMetaType(QMetaType::UnknownType) << QMetaType::fromType<void>()
                             << false;
-    QTest::newRow("void2")  << QMetaType::fromType<const void>() << QMetaType::fromType<void>()
+    BOBUIest::newRow("void2")  << QMetaType::fromType<const void>() << QMetaType::fromType<void>()
                             << true;
-    QTest::newRow("list1")  << QMetaType::fromType<QList<const int *>>()
+    BOBUIest::newRow("list1")  << QMetaType::fromType<QList<const int *>>()
                             << QMetaType::fromType<QList<const int *>>() << true;
-    QTest::newRow("list2")  << QMetaType::fromType<QList<const int *>>()
+    BOBUIest::newRow("list2")  << QMetaType::fromType<QList<const int *>>()
                             << QMetaType::fromType<QList<int *>>() << false;
-    QTest::newRow("char1")  << QMetaType::fromType<CharTemplate<'>'>>()
+    BOBUIest::newRow("char1")  << QMetaType::fromType<CharTemplate<'>'>>()
                             << QMetaType::fromType<CharTemplate<'>', void>>() << true;
-    QTest::newRow("annon1") << QMetaType::fromType<decltype(CharTemplate<'>'>::x)>()
+    BOBUIest::newRow("annon1") << QMetaType::fromType<decltype(CharTemplate<'>'>::x)>()
                             << QMetaType::fromType<decltype(CharTemplate<'>'>::x)>() << true;
-    QTest::newRow("annon2") << QMetaType::fromType<decltype(CharTemplate<'>'>::x)>()
+    BOBUIest::newRow("annon2") << QMetaType::fromType<decltype(CharTemplate<'>'>::x)>()
                             << QMetaType::fromType<decltype(CharTemplate<'<'>::x)>() << false;
 }
 
@@ -463,7 +463,7 @@ void tst_QMetaType::operatorEq()
     QFETCH(QMetaType, typeB);
     QFETCH(bool, eq);
 
-    QT_TEST_EQUALITY_OPS(typeA, typeB, eq);
+    BOBUI_TEST_EQUALITY_OPS(typeA, typeB, eq);
 
 #if !defined(Q_OS_WIN) && !defined(Q_OS_INTEGRITY)
     // for built-in types or locally-defined types, this must also hold true
@@ -500,10 +500,10 @@ FOR_EACH_CORE_METATYPE(GET_METATYPE_FROM_TYPE)
     QCOMPARE(fromId2.id(), type);
 
     // confirm that they're all equal
-    QT_TEST_EQUALITY_OPS(fromId1, fromId2, true);
-    QT_TEST_EQUALITY_OPS(fromType1, fromType2, true);
-    QT_TEST_EQUALITY_OPS(fromType1, fromId1, true);
-    QT_TEST_EQUALITY_OPS(fromType2, fromId2, true);
+    BOBUI_TEST_EQUALITY_OPS(fromId1, fromId2, true);
+    BOBUI_TEST_EQUALITY_OPS(fromType1, fromType2, true);
+    BOBUI_TEST_EQUALITY_OPS(fromType1, fromId1, true);
+    BOBUI_TEST_EQUALITY_OPS(fromType2, fromId2, true);
 
 #if !defined(Q_OS_WIN) && !defined(Q_OS_INTEGRITY)
     // for built-in types (other than void), this must be true
@@ -523,13 +523,13 @@ namespace Lib2 { FOR_EACH_METATYPE_LIBS(DECLARE_LIB_FUNCTION) }
 using LibMetatypeFunction = QMetaType (*)();
 void tst_QMetaType::operatorEqAcrossLibs_data()
 {
-    QTest::addColumn<int>("builtinTypeId");
-    QTest::addColumn<QMetaType>("localType");
-    QTest::addColumn<LibMetatypeFunction>("lib1Function");
-    QTest::addColumn<LibMetatypeFunction>("lib2Function");
+    BOBUIest::addColumn<int>("builtinTypeId");
+    BOBUIest::addColumn<QMetaType>("localType");
+    BOBUIest::addColumn<LibMetatypeFunction>("lib1Function");
+    BOBUIest::addColumn<LibMetatypeFunction>("lib2Function");
 
 #define ADD_ROW(TYPE, ID)                           \
-    QTest::addRow(QT_STRINGIFY(TYPE))   << int(ID)  \
+    BOBUIest::addRow(BOBUI_STRINGIFY(TYPE))   << int(ID)  \
         << QMetaType::fromType<TYPE>()              \
         << &Lib1::metatype_ ## TYPE                 \
         << &Lib2::metatype_ ## TYPE;
@@ -547,21 +547,21 @@ void tst_QMetaType::operatorEqAcrossLibs()
     QMetaType lib1Type = lib1Function();
     QMetaType lib2Type = lib2Function();
 
-    const QtPrivate::QMetaTypeInterface *localIface = localType.iface();
-    const QtPrivate::QMetaTypeInterface *lib1Iface = lib1Type.iface();
-    const QtPrivate::QMetaTypeInterface *lib2Iface = lib2Type.iface();
+    const BobUIPrivate::QMetaTypeInterface *localIface = localType.iface();
+    const BobUIPrivate::QMetaTypeInterface *lib1Iface = lib1Type.iface();
+    const BobUIPrivate::QMetaTypeInterface *lib2Iface = lib2Type.iface();
 
     // DO THIS FIRST:
     // if this isn't a built-in type, then the QMetaTypeInterface::typeId is
     // initially set to 0
-    QT_TEST_EQUALITY_OPS(lib1Type, lib2Type, true);
+    BOBUI_TEST_EQUALITY_OPS(lib1Type, lib2Type, true);
 
     int actualTypeId = localType.id();
     bool builtinTypeExpected = builtinTypeId != QMetaType::UnknownType;
     bool builtinTypeActually = actualTypeId < QMetaType::User;
 
     qDebug() << "QMetaType for type" << QByteArray(localType.name())
-             << "(type ID" << (actualTypeId >= 0x1000 ? Qt::hex : Qt::dec) << actualTypeId << ')'
+             << "(type ID" << (actualTypeId >= 0x1000 ? BobUI::hex : BobUI::dec) << actualTypeId << ')'
              << (builtinTypeActually ? "IS" : "is NOT") << "a built-in type;"
              << "local interface:" << static_cast<const void *>(localIface)
              << "lib1 interface:" << static_cast<const void *>(lib1Iface)
@@ -572,12 +572,12 @@ void tst_QMetaType::operatorEqAcrossLibs()
     QCOMPARE(lib2Type.id(), actualTypeId);
     QCOMPARE(QByteArray(lib1Type.name()), QByteArray(localType.name()));
     QCOMPARE(QByteArray(lib2Type.name()), QByteArray(localType.name()));
-    QT_TEST_EQUALITY_OPS(lib1Type, localType, true);
-    QT_TEST_EQUALITY_OPS(lib2Type, localType, true);
+    BOBUI_TEST_EQUALITY_OPS(lib1Type, localType, true);
+    BOBUI_TEST_EQUALITY_OPS(lib2Type, localType, true);
 
 #if !defined(Q_OS_WIN) && !defined(Q_OS_INTEGRITY)
     if (actualTypeId < QMetaType::FirstGuiType && actualTypeId != QMetaType::Void) {
-        // for built-in QtCore types, we expect the interfaces to be the same too
+        // for built-in BobUICore types, we expect the interfaces to be the same too
         QCOMPARE(lib1Iface, localIface);
         QCOMPARE(lib2Iface, localIface);
     }
@@ -612,7 +612,7 @@ void tst_QMetaType::typeNameNormalization()
     // check the we normalize types the right way
 #define CHECK_TYPE_NORMALIZATION(Normalized, ...) \
     do { \
-        /*QCOMPARE(QtPrivate::typenameHelper<Type>(), Normalized);*/ \
+        /*QCOMPARE(BobUIPrivate::typenameHelper<Type>(), Normalized);*/ \
         QByteArray typeName = QMetaObject::normalizedType(#__VA_ARGS__); \
         QCOMPARE(typeName, Normalized); \
         typeName = QMetaType::fromType<__VA_ARGS__>().name(); \
@@ -653,41 +653,41 @@ void tst_QMetaType::typeNameNormalization()
     }
 }
 
-QT_BEGIN_NAMESPACE
-namespace QtPrivate { struct tst_QMetaType_TestType {}; }
-QT_END_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
+namespace BobUIPrivate { struct tst_QMetaType_TestType {}; }
+BOBUI_END_NAMESPACE
 
-void tst_QMetaType::typeNameInQtPrivate()
+void tst_QMetaType::typeNameInBobUIPrivate()
 {
-    using T = QT_PREPEND_NAMESPACE(QtPrivate::tst_QMetaType_TestType);
+    using T = BOBUI_PREPEND_NAMESPACE(BobUIPrivate::tst_QMetaType_TestType);
 
     // some compilers (GCC) are known to suppress the namespace prefix if the
     // type and the function where it is expanded on are on the same namespace
-    static constexpr char expectedName[] = "QtPrivate::tst_QMetaType_TestType";
+    static constexpr char expectedName[] = "BobUIPrivate::tst_QMetaType_TestType";
     QMetaType mt = QMetaType::fromType<T>();
     QCOMPARE(mt.name(), expectedName);
 }
 
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
 void tst_QMetaType::testDeprecatedGetters()
 {
     QFETCH(int, aType);
     QFETCH(QByteArray, aTypeName);
 
     if (aType >= QMetaType::FirstWidgetsType)
-        QSKIP("The test doesn't link against QtWidgets.");
+        QSKIP("The test doesn't link against BobUIWidgets.");
 
     // QMetaType::type("name") -> QMetaType::fromName("name").id()
-    QT_IGNORE_DEPRECATIONS(QCOMPARE(QMetaType::type(aTypeName),
+    BOBUI_IGNORE_DEPRECATIONS(QCOMPARE(QMetaType::type(aTypeName),
                                     QMetaType::fromName(aTypeName).id());)
     // QMetaType::typeName(int) -> QMetaType(int).name()
-    QT_IGNORE_DEPRECATIONS(QCOMPARE(QLatin1String(QMetaType::typeName(aType)),
+    BOBUI_IGNORE_DEPRECATIONS(QCOMPARE(QLatin1String(QMetaType::typeName(aType)),
                                     QLatin1String(QMetaType(aType).name()));)
     // QMetaType::typeFlags(int) -> QMetaType(int).flags()
-    QT_IGNORE_DEPRECATIONS(QCOMPARE(QMetaType::typeFlags(aType),
+    BOBUI_IGNORE_DEPRECATIONS(QCOMPARE(QMetaType::typeFlags(aType),
                                     QMetaType(aType).flags());)
     // QMetaType::metaObjectForType(int) -> QMetaType(int).metaObject()
-    QT_IGNORE_DEPRECATIONS(QCOMPARE(QMetaType::metaObjectForType(aType),
+    BOBUI_IGNORE_DEPRECATIONS(QCOMPARE(QMetaType::metaObjectForType(aType),
                                     QMetaType(aType).metaObject());)
 }
 
@@ -709,7 +709,7 @@ void tst_QMetaType::testDeprecatedLoadSave()
     QDataStream stream(&ba, QIODevice::ReadWrite);
 
     // Write using deprecated API
-    QT_IGNORE_DEPRECATIONS(QVERIFY(QMetaType::save(stream, type, value));)
+    BOBUI_IGNORE_DEPRECATIONS(QVERIFY(QMetaType::save(stream, type, value));)
     QCOMPARE(stream.status(), QDataStream::Ok);
 
     // Read using non-deprecated API
@@ -725,10 +725,10 @@ void tst_QMetaType::testDeprecatedLoadSave()
 
     // Read using deprecated API
     stream.device()->seek(0);
-    QT_IGNORE_DEPRECATIONS(QVERIFY(QMetaType::load(stream, type, value));)
+    BOBUI_IGNORE_DEPRECATIONS(QVERIFY(QMetaType::load(stream, type, value));)
     QCOMPARE(stream.status(), QDataStream::Ok);
 }
-#endif // QT_DEPRECATED_SINCE(6, 0)
+#endif // BOBUI_DEPRECATED_SINCE(6, 0)
 
 // Compile-time test, it should be possible to register function pointer types
 class Undefined;

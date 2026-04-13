@@ -1,8 +1,8 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QThread>
+#include <BOBUIest>
+#include <BOBUIhread>
 #include <QFile>
 #include <QOffscreenSurface>
 #include <QPainter>
@@ -13,15 +13,15 @@
 
 #include <private/qrhi_p.h>
 
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
 # include <QOpenGLContext>
 # include <QOpenGLFunctions>
-# include <QtGui/private/qguiapplication_p.h>
+# include <BobUIGui/private/qguiapplication_p.h>
 # include <qpa/qplatformintegration.h>
 # define TST_GL
 #endif
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
 # include <QVulkanInstance>
 # include <QVulkanFunctions>
 # define TST_VK
@@ -32,7 +32,7 @@
 # define TST_D3D12
 #endif
 
-#if QT_CONFIG(metal)
+#if BOBUI_CONFIG(metal)
 # define TST_MTL
 #endif
 
@@ -246,49 +246,49 @@ void tst_QRhi::cleanupTestCase()
 
 void tst_QRhi::rhiTestData()
 {
-    QTest::addColumn<QRhi::Implementation>("impl");
-    QTest::addColumn<QRhiInitParams *>("initParams");
+    BOBUIest::addColumn<QRhi::Implementation>("impl");
+    BOBUIest::addColumn<QRhiInitParams *>("initParams");
 
 // webOS does not support raster (software) pipeline
 #ifndef Q_OS_WEBOS
-    QTest::newRow("Null") << QRhi::Null << static_cast<QRhiInitParams *>(&initParams.null);
+    BOBUIest::newRow("Null") << QRhi::Null << static_cast<QRhiInitParams *>(&initParams.null);
 #endif
 #ifdef TST_GL
     if (QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::OpenGL))
-        QTest::newRow("OpenGL") << QRhi::OpenGLES2 << static_cast<QRhiInitParams *>(&initParams.gl);
+        BOBUIest::newRow("OpenGL") << QRhi::OpenGLES2 << static_cast<QRhiInitParams *>(&initParams.gl);
 #endif
 #ifdef TST_VK
     if (vulkanInstance.isValid())
-        QTest::newRow("Vulkan") << QRhi::Vulkan << static_cast<QRhiInitParams *>(&initParams.vk);
+        BOBUIest::newRow("Vulkan") << QRhi::Vulkan << static_cast<QRhiInitParams *>(&initParams.vk);
 #endif
 #ifdef TST_D3D11
-    QTest::newRow("Direct3D 11") << QRhi::D3D11 << static_cast<QRhiInitParams *>(&initParams.d3d11);
+    BOBUIest::newRow("Direct3D 11") << QRhi::D3D11 << static_cast<QRhiInitParams *>(&initParams.d3d11);
 #endif
 #ifdef TST_D3D12
-    QTest::newRow("Direct3D 12") << QRhi::D3D12 << static_cast<QRhiInitParams *>(&initParams.d3d12);
+    BOBUIest::newRow("Direct3D 12") << QRhi::D3D12 << static_cast<QRhiInitParams *>(&initParams.d3d12);
 #endif
 #ifdef TST_MTL
-    QTest::newRow("Metal") << QRhi::Metal << static_cast<QRhiInitParams *>(&initParams.mtl);
+    BOBUIest::newRow("Metal") << QRhi::Metal << static_cast<QRhiInitParams *>(&initParams.mtl);
 #endif
 }
 
 template<typename T, std::size_t E, typename ParamStringifier>
 void tst_QRhi::rhiTestDataWithParam(const char *paramName, QSpan<T, E> paramValues, ParamStringifier &&paramStringifier)
 {
-    QTest::addColumn<QRhi::Implementation>("impl");
-    QTest::addColumn<QRhiInitParams *>("initParams");
-    QTest::addColumn<T>(paramName);
+    BOBUIest::addColumn<QRhi::Implementation>("impl");
+    BOBUIest::addColumn<QRhiInitParams *>("initParams");
+    BOBUIest::addColumn<T>(paramName);
 
 #ifndef Q_OS_WEBOS
     for (auto &paramValue : paramValues) {
-        QTest::newRow(qPrintable(QStringLiteral("Null-") + paramStringifier(paramValue)))
+        BOBUIest::newRow(qPrintable(QStringLiteral("Null-") + paramStringifier(paramValue)))
             << QRhi::Null << static_cast<QRhiInitParams *>(&initParams.null) << paramValue;
     }
 #endif
 #ifdef TST_GL
     if (QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::OpenGL)) {
         for (auto &paramValue : paramValues) {
-            QTest::newRow(qPrintable(QStringLiteral("OpenGL-") + paramStringifier(paramValue)))
+            BOBUIest::newRow(qPrintable(QStringLiteral("OpenGL-") + paramStringifier(paramValue)))
                 << QRhi::OpenGLES2 << static_cast<QRhiInitParams *>(&initParams.gl) << paramValue;
         }
     }
@@ -296,26 +296,26 @@ void tst_QRhi::rhiTestDataWithParam(const char *paramName, QSpan<T, E> paramValu
 #ifdef TST_VK
     if (vulkanInstance.isValid()) {
         for (auto &paramValue : paramValues) {
-            QTest::newRow(qPrintable(QStringLiteral("Vulkan-") + paramStringifier(paramValue)))
+            BOBUIest::newRow(qPrintable(QStringLiteral("Vulkan-") + paramStringifier(paramValue)))
                 << QRhi::Vulkan << static_cast<QRhiInitParams *>(&initParams.vk) << paramValue;
         }
     }
 #endif
 #ifdef TST_D3D11
     for (auto &paramValue : paramValues) {
-        QTest::newRow(qPrintable(QStringLiteral("Direct3D11-") + paramStringifier(paramValue)))
+        BOBUIest::newRow(qPrintable(QStringLiteral("Direct3D11-") + paramStringifier(paramValue)))
             << QRhi::D3D11 << static_cast<QRhiInitParams *>(&initParams.d3d11) << paramValue;
     }
 #endif
 #ifdef TST_D3D12
     for (auto &paramValue : paramValues) {
-        QTest::newRow(qPrintable(QStringLiteral("Direct3D12-") + paramStringifier(paramValue)))
+        BOBUIest::newRow(qPrintable(QStringLiteral("Direct3D12-") + paramStringifier(paramValue)))
             << QRhi::D3D12 << static_cast<QRhiInitParams *>(&initParams.d3d12) << paramValue;
     }
 #endif
 #ifdef TST_MTL
     for (auto &paramValue : paramValues) {
-        QTest::newRow(qPrintable(QStringLiteral("Metal-") + paramStringifier(paramValue)))
+        BOBUIest::newRow(qPrintable(QStringLiteral("Metal-") + paramStringifier(paramValue)))
             << QRhi::Metal << static_cast<QRhiInitParams *>(&initParams.mtl) << paramValue;
     }
 #endif
@@ -364,7 +364,7 @@ void tst_QRhi::create()
         QVERIFY(strcmp(rhi->backendName(), ""));
         QVERIFY(!strcmp(rhi->backendName(), QRhi::backendName(rhi->backend())));
         QVERIFY(!rhi->driverInfo().deviceName.isEmpty());
-        QCOMPARE(rhi->thread(), QThread::currentThread());
+        QCOMPARE(rhi->thread(), BOBUIhread::currentThread());
 
         // do a basic smoke test for the apis that do not directly render anything
 
@@ -755,7 +755,7 @@ void tst_QRhi::nativeHandles()
             QVERIFY(rpDesc);
             rt->setRenderPassDescriptor(rpDesc.data());
             QVERIFY(rt->create());
-            cb->beginPass(rt.data(), Qt::red, { 1.0f, 0 });
+            cb->beginPass(rt.data(), BobUI::red, { 1.0f, 0 });
             QVERIFY(static_cast<const QRhiMetalCommandBufferNativeHandles *>(cb->nativeHandles())->encoder);
             cb->endPass();
         }
@@ -1234,12 +1234,12 @@ void tst_QRhi::resourceUpdateBatchRGBATextureUpload()
         QSKIP("QRhi could not be created, skipping testing texture resource updates");
 
     QImage image(234, 123, QImage::Format_RGBA8888_Premultiplied);
-    image.fill(Qt::red);
+    image.fill(BobUI::red);
     QPainter painter;
     const QPoint greenRectPos(35, 50);
     const QSize greenRectSize(100, 50);
     painter.begin(&image);
-    painter.fillRect(QRect(greenRectPos, greenRectSize), Qt::green);
+    painter.fillRect(QRect(greenRectPos, greenRectSize), BobUI::green);
     painter.end();
 
     // simple image upload; uploading and reading back RGBA8 is supported by the Null backend even
@@ -1310,7 +1310,7 @@ void tst_QRhi::resourceUpdateBatchRGBATextureUpload()
         QRhiResourceUpdateBatch *batch = rhi->nextResourceUpdateBatch();
 
         QImage clearImage(fullSize, image.format());
-        clearImage.fill(Qt::black);
+        clearImage.fill(BobUI::black);
         batch->uploadTexture(texture.data(), clearImage);
 
         // copy green pixels of copySize to (gap, gap), leaving a black bar of
@@ -1341,7 +1341,7 @@ void tst_QRhi::resourceUpdateBatchRGBATextureUpload()
 
         QImage expectedImage = clearImage;
         QPainter painter(&expectedImage);
-        painter.fillRect(QRect(QPoint(gap, gap), QSize(copySize)), Qt::green);
+        painter.fillRect(QRect(QPoint(gap, gap), QSize(copySize)), BobUI::green);
         painter.end();
 
         QVERIFY(imageRGBAEquals(expectedImage, wrapperImage));
@@ -1359,7 +1359,7 @@ void tst_QRhi::resourceUpdateBatchRGBATextureUpload()
         QRhiResourceUpdateBatch *batch = rhi->nextResourceUpdateBatch();
 
         QImage clearImage(fullSize, image.format());
-        clearImage.fill(Qt::black);
+        clearImage.fill(BobUI::black);
         batch->uploadTexture(texture.data(), clearImage);
 
         // SourceTopLeft is not supported for non-QImage-based uploads.
@@ -1390,7 +1390,7 @@ void tst_QRhi::resourceUpdateBatchRGBATextureUpload()
 
         QImage expectedImage = clearImage;
         QPainter painter(&expectedImage);
-        painter.fillRect(QRect(QPoint(gap, gap), QSize(copySize)), Qt::green);
+        painter.fillRect(QRect(QPoint(gap, gap), QSize(copySize)), BobUI::green);
         painter.end();
 
         QVERIFY(imageRGBAEquals(expectedImage, wrapperImage));
@@ -1399,7 +1399,7 @@ void tst_QRhi::resourceUpdateBatchRGBATextureUpload()
     // now a QImage from an actual file
     {
         QImage inputImage;
-        inputImage.load(QLatin1String(":/data/qt256.png"));
+        inputImage.load(QLatin1String(":/data/bobui256.png"));
         QVERIFY(!inputImage.isNull());
         inputImage = std::move(inputImage).convertToFormat(image.format());
 
@@ -1427,7 +1427,7 @@ void tst_QRhi::resourceUpdateBatchRGBATextureUpload()
         // row. This is expected to lead to printing a warning, and clamping the
         // upload size so that the underlying 3D APIs will not crash.
         if (impl != QRhi::Null) {
-            QTest::ignoreMessage(QtWarningMsg, QRegularExpression(QStringLiteral("Invalid texture upload issued.+")));
+            BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression(QStringLiteral("Invalid texture upload issued.+")));
             QRhiResourceUpdateBatch *batch = rhi->nextResourceUpdateBatch();
             QRhiTextureSubresourceUploadDescription subresDesc(inputImage);
             subresDesc.setDestinationTopLeft(QPoint(0, 1));
@@ -1453,10 +1453,10 @@ void tst_QRhi::resourceUpdateBatchRGBATextureCopy()
         QSKIP("QRhi could not be created, skipping testing texture resource updates");
 
     QImage red(256, 256, QImage::Format_RGBA8888_Premultiplied);
-    red.fill(Qt::red);
+    red.fill(BobUI::red);
 
     QImage green(35, 73, red.format());
-    green.fill(Qt::green);
+    green.fill(BobUI::green);
 
     QRhiResourceUpdateBatch *batch = rhi->nextResourceUpdateBatch();
 
@@ -1553,7 +1553,7 @@ void tst_QRhi::resourceUpdateBatchRGBATextureMip()
 
 
     QImage red(512, 512, QImage::Format_RGBA8888_Premultiplied);
-    red.fill(Qt::red);
+    red.fill(BobUI::red);
 
     const QRhiTexture::Flags textureFlags =
             QRhiTexture::UsedAsTransferSource
@@ -1675,14 +1675,14 @@ void tst_QRhi::resourceUpdateBatchLotsOfResources()
         QSKIP("QRhi could not be created, skipping testing resource updates");
 
     QImage image(128, 128, QImage::Format_RGBA8888_Premultiplied);
-    image.fill(Qt::red);
+    image.fill(BobUI::red);
     static const float bufferData[64] = {};
 
     QRhiResourceUpdateBatch *b = rhi->nextResourceUpdateBatch();
     std::vector<std::unique_ptr<QRhiTexture>> textures;
     std::vector<std::unique_ptr<QRhiBuffer>> buffers;
 
-    // QTBUG-96619
+    // BOBUIBUG-96619
     static const int TEXTURE_COUNT = 3 * QRhiResourceUpdateBatchPrivate::TEXTURE_OPS_STATIC_ALLOC;
     static const int BUFFER_COUNT = 3 * QRhiResourceUpdateBatchPrivate::BUFFER_OPS_STATIC_ALLOC;
 
@@ -1718,7 +1718,7 @@ void tst_QRhi::resourceUpdateBatchBetweenFrames()
         QSKIP("QRhi could not be created, skipping testing resource updates");
 
     QImage image(128, 128, QImage::Format_RGBA8888_Premultiplied);
-    image.fill(Qt::red);
+    image.fill(BobUI::red);
     static const float bufferData[64] = {};
 
     QRhiCommandBuffer *cb = nullptr;
@@ -1944,7 +1944,7 @@ void tst_QRhi::renderToTextureSimple()
     QScopedPointer<QRhiGraphicsPipeline> pipeline(createSimplePipeline(rhi.data(), srb.data(), rpDesc.data()));
     QVERIFY(pipeline);
 
-    cb->beginPass(rt.data(), Qt::blue, { 1.0f, 0 }, updates);
+    cb->beginPass(rt.data(), BobUI::blue, { 1.0f, 0 }, updates);
     cb->setGraphicsPipeline(pipeline.data());
     cb->setViewport({ 0, 0, float(outputSize.width()), float(outputSize.height()) });
     QRhiCommandBuffer::VertexInput vbindings(vbuf.data(), 0);
@@ -2054,7 +2054,7 @@ void tst_QRhi::renderToTextureMip()
     QScopedPointer<QRhiGraphicsPipeline> pipeline(createSimplePipeline(rhi.data(), srb.data(), rpDesc.data()));
     QVERIFY(pipeline);
 
-    cb->beginPass(rt.data(), Qt::blue, { 1.0f, 0 }, updates);
+    cb->beginPass(rt.data(), BobUI::blue, { 1.0f, 0 }, updates);
     cb->setGraphicsPipeline(pipeline.data());
     cb->setViewport({ 0, 0, float(rt->pixelSize().width()), float(rt->pixelSize().height()) });
     QRhiCommandBuffer::VertexInput vbindings(vbuf.data(), 0);
@@ -2159,7 +2159,7 @@ void tst_QRhi::renderToTextureCubemapFace()
     QScopedPointer<QRhiGraphicsPipeline> pipeline(createSimplePipeline(rhi.data(), srb.data(), rpDesc.data()));
     QVERIFY(pipeline);
 
-    cb->beginPass(rt.data(), Qt::blue, { 1.0f, 0 }, updates);
+    cb->beginPass(rt.data(), BobUI::blue, { 1.0f, 0 }, updates);
     cb->setGraphicsPipeline(pipeline.data());
     cb->setViewport({ 0, 0, float(rt->pixelSize().width()), float(rt->pixelSize().height()) });
     QRhiCommandBuffer::VertexInput vbindings(vbuf.data(), 0);
@@ -2248,7 +2248,7 @@ void tst_QRhi::renderToTextureTextureArray()
 
     if (isAndroidOpenGLSwiftShader(impl, rhi.get())) {
         QSKIP("SwiftShader software acceleration is used which does not support this OpenGLES "
-              "feature. See QTBUG-132934");
+              "feature. See BOBUIBUG-132934");
     }
 
     const QSize outputSize(512, 256);
@@ -2290,7 +2290,7 @@ void tst_QRhi::renderToTextureTextureArray()
     QScopedPointer<QRhiGraphicsPipeline> pipeline(createSimplePipeline(rhi.data(), srb.data(), rpDesc.data()));
     QVERIFY(pipeline);
 
-    cb->beginPass(rt.data(), Qt::blue, { 1.0f, 0 }, updates);
+    cb->beginPass(rt.data(), BobUI::blue, { 1.0f, 0 }, updates);
     cb->setGraphicsPipeline(pipeline.data());
     cb->setViewport({ 0, 0, float(rt->pixelSize().width()), float(rt->pixelSize().height()) });
     QRhiCommandBuffer::VertexInput vbindings(vbuf.data(), 0);
@@ -2365,7 +2365,7 @@ void tst_QRhi::renderToTextureTexturedQuad()
         QSKIP("QRhi could not be created, skipping testing rendering");
 
     QImage inputImage;
-    inputImage.load(QLatin1String(":/data/qt256.png"));
+    inputImage.load(QLatin1String(":/data/bobui256.png"));
     QVERIFY(!inputImage.isNull());
 
     QScopedPointer<QRhiTexture> texture(rhi->newTexture(QRhiTexture::RGBA8, inputImage.size(), 1,
@@ -2420,7 +2420,7 @@ void tst_QRhi::renderToTextureTexturedQuad()
 
     QVERIFY(pipeline->create());
 
-    cb->beginPass(rt.data(), Qt::black, { 1.0f, 0 }, updates);
+    cb->beginPass(rt.data(), BobUI::black, { 1.0f, 0 }, updates);
     cb->setGraphicsPipeline(pipeline.data());
     cb->setShaderResources();
     cb->setViewport({ 0, 0, float(texture->pixelSize().width()), float(texture->pixelSize().height()) });
@@ -2491,7 +2491,7 @@ void tst_QRhi::renderToTextureSampleWithSeparateTextureAndSampler()
 
 #ifdef Q_OS_ANDROID
     if (impl == QRhi::Vulkan) {
-        QSKIP("This function fails with Vulkan on Android, see QTQAINFRA-6926 for more info.");
+        QSKIP("This function fails with Vulkan on Android, see BOBUIQAINFRA-6926 for more info.");
     }
 #endif
 
@@ -2500,7 +2500,7 @@ void tst_QRhi::renderToTextureSampleWithSeparateTextureAndSampler()
         QSKIP("QRhi could not be created, skipping testing rendering");
 
     QImage inputImage;
-    inputImage.load(QLatin1String(":/data/qt256.png"));
+    inputImage.load(QLatin1String(":/data/bobui256.png"));
     QVERIFY(!inputImage.isNull());
 
     QScopedPointer<QRhiTexture> texture(rhi->newTexture(QRhiTexture::RGBA8, inputImage.size(), 1,
@@ -2556,7 +2556,7 @@ void tst_QRhi::renderToTextureSampleWithSeparateTextureAndSampler()
 
     QVERIFY(pipeline->create());
 
-    cb->beginPass(rt.data(), Qt::black, { 1.0f, 0 }, updates);
+    cb->beginPass(rt.data(), BobUI::black, { 1.0f, 0 }, updates);
     cb->setGraphicsPipeline(pipeline.data());
     cb->setShaderResources();
     cb->setViewport({ 0, 0, float(texture->pixelSize().width()), float(texture->pixelSize().height()) });
@@ -2620,11 +2620,11 @@ void tst_QRhi::renderToTextureArrayOfTexturedQuad()
 
     if (isAndroidOpenGLSwiftShader(impl, rhi.get())) {
         QSKIP("SwiftShader software acceleration is used which does not support this OpenGLES "
-              "feature. See QTBUG-132934");
+              "feature. See BOBUIBUG-132934");
     }
 
     QImage inputImage;
-    inputImage.load(QLatin1String(":/data/qt256.png"));
+    inputImage.load(QLatin1String(":/data/bobui256.png"));
     QVERIFY(!inputImage.isNull());
 
     QScopedPointer<QRhiTexture> texture(rhi->newTexture(QRhiTexture::RGBA8, inputImage.size(), 1,
@@ -2654,14 +2654,14 @@ void tst_QRhi::renderToTextureArrayOfTexturedQuad()
     updates->uploadTexture(inputTexture.data(), inputImage);
 
     QImage redImage(inputImage.size(), QImage::Format_RGBA8888);
-    redImage.fill(Qt::red);
+    redImage.fill(BobUI::red);
 
     QScopedPointer<QRhiTexture> redTexture(rhi->newTexture(QRhiTexture::RGBA8, inputImage.size()));
     QVERIFY(redTexture->create());
     updates->uploadTexture(redTexture.data(), redImage);
 
     QImage greenImage(inputImage.size(), QImage::Format_RGBA8888);
-    greenImage.fill(Qt::green);
+    greenImage.fill(BobUI::green);
 
     QScopedPointer<QRhiTexture> greenTexture(rhi->newTexture(QRhiTexture::RGBA8, inputImage.size()));
     QVERIFY(greenTexture->create());
@@ -2701,7 +2701,7 @@ void tst_QRhi::renderToTextureArrayOfTexturedQuad()
 
     QVERIFY(pipeline->create());
 
-    cb->beginPass(rt.data(), Qt::black, { 1.0f, 0 }, updates);
+    cb->beginPass(rt.data(), BobUI::black, { 1.0f, 0 }, updates);
     cb->setGraphicsPipeline(pipeline.data());
     cb->setShaderResources();
     cb->setViewport({ 0, 0, float(texture->pixelSize().width()), float(texture->pixelSize().height()) });
@@ -2759,7 +2759,7 @@ void tst_QRhi::renderToTextureTexturedQuadAndUniformBuffer()
         QSKIP("QRhi could not be created, skipping testing rendering");
 
     QImage inputImage;
-    inputImage.load(QLatin1String(":/data/qt256.png"));
+    inputImage.load(QLatin1String(":/data/bobui256.png"));
     QVERIFY(!inputImage.isNull());
 
     QScopedPointer<QRhiTexture> texture(rhi->newTexture(QRhiTexture::RGBA8, inputImage.size(), 1,
@@ -2853,7 +2853,7 @@ void tst_QRhi::renderToTextureTexturedQuadAndUniformBuffer()
 
     QVERIFY(pipeline->create());
 
-    cb->beginPass(rt.data(), Qt::black, { 1.0f, 0 }, updates);
+    cb->beginPass(rt.data(), BobUI::black, { 1.0f, 0 }, updates);
     cb->setGraphicsPipeline(pipeline.data());
     cb->setShaderResources();
     cb->setViewport({ 0, 0, float(texture->pixelSize().width()), float(texture->pixelSize().height()) });
@@ -2873,7 +2873,7 @@ void tst_QRhi::renderToTextureTexturedQuadAndUniformBuffer()
     cb->endPass(readbackBatch);
 
     // second pass (rotated)
-    cb->beginPass(rt.data(), Qt::black, { 1.0f, 0 });
+    cb->beginPass(rt.data(), BobUI::black, { 1.0f, 0 });
     cb->setGraphicsPipeline(pipeline.data());
     cb->setShaderResources(srb1.data()); // sources data from a different offset in ubuf
     cb->setViewport({ 0, 0, float(texture->pixelSize().width()), float(texture->pixelSize().height()) });
@@ -2957,7 +2957,7 @@ void tst_QRhi::renderToTextureTexturedQuadAllDynamicBuffers()
         QSKIP("QRhi could not be created, skipping testing rendering");
 
     QImage inputImage;
-    inputImage.load(QLatin1String(":/data/qt256.png"));
+    inputImage.load(QLatin1String(":/data/bobui256.png"));
     QVERIFY(!inputImage.isNull());
 
     QScopedPointer<QRhiTexture> texture(rhi->newTexture(QRhiTexture::RGBA8, inputImage.size(), 1,
@@ -3060,7 +3060,7 @@ void tst_QRhi::renderToTextureTexturedQuadAllDynamicBuffers()
 
     QVERIFY(pipeline->create());
 
-    cb->beginPass(rt.data(), Qt::black, { 1.0f, 0 });
+    cb->beginPass(rt.data(), BobUI::black, { 1.0f, 0 });
     cb->setGraphicsPipeline(pipeline.data());
     cb->setShaderResources();
     cb->setViewport({ 0, 0, float(texture->pixelSize().width()), float(texture->pixelSize().height()) });
@@ -3080,7 +3080,7 @@ void tst_QRhi::renderToTextureTexturedQuadAllDynamicBuffers()
     cb->endPass(readbackBatch);
 
     // second pass (rotated)
-    cb->beginPass(rt.data(), Qt::black, { 1.0f, 0 });
+    cb->beginPass(rt.data(), BobUI::black, { 1.0f, 0 });
     cb->setGraphicsPipeline(pipeline.data());
     cb->setShaderResources(srb1.data()); // sources data from a different offset in ubuf
     cb->setViewport({ 0, 0, float(texture->pixelSize().width()), float(texture->pixelSize().height()) });
@@ -3164,7 +3164,7 @@ void tst_QRhi::renderToTextureDeferredSrb()
         QSKIP("QRhi could not be created, skipping testing rendering");
 
     QImage inputImage;
-    inputImage.load(QLatin1String(":/data/qt256.png"));
+    inputImage.load(QLatin1String(":/data/bobui256.png"));
     QVERIFY(!inputImage.isNull());
 
     QScopedPointer<QRhiTexture> texture(rhi->newTexture(QRhiTexture::RGBA8, inputImage.size(), 1,
@@ -3238,7 +3238,7 @@ void tst_QRhi::renderToTextureDeferredSrb()
                      });
     QVERIFY(layoutCompatibleSrbWithResources->create());
 
-    cb->beginPass(rt.data(), Qt::black, { 1.0f, 0 }, updates);
+    cb->beginPass(rt.data(), BobUI::black, { 1.0f, 0 }, updates);
     cb->setGraphicsPipeline(pipeline.data());
     cb->setShaderResources(layoutCompatibleSrbWithResources.data()); // here we must use the srb referencing the resources
     cb->setViewport({ 0, 0, float(texture->pixelSize().width()), float(texture->pixelSize().height()) });
@@ -3302,7 +3302,7 @@ void tst_QRhi::renderToTextureDeferredUpdateSamplerInSrb()
         QSKIP("QRhi could not be created, skipping testing rendering");
 
     QImage inputImage;
-    inputImage.load(QLatin1String(":/data/qt256.png"));
+    inputImage.load(QLatin1String(":/data/bobui256.png"));
     QVERIFY(!inputImage.isNull());
 
     QScopedPointer<QRhiTexture> texture(rhi->newTexture(QRhiTexture::RGBA8, inputImage.size(), 1,
@@ -3379,7 +3379,7 @@ void tst_QRhi::renderToTextureDeferredUpdateSamplerInSrb()
                      });
     srb->updateResources(); // now it references sampler2, not sampler1
 
-    cb->beginPass(rt.data(), Qt::black, { 1.0f, 0 }, updates);
+    cb->beginPass(rt.data(), BobUI::black, { 1.0f, 0 }, updates);
     cb->setGraphicsPipeline(pipeline.data());
     cb->setShaderResources();
     cb->setViewport({ 0, 0, float(texture->pixelSize().width()), float(texture->pixelSize().height()) });
@@ -3443,7 +3443,7 @@ void tst_QRhi::renderToTextureMultipleUniformBuffersAndDynamicOffset()
         QSKIP("QRhi could not be created, skipping testing rendering");
 
     QImage inputImage;
-    inputImage.load(QLatin1String(":/data/qt256.png"));
+    inputImage.load(QLatin1String(":/data/bobui256.png"));
     QVERIFY(!inputImage.isNull());
 
     QScopedPointer<QRhiTexture> texture(rhi->newTexture(QRhiTexture::RGBA8, inputImage.size(), 1,
@@ -3531,7 +3531,7 @@ void tst_QRhi::renderToTextureMultipleUniformBuffersAndDynamicOffset()
 
     QVERIFY(pipeline->create());
 
-    cb->beginPass(rt.data(), Qt::black, { 1.0f, 0 }, updates);
+    cb->beginPass(rt.data(), BobUI::black, { 1.0f, 0 }, updates);
     cb->setGraphicsPipeline(pipeline.data());
 
     // Now the magic, expose the 3rd matrix and 4th opacity value to the shader.
@@ -3614,7 +3614,7 @@ void tst_QRhi::renderToTextureSrbReuse()
     // which presents extra pipeline-srb tracking work for the backend)
 
     QImage inputImage;
-    inputImage.load(QLatin1String(":/data/qt256.png"));
+    inputImage.load(QLatin1String(":/data/bobui256.png"));
     QVERIFY(!inputImage.isNull());
 
     QScopedPointer<QRhiTexture> texture(rhi->newTexture(QRhiTexture::RGBA8, inputImage.size(), 1,
@@ -3685,7 +3685,7 @@ void tst_QRhi::renderToTextureSrbReuse()
     pipeline2->setRenderPassDescriptor(rpDesc.data());
     QVERIFY(pipeline2->create());
 
-    cb->beginPass(rt.data(), Qt::black, { 1.0f, 0 }, updates);
+    cb->beginPass(rt.data(), BobUI::black, { 1.0f, 0 }, updates);
 
     // The key step in this test: set the 1st pipeline, then the 2nd, the
     // srb is the same. This should lead to identical results to just
@@ -3816,28 +3816,28 @@ void tst_QRhi::renderToTextureIndexedDraw()
     QRhiCommandBuffer::VertexInput vbindings(vbuf.data(), 0);
 
     // Do three render passes, even though all render the same thing. This is done to
-    // verify that QTBUG-89765 is fixed.  One of them specifies ExternalContent which
+    // verify that BOBUIBUG-89765 is fixed.  One of them specifies ExternalContent which
     // triggers special behavior with some backends (uses a secondary command buffer with
     // Vulkan for example). This way we can see that optimizations, such as keeping track
     // of what index buffer is active, are handled correctly across pass boundaries in the
-    // QRhi backends. Without the fix for QTBUG-89765 this test would show validation
+    // QRhi backends. Without the fix for BOBUIBUG-89765 this test would show validation
     // warnings and even crash when run with Vulkan.
 
-    cb->beginPass(rt.data(), Qt::blue, { 1.0f, 0 }, updates);
+    cb->beginPass(rt.data(), BobUI::blue, { 1.0f, 0 }, updates);
     cb->setGraphicsPipeline(pipeline.data());
     cb->setViewport({ 0, 0, float(outputSize.width()), float(outputSize.height()) });
     cb->setVertexInput(0, 1, &vbindings, ibuf.data(), 0, QRhiCommandBuffer::IndexUInt16);
     cb->drawIndexed(3);
     cb->endPass();
 
-    cb->beginPass(rt.data(), Qt::blue, { 1.0f, 0 }, nullptr, QRhiCommandBuffer::ExternalContent);
+    cb->beginPass(rt.data(), BobUI::blue, { 1.0f, 0 }, nullptr, QRhiCommandBuffer::ExternalContent);
     cb->setGraphicsPipeline(pipeline.data());
     cb->setViewport({ 0, 0, float(outputSize.width()), float(outputSize.height()) });
     cb->setVertexInput(0, 1, &vbindings, ibuf.data(), 0, QRhiCommandBuffer::IndexUInt16);
     cb->drawIndexed(3);
     cb->endPass();
 
-    cb->beginPass(rt.data(), Qt::blue, { 1.0f, 0 }, nullptr);
+    cb->beginPass(rt.data(), BobUI::blue, { 1.0f, 0 }, nullptr);
     cb->setGraphicsPipeline(pipeline.data());
     cb->setViewport({ 0, 0, float(outputSize.width()), float(outputSize.height()) });
     cb->setVertexInput(0, 1, &vbindings, ibuf.data(), 0, QRhiCommandBuffer::IndexUInt16);
@@ -3909,7 +3909,7 @@ void tst_QRhi::renderToTextureArrayMultiView()
         QSKIP("lavapipe does not like multiview, skip for now");
 
     if (QSysInfo::productType() == "opensuse-leap" && QSysInfo::productVersion() == QLatin1String("16.0") && rhi->backend() == QRhi::OpenGLES2)
-        QSKIP("QTBUG-141769: opensuse-leap 16.0 fails with OpenGL, skip for now");
+        QSKIP("BOBUIBUG-141769: opensuse-leap 16.0 fails with OpenGL, skip for now");
 
     for (int sampleCount : rhi->supportedSampleCounts()) {
         const QSize outputSize(1920, 1080);
@@ -3997,7 +3997,7 @@ void tst_QRhi::renderToTextureArrayMultiView()
         mvp.rotate(-180, 0, 0, 1); // point right
         updates->updateDynamicBuffer(ubuf.get(), 64, 64, mvp.constData());
 
-        cb->beginPass(rt.data(), Qt::black, { 1.0f, 0 }, updates);
+        cb->beginPass(rt.data(), BobUI::black, { 1.0f, 0 }, updates);
         cb->setGraphicsPipeline(ps.data());
         cb->setShaderResources();
         cb->setViewport({ 0, 0, float(outputSize.width()), float(outputSize.height()) });
@@ -4074,7 +4074,7 @@ void tst_QRhi::renderToWindowSimple_data()
 
 void tst_QRhi::renderToWindowSimple()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("offscreen"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("offscreen"), BobUI::CaseInsensitive))
         QSKIP("Offscreen: This fails.");
 
     QFETCH(QRhi::Implementation, impl);
@@ -4089,7 +4089,7 @@ void tst_QRhi::renderToWindowSimple()
 
     window->setGeometry(0, 0, 640, 480);
     window->show();
-    QVERIFY(QTest::qWaitForWindowExposed(window.data()));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(window.data()));
 
     QScopedPointer<QRhiSwapChain> swapChain(rhi->newSwapChain());
     swapChain->setWindow(window.data());
@@ -4134,7 +4134,7 @@ void tst_QRhi::renderToWindowSimple()
         QCOMPARE(rt->pixelSize(), outputSize);
         QRhiViewport viewport(0, 0, float(outputSize.width()), float(outputSize.height()));
 
-        cb->beginPass(rt, Qt::blue, { 1.0f, 0 }, updates);
+        cb->beginPass(rt, BobUI::blue, { 1.0f, 0 }, updates);
         updates = nullptr;
         cb->setGraphicsPipeline(pipeline.data());
         cb->setViewport(viewport);
@@ -4296,7 +4296,7 @@ void tst_QRhi::renderToTextureSameSrbDifferentShaders()
     u->updateDynamicBuffer(ubuf2.data(), 0, 4, &color2);
     cb->resourceUpdate(u);
 
-    cb->beginPass(rt.data(), Qt::black, { 1.0f, 0 });
+    cb->beginPass(rt.data(), BobUI::black, { 1.0f, 0 });
 
     for (int i = 0; i < 4; ++i) {
         cb->setGraphicsPipeline(pipeline1.data());
@@ -4335,7 +4335,7 @@ void tst_QRhi::renderToTextureSameSrbDifferentShaders()
     if (rhi->isYUpInFramebuffer())
         image = result.flipped();
 
-    // before the fix for QTBUG-140795 D3D11 (and 12 in fact) does not render
+    // before the fix for BOBUIBUG-140795 D3D11 (and 12 in fact) does not render
     // correctly, and instead of getting a triangle with color (0.5, 0.5, 0.5),
     // it's just not there; should be with the patch in place, with all backends
     const int maxFuzz = 4;
@@ -4350,7 +4350,7 @@ void tst_QRhi::continuousReadbackFromWindow_data()
 
 void tst_QRhi::continuousReadbackFromWindow()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("offscreen"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("offscreen"), BobUI::CaseInsensitive))
         QSKIP("Offscreen: This fails.");
 
     QFETCH(QRhi::Implementation, impl);
@@ -4365,7 +4365,7 @@ void tst_QRhi::continuousReadbackFromWindow()
 
     window->setGeometry(0, 0, 640, 480);
     window->show();
-    QVERIFY(QTest::qWaitForWindowExposed(window.data()));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(window.data()));
 
     QScopedPointer<QRhiSwapChain> swapChain(rhi->newSwapChain());
     swapChain->setWindow(window.data());
@@ -4398,7 +4398,7 @@ void tst_QRhi::continuousReadbackFromWindow()
         const QSize outputSize = swapChain->currentPixelSize();
         QRhiViewport viewport(0, 0, float(outputSize.width()), float(outputSize.height()));
 
-        cb->beginPass(rt, Qt::blue, { 1.0f, 0 }, updates);
+        cb->beginPass(rt, BobUI::blue, { 1.0f, 0 }, updates);
         updates = nullptr;
         cb->setGraphicsPipeline(pipeline.data());
         cb->setViewport(viewport);
@@ -4428,7 +4428,7 @@ void tst_QRhi::finishWithinSwapchainFrame_data()
 
 void tst_QRhi::finishWithinSwapchainFrame()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("offscreen"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("offscreen"), BobUI::CaseInsensitive))
         QSKIP("Offscreen: This fails.");
 
     QFETCH(QRhi::Implementation, impl);
@@ -4443,7 +4443,7 @@ void tst_QRhi::finishWithinSwapchainFrame()
 
     window->setGeometry(0, 0, 640, 480);
     window->show();
-    QVERIFY(QTest::qWaitForWindowExposed(window.data()));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(window.data()));
 
     QScopedPointer<QRhiSwapChain> swapChain(rhi->newSwapChain());
     swapChain->setWindow(window.data());
@@ -4473,7 +4473,7 @@ void tst_QRhi::finishWithinSwapchainFrame()
         QRhiResourceUpdateBatch *updates = rhi->nextResourceUpdateBatch();
         updates->uploadStaticBuffer(vbuf.data(), triangleVertices);
 
-        cb->beginPass(rt, Qt::blue, { 1.0f, 0 }, updates, QRhiCommandBuffer::ExternalContent);
+        cb->beginPass(rt, BobUI::blue, { 1.0f, 0 }, updates, QRhiCommandBuffer::ExternalContent);
 
         // just have some commands, do not bother with draw calls
         cb->setGraphicsPipeline(pipeline.data());
@@ -4522,7 +4522,7 @@ void tst_QRhi::resourceUpdateBatchBufferTextureWithSwapchainFrames_data()
 
 void tst_QRhi::resourceUpdateBatchBufferTextureWithSwapchainFrames()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("offscreen"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("offscreen"), BobUI::CaseInsensitive))
         QSKIP("Offscreen: Skipping onscreen test");
 
     QFETCH(QRhi::Implementation, impl);
@@ -4537,7 +4537,7 @@ void tst_QRhi::resourceUpdateBatchBufferTextureWithSwapchainFrames()
 
     window->setGeometry(0, 0, 640, 480);
     window->show();
-    QVERIFY(QTest::qWaitForWindowExposed(window.data()));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(window.data()));
 
     QScopedPointer<QRhiSwapChain> swapChain(rhi->newSwapChain());
     swapChain->setWindow(window.data());
@@ -4574,7 +4574,7 @@ void tst_QRhi::resourceUpdateBatchBufferTextureWithSwapchainFrames()
 
             QRhiCommandBuffer *cb = swapChain->currentFrameCommandBuffer();
             // just clear to black, but submit the resource update
-            cb->beginPass(swapChain->currentFrameRenderTarget(), Qt::black, { 1.0f, 0 }, batch);
+            cb->beginPass(swapChain->currentFrameRenderTarget(), BobUI::black, { 1.0f, 0 }, batch);
             cb->endPass();
 
             rhi->endFrame(swapChain.data());
@@ -4588,7 +4588,7 @@ void tst_QRhi::resourceUpdateBatchBufferTextureWithSwapchainFrames()
             batch->readBackBuffer(dynamicBuffer.data(), 0, bufferSize, &readResult);
 
             QRhiCommandBuffer *cb = swapChain->currentFrameCommandBuffer();
-            cb->beginPass(swapChain->currentFrameRenderTarget(), Qt::black, { 1.0f, 0 }, batch);
+            cb->beginPass(swapChain->currentFrameRenderTarget(), BobUI::black, { 1.0f, 0 }, batch);
             cb->endPass();
 
             rhi->endFrame(swapChain.data());
@@ -4623,7 +4623,7 @@ void tst_QRhi::resourceUpdateBatchBufferTextureWithSwapchainFrames()
                 batch->uploadStaticBuffer(buffer.data(), i, 1, a + i);
 
             QRhiCommandBuffer *cb = swapChain->currentFrameCommandBuffer();
-            cb->beginPass(swapChain->currentFrameRenderTarget(), Qt::black, { 1.0f, 0 }, batch);
+            cb->beginPass(swapChain->currentFrameRenderTarget(), BobUI::black, { 1.0f, 0 }, batch);
             cb->endPass();
 
             rhi->endFrame(swapChain.data());
@@ -4637,7 +4637,7 @@ void tst_QRhi::resourceUpdateBatchBufferTextureWithSwapchainFrames()
             batch->readBackBuffer(buffer.data(), 0, bufferSize, &readResult);
 
             QRhiCommandBuffer *cb = swapChain->currentFrameCommandBuffer();
-            cb->beginPass(swapChain->currentFrameRenderTarget(), Qt::black, { 1.0f, 0 }, batch);
+            cb->beginPass(swapChain->currentFrameRenderTarget(), BobUI::black, { 1.0f, 0 }, batch);
             cb->endPass();
 
             rhi->endFrame(swapChain.data());
@@ -4662,7 +4662,7 @@ void tst_QRhi::resourceUpdateBatchBufferTextureWithSwapchainFrames()
     {
         const int w = 234;
         const int h = 8; // use a small height because vsync throttling is active
-        const QColor colors[] = { Qt::red, Qt::green, Qt::blue, Qt::gray, Qt::yellow, Qt::black, Qt::white, Qt::magenta };
+        const QColor colors[] = { BobUI::red, BobUI::green, BobUI::blue, BobUI::gray, BobUI::yellow, BobUI::black, BobUI::white, BobUI::magenta };
         QImage image(w, h, QImage::Format_RGBA8888);
         for (int i = 0; i < h; ++i) {
             QRgb c = colors[i].rgb();
@@ -4692,7 +4692,7 @@ void tst_QRhi::resourceUpdateBatchBufferTextureWithSwapchainFrames()
             batch->uploadTexture(texture.data(), uploadDesc);
 
             QRhiCommandBuffer *cb = swapChain->currentFrameCommandBuffer();
-            cb->beginPass(swapChain->currentFrameRenderTarget(), Qt::black, { 1.0f, 0 }, batch);
+            cb->beginPass(swapChain->currentFrameRenderTarget(), BobUI::black, { 1.0f, 0 }, batch);
             cb->endPass();
 
             rhi->endFrame(swapChain.data());
@@ -4706,7 +4706,7 @@ void tst_QRhi::resourceUpdateBatchBufferTextureWithSwapchainFrames()
             batch->readBackTexture(texture.data(), &texReadResult);
 
             QRhiCommandBuffer *cb = swapChain->currentFrameCommandBuffer();
-            cb->beginPass(swapChain->currentFrameRenderTarget(), Qt::black, { 1.0f, 0 }, batch);
+            cb->beginPass(swapChain->currentFrameRenderTarget(), BobUI::black, { 1.0f, 0 }, batch);
             cb->endPass();
 
             rhi->endFrame(swapChain.data());
@@ -4751,7 +4751,7 @@ void tst_QRhi::textureRenderTargetAutoRebuild()
         QRhiCommandBuffer *cb = nullptr;
         QVERIFY(rhi->beginOffscreenFrame(&cb) == QRhi::FrameOpSuccess);
         QVERIFY(cb);
-        cb->beginPass(rt.data(), Qt::red, { 1.0f, 0 });
+        cb->beginPass(rt.data(), BobUI::red, { 1.0f, 0 });
         cb->endPass();
         rhi->endOffscreenFrame();
 
@@ -4762,7 +4762,7 @@ void tst_QRhi::textureRenderTargetAutoRebuild()
         QVERIFY(rhi->beginOffscreenFrame(&cb) == QRhi::FrameOpSuccess);
         QVERIFY(cb);
         // no rt->create() but beginPass() does it implicitly for us
-        cb->beginPass(rt.data(), Qt::red, { 1.0f, 0 });
+        cb->beginPass(rt.data(), BobUI::red, { 1.0f, 0 });
         QCOMPARE(rt->pixelSize(), QSize(256, 256));
         cb->endPass();
         rhi->endOffscreenFrame();
@@ -4867,7 +4867,7 @@ void tst_QRhi::renderToMRTPerRenderTargetBlending()
     QScopedPointer<QRhiGraphicsPipeline> pipeline(createMRTBLPipeline(rhi.data(), srb.data(), rpDesc.data(), blend));
     QVERIFY(pipeline);
 
-    cb->beginPass(rt.data(), Qt::white, { 1.0f, 0 }, updates);
+    cb->beginPass(rt.data(), BobUI::white, { 1.0f, 0 }, updates);
     cb->setGraphicsPipeline(pipeline.data());
     cb->setViewport({ 0, 0, float(outputSize.width()), float(outputSize.height()) });
     QRhiCommandBuffer::VertexInput vbindings(vbuf.data(), 0);
@@ -5644,7 +5644,7 @@ void tst_QRhi::textureImportOpenGL()
     QOpenGLFunctions *f = ctx->functions();
 
     QImage image(320, 200, QImage::Format_RGBA8888_Premultiplied);
-    image.fill(Qt::red);
+    image.fill(BobUI::red);
 
     GLuint t = 0;
     f->glGenTextures(1, &t);
@@ -5713,7 +5713,7 @@ void tst_QRhi::renderbufferImportOpenGL()
     QRhiCommandBuffer *cb = nullptr;
     QVERIFY(rhi->beginOffscreenFrame(&cb) == QRhi::FrameOpSuccess);
     QVERIFY(cb);
-    cb->beginPass(rt.data(), Qt::red, { 1.0f, 0 }, nullptr, QRhiCommandBuffer::ExternalContent);
+    cb->beginPass(rt.data(), BobUI::red, { 1.0f, 0 }, nullptr, QRhiCommandBuffer::ExternalContent);
     cb->beginExternal();
     QByteArray tmpBuf;
     tmpBuf.resize(size.width() * size.height() * 4);
@@ -5728,7 +5728,7 @@ void tst_QRhi::renderbufferImportOpenGL()
                         size.width(), size.height(), QImage::Format_RGBA8888_Premultiplied);
 
     QImage image(320, 200, QImage::Format_RGBA8888_Premultiplied);
-    image.fill(Qt::red);
+    image.fill(BobUI::red);
     QVERIFY(imageRGBAEquals(image, wrapperImage));
 #endif
 }
@@ -5747,7 +5747,7 @@ void tst_QRhi::threeDimTexture()
 
 #ifdef Q_OS_ANDROID
     if (QNativeInterface::QAndroidApplication::sdkVersion() == 36)
-        QSKIP("Fails and crashes on Android 16 (QTBUG-140189)");
+        QSKIP("Fails and crashes on Android 16 (BOBUIBUG-140189)");
 #endif
 
     if (!rhi)
@@ -5758,7 +5758,7 @@ void tst_QRhi::threeDimTexture()
 
     if (isAndroidOpenGLSwiftShader(impl, rhi.get())) {
         QSKIP("SwiftShader software acceleration is used which does not support this OpenGLES "
-            "feature. See QTBUG-132934");
+            "feature. See BOBUIBUG-132934");
     }
 
     const int WIDTH = 512;
@@ -5824,7 +5824,7 @@ void tst_QRhi::threeDimTexture()
         // mipmap generation of 3D textures (it ignores the depth, effectively behaving as
         // if the 3D texture was a 2D array which is incorrect wrt mipmapping)
         // Some software-based OpenGL implementations, such as Mesa llvmpipe builds that are
-        // used both in Qt CI and are shipped with the official Qt binaries also seem to have
+        // used both in BobUI CI and are shipped with the official BobUI binaries also seem to have
         // problems with this.
         if (impl != QRhi::Null && impl != QRhi::OpenGLES2)
             QVERIFY(imageRGBAEquals(result, referenceImage, 2));
@@ -5852,14 +5852,14 @@ void tst_QRhi::threeDimTexture()
         QRhiCommandBuffer *cb = nullptr;
         QVERIFY(rhi->beginOffscreenFrame(&cb) == QRhi::FrameOpSuccess);
         QVERIFY(cb);
-        cb->beginPass(rt.data(), Qt::blue, { 1.0f, 0 });
+        cb->beginPass(rt.data(), BobUI::blue, { 1.0f, 0 });
         // slice 23 is now blue
         cb->endPass();
         rhi->endOffscreenFrame();
 
         // Fill all other slices with some color. We should be free to do this
         // step *before* the "render to slice 23" block above as well. However,
-        // as QTBUG-111772 shows, some Vulkan implementations have problems
+        // as BOBUIBUG-111772 shows, some Vulkan implementations have problems
         // then. (or it could be QRhi is doing something wrong, but there is no
         // evidence of that yet) For now, keep the order of first rendering to
         // a slice and then uploading data for the rest.
@@ -6325,7 +6325,7 @@ void tst_QRhi::oneDimTexture()
         QRhiCommandBuffer *cb = nullptr;
         QVERIFY(rhi->beginOffscreenFrame(&cb) == QRhi::FrameOpSuccess);
         QVERIFY(cb);
-        cb->beginPass(rt.data(), Qt::blue, { 1.0f, 0 }, batch);
+        cb->beginPass(rt.data(), BobUI::blue, { 1.0f, 0 }, batch);
         // texture is now blue
         cb->endPass();
         rhi->endOffscreenFrame();
@@ -6381,7 +6381,7 @@ void tst_QRhi::oneDimTexture()
         QRhiCommandBuffer *cb = nullptr;
         QVERIFY(rhi->beginOffscreenFrame(&cb) == QRhi::FrameOpSuccess);
         QVERIFY(cb);
-        cb->beginPass(rt.data(), Qt::blue, { 1.0f, 0 }, batch);
+        cb->beginPass(rt.data(), BobUI::blue, { 1.0f, 0 }, batch);
         // slice 23 is now blue
         cb->endPass();
         rhi->endOffscreenFrame();
@@ -6440,7 +6440,7 @@ void tst_QRhi::leakedResourceDestroy()
 
 #ifdef Q_OS_ANDROID
     if ((QNativeInterface::QAndroidApplication::sdkVersion() == 36) && (impl == QRhi::Vulkan))
-        QSKIP("Fails and crashes on Android 16 (QTBUG-140189)");
+        QSKIP("Fails and crashes on Android 16 (BOBUIBUG-140189)");
 #endif
 
     QScopedPointer<QRhi> rhi(QRhi::create(impl, initParams));
@@ -6454,7 +6454,7 @@ void tst_QRhi::leakedResourceDestroy()
     // We do not however have control over other, native and 3rd party components: a
     // validation or debug layer, or a memory allocator may warn, assert, or abort when
     // not releasing all native resources correctly.
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     // don't want asserts from vkmemalloc, skip the test in debug builds
     if (impl == QRhi::Vulkan)
         QSKIP("Skipping leaked resource destroy test due to Vulkan and debug build");
@@ -6523,7 +6523,7 @@ void tst_QRhi::renderToFloatTexture()
 
     if (isAndroidOpenGLSwiftShader(impl, rhi.get())) {
         QSKIP("SwiftShader software acceleration is used which does not support this OpenGLES "
-              "feature. See QTBUG-132934");
+              "feature. See BOBUIBUG-132934");
     }
 
     const QSize outputSize(1920, 1080);
@@ -6552,7 +6552,7 @@ void tst_QRhi::renderToFloatTexture()
     QScopedPointer<QRhiGraphicsPipeline> pipeline(createSimplePipeline(rhi.data(), srb.data(), rpDesc.data()));
     QVERIFY(pipeline);
 
-    cb->beginPass(rt.data(), Qt::blue, { 1.0f, 0 }, updates);
+    cb->beginPass(rt.data(), BobUI::blue, { 1.0f, 0 }, updates);
     cb->setGraphicsPipeline(pipeline.data());
     cb->setViewport({ 0, 0, float(outputSize.width()), float(outputSize.height()) });
     QRhiCommandBuffer::VertexInput vbindings(vbuf.data(), 0);
@@ -6617,7 +6617,7 @@ void tst_QRhi::renderToRgb10Texture()
 
     if (isAndroidOpenGLSwiftShader(impl, rhi.get())) {
         QSKIP("SwiftShader software acceleration is used which does not support this OpenGLES "
-              "feature. See QTBUG-132934");
+              "feature. See BOBUIBUG-132934");
     }
 
     const QSize outputSize(1920, 1080);
@@ -6646,7 +6646,7 @@ void tst_QRhi::renderToRgb10Texture()
     QScopedPointer<QRhiGraphicsPipeline> pipeline(createSimplePipeline(rhi.data(), srb.data(), rpDesc.data()));
     QVERIFY(pipeline);
 
-    cb->beginPass(rt.data(), Qt::blue, { 1.0f, 0 }, updates);
+    cb->beginPass(rt.data(), BobUI::blue, { 1.0f, 0 }, updates);
     cb->setGraphicsPipeline(pipeline.data());
     cb->setViewport({ 0, 0, float(outputSize.width()), float(outputSize.height()) });
     QRhiCommandBuffer::VertexInput vbindings(vbuf.data(), 0);
@@ -6700,7 +6700,7 @@ void tst_QRhi::tessellation()
 {
 #ifdef Q_OS_ANDROID
     if (QNativeInterface::QAndroidApplication::sdkVersion() >= 31)
-        QSKIP("Fails on Android 12 (QTBUG-108844)");
+        QSKIP("Fails on Android 12 (BOBUIBUG-108844)");
 #endif
     QFETCH(QRhi::Implementation, impl);
     QFETCH(QRhiInitParams *, initParams);
@@ -6791,7 +6791,7 @@ void tst_QRhi::tessellation()
     QRhiCommandBuffer *cb = nullptr;
     QCOMPARE(rhi->beginOffscreenFrame(&cb), QRhi::FrameOpSuccess);
 
-    cb->beginPass(rt.data(), Qt::black, { 1.0f, 0 }, u);
+    cb->beginPass(rt.data(), BobUI::black, { 1.0f, 0 }, u);
     cb->setGraphicsPipeline(pipeline.data());
     cb->setViewport({ 0, 0, float(rt->pixelSize().width()), float(rt->pixelSize().height()) });
     cb->setShaderResources();
@@ -6864,7 +6864,7 @@ void tst_QRhi::tessellationInterfaceBlocks()
 {
 #ifdef Q_OS_ANDROID
     if (QNativeInterface::QAndroidApplication::sdkVersion() >= 31)
-        QSKIP("Fails on Android 12 (QTBUG-108844)");
+        QSKIP("Fails on Android 12 (BOBUIBUG-108844)");
 #endif
     QFETCH(QRhi::Implementation, impl);
     QFETCH(QRhiInitParams *, initParams);
@@ -6976,7 +6976,7 @@ void tst_QRhi::tessellationInterfaceBlocks()
     QRhiCommandBuffer *cb = nullptr;
     QCOMPARE(rhi->beginOffscreenFrame(&cb), QRhi::FrameOpSuccess);
 
-    cb->beginPass(rt.data(), Qt::black, { 1.0f, 0 }, u);
+    cb->beginPass(rt.data(), BobUI::black, { 1.0f, 0 }, u);
     cb->setGraphicsPipeline(pipeline.data());
     cb->setViewport({ 0, 0, float(rt->pixelSize().width()), float(rt->pixelSize().height()) });
     cb->setShaderResources();
@@ -7315,7 +7315,7 @@ void tst_QRhi::storageBuffer()
 
 #ifdef Q_OS_ANDROID
     if (QNativeInterface::QAndroidApplication::sdkVersion() == 36)
-        QSKIP("pipeline->create()) Fails on Android 16 (QTBUG-140189)");
+        QSKIP("pipeline->create()) Fails on Android 16 (BOBUIBUG-140189)");
 #endif
 
 
@@ -7430,7 +7430,7 @@ void tst_QRhi::storageBufferRuntimeSizeGraphics()
 {
 #ifdef Q_OS_ANDROID
     if (QNativeInterface::QAndroidApplication::sdkVersion() >= 31)
-        QSKIP("Fails on Android 12 (QTBUG-108844)");
+        QSKIP("Fails on Android 12 (BOBUIBUG-108844)");
 #endif
     // Draws a tessellated triangle with color determined by the length of
     // buffers bound to shader stages. This is primarily to test Metal
@@ -7571,7 +7571,7 @@ void tst_QRhi::storageBufferRuntimeSizeGraphics()
     QRhiCommandBuffer *cb = nullptr;
     QCOMPARE(rhi->beginOffscreenFrame(&cb), QRhi::FrameOpSuccess);
 
-    cb->beginPass(rt.data(), Qt::black, { 1.0f, 0 }, u);
+    cb->beginPass(rt.data(), BobUI::black, { 1.0f, 0 }, u);
     cb->setGraphicsPipeline(pipeline.data());
     cb->setViewport({ 0, 0, float(rt->pixelSize().width()), float(rt->pixelSize().height()) });
     cb->setShaderResources();
@@ -7610,7 +7610,7 @@ void tst_QRhi::halfPrecisionAttributes()
 {
 #ifdef Q_OS_ANDROID
     if (QNativeInterface::QAndroidApplication::sdkVersion() >= 31)
-        QSKIP("Fails on Android 12 (QTBUG-108844)");
+        QSKIP("Fails on Android 12 (BOBUIBUG-108844)");
 #endif
     QFETCH(QRhi::Implementation, impl);
     QFETCH(QRhiInitParams *, initParams);
@@ -7691,7 +7691,7 @@ void tst_QRhi::halfPrecisionAttributes()
     pipeline->setRenderPassDescriptor(rpDesc.data());
     QVERIFY(pipeline->create());
 
-    cb->beginPass(rt.data(), Qt::blue, { 1.0f, 0 }, updates);
+    cb->beginPass(rt.data(), BobUI::blue, { 1.0f, 0 }, updates);
     cb->setGraphicsPipeline(pipeline.data());
     cb->setViewport({ 0, 0, float(outputSize.width()), float(outputSize.height()) });
     QRhiCommandBuffer::VertexInput vbindings(vbuf.data(), 0);
@@ -7752,4 +7752,4 @@ void tst_QRhi::halfPrecisionAttributes()
 }
 
 #include <tst_qrhi.moc>
-QTEST_MAIN(tst_QRhi)
+BOBUIEST_MAIN(tst_QRhi)

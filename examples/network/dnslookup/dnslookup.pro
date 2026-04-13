@@ -1,9 +1,9 @@
 TEMPLATE = app
-QT = core network
+BOBUI = core network
 CONFIG += cmdline
 HEADERS += dnslookup.h
 SOURCES += dnslookup.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/network/dnslookup
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/network/dnslookup
 INSTALLS += target

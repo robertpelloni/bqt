@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QDRAWINGPRIMITIVE_SSE2_P_H
 #define QDRAWINGPRIMITIVE_SSE2_P_H
 
-#include <QtGui/private/qtguiglobal_p.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
 #include <private/qsimd_p.h>
 #include "qdrawhelper_x86_p.h"
 #include "qrgba64_p.h"
@@ -15,14 +15,14 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*
  * Multiply the components of pixelVector by alphaChannel
@@ -189,13 +189,13 @@ QT_BEGIN_NAMESPACE
     } \
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // __SSE2__
 
-QT_BEGIN_NAMESPACE
-#if QT_COMPILER_SUPPORTS_HERE(SSE4_1)
-QT_FUNCTION_TARGET(SSE2)
+BOBUI_BEGIN_NAMESPACE
+#if BOBUI_COMPILER_SUPPORTS_HERE(SSE4_1)
+BOBUI_FUNCTION_TARGET(SSE2)
 static inline void Q_DECL_VECTORCALL reciprocal_mul_ss(__m128 &ia, const __m128 a, float mul)
 {
     ia = _mm_rcp_ss(a); // Approximate 1/a
@@ -205,7 +205,7 @@ static inline void Q_DECL_VECTORCALL reciprocal_mul_ss(__m128 &ia, const __m128 
     ia = _mm_shuffle_ps(ia, ia, _MM_SHUFFLE(0,0,0,0));
 }
 
-QT_FUNCTION_TARGET(SSE4_1)
+BOBUI_FUNCTION_TARGET(SSE4_1)
 static inline QRgb qUnpremultiply_sse4(QRgb p)
 {
     const uint alpha = qAlpha(p);
@@ -224,8 +224,8 @@ static inline QRgb qUnpremultiply_sse4(QRgb p)
     return _mm_cvtsi128_si32(vl);
 }
 
-template<enum QtPixelOrder PixelOrder>
-QT_FUNCTION_TARGET(SSE4_1)
+template<enum BobUIPixelOrder PixelOrder>
+BOBUI_FUNCTION_TARGET(SSE4_1)
 static inline uint qConvertArgb32ToA2rgb30_sse4(QRgb p)
 {
     const uint alpha = qAlpha(p);
@@ -254,8 +254,8 @@ static inline uint qConvertArgb32ToA2rgb30_sse4(QRgb p)
     return rgb30;
 }
 
-template<enum QtPixelOrder PixelOrder>
-QT_FUNCTION_TARGET(SSE4_1)
+template<enum BobUIPixelOrder PixelOrder>
+BOBUI_FUNCTION_TARGET(SSE4_1)
 static inline uint qConvertRgba64ToRgb32_sse4(QRgba64 p)
 {
     if (p.isTransparent())
@@ -275,6 +275,6 @@ static inline uint qConvertRgba64ToRgb32_sse4(QRgba64 p)
     return toArgb32(vl);
 }
 #endif
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QDRAWINGPRIMITIVE_SSE2_P_H

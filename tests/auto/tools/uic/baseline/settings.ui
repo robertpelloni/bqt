@@ -34,7 +34,7 @@
         <string>Audio device:</string>
        </property>
        <property name="alignment">
-        <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
+        <set>BobUI::AlignmentFlag::AlignLeading|BobUI::AlignmentFlag::AlignLeft|BobUI::AlignmentFlag::AlignTop</set>
        </property>
       </widget>
      </item>
@@ -70,7 +70,7 @@
         <string>Audio effect:</string>
        </property>
        <property name="alignment">
-        <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
+        <set>BobUI::AlignmentFlag::AlignLeading|BobUI::AlignmentFlag::AlignLeft|BobUI::AlignmentFlag::AlignTop</set>
        </property>
       </widget>
      </item>
@@ -106,7 +106,7 @@
         <string>Cross fade:</string>
        </property>
        <property name="alignment">
-        <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
+        <set>BobUI::AlignmentFlag::AlignLeading|BobUI::AlignmentFlag::AlignLeft|BobUI::AlignmentFlag::AlignTop</set>
        </property>
       </widget>
      </item>
@@ -136,7 +136,7 @@
           <number>0</number>
          </property>
          <property name="orientation">
-          <enum>Qt::Orientation::Horizontal</enum>
+          <enum>BobUI::Orientation::Horizontal</enum>
          </property>
          <property name="tickPosition">
           <enum>QSlider::TickPosition::TicksBelow</enum>
@@ -160,7 +160,7 @@
          <item>
           <spacer>
            <property name="orientation">
-            <enum>Qt::Orientation::Horizontal</enum>
+            <enum>BobUI::Orientation::Horizontal</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
@@ -185,7 +185,7 @@
          <item>
           <spacer>
            <property name="orientation">
-            <enum>Qt::Orientation::Horizontal</enum>
+            <enum>BobUI::Orientation::Horizontal</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
@@ -216,7 +216,7 @@
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
-      <enum>Qt::Orientation::Horizontal</enum>
+      <enum>BobUI::Orientation::Horizontal</enum>
      </property>
      <property name="standardButtons">
       <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>

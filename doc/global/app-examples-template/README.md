@@ -1,7 +1,7 @@
-# Qt Application Examples Template
+# BobUI Application Examples Template
 
 Use the 'app-examples-template.qdoc' file when creating or updating any of
-the Qt application examples.
+the BobUI application examples.
 
 The purpose of the template is to make it easier for technical writers and
 developers to create documentation with a consistent look and feel. The
@@ -17,19 +17,19 @@ angle brackets and check the links.
 ### Application examples structure
 
    - State the objective of the example.
-   - Explain which Qt technologies are used.
-   - Explain what Qt features are shown.
+   - Explain which BobUI technologies are used.
+   - Explain what BobUI features are shown.
 
    - (Optional) Create a workflow diagram for more complicated examples.
-   The [WebEngine Push Notifications Example](https://doc.qt.io/qt-6/qtwebengine-webenginewidgets-push-notifications-example.html)
+   The [WebEngine Push Notifications Example](https://doc.bobui.io/bobui-6/bobuiwebengine-webenginewidgets-push-notifications-example.html)
    demonstrates this well.
 
-   [QUIP-21](https://contribute.qt-project.org/quips/21) explains how to use
-   images in Qt Documentation.
+   [QUIP-21](https://contribute.bobui-project.org/quips/21) explains how to use
+   images in BobUI Documentation.
 
 ### Explain how to run the example
 
-   - Include the [Launching Examples Template](https://github.com/qt/qtbase/blob/dev/doc/global/includes/examples-run.qdocinc).
+   - Include the [Launching Examples Template](https://github.com/bobui/bobuibase/blob/dev/doc/global/includes/examples-run.qdocinc).
    - Explain the expected application output after running the example.
 
 ### (Optional) Provide relevant platform information
@@ -40,20 +40,20 @@ angle brackets and check the links.
 
    - Use for more complicated examples.
    - The walkthrough describes how to navigate and access different parts of the example/UI.
-   - The [Coffee Machine](https://doc.qt.io/qt-6/qtdoc-demos-coffee-example.html)
+   - The [Coffee Machine](https://doc.bobui.io/bobui-6/bobuidoc-demos-coffee-example.html)
     example demonstrates this well.
 
-### (Optional) Provide a list of the main Qt classes and modules the examples uses
+### (Optional) Provide a list of the main BobUI classes and modules the examples uses
 
    - Use for more complicated examples.
-   - The [Bluetooth Low Energy Heart Rate Game](https://doc.qt.io/qt-6/qtbluetooth-heartrate-game-example.html)
+   - The [Bluetooth Low Energy Heart Rate Game](https://doc.bobui.io/bobui-6/bobuibluetooth-heartrate-game-example.html)
     demonstrates this well.
 
 #### (Optional) Create a class diagram
 
    - Use for more complicated examples.
-   - The class diagram visually depicts the hierarchy of the Qt classes used in the example.
-   - The [WebEngine Widgets Simple Browser Example](https://doc.qt.io/qt-6/qtwebengine-webenginewidgets-simplebrowser-example.html)
+   - The class diagram visually depicts the hierarchy of the BobUI classes used in the example.
+   - The [WebEngine Widgets Simple Browser Example](https://doc.bobui.io/bobui-6/bobuiwebengine-webenginewidgets-simplebrowser-example.html)
     demonstrates this well.
 
 ### Describe Feature A
@@ -72,5 +72,5 @@ angle brackets and check the links.
    - Add any relevant best practices.
 
 ### Add links to relevant files
-   - Use \sa command to link to All Qt Examples, and to other relevant documentation.
+   - Use \sa command to link to All BobUI Examples, and to other relevant documentation.
    - A link to the source code is automatically generated whenever the \example command is used.

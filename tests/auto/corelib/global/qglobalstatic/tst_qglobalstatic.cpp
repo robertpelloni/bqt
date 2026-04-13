@@ -1,16 +1,16 @@
 // Copyright (C) 2016 Thiago Macieira <thiago@kde.org>
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/QThread>
-#include <QTest>
+#include <BobUICore/BOBUIhread>
+#include <BOBUIest>
 #include <QReadWriteLock>
 
 #if defined(Q_OS_UNIX) && !defined(Q_OS_INTEGRITY)
 #include <sys/resource.h>
 #endif
 
-#include <QtTest/private/qemulationdetector_p.h>
+#include <BobUITest/private/qemulationdetector_p.h>
 
 class tst_QGlobalStatic : public QObject
 {
@@ -123,7 +123,7 @@ void tst_QGlobalStatic::exception()
         exceptionCaught = true;
     }
     QVERIFY(exceptionCaught);
-    QCOMPARE(QtGlobalStatic::Holder<Q_QGS_throwingGS>::guard.loadRelaxed(), 0);
+    QCOMPARE(BobUIGlobalStatic::Holder<Q_QGS_throwingGS>::guard.loadRelaxed(), 0);
     QVERIFY(!throwingGS.exists());
     QVERIFY(!throwingGS.isDestroyed());
 }
@@ -156,10 +156,10 @@ Q_GLOBAL_STATIC_WITH_ARGS(ThrowingType, threadStressTestGS, (threadStressTestCon
 
 void tst_QGlobalStatic::threadStressTest()
 {
-    if (QTestPrivate::isRunningArmOnX86())
-        QSKIP("Frequently hangs on QEMU, QTBUG-91423");
+    if (BOBUIestPrivate::isRunningArmOnX86())
+        QSKIP("Frequently hangs on QEMU, BOBUIBUG-91423");
 
-    class ThreadStressTestThread: public QThread
+    class ThreadStressTestThread: public BOBUIhread
     {
     public:
         QReadWriteLock *lock;
@@ -228,6 +228,6 @@ void tst_QGlobalStatic::afterDestruction()
     *checkedAfterDestruction = 42;
 }
 
-QTEST_APPLESS_MAIN(tst_QGlobalStatic);
+BOBUIEST_APPLESS_MAIN(tst_QGlobalStatic);
 
 #include "tst_qglobalstatic.moc"

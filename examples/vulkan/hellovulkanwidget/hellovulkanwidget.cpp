@@ -1,5 +1,5 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "hellovulkanwidget.h"
 #include <QVulkanFunctions>
@@ -10,7 +10,7 @@
 #include <QLCDNumber>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QTabWidget>
+#include <BOBUIabWidget>
 
 MainWindow::MainWindow(VulkanWindow *w, QPlainTextEdit *logWidget)
     : m_window(w)
@@ -24,17 +24,17 @@ MainWindow::MainWindow(VulkanWindow *w, QPlainTextEdit *logWidget)
     m_number->setSegmentStyle(QLCDNumber::Filled);
 
     QPushButton *grabButton = new QPushButton(tr("&Grab"));
-    grabButton->setFocusPolicy(Qt::NoFocus);
+    grabButton->setFocusPolicy(BobUI::NoFocus);
 
     connect(grabButton, &QPushButton::clicked, this, &MainWindow::onGrabRequested);
 
     QPushButton *quitButton = new QPushButton(tr("&Quit"));
-    quitButton->setFocusPolicy(Qt::NoFocus);
+    quitButton->setFocusPolicy(BobUI::NoFocus);
 
     connect(quitButton, &QPushButton::clicked, qApp, &QCoreApplication::quit);
 
     QVBoxLayout *layout = new QVBoxLayout;
-    m_infoTab = new QTabWidget(this);
+    m_infoTab = new BOBUIabWidget(this);
     m_infoTab->addTab(m_info, tr("Vulkan Info"));
     m_infoTab->addTab(logWidget, tr("Debug Log"));
     layout->addWidget(m_infoTab, 2);

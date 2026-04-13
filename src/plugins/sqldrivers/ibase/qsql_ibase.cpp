@@ -1,37 +1,37 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qsql_ibase_p.h"
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qendian.h>
-#include <QtCore/qdatetime.h>
-#include <QtCore/qtimezone.h>
-#include <QtCore/qdeadlinetimer.h>
-#include <QtCore/qdebug.h>
-#include <QtCore/qlist.h>
-#include <QtCore/private/qlocale_tools_p.h>
-#include <QtCore/qloggingcategory.h>
-#include <QtCore/qmap.h>
-#include <QtCore/qmutex.h>
-#include <QtCore/qvariant.h>
-#include <QtCore/qvarlengtharray.h>
-#include <QtSql/qsqlerror.h>
-#include <QtSql/qsqlfield.h>
-#include <QtSql/qsqlindex.h>
-#include <QtSql/qsqlquery.h>
-#include <QtSql/private/qsqlcachedresult_p.h>
-#include <QtSql/private/qsqldriver_p.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/qendian.h>
+#include <BobUICore/qdatetime.h>
+#include <BobUICore/bobuiimezone.h>
+#include <BobUICore/qdeadlinetimer.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/private/qlocale_tools_p.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUICore/qmap.h>
+#include <BobUICore/qmutex.h>
+#include <BobUICore/qvariant.h>
+#include <BobUICore/qvarlengtharray.h>
+#include <BobUISql/qsqlerror.h>
+#include <BobUISql/qsqlfield.h>
+#include <BobUISql/qsqlindex.h>
+#include <BobUISql/qsqlquery.h>
+#include <BobUISql/private/qsqlcachedresult_p.h>
+#include <BobUISql/private/qsqldriver_p.h>
 #include <stdlib.h>
 #include <limits.h>
 #include <math.h>
 #include <mutex>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_STATIC_LOGGING_CATEGORY(lcIbase, "qt.sql.ibase")
+Q_STATIC_LOGGING_CATEGORY(lcIbase, "bobui.sql.ibase")
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 #define FBVERSION SQL_DIALECT_V6
 
@@ -44,7 +44,7 @@ using namespace Qt::StringLiterals;
 #define blr_boolean_dtype blr_bool
 #endif
 
-#if (defined(QT_SUPPORTS_INT128) || defined(QT_USE_MSVC_INT128)) && (FB_API_VER >= 40)
+#if (defined(BOBUI_SUPPORTS_INT128) || defined(BOBUI_USE_MSVC_INT128)) && (FB_API_VER >= 40)
 #define IBASE_INT128_SUPPORTED
 #endif
 
@@ -169,7 +169,7 @@ static QMetaType::Type qIBaseTypeName(int iType, bool hasScale)
     case blr_cstring2:
         return QMetaType::QString;
     case blr_sql_time:
-        return QMetaType::QTime;
+        return QMetaType::BOBUIime;
     case blr_sql_date:
         return QMetaType::QDate;
     case blr_timestamp:
@@ -220,7 +220,7 @@ static QMetaType::Type qIBaseTypeName2(int iType, bool hasScale)
 #endif
         return QMetaType::QDateTime;
     case SQL_TYPE_TIME:
-        return QMetaType::QTime;
+        return QMetaType::BOBUIime;
     case SQL_TYPE_DATE:
         return QMetaType::QDate;
     case SQL_ARRAY:
@@ -252,7 +252,7 @@ static inline QDateTime fromTimeStamp(const char *buffer)
     // have to demangle the structure ourselves because isc_decode_time
     // strips the msecs
     auto timebuf = reinterpret_cast<const ISC_TIMESTAMP *>(buffer);
-    const QTime t = QTime::fromMSecsSinceStartOfDay(timebuf->timestamp_time / 10);
+    const BOBUIime t = BOBUIime::fromMSecsSinceStartOfDay(timebuf->timestamp_time / 10);
     const QDate d = s_ibaseBaseDate.addDays(timebuf->timestamp_date);
     return QDateTime(d, t);
 }
@@ -263,15 +263,15 @@ static inline QDateTime fromTimeStampTz(const char *buffer)
     // have to demangle the structure ourselves because isc_decode_time
     // strips the msecs
     auto timebuf = reinterpret_cast<const ISC_TIMESTAMP_TZ *>(buffer);
-    const QTime t = QTime::fromMSecsSinceStartOfDay(timebuf->utc_timestamp.timestamp_time / 10);
+    const BOBUIime t = BOBUIime::fromMSecsSinceStartOfDay(timebuf->utc_timestamp.timestamp_time / 10);
     const QDate d = s_ibaseBaseDate.addDays(timebuf->utc_timestamp.timestamp_date);
     quint16 fpTzID = timebuf->time_zone;
 
     QByteArray timeZoneName = qFbTzIdToIanaIdMap()->value(fpTzID);
     if (!timeZoneName.isEmpty())
     {
-        const auto utc = QDateTime(d, t, QTimeZone(QTimeZone::UTC));
-        return utc.toTimeZone(QTimeZone(timeZoneName));
+        const auto utc = QDateTime(d, t, BOBUIimeZone(BOBUIimeZone::UTC));
+        return utc.toTimeZone(BOBUIimeZone(timeZoneName));
     }
     else
         return {};
@@ -288,17 +288,17 @@ static inline ISC_TIMESTAMP_TZ toTimeStampTz(const QDateTime &dt)
 }
 #endif
 
-static inline ISC_TIME toTime(QTime t)
+static inline ISC_TIME toTime(BOBUIime t)
 {
     return t.msecsSinceStartOfDay() * 10;
 }
 
-static inline QTime fromTime(const char *buffer)
+static inline BOBUIime fromTime(const char *buffer)
 {
     // have to demangle the structure ourselves because isc_decode_time
     // strips the msecs
     const auto timebuf = reinterpret_cast<const ISC_TIME *>(buffer);
-    return QTime::fromMSecsSinceStartOfDay(*timebuf / 10);
+    return BOBUIime::fromMSecsSinceStartOfDay(*timebuf / 10);
 }
 
 static inline ISC_DATE toDate(QDate t)
@@ -560,13 +560,13 @@ bool QIBaseResultPrivate::writeBlob(qsizetype iPos, const QByteArray &ba)
     isc_blob_handle handle = 0;
     ISC_QUAD *bId = (ISC_QUAD*)inda->sqlvar[iPos].sqldata;
     isc_create_blob2(status, &ibase, &trans, &handle, bId, 0, 0);
-    if (!isError(QT_TRANSLATE_NOOP("QIBaseResult", "Unable to create BLOB"),
+    if (!isError(BOBUI_TRANSLATE_NOOP("QIBaseResult", "Unable to create BLOB"),
                  QSqlError::StatementError)) {
         qsizetype i = 0;
         while (i < ba.size()) {
             isc_put_segment(status, &handle, qMin(ba.size() - i, QIBaseChunkSize),
                             ba.data() + i);
-            if (isError(QT_TRANSLATE_NOOP("QIBaseResult", "Unable to write BLOB")))
+            if (isError(BOBUI_TRANSLATE_NOOP("QIBaseResult", "Unable to write BLOB")))
                 return false;
             i += qMin(ba.size() - i, QIBaseChunkSize);
         }
@@ -580,13 +580,13 @@ QVariant QIBaseResultPrivate::fetchBlob(ISC_QUAD *bId)
     isc_blob_handle handle = 0;
 
     isc_open_blob2(status, &ibase, &trans, &handle, bId, 0, 0);
-    if (isError(QT_TRANSLATE_NOOP("QIBaseResult", "Unable to open BLOB"),
+    if (isError(BOBUI_TRANSLATE_NOOP("QIBaseResult", "Unable to open BLOB"),
                 QSqlError::StatementError))
         return QVariant();
 
     unsigned short len = 0;
     constexpr auto chunkSize = QIBaseChunkSize;
-    QByteArray ba(chunkSize, Qt::Uninitialized);
+    QByteArray ba(chunkSize, BobUI::Uninitialized);
     qsizetype read = 0;
     while (isc_get_segment(status, &handle, &len, chunkSize, ba.data() + read) == 0 || status[1] == isc_segment) {
         read += len;
@@ -595,7 +595,7 @@ QVariant QIBaseResultPrivate::fetchBlob(ISC_QUAD *bId)
     ba.resize(read);
 
     bool isErr = (status[1] == isc_segstr_eof ? false :
-                    isError(QT_TRANSLATE_NOOP("QIBaseResult",
+                    isError(BOBUI_TRANSLATE_NOOP("QIBaseResult",
                                                 "Unable to read BLOB"),
                                                 QSqlError::StatementError));
 
@@ -714,7 +714,7 @@ QVariant QIBaseResultPrivate::fetchArray(int pos, ISC_QUAD *arr)
     const auto sqlname = QByteArray::fromRawData(sqlvar.sqlname, sqlvar.sqlname_length);
 
     isc_array_lookup_bounds(status, &ibase, &trans, relname.data(), sqlname.data(), &desc);
-    if (isError(QT_TRANSLATE_NOOP("QIBaseResult", "Could not find array"),
+    if (isError(BOBUI_TRANSLATE_NOOP("QIBaseResult", "Could not find array"),
                 QSqlError::StatementError))
         return list;
 
@@ -742,9 +742,9 @@ QVariant QIBaseResultPrivate::fetchArray(int pos, ISC_QUAD *arr)
         bufLen = desc.array_desc_length *  arraySize;
     }
 
-    QByteArray ba(bufLen, Qt::Uninitialized);
+    QByteArray ba(bufLen, BobUI::Uninitialized);
     isc_array_get_slice(status, &ibase, &trans, arr, &desc, ba.data(), &bufLen);
-    if (isError(QT_TRANSLATE_NOOP("QIBaseResult", "Could not get array data"),
+    if (isError(BOBUI_TRANSLATE_NOOP("QIBaseResult", "Could not get array data"),
                 QSqlError::StatementError))
         return list;
 
@@ -867,7 +867,7 @@ static char* createArrayBuffer(char *buffer, const QList<QVariant> &list,
                 buffer += sizeof(ISC_DATE);
             }
             break;
-        case QMetaType::QTime:
+        case QMetaType::BOBUIime:
             for (const auto &elem : list) {
                 *((ISC_TIME*)buffer) = toTime(elem.toTime());
                 buffer += sizeof(ISC_TIME);
@@ -913,7 +913,7 @@ bool QIBaseResultPrivate::writeArray(qsizetype column, const QList<QVariant> &li
     const auto sqlname = QByteArray::fromRawData(sqlvar.sqlname, sqlvar.sqlname_length);
 
     isc_array_lookup_bounds(status, &ibase, &trans, relname.data(), sqlname.data(), &desc);
-    if (isError(QT_TRANSLATE_NOOP("QIBaseResult", "Could not find array"),
+    if (isError(BOBUI_TRANSLATE_NOOP("QIBaseResult", "Could not find array"),
                 QSqlError::StatementError))
         return false;
 
@@ -934,7 +934,7 @@ bool QIBaseResultPrivate::writeArray(qsizetype column, const QList<QVariant> &li
         desc.array_desc_length += 2;
 
     bufLen = desc.array_desc_length * arraySize;
-    QByteArray ba(bufLen, Qt::Uninitialized);
+    QByteArray ba(bufLen, BobUI::Uninitialized);
 
     if (list.size() > arraySize) {
         error = QCoreApplication::translate(
@@ -968,7 +968,7 @@ bool QIBaseResultPrivate::isSelect()
     char acBuffer[9];
     char qType = isc_info_sql_stmt_type;
     isc_dsql_sql_info(status, &stmt, 1, &qType, sizeof(acBuffer), acBuffer);
-    if (isError(QT_TRANSLATE_NOOP("QIBaseResult", "Could not get query info"),
+    if (isError(BOBUI_TRANSLATE_NOOP("QIBaseResult", "Could not get query info"),
                 QSqlError::StatementError))
         return false;
     int iLength = isc_vax_integer(&acBuffer[1], 2);
@@ -988,7 +988,7 @@ bool QIBaseResultPrivate::transaction()
     localTransaction = true;
 
     isc_start_transaction(status, &trans, 1, &ibase, 0, NULL);
-    if (isError(QT_TRANSLATE_NOOP("QIBaseResult", "Could not start transaction"),
+    if (isError(BOBUI_TRANSLATE_NOOP("QIBaseResult", "Could not start transaction"),
                 QSqlError::TransactionError))
         return false;
 
@@ -1007,7 +1007,7 @@ bool QIBaseResultPrivate::commit()
 
     isc_commit_transaction(status, &trans);
     trans = 0;
-    return !isError(QT_TRANSLATE_NOOP("QIBaseResult", "Unable to commit transaction"),
+    return !isError(BOBUI_TRANSLATE_NOOP("QIBaseResult", "Unable to commit transaction"),
                     QSqlError::TransactionError);
 }
 
@@ -1044,17 +1044,17 @@ bool QIBaseResult::prepare(const QString& query)
         return false;
 
     isc_dsql_allocate_statement(d->status, &d->ibase, &d->stmt);
-    if (d->isError(QT_TRANSLATE_NOOP("QIBaseResult", "Could not allocate statement"),
+    if (d->isError(BOBUI_TRANSLATE_NOOP("QIBaseResult", "Could not allocate statement"),
                    QSqlError::StatementError))
         return false;
     isc_dsql_prepare(d->status, &d->trans, &d->stmt, 0,
         const_cast<char*>(query.toUtf8().constData()), FBVERSION, d->sqlda);
-    if (d->isError(QT_TRANSLATE_NOOP("QIBaseResult", "Could not prepare statement"),
+    if (d->isError(BOBUI_TRANSLATE_NOOP("QIBaseResult", "Could not prepare statement"),
                    QSqlError::StatementError))
         return false;
 
     isc_dsql_describe_bind(d->status, &d->stmt, FBVERSION, d->inda);
-    if (d->isError(QT_TRANSLATE_NOOP("QIBaseResult",
+    if (d->isError(BOBUI_TRANSLATE_NOOP("QIBaseResult",
                     "Could not describe input statement"), QSqlError::StatementError))
         return false;
     if (d->inda->sqld > d->inda->sqln) {
@@ -1065,7 +1065,7 @@ bool QIBaseResult::prepare(const QString& query)
         }
 
         isc_dsql_describe_bind(d->status, &d->stmt, FBVERSION, d->inda);
-        if (d->isError(QT_TRANSLATE_NOOP("QIBaseResult",
+        if (d->isError(BOBUI_TRANSLATE_NOOP("QIBaseResult",
                         "Could not describe input statement"), QSqlError::StatementError))
             return false;
     }
@@ -1079,7 +1079,7 @@ bool QIBaseResult::prepare(const QString& query)
         }
 
         isc_dsql_describe(d->status, &d->stmt, FBVERSION, d->sqlda);
-        if (d->isError(QT_TRANSLATE_NOOP("QIBaseResult", "Could not describe statement"),
+        if (d->isError(BOBUI_TRANSLATE_NOOP("QIBaseResult", "Could not describe statement"),
                        QSqlError::StatementError))
             return false;
     }
@@ -1218,7 +1218,7 @@ bool QIBaseResult::exec()
             isc_dsql_execute2(d->status, &d->trans, &d->stmt, FBVERSION, d->inda, d->sqlda);
         else
             isc_dsql_execute(d->status, &d->trans, &d->stmt, FBVERSION, d->inda);
-        if (d->isError(QT_TRANSLATE_NOOP("QIBaseResult", "Unable to execute query")))
+        if (d->isError(BOBUI_TRANSLATE_NOOP("QIBaseResult", "Unable to execute query")))
             return false;
 
         // Not all stored procedures necessarily return values.
@@ -1265,7 +1265,7 @@ bool QIBaseResult::gotoNext(QSqlCachedResult::ValueCache& row, int rowIdx)
         setAt(QSql::AfterLastRow);
         return false;
     }
-    if (d->isError(QT_TRANSLATE_NOOP("QIBaseResult", "Could not fetch next item"),
+    if (d->isError(BOBUI_TRANSLATE_NOOP("QIBaseResult", "Could not fetch next item"),
                    QSqlError::StatementError))
         return false;
     if (rowIdx < 0) // not interested in actual values
@@ -1465,7 +1465,7 @@ int QIBaseResult::numRowsAffected()
     char acBuffer[33];
     int iResult = -1;
     isc_dsql_sql_info(d->status, &d->stmt, sizeof(acCountInfo), acCountInfo, sizeof(acBuffer), acBuffer);
-    if (d->isError(QT_TRANSLATE_NOOP("QIBaseResult", "Could not get statement info"),
+    if (d->isError(BOBUI_TRANSLATE_NOOP("QIBaseResult", "Could not get statement info"),
                    QSqlError::StatementError))
         return -1;
     for (char *pcBuf = acBuffer + 3; *pcBuf != isc_info_end; /*nothing*/) {
@@ -1591,7 +1591,7 @@ bool QIBaseDriver::open(const QString &db,
     if (isOpen())
         close();
 
-    const auto opts(QStringView(connOpts).split(u';', Qt::SkipEmptyParts));
+    const auto opts(QStringView(connOpts).split(u';', BobUI::SkipEmptyParts));
 
     QByteArray role;
     for (const auto &opt : opts) {
@@ -1642,7 +1642,7 @@ bool QIBaseDriver::open(const QString &db,
     ldb += db;
     isc_attach_database(d->status, 0, const_cast<char *>(ldb.toLocal8Bit().constData()),
                         &d->ibase, ba.size(), ba.constData());
-    if (d->isError(QT_TRANSLATE_NOOP("QIBaseDriver", "Error opening database"),
+    if (d->isError(BOBUI_TRANSLATE_NOOP("QIBaseDriver", "Error opening database"),
                    QSqlError::ConnectionError)) {
         setOpenError(true);
         return false;
@@ -1694,7 +1694,7 @@ bool QIBaseDriver::beginTransaction()
         return false;
 
     isc_start_transaction(d->status, &d->trans, 1, &d->ibase, 0, NULL);
-    return !d->isError(QT_TRANSLATE_NOOP("QIBaseDriver", "Could not start transaction"),
+    return !d->isError(BOBUI_TRANSLATE_NOOP("QIBaseDriver", "Could not start transaction"),
                        QSqlError::TransactionError);
 }
 
@@ -1708,7 +1708,7 @@ bool QIBaseDriver::commitTransaction()
 
     isc_commit_transaction(d->status, &d->trans);
     d->trans = 0;
-    return !d->isError(QT_TRANSLATE_NOOP("QIBaseDriver", "Unable to commit transaction"),
+    return !d->isError(BOBUI_TRANSLATE_NOOP("QIBaseDriver", "Unable to commit transaction"),
                        QSqlError::TransactionError);
 }
 
@@ -1722,7 +1722,7 @@ bool QIBaseDriver::rollbackTransaction()
 
     isc_rollback_transaction(d->status, &d->trans);
     d->trans = 0;
-    return !d->isError(QT_TRANSLATE_NOOP("QIBaseDriver", "Unable to rollback transaction"),
+    return !d->isError(BOBUI_TRANSLATE_NOOP("QIBaseDriver", "Unable to rollback transaction"),
                        QSqlError::TransactionError);
 }
 
@@ -1842,8 +1842,8 @@ QString QIBaseDriver::formatValue(const QSqlField &field, bool trimStrings) cons
         else
             return "NULL"_L1;
     }
-    case QMetaType::QTime: {
-        QTime time = field.value().toTime();
+    case QMetaType::BOBUIime: {
+        BOBUIime time = field.value().toTime();
         if (time.isValid())
             return u'\'' + QString::number(time.hour()) + u':' +
                 QString::number(time.minute()) + u':' +
@@ -1887,7 +1887,7 @@ static ISC_EVENT_CALLBACK qEventCallback(char *result, ISC_USHORT length, const 
     // We use an asynchronous call (i.e., queued connection) because the event callback
     // is executed in a different thread than the one in which the driver lives.
     if (driver)
-        QMetaObject::invokeMethod(driver, "qHandleEventNotification", Qt::QueuedConnection, Q_ARG(void *, reinterpret_cast<void *>(result)));
+        QMetaObject::invokeMethod(driver, "qHandleEventNotification", BobUI::QueuedConnection, Q_ARG(void *, reinterpret_cast<void *>(result)));
 
     return 0;
 }
@@ -2030,6 +2030,6 @@ int QIBaseDriver::maximumIdentifierLength(IdentifierType type) const
     return 31;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsql_ibase_p.cpp"

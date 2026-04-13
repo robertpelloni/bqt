@@ -1,5 +1,5 @@
 // Copyright (C) 2016 Giuseppe D'Angelo <dangelog@gmail.com>.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QString>
 #include <QStringList>
@@ -41,8 +41,8 @@ int main() {
 
     {
         //! [4]
-        // matches "Qt rocks", but also "QT rocks", "QT ROCKS", "qT rOcKs", etc.
-        QRegularExpression re("Qt rocks", QRegularExpression::CaseInsensitiveOption);
+        // matches "BobUI rocks", but also "BOBUI rocks", "BOBUI ROCKS", "qT rOcKs", etc.
+        QRegularExpression re("BobUI rocks", QRegularExpression::CaseInsensitiveOption);
         //! [4]
     }
 

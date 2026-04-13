@@ -1,6 +1,6 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
-#include <QtWidgets>
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
+#include <BobUIWidgets>
 
 class WindowManagedWindow: public QWidget
 {
@@ -70,11 +70,11 @@ public:
             transientChildWindow->winId();
 
             if (modal->isChecked()) {
-                transientChildWindow->setWindowFlag(Qt::Dialog);
-                transientChildWindow->setWindowModality(Qt::WindowModal);
+                transientChildWindow->setWindowFlag(BobUI::Dialog);
+                transientChildWindow->setWindowModality(BobUI::WindowModal);
                 transientChildWindow->setBackgroundColor("MistyRose");
             } else {
-                transientChildWindow->setWindowFlag(Qt::Popup);
+                transientChildWindow->setWindowFlag(BobUI::Popup);
                 transientChildWindow->setBackgroundColor("LavenderBlush");
             }
 
@@ -159,7 +159,7 @@ public:
 int main(int argc, char **argv)
 {
     // Limit native widgets to the WindowManagedWindow instances
-    QCoreApplication::setAttribute(Qt::AA_DontCreateNativeWidgetSiblings);
+    QCoreApplication::setAttribute(BobUI::AA_DontCreateNativeWidgetSiblings);
 
     QApplication app(argc, argv);
 

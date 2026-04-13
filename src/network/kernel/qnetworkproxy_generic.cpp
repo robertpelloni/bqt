@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qnetworkproxy.h"
 
-#include <QtCore/QByteArray>
-#include <QtCore/QUrl>
+#include <BobUICore/QByteArray>
+#include <BobUICore/QUrl>
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
 
 /*
  * Construct a proxy from the environment variables http_proxy and no_proxy.
  * Or no system proxy. Just return a list with NoProxy.
  */
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static bool ignoreProxyFor(const QNetworkProxyQuery &query)
 {
@@ -107,6 +107,6 @@ QList<QNetworkProxy> QNetworkProxyFactory::systemProxyForQuery(const QNetworkPro
     return proxyList;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

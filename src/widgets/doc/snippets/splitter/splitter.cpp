@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtGui>
-#include <QtWidgets>
+#include <BobUIGui>
+#include <BobUIWidgets>
 
 void processSize(int)
 {
@@ -15,8 +15,8 @@ int main()
     //! [0]
     QSplitter *splitter = new QSplitter(parent);
     QListView *listview = new QListView;
-    QTreeView *treeview = new QTreeView;
-    QTextEdit *textedit = new QTextEdit;
+    BOBUIreeView *treeview = new BOBUIreeView;
+    BOBUIextEdit *textedit = new BOBUIextEdit;
     splitter->addWidget(listview);
     splitter->addWidget(treeview);
     splitter->addWidget(textedit);

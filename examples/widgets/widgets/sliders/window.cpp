@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "slidersgroup.h"
 #include "window.h"
@@ -98,10 +98,10 @@ void Window::resizeEvent(QResizeEvent *)
 
     if (aspectRatio < 1.0) {
         layout->setDirection(QBoxLayout::TopToBottom);
-        slidersGroup->setOrientation(Qt::Horizontal);
+        slidersGroup->setOrientation(BobUI::Horizontal);
     } else if (aspectRatio > 1.0) {
         layout->setDirection(QBoxLayout::LeftToRight);
-        slidersGroup->setOrientation(Qt::Vertical);
+        slidersGroup->setOrientation(BobUI::Vertical);
     }
 }
 //! [7]

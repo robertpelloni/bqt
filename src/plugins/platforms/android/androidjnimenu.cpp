@@ -1,6 +1,6 @@
 // Copyright (C) 2012 BogDan Vatra <bogdan@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "androidjnimain.h"
 #include "androidjnimenu.h"
@@ -14,16 +14,16 @@
 #include <QRect>
 #include <QSet>
 #include <QWindow>
-#include <QtCore/private/qjnihelpers_p.h>
-#include <QtCore/QJniObject>
+#include <BobUICore/private/qjnihelpers_p.h>
+#include <BobUICore/QJniObject>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace QtAndroid;
+using namespace BobUIAndroid;
 
-Q_DECLARE_JNI_CLASS(QtMenuInterface, "org/qtproject/qt/android/QtMenuInterface");
+Q_DECLARE_JNI_CLASS(BobUIMenuInterface, "org/bobuiproject/bobui/android/BobUIMenuInterface");
 
-namespace QtAndroidMenu
+namespace BobUIAndroidMenu
 {
     static QList<QAndroidPlatformMenu *> pendingContextMenus;
     static QAndroidPlatformMenu *visibleMenu = nullptr;
@@ -47,14 +47,14 @@ namespace QtAndroidMenu
 
     void resetMenuBar()
     {
-        AndroidBackendRegister *reg = QtAndroid::backendRegister();
-        reg->callInterface<QtJniTypes::QtMenuInterface>("resetOptionsMenu");
+        AndroidBackendRegister *reg = BobUIAndroid::backendRegister();
+        reg->callInterface<BobUIJniTypes::BobUIMenuInterface>("resetOptionsMenu");
     }
 
     void openOptionsMenu()
     {
-        AndroidBackendRegister *reg = QtAndroid::backendRegister();
-        reg->callInterface<QtJniTypes::QtMenuInterface>("openOptionsMenu");
+        AndroidBackendRegister *reg = BobUIAndroid::backendRegister();
+        reg->callInterface<BobUIJniTypes::BobUIMenuInterface>("openOptionsMenu");
     }
 
     void showContextMenu(QAndroidPlatformMenu *menu, const QRect &anchorRect)
@@ -64,8 +64,8 @@ namespace QtAndroidMenu
             pendingContextMenus.append(visibleMenu);
         visibleMenu = menu;
         menu->aboutToShow();
-        AndroidBackendRegister *reg = QtAndroid::backendRegister();
-        reg->callInterface<QtJniTypes::QtMenuInterface, void>("openContextMenu", anchorRect.x(),
+        AndroidBackendRegister *reg = BobUIAndroid::backendRegister();
+        reg->callInterface<BobUIJniTypes::BobUIMenuInterface, void>("openContextMenu", anchorRect.x(),
                                                               anchorRect.y(), anchorRect.width(),
                                                               anchorRect.height());
     }
@@ -74,8 +74,8 @@ namespace QtAndroidMenu
     {
         QMutexLocker lock(&visibleMenuMutex);
         if (visibleMenu == menu) {
-            AndroidBackendRegister *reg = QtAndroid::backendRegister();
-            reg->callInterface<QtJniTypes::QtMenuInterface>("closeContextMenu");
+            AndroidBackendRegister *reg = BobUIAndroid::backendRegister();
+            reg->callInterface<BobUIJniTypes::BobUIMenuInterface>("closeContextMenu");
             pendingContextMenus.clear();
         } else {
             pendingContextMenus.removeOne(menu);
@@ -110,11 +110,11 @@ namespace QtAndroidMenu
 
     void setActiveTopLevelWindow(QWindow *window)
     {
-        Qt::WindowFlags flags = window ? window->flags() : Qt::WindowFlags();
+        BobUI::WindowFlags flags = window ? window->flags() : BobUI::WindowFlags();
         if (!window)
             return;
 
-        bool isNonRegularWindow = flags & (Qt::Popup | Qt::Dialog | Qt::Sheet) & ~Qt::Window;
+        bool isNonRegularWindow = flags & (BobUI::Popup | BobUI::Dialog | BobUI::Sheet) & ~BobUI::Window;
         if (isNonRegularWindow)
             return;
 
@@ -171,7 +171,7 @@ namespace QtAndroidMenu
         env->DeleteLocalRef(env->CallObjectMethod(menuItem, setEnabledMenuItemMethodID, enabled));
 
         if (!icon.isNull()) { // isNull() only checks the d pointer, not the actual image data.
-            int sz = qMax(36, qEnvironmentVariableIntValue("QT_ANDROID_APP_ICON_SIZE"));
+            int sz = qMax(36, qEnvironmentVariableIntValue("BOBUI_ANDROID_APP_ICON_SIZE"));
             QImage img = icon.pixmap(QSize(sz,sz),
                                      enabled
                                         ? QIcon::Normal
@@ -378,28 +378,28 @@ namespace QtAndroidMenu
 #define FIND_AND_CHECK_CLASS(CLASS_NAME) \
     clazz = env->FindClass(CLASS_NAME); \
     if (!clazz) { \
-        __android_log_print(ANDROID_LOG_FATAL, qtTagText(), classErrorMsgFmt(), CLASS_NAME); \
+        __android_log_print(ANDROID_LOG_FATAL, bobuiTagText(), classErrorMsgFmt(), CLASS_NAME); \
         return false; \
     }
 
 #define GET_AND_CHECK_METHOD(VAR, CLASS, METHOD_NAME, METHOD_SIGNATURE) \
     VAR = env->GetMethodID(CLASS, METHOD_NAME, METHOD_SIGNATURE); \
     if (!VAR) { \
-        __android_log_print(ANDROID_LOG_FATAL, qtTagText(), methodErrorMsgFmt(), METHOD_NAME, METHOD_SIGNATURE); \
+        __android_log_print(ANDROID_LOG_FATAL, bobuiTagText(), methodErrorMsgFmt(), METHOD_NAME, METHOD_SIGNATURE); \
         return false; \
     }
 
 #define GET_AND_CHECK_STATIC_METHOD(VAR, CLASS, METHOD_NAME, METHOD_SIGNATURE) \
     VAR = env->GetStaticMethodID(CLASS, METHOD_NAME, METHOD_SIGNATURE); \
     if (!VAR) { \
-        __android_log_print(ANDROID_LOG_FATAL, qtTagText(), methodErrorMsgFmt(), METHOD_NAME, METHOD_SIGNATURE); \
+        __android_log_print(ANDROID_LOG_FATAL, bobuiTagText(), methodErrorMsgFmt(), METHOD_NAME, METHOD_SIGNATURE); \
         return false; \
     }
 
 #define GET_AND_CHECK_STATIC_FIELD(VAR, CLASS, FIELD_NAME, FIELD_SIGNATURE) \
     VAR = env->GetStaticFieldID(CLASS, FIELD_NAME, FIELD_SIGNATURE); \
     if (!VAR) { \
-        __android_log_print(ANDROID_LOG_FATAL, qtTagText(), methodErrorMsgFmt(), FIELD_NAME, FIELD_SIGNATURE); \
+        __android_log_print(ANDROID_LOG_FATAL, bobuiTagText(), methodErrorMsgFmt(), FIELD_NAME, FIELD_SIGNATURE); \
         return false; \
     }
 
@@ -408,7 +408,7 @@ namespace QtAndroidMenu
         jclass appClass = applicationClass();
 
         if (!env.registerNativeMethods(appClass, methods,  sizeof(methods) / sizeof(methods[0]))) {
-            __android_log_print(ANDROID_LOG_FATAL,"Qt", "RegisterNatives failed");
+            __android_log_print(ANDROID_LOG_FATAL,"BobUI", "RegisterNatives failed");
             return false;
         }
 
@@ -433,4 +433,4 @@ namespace QtAndroidMenu
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

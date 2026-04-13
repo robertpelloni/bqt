@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "msvc_objectmodel.h"
 #include "msvc_vcproj.h"
@@ -13,7 +13,7 @@
 
 using namespace QMakeInternal;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 DotNET vsVersionFromString(const ProString &versionString)
 {
@@ -1277,7 +1277,7 @@ VCLinkerTool::VCLinkerTool()
 
 // Hashing routine to do fast option lookups ----
 // Slightly rewritten to stop on ':' ',' and '\0'
-// Original routine in qtranslator.cpp ----------
+// Original routine in bobuiranslator.cpp ----------
 static uint elfHash(const char* name)
 {
     const uchar *k;
@@ -1402,7 +1402,7 @@ bool VCLinkerTool::parseOption(const char* option)
     case 0x0336675: // /BASE:{address | @filename,key}
         // Do we need to do a manual lookup when '@filename,key'?
         // Seems BaseAddress only can contain the location...
-        // We don't use it in Qt, so keep it simple for now
+        // We don't use it in BobUI, so keep it simple for now
         BaseAddress = option+6;
         break;
     case 0x63bf065: // /CLRIMAGETYPE:{IJW|PURE|SAFE}
@@ -2892,7 +2892,7 @@ void VCProjectWriter::write(XmlOutput &xml, const VCDeploymentTool &tool)
         << closetag(tool.DeploymentTag);
 }
 
-void VCProjectWriter::write(XmlOutput &xml, const VCWinDeployQtTool &tool)
+void VCProjectWriter::write(XmlOutput &xml, const VCWinDeployBobUITool &tool)
 {
     Q_UNUSED(xml);
     Q_UNUSED(tool);
@@ -3061,4 +3061,4 @@ void VCProjectWriter::outputFileConfig(VCFilter &filter, XmlOutput &xml, const Q
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

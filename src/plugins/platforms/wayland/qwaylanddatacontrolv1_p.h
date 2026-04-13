@@ -1,5 +1,5 @@
 // Copyright (C) 2024 Jie Liu <liujie01@kylinos.cn>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWAYLANDDATACONTROLV1_H
 #define QWAYLANDDATACONTROLV1_H
@@ -8,32 +8,32 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWaylandClient/private/qwayland-wlr-data-control-unstable-v1.h>
+#include <BobUIWaylandClient/private/qwayland-wlr-data-control-unstable-v1.h>
 
-#include <QtWaylandClient/private/qtwaylandclientglobal_p.h>
-#include <QtWaylandClient/private/qwaylanddataoffer_p.h>
+#include <BobUIWaylandClient/private/bobuiwaylandclientglobal_p.h>
+#include <BobUIWaylandClient/private/qwaylanddataoffer_p.h>
 
-#include <QtCore/QObject>
+#include <BobUICore/QObject>
 
-QT_REQUIRE_CONFIG(clipboard);
+BOBUI_REQUIRE_CONFIG(clipboard);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QMimeData;
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 class QWaylandInputDevice;
 class QWaylandDataControlDeviceV1;
 
-class QWaylandDataControlManagerV1 : public QtWayland::zwlr_data_control_manager_v1
+class QWaylandDataControlManagerV1 : public BobUIWayland::zwlr_data_control_manager_v1
 {
 public:
     explicit QWaylandDataControlManagerV1(QWaylandDisplay *display, uint id, uint version);
@@ -44,7 +44,7 @@ private:
     QWaylandDisplay *m_display = nullptr;
 };
 
-class QWaylandDataControlOfferV1 : public QtWayland::zwlr_data_control_offer_v1, public QWaylandAbstractDataOffer
+class QWaylandDataControlOfferV1 : public BobUIWayland::zwlr_data_control_offer_v1, public QWaylandAbstractDataOffer
 {
 public:
     explicit QWaylandDataControlOfferV1(QWaylandDisplay *display, ::zwlr_data_control_offer_v1 *offer);
@@ -60,7 +60,7 @@ private:
     QScopedPointer<QWaylandMimeData> m_mimeData;
 };
 
-class Q_WAYLANDCLIENT_EXPORT QWaylandDataControlSourceV1 : public QObject, public QtWayland::zwlr_data_control_source_v1
+class Q_WAYLANDCLIENT_EXPORT QWaylandDataControlSourceV1 : public QObject, public BobUIWayland::zwlr_data_control_source_v1
 {
     Q_OBJECT
 public:
@@ -81,7 +81,7 @@ private:
     QMimeData *m_mimeData = nullptr;
 };
 
-class QWaylandDataControlDeviceV1 : public QObject, public QtWayland::zwlr_data_control_device_v1
+class QWaylandDataControlDeviceV1 : public QObject, public BobUIWayland::zwlr_data_control_device_v1
 {
     Q_OBJECT
     QWaylandDataControlDeviceV1(QWaylandDataControlManagerV1 *manager, QWaylandInputDevice *seat);
@@ -112,8 +112,8 @@ private:
     friend class QWaylandDataControlManagerV1;
 };
 
-} // namespace QtWaylandClient
+} // namespace BobUIWaylandClient
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWAYLANDDATACONTROLV1_H

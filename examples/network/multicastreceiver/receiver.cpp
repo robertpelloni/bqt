@@ -1,8 +1,8 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
-#include <QtNetwork>
+#include <BobUIWidgets>
+#include <BobUINetwork>
 
 #include "receiver.h"
 
@@ -45,7 +45,7 @@ void Receiver::processPendingDatagrams()
 {
     QByteArray datagram;
 
-    // using QUdpSocket::readDatagram (API since Qt 4)
+    // using QUdpSocket::readDatagram (API since BobUI 4)
     while (udpSocket4.hasPendingDatagrams()) {
         datagram.resize(qsizetype(udpSocket4.pendingDatagramSize()));
         udpSocket4.readDatagram(datagram.data(), datagram.size());
@@ -53,7 +53,7 @@ void Receiver::processPendingDatagrams()
                              .arg(datagram.constData()));
     }
 
-    // using QUdpSocket::receiveDatagram (API since Qt 5.8)
+    // using QUdpSocket::receiveDatagram (API since BobUI 5.8)
     while (udpSocket6.hasPendingDatagrams()) {
         QNetworkDatagram dgram = udpSocket6.receiveDatagram();
         statusLabel->setText(statusLabel->text() +

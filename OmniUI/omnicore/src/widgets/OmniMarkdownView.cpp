@@ -13,7 +13,7 @@ OmniMarkdownView::OmniMarkdownView(QQuickItem *parent)
       m_needsLayout(true)
 {
     setObjectName("OmniMarkdownView");
-    setAcceptedMouseButtons(Qt::LeftButton);
+    setAcceptedMouseButtons(BobUI::LeftButton);
     setFlag(ItemHasContents, true);
     setClip(true);
     setWidth(600);
@@ -124,7 +124,7 @@ void OmniMarkdownView::layoutDocument() {
             block.rect = QRectF(padding, currentY, maxWidth, h);
             currentY += h + 15;
         } else {
-            QRectF bound = fm.boundingRect(QRectF(0, 0, maxWidth, 10000), Qt::TextWordWrap | Qt::AlignLeft, block.text);
+            QRectF bound = fm.boundingRect(QRectF(0, 0, maxWidth, 10000), BobUI::TextWordWrap | BobUI::AlignLeft, block.text);
             qreal h = bound.height() + (block.type == OmniMarkdownBlock::Paragraph ? 10 : 20);
             block.rect = QRectF(padding, currentY, maxWidth, h);
             currentY += h;
@@ -163,14 +163,14 @@ void OmniMarkdownView::paint(QPainter *painter) {
         if (block.type == OmniMarkdownBlock::Header1) {
             painter->setFont(h1Font);
             painter->setPen(theme->primaryColor());
-            painter->drawText(block.rect, Qt::TextWordWrap | Qt::AlignLeft | Qt::AlignTop, block.text);
+            painter->drawText(block.rect, BobUI::TextWordWrap | BobUI::AlignLeft | BobUI::AlignTop, block.text);
             painter->drawLine(block.rect.bottomLeft() + QPointF(0,-5), block.rect.bottomRight() + QPointF(0,-5));
         } else if (block.type == OmniMarkdownBlock::Header2) {
             painter->setFont(h2Font);
-            painter->drawText(block.rect, Qt::TextWordWrap | Qt::AlignLeft | Qt::AlignTop, block.text);
+            painter->drawText(block.rect, BobUI::TextWordWrap | BobUI::AlignLeft | BobUI::AlignTop, block.text);
         } else if (block.type == OmniMarkdownBlock::Header3) {
             painter->setFont(h3Font);
-            painter->drawText(block.rect, Qt::TextWordWrap | Qt::AlignLeft | Qt::AlignTop, block.text);
+            painter->drawText(block.rect, BobUI::TextWordWrap | BobUI::AlignLeft | BobUI::AlignTop, block.text);
         } else if (block.type == OmniMarkdownBlock::HorizontalRule) {
             painter->setPen(QPen(theme->surfaceColor().lighter(), 2));
             painter->drawLine(block.rect.topLeft(), block.rect.topRight());
@@ -181,18 +181,18 @@ void OmniMarkdownView::paint(QPainter *painter) {
             
             painter->setFont(codeFont);
             painter->setPen(theme->successColor()); 
-            painter->drawText(block.rect.adjusted(10, 10, -10, -10), Qt::AlignLeft | Qt::AlignTop, block.text);
+            painter->drawText(block.rect.adjusted(10, 10, -10, -10), BobUI::AlignLeft | BobUI::AlignTop, block.text);
         } else if (block.type == OmniMarkdownBlock::ListItem) {
             painter->setFont(baseFont);
             painter->setBrush(theme->primaryColor());
-            painter->setPen(Qt::NoPen);
+            painter->setPen(BobUI::NoPen);
             painter->drawEllipse(block.rect.topLeft() + QPointF(10, 10), 4, 4);
             
             painter->setPen(theme->textColor());
-            painter->drawText(block.rect.adjusted(25, 0, 0, 0), Qt::TextWordWrap | Qt::AlignLeft | Qt::AlignTop, block.text);
+            painter->drawText(block.rect.adjusted(25, 0, 0, 0), BobUI::TextWordWrap | BobUI::AlignLeft | BobUI::AlignTop, block.text);
         } else {
             painter->setFont(baseFont);
-            painter->drawText(block.rect, Qt::TextWordWrap | Qt::AlignLeft | Qt::AlignTop, block.text);
+            painter->drawText(block.rect, BobUI::TextWordWrap | BobUI::AlignLeft | BobUI::AlignTop, block.text);
         }
     }
 }

@@ -1,7 +1,7 @@
-Qt 4.1.3 is a bug-fix release. It maintains both forward and backward
-compatibility (source and binary) with Qt 4.1.0.
+BobUI 4.1.3 is a bug-fix release. It maintains both forward and backward
+compatibility (source and binary) with BobUI 4.1.0.
 
-The Qt version 4.1 series is binary compatible with the 4.0.x series.
+The BobUI version 4.1 series is binary compatible with the 4.0.x series.
 Applications compiled for 4.0 will continue to run with 4.1.
 
 ****************************************************************************
@@ -11,17 +11,17 @@ Applications compiled for 4.0 will continue to run with 4.1.
 Meta Object Compiler (moc)
 
 Configure / Compilation
-	Compile with NAS sound support enabled and no Qt 3 support.
+	Compile with NAS sound support enabled and no BobUI 3 support.
 	Fixed some issues with resolving absolute paths when configuring
-	Qt using "-prefix".
+	BobUI using "-prefix".
 
-Porting (qt3to4)
-	qt3to4 now adds the needed include directive for
+Porting (bobui3to4)
+	bobui3to4 now adds the needed include directive for
 	qPixmapFromMimeFactory().
 	Added rule for QDeepCopy.
 	Improved handling of files with non-unix line endings.
 	
-Qt Designer
+BobUI Designer
 	Improved usability by letting the Find Icon dialog remember the last
 	path visited.
 	Fixed preview of DataTime and Date types.
@@ -31,7 +31,7 @@ Qt Designer
 	Fixed code generation for custom widgets containing a QComboBox.
 	Fixed a bug that prevented the windowTitle property for QDockWidgets
         from being designable.
-	Fixed problem where Designer would fail to reflect QTreeWidget column
+	Fixed problem where Designer would fail to reflect BOBUIreeWidget column
         changes.
 	Fixed potential assert when font size is specified in points.
 	Fixed potential crash when breaking the layout of an empty splitter.
@@ -44,15 +44,15 @@ Qt Designer
 	Fixed a bug where breaking splitter layout would not work after
         reopening the form.
 
-Qt Assistant
+BobUI Assistant
 	Assistant now sets the proper encoding attribute when saving files,
 	solving problems when viewing the page in some browsers.
 	Improved window placement on startup.
 	Improved performance of first-time keyword loading.
 
-Qt Linguist / Internationalization
+BobUI Linguist / Internationalization
 	Improved window placement on startup.
-	Fixed problem where .ts files for Qt 3 .ui files would be grayed out.
+	Fixed problem where .ts files for BobUI 3 .ui files would be grayed out.
 
 uic
 	Fixed code generating bug for forms in namepsaces preventing
@@ -61,7 +61,7 @@ uic
 	Fixed a bug causing QLabel's font not to be set when using uic3.
 	Fixed a dependency issue when .ui files are in a subdirectory.
 	Ensured that "uic3 -convert" will convert connections.
-	Ensured that uic3 will convert QDataTable and QSqlCursor to Qt3
+	Ensured that uic3 will convert QDataTable and QSqlCursor to BobUI3
         support classes.
 
 Demos / Examples
@@ -157,7 +157,7 @@ General improvements
 	Fixed issue where input methods would not work on editable itemviews.
 	Fixed potential crash.
 	Made sure the editor does not open when expanding and collapsing
-        branches in QTreeView. Note that this change introduces a system
+        branches in BOBUIreeView. Note that this change introduces a system
         dependent delay to differentiate between single and double clicks.
 	Made sure setIndexWidget() does not delete an old widget if one is
         already set.
@@ -239,7 +239,7 @@ General improvements
 	Fixed a painting error occurring when the sort indicator was enabled
 	and the column width became smaller than the indicator width.
 	Fixed a usability issue when resizing small headers in a fixed-width
-        QTreeWidget.
+        BOBUIreeWidget.
 	Ensured that the header has the correct size when the font changes.
 	Fixed a painting error that occurred when the header was hidden.
 	Fixed a painting error that occurred when the user activated the
@@ -255,7 +255,7 @@ General improvements
         call.
 
 - QIcon
-	Ensured that visible icons on QToolButtons and QMenus are updated
+	Ensured that visible icons on BOBUIoolButtons and QMenus are updated
         when the icon of a QAction changes.
 	Fixed issue where actualSize() would return a bigger size than the
         requested size.
@@ -267,12 +267,12 @@ General improvements
 	Handle out of memory conditions gracefully.
 
 - QIODevice
-	Fixed return values for Qt 3 support members getch(), putch() and
+	Fixed return values for BobUI 3 support members getch(), putch() and
 	ungetch().
 
 - QItemDelegate
 	Proper painting in inactive windows.
-	Improved hit detection for QTreeWidgetItem checkboxes.
+	Improved hit detection for BOBUIreeWidgetItem checkboxes.
 
 - QItemSelectionModel
 	Emit currentChanged() when the current item is deleted.
@@ -283,7 +283,7 @@ General improvements
 	Added support for suffixes before library extensions.
 
 - QLineEdit
-	Made sure QT_NO_CLIPBOARD is respected.
+	Made sure BOBUI_NO_CLIPBOARD is respected.
 	Fixed incorrect background color when disabled.
 
 - QListView
@@ -300,7 +300,7 @@ General improvements
 - QMainWindow
 	Fixed a crash when deleting the widget returned by
         QMainWindow::statusBar().
-	Fixed a bug causing wrong behavior when removing a QToolBar with
+	Fixed a bug causing wrong behavior when removing a BOBUIoolBar with
         removeToolBar()
 	Fixed layout error when showing the status bar after the main window.
 	Fixed incorrect assert in QMainWindowLayout::dockWidgetArea().
@@ -326,7 +326,7 @@ General improvements
 	Improved calculation of sizeHint().
 	Fixed a bug causing menu items after a spacer item to always appear
 	in the extension menu.
-	Changed activateItemAt() to behave more like its behavior in Qt 3.
+	Changed activateItemAt() to behave more like its behavior in BobUI 3.
 
 - QMotifStyle
 	Draw QSlider tick marks.
@@ -365,7 +365,7 @@ General improvements
 	clicks wider.
 	Fixed animation of indeterminate progress bars.
 	Ensured that lines are drawn for the hierarchical relationships in
-        QTreeWidgets.
+        BOBUIreeWidgets.
 
 - QPrinter
 	Optimized the size of PDF documents containing the same picture in
@@ -439,35 +439,35 @@ General improvements
 - QSyntaxHighlighter
 	Fixed a regression.
 
-- QTabBar
+- BOBUIabBar
 	Ensured that currentChanged() is only emitted when the current index
         actually changes.
 
-- QTabWidget
-	Ensured that QTabWidget has the same behavior as QStackedWidget when
+- BOBUIabWidget
+	Ensured that BOBUIabWidget has the same behavior as QStackedWidget when
         inserting a page at index <= currentIndex().
 
-- QTableView
+- BOBUIableView
 	Fixed selection handling in situations after rows/columns have been
         moved.
 	Made decision to show scrollbars independent of the previous
         scrollbar state.
  	Fixed a bug causing mouse clicks to be lost.
-	Fixed potential assertion when hiding columns in QTableView.
+	Fixed potential assertion when hiding columns in BOBUIableView.
 	Fixed potential crash if indexes are invalid and sections have been
         moved.
 
-- QTabWidget
+- BOBUIabWidget
 	Fixed drawing of icons.
 
-- QTextCodec
+- BOBUIextCodec
 	Fixed detection of locales with the '@' modifier.
 
-- QTextDocumentLayout
-	Made sure the right margin of a QTextBlock is filled with the
+- BOBUIextDocumentLayout
+	Made sure the right margin of a BOBUIextBlock is filled with the
         background color.
 
-- QTextEdit
+- BOBUIextEdit
 	Fixed a bug causing setPlainText() to emit textChanged() three times.
 	Fixed an infinte loop triggered when calling setHtml() inside
 	resizeEvent().
@@ -479,7 +479,7 @@ General improvements
 	Improved stability when setting a null cursor.
 	Increased accuracy when moving text by drag and drop.
 
-- QTextBrowser
+- BOBUIextBrowser
 	Fixed incorrect mouse cursor after right-clicking a link.
 	Fixed incorrect mouse cursor in read-only mode.
 	Fixed issue where arrow cursor would override custom cursors.
@@ -487,33 +487,33 @@ General improvements
 	Improved support for relative links.
 	Improved parsing of internal document anchors.
 
-- QTextHtmlParser
+- BOBUIextHtmlParser
 	Fixed a bug in the whitespace handling.
 
-- QTreeWidget
+- BOBUIreeWidget
  	Fixed a bug that caused itemChanged() to be emitted with a null
         pointer.
 
-- QTreeWidgetItemIterator
+- BOBUIreeWidgetItemIterator
 	Fixed incorrect assert caused by creating an iterator for an empty
-        QTreeWidget.
+        BOBUIreeWidget.
 
-- QToolBar
+- BOBUIoolBar
 	Fixed potential crash when resizing a tool bar with certain types of
 	widgets.
 	Fixed a bug causing hidden widgets to be shown when the toolbar is
         moved.
 
-- QToolTip
+- BOBUIoolTip
 	Enable word breaking in rich-text tool tips.
 
-- QTextStream
+- BOBUIextStream
 	Fixed a bug causing aboutToClose() to be connected to a NULL slot
 	after calling unsetDevice().
 	Fixed a bug causing read() or readLine() to sometimes return an empty
         string.
 
-- QTreeView
+- BOBUIreeView
 	Fixed some drag and drop issues.
 	Fixed a bug where the check state of an item was unchanged after an
 	itemClicked() signal was emitted.
@@ -530,7 +530,7 @@ General improvements
 	Fixed a bug causing some custom index widgets to be incorrectly
         placed.
 
-- QTreeWidget
+- BOBUIreeWidget
 	Fixed selection handling in situations after sortItems() has been
         called.
 
@@ -609,7 +609,7 @@ Windows:
 
 - Improved the native look and feel of QComboBox.
 
-- Improved appearance of QToolButtons with menus.
+- Improved appearance of BOBUIoolButtons with menus.
 
 - Fixed issue where certain fonts would be incorrectly replaced when
   printing.
@@ -665,8 +665,8 @@ Windows:
 	Fixed setPageSize() to correctly update the page and paper
         rectangles.
 
-- QTextBrowser
-	Made sure that QTextBrowser does not override
+- BOBUIextBrowser
+	Made sure that BOBUIextBrowser does not override
         QApplication::setOverrideCursor().
 
 - QWindowsStyle
@@ -690,7 +690,7 @@ X11:
 - Fixed a potential crash that could occur when drawing a large number of
   polygons/trapezoids.
 
-- QtConfig
+- BobUIConfig
 	Fixed missing update of window decorations.
 	Fixed assert when editing font family substitutions.
 
@@ -706,7 +706,7 @@ X11:
 
 - Fixed a bug causing text to be clipped incorrectly when printed.
 
-- Fixed issue where Qt::KeyPadModifier was not being set for non-numeric
+- Fixed issue where BobUI::KeyPadModifier was not being set for non-numeric
   keypad keys.
 
 - Ensured that files written by QSettings will only get user-readable
@@ -752,15 +752,15 @@ Mac OS X:
 - Fixed a bug that caused the font size to change when clicking checkable
   toolbar buttons.
 
-- Fixed a crash that occurred when using a Qt-plugin in a non-Qt application.
+- Fixed a crash that occurred when using a BobUI-plugin in a non-BobUI application.
 
 - Fixed use of newlines in a QMessageBox.
 
 - Fixed painting of QGroupBox without any text.
 
-- Fixed rendering of Qt::FDiagPattern and Qt::BDiagPattern.
+- Fixed rendering of BobUI::FDiagPattern and BobUI::BDiagPattern.
 
-- Fixed building with -no-qt3support.
+- Fixed building with -no-bobui3support.
 
 - Fixed painting of the sort indicator in item view headers.
 
@@ -792,7 +792,7 @@ Mac OS X:
 
 - Ensured that the correct number of tick marks are painted on sliders.
 
-- Fixed issue where Qt::FramelessWindowHint widgets were not visible in
+- Fixed issue where BobUI::FramelessWindowHint widgets were not visible in
   Expose.
 
 - Fixed a painting error that occurred when unchecking checkboxes.
@@ -805,9 +805,9 @@ Mac OS X:
 - Fixed a potential crash in QPixmap::copy() when given an area outside image
   bounds.
 
-- Improved QToolButton arrow appearance.
+- Improved BOBUIoolButton arrow appearance.
 
-- Fixed an issue causing QDateTime::toString(Qt::LocalDate) to return
+- Fixed an issue causing QDateTime::toString(BobUI::LocalDate) to return
   incorrect dates.
 
 - Improved performance of QPainter::drawImage().
@@ -817,7 +817,7 @@ Mac OS X:
 - Improved key translation for non-Latin keyboard layouts.
 
 - QGLWidget
-	Fixed update issues when QGLWidgets are embedded in a QTabWidget.
+	Fixed update issues when QGLWidgets are embedded in a BOBUIabWidget.
 
 - QLibrary
 	isLibrary() now supports .dylib libraries with version numbers.
@@ -832,7 +832,7 @@ Mac OS X:
         "Command + H".
 
 
-Qtopia Core:
+BobUIopia Core:
 
 - Added configure options to build decorations and mouse drivers as plugins.
 
@@ -848,7 +848,7 @@ Qtopia Core:
 - Fixed the transparent corners of the window decoration using the Plastique
   style.
 
-- Removed dependency of shared memory when using QT_NO_QWS_MULTIPROCESS.
+- Removed dependency of shared memory when using BOBUI_NO_QWS_MULTIPROCESS.
 
 - Fixed input method focus change problems.
 
@@ -864,7 +864,7 @@ Qtopia Core:
 
 - Added support for QIODevice::canReadLine().
 
-- Ensured that the Qtopia Core data directory owner is checked against the
+- Ensured that the BobUIopia Core data directory owner is checked against the
   effective user.
 
 - Fixed appearance of the title bar font when the application font has not

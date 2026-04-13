@@ -1,5 +1,5 @@
 // Copyright (C) 2016 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWAYLANDINPUTMETHODEVENTBUILDER_H
 #define QWAYLANDINPUTMETHODEVENTBUILDER_H
@@ -8,7 +8,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -20,7 +20,7 @@
 
 #include <utility> // for std::pair
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QWaylandInputMethodEventBuilder
 {
@@ -59,11 +59,11 @@ struct QWaylandInputMethodContentType {
     uint32_t hint = 0;
     uint32_t purpose = 0;
 
-    static QWaylandInputMethodContentType convert(Qt::InputMethodHints hints);
-    static QWaylandInputMethodContentType convertV3(Qt::InputMethodHints hints);
+    static QWaylandInputMethodContentType convert(BobUI::InputMethodHints hints);
+    static QWaylandInputMethodContentType convertV3(BobUI::InputMethodHints hints);
 };
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWAYLANDINPUTMETHODEVENTBUILDER_H

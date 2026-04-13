@@ -1,8 +1,8 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2020 Intel Corporation.
 // Copyright (C) 2019 Klarälvdalens Datakonsult AB.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qsharedpointer.h"
 
@@ -11,7 +11,7 @@
 
 /*!
     \class QSharedPointer
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QSharedPointer class holds a strong reference to a shared pointer.
     \since 4.5
 
@@ -55,7 +55,7 @@
 
     \section1 Other Pointer Classes
 
-    Qt also provides two other pointer wrapper classes: QPointer and
+    BobUI also provides two other pointer wrapper classes: QPointer and
     QSharedDataPointer. They are incompatible with one another, since
     each has its very different use case.
 
@@ -96,7 +96,7 @@
     This allows one to catch mistakes like assigning the same pointer to two
     QSharedPointer objects.
 
-    This function is enabled by defining the \tt{QT_SHAREDPOINTER_TRACK_POINTERS}
+    This function is enabled by defining the \tt{BOBUI_SHAREDPOINTER_TRACK_POINTERS}
     macro before including the QSharedPointer header.
 
     It is safe to use this feature even with code compiled without the
@@ -129,11 +129,11 @@
     complete object. See the \tt virtualBaseDifferentPointers autotest for
     this problem.
 
-    The d pointer is a pointer to QtSharedPointer::ExternalRefCountData, but it
+    The d pointer is a pointer to BobUISharedPointer::ExternalRefCountData, but it
     always points to one of the two classes derived from ExternalRefCountData.
 
     \section2 d-pointer
-    \section3 QtSharedPointer::ExternalRefCountData
+    \section3 BobUISharedPointer::ExternalRefCountData
 
     It is basically a reference-counted reference-counter plus a pointer to the
     function to be used to delete the pointer. It has three members: \tt
@@ -163,7 +163,7 @@
     a pointer. On 32-bit architectures, that's 12 bytes, whereas on 64-bit ones
     it's 16 bytes. There is no padding.
 
-    \section3 QtSharedPointer::ExternalRefCountWithCustomDeleter
+    \section3 BobUISharedPointer::ExternalRefCountWithCustomDeleter
 
     This class derives from ExternalRefCountData and is a template class. As
     template parameters, it has the type of the pointer being tracked (\tt T)
@@ -206,7 +206,7 @@
     a direct delete call. The size of the structure, in this case, is 12+4 = 16
     bytes on 32-bit architectures, 16+8 = 24 bytes on 64-bit ones.
 
-    \section3 QtSharedPointer::ExternalRefCountWithContiguousData
+    \section3 BobUISharedPointer::ExternalRefCountWithContiguousData
 
     This class also derives from ExternalRefCountData and it is
     also a template class. The template parameter is the type \tt T of the
@@ -290,7 +290,7 @@
 
 /*!
     \class QWeakPointer
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QWeakPointer class holds a weak reference to a shared pointer.
     \since 4.5
     \reentrant
@@ -327,7 +327,7 @@
     classes.
 
     It has a special QObject constructor, which works by calling
-    QtSharedPointer::ExternalRefCountData::getAndRef, which retrieves the
+    BobUISharedPointer::ExternalRefCountData::getAndRef, which retrieves the
     d-pointer from QObjectPrivate. If one isn't set yet, that function
     creates the d-pointer and atomically sets it.
 
@@ -343,7 +343,7 @@
 
 /*!
     \class QEnableSharedFromThis
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief A base class that allows obtaining a QSharedPointer for an object already managed by a shared pointer.
     \since 5.4
 
@@ -391,7 +391,7 @@
     becomes managed by this QSharedPointer and must not be passed to
     another QSharedPointer object or deleted outside this object.
 
-    Since Qt 5.8, when the last reference to this QSharedPointer gets
+    Since BobUI 5.8, when the last reference to this QSharedPointer gets
     destroyed, \a ptr will be deleted by calling \c X's destructor (even if \c
     X is not the same as QSharedPointer's template parameter \c T). Previously,
     the destructor for \c T was called.
@@ -1438,22 +1438,22 @@
 #include <qset.h>
 #include <qmutex.h>
 
-#if !defined(QT_NO_QOBJECT)
+#if !defined(BOBUI_NO_QOBJECT)
 #include "private/qobject_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT6_ONLY(
+BOBUI6_ONLY(
 /*!
     \internal
     This function is called for a just-created QObject \a obj, to enable
     the use of QSharedPointer and QWeakPointer in the future.
  */
-void QtSharedPointer::ExternalRefCountData::setQObjectShared(const QObject *, bool)
+void BobUISharedPointer::ExternalRefCountData::setQObjectShared(const QObject *, bool)
 {}
 )
 
-QT6_ONLY(
+BOBUI6_ONLY(
 /*!
     \internal
     This function is called when a QSharedPointer is created from a QWeakPointer
@@ -1461,14 +1461,14 @@ QT6_ONLY(
     We check that the QWeakPointer was really created from a QSharedPointer, and
     not from a QObject.
 */
-void QtSharedPointer::ExternalRefCountData::checkQObjectShared(const QObject *)
+void BobUISharedPointer::ExternalRefCountData::checkQObjectShared(const QObject *)
 {
     if (strongref.loadRelaxed() < 0)
         qWarning("QSharedPointer: cannot create a QSharedPointer from a QObject-tracking QWeakPointer");
 }
 )
 
-QtSharedPointer::ExternalRefCountData *QtSharedPointer::ExternalRefCountData::getAndRef(const QObject *obj)
+BobUISharedPointer::ExternalRefCountData *BobUISharedPointer::ExternalRefCountData::getAndRef(const QObject *obj)
 {
     Q_ASSERT(obj);
     QObjectPrivate *d = QObjectPrivate::get(const_cast<QObject *>(obj));
@@ -1481,7 +1481,7 @@ QtSharedPointer::ExternalRefCountData *QtSharedPointer::ExternalRefCountData::ge
     }
 
     // we can create the refcount data because it doesn't exist
-    ExternalRefCountData *x = ::new ExternalRefCountData(Qt::Uninitialized);
+    ExternalRefCountData *x = ::new ExternalRefCountData(BobUI::Uninitialized);
     x->strongref.storeRelaxed(-1);
     x->weakref.storeRelaxed(2);  // the QWeakPointer that called us plus the QObject itself
     x->destroyer = nullptr;
@@ -1504,7 +1504,7 @@ QtSharedPointer::ExternalRefCountData *QtSharedPointer::ExternalRefCountData::ge
     Returns a QSharedPointer<QObject> if the variant contains
     a QSharedPointer<T> where T inherits QObject. Otherwise the behaviour is undefined.
 */
-QSharedPointer<QObject> QtSharedPointer::sharedPointerFromVariant_internal(const QVariant &variant)
+QSharedPointer<QObject> BobUISharedPointer::sharedPointerFromVariant_internal(const QVariant &variant)
 {
     Q_ASSERT(variant.metaType().flags() & QMetaType::SharedPointerToQObject);
     return *reinterpret_cast<const QSharedPointer<QObject>*>(variant.constData());
@@ -1515,22 +1515,22 @@ QSharedPointer<QObject> QtSharedPointer::sharedPointerFromVariant_internal(const
     Returns a QWeakPointer<QObject> if the variant contains
     a QWeakPointer<T> where T inherits QObject. Otherwise the behaviour is undefined.
 */
-QWeakPointer<QObject> QtSharedPointer::weakPointerFromVariant_internal(const QVariant &variant)
+QWeakPointer<QObject> BobUISharedPointer::weakPointerFromVariant_internal(const QVariant &variant)
 {
     Q_ASSERT(variant.metaType().flags() & QMetaType::WeakPointerToQObject ||
              variant.metaType().flags() & QMetaType::TrackingPointerToQObject);
     return *reinterpret_cast<const QWeakPointer<QObject>*>(variant.constData());
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif
 
 
 
-//#  define QT_SHARED_POINTER_BACKTRACE_SUPPORT
-#  ifdef QT_SHARED_POINTER_BACKTRACE_SUPPORT
-#    if defined(__GLIBC__) && (__GLIBC__ >= 2) && !defined(__UCLIBC__) && !defined(QT_LINUXBASE)
+//#  define BOBUI_SHARED_POINTER_BACKTRACE_SUPPORT
+#  ifdef BOBUI_SHARED_POINTER_BACKTRACE_SUPPORT
+#    if defined(__GLIBC__) && (__GLIBC__ >= 2) && !defined(__UCLIBC__) && !defined(BOBUI_LINUXBASE)
 #      define BACKTRACE_SUPPORTED
 #    elif defined(Q_OS_DARWIN)
 #      define BACKTRACE_SUPPORTED
@@ -1544,7 +1544,7 @@ QT_END_NAMESPACE
 #    include <unistd.h>
 #    include <sys/wait.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static inline QByteArray saveBacktrace() __attribute__((always_inline));
 static inline QByteArray saveBacktrace()
@@ -1607,12 +1607,12 @@ static void printBacktrace(QByteArray stacktrace)
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #  endif  // BACKTRACE_SUPPORTED
 
 namespace {
-    QT_USE_NAMESPACE
+    BOBUI_USE_NAMESPACE
     struct Data {
         const volatile void *pointer;
 #  ifdef BACKTRACE_SUPPORTED
@@ -1631,16 +1631,16 @@ namespace {
 
 Q_GLOBAL_STATIC(KnownPointers, knownPointers)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtSharedPointer {
+namespace BobUISharedPointer {
     Q_AUTOTEST_EXPORT void internalSafetyCheckCleanCheck();
 }
 
 /*!
     \internal
 */
-void QtSharedPointer::internalSafetyCheckAdd(const void *d_ptr, const volatile void *ptr)
+void BobUISharedPointer::internalSafetyCheckAdd(const void *d_ptr, const volatile void *ptr)
 {
     KnownPointers *const kp = knownPointers();
     if (!kp)
@@ -1680,7 +1680,7 @@ void QtSharedPointer::internalSafetyCheckAdd(const void *d_ptr, const volatile v
 /*!
     \internal
 */
-void QtSharedPointer::internalSafetyCheckRemove(const void *d_ptr)
+void BobUISharedPointer::internalSafetyCheckRemove(const void *d_ptr)
 {
     KnownPointers *const kp = knownPointers();
     if (!kp)
@@ -1691,7 +1691,7 @@ void QtSharedPointer::internalSafetyCheckRemove(const void *d_ptr)
     const auto it = kp->dPointers.constFind(d_ptr);
     if (Q_UNLIKELY(it == kp->dPointers.cend())) {
         qFatal("QSharedPointer: internal self-check inconsistency: pointer %p was not tracked. "
-               "To use QT_SHAREDPOINTER_TRACK_POINTERS, you have to enable it throughout "
+               "To use BOBUI_SHAREDPOINTER_TRACK_POINTERS, you have to enable it throughout "
                "in your code.", d_ptr);
     }
 
@@ -1710,9 +1710,9 @@ void QtSharedPointer::internalSafetyCheckRemove(const void *d_ptr)
     \internal
     Called by the QSharedPointer autotest
 */
-void QtSharedPointer::internalSafetyCheckCleanCheck()
+void BobUISharedPointer::internalSafetyCheckCleanCheck()
 {
-#  ifdef QT_BUILD_INTERNAL
+#  ifdef BOBUI_BUILD_INTERNAL
     KnownPointers *const kp = knownPointers();
     Q_ASSERT_X(kp, "internalSafetyCheckSelfCheck()", "Called after global statics deletion!");
 
@@ -1724,4 +1724,4 @@ void QtSharedPointer::internalSafetyCheckCleanCheck()
 #  endif
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

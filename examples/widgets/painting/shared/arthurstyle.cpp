@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "arthurstyle.h"
 #include "arthurwidgets.h"
@@ -10,7 +10,7 @@
 #include <QRadioButton>
 #include <QString>
 #include <QStyleOption>
-#include <QtDebug>
+#include <BobUIDebug>
 
 QPixmap cached(const QString &img)
 {
@@ -18,7 +18,7 @@ QPixmap cached(const QString &img)
     if (QPixmapCache::find(img, &pm))
         return pm;
 
-    pm = QPixmap::fromImage(QImage(img), Qt::OrderedDither | Qt::OrderedAlphaDither);
+    pm = QPixmap::fromImage(QImage(img), BobUI::OrderedDither | BobUI::OrderedAlphaDither);
     if (pm.isNull())
         return QPixmap();
 
@@ -42,8 +42,8 @@ void ArthurStyle::drawHoverRect(QPainter *painter, const QRect &r) const
     path.addRect(r.x() + h2, r.y() + 0, r.width() - h2 * 2, r.height());
     path.addEllipse(r.x(), r.y(), h, h);
     path.addEllipse(r.x() + r.width() - h, r.y(), h, h);
-    path.setFillRule(Qt::WindingFill);
-    painter->setPen(Qt::NoPen);
+    path.setFillRule(BobUI::WindingFill);
+    painter->setPen(BobUI::NoPen);
     painter->setBrush(QColor(191, 215, 191));
     painter->setRenderHint(QPainter::Antialiasing);
     painter->drawPath(path);
@@ -91,7 +91,7 @@ void ArthurStyle::drawPrimitive(PrimitiveElement element, const QStyleOption *op
                 QLinearGradient lg(0, 0, 0, parent->height());
                 lg.setColorAt(0, QColor(224,224,224));
                 lg.setColorAt(1, QColor(255,255,255));
-                painter->setPen(Qt::NoPen);
+                painter->setPen(BobUI::NoPen);
                 painter->setBrush(lg);
                 painter->setBrushOrigin(-widget->mapToParent(QPoint(0,0)));
                 painter->drawRect(button->rect);
@@ -152,7 +152,7 @@ void ArthurStyle::drawPrimitive(PrimitiveElement element, const QStyleOption *op
             QLinearGradient lg(0, 0, 0, r.height());
             lg.setColorAt(0, QColor(224,224,224));
             lg.setColorAt(1, QColor(255,255,255));
-            painter->setPen(Qt::NoPen);
+            painter->setPen(BobUI::NoPen);
             painter->setBrush(lg);
             painter->drawRect(r.adjusted(0, titleStretch.height()/2, 0, 0));
             painter->setClipping(false);
@@ -255,14 +255,14 @@ void ArthurStyle::drawComplexControl(ComplexControl control, const QStyleOptionC
                 int opacity = 31;
                 painter->setPen(QColor(0, 0, 0, opacity));
                 painter->drawText(tileRect.translated(0, 1),
-                                  Qt::AlignVCenter | Qt::AlignHCenter, groupBox->text);
+                                  BobUI::AlignVCenter | BobUI::AlignHCenter, groupBox->text);
                 painter->drawText(tileRect.translated(2, 1),
-                                  Qt::AlignVCenter | Qt::AlignHCenter, groupBox->text);
+                                  BobUI::AlignVCenter | BobUI::AlignHCenter, groupBox->text);
                 painter->setPen(QColor(0, 0, 0, opacity * 2));
                 painter->drawText(tileRect.translated(1, 1),
-                                  Qt::AlignVCenter | Qt::AlignHCenter, groupBox->text);
-                painter->setPen(Qt::white);
-                painter->drawText(tileRect, Qt::AlignVCenter | Qt::AlignHCenter, groupBox->text);
+                                  BobUI::AlignVCenter | BobUI::AlignHCenter, groupBox->text);
+                painter->setPen(BobUI::white);
+                painter->drawText(tileRect, BobUI::AlignVCenter | BobUI::AlignHCenter, groupBox->text);
             }
         }
         break;
@@ -285,8 +285,8 @@ void ArthurStyle::drawControl(QStyle::ControlElement element, const QStyleOption
                 QCommonStyle::drawControl(element, option, painter, widget);
             } else {
                 painter->save();
-                painter->setPen(Qt::black);
-                painter->drawText(button->rect, Qt::AlignVCenter, button->text);
+                painter->setPen(BobUI::black);
+                painter->drawText(button->rect, BobUI::AlignVCenter, button->text);
                 painter->restore();
             }
         }
@@ -299,8 +299,8 @@ void ArthurStyle::drawControl(QStyle::ControlElement element, const QStyleOption
                 QCommonStyle::drawControl(element, option, painter, widget);
             } else {
                 painter->save();
-                painter->setPen(Qt::black);
-                painter->drawText(button->rect, Qt::AlignVCenter | Qt::AlignHCenter, button->text);
+                painter->setPen(BobUI::black);
+                painter->drawText(button->rect, BobUI::AlignVCenter | BobUI::AlignHCenter, button->text);
                 painter->restore();
             }
         }
@@ -405,7 +405,7 @@ void ArthurStyle::polish(QWidget *widget)
     if (qobject_cast<QPushButton *>(widget)
         || qobject_cast<QRadioButton *>(widget)
         || qobject_cast<QSlider *>(widget)) {
-        widget->setAttribute(Qt::WA_Hover);
+        widget->setAttribute(BobUI::WA_Hover);
     }
 
     QPalette pal = widget->palette();
@@ -421,7 +421,7 @@ void ArthurStyle::unpolish(QWidget *widget)
     if (qobject_cast<QPushButton *>(widget)
         || qobject_cast<QRadioButton *>(widget)
         || qobject_cast<QSlider *>(widget)) {
-        widget->setAttribute(Qt::WA_Hover, false);
+        widget->setAttribute(BobUI::WA_Hover, false);
     }
 }
 

@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QABSTRACTBUTTON_P_H
 #define QABSTRACTBUTTON_P_H
@@ -9,21 +9,21 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 #include "qabstractbutton.h"
 
-#include "QtCore/qbasictimer.h"
+#include "BobUICore/qbasictimer.h"
 #include "private/qwidget_p.h"
-#include "QtWidgets/qstyle.h"
+#include "BobUIWidgets/qstyle.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QAbstractButtonPrivate : public QWidgetPrivate
 {
@@ -34,7 +34,7 @@ public:
     QString text;
     QIcon icon;
     QSize iconSize;
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     QKeySequence shortcut;
     int shortcutId;
 #endif
@@ -46,7 +46,7 @@ public:
     uint blockRefresh :1;
     uint pressed : 1;
 
-#if QT_CONFIG(buttongroup)
+#if BOBUI_CONFIG(buttongroup)
     QButtonGroup* group;
 #endif
     QBasicTimer repeatTimer;
@@ -72,11 +72,11 @@ public:
     void emitClicked();
     void emitToggled(bool checked);
 
-    // ### Qt7: add a public virtual initStyleOption()
+    // ### BobUI7: add a public virtual initStyleOption()
     // returns additional button states for QStyleOption
     virtual QStyle::State styleButtonState(QStyle::State state) const;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QABSTRACTBUTTON_P_H

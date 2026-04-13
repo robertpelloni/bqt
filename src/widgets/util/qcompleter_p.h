@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QCOMPLETER_P_H
 #define QCOMPLETER_P_H
@@ -10,29 +10,29 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 #include "private/qobject_p.h"
 
-#include "QtWidgets/qabstractitemview.h"
-#include "QtCore/qabstractproxymodel.h"
-#include "QtCore/qmap.h"
+#include "BobUIWidgets/qabstractitemview.h"
+#include "BobUICore/qabstractproxymodel.h"
+#include "BobUICore/qmap.h"
 #include "qcompleter.h"
 #include "qstyleditemdelegate.h"
-#include "QtGui/qpainter.h"
+#include "BobUIGui/qpainter.h"
 
 #include "private/qabstractproxymodel_p.h"
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
-QT_REQUIRE_CONFIG(completer);
+BOBUI_REQUIRE_CONFIG(completer);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QCompletionModel;
 
@@ -49,10 +49,10 @@ public:
     QCompletionModel *proxy;
     QAbstractItemView *popup;
     QCompleter::CompletionMode mode;
-    Qt::MatchFlags filterMode;
+    BobUI::MatchFlags filterMode;
 
     QString prefix;
-    Qt::CaseSensitivity cs;
+    BobUI::CaseSensitivity cs;
     int role;
     int column;
     int maxVisibleItems;
@@ -146,8 +146,8 @@ class QSortedModelEngine : public QCompletionEngine
 public:
     QSortedModelEngine(QCompleterPrivate *c) : QCompletionEngine(c) { }
     QMatchData filter(const QString&, const QModelIndex&, int) override;
-    QIndexMapper indexHint(QString, const QModelIndex&, Qt::SortOrder);
-    Qt::SortOrder sortOrder(const QModelIndex&) const;
+    QIndexMapper indexHint(QString, const QModelIndex&, BobUI::SortOrder);
+    BobUI::SortOrder sortOrder(const QModelIndex&) const;
 };
 
 class QUnsortedModelEngine : public QCompletionEngine
@@ -201,7 +201,7 @@ public:
     int columnCount(const QModelIndex &index = QModelIndex()) const override;
     bool hasChildren(const QModelIndex &parent = QModelIndex()) const override;
     QModelIndex parent(const QModelIndex & = QModelIndex()) const override { return QModelIndex(); }
-    QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
+    QVariant data(const QModelIndex& index, int role = BobUI::DisplayRole) const override;
 
     void setSourceModel(QAbstractItemModel *sourceModel) override;
     QModelIndex mapToSource(const QModelIndex& proxyIndex) const override;
@@ -227,6 +227,6 @@ class QCompletionModelPrivate : public QAbstractProxyModelPrivate
     Q_DECLARE_PUBLIC(QCompletionModel)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCOMPLETER_P_H

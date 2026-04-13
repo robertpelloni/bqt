@@ -1,26 +1,26 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwindowsclipboard.h"
 #include "qwindowscontext.h"
 #include "qwindowsole.h"
 
-#include <QtGui/qguiapplication.h>
-#include <QtGui/qclipboard.h>
-#include <QtGui/qcolor.h>
-#include <QtGui/qimage.h>
+#include <BobUIGui/qguiapplication.h>
+#include <BobUIGui/qclipboard.h>
+#include <BobUIGui/qcolor.h>
+#include <BobUIGui/qimage.h>
 
-#include <QtCore/qdebug.h>
-#include <QtCore/qmimedata.h>
-#include <QtCore/qstringlist.h>
-#include <QtCore/qthread.h>
-#include <QtCore/qvariant.h>
-#include <QtCore/qurl.h>
-#include <QtCore/private/qsystemerror_p.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qmimedata.h>
+#include <BobUICore/qstringlist.h>
+#include <BobUICore/bobuihread.h>
+#include <BobUICore/qvariant.h>
+#include <BobUICore/qurl.h>
+#include <BobUICore/private/qsystemerror_p.h>
 
-#include <QtGui/private/qwindowsguieventdispatcher_p.h>
+#include <BobUIGui/private/qwindowsguieventdispatcher_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QWindowsClipboard
@@ -37,7 +37,7 @@ QT_BEGIN_NAMESPACE
     \internal
 */
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 static QDebug operator<<(QDebug d, const QMimeData *mimeData)
 {
     QDebugStateSaver saver(d);
@@ -62,7 +62,7 @@ static QDebug operator<<(QDebug d, const QMimeData *mimeData)
     d << ')';
     return d;
 }
-#endif // !QT_NO_DEBUG_STREAM
+#endif // !BOBUI_NO_DEBUG_STREAM
 
 /*!
     \class QWindowsClipboardRetrievalMimeData
@@ -79,7 +79,7 @@ IDataObject *QWindowsClipboardRetrievalMimeData::retrieveDataObject() const
 {
     enum : int { attempts = 3 };
     IDataObject * pDataObj = nullptr;
-    // QTBUG-53979, retry in case the other application has clipboard locked
+    // BOBUIBUG-53979, retry in case the other application has clipboard locked
     for (int i = 1; i <= attempts; ++i) {
         if (SUCCEEDED(OleGetClipboard(&pDataObj))) {
             if (QWindowsContext::verbose > 1)
@@ -89,7 +89,7 @@ IDataObject *QWindowsClipboardRetrievalMimeData::retrieveDataObject() const
         qCWarning(lcQpaMime, i == attempts
                   ? "Unable to obtain clipboard."
                   : "Retrying to obtain clipboard.");
-        QThread::msleep(50);
+        BOBUIhread::msleep(50);
     }
 
     return nullptr;
@@ -100,7 +100,7 @@ void QWindowsClipboardRetrievalMimeData::releaseDataObject(IDataObject *dataObje
     dataObject->Release();
 }
 
-LRESULT QT_WIN_CALLBACK qClipboardViewerWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT BOBUI_WIN_CALLBACK qClipboardViewerWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     LRESULT result = 0;
     if (QWindowsClipboard::instance()
@@ -109,7 +109,7 @@ LRESULT QT_WIN_CALLBACK qClipboardViewerWndProc(HWND hwnd, UINT message, WPARAM 
     return DefWindowProc(hwnd, message, wParam, lParam);
 }
 
-// QTBUG-36958, ensure the clipboard is flushed before
+// BOBUIBUG-36958, ensure the clipboard is flushed before
 // QGuiApplication is destroyed since OleFlushClipboard()
 // might query the data again which causes problems
 // for QMimeData-derived classes using QPixmap/QImage.
@@ -143,7 +143,7 @@ void QWindowsClipboard::releaseIData()
 {
     if (m_data) {
         delete m_data->mimeData();
-        m_data->releaseQt();
+        m_data->releaseBobUI();
         m_data->Release();
         m_data = nullptr;
     }
@@ -152,7 +152,7 @@ void QWindowsClipboard::releaseIData()
 void QWindowsClipboard::registerViewer()
 {
     m_clipboardViewer = QWindowsContext::instance()->
-        createDummyWindow(QStringLiteral("ClipboardView"), L"QtClipboardView",
+        createDummyWindow(QStringLiteral("ClipboardView"), L"BobUIClipboardView",
                           qClipboardViewerWndProc, WS_OVERLAPPED);
 
     m_formatListenerRegistered = AddClipboardFormatListener(m_clipboardViewer);
@@ -182,7 +182,7 @@ void QWindowsClipboard::unregisterViewer()
     }
 }
 
-// ### FIXME: Qt 6: Remove the clipboard chain handling code and make the
+// ### FIXME: BobUI 6: Remove the clipboard chain handling code and make the
 // format listener the default.
 
 static bool isProcessBeingDebugged(HWND hwnd)
@@ -293,7 +293,7 @@ void QWindowsClipboard::setMimeData(QMimeData *mimeData, QClipboard::Mode mode)
         src = OleSetClipboard(m_data);
         if (src != CLIPBRD_E_CANT_OPEN || QWindowsContext::isSessionLocked())
             break;
-        QThread::msleep(100);
+        BOBUIhread::msleep(100);
     }
 
     if (src != S_OK) {
@@ -333,4 +333,4 @@ bool QWindowsClipboard::ownsMode(QClipboard::Mode mode) const
     return result;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDBUSPLATFORMMENU_H
 #define QDBUSPLATFORMMENU_H
@@ -9,7 +9,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -21,14 +21,14 @@
 //
 // This file is part of the DBus menu support and is not meant to be used
 // in applications. Usage of this API may make your code
-// source and binary incompatible with future versions of Qt.
+// source and binary incompatible with future versions of BobUI.
 //
 
 #include <qpa/qplatformmenu.h>
 #include <QLoggingCategory>
 #include "qdbusmenutypes_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 Q_DECLARE_LOGGING_CATEGORY(qLcMenu)
 
 class QDBusPlatformMenu;
@@ -61,7 +61,7 @@ public:
     void setChecked(bool isChecked) override;
     bool hasExclusiveGroup() const { return m_hasExclusiveGroup; }
     void setHasExclusiveGroup(bool hasExclusiveGroup) override;
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     QKeySequence shortcut() const { return m_shortcut; }
     void setShortcut(const QKeySequence& shortcut) override;
 #endif
@@ -88,7 +88,7 @@ private:
     bool m_hasExclusiveGroup : 1;
     short /*unused*/ : 6;
     short m_dbusID : 16;
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     QKeySequence m_shortcut;
 #endif
 };
@@ -150,7 +150,7 @@ private:
     QDBusPlatformMenuItem *m_containingMenuItem;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif
 

@@ -1,3 +1,3 @@
 SOURCES += gradientgen.cpp
-QT = core gui
+BOBUI = core gui
 CONFIG += cmdline

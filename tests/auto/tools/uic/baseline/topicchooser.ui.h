@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'topicchooser.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,17 +9,17 @@
 #ifndef TOPICCHOOSER_H
 #define TOPICCHOOSER_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QListWidget>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QVBoxLayout>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QDialog>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QListWidget>
+#include <BobUIWidgets/QPushButton>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/QVBoxLayout>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_TopicChooser
 {
@@ -79,9 +79,9 @@ public:
 
         unnamed->addLayout(unnamed1);
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
         label->setBuddy(listWidget);
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
         retranslateUi(TopicChooser);
 
@@ -105,6 +105,6 @@ namespace Ui {
     class TopicChooser: public Ui_TopicChooser {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // TOPICCHOOSER_H

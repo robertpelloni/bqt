@@ -1,4 +1,4 @@
-QT += network widgets
+BOBUI += network widgets
 
 HEADERS       = blockingclient.h \
                 fortunethread.h
@@ -7,6 +7,6 @@ SOURCES       = blockingclient.cpp \
                 fortunethread.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/network/blockingfortuneclient
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/network/blockingfortuneclient
 INSTALLS += target
 

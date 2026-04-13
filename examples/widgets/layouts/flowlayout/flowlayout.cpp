@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 #include "flowlayout.h"
 //! [1]
@@ -74,7 +74,7 @@ QLayoutItem *FlowLayout::takeAt(int index)
 //! [5]
 
 //! [6]
-Qt::Orientations FlowLayout::expandingDirections() const
+BobUI::Orientations FlowLayout::expandingDirections() const
 {
     return { };
 }
@@ -134,11 +134,11 @@ int FlowLayout::doLayout(const QRect &rect, bool testOnly) const
         int spaceX = horizontalSpacing();
         if (spaceX == -1)
             spaceX = wid->style()->layoutSpacing(
-                QSizePolicy::PushButton, QSizePolicy::PushButton, Qt::Horizontal);
+                QSizePolicy::PushButton, QSizePolicy::PushButton, BobUI::Horizontal);
         int spaceY = verticalSpacing();
         if (spaceY == -1)
             spaceY = wid->style()->layoutSpacing(
-                QSizePolicy::PushButton, QSizePolicy::PushButton, Qt::Vertical);
+                QSizePolicy::PushButton, QSizePolicy::PushButton, BobUI::Vertical);
 //! [10]
 //! [11]
         int nextX = x + item->sizeHint().width() + spaceX;

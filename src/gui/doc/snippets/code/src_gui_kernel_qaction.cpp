@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QApplication>
 #include <QAction>
@@ -11,7 +11,7 @@ int main(int argc, char **argv)
 
     //! [0]
     QApplication app(argc, argv);
-    app.setAttribute(Qt::AA_DontShowIconsInMenus);  // Icons are *no longer shown* in menus
+    app.setAttribute(BobUI::AA_DontShowIconsInMenus);  // Icons are *no longer shown* in menus
     // ...
     QAction *myAction = new QAction();
     // ...

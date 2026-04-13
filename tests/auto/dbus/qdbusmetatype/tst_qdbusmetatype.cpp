@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QCoreApplication>
 #include <QMetaType>
 #include <QDBusArgument>
@@ -84,7 +84,7 @@ typedef QMap<int, QString> IntStringMap;
 typedef QMap<QString, QString> StringStringMap;
 typedef QMap<QString, Struct1> StringStruct1Map;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 QDBusArgument &operator<<(QDBusArgument &arg, const Struct1 &)
 {
     arg.beginStructure();
@@ -228,7 +228,7 @@ const QDBusArgument &operator>>(const QDBusArgument &arg, Invalid6 &)
 { return arg; }
 const QDBusArgument &operator>>(const QDBusArgument &arg, Invalid7 &)
 { return arg; }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 void tst_QDBusMetaType::initTestCase()
 {
@@ -272,68 +272,68 @@ void tst_QDBusMetaType::initTestCase()
 
 void tst_QDBusMetaType::staticTypes_data()
 {
-    QTest::addColumn<int>("typeId");
-    QTest::addColumn<QString>("signature");
+    BOBUIest::addColumn<int>("typeId");
+    BOBUIest::addColumn<QString>("signature");
 
-    QTest::newRow("uchar") << int(QMetaType::UChar) << "y";
-    QTest::newRow("bool") << int(QMetaType::Bool) << "b";
-    QTest::newRow("short") << int(QMetaType::Short) << "n";
-    QTest::newRow("ushort") << int(QMetaType::UShort) << "q";
-    QTest::newRow("int") << int(QMetaType::Int) << "i";
-    QTest::newRow("uint") << int(QMetaType::UInt) << "u";
-    QTest::newRow("qlonglong") << int(QMetaType::LongLong) << "x";
-    QTest::newRow("qulonglong") << int(QMetaType::ULongLong) << "t";
-    QTest::newRow("double") << int(QMetaType::Double) << "d";
-    QTest::newRow("QString") << int(QMetaType::QString) << "s";
-    QTest::newRow("QDBusObjectPath") << qMetaTypeId<QDBusObjectPath>() << "o";
-    QTest::newRow("QDBusSignature") << qMetaTypeId<QDBusSignature>() << "g";
-    QTest::newRow("QDBusVariant") << qMetaTypeId<QDBusVariant>() << "v";
+    BOBUIest::newRow("uchar") << int(QMetaType::UChar) << "y";
+    BOBUIest::newRow("bool") << int(QMetaType::Bool) << "b";
+    BOBUIest::newRow("short") << int(QMetaType::Short) << "n";
+    BOBUIest::newRow("ushort") << int(QMetaType::UShort) << "q";
+    BOBUIest::newRow("int") << int(QMetaType::Int) << "i";
+    BOBUIest::newRow("uint") << int(QMetaType::UInt) << "u";
+    BOBUIest::newRow("qlonglong") << int(QMetaType::LongLong) << "x";
+    BOBUIest::newRow("qulonglong") << int(QMetaType::ULongLong) << "t";
+    BOBUIest::newRow("double") << int(QMetaType::Double) << "d";
+    BOBUIest::newRow("QString") << int(QMetaType::QString) << "s";
+    BOBUIest::newRow("QDBusObjectPath") << qMetaTypeId<QDBusObjectPath>() << "o";
+    BOBUIest::newRow("QDBusSignature") << qMetaTypeId<QDBusSignature>() << "g";
+    BOBUIest::newRow("QDBusVariant") << qMetaTypeId<QDBusVariant>() << "v";
 
-    QTest::newRow("QByteArray") << int(QMetaType::QByteArray) << "ay";
-    QTest::newRow("QStringList") << int(QMetaType::QStringList) << "as";
+    BOBUIest::newRow("QByteArray") << int(QMetaType::QByteArray) << "ay";
+    BOBUIest::newRow("QStringList") << int(QMetaType::QStringList) << "as";
 }
 
 void tst_QDBusMetaType::dynamicTypes_data()
 {
-    QTest::addColumn<int>("typeId");
-    QTest::addColumn<QString>("signature");
+    BOBUIest::addColumn<int>("typeId");
+    BOBUIest::addColumn<QString>("signature");
 
-    QTest::newRow("QVariantList") << int(QMetaType::QVariantList) << "av";
-    QTest::newRow("QVariantMap") << int(QMetaType::QVariantMap) << "a{sv}";
-    QTest::newRow("QDate") << int(QMetaType::QDate) << "(iii)";
-    QTest::newRow("QTime") << int(QMetaType::QTime) << "(iiii)";
-    QTest::newRow("QDateTime") << int(QMetaType::QDateTime) << "((iii)(iiii)i)";
-    QTest::newRow("QRect") << int(QMetaType::QRect) << "(iiii)";
-    QTest::newRow("QRectF") << int(QMetaType::QRectF) << "(dddd)";
-    QTest::newRow("QSize") << int(QMetaType::QSize) << "(ii)";
-    QTest::newRow("QSizeF") << int(QMetaType::QSizeF) << "(dd)";
-    QTest::newRow("QPoint") << int(QMetaType::QPoint) << "(ii)";
-    QTest::newRow("QPointF") << int(QMetaType::QPointF) << "(dd)";
-    QTest::newRow("QLine") << int(QMetaType::QLine) << "((ii)(ii))";
-    QTest::newRow("QLineF") << int(QMetaType::QLineF) << "((dd)(dd))";
+    BOBUIest::newRow("QVariantList") << int(QMetaType::QVariantList) << "av";
+    BOBUIest::newRow("QVariantMap") << int(QMetaType::QVariantMap) << "a{sv}";
+    BOBUIest::newRow("QDate") << int(QMetaType::QDate) << "(iii)";
+    BOBUIest::newRow("BOBUIime") << int(QMetaType::BOBUIime) << "(iiii)";
+    BOBUIest::newRow("QDateTime") << int(QMetaType::QDateTime) << "((iii)(iiii)i)";
+    BOBUIest::newRow("QRect") << int(QMetaType::QRect) << "(iiii)";
+    BOBUIest::newRow("QRectF") << int(QMetaType::QRectF) << "(dddd)";
+    BOBUIest::newRow("QSize") << int(QMetaType::QSize) << "(ii)";
+    BOBUIest::newRow("QSizeF") << int(QMetaType::QSizeF) << "(dd)";
+    BOBUIest::newRow("QPoint") << int(QMetaType::QPoint) << "(ii)";
+    BOBUIest::newRow("QPointF") << int(QMetaType::QPointF) << "(dd)";
+    BOBUIest::newRow("QLine") << int(QMetaType::QLine) << "((ii)(ii))";
+    BOBUIest::newRow("QLineF") << int(QMetaType::QLineF) << "((dd)(dd))";
 
-    QTest::newRow("Struct1") << qMetaTypeId<Struct1>() << "(s)";
-    QTest::newRow("QList<Struct1>") << qMetaTypeId<QList<Struct1> >() << "a(s)";
+    BOBUIest::newRow("Struct1") << qMetaTypeId<Struct1>() << "(s)";
+    BOBUIest::newRow("QList<Struct1>") << qMetaTypeId<QList<Struct1> >() << "a(s)";
 #ifdef Q_CC_GNU_ONLY
-    QTest::newRow("std::vector<Struct1>") << qMetaTypeId<std::vector<Struct1> >() << "a(s)";
+    BOBUIest::newRow("std::vector<Struct1>") << qMetaTypeId<std::vector<Struct1> >() << "a(s)";
 #endif
 
-    QTest::newRow("Struct2") << qMetaTypeId<Struct2>() << "(sos)";
-    QTest::newRow("QList<Struct2>") << qMetaTypeId<QList<Struct2>>() << "a(sos)";
+    BOBUIest::newRow("Struct2") << qMetaTypeId<Struct2>() << "(sos)";
+    BOBUIest::newRow("QList<Struct2>") << qMetaTypeId<QList<Struct2>>() << "a(sos)";
 
-    QTest::newRow("QList<Struct3>") << qMetaTypeId<QList<Struct3>>() << "a(sas)";
-    QTest::newRow("Struct3") << qMetaTypeId<Struct3>() << "(sas)";
+    BOBUIest::newRow("QList<Struct3>") << qMetaTypeId<QList<Struct3>>() << "a(sas)";
+    BOBUIest::newRow("Struct3") << qMetaTypeId<Struct3>() << "(sas)";
 
-    QTest::newRow("Struct4") << qMetaTypeId<Struct4>() << "(ssa(ss)sayasx)";
-    QTest::newRow("QList<Struct4>") << qMetaTypeId<QList<Struct4>>() << "a(ssa(ss)sayasx)";
+    BOBUIest::newRow("Struct4") << qMetaTypeId<Struct4>() << "(ssa(ss)sayasx)";
+    BOBUIest::newRow("QList<Struct4>") << qMetaTypeId<QList<Struct4>>() << "a(ssa(ss)sayasx)";
 
-    QTest::newRow("Struct5") << qMetaTypeId<Struct5>() << "a{sa{sv}}";
+    BOBUIest::newRow("Struct5") << qMetaTypeId<Struct5>() << "a{sa{sv}}";
 
-    QTest::newRow("Struct6") << qMetaTypeId<Struct6>() << "av";
+    BOBUIest::newRow("Struct6") << qMetaTypeId<Struct6>() << "av";
 
-    QTest::newRow("QMap<int,QString>") << intStringMap << "a{is}";
-    QTest::newRow("QMap<QString,QString>") << stringStringMap << "a{ss}";
-    QTest::newRow("QMap<QString,Struct1>") << stringStruct1Map << "a{s(s)}";
+    BOBUIest::newRow("QMap<int,QString>") << intStringMap << "a{is}";
+    BOBUIest::newRow("QMap<QString,QString>") << stringStringMap << "a{ss}";
+    BOBUIest::newRow("QMap<QString,Struct1>") << stringStruct1Map << "a{s(s)}";
 }
 
 void tst_QDBusMetaType::staticTypes()
@@ -341,7 +341,7 @@ void tst_QDBusMetaType::staticTypes()
     QFETCH(int, typeId);
 
     QString result = QDBusMetaType::typeToSignature(QMetaType(typeId));
-    QTEST(result, "signature");
+    BOBUIEST(result, "signature");
 }
 
 void tst_QDBusMetaType::dynamicTypes()
@@ -352,48 +352,48 @@ void tst_QDBusMetaType::dynamicTypes()
 
 void tst_QDBusMetaType::invalidTypes_data()
 {
-    QTest::addColumn<int>("typeId");
-    QTest::addColumn<QString>("signature");
+    BOBUIest::addColumn<int>("typeId");
+    BOBUIest::addColumn<QString>("signature");
 
-    QTest::newRow("Invalid0") << qMetaTypeId<Invalid0>() << "";
-    QTest::newRow("Invalid1") << qMetaTypeId<Invalid1>() << "";
-    QTest::newRow("Invalid2") << qMetaTypeId<Invalid2>() << "";
-    QTest::newRow("Invalid3") << qMetaTypeId<Invalid3>() << "";
-    QTest::newRow("Invalid4") << qMetaTypeId<Invalid4>() << "";
-    QTest::newRow("Invalid5") << qMetaTypeId<Invalid5>() << "";
-    QTest::newRow("Invalid6") << qMetaTypeId<Invalid6>() << "";
-    QTest::newRow("Invalid7") << qMetaTypeId<Invalid7>() << "";
+    BOBUIest::newRow("Invalid0") << qMetaTypeId<Invalid0>() << "";
+    BOBUIest::newRow("Invalid1") << qMetaTypeId<Invalid1>() << "";
+    BOBUIest::newRow("Invalid2") << qMetaTypeId<Invalid2>() << "";
+    BOBUIest::newRow("Invalid3") << qMetaTypeId<Invalid3>() << "";
+    BOBUIest::newRow("Invalid4") << qMetaTypeId<Invalid4>() << "";
+    BOBUIest::newRow("Invalid5") << qMetaTypeId<Invalid5>() << "";
+    BOBUIest::newRow("Invalid6") << qMetaTypeId<Invalid6>() << "";
+    BOBUIest::newRow("Invalid7") << qMetaTypeId<Invalid7>() << "";
 
-    QTest::newRow("QList<Invalid0>") << qMetaTypeId<QList<Invalid0>>() << "";
+    BOBUIest::newRow("QList<Invalid0>") << qMetaTypeId<QList<Invalid0>>() << "";
 
-    QTest::newRow("long") << int(QMetaType::Long) << "";
-    QTest::newRow("void*") << int(QMetaType::VoidStar) << "";
+    BOBUIest::newRow("long") << int(QMetaType::Long) << "";
+    BOBUIest::newRow("void*") << int(QMetaType::VoidStar) << "";
 }
 
 void tst_QDBusMetaType::invalidTypes()
 {
     // same test
-    if (qstrcmp(QTest::currentDataTag(), "Invalid0") == 0)
-        QTest::ignoreMessage(QtWarningMsg, "QDBusMarshaller: type 'Invalid0' produces invalid D-Bus signature '<empty>' (Did you forget to call beginStructure() ?)");
-    else if (qstrcmp(QTest::currentDataTag(), "Invalid1") == 0)
-        QTest::ignoreMessage(QtWarningMsg, "QDBusMarshaller: type 'Invalid1' attempts to redefine basic D-Bus type 's' (QString) (Did you forget to call beginStructure() ?)");
-    else if (qstrcmp(QTest::currentDataTag(), "Invalid2") == 0)
-        QTest::ignoreMessage(QtWarningMsg, "QDBusMarshaller: type 'Invalid2' attempts to redefine basic D-Bus type 'o' (QDBusObjectPath) (Did you forget to call beginStructure() ?)");
-    else if (qstrcmp(QTest::currentDataTag(), "Invalid3") == 0)
-        QTest::ignoreMessage(QtWarningMsg, "QDBusMarshaller: type 'Invalid3' attempts to redefine basic D-Bus type 'as' (QStringList) (Did you forget to call beginStructure() ?)");
-    else if (qstrcmp(QTest::currentDataTag(), "Invalid4") == 0)
-        QTest::ignoreMessage(QtWarningMsg, "QDBusMarshaller: type 'Invalid4' attempts to redefine basic D-Bus type 'ay' (QByteArray) (Did you forget to call beginStructure() ?)");
-    else if (qstrcmp(QTest::currentDataTag(), "Invalid5") == 0)
-        QTest::ignoreMessage(QtWarningMsg, "QDBusMarshaller: type 'Invalid5' produces invalid D-Bus signature 'ii' (Did you forget to call beginStructure() ?)");
-    else if (qstrcmp(QTest::currentDataTag(), "Invalid7") == 0)
-        QTest::ignoreMessage(QtWarningMsg, "QDBusMarshaller: type 'Invalid7' produces invalid D-Bus signature '()' (Did you forget to call beginStructure() ?)");
-    else if (qstrcmp(QTest::currentDataTag(), "QList<Invalid0>") == 0)
-        QTest::ignoreMessage(QtWarningMsg, "QDBusMarshaller: type 'QList<Invalid0>' produces invalid D-Bus signature 'a' (Did you forget to call beginStructure() ?)");
+    if (qstrcmp(BOBUIest::currentDataTag(), "Invalid0") == 0)
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QDBusMarshaller: type 'Invalid0' produces invalid D-Bus signature '<empty>' (Did you forget to call beginStructure() ?)");
+    else if (qstrcmp(BOBUIest::currentDataTag(), "Invalid1") == 0)
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QDBusMarshaller: type 'Invalid1' attempts to redefine basic D-Bus type 's' (QString) (Did you forget to call beginStructure() ?)");
+    else if (qstrcmp(BOBUIest::currentDataTag(), "Invalid2") == 0)
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QDBusMarshaller: type 'Invalid2' attempts to redefine basic D-Bus type 'o' (QDBusObjectPath) (Did you forget to call beginStructure() ?)");
+    else if (qstrcmp(BOBUIest::currentDataTag(), "Invalid3") == 0)
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QDBusMarshaller: type 'Invalid3' attempts to redefine basic D-Bus type 'as' (QStringList) (Did you forget to call beginStructure() ?)");
+    else if (qstrcmp(BOBUIest::currentDataTag(), "Invalid4") == 0)
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QDBusMarshaller: type 'Invalid4' attempts to redefine basic D-Bus type 'ay' (QByteArray) (Did you forget to call beginStructure() ?)");
+    else if (qstrcmp(BOBUIest::currentDataTag(), "Invalid5") == 0)
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QDBusMarshaller: type 'Invalid5' produces invalid D-Bus signature 'ii' (Did you forget to call beginStructure() ?)");
+    else if (qstrcmp(BOBUIest::currentDataTag(), "Invalid7") == 0)
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QDBusMarshaller: type 'Invalid7' produces invalid D-Bus signature '()' (Did you forget to call beginStructure() ?)");
+    else if (qstrcmp(BOBUIest::currentDataTag(), "QList<Invalid0>") == 0)
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QDBusMarshaller: type 'QList<Invalid0>' produces invalid D-Bus signature 'a' (Did you forget to call beginStructure() ?)");
 
     staticTypes();
     staticTypes();              // run twice: the error messages should be printed once only
 }
 
-QTEST_MAIN(tst_QDBusMetaType)
+BOBUIEST_MAIN(tst_QDBusMetaType)
 
 #include "tst_qdbusmetatype.moc"

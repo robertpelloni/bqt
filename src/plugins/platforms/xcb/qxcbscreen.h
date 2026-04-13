@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #pragma once
 
 #include <qpa/qplatformscreen.h>
 #include <qpa/qplatformscreen_p.h>
-#include <QtCore/QString>
+#include <BobUICore/QString>
 
 #include <xcb/xcb.h>
 #include <xcb/randr.h>
@@ -16,16 +16,16 @@
 
 #include <private/qfontengine_p.h>
 
-#include <QtGui/private/qedidparser_p.h>
+#include <BobUIGui/private/qedidparser_p.h>
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QXcbConnection;
 class QXcbCursor;
 class QXcbXSettings;
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 class QDebug;
 #endif
 
@@ -139,7 +139,7 @@ public:
     QDpi logicalBaseDpi() const override { return QDpi(96, 96); }
     QPlatformCursor *cursor() const override;
     qreal refreshRate() const override { return m_refreshRate; }
-    Qt::ScreenOrientation orientation() const override { return m_orientation; }
+    BobUI::ScreenOrientation orientation() const override { return m_orientation; }
     QList<QPlatformScreen *> virtualSiblings() const override { return m_virtualDesktop->screens(); }
     QXcbVirtualDesktop *virtualDesktop() const { return m_virtualDesktop; }
 
@@ -214,7 +214,7 @@ private:
     QRect m_geometry;
     QRect m_availableGeometry;
     QColorSpace m_colorSpace;
-    Qt::ScreenOrientation m_orientation = Qt::PrimaryOrientation;
+    BobUI::ScreenOrientation m_orientation = BobUI::PrimaryOrientation;
     std::unique_ptr<QXcbCursor> m_cursor;
     qreal m_refreshRate = 60.0;
     QEdidParser m_edid;
@@ -223,8 +223,8 @@ private:
     friend class QXcbVirtualDesktop;
 };
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QXcbScreen *);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

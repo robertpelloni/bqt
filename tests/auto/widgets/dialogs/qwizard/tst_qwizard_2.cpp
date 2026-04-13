@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
 #include <QComboBox>
@@ -10,35 +10,35 @@
 #include <QWizard>
 #include <QWizardPage>
 
-#include <QTest>
+#include <BOBUIest>
 
-class taskQTBUG_25691 : public QWizard
+class taskBOBUIBUG_25691 : public QWizard
 {
     Q_OBJECT
 public:
-    taskQTBUG_25691( QWidget * parent = nullptr );
+    taskBOBUIBUG_25691( QWidget * parent = nullptr );
 
-    ~taskQTBUG_25691(void);
+    ~taskBOBUIBUG_25691(void);
 };
 
-class taskQTBUG_25691Page1 : public QWizardPage
+class taskBOBUIBUG_25691Page1 : public QWizardPage
 {
     Q_OBJECT
 public:
-    taskQTBUG_25691Page1( QWidget * parent = nullptr );
+    taskBOBUIBUG_25691Page1( QWidget * parent = nullptr );
 
-    ~taskQTBUG_25691Page1(void);
+    ~taskBOBUIBUG_25691Page1(void);
 };
 
-class taskQTBUG_25691Page2 : public QWizardPage
+class taskBOBUIBUG_25691Page2 : public QWizardPage
 {
     Q_OBJECT
 public:
-    taskQTBUG_25691Page2( QWidget * parent = nullptr );
+    taskBOBUIBUG_25691Page2( QWidget * parent = nullptr );
 
     virtual void initializePage(void) override;
 
-    ~taskQTBUG_25691Page2(void);
+    ~taskBOBUIBUG_25691Page2(void);
 
 private:
     QVBoxLayout * layout;
@@ -48,19 +48,19 @@ private:
 };
 
 
-taskQTBUG_25691::taskQTBUG_25691( QWidget * parent )
+taskBOBUIBUG_25691::taskBOBUIBUG_25691( QWidget * parent )
     : QWizard( parent )
 {
-    this->addPage( new taskQTBUG_25691Page1 );
-    this->addPage( new taskQTBUG_25691Page2 );
+    this->addPage( new taskBOBUIBUG_25691Page1 );
+    this->addPage( new taskBOBUIBUG_25691Page2 );
     this->show();
 }
 
-taskQTBUG_25691::~taskQTBUG_25691(void)
+taskBOBUIBUG_25691::~taskBOBUIBUG_25691(void)
 {
 }
 
-taskQTBUG_25691Page1::taskQTBUG_25691Page1( QWidget * parent )
+taskBOBUIBUG_25691Page1::taskBOBUIBUG_25691Page1( QWidget * parent )
     : QWizardPage( parent )
 {
     QComboBox * field0_needed = new QComboBox( this );
@@ -88,11 +88,11 @@ taskQTBUG_25691Page1::taskQTBUG_25691Page1( QWidget * parent )
     this->setLayout( layout );
 }
 
-taskQTBUG_25691Page1::~taskQTBUG_25691Page1(void)
+taskBOBUIBUG_25691Page1::~taskBOBUIBUG_25691Page1(void)
 {
 }
 
-taskQTBUG_25691Page2::taskQTBUG_25691Page2( QWidget * parent )
+taskBOBUIBUG_25691Page2::taskBOBUIBUG_25691Page2( QWidget * parent )
     : QWizardPage( parent )
 {
     this->layout = new QVBoxLayout;
@@ -103,7 +103,7 @@ taskQTBUG_25691Page2::taskQTBUG_25691Page2( QWidget * parent )
     this->field2_value = 0;
 }
 
-void taskQTBUG_25691Page2::initializePage(void)
+void taskBOBUIBUG_25691Page2::initializePage(void)
 {
     QWizard * wizard = this->wizard();
     bool field0_needed = wizard->field( "field0_needed" ).toBool();
@@ -141,14 +141,14 @@ void taskQTBUG_25691Page2::initializePage(void)
     }
 }
 
-taskQTBUG_25691Page2::~taskQTBUG_25691Page2(void)
+taskBOBUIBUG_25691Page2::~taskBOBUIBUG_25691Page2(void)
 {
 }
 
-void taskQTBUG_25691_fieldObjectDestroyed2(void)
+void taskBOBUIBUG_25691_fieldObjectDestroyed2(void)
 {
     QMainWindow mw;
-    taskQTBUG_25691 wb( &mw );
+    taskBOBUIBUG_25691 wb( &mw );
 
     wb.setField( "field0_needed", true );
     wb.setField( "field1_needed", true );

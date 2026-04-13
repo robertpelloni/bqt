@@ -1,11 +1,11 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## dialogs Binary:
 #####################################################################
 
-qt_internal_add_manual_test(dialogs
+bobui_internal_add_manual_test(dialogs
     GUI
     SOURCES
         colordialogpanel.cpp colordialogpanel.h
@@ -16,26 +16,26 @@ qt_internal_add_manual_test(dialogs
         utils.cpp utils.h
         wizardpanel.cpp wizardpanel.h
     NO_PCH_SOURCES
-        filedialogpanel.cpp # undef QT_NO_FOREACH
-        utils.cpp # undef QT_NO_FOREACH
+        filedialogpanel.cpp # undef BOBUI_NO_FOREACH
+        utils.cpp # undef BOBUI_NO_FOREACH
     LIBRARIES
-        Qt::Gui
-        Qt::Widgets
+        BobUI::Gui
+        BobUI::Widgets
 )
 
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(dialogs CONDITION TARGET Qt::PrintSupport
+bobui_internal_extend_target(dialogs CONDITION TARGET BobUI::PrintSupport
     LIBRARIES
-        Qt::PrintSupport
+        BobUI::PrintSupport
 )
 
-qt_internal_extend_target(dialogs CONDITION NOT (QT_FEATURE_printer EQUAL FALSE)
+bobui_internal_extend_target(dialogs CONDITION NOT (BOBUI_FEATURE_printer EQUAL FALSE)
     SOURCES
         printdialogpanel.cpp printdialogpanel.h printdialogpanel.ui
     NO_PCH_SOURCES
-        printdialogpanel.cpp # undef QT_NO_FOREACH
+        printdialogpanel.cpp # undef BOBUI_NO_FOREACH
     ENABLE_AUTOGEN_TOOLS
         uic
 )

@@ -1,13 +1,13 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qvkconvenience_p.h"
 
-#if QT_CONFIG(opengl)
-#include <QtOpenGL/QOpenGLTexture>
+#if BOBUI_CONFIG(opengl)
+#include <BobUIOpenGL/QOpenGLTexture>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QVkConvenience
@@ -17,7 +17,7 @@ QT_BEGIN_NAMESPACE
     \ingroup qpa
  */
 
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
 VkFormat QVkConvenience::vkFormatFromGlFormat(uint glFormat)
 {
     using GlFormat = QOpenGLTexture::TextureFormat;
@@ -180,4 +180,4 @@ VkFormat QVkConvenience::vkFormatFromGlFormat(uint glFormat)
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

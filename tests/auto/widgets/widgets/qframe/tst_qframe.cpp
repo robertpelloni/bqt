@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2014 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QFrame>
 #include <QStyleOptionFrame>
 #include <QPixmap>
@@ -45,32 +45,32 @@ void tst_QFrame::testDefaults()
 
 static void provideFrameData()
 {
-    QTest::addColumn<QString>("basename");
-    QTest::addColumn<int>("lineWidth");
-    QTest::addColumn<int>("midLineWidth");
-    QTest::addColumn<QFrame::Shape>("shape");
-    QTest::addColumn<QFrame::Shadow>("shadow");
+    BOBUIest::addColumn<QString>("basename");
+    BOBUIest::addColumn<int>("lineWidth");
+    BOBUIest::addColumn<int>("midLineWidth");
+    BOBUIest::addColumn<QFrame::Shape>("shape");
+    BOBUIest::addColumn<QFrame::Shadow>("shadow");
 
     for (int lineWidth = 0; lineWidth < 3; ++lineWidth) {
         for (int midLineWidth = 0; midLineWidth < 3; ++midLineWidth) {
             const QByteArray postFix = '_' + QByteArray::number(lineWidth) + '_'
                 + QByteArray::number(midLineWidth);
-            QTest::newRow(("box_noshadow" + postFix).constData())
+            BOBUIest::newRow(("box_noshadow" + postFix).constData())
                      << "box_noshadow" << lineWidth << midLineWidth << QFrame::Box << (QFrame::Shadow)0;
-            QTest::newRow(("box_plain" + postFix).constData())
+            BOBUIest::newRow(("box_plain" + postFix).constData())
                     << "box_plain" << lineWidth << midLineWidth << QFrame::Box << QFrame::Plain;
-            QTest::newRow(("box_raised" + postFix).constData())
+            BOBUIest::newRow(("box_raised" + postFix).constData())
                     << "box_raised" << lineWidth << midLineWidth << QFrame::Box << QFrame::Raised;
-            QTest::newRow(("box_sunken" + postFix).constData())
+            BOBUIest::newRow(("box_sunken" + postFix).constData())
                     << "box_sunken" << lineWidth << midLineWidth << QFrame::Box << QFrame::Sunken;
 
-            QTest::newRow(("winpanel_noshadow" + postFix).constData())
+            BOBUIest::newRow(("winpanel_noshadow" + postFix).constData())
                     << "winpanel_noshadow" << lineWidth << midLineWidth << QFrame::WinPanel << (QFrame::Shadow)0;
-            QTest::newRow(("winpanel_plain" + postFix).constData())
+            BOBUIest::newRow(("winpanel_plain" + postFix).constData())
                     << "winpanel_plain" << lineWidth << midLineWidth << QFrame::WinPanel << QFrame::Plain;
-            QTest::newRow(("winpanel_raised" + postFix).constData())
+            BOBUIest::newRow(("winpanel_raised" + postFix).constData())
                     << "winpanel_raised" << lineWidth << midLineWidth << QFrame::WinPanel << QFrame::Raised;
-            QTest::newRow(("winpanel_sunken" + postFix).constData())
+            BOBUIest::newRow(("winpanel_sunken" + postFix).constData())
                     << "winpanel_sunken" << lineWidth << midLineWidth << QFrame::WinPanel << QFrame::Sunken;
         }
     }
@@ -129,9 +129,9 @@ void tst_QFrame::testInitStyleOption()
         QVERIFY(styleOption.state & QStyle::State_Raised);
 }
 
-QT_BEGIN_NAMESPACE
-Q_GUI_EXPORT QPalette qt_fusionPalette();
-QT_END_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
+Q_GUI_EXPORT QPalette bobui_fusionPalette();
+BOBUI_END_NAMESPACE
 
 void tst_QFrame::testPainting_data()
 {
@@ -140,7 +140,7 @@ void tst_QFrame::testPainting_data()
 
 void tst_QFrame::testPainting()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QFETCH(QString, basename);
@@ -151,7 +151,7 @@ void tst_QFrame::testPainting()
 
     QFrame frame;
     frame.setStyle(fusionStyle());
-    frame.setPalette(qt_fusionPalette());
+    frame.setPalette(bobui_fusionPalette());
     frame.setFrameStyle(shape | shadow);
     frame.setLineWidth(lineWidth);
     frame.setMidLineWidth(midLineWidth);
@@ -177,6 +177,6 @@ void tst_QFrame::testPainting()
     QCOMPARE(pixmap, referencePixmap);
 }
 
-QTEST_MAIN(tst_QFrame)
+BOBUIEST_MAIN(tst_QFrame)
 
 #include "tst_qframe.moc"

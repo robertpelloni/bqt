@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qbytearraymatcher.h"
 
-#include <qtconfiginclude.h>
-#ifndef QT_BOOTSTRAPPED
-#  include <private/qtcore-config_p.h>
+#include <bobuiconfiginclude.h>
+#ifndef BOBUI_BOOTSTRAPPED
+#  include <private/bobuicore-config_p.h>
 #endif
 
 #include <limits.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static inline void bm_init_skiptable(const uchar *cc, qsizetype len, uchar *skiptable)
 {
@@ -58,7 +58,7 @@ static inline qsizetype bm_find(const uchar *cc, qsizetype l, qsizetype index, c
 }
 
 /*! \class QByteArrayMatcher
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QByteArrayMatcher class holds a sequence of bytes that
     can be quickly matched in a byte array.
 
@@ -239,12 +239,12 @@ static qsizetype qFindByteArrayBoyerMoore(
  */
 static qsizetype qFindByteArray(const char *haystack0, qsizetype l, qsizetype from,
                                 const char *needle, qsizetype sl);
-qsizetype QtPrivate::findByteArray(QByteArrayView haystack, qsizetype from, QByteArrayView needle) noexcept
+qsizetype BobUIPrivate::findByteArray(QByteArrayView haystack, qsizetype from, QByteArrayView needle) noexcept
 {
     const auto haystack0 = haystack.data();
     const auto l = haystack.size();
     const auto sl = needle.size();
-#if !QT_CONFIG(memmem)
+#if !BOBUI_CONFIG(memmem)
     if (sl == 1)
         return findByteArray(haystack, from, needle.front());
 #endif
@@ -258,7 +258,7 @@ qsizetype QtPrivate::findByteArray(QByteArrayView haystack, qsizetype from, QByt
     if (!l)
         return -1;
 
-#if QT_CONFIG(memmem)
+#if BOBUI_CONFIG(memmem)
     auto where = memmem(haystack0 + from, l - from, needle.data(), sl);
     return where ? static_cast<const char *>(where) - haystack0 : -1;
 #endif
@@ -316,7 +316,7 @@ qsizetype qFindByteArray(const char *haystack0, qsizetype l, qsizetype from,
 /*!
     \class QStaticByteArrayMatcher
     \since 5.9
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QStaticByteArrayMatcher class is a compile-time version of QByteArrayMatcher.
 
     \ingroup tools
@@ -410,4 +410,4 @@ qsizetype QStaticByteArrayMatcherBase::indexOfIn(const char *needle, size_t nlen
     \snippet code/src_corelib_text_qbytearraymatcher.cpp 0
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

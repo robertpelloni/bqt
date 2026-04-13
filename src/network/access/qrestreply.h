@@ -1,18 +1,18 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QRESTREPLY_H
 #define QRESTREPLY_H
 
-#include <QtNetwork/qnetworkreply.h>
+#include <BobUINetwork/qnetworkreply.h>
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
 #include <optional>
 #include <utility>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QByteArray;
 class QDebug;
@@ -32,11 +32,11 @@ public:
           d(std::exchange(other.d, nullptr))
     {
     }
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QRestReply)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QRestReply)
     void swap(QRestReply &other) noexcept
     {
         wrapped.swap(other.wrapped);
-        qt_ptr_swap(d, other.d);
+        bobui_ptr_swap(d, other.d);
     }
 
     Q_NETWORK_EXPORT QNetworkReply *networkReply() const;
@@ -57,7 +57,7 @@ public:
     Q_NETWORK_EXPORT QString errorString() const;
 
 private:
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
     friend Q_NETWORK_EXPORT QDebug operator<<(QDebug debug, const QRestReply &reply);
 #endif
     QPointer<QNetworkReply> wrapped;
@@ -67,6 +67,6 @@ private:
 
 Q_DECLARE_SHARED(QRestReply)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QRESTREPLY_H

@@ -1,15 +1,15 @@
 // Copyright (C) 2018 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtWaylandClient/private/qwaylandscreen_p.h>
+#include <BobUIWaylandClient/private/qwaylandscreen_p.h>
 
 #include "qwaylandfullscreenshellv1surface.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
-QWaylandFullScreenShellV1Surface::QWaylandFullScreenShellV1Surface(QtWayland::zwp_fullscreen_shell_v1 *shell, QWaylandWindow *window)
+QWaylandFullScreenShellV1Surface::QWaylandFullScreenShellV1Surface(BobUIWayland::zwp_fullscreen_shell_v1 *shell, QWaylandWindow *window)
     : QWaylandShellSurface(window)
     , m_shell(shell)
     , m_window(window)
@@ -17,10 +17,10 @@ QWaylandFullScreenShellV1Surface::QWaylandFullScreenShellV1Surface(QtWayland::zw
     auto *screen = m_window->waylandScreen();
     auto *output = screen ? screen->output() : nullptr;
     m_shell->present_surface(m_window->wlSurface(),
-                             QtWayland::zwp_fullscreen_shell_v1::present_method_default,
+                             BobUIWayland::zwp_fullscreen_shell_v1::present_method_default,
                              output);
 }
 
-} // namespace QtWaylandClient
+} // namespace BobUIWaylandClient
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

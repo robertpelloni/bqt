@@ -134,7 +134,7 @@ void OmniParticleSystem::paint(QPainter *painter) {
         if (alpha > 0.5) {
             c.setAlphaF(alpha * 0.3);
             painter->setBrush(c);
-            painter->setPen(Qt::NoPen);
+            painter->setPen(BobUI::NoPen);
             painter->drawEllipse(p.position, 2, 2);
         }
     }

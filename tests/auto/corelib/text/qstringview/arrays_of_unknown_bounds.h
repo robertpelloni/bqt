@@ -1,9 +1,9 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #pragma once
 
-#include <QtTest/qtest.h>
+#include <BobUITest/bobuiest.h>
 
 extern const char string_array[];
 extern const int string_array_size;

@@ -1,22 +1,22 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qgnomeportalinterface_p.h"
 #include "qdbussettings_p.h"
 #include <private/qdbusplatformmenu_p.h>
-#include <QtDBus/QDBusMessage>
-#include <QtDBus/QDBusPendingCall>
-#include <QtDBus/QDBusReply>
-#include <QtDBus/QDBusVariant>
+#include <BobUIDBus/QDBusMessage>
+#include <BobUIDBus/QDBusPendingCall>
+#include <BobUIDBus/QDBusReply>
+#include <BobUIDBus/QDBusVariant>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if QT_CONFIG(dbus)
-Q_STATIC_LOGGING_CATEGORY(lcQpaThemeGnome, "qt.qpa.theme.gnome")
-#endif // QT_CONFIG(dbus)
+#if BOBUI_CONFIG(dbus)
+Q_STATIC_LOGGING_CATEGORY(lcQpaThemeGnome, "bobui.qpa.theme.gnome")
+#endif // BOBUI_CONFIG(dbus)
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QGnomePortalInterface::QGnomePortalInterface(QObject *parent)
     : QObject(parent), m_dbus{ new QDBusListener }
@@ -35,7 +35,7 @@ QGnomePortalInterface::QGnomePortalInterface(QObject *parent)
     \return returns the cached color-scheme. If the color-scheme was not loaded
     it returns the \a fallback color-scheme.
  */
-Qt::ColorScheme QGnomePortalInterface::colorScheme(Qt::ColorScheme fallback) const
+BobUI::ColorScheme QGnomePortalInterface::colorScheme(BobUI::ColorScheme fallback) const
 {
     if (!m_colorScheme.has_value())
         return fallback;
@@ -50,8 +50,8 @@ Qt::ColorScheme QGnomePortalInterface::colorScheme(Qt::ColorScheme fallback) con
     \return returns the cached contrast-preference if it was loaded. Otherwise,
     returns the \a fallback contrast-preference.
  */
-Qt::ContrastPreference
-QGnomePortalInterface::contrastPreference(Qt::ContrastPreference fallback) const
+BobUI::ContrastPreference
+QGnomePortalInterface::contrastPreference(BobUI::ContrastPreference fallback) const
 {
     if (!m_contrast.has_value())
         return fallback;
@@ -133,7 +133,7 @@ void QGnomePortalInterface::querySettings()
     connect(watcher, &QDBusPendingCallWatcher::finished, this, onWatcherFinished);
 }
 
-void QGnomePortalInterface::updateColorScheme(Qt::ColorScheme colorScheme)
+void QGnomePortalInterface::updateColorScheme(BobUI::ColorScheme colorScheme)
 {
     if (m_colorScheme.has_value() && (m_colorScheme.value() == colorScheme))
         return;
@@ -141,7 +141,7 @@ void QGnomePortalInterface::updateColorScheme(Qt::ColorScheme colorScheme)
     emit colorSchemeChanged(colorScheme);
 }
 
-void QGnomePortalInterface::updateContrast(Qt::ContrastPreference contrast)
+void QGnomePortalInterface::updateContrast(BobUI::ContrastPreference contrast)
 {
     if (m_contrast.has_value() && (m_contrast.value() == contrast))
         return;
@@ -158,10 +158,10 @@ void QGnomePortalInterface::dbusSettingChanged(QDBusListener::Provider provider,
 
     switch (setting) {
     case QDBusListener::Setting::ColorScheme:
-        updateColorScheme(value.value<Qt::ColorScheme>());
+        updateColorScheme(value.value<BobUI::ColorScheme>());
         break;
     case QDBusListener::Setting::Contrast:
-        updateContrast(value.value<Qt::ContrastPreference>());
+        updateContrast(value.value<BobUI::ContrastPreference>());
         break;
     case QDBusListener::Setting::Theme:
         emit themeNameChanged(value.toString());
@@ -171,6 +171,6 @@ void QGnomePortalInterface::dbusSettingChanged(QDBusListener::Provider provider,
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qgnomeportalinterface_p.cpp"

@@ -1,9 +1,9 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtGui>
+#include <BobUIGui>
 
-#if QT_CONFIG(metal) || defined(Q_OS_WIN) || QT_CONFIG(xcb) || defined(ANDROID)
+#if BOBUI_CONFIG(metal) || defined(Q_OS_WIN) || BOBUI_CONFIG(xcb) || defined(ANDROID)
 #include "../../shared/nativewindow.h"
 #define HAVE_NATIVE_WINDOW
 #endif

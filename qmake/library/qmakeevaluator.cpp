@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "qmakeevaluator.h"
 #include "qmakeevaluator_p.h"
@@ -22,7 +22,7 @@
 #include <qstring.h>
 #include <qstringlist.h>
 #ifdef PROEVALUATOR_THREAD_SAFE
-# include <qthreadpool.h>
+# include <bobuihreadpool.h>
 #endif
 
 #ifdef Q_OS_UNIX
@@ -32,29 +32,29 @@
 #    include <sys/sysctl.h>
 #  endif
 #else
-#include <qt_windows.h>
+#include <bobui_windows.h>
 #endif
 #include <stdio.h>
 #include <stdlib.h>
 
 using namespace QMakeInternal;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #define fL1S(s) QString::fromLatin1(s)
 
-// we can't use QThread in qmake
-// this function is a merger of QThread::idealThreadCount from qthread_win.cpp and qthread_unix.cpp
+// we can't use BOBUIhread in qmake
+// this function is a merger of BOBUIhread::idealThreadCount from bobuihread_win.cpp and bobuihread_unix.cpp
 static int idealThreadCount()
 {
 #ifdef PROEVALUATOR_THREAD_SAFE
-    return QThread::idealThreadCount();
+    return BOBUIhread::idealThreadCount();
 #elif defined(Q_OS_WIN)
     SYSTEM_INFO sysinfo;
     GetSystemInfo(&sysinfo);
     return sysinfo.dwNumberOfProcessors;
 #else
-    // there are a couple more definitions in the Unix QThread::idealThreadCount, but
+    // there are a couple more definitions in the Unix BOBUIhread::idealThreadCount, but
     // we don't need them all here
     int cores = 1;
 #  if defined(Q_OS_BSD4)
@@ -858,7 +858,7 @@ QMakeEvaluator::VisitReturn QMakeEvaluator::visitProVariable(
             return ReturnTrue;
         }
         QChar sep = val.at(1);
-        auto func = val.split(sep, Qt::KeepEmptyParts);
+        auto func = val.split(sep, BobUI::KeepEmptyParts);
         if (func.size() < 3 || func.size() > 4) {
             evalError(fL1S("The s/// function expects 3 or 4 arguments."));
             return ReturnTrue;
@@ -998,9 +998,9 @@ static ProString msvcArchitecture(const QString &vcInstallDir, const QString &pa
     QString vcBinDir = vcInstallDir;
     if (vcBinDir.endsWith(QLatin1Char('\\')))
         vcBinDir.chop(1);
-    const auto dirs = pathVar.split(QLatin1Char(';'), Qt::SkipEmptyParts);
+    const auto dirs = pathVar.split(QLatin1Char(';'), BobUI::SkipEmptyParts);
     for (const QString &dir : dirs) {
-        if (!dir.startsWith(vcBinDir, Qt::CaseInsensitive))
+        if (!dir.startsWith(vcBinDir, BobUI::CaseInsensitive))
             continue;
         const ProString arch = msvcBinDirToQMakeArch(dir.mid(vcBinDir.length() + 1));
         if (!arch.isEmpty())
@@ -1024,8 +1024,8 @@ void QMakeEvaluator::loadDefaults()
         vars[ProKey("QMAKE_QMAKE")] << ProString(m_option->qmake_abslocation);
     if (!m_option->qmake_args.isEmpty())
         vars[ProKey("QMAKE_ARGS")] = ProStringList(m_option->qmake_args);
-    if (!m_option->qtconf.isEmpty())
-        vars[ProKey("QMAKE_QTCONF")] = ProString(m_option->qtconf);
+    if (!m_option->bobuiconf.isEmpty())
+        vars[ProKey("QMAKE_BOBUICONF")] = ProString(m_option->bobuiconf);
     vars[ProKey("QMAKE_HOST.cpu_count")] = ProString(QString::number(idealThreadCount()));
 #if defined(Q_OS_WIN32)
     vars[ProKey("QMAKE_HOST.os")] << ProString("Windows");
@@ -1171,8 +1171,8 @@ bool QMakeEvaluator::loadSpecInternal()
         evalError(fL1S("Could not read qmake configuration file %1.").arg(spec));
         return false;
     }
-#ifndef QT_BUILD_QMAKE
-    // Legacy support for Qt4 default specs
+#ifndef BOBUI_BUILD_QMAKE
+    // Legacy support for BobUI4 default specs
 #  ifdef Q_OS_UNIX
     if (m_qmakespec.endsWith(QLatin1String("/default-host"))
         || m_qmakespec.endsWith(QLatin1String("/default"))) {
@@ -1235,8 +1235,8 @@ bool QMakeEvaluator::loadSpec()
     updateMkspecPaths();
     if (qmakespec.isEmpty())
         qmakespec = propertyValue(ProKey(m_hostBuild ? "QMAKE_SPEC" : "QMAKE_XSPEC")).toQString();
-#ifndef QT_BUILD_QMAKE
-    // Legacy support for Qt4 qmake in Qt Creator, etc.
+#ifndef BOBUI_BUILD_QMAKE
+    // Legacy support for BobUI4 qmake in BobUI Creator, etc.
     if (qmakespec.isEmpty())
         qmakespec = m_hostBuild ? QLatin1String("default-host") : QLatin1String("default");
 #endif
@@ -1367,9 +1367,9 @@ QMakeEvaluator::VisitReturn QMakeEvaluator::visitProFile(
         QMutexLocker locker(&baseEnv->mutex);
         m_option->mutex.unlock();
         if (baseEnv->inProgress) {
-            QThreadPool::globalInstance()->releaseThread();
+            BOBUIhreadPool::globalInstance()->releaseThread();
             baseEnv->cond.wait(&baseEnv->mutex);
-            QThreadPool::globalInstance()->reserveThread();
+            BOBUIhreadPool::globalInstance()->reserveThread();
             if (!baseEnv->isOk)
                 return ReturnFalse;
         } else
@@ -1491,8 +1491,8 @@ void QMakeEvaluator::updateMkspecPaths()
     if (!m_sourceRoot.isEmpty())
         ret << m_sourceRoot + concat;
 
-    ret << m_option->propertyValue(ProKey("QT_HOST_DATA/get")) + concat;
-    ret << m_option->propertyValue(ProKey("QT_HOST_DATA/src")) + concat;
+    ret << m_option->propertyValue(ProKey("BOBUI_HOST_DATA/get")) + concat;
+    ret << m_option->propertyValue(ProKey("BOBUI_HOST_DATA/src")) + concat;
 
     ret.removeDuplicates();
     m_mkspecPaths = ret;
@@ -1543,8 +1543,8 @@ void QMakeEvaluator::updateFeaturePaths()
         }
     }
 
-    feature_bases << (m_option->propertyValue(ProKey("QT_HOST_DATA/get")) + mkspecs_concat);
-    feature_bases << (m_option->propertyValue(ProKey("QT_HOST_DATA/src")) + mkspecs_concat);
+    feature_bases << (m_option->propertyValue(ProKey("BOBUI_HOST_DATA/get")) + mkspecs_concat);
+    feature_bases << (m_option->propertyValue(ProKey("BOBUI_HOST_DATA/src")) + mkspecs_concat);
 
     for (const QString &fb : std::as_const(feature_bases)) {
         const auto sfxs = values(ProKey("QMAKE_PLATFORM"));
@@ -2193,4 +2193,4 @@ QString QMakeEvaluator::formatValueListList(const QList<ProStringList> &lists)
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

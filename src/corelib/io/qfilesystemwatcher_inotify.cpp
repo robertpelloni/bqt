@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qfilesystemwatcher.h"
 #include "qfilesystemwatcher_inotify_p.h"
@@ -22,7 +22,7 @@
 #include <fcntl.h>
 #endif
 
-#if defined(QT_NO_INOTIFY)
+#if defined(BOBUI_NO_INOTIFY)
 
 #if defined(Q_OS_QNX)
 // These files should only be compiled on QNX if the inotify headers are found
@@ -107,16 +107,16 @@
 # define __NR_inotify_rm_watch  28
 // no inotify_init for aarch64
 #else
-# error "This architecture is not supported. Please see http://www.qt-project.org/"
+# error "This architecture is not supported. Please see http://www.bobui-project.org/"
 #endif
 
 #if !defined(IN_CLOEXEC) && defined(O_CLOEXEC) && defined(__NR_inotify_init1)
 # define IN_CLOEXEC              O_CLOEXEC
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#ifdef QT_LINUXBASE
+#ifdef BOBUI_LINUXBASE
 // ### the LSB doesn't standardize syscall, need to wait until glib2.4 is standardized
 static inline int syscall(...) { return -1; }
 #endif
@@ -178,11 +178,11 @@ struct inotify_event {
 #define IN_MOVE                 (IN_MOVED_FROM | IN_MOVED_TO)
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 // --------- inotify.h end ----------
 
-#else /* QT_NO_INOTIFY */
+#else /* BOBUI_NO_INOTIFY */
 
 #include <sys/inotify.h>
 
@@ -196,7 +196,7 @@ static inline int inotify_init1(int flags)
 
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QInotifyFileSystemWatcherEngine *QInotifyFileSystemWatcherEngine::create(QObject *parent)
 {
@@ -357,7 +357,7 @@ void QInotifyFileSystemWatcherEngine::readFromInotify()
         const inotify_event &event = **it;
         ++it;
 
-        // qDebug() << "inotify event, wd" << event.wd << "mask" << Qt::hex << event.mask;
+        // qDebug() << "inotify event, wd" << event.wd << "mask" << BobUI::hex << event.mask;
 
         int id = event.wd;
         QString path = getPathFromID(id);
@@ -413,6 +413,6 @@ QString QInotifyFileSystemWatcherEngine::getPathFromID(int id) const
     return i == idToPath.cend() ? QString() : i.value() ;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qfilesystemwatcher_inotify_p.cpp"

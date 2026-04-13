@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "imagewidget.h"
 #include "mainwidget.h"
@@ -25,7 +25,7 @@ void MainWidget::openDirectory(const QString &path)
     imageWidget->openDirectory(path);
 }
 
-void MainWidget::grabGestures(const QList<Qt::GestureType> &gestures)
+void MainWidget::grabGestures(const QList<BobUI::GestureType> &gestures)
 {
     imageWidget->grabGestures(gestures);
 }

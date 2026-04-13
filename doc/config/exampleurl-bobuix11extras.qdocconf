@@ -1,0 +1,1 @@
+url.examples = "https://code.bobui.io/cgit/bobui/bobuix11extras.git/tree/examples/\1?h=$BOBUI_VER"

@@ -1,6 +1,6 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QUNIQUEHANDLE_P_H
 #define QUNIQUEHANDLE_P_H
@@ -9,25 +9,25 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/qtconfigmacros.h>
-#include <QtCore/qassert.h>
-#include <QtCore/qcompare.h>
-#include <QtCore/qfunctionaltools_impl.h>
-#include <QtCore/qswap.h>
-#include <QtCore/qtclasshelpermacros.h>
+#include <BobUICore/bobuiconfigmacros.h>
+#include <BobUICore/qassert.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qfunctionaltools_impl.h>
+#include <BobUICore/qswap.h>
+#include <BobUICore/bobuiclasshelpermacros.h>
 
 #include <memory>
 #include <utility>
 #include <type_traits>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*! \internal QUniqueHandle is a general purpose RAII wrapper intended
     for interfacing with resource-allocating C-style APIs, for example
@@ -146,7 +146,7 @@ QT_BEGIN_NAMESPACE
 
 // clang-format off
 
-namespace QtUniqueHandleTraits {
+namespace BobUIUniqueHandleTraits {
 
 template <typename HandleTraits>
 struct DefaultDeleter
@@ -162,12 +162,12 @@ struct DefaultDeleter
     }
 };
 
-} // namespace QtUniqueHandleTraits
+} // namespace BobUIUniqueHandleTraits
 
-template <typename HandleTraits, typename Deleter = QtUniqueHandleTraits::DefaultDeleter<HandleTraits>>
-class QUniqueHandle : private QtPrivate::CompactStorage<Deleter>
+template <typename HandleTraits, typename Deleter = BobUIUniqueHandleTraits::DefaultDeleter<HandleTraits>>
+class QUniqueHandle : private BobUIPrivate::CompactStorage<Deleter>
 {
-    using Storage = QtPrivate::CompactStorage<Deleter>;
+    using Storage = BobUIPrivate::CompactStorage<Deleter>;
 
     template <typename D>
     using if_default_constructible = std::enable_if_t<std::is_default_constructible_v<D>, bool>;
@@ -226,7 +226,7 @@ public:
         qSwap(deleter(), other.deleter());
     }
 
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QUniqueHandle)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QUniqueHandle)
 
     QUniqueHandle(const QUniqueHandle &) = delete;
     QUniqueHandle &operator=(const QUniqueHandle &) = delete;
@@ -293,12 +293,12 @@ private:
         return lhs.get() == rhs.get();
     }
 
-    friend Qt::strong_ordering compareThreeWay(const QUniqueHandle& lhs,
+    friend BobUI::strong_ordering compareThreeWay(const QUniqueHandle& lhs,
                                                const QUniqueHandle& rhs) noexcept
     {
         if constexpr (std::is_pointer_v<Type>)
-            return qCompareThreeWay(Qt::totally_ordered_wrapper{ lhs.get() },
-                                    Qt::totally_ordered_wrapper{ rhs.get() });
+            return qCompareThreeWay(BobUI::totally_ordered_wrapper{ lhs.get() },
+                                    BobUI::totally_ordered_wrapper{ rhs.get() });
         else
             return qCompareThreeWay(lhs.get(), rhs.get());
     }
@@ -317,6 +317,6 @@ void swap(QUniqueHandle<Trait, Deleter> &lhs, QUniqueHandle<Trait, Deleter> &rhs
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

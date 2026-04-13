@@ -1,20 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#include <QtNetwork/private/qtnetworkglobal_p.h>
+#include <BobUINetwork/private/bobuinetworkglobal_p.h>
 
 #include "qlocalsocket.h"
 #include "qlocalsocket_p.h"
 
-#include <QtCore/qdebug.h>
+#include <BobUICore/qdebug.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QLocalSocket
     \since 4.4
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     \brief The QLocalSocket class provides a local socket.
 
@@ -117,8 +117,8 @@ QT_BEGIN_NAMESPACE
         \l{Winsock 2 Socket Handle}.
 
         \li On INTEGRITY, the returned value is the
-        QTcpSocket socket descriptor and the type is defined by
-        \l{QTcpSocket::socketDescriptor}{socketDescriptor}.
+        BOBUIcpSocket socket descriptor and the type is defined by
+        \l{BOBUIcpSocket::socketDescriptor}{socketDescriptor}.
 
         \li On all other UNIX-like operating systems, the type is
         a file descriptor representing a socket.
@@ -338,7 +338,7 @@ QT_BEGIN_NAMESPACE
     connections, you will have to register it with Q_DECLARE_METATYPE() and
     qRegisterMetaType().
 
-    \sa error(), errorString(), {Creating Custom Qt Types}
+    \sa error(), errorString(), {Creating Custom BobUI Types}
 */
 
 /*!
@@ -351,7 +351,7 @@ QT_BEGIN_NAMESPACE
     connections, you will have to register it with Q_DECLARE_METATYPE() and
     qRegisterMetaType().
 
-    \sa state(), {Creating Custom Qt Types}
+    \sa state(), {Creating Custom BobUI Types}
 */
 
 /*!
@@ -373,7 +373,7 @@ QLocalSocket::QLocalSocket(QObject * parent)
 QLocalSocket::~QLocalSocket()
 {
     abort();
-#if !defined(Q_OS_WIN) && !defined(QT_LOCALSOCKET_TCP)
+#if !defined(Q_OS_WIN) && !defined(BOBUI_LOCALSOCKET_TCP)
     Q_D(QLocalSocket);
     d->unixSocket.setParent(nullptr);
 #endif
@@ -537,6 +537,6 @@ bool QLocalSocket::isSequential() const
         (data may still be waiting to be written).
  */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qlocalsocket.cpp"

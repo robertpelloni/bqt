@@ -1,14 +1,14 @@
-# See qtbase/src/testlib/qtestblacklist.cpp for format
+# See bobuibase/src/testlib/bobuiestblacklist.cpp for format
 [getErrors:ftp-host]
 linux
 [ioPostToHttpFromSocket]
 osx
 [ioHttpRedirectMultipartPost]
-b2qt
+b2bobui
 linux
 [ioHttpRedirectPolicy]
 opensuse-leap
-b2qt
+b2bobui
 ubuntu
 windows-10
 [putToFtp]
@@ -47,11 +47,11 @@ osx
 osx
 [backgroundRequestConnectInBackground]
 osx
-#QTBUG-103055
+#BOBUIBUG-103055
 [ioGetFromHttpWithProxyAuth]
 qnx
 
-# QTBUG-130740
+# BOBUIBUG-130740
 [chaining]
 vxworks
 [getFromFile]

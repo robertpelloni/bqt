@@ -1,6 +1,6 @@
-// Copyright (C) 2017 The Qt Company Ltd.
+// Copyright (C) 2017 The BobUI Company Ltd.
 // Copyright (C) 2017 Eurogiciel, author: <philippe.coval@eurogiciel.fr>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #pragma once
 
@@ -9,20 +9,20 @@
 #include "qwaylandxdgdecorationv1_p.h"
 #include "qwaylandxdgactivationv1_p.h"
 
-#include <QtWaylandClient/qtwaylandclientglobal.h>
-#include <QtWaylandClient/private/qwaylandshellsurface_p.h>
-#include <QtWaylandClient/private/qwaylandwindow_p.h>
+#include <BobUIWaylandClient/bobuiwaylandclientglobal.h>
+#include <BobUIWaylandClient/private/qwaylandshellsurface_p.h>
+#include <BobUIWaylandClient/private/qwaylandwindow_p.h>
 
-#include <QtCore/QSize>
-#include <QtGui/QRegion>
+#include <BobUICore/QSize>
+#include <BobUIGui/QRegion>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWayland {
+namespace BobUIWayland {
     class xx_toplevel_session_v1;
 }
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 class QWaylandDisplay;
 class QWaylandInputDevice;
@@ -35,19 +35,19 @@ class QWaylandXdgDialogV1;
 class QWaylandXdgToplevelIconManagerV1;
 class QWaylandTopLevelSession;
 
-class Q_WAYLANDCLIENT_EXPORT QWaylandXdgSurface : public QWaylandShellSurface, public QtWayland::xdg_surface
+class Q_WAYLANDCLIENT_EXPORT QWaylandXdgSurface : public QWaylandShellSurface, public BobUIWayland::xdg_surface
 {
     Q_OBJECT
 public:
     QWaylandXdgSurface(QWaylandXdgShell *shell, ::xdg_surface *surface, QWaylandWindow *window);
     ~QWaylandXdgSurface() override;
 
-    bool resize(QWaylandInputDevice *inputDevice, Qt::Edges edges) override;
+    bool resize(QWaylandInputDevice *inputDevice, BobUI::Edges edges) override;
     bool move(QWaylandInputDevice *inputDevice) override;
     bool showWindowMenu(QWaylandInputDevice *seat) override;
     void setTitle(const QString &title) override;
     void setAppId(const QString &appId) override;
-    void setWindowFlags(Qt::WindowFlags flags) override;
+    void setWindowFlags(BobUI::WindowFlags flags) override;
 
     bool isExposed() const override;
     bool handlesActiveState() const { return m_toplevel; }
@@ -72,11 +72,11 @@ public:
     std::any surfaceRole() const override;
 
 protected:
-    void requestWindowStates(Qt::WindowStates states) override;
+    void requestWindowStates(BobUI::WindowStates states) override;
     void xdg_surface_configure(uint32_t serial) override;
 
 private:
-    class Toplevel: public QtWayland::xdg_toplevel
+    class Toplevel: public BobUIWayland::xdg_toplevel
     {
     public:
         Toplevel(QWaylandXdgSurface *xdgSurface);
@@ -89,15 +89,15 @@ private:
         void xdg_toplevel_close() override;
         void xdg_toplevel_configure_bounds(int32_t width, int32_t height) override;
 
-        void requestWindowFlags(Qt::WindowFlags flags);
-        void requestWindowStates(Qt::WindowStates states);
+        void requestWindowFlags(BobUI::WindowFlags flags);
+        void requestWindowStates(BobUI::WindowStates states);
 
-        static resize_edge convertToResizeEdges(Qt::Edges edges);
+        static resize_edge convertToResizeEdges(BobUI::Edges edges);
 
         struct {
             QSize bounds = {0, 0};
             QSize size = {0, 0};
-            Qt::WindowStates states = Qt::WindowNoState;
+            BobUI::WindowStates states = BobUI::WindowNoState;
             bool suspended = false;
         }  m_pending, m_applied;
         QWaylandWindow::ToplevelWindowTilingStates m_toplevelStates = QWaylandWindow::WindowNoState;
@@ -107,18 +107,18 @@ private:
         QWaylandXdgToplevelDecorationV1 *m_decoration = nullptr;
         QScopedPointer<QWaylandXdgExportedV2> m_exported;
         QScopedPointer<QWaylandXdgDialogV1> m_xdgDialog;
-#ifndef QT_NO_SESSIONMANAGER
-        QScopedPointer<QtWayland::xx_toplevel_session_v1> m_session;
+#ifndef BOBUI_NO_SESSIONMANAGER
+        QScopedPointer<BobUIWayland::xx_toplevel_session_v1> m_session;
 #endif
     };
 
-    class Positioner : public QtWayland::xdg_positioner {
+    class Positioner : public BobUIWayland::xdg_positioner {
     public:
         Positioner(QWaylandXdgShell *xdgShell);
         ~Positioner() override;
     };
 
-    class Popup : public QtWayland::xdg_popup {
+    class Popup : public BobUIWayland::xdg_popup {
     public:
         Popup(QWaylandXdgSurface *xdgSurface, QWaylandWindow *parent, Positioner *positioner);
         ~Popup() override;
@@ -164,7 +164,7 @@ private:
 class Q_WAYLANDCLIENT_EXPORT QWaylandXdgShell
 {
 public:
-    QWaylandXdgShell(QWaylandDisplay *display, QtWayland::xdg_wm_base *xdg_wm_base);
+    QWaylandXdgShell(QWaylandDisplay *display, BobUIWayland::xdg_wm_base *xdg_wm_base);
     ~QWaylandXdgShell();
 
     QWaylandDisplay *display() const { return m_display; }
@@ -179,7 +179,7 @@ private:
                                      const QString &interface, uint version);
 
     QWaylandDisplay *m_display = nullptr;
-    QtWayland::xdg_wm_base *m_xdgWmBase = nullptr;
+    BobUIWayland::xdg_wm_base *m_xdgWmBase = nullptr;
     QScopedPointer<QWaylandXdgDecorationManagerV1> m_xdgDecorationManager;
     QScopedPointer<QWaylandXdgActivationV1> m_xdgActivation;
     QScopedPointer<QWaylandXdgExporterV2> m_xdgExporter;
@@ -189,6 +189,6 @@ private:
     friend class QWaylandXdgSurface;
 };
 
-} // namespace QtWaylandClient
+} // namespace BobUIWaylandClient
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

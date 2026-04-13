@@ -1,6 +1,6 @@
 TEMPLATE = app
 
-QT += qml widgets
+BOBUI += qml widgets
 
 #! [0]
 RESOURCES = application.qrc

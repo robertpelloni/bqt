@@ -1,8 +1,8 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QRegularExpression>
-#include <QTest>
+#include <BOBUIest>
 
 /*!
     \internal
@@ -270,6 +270,6 @@ void tst_QRegularExpressionBenchmark::iterateThroughGlobalMatchResults()
     }
 }
 
-QTEST_MAIN(tst_QRegularExpressionBenchmark)
+BOBUIEST_MAIN(tst_QRegularExpressionBenchmark)
 
 #include "tst_bench_qregularexpression.moc"

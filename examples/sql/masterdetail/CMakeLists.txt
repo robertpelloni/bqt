@@ -1,14 +1,14 @@
-# Copyright (C) 2022 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+# Copyright (C) 2022 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 cmake_minimum_required(VERSION 3.16)
 project(masterdetail LANGUAGES CXX)
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Sql Widgets Xml)
+find_package(BobUI6 REQUIRED COMPONENTS Core Gui Sql Widgets Xml)
 
-qt_standard_project_setup()
+bobui_standard_project_setup()
 
-qt_add_executable(masterdetail
+bobui_add_executable(masterdetail
     database.h
     dialog.cpp dialog.h
     main.cpp
@@ -21,11 +21,11 @@ set_target_properties(masterdetail PROPERTIES
 )
 
 target_link_libraries(masterdetail PRIVATE
-    Qt6::Core
-    Qt6::Gui
-    Qt6::Sql
-    Qt6::Widgets
-    Qt6::Xml
+    BobUI6::Core
+    BobUI6::Gui
+    BobUI6::Sql
+    BobUI6::Widgets
+    BobUI6::Xml
 )
 
 # Resources:
@@ -35,7 +35,7 @@ set(masterdetail_resource_files
     "albumdetails.xml"
 )
 
-qt_add_resources(masterdetail "masterdetail"
+bobui_add_resources(masterdetail "masterdetail"
     PREFIX
         "/"
     FILES
@@ -48,7 +48,7 @@ install(TARGETS masterdetail
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
 
-qt_generate_deploy_app_script(
+bobui_generate_deploy_app_script(
     TARGET masterdetail
     OUTPUT_SCRIPT deploy_script
     NO_UNSUPPORTED_PLATFORM_ERROR

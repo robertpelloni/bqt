@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "arrow.h"
 #include "diagramitem.h"
@@ -7,7 +7,7 @@
 #include "diagramtextitem.h"
 #include "mainwindow.h"
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 const int InsertTextButton = 10;
 
@@ -185,7 +185,7 @@ void MainWindow::fontSizeChanged(const QString &)
 void MainWindow::sceneScaleChanged(const QString &scale)
 {
     double newScale = scale.left(scale.indexOf(tr("%"))).toDouble() / 100.0;
-    QTransform oldMatrix = view->transform();
+    BOBUIransform oldMatrix = view->transform();
     view->resetTransform();
     view->translate(oldMatrix.dx(), oldMatrix.dy());
     view->scale(newScale, newScale);
@@ -296,14 +296,14 @@ void MainWindow::createToolBox()
     layout->addWidget(createCellWidget(tr("Input/Output"), DiagramItem::Io), 1, 0);
 //! [21]
 
-    QToolButton *textButton = new QToolButton;
+    BOBUIoolButton *textButton = new BOBUIoolButton;
     textButton->setCheckable(true);
     buttonGroup->addButton(textButton, InsertTextButton);
     textButton->setIcon(QIcon(QPixmap(":/images/textpointer.png")));
     textButton->setIconSize(QSize(50, 50));
     QGridLayout *textLayout = new QGridLayout;
-    textLayout->addWidget(textButton, 0, 0, Qt::AlignHCenter);
-    textLayout->addWidget(new QLabel(tr("Text")), 1, 0, Qt::AlignCenter);
+    textLayout->addWidget(textButton, 0, 0, BobUI::AlignHCenter);
+    textLayout->addWidget(new QLabel(tr("Text")), 1, 0, BobUI::AlignCenter);
     QWidget *textWidget = new QWidget;
     textWidget->setLayout(textLayout);
     layout->addWidget(textWidget, 1, 1);
@@ -336,7 +336,7 @@ void MainWindow::createToolBox()
 
 
 //! [22]
-    toolBox = new QToolBox;
+    toolBox = new BOBUIoolBox;
     toolBox->setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Ignored));
     toolBox->setMinimumWidth(itemWidget->sizeHint().width());
     toolBox->addItem(itemWidget, tr("Basic Flowchart Shapes"));
@@ -430,32 +430,32 @@ void MainWindow::createToolbars()
     connect(fontSizeCombo, &QComboBox::currentTextChanged,
             this, &MainWindow::fontSizeChanged);
 
-    fontColorToolButton = new QToolButton;
-    fontColorToolButton->setPopupMode(QToolButton::MenuButtonPopup);
-    fontColorToolButton->setMenu(createColorMenu(&MainWindow::textColorChanged, Qt::black));
+    fontColorToolButton = new BOBUIoolButton;
+    fontColorToolButton->setPopupMode(BOBUIoolButton::MenuButtonPopup);
+    fontColorToolButton->setMenu(createColorMenu(&MainWindow::textColorChanged, BobUI::black));
     textAction = fontColorToolButton->menu()->defaultAction();
-    fontColorToolButton->setIcon(createColorToolButtonIcon(":/images/textpointer.png", Qt::black));
+    fontColorToolButton->setIcon(createColorToolButtonIcon(":/images/textpointer.png", BobUI::black));
     fontColorToolButton->setAutoFillBackground(true);
     connect(fontColorToolButton, &QAbstractButton::clicked,
             this, &MainWindow::textButtonTriggered);
 
 //! [26]
-    fillColorToolButton = new QToolButton;
-    fillColorToolButton->setPopupMode(QToolButton::MenuButtonPopup);
-    fillColorToolButton->setMenu(createColorMenu(&MainWindow::itemColorChanged, Qt::white));
+    fillColorToolButton = new BOBUIoolButton;
+    fillColorToolButton->setPopupMode(BOBUIoolButton::MenuButtonPopup);
+    fillColorToolButton->setMenu(createColorMenu(&MainWindow::itemColorChanged, BobUI::white));
     fillAction = fillColorToolButton->menu()->defaultAction();
     fillColorToolButton->setIcon(createColorToolButtonIcon(
-                                     ":/images/floodfill.png", Qt::white));
+                                     ":/images/floodfill.png", BobUI::white));
     connect(fillColorToolButton, &QAbstractButton::clicked,
             this, &MainWindow::fillButtonTriggered);
 //! [26]
 
-    lineColorToolButton = new QToolButton;
-    lineColorToolButton->setPopupMode(QToolButton::MenuButtonPopup);
-    lineColorToolButton->setMenu(createColorMenu(&MainWindow::lineColorChanged, Qt::black));
+    lineColorToolButton = new BOBUIoolButton;
+    lineColorToolButton->setPopupMode(BOBUIoolButton::MenuButtonPopup);
+    lineColorToolButton->setMenu(createColorMenu(&MainWindow::lineColorChanged, BobUI::black));
     lineAction = lineColorToolButton->menu()->defaultAction();
     lineColorToolButton->setIcon(createColorToolButtonIcon(
-                                     ":/images/linecolor.png", Qt::black));
+                                     ":/images/linecolor.png", BobUI::black));
     connect(lineColorToolButton, &QAbstractButton::clicked,
             this, &MainWindow::lineButtonTriggered);
 
@@ -471,11 +471,11 @@ void MainWindow::createToolbars()
     colorToolBar->addWidget(fillColorToolButton);
     colorToolBar->addWidget(lineColorToolButton);
 
-    QToolButton *pointerButton = new QToolButton;
+    BOBUIoolButton *pointerButton = new BOBUIoolButton;
     pointerButton->setCheckable(true);
     pointerButton->setChecked(true);
     pointerButton->setIcon(QIcon(":/images/pointer.png"));
-    QToolButton *linePointerButton = new QToolButton;
+    BOBUIoolButton *linePointerButton = new BOBUIoolButton;
     linePointerButton->setCheckable(true);
     linePointerButton->setIcon(QIcon(":/images/linepointer.png"));
 
@@ -504,7 +504,7 @@ void MainWindow::createToolbars()
 //! [28]
 QWidget *MainWindow::createBackgroundCellWidget(const QString &text, const QString &image)
 {
-    QToolButton *button = new QToolButton;
+    BOBUIoolButton *button = new BOBUIoolButton;
     button->setText(text);
     button->setIcon(QIcon(image));
     button->setIconSize(QSize(50, 50));
@@ -512,8 +512,8 @@ QWidget *MainWindow::createBackgroundCellWidget(const QString &text, const QStri
     backgroundButtonGroup->addButton(button);
 
     QGridLayout *layout = new QGridLayout;
-    layout->addWidget(button, 0, 0, Qt::AlignHCenter);
-    layout->addWidget(new QLabel(text), 1, 0, Qt::AlignCenter);
+    layout->addWidget(button, 0, 0, BobUI::AlignHCenter);
+    layout->addWidget(new QLabel(text), 1, 0, BobUI::AlignCenter);
 
     QWidget *widget = new QWidget;
     widget->setLayout(layout);
@@ -529,15 +529,15 @@ QWidget *MainWindow::createCellWidget(const QString &text, DiagramItem::DiagramT
     DiagramItem item(type, itemMenu);
     QIcon icon(item.image());
 
-    QToolButton *button = new QToolButton;
+    BOBUIoolButton *button = new BOBUIoolButton;
     button->setIcon(icon);
     button->setIconSize(QSize(50, 50));
     button->setCheckable(true);
     buttonGroup->addButton(button, int(type));
 
     QGridLayout *layout = new QGridLayout;
-    layout->addWidget(button, 0, 0, Qt::AlignHCenter);
-    layout->addWidget(new QLabel(text), 1, 0, Qt::AlignCenter);
+    layout->addWidget(button, 0, 0, BobUI::AlignHCenter);
+    layout->addWidget(new QLabel(text), 1, 0, BobUI::AlignCenter);
 
     QWidget *widget = new QWidget;
     widget->setLayout(layout);
@@ -551,7 +551,7 @@ template<typename PointerToMemberFunction>
 QMenu *MainWindow::createColorMenu(const PointerToMemberFunction &slot, QColor defaultColor)
 {
     QList<QColor> colors;
-    colors << Qt::black << Qt::white << Qt::red << Qt::blue << Qt::yellow;
+    colors << BobUI::black << BobUI::white << BobUI::red << BobUI::blue << BobUI::yellow;
     QStringList names;
     names << tr("black") << tr("white") << tr("red") << tr("blue")
           << tr("yellow");
@@ -574,7 +574,7 @@ QMenu *MainWindow::createColorMenu(const PointerToMemberFunction &slot, QColor d
 QIcon MainWindow::createColorToolButtonIcon(const QString &imageFile, QColor color)
 {
     QPixmap pixmap(50, 80);
-    pixmap.fill(Qt::transparent);
+    pixmap.fill(BobUI::transparent);
     QPainter painter(&pixmap);
     QPixmap image(imageFile);
     // Draw icon centred horizontally on button.
@@ -592,7 +592,7 @@ QIcon MainWindow::createColorIcon(QColor color)
 {
     QPixmap pixmap(20, 20);
     QPainter painter(&pixmap);
-    painter.setPen(Qt::NoPen);
+    painter.setPen(BobUI::NoPen);
     painter.fillRect(QRect(0, 0, 20, 20), color);
 
     return QIcon(pixmap);

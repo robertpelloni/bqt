@@ -1,5 +1,5 @@
 
-# Copyright (C) 2024 The Qt Company Ltd.
+# Copyright (C) 2024 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 function(check_parameters file_path)
     file(READ ${file_path} file_content)

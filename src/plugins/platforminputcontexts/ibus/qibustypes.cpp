@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qibustypes.h"
 
 #include <QHash>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(qtQpaInputMethods, "qt.qpa.input.methods")
-Q_LOGGING_CATEGORY(qtQpaInputMethodsSerialize, "qt.qpa.input.methods.serialize")
+Q_LOGGING_CATEGORY(bobuiQpaInputMethods, "bobui.qpa.input.methods")
+Q_LOGGING_CATEGORY(bobuiQpaInputMethodsSerialize, "bobui.qpa.input.methods.serialize")
 
 QIBusSerializable::QIBusSerializable()
 {
@@ -90,30 +90,30 @@ void QIBusAttribute::deserializeFrom(const QDBusArgument &argument)
     argument.endStructure();
 }
 
-QTextCharFormat QIBusAttribute::format() const
+BOBUIextCharFormat QIBusAttribute::format() const
 {
-    QTextCharFormat fmt;
+    BOBUIextCharFormat fmt;
     switch (type) {
     case Invalid:
         break;
     case Underline: {
-        QTextCharFormat::UnderlineStyle style = QTextCharFormat::NoUnderline;
+        BOBUIextCharFormat::UnderlineStyle style = BOBUIextCharFormat::NoUnderline;
 
         switch (value) {
         case UnderlineNone:
             break;
         case UnderlineSingle:
-            style = QTextCharFormat::SingleUnderline;
+            style = BOBUIextCharFormat::SingleUnderline;
             break;
         case UnderlineDouble:
-            style = QTextCharFormat::DashUnderline;
+            style = BOBUIextCharFormat::DashUnderline;
             break;
         case UnderlineLow:
-            style = QTextCharFormat::DashDotLine;
+            style = BOBUIextCharFormat::DashDotLine;
             break;
         case UnderlineError:
-            style = QTextCharFormat::WaveUnderline;
-            fmt.setUnderlineColor(Qt::red);
+            style = BOBUIextCharFormat::WaveUnderline;
+            fmt.setUnderlineColor(BobUI::red);
             break;
         }
 
@@ -154,7 +154,7 @@ void QIBusAttributeList::serializeTo(QDBusArgument &argument) const
 
 void QIBusAttributeList::deserializeFrom(const QDBusArgument &arg)
 {
-    qCDebug(qtQpaInputMethodsSerialize) << "QIBusAttributeList::fromDBusArgument()" << arg.currentSignature();
+    qCDebug(bobuiQpaInputMethodsSerialize) << "QIBusAttributeList::fromDBusArgument()" << arg.currentSignature();
 
     arg.beginStructure();
 
@@ -176,13 +176,13 @@ void QIBusAttributeList::deserializeFrom(const QDBusArgument &arg)
 
 QList<QInputMethodEvent::Attribute> QIBusAttributeList::imAttributes() const
 {
-    QHash<std::pair<int, int>, QTextCharFormat> rangeAttrs;
+    QHash<std::pair<int, int>, BOBUIextCharFormat> rangeAttrs;
     const int numAttributes = attributes.size();
 
-    // Merge text formats for identical ranges into a single QTextFormat.
+    // Merge text formats for identical ranges into a single BOBUIextFormat.
     for (int i = 0; i < numAttributes; ++i) {
         const QIBusAttribute &attr = attributes.at(i);
-        const QTextCharFormat &format = attr.format();
+        const BOBUIextCharFormat &format = attr.format();
 
         if (format.isValid()) {
             const std::pair<int, int> range(attr.start, attr.end);
@@ -196,7 +196,7 @@ QList<QInputMethodEvent::Attribute> QIBusAttributeList::imAttributes() const
 
     for (int i = 0; i < numAttributes; ++i) {
         const QIBusAttribute &attr = attributes.at(i);
-        const QTextFormat &format = attr.format();
+        const BOBUIextFormat &format = attr.format();
 
         imAttrs += QInputMethodEvent::Attribute(QInputMethodEvent::TextFormat,
             attr.start,
@@ -224,7 +224,7 @@ void QIBusText::serializeTo(QDBusArgument &argument) const
 
 void QIBusText::deserializeFrom(const QDBusArgument &argument)
 {
-    qCDebug(qtQpaInputMethodsSerialize) << "QIBusText::fromDBusArgument()" << argument.currentSignature();
+    qCDebug(bobuiQpaInputMethodsSerialize) << "QIBusText::fromDBusArgument()" << argument.currentSignature();
 
     argument.beginStructure();
 
@@ -273,7 +273,7 @@ void QIBusEngineDesc::serializeTo(QDBusArgument &argument) const
 
 void QIBusEngineDesc::deserializeFrom(const QDBusArgument &argument)
 {
-    qCDebug(qtQpaInputMethodsSerialize) << "QIBusEngineDesc::fromDBusArgument()" << argument.currentSignature();
+    qCDebug(bobuiQpaInputMethodsSerialize) << "QIBusEngineDesc::fromDBusArgument()" << argument.currentSignature();
     argument.beginStructure();
 
     QIBusSerializable::deserializeFrom(argument);
@@ -363,4 +363,4 @@ void QIBusPropTypeContentType::deserializeFrom(const QDBusArgument &argument)
     argument.endStructure();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,19 +1,19 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QFILEINFO_H
 #define QFILEINFO_H
 
-#include <QtCore/qcompare.h>
-#include <QtCore/qfile.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qshareddata.h>
-#include <QtCore/qmetatype.h>
-#include <QtCore/qdatetime.h>
-#include <QtCore/qtimezone.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qfile.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qshareddata.h>
+#include <BobUICore/qmetatype.h>
+#include <BobUICore/qdatetime.h>
+#include <BobUICore/bobuiimezone.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QDir;
@@ -28,7 +28,7 @@ class Q_CORE_EXPORT QFileInfo
 public:
     explicit QFileInfo(QFileInfoPrivate *d);
 
-#ifdef QT_IMPLICIT_QFILEINFO_CONSTRUCTION
+#ifdef BOBUI_IMPLICIT_QFILEINFO_CONSTRUCTION
 #define QFILEINFO_MAYBE_EXPLICIT Q_IMPLICIT
 #else
 #define QFILEINFO_MAYBE_EXPLICIT explicit
@@ -42,27 +42,27 @@ public:
 #ifdef Q_QDOC
     QFileInfo(const std::filesystem::path &file);
     QFileInfo(const QDir &dir, const std::filesystem::path &file);
-#elif QT_CONFIG(cxx17_filesystem)
-    template<typename T, QtPrivate::ForceFilesystemPath<T> = 0>
-    QFILEINFO_MAYBE_EXPLICIT QFileInfo(const T &file) : QFileInfo(QtPrivate::fromFilesystemPath(file)) { }
+#elif BOBUI_CONFIG(cxx17_filesystem)
+    template<typename T, BobUIPrivate::ForceFilesystemPath<T> = 0>
+    QFILEINFO_MAYBE_EXPLICIT QFileInfo(const T &file) : QFileInfo(BobUIPrivate::fromFilesystemPath(file)) { }
 
-    template<typename T, QtPrivate::ForceFilesystemPath<T> = 0>
-    QFILEINFO_MAYBE_EXPLICIT QFileInfo(const QDir &dir, const T &file) : QFileInfo(dir, QtPrivate::fromFilesystemPath(file))
+    template<typename T, BobUIPrivate::ForceFilesystemPath<T> = 0>
+    QFILEINFO_MAYBE_EXPLICIT QFileInfo(const QDir &dir, const T &file) : QFileInfo(dir, BobUIPrivate::fromFilesystemPath(file))
     {
     }
-#endif // QT_CONFIG(cxx17_filesystem)
+#endif // BOBUI_CONFIG(cxx17_filesystem)
 
 #undef QFILEINFO_MAYBE_EXPLICIT
 
     ~QFileInfo();
 
     QFileInfo &operator=(const QFileInfo &fileinfo);
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QFileInfo)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QFileInfo)
 
     void swap(QFileInfo &other) noexcept
     { d_ptr.swap(other.d_ptr); }
 
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
     bool operator==(const QFileInfo &fileinfo) const;
     inline bool operator!=(const QFileInfo &fileinfo) const { return !(operator==(fileinfo)); }
 #endif
@@ -72,10 +72,10 @@ public:
     void setFile(const QDir &dir, const QString &file);
 #ifdef Q_QDOC
     void setFile(const std::filesystem::path &file);
-#elif QT_CONFIG(cxx17_filesystem)
-    template<typename T, QtPrivate::ForceFilesystemPath<T> = 0>
-    void setFile(const T &file) { setFile(QtPrivate::fromFilesystemPath(file)); }
-#endif // QT_CONFIG(cxx17_filesystem)
+#elif BOBUI_CONFIG(cxx17_filesystem)
+    template<typename T, BobUIPrivate::ForceFilesystemPath<T> = 0>
+    void setFile(const T &file) { setFile(BobUIPrivate::fromFilesystemPath(file)); }
+#endif // BOBUI_CONFIG(cxx17_filesystem)
 
     bool exists() const;
     static bool exists(const QString &file);
@@ -84,14 +84,14 @@ public:
     QString filePath() const;
     QString absoluteFilePath() const;
     QString canonicalFilePath() const;
-#if QT_CONFIG(cxx17_filesystem) || defined(Q_QDOC)
+#if BOBUI_CONFIG(cxx17_filesystem) || defined(Q_QDOC)
     std::filesystem::path filesystemFilePath() const
-    { return QtPrivate::toFilesystemPath(filePath()); }
+    { return BobUIPrivate::toFilesystemPath(filePath()); }
     std::filesystem::path filesystemAbsoluteFilePath() const
-    { return QtPrivate::toFilesystemPath(absoluteFilePath()); }
+    { return BobUIPrivate::toFilesystemPath(absoluteFilePath()); }
     std::filesystem::path filesystemCanonicalFilePath() const
-    { return QtPrivate::toFilesystemPath(canonicalFilePath()); }
-#endif // QT_CONFIG(cxx17_filesystem)
+    { return BobUIPrivate::toFilesystemPath(canonicalFilePath()); }
+#endif // BOBUI_CONFIG(cxx17_filesystem)
     QString fileName() const;
     QString baseName() const;
     QString completeBaseName() const;
@@ -102,13 +102,13 @@ public:
     QString path() const;
     QString absolutePath() const;
     QString canonicalPath() const;
-#if QT_CONFIG(cxx17_filesystem) || defined(Q_QDOC)
-    std::filesystem::path filesystemPath() const { return QtPrivate::toFilesystemPath(path()); }
+#if BOBUI_CONFIG(cxx17_filesystem) || defined(Q_QDOC)
+    std::filesystem::path filesystemPath() const { return BobUIPrivate::toFilesystemPath(path()); }
     std::filesystem::path filesystemAbsolutePath() const
-    { return QtPrivate::toFilesystemPath(absolutePath()); }
+    { return BobUIPrivate::toFilesystemPath(absolutePath()); }
     std::filesystem::path filesystemCanonicalPath() const
-    { return QtPrivate::toFilesystemPath(canonicalPath()); }
-#endif // QT_CONFIG(cxx17_filesystem)
+    { return BobUIPrivate::toFilesystemPath(canonicalPath()); }
+#endif // BOBUI_CONFIG(cxx17_filesystem)
     QDir dir() const;
     QDir absoluteDir() const;
 
@@ -137,16 +137,16 @@ public:
     QString readSymLink() const;
     QString junctionTarget() const;
 
-#if QT_CONFIG(cxx17_filesystem) || defined(Q_QDOC)
+#if BOBUI_CONFIG(cxx17_filesystem) || defined(Q_QDOC)
     std::filesystem::path filesystemSymLinkTarget() const
-    { return QtPrivate::toFilesystemPath(symLinkTarget()); }
+    { return BobUIPrivate::toFilesystemPath(symLinkTarget()); }
 
     std::filesystem::path filesystemReadSymLink() const
-    { return QtPrivate::toFilesystemPath(readSymLink()); }
+    { return BobUIPrivate::toFilesystemPath(readSymLink()); }
 
     std::filesystem::path filesystemJunctionTarget() const
-    { return QtPrivate::toFilesystemPath(junctionTarget()); }
-#endif // QT_CONFIG(cxx17_filesystem)
+    { return BobUIPrivate::toFilesystemPath(junctionTarget()); }
+#endif // BOBUI_CONFIG(cxx17_filesystem)
 
     QString owner() const;
     uint ownerId() const;
@@ -164,11 +164,11 @@ public:
     QDateTime lastRead() const { return fileTime(QFile::FileAccessTime); }
     QDateTime fileTime(QFile::FileTime time) const;
 
-    QDateTime birthTime(const QTimeZone &tz) const { return fileTime(QFile::FileBirthTime, tz); }
-    QDateTime metadataChangeTime(const QTimeZone &tz) const { return fileTime(QFile::FileMetadataChangeTime, tz); }
-    QDateTime lastModified(const QTimeZone &tz) const { return fileTime(QFile::FileModificationTime, tz); }
-    QDateTime lastRead(const QTimeZone &tz) const { return fileTime(QFile::FileAccessTime, tz); }
-    QDateTime fileTime(QFile::FileTime time, const QTimeZone &tz) const;
+    QDateTime birthTime(const BOBUIimeZone &tz) const { return fileTime(QFile::FileBirthTime, tz); }
+    QDateTime metadataChangeTime(const BOBUIimeZone &tz) const { return fileTime(QFile::FileMetadataChangeTime, tz); }
+    QDateTime lastModified(const BOBUIimeZone &tz) const { return fileTime(QFile::FileModificationTime, tz); }
+    QDateTime lastRead(const BOBUIimeZone &tz) const { return fileTime(QFile::FileAccessTime, tz); }
+    QDateTime fileTime(QFile::FileTime time, const BOBUIimeZone &tz) const;
 
     bool caching() const;
     void setCaching(bool on);
@@ -191,12 +191,12 @@ Q_DECLARE_SHARED(QFileInfo)
 
 typedef QList<QFileInfo> QFileInfoList;
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QFileInfo &);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN(QFileInfo, Q_CORE_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QFileInfo, Q_CORE_EXPORT)
 
 #endif // QFILEINFO_H

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "dialog.h"
 
@@ -58,7 +58,7 @@ void Dialog::submit()
         int albumId = addNewAlbum(title, artistId);
 
         QStringList tracks;
-        tracks = tracksEditor->text().split(QLatin1Char(','), Qt::SkipEmptyParts);
+        tracks = tracksEditor->text().split(QLatin1Char(','), BobUI::SkipEmptyParts);
         addTracks(albumId, tracks);
 
         increaseAlbumCount(indexOfArtist(artist));
@@ -157,7 +157,7 @@ void Dialog::addTracks(int albumId, const QStringList &tracks)
     if (!outputFile->open(QIODevice::WriteOnly)) {
         return;
     } else {
-        QTextStream stream(outputFile);
+        BOBUIextStream stream(outputFile);
         archive.item(0).save(stream, 4);
         outputFile->close();
     }

@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2018 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "connection.h"
 
-#include <QTimerEvent>
+#include <BOBUIimerEvent>
 
 using namespace std::chrono_literals;
 
@@ -27,17 +27,17 @@ static constexpr auto PingInterval = 5s;
  */
 
 Connection::Connection(QObject *parent)
-    : QTcpSocket(parent), writer(this)
+    : BOBUIcpSocket(parent), writer(this)
 {
     pingTimer.setInterval(PingInterval);
 
-    connect(this, &QTcpSocket::readyRead, this,
+    connect(this, &BOBUIcpSocket::readyRead, this,
             &Connection::processReadyRead);
-    connect(this, &QTcpSocket::disconnected,
-            &pingTimer, &QTimer::stop);
-    connect(&pingTimer, &QTimer::timeout,
+    connect(this, &BOBUIcpSocket::disconnected,
+            &pingTimer, &BOBUIimer::stop);
+    connect(&pingTimer, &BOBUIimer::timeout,
             this, &Connection::sendPing);
-    connect(this, &QTcpSocket::connected,
+    connect(this, &BOBUIcpSocket::connected,
             this, &Connection::sendGreetingMessage);
 }
 
@@ -85,7 +85,7 @@ bool Connection::sendMessage(const QString &message)
     return true;
 }
 
-void Connection::timerEvent(QTimerEvent *timerEvent)
+void Connection::timerEvent(BOBUIimerEvent *timerEvent)
 {
     if (timerEvent->matches(transferTimer)) {
         abort();

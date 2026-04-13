@@ -1,7 +1,7 @@
   <Environment>
-    <QtVersion>@INSERT_QT_VERSION_HERE@</QtVersion>
-    <QtBuild/>
-    <QTestVersion>@INSERT_QT_VERSION_HERE@</QTestVersion>
+    <BobUIVersion>@INSERT_BOBUI_VERSION_HERE@</BobUIVersion>
+    <BobUIBuild/>
+    <BOBUIestVersion>@INSERT_BOBUI_VERSION_HERE@</BOBUIestVersion>
   </Environment>
   <TestFunction name="initTestCase">
     <Incident type="pass" file="" line="0" />
@@ -34,30 +34,30 @@
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="fiveTableFailures">
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/datatable/tst_datatable.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/datatable/tst_datatable.cpp" line="0">
       <DataTag><![CDATA[fiveTableFailures_data 1]]></DataTag>
       <Description><![CDATA['test' returned FALSE. ()]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/datatable/tst_datatable.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/datatable/tst_datatable.cpp" line="0">
       <DataTag><![CDATA[fiveTableFailures_data 2]]></DataTag>
       <Description><![CDATA['test' returned FALSE. ()]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/datatable/tst_datatable.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/datatable/tst_datatable.cpp" line="0">
       <DataTag><![CDATA[fiveTableFailures_data 3]]></DataTag>
       <Description><![CDATA['test' returned FALSE. ()]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/datatable/tst_datatable.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/datatable/tst_datatable.cpp" line="0">
       <DataTag><![CDATA[fiveTableFailures_data 4]]></DataTag>
       <Description><![CDATA['test' returned FALSE. ()]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/datatable/tst_datatable.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/datatable/tst_datatable.cpp" line="0">
       <DataTag><![CDATA[fiveTableFailures_data 5]]></DataTag>
       <Description><![CDATA['test' returned FALSE. ()]]></Description>
     </Incident>
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="startsWithFailure">
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/datatable/tst_datatable.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/datatable/tst_datatable.cpp" line="0">
       <DataTag><![CDATA[startsWithFailure_data 1]]></DataTag>
       <Description><![CDATA['test' returned FALSE. ()]]></Description>
     </Incident>
@@ -88,7 +88,7 @@
     <Incident type="pass" file="" line="0">
       <DataTag><![CDATA[endsWithFailure 4]]></DataTag>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/datatable/tst_datatable.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/datatable/tst_datatable.cpp" line="0">
       <DataTag><![CDATA[endsWithFailure 5]]></DataTag>
       <Description><![CDATA['test' returned FALSE. ()]]></Description>
     </Incident>
@@ -101,7 +101,7 @@
     <Incident type="pass" file="" line="0">
       <DataTag><![CDATA[failureInMiddle_data 2]]></DataTag>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/datatable/tst_datatable.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/datatable/tst_datatable.cpp" line="0">
       <DataTag><![CDATA[failureInMiddle_data 3]]></DataTag>
       <Description><![CDATA['test' returned FALSE. ()]]></Description>
     </Incident>
@@ -114,23 +114,23 @@
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="fiveIsolatedFailures">
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/datatable/tst_datatable.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/datatable/tst_datatable.cpp" line="0">
       <DataTag><![CDATA[fiveIsolatedFailures_data 1]]></DataTag>
       <Description><![CDATA['!test' returned FALSE. ()]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/datatable/tst_datatable.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/datatable/tst_datatable.cpp" line="0">
       <DataTag><![CDATA[fiveIsolatedFailures_data 2]]></DataTag>
       <Description><![CDATA['!test' returned FALSE. ()]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/datatable/tst_datatable.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/datatable/tst_datatable.cpp" line="0">
       <DataTag><![CDATA[fiveIsolatedFailures_data 3]]></DataTag>
       <Description><![CDATA['!test' returned FALSE. ()]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/datatable/tst_datatable.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/datatable/tst_datatable.cpp" line="0">
       <DataTag><![CDATA[fiveIsolatedFailures_data 4]]></DataTag>
       <Description><![CDATA['!test' returned FALSE. ()]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/datatable/tst_datatable.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/datatable/tst_datatable.cpp" line="0">
       <DataTag><![CDATA[fiveIsolatedFailures_data 5]]></DataTag>
       <Description><![CDATA['!test' returned FALSE. ()]]></Description>
     </Incident>

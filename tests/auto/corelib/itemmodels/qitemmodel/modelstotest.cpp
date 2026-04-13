@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
-#include <QtCore/QCoreApplication>
-#include <QtSql/QtSql>
-#include <QtWidgets/QtWidgets>
-#include <QtCore/QSortFilterProxyModel>
+#include <BOBUIest>
+#include <BobUICore/QCoreApplication>
+#include <BobUISql/BobUISql>
+#include <BobUIWidgets/BobUIWidgets>
+#include <BobUICore/QSortFilterProxyModel>
 
 /*
     To add a model to be tested add the header file to the includes
     and impliment what is needed in the four functions below.
 
-    You can add more then one model, several Qt models and included as examples.
+    You can add more then one model, several BobUI models and included as examples.
 
     In tst_qitemmodel.cpp a new ModelsToTest object is created for each test.
 
@@ -50,7 +50,7 @@ public:
     static void setupDatabase();
 
 private:
-    QScopedPointer<QTemporaryDir> m_dirModelTempDir;
+    QScopedPointer<BOBUIemporaryDir> m_dirModelTempDir;
 };
 
 
@@ -78,11 +78,11 @@ ModelsToTest::ModelsToTest()
 
     tests.append(test("QListModel", ReadWrite, HasData));
     tests.append(test("QListModelEmpty", ReadWrite, Empty));
-    tests.append(test("QTableModel", ReadWrite, HasData));
-    tests.append(test("QTableModelEmpty", ReadWrite, Empty));
+    tests.append(test("BOBUIableModel", ReadWrite, HasData));
+    tests.append(test("BOBUIableModelEmpty", ReadWrite, Empty));
 
-    tests.append(test("QTreeModel", ReadWrite, HasData));
-    tests.append(test("QTreeModelEmpty", ReadWrite, Empty));
+    tests.append(test("BOBUIreeModel", ReadWrite, HasData));
+    tests.append(test("BOBUIreeModelEmpty", ReadWrite, Empty));
 
     tests.append(test("QSqlQueryModel", ReadOnly, HasData));
     tests.append(test("QSqlQueryModelEmpty", ReadOnly, Empty));
@@ -165,22 +165,22 @@ QAbstractItemModel *ModelsToTest::createModel(const QString &modelType)
         return widget->model();
     }
 
-    if (modelType == "QTableModelEmpty")
-        return (new QTableWidget)->model();
+    if (modelType == "BOBUIableModelEmpty")
+        return (new BOBUIableWidget)->model();
 
-    if (modelType == "QTableModel") {
-        QTableWidget *widget = new QTableWidget;
+    if (modelType == "BOBUIableModel") {
+        BOBUIableWidget *widget = new BOBUIableWidget;
         populateTestArea(widget->model());
         return widget->model();
     }
 
-    if (modelType == "QTreeModelEmpty") {
-        QTreeWidget *widget = new QTreeWidget;
+    if (modelType == "BOBUIreeModelEmpty") {
+        BOBUIreeWidget *widget = new BOBUIreeWidget;
         return widget->model();
     }
 
-    if (modelType == "QTreeModel") {
-        QTreeWidget *widget = new QTreeWidget;
+    if (modelType == "BOBUIreeModel") {
+        BOBUIreeWidget *widget = new BOBUIreeWidget;
         populateTestArea(widget->model());
         return widget->model();
     }
@@ -206,7 +206,7 @@ QModelIndex ModelsToTest::populateTestArea(QAbstractItemModel *model)
     if (qobject_cast<QStandardItemModel *>(model)) {
         // Basic tree StandardItemModel
         QModelIndex parent;
-        QVariant blue = QVariant(QColor(Qt::blue));
+        QVariant blue = QVariant(QColor(BobUI::blue));
         for (int i = 0; i < 4; ++i) {
             parent = model->index(0, 0, parent);
             model->insertRows(0, 26 + i, parent);
@@ -219,7 +219,7 @@ QModelIndex ModelsToTest::populateTestArea(QAbstractItemModel *model)
                     QString val = xval + QString::number(y) + QString::number(i);
                     QModelIndex index = model->index(x, y, parent);
                     model->setData(index, val);
-                    model->setData(index, blue, Qt::ForegroundRole);
+                    model->setData(index, blue, BobUI::ForegroundRole);
                 }
             }
             */
@@ -231,7 +231,7 @@ QModelIndex ModelsToTest::populateTestArea(QAbstractItemModel *model)
         QAbstractItemModel *realModel = (qobject_cast<QSortFilterProxyModel *>(model))->sourceModel();
         // Basic tree StandardItemModel
         QModelIndex parent;
-        QVariant blue = QVariant(QColor(Qt::blue));
+        QVariant blue = QVariant(QColor(BobUI::blue));
         for (int i = 0; i < 4; ++i) {
             parent = realModel->index(0, 0, parent);
             realModel->insertRows(0, 26+i, parent);
@@ -244,7 +244,7 @@ QModelIndex ModelsToTest::populateTestArea(QAbstractItemModel *model)
                     QString val = xval + QString::number(y) + QString::number(i);
                     QModelIndex index = realModel->index(x, y, parent);
                     realModel->setData(index, val);
-                    realModel->setData(index, blue, Qt::ForegroundRole);
+                    realModel->setData(index, blue, BobUI::ForegroundRole);
                 }
             }
             */
@@ -281,21 +281,21 @@ QModelIndex ModelsToTest::populateTestArea(QAbstractItemModel *model)
         return QModelIndex();
     }
 
-    if (QTableWidget *tableWidget = qobject_cast<QTableWidget *>(model->parent())) {
+    if (BOBUIableWidget *tableWidget = qobject_cast<BOBUIableWidget *>(model->parent())) {
         tableWidget->setColumnCount(20);
         tableWidget->setRowCount(20);
         return QModelIndex();
     }
 
-    if (QTreeWidget *treeWidget = qobject_cast<QTreeWidget *>(model->parent())) {
+    if (BOBUIreeWidget *treeWidget = qobject_cast<BOBUIreeWidget *>(model->parent())) {
         int topItems = 20;
         treeWidget->setColumnCount(1);
-        QTreeWidgetItem *parent;
+        BOBUIreeWidgetItem *parent;
         while (topItems--){
             const QString tS = QString::number(topItems);
-            parent = new QTreeWidgetItem(treeWidget, QStringList(QLatin1String("top ") + tS));
+            parent = new BOBUIreeWidgetItem(treeWidget, QStringList(QLatin1String("top ") + tS));
             for (int i = 0; i < 20; ++i)
-                new QTreeWidgetItem(parent, QStringList(QLatin1String("child ") + tS));
+                new BOBUIreeWidgetItem(parent, QStringList(QLatin1String("child ") + tS));
         }
         return QModelIndex();
     }

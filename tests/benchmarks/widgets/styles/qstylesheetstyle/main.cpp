@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 // This file contains benchmarks for QRect/QRectF functions.
 
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QSpinBox>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QRadioButton>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QProgressBar>
-#include <QtWidgets/QLineEdit>
-#include <qtest.h>
+#include <BobUIWidgets/QWidget>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QPushButton>
+#include <BobUIWidgets/QComboBox>
+#include <BobUIWidgets/QSpinBox>
+#include <BobUIWidgets/QCheckBox>
+#include <BobUIWidgets/QRadioButton>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QProgressBar>
+#include <BobUIWidgets/QLineEdit>
+#include <bobuiest.h>
 
 class tst_qstylesheetstyle : public QObject
 {
@@ -110,14 +110,14 @@ void tst_qstylesheetstyle::simple_events()
 
 void tst_qstylesheetstyle::grid_data()
 {
-        QTest::addColumn<bool>("events");
-        QTest::addColumn<bool>("show");
-        QTest::addColumn<int>("N");
+        BOBUIest::addColumn<bool>("events");
+        BOBUIest::addColumn<bool>("show");
+        BOBUIest::addColumn<int>("N");
         for (int n = 5; n <= 25; n += 5) {
            const QByteArray nString = QByteArray::number(n*n);
-            QTest::newRow(QByteArray("simple--" + nString).constData()) << false << false << n;
-            QTest::newRow(QByteArray("events--" + nString).constData()) << true << false << n;
-            QTest::newRow(QByteArray("show--" + nString).constData()) << true << true << n;
+            BOBUIest::newRow(QByteArray("simple--" + nString).constData()) << false << false << n;
+            BOBUIest::newRow(QByteArray("events--" + nString).constData()) << true << false << n;
+            BOBUIest::newRow(QByteArray("show--" + nString).constData()) << true << true << n;
         }
 }
 
@@ -143,9 +143,9 @@ void tst_qstylesheetstyle::grid()
     w->setStyleSheet("/* */");
     if(show) {
         w->show();
-        QVERIFY(QTest::qWaitForWindowExposed(w));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(w));
         QApplication::processEvents();
-        QTest::qWait(30);
+        BOBUIest::qWait(30);
         QApplication::processEvents();
     }
     QApplication::processEvents();
@@ -159,6 +159,6 @@ void tst_qstylesheetstyle::grid()
     delete w;
 }
 
-QTEST_MAIN(tst_qstylesheetstyle)
+BOBUIEST_MAIN(tst_qstylesheetstyle)
 
 #include "main.moc"

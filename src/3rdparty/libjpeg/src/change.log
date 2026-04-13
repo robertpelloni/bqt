@@ -97,7 +97,7 @@ djpeg now supports scalings N/8 with all N from 1 to 16.
 cjpeg -quality option has been extended for support of separate quality
 settings for luminance and chrominance (or in general, for every provided
 quantization table slot).
-New API function jpeg_default_qtables() and q_scale_factor array in library.
+New API function jpeg_default_bobuiables() and q_scale_factor array in library.
 
 Support arithmetic entropy encoding and decoding.
 Added files jaricom.c, jcarith.c, jdarith.c.
@@ -207,8 +207,8 @@ changed.  If you need to make such code work with either older or newer
 versions of the library, a test like "#if JPEG_LIB_VERSION >= 61" is
 recommended.
 
-djpeg's trace capability now dumps DQT tables in natural order, not zigzag
-order.  This allows the trace output to be made into a "-qtables" file
+djpeg's trace capability now dumps DBOBUI tables in natural order, not zigzag
+order.  This allows the trace output to be made into a "-bobuiables" file
 more easily.
 
 New system-dependent memory manager module for use on Apple Macintosh.

@@ -1,6 +1,6 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qicc_p.h"
 
@@ -20,8 +20,8 @@
 
 #include <array>
 
-QT_BEGIN_NAMESPACE
-Q_STATIC_LOGGING_CATEGORY(lcIcc, "qt.gui.icc", QtWarningMsg)
+BOBUI_BEGIN_NAMESPACE
+Q_STATIC_LOGGING_CATEGORY(lcIcc, "bobui.gui.icc", BobUIWarningMsg)
 
 namespace QIcc {
 
@@ -852,7 +852,7 @@ QByteArray toIccProfile(const QColorSpace &space)
     stream << uint(0x0000f6d6); // D50 X
     stream << uint(0x00010000); // D50 Y
     stream << uint(0x0000d32d); // D50 Z
-    stream << IccTag('Q','t', QT_VERSION_MAJOR, QT_VERSION_MINOR);
+    stream << IccTag('Q','t', BOBUI_VERSION_MAJOR, BOBUI_VERSION_MINOR);
     stream << uint(0) << uint(0) << uint(0) << uint(0);
     stream << uint(0) << uint(0) << uint(0) << uint(0) << uint(0) << uint(0) << uint(0);
 
@@ -1050,7 +1050,7 @@ QByteArray toIccProfile(const QColorSpace &space)
         *(quint32_be *)(iccProfile.data() + variableTagTableOffsets + 8) = descSize;
     }
 
-#if !defined(QT_NO_DEBUG) || defined(QT_FORCE_ASSERTS)
+#if !defined(BOBUI_NO_DEBUG) || defined(BOBUI_FORCE_ASSERTS)
     const ICCProfileHeader *iccHeader = (const ICCProfileHeader *)iccProfile.constData();
     Q_ASSERT(qsizetype(iccHeader->profileSize) == qsizetype(iccProfile.size()));
     Q_ASSERT(isValidIccProfile(*iccHeader));
@@ -1207,7 +1207,7 @@ static quint32 parseTRC(const QByteArrayView &tagData, QColorTrc &gamma, QColorT
         }
         return true;
     }
-    qCWarning(lcIcc) << "Invalid TRC data type" << Qt::hex << trcData.type;
+    qCWarning(lcIcc) << "Invalid TRC data type" << BobUI::hex << trcData.type;
     return 0;
 }
 
@@ -2017,4 +2017,4 @@ bool fromIccProfile(const QByteArray &data, QColorSpace *colorSpace)
 
 } // namespace QIcc
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

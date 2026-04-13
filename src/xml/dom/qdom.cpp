@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include <qplatformdefs.h>
 #include <qdom.h>
 #include "private/qxmlutils_p.h"
 
-#if QT_CONFIG(dom)
+#if BOBUI_CONFIG(dom)
 
 #include "qdom_p.h"
 #include "qdomhelpers_p.h"
@@ -14,10 +14,10 @@
 #include <qatomic.h>
 #include <qbuffer.h>
 #include <qiodevice.h>
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 #include <qregularexpression.h>
 #endif
-#include <qtextstream.h>
+#include <bobuiextstream.h>
 #include <qvariant.h>
 #include <qshareddata.h>
 #include <qdebug.h>
@@ -32,7 +32,7 @@
 
 BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*
   ### old todo comments -- I don't know if they still apply...
@@ -71,7 +71,7 @@ using namespace Qt::StringLiterals;
 /*
   Helper to split a qualified name in the prefix and local name.
 */
-static void qt_split_namespace(QString& prefix, QString& name, const QString& qName, bool hasURI)
+static void bobui_split_namespace(QString& prefix, QString& name, const QString& qName, bool hasURI)
 {
     qsizetype i = qName.indexOf(u':');
     if (i == -1) {
@@ -100,7 +100,7 @@ static QString fixedXmlName(const QString &_name, bool *ok, bool namespaces = fa
 {
     QString name, prefix;
     if (namespaces)
-        qt_split_namespace(prefix, name, _name, true);
+        bobui_split_namespace(prefix, name, _name, true);
     else
         name = _name;
 
@@ -359,8 +359,8 @@ QDomImplementationPrivate* QDomImplementationPrivate::clone()
     documentation.
 
     The QDom classes have a few issues of nonconformance with the XML
-    specifications that cannot be fixed in Qt 4 without breaking backward
-    compatibility. The Qt XML Patterns module and the QXmlStreamReader and
+    specifications that cannot be fixed in BobUI 4 without breaking backward
+    compatibility. The BobUI XML Patterns module and the QXmlStreamReader and
     QXmlStreamWriter classes have a higher degree of a conformance.
 
     \sa hasFeature()
@@ -476,7 +476,7 @@ bool QDomImplementation::hasFeature(const QString& feature, const QString& versi
     create a QDomDocument with this document type.
 
     In the DOM specification, this is the only way to create a non-null
-    document. For historical reasons, Qt also allows to create the
+    document. For historical reasons, BobUI also allows to create the
     document using the default empty constructor. The resulting document
     is null, but becomes non-null when a factory function, for example
     QDomDocument::createElement(), is called. The document also becomes
@@ -543,7 +543,7 @@ bool QDomImplementation::isNull()
     in QDomDocument is called with invalid data.
     \value AcceptInvalidChars The data should be stored in the DOM object
         anyway. In this case the resulting XML document might not be well-formed.
-        This is the default value and QDom's behavior in Qt < 4.1.
+        This is the default value and QDom's behavior in BobUI < 4.1.
     \value DropInvalidChars The invalid characters should be removed from
         the data.
     \value ReturnNullNode The factory function should return a null node.
@@ -559,7 +559,7 @@ bool QDomImplementation::isNull()
    when serializing.
 
    \value EncodingFromDocument The encoding is fetched from the document.
-   \value EncodingFromTextStream The encoding is fetched from the QTextStream.
+   \value EncodingFromTextStream The encoding is fetched from the BOBUIextStream.
 
    \sa QDomNode::save()
 */
@@ -939,25 +939,25 @@ int QDomNodeList::noexceptLength() const noexcept
     \fn bool QDomNodeList::isEmpty() const
 
     Returns \c true if the list contains no items; otherwise returns \c false.
-    This function is provided for Qt API consistency.
+    This function is provided for BobUI API consistency.
 */
 
 /*!
     \fn int QDomNodeList::count() const
 
-    This function is provided for Qt API consistency. It is equivalent to length().
+    This function is provided for BobUI API consistency. It is equivalent to length().
 */
 
 /*!
     \fn int QDomNodeList::size() const
 
-    This function is provided for Qt API consistency. It is equivalent to length().
+    This function is provided for BobUI API consistency. It is equivalent to length().
 */
 
 /*!
     \fn QDomNode QDomNodeList::at(int index) const
 
-    This function is provided for Qt API consistency. It is equivalent
+    This function is provided for BobUI API consistency. It is equivalent
     to item().
 
     If \a index is negative or if \a index >= length() then a null
@@ -1502,7 +1502,7 @@ void QDomNodePrivate::normalize()
     qNormalizeNode(this);
 }
 
-void QDomNodePrivate::saveSubTree(const QDomNodePrivate *n, QTextStream &s,
+void QDomNodePrivate::saveSubTree(const QDomNodePrivate *n, BOBUIextStream &s,
                                   int depth, int indent) const
 {
     if (!n)
@@ -2307,7 +2307,7 @@ QDomNode QDomNode::namedItem(const QString& name) const
     is used.
 
     If \a encodingPolicy is EncodingFromTextStream and this node is a document node, this
-    function behaves as save(QTextStream &str, int indent) with the exception that the encoding
+    function behaves as save(BOBUIextStream &str, int indent) with the exception that the encoding
     specified in the text stream \a stream is used.
 
     If the document contains invalid XML characters or characters that cannot be
@@ -2315,7 +2315,7 @@ QDomNode QDomNode::namedItem(const QString& name) const
 
     \since 4.2
  */
-void QDomNode::save(QTextStream& stream, int indent, EncodingPolicy encodingPolicy) const
+void QDomNode::save(BOBUIextStream& stream, int indent, EncodingPolicy encodingPolicy) const
 {
     if (!impl)
         return;
@@ -2332,7 +2332,7 @@ void QDomNode::save(QTextStream& stream, int indent, EncodingPolicy encodingPoli
     Writes the XML representation of the node \a node and all its
     children to the stream \a str.
 */
-QTextStream& operator<<(QTextStream& str, const QDomNode& node)
+BOBUIextStream& operator<<(BOBUIextStream& str, const QDomNode& node)
 {
     node.save(str, 1);
 
@@ -3056,19 +3056,19 @@ int QDomNamedNodeMap::length() const
     \fn bool QDomNamedNodeMap::isEmpty() const
 
     Returns \c true if the map is empty; otherwise returns \c false. This function is
-    provided for Qt API consistency.
+    provided for BobUI API consistency.
 */
 
 /*!
     \fn int QDomNamedNodeMap::count() const
 
-    This function is provided for Qt API consistency. It is equivalent to length().
+    This function is provided for BobUI API consistency. It is equivalent to length().
 */
 
 /*!
     \fn int QDomNamedNodeMap::size() const
 
-    This function is provided for Qt API consistency. It is equivalent to length().
+    This function is provided for BobUI API consistency. It is equivalent to length().
 */
 
 /*!
@@ -3128,7 +3128,7 @@ QDomDocumentTypePrivate::~QDomDocumentTypePrivate()
 void QDomDocumentTypePrivate::init()
 {
     entities = new QDomNamedNodeMapPrivate(this);
-    QT_TRY {
+    BOBUI_TRY {
         notations = new QDomNamedNodeMapPrivate(this);
         publicId.clear();
         systemId.clear();
@@ -3136,9 +3136,9 @@ void QDomDocumentTypePrivate::init()
 
         entities->setAppendToParent(true);
         notations->setAppendToParent(true);
-    } QT_CATCH(...) {
+    } BOBUI_CATCH(...) {
         delete entities;
-        QT_RETHROW;
+        BOBUI_RETHROW;
     }
 }
 
@@ -3220,7 +3220,7 @@ static QString quotedValue(const QString &data)
     return quote + data + quote;
 }
 
-void QDomDocumentTypePrivate::save(QTextStream& s, int, int indent) const
+void QDomDocumentTypePrivate::save(BOBUIextStream& s, int, int indent) const
 {
     if (name.isEmpty())
         return;
@@ -3237,7 +3237,7 @@ void QDomDocumentTypePrivate::save(QTextStream& s, int, int indent) const
     }
 
     if (entities->length()>0 || notations->length()>0) {
-        s << " [" << Qt::endl;
+        s << " [" << BobUI::endl;
 
         auto it2 = notations->map.constBegin();
         for (; it2 != notations->map.constEnd(); ++it2)
@@ -3250,7 +3250,7 @@ void QDomDocumentTypePrivate::save(QTextStream& s, int, int indent) const
         s << ']';
     }
 
-    s << '>' << Qt::endl;
+    s << '>' << BobUI::endl;
 }
 
 /**************************************************************
@@ -3729,7 +3729,7 @@ QDomAttrPrivate::QDomAttrPrivate(QDomDocumentPrivate* d, QDomNodePrivate* parent
 QDomAttrPrivate::QDomAttrPrivate(QDomDocumentPrivate* d, QDomNodePrivate* p, const QString& nsURI, const QString& qName)
     : QDomNodePrivate(d, p)
 {
-    qt_split_namespace(prefix, name, qName, !nsURI.isNull());
+    bobui_split_namespace(prefix, name, qName, !nsURI.isNull());
     namespaceURI = nsURI;
     createdWithDom1Interface = false;
     m_specified = false;
@@ -3836,7 +3836,7 @@ static QString encodeText(const QString &str,
     return str;
 }
 
-void QDomAttrPrivate::save(QTextStream& s, int, int) const
+void QDomAttrPrivate::save(BOBUIextStream& s, int, int) const
 {
     if (namespaceURI.isNull()) {
         s << name << "=\"" << encodeText(value, true, true) << '\"';
@@ -4024,7 +4024,7 @@ QDomElementPrivate::QDomElementPrivate(QDomDocumentPrivate* d, QDomNodePrivate* 
         const QString& nsURI, const QString& qName)
     : QDomNodePrivate(d, p)
 {
-    qt_split_namespace(prefix, name, qName, !nsURI.isNull());
+    bobui_split_namespace(prefix, name, qName, !nsURI.isNull());
     namespaceURI = nsURI;
     createdWithDom1Interface = false;
     m_attr = new QDomNamedNodeMapPrivate(this);
@@ -4089,7 +4089,7 @@ void QDomElementPrivate::setAttribute(const QString& aname, const QString& newVa
 void QDomElementPrivate::setAttributeNS(const QString& nsURI, const QString& qName, const QString& newValue)
 {
     QString prefix, localName;
-    qt_split_namespace(prefix, localName, qName, true);
+    bobui_split_namespace(prefix, localName, qName, true);
     QDomNodePrivate* n = m_attr->namedItemNS(nsURI, localName);
     if (!n) {
         n = new QDomAttrPrivate(ownerDocument(), this, nsURI, qName);
@@ -4181,7 +4181,7 @@ QString QDomElementPrivate::text()
     return t;
 }
 
-void QDomElementPrivate::save(QTextStream& s, int depth, int indent) const
+void QDomElementPrivate::save(BOBUIextStream& s, int depth, int indent) const
 {
     if (!(prev && prev->isText()))
         s << QString(indent < 1 ? 0 : depth * indent, u' ');
@@ -4300,14 +4300,14 @@ void QDomElementPrivate::save(QTextStream& s, int depth, int indent) const
 
             /* -1 disables new lines. */
             if (indent != -1)
-                s << Qt::endl;
+                s << BobUI::endl;
         }
     } else {
         s << "/>";
     }
 }
 
-void QDomElementPrivate::afterSave(QTextStream &s, int depth, int indent) const
+void QDomElementPrivate::afterSave(BOBUIextStream &s, int depth, int indent) const
 {
     if (last) {
         QString qName(name);
@@ -4324,7 +4324,7 @@ void QDomElementPrivate::afterSave(QTextStream &s, int depth, int indent) const
     if (!(next && next->isText())) {
         /* -1 disables new lines. */
         if (indent != -1)
-            s << Qt::endl;
+            s << BobUI::endl;
     }
 }
 
@@ -4876,7 +4876,7 @@ QDomTextPrivate* QDomTextPrivate::splitText(int offset)
     return t;
 }
 
-void QDomTextPrivate::save(QTextStream& s, int, int) const
+void QDomTextPrivate::save(BOBUIextStream& s, int, int) const
 {
     QDomTextPrivate *that = const_cast<QDomTextPrivate*>(this);
     s << encodeText(value, !(that->parent() && that->parent()->isElement()), false, true);
@@ -4995,7 +4995,7 @@ QDomNodePrivate* QDomCommentPrivate::cloneNode(bool deep)
     return p;
 }
 
-void QDomCommentPrivate::save(QTextStream& s, int depth, int indent) const
+void QDomCommentPrivate::save(BOBUIextStream& s, int depth, int indent) const
 {
     /* We don't output whitespace if we would pollute a text node. */
     if (!(prev && prev->isText()))
@@ -5007,7 +5007,7 @@ void QDomCommentPrivate::save(QTextStream& s, int depth, int indent) const
     s << "-->";
 
     if (!(next && next->isText()))
-        s << Qt::endl;
+        s << BobUI::endl;
 }
 
 /**************************************************************
@@ -5104,7 +5104,7 @@ QDomNodePrivate* QDomCDATASectionPrivate::cloneNode(bool deep)
     return p;
 }
 
-void QDomCDATASectionPrivate::save(QTextStream& s, int, int) const
+void QDomCDATASectionPrivate::save(BOBUIextStream& s, int, int) const
 {
     // ### How do we escape "]]>" ?
     // "]]>" is not allowed; so there should be none in value anyway
@@ -5214,7 +5214,7 @@ QDomNodePrivate* QDomNotationPrivate::cloneNode(bool deep)
     return p;
 }
 
-void QDomNotationPrivate::save(QTextStream& s, int, int) const
+void QDomNotationPrivate::save(BOBUIextStream& s, int, int) const
 {
     s << "<!NOTATION " << name << ' ';
     if (!m_pub.isNull())  {
@@ -5224,7 +5224,7 @@ void QDomNotationPrivate::save(QTextStream& s, int, int) const
     }  else {
         s << "SYSTEM " << quotedValue(m_sys);
     }
-    s << '>' << Qt::endl;
+    s << '>' << BobUI::endl;
 }
 
 /**************************************************************
@@ -5395,14 +5395,14 @@ static QByteArray encodeEntity(const QByteArray& str)
     return tmp;
 }
 
-void QDomEntityPrivate::save(QTextStream& s, int, int) const
+void QDomEntityPrivate::save(BOBUIextStream& s, int, int) const
 {
     QString _name = name;
     if (_name.startsWith(u'%'))
         _name = u"% "_s + _name.mid(1);
 
     if (m_sys.isNull() && m_pub.isNull()) {
-        s << "<!ENTITY " << _name << " \"" << encodeEntity(value.toUtf8()) << "\">" << Qt::endl;
+        s << "<!ENTITY " << _name << " \"" << encodeEntity(value.toUtf8()) << "\">" << BobUI::endl;
     } else {
         s << "<!ENTITY " << _name << ' ';
         if (m_pub.isNull()) {
@@ -5413,7 +5413,7 @@ void QDomEntityPrivate::save(QTextStream& s, int, int) const
         if (! m_notationName.isNull()) {
             s << " NDATA " << m_notationName;
         }
-        s << '>' << Qt::endl;
+        s << '>' << BobUI::endl;
     }
 }
 
@@ -5559,7 +5559,7 @@ QDomNodePrivate* QDomEntityReferencePrivate::cloneNode(bool deep)
     return p;
 }
 
-void QDomEntityReferencePrivate::save(QTextStream& s, int, int) const
+void QDomEntityReferencePrivate::save(BOBUIextStream& s, int, int) const
 {
     s << '&' << name << ';';
 }
@@ -5675,9 +5675,9 @@ QDomNodePrivate* QDomProcessingInstructionPrivate::cloneNode(bool deep)
     return p;
 }
 
-void QDomProcessingInstructionPrivate::save(QTextStream& s, int, int) const
+void QDomProcessingInstructionPrivate::save(BOBUIextStream& s, int, int) const
 {
-    s << "<?" << name << ' ' << value << "?>" << Qt::endl;
+    s << "<?" << name << ' ' << value << "?>" << BobUI::endl;
 }
 
 /**************************************************************
@@ -6076,12 +6076,12 @@ QDomNodePrivate* QDomDocumentPrivate::importNode(QDomNodePrivate *importedNode, 
     return node;
 }
 
-void QDomDocumentPrivate::saveDocument(QTextStream& s, const int indent, QDomNode::EncodingPolicy encUsed) const
+void QDomDocumentPrivate::saveDocument(BOBUIextStream& s, const int indent, QDomNode::EncodingPolicy encUsed) const
 {
     const QDomNodePrivate* n = first;
 
     if (encUsed == QDomNode::EncodingFromDocument) {
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
         const QDomNodePrivate* n = first;
 
         if (n && n->isProcessingInstruction() && n->nodeName() == "xml"_L1) {
@@ -6290,9 +6290,9 @@ QDomDocument::~QDomDocument()
 {
 }
 
-#if QT_DEPRECATED_SINCE(6, 8)
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 8)
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
 /*!
     \overload
     \deprecated [6.8] Use the overloads taking ParseOptions instead.
@@ -6398,7 +6398,7 @@ static inline void unpackParseResult(const QDomDocument::ParseResult &parseResul
 
     \note This method will try to open \a dev in read-only mode if it is not
     already open. In that case, the caller is responsible for calling close.
-    This will change in Qt 7, which will no longer open \a dev. Applications
+    This will change in BobUI 7, which will no longer open \a dev. Applications
     should therefore open the device themselves before calling setContent.
 */
 bool QDomDocument::setContent(QIODevice* dev, bool namespaceProcessing,
@@ -6481,8 +6481,8 @@ bool QDomDocument::setContent(QXmlStreamReader *reader, bool namespaceProcessing
     unpackParseResult(result, errorMsg, errorLine, errorColumn);
     return bool(result);
 }
-QT_WARNING_POP
-#endif // QT_DEPRECATED_SINCE(6, 8)
+BOBUI_WARNING_POP
+#endif // BOBUI_DEPRECATED_SINCE(6, 8)
 
 /*!
     \enum QDomDocument::ParseOption
@@ -6581,7 +6581,7 @@ QT_WARNING_POP
     string if the element or attribute has no prefix.
 
     Text nodes consisting only of whitespace are stripped and won't
-    appear in the QDomDocument. Since Qt 6.5, one can pass
+    appear in the QDomDocument. Since BobUI 6.5, one can pass
     QDomDocument::ParseOption::PreserveSpacingOnlyNodes as a parse
     option, to specify that spacing-only text nodes must be preserved.
 
@@ -6589,7 +6589,7 @@ QT_WARNING_POP
 
     \note The overload taking IO \a device will try to open it in read-only
     mode if it is not already open. In that case, the caller is responsible
-    for calling close. This will change in Qt 7, which will no longer open
+    for calling close. This will change in BobUI 7, which will no longer open
     the IO \a device. Applications should therefore open the device themselves
     before calling setContent().
 
@@ -6611,10 +6611,10 @@ QDomDocument::ParseResult QDomDocument::setContent(QAnyStringView data, ParseOpt
 
 QDomDocument::ParseResult QDomDocument::setContent(QIODevice *device, ParseOptions options)
 {
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
     if (!device->isOpen()) {
         qWarning("QDomDocument called with unopened QIODevice. "
-                 "This will not be supported in future Qt versions.");
+                 "This will not be supported in future BobUI versions.");
         if (!device->open(QIODevice::ReadOnly)) {
             const auto error = u"QDomDocument::setContent: Failed to open device."_s;
             qWarning("%s", qPrintable(error));
@@ -6646,7 +6646,7 @@ QDomDocument::ParseResult QDomDocument::setContent(QXmlStreamReader *reader, Par
 QString QDomDocument::toString(int indent) const
 {
     QString str;
-    QTextStream s(&str, QIODevice::WriteOnly);
+    BOBUIextStream s(&str, QIODevice::WriteOnly);
     save(s, indent);
     return str;
 }

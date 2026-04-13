@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#undef QT_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
+#undef BOBUI_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
 
 #include "interactivewidget.h"
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 InteractiveWidget::InteractiveWidget()
 {
@@ -13,7 +13,7 @@ InteractiveWidget::InteractiveWidget()
 
     setCentralWidget(m_onScreenWidget);
 
-    ui_textEdit = new QTextEdit();
+    ui_textEdit = new BOBUIextEdit();
     ui_textEdit->installEventFilter(this);
 
     QWidget *panelContent = new QWidget();
@@ -22,7 +22,7 @@ InteractiveWidget::InteractiveWidget()
     vlayout->setSpacing(0);
 
     // create and populate the command toolbox
-    m_commandsToolBox = new QToolBox();
+    m_commandsToolBox = new BOBUIoolBox();
     QListWidget *currentListWidget = nullptr;
     foreach (PaintCommands::PaintCommandInfos paintCommandInfo, PaintCommands::s_commandInfoTable) {
         if (paintCommandInfo.isSectionHeader()) {
@@ -35,7 +35,7 @@ InteractiveWidget::InteractiveWidget()
     }
 
     // create and populate the enumerations toolbox
-    m_enumsToolBox = new QToolBox();
+    m_enumsToolBox = new BOBUIoolBox();
     typedef QPair<QString,QStringList> EnumListType;
     foreach (EnumListType enumInfos, PaintCommands::s_enumsTable) {
         currentListWidget = new QListWidget();
@@ -52,7 +52,7 @@ InteractiveWidget::InteractiveWidget()
     QPushButton *run = new QPushButton("&Run");
     QPushButton *load = new QPushButton("&Load");
     QPushButton *save = new QPushButton("&Save");
-    run->setFocusPolicy(Qt::NoFocus);
+    run->setFocusPolicy(BobUI::NoFocus);
 
     vlayout->addSpacing(20);
     vlayout->addWidget(run);
@@ -61,11 +61,11 @@ InteractiveWidget::InteractiveWidget()
 
     QDockWidget *panel = new QDockWidget("Commands");
     panel->setWidget(panelContent);
-    addDockWidget(Qt::LeftDockWidgetArea, panel);
+    addDockWidget(BobUI::LeftDockWidgetArea, panel);
 
     QDockWidget *editor = new QDockWidget("Editor");
     editor->setWidget(ui_textEdit);
-    addDockWidget(Qt::RightDockWidgetArea, editor);
+    addDockWidget(BobUI::RightDockWidgetArea, editor);
 
     // connect gui signals
     connect(run, SIGNAL(clicked()), SLOT(run()));
@@ -90,7 +90,7 @@ void InteractiveWidget::cmdSelected(QListWidgetItem *item)
     if (ui_textEdit->textCursor().atBlockStart()) {
         ui_textEdit->insertPlainText(PaintCommands::findCommandById(item->text())->sample + "\n");
     } else {
-        ui_textEdit->moveCursor(QTextCursor::EndOfLine);
+        ui_textEdit->moveCursor(BOBUIextCursor::EndOfLine);
         ui_textEdit->insertPlainText("\n" + PaintCommands::findCommandById(item->text())->sample);
     }
     ui_textEdit->setFocus();
@@ -130,7 +130,7 @@ void InteractiveWidget::load(const QString &fname)
         }
         m_filename = fname;
         ui_textEdit->clear();
-        QTextStream textFile(&file);
+        BOBUIextStream textFile(&file);
         QString script = textFile.readAll();
         ui_textEdit->setPlainText(script);
         m_onScreenWidget->m_filename = fname;
@@ -158,7 +158,7 @@ void InteractiveWidget::save()
             return;
         }
         m_filename = fname;
-        QTextStream textFile(&file);
+        BOBUIextStream textFile(&file);
         textFile << script;
         m_onScreenWidget->m_filename = fname;
     }
@@ -167,12 +167,12 @@ void InteractiveWidget::save()
 /***************************************************************************************************/
 bool InteractiveWidget::eventFilter(QObject *o, QEvent *e)
 {
-    if (qobject_cast<QTextEdit *>(o) && e->type() == QEvent::KeyPress) {
+    if (qobject_cast<BOBUIextEdit *>(o) && e->type() == QEvent::KeyPress) {
         QKeyEvent *ke = static_cast<QKeyEvent *>(e);
-        if (ke->key() == Qt::Key_Tab) {
+        if (ke->key() == BobUI::Key_Tab) {
             m_commandsToolBox->currentWidget()->setFocus();
             return true;
-        } else if (ke->key() == Qt::Key_Return && ke->modifiers() == Qt::ControlModifier) {
+        } else if (ke->key() == BobUI::Key_Return && ke->modifiers() == BobUI::ControlModifier) {
             run();
             return true;
         }

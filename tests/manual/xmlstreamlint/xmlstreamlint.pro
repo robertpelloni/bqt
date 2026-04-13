@@ -1,7 +1,7 @@
 CONFIG   += cmdline
-QT       -= gui
+BOBUI       -= gui
 SOURCES  += main.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/xml/xmlstreamlint
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/xml/xmlstreamlint
 INSTALLS += target

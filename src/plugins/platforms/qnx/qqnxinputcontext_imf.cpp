@@ -1,5 +1,5 @@
 // Copyright (C) 2013 BlackBerry Limited. All rights reserved.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qqnxinputcontext_imf.h"
 #include "qqnxabstractvirtualkeyboard.h"
@@ -7,17 +7,17 @@
 #include "qqnxscreen.h"
 #include "qqnxscreeneventhandler.h"
 
-#include <QtGui/QGuiApplication>
-#include <QtGui/QInputMethodEvent>
-#include <QtGui/QTextCharFormat>
+#include <BobUIGui/QGuiApplication>
+#include <BobUIGui/QInputMethodEvent>
+#include <BobUIGui/BOBUIextCharFormat>
 
-#include <QtCore/QDebug>
-#include <QtCore/QMutex>
-#include <QtCore/QVariant>
-#include <QtCore/QVariantHash>
-#include <QtCore/QWaitCondition>
-#include <QtCore/QQueue>
-#include <QtCore/QGlobalStatic>
+#include <BobUICore/QDebug>
+#include <BobUICore/QMutex>
+#include <BobUICore/QVariant>
+#include <BobUICore/QVariantHash>
+#include <BobUICore/QWaitCondition>
+#include <BobUICore/QQueue>
+#include <BobUICore/QGlobalStatic>
 
 #include <dlfcn.h>
 #include "imf/imf_client.h"
@@ -25,7 +25,7 @@
 #include <process.h>
 #include <sys/keycodes.h>
 
-Q_LOGGING_CATEGORY(lcQpaInputMethods, "qt.qpa.input.methods");
+Q_LOGGING_CATEGORY(lcQpaInputMethods, "bobui.qpa.input.methods");
 
 static QQnxInputContext *sInputContextInstance;
 static QColor sSelectedColor(0,0xb8,0,85);
@@ -115,20 +115,20 @@ public:
     };
 };
 
-// Invoke an IMF initiated request synchronously on Qt's main thread.  As describe below all
+// Invoke an IMF initiated request synchronously on BobUI's main thread.  As describe below all
 // IMF requests are made from another thread but need to be executed on the main thread.
 static void executeIMFRequest(QQnxImfRequest *event)
 {
     QMetaObject::invokeMethod(sInputContextInstance,
                               "processImfEvent",
-                              Qt::BlockingQueuedConnection,
+                              BobUI::BlockingQueuedConnection,
                               Q_ARG(QQnxImfRequest*, event));
 }
 
 // The following functions (ic_*) are callback functions called by the input system to query information
 // about the text object that currently has focus or to make changes to it.  All calls are made from the
 // input system's own thread.  The pattern for each callback function is to copy its parameters into
-// a QQnxImfRequest structure and call executeIMFRequest to have it passed synchronously to Qt's main thread.
+// a QQnxImfRequest structure and call executeIMFRequest to have it passed synchronously to BobUI's main thread.
 // Any return values should be pre-initialised with suitable default values as in some cases
 // (e.g. a stale session) the call will return without having executed any request specific code.
 //
@@ -517,7 +517,7 @@ static bool imfAvailable()
     return s_imfReady;
 }
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QQnxInputContext::QQnxInputContext(QQnxIntegration *integration, QQnxAbstractVirtualKeyboard &keyboard) :
          QPlatformInputContext(),
@@ -661,11 +661,11 @@ void QQnxInputContext::commit()
     endComposition();
 }
 
-void QQnxInputContext::update(Qt::InputMethodQueries queries)
+void QQnxInputContext::update(BobUI::InputMethodQueries queries)
 {
     qCDebug(lcQpaInputMethods) << Q_FUNC_INFO << "Queries:" << queries;
 
-    if (queries & Qt::ImCursorPosition) {
+    if (queries & BobUI::ImCursorPosition) {
         int lastCaret = m_caretPosition;
         updateCursorPosition();
         // If caret position has changed we need to inform IMF unless this is just due to our own action
@@ -722,10 +722,10 @@ bool QQnxInputContext::hasSelectedText()
     if (!input)
         return false;
 
-    QInputMethodQueryEvent query(Qt::ImCurrentSelection);
+    QInputMethodQueryEvent query(BobUI::ImCurrentSelection);
     QCoreApplication::sendEvent(input, &query);
 
-    return !query.value(Qt::ImCurrentSelection).toString().isEmpty();
+    return !query.value(BobUI::ImCurrentSelection).toString().isEmpty();
 }
 
 bool QQnxInputContext::dispatchRequestSoftwareInputPanel()
@@ -761,26 +761,26 @@ bool QQnxInputContext::dispatchFocusGainEvent(int inputHints)
     // want to have the old one.
     m_caretPosition = 0;
 
-    QInputMethodQueryEvent query(Qt::ImHints);
+    QInputMethodQueryEvent query(BobUI::ImHints);
     QCoreApplication::sendEvent(input, &query);
 
     focus_event_t focusEvent;
     initEvent(&focusEvent.event, sInputSession, EVENT_FOCUS, FOCUS_GAINED, sizeof(focusEvent));
     focusEvent.style = DEFAULT_STYLE;
 
-    if (inputHints & Qt::ImhNoPredictiveText)
+    if (inputHints & BobUI::ImhNoPredictiveText)
         focusEvent.style |= NO_PREDICTION | NO_AUTO_CORRECTION;
-    if (inputHints & Qt::ImhNoAutoUppercase)
+    if (inputHints & BobUI::ImhNoAutoUppercase)
         focusEvent.style |= NO_AUTO_TEXT;
 
     // Following styles are mutually exclusive
-    if (inputHints & Qt::ImhHiddenText) {
+    if (inputHints & BobUI::ImhHiddenText) {
         focusEvent.style |= IMF_PASSWORD_TYPE;
-    } else if (inputHints & Qt::ImhDialableCharactersOnly) {
+    } else if (inputHints & BobUI::ImhDialableCharactersOnly) {
         focusEvent.style |= IMF_PHONE_TYPE;
-    } else if (inputHints & Qt::ImhUrlCharactersOnly) {
+    } else if (inputHints & BobUI::ImhUrlCharactersOnly) {
         focusEvent.style |= IMF_URL_TYPE;
-    } else if (inputHints & Qt::ImhEmailCharactersOnly) {
+    } else if (inputHints & BobUI::ImhEmailCharactersOnly) {
         focusEvent.style |= IMF_EMAIL_TYPE;
     }
 
@@ -895,9 +895,9 @@ void QQnxInputContext::updateCursorPosition()
     if (!input)
         return;
 
-    QInputMethodQueryEvent query(Qt::ImCursorPosition);
+    QInputMethodQueryEvent query(BobUI::ImCursorPosition);
     QCoreApplication::sendEvent(input, &query);
-    m_caretPosition = query.value(Qt::ImCursorPosition).toInt();
+    m_caretPosition = query.value(BobUI::ImCursorPosition).toInt();
 
     qCDebug(lcQpaInputMethods, "ictrl_dispatch_even key %d", key);
 }
@@ -954,7 +954,7 @@ void QQnxInputContext::updateComposition(spannable_string_t *text, int32_t new_c
         }
 
         if (underline || highlightColor.isValid()) {
-            QTextCharFormat format;
+            BOBUIextCharFormat format;
             if (underline)
                 format.setFontUnderline(true);
             if (highlightColor.isValid())
@@ -1021,7 +1021,7 @@ int QQnxInputContext::handleSpellCheck(spell_check_event_t *event)
     // Generate the list of indices indicating misspelled words in the text.  We use end + 1
     // since it's more conventional to have the end index point just past the string.  We also
     // can't use the indices directly since they are relative to UTF-32 encoded data and the
-    // conversion to Qt's UTF-16 internal format might cause lengthening.
+    // conversion to BobUI's UTF-16 internal format might cause lengthening.
     QList<int> indices;
     int adjustment = 0;
     int index = 0;
@@ -1163,10 +1163,10 @@ spannable_string_t *QQnxInputContext::onGetTextAfterCursor(int32_t n, int32_t fl
     if (!input)
         return toSpannableString("");
 
-    QInputMethodQueryEvent query(Qt::ImCursorPosition | Qt::ImSurroundingText);
+    QInputMethodQueryEvent query(BobUI::ImCursorPosition | BobUI::ImSurroundingText);
     QCoreApplication::sendEvent(input, &query);
-    QString text = query.value(Qt::ImSurroundingText).toString();
-    m_caretPosition = query.value(Qt::ImCursorPosition).toInt();
+    QString text = query.value(BobUI::ImSurroundingText).toString();
+    m_caretPosition = query.value(BobUI::ImCursorPosition).toInt();
 
     return toSpannableString(text.mid(m_caretPosition, n));
 }
@@ -1180,10 +1180,10 @@ spannable_string_t *QQnxInputContext::onGetTextBeforeCursor(int32_t n, int32_t f
     if (!input)
         return toSpannableString("");
 
-    QInputMethodQueryEvent query(Qt::ImCursorPosition | Qt::ImSurroundingText);
+    QInputMethodQueryEvent query(BobUI::ImCursorPosition | BobUI::ImSurroundingText);
     QCoreApplication::sendEvent(input, &query);
-    QString text = query.value(Qt::ImSurroundingText).toString();
-    m_caretPosition = query.value(Qt::ImCursorPosition).toInt();
+    QString text = query.value(BobUI::ImSurroundingText).toString();
+    m_caretPosition = query.value(BobUI::ImCursorPosition).toInt();
 
     if (n < m_caretPosition)
         return toSpannableString(text.mid(m_caretPosition - n, n));
@@ -1204,10 +1204,10 @@ int32_t QQnxInputContext::onSetComposingRegion(int32_t start, int32_t end)
     if (!input)
         return 0;
 
-    QInputMethodQueryEvent query(Qt::ImCursorPosition | Qt::ImSurroundingText);
+    QInputMethodQueryEvent query(BobUI::ImCursorPosition | BobUI::ImSurroundingText);
     QCoreApplication::sendEvent(input, &query);
-    QString text = query.value(Qt::ImSurroundingText).toString();
-    m_caretPosition = query.value(Qt::ImCursorPosition).toInt();
+    QString text = query.value(BobUI::ImSurroundingText).toString();
+    m_caretPosition = query.value(BobUI::ImCursorPosition).toInt();
 
     qCDebug(lcQpaInputMethods) << Q_FUNC_INFO << "Text =" << text;
 
@@ -1222,7 +1222,7 @@ int32_t QQnxInputContext::onSetComposingRegion(int32_t start, int32_t end)
     m_isComposing = true;
 
     QList<QInputMethodEvent::Attribute> attributes;
-    QTextCharFormat format;
+    BOBUIextCharFormat format;
     format.setFontUnderline(true);
     attributes.push_back(QInputMethodEvent::Attribute(QInputMethodEvent::TextFormat, 0, m_composingText.length(), format));
 
@@ -1263,10 +1263,10 @@ int32_t QQnxInputContext::onIsAllTextSelected(int32_t* pIsSelected)
     if (!input)
         return -1;
 
-    QInputMethodQueryEvent query(Qt::ImCurrentSelection | Qt::ImSurroundingText);
+    QInputMethodQueryEvent query(BobUI::ImCurrentSelection | BobUI::ImSurroundingText);
     QCoreApplication::sendEvent(input, &query);
 
-    *pIsSelected = query.value(Qt::ImSurroundingText).toString().length() == query.value(Qt::ImCurrentSelection).toString().length();
+    *pIsSelected = query.value(BobUI::ImSurroundingText).toString().length() == query.value(BobUI::ImCurrentSelection).toString().length();
 
     qCDebug(lcQpaInputMethods) << Q_FUNC_INFO << *pIsSelected;
 
@@ -1345,16 +1345,16 @@ void QQnxInputContext::setFocusObject(QObject *object)
         if (hasSession())
             dispatchFocusLossEvent();
     } else {
-        QInputMethodQueryEvent query(Qt::ImHints | Qt::ImEnterKeyType);
+        QInputMethodQueryEvent query(BobUI::ImHints | BobUI::ImEnterKeyType);
         QCoreApplication::sendEvent(object, &query);
-        int inputHints = query.value(Qt::ImHints).toInt();
-        Qt::EnterKeyType qtEnterKeyType = Qt::EnterKeyType(query.value(Qt::ImEnterKeyType).toInt());
+        int inputHints = query.value(BobUI::ImHints).toInt();
+        BobUI::EnterKeyType bobuiEnterKeyType = BobUI::EnterKeyType(query.value(BobUI::ImEnterKeyType).toInt());
 
         dispatchFocusGainEvent(inputHints);
 
         m_virtualKeyboard.setInputHints(inputHints);
         m_virtualKeyboard.setEnterKeyType(
-            QQnxAbstractVirtualKeyboard::qtEnterKeyTypeToQnx(qtEnterKeyType)
+            QQnxAbstractVirtualKeyboard::bobuiEnterKeyTypeToQnx(bobuiEnterKeyType)
         );
 
         if (!m_inputPanelVisible)
@@ -1387,4 +1387,4 @@ bool QQnxInputContext::checkSpelling(const QString &text, void *context, void (*
     return false;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

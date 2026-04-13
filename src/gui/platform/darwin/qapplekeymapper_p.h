@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QAPPLEKEYMAPPER_H
 #define QAPPLEKEYMAPPER_H
@@ -8,7 +8,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -21,33 +21,33 @@
 
 #include <qpa/qplatformkeymapper.h>
 
-#include <QtCore/QList>
-#include <QtCore/QHash>
-#include <QtGui/QKeyEvent>
+#include <BobUICore/QList>
+#include <BobUICore/QHash>
+#include <BobUIGui/QKeyEvent>
 
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Q_GUI_EXPORT QAppleKeyMapper : public QPlatformKeyMapper
 {
 public:
-    Qt::KeyboardModifiers queryKeyboardModifiers() const override;
+    BobUI::KeyboardModifiers queryKeyboardModifiers() const override;
     QList<QKeyCombination> possibleKeyCombinations(const QKeyEvent *event) const override;
 
 #ifdef Q_OS_MACOS
-    static Qt::KeyboardModifiers fromCocoaModifiers(NSEventModifierFlags cocoaModifiers);
-    static NSEventModifierFlags toCocoaModifiers(Qt::KeyboardModifiers);
+    static BobUI::KeyboardModifiers fromCocoaModifiers(NSEventModifierFlags cocoaModifiers);
+    static NSEventModifierFlags toCocoaModifiers(BobUI::KeyboardModifiers);
 
-    static QChar toCocoaKey(Qt::Key key);
-    static Qt::Key fromCocoaKey(QChar keyCode);
+    static QChar toCocoaKey(BobUI::Key key);
+    static BobUI::Key fromCocoaKey(QChar keyCode);
 #else
-    static Qt::Key fromNSString(Qt::KeyboardModifiers qtMods, NSString *characters,
+    static BobUI::Key fromNSString(BobUI::KeyboardModifiers bobuiMods, NSString *characters,
                             NSString *charactersIgnoringModifiers, QString &text);
 
-    static Qt::Key fromUIKitKey(NSString *keyCode);
-    static Qt::KeyboardModifiers fromUIKitModifiers(ulong uikitModifiers);
-    static ulong toUIKitModifiers(Qt::KeyboardModifiers);
+    static BobUI::Key fromUIKitKey(NSString *keyCode);
+    static BobUI::KeyboardModifiers fromUIKitModifiers(ulong uikitModifiers);
+    static ulong toUIKitModifiers(BobUI::KeyboardModifiers);
 #endif
 private:
 #ifdef Q_OS_MACOS
@@ -58,7 +58,7 @@ private:
         // to distinguish an uninitialized map from an initialized.
         // Using 0 would not allow us to map U+0000 (NUL), however
         // unlikely that is.
-        KeyMap() : std::array<char32_t, 16>{Qt::Key_unknown} {}
+        KeyMap() : std::array<char32_t, 16>{BobUI::Key_unknown} {}
     };
 
     bool updateKeyboard();
@@ -76,7 +76,7 @@ private:
 #endif
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif
 

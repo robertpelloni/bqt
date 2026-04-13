@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSQLTABLEMODEL_H
 #define QSQLTABLEMODEL_H
 
-#include <QtSql/qtsqlglobal.h>
-#include <QtSql/qsqldatabase.h>
-#include <QtSql/qsqlquerymodel.h>
+#include <BobUISql/bobuisqlglobal.h>
+#include <BobUISql/qsqldatabase.h>
+#include <BobUISql/qsqlquerymodel.h>
 
-QT_REQUIRE_CONFIG(sqlmodel);
+BOBUI_REQUIRE_CONFIG(sqlmodel);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QSqlTableModelPrivate;
@@ -23,7 +23,7 @@ class Q_SQL_EXPORT QSqlTableModel: public QSqlQueryModel
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(QSqlTableModel)
-    Q_MOC_INCLUDE(<QtSql/qsqlrecord.h>)
+    Q_MOC_INCLUDE(<BobUISql/qsqlrecord.h>)
 
 public:
     enum EditStrategy {OnFieldChange, OnRowChange, OnManualSubmit};
@@ -34,15 +34,15 @@ public:
     virtual void setTable(const QString &tableName);
     QString tableName() const;
 
-    Qt::ItemFlags flags(const QModelIndex &index) const override;
+    BobUI::ItemFlags flags(const QModelIndex &index) const override;
 
     QSqlRecord record() const;
     QSqlRecord record(int row) const;
-    QVariant data(const QModelIndex &idx, int role = Qt::DisplayRole) const override;
-    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
+    QVariant data(const QModelIndex &idx, int role = BobUI::DisplayRole) const override;
+    bool setData(const QModelIndex &index, const QVariant &value, int role = BobUI::EditRole) override;
     bool clearItemData(const QModelIndex &index) override;
 
-    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
+    QVariant headerData(int section, BobUI::Orientation orientation, int role = BobUI::DisplayRole) const override;
 
     bool isDirty() const;
     bool isDirty(const QModelIndex &index) const;
@@ -56,8 +56,8 @@ public:
     QSqlDatabase database() const;
     int fieldIndex(const QString &fieldName) const;
 
-    void sort(int column, Qt::SortOrder order) override;
-    virtual void setSort(int column, Qt::SortOrder order);
+    void sort(int column, BobUI::SortOrder order) override;
+    virtual void setSort(int column, BobUI::SortOrder order);
 
     QString filter() const;
     virtual void setFilter(const QString &filter);
@@ -100,13 +100,13 @@ protected:
     virtual QString selectStatement() const;
 
     void setPrimaryKey(const QSqlIndex &key);
-#if QT_SQL_REMOVED_SINCE(6, 5)
+#if BOBUI_SQL_REMOVED_SINCE(6, 5)
     void setQuery(const QSqlQuery &query);
 #endif
     QModelIndex indexInQuery(const QModelIndex &item) const override;
     QSqlRecord primaryValues(int row) const;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSQLTABLEMODEL_H

@@ -8,7 +8,7 @@
 OmniTreeView::OmniTreeView(QQuickItem *parent)
     : QQuickPaintedItem(parent), m_rowHeight(30), m_scrollY(0) {
     setObjectName("OmniTreeView");
-    setAcceptedMouseButtons(Qt::LeftButton);
+    setAcceptedMouseButtons(BobUI::LeftButton);
     
     m_root = new OmniTreeNode{"Root", true, {}, 0};
     
@@ -71,11 +71,11 @@ void OmniTreeView::paint(QPainter *painter) {
         int indent = node->depth * 20;
         
         painter->setPen(theme->textColor());
-        painter->drawText(rowRect.adjusted(indent, 0, 0, 0), Qt::AlignLeft | Qt::AlignVCenter, node->text);
+        painter->drawText(rowRect.adjusted(indent, 0, 0, 0), BobUI::AlignLeft | BobUI::AlignVCenter, node->text);
         
         // Draw expand/collapse arrow if has children
         if (!node->children.isEmpty()) {
-            painter->drawText(rowRect.adjusted(indent - 15, 0, 0, 0), Qt::AlignLeft | Qt::AlignVCenter, node->isExpanded ? "▼" : "▶");
+            painter->drawText(rowRect.adjusted(indent - 15, 0, 0, 0), BobUI::AlignLeft | BobUI::AlignVCenter, node->isExpanded ? "▼" : "▶");
         }
     }
 }

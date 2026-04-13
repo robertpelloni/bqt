@@ -1,7 +1,7 @@
-[QTBUG4419_lineEditSelectAll]
+[BOBUIBUG4419_lineEditSelectAll]
 macos
-# QTBUG-87393
+# BOBUIBUG-87393
 [task227930_correctNavigationKeyboardBehavior]
 android
-[QTBUG4419_lineEditSelectAll]
+[BOBUIBUG4419_lineEditSelectAll]
 android

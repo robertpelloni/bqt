@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtCore/QScopedPointer>
+#include <BOBUIest>
+#include <BobUICore/QScopedPointer>
 
-#include <QtCore/qstdlibdetection.h>
+#include <BobUICore/qstdlibdetection.h>
 
 /*!
  \class tst_QScopedPointer
@@ -41,9 +41,9 @@ private Q_SLOTS:
     // TODO instanciate on const object
 
     // Tests for deprecated APIs
-#if QT_DEPRECATED_SINCE(6, 1)
+#if BOBUI_DEPRECATED_SINCE(6, 1)
     void deprecatedTake();
-#endif // QT_DEPRECATED_SINCE(6, 1)
+#endif // BOBUI_DEPRECATED_SINCE(6, 1)
 };
 
 void tst_QScopedPointer::defaultConstructor()
@@ -143,7 +143,7 @@ void tst_QScopedPointer::resetDeleteOrdering()
             {
                 const auto *value = instance->get();
                 std::unique_ptr<int> deleter(p);
-                QT_TRY { QCOMPARE(value, expected); } QT_CATCH(...) {} // eat QTest failure exception, if any
+                BOBUI_TRY { QCOMPARE(value, expected); } BOBUI_CATCH(...) {} // eat BOBUIest failure exception, if any
             }
             void operator()(int *p) { cleanup(p); }
         };
@@ -155,7 +155,7 @@ void tst_QScopedPointer::resetDeleteOrdering()
             expected = nullptr;
             p.reset();
         }
-        if (QTest::currentTestFailed())
+        if (BOBUIest::currentTestFailed())
             return;
         // destructor
         {
@@ -163,7 +163,7 @@ void tst_QScopedPointer::resetDeleteOrdering()
             instance = &p;
             expected = p.get(); // inconsistent with reset(), but consistent with unique_ptr
         }
-        if (QTest::currentTestFailed())
+        if (BOBUIest::currentTestFailed())
             return;
     }
 
@@ -180,7 +180,7 @@ void tst_QScopedPointer::resetDeleteOrdering()
             {
                 const auto *value = instance->get();
                 std::unique_ptr<int> deleter(p);
-                QT_TRY { QCOMPARE(value, expected); } QT_CATCH(...) {} // eat QTest failure exception, if any
+                BOBUI_TRY { QCOMPARE(value, expected); } BOBUI_CATCH(...) {} // eat BOBUIest failure exception, if any
             }
         };
 
@@ -191,7 +191,7 @@ void tst_QScopedPointer::resetDeleteOrdering()
             expected = nullptr; // https://eel.is/c++draft/unique.ptr#single.modifiers-3 ... 5
             p.reset();
         }
-        if (QTest::currentTestFailed())
+        if (BOBUIest::currentTestFailed())
             return;
         // destructor
 #ifdef Q_STL_LIBCPP
@@ -203,7 +203,7 @@ void tst_QScopedPointer::resetDeleteOrdering()
             instance = &p;
             expected = p.get(); // https://eel.is/c++draft/unique.ptr#single.dtor
         }
-        if (QTest::currentTestFailed())
+        if (BOBUIest::currentTestFailed())
             return;
 
     }
@@ -527,7 +527,7 @@ void tst_QScopedPointer::array()
     QCOMPARE(instCount, RefCounted::instanceCount.loadRelaxed());
 }
 
-#if QT_DEPRECATED_SINCE(6, 1)
+#if BOBUI_DEPRECATED_SINCE(6, 1)
 void tst_QScopedPointer::deprecatedTake()
 {
     RefCounted *a = new RefCounted;
@@ -537,13 +537,13 @@ void tst_QScopedPointer::deprecatedTake()
 
     QCOMPARE(RefCounted::instanceCount.loadRelaxed(), 1);
 
-    QT_IGNORE_DEPRECATIONS(pa2.take();)
+    BOBUI_IGNORE_DEPRECATIONS(pa2.take();)
 
     // check that pa2 holds nullptr, but the memory was not released
     QVERIFY(pa2.isNull());
     QCOMPARE(RefCounted::instanceCount.loadRelaxed(), 1);
 }
-#endif // QT_DEPRECATED_SINCE(6, 1)
+#endif // BOBUI_DEPRECATED_SINCE(6, 1)
 
-QTEST_MAIN(tst_QScopedPointer)
+BOBUIEST_MAIN(tst_QScopedPointer)
 #include "tst_qscopedpointer.moc"

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example widgets/windowflags
@@ -7,15 +7,15 @@
     \examplecategory {User Interface Components}
     \ingroup examples-widgets
     \brief The Window Flags example shows how to use the window flags
-    available in Qt.
+    available in BobUI.
 
     A window flag is either a type or a hint. A type is used to
     specify various window-system properties for the widget. A widget
-    can only have one type, and the default is Qt::Widget. However, a
+    can only have one type, and the default is BobUI::Widget. However, a
     widget can have zero or more hints. The hints are used to
     customize the appearance of top-level windows.
 
-    A widget's flags are stored in a Qt::WindowFlags type which stores
+    A widget's flags are stored in a BobUI::WindowFlags type which stores
     an OR combination of the flags.
 
     \image windowflags-example.png {Controller window and preview window}
@@ -79,7 +79,7 @@
     \snippet widgets/windowflags/controllerwindow.cpp 2
 
     The \c updatePreview() slot is called whenever the user changes
-    any of the window flags. First we create an empty Qt::WindowFlags
+    any of the window flags. First we create an empty BobUI::WindowFlags
     \c flags, then we determine which one of the types that is checked
     and add it to \c flags.
 
@@ -112,16 +112,16 @@
 
     First we create a group box, and then we create a radio button
     (using the private \c createRadioButton() function) for each of
-    the available types among the window flags. We make Qt::Window the
+    the available types among the window flags. We make BobUI::Window the
     initially applied type. We put the radio buttons into a
     QGridLayout and install the layout on the group box.
 
-    We do not include the default Qt::Widget type. The reason is that
+    We do not include the default BobUI::Widget type. The reason is that
     it behaves somewhat different than the other types. If the type is
     not specified for a widget, and it has no parent, the widget is a
     window. However, if it has a parent, it is a standard child
     widget. The other types are all top-level windows, and since the
-    hints only affect top-level windows, we abandon the Qt::Widget
+    hints only affect top-level windows, we abandon the BobUI::Widget
     type.
 
     \snippet widgets/windowflags/controllerwindow.cpp 6
@@ -170,15 +170,15 @@
 
     \snippet widgets/windowflags/previewwindow.cpp 0
 
-    In the constructor, we first create a QTextEdit and make sure that
+    In the constructor, we first create a BOBUIextEdit and make sure that
     it is read-only.
 
     We also prohibit any line wrapping in the text editor using the
-    QTextEdit::setLineWrapMode() function. The result is that a
+    BOBUIextEdit::setLineWrapMode() function. The result is that a
     horizontal scrollbar appears when a window flag's name exceeds the
     width of the editor. This is a reasonable solution since we
     construct the displayed text with built-in line breaks. If no line
-    breaks were guaranteed, using another QTextEdit::LineWrapMode
+    breaks were guaranteed, using another BOBUIextEdit::LineWrapMode
     would perhaps make more sense.
 
     Then we create the \uicontrol Close button, and put both the widgets

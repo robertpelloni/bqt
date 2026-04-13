@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "fsmodel.h"
 
@@ -13,7 +13,7 @@ FileSystemModel::FileSystemModel(QObject *parent)
 //! [1]
 QVariant FileSystemModel::data(const QModelIndex &index, int role) const
 {
-    if (role == Qt::DisplayRole && index.column() == 0) {
+    if (role == BobUI::DisplayRole && index.column() == 0) {
         QString path  = QDir::toNativeSeparators(filePath(index));
         if (path.endsWith(QDir::separator()))
             path.chop(1);

@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #ifndef PARSETABLE_H
 #define PARSETABLE_H
 
-#include <QtCore/qglobal.h>
+#include <BobUICore/qglobal.h>
 
-QT_FORWARD_DECLARE_CLASS(QTextStream);
+BOBUI_FORWARD_DECLARE_CLASS(BOBUIextStream);
 class Automaton;
 
 class ParseTable
 {
 public:
-  ParseTable (QTextStream &out);
+  ParseTable (BOBUIextStream &out);
 
   void operator () (Automaton *a);
 
 private:
-  QTextStream &out;
+  BOBUIextStream &out;
 };
 
 #endif // PARSETABLE_H

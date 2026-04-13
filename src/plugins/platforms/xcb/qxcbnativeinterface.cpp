@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qxcbnativeinterface.h"
 
@@ -11,12 +11,12 @@
 #include "qxcbsystemtraytracker.h"
 
 #include <private/qguiapplication_p.h>
-#include <QtCore/QMap>
+#include <BobUICore/QMap>
 
-#include <QtCore/QDebug>
+#include <BobUICore/QDebug>
 
-#include <QtGui/qopenglcontext.h>
-#include <QtGui/qscreen.h>
+#include <BobUIGui/qopenglcontext.h>
+#include <BobUIGui/qscreen.h>
 
 #include <stdio.h>
 
@@ -24,11 +24,11 @@
 
 #include "qxcbnativeinterfacehandler.h"
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
 #include "qxcbvulkanwindow.h"
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // return QXcbNativeInterface::ResourceType for the key.
 static int resourceType(const QByteArray &key)
@@ -121,7 +121,7 @@ void *QXcbNativeInterface::nativeResourceForScreen(const QByteArray &resourceStr
     const QXcbScreen *xcbScreen = static_cast<QXcbScreen *>(screen->handle());
     switch (resourceType(lowerCaseResource)) {
     case XDisplay:
-#if QT_CONFIG(xcb_xlib)
+#if BOBUI_CONFIG(xcb_xlib)
         result = xcbScreen->connection()->xlib_display();
 #endif
         break;
@@ -177,7 +177,7 @@ void *QXcbNativeInterface::nativeResourceForWindow(const QByteArray &resourceStr
     case Screen:
         result = screenForWindow(window);
         break;
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     case VkSurface:
         if (window->surfaceType() == QSurface::VulkanSurface && window->handle()) {
             // return a pointer to the VkSurfaceKHR value, not the value itself
@@ -199,7 +199,7 @@ void *QXcbNativeInterface::nativeResourceForBackingStore(const QByteArray &resou
     return result;
 }
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 void *QXcbNativeInterface::nativeResourceForCursor(const QByteArray &resource, const QCursor &cursor)
 {
     if (resource == QByteArrayLiteral("xcbcursor")) {
@@ -212,7 +212,7 @@ void *QXcbNativeInterface::nativeResourceForCursor(const QByteArray &resource, c
     }
     return nullptr;
 }
-#endif // !QT_NO_CURSOR
+#endif // !BOBUI_NO_CURSOR
 
 QPlatformNativeInterface::NativeResourceForIntegrationFunction QXcbNativeInterface::nativeResourceFunctionForIntegration(const QByteArray &resource)
 {
@@ -332,7 +332,7 @@ void *QXcbNativeInterface::rootWindow()
 
 Display *QXcbNativeInterface::display() const
 {
-#if QT_CONFIG(xcb_xlib)
+#if BOBUI_CONFIG(xcb_xlib)
     QXcbIntegration *integration = QXcbIntegration::instance();
     if (QXcbConnection *connection = integration->connection())
         return reinterpret_cast<Display *>(connection->xlib_display());
@@ -423,7 +423,7 @@ QXcbScreen *QXcbNativeInterface::qPlatformScreenForWindow(QWindow *window)
 
 void *QXcbNativeInterface::displayForWindow(QWindow *window)
 {
-#if QT_CONFIG(xcb_xlib)
+#if BOBUI_CONFIG(xcb_xlib)
     QXcbScreen *screen = qPlatformScreenForWindow(window);
     return screen ? screen->connection()->xlib_display() : nullptr;
 #else
@@ -562,7 +562,7 @@ void *QXcbNativeInterface::handlerNativeResourceForBackingStore(const QByteArray
 }
 
 static void dumpNativeWindowsRecursion(const QXcbConnection *connection, xcb_window_t window,
-                                       int level, QTextStream &str)
+                                       int level, BOBUIextStream &str)
 {
     if (level)
         str << QByteArray(2 * level, ' ');
@@ -579,13 +579,13 @@ static void dumpNativeWindowsRecursion(const QXcbConnection *connection, xcb_win
     const QChar oldPadChar =str.padChar();
     str.setFieldWidth(8);
     str.setPadChar(u'0');
-    str << Qt::hex << window;
+    str << BobUI::hex << window;
     str.setFieldWidth(oldFieldWidth);
     str.setPadChar(oldPadChar);
-    str << Qt::dec << " \""
+    str << BobUI::dec << " \""
         << QXcbWindow::windowTitle(connection, window) << "\" "
-        << geom.width() << 'x' << geom.height() << Qt::forcesign << geom.x() << geom.y()
-        << Qt::noforcesign << '\n';
+        << geom.width() << 'x' << geom.height() << BobUI::forcesign << geom.x() << geom.y()
+        << BobUI::noforcesign << '\n';
 
     auto reply = Q_XCB_REPLY(xcb_query_tree, conn, window);
     if (reply) {
@@ -599,7 +599,7 @@ static void dumpNativeWindowsRecursion(const QXcbConnection *connection, xcb_win
 QString QXcbNativeInterface::dumpConnectionNativeWindows(const QXcbConnection *connection, WId root) const
 {
     QString result;
-    QTextStream str(&result);
+    BOBUIextStream str(&result);
     if (root) {
         dumpNativeWindowsRecursion(connection, xcb_window_t(root), 0, str);
     } else {
@@ -617,6 +617,6 @@ QString QXcbNativeInterface::dumpNativeWindows(WId root) const
     return dumpConnectionNativeWindows(QXcbIntegration::instance()->connection(), root);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qxcbnativeinterface.cpp"

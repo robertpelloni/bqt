@@ -1,9 +1,9 @@
 // Copyright (C) 2015 Robin Burchell <robin.burchell@viroteck.net>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QStack>
 #include <QDebug>
-#include <QTest>
+#include <BOBUIest>
 
 #include <vector>
 
@@ -54,6 +54,6 @@ void tst_QStack::qstack_pushpopone()
     }
 }
 
-QTEST_MAIN(tst_QStack)
+BOBUIEST_MAIN(tst_QStack)
 
 #include "tst_bench_qstack.moc"

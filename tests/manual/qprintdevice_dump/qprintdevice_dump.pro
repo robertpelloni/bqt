@@ -1,4 +1,4 @@
-QT += printsupport-private
+BOBUI += printsupport-private
 
 TARGET = qprintdevice_dump
 TEMPLATE = app

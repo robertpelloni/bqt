@@ -1,11 +1,11 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "renderthread.h"
 
 #include <QImage>
 #include <QElapsedTimer>
-#include <QTextStream>
+#include <BOBUIextStream>
 
 #include <cmath>
 
@@ -13,7 +13,7 @@ int RenderThread::numPasses = 8;
 
 //! [0]
 RenderThread::RenderThread(QObject *parent)
-    : QThread(parent)
+    : BOBUIhread(parent)
 {
     for (int i = 0; i < ColormapSize; ++i)
         colormap[i] = rgbFromWaveLength(380.0 + (i * 400.0 / ColormapSize));
@@ -127,7 +127,7 @@ void RenderThread::run()
             } else {
                 if (!restart) {
                     QString message;
-                    QTextStream str(&message);
+                    BOBUIextStream str(&message);
                     str << " Pass " << (pass + 1) << '/' << numPasses
                         << ", max iterations: " << MaxIterations << ", time: ";
                     const auto elapsed = timer.elapsed();

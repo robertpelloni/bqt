@@ -1,5 +1,5 @@
-QT += widgets
-requires(qtConfig(combobox))
+BOBUI += widgets
+requires(bobuiConfig(combobox))
 
 HEADERS       = mainwindow.h \
                 stylesheeteditor.h
@@ -11,5 +11,5 @@ SOURCES       = main.cpp \
                 stylesheeteditor.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/widgets/stylesheet
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/widgets/stylesheet
 INSTALLS += target

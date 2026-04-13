@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
-#include <QTableView>
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
+#include <BOBUIableView>
 #include <QVBoxLayout>
 #include <QStyledItemDelegate>
 #include <QItemEditorFactory>
@@ -36,7 +36,7 @@ public:
 LocaleWidget::LocaleWidget(QWidget *parent)
     : QWidget(parent),
       m_model(new LocaleModel(this)),
-      m_view(new QTableView(this))
+      m_view(new BOBUIableView(this))
 {
     QStyledItemDelegate *delegate = qobject_cast<QStyledItemDelegate*>(m_view->itemDelegate());
     Q_ASSERT(delegate != 0);

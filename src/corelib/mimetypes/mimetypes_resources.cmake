@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 # List of files that need to be packaged as resources.
@@ -13,11 +13,11 @@ set(corelib_mimetypes_resource_file
 function(corelib_add_mimetypes_resources target)
     set(source_file "${corelib_mimetypes_resource_file}")
     set_source_files_properties("${source_file}"
-        PROPERTIES QT_RESOURCE_ALIAS "tika-mimetypes.xml"
+        PROPERTIES BOBUI_RESOURCE_ALIAS "tika-mimetypes.xml"
     )
-    qt_internal_add_resource(${target} "mimetypes"
+    bobui_internal_add_resource(${target} "mimetypes"
         PREFIX
-            "/qt-project.org/qmime/tika/packages"
+            "/bobui-project.org/qmime/tika/packages"
         FILES
             "${source_file}"
     )

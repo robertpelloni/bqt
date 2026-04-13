@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDIR_P_H
 #define QDIR_P_H
@@ -9,7 +9,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -20,11 +20,11 @@
 #include "qfilesystementry_p.h"
 #include "qfilesystemmetadata_p.h"
 
-#include <QtCore/qmutex.h>
+#include <BobUICore/qmutex.h>
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDirPrivate : public QSharedData
 {
@@ -44,13 +44,13 @@ public:
 
     bool exists() const;
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
     static QDirListing::IteratorFlags toDirListingFlags(QDir::Filters filters);
     static bool checkNonDirListingFlags(const QDirListing::DirEntry &dirEntry,
                                         QDir::Filters filters);
 
     void initFileLists(const QDir &dir) const;
-#endif // !QT_BOOTSTRAPPED
+#endif // !BOBUI_BOOTSTRAPPED
 
     static void sortFileList(QDir::SortFlags, const QFileInfoList &, QStringList *, QFileInfoList *);
 
@@ -88,9 +88,9 @@ public:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QDirPrivate::PathNormalizations)
 
-bool qt_isPathNormalized(const QString &path, QDirPrivate::PathNormalizations flags) noexcept;
-Q_AUTOTEST_EXPORT bool qt_normalizePathSegments(QString *path, QDirPrivate::PathNormalizations flags);
+bool bobui_isPathNormalized(const QString &path, QDirPrivate::PathNormalizations flags) noexcept;
+Q_AUTOTEST_EXPORT bool bobui_normalizePathSegments(QString *path, QDirPrivate::PathNormalizations flags);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

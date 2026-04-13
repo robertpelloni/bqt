@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #ifndef QMAKEEVALUATOR_H
 #define QMAKEEVALUATOR_H
@@ -19,7 +19,7 @@
 #include <qstring.h>
 #include <qstringlist.h>
 #include <qshareddata.h>
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
 # include <qprocess.h>
 #else
 # include <qiodevice.h>
@@ -30,7 +30,7 @@
 
 #include <list>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QMakeGlobals;
 
@@ -221,7 +221,7 @@ public:
 
     VisitReturn writeFile(const QString &ctx, const QString &fn, QIODevice::OpenMode mode,
                           QMakeVfs::VfsFlags flags, const QString &contents);
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
     void runProcess(QProcess *proc, const QString &command) const;
 #endif
     QByteArray getCommandOutput(const QString &args, int *exitCode) const;
@@ -304,6 +304,6 @@ Q_DECLARE_TYPEINFO(QMakeEvaluator::Location, Q_PRIMITIVE_TYPE);
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QMakeEvaluator::LoadFlags)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QMAKEEVALUATOR_H

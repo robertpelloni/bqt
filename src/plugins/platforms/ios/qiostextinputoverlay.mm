@@ -1,17 +1,17 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #import <UIKit/UIGestureRecognizerSubclass.h>
 #import <UIKit/UITextView.h>
 
-#include <QtGui/QGuiApplication>
-#include <QtGui/QInputMethod>
-#include <QtGui/QStyleHints>
+#include <BobUIGui/QGuiApplication>
+#include <BobUIGui/QInputMethod>
+#include <BobUIGui/QStyleHints>
 
-#include <QtGui/private/qinputmethod_p.h>
-#include <QtCore/private/qobject_p.h>
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUIGui/private/qinputmethod_p.h>
+#include <BobUICore/private/qobject_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
 #include "qiosglobal.h"
 #include "qiostextinputoverlay.h"
@@ -32,10 +32,10 @@ static QPlatformInputContext *platformInputContext()
 
 static SelectionPair querySelection()
 {
-    QInputMethodQueryEvent query(Qt::ImAnchorPosition | Qt::ImCursorPosition);
+    QInputMethodQueryEvent query(BobUI::ImAnchorPosition | BobUI::ImCursorPosition);
     QGuiApplication::sendEvent(QGuiApplication::focusObject(), &query);
-    int anchorPos = query.value(Qt::ImAnchorPosition).toInt();
-    int cursorPos = query.value(Qt::ImCursorPosition).toInt();
+    int anchorPos = query.value(BobUI::ImAnchorPosition).toInt();
+    int cursorPos = query.value(BobUI::ImCursorPosition).toInt();
     return {anchorPos, cursorPos};
 }
 
@@ -138,11 +138,11 @@ static void executeBlockWithoutAnimation(Block block)
 void showEditMenu(UIView *focusView, QPoint touchPos)
 {
     const bool mouseTriggered = false;
-    const Qt::KeyboardModifiers keyboardModifiers = Qt::NoModifier;
-    QWindow *qtWindow = quiview_cast(focusView).platformWindow->window();
-    const auto globalTouchPos = qtWindow->mapToGlobal(touchPos);
+    const BobUI::KeyboardModifiers keyboardModifiers = BobUI::NoModifier;
+    QWindow *bobuiWindow = quiview_cast(focusView).platformWindow->window();
+    const auto globalTouchPos = bobuiWindow->mapToGlobal(touchPos);
     const bool contextMenuEventAccepted = QWindowSystemInterface::handleContextMenuEvent<
-        QWindowSystemInterface::SynchronousDelivery>(qtWindow, mouseTriggered, touchPos,
+        QWindowSystemInterface::SynchronousDelivery>(bobuiWindow, mouseTriggered, touchPos,
                                                      globalTouchPos, keyboardModifiers);
 
     if (!contextMenuEventAccepted) {
@@ -167,7 +167,7 @@ void showEditMenu(UIView *focusView, QPoint touchPos)
     UIView *_loupeImageView;
     CALayer *_containerLayer;
     CGFloat _loupeOffset;
-    QTimer _updateTimer;
+    BOBUIimer _updateTimer;
 }
 
 - (instancetype)initWithSize:(CGSize)size cornerRadius:(CGFloat)cornerRadius bottomOffset:(CGFloat)bottomOffset
@@ -178,7 +178,7 @@ void showEditMenu(UIView *focusView, QPoint touchPos)
         _pendingSnapshotUpdate = YES;
         _updateTimer.setInterval(100);
         _updateTimer.setSingleShot(true);
-        QObject::connect(&_updateTimer, &QTimer::timeout, [self](){ [self updateSnapshot]; });
+        QObject::connect(&_updateTimer, &BOBUIimer::timeout, [self](){ [self updateSnapshot]; });
 
         // Create own geometry and outer shadow
         self.frame = CGRectMake(0, 0, size.width, size.height);
@@ -306,12 +306,12 @@ void showEditMenu(UIView *focusView, QPoint touchPos)
 @implementation QIOSHandleLayer {
     CALayer *_handleCursorLayer;
     CALayer *_handleKnobLayer;
-    Qt::Edge _selectionEdge;
+    BobUI::Edge _selectionEdge;
 }
 
 @dynamic handleScale;
 
-- (instancetype)initWithKnobAtEdge:(Qt::Edge)selectionEdge
+- (instancetype)initWithKnobAtEdge:(BobUI::Edge)selectionEdge
 {
     if (self = [super init]) {
         CGColorRef bgColor = [UIColor colorWithRed:0.1 green:0.4 blue:0.9 alpha:1].CGColor;
@@ -397,12 +397,12 @@ void showEditMenu(UIView *focusView, QPoint touchPos)
     CGPoint origin = _cursorRectangle.origin;
     CGSize size = _cursorRectangle.size;
     CGFloat scale = ((QIOSHandleLayer *)[self presentationLayer]).handleScale;
-    CGFloat edgeAdjustment = (_selectionEdge == Qt::LeftEdge) ? 0.5 - cursorWidth : -0.5;
+    CGFloat edgeAdjustment = (_selectionEdge == BobUI::LeftEdge) ? 0.5 - cursorWidth : -0.5;
 
     CGFloat cursorX = origin.x + (size.width / 2) + edgeAdjustment;
     CGFloat cursorY = origin.y;
     CGFloat knobX = cursorX - (kKnobWidth - cursorWidth) / 2;
-    CGFloat knobY = origin.y + ((_selectionEdge == Qt::LeftEdge) ? -kKnobWidth : size.height);
+    CGFloat knobY = origin.y + ((_selectionEdge == BobUI::LeftEdge) ? -kKnobWidth : size.height);
 
     _handleCursorLayer.frame = CGRectMake(cursorX, cursorY, cursorWidth, size.height);
     _handleKnobLayer.frame = CGRectMake(knobX, knobY, kKnobWidth, kKnobWidth);
@@ -430,7 +430,7 @@ void showEditMenu(UIView *focusView, QPoint touchPos)
     UIView *_desktopView;
     CGPoint _firstTouchPoint;
     CGPoint _lastTouchPoint;
-    QTimer _triggerStateBeganTimer;
+    BOBUIimer _triggerStateBeganTimer;
     int _originalCursorFlashTime;
 }
 
@@ -440,7 +440,7 @@ void showEditMenu(UIView *focusView, QPoint touchPos)
         self.enabled = NO;
         _triggerStateBeganTimer.setInterval(QGuiApplication::styleHints()->startDragTime());
         _triggerStateBeganTimer.setSingleShot(true);
-        QObject::connect(&_triggerStateBeganTimer, &QTimer::timeout, [=](){
+        QObject::connect(&_triggerStateBeganTimer, &BOBUIimer::timeout, [=](){
             self.state = UIGestureRecognizerStateBegan;
         });
     }
@@ -631,8 +631,8 @@ void showEditMenu(UIView *focusView, QPoint touchPos)
 {
     self.focalPoint = touchPoint;
 
-    const int currentCursorPos = QInputMethod::queryFocusObject(Qt::ImCursorPosition, QVariant()).toInt();
-    const int newCursorPos = QPlatformInputContext::queryFocusObject(Qt::ImCursorPosition, touchPoint).toInt();
+    const int currentCursorPos = QInputMethod::queryFocusObject(BobUI::ImCursorPosition, QVariant()).toInt();
+    const int newCursorPos = QPlatformInputContext::queryFocusObject(BobUI::ImCursorPosition, touchPoint).toInt();
     if (newCursorPos != currentCursorPos)
         QPlatformInputContext::setSelectionOnFocusObject(touchPoint, touchPoint);
 }
@@ -657,7 +657,7 @@ void showEditMenu(UIView *focusView, QPoint touchPos)
     bool _dragOnCursor;
     bool _dragOnAnchor;
     bool _multiLine;
-    QTimer _updateSelectionTimer;
+    BOBUIimer _updateSelectionTimer;
     QMetaObject::Connection _cursorConnection;
     QMetaObject::Connection _anchorConnection;
     QMetaObject::Connection _clipRectConnection;
@@ -668,10 +668,10 @@ void showEditMenu(UIView *focusView, QPoint touchPos)
     if (self = [super init]) {
         self.delaysTouchesBegan = YES;
         self.dragTriggersGesture = YES;
-        _multiLine = QInputMethod::queryFocusObject(Qt::ImHints, QVariant()).toUInt() & Qt::ImhMultiLine;
+        _multiLine = QInputMethod::queryFocusObject(BobUI::ImHints, QVariant()).toUInt() & BobUI::ImhMultiLine;
         _updateSelectionTimer.setInterval(1);
         _updateSelectionTimer.setSingleShot(true);
-        QObject::connect(&_updateSelectionTimer, &QTimer::timeout, [self](){ [self updateSelection]; });
+        QObject::connect(&_updateSelectionTimer, &BOBUIimer::timeout, [self](){ [self updateSelection]; });
     }
 
     return self;
@@ -691,8 +691,8 @@ void showEditMenu(UIView *focusView, QPoint touchPos)
         [self.focusView.layer addSublayer:_clipRectLayer];
 
         // Create the handle layers, and add them to the clipped input rect layer
-        _cursorLayer = [[[QIOSHandleLayer alloc] initWithKnobAtEdge:Qt::RightEdge] autorelease];
-        _anchorLayer = [[[QIOSHandleLayer alloc] initWithKnobAtEdge:Qt::LeftEdge] autorelease];
+        _cursorLayer = [[[QIOSHandleLayer alloc] initWithKnobAtEdge:BobUI::RightEdge] autorelease];
+        _anchorLayer = [[[QIOSHandleLayer alloc] initWithKnobAtEdge:BobUI::LeftEdge] autorelease];
         bool selection = hasSelection();
         _cursorLayer.visible = selection;
         _anchorLayer.visible = selection;
@@ -703,9 +703,9 @@ void showEditMenu(UIView *focusView, QPoint touchPos)
         // such as backspace (select last character + cut selection). To avoid briefly showing
         // the selection handles for such cases, and to avoid calling updateSelection when
         // both handles and clip rectangle change, we use a timer to wait a cycle before we update.
-        // (Note that since QTimer::start is overloaded, we need some extra syntax for the connections).
+        // (Note that since BOBUIimer::start is overloaded, we need some extra syntax for the connections).
         QInputMethod *im = QGuiApplication::inputMethod();
-        void(QTimer::*start)(void) = &QTimer::start;
+        void(BOBUIimer::*start)(void) = &BOBUIimer::start;
         _cursorConnection = QObject::connect(im, &QInputMethod::cursorRectangleChanged, &_updateSelectionTimer, start);
         _anchorConnection = QObject::connect(im, &QInputMethod::anchorRectangleChanged, &_updateSelectionTimer, start);
         _clipRectConnection = QObject::connect(im, &QInputMethod::inputItemClipRectangleChanged, &_updateSelectionTimer, start);
@@ -815,7 +815,7 @@ void showEditMenu(UIView *focusView, QPoint touchPos)
 
     // Get the text position under the touch
     SelectionPair selection = querySelection();
-    int touchTextPos = QPlatformInputContext::queryFocusObject(Qt::ImCursorPosition, touchPoint).toInt();
+    int touchTextPos = QPlatformInputContext::queryFocusObject(BobUI::ImCursorPosition, touchPoint).toInt();
 
     // Ensure that the handles cannot be dragged past each other
     if (_dragOnCursor)
@@ -930,9 +930,9 @@ void showEditMenu(UIView *focusView, QPoint touchPos)
 
     if (touchInsideInputArea && hasSelection()) {
         // When we have a selection and the user taps inside the input area, we stop
-        // tracking, and let Qt handle the event like normal. Unless the selection
+        // tracking, and let BobUI handle the event like normal. Unless the selection
         // recogniser is triggered instead (if the touch is on top of the selection
-        // handles) this will typically result in Qt clearing the selection, which in
+        // handles) this will typically result in BobUI clearing the selection, which in
         // turn will make the selection recogniser hide the menu.
         self.state = UIGestureRecognizerStateFailed;
         return;
@@ -960,7 +960,7 @@ void showEditMenu(UIView *focusView, QPoint touchPos)
     // When no menu is showing, and the touch is inside the input
     // area, we check if we should show it. We want to do so if
     // the tap doesn't result in the cursor changing position.
-    _cursorPosOnPress = QInputMethod::queryFocusObject(Qt::ImCursorPosition, QVariant()).toInt();
+    _cursorPosOnPress = QInputMethod::queryFocusObject(BobUI::ImCursorPosition, QVariant()).toInt();
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
@@ -969,7 +969,7 @@ void showEditMenu(UIView *focusView, QPoint touchPos)
         _menuShouldBeVisible = false;
     } else {
         QPointF touchPos = QPointF::fromCGPoint([static_cast<UITouch *>([touches anyObject]) locationInView:_focusView]);
-        int cursorPosOnRelease = QPlatformInputContext::queryFocusObject(Qt::ImCursorPosition, touchPos).toInt();
+        int cursorPosOnRelease = QPlatformInputContext::queryFocusObject(BobUI::ImCursorPosition, touchPos).toInt();
 
         if (cursorPosOnRelease == _cursorPosOnPress) {
             // We've recognized a gesture to open the menu, but we don't know
@@ -988,7 +988,7 @@ void showEditMenu(UIView *focusView, QPoint touchPos)
             });
         } else {
             // The menu is hidden, and the cursor will change position once
-            // Qt receive the touch release. We therefore fail so that we
+            // BobUI receive the touch release. We therefore fail so that we
             // don't block the touch event from further processing.
             self.state = UIGestureRecognizerStateFailed;
         }
@@ -1009,7 +1009,7 @@ void showEditMenu(UIView *focusView, QPoint touchPos)
 
 // -------------------------------------------------------------------------
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QIOSEditMenu *QIOSTextInputOverlay::s_editMenu = nullptr;
 
@@ -1018,7 +1018,7 @@ QIOSTextInputOverlay::QIOSTextInputOverlay()
     , m_selectionRecognizer(nullptr)
     , m_openMenuOnTapRecognizer(nullptr)
 {
-    if (qt_apple_isApplicationExtension()) {
+    if (bobui_apple_isApplicationExtension()) {
         qWarning() << "text input overlays disabled in application extensions";
         return;
     }
@@ -1057,9 +1057,9 @@ void QIOSTextInputOverlay::updateFocusObject()
         s_editMenu = nullptr;
     }
 
-    const QVariant hintsVariant = QGuiApplication::inputMethod()->queryFocusObject(Qt::ImHints, QVariant());
-    const Qt::InputMethodHints hints = Qt::InputMethodHints(hintsVariant.toUInt());
-    if (hints & Qt::ImhNoTextHandles)
+    const QVariant hintsVariant = QGuiApplication::inputMethod()->queryFocusObject(BobUI::ImHints, QVariant());
+    const BobUI::InputMethodHints hints = BobUI::InputMethodHints(hintsVariant.toUInt());
+    if (hints & BobUI::ImhNoTextHandles)
         return;
 
     // The focus object can emit selection updates (e.g from mouse drag), and
@@ -1075,10 +1075,10 @@ void QIOSTextInputOverlay::updateFocusObject()
     // mouse drag), even if we in theory could also start selections from a loupe.
 
     const bool inputAccepted = platformInputContext()->inputMethodAccepted();
-    const bool readOnly = QGuiApplication::inputMethod()->queryFocusObject(Qt::ImReadOnly, QVariant()).toBool();
+    const bool readOnly = QGuiApplication::inputMethod()->queryFocusObject(BobUI::ImReadOnly, QVariant()).toBool();
 
     if (inputAccepted || readOnly) {
-        if (!(hints & Qt::ImhNoEditMenu))
+        if (!(hints & BobUI::ImhNoEditMenu))
             s_editMenu = [QIOSEditMenu new];
         m_selectionRecognizer = [QIOSSelectionRecognizer new];
         m_openMenuOnTapRecognizer = [QIOSTapRecognizer new];
@@ -1092,4 +1092,4 @@ void QIOSTextInputOverlay::updateFocusObject()
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

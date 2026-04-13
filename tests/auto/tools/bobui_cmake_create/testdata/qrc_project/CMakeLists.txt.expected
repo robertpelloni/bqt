@@ -1,0 +1,20 @@
+cmake_minimum_required(VERSION 3.16)
+project(qrc_project LANGUAGES CXX)
+
+find_package(BobUI6 REQUIRED COMPONENTS Core)
+bobui_standard_project_setup(REQUIRES 6.8)
+
+bobui_add_executable(qrc_project
+    main.cpp
+)
+
+bobui_add_resources(qrc_project_resources test.qrc)
+target_sources(qrc_project
+    PRIVATE
+        ${qrc_project_resources}
+)
+
+target_link_libraries(qrc_project
+    PRIVATE
+        BobUI::Core
+)

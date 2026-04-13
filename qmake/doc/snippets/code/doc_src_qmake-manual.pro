@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #! [0]
 make all
@@ -7,22 +7,22 @@ make all
 
 
 #! [1]
-CONFIG += qt debug
+CONFIG += bobui debug
 #! [1]
 
 
 #! [2]
-QT += network xml
+BOBUI += network xml
 #! [2]
 
 
 #! [3]
-QT = network xml # This will omit the core and gui modules.
+BOBUI = network xml # This will omit the core and gui modules.
 #! [3]
 
 
 #! [4]
-QT -= gui # Only the core module is used.
+BOBUI -= gui # Only the core module is used.
 #! [4]
 
 
@@ -179,7 +179,7 @@ INCLUDEPATH = c:/msdev/include d:/stl/include
 
 
 #! [36]
-target.path += $$[QT_INSTALL_PLUGINS]/imageformats
+target.path += $$[BOBUI_INSTALL_PLUGINS]/imageformats
 INSTALLS += target
 #! [36]
 
@@ -231,7 +231,7 @@ QMAKE_RESOURCE_FLAGS += -threshold 0 -compress 9
 
 
 #! [47]
-QT -= gui # Only the core module is used.
+BOBUI -= gui # Only the core module is used.
 #! [47]
 
 
@@ -323,8 +323,8 @@ error(An error has occurred in the configuration process.)
 
 
 #! [63]
-exists( $(QTDIR)/lib/libqt-mt* ) {
-      message( "Configuring for multi-threaded Qt..." )
+exists( $(BOBUIDIR)/lib/libbobui-mt* ) {
+      message( "Configuring for multi-threaded BobUI..." )
       CONFIG += thread
 }
 #! [63]
@@ -404,7 +404,7 @@ qmake -query #queries all current PROPERTY/VALUE pairs
 
 
 #! [77]
-qmake -query "QT_INSTALL_PREFIX"
+qmake -query "BOBUI_INSTALL_PREFIX"
 #! [77]
 
 
@@ -494,7 +494,7 @@ DEFINES *= USE_MY_STUFF
 
 
 #! [93]
-DEFINES ~= s/QT_[DT].+/QT
+DEFINES ~= s/BOBUI_[DT].+/BOBUI
 #! [93]
 
 
@@ -543,7 +543,7 @@ TARGET = myproject_$${TEMPLATE}
 
 
 #! [101]
-target.path = $$[QT_INSTALL_PLUGINS]/designer
+target.path = $$[BOBUI_INSTALL_PLUGINS]/designer
 INSTALLS += target
 #! [101]
 
@@ -747,7 +747,7 @@ my_library.subdir = lib
 #! [149]
 
 #! [157]
-packagesExist(sqlite3 QtNetwork QtDeclarative) {
+packagesExist(sqlite3 BobUINetwork BobUIDeclarative) {
     DEFINES += USE_FANCY_UI
 }
 #! [157]
@@ -902,7 +902,7 @@ load(configure)
 # <project root>/config.tests/test/test.pro
 SOURCES = main.cpp
 LIBS += -ltheFeature
-# Note that the test project is built without Qt by default.
+# Note that the test project is built without BobUI by default.
 #! [180]
 
 
@@ -915,7 +915,7 @@ int main() { return featureFunction(); }
 
 #! [182]
 # <project root>/project.pro
-qtCompileTest(test)
+bobuiCompileTest(test)
 #! [182]
 
 #! [183]

@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:network-protocol
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:network-protocol
 
 #include "http2protocol_p.h"
 #include "http2frames_p.h"
@@ -10,16 +10,16 @@
 
 #include <access/qhttp2configuration.h>
 
-#include <QtCore/qbytearray.h>
-#include <QtCore/qstring.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qstring.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-QT_IMPL_METATYPE_EXTERN_TAGGED(Http2::Settings, Http2__Settings)
+BOBUI_IMPL_METATYPE_EXTERN_TAGGED(Http2::Settings, Http2__Settings)
 
-Q_LOGGING_CATEGORY(QT_HTTP2, "qt.network.http2")
+Q_LOGGING_CATEGORY(BOBUI_HTTP2, "bobui.network.http2")
 
 namespace Http2
 {
@@ -90,7 +90,7 @@ void appendProtocolUpgradeHeaders(const QHttp2Configuration &config, QHttpNetwor
     request->setHeaderField("HTTP2-Settings", settingsFrameToBase64(frame));
 }
 
-void qt_error(quint32 errorCode, QNetworkReply::NetworkError &error,
+void bobui_error(quint32 errorCode, QNetworkReply::NetworkError &error,
               QString &errorMessage)
 {
     if (errorCode > quint32(HTTP_1_1_REQUIRED)) {
@@ -145,7 +145,7 @@ void qt_error(quint32 errorCode, QNetworkReply::NetworkError &error,
                        "header compression context for the connection"_L1;
         break;
     case CONNECT_ERROR:
-        // TODO: in Qt6 we'll have to add more error codes in QNetworkReply.
+        // TODO: in BobUI6 we'll have to add more error codes in QNetworkReply.
         error = QNetworkReply::UnknownNetworkError;
         errorMessage = "The connection established in response "
                        "to a CONNECT request was reset or abnormally closed"_L1;
@@ -167,19 +167,19 @@ void qt_error(quint32 errorCode, QNetworkReply::NetworkError &error,
     }
 }
 
-QString qt_error_string(quint32 errorCode)
+QString bobui_error_string(quint32 errorCode)
 {
     QNetworkReply::NetworkError error = QNetworkReply::NoError;
     QString message;
-    qt_error(errorCode, error, message);
+    bobui_error(errorCode, error, message);
     return message;
 }
 
-QNetworkReply::NetworkError qt_error(quint32 errorCode)
+QNetworkReply::NetworkError bobui_error(quint32 errorCode)
 {
     QNetworkReply::NetworkError error = QNetworkReply::NoError;
     QString message;
-    qt_error(errorCode, error, message);
+    bobui_error(errorCode, error, message);
     return error;
 }
 
@@ -191,7 +191,7 @@ bool is_protocol_upgraded(const QHttpNetworkReply &reply)
     const auto values = reply.header().values(QHttpHeaders::WellKnownHeader::Upgrade);
     // Do some minimal checks here - we expect 'Upgrade: h2c' to be found.
     for (const auto &v : values) {
-        if (v.compare("h2c", Qt::CaseInsensitive) == 0)
+        if (v.compare("h2c", BobUI::CaseInsensitive) == 0)
             return true;
     }
 
@@ -227,4 +227,4 @@ std::vector<uchar> assemble_hpack_block(const std::vector<Frame> &frames)
 
 } // namespace Http2
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,5 +1,5 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QVXKEYBOARDHANDLER_DEFAULTMAP_P_H
 #define QVXKEYBOARDHANDLER_DEFAULTMAP_P_H
@@ -8,7 +8,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -16,10 +16,10 @@
 //
 
 #include "qnamespace.h"
-#include <QtInputSupport/private/qkeyboardmap_p.h>
+#include <BobUIInputSupport/private/qkeyboardmap_p.h>
 #include "private/qglobal_p.h"
 
-// no QT_BEGIN_NAMESPACE, since we include it internally...
+// no BOBUI_BEGIN_NAMESPACE, since we include it internally...
 
 const QKeyboardMap::Mapping QVxKeyboardHandler::s_keymap_default[] = {
     {   1, 0xffff, 0x01000000, 0x00, 0x00, 0x0000 },

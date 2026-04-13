@@ -1,17 +1,17 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qgraphicsframecapturemetal_p_p.h"
-#include <QtCore/qurl.h>
+#include <BobUICore/qurl.h>
 #include "Metal/Metal.h"
 #include "qglobal.h"
-#include <QtGui/rhi/qrhi.h>
-#include <QtGui/rhi/qrhi_platform.h>
+#include <BobUIGui/rhi/qrhi.h>
+#include <BobUIGui/rhi/qrhi_platform.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcGraphicsFrameCapture, "qt.gui.graphicsframecapture")
+Q_LOGGING_CATEGORY(lcGraphicsFrameCapture, "bobui.gui.graphicsframecapture")
 
 #if __has_feature(objc_arc)
 #error ARC not supported
@@ -28,7 +28,7 @@ QGraphicsFrameCaptureMetal::QGraphicsFrameCaptureMetal()
 
 QGraphicsFrameCaptureMetal::~QGraphicsFrameCaptureMetal()
 {
-#if defined(Q_OS_MACOS) && QT_CONFIG(process)
+#if defined(Q_OS_MACOS) && BOBUI_CONFIG(process)
     if (m_process) {
         m_process->terminate();
         delete m_process;
@@ -134,7 +134,7 @@ bool QGraphicsFrameCaptureMetal::isCapturing() const
 void QGraphicsFrameCaptureMetal::openCapture()
 {
 #if defined(Q_OS_MACOS)
-#if !QT_CONFIG(process)
+#if !BOBUI_CONFIG(process)
     qFatal("QGraphicsFrameCapture requires QProcess on macOS");
 #else
     if (!initialized()) {
@@ -169,4 +169,4 @@ void QGraphicsFrameCaptureMetal::updateCaptureFileName()
     m_captureDescriptor.outputURL = m_traceURL;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

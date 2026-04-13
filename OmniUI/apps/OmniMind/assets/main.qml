@@ -1,6 +1,6 @@
-import QtQuick 2.15
-import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.15
+import BobUIQuick 2.15
+import BobUIQuick.Controls 2.15
+import BobUIQuick.Layouts 1.15
 import Omni.BCI 1.0
 
 ApplicationWindow {
@@ -174,13 +174,13 @@ ApplicationWindow {
                 ColumnLayout {
                     anchors.centerIn: parent
                     spacing: 10
-                    Label { text: "Thought-to-Text Translator"; color: "#a1a1aa"; Layout.alignment: Qt.AlignHCenter }
+                    Label { text: "Thought-to-Text Translator"; color: "#a1a1aa"; Layout.alignment: BobUI.AlignHCenter }
                     Label {
                         text: detectedIntention
                         color: detectedIntention === "Awaiting Neural Command..." ? "#52525b" : "#fbbf24"
                         font.pixelSize: 28
                         font.bold: true
-                        Layout.alignment: Qt.AlignHCenter
+                        Layout.alignment: BobUI.AlignHCenter
                     }
                 }
             }
@@ -216,50 +216,50 @@ ApplicationWindow {
                             Layout.fillWidth: true
                             spacing: 5
                             ProgressBar {
-                                value: OmniBCIProcessor.deltaPower / 50.0; Layout.fillWidth: true; Layout.fillHeight: true; orientation: Qt.Vertical
+                                value: OmniBCIProcessor.deltaPower / 50.0; Layout.fillWidth: true; Layout.fillHeight: true; orientation: BobUI.Vertical
                                 ToolTip.visible: hovered; ToolTip.text: "0.5 - 4 Hz (Deep Sleep / Healing)"
                             }
-                            Label { text: "Delta"; color: "#a1a1aa"; Layout.alignment: Qt.AlignHCenter; font.bold: true }
+                            Label { text: "Delta"; color: "#a1a1aa"; Layout.alignment: BobUI.AlignHCenter; font.bold: true }
                         }
                         // Theta
                         ColumnLayout {
                             Layout.fillWidth: true
                             spacing: 5
                             ProgressBar {
-                                value: OmniBCIProcessor.thetaPower / 50.0; Layout.fillWidth: true; Layout.fillHeight: true; orientation: Qt.Vertical
+                                value: OmniBCIProcessor.thetaPower / 50.0; Layout.fillWidth: true; Layout.fillHeight: true; orientation: BobUI.Vertical
                                 ToolTip.visible: hovered; ToolTip.text: "4 - 8 Hz (Creativity / Dreams / Memory)"
                             }
-                            Label { text: "Theta"; color: "#a1a1aa"; Layout.alignment: Qt.AlignHCenter; font.bold: true }
+                            Label { text: "Theta"; color: "#a1a1aa"; Layout.alignment: BobUI.AlignHCenter; font.bold: true }
                         }
                         // Alpha
                         ColumnLayout {
                             Layout.fillWidth: true
                             spacing: 5
                             ProgressBar {
-                                value: OmniBCIProcessor.alphaPower / 50.0; Layout.fillWidth: true; Layout.fillHeight: true; orientation: Qt.Vertical
+                                value: OmniBCIProcessor.alphaPower / 50.0; Layout.fillWidth: true; Layout.fillHeight: true; orientation: BobUI.Vertical
                                 ToolTip.visible: hovered; ToolTip.text: "8 - 12 Hz (Relaxed / Calm / Awake)"
                             }
-                            Label { text: "Alpha"; color: "#a1a1aa"; Layout.alignment: Qt.AlignHCenter; font.bold: true }
+                            Label { text: "Alpha"; color: "#a1a1aa"; Layout.alignment: BobUI.AlignHCenter; font.bold: true }
                         }
                         // Beta
                         ColumnLayout {
                             Layout.fillWidth: true
                             spacing: 5
                             ProgressBar {
-                                value: OmniBCIProcessor.betaPower / 50.0; Layout.fillWidth: true; Layout.fillHeight: true; orientation: Qt.Vertical
+                                value: OmniBCIProcessor.betaPower / 50.0; Layout.fillWidth: true; Layout.fillHeight: true; orientation: BobUI.Vertical
                                 ToolTip.visible: hovered; ToolTip.text: "12 - 30 Hz (Alert / Focused / Thinking)"
                             }
-                            Label { text: "Beta"; color: "#a1a1aa"; Layout.alignment: Qt.AlignHCenter; font.bold: true }
+                            Label { text: "Beta"; color: "#a1a1aa"; Layout.alignment: BobUI.AlignHCenter; font.bold: true }
                         }
                         // Gamma
                         ColumnLayout {
                             Layout.fillWidth: true
                             spacing: 5
                             ProgressBar {
-                                value: OmniBCIProcessor.gammaPower / 50.0; Layout.fillWidth: true; Layout.fillHeight: true; orientation: Qt.Vertical
+                                value: OmniBCIProcessor.gammaPower / 50.0; Layout.fillWidth: true; Layout.fillHeight: true; orientation: BobUI.Vertical
                                 ToolTip.visible: hovered; ToolTip.text: "> 30 Hz (Peak Focus / High Cognitive Load)"
                             }
-                            Label { text: "Gamma"; color: "#a1a1aa"; Layout.alignment: Qt.AlignHCenter; font.bold: true }
+                            Label { text: "Gamma"; color: "#a1a1aa"; Layout.alignment: BobUI.AlignHCenter; font.bold: true }
                         }
                     }
 

@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QWIZARD_WIN_P_H
 #define QWIZARD_WIN_P_H
@@ -9,27 +9,27 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 
-#if QT_CONFIG(style_windowsvista)
+#if BOBUI_CONFIG(style_windowsvista)
 
 #include <qobject.h>
 #include <qwidget.h>
 #include <qabstractbutton.h>
-#include <QtWidgets/private/qwidget_p.h>
-#include <QtWidgets/private/qstylehelper_p.h>
-#include <qt_windows.h>
+#include <BobUIWidgets/private/qwidget_p.h>
+#include <BobUIWidgets/private/qstylehelper_p.h>
+#include <bobui_windows.h>
 
-QT_REQUIRE_CONFIG(wizard);
+BOBUI_REQUIRE_CONFIG(wizard);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QVistaBackButton : public QAbstractButton
 {
@@ -115,7 +115,7 @@ private:
 };
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // style_windowsvista
 #endif // QWIZARD_WIN_P_H

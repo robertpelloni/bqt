@@ -1,19 +1,19 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "glinfo.h"
 
 #include <QOpenGLFunctions>
-#include <QtOpenGLWidgets/QOpenGLWidget>
-#include <QtOpenGL/QOpenGLWindow>
-#include <QtGui/QOpenGLContext>
-#include <QtGui/QOpenGLFunctions>
-#include <QtGui/QWindow>
-#include <QtCore/QDebug>
-#include <QtCore/QString>
-#include <QtCore/QTimer>
+#include <BobUIOpenGLWidgets/QOpenGLWidget>
+#include <BobUIOpenGL/QOpenGLWindow>
+#include <BobUIGui/QOpenGLContext>
+#include <BobUIGui/QOpenGLFunctions>
+#include <BobUIGui/QWindow>
+#include <BobUICore/QDebug>
+#include <BobUICore/QString>
+#include <BobUICore/BOBUIimer>
 
-namespace QtDiag {
+namespace BobUIDiag {
 
 static QString getGlString(const QOpenGLContext *ctx, GLenum name)
 {
@@ -44,4 +44,4 @@ QString glInfo(const QObject *o)
     return QString();
 }
 
-} // namespace QtDiag
+} // namespace BobUIDiag

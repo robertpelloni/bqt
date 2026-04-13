@@ -1,5 +1,5 @@
 // Copyright (C) 2016 David Faure <faure@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QCommandLineParser>
 

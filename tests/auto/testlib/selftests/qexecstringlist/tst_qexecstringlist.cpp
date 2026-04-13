@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QtCore/QCoreApplication>
-#include <QTest>
+#include <BobUICore/QCoreApplication>
+#include <BOBUIest>
 
 class tst_QExecStringList: public QObject
 {
@@ -28,11 +28,11 @@ void tst_QExecStringList::testB() const
 
 void tst_QExecStringList::testB_data() const
 {
-    QTest::addColumn<bool>("dummy");
+    BOBUIest::addColumn<bool>("dummy");
 
-    QTest::newRow("Data1") << false;
-    QTest::newRow("Data2") << false;
-    QTest::newRow("Data3") << false;
+    BOBUIest::newRow("Data1") << false;
+    BOBUIest::newRow("Data2") << false;
+    BOBUIest::newRow("Data3") << false;
 }
 
 void tst_QExecStringList::testC() const
@@ -45,12 +45,12 @@ int main(int argc,char *argv[])
 
     tst_QExecStringList test;
 
-    QTest::qExec(&test, app.arguments());
-    QTest::qExec(&test, QStringList("appName"));
-    QTest::qExec(&test, QStringList("appName") << "testA");
-    QTest::qExec(&test, QStringList("appName") << "testB");
-    QTest::qExec(&test, QStringList("appName") << "testB:Data2");
-    QTest::qExec(&test, QStringList("appName") << "testC");
+    BOBUIest::qExec(&test, app.arguments());
+    BOBUIest::qExec(&test, QStringList("appName"));
+    BOBUIest::qExec(&test, QStringList("appName") << "testA");
+    BOBUIest::qExec(&test, QStringList("appName") << "testB");
+    BOBUIest::qExec(&test, QStringList("appName") << "testB:Data2");
+    BOBUIest::qExec(&test, QStringList("appName") << "testC");
 
     return 0;
 }

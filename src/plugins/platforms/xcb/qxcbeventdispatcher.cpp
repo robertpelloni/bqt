@@ -1,15 +1,15 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qxcbeventdispatcher.h"
 #include "qxcbconnection.h"
 
-#include <QtCore/QCoreApplication>
+#include <BobUICore/QCoreApplication>
 
 #include <qpa/qwindowsysteminterface.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QXcbUnixEventDispatcher::QXcbUnixEventDispatcher(QXcbConnection *connection, QObject *parent)
     : QEventDispatcherUNIX(parent)
@@ -25,11 +25,11 @@ bool QXcbUnixEventDispatcher::processEvents(QEventLoop::ProcessEventsFlags flags
 {
     const bool didSendEvents = QEventDispatcherUNIX::processEvents(flags);
     m_connection->processXcbEvents(flags);
-    // The following line should not be necessary after QTBUG-70095
+    // The following line should not be necessary after BOBUIBUG-70095
     return QWindowSystemInterface::sendWindowSystemEvents(flags) || didSendEvents;
 }
 
-#if QT_CONFIG(glib)
+#if BOBUI_CONFIG(glib)
 struct XcbEventSource
 {
     GSource source;
@@ -55,7 +55,7 @@ static gboolean xcbSourceDispatch(GSource *source, GSourceFunc, gpointer)
     auto xcbEventSource = reinterpret_cast<XcbEventSource *>(source);
     QEventLoop::ProcessEventsFlags flags = xcbEventSource->dispatcher->flags();
     xcbEventSource->connection->processXcbEvents(flags);
-    // The following line should not be necessary after QTBUG-70095
+    // The following line should not be necessary after BOBUIBUG-70095
     QWindowSystemInterface::sendWindowSystemEvents(flags);
     return true;
 }
@@ -71,7 +71,7 @@ QXcbGlibEventDispatcher::QXcbGlibEventDispatcher(QXcbConnection *connection, QOb
     m_xcbEventSourceFuncs.finalize = nullptr;
 
     GSource *source = g_source_new(&m_xcbEventSourceFuncs, sizeof(XcbEventSource));
-    g_source_set_name(source, "[Qt] XcbEventSource");
+    g_source_set_name(source, "[BobUI] XcbEventSource");
     m_xcbEventSource = reinterpret_cast<XcbEventSource *>(source);
 
     m_xcbEventSource->dispatcher = this;
@@ -98,12 +98,12 @@ bool QXcbGlibEventDispatcher::processEvents(QEventLoop::ProcessEventsFlags flags
     return QEventDispatcherGlib::processEvents(m_flags);
 }
 
-#endif // QT_CONFIG(glib)
+#endif // BOBUI_CONFIG(glib)
 
 QAbstractEventDispatcher *QXcbEventDispatcher::createEventDispatcher(QXcbConnection *connection)
 {
-#if QT_CONFIG(glib)
-    if (qEnvironmentVariableIsEmpty("QT_NO_GLIB") && QEventDispatcherGlib::versionSupported()) {
+#if BOBUI_CONFIG(glib)
+    if (qEnvironmentVariableIsEmpty("BOBUI_NO_GLIB") && QEventDispatcherGlib::versionSupported()) {
         qCDebug(lcQpaXcb, "using glib dispatcher");
         return new QXcbGlibEventDispatcher(connection);
     } else
@@ -114,6 +114,6 @@ QAbstractEventDispatcher *QXcbEventDispatcher::createEventDispatcher(QXcbConnect
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qxcbeventdispatcher.cpp"

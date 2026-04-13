@@ -1,9 +1,9 @@
 // Copyright (C) 2025 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QCoreApplication>
 #include <QSemaphore>
-#include <QThread>
+#include <BOBUIhread>
 
 #ifdef Q_OS_UNIX
 #  include <poll.h>
@@ -46,13 +46,13 @@ int main(int argc, char **argv)
 {
     QCoreApplication app(argc, argv);
 
-    if (qEnvironmentVariableIntValue("QT_FATAL_WARNINGS") != 1) {
-        fprintf(stderr, "QT_FATAL_WARNINGS=1 is not set\n");
+    if (qEnvironmentVariableIntValue("BOBUI_FATAL_WARNINGS") != 1) {
+        fprintf(stderr, "BOBUI_FATAL_WARNINGS=1 is not set\n");
         return EXIT_FAILURE;
     }
 
     setUpAbortControl();
-    QThread *thr = QThread::create([] {
+    BOBUIhread *thr = BOBUIhread::create([] {
         qWarning("warning from aux thread");
     });
     thr->start();

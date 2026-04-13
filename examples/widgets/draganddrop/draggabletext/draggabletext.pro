@@ -1,4 +1,4 @@
-QT += widgets
+BOBUI += widgets
 
 HEADERS     = dragwidget.h
 RESOURCES   = draggabletext.qrc
@@ -9,5 +9,5 @@ wasm {
 }
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/draganddrop/draggabletext
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/draganddrop/draggabletext
 INSTALLS += target

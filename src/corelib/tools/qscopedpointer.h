@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSCOPEDPOINTER_H
 #define QSCOPEDPOINTER_H
 
-#include <QtCore/qglobal.h>
+#include <BobUICore/qglobal.h>
 
 #include <stdlib.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 template <typename T>
 struct QScopedPointerDeleter
@@ -55,7 +55,7 @@ struct QScopedPointerPodDeleter
     void operator()(void *pointer) const noexcept { cleanup(pointer); }
 };
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 template <typename T>
 struct QScopedPointerObjectDeleteLater
 {
@@ -126,8 +126,8 @@ public:
         Cleanup::cleanup(oldD);
     }
 
-#if QT_DEPRECATED_SINCE(6, 1)
-    QT_DEPRECATED_VERSION_X_6_1("Use std::unique_ptr instead, and call release().")
+#if BOBUI_DEPRECATED_SINCE(6, 1)
+    BOBUI_DEPRECATED_VERSION_X_6_1("Use std::unique_ptr instead, and call release().")
     T *take() noexcept
     {
         T *oldD = std::exchange(d, nullptr);
@@ -135,11 +135,11 @@ public:
     }
 #endif
 
-#if QT_DEPRECATED_SINCE(6, 2)
-    QT_DEPRECATED_VERSION_X_6_2("Use std::unique_ptr instead of QScopedPointer.")
+#if BOBUI_DEPRECATED_SINCE(6, 2)
+    BOBUI_DEPRECATED_VERSION_X_6_2("Use std::unique_ptr instead of QScopedPointer.")
     void swap(QScopedPointer<T, Cleanup> &other) noexcept
     {
-        qt_ptr_swap(d, other.d);
+        bobui_ptr_swap(d, other.d);
     }
 #endif
 
@@ -175,8 +175,8 @@ public:
         return !rhs.isNull();
     }
 
-#if QT_DEPRECATED_SINCE(6, 2)
-    QT_DEPRECATED_VERSION_X_6_2("Use std::unique_ptr instead of QScopedPointer.")
+#if BOBUI_DEPRECATED_SINCE(6, 2)
+    BOBUI_DEPRECATED_VERSION_X_6_2("Use std::unique_ptr instead of QScopedPointer.")
     friend void swap(QScopedPointer<T, Cleanup> &p1, QScopedPointer<T, Cleanup> &p2) noexcept
     { p1.swap(p2); }
 #endif
@@ -215,8 +215,8 @@ public:
         return this->d[i];
     }
 
-#if QT_DEPRECATED_SINCE(6, 2)
-    QT_DEPRECATED_VERSION_X_6_2("Use std::unique_ptr instead of QScopedArrayPointer.")
+#if BOBUI_DEPRECATED_SINCE(6, 2)
+    BOBUI_DEPRECATED_VERSION_X_6_2("Use std::unique_ptr instead of QScopedArrayPointer.")
     void swap(QScopedArrayPointer &other) noexcept // prevent QScopedPointer <->QScopedArrayPointer swaps
     { QScopedPointer<T, Cleanup>::swap(other); }
 #endif
@@ -237,13 +237,13 @@ private:
     Q_DISABLE_COPY_MOVE(QScopedArrayPointer)
 };
 
-#if QT_DEPRECATED_SINCE(6, 2)
+#if BOBUI_DEPRECATED_SINCE(6, 2)
 template <typename T, typename Cleanup>
-QT_DEPRECATED_VERSION_X_6_2("Use std::unique_ptr instead of QScopedArrayPointer.")
+BOBUI_DEPRECATED_VERSION_X_6_2("Use std::unique_ptr instead of QScopedArrayPointer.")
 inline void swap(QScopedArrayPointer<T, Cleanup> &lhs, QScopedArrayPointer<T, Cleanup> &rhs) noexcept
 { lhs.swap(rhs); }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSCOPEDPOINTER_H

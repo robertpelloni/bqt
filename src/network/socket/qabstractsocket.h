@@ -1,33 +1,33 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QABSTRACTSOCKET_H
 #define QABSTRACTSOCKET_H
 
-#include <QtNetwork/qtnetworkglobal.h>
-#if QT_VERSION >= QT_VERSION_CHECK(7, 0, 0) || defined(Q_QDOC)
-#include <QtNetwork/qhostaddress.h>
+#include <BobUINetwork/bobuinetworkglobal.h>
+#if BOBUI_VERSION >= BOBUI_VERSION_CHECK(7, 0, 0) || defined(Q_QDOC)
+#include <BobUINetwork/qhostaddress.h>
 #endif
-#include <QtCore/qiodevice.h>
-#include <QtCore/qobject.h>
+#include <BobUICore/qiodevice.h>
+#include <BobUICore/qobject.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDebug;
 
 class QHostAddress;
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
 class QNetworkProxy;
 #endif
 class QAbstractSocketPrivate;
 class QAuthenticator;
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 struct QAbstractSocketConstants
 {
-#if QT_VERSION >= QT_VERSION_CHECK(7, 0, 0)
-    // compatibility with Qt 4 to 6
+#if BOBUI_VERSION >= BOBUI_VERSION_CHECK(7, 0, 0)
+    // compatibility with BobUI 4 to 6
     using NetworkLayerProtocol = QHostAddress::NetworkLayerProtocol;
     static constexpr auto IPv4Protocol = QHostAddress::IPv4Protocol;
     static constexpr auto IPv6Protocol = QHostAddress::IPv6Protocol;
@@ -38,10 +38,10 @@ struct QAbstractSocketConstants
 }
 
 class Q_NETWORK_EXPORT QAbstractSocket : public QIODevice
-        QT7_ONLY(, public QtPrivate::QAbstractSocketConstants)
+        BOBUI7_ONLY(, public BobUIPrivate::QAbstractSocketConstants)
 {
     Q_OBJECT
-    Q_MOC_INCLUDE(<QtNetwork/qauthenticator.h>)
+    Q_MOC_INCLUDE(<BobUINetwork/qauthenticator.h>)
 
 public:
     enum SocketType {
@@ -52,7 +52,7 @@ public:
     };
     Q_ENUM(SocketType)
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
     enum NetworkLayerProtocol {
         IPv4Protocol,
         IPv6Protocol,
@@ -136,7 +136,7 @@ public:
 
     virtual bool bind(const QHostAddress &address, quint16 port = 0,
                       BindMode mode = DefaultForPlatform);
-#if QT_VERSION >= QT_VERSION_CHECK(7,0,0) || defined(Q_QDOC)
+#if BOBUI_VERSION >= BOBUI_VERSION_CHECK(7,0,0) || defined(Q_QDOC)
     bool bind(QHostAddress::SpecialAddress addr, quint16 port = 0, BindMode mode = DefaultForPlatform)
     { return bind(QHostAddress(addr), port, mode); }
     bool bind(quint16 port = 0, BindMode mode = DefaultForPlatform)
@@ -187,7 +187,7 @@ public:
     bool waitForBytesWritten(int msecs = 30000) override;
     virtual bool waitForDisconnected(int msecs = 30000);
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     void setProxy(const QNetworkProxy &networkProxy);
     QNetworkProxy proxy() const;
     QString protocolTag() const;
@@ -200,7 +200,7 @@ Q_SIGNALS:
     void disconnected();
     void stateChanged(QAbstractSocket::SocketState);
     void errorOccurred(QAbstractSocket::SocketError);
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     void proxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *authenticator);
 #endif
 
@@ -234,18 +234,18 @@ private:
 Q_DECLARE_OPERATORS_FOR_FLAGS(QAbstractSocket::BindMode)
 Q_DECLARE_OPERATORS_FOR_FLAGS(QAbstractSocket::PauseModes)
 
-#if QT_NETWORK_REMOVED_SINCE(6, 12)
-#ifndef QT_NO_DEBUG_STREAM
+#if BOBUI_NETWORK_REMOVED_SINCE(6, 12)
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_NETWORK_EXPORT QDebug operator<<(QDebug, QAbstractSocket::SocketError);
 Q_NETWORK_EXPORT QDebug operator<<(QDebug, QAbstractSocket::SocketState);
 #endif
-#endif // QT_NETWORK_REMOVED_SINCE(6, 12)
+#endif // BOBUI_NETWORK_REMOVED_SINCE(6, 12)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN_TAGGED(QAbstractSocket::SocketState,
+BOBUI_DECL_METATYPE_EXTERN_TAGGED(QAbstractSocket::SocketState,
                                QAbstractSocket__SocketState, Q_NETWORK_EXPORT)
-QT_DECL_METATYPE_EXTERN_TAGGED(QAbstractSocket::SocketError,
+BOBUI_DECL_METATYPE_EXTERN_TAGGED(QAbstractSocket::SocketError,
                                QAbstractSocket__SocketError, Q_NETWORK_EXPORT)
 
 #endif // QABSTRACTSOCKET_H

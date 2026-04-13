@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QCOCOACLIPBOARD_H
 #define QCOCOACLIPBOARD_H
 
 #include <qpa/qplatformclipboard.h>
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
 
 #include "qmacclipboard.h"
-#include <QtCore/QScopedPointer>
+#include <BobUICore/QScopedPointer>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QCocoaClipboard : public QObject, public QPlatformClipboard
 {
@@ -27,7 +27,7 @@ public:
     bool ownsMode(QClipboard::Mode mode) const override;
 
 private Q_SLOTS:
-    void handleApplicationStateChanged(Qt::ApplicationState state);
+    void handleApplicationStateChanged(BobUI::ApplicationState state);
 
 protected:
     QMacPasteboard *pasteboardForMode(QClipboard::Mode mode) const;
@@ -37,8 +37,8 @@ private:
     QScopedPointer<QMacPasteboard> m_find;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_CLIPBOARD
+#endif // BOBUI_NO_CLIPBOARD
 
 #endif // QCOCOACLIPBOARD_H

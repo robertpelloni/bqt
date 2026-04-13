@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <AppKit/AppKit.h>
 #include <CoreGraphics/CoreGraphics.h>
@@ -29,23 +29,23 @@
 #include <private/qnumeric_p.h>
 #include <private/qpainter_p.h>
 #include <private/qpainterpath_p.h>
-#include <private/qtextengine_p.h>
+#include <private/bobuiextengine_p.h>
 #include <private/qcoregraphics_p.h>
 
 #include <string.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*****************************************************************************
   QCoreGraphicsPaintEngine utility functions
  *****************************************************************************/
 
-void qt_mac_cgimage_data_free(void *, const void *memoryToFree, size_t)
+void bobui_mac_cgimage_data_free(void *, const void *memoryToFree, size_t)
 {
     free(const_cast<void *>(memoryToFree));
 }
 
-CGImageRef qt_mac_create_imagemask(const QPixmap &pixmap, const QRectF &sr)
+CGImageRef bobui_mac_create_imagemask(const QPixmap &pixmap, const QRectF &sr)
 {
     QImage image = pixmap.toImage();
     if (image.format() != QImage::Format_ARGB32_Premultiplied)
@@ -63,23 +63,23 @@ CGImageRef qt_mac_create_imagemask(const QPixmap &pixmap, const QRectF &sr)
         for (int x = sx; x < sw; ++x)
             *(dptr+(offset++)) = (*(srow+x) & mask) ? 255 : 0;
     }
-    QCFType<CGDataProviderRef> provider = CGDataProviderCreateWithData(nullptr, dptr, nbytes, qt_mac_cgimage_data_free);
+    QCFType<CGDataProviderRef> provider = CGDataProviderCreateWithData(nullptr, dptr, nbytes, bobui_mac_cgimage_data_free);
     return CGImageMaskCreate(sw, sh, 8, 8, nbytes / sh, provider, nullptr, false);
 }
 
 //conversion
-inline static float qt_mac_convert_color_to_cg(int c) { return ((float)c * 1000 / 255) / 1000; }
-CGAffineTransform qt_mac_convert_transform_to_cg(const QTransform &t) {
+inline static float bobui_mac_convert_color_to_cg(int c) { return ((float)c * 1000 / 255) / 1000; }
+CGAffineTransform bobui_mac_convert_transform_to_cg(const BOBUIransform &t) {
     return CGAffineTransformMake(t.m11(), t.m12(), t.m21(), t.m22(), t.dx(),  t.dy());
 }
 
 inline static QCFType<CGColorRef> cgColorForQColor(const QColor &col)
 {
     CGFloat components[] = {
-        qt_mac_convert_color_to_cg(col.red()),
-        qt_mac_convert_color_to_cg(col.green()),
-        qt_mac_convert_color_to_cg(col.blue()),
-        qt_mac_convert_color_to_cg(col.alpha())
+        bobui_mac_convert_color_to_cg(col.red()),
+        bobui_mac_convert_color_to_cg(col.green()),
+        bobui_mac_convert_color_to_cg(col.blue()),
+        bobui_mac_convert_color_to_cg(col.alpha())
     };
     QCFType<CGColorSpaceRef> colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceSRGB);
     return CGColorCreate(colorSpace, components);
@@ -87,16 +87,16 @@ inline static QCFType<CGColorRef> cgColorForQColor(const QColor &col)
 
 // There's architectural problems with using native gradients
 // on the Mac at the moment, so disable them.
-// #define QT_MAC_USE_NATIVE_GRADIENTS
+// #define BOBUI_MAC_USE_NATIVE_GRADIENTS
 
-#ifdef QT_MAC_USE_NATIVE_GRADIENTS
+#ifdef BOBUI_MAC_USE_NATIVE_GRADIENTS
 static bool drawGradientNatively(const QGradient *gradient)
 {
     return gradient->spread() == QGradient::PadSpread;
 }
 
 // gradiant callback
-static void qt_mac_color_gradient_function(void *info, const CGFloat *in, CGFloat *out)
+static void bobui_mac_color_gradient_function(void *info, const CGFloat *in, CGFloat *out)
 {
     QBrush *brush = static_cast<QBrush *>(info);
     Q_ASSERT(brush && brush->gradient());
@@ -132,10 +132,10 @@ static void qt_mac_color_gradient_function(void *info, const CGFloat *in, CGFloa
                   INTERPOLATE_PIXEL_256(qAlpha(c1), dist, qAlpha(c2), idist));
     }
 
-    out[0] = qt_mac_convert_color_to_cg(qRed(c));
-    out[1] = qt_mac_convert_color_to_cg(qGreen(c));
-    out[2] = qt_mac_convert_color_to_cg(qBlue(c));
-    out[3] = qt_mac_convert_color_to_cg(qAlpha(c));
+    out[0] = bobui_mac_convert_color_to_cg(qRed(c));
+    out[1] = bobui_mac_convert_color_to_cg(qGreen(c));
+    out[2] = bobui_mac_convert_color_to_cg(qBlue(c));
+    out[3] = bobui_mac_convert_color_to_cg(qAlpha(c));
 }
 #endif
 
@@ -161,12 +161,12 @@ void QCoreGraphicsPaintEnginePrivate::resetClip()
     CGContextConcatCTM(hd, old_xform);
 }
 
-static CGRect qt_mac_compose_rect(const QRectF &r, float off=0)
+static CGRect bobui_mac_compose_rect(const QRectF &r, float off=0)
 {
     return CGRectMake(r.x()+off, r.y()+off, r.width(), r.height());
 }
 
-static CGMutablePathRef qt_mac_compose_path(const QPainterPath &p, float off=0)
+static CGMutablePathRef bobui_mac_compose_path(const QPainterPath &p, float off=0)
 {
     CGMutablePathRef ret = CGPathCreateMutable();
     QPointF startPt;
@@ -242,7 +242,7 @@ public:
     //output
     CGImageRef image;
 };
-static void qt_mac_draw_pattern(void *info, CGContextRef c)
+static void bobui_mac_draw_pattern(void *info, CGContextRef c)
 {
     QMacPattern *pat = (QMacPattern*)info;
     int w = 0, h = 0;
@@ -274,10 +274,10 @@ static void qt_mac_draw_pattern(void *info, CGContextRef c)
                 rect.origin.x = x * w;
                 for (int y = 0; y < QMACPATTERN_MASK_MULTIPLIER; ++y) {
                     rect.origin.y = y * h;
-                    qt_mac_drawCGImage(pm_ctx, &rect, swatch);
+                    bobui_mac_drawCGImage(pm_ctx, &rect, swatch);
                 }
             }
-            pat->image = qt_mac_create_imagemask(pm, pm.rect());
+            pat->image = bobui_mac_create_imagemask(pm, pm.rect());
             CGImageRelease(swatch);
             w *= QMACPATTERN_MASK_MULTIPLIER;
             h *= QMACPATTERN_MASK_MULTIPLIER;
@@ -286,9 +286,9 @@ static void qt_mac_draw_pattern(void *info, CGContextRef c)
             w = pat->data.pixmap.width();
             h = pat->data.pixmap.height();
             if (isBitmap)
-                pat->image = qt_mac_create_imagemask(pat->data.pixmap, pat->data.pixmap.rect());
+                pat->image = bobui_mac_create_imagemask(pat->data.pixmap, pat->data.pixmap.rect());
             else
-                pat->image = qt_mac_toCGImage(pat->data.pixmap.toImage());
+                pat->image = bobui_mac_toCGImage(pat->data.pixmap.toImage());
         }
     } else {
         w = CGImageGetWidth(pat->image);
@@ -302,11 +302,11 @@ static void qt_mac_draw_pattern(void *info, CGContextRef c)
         CGContextSetFillColorWithColor(c, cgColorForQColor(pat->foreground));
     }
     CGRect rect = CGRectMake(0, 0, w, h);
-    qt_mac_drawCGImage(c, &rect, pat->image);
+    bobui_mac_drawCGImage(c, &rect, pat->image);
     if (needRestore)
         CGContextRestoreGState(c);
 }
-static void qt_mac_dispose_pattern(void *info)
+static void bobui_mac_dispose_pattern(void *info)
 {
     QMacPattern *pat = (QMacPattern*)info;
     delete pat;
@@ -316,7 +316,7 @@ static void qt_mac_dispose_pattern(void *info)
   QCoreGraphicsPaintEngine member functions
  *****************************************************************************/
 
-inline static QPaintEngine::PaintEngineFeatures qt_mac_cg_features()
+inline static QPaintEngine::PaintEngineFeatures bobui_mac_cg_features()
 {
     return QPaintEngine::PaintEngineFeatures(QPaintEngine::AllFeatures & ~QPaintEngine::PaintOutsidePaintEvent
                                               & ~QPaintEngine::PerspectiveTransform
@@ -327,12 +327,12 @@ inline static QPaintEngine::PaintEngineFeatures qt_mac_cg_features()
 }
 
 QCoreGraphicsPaintEngine::QCoreGraphicsPaintEngine()
-: QPaintEngine(*(new QCoreGraphicsPaintEnginePrivate), qt_mac_cg_features())
+: QPaintEngine(*(new QCoreGraphicsPaintEnginePrivate), bobui_mac_cg_features())
 {
 }
 
 QCoreGraphicsPaintEngine::QCoreGraphicsPaintEngine(QPaintEnginePrivate &dptr)
-: QPaintEngine(dptr, qt_mac_cg_features())
+: QPaintEngine(dptr, bobui_mac_cg_features())
 {
 }
 
@@ -375,7 +375,7 @@ QCoreGraphicsPaintEngine::begin(QPaintDevice *pdev)
 
     if (d->pdev->devType() == QInternal::Widget) {                    // device is a widget
         QWidget *w = (QWidget*)d->pdev;
-        bool unclipped = w->testAttribute(Qt::WA_PaintUnclipped);
+        bool unclipped = w->testAttribute(BobUI::WA_PaintUnclipped);
 
         if (unclipped) {
             qWarning("QCoreGraphicsPaintEngine::begin: Does not support unclipped painting");
@@ -426,9 +426,9 @@ QCoreGraphicsPaintEngine::updateState(const QPaintEngineState &state)
 
     if (flags & DirtyClipEnabled) {
         if (state.isClipEnabled())
-            updateClipPath(painter()->clipPath(), Qt::ReplaceClip);
+            updateClipPath(painter()->clipPath(), BobUI::ReplaceClip);
         else
-            updateClipPath(QPainterPath(), Qt::NoClip);
+            updateClipPath(QPainterPath(), BobUI::NoClip);
     }
 
     if (flags & DirtyClipPath) {
@@ -492,7 +492,7 @@ QCoreGraphicsPaintEngine::updateBrush(const QBrush &brush, const QPointF &brushO
     Q_ASSERT(isActive());
     d->current.brush = brush;
 
-#ifdef QT_MAC_USE_NATIVE_GRADIENTS
+#ifdef BOBUI_MAC_USE_NATIVE_GRADIENTS
     // Quartz supports only pad spread
     if (const QGradient *gradient = brush.gradient()) {
         if (drawGradientNatively(gradient)) {
@@ -526,14 +526,14 @@ QCoreGraphicsPaintEngine::updateFont(const QFont &)
 }
 
 void
-QCoreGraphicsPaintEngine::updateMatrix(const QTransform &transform)
+QCoreGraphicsPaintEngine::updateMatrix(const BOBUIransform &transform)
 {
     Q_D(QCoreGraphicsPaintEngine);
     Q_ASSERT(isActive());
 
-    if (qt_is_nan(transform.m11()) || qt_is_nan(transform.m12()) || qt_is_nan(transform.m13())
-        || qt_is_nan(transform.m21()) || qt_is_nan(transform.m22()) || qt_is_nan(transform.m23())
-        || qt_is_nan(transform.m31()) || qt_is_nan(transform.m32()) || qt_is_nan(transform.m33()))
+    if (bobui_is_nan(transform.m11()) || bobui_is_nan(transform.m12()) || bobui_is_nan(transform.m13())
+        || bobui_is_nan(transform.m21()) || bobui_is_nan(transform.m22()) || bobui_is_nan(transform.m23())
+        || bobui_is_nan(transform.m31()) || bobui_is_nan(transform.m32()) || bobui_is_nan(transform.m33()))
         return;
 
     d->current.transform = transform;
@@ -544,11 +544,11 @@ QCoreGraphicsPaintEngine::updateMatrix(const QTransform &transform)
 }
 
 void
-QCoreGraphicsPaintEngine::updateClipPath(const QPainterPath &p, Qt::ClipOperation op)
+QCoreGraphicsPaintEngine::updateClipPath(const QPainterPath &p, BobUI::ClipOperation op)
 {
     Q_D(QCoreGraphicsPaintEngine);
     Q_ASSERT(isActive());
-    if (op == Qt::NoClip) {
+    if (op == BobUI::NoClip) {
         if (d->current.clipEnabled) {
             d->current.clipEnabled = false;
             d->current.clip = QRegion();
@@ -556,26 +556,26 @@ QCoreGraphicsPaintEngine::updateClipPath(const QPainterPath &p, Qt::ClipOperatio
         }
     } else {
         if (!d->current.clipEnabled)
-            op = Qt::ReplaceClip;
+            op = BobUI::ReplaceClip;
         d->current.clipEnabled = true;
         QRegion clipRegion(p.toFillPolygon().toPolygon(), p.fillRule());
-        if (op == Qt::ReplaceClip) {
+        if (op == BobUI::ReplaceClip) {
             d->current.clip = clipRegion;
             d->setClip(nullptr);
             if (p.isEmpty()) {
                 CGRect rect = CGRectMake(0, 0, 0, 0);
                 CGContextClipToRect(d->hd, rect);
             } else {
-                CGMutablePathRef path = qt_mac_compose_path(p);
+                CGMutablePathRef path = bobui_mac_compose_path(p);
                 CGContextBeginPath(d->hd);
                 CGContextAddPath(d->hd, path);
-                if (p.fillRule() == Qt::WindingFill)
+                if (p.fillRule() == BobUI::WindingFill)
                     CGContextClip(d->hd);
                 else
                     CGContextEOClip(d->hd);
                 CGPathRelease(path);
             }
-        } else if (op == Qt::IntersectClip) {
+        } else if (op == BobUI::IntersectClip) {
             d->current.clip = d->current.clip.intersected(clipRegion);
             d->setClip(&d->current.clip);
         }
@@ -583,21 +583,21 @@ QCoreGraphicsPaintEngine::updateClipPath(const QPainterPath &p, Qt::ClipOperatio
 }
 
 void
-QCoreGraphicsPaintEngine::updateClipRegion(const QRegion &clipRegion, Qt::ClipOperation op)
+QCoreGraphicsPaintEngine::updateClipRegion(const QRegion &clipRegion, BobUI::ClipOperation op)
 {
     Q_D(QCoreGraphicsPaintEngine);
     Q_ASSERT(isActive());
-    if (op == Qt::NoClip) {
+    if (op == BobUI::NoClip) {
         d->current.clipEnabled = false;
         d->current.clip = QRegion();
         d->setClip(nullptr);
     } else {
         if (!d->current.clipEnabled)
-            op = Qt::ReplaceClip;
+            op = BobUI::ReplaceClip;
         d->current.clipEnabled = true;
-        if (op == Qt::IntersectClip)
+        if (op == BobUI::IntersectClip)
             d->current.clip = d->current.clip.intersected(clipRegion);
-        else if (op == Qt::ReplaceClip)
+        else if (op == BobUI::ReplaceClip)
             d->current.clip = clipRegion;
         d->setClip(&d->current.clip);
     }
@@ -612,9 +612,9 @@ QCoreGraphicsPaintEngine::drawPath(const QPainterPath &p)
     if (state->compositionMode() == QPainter::CompositionMode_Destination)
         return;
 
-    CGMutablePathRef path = qt_mac_compose_path(p);
+    CGMutablePathRef path = bobui_mac_compose_path(p);
     uchar ops = QCoreGraphicsPaintEnginePrivate::CGStroke;
-    if (p.fillRule() == Qt::WindingFill)
+    if (p.fillRule() == BobUI::WindingFill)
         ops |= QCoreGraphicsPaintEnginePrivate::CGFill;
     else
         ops |= QCoreGraphicsPaintEnginePrivate::CGEOFill;
@@ -636,7 +636,7 @@ QCoreGraphicsPaintEngine::drawRects(const QRectF *rects, int rectCount)
         QRectF r = rects[i];
 
         CGMutablePathRef path = CGPathCreateMutable();
-        CGPathAddRect(path, nullptr, qt_mac_compose_rect(r));
+        CGPathAddRect(path, nullptr, bobui_mac_compose_rect(r));
         d->drawPath(QCoreGraphicsPaintEnginePrivate::CGFill|QCoreGraphicsPaintEnginePrivate::CGStroke,
                 path);
         CGPathRelease(path);
@@ -652,7 +652,7 @@ QCoreGraphicsPaintEngine::drawPoints(const QPointF *points, int pointCount)
     if (state->compositionMode() == QPainter::CompositionMode_Destination)
         return;
 
-    if (d->current.pen.capStyle() == Qt::FlatCap)
+    if (d->current.pen.capStyle() == BobUI::FlatCap)
         CGContextSetLineCap(d->hd, kCGLineCapSquare);
 
     CGMutablePathRef path = CGPathCreateMutable();
@@ -673,7 +673,7 @@ QCoreGraphicsPaintEngine::drawPoints(const QPointF *points, int pointCount)
     if (doRestore)
         d->restoreGraphicsState();
     CGPathRelease(path);
-    if (d->current.pen.capStyle() == Qt::FlatCap)
+    if (d->current.pen.capStyle() == BobUI::FlatCap)
         CGContextSetLineCap(d->hd, kCGLineCapButt);
 }
 
@@ -758,21 +758,21 @@ void QCoreGraphicsPaintEngine::drawPixmap(const QRectF &r, const QPixmap &pm, co
 
         const QColor &col = d->current.pen.color();
         CGContextSetFillColorWithColor(d->hd, cgColorForQColor(col));
-        image = qt_mac_create_imagemask(pm, sr);
+        image = bobui_mac_create_imagemask(pm, sr);
     } else if (differentSize) {
-        QCFType<CGImageRef> img = qt_mac_toCGImage(pm.toImage());
+        QCFType<CGImageRef> img = bobui_mac_toCGImage(pm.toImage());
         if (img)
             image = CGImageCreateWithImageInRect(img, CGRectMake(qRound(sr.x()), qRound(sr.y()), qRound(sr.width()), qRound(sr.height())));
     } else {
-        image = qt_mac_toCGImage(pm.toImage());
+        image = bobui_mac_toCGImage(pm.toImage());
     }
-    qt_mac_drawCGImage(d->hd, &rect, image);
+    bobui_mac_drawCGImage(d->hd, &rect, image);
     if (doRestore)
         d->restoreGraphicsState();
 }
 
 void QCoreGraphicsPaintEngine::drawImage(const QRectF &r, const QImage &img, const QRectF &sr,
-                                         Qt::ImageConversionFlags flags)
+                                         BobUI::ImageConversionFlags flags)
 {
     Q_D(QCoreGraphicsPaintEngine);
     Q_UNUSED(flags);
@@ -781,12 +781,12 @@ void QCoreGraphicsPaintEngine::drawImage(const QRectF &r, const QImage &img, con
     if (img.isNull() || state->compositionMode() == QPainter::CompositionMode_Destination)
         return;
 
-    QCFType<CGImageRef> cgimage = qt_mac_toCGImage(img);
+    QCFType<CGImageRef> cgimage = bobui_mac_toCGImage(img);
     CGRect rect = CGRectMake(r.x(), r.y(), r.width(), r.height());
     if (QRectF(0, 0, img.width(), img.height()) != sr)
         cgimage = CGImageCreateWithImageInRect(cgimage, CGRectMake(sr.x(), sr.y(),
                                                sr.width(), sr.height()));
-    qt_mac_drawCGImage(d->hd, &rect, cgimage);
+    bobui_mac_drawCGImage(d->hd, &rect, cgimage);
 }
 
 void QCoreGraphicsPaintEngine::initialize()
@@ -823,8 +823,8 @@ QCoreGraphicsPaintEngine::drawTiledPixmap(const QRectF &r, const QPixmap &pixmap
     qpattern->pdev = d->pdev;
     CGPatternCallbacks callbks;
     callbks.version = 0;
-    callbks.drawPattern = qt_mac_draw_pattern;
-    callbks.releaseInfo = qt_mac_dispose_pattern;
+    callbks.drawPattern = bobui_mac_draw_pattern;
+    callbks.releaseInfo = bobui_mac_dispose_pattern;
     const int width = qpattern->width(), height = qpattern->height();
     CGAffineTransform trans = CGContextGetCTM(d->hd);
     CGPatternRef pat = CGPatternCreate(qpattern, CGRectMake(0, 0, width, height),
@@ -848,10 +848,10 @@ QCoreGraphicsPaintEngine::drawTiledPixmap(const QRectF &r, const QPixmap &pixmap
     CGPatternRelease(pat);
 }
 
-void QCoreGraphicsPaintEngine::drawTextItem(const QPointF &pos, const QTextItem &item)
+void QCoreGraphicsPaintEngine::drawTextItem(const QPointF &pos, const BOBUIextItem &item)
 {
     Q_D(QCoreGraphicsPaintEngine);
-    if (d->current.transform.type() == QTransform::TxProject
+    if (d->current.transform.type() == BOBUIransform::TxProject
 #ifndef QMAC_NATIVE_GRADIENTS
         || painter()->pen().brush().gradient()  //Just let the base engine "emulate" the gradient
 #endif
@@ -863,12 +863,12 @@ void QCoreGraphicsPaintEngine::drawTextItem(const QPointF &pos, const QTextItem 
     if (state->compositionMode() == QPainter::CompositionMode_Destination)
         return;
 
-    const QTextItemInt &ti = static_cast<const QTextItemInt &>(item);
+    const BOBUIextItemInt &ti = static_cast<const BOBUIextItemInt &>(item);
 
     QPen oldPen = painter()->pen();
     QBrush oldBrush = painter()->brush();
     QPointF oldBrushOrigin = painter()->brushOrigin();
-    updatePen(Qt::NoPen);
+    updatePen(BobUI::NoPen);
     updateBrush(oldPen.brush(), QPointF(0, 0));
 
     Q_ASSERT(type() == QPaintEngine::CoreGraphics);
@@ -1064,40 +1064,40 @@ QCoreGraphicsPaintEnginePrivate::setStrokePen(const QPen &pen)
 {
     //pencap
     CGLineCap cglinecap = kCGLineCapButt;
-    if (pen.capStyle() == Qt::SquareCap)
+    if (pen.capStyle() == BobUI::SquareCap)
         cglinecap = kCGLineCapSquare;
-    else if (pen.capStyle() == Qt::RoundCap)
+    else if (pen.capStyle() == BobUI::RoundCap)
         cglinecap = kCGLineCapRound;
     CGContextSetLineCap(hd, cglinecap);
     CGContextSetLineWidth(hd, adjustPenWidth(pen.widthF()));
 
     //join
     CGLineJoin cglinejoin = kCGLineJoinMiter;
-    if (pen.joinStyle() == Qt::BevelJoin)
+    if (pen.joinStyle() == BobUI::BevelJoin)
         cglinejoin = kCGLineJoinBevel;
-    else if (pen.joinStyle() == Qt::RoundJoin)
+    else if (pen.joinStyle() == BobUI::RoundJoin)
         cglinejoin = kCGLineJoinRound;
     CGContextSetLineJoin(hd, cglinejoin);
 //    CGContextSetMiterLimit(hd, pen.miterLimit());
 
     //pen style
     QVector<CGFloat> linedashes;
-    if (pen.style() == Qt::CustomDashLine) {
+    if (pen.style() == BobUI::CustomDashLine) {
         QVector<qreal> customs = pen.dashPattern();
         for (int i = 0; i < customs.size(); ++i)
             linedashes.append(customs.at(i));
-    } else if (pen.style() == Qt::DashLine) {
+    } else if (pen.style() == BobUI::DashLine) {
         linedashes.append(4);
         linedashes.append(2);
-    } else if (pen.style() == Qt::DotLine) {
+    } else if (pen.style() == BobUI::DotLine) {
         linedashes.append(1);
         linedashes.append(2);
-    } else if (pen.style() == Qt::DashDotLine) {
+    } else if (pen.style() == BobUI::DashDotLine) {
         linedashes.append(4);
         linedashes.append(2);
         linedashes.append(1);
         linedashes.append(2);
-    } else if (pen.style() == Qt::DashDotDotLine) {
+    } else if (pen.style() == BobUI::DashDotDotLine) {
         linedashes.append(4);
         linedashes.append(2);
         linedashes.append(1);
@@ -1123,9 +1123,9 @@ QCoreGraphicsPaintEnginePrivate::setStrokePen(const QPen &pen)
 
 // Add our own patterns here to deal with the fact that the coordinate system
 // is flipped vertically with Quartz2D.
-static const uchar *qt_mac_patternForBrush(int brushStyle)
+static const uchar *bobui_mac_patternForBrush(int brushStyle)
 {
-    Q_ASSERT(brushStyle > Qt::SolidPattern && brushStyle < Qt::LinearGradientPattern);
+    Q_ASSERT(brushStyle > BobUI::SolidPattern && brushStyle < BobUI::LinearGradientPattern);
     static const uchar dense1_pat[] = { 0x00, 0x00, 0x44, 0x00, 0x00, 0x00, 0x44, 0x00 };
     static const uchar dense2_pat[] = { 0x00, 0x22, 0x00, 0x88, 0x00, 0x22, 0x00, 0x88 };
     static const uchar dense3_pat[] = { 0x11, 0xaa, 0x44, 0xaa, 0x11, 0xaa, 0x44, 0xaa };
@@ -1143,33 +1143,33 @@ static const uchar *qt_mac_patternForBrush(int brushStyle)
         dense1_pat, dense2_pat, dense3_pat, dense4_pat, dense5_pat,
         dense6_pat, dense7_pat,
         hor_pat, ver_pat, cross_pat, bdiag_pat, fdiag_pat, dcross_pat };
-    return pat_tbl[brushStyle - Qt::Dense1Pattern];
+    return pat_tbl[brushStyle - BobUI::Dense1Pattern];
 }
 
 void QCoreGraphicsPaintEnginePrivate::setFillBrush(const QPointF &offset)
 {
     // pattern
-    Qt::BrushStyle bs = current.brush.style();
-#ifdef QT_MAC_USE_NATIVE_GRADIENTS
-    if (bs == Qt::LinearGradientPattern || bs == Qt::RadialGradientPattern) {
+    BobUI::BrushStyle bs = current.brush.style();
+#ifdef BOBUI_MAC_USE_NATIVE_GRADIENTS
+    if (bs == BobUI::LinearGradientPattern || bs == BobUI::RadialGradientPattern) {
         const QGradient *grad = static_cast<const QGradient*>(current.brush.gradient());
         if (drawGradientNatively(grad)) {
             Q_ASSERT(grad->spread() == QGradient::PadSpread);
 
             static const CGFloat domain[] = { 0.0f, +1.0f };
-            static const CGFunctionCallbacks callbacks = { 0, qt_mac_color_gradient_function, nullptr };
+            static const CGFunctionCallbacks callbacks = { 0, bobui_mac_color_gradient_function, nullptr };
             CGFunctionRef fill_func = CGFunctionCreate(reinterpret_cast<void *>(&current.brush),
                     1, domain, 4, nullptr, &callbacks);
 
             CGColorSpaceRef colorspace = CGColorSpaceCreateWithName(kCGColorSpaceSRGB)
-            if (bs == Qt::LinearGradientPattern) {
+            if (bs == BobUI::LinearGradientPattern) {
                 const QLinearGradient *linearGrad = static_cast<const QLinearGradient *>(grad);
                 const QPointF start(linearGrad->start());
                 const QPointF stop(linearGrad->finalStop());
                 shading = CGShadingCreateAxial(colorspace, CGPointMake(start.x(), start.y()),
                                                CGPointMake(stop.x(), stop.y()), fill_func, true, true);
             } else {
-                Q_ASSERT(bs == Qt::RadialGradientPattern);
+                Q_ASSERT(bs == BobUI::RadialGradientPattern);
                 const QRadialGradient *radialGrad = static_cast<const QRadialGradient *>(grad);
                 QPointF center(radialGrad->center());
                 QPointF focal(radialGrad->focalPoint());
@@ -1183,9 +1183,9 @@ void QCoreGraphicsPaintEnginePrivate::setFillBrush(const QPointF &offset)
         }
     } else
 #endif
-    if (bs != Qt::SolidPattern && bs != Qt::NoBrush
-#ifndef QT_MAC_USE_NATIVE_GRADIENTS
-       && (bs < Qt::LinearGradientPattern || bs > Qt::ConicalGradientPattern)
+    if (bs != BobUI::SolidPattern && bs != BobUI::NoBrush
+#ifndef BOBUI_MAC_USE_NATIVE_GRADIENTS
+       && (bs < BobUI::LinearGradientPattern || bs > BobUI::ConicalGradientPattern)
 #endif
         )
     {
@@ -1193,23 +1193,23 @@ void QCoreGraphicsPaintEnginePrivate::setFillBrush(const QPointF &offset)
         qpattern->pdev = pdev;
         CGFloat components[4] = { 1.0, 1.0, 1.0, 1.0 };
         CGColorSpaceRef base_colorspace = nullptr;
-        if (bs == Qt::TexturePattern) {
+        if (bs == BobUI::TexturePattern) {
             qpattern->data.pixmap = current.brush.texture();
             if (qpattern->data.pixmap.isQBitmap()) {
                 const QColor &col = current.brush.color();
-                components[0] = qt_mac_convert_color_to_cg(col.red());
-                components[1] = qt_mac_convert_color_to_cg(col.green());
-                components[2] = qt_mac_convert_color_to_cg(col.blue());
+                components[0] = bobui_mac_convert_color_to_cg(col.red());
+                components[1] = bobui_mac_convert_color_to_cg(col.green());
+                components[2] = bobui_mac_convert_color_to_cg(col.blue());
                 base_colorspace = CGColorSpaceCreateWithName(kCGColorSpaceSRGB);
             }
         } else {
             qpattern->as_mask = true;
 
-            qpattern->data.bytes = qt_mac_patternForBrush(bs);
+            qpattern->data.bytes = bobui_mac_patternForBrush(bs);
             const QColor &col = current.brush.color();
-            components[0] = qt_mac_convert_color_to_cg(col.red());
-            components[1] = qt_mac_convert_color_to_cg(col.green());
-            components[2] = qt_mac_convert_color_to_cg(col.blue());
+            components[0] = bobui_mac_convert_color_to_cg(col.red());
+            components[1] = bobui_mac_convert_color_to_cg(col.green());
+            components[2] = bobui_mac_convert_color_to_cg(col.blue());
             base_colorspace = CGColorSpaceCreateWithName(kCGColorSpaceSRGB);
         }
         int width = qpattern->width(), height = qpattern->height();
@@ -1219,13 +1219,13 @@ void QCoreGraphicsPaintEnginePrivate::setFillBrush(const QPointF &offset)
         CGContextSetFillColorSpace(hd, fill_colorspace);
 
         CGAffineTransform xform = CGContextGetCTM(hd);
-        xform = CGAffineTransformConcat(qt_mac_convert_transform_to_cg(current.brush.transform()), xform);
+        xform = CGAffineTransformConcat(bobui_mac_convert_transform_to_cg(current.brush.transform()), xform);
         xform = CGAffineTransformTranslate(xform, offset.x(), offset.y());
 
         CGPatternCallbacks callbks;
         callbks.version = 0;
-        callbks.drawPattern = qt_mac_draw_pattern;
-        callbks.releaseInfo = qt_mac_dispose_pattern;
+        callbks.drawPattern = bobui_mac_draw_pattern;
+        callbks.releaseInfo = bobui_mac_dispose_pattern;
         CGPatternRef fill_pattern = CGPatternCreate(qpattern, CGRectMake(0, 0, width, height),
                 xform, width, height, kCGPatternTilingNoDistortion,
                 !base_colorspace, &callbks);
@@ -1235,7 +1235,7 @@ void QCoreGraphicsPaintEnginePrivate::setFillBrush(const QPointF &offset)
         CGPatternRelease(fill_pattern);
         CGColorSpaceRelease(base_colorspace);
         CGColorSpaceRelease(fill_colorspace);
-    } else if (bs != Qt::NoBrush) {
+    } else if (bs != BobUI::NoBrush) {
         CGContextSetFillColorWithColor(hd, cgColorForQColor(current.brush.color()));
     }
 }
@@ -1248,21 +1248,21 @@ QCoreGraphicsPaintEnginePrivate::setClip(const QRegion *rgn)
         resetClip();
         QRegion sysClip = q->systemClip();
         if (!sysClip.isEmpty())
-            qt_mac_clip_cg(hd, sysClip, &orig_xform);
+            bobui_mac_clip_cg(hd, sysClip, &orig_xform);
         if (rgn)
-            qt_mac_clip_cg(hd, *rgn, nullptr);
+            bobui_mac_clip_cg(hd, *rgn, nullptr);
     }
 }
 
-struct qt_mac_cg_transform_path {
+struct bobui_mac_cg_transform_path {
     CGMutablePathRef path;
     CGAffineTransform transform;
 };
 
-void qt_mac_cg_transform_path_apply(void *info, const CGPathElement *element)
+void bobui_mac_cg_transform_path_apply(void *info, const CGPathElement *element)
 {
     Q_ASSERT(info && element);
-    qt_mac_cg_transform_path *t = (qt_mac_cg_transform_path*)info;
+    bobui_mac_cg_transform_path *t = (bobui_mac_cg_transform_path*)info;
     switch (element->type) {
     case kCGPathElementMoveToPoint:
         CGPathMoveToPoint(t->path, &t->transform, element->points[0].x, element->points[0].y);
@@ -1312,12 +1312,12 @@ void QCoreGraphicsPaintEnginePrivate::drawPath(uchar ops, CGMutablePathRef path)
             restoreGraphicsState();
             ops &= ~CGFill;
             ops &= ~CGEOFill;
-        } else if (current.brush.style() == Qt::NoBrush) {
+        } else if (current.brush.style() == BobUI::NoBrush) {
             ops &= ~CGFill;
             ops &= ~CGEOFill;
         }
     }
-    if ((ops & CGStroke) && current.pen.style() == Qt::NoPen)
+    if ((ops & CGStroke) && current.pen.style() == BobUI::NoPen)
         ops &= ~CGStroke;
 
     if (ops & (CGEOFill | CGFill)) {
@@ -1341,9 +1341,9 @@ void QCoreGraphicsPaintEnginePrivate::drawPath(uchar ops, CGMutablePathRef path)
         // Translate a fraction of a pixel size in the y direction
         // to make sure that primitives painted at pixel borders
         // fills the right pixel. This is needed since the y xais
-        // in the Quartz coordinate system is inverted compared to Qt.
+        // in the Quartz coordinate system is inverted compared to BobUI.
         if (!(q->state->renderHints() & QPainter::Antialiasing)) {
-            if (current.pen.style() == Qt::SolidLine || current.pen.width() >= 3)
+            if (current.pen.style() == BobUI::SolidLine || current.pen.width() >= 3)
                 CGContextTranslateCTM(hd, double(pixelSize.x()) * 0.25, double(pixelSize.y()) * 0.25);
             else
                 CGContextTranslateCTM(hd, 0, double(pixelSize.y()) * 0.1);
@@ -1359,10 +1359,10 @@ void QCoreGraphicsPaintEnginePrivate::drawPath(uchar ops, CGMutablePathRef path)
                 CGContextSetLineWidth(hd, cosmeticPenSize);
         }
         if (cosmeticPen == QCoreGraphicsPaintEnginePrivate::CosmeticTransformPath) {
-            qt_mac_cg_transform_path t;
-            t.transform = qt_mac_convert_transform_to_cg(current.transform);
+            bobui_mac_cg_transform_path t;
+            t.transform = bobui_mac_convert_transform_to_cg(current.transform);
             t.path = CGPathCreateMutable();
-            CGPathApply(path, &t, qt_mac_cg_transform_path_apply); //transform the path
+            CGPathApply(path, &t, bobui_mac_cg_transform_path_apply); //transform the path
             setTransform(nullptr); //unset the context transform
             CGContextSetLineWidth(hd,  cosmeticPenSize);
             CGContextAddPath(hd, t.path);
@@ -1377,4 +1377,4 @@ void QCoreGraphicsPaintEnginePrivate::drawPath(uchar ops, CGMutablePathRef path)
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

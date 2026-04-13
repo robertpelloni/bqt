@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 /*!
     \class QQueue
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QQueue class is a generic container that provides a queue.
 
     \ingroup tools
@@ -12,7 +12,7 @@
 
     \reentrant
 
-    QQueue\<T\> is one of Qt's generic \l{container classes}, where
+    QQueue\<T\> is one of BobUI's generic \l{container classes}, where
     \a T specifies the element type. It implements a queue data structure
     for items of a same type.
 

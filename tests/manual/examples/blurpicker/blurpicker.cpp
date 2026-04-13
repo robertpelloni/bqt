@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "blurpicker.h"
 
-#include <QtWidgets>
-#include <QtCore/qmath.h>
+#include <BobUIWidgets>
+#include <BobUICore/qmath.h>
 #include <qmath.h>
 #include "blureffect.h"
 
@@ -40,7 +40,7 @@ void BlurPicker::setIndex(qreal index)
         qreal xs = 170 * qSin(a);
         qreal ys = 100 * qCos(a);
         QPointF pos(xs, ys);
-        pos = QTransform().rotate(-20).map(pos);
+        pos = BOBUIransform().rotate(-20).map(pos);
         pos -= QPointF(40, 40);
         icon->setPos(pos);
         baseline = qMax(baseline, ys);
@@ -82,10 +82,10 @@ void BlurPicker::keyPressEvent(QKeyEvent *event)
     int delta = 0;
     switch (event->key())
     {
-    case Qt::Key_Left:
+    case BobUI::Key_Left:
         delta = -1;
         break;
-    case  Qt::Key_Right:
+    case  BobUI::Key_Right:
         delta = 1;
         break;
     default:

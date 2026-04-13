@@ -1,4 +1,4 @@
 TEMPLATE = app
-QT = core gui
+BOBUI = core gui
 SOURCES += main.cpp
 CONFIG += console

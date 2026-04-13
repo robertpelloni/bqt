@@ -1,5 +1,5 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "qwasminputcontext.h"
 #include "qwasmwindow.h"
@@ -11,14 +11,14 @@
 #include <qwindow.h>
 #include <qpa/qplatforminputcontext.h>
 #include <qpa/qwindowsysteminterface.h>
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
 #include <QClipboard>
 #endif
-#include <QtGui/qtextobject.h>
+#include <BobUIGui/bobuiextobject.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(qLcQpaWasmInputContext, "qt.qpa.wasm.inputcontext")
+Q_LOGGING_CATEGORY(qLcQpaWasmInputContext, "bobui.qpa.wasm.inputcontext")
 
 using namespace qstdweb;
 
@@ -41,9 +41,9 @@ void QWasmInputContext::inputCallback(emscripten::val event)
     qCDebug(qLcQpaWasmInputContext) << Q_FUNC_INFO << "inputType : " << inputTypeString;
     if (!inputTypeString.compare("deleteContentBackward")) {
 
-        QInputMethodQueryEvent queryEvent(Qt::ImQueryAll);
+        QInputMethodQueryEvent queryEvent(BobUI::ImQueryAll);
         QCoreApplication::sendEvent(m_focusObject, &queryEvent);
-        int cursorPosition = queryEvent.value(Qt::ImCursorPosition).toInt();
+        int cursorPosition = queryEvent.value(BobUI::ImCursorPosition).toInt();
         int deleteLength = rangesPair.second - rangesPair.first;
         int deleteFrom = -1;
 
@@ -60,18 +60,18 @@ void QWasmInputContext::inputCallback(emscripten::val event)
         event.call<void>("stopImmediatePropagation");
         return;
     } else if (!inputTypeString.compare("deleteContentForward")) {
-        QWindowSystemInterface::handleKeyEvent(0, QEvent::KeyPress, Qt::Key_Delete, Qt::NoModifier);
-        QWindowSystemInterface::handleKeyEvent(0, QEvent::KeyRelease, Qt::Key_Delete, Qt::NoModifier);
+        QWindowSystemInterface::handleKeyEvent(0, QEvent::KeyPress, BobUI::Key_Delete, BobUI::NoModifier);
+        QWindowSystemInterface::handleKeyEvent(0, QEvent::KeyRelease, BobUI::Key_Delete, BobUI::NoModifier);
         event.call<void>("stopImmediatePropagation");
         return;
     } else if (!inputTypeString.compare("insertCompositionText")) {
         qCDebug(qLcQpaWasmInputContext) << "insertCompositionText : " << inputStr;
         event.call<void>("stopImmediatePropagation");
 
-        QInputMethodQueryEvent queryEvent(Qt::ImQueryAll);
+        QInputMethodQueryEvent queryEvent(BobUI::ImQueryAll);
         QCoreApplication::sendEvent(m_focusObject, &queryEvent);
 
-        int qCursorPosition = queryEvent.value(Qt::ImCursorPosition).toInt() ;
+        int qCursorPosition = queryEvent.value(BobUI::ImCursorPosition).toInt() ;
         int replaceIndex = (qCursorPosition - rangesPair.first);
         int replaceLength = rangesPair.second  - rangesPair.first;
 
@@ -92,10 +92,10 @@ void QWasmInputContext::inputCallback(emscripten::val event)
 
         m_preeditString.clear();
         std::string elementString = m_inputElement["value"].as<std::string>();
-        QInputMethodQueryEvent queryEvent(Qt::ImQueryAll);
+        QInputMethodQueryEvent queryEvent(BobUI::ImQueryAll);
         QCoreApplication::sendEvent(m_focusObject, &queryEvent);
-        QString textFieldString = queryEvent.value(Qt::ImTextBeforeCursor).toString();
-        int qCursorPosition = queryEvent.value(Qt::ImCursorPosition).toInt();
+        QString textFieldString = queryEvent.value(BobUI::ImTextBeforeCursor).toString();
+        int qCursorPosition = queryEvent.value(BobUI::ImCursorPosition).toInt();
 
         if (rangesPair.first != 0 || rangesPair.second != 0) {
 
@@ -129,10 +129,10 @@ void QWasmInputContext::inputCallback(emscripten::val event)
         if ((rangesPair.first != 0 || rangesPair.second != 0)
             && rangesPair.first != rangesPair.second) {
 
-            QInputMethodQueryEvent queryEvent(Qt::ImQueryAll);
+            QInputMethodQueryEvent queryEvent(BobUI::ImQueryAll);
             QCoreApplication::sendEvent(m_focusObject, &queryEvent);
 
-            int qCursorPosition = queryEvent.value(Qt::ImCursorPosition).toInt();
+            int qCursorPosition = queryEvent.value(BobUI::ImCursorPosition).toInt();
             int replaceIndex = (qCursorPosition - rangesPair.first);
             int replaceLength = rangesPair.second  - rangesPair.first;
 
@@ -146,7 +146,7 @@ void QWasmInputContext::inputCallback(emscripten::val event)
          }
 
         event.call<void>("stopImmediatePropagation");
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
     } else if (!inputTypeString.compare("insertFromPaste")) {
         insertText(QGuiApplication::clipboard()->text());
         event.call<void>("stopImmediatePropagation");
@@ -157,7 +157,7 @@ void QWasmInputContext::inputCallback(emscripten::val event)
 #endif
     } else {
         qCWarning(qLcQpaWasmInputContext) << Q_FUNC_INFO << "inputType \"" <<
-            inputType.as<std::string>() << "\" is not supported in Qt yet";
+            inputType.as<std::string>() << "\" is not supported in BobUI yet";
     }
 }
 
@@ -214,11 +214,11 @@ QWasmInputContext::~QWasmInputContext()
 {
 }
 
-void QWasmInputContext::update(Qt::InputMethodQueries queries)
+void QWasmInputContext::update(BobUI::InputMethodQueries queries)
 {
     qCDebug(qLcQpaWasmInputContext) << Q_FUNC_INFO << queries;
 
-    if ((queries & Qt::ImEnabled) && (inputMethodAccepted() != m_inputMethodAccepted)) {
+    if ((queries & BobUI::ImEnabled) && (inputMethodAccepted() != m_inputMethodAccepted)) {
         if (m_focusObject && !m_preeditString.isEmpty())
             commitPreeditAndClear();
         updateInputElement();
@@ -301,41 +301,41 @@ void QWasmInputContext::updateInputElement()
     qCDebug(qLcQpaWasmInputContext) << Q_FUNC_INFO << QRectF::fromDOMRect(m_inputElement.call<emscripten::val>("getBoundingClientRect"));
 
     // Set the text input
-    QInputMethodQueryEvent queryEvent(Qt::ImQueryAll);
+    QInputMethodQueryEvent queryEvent(BobUI::ImQueryAll);
     QCoreApplication::sendEvent(m_focusObject, &queryEvent);
-    qCDebug(qLcQpaWasmInputContext) << "Qt surrounding text: " << queryEvent.value(Qt::ImSurroundingText).toString();
-    qCDebug(qLcQpaWasmInputContext) << "Qt current selection: " << queryEvent.value(Qt::ImCurrentSelection).toString();
-    qCDebug(qLcQpaWasmInputContext) << "Qt text before cursor: " << queryEvent.value(Qt::ImTextBeforeCursor).toString();
-    qCDebug(qLcQpaWasmInputContext) << "Qt text after cursor: " << queryEvent.value(Qt::ImTextAfterCursor).toString();
-    qCDebug(qLcQpaWasmInputContext) << "Qt cursor position: " << queryEvent.value(Qt::ImCursorPosition).toInt();
-    qCDebug(qLcQpaWasmInputContext) << "Qt anchor position: " << queryEvent.value(Qt::ImAnchorPosition).toInt();
+    qCDebug(qLcQpaWasmInputContext) << "BobUI surrounding text: " << queryEvent.value(BobUI::ImSurroundingText).toString();
+    qCDebug(qLcQpaWasmInputContext) << "BobUI current selection: " << queryEvent.value(BobUI::ImCurrentSelection).toString();
+    qCDebug(qLcQpaWasmInputContext) << "BobUI text before cursor: " << queryEvent.value(BobUI::ImTextBeforeCursor).toString();
+    qCDebug(qLcQpaWasmInputContext) << "BobUI text after cursor: " << queryEvent.value(BobUI::ImTextAfterCursor).toString();
+    qCDebug(qLcQpaWasmInputContext) << "BobUI cursor position: " << queryEvent.value(BobUI::ImCursorPosition).toInt();
+    qCDebug(qLcQpaWasmInputContext) << "BobUI anchor position: " << queryEvent.value(BobUI::ImAnchorPosition).toInt();
 
-    m_inputElement.set("value", queryEvent.value(Qt::ImSurroundingText).toString().toStdString());
+    m_inputElement.set("value", queryEvent.value(BobUI::ImSurroundingText).toString().toStdString());
 
-    m_inputElement.set("selectionStart", queryEvent.value(Qt::ImAnchorPosition).toUInt());
-    m_inputElement.set("selectionEnd", queryEvent.value(Qt::ImCursorPosition).toUInt());
+    m_inputElement.set("selectionStart", queryEvent.value(BobUI::ImAnchorPosition).toUInt());
+    m_inputElement.set("selectionEnd", queryEvent.value(BobUI::ImCursorPosition).toUInt());
 
-    QInputMethodQueryEvent query((Qt::InputMethodQueries(Qt::ImHints)));
+    QInputMethodQueryEvent query((BobUI::InputMethodQueries(BobUI::ImHints)));
     QCoreApplication::sendEvent(m_focusObject, &query);
-    if (Qt::InputMethodHints(query.value(Qt::ImHints).toInt()).testFlag(Qt::ImhHiddenText))
+    if (BobUI::InputMethodHints(query.value(BobUI::ImHints).toInt()).testFlag(BobUI::ImhHiddenText))
         m_inputElement.set("type", "password");
     else
         m_inputElement.set("type", "text");
 
-// change inputmode to suit Qt imhints
+// change inputmode to suit BobUI imhints
 
-    Qt::InputMethodHints imHints = static_cast<Qt::InputMethodHints>(query.value(Qt::ImHints).toInt());
+    BobUI::InputMethodHints imHints = static_cast<BobUI::InputMethodHints>(query.value(BobUI::ImHints).toInt());
     std::string inMode = "text";
 
-    if (imHints & Qt::ImhDigitsOnly)
+    if (imHints & BobUI::ImhDigitsOnly)
         inMode = "numeric";
-    if (imHints & Qt::ImhFormattedNumbersOnly)
+    if (imHints & BobUI::ImhFormattedNumbersOnly)
         inMode = "decimal";
-    if (imHints & Qt::ImhDialableCharactersOnly)
+    if (imHints & BobUI::ImhDialableCharactersOnly)
         inMode = "tel";
-    if (imHints & Qt::ImhEmailCharactersOnly)
+    if (imHints & BobUI::ImhEmailCharactersOnly)
         inMode = "email";
-    if (imHints & Qt::ImhUrlCharactersOnly)
+    if (imHints & BobUI::ImhUrlCharactersOnly)
         inMode = "url";
     // search ??
     m_inputElement.set("inputMode",inMode);
@@ -386,9 +386,9 @@ void QWasmInputContext::insertPreedit(int replaceLength)
                                                  1);
         attributes.append(attr_cursor);
 
-        QTextCharFormat format;
+        BOBUIextCharFormat format;
         format.setFontUnderline(true);
-        format.setUnderlineStyle(QTextCharFormat::SingleUnderline);
+        format.setUnderlineStyle(BOBUIextCharFormat::SingleUnderline);
         QInputMethodEvent::Attribute attr_format(QInputMethodEvent::TextFormat,
                                                 0,
                                                 replaceLength, format);
@@ -437,9 +437,9 @@ void QWasmInputContext::insertText(QString inputStr, bool replace)
                                                 1); // length
         attributes.append(attr_cursor);
 
-        QTextCharFormat format;
+        BOBUIextCharFormat format;
         format.setFontUnderline(true);
-        format.setUnderlineStyle(QTextCharFormat::SingleUnderline);
+        format.setUnderlineStyle(BOBUIextCharFormat::SingleUnderline);
         QInputMethodEvent::Attribute attr_format(QInputMethodEvent::TextFormat,
                                                 0,
                                                 replaceSize,
@@ -454,4 +454,4 @@ void QWasmInputContext::insertText(QString inputStr, bool replace)
     m_preeditString.clear();
  }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

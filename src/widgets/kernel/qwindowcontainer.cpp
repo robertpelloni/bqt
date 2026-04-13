@@ -1,27 +1,27 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qwindowcontainer_p.h"
 #include "qwidget_p.h"
 #include "qwidgetwindow_p.h"
-#include <QtGui/qwindow.h>
-#include <QtGui/private/qwindow_p.h>
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/qwindow.h>
+#include <BobUIGui/private/qwindow_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 #include <qpa/qplatformintegration.h>
 #include <QDebug>
 
-#if QT_CONFIG(mdiarea)
+#if BOBUI_CONFIG(mdiarea)
 #include <QMdiSubWindow>
 #endif
 #include <QAbstractScrollArea>
 #include <QPainter>
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class QWindowContainerPrivate : public QWidgetPrivate
 {
@@ -46,7 +46,7 @@ public:
     void updateGeometry() {
         Q_Q(QWindowContainer);
         if (!q->isWindow() && (q->geometry().bottom() <= 0 || q->geometry().right() <= 0))
-            /* Qt (e.g. QSplitter) sometimes prefer to hide a widget by *not* calling
+            /* BobUI (e.g. QSplitter) sometimes prefer to hide a widget by *not* calling
                setVisible(false). This is often done by setting its coordinates to a sufficiently
                negative value so that its clipped outside the parent. Since a QWindow is not clipped
                to widgets in general, it needs to be dealt with as a special case.
@@ -63,7 +63,7 @@ public:
         if (window->parent() == nullptr)
             return;
         Q_Q(QWindowContainer);
-        if (q->testAttribute(Qt::WA_DontCreateNativeAncestors))
+        if (q->testAttribute(BobUI::WA_DontCreateNativeAncestors))
             return;
         if (q->internalWinId()) {
             // Allow use native widgets if the window container is already a native widget
@@ -74,10 +74,10 @@ public:
         QWidget *p = q->parentWidget();
         while (p) {
             if (false
-#if QT_CONFIG(mdiarea)
+#if BOBUI_CONFIG(mdiarea)
                 || qobject_cast<QMdiSubWindow *>(p) != 0
 #endif
-#if QT_CONFIG(scrollarea)
+#if BOBUI_CONFIG(scrollarea)
                 || qobject_cast<QAbstractScrollArea *>(p) != 0
 #endif
                     ) {
@@ -114,7 +114,7 @@ public:
 
 
 /*!
-    \fn QWidget *QWidget::createWindowContainer(QWindow *window, QWidget *parent, Qt::WindowFlags flags);
+    \fn QWidget *QWidget::createWindowContainer(QWindow *window, QWidget *parent, BobUI::WindowFlags flags);
 
     Creates a QWidget that makes it possible to embed \a window into
     a QWidget-based application.
@@ -161,7 +161,7 @@ public:
     QWindow::requestActivate() actually gives the window focus, is
     platform dependent.
 
-    Since 6.8, if embedding a Qt Quick based window, tab presses will
+    Since 6.8, if embedding a BobUI Quick based window, tab presses will
     transition in and out of the embedded QML window, allowing focus to move
     to the next or previous focusable object in the window container chain.
 
@@ -180,14 +180,14 @@ public:
     \endlist
  */
 
-QWidget *QWidget::createWindowContainer(QWindow *window, QWidget *parent, Qt::WindowFlags flags)
+QWidget *QWidget::createWindowContainer(QWindow *window, QWidget *parent, BobUI::WindowFlags flags)
 {
     // Embedding a QWidget in a window container doesn't make sense,
     // and has various issues in practice, so just return the widget
     // itself.
     if (auto *widgetWindow = qobject_cast<QWidgetWindow *>(window)) {
         QWidget *widget = widgetWindow->widget();
-        if (flags != Qt::WindowFlags()) {
+        if (flags != BobUI::WindowFlags()) {
             qWarning() << window << "refers to a widget:" << widget
                        << "WindowFlags" << flags << "will be ignored.";
         }
@@ -201,7 +201,7 @@ QWidget *QWidget::createWindowContainer(QWindow *window, QWidget *parent, Qt::Wi
     \internal
  */
 
-QWindowContainer::QWindowContainer(QWindow *embeddedWindow, QWidget *parent, Qt::WindowFlags flags)
+QWindowContainer::QWindowContainer(QWindow *embeddedWindow, QWidget *parent, BobUI::WindowFlags flags)
     : QWidget(*new QWindowContainerPrivate, parent, flags)
 {
     Q_D(QWindowContainer);
@@ -220,7 +220,7 @@ QWindowContainer::QWindowContainer(QWindow *embeddedWindow, QWidget *parent, Qt:
 
     d->window->setParent(&d->fakeParent);
     d->window->parent()->installEventFilter(this);
-    d->window->setFlag(Qt::SubWindow);
+    d->window->setFlag(BobUI::SubWindow);
 
     setAcceptDrops(true);
 
@@ -273,7 +273,7 @@ bool QWindowContainer::eventFilter(QObject *o, QEvent *e)
         }
     } else if (e->type() == QEvent::FocusIn) {
         if (o == d->window)
-            setFocus(Qt::ActiveWindowFocusReason);
+            setFocus(BobUI::ActiveWindowFocusReason);
     }
     return false;
 }
@@ -327,16 +327,16 @@ bool QWindowContainer::event(QEvent *e)
                 QFocusEvent *event = static_cast<QFocusEvent *>(e);
                 const auto reason = event->reason();
                 QWindowPrivate::FocusTarget target = QWindowPrivate::FocusTarget::Current;
-                if (reason == Qt::TabFocusReason)
+                if (reason == BobUI::TabFocusReason)
                     target = QWindowPrivate::FocusTarget::First;
-                else if (reason == Qt::BacktabFocusReason)
+                else if (reason == BobUI::BacktabFocusReason)
                     target = QWindowPrivate::FocusTarget::Last;
-                qt_window_private(d->window)->setFocusToTarget(target, reason);
+                bobui_window_private(d->window)->setFocusToTarget(target, reason);
                 d->window->requestActivate();
             }
         }
         break;
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     case QEvent::Drop:
     case QEvent::DragMove:
     case QEvent::DragLeave:
@@ -357,7 +357,7 @@ bool QWindowContainer::event(QEvent *e)
         if (needsPunch) {
             QPainter p(this);
             p.setCompositionMode(QPainter::CompositionMode_Source);
-            p.fillRect(rect(), Qt::transparent);
+            p.fillRect(rect(), BobUI::transparent);
         }
         break;
     }
@@ -455,6 +455,6 @@ void QWindowContainer::parentWasLowered(QWidget *parent)
     qwindowcontainer_traverse(parent, parentWasLowered);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qwindowcontainer_p.cpp"

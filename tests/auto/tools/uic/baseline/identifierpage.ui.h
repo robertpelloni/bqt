@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'identifierpage.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,16 +9,16 @@
 #ifndef IDENTIFIERPAGE_H
 #define IDENTIFIERPAGE_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QRadioButton>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QCheckBox>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QLineEdit>
+#include <BobUIWidgets/QRadioButton>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_IdentifierPage
 {
@@ -101,6 +101,6 @@ namespace Ui {
     class IdentifierPage: public Ui_IdentifierPage {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // IDENTIFIERPAGE_H

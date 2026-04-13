@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "mainwindow.h"
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 //! [0]
 MainWindow::MainWindow()
@@ -34,7 +34,7 @@ MainWindow::MainWindow()
     QSpinBox *fontSizeSpinBox = new QSpinBox;
     fontSizeSpinBox->setRange(1, 64);
 
-    editor = new QTextBrowser;
+    editor = new BOBUIextBrowser;
     insertCalendar();
 //! [2]
 
@@ -72,57 +72,57 @@ MainWindow::MainWindow()
 void MainWindow::insertCalendar()
 {
     editor->clear();
-    QTextCursor cursor = editor->textCursor();
+    BOBUIextCursor cursor = editor->textCursor();
     cursor.beginEditBlock();
 
     QDate date(selectedDate.year(), selectedDate.month(), 1);
 //! [5]
 
 //! [6]
-    QTextTableFormat tableFormat;
-    tableFormat.setAlignment(Qt::AlignHCenter);
+    BOBUIextTableFormat tableFormat;
+    tableFormat.setAlignment(BobUI::AlignHCenter);
     tableFormat.setBackground(QColor("#e0e0e0"));
     tableFormat.setCellPadding(2);
     tableFormat.setCellSpacing(4);
 //! [6] //! [7]
-    QList<QTextLength> constraints;
-    constraints << QTextLength(QTextLength::PercentageLength, 14)
-                << QTextLength(QTextLength::PercentageLength, 14)
-                << QTextLength(QTextLength::PercentageLength, 14)
-                << QTextLength(QTextLength::PercentageLength, 14)
-                << QTextLength(QTextLength::PercentageLength, 14)
-                << QTextLength(QTextLength::PercentageLength, 14)
-                << QTextLength(QTextLength::PercentageLength, 14);
+    QList<BOBUIextLength> constraints;
+    constraints << BOBUIextLength(BOBUIextLength::PercentageLength, 14)
+                << BOBUIextLength(BOBUIextLength::PercentageLength, 14)
+                << BOBUIextLength(BOBUIextLength::PercentageLength, 14)
+                << BOBUIextLength(BOBUIextLength::PercentageLength, 14)
+                << BOBUIextLength(BOBUIextLength::PercentageLength, 14)
+                << BOBUIextLength(BOBUIextLength::PercentageLength, 14)
+                << BOBUIextLength(BOBUIextLength::PercentageLength, 14);
     tableFormat.setColumnWidthConstraints(constraints);
 //! [7]
 
 //! [8]
-    QTextTable *table = cursor.insertTable(1, 7, tableFormat);
+    BOBUIextTable *table = cursor.insertTable(1, 7, tableFormat);
 //! [8]
 
 //! [9]
-    QTextFrame *frame = cursor.currentFrame();
-    QTextFrameFormat frameFormat = frame->frameFormat();
+    BOBUIextFrame *frame = cursor.currentFrame();
+    BOBUIextFrameFormat frameFormat = frame->frameFormat();
     frameFormat.setBorder(1);
     frame->setFrameFormat(frameFormat);
 //! [9]
 
 //! [10]
-    QTextCharFormat format = cursor.charFormat();
+    BOBUIextCharFormat format = cursor.charFormat();
     format.setFontPointSize(fontSize);
 
-    QTextCharFormat boldFormat = format;
+    BOBUIextCharFormat boldFormat = format;
     boldFormat.setFontWeight(QFont::Bold);
 
-    QTextCharFormat highlightedFormat = boldFormat;
-    highlightedFormat.setBackground(Qt::yellow);
+    BOBUIextCharFormat highlightedFormat = boldFormat;
+    highlightedFormat.setBackground(BobUI::yellow);
 //! [10]
 
 //! [11]
     for (int weekDay = 1; weekDay <= 7; ++weekDay) {
-        QTextTableCell cell = table->cellAt(0, weekDay-1);
+        BOBUIextTableCell cell = table->cellAt(0, weekDay-1);
 //! [11] //! [12]
-        QTextCursor cellCursor = cell.firstCursorPosition();
+        BOBUIextCursor cellCursor = cell.firstCursorPosition();
         cellCursor.insertText(QLocale::system().dayName(weekDay), boldFormat);
     }
 //! [12]
@@ -133,8 +133,8 @@ void MainWindow::insertCalendar()
 
     while (date.month() == selectedDate.month()) {
         int weekDay = date.dayOfWeek();
-        QTextTableCell cell = table->cellAt(table->rows()-1, weekDay-1);
-        QTextCursor cellCursor = cell.firstCursorPosition();
+        BOBUIextTableCell cell = table->cellAt(table->rows()-1, weekDay-1);
+        BOBUIextCursor cellCursor = cell.firstCursorPosition();
 
         if (date == QDate::currentDate())
             cellCursor.insertText(QString("%1").arg(date.day()), highlightedFormat);

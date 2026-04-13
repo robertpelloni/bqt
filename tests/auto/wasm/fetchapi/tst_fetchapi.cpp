@@ -1,8 +1,8 @@
-// Copyright (C) 2023 The Qt Company Ltd.
+// Copyright (C) 2023 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QEventLoop>
 #include <QNetworkReply>
 #include <QNetworkRequest>
@@ -14,7 +14,7 @@ namespace {
 
 const QUrl URL = QUrl("http://localhost:6931/test_batch.html");
 
-class BackgroundThread : public QThread
+class BackgroundThread : public BOBUIhread
 {
     Q_OBJECT
     void run() override
@@ -80,5 +80,5 @@ void tst_FetchApi::sendRequestOnBackgroundThread()
     QVERIFY(backgroundThread->reply->error() == QNetworkReply::NoError);
 }
 
-QTEST_MAIN(tst_FetchApi);
+BOBUIEST_MAIN(tst_FetchApi);
 #include "tst_fetchapi.moc"

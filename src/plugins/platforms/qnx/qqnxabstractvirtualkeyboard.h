@@ -1,5 +1,5 @@
 // Copyright (C) 2013 BlackBerry Limited. All rights reserved.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QQNXABSTRACTVIRTUALKEYBOARD_H
 #define QQNXABSTRACTVIRTUALKEYBOARD_H
@@ -7,7 +7,7 @@
 #include <QLocale>
 #include <QObject>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QQnxAbstractVirtualKeyboard : public QObject
 {
@@ -44,7 +44,7 @@ public:
     KeyboardMode keyboardMode() const { return m_keyboardMode; }
     EnterKeyType enterKeyType() const { return m_enterKeyType; }
 
-    static EnterKeyType qtEnterKeyTypeToQnx(Qt::EnterKeyType type);
+    static EnterKeyType bobuiEnterKeyTypeToQnx(BobUI::EnterKeyType type);
 
 Q_SIGNALS:
     void heightChanged(int height);
@@ -66,6 +66,6 @@ private:
     EnterKeyType m_enterKeyType;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QQNXABSTRACTVIRTUALKEYBOARD_H

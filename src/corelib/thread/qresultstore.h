@@ -1,17 +1,17 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#ifndef QTCORE_RESULTSTORE_H
-#define QTCORE_RESULTSTORE_H
+#ifndef BOBUICORE_RESULTSTORE_H
+#define BOBUICORE_RESULTSTORE_H
 
-#include <QtCore/qmap.h>
+#include <BobUICore/qmap.h>
 
 #include <utility>
 
-QT_REQUIRE_CONFIG(future);
+BOBUI_REQUIRE_CONFIG(future);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*
     ResultStore stores indexed results. Results can be added and retrieved
@@ -21,7 +21,7 @@ QT_BEGIN_NAMESPACE
     either individually or in batches.
 */
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 class ResultItem
 {
@@ -47,7 +47,7 @@ public:
     ResultIteratorBase operator++();
     int batchSize() const;
     void batchedAdvance();
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
     bool operator==(const ResultIteratorBase &other) const;
     bool operator!=(const ResultIteratorBase &other) const;
 #endif
@@ -109,16 +109,16 @@ public:
     ResultIteratorBase resultAt(int index) const;
     bool contains(int index) const;
     int count() const;
-    // ### Qt 7: 'virtual' isn't required, can be removed, along with renaming
+    // ### BobUI 7: 'virtual' isn't required, can be removed, along with renaming
     // the class to ResultStore and changing the members below to be private.
-    QT_WARNING_PUSH
+    BOBUI_WARNING_PUSH
 #if defined(Q_CC_CLANG)
 #  if __has_warning("-Wunnecessary-virtual-specifier")
-    QT_WARNING_DISABLE_CLANG("-Wunnecessary-virtual-specifier")
+    BOBUI_WARNING_DISABLE_CLANG("-Wunnecessary-virtual-specifier")
 #  endif
 #endif
     virtual ~ResultStoreBase();
-    QT_WARNING_POP
+    BOBUI_WARNING_POP
 
 protected:
     int insertResultItem(int index, ResultItem &resultItem);
@@ -236,11 +236,11 @@ public:
     }
 };
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
-Q_DECLARE_TYPEINFO(QtPrivate::ResultItem, Q_PRIMITIVE_TYPE);
+Q_DECLARE_TYPEINFO(BobUIPrivate::ResultItem, Q_PRIMITIVE_TYPE);
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

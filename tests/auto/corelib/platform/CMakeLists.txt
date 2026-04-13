@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 if(ANDROID)
@@ -6,7 +6,7 @@ if(ANDROID)
     add_subdirectory(android_appless)
     add_subdirectory(androiditemmodel)
     add_subdirectory(androidactivityalias)
-    if(NOT QT_USE_ANDROID_MODERN_BUNDLE)
+    if(NOT BOBUI_USE_ANDROID_MODERN_BUNDLE)
         add_subdirectory(android_legacy_packaging)
     endif()
 endif()

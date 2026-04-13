@@ -1,26 +1,26 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDTLS_H
 #define QDTLS_H
 
-#include <QtNetwork/qtnetworkglobal.h>
+#include <BobUINetwork/bobuinetworkglobal.h>
 
-#include <QtNetwork/qsslsocket.h>
-#include <QtNetwork/qssl.h>
+#include <BobUINetwork/qsslsocket.h>
+#include <BobUINetwork/qssl.h>
 
-#include <QtCore/qcryptographichash.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qcontainerfwd.h>
+#include <BobUICore/qcryptographichash.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qcontainerfwd.h>
 
-Q_MOC_INCLUDE(<QtNetwork/QSslPreSharedKeyAuthenticator>)
+Q_MOC_INCLUDE(<BobUINetwork/QSslPreSharedKeyAuthenticator>)
 
 #ifndef Q_QDOC
-QT_REQUIRE_CONFIG(dtls);
+BOBUI_REQUIRE_CONFIG(dtls);
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 enum class QDtlsError : unsigned char
 {
@@ -150,6 +150,6 @@ private:
     Q_DISABLE_COPY_MOVE(QDtls)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QDTLS_H

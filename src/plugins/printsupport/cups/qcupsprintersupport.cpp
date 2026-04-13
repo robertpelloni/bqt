@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2014 John Layt <jlayt@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qcupsprintersupport_p.h"
 
@@ -9,25 +9,25 @@
 #include <private/qprinterinfo_p.h>
 #include <private/qprintdevice_p.h>
 
-#include <QtPrintSupport/QPrinterInfo>
+#include <BobUIPrintSupport/QPrinterInfo>
 
-#if QT_CONFIG(cupspassworddialog)
+#if BOBUI_CONFIG(cupspassworddialog)
 #include <QGuiApplication>
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QFormLayout>
 #include <QLabel>
 #include <QLineEdit>
-#endif // QT_CONFIG(cupspassworddialog)
+#endif // BOBUI_CONFIG(cupspassworddialog)
 
 #include <cups/ppd.h>
-#ifndef QT_LINUXBASE // LSB merges everything into cups.h
+#ifndef BOBUI_LINUXBASE // LSB merges everything into cups.h
 # include <cups/language.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if QT_CONFIG(cupspassworddialog)
+#if BOBUI_CONFIG(cupspassworddialog)
 static const char *getPasswordCB(const char */*prompt*/, http_t *http, const char */*method*/, const char *resource, void */*user_data*/)
 {
     // cups doesn't free the const char * we return so keep around
@@ -89,16 +89,16 @@ static const char *getPasswordCB(const char */*prompt*/, http_t *http, const cha
 
     return password.constData();
 }
-#endif // QT_CONFIG(cupspassworddialog)
+#endif // BOBUI_CONFIG(cupspassworddialog)
 
 QCupsPrinterSupport::QCupsPrinterSupport()
     : QPlatformPrinterSupport()
 {
-#if QT_CONFIG(cupspassworddialog)
+#if BOBUI_CONFIG(cupspassworddialog)
     // Only show password dialog if GUI application
     if (qobject_cast<QGuiApplication*>(QCoreApplication::instance()))
         cupsSetPasswordCB2(getPasswordCB, nullptr /* user_data */ );
-#endif // QT_CONFIG(cupspassworddialog)
+#endif // BOBUI_CONFIG(cupspassworddialog)
 }
 
 QCupsPrinterSupport::~QCupsPrinterSupport()
@@ -160,4 +160,4 @@ QString QCupsPrinterSupport::staticDefaultPrintDeviceId()
     return printerId;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,13 +1,13 @@
 // Copyright (C) 2017-2018 Red Hat, Inc
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 #ifndef QXDGDESKTOPPORTALFILEDIALOG_P_H
 #define QXDGDESKTOPPORTALFILEDIALOG_P_H
 
 #include <qpa/qplatformdialoghelper.h>
 #include <QList>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QXdgDesktopPortalFileDialogPrivate;
 
@@ -54,7 +54,7 @@ public:
     QString selectedMimeTypeFilter() const override;
 
     void exec() override;
-    bool show(Qt::WindowFlags windowFlags, Qt::WindowModality windowModality, QWindow *parent) override;
+    bool show(BobUI::WindowFlags windowFlags, BobUI::WindowModality windowModality, QWindow *parent) override;
     void hide() override;
 
 private Q_SLOTS:
@@ -62,13 +62,13 @@ private Q_SLOTS:
 
 private:
     void initializeDialog();
-    void openPortal(Qt::WindowFlags windowFlags, Qt::WindowModality windowModality, QWindow *parent);
+    void openPortal(BobUI::WindowFlags windowFlags, BobUI::WindowModality windowModality, QWindow *parent);
     bool useNativeFileDialog(FallbackType fallbackType = GenericFallback) const;
 
     QScopedPointer<QXdgDesktopPortalFileDialogPrivate> d_ptr;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 Q_DECLARE_METATYPE(QXdgDesktopPortalFileDialog::FilterCondition);
 Q_DECLARE_METATYPE(QXdgDesktopPortalFileDialog::FilterConditionList);

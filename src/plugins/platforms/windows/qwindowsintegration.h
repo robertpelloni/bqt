@@ -1,6 +1,6 @@
 // Copyright (C) 2013 Samuel Gaist <samuel.gaist@edeltech.ch>
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWINDOWSINTEGRATION_H
 #define QWINDOWSINTEGRATION_H
@@ -8,14 +8,14 @@
 #include "qwindowsapplication.h"
 
 #include <qpa/qplatformintegration.h>
-#include <QtCore/qscopedpointer.h>
-#include <QtGui/private/qwindowsfontdatabase_p.h>
-#ifndef QT_NO_OPENGL
-#include <QtGui/private/qopenglcontext_p.h>
+#include <BobUICore/qscopedpointer.h>
+#include <BobUIGui/private/qwindowsfontdatabase_p.h>
+#ifndef BOBUI_NO_OPENGL
+#include <BobUIGui/private/qopenglcontext_p.h>
 #endif
 #include <qpa/qplatformopenglcontext.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct QWindowsIntegrationPrivate;
 struct QWindowsWindowData;
@@ -23,7 +23,7 @@ class QWindowsWindow;
 class QWindowsStaticOpenGLContext;
 
 class QWindowsIntegration : public QPlatformIntegration
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     , public QNativeInterface::Private::QWindowsGLIntegration
 #endif
     , public QWindowsApplication
@@ -54,7 +54,7 @@ public:
 
     QPlatformWindow *createPlatformWindow(QWindow *window) const override;
     QPlatformWindow *createForeignWindow(QWindow *window, WId nativeHandle) const override;
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     QPlatformOpenGLContext *createPlatformOpenGLContext(QOpenGLContext *context) const override;
     QOpenGLContext::OpenGLModuleType openGLModuleType() override;
     static QWindowsStaticOpenGLContext *staticOpenGLContext();
@@ -65,14 +65,14 @@ public:
 #endif
     QAbstractEventDispatcher *createEventDispatcher() const override;
     void initialize() override;
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
     QPlatformClipboard *clipboard() const override;
-#  if QT_CONFIG(draganddrop)
+#  if BOBUI_CONFIG(draganddrop)
     QPlatformDrag *drag() const override;
 #  endif
-#endif // !QT_NO_CLIPBOARD
+#endif // !BOBUI_NO_CLIPBOARD
     QPlatformInputContext *inputContext() const override;
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     QPlatformAccessibility *accessibility() const override;
 #endif
     QPlatformFontDatabase *fontDatabase() const override;
@@ -93,11 +93,11 @@ public:
     void setApplicationBadge(const QImage &image);
     void updateApplicationBadge();
 
-#if QT_CONFIG(sessionmanager)
+#if BOBUI_CONFIG(sessionmanager)
     QPlatformSessionManager *createPlatformSessionManager(const QString &id, const QString &key) const override;
 #endif
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     QPlatformVulkanInstance *createPlatformVulkanInstance(QVulkanInstance *instance) const override;
 #endif
 
@@ -112,6 +112,6 @@ private:
     qint64 m_applicationBadgeNumber = 0;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

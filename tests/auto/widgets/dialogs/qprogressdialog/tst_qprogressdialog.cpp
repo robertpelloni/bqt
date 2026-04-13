@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qapplication.h>
 #include <qdebug.h>
@@ -11,8 +11,8 @@
 #include <qpushbutton.h>
 #include <qlabel.h>
 #include <qpointer.h>
-#include <qthread.h>
-#include <qtranslator.h>
+#include <bobuihread.h>
+#include <bobuiranslator.h>
 
 class tst_QProgressDialog : public QObject
 {
@@ -25,8 +25,8 @@ private Q_SLOTS:
     void autoShowCtor();
     void getSetCheck();
     void task198202();
-    void QTBUG_31046();
-    void QTBUG_19983();
+    void BOBUIBUG_31046();
+    void BOBUIBUG_19983();
     void settingCustomWidgets();
     void i18n();
     void setValueReentrancyGuard();
@@ -39,32 +39,32 @@ void tst_QProgressDialog::cleanup()
 
 void tst_QProgressDialog::autoShow_data()
 {
-    QTest::addColumn<int>("min");
-    QTest::addColumn<int>("max");
-    QTest::addColumn<int>("value"); // initial setValue call
-    QTest::addColumn<int>("delay"); // then we wait for this long, and setValue(min+1)
-    QTest::addColumn<int>("minDuration");
-    QTest::addColumn<bool>("expectedAutoShow");
+    BOBUIest::addColumn<int>("min");
+    BOBUIest::addColumn<int>("max");
+    BOBUIest::addColumn<int>("value"); // initial setValue call
+    BOBUIest::addColumn<int>("delay"); // then we wait for this long, and setValue(min+1)
+    BOBUIest::addColumn<int>("minDuration");
+    BOBUIest::addColumn<bool>("expectedAutoShow");
 
     // Check that autoshow works even when not starting at 0
-    QTest::newRow("50_to_100_slow_shown") << 50 << 100 << 50 << 100 << 100 << true; // 50*100ms = 5s
-    QTest::newRow("50_to_100_fast_not_shown") << 50 << 100 << 50 << 1 << 100 << false; // 1ms is too short to even start estimating
-    QTest::newRow("50_to_60_high_minDuration_not_shown") << 50 << 60 << 50 << 100 << 2000 << false; // 10*100ms = 1s < 2s
+    BOBUIest::newRow("50_to_100_slow_shown") << 50 << 100 << 50 << 100 << 100 << true; // 50*100ms = 5s
+    BOBUIest::newRow("50_to_100_fast_not_shown") << 50 << 100 << 50 << 1 << 100 << false; // 1ms is too short to even start estimating
+    BOBUIest::newRow("50_to_60_high_minDuration_not_shown") << 50 << 60 << 50 << 100 << 2000 << false; // 10*100ms = 1s < 2s
 
     // Check that setValue(0) still starts the timer as previously documented
-    QTest::newRow("50_to_100_slow_0_compat") << 50 << 100 << 0 << 100 << 100 << true; // 50*100ms = 5s
-    QTest::newRow("50_to_100_fast_0_compat") << 50 << 100 << 0 << 1 << 100 << false; // 1ms is too short to even start estimating
-    QTest::newRow("50_to_60_high_minDuration_0_compat") << 50 << 60 << 0 << 100 << 2000 << false; // 10*100ms = 1s < 2s
+    BOBUIest::newRow("50_to_100_slow_0_compat") << 50 << 100 << 0 << 100 << 100 << true; // 50*100ms = 5s
+    BOBUIest::newRow("50_to_100_fast_0_compat") << 50 << 100 << 0 << 1 << 100 << false; // 1ms is too short to even start estimating
+    BOBUIest::newRow("50_to_60_high_minDuration_0_compat") << 50 << 60 << 0 << 100 << 2000 << false; // 10*100ms = 1s < 2s
 
     // Check the typical case of starting at 0
-    QTest::newRow("0_to_100_slow_shown") << 0 << 100 << 0 << 100 << 100 << true; // 100*100ms = 10s > 100ms
-    QTest::newRow("0_to_10_slow_shown") << 0 << 10 << 0 << 100 << 500 << true; // 10*100ms = 1s > 0.5s
-    QTest::newRow("0_to_10_high_minDuration_not_shown") << 0 << 10 << 0 << 100 << 2000 << false; // 10*100ms = 1s < 2s
+    BOBUIest::newRow("0_to_100_slow_shown") << 0 << 100 << 0 << 100 << 100 << true; // 100*100ms = 10s > 100ms
+    BOBUIest::newRow("0_to_10_slow_shown") << 0 << 10 << 0 << 100 << 500 << true; // 10*100ms = 1s > 0.5s
+    BOBUIest::newRow("0_to_10_high_minDuration_not_shown") << 0 << 10 << 0 << 100 << 2000 << false; // 10*100ms = 1s < 2s
 
     // Check the special case of going via 0 at some point
-    QTest::newRow("-1_to_1_slow_shown") << -1 << 1 << -1 << 200 << 100 << true; // 1*200ms = 200ms > 100ms
-    QTest::newRow("-1_to_1_fast_not_shown") << -1 << 1 << -1 << 10 << 100 << false; // 10ms is too short to even start estimating
-    QTest::newRow("-1_to_1_high_minDuration_not_shown") << -1 << 1 << -1 << 100 << 2000 << false; // 1*100ms = 100ms < 2s
+    BOBUIest::newRow("-1_to_1_slow_shown") << -1 << 1 << -1 << 200 << 100 << true; // 1*200ms = 200ms > 100ms
+    BOBUIest::newRow("-1_to_1_fast_not_shown") << -1 << 1 << -1 << 10 << 100 << false; // 10ms is too short to even start estimating
+    BOBUIest::newRow("-1_to_1_high_minDuration_not_shown") << -1 << 1 << -1 << 100 << 2000 << false; // 1*100ms = 100ms < 2s
 
 }
 
@@ -84,7 +84,7 @@ void tst_QProgressDialog::autoShow()
                  // in order to test for the setValue() behavior instead
                  // See autoShowCtor() for the ctor timer check
     dlg.setValue(value);
-    QThread::sleep(std::chrono::milliseconds{delay});
+    BOBUIhread::sleep(std::chrono::milliseconds{delay});
     dlg.setValue(min+1);
     QCOMPARE(dlg.isVisible(), expectedAutoShow);
 }
@@ -93,8 +93,8 @@ void tst_QProgressDialog::autoShowCtor()
 {
     QProgressDialog dlg;
     QVERIFY(!dlg.isVisible());
-    QThread::sleep(std::chrono::milliseconds{dlg.minimumDuration()});
-    QTRY_VERIFY(dlg.isVisible());
+    BOBUIhread::sleep(std::chrono::milliseconds{dlg.minimumDuration()});
+    BOBUIRY_VERIFY(dlg.isVisible());
 }
 
 // Testing get/set functions
@@ -169,24 +169,24 @@ void tst_QProgressDialog::task198202()
     //should not crash
     QProgressDialog dlg(QLatin1String("test"),QLatin1String("test"),1,10);
     dlg.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&dlg));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&dlg));
     int futureHeight = dlg.sizeHint().height() - dlg.findChild<QLabel*>()->sizeHint().height();
     dlg.setLabel(0);
-    QTest::ignoreMessage(QtWarningMsg, "QProgressDialog::setBar: Cannot set a null progress bar");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QProgressDialog::setBar: Cannot set a null progress bar");
     dlg.setBar(0);
-    QTRY_COMPARE(dlg.sizeHint().height(), futureHeight);
+    BOBUIRY_COMPARE(dlg.sizeHint().height(), futureHeight);
 }
 
-void tst_QProgressDialog::QTBUG_31046()
+void tst_QProgressDialog::BOBUIBUG_31046()
 {
     QProgressDialog dlg("", "", 50, 60);
     dlg.setValue(0);
-    QThread::sleep(std::chrono::milliseconds{200});
+    BOBUIhread::sleep(std::chrono::milliseconds{200});
     dlg.setValue(50);
     QCOMPARE(50, dlg.value());
 }
 
-void tst_QProgressDialog::QTBUG_19983()
+void tst_QProgressDialog::BOBUIBUG_19983()
 {
     QProgressDialog tempDlg;
     tempDlg.setRange(0, 0);
@@ -195,7 +195,7 @@ void tst_QProgressDialog::QTBUG_19983()
     QPushButton *btnOne = new QPushButton("Cancel", &tempDlg);
     tempDlg.setCancelButton(btnOne);
     tempDlg.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&tempDlg));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&tempDlg));
     const auto btnOneGeometry = btnOne->geometry();
     QVERIFY(QPoint(0,0) != btnOneGeometry.topLeft());
 
@@ -205,7 +205,7 @@ void tst_QProgressDialog::QTBUG_19983()
     QPushButton *btnTwo = new QPushButton("Cancel", &tempDlg);
     tempDlg.setCancelButton(btnTwo);
     tempDlg.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&tempDlg));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&tempDlg));
     QCOMPARE(btnOneGeometry, btnTwo->geometry());
 }
 
@@ -224,21 +224,21 @@ void tst_QProgressDialog::settingCustomWidgets()
         QVERIFY(!dlg.isAncestorOf(l));
         dlg.setLabel(l);
         QVERIFY(dlg.isAncestorOf(l));
-        QTest::ignoreMessage(QtWarningMsg, "QProgressDialog::setLabel: Attempt to set the same label again");
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QProgressDialog::setLabel: Attempt to set the same label again");
         dlg.setLabel(l);          // setting the same widget again should not crash
         QVERIFY(l);               // and not delete the (old == new) widget
 
         QVERIFY(!dlg.isAncestorOf(btn));
         dlg.setCancelButton(btn);
         QVERIFY(dlg.isAncestorOf(btn));
-        QTest::ignoreMessage(QtWarningMsg, "QProgressDialog::setCancelButton: Attempt to set the same button again");
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QProgressDialog::setCancelButton: Attempt to set the same button again");
         dlg.setCancelButton(btn); // setting the same widget again should not crash
         QVERIFY(btn);             // and not delete the (old == new) widget
 
         QVERIFY(!dlg.isAncestorOf(bar));
         dlg.setBar(bar);
         QVERIFY(dlg.isAncestorOf(bar));
-        QTest::ignoreMessage(QtWarningMsg, "QProgressDialog::setBar: Attempt to set the same progress bar again");
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QProgressDialog::setBar: Attempt to set the same progress bar again");
         dlg.setBar(bar);          // setting the same widget again should not crash
         QVERIFY(bar);             // and not delete the (old == new) widget
     }
@@ -248,11 +248,11 @@ void tst_QProgressDialog::settingCustomWidgets()
     QVERIFY(!bar);
 }
 
-class QTestTranslator : public QTranslator
+class BOBUIestTranslator : public BOBUIranslator
 {
     const QString m_str;
 public:
-    explicit QTestTranslator(QString str) : m_str(std::move(str)) {}
+    explicit BOBUIestTranslator(QString str) : m_str(std::move(str)) {}
 
     QString translate(const char *, const char *sourceText, const char *, int) const override
     { return m_str + sourceText + m_str; }
@@ -261,13 +261,13 @@ public:
 };
 
 template <typename Translator>
-class QTranslatorGuard {
+class BOBUIranslatorGuard {
     Translator t;
 public:
     template <typename Arg>
-    explicit QTranslatorGuard(Arg a) : t(std::move(a))
+    explicit BOBUIranslatorGuard(Arg a) : t(std::move(a))
     { qApp->installTranslator(&t); }
-    ~QTranslatorGuard()
+    ~BOBUIranslatorGuard()
     { qApp->removeTranslator(&t); }
 };
 
@@ -278,23 +278,23 @@ void tst_QProgressDialog::i18n()
     QVERIFY(btn);
     const QString xxx = QStringLiteral("xxx");
     {
-        QTranslatorGuard<QTestTranslator> guard(xxx);
+        BOBUIranslatorGuard<BOBUIestTranslator> guard(xxx);
         {
             QPushButton *btn = dlg.findChild<QPushButton*>();
             QVERIFY(btn);
-            QTRY_COMPARE(btn->text(), QProgressDialog::tr("Cancel"));
+            BOBUIRY_COMPARE(btn->text(), QProgressDialog::tr("Cancel"));
             QVERIFY(btn->text().startsWith(xxx));
         }
     }
     QVERIFY(btn);
-    QTRY_COMPARE(btn->text(), QProgressDialog::tr("Cancel"));
+    BOBUIRY_COMPARE(btn->text(), QProgressDialog::tr("Cancel"));
     QVERIFY(!btn->text().startsWith(xxx));
 }
 
 void tst_QProgressDialog::setValueReentrancyGuard()
 {
     // Tests setValue() of window modal QProgressBar with
-    // Qt::QueuedConnection:
+    // BobUI::QueuedConnection:
     // This test crashes with a stack overflow if the boolean
     // guard "processingEvents" that prevents reentranct calls
     // to QCoreApplication::processEvents() within setValue()
@@ -303,16 +303,16 @@ void tst_QProgressDialog::setValueReentrancyGuard()
     constexpr int steps = 100; // Should be at least 50 to test for crash
 
     QProgressDialog dlg("Testing setValue reentrancy guard...", QString(), 0, steps);
-    dlg.setWindowModality(Qt::WindowModal);
+    dlg.setWindowModality(BobUI::WindowModal);
     dlg.setMinimumDuration(0);
     dlg.setAutoReset(false);
 
     // Simulate a quick work loop
     for (int i = 0; i <= steps; ++i)
-        QMetaObject::invokeMethod(&dlg, "setValue", Qt::QueuedConnection, Q_ARG(int, i));
+        QMetaObject::invokeMethod(&dlg, "setValue", BobUI::QueuedConnection, Q_ARG(int, i));
 
-    QTRY_COMPARE(dlg.value(), steps);
+    BOBUIRY_COMPARE(dlg.value(), steps);
 }
 
-QTEST_MAIN(tst_QProgressDialog)
+BOBUIEST_MAIN(tst_QProgressDialog)
 #include "tst_qprogressdialog.moc"

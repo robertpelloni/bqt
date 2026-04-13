@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QBACKINGSTORE_H
 #define QBACKINGSTORE_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qrect.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qrect.h>
 
-#include <QtGui/qwindow.h>
-#include <QtGui/qregion.h>
+#include <BobUIGui/qwindow.h>
+#include <BobUIGui/qregion.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QRegion;
@@ -50,6 +50,6 @@ private:
     QScopedPointer<QBackingStorePrivate> d_ptr;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QBACKINGSTORE_H

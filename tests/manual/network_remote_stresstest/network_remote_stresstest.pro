@@ -1,6 +1,6 @@
 TARGET = tst_network_remote_stresstest
 
-QT = core core-private network network-private testlib
+BOBUI = core core-private network network-private testlib
 
 SOURCES  += tst_network_remote_stresstest.cpp
 

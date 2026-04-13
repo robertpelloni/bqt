@@ -1,15 +1,15 @@
 // Copyright (C) 2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Marc Mutz <marc.mutz@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:docs-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:docs-only
 
 #include "qstringtokenizer.h"
 #include "qstringalgorithms.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QStringTokenizer
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 6.0
     \brief The QStringTokenizer class splits strings into tokens along given separators.
     \reentrant
@@ -27,7 +27,7 @@ QT_BEGIN_NAMESPACE
     containing this string.  If the separator is empty,
     QStringTokenizer produces an empty string, followed by each of the
     string's characters, followed by another empty string. The two
-    enumerations Qt::SplitBehavior and Qt::CaseSensitivity further
+    enumerations BobUI::SplitBehavior and BobUI::CaseSensitivity further
     control the output.
 
     QStringTokenizer drives QStringView::tokenize(), but you can use it
@@ -194,8 +194,8 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn template <typename Haystack, typename Needle> QStringTokenizer<Haystack, Needle>::QStringTokenizer(Haystack haystack, Needle needle, Qt::CaseSensitivity cs, Qt::SplitBehavior sb)
-    \fn template <typename Haystack, typename Needle> QStringTokenizer<Haystack, Needle>::QStringTokenizer(Haystack haystack, Needle needle, Qt::SplitBehavior sb, Qt::CaseSensitivity cs)
+    \fn template <typename Haystack, typename Needle> QStringTokenizer<Haystack, Needle>::QStringTokenizer(Haystack haystack, Needle needle, BobUI::CaseSensitivity cs, BobUI::SplitBehavior sb)
+    \fn template <typename Haystack, typename Needle> QStringTokenizer<Haystack, Needle>::QStringTokenizer(Haystack haystack, Needle needle, BobUI::SplitBehavior sb, BobUI::CaseSensitivity cs)
 
     Constructs a string tokenizer that splits the string \a haystack
     into substrings wherever \a needle occurs, and allows iteration
@@ -206,10 +206,10 @@ QT_BEGIN_NAMESPACE
     \a cs specifies whether \a needle should be matched case
     sensitively or case insensitively.
 
-    If \a sb is Qt::SkipEmptyParts, empty entries don't
+    If \a sb is BobUI::SkipEmptyParts, empty entries don't
     appear in the result. By default, empty entries are included.
 
-    \sa QStringView::split(), QString::split(), Qt::CaseSensitivity, Qt::SplitBehavior
+    \sa QStringView::split(), QString::split(), BobUI::CaseSensitivity, BobUI::SplitBehavior
 */
 
 /*!
@@ -322,8 +322,8 @@ QT_BEGIN_NAMESPACE
     anywhere in \a haystack, a single element containing \a haystack
     is produced.
 
-    Pass values from Qt::CaseSensitivity and Qt::SplitBehavior enumerators
+    Pass values from BobUI::CaseSensitivity and BobUI::SplitBehavior enumerators
     as \a flags to modify the behavior of the tokenizer.
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

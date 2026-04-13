@@ -2,13 +2,13 @@ The following table describes the mapping of configure options to CMake argument
 
 | configure                             | cmake                                             | Notes                                                           |
 |---------------------------------------|---------------------------------------------------|-----------------------------------------------------------------|
-| -prefix /opt/qt6                      | -DCMAKE_INSTALL_PREFIX=/opt/qta6                  |                                                                 |
-| -no-prefix (only available in Qt6)    | -DCMAKE_INSTALL_PREFIX=$PWD (with bash)           | In Qt5 this was done by specifying -prefix $PWD                 |
+| -prefix /opt/bobui6                      | -DCMAKE_INSTALL_PREFIX=/opt/bobuia6                  |                                                                 |
+| -no-prefix (only available in BobUI6)    | -DCMAKE_INSTALL_PREFIX=$PWD (with bash)           | In BobUI5 this was done by specifying -prefix $PWD                 |
 |                                         or -DFEATURE_no_prefix=ON                         |                                                                 |
-| -extprefix /opt/qt6                   | -DCMAKE_STAGING_PREFIX=/opt/qt6                   |                                                                 |
+| -extprefix /opt/bobui6                   | -DCMAKE_STAGING_PREFIX=/opt/bobui6                   |                                                                 |
 | -bindir <dir>                         | -DINSTALL_BINDIR=<dir>                            | similar for -headerdir -libdir and so on                        |
 | -hostdatadir <dir>                    | -DINSTALL_MKSPECSDIR=<dir>                        |                                                                 |
-| -qt-host-path <dir>                   | -DQT_HOST_PATH=<dir>                              |                                                                 |
+| -bobui-host-path <dir>                   | -DBOBUI_HOST_PATH=<dir>                              |                                                                 |
 | -help                                 | n/a                                               | Handled by configure[.bat].                                     |
 | -verbose                              | --log-level=STATUS                                | Sets the CMake log level to STATUS. The default one is NOTICE.  |
 | -continue                             |                                                   |                                                                 |
@@ -38,27 +38,27 @@ The following table describes the mapping of configure options to CMake argument
 | -shared                               | -DBUILD_SHARED_LIBS=ON                            |                                                                 |
 | -static                               | -DBUILD_SHARED_LIBS=OFF                           |                                                                 |
 | -framework                            | -DFEATURE_framework=ON                            |                                                                 |
-| -platform <target>                    | -DQT_QMAKE_TARGET_MKSPEC=<mkspec>                 |                                                                 |
-| -xplatform <target>                   | -DQT_QMAKE_TARGET_MKSPEC=<mkspec>                 | Used for generating qmake-compatibility files.                  |
+| -platform <target>                    | -DBOBUI_QMAKE_TARGET_MKSPEC=<mkspec>                 |                                                                 |
+| -xplatform <target>                   | -DBOBUI_QMAKE_TARGET_MKSPEC=<mkspec>                 | Used for generating qmake-compatibility files.                  |
 |                                       |                                                   | If passed 'macx-ios-clang', will configure an iOS build.        |
 | -device <name>                        | equivalent to -xplatform devices/<name>           |                                                                 |
-| -device-option <key=value>            | -DQT_QMAKE_DEVICE_OPTIONS=key1=value1;key2=value2 | Only used for generation qmake-compatibility files.             |
+| -device-option <key=value>            | -DBOBUI_QMAKE_DEVICE_OPTIONS=key1=value1;key2=value2 | Only used for generation qmake-compatibility files.             |
 |                                       |                                                   | The device options are written into mkspecs/qdevice.pri.        |
 | -appstore-compliant                   | -DFEATURE_appstore_compliant=ON                   |                                                                 |
-| -sbom                                 | -DQT_GENERATE_SBOM=ON                             | Enables generation of SBOM documents (multiple formats)         |
-| -sbom-spdx-v2                         | -DQT_SBOM_GENERATE_SPDX_V2=ON                     | Enables generation of SPDX v2.3 SBOM in tag:value format        |
-| -sbom-cyclonedx-v1_6                  | -DQT_SBOM_GENERATE_CYDX_V1_6=ON                   | Enables generation of CycloneDX v1.6 SBOM in JSON format        |
-| -sbom-cyclonedx-v1_6-required         | -DQT_SBOM_REQUIRE_GENERATE_CYDX_V1_6=ON           | Fails the build if Cyclone DX Python deps are not found         |
-| -sbom-cyclonedx-v1_6-verify           | -DQT_SBOM_VERIFY_CYDX_V1_6=ON                     | Enables verification of generated CycloneDX v1.6 SBOMs          |
-| -sbom-cyclonedx-v1_6-verify-required  | -DQT_SBOM_REQUIRE_VERIFY_CYDX_V1_6=ON             | Fails the build if Cyclone DX Python verify deps are not found  |
-| -sbom-json                            | -DQT_SBOM_GENERATE_SPDX_V2_JSON=ON                | Enables generation of SPDX v2.3 SBOM in JSON format             |
-| -sbom-json-required                   | -DQT_SBOM_REQUIRE_GENERATE_SPDX_V2_JSON=ON        | Fails the build if SPDX Python deps are not found               |
-| -sbom-verify                          | -DQT_SBOM_VERIFY_SPDX_V2=ON                       | Enables verification of generated SPDX v2.3 SBOMs               |
-| -sbom-verify-required                 | -DQT_SBOM_REQUIRE_VERIFY_SPDX_V2=ON               | Fails the build if SPDX Python verify deps are not found        |
+| -sbom                                 | -DBOBUI_GENERATE_SBOM=ON                             | Enables generation of SBOM documents (multiple formats)         |
+| -sbom-spdx-v2                         | -DBOBUI_SBOM_GENERATE_SPDX_V2=ON                     | Enables generation of SPDX v2.3 SBOM in tag:value format        |
+| -sbom-cyclonedx-v1_6                  | -DBOBUI_SBOM_GENERATE_CYDX_V1_6=ON                   | Enables generation of CycloneDX v1.6 SBOM in JSON format        |
+| -sbom-cyclonedx-v1_6-required         | -DBOBUI_SBOM_REQUIRE_GENERATE_CYDX_V1_6=ON           | Fails the build if Cyclone DX Python deps are not found         |
+| -sbom-cyclonedx-v1_6-verify           | -DBOBUI_SBOM_VERIFY_CYDX_V1_6=ON                     | Enables verification of generated CycloneDX v1.6 SBOMs          |
+| -sbom-cyclonedx-v1_6-verify-required  | -DBOBUI_SBOM_REQUIRE_VERIFY_CYDX_V1_6=ON             | Fails the build if Cyclone DX Python verify deps are not found  |
+| -sbom-json                            | -DBOBUI_SBOM_GENERATE_SPDX_V2_JSON=ON                | Enables generation of SPDX v2.3 SBOM in JSON format             |
+| -sbom-json-required                   | -DBOBUI_SBOM_REQUIRE_GENERATE_SPDX_V2_JSON=ON        | Fails the build if SPDX Python deps are not found               |
+| -sbom-verify                          | -DBOBUI_SBOM_VERIFY_SPDX_V2=ON                       | Enables verification of generated SPDX v2.3 SBOMs               |
+| -sbom-verify-required                 | -DBOBUI_SBOM_REQUIRE_VERIFY_SPDX_V2=ON               | Fails the build if SPDX Python verify deps are not found        |
 | -sbomdir <dir>                        | -DINSTALL_SBOMDIR=<dir>                           | Installation location of SBOM files.                            |
-| -qtinlinenamespace                    | -DQT_INLINE_NAMESPACE=ON                          | Make the namespace specified by -qtnamespace an inline one.     |
-| -qtnamespace <name>                   | -DQT_NAMESPACE=<name>                             |                                                                 |
-| -qtlibinfix <infix>                   | -DQT_LIBINFIX=<infix>                             |                                                                 |
+| -bobuiinlinenamespace                    | -DBOBUI_INLINE_NAMESPACE=ON                          | Make the namespace specified by -bobuinamespace an inline one.     |
+| -bobuinamespace <name>                   | -DBOBUI_NAMESPACE=<name>                             |                                                                 |
+| -bobuilibinfix <infix>                   | -DBOBUI_LIBINFIX=<infix>                             |                                                                 |
 | -coverage <tool>                      | -DINPUT_coverage=<tool>                           | Enables code coverage using the specified tool.                 |
 | -gcov                                 | -DINPUT_coverage=gcov                             | Enables code coverage using the gcov tool.                      |
 | -trace [backend]                      | -DINPUT_trace=yes or -DINPUT_trace=<backend>      |                                                                 |
@@ -70,8 +70,8 @@ The following table describes the mapping of configure options to CMake argument
 | -c++std c++20                         | -DFEATURE_cxx20=ON                                |                                                                 |
 | -sse2/-sse3/-ssse3/-sse4.1            | -DFEATURE_sse4=ON                                 |                                                                 |
 | -mips_dsp/-mips_dspr2                 | -DFEATURE_mips_dsp=ON                             |                                                                 |
-| -qreal <type>                         | -DQT_COORD_TYPE=<type>                            |                                                                 |
-| -R <string>                           | -DQT_EXTRA_RPATHS=path1;path2                     |                                                                 |
+| -qreal <type>                         | -DBOBUI_COORD_TYPE=<type>                            |                                                                 |
+| -R <string>                           | -DBOBUI_EXTRA_RPATHS=path1;path2                     |                                                                 |
 | -rpath                                | negative CMAKE_SKIP_BUILD_RPATH                   |                                                                 |
 |                                       | negative CMAKE_SKIP_INSTALL_RPATH                 |                                                                 |
 |                                       | negative CMAKE_MACOSX_RPATH                       |                                                                 |
@@ -87,17 +87,17 @@ The following table describes the mapping of configure options to CMake argument
 | -incredibuild-xge                     | n/a                                               | This option enables remote distribution of Visual Studio        |
 |                                       |                                                   | custom build steps for moc, uic, and rcc.                       |
 |                                       |                                                   | This lacks support in CMake.                                    |
-| -ccache                               | -DQT_USE_CCACHE=ON                                |                                                                 |
-| -unity-build                          | -DQT_UNITY_BUILD=ON                               |                                                                 |
-| -unity-build-batch-size <int>         | -DQT_UNITY_BUILD_BATCH_SIZE=<int>                 |                                                                 |
+| -ccache                               | -DBOBUI_USE_CCACHE=ON                                |                                                                 |
+| -unity-build                          | -DBOBUI_UNITY_BUILD=ON                               |                                                                 |
+| -unity-build-batch-size <int>         | -DBOBUI_UNITY_BUILD_BATCH_SIZE=<int>                 |                                                                 |
 | -warnings-are-errors                  | -DWARNINGS_ARE_ERRORS=ON                          |                                                                 |
 | -no-pkg-config                        | -DFEATURE_pkg_config=OFF                          |                                                                 |
-| -vcpkg                                | -DQT_USE_VCPKG=ON                                 |                                                                 |
-| -D <string>                           | -DQT_EXTRA_DEFINES=<string1>;<string2>            |                                                                 |
-| -I <string>                           | -DQT_EXTRA_INCLUDEPATHS=<string1>;<string2>       |                                                                 |
-| -L <string>                           | -DQT_EXTRA_LIBDIRS=<string1>;<string2>            |                                                                 |
-| -F <string>                           | -DQT_EXTRA_FRAMEWORKPATHS=<string1>;<string2>     |                                                                 |
-| -sdk <sdk>                            | -DQT_APPLE_SDK=<value>                            | Should be provided a value like 'iphoneos' or 'iphonesimulator' |
+| -vcpkg                                | -DBOBUI_USE_VCPKG=ON                                 |                                                                 |
+| -D <string>                           | -DBOBUI_EXTRA_DEFINES=<string1>;<string2>            |                                                                 |
+| -I <string>                           | -DBOBUI_EXTRA_INCLUDEPATHS=<string1>;<string2>       |                                                                 |
+| -L <string>                           | -DBOBUI_EXTRA_LIBDIRS=<string1>;<string2>            |                                                                 |
+| -F <string>                           | -DBOBUI_EXTRA_FRAMEWORKPATHS=<string1>;<string2>     |                                                                 |
+| -sdk <sdk>                            | -DBOBUI_APPLE_SDK=<value>                            | Should be provided a value like 'iphoneos' or 'iphonesimulator' |
 |                                       |                                                   | If no value is provided, a simulator_and_device build is        |
 |                                       |                                                   | assumed.                                                        |
 | -android-sdk <path>                   | -DANDROID_SDK_ROOT=<path>                         |                                                                 |
@@ -105,22 +105,22 @@ The following table describes the mapping of configure options to CMake argument
 | -android-ndk-platform android-28      | -DANDROID_PLATFORM=android-28                     |                                                                 |
 | -android-abis <abi_1>,...,<abi_n>     | -DANDROID_ABI=<abi_1>                             | only one ABI can be specified                                   |
 | -android-style-assets                 | -DFEATURE_android_style_assets=ON                 |                                                                 |
-| -android-javac-source                 | -DQT_ANDROID_JAVAC_SOURCE=7                       | Set the javac build source version.                             |
-| -android-javac-target                 | -DQT_ANDROID_JAVAC_TARGET=7                       | Set the javac build target version.                             |
+| -android-javac-source                 | -DBOBUI_ANDROID_JAVAC_SOURCE=7                       | Set the javac build source version.                             |
+| -android-javac-target                 | -DBOBUI_ANDROID_JAVAC_TARGET=7                       | Set the javac build target version.                             |
 | -skip <repo>,...,<repo_n>             | -DBUILD_<repo>=OFF                                |                                                                 |
-| -skip-tests <repo>,...,<repo_n>       | -DQT_BUILD_TESTS_PROJECT_<repo>=OFF               |                                                                 |
-| -skip-examples <repo>,...,<repo_n>    | -DQT_BUILD_EXAMPLES_PROJECT_<repo>=OFF            |                                                                 |
-| -submodules <repo>,...,<repo_n>       | -DQT_BUILD_SUBMODULES=<repo>;...;<repo>           |                                                                 |
-| -make <part>                          | -DQT_BUILD_TESTS=ON                               | A way to turn on tools explicitly is missing. If tests/examples |
-|                                       | -DQT_BUILD_EXAMPLES=ON                            | are enabled, you can disable their building as part of the      |
-|                                       |                                                   | 'all' target by also passing -DQT_BUILD_TESTS_BY_DEFAULT=OFF or |
-|                                       |                                                   | -DQT_BUILD_EXAMPLES_BY_DEFAULT=OFF. Note that if you entirely   |
+| -skip-tests <repo>,...,<repo_n>       | -DBOBUI_BUILD_TESTS_PROJECT_<repo>=OFF               |                                                                 |
+| -skip-examples <repo>,...,<repo_n>    | -DBOBUI_BUILD_EXAMPLES_PROJECT_<repo>=OFF            |                                                                 |
+| -submodules <repo>,...,<repo_n>       | -DBOBUI_BUILD_SUBMODULES=<repo>;...;<repo>           |                                                                 |
+| -make <part>                          | -DBOBUI_BUILD_TESTS=ON                               | A way to turn on tools explicitly is missing. If tests/examples |
+|                                       | -DBOBUI_BUILD_EXAMPLES=ON                            | are enabled, you can disable their building as part of the      |
+|                                       |                                                   | 'all' target by also passing -DBOBUI_BUILD_TESTS_BY_DEFAULT=OFF or |
+|                                       |                                                   | -DBOBUI_BUILD_EXAMPLES_BY_DEFAULT=OFF. Note that if you entirely   |
 |                                       |                                                   | disable tests/examples at configure time (by using              |
-|                                       |                                                   | -DQT_BUILD_TESTS=OFF or -DQT_BUILD_EXAMPLES=OFF) you can't then |
+|                                       |                                                   | -DBOBUI_BUILD_TESTS=OFF or -DBOBUI_BUILD_EXAMPLES=OFF) you can't then |
 |                                       |                                                   | build them separately, after configuration.                     |
-| -nomake <part>                        | -DQT_BUILD_TESTS=OFF                              | A way to turn off tools explicitly is missing.                  |
-|                                       | -DQT_BUILD_EXAMPLES=OFF                           |                                                                 |
-| -install-examples-sources             | -DQT_INSTALL_EXAMPLES_SOURCES=ON                  |                                                                 |
+| -nomake <part>                        | -DBOBUI_BUILD_TESTS=OFF                              | A way to turn off tools explicitly is missing.                  |
+|                                       | -DBOBUI_BUILD_EXAMPLES=OFF                           |                                                                 |
+| -install-examples-sources             | -DBOBUI_INSTALL_EXAMPLES_SOURCES=ON                  |                                                                 |
 | -no-gui                               | -DFEATURE_gui=OFF                                 |                                                                 |
 | -no-widgets                           | -DFEATURE_widgets=OFF                             |                                                                 |
 | -no-dbus                              | -DFEATURE_dbus=OFF                                |                                                                 |
@@ -133,9 +133,9 @@ The following table describes the mapping of configure options to CMake argument
 | -glib                                 | -DFEATURE_glib=ON                                 |                                                                 |
 | -inotify                              | -DFEATURE_inotify=ON                              |                                                                 |
 | -icu                                  | -DFEATURE_icu=ON                                  |                                                                 |
-| -pcre [system/qt]                     | -DFEATURE_system_pcre2=ON/OFF                     |                                                                 |
+| -pcre [system/bobui]                     | -DFEATURE_system_pcre2=ON/OFF                     |                                                                 |
 | -pps                                  | n/a                                               | QNX feature. Not available for 6.0.                             |
-| -zlib [system/qt]                     | -DFEATURE_system_zlib=ON/OFF                      |                                                                 |
+| -zlib [system/bobui]                     | -DFEATURE_system_zlib=ON/OFF                      |                                                                 |
 | -ssl                                  | -DFEATURE_ssl=ON                                  |                                                                 |
 | -openssl [no/yes/linked/runtime]      | -DINPUT_openssl=no/yes/linked/runtime             |                                                                 |
 | -openssl-linked                       | -DINPUT_openssl=linked                            |                                                                 |
@@ -147,9 +147,9 @@ The following table describes the mapping of configure options to CMake argument
 | -system-proxies                       | -DFEATURE_system_proxies=ON                       |                                                                 |
 | -cups                                 | -DFEATURE_cups=ON                                 |                                                                 |
 | -fontconfig                           | -DFEATURE_fontconfig=ON                           |                                                                 |
-| -freetype [no/qt/system]              | -DFEATURE_freetype=ON/OFF                         |                                                                 |
+| -freetype [no/bobui/system]              | -DFEATURE_freetype=ON/OFF                         |                                                                 |
 |                                       | -DFEATURE_system_freetype=ON/OFF                  |                                                                 |
-| -harfbuzz [no/qt/system]              | -DFEATURE_harfbuzz=ON                             |                                                                 |
+| -harfbuzz [no/bobui/system]              | -DFEATURE_harfbuzz=ON                             |                                                                 |
 |                                       | -DFEATURE_system_harfbuzz=ON/OFF                  |                                                                 |
 | -gtk                                  | -DFEATURE_gtk3=ON                                 |                                                                 |
 | -lgmon                                | n/a                                               | QNX-specific                                                    |
@@ -157,8 +157,8 @@ The following table describes the mapping of configure options to CMake argument
 | -opengl <api>                         | -DINPUT_opengl=<api>                              |                                                                 |
 | -opengles3                            | -DFEATURE_opengles3=ON                            |                                                                 |
 | -egl                                  | -DFEATURE_egl=ON                                  |                                                                 |
-| -qpa <name>;...;<name_n>              | -DQT_QPA_PLATFORMS=<name>;...;<name_n>            |                                                                 |
-| -default-qpa <name>                   | -DQT_QPA_DEFAULT_PLATFORM=<name>                  |                                                                 |
+| -qpa <name>;...;<name_n>              | -DBOBUI_QPA_PLATFORMS=<name>;...;<name_n>            |                                                                 |
+| -default-qpa <name>                   | -DBOBUI_QPA_DEFAULT_PLATFORM=<name>                  |                                                                 |
 | -xcb-xlib                             | -DFEATURE_xcb_xlib=ON                             |                                                                 |
 | -direct2d                             | -DFEATURE_direct2d=ON                             |                                                                 |
 | -directfb                             | -DFEATURE_directfb=ON                             |                                                                 |
@@ -180,11 +180,11 @@ The following table describes the mapping of configure options to CMake argument
 | -libpng                               | -DFEATURE_png=ON                                  |                                                                 |
 | -libjpeg                              | -DFEATURE_jpeg=ON                                 |                                                                 |
 | -sql-<driver>                         | -DFEATURE_sql_<driver>=ON                         |                                                                 |
-| -sqlite [qt/system]                   | -DFEATURE_system_sqlite=OFF/ON                    |                                                                 |
-| -disable-deprecated-up-to <hex_version> | -DQT_DISABLE_DEPRECATED_UP_TO=<hex_version>     |                                                                 |
+| -sqlite [bobui/system]                   | -DFEATURE_system_sqlite=OFF/ON                    |                                                                 |
+| -disable-deprecated-up-to <hex_version> | -DBOBUI_DISABLE_DEPRECATED_UP_TO=<hex_version>     |                                                                 |
 | -mimetype-database-compression <type> | -DINPUT_mimetype_database_compression=<type>      | Sets the compression type for mime type database. Supported     |
 |                                       |                                                   | types: gzip, zstd, none.                                        |
 | -force-bundled-libs                   | -DFEATURE_force_bundled_libs=ON                   |                                                                 |
 | -force-system-libs                    | -DFEATURE_force_system_libs=ON                    |                                                                 |
 | -ffmpeg-dir                           | -DFFMPEG_DIR=<dir>                                | FFmpeg development libraries directory                          |
-| -ffmpeg-deploy                        | -DQT_DEPLOY_FFMPEG=ON                             | FFmpeg binaries will be copied to Qt's install directory        |
+| -ffmpeg-deploy                        | -DBOBUI_DEPLOY_FFMPEG=ON                             | FFmpeg binaries will be copied to BobUI's install directory        |

@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 #include "dialog.h"
 
@@ -15,7 +15,7 @@ Dialog::Dialog()
 //! [0]
 
 //! [1]
-    bigEditor = new QTextEdit;
+    bigEditor = new BOBUIextEdit;
     bigEditor->setPlainText(tr("This widget takes up all the remaining space "
                                "in the top-level layout."));
 
@@ -42,7 +42,7 @@ Dialog::Dialog()
 
     QScrollArea *scrollArea = new QScrollArea;
     scrollArea->setFrameShape(QFrame::NoFrame);
-    scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    scrollArea->setHorizontalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
     scrollArea->setWidgetResizable(true);
     scrollArea->verticalScrollBar()->setStyleSheet("QScrollBar:vertical {width: 20px;}");
 
@@ -101,7 +101,7 @@ void Dialog::createGridGroupBox()
     }
 
 //! [9] //! [10]
-    smallEditor = new QTextEdit;
+    smallEditor = new BOBUIextEdit;
     smallEditor->setPlainText(tr("This widget takes up about two thirds of the "
                                  "grid layout."));
     layout->addWidget(smallEditor, 0, 2, 4, 1);

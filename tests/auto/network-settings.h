@@ -1,15 +1,15 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QString>
-#include <QTest>
+#include <BOBUIest>
 #include <QOperatingSystemVersion>
 #include <QStringBuilder>
-#ifdef QT_NETWORK_LIB
-#include <QtNetwork/QHostInfo>
-#include <QtNetwork/QHostAddress>
-#include <QtNetwork/QAbstractSocket>
-#include <QtNetwork/QTcpSocket>
+#ifdef BOBUI_NETWORK_LIB
+#include <BobUINetwork/QHostInfo>
+#include <BobUINetwork/QHostAddress>
+#include <BobUINetwork/QAbstractSocket>
+#include <BobUINetwork/BOBUIcpSocket>
 #endif
 
 #ifdef Q_OS_UNIX
@@ -19,20 +19,20 @@
 #include <unistd.h>
 #endif
 
-class QtNetworkSettings
+class BobUINetworkSettings
 {
 public:
 
     static QString serverLocalName()
     {
-        return QString("qt-test-server");
+        return QString("bobui-test-server");
     }
     static QString serverDomainName()
     {
-#ifdef QT_TEST_SERVER_DOMAIN
-        return QString(QT_TEST_SERVER_DOMAIN); // Defined in testserver feature
+#ifdef BOBUI_TEST_SERVER_DOMAIN
+        return QString(BOBUI_TEST_SERVER_DOMAIN); // Defined in testserver feature
 #else
-        return QString("qt-test-net");
+        return QString("bobui-test-net");
 #endif
     }
     static QString serverName()
@@ -45,15 +45,15 @@ public:
     }
     static QString wildcardServerName()
     {
-        return "qt-test-server.wildcard.dev." + serverDomainName();
+        return "bobui-test-server.wildcard.dev." + serverDomainName();
     }
 
-#ifdef QT_NETWORK_LIB
+#ifdef BOBUI_NETWORK_LIB
     static QHostAddress getServerIpImpl(const QString &serverName)
     {
         const QHostInfo info = QHostInfo::fromName(serverName);
         if (info.error()) {
-            QTest::qFail(qPrintable(info.errorString()), __FILE__, __LINE__);
+            BOBUIest::qFail(qPrintable(info.errorString()), __FILE__, __LINE__);
             return QHostAddress();
         }
         return info.addresses().constFirst();
@@ -93,7 +93,7 @@ public:
     static bool hasIPv6()
     {
 #if defined(Q_OS_QNX)
-        // Qt's support for IPv6 on QNX appears to be broken.
+        // BobUI's support for IPv6 on QNX appears to be broken.
         // This is an unaccepable situation after 2011-01-31.
         return false;
 #elif defined(Q_OS_UNIX)
@@ -132,12 +132,12 @@ public:
     }
 
 
-#ifdef QT_NETWORK_LIB
+#ifdef BOBUI_NETWORK_LIB
     static bool verifyTestNetworkSettings()
     {
-        QHostInfo testServerResult = QHostInfo::fromName(QtNetworkSettings::serverName());
+        QHostInfo testServerResult = QHostInfo::fromName(BobUINetworkSettings::serverName());
         if (testServerResult.error() != QHostInfo::NoError) {
-            qWarning() << "Could not lookup" << QtNetworkSettings::serverName();
+            qWarning() << "Could not lookup" << BobUINetworkSettings::serverName();
             qWarning() << "Please configure the test environment!";
             qWarning() << "See /etc/hosts or network-settings.h";
             return false;
@@ -147,13 +147,13 @@ public:
 
     static bool verifyConnection(QString serverName, quint16 port, quint32 retry = 60)
     {
-        QTcpSocket socket;
+        BOBUIcpSocket socket;
         for (quint32 i = 1; i < retry; i++) {
             socket.connectToHost(serverName, port);
             if (socket.waitForConnected(1000))
                 return true;
             // Wait for service to start up
-            QTest::qWait(1000);
+            BOBUIest::qWait(1000);
         }
         socket.connectToHost(serverName, port);
         return socket.waitForConnected(1000);
@@ -174,11 +174,11 @@ public:
             << ", error=" << s.error() << ": " << s.errorString();
        return result.toLocal8Bit();
     }
-#endif // QT_NETWORK_LIB
+#endif // BOBUI_NETWORK_LIB
 
     static QString ftpServerName()
     {
-#ifdef QT_TEST_SERVER_NAME
+#ifdef BOBUI_TEST_SERVER_NAME
         return QString("vsftpd.") % serverDomainName();
 #else
         return serverName();
@@ -186,7 +186,7 @@ public:
     }
     static QString ftpProxyServerName()
     {
-#ifdef QT_TEST_SERVER_NAME
+#ifdef BOBUI_TEST_SERVER_NAME
         return QString("ftp-proxy.") % serverDomainName();
 #else
         return serverName();
@@ -194,7 +194,7 @@ public:
     }
     static QString httpServerName()
     {
-#ifdef QT_TEST_SERVER_NAME
+#ifdef BOBUI_TEST_SERVER_NAME
         return QString("apache2.") % serverDomainName();
 #else
         return serverName();
@@ -202,7 +202,7 @@ public:
     }
     static QString httpProxyServerName()
     {
-#ifdef QT_TEST_SERVER_NAME
+#ifdef BOBUI_TEST_SERVER_NAME
         return QString("squid.") % serverDomainName();
 #else
         return serverName();
@@ -210,7 +210,7 @@ public:
     }
     static QString socksProxyServerName()
     {
-#ifdef QT_TEST_SERVER_NAME
+#ifdef BOBUI_TEST_SERVER_NAME
         return QString("danted.") % serverDomainName();
 #else
         return serverName();
@@ -218,7 +218,7 @@ public:
     }
     static QString imapServerName()
     {
-#ifdef QT_TEST_SERVER_NAME
+#ifdef BOBUI_TEST_SERVER_NAME
         return QString("cyrus.") % serverDomainName();
 #else
         return serverName();
@@ -227,7 +227,7 @@ public:
 
     static QString echoServerName()
     {
-#ifdef QT_TEST_SERVER_NAME
+#ifdef BOBUI_TEST_SERVER_NAME
         return QString("echo.") % serverDomainName();
 #else
         return serverName();
@@ -236,7 +236,7 @@ public:
 
     static QString firewallServerName()
     {
-#ifdef QT_TEST_SERVER_NAME
+#ifdef BOBUI_TEST_SERVER_NAME
         return QString("iptables.") % serverDomainName();
 #else
         return serverName();
@@ -245,7 +245,7 @@ public:
 
     static QString hostWithServiceOnPort(int port)
     {
-#if !defined(QT_TEST_SERVER)
+#if !defined(BOBUI_TEST_SERVER)
         Q_UNUSED(port);
         return serverName();
 #else
@@ -275,10 +275,10 @@ public:
         default:
             return serverName();
         }
-#endif // QT_TEST_SERVER
+#endif // BOBUI_TEST_SERVER
     }
 
-#ifdef QT_NETWORK_LIB
+#ifdef BOBUI_NETWORK_LIB
     static QHostAddress imapServerIp()
     {
         return getServerIpImpl(imapServerName());
@@ -314,5 +314,5 @@ public:
         return getServerIpImpl(firewallServerName());
     }
 
-#endif // QT_NETWORK_LIB
+#endif // BOBUI_NETWORK_LIB
 };

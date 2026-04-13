@@ -1,12 +1,12 @@
 // Copyright (C) 2011 - 2012 Research In Motion
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qqnxvirtualkeyboardpps.h"
 #include "qqnxscreen.h"
 
-#include <QtCore/QDebug>
-#include <QtCore/QSocketNotifier>
-#include <QtCore/private/qcore_unix_p.h>
+#include <BobUICore/QDebug>
+#include <BobUICore/QSocketNotifier>
+#include <BobUICore/private/qcore_unix_p.h>
 
 #include <errno.h>
 #include <fcntl.h>
@@ -18,9 +18,9 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcQpaQnxVirtualKeyboard, "qt.qpa.qnx.virtualkeyboard");
+Q_LOGGING_CATEGORY(lcQpaQnxVirtualKeyboard, "bobui.qpa.qnx.virtualkeyboard");
 
 const char  *QQnxVirtualKeyboardPps::ms_PPSPath = "/pps/services/input/control";
 const size_t QQnxVirtualKeyboardPps::ms_bufferSize = 2048;
@@ -122,7 +122,7 @@ bool QQnxVirtualKeyboardPps::queryPPSInfo()
 
 void QQnxVirtualKeyboardPps::ppsDataReady()
 {
-    qint64 nread = qt_safe_read(m_fd, m_buffer, ms_bufferSize - 1);
+    qint64 nread = bobui_safe_read(m_fd, m_buffer, ms_bufferSize - 1);
 
     qCDebug(lcQpaQnxVirtualKeyboard, "keyboardMessage size: %lld", nread);
     if (nread < 0){
@@ -318,4 +318,4 @@ const char* QQnxVirtualKeyboardPps::enterKeyTypeStr() const
     return "";
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

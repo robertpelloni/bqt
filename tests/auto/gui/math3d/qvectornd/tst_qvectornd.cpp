@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QVector2D>
 #include <QVector3D>
 #include <QVector4D>
 
-#include <QtCore/qdatastream.h>
+#include <BobUICore/qdatastream.h>
 
 #ifdef QVARIANT_H
 # error "This test requires qvector{2,3,4}d.h to not include qvariant.h"
@@ -37,12 +37,12 @@ CHECK(const &&);
 
 #undef CHECK
 
-#include <QTest>
-#include <QtCore/qmath.h>
-#include <QtGui/qvector2d.h>
-#include <QtGui/qvector3d.h>
-#include <QtGui/qvector4d.h>
-#include <QtGui/qmatrix4x4.h>
+#include <BOBUIest>
+#include <BobUICore/qmath.h>
+#include <BobUIGui/qvector2d.h>
+#include <BobUIGui/qvector3d.h>
+#include <BobUIGui/qvector4d.h>
+#include <BobUIGui/qmatrix4x4.h>
 
 class tst_QVectorND : public QObject
 {
@@ -668,16 +668,16 @@ void tst_QVectorND::modify4()
 // Test vector length computation for 2D vectors.
 void tst_QVectorND::length2_data()
 {
-    QTest::addColumn<float>("x");
-    QTest::addColumn<float>("y");
-    QTest::addColumn<float>("len");
+    BOBUIest::addColumn<float>("x");
+    BOBUIest::addColumn<float>("y");
+    BOBUIest::addColumn<float>("len");
 
-    QTest::newRow("null") <<  0.0f <<  0.0f << 0.0f;
-    QTest::newRow("1x")   <<  1.0f <<  0.0f << 1.0f;
-    QTest::newRow("1y")   <<  0.0f <<  1.0f << 1.0f;
-    QTest::newRow("-1x")  << -1.0f <<  0.0f << 1.0f;
-    QTest::newRow("-1y")  <<  0.0f << -1.0f << 1.0f;
-    QTest::newRow("two")  <<  2.0f << -2.0f << std::sqrt(8.0f);
+    BOBUIest::newRow("null") <<  0.0f <<  0.0f << 0.0f;
+    BOBUIest::newRow("1x")   <<  1.0f <<  0.0f << 1.0f;
+    BOBUIest::newRow("1y")   <<  0.0f <<  1.0f << 1.0f;
+    BOBUIest::newRow("-1x")  << -1.0f <<  0.0f << 1.0f;
+    BOBUIest::newRow("-1y")  <<  0.0f << -1.0f << 1.0f;
+    BOBUIest::newRow("two")  <<  2.0f << -2.0f << std::sqrt(8.0f);
 }
 void tst_QVectorND::length2()
 {
@@ -693,19 +693,19 @@ void tst_QVectorND::length2()
 // Test vector length computation for 3D vectors.
 void tst_QVectorND::length3_data()
 {
-    QTest::addColumn<float>("x");
-    QTest::addColumn<float>("y");
-    QTest::addColumn<float>("z");
-    QTest::addColumn<float>("len");
+    BOBUIest::addColumn<float>("x");
+    BOBUIest::addColumn<float>("y");
+    BOBUIest::addColumn<float>("z");
+    BOBUIest::addColumn<float>("len");
 
-    QTest::newRow("null") << 0.0f << 0.0f << 0.0f << 0.0f;
-    QTest::newRow("1x") << 1.0f << 0.0f << 0.0f << 1.0f;
-    QTest::newRow("1y") << 0.0f << 1.0f << 0.0f << 1.0f;
-    QTest::newRow("1z") << 0.0f << 0.0f << 1.0f << 1.0f;
-    QTest::newRow("-1x") << -1.0f << 0.0f << 0.0f << 1.0f;
-    QTest::newRow("-1y") << 0.0f << -1.0f << 0.0f << 1.0f;
-    QTest::newRow("-1z") << 0.0f << 0.0f << -1.0f << 1.0f;
-    QTest::newRow("two") << 2.0f << -2.0f << 2.0f << std::sqrt(12.0f);
+    BOBUIest::newRow("null") << 0.0f << 0.0f << 0.0f << 0.0f;
+    BOBUIest::newRow("1x") << 1.0f << 0.0f << 0.0f << 1.0f;
+    BOBUIest::newRow("1y") << 0.0f << 1.0f << 0.0f << 1.0f;
+    BOBUIest::newRow("1z") << 0.0f << 0.0f << 1.0f << 1.0f;
+    BOBUIest::newRow("-1x") << -1.0f << 0.0f << 0.0f << 1.0f;
+    BOBUIest::newRow("-1y") << 0.0f << -1.0f << 0.0f << 1.0f;
+    BOBUIest::newRow("-1z") << 0.0f << 0.0f << -1.0f << 1.0f;
+    BOBUIest::newRow("two") << 2.0f << -2.0f << 2.0f << std::sqrt(12.0f);
 }
 void tst_QVectorND::length3()
 {
@@ -722,22 +722,22 @@ void tst_QVectorND::length3()
 // Test vector length computation for 4D vectors.
 void tst_QVectorND::length4_data()
 {
-    QTest::addColumn<float>("x");
-    QTest::addColumn<float>("y");
-    QTest::addColumn<float>("z");
-    QTest::addColumn<float>("w");
-    QTest::addColumn<float>("len");
+    BOBUIest::addColumn<float>("x");
+    BOBUIest::addColumn<float>("y");
+    BOBUIest::addColumn<float>("z");
+    BOBUIest::addColumn<float>("w");
+    BOBUIest::addColumn<float>("len");
 
-    QTest::newRow("null") << 0.0f << 0.0f << 0.0f << 0.0f << 0.0f;
-    QTest::newRow("1x") << 1.0f << 0.0f << 0.0f << 0.0f << 1.0f;
-    QTest::newRow("1y") << 0.0f << 1.0f << 0.0f << 0.0f << 1.0f;
-    QTest::newRow("1z") << 0.0f << 0.0f << 1.0f << 0.0f << 1.0f;
-    QTest::newRow("1w") << 0.0f << 0.0f << 0.0f << 1.0f << 1.0f;
-    QTest::newRow("-1x") << -1.0f << 0.0f << 0.0f << 0.0f << 1.0f;
-    QTest::newRow("-1y") << 0.0f << -1.0f << 0.0f << 0.0f << 1.0f;
-    QTest::newRow("-1z") << 0.0f << 0.0f << -1.0f << 0.0f << 1.0f;
-    QTest::newRow("-1w") << 0.0f << 0.0f << 0.0f << -1.0f << 1.0f;
-    QTest::newRow("two") << 2.0f << -2.0f << 2.0f << 2.0f << std::sqrt(16.0f);
+    BOBUIest::newRow("null") << 0.0f << 0.0f << 0.0f << 0.0f << 0.0f;
+    BOBUIest::newRow("1x") << 1.0f << 0.0f << 0.0f << 0.0f << 1.0f;
+    BOBUIest::newRow("1y") << 0.0f << 1.0f << 0.0f << 0.0f << 1.0f;
+    BOBUIest::newRow("1z") << 0.0f << 0.0f << 1.0f << 0.0f << 1.0f;
+    BOBUIest::newRow("1w") << 0.0f << 0.0f << 0.0f << 1.0f << 1.0f;
+    BOBUIest::newRow("-1x") << -1.0f << 0.0f << 0.0f << 0.0f << 1.0f;
+    BOBUIest::newRow("-1y") << 0.0f << -1.0f << 0.0f << 0.0f << 1.0f;
+    BOBUIest::newRow("-1z") << 0.0f << 0.0f << -1.0f << 0.0f << 1.0f;
+    BOBUIest::newRow("-1w") << 0.0f << 0.0f << 0.0f << -1.0f << 1.0f;
+    BOBUIest::newRow("two") << 2.0f << -2.0f << 2.0f << 2.0f << std::sqrt(16.0f);
 }
 void tst_QVectorND::length4()
 {
@@ -935,29 +935,29 @@ void tst_QVectorND::compare4()
 // Test vector addition for 2D vectors.
 void tst_QVectorND::add2_data()
 {
-    QTest::addColumn<float>("x1");
-    QTest::addColumn<float>("y1");
-    QTest::addColumn<float>("x2");
-    QTest::addColumn<float>("y2");
-    QTest::addColumn<float>("x3");
-    QTest::addColumn<float>("y3");
+    BOBUIest::addColumn<float>("x1");
+    BOBUIest::addColumn<float>("y1");
+    BOBUIest::addColumn<float>("x2");
+    BOBUIest::addColumn<float>("y2");
+    BOBUIest::addColumn<float>("x3");
+    BOBUIest::addColumn<float>("y3");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << 0.0f << 0.0f
         << 0.0f << 0.0f
         << 0.0f << 0.0f;
 
-    QTest::newRow("xonly")
+    BOBUIest::newRow("xonly")
         << 1.0f << 0.0f
         << 2.0f << 0.0f
         << 3.0f << 0.0f;
 
-    QTest::newRow("yonly")
+    BOBUIest::newRow("yonly")
         << 0.0f << 1.0f
         << 0.0f << 2.0f
         << 0.0f << 3.0f;
 
-    QTest::newRow("all")
+    BOBUIest::newRow("all")
         << 1.0f << 2.0f
         << 4.0f << 5.0f
         << 5.0f << 7.0f;
@@ -988,37 +988,37 @@ void tst_QVectorND::add2()
 // Test vector addition for 3D vectors.
 void tst_QVectorND::add3_data()
 {
-    QTest::addColumn<float>("x1");
-    QTest::addColumn<float>("y1");
-    QTest::addColumn<float>("z1");
-    QTest::addColumn<float>("x2");
-    QTest::addColumn<float>("y2");
-    QTest::addColumn<float>("z2");
-    QTest::addColumn<float>("x3");
-    QTest::addColumn<float>("y3");
-    QTest::addColumn<float>("z3");
+    BOBUIest::addColumn<float>("x1");
+    BOBUIest::addColumn<float>("y1");
+    BOBUIest::addColumn<float>("z1");
+    BOBUIest::addColumn<float>("x2");
+    BOBUIest::addColumn<float>("y2");
+    BOBUIest::addColumn<float>("z2");
+    BOBUIest::addColumn<float>("x3");
+    BOBUIest::addColumn<float>("y3");
+    BOBUIest::addColumn<float>("z3");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << 0.0f << 0.0f << 0.0f
         << 0.0f << 0.0f << 0.0f
         << 0.0f << 0.0f << 0.0f;
 
-    QTest::newRow("xonly")
+    BOBUIest::newRow("xonly")
         << 1.0f << 0.0f << 0.0f
         << 2.0f << 0.0f << 0.0f
         << 3.0f << 0.0f << 0.0f;
 
-    QTest::newRow("yonly")
+    BOBUIest::newRow("yonly")
         << 0.0f << 1.0f << 0.0f
         << 0.0f << 2.0f << 0.0f
         << 0.0f << 3.0f << 0.0f;
 
-    QTest::newRow("zonly")
+    BOBUIest::newRow("zonly")
         << 0.0f << 0.0f << 1.0f
         << 0.0f << 0.0f << 2.0f
         << 0.0f << 0.0f << 3.0f;
 
-    QTest::newRow("all")
+    BOBUIest::newRow("all")
         << 1.0f << 2.0f << 3.0f
         << 4.0f << 5.0f << -6.0f
         << 5.0f << 7.0f << -3.0f;
@@ -1053,45 +1053,45 @@ void tst_QVectorND::add3()
 // Test vector addition for 4D vectors.
 void tst_QVectorND::add4_data()
 {
-    QTest::addColumn<float>("x1");
-    QTest::addColumn<float>("y1");
-    QTest::addColumn<float>("z1");
-    QTest::addColumn<float>("w1");
-    QTest::addColumn<float>("x2");
-    QTest::addColumn<float>("y2");
-    QTest::addColumn<float>("z2");
-    QTest::addColumn<float>("w2");
-    QTest::addColumn<float>("x3");
-    QTest::addColumn<float>("y3");
-    QTest::addColumn<float>("z3");
-    QTest::addColumn<float>("w3");
+    BOBUIest::addColumn<float>("x1");
+    BOBUIest::addColumn<float>("y1");
+    BOBUIest::addColumn<float>("z1");
+    BOBUIest::addColumn<float>("w1");
+    BOBUIest::addColumn<float>("x2");
+    BOBUIest::addColumn<float>("y2");
+    BOBUIest::addColumn<float>("z2");
+    BOBUIest::addColumn<float>("w2");
+    BOBUIest::addColumn<float>("x3");
+    BOBUIest::addColumn<float>("y3");
+    BOBUIest::addColumn<float>("z3");
+    BOBUIest::addColumn<float>("w3");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << 0.0f << 0.0f << 0.0f << 0.0f
         << 0.0f << 0.0f << 0.0f << 0.0f
         << 0.0f << 0.0f << 0.0f << 0.0f;
 
-    QTest::newRow("xonly")
+    BOBUIest::newRow("xonly")
         << 1.0f << 0.0f << 0.0f << 0.0f
         << 2.0f << 0.0f << 0.0f << 0.0f
         << 3.0f << 0.0f << 0.0f << 0.0f;
 
-    QTest::newRow("yonly")
+    BOBUIest::newRow("yonly")
         << 0.0f << 1.0f << 0.0f << 0.0f
         << 0.0f << 2.0f << 0.0f << 0.0f
         << 0.0f << 3.0f << 0.0f << 0.0f;
 
-    QTest::newRow("zonly")
+    BOBUIest::newRow("zonly")
         << 0.0f << 0.0f << 1.0f << 0.0f
         << 0.0f << 0.0f << 2.0f << 0.0f
         << 0.0f << 0.0f << 3.0f << 0.0f;
 
-    QTest::newRow("wonly")
+    BOBUIest::newRow("wonly")
         << 0.0f << 0.0f << 0.0f << 1.0f
         << 0.0f << 0.0f << 0.0f << 2.0f
         << 0.0f << 0.0f << 0.0f << 3.0f;
 
-    QTest::newRow("all")
+    BOBUIest::newRow("all")
         << 1.0f << 2.0f << 3.0f << 8.0f
         << 4.0f << 5.0f << -6.0f << 9.0f
         << 5.0f << 7.0f << -3.0f << 17.0f;
@@ -1256,29 +1256,29 @@ void tst_QVectorND::subtract4()
 // Test component-wise vector multiplication for 2D vectors.
 void tst_QVectorND::multiply2_data()
 {
-    QTest::addColumn<float>("x1");
-    QTest::addColumn<float>("y1");
-    QTest::addColumn<float>("x2");
-    QTest::addColumn<float>("y2");
-    QTest::addColumn<float>("x3");
-    QTest::addColumn<float>("y3");
+    BOBUIest::addColumn<float>("x1");
+    BOBUIest::addColumn<float>("y1");
+    BOBUIest::addColumn<float>("x2");
+    BOBUIest::addColumn<float>("y2");
+    BOBUIest::addColumn<float>("x3");
+    BOBUIest::addColumn<float>("y3");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << 0.0f << 0.0f
         << 0.0f << 0.0f
         << 0.0f << 0.0f;
 
-    QTest::newRow("xonly")
+    BOBUIest::newRow("xonly")
         << 1.0f << 0.0f
         << 2.0f << 0.0f
         << 2.0f << 0.0f;
 
-    QTest::newRow("yonly")
+    BOBUIest::newRow("yonly")
         << 0.0f << 1.0f
         << 0.0f << 2.0f
         << 0.0f << 2.0f;
 
-    QTest::newRow("all")
+    BOBUIest::newRow("all")
         << 1.0f << 2.0f
         << 4.0f << 5.0f
         << 4.0f << 10.0f;
@@ -1309,37 +1309,37 @@ void tst_QVectorND::multiply2()
 // Test component-wise vector multiplication for 3D vectors.
 void tst_QVectorND::multiply3_data()
 {
-    QTest::addColumn<float>("x1");
-    QTest::addColumn<float>("y1");
-    QTest::addColumn<float>("z1");
-    QTest::addColumn<float>("x2");
-    QTest::addColumn<float>("y2");
-    QTest::addColumn<float>("z2");
-    QTest::addColumn<float>("x3");
-    QTest::addColumn<float>("y3");
-    QTest::addColumn<float>("z3");
+    BOBUIest::addColumn<float>("x1");
+    BOBUIest::addColumn<float>("y1");
+    BOBUIest::addColumn<float>("z1");
+    BOBUIest::addColumn<float>("x2");
+    BOBUIest::addColumn<float>("y2");
+    BOBUIest::addColumn<float>("z2");
+    BOBUIest::addColumn<float>("x3");
+    BOBUIest::addColumn<float>("y3");
+    BOBUIest::addColumn<float>("z3");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << 0.0f << 0.0f << 0.0f
         << 0.0f << 0.0f << 0.0f
         << 0.0f << 0.0f << 0.0f;
 
-    QTest::newRow("xonly")
+    BOBUIest::newRow("xonly")
         << 1.0f << 0.0f << 0.0f
         << 2.0f << 0.0f << 0.0f
         << 2.0f << 0.0f << 0.0f;
 
-    QTest::newRow("yonly")
+    BOBUIest::newRow("yonly")
         << 0.0f << 1.0f << 0.0f
         << 0.0f << 2.0f << 0.0f
         << 0.0f << 2.0f << 0.0f;
 
-    QTest::newRow("zonly")
+    BOBUIest::newRow("zonly")
         << 0.0f << 0.0f << 1.0f
         << 0.0f << 0.0f << 2.0f
         << 0.0f << 0.0f << 2.0f;
 
-    QTest::newRow("all")
+    BOBUIest::newRow("all")
         << 1.0f << 2.0f << 3.0f
         << 4.0f << 5.0f << -6.0f
         << 4.0f << 10.0f << -18.0f;
@@ -1374,45 +1374,45 @@ void tst_QVectorND::multiply3()
 // Test component-wise vector multiplication for 4D vectors.
 void tst_QVectorND::multiply4_data()
 {
-    QTest::addColumn<float>("x1");
-    QTest::addColumn<float>("y1");
-    QTest::addColumn<float>("z1");
-    QTest::addColumn<float>("w1");
-    QTest::addColumn<float>("x2");
-    QTest::addColumn<float>("y2");
-    QTest::addColumn<float>("z2");
-    QTest::addColumn<float>("w2");
-    QTest::addColumn<float>("x3");
-    QTest::addColumn<float>("y3");
-    QTest::addColumn<float>("z3");
-    QTest::addColumn<float>("w3");
+    BOBUIest::addColumn<float>("x1");
+    BOBUIest::addColumn<float>("y1");
+    BOBUIest::addColumn<float>("z1");
+    BOBUIest::addColumn<float>("w1");
+    BOBUIest::addColumn<float>("x2");
+    BOBUIest::addColumn<float>("y2");
+    BOBUIest::addColumn<float>("z2");
+    BOBUIest::addColumn<float>("w2");
+    BOBUIest::addColumn<float>("x3");
+    BOBUIest::addColumn<float>("y3");
+    BOBUIest::addColumn<float>("z3");
+    BOBUIest::addColumn<float>("w3");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << 0.0f << 0.0f << 0.0f << 0.0f
         << 0.0f << 0.0f << 0.0f << 0.0f
         << 0.0f << 0.0f << 0.0f << 0.0f;
 
-    QTest::newRow("xonly")
+    BOBUIest::newRow("xonly")
         << 1.0f << 0.0f << 0.0f << 0.0f
         << 2.0f << 0.0f << 0.0f << 0.0f
         << 2.0f << 0.0f << 0.0f << 0.0f;
 
-    QTest::newRow("yonly")
+    BOBUIest::newRow("yonly")
         << 0.0f << 1.0f << 0.0f << 0.0f
         << 0.0f << 2.0f << 0.0f << 0.0f
         << 0.0f << 2.0f << 0.0f << 0.0f;
 
-    QTest::newRow("zonly")
+    BOBUIest::newRow("zonly")
         << 0.0f << 0.0f << 1.0f << 0.0f
         << 0.0f << 0.0f << 2.0f << 0.0f
         << 0.0f << 0.0f << 2.0f << 0.0f;
 
-    QTest::newRow("wonly")
+    BOBUIest::newRow("wonly")
         << 0.0f << 0.0f << 0.0f << 1.0f
         << 0.0f << 0.0f << 0.0f << 2.0f
         << 0.0f << 0.0f << 0.0f << 2.0f;
 
-    QTest::newRow("all")
+    BOBUIest::newRow("all")
         << 1.0f << 2.0f << 3.0f << 8.0f
         << 4.0f << 5.0f << -6.0f << 9.0f
         << 4.0f << 10.0f << -18.0f << 72.0f;
@@ -1451,33 +1451,33 @@ void tst_QVectorND::multiply4()
 // Test vector multiplication by a factor for 2D vectors.
 void tst_QVectorND::multiplyFactor2_data()
 {
-    QTest::addColumn<float>("x1");
-    QTest::addColumn<float>("y1");
-    QTest::addColumn<float>("factor");
-    QTest::addColumn<float>("x2");
-    QTest::addColumn<float>("y2");
+    BOBUIest::addColumn<float>("x1");
+    BOBUIest::addColumn<float>("y1");
+    BOBUIest::addColumn<float>("factor");
+    BOBUIest::addColumn<float>("x2");
+    BOBUIest::addColumn<float>("y2");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << 0.0f << 0.0f
         << 100.0f
         << 0.0f << 0.0f;
 
-    QTest::newRow("xonly")
+    BOBUIest::newRow("xonly")
         << 1.0f << 0.0f
         << 2.0f
         << 2.0f << 0.0f;
 
-    QTest::newRow("yonly")
+    BOBUIest::newRow("yonly")
         << 0.0f << 1.0f
         << 2.0f
         << 0.0f << 2.0f;
 
-    QTest::newRow("all")
+    BOBUIest::newRow("all")
         << 1.0f << 2.0f
         << 2.0f
         << 2.0f << 4.0f;
 
-    QTest::newRow("allzero")
+    BOBUIest::newRow("allzero")
         << 1.0f << 2.0f
         << 0.0f
         << 0.0f << 0.0f;
@@ -1507,40 +1507,40 @@ void tst_QVectorND::multiplyFactor2()
 // Test vector multiplication by a factor for 3D vectors.
 void tst_QVectorND::multiplyFactor3_data()
 {
-    QTest::addColumn<float>("x1");
-    QTest::addColumn<float>("y1");
-    QTest::addColumn<float>("z1");
-    QTest::addColumn<float>("factor");
-    QTest::addColumn<float>("x2");
-    QTest::addColumn<float>("y2");
-    QTest::addColumn<float>("z2");
+    BOBUIest::addColumn<float>("x1");
+    BOBUIest::addColumn<float>("y1");
+    BOBUIest::addColumn<float>("z1");
+    BOBUIest::addColumn<float>("factor");
+    BOBUIest::addColumn<float>("x2");
+    BOBUIest::addColumn<float>("y2");
+    BOBUIest::addColumn<float>("z2");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << 0.0f << 0.0f << 0.0f
         << 100.0f
         << 0.0f << 0.0f << 0.0f;
 
-    QTest::newRow("xonly")
+    BOBUIest::newRow("xonly")
         << 1.0f << 0.0f << 0.0f
         << 2.0f
         << 2.0f << 0.0f << 0.0f;
 
-    QTest::newRow("yonly")
+    BOBUIest::newRow("yonly")
         << 0.0f << 1.0f << 0.0f
         << 2.0f
         << 0.0f << 2.0f << 0.0f;
 
-    QTest::newRow("zonly")
+    BOBUIest::newRow("zonly")
         << 0.0f << 0.0f << 1.0f
         << 2.0f
         << 0.0f << 0.0f << 2.0f;
 
-    QTest::newRow("all")
+    BOBUIest::newRow("all")
         << 1.0f << 2.0f << -3.0f
         << 2.0f
         << 2.0f << 4.0f << -6.0f;
 
-    QTest::newRow("allzero")
+    BOBUIest::newRow("allzero")
         << 1.0f << 2.0f << -3.0f
         << 0.0f
         << 0.0f << 0.0f << 0.0f;
@@ -1573,47 +1573,47 @@ void tst_QVectorND::multiplyFactor3()
 // Test vector multiplication by a factor for 4D vectors.
 void tst_QVectorND::multiplyFactor4_data()
 {
-    QTest::addColumn<float>("x1");
-    QTest::addColumn<float>("y1");
-    QTest::addColumn<float>("z1");
-    QTest::addColumn<float>("w1");
-    QTest::addColumn<float>("factor");
-    QTest::addColumn<float>("x2");
-    QTest::addColumn<float>("y2");
-    QTest::addColumn<float>("z2");
-    QTest::addColumn<float>("w2");
+    BOBUIest::addColumn<float>("x1");
+    BOBUIest::addColumn<float>("y1");
+    BOBUIest::addColumn<float>("z1");
+    BOBUIest::addColumn<float>("w1");
+    BOBUIest::addColumn<float>("factor");
+    BOBUIest::addColumn<float>("x2");
+    BOBUIest::addColumn<float>("y2");
+    BOBUIest::addColumn<float>("z2");
+    BOBUIest::addColumn<float>("w2");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << 0.0f << 0.0f << 0.0f << 0.0f
         << 100.0f
         << 0.0f << 0.0f << 0.0f << 0.0f;
 
-    QTest::newRow("xonly")
+    BOBUIest::newRow("xonly")
         << 1.0f << 0.0f << 0.0f << 0.0f
         << 2.0f
         << 2.0f << 0.0f << 0.0f << 0.0f;
 
-    QTest::newRow("yonly")
+    BOBUIest::newRow("yonly")
         << 0.0f << 1.0f << 0.0f << 0.0f
         << 2.0f
         << 0.0f << 2.0f << 0.0f << 0.0f;
 
-    QTest::newRow("zonly")
+    BOBUIest::newRow("zonly")
         << 0.0f << 0.0f << 1.0f << 0.0f
         << 2.0f
         << 0.0f << 0.0f << 2.0f << 0.0f;
 
-    QTest::newRow("wonly")
+    BOBUIest::newRow("wonly")
         << 0.0f << 0.0f << 0.0f << 1.0f
         << 2.0f
         << 0.0f << 0.0f << 0.0f << 2.0f;
 
-    QTest::newRow("all")
+    BOBUIest::newRow("all")
         << 1.0f << 2.0f << -3.0f << 4.0f
         << 2.0f
         << 2.0f << 4.0f << -6.0f << 8.0f;
 
-    QTest::newRow("allzero")
+    BOBUIest::newRow("allzero")
         << 1.0f << 2.0f << -3.0f << 4.0f
         << 0.0f
         << 0.0f << 0.0f << 0.0f << 0.0f;
@@ -1940,30 +1940,30 @@ void tst_QVectorND::negate4()
 // Test the computation of vector cross-products.
 void tst_QVectorND::crossProduct_data()
 {
-    QTest::addColumn<float>("x1");
-    QTest::addColumn<float>("y1");
-    QTest::addColumn<float>("z1");
-    QTest::addColumn<float>("x2");
-    QTest::addColumn<float>("y2");
-    QTest::addColumn<float>("z2");
-    QTest::addColumn<float>("x3");
-    QTest::addColumn<float>("y3");
-    QTest::addColumn<float>("z3");
-    QTest::addColumn<float>("dot");
+    BOBUIest::addColumn<float>("x1");
+    BOBUIest::addColumn<float>("y1");
+    BOBUIest::addColumn<float>("z1");
+    BOBUIest::addColumn<float>("x2");
+    BOBUIest::addColumn<float>("y2");
+    BOBUIest::addColumn<float>("z2");
+    BOBUIest::addColumn<float>("x3");
+    BOBUIest::addColumn<float>("y3");
+    BOBUIest::addColumn<float>("z3");
+    BOBUIest::addColumn<float>("dot");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << 0.0f << 0.0f << 0.0f
         << 0.0f << 0.0f << 0.0f
         << 0.0f << 0.0f << 0.0f
         << 0.0f;
 
-    QTest::newRow("unitvec")
+    BOBUIest::newRow("unitvec")
         << 1.0f << 0.0f << 0.0f
         << 0.0f << 1.0f << 0.0f
         << 0.0f << 0.0f << 1.0f
         << 0.0f;
 
-    QTest::newRow("complex")
+    BOBUIest::newRow("complex")
         << 1.0f << 2.0f << 3.0f
         << 4.0f << 5.0f << 6.0f
         << -3.0f << 6.0f << -3.0f
@@ -2030,34 +2030,34 @@ void tst_QVectorND::normal()
 // Test distance to point calculations.
 void tst_QVectorND::distanceToPoint2_data()
 {
-    QTest::addColumn<float>("x1");  // Point to test for distance
-    QTest::addColumn<float>("y1");
-    QTest::addColumn<float>("x2");  // Point to test against
-    QTest::addColumn<float>("y2");
+    BOBUIest::addColumn<float>("x1");  // Point to test for distance
+    BOBUIest::addColumn<float>("y1");
+    BOBUIest::addColumn<float>("x2");  // Point to test against
+    BOBUIest::addColumn<float>("y2");
 
-    QTest::addColumn<float>("distance");
+    BOBUIest::addColumn<float>("distance");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << 0.0f << 0.0f
         << 0.0f << 1.0f
         << 1.0f;
 
-    QTest::newRow("on point")
+    BOBUIest::newRow("on point")
         << 1.0f << 1.0f
         << 1.0f << 1.0f
         << 0.0f;
 
-    QTest::newRow("off point")
+    BOBUIest::newRow("off point")
         << 0.0f << 1.0f
         << 0.0f << 2.0f
         << 1.0f;
 
-    QTest::newRow("off point 2")
+    BOBUIest::newRow("off point 2")
         << 0.0f << 0.0f
         << 0.0f << 2.0f
         << 2.0f;
 
-    QTest::newRow("minus point")
+    BOBUIest::newRow("minus point")
         << 0.0f << 0.0f
         << 0.0f << -2.0f
         << 2.0f;
@@ -2079,36 +2079,36 @@ void tst_QVectorND::distanceToPoint2()
 // Test distance to point calculations.
 void tst_QVectorND::distanceToPoint3_data()
 {
-    QTest::addColumn<float>("x1");  // Point to test for distance
-    QTest::addColumn<float>("y1");
-    QTest::addColumn<float>("z1");
-    QTest::addColumn<float>("x2");  // Point to test against
-    QTest::addColumn<float>("y2");
-    QTest::addColumn<float>("z2");
+    BOBUIest::addColumn<float>("x1");  // Point to test for distance
+    BOBUIest::addColumn<float>("y1");
+    BOBUIest::addColumn<float>("z1");
+    BOBUIest::addColumn<float>("x2");  // Point to test against
+    BOBUIest::addColumn<float>("y2");
+    BOBUIest::addColumn<float>("z2");
 
-    QTest::addColumn<float>("distance");
+    BOBUIest::addColumn<float>("distance");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << 0.0f << 0.0f << 0.0f
         << 0.0f << 0.0f << 1.0f
         << 1.0f;
 
-    QTest::newRow("on point")
+    BOBUIest::newRow("on point")
         << 0.0f << 0.0f << 0.0f
         << 0.0f << 0.0f << 0.0f
         << 0.0f;
 
-    QTest::newRow("off point")
+    BOBUIest::newRow("off point")
         << 0.0f << 0.0f << 1.0f
         << 0.0f << 0.0f << 2.0f
         << 1.0f;
 
-    QTest::newRow("off point 2")
+    BOBUIest::newRow("off point 2")
         << 0.0f << 0.0f << 0.0f
         << 0.0f << 2.0f << 0.0f
         << 2.0f;
 
-    QTest::newRow("minus point")
+    BOBUIest::newRow("minus point")
         << 0.0f << 0.0f << 0.0f
         << 0.0f << -2.0f << 0.0f
         << 2.0f;
@@ -2132,24 +2132,24 @@ void tst_QVectorND::distanceToPoint3()
 // Test distance to plane calculations.
 void tst_QVectorND::distanceToPlane_data()
 {
-    QTest::addColumn<float>("x1");  // Point on plane
-    QTest::addColumn<float>("y1");
-    QTest::addColumn<float>("z1");
-    QTest::addColumn<float>("x2");  // Normal to plane
-    QTest::addColumn<float>("y2");
-    QTest::addColumn<float>("z2");
-    QTest::addColumn<float>("x3");  // Point to test for distance
-    QTest::addColumn<float>("y3");
-    QTest::addColumn<float>("z3");
-    QTest::addColumn<float>("x4");  // Second point on plane
-    QTest::addColumn<float>("y4");
-    QTest::addColumn<float>("z4");
-    QTest::addColumn<float>("x5");  // Third point on plane
-    QTest::addColumn<float>("y5");
-    QTest::addColumn<float>("z5");
-    QTest::addColumn<float>("distance");
+    BOBUIest::addColumn<float>("x1");  // Point on plane
+    BOBUIest::addColumn<float>("y1");
+    BOBUIest::addColumn<float>("z1");
+    BOBUIest::addColumn<float>("x2");  // Normal to plane
+    BOBUIest::addColumn<float>("y2");
+    BOBUIest::addColumn<float>("z2");
+    BOBUIest::addColumn<float>("x3");  // Point to test for distance
+    BOBUIest::addColumn<float>("y3");
+    BOBUIest::addColumn<float>("z3");
+    BOBUIest::addColumn<float>("x4");  // Second point on plane
+    BOBUIest::addColumn<float>("y4");
+    BOBUIest::addColumn<float>("z4");
+    BOBUIest::addColumn<float>("x5");  // Third point on plane
+    BOBUIest::addColumn<float>("y5");
+    BOBUIest::addColumn<float>("z5");
+    BOBUIest::addColumn<float>("distance");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << 0.0f << 0.0f << 0.0f
         << 0.0f << 0.0f << 1.0f
         << 0.0f << 0.0f << 0.0f
@@ -2157,7 +2157,7 @@ void tst_QVectorND::distanceToPlane_data()
         << 0.0f << 2.0f << 0.0f
         << 0.0f;
 
-    QTest::newRow("above")
+    BOBUIest::newRow("above")
         << 0.0f << 0.0f << 0.0f
         << 0.0f << 0.0f << 1.0f
         << 0.0f << 0.0f << 2.0f
@@ -2165,7 +2165,7 @@ void tst_QVectorND::distanceToPlane_data()
         << 0.0f << 2.0f << 0.0f
         << 2.0f;
 
-    QTest::newRow("below")
+    BOBUIest::newRow("below")
         << 0.0f << 0.0f << 0.0f
         << 0.0f << 0.0f << 1.0f
         << -1.0f << 1.0f << -2.0f
@@ -2205,39 +2205,39 @@ void tst_QVectorND::distanceToPlane()
 // Test distance to line calculations.
 void tst_QVectorND::distanceToLine2_data()
 {
-    QTest::addColumn<float>("x1");  // Point on line
-    QTest::addColumn<float>("y1");
-    QTest::addColumn<float>("x2");  // Direction of the line
-    QTest::addColumn<float>("y2");
-    QTest::addColumn<float>("x3");  // Point to test for distance
-    QTest::addColumn<float>("y3");
-    QTest::addColumn<float>("distance");
+    BOBUIest::addColumn<float>("x1");  // Point on line
+    BOBUIest::addColumn<float>("y1");
+    BOBUIest::addColumn<float>("x2");  // Direction of the line
+    BOBUIest::addColumn<float>("y2");
+    BOBUIest::addColumn<float>("x3");  // Point to test for distance
+    BOBUIest::addColumn<float>("y3");
+    BOBUIest::addColumn<float>("distance");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << 0.0f << 0.0f
         << 0.0f << 0.1f
         << 0.0f << 0.0f
         << 0.0f;
 
-    QTest::newRow("on line")
+    BOBUIest::newRow("on line")
         << 0.0f << 0.0f
         << 0.0f << 1.0f
         << 0.0f << 5.0f
         << 0.0f;
 
-    QTest::newRow("off line")
+    BOBUIest::newRow("off line")
         << 0.0f << 0.0f
         << 0.0f << 1.0f
         << 1.0f << 0.0f
         << 1.0f;
 
-    QTest::newRow("off line 2")
+    BOBUIest::newRow("off line 2")
         << 0.0f << 0.0f
         << 0.0f << 1.0f
         << -2.0f << 0.0f
         << 2.0f;
 
-    QTest::newRow("points")
+    BOBUIest::newRow("points")
         << 0.0f << 0.0f
         << 0.0f << 0.0f
         << 0.0f << 5.0f
@@ -2263,42 +2263,42 @@ void tst_QVectorND::distanceToLine2()
 // Test distance to line calculations.
 void tst_QVectorND::distanceToLine3_data()
 {
-    QTest::addColumn<float>("x1");  // Point on line
-    QTest::addColumn<float>("y1");
-    QTest::addColumn<float>("z1");
-    QTest::addColumn<float>("x2");  // Direction of the line
-    QTest::addColumn<float>("y2");
-    QTest::addColumn<float>("z2");
-    QTest::addColumn<float>("x3");  // Point to test for distance
-    QTest::addColumn<float>("y3");
-    QTest::addColumn<float>("z3");
-    QTest::addColumn<float>("distance");
+    BOBUIest::addColumn<float>("x1");  // Point on line
+    BOBUIest::addColumn<float>("y1");
+    BOBUIest::addColumn<float>("z1");
+    BOBUIest::addColumn<float>("x2");  // Direction of the line
+    BOBUIest::addColumn<float>("y2");
+    BOBUIest::addColumn<float>("z2");
+    BOBUIest::addColumn<float>("x3");  // Point to test for distance
+    BOBUIest::addColumn<float>("y3");
+    BOBUIest::addColumn<float>("z3");
+    BOBUIest::addColumn<float>("distance");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << 0.0f << 0.0f << 0.0f
         << 0.0f << 0.0f << 1.0f
         << 0.0f << 0.0f << 0.0f
         << 0.0f;
 
-    QTest::newRow("on line")
+    BOBUIest::newRow("on line")
         << 0.0f << 0.0f << 0.0f
         << 0.0f << 0.0f << 1.0f
         << 0.0f << 0.0f << 5.0f
         << 0.0f;
 
-    QTest::newRow("off line")
+    BOBUIest::newRow("off line")
         << 0.0f << 0.0f << 0.0f
         << 0.0f << 0.0f << 1.0f
         << 1.0f << 0.0f << 0.0f
         << 1.0f;
 
-    QTest::newRow("off line 2")
+    BOBUIest::newRow("off line 2")
         << 0.0f << 0.0f << 0.0f
         << 0.0f << 0.0f << 1.0f
         << 0.0f << -2.0f << 0.0f
         << 2.0f;
 
-    QTest::newRow("points")
+    BOBUIest::newRow("points")
         << 0.0f << 0.0f << 0.0f
         << 0.0f << 0.0f << 0.0f
         << 0.0f << 5.0f << 0.0f
@@ -2327,23 +2327,23 @@ void tst_QVectorND::distanceToLine3()
 // Test the computation of dot products for 2D vectors.
 void tst_QVectorND::dotProduct2_data()
 {
-    QTest::addColumn<float>("x1");
-    QTest::addColumn<float>("y1");
-    QTest::addColumn<float>("x2");
-    QTest::addColumn<float>("y2");
-    QTest::addColumn<float>("dot");
+    BOBUIest::addColumn<float>("x1");
+    BOBUIest::addColumn<float>("y1");
+    BOBUIest::addColumn<float>("x2");
+    BOBUIest::addColumn<float>("y2");
+    BOBUIest::addColumn<float>("dot");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << 0.0f << 0.0f
         << 0.0f << 0.0f
         << 0.0f;
 
-    QTest::newRow("unitvec")
+    BOBUIest::newRow("unitvec")
         << 1.0f << 0.0f
         << 0.0f << 1.0f
         << 0.0f;
 
-    QTest::newRow("complex")
+    BOBUIest::newRow("complex")
         << 1.0f << 2.0f
         << 4.0f << 5.0f
         << 14.0f;
@@ -2404,27 +2404,27 @@ void tst_QVectorND::dotProduct3()
 // Test the computation of dot products for 4D vectors.
 void tst_QVectorND::dotProduct4_data()
 {
-    QTest::addColumn<float>("x1");
-    QTest::addColumn<float>("y1");
-    QTest::addColumn<float>("z1");
-    QTest::addColumn<float>("w1");
-    QTest::addColumn<float>("x2");
-    QTest::addColumn<float>("y2");
-    QTest::addColumn<float>("z2");
-    QTest::addColumn<float>("w2");
-    QTest::addColumn<float>("dot");
+    BOBUIest::addColumn<float>("x1");
+    BOBUIest::addColumn<float>("y1");
+    BOBUIest::addColumn<float>("z1");
+    BOBUIest::addColumn<float>("w1");
+    BOBUIest::addColumn<float>("x2");
+    BOBUIest::addColumn<float>("y2");
+    BOBUIest::addColumn<float>("z2");
+    BOBUIest::addColumn<float>("w2");
+    BOBUIest::addColumn<float>("dot");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << 0.0f << 0.0f << 0.0f << 0.0f
         << 0.0f << 0.0f << 0.0f << 0.0f
         << 0.0f;
 
-    QTest::newRow("unitvec")
+    BOBUIest::newRow("unitvec")
         << 1.0f << 0.0f << 0.0f << 0.0f
         << 0.0f << 1.0f << 0.0f << 0.0f
         << 0.0f;
 
-    QTest::newRow("complex")
+    BOBUIest::newRow("complex")
         << 1.0f << 2.0f << 3.0f << 4.0f
         << 4.0f << 5.0f << 6.0f << 7.0f
         << 60.0f;
@@ -2454,11 +2454,11 @@ void tst_QVectorND::dotProduct4()
 
 void tst_QVectorND::project_data()
 {
-    QTest::addColumn<QVector3D>("point");
-    QTest::addColumn<QRect>("viewport");
-    QTest::addColumn<QMatrix4x4>("projection");
-    QTest::addColumn<QMatrix4x4>("view");
-    QTest::addColumn<QVector2D>("result");
+    BOBUIest::addColumn<QVector3D>("point");
+    BOBUIest::addColumn<QRect>("viewport");
+    BOBUIest::addColumn<QMatrix4x4>("projection");
+    BOBUIest::addColumn<QMatrix4x4>("view");
+    BOBUIest::addColumn<QVector2D>("result");
 
     QMatrix4x4 projection;
     projection.ortho(-1.0f, 1.0f, -1.0f, 1.0f, 0.1f, 1000.0f);
@@ -2472,42 +2472,42 @@ void tst_QVectorND::project_data()
                           0.0f, 0.0f, 0.0f, 0.0f,
                           0.0f, 0.0f, 0.0f, 0.0f);
 
-    QTest::newRow("center")
+    BOBUIest::newRow("center")
         << QVector3D(0.0f, 0.0f, 0.0f)
         << QRect(0.0f, 0.0f, 800.0f, 600.0f)
         << projection
         << view
         << QVector2D(400.0f, 300.0f);
 
-    QTest::newRow("topLeft")
+    BOBUIest::newRow("topLeft")
         << QVector3D(-1.0f, 1.0f, 0.0f)
         << QRect(0.0f, 0.0f, 800.0f, 600.0f)
         << projection
         << view
         << QVector2D(0.0f, 600.0f);
 
-    QTest::newRow("topRight")
+    BOBUIest::newRow("topRight")
         << QVector3D(1.0f, 1.0f, 0.0f)
         << QRect(0.0f, 0.0f, 800.0f, 600.0f)
         << projection
         << view
         << QVector2D(800.0f, 600.0f);
 
-    QTest::newRow("bottomLeft")
+    BOBUIest::newRow("bottomLeft")
         << QVector3D(-1.0f, -1.0f, 0.0f)
         << QRect(0.0f, 0.0f, 800.0f, 600.0f)
         << projection
         << view
         << QVector2D(0.0f, 0.0f);
 
-    QTest::newRow("bottomRight")
+    BOBUIest::newRow("bottomRight")
         << QVector3D(1.0f, -1.0f, 0.0f)
         << QRect(0.0f, 0.0f, 800.0f, 600.0f)
         << projection
         << view
         << QVector2D(800.0f, 0.0f);
 
-    QTest::newRow("nullMatrix")
+    BOBUIest::newRow("nullMatrix")
         << QVector3D(0.0f, 0.0f, 0.0f)
         << QRect(0.0f, 0.0f, 800.0f, 600.0f)
         << nullMatrix
@@ -2530,11 +2530,11 @@ void tst_QVectorND::project()
 
 void tst_QVectorND::unproject_data()
 {
-    QTest::addColumn<QVector3D>("point");
-    QTest::addColumn<QRect>("viewport");
-    QTest::addColumn<QMatrix4x4>("projection");
-    QTest::addColumn<QMatrix4x4>("view");
-    QTest::addColumn<QVector3D>("result");
+    BOBUIest::addColumn<QVector3D>("point");
+    BOBUIest::addColumn<QRect>("viewport");
+    BOBUIest::addColumn<QMatrix4x4>("projection");
+    BOBUIest::addColumn<QMatrix4x4>("view");
+    BOBUIest::addColumn<QVector3D>("result");
 
     QMatrix4x4 projection;
     projection.ortho(-1.0f, 1.0f, -1.0f, 1.0f, 0.1f, 1000.0f);
@@ -2548,42 +2548,42 @@ void tst_QVectorND::unproject_data()
                           0.0f, 0.0f, 0.0f, 0.0f,
                           0.0f, 0.0f, 0.0f, 0.0f);
 
-    QTest::newRow("center")
+    BOBUIest::newRow("center")
         << QVector3D(400.0f, 300.0f, 0.0f)
         << QRect(0.0f, 0.0f, 800.0f, 600.0f)
         << projection
         << view
         << QVector3D(0.0f, 0.0f, 9.9f);
 
-    QTest::newRow("topLeft")
+    BOBUIest::newRow("topLeft")
         << QVector3D(0.0f, 600.0f, 0.0f)
         << QRect(0.0f, 0.0f, 800.0f, 600.0f)
         << projection
         << view
         << QVector3D(-1.0f, 1.0f, 9.9f);
 
-    QTest::newRow("topRight")
+    BOBUIest::newRow("topRight")
         << QVector3D(800.0f, 600.0f, 0.0f)
         << QRect(0.0f, 0.0f, 800.0f, 600.0f)
         << projection
         << view
         << QVector3D(1.0f, 1.0f, 9.9f);
 
-    QTest::newRow("bottomLeft")
+    BOBUIest::newRow("bottomLeft")
         << QVector3D(0.0f, 0.0f, 0.0f)
         << QRect(0.0f, 0.0f, 800.0f, 600.0f)
         << projection
         << view
         << QVector3D(-1.0, -1.0f, 9.9f);
 
-    QTest::newRow("bottomRight")
+    BOBUIest::newRow("bottomRight")
         << QVector3D(800.0f, 0.0f, 0.0f)
         << QRect(0.0f, 0.0f, 800.0f, 600.0f)
         << projection
         << view
         << QVector3D(1.0f, -1.0f, 9.9f);
 
-    QTest::newRow("nullMatrix")
+    BOBUIest::newRow("nullMatrix")
         << QVector3D(400.0f, 300.0f, 0.0f)
         << QRect(0.0f, 0.0f, 800.0f, 600.0f)
         << nullMatrix
@@ -2766,14 +2766,14 @@ void tst_QVectorND::structuredBinding()
 
 void tst_QVectorND::nonFiniteValuesStreamingRoundTrip_data()
 {
-    QTest::addColumn<float>("value");
+    BOBUIest::addColumn<float>("value");
 
     constexpr auto inf = std::numeric_limits<float>::infinity();
     constexpr auto NaN = std::numeric_limits<float>::quiet_NaN();
 
-    QTest::addRow("+∞") << +inf;
-    QTest::addRow("-∞") << -inf;
-    QTest::addRow("NaN") << NaN;
+    BOBUIest::addRow("+∞") << +inf;
+    BOBUIest::addRow("-∞") << -inf;
+    BOBUIest::addRow("NaN") << NaN;
 
 }
 
@@ -2836,6 +2836,6 @@ void tst_QVectorND::nonFiniteValuesStreamingRoundTrip()
     }
 }
 
-QTEST_APPLESS_MAIN(tst_QVectorND)
+BOBUIEST_APPLESS_MAIN(tst_QVectorND)
 
 #include "tst_qvectornd.moc"

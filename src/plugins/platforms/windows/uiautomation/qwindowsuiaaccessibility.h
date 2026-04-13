@@ -1,17 +1,17 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWINDOWSUIAACCESSIBILITY_H
 #define QWINDOWSUIAACCESSIBILITY_H
 
-#include <QtGui/qtguiglobal.h>
-#if QT_CONFIG(accessibility)
+#include <BobUIGui/bobuiguiglobal.h>
+#if BOBUI_CONFIG(accessibility)
 
-#include <QtCore/qt_windows.h>
+#include <BobUICore/bobui_windows.h>
 #include "qwindowscontext.h"
 #include <qpa/qplatformaccessibility.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // Windows platform accessibility implemented over UI Automation.
 class QWindowsUiaAccessibility : public QPlatformAccessibility
@@ -25,8 +25,8 @@ private:
     static bool m_accessibleActive;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)
 
 #endif // QWINDOWSUIAACCESSIBILITY_H

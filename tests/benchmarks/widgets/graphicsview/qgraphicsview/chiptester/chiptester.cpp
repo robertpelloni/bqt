@@ -1,13 +1,13 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "chiptester.h"
 #include "chip.h"
 
-#include <QtGui>
+#include <BobUIGui>
 #include <QScrollBar>
-#ifndef QT_NO_OPENGL
-#include <QtOpenGL>
+#ifndef BOBUI_NO_OPENGL
+#include <BobUIOpenGL>
 #endif
 
 ChipTester::ChipTester(QWidget *parent)
@@ -15,8 +15,8 @@ ChipTester::ChipTester(QWidget *parent)
       npaints(0)
 {
     resize(400, 300);
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setHorizontalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
+    setVerticalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
     setFrameStyle(0);
     setTransformationAnchor(NoAnchor);
 
@@ -51,7 +51,7 @@ void ChipTester::paintEvent(QPaintEvent *event)
         eventLoop.quit();
 }
 
-void ChipTester::timerEvent(QTimerEvent *)
+void ChipTester::timerEvent(BOBUIimerEvent *)
 {
     switch (operation) {
     case Rotate360:
@@ -59,7 +59,7 @@ void ChipTester::timerEvent(QTimerEvent *)
         break;
     case ZoomInOut: {
         qreal s = 0.05 + (npaints / 20.0);
-        setTransform(QTransform().scale(s, s));
+        setTransform(BOBUIransform().scale(s, s));
         break;
     }
     case Translate: {
@@ -75,7 +75,7 @@ void ChipTester::populateScene()
 {
     scene = new QGraphicsScene;
 
-    QImage image(":/qt4logo.png");
+    QImage image(":/bobui4logo.png");
 
     // Populate scene
     int xx = 0;

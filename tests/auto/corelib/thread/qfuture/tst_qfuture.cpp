@@ -1,30 +1,30 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#undef QT_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
+#undef BOBUI_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
 
 #define QFUTURE_TEST
 
 #include <QCoreApplication>
 #include <QDebug>
 #include <QSemaphore>
-#include <QTestEventLoop>
-#include <QTimer>
+#include <BOBUIestEventLoop>
+#include <BOBUIimer>
 #include <QSignalSpy>
 #include <QVarLengthArray>
 #include <QSet>
 #include <QList>
 #include <private/qobject_p.h>
 
-#include <QTest>
-#include <QtTest/private/qcomparisontesthelper_p.h>
+#include <BOBUIest>
+#include <BobUITest/private/qcomparisontesthelper_p.h>
 #include <qfuture.h>
 #include <qfuturewatcher.h>
 #include <qresultstore.h>
-#include <qthreadpool.h>
+#include <bobuihreadpool.h>
 #include <qexception.h>
 #include <qrandom.h>
-#include <QtConcurrent/qtconcurrentrun.h>
+#include <BobUIConcurrent/bobuiconcurrentrun.h>
 #include <private/qfutureinterface_p.h>
 
 #include <forward_list>
@@ -41,7 +41,7 @@
 using namespace std::chrono_literals;
 static constexpr auto DefaultWaitTime = 2s;
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class SenderObject : public QObject
 {
@@ -126,7 +126,7 @@ signals:
                                          QPrivateSignal);
 };
 
-class LambdaThread : public QThread
+class LambdaThread : public BOBUIhread
 {
 public:
     LambdaThread(std::function<void ()> fn)
@@ -182,14 +182,14 @@ private slots:
     void iterators();
     void valueInitializedIteratorsCompareEqual();
     void iteratorsThread();
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
     void pause();
     void suspendCheckPaused();
 #endif
     void suspend();
     void throttling();
     void voidConversions();
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
     void exceptions();
     void nestedExceptions();
 #endif
@@ -198,7 +198,7 @@ private slots:
     void then();
     void thenForMoveOnlyTypes();
     void thenOnCanceledFuture();
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
     void thenOnExceptionFuture();
     void thenThrows();
     void onFailed();
@@ -276,24 +276,24 @@ private:
 class IntResultsCleaner
 {
 public:
-    IntResultsCleaner(QtPrivate::ResultStoreBase &s) : store(s) { }
+    IntResultsCleaner(BobUIPrivate::ResultStoreBase &s) : store(s) { }
     ~IntResultsCleaner() { store.clear<int>(); }
 
 private:
-    QtPrivate::ResultStoreBase &store;
+    BobUIPrivate::ResultStoreBase &store;
 };
 
 static void suppressContinuationOverrideWarning()
 {
-    QTest::ignoreMessage(QtWarningMsg,
+    BOBUIest::ignoreMessage(BobUIWarningMsg,
                          "Adding a continuation to a future which already has a continuation. "
                          "The existing continuation is overwritten.");
 }
 
 void tst_QFuture::compareCompiles()
 {
-    QTestPrivate::testEqualityOperatorsCompile<QFuture<int>::const_iterator>();
-    QTestPrivate::testEqualityOperatorsCompile<QFuture<QString>::const_iterator>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QFuture<int>::const_iterator>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QFuture<QString>::const_iterator>();
 }
 
 void tst_QFuture::resultStore()
@@ -303,7 +303,7 @@ void tst_QFuture::resultStore()
     int int2 = 2;
 
     {
-        QtPrivate::ResultStoreBase store;
+        BobUIPrivate::ResultStoreBase store;
         IntResultsCleaner cleanGuard(store);
 
         QCOMPARE(store.begin(), store.end());
@@ -313,12 +313,12 @@ void tst_QFuture::resultStore()
 
 
     {
-        QtPrivate::ResultStoreBase store;
+        BobUIPrivate::ResultStoreBase store;
         IntResultsCleaner cleanGuard(store);
 
         store.addResult(-1, &int0);
         store.addResult(1, &int1);
-        QtPrivate::ResultIteratorBase it = store.begin();
+        BobUIPrivate::ResultIteratorBase it = store.begin();
         QCOMPARE(it.resultIndex(), 0);
         QVERIFY(it == store.begin());
         QVERIFY(it != store.end());
@@ -337,12 +337,12 @@ void tst_QFuture::resultStore()
     QList<int> vec1 = QList<int>() << 4 << 5;
 
     {
-        QtPrivate::ResultStoreBase store;
+        BobUIPrivate::ResultStoreBase store;
         IntResultsCleaner cleanGuard(store);
 
         store.addResults(-1, &vec0, 2);
         store.addResults(-1, &vec1, 2);
-        QtPrivate::ResultIteratorBase it = store.begin();
+        BobUIPrivate::ResultIteratorBase it = store.begin();
         QCOMPARE(it.resultIndex(), 0);
         QCOMPARE(it, store.begin());
         QVERIFY(it != store.end());
@@ -362,14 +362,14 @@ void tst_QFuture::resultStore()
         QCOMPARE(it, store.end());
     }
     {
-        QtPrivate::ResultStoreBase store;
+        BobUIPrivate::ResultStoreBase store;
         IntResultsCleaner cleanGuard(store);
 
         store.addResult(-1, &int0);
         store.addResults(-1, &vec1, 2);
         store.addResult(-1, &int1);
 
-        QtPrivate::ResultIteratorBase it = store.begin();
+        BobUIPrivate::ResultIteratorBase it = store.begin();
         QCOMPARE(it.resultIndex(), 0);
         QVERIFY(it == store.begin());
         QVERIFY(it != store.end());
@@ -395,14 +395,14 @@ void tst_QFuture::resultStore()
         QCOMPARE(store.resultAt(4), store.end());
     }
     {
-        QtPrivate::ResultStoreBase store;
+        BobUIPrivate::ResultStoreBase store;
         IntResultsCleaner cleanGuard(store);
 
         store.addResult(-1, &int0);
         store.addResults(-1, &vec0);
         store.addResult(-1, &int1);
 
-        QtPrivate::ResultIteratorBase it = store.begin();
+        BobUIPrivate::ResultIteratorBase it = store.begin();
         QCOMPARE(it.resultIndex(), 0);
         QVERIFY(it == store.begin());
         QVERIFY(it != store.end());
@@ -427,7 +427,7 @@ void tst_QFuture::resultStore()
         QCOMPARE(store.resultAt(3).value<int>(), int1);
     }
     {
-        QtPrivate::ResultStoreBase store;
+        BobUIPrivate::ResultStoreBase store;
         IntResultsCleaner cleanGuard(store);
 
         store.addResult(-1, &int0);
@@ -441,7 +441,7 @@ void tst_QFuture::resultStore()
     }
 
     {
-        QtPrivate::ResultStoreBase store;
+        BobUIPrivate::ResultStoreBase store;
         IntResultsCleaner cleanGuard(store);
 
         store.addResult(1, &int1);
@@ -454,7 +454,7 @@ void tst_QFuture::resultStore()
     }
 
     {
-        QtPrivate::ResultStoreBase store;
+        BobUIPrivate::ResultStoreBase store;
         IntResultsCleaner cleanGuard(store);
 
         QCOMPARE(store.contains(0), false);
@@ -464,7 +464,7 @@ void tst_QFuture::resultStore()
 
     {
         // Test filter mode, where "gaps" in the result array aren't allowed.
-        QtPrivate::ResultStoreBase store;
+        BobUIPrivate::ResultStoreBase store;
         IntResultsCleaner cleanGuard(store);
 
         store.setFilterMode(true);
@@ -500,7 +500,7 @@ void tst_QFuture::resultStore()
 
     {
         // test canceled results
-        QtPrivate::ResultStoreBase store;
+        BobUIPrivate::ResultStoreBase store;
         IntResultsCleaner cleanGuard(store);
 
         store.setFilterMode(true);
@@ -539,7 +539,7 @@ void tst_QFuture::resultStore()
 
     {
         // test addResult return value
-        QtPrivate::ResultStoreBase store;
+        BobUIPrivate::ResultStoreBase store;
         IntResultsCleaner cleanGuard(store);
 
         store.setFilterMode(true);
@@ -587,7 +587,7 @@ void tst_QFuture::resultStore()
     {
         // test resultCount in non-filtered mode. It should always be possible
         // to iterate through the results 0 to resultCount.
-        QtPrivate::ResultStoreBase store;
+        BobUIPrivate::ResultStoreBase store;
         IntResultsCleaner cleanGuard(store);
 
         store.addResult(0, &int0);
@@ -603,7 +603,7 @@ void tst_QFuture::resultStore()
     }
 
     {
-        QtPrivate::ResultStoreBase store;
+        BobUIPrivate::ResultStoreBase store;
         IntResultsCleaner cleanGuard(store);
 
         store.addResult(2, &int0);
@@ -617,7 +617,7 @@ void tst_QFuture::resultStore()
     }
 
     {
-        QtPrivate::ResultStoreBase store;
+        BobUIPrivate::ResultStoreBase store;
         IntResultsCleaner cleanGuard(store);
 
         store.addResults(2, &vec1);
@@ -631,7 +631,7 @@ void tst_QFuture::resultStore()
     }
 
     {
-        QtPrivate::ResultStoreBase store;
+        BobUIPrivate::ResultStoreBase store;
         IntResultsCleaner cleanGuard(store);
 
         store.addResults(2, &vec1);
@@ -641,7 +641,7 @@ void tst_QFuture::resultStore()
         QCOMPARE(store.count(), 4);
     }
     {
-        QtPrivate::ResultStoreBase store;
+        BobUIPrivate::ResultStoreBase store;
         IntResultsCleaner cleanGuard(store);
 
         store.addResults(3, &vec1);
@@ -655,7 +655,7 @@ void tst_QFuture::resultStore()
     }
 
     {
-        QtPrivate::ResultStoreBase store;
+        BobUIPrivate::ResultStoreBase store;
         IntResultsCleaner cleanGuard(store);
 
         store.setFilterMode(true);
@@ -670,7 +670,7 @@ void tst_QFuture::resultStore()
     }
 
     {
-        QtPrivate::ResultStoreBase store;
+        BobUIPrivate::ResultStoreBase store;
         IntResultsCleaner cleanGuard(store);
 
         store.setFilterMode(true);
@@ -682,7 +682,7 @@ void tst_QFuture::resultStore()
     }
 
     {
-        QtPrivate::ResultStoreBase store;
+        BobUIPrivate::ResultStoreBase store;
         IntResultsCleaner cleanGuard(store);
 
         store.setFilterMode(true);
@@ -697,7 +697,7 @@ void tst_QFuture::resultStore()
     }
 
     {
-        QtPrivate::ResultStoreBase store;
+        BobUIPrivate::ResultStoreBase store;
         IntResultsCleaner cleanGuard(store);
 
         store.addResult(1, &int0);
@@ -714,7 +714,7 @@ void tst_QFuture::resultStore()
     }
 
     {
-        QtPrivate::ResultStoreBase store;
+        BobUIPrivate::ResultStoreBase store;
         IntResultsCleaner cleanGuard(store);
 
         store.setFilterMode(true);
@@ -744,7 +744,7 @@ void tst_QFuture::resultStore()
         QCOMPARE(store.contains(7), false);
     }
     {
-        QtPrivate::ResultStoreBase store;
+        BobUIPrivate::ResultStoreBase store;
         IntResultsCleaner cleanGuard(store);
 
         store.setFilterMode(true);
@@ -1386,16 +1386,16 @@ void tst_QFuture::iterators()
         QFuture<int>::const_iterator i1 = f.begin(), i2 = i1 + 1;
         QFuture<int>::const_iterator c1 = i1, c2 = c1 + 1;
 
-        QT_TEST_EQUALITY_OPS(i1, i1, true);
-        QT_TEST_EQUALITY_OPS(i1, c1, true);
-        QT_TEST_EQUALITY_OPS(c1, i1, true);
-        QT_TEST_EQUALITY_OPS(c1, c1, true);
-        QT_TEST_EQUALITY_OPS(i2, i2, true);
-        QT_TEST_EQUALITY_OPS(i2, c2, true);
-        QT_TEST_EQUALITY_OPS(c2, i2, true);
-        QT_TEST_EQUALITY_OPS(c2, c2, true);
-        QT_TEST_EQUALITY_OPS(1 + i1, i1 + 1, true);
-        QT_TEST_EQUALITY_OPS(1 + c1, c1 + 1, true);
+        BOBUI_TEST_EQUALITY_OPS(i1, i1, true);
+        BOBUI_TEST_EQUALITY_OPS(i1, c1, true);
+        BOBUI_TEST_EQUALITY_OPS(c1, i1, true);
+        BOBUI_TEST_EQUALITY_OPS(c1, c1, true);
+        BOBUI_TEST_EQUALITY_OPS(i2, i2, true);
+        BOBUI_TEST_EQUALITY_OPS(i2, c2, true);
+        BOBUI_TEST_EQUALITY_OPS(c2, i2, true);
+        BOBUI_TEST_EQUALITY_OPS(c2, c2, true);
+        BOBUI_TEST_EQUALITY_OPS(1 + i1, i1 + 1, true);
+        BOBUI_TEST_EQUALITY_OPS(1 + c1, c1 + 1, true);
 
         QVERIFY(i1 != i2);
         QVERIFY(i1 != c2);
@@ -1532,7 +1532,7 @@ void tst_QFuture::valueInitializedIteratorsCompareEqual()
 
 void tst_QFuture::iteratorsThread()
 {
-#if !QT_CONFIG(thread)
+#if !BOBUI_CONFIG(thread)
     QSKIP("This test requires threads");
 #endif
 
@@ -1627,9 +1627,9 @@ public:
     QSet<int> reportedProgress;
 };
 
-#if QT_DEPRECATED_SINCE(6, 0)
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
 void tst_QFuture::pause()
 {
     QFutureInterface<void> Interface;
@@ -1696,8 +1696,8 @@ void tst_QFuture::suspendCheckPaused()
     interface.reportFinished();
 }
 
-QT_WARNING_POP
-#endif // QT_DEPRECATED_SINCE(6, 0)
+BOBUI_WARNING_POP
+#endif // BOBUI_DEPRECATED_SINCE(6, 0)
 
 void tst_QFuture::suspend()
 {
@@ -1811,7 +1811,7 @@ void tst_QFuture::voidConversions()
 }
 
 
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
 
 QFuture<void> createExceptionFuture()
 {
@@ -1990,7 +1990,7 @@ public:
 
 bool MyClass::caught = false;
 
-// This is a regression test for QTBUG-18149. where QFuture did not throw
+// This is a regression test for BOBUIBUG-18149. where QFuture did not throw
 // exceptions if called from destructors when the stack was already unwinding
 // due to an exception having been thrown.
 void tst_QFuture::nestedExceptions()
@@ -2004,11 +2004,11 @@ void tst_QFuture::nestedExceptions()
     QVERIFY(MyClass::caught);
 }
 
-#endif // QT_NO_EXCEPTIONS
+#endif // BOBUI_NO_EXCEPTIONS
 
 void tst_QFuture::nonGlobalThreadPool()
 {
-#if !QT_CONFIG(thread)
+#if !BOBUI_CONFIG(thread)
     QSKIP("This test requires threads");
 #endif
 
@@ -2016,7 +2016,7 @@ void tst_QFuture::nonGlobalThreadPool()
 
     struct UselessTask : QRunnable, QFutureInterface<int>
     {
-        QFuture<int> start(QThreadPool *pool)
+        QFuture<int> start(BOBUIhreadPool *pool)
         {
             setRunnable(this);
             setThreadPool(pool);
@@ -2029,15 +2029,15 @@ void tst_QFuture::nonGlobalThreadPool()
         void run() override
         {
             const int ms = 100 + (QRandomGenerator::global()->bounded(100) - 100/2);
-            QThread::sleep(std::chrono::milliseconds{ms});
+            BOBUIhread::sleep(std::chrono::milliseconds{ms});
             reportResult(Answer);
             reportFinished();
         }
     };
 
-    QThreadPool pool;
+    BOBUIhreadPool pool;
 
-    const int numTasks = QThread::idealThreadCount();
+    const int numTasks = BOBUIhread::idealThreadCount();
 
     QList<QFuture<int>> futures;
     futures.reserve(numTasks);
@@ -2059,7 +2059,7 @@ void tst_QFuture::nonGlobalThreadPool()
 
 void tst_QFuture::then()
 {
-#if !QT_CONFIG(thread)
+#if !BOBUI_CONFIG(thread)
     QSKIP("This test requires threads");
 #endif
 
@@ -2188,13 +2188,13 @@ void tst_QFuture::then()
 
     // Continuations use a new thread
     {
-        Qt::HANDLE threadId1 = nullptr;
-        Qt::HANDLE threadId2 = nullptr;
+        BobUI::HANDLE threadId1 = nullptr;
+        BobUI::HANDLE threadId2 = nullptr;
         QFutureInterface<void> promise;
         QFuture<void> then = promise.future()
-                                     .then(QtFuture::Launch::Async,
-                                           [&]() { threadId1 = QThread::currentThreadId(); })
-                                     .then([&]() { threadId2 = QThread::currentThreadId(); });
+                                     .then(BobUIFuture::Launch::Async,
+                                           [&]() { threadId1 = BOBUIhread::currentThreadId(); })
+                                     .then([&]() { threadId2 = BOBUIhread::currentThreadId(); });
 
         promise.reportStarted();
         QVERIFY(!then.isStarted());
@@ -2206,21 +2206,21 @@ void tst_QFuture::then()
 
         QVERIFY(then.isStarted());
         QVERIFY(then.isFinished());
-        QVERIFY(threadId1 != QThread::currentThreadId());
-        QVERIFY(threadId2 != QThread::currentThreadId());
+        QVERIFY(threadId1 != BOBUIhread::currentThreadId());
+        QVERIFY(threadId2 != BOBUIhread::currentThreadId());
         QVERIFY(threadId1 == threadId2);
     }
 
-    // Continuation inherits the launch policy of its parent (QtFuture::Launch::Sync)
+    // Continuation inherits the launch policy of its parent (BobUIFuture::Launch::Sync)
     {
-        Qt::HANDLE threadId1 = nullptr;
-        Qt::HANDLE threadId2 = nullptr;
+        BobUI::HANDLE threadId1 = nullptr;
+        BobUI::HANDLE threadId2 = nullptr;
         QFutureInterface<void> promise;
         QFuture<void> then = promise.future()
-                                     .then(QtFuture::Launch::Sync,
-                                           [&]() { threadId1 = QThread::currentThreadId(); })
-                                     .then(QtFuture::Launch::Inherit,
-                                           [&]() { threadId2 = QThread::currentThreadId(); });
+                                     .then(BobUIFuture::Launch::Sync,
+                                           [&]() { threadId1 = BOBUIhread::currentThreadId(); })
+                                     .then(BobUIFuture::Launch::Inherit,
+                                           [&]() { threadId2 = BOBUIhread::currentThreadId(); });
 
         promise.reportStarted();
         QVERIFY(!then.isStarted());
@@ -2232,21 +2232,21 @@ void tst_QFuture::then()
 
         QVERIFY(then.isStarted());
         QVERIFY(then.isFinished());
-        QVERIFY(threadId1 == QThread::currentThreadId());
-        QVERIFY(threadId2 == QThread::currentThreadId());
+        QVERIFY(threadId1 == BOBUIhread::currentThreadId());
+        QVERIFY(threadId2 == BOBUIhread::currentThreadId());
         QVERIFY(threadId1 == threadId2);
     }
 
-    // Continuation inherits the launch policy of its parent (QtFuture::Launch::Async)
+    // Continuation inherits the launch policy of its parent (BobUIFuture::Launch::Async)
     {
-        Qt::HANDLE threadId1 = nullptr;
-        Qt::HANDLE threadId2 = nullptr;
+        BobUI::HANDLE threadId1 = nullptr;
+        BobUI::HANDLE threadId2 = nullptr;
         QFutureInterface<void> promise;
         QFuture<void> then = promise.future()
-                                     .then(QtFuture::Launch::Async,
-                                           [&]() { threadId1 = QThread::currentThreadId(); })
-                                     .then(QtFuture::Launch::Inherit,
-                                           [&]() { threadId2 = QThread::currentThreadId(); });
+                                     .then(BobUIFuture::Launch::Async,
+                                           [&]() { threadId1 = BOBUIhread::currentThreadId(); })
+                                     .then(BobUIFuture::Launch::Inherit,
+                                           [&]() { threadId2 = BOBUIhread::currentThreadId(); });
 
         promise.reportStarted();
         QVERIFY(!then.isStarted());
@@ -2258,14 +2258,14 @@ void tst_QFuture::then()
 
         QVERIFY(then.isStarted());
         QVERIFY(then.isFinished());
-        QVERIFY(threadId1 != QThread::currentThreadId());
-        QVERIFY(threadId2 != QThread::currentThreadId());
+        QVERIFY(threadId1 != BOBUIhread::currentThreadId());
+        QVERIFY(threadId2 != BOBUIhread::currentThreadId());
     }
 
     // Continuations use a custom thread pool
     {
         QFutureInterface<void> promise;
-        QThreadPool pool;
+        BOBUIhreadPool pool;
         QVERIFY(pool.waitForDone(0)); // pool is not busy yet
         QSemaphore semaphore;
         QFuture<void> then = promise.future().then(&pool, [&]() { semaphore.acquire(); });
@@ -2285,13 +2285,13 @@ void tst_QFuture::then()
 
     // Continuation inherits parent's thread pool
     {
-        Qt::HANDLE threadId1 = nullptr;
-        Qt::HANDLE threadId2 = nullptr;
+        BobUI::HANDLE threadId1 = nullptr;
+        BobUI::HANDLE threadId2 = nullptr;
         QFutureInterface<void> promise;
 
-        QThreadPool pool;
+        BOBUIhreadPool pool;
         QFuture<void> then1 = promise.future().then(&pool, [&]() {
-            threadId1 = QThread::currentThreadId();
+            threadId1 = BOBUIhread::currentThreadId();
         });
 
         promise.reportStarted();
@@ -2301,9 +2301,9 @@ void tst_QFuture::then()
         QVERIFY(pool.waitForDone()); // The pool is not busy after the first continuation is done
 
         QSemaphore semaphore;
-        QFuture<void> then2 = then1.then(QtFuture::Launch::Inherit, [&]() {
+        QFuture<void> then2 = then1.then(BobUIFuture::Launch::Inherit, [&]() {
             semaphore.acquire();
-            threadId2 = QThread::currentThreadId();
+            threadId2 = BOBUIhread::currentThreadId();
         });
 
         QVERIFY(!pool.waitForDone(0)); // The pool is busy running the 2nd continuation
@@ -2315,19 +2315,19 @@ void tst_QFuture::then()
         QVERIFY(then2.isFinished());
         QCOMPARE(then1.d.threadPool(), then2.d.threadPool());
         QCOMPARE(then2.d.threadPool(), &pool);
-        QVERIFY(threadId1 != QThread::currentThreadId());
-        QVERIFY(threadId2 != QThread::currentThreadId());
+        QVERIFY(threadId1 != BOBUIhread::currentThreadId());
+        QVERIFY(threadId2 != BOBUIhread::currentThreadId());
     }
 
-    // QTBUG-106083 & QTBUG-105182
+    // BOBUIBUG-106083 & BOBUIBUG-105182
     {
-        QThread thread;
+        BOBUIhread thread;
         thread.start();
 
         QObject context;
         context.moveToThread(&thread);
 
-        auto future = QtConcurrent::run([] {
+        auto future = BobUIConcurrent::run([] {
             return 42;
         }).then([] (int result) {
             return result + 1;
@@ -2411,13 +2411,13 @@ void tst_QFuture::thenOnCanceledFuture()
         QCOMPARE(thenResult, 0);
     }
 
-    // Same with QtFuture::Launch::Async
+    // Same with BobUIFuture::Launch::Async
 
     // Continuations on a canceled future
     {
         int thenResult = 0;
         QFuture<void> then = createCanceledFuture<void>()
-                                     .then(QtFuture::Launch::Async, [&]() { ++thenResult; })
+                                     .then(BobUIFuture::Launch::Async, [&]() { ++thenResult; })
                                      .then([&]() { ++thenResult; });
 
         QVERIFY(then.isCanceled());
@@ -2430,7 +2430,7 @@ void tst_QFuture::thenOnCanceledFuture()
 
         int thenResult = 0;
         QFuture<void> then =
-                promise.future().then(QtFuture::Launch::Async, [&]() { ++thenResult; }).then([&]() {
+                promise.future().then(BobUIFuture::Launch::Async, [&]() { ++thenResult; }).then([&]() {
                     ++thenResult;
                 });
 
@@ -2443,7 +2443,7 @@ void tst_QFuture::thenOnCanceledFuture()
     }
 }
 
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
 void tst_QFuture::thenOnExceptionFuture()
 {
     {
@@ -2523,13 +2523,13 @@ void tst_QFuture::thenOnExceptionFuture()
         QCOMPARE(thenResult, 0);
     }
 
-    // Same with QtFuture::Launch::Async
+    // Same with BobUIFuture::Launch::Async
     {
         QFutureInterface<int> promise;
 
         int thenResult = 0;
         QFuture<void> then =
-                promise.future().then(QtFuture::Launch::Async, [&](int res) { thenResult = res; });
+                promise.future().then(BobUIFuture::Launch::Async, [&](int res) { thenResult = res; });
 
         promise.reportStarted();
         QException e;
@@ -2556,7 +2556,7 @@ void tst_QFuture::thenOnExceptionFuture()
 
         int thenResult = 0;
         QFuture<void> then =
-                promise.future().then(QtFuture::Launch::Async, [&](int res) { thenResult = res; });
+                promise.future().then(BobUIFuture::Launch::Async, [&](int res) { thenResult = res; });
 
         bool caught = false;
         try {
@@ -2570,7 +2570,7 @@ void tst_QFuture::thenOnExceptionFuture()
 }
 
 template<class Exception, bool hasTestMsg = false>
-QFuture<void> createExceptionContinuation(QtFuture::Launch policy = QtFuture::Launch::Sync)
+QFuture<void> createExceptionContinuation(BobUIFuture::Launch policy = BobUIFuture::Launch::Sync)
 {
     QFutureInterface<void> promise;
 
@@ -2589,7 +2589,7 @@ QFuture<void> createExceptionContinuation(QtFuture::Launch policy = QtFuture::La
 
 void tst_QFuture::thenThrows()
 {
-#if !QT_CONFIG(thread)
+#if !BOBUI_CONFIG(thread)
     QSKIP("This test requires threads");
 #endif
 
@@ -2639,9 +2639,9 @@ void tst_QFuture::thenThrows()
         QVERIFY(caught);
     }
 
-    // Same with QtFuture::Launch::Async
+    // Same with BobUIFuture::Launch::Async
     {
-        auto future = createExceptionContinuation<QException>(QtFuture::Launch::Async);
+        auto future = createExceptionContinuation<QException>(BobUIFuture::Launch::Async);
 
         bool caught = false;
         try {
@@ -3015,7 +3015,7 @@ void tst_QFuture::onFailedForMoveOnlyTypes()
     QVERIFY(runOnFailedForMoveOnly([] { return std::make_unique<int>(-1); }));
 }
 
-#endif // QT_NO_EXCEPTIONS
+#endif // BOBUI_NO_EXCEPTIONS
 
 void tst_QFuture::onCanceled()
 {
@@ -3061,7 +3061,7 @@ void tst_QFuture::onCanceled()
         QCOMPARE(*future.takeResult(), 42);
     }
 
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
     // onCanceled propagates exceptions
     {
         QFutureInterface<int> promise;
@@ -3092,12 +3092,12 @@ void tst_QFuture::onCanceled()
         QCOMPARE(future.result(), -2);
     }
 
-#endif // QT_NO_EXCEPTIONS
+#endif // BOBUI_NO_EXCEPTIONS
 }
 
 void tst_QFuture::cancelContinuations()
 {
-#if !QT_CONFIG(thread)
+#if !BOBUI_CONFIG(thread)
     QSKIP("This test requires threads");
 #endif
 
@@ -3130,7 +3130,7 @@ void tst_QFuture::cancelContinuations()
 
     // The chain is cancelled before the execution of continuations
     {
-        auto f = QtFuture::makeReadyValueFuture(42);
+        auto f = BobUIFuture::makeReadyValueFuture(42);
         f.cancel();
 
         int checkpoint = 0;
@@ -3183,7 +3183,7 @@ void tst_QFuture::cancelContinuations()
         QCOMPARE(checkpoint, 1);
     }
 
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
     // The chain is cancelled in the middle of execution of continuations,
     // while there's an exception in the chain, which is handled inside
     // the continuations.
@@ -3221,7 +3221,7 @@ void tst_QFuture::cancelContinuations()
         QCOMPARE(future.result(), -1);
         QCOMPARE(checkpoint, 3);
     }
-#endif // QT_NO_EXCEPTIONS
+#endif // BOBUI_NO_EXCEPTIONS
 
     // Check notifications from QFutureWatcher
     {
@@ -3274,10 +3274,10 @@ void tst_QFuture::cancelContinuations()
         QVERIFY(watcher2.isCanceled());
     }
 
-    // Cancel continuations with context (QTBUG-108790)
+    // Cancel continuations with context (BOBUIBUG-108790)
     {
         // This test should pass with ASan
-        auto future = QtConcurrent::run([] {});
+        auto future = BobUIConcurrent::run([] {});
         future.then(this, [] {});
         future.waitForFinished();
         future.cancel();
@@ -3286,21 +3286,21 @@ void tst_QFuture::cancelContinuations()
 
 void tst_QFuture::continuationsWithContext_data()
 {
-    QTest::addColumn<bool>("inOtherThread");
-    QTest::addRow("in-other-thread") << true;
-    QTest::addRow("in-main-thread-qtbug119406") << false;
+    BOBUIest::addColumn<bool>("inOtherThread");
+    BOBUIest::addRow("in-other-thread") << true;
+    BOBUIest::addRow("in-main-thread-bobuibug119406") << false;
 }
 
 void tst_QFuture::continuationsWithContext()
 {
-#if !QT_CONFIG(thread)
+#if !BOBUI_CONFIG(thread)
     QSKIP("This test requires threads");
 #endif
 
     QFETCH(bool, inOtherThread);
 
-    auto tstThread = QThread::currentThread();
-    QThread *thread = inOtherThread ? new QThread
+    auto tstThread = BOBUIhread::currentThread();
+    BOBUIhread *thread = inOtherThread ? new BOBUIhread
                                     : tstThread;
     auto context = new QObject();
 
@@ -3323,18 +3323,18 @@ void tst_QFuture::continuationsWithContext()
         QPromise<int> promise;
         auto future = promise.future()
                               .then([&](int val) {
-                                  if (QThread::currentThread() != tstThread)
+                                  if (BOBUIhread::currentThread() != tstThread)
                                       return 0;
                                   return val + 1;
                               })
                               .then(context,
                                     [&](int val) {
-                                        if (QThread::currentThread() != thread)
+                                        if (BOBUIhread::currentThread() != thread)
                                             return 0;
                                         return val + 1;
                                     })
                               .then([&](int val) {
-                                  if (QThread::currentThread() != thread)
+                                  if (BOBUIhread::currentThread() != thread)
                                       return 0;
                                   return val + 1;
                               });
@@ -3350,12 +3350,12 @@ void tst_QFuture::continuationsWithContext()
         auto future = promise.future()
                               .onCanceled(context,
                                           [&] {
-                                              if (QThread::currentThread() != thread)
+                                              if (BOBUIhread::currentThread() != thread)
                                                   return 0;
                                               return 1;
                                           })
                               .then([&](int val) {
-                                  if (QThread::currentThread() != thread)
+                                  if (BOBUIhread::currentThread() != thread)
                                       return 0;
                                   return val + 1;
                               });
@@ -3377,12 +3377,12 @@ void tst_QFuture::continuationsWithContext()
         QPromise<int> promise;
         auto future = promise.future()
                               .then(shortLivedContext, [&](int val) {
-                                  if (QThread::currentThread() != thread)
+                                  if (BOBUIhread::currentThread() != thread)
                                       return 0;
                                   return val + 1000;
                               })
                               .onCanceled([&, ptr=QPointer(shortLivedContext)] {
-                                  if (QThread::currentThread() != thread)
+                                  if (BOBUIhread::currentThread() != thread)
                                       return 0;
                                   if (ptr)
                                       return 1;
@@ -3392,31 +3392,31 @@ void tst_QFuture::continuationsWithContext()
 
         QMetaObject::invokeMethod(shortLivedContext, [&]() {
             delete shortLivedContext;
-        }, inOtherThread ? Qt::BlockingQueuedConnection
-                         : Qt::DirectConnection);
+        }, inOtherThread ? BobUI::BlockingQueuedConnection
+                         : BobUI::DirectConnection);
 
         promise.finish();
         QCOMPARE(future.result(), 2);
     }
 
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
     // .onFaled()
     {
         QPromise<void> promise;
         auto future = promise.future()
                               .then([&] {
-                                  if (QThread::currentThread() != tstThread)
+                                  if (BOBUIhread::currentThread() != tstThread)
                                       return 0;
                                   throw std::runtime_error("error");
                               })
                               .onFailed(context,
                                         [&] {
-                                            if (QThread::currentThread() != thread)
+                                            if (BOBUIhread::currentThread() != thread)
                                                 return 0;
                                             return 1;
                                         })
                               .then([&](int val) {
-                                  if (QThread::currentThread() != thread)
+                                  if (BOBUIhread::currentThread() != thread)
                                       return 0;
                                   return val + 1;
                               });
@@ -3424,28 +3424,28 @@ void tst_QFuture::continuationsWithContext()
         promise.finish();
         QCOMPARE(future.result(), 2);
     }
-#endif // QT_NO_EXCEPTIONS
+#endif // BOBUI_NO_EXCEPTIONS
 }
 
 void tst_QFuture::continuationsWithMoveOnlyLambda()
 {
-#if !QT_CONFIG(thread)
+#if !BOBUI_CONFIG(thread)
     QSKIP("This test requires threads");
 #endif
 
     // .then()
     {
         std::unique_ptr<int> uniquePtr(new int(42));
-        auto future = QtFuture::makeReadyVoidFuture()
+        auto future = BobUIFuture::makeReadyVoidFuture()
                 .then([p = std::move(uniquePtr)] { return *p; });
         QCOMPARE(future.result(), 42);
     }
     // .then() with thread pool
     {
-        QThreadPool pool;
+        BOBUIhreadPool pool;
 
         std::unique_ptr<int> uniquePtr(new int(42));
-        auto future = QtFuture::makeReadyVoidFuture()
+        auto future = BobUIFuture::makeReadyVoidFuture()
                 .then(&pool, [p = std::move(uniquePtr)] { return *p; });
         QCOMPARE(future.result(), 42);
     }
@@ -3454,7 +3454,7 @@ void tst_QFuture::continuationsWithMoveOnlyLambda()
         QObject object;
 
         std::unique_ptr<int> uniquePtr(new int(42));
-        auto future = QtFuture::makeReadyVoidFuture()
+        auto future = BobUIFuture::makeReadyVoidFuture()
                 .then(&object, [p = std::move(uniquePtr)] { return *p; });
         QCOMPARE(future.result(), 42);
     }
@@ -3477,11 +3477,11 @@ void tst_QFuture::continuationsWithMoveOnlyLambda()
         QCOMPARE(future.result(), 42);
     }
 
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
     // .onFailed()
     {
         std::unique_ptr<int> uniquePtr(new int(42));
-        auto future = QtFuture::makeExceptionalFuture<int>(QException())
+        auto future = BobUIFuture::makeExceptionalFuture<int>(QException())
                               .onFailed([p = std::move(uniquePtr)] { return *p; });
         QCOMPARE(future.result(), 42);
     }
@@ -3490,11 +3490,11 @@ void tst_QFuture::continuationsWithMoveOnlyLambda()
         QObject object;
 
         std::unique_ptr<int> uniquePtr(new int(42));
-        auto future = QtFuture::makeExceptionalFuture<int>(QException())
+        auto future = BobUIFuture::makeExceptionalFuture<int>(QException())
                               .onFailed(&object, [p = std::move(uniquePtr)] { return *p; });
         QCOMPARE(future.result(), 42);
     }
-#endif // QT_NO_EXCEPTIONS
+#endif // BOBUI_NO_EXCEPTIONS
 }
 
 void tst_QFuture::testSingleResult(const UniquePtr &p)
@@ -3538,12 +3538,12 @@ void tst_QFuture::testTakeResults(QFuture<T> future, size_type resultCount)
 
     for (const auto &r : vec) {
         testSingleResult(r);
-        if (QTest::currentTestFailed())
+        if (BOBUIest::currentTestFailed())
             return;
     }
 
     testFutureTaken(future);
-    if (QTest::currentTestFailed())
+    if (BOBUIest::currentTestFailed())
         return;
     testFutureTaken(copy);
 }
@@ -3572,7 +3572,7 @@ void tst_QFuture::takeResults()
     copyIface.reportFinished();
 
     testTakeResults(moveIface.future(), size_type(expectedCount));
-    if (QTest::currentTestFailed())
+    if (BOBUIest::currentTestFailed())
         return;
 
     testTakeResults(copyIface.future(), size_type(expectedCount));
@@ -3593,7 +3593,7 @@ void tst_QFuture::takeResult()
 
     auto result = future.takeResult();
     testFutureTaken(future);
-    if (QTest::currentTestFailed())
+    if (BOBUIest::currentTestFailed())
         return;
     testSingleResult(result);
 }
@@ -3601,22 +3601,22 @@ void tst_QFuture::takeResult()
 void tst_QFuture::runAndTake()
 {
     // Test if a 'moving' future can be used by
-    // QtConcurrent::run.
+    // BobUIConcurrent::run.
 
     auto rabbit = [](){
         // Let's wait a bit to give the test below some time
         // to sync up with us with its watcher.
-        QThread::currentThread()->sleep(std::chrono::milliseconds{100});
+        BOBUIhread::currentThread()->sleep(std::chrono::milliseconds{100});
         return UniquePtr(new int(10));
     };
 
-    QTestEventLoop loop;
+    BOBUIestEventLoop loop;
     QFutureWatcher<UniquePtr> watcha;
     connect(&watcha, &QFutureWatcher<UniquePtr>::finished, [&loop](){
         loop.exitLoop();
     });
 
-    auto gotcha = QtConcurrent::run(rabbit);
+    auto gotcha = BobUIConcurrent::run(rabbit);
     watcha.setFuture(gotcha);
 
     loop.enterLoop(500ms);
@@ -3632,14 +3632,14 @@ void tst_QFuture::runAndTake()
 
 void tst_QFuture::takeResultWaitForStartedFinished()
 {
-#if !QT_CONFIG(cxx11_future)
+#if !BOBUI_CONFIG(cxx11_future)
     QSKIP("The test requires feature cxx11_future");
 #else
     QPromise<int> promise{QFutureInterface<int>{QFutureInterfaceBase::State::Pending}};
     auto future = promise.future();
-    const std::unique_ptr<QThread> thread(QThread::create(
+    const std::unique_ptr<BOBUIhread> thread(BOBUIhread::create(
         [](QPromise<int> promise) {
-            QThread::msleep(100);
+            BOBUIhread::msleep(100);
             promise.start();
             promise.addResult(11);
             promise.finish();
@@ -3652,10 +3652,10 @@ void tst_QFuture::takeResultWaitForStartedFinished()
 
 void tst_QFuture::resultsReadyAt_data()
 {
-    QTest::addColumn<bool>("testMove");
+    BOBUIest::addColumn<bool>("testMove");
 
-    QTest::addRow("reportResult") << false;
-    QTest::addRow("reportAndMoveResult") << true;
+    BOBUIest::addRow("reportResult") << false;
+    BOBUIest::addRow("reportAndMoveResult") << true;
 }
 
 void tst_QFuture::resultsReadyAt()
@@ -3666,8 +3666,8 @@ void tst_QFuture::resultsReadyAt()
     QFutureWatcher<int> watcher;
     watcher.setFuture(iface.future());
 
-    QTestEventLoop eventProcessor;
-    connect(&watcher, &QFutureWatcher<int>::finished, &eventProcessor, &QTestEventLoop::exitLoop);
+    BOBUIestEventLoop eventProcessor;
+    connect(&watcher, &QFutureWatcher<int>::finished, &eventProcessor, &BOBUIestEventLoop::exitLoop);
 
     const int nExpectedResults = 4;
     int reported = 0;
@@ -3693,7 +3693,7 @@ void tst_QFuture::resultsReadyAt()
     };
 
     const QSignalSpy readyCounter(&watcher, &QFutureWatcher<int>::resultsReadyAt);
-    QTimer::singleShot(0, [&iface, &report]{
+    BOBUIimer::singleShot(0, [&iface, &report]{
         // With filter mode == true, the result may go into the pending results.
         // Reporting it as ready will allow an application to try and access the
         // result, crashing on invalid (store.end()) iterator dereferenced.
@@ -3712,7 +3712,7 @@ void tst_QFuture::resultsReadyAt()
     // in QFutureInterface:
     eventProcessor.enterLoop(DefaultWaitTime);
     QVERIFY(!eventProcessor.timeout());
-    if (QTest::currentTestFailed()) // Failed in our lambda observing 'ready at'
+    if (BOBUIest::currentTestFailed()) // Failed in our lambda observing 'ready at'
         return;
 
     QCOMPARE(reported, nExpectedResults);
@@ -3772,7 +3772,7 @@ void tst_QFuture::signalConnect()
     {
         SenderObject sender;
         auto future =
-                QtFuture::connect(&sender, &SenderObject::noArgSignal).then([] { return true; });
+                BobUIFuture::connect(&sender, &SenderObject::noArgSignal).then([] { return true; });
         sender.emitNoArg();
         QCOMPARE(future.result(), true);
     }
@@ -3780,7 +3780,7 @@ void tst_QFuture::signalConnect()
     // One arg
     {
         SenderObject sender;
-        auto future = QtFuture::connect(&sender, &SenderObject::intArgSignal).then([](int value) {
+        auto future = BobUIFuture::connect(&sender, &SenderObject::intArgSignal).then([](int value) {
             return value;
         });
         sender.emitIntArg(42);
@@ -3791,7 +3791,7 @@ void tst_QFuture::signalConnect()
     {
         SenderObject sender;
         auto future =
-                QtFuture::connect(&sender, &SenderObject::constRefArg).then([](QString value) {
+                BobUIFuture::connect(&sender, &SenderObject::constRefArg).then([](QString value) {
                     return value;
                 });
         sender.emitConstRefArg(QString("42"));
@@ -3802,7 +3802,7 @@ void tst_QFuture::signalConnect()
     {
         SenderObject sender;
         auto future =
-                QtFuture::connect(&sender, &SenderObject::multipleArgs).then([](TupleType values) {
+                BobUIFuture::connect(&sender, &SenderObject::multipleArgs).then([](TupleType values) {
                     return values;
                 });
         sender.emitMultipleArgs(intValue, doubleValue, stringValue);
@@ -3813,7 +3813,7 @@ void tst_QFuture::signalConnect()
     // Single std::tuple arg
     {
         SenderObject sender;
-        QFuture<TupleType> future = QtFuture::connect(&sender, &SenderObject::tupleArgSignal);
+        QFuture<TupleType> future = BobUIFuture::connect(&sender, &SenderObject::tupleArgSignal);
         sender.emitTupleArgSignal(tuple);
         auto result = future.result();
         QCOMPARE(result, tuple);
@@ -3823,7 +3823,7 @@ void tst_QFuture::signalConnect()
     {
         SenderObject sender;
         QFuture<std::tuple<int, TupleType>> future =
-                QtFuture::connect(&sender, &SenderObject::multiArgsWithTupleSignal1);
+                BobUIFuture::connect(&sender, &SenderObject::multiArgsWithTupleSignal1);
         sender.emitMultiArgsWithTupleSignal1(142, tuple);
         const auto [v, t] = future.result();
         QCOMPARE(v, 142);
@@ -3834,7 +3834,7 @@ void tst_QFuture::signalConnect()
     {
         SenderObject sender;
         QFuture<std::tuple<TupleType, int>> future =
-                QtFuture::connect(&sender, &SenderObject::multiArgsWithTupleSignal2);
+                BobUIFuture::connect(&sender, &SenderObject::multiArgsWithTupleSignal2);
         sender.emitMultiArgsWithTupleSignal2(tuple, 142);
         const auto [t, v] = future.result();
         QCOMPARE(v, 142);
@@ -3845,7 +3845,7 @@ void tst_QFuture::signalConnect()
     {
         SenderObject sender;
         QFuture<std::tuple<int, PairType>> future =
-                QtFuture::connect(&sender, &SenderObject::multiArgsWithPairSignal1);
+                BobUIFuture::connect(&sender, &SenderObject::multiArgsWithPairSignal1);
         sender.emitMultiArgsWithPairSignal1(142, pair);
         const auto [v, p] = future.result();
         QCOMPARE(v, 142);
@@ -3856,7 +3856,7 @@ void tst_QFuture::signalConnect()
     {
         SenderObject sender;
         QFuture<std::tuple<PairType, int>> future =
-                QtFuture::connect(&sender, &SenderObject::multiArgsWithPairSignal2);
+                BobUIFuture::connect(&sender, &SenderObject::multiArgsWithPairSignal2);
         sender.emitMultiArgsWithPairSignal2(pair, 142);
         const auto [p, v] = future.result();
         QCOMPARE(v, 142);
@@ -3866,7 +3866,7 @@ void tst_QFuture::signalConnect()
     // No arg private signal
     {
         SenderObject sender;
-        auto future = QtFuture::connect(&sender, &SenderObject::noArgPrivateSignal).then([] {
+        auto future = BobUIFuture::connect(&sender, &SenderObject::noArgPrivateSignal).then([] {
             return true;
         });
         sender.emitNoArgPrivateSignal();
@@ -3877,7 +3877,7 @@ void tst_QFuture::signalConnect()
     {
         SenderObject sender;
         auto future =
-                QtFuture::connect(&sender, &SenderObject::intArgPrivateSignal).then([](int value) {
+                BobUIFuture::connect(&sender, &SenderObject::intArgPrivateSignal).then([](int value) {
                     return value;
                 });
         sender.emitIntArgPrivateSignal(42);
@@ -3887,7 +3887,7 @@ void tst_QFuture::signalConnect()
     // Multi-args private signal
     {
         SenderObject sender;
-        auto future = QtFuture::connect(&sender, &SenderObject::multiArgsPrivateSignal)
+        auto future = BobUIFuture::connect(&sender, &SenderObject::multiArgsPrivateSignal)
                               .then([](TupleType values) { return values; });
         sender.emitMultiArgsPrivateSignal(intValue, doubleValue, stringValue);
         auto result = future.result();
@@ -3898,7 +3898,7 @@ void tst_QFuture::signalConnect()
     {
         SenderObject sender;
         QFuture<TupleType> future =
-                QtFuture::connect(&sender, &SenderObject::tupleArgPrivateSignal);
+                BobUIFuture::connect(&sender, &SenderObject::tupleArgPrivateSignal);
         sender.emitTupleArgPrivateSignal(tuple);
         auto result = future.result();
         QCOMPARE(result, tuple);
@@ -3908,7 +3908,7 @@ void tst_QFuture::signalConnect()
     {
         SenderObject sender;
         QFuture<std::tuple<int, TupleType>> future =
-                QtFuture::connect(&sender, &SenderObject::multiArgsWithTuplePrivateSignal1);
+                BobUIFuture::connect(&sender, &SenderObject::multiArgsWithTuplePrivateSignal1);
         sender.emitMultiArgsWithTuplePrivateSignal1(142, tuple);
         const auto [v, t] = future.result();
         QCOMPARE(v, 142);
@@ -3919,7 +3919,7 @@ void tst_QFuture::signalConnect()
     {
         SenderObject sender;
         QFuture<std::tuple<TupleType, int>> future =
-                QtFuture::connect(&sender, &SenderObject::multiArgsWithTuplePrivateSignal2);
+                BobUIFuture::connect(&sender, &SenderObject::multiArgsWithTuplePrivateSignal2);
         sender.emitMultiArgsWithTuplePrivateSignal2(tuple, 142);
         const auto [t, v] = future.result();
         QCOMPARE(v, 142);
@@ -3930,7 +3930,7 @@ void tst_QFuture::signalConnect()
     {
         SenderObject sender;
         QFuture<std::tuple<int, PairType>> future =
-                QtFuture::connect(&sender, &SenderObject::multiArgsWithPairPrivateSignal1);
+                BobUIFuture::connect(&sender, &SenderObject::multiArgsWithPairPrivateSignal1);
         sender.emitMultiArgsWithPairPrivateSignal1(142, pair);
         const auto [v, p] = future.result();
         QCOMPARE(v, 142);
@@ -3941,7 +3941,7 @@ void tst_QFuture::signalConnect()
     {
         SenderObject sender;
         QFuture<std::tuple<PairType, int>> future =
-                QtFuture::connect(&sender, &SenderObject::multiArgsWithPairPrivateSignal2);
+                BobUIFuture::connect(&sender, &SenderObject::multiArgsWithPairPrivateSignal2);
         sender.emitMultiArgsWithPairPrivateSignal2(pair, 142);
         const auto [p, v] = future.result();
         QCOMPARE(v, 142);
@@ -3952,7 +3952,7 @@ void tst_QFuture::signalConnect()
     {
         SenderObject *sender = new SenderObject();
 
-        auto future = QtFuture::connect(sender, &SenderObject::intArgSignal);
+        auto future = BobUIFuture::connect(sender, &SenderObject::intArgSignal);
 
         QSignalSpy spy(sender, &QObject::destroyed);
         sender->deleteLater();
@@ -3967,7 +3967,7 @@ void tst_QFuture::signalConnect()
     {
         SenderObject *sender = new SenderObject();
 
-        auto future = QtFuture::connect(sender, &SenderObject::intArgSignal);
+        auto future = BobUIFuture::connect(sender, &SenderObject::intArgSignal);
         future.then([sender](int) {
             // Scenario: Sender no longer needed, so it's deleted
             delete sender;
@@ -3985,7 +3985,7 @@ void tst_QFuture::signalConnect()
     // Connect to nullptr
     {
         SenderObject *sender = nullptr;
-        auto future = QtFuture::connect(sender, &SenderObject::intArgSignal);
+        auto future = BobUIFuture::connect(sender, &SenderObject::intArgSignal);
         QVERIFY(future.isFinished());
         QVERIFY(future.isCanceled());
         QVERIFY(!future.isValid());
@@ -3996,13 +3996,13 @@ void tst_QFuture::signalConnect()
         SenderObject sender;
 
 #if defined(Q_CC_MSVC_ONLY) && (Q_CC_MSVC < 1940 || !defined(_DEBUG))
-#define EXPECT_FUTURE_CONNECT_FAIL() QEXPECT_FAIL("", "QTBUG-101761, test fails on Windows/MSVC", Continue)
+#define EXPECT_FUTURE_CONNECT_FAIL() QEXPECT_FAIL("", "BOBUIBUG-101761, test fails on Windows/MSVC", Continue)
 #else
-        QTest::ignoreMessage(QtWarningMsg, "QObject::connect(SenderObject, SenderObject): signal not found");
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QObject::connect(SenderObject, SenderObject): signal not found");
 #define EXPECT_FUTURE_CONNECT_FAIL()
 #endif
 
-        auto future = QtFuture::connect(&sender, &SenderObject::emitNoArg);
+        auto future = BobUIFuture::connect(&sender, &SenderObject::emitNoArg);
         EXPECT_FUTURE_CONNECT_FAIL();
         QVERIFY(future.isFinished());
         EXPECT_FUTURE_CONNECT_FAIL();
@@ -4015,14 +4015,14 @@ void tst_QFuture::signalConnect()
 
 void tst_QFuture::waitForFinished()
 {
-#if !QT_CONFIG(thread)
+#if !BOBUI_CONFIG(thread)
     QSKIP("This test requires threads");
 #endif
 
     QFutureInterface<void> fi;
     auto future = fi.future();
 
-    QScopedPointer<QThread> waitingThread (QThread::create([&] {
+    QScopedPointer<BOBUIhread> waitingThread (BOBUIhread::create([&] {
         future.waitForFinished();
     }));
 
@@ -4043,13 +4043,13 @@ void tst_QFuture::waitForFinished()
 
 void tst_QFuture::rejectResultOverwrite_data()
 {
-    QTest::addColumn<bool>("filterMode");
-    QTest::addColumn<QList<int>>("initResults");
+    BOBUIest::addColumn<bool>("filterMode");
+    BOBUIest::addColumn<QList<int>>("initResults");
 
-    QTest::addRow("filter-mode-on-1-result") << true << QList<int>({ 456 });
-    QTest::addRow("filter-mode-on-N-results") << true << QList<int>({ 456, 789 });
-    QTest::addRow("filter-mode-off-1-result") << false << QList<int>({ 456 });
-    QTest::addRow("filter-mode-off-N-results") << false << QList<int>({ 456, 789 });
+    BOBUIest::addRow("filter-mode-on-1-result") << true << QList<int>({ 456 });
+    BOBUIest::addRow("filter-mode-on-N-results") << true << QList<int>({ 456, 789 });
+    BOBUIest::addRow("filter-mode-off-1-result") << false << QList<int>({ 456 });
+    BOBUIest::addRow("filter-mode-off-N-results") << false << QList<int>({ 456, 789 });
 }
 
 void tst_QFuture::rejectResultOverwrite()
@@ -4063,9 +4063,9 @@ void tst_QFuture::rejectResultOverwrite()
     QFutureWatcher<int> watcher;
     watcher.setFuture(f);
 
-    QTestEventLoop eventProcessor;
+    BOBUIestEventLoop eventProcessor;
     // control the loop by suspend
-    connect(&watcher, &QFutureWatcher<int>::suspending, &eventProcessor, &QTestEventLoop::exitLoop);
+    connect(&watcher, &QFutureWatcher<int>::suspending, &eventProcessor, &BOBUIestEventLoop::exitLoop);
     // internal machinery always emits resultsReadyAt
     QSignalSpy resultCounter(&watcher, &QFutureWatcher<int>::resultsReadyAt);
 
@@ -4078,7 +4078,7 @@ void tst_QFuture::rejectResultOverwrite()
     QCOMPARE(f.resultAt(0), initResults[0]);
     QCOMPARE(f.results(), initResults);
 
-    QTimer::singleShot(50, [&f]() {
+    BOBUIimer::singleShot(50, [&f]() {
         f.suspend(); // should exit the loop
     });
     // Run event loop, QCoreApplication::postEvent is in use
@@ -4119,7 +4119,7 @@ void tst_QFuture::rejectResultOverwrite()
         QCOMPARE(f.resultAt(1), initResults[1]);
     }
 
-    QTimer::singleShot(50, [&f]() {
+    BOBUIimer::singleShot(50, [&f]() {
         f.suspend(); // should exit the loop
     });
     eventProcessor.enterLoop(DefaultWaitTime);
@@ -4140,9 +4140,9 @@ void tst_QFuture::rejectPendingResultOverwrite()
     QFutureWatcher<int> watcher;
     watcher.setFuture(f);
 
-    QTestEventLoop eventProcessor;
+    BOBUIestEventLoop eventProcessor;
     // control the loop by suspend
-    connect(&watcher, &QFutureWatcher<int>::suspending, &eventProcessor, &QTestEventLoop::exitLoop);
+    connect(&watcher, &QFutureWatcher<int>::suspending, &eventProcessor, &BOBUIestEventLoop::exitLoop);
     // internal machinery always emits resultsReadyAt
     QSignalSpy resultCounter(&watcher, &QFutureWatcher<int>::resultsReadyAt);
 
@@ -4156,7 +4156,7 @@ void tst_QFuture::rejectPendingResultOverwrite()
         QCOMPARE(f.resultAt(1), initResults[0]);
         QCOMPARE(f.results(), initResults);
 
-        QTimer::singleShot(50, [&f]() {
+        BOBUIimer::singleShot(50, [&f]() {
             f.suspend(); // should exit the loop
         });
         // Run event loop, QCoreApplication::postEvent is in use
@@ -4202,7 +4202,7 @@ void tst_QFuture::rejectPendingResultOverwrite()
     }
 
     if (!filterMode) {
-        QTimer::singleShot(50, [&f]() {
+        BOBUIimer::singleShot(50, [&f]() {
             f.suspend(); // should exit the loop
         });
         eventProcessor.enterLoop(DefaultWaitTime);
@@ -4220,32 +4220,32 @@ void tst_QFuture::rejectPendingResultOverwrite()
 
 void tst_QFuture::createReadyFutures()
 {
-#if QT_DEPRECATED_SINCE(6, 10)
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 10)
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
     // using const T &
     {
         const int val = 42;
-        QFuture<int> f = QtFuture::makeReadyFuture(val);
+        QFuture<int> f = BobUIFuture::makeReadyFuture(val);
         QCOMPARE(f.result(), val);
     }
 
     // using T
     {
         int val = 42;
-        QFuture<int> f = QtFuture::makeReadyFuture(val);
+        QFuture<int> f = BobUIFuture::makeReadyFuture(val);
         QCOMPARE(f.result(), val);
     }
 
     // using T &&
     {
-        auto f = QtFuture::makeReadyFuture(std::make_unique<int>(42));
+        auto f = BobUIFuture::makeReadyFuture(std::make_unique<int>(42));
         QCOMPARE(*f.takeResult(), 42);
     }
 
     // using void
     {
-        auto f = QtFuture::makeReadyFuture();
+        auto f = BobUIFuture::makeReadyFuture();
         QVERIFY(f.isStarted());
         QVERIFY(!f.isRunning());
         QVERIFY(f.isFinished());
@@ -4254,40 +4254,40 @@ QT_WARNING_DISABLE_DEPRECATED
     // using const QList<T> &
     {
         const QList<int> values { 1, 2, 3 };
-        auto f = QtFuture::makeReadyFuture(values);
+        auto f = BobUIFuture::makeReadyFuture(values);
         QCOMPARE(f.resultCount(), 3);
         QCOMPARE(f.results(), values);
     }
-QT_WARNING_POP
-#endif // QT_DEPRECATED_SINCE(6, 10)
+BOBUI_WARNING_POP
+#endif // BOBUI_DEPRECATED_SINCE(6, 10)
 
     // test makeReadyValueFuture<T>()
     {
         const int val = 42;
-        auto f = QtFuture::makeReadyValueFuture(val);
+        auto f = BobUIFuture::makeReadyValueFuture(val);
         QCOMPARE_EQ(f.result(), val);
 
         int otherVal = 42;
-        f = QtFuture::makeReadyValueFuture(otherVal);
+        f = BobUIFuture::makeReadyValueFuture(otherVal);
         QCOMPARE_EQ(f.result(), otherVal);
     }
     {
-        auto f = QtFuture::makeReadyValueFuture(std::make_unique<int>(42));
+        auto f = BobUIFuture::makeReadyValueFuture(std::make_unique<int>(42));
         QCOMPARE(*f.takeResult(), 42);
     }
     // test makeReadyVoidFuture()
     {
-        auto f = QtFuture::makeReadyVoidFuture();
+        auto f = BobUIFuture::makeReadyVoidFuture();
         QVERIFY(f.isStarted());
         QVERIFY(!f.isRunning());
         QVERIFY(f.isFinished());
     }
 
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
     // using QException
     {
         QException e;
-        auto f = QtFuture::makeExceptionalFuture<int>(e);
+        auto f = BobUIFuture::makeExceptionalFuture<int>(e);
         bool caught = false;
         try {
             f.result();
@@ -4300,7 +4300,7 @@ QT_WARNING_POP
     // using std::exception_ptr and QFuture<void>
     {
         auto exception = std::make_exception_ptr(TestException());
-        auto f = QtFuture::makeExceptionalFuture(exception);
+        auto f = BobUIFuture::makeExceptionalFuture(exception);
         bool caught = false;
         try {
             f.waitForFinished();
@@ -4316,35 +4316,35 @@ QT_WARNING_POP
         const QList<int> expectedResult{1, 2, 3};
 
         const QList<int> list{1, 2, 3};
-        auto f = QtFuture::makeReadyRangeFuture(list);
+        auto f = BobUIFuture::makeReadyRangeFuture(list);
         QCOMPARE_EQ(f.resultCount(), 3);
         QCOMPARE_EQ(f.results(), expectedResult);
 
         QVarLengthArray<int> varArray{1, 2, 3};
-        f = QtFuture::makeReadyRangeFuture(varArray);
+        f = BobUIFuture::makeReadyRangeFuture(varArray);
         QCOMPARE_EQ(f.resultCount(), 3);
         QCOMPARE_EQ(f.results(), expectedResult);
 
         std::vector<int> vec{1, 2, 3};
-        f = QtFuture::makeReadyRangeFuture(std::move(vec));
+        f = BobUIFuture::makeReadyRangeFuture(std::move(vec));
         QCOMPARE_EQ(f.resultCount(), 3);
         QCOMPARE_EQ(f.results(), expectedResult);
 
-        f = QtFuture::makeReadyRangeFuture(std::array<int, 3>{1, 2, 3});
+        f = BobUIFuture::makeReadyRangeFuture(std::array<int, 3>{1, 2, 3});
         QCOMPARE_EQ(f.resultCount(), 3);
         QCOMPARE_EQ(f.results(), expectedResult);
 
-        f = QtFuture::makeReadyRangeFuture(std::list<int>{1, 2, 3});
+        f = BobUIFuture::makeReadyRangeFuture(std::list<int>{1, 2, 3});
         QCOMPARE_EQ(f.resultCount(), 3);
         QCOMPARE_EQ(f.results(), expectedResult);
 
         std::forward_list<int> fwdlist{1, 2, 3};
-        f = QtFuture::makeReadyRangeFuture(fwdlist);
+        f = BobUIFuture::makeReadyRangeFuture(fwdlist);
         QCOMPARE_EQ(f.resultCount(), 3);
         QCOMPARE_EQ(f.results(), expectedResult);
 
         const QSet<int> qset{1, 2, 3};
-        f = QtFuture::makeReadyRangeFuture(qset);
+        f = BobUIFuture::makeReadyRangeFuture(qset);
         QCOMPARE_EQ(f.resultCount(), 3);
         auto result = f.results();
         std::sort(result.begin(), result.end());
@@ -4355,14 +4355,14 @@ QT_WARNING_POP
             {"two", 2},
             {"three", 3}
         };
-        f = QtFuture::makeReadyRangeFuture(qmap);
+        f = BobUIFuture::makeReadyRangeFuture(qmap);
         QCOMPARE_EQ(f.resultCount(), 3);
         result = f.results();
         std::sort(result.begin(), result.end());
         QCOMPARE_EQ(result, expectedResult);
 
         std::set<int> stdset{1, 2, 3};
-        f = QtFuture::makeReadyRangeFuture(stdset);
+        f = BobUIFuture::makeReadyRangeFuture(stdset);
         QCOMPARE_EQ(f.resultCount(), 3);
         result = f.results();
         std::sort(result.begin(), result.end());
@@ -4370,11 +4370,11 @@ QT_WARNING_POP
 
         // testing ValueType[N] overload
         const int c_array[] = {1, 2, 3};
-        f = QtFuture::makeReadyRangeFuture(c_array);
+        f = BobUIFuture::makeReadyRangeFuture(c_array);
         QCOMPARE_EQ(f.resultCount(), 3);
         QCOMPARE_EQ(f.results(), expectedResult);
 
-        f = QtFuture::makeReadyRangeFuture({1, 2, 3});
+        f = BobUIFuture::makeReadyRangeFuture({1, 2, 3});
         QCOMPARE_EQ(f.resultCount(), 3);
         QCOMPARE_EQ(f.results(), expectedResult);
     }
@@ -4387,17 +4387,17 @@ QT_WARNING_POP
         const QList<QObject*> expectedResult{&obj1, &obj2, &obj3};
 
         const QList<QObject*> list{&obj1, &obj2, &obj3};
-        auto f = QtFuture::makeReadyRangeFuture(list);
+        auto f = BobUIFuture::makeReadyRangeFuture(list);
         QCOMPARE_EQ(f.resultCount(), 3);
         QCOMPARE_EQ(f.results(), expectedResult);
 
         std::list<QObject*> stdlist{&obj1, &obj2, &obj3};
-        f = QtFuture::makeReadyRangeFuture(std::move(stdlist));
+        f = BobUIFuture::makeReadyRangeFuture(std::move(stdlist));
         QCOMPARE_EQ(f.resultCount(), 3);
         QCOMPARE_EQ(f.results(), expectedResult);
 
         QObject* const c_array[] = {&obj1, &obj2, &obj3};
-        f = QtFuture::makeReadyRangeFuture(c_array);
+        f = BobUIFuture::makeReadyRangeFuture(c_array);
         QCOMPARE_EQ(f.resultCount(), 3);
         QCOMPARE_EQ(f.results(), expectedResult);
     }
@@ -4407,12 +4407,12 @@ void tst_QFuture::continuationsAfterReadyFutures()
 {
     // continuations without a context
     auto suppressMultipleResultsWarning = [] {
-        QTest::ignoreMessage(QtWarningMsg,
+        BOBUIest::ignoreMessage(BobUIWarningMsg,
                              "Parent future has 3 result(s), but only the first result will be "
                              "handled in the continuation.");
     };
     {
-        QFuture<int> f = QtFuture::makeReadyValueFuture(42)
+        QFuture<int> f = BobUIFuture::makeReadyValueFuture(42)
                 .then([](int val) {
                     return val + 10;
                 })
@@ -4422,7 +4422,7 @@ void tst_QFuture::continuationsAfterReadyFutures()
         QCOMPARE(f.result(), 52);
     }
     {
-        auto rangeF = QtFuture::makeReadyRangeFuture({1, 2, 3});
+        auto rangeF = BobUIFuture::makeReadyRangeFuture({1, 2, 3});
         suppressMultipleResultsWarning();
         QFuture<int> f = rangeF
                 .then([vals = rangeF.results()](auto) {
@@ -4434,7 +4434,7 @@ void tst_QFuture::continuationsAfterReadyFutures()
         QCOMPARE(f.result(), 3);
     }
     {
-        QFuture<int> f = QtFuture::makeReadyVoidFuture()
+        QFuture<int> f = BobUIFuture::makeReadyVoidFuture()
                 .then([]() {
                     return 1;
                 })
@@ -4443,10 +4443,10 @@ void tst_QFuture::continuationsAfterReadyFutures()
                 });
         QCOMPARE(f.result(), 1);
     }
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
     {
         QException e;
-        QFuture<int> f = QtFuture::makeExceptionalFuture<int>(e)
+        QFuture<int> f = BobUIFuture::makeExceptionalFuture<int>(e)
                 .then([](int) {
                     return 1;
                 })
@@ -4463,7 +4463,7 @@ void tst_QFuture::continuationsAfterReadyFutures()
     // continuations with a context
     QObject context;
     {
-        QFuture<int> f = QtFuture::makeReadyValueFuture(42)
+        QFuture<int> f = BobUIFuture::makeReadyValueFuture(42)
                 .then(&context, [](int val) {
                     return val + 10;
                 })
@@ -4473,7 +4473,7 @@ void tst_QFuture::continuationsAfterReadyFutures()
         QCOMPARE(f.result(), 52);
     }
     {
-        auto rangeF = QtFuture::makeReadyRangeFuture({1, 2, 3});
+        auto rangeF = BobUIFuture::makeReadyRangeFuture({1, 2, 3});
         suppressMultipleResultsWarning();
         QFuture<int> f = rangeF
                 .then(&context, [vals = rangeF.results()](auto) {
@@ -4485,7 +4485,7 @@ void tst_QFuture::continuationsAfterReadyFutures()
         QCOMPARE(f.result(), 3);
     }
     {
-        QFuture<int> f = QtFuture::makeReadyVoidFuture()
+        QFuture<int> f = BobUIFuture::makeReadyVoidFuture()
                 .then(&context, []() {
                     return 1;
                 })
@@ -4494,10 +4494,10 @@ void tst_QFuture::continuationsAfterReadyFutures()
                 });
         QCOMPARE(f.result(), 1);
     }
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
     {
         QException e;
-        QFuture<int> f = QtFuture::makeExceptionalFuture<int>(e)
+        QFuture<int> f = BobUIFuture::makeExceptionalFuture<int>(e)
                 .then(&context, [](int) {
                     return 1;
                 })
@@ -4515,7 +4515,7 @@ void tst_QFuture::continuationsAfterReadyFutures()
 void tst_QFuture::getFutureInterface()
 {
     const int val = 42;
-    QFuture<int> f = QtFuture::makeReadyValueFuture(val);
+    QFuture<int> f = BobUIFuture::makeReadyValueFuture(val);
 
     auto interface = QFutureInterfaceBase::get(f);
     QCOMPARE(interface.resultCount(), 1);
@@ -4529,7 +4529,7 @@ void tst_QFuture::convertQMetaType()
     QVERIFY(QMetaType::canConvert(intType, voidType));
 
     const int val = 42;
-    QFuture<int> f = QtFuture::makeReadyValueFuture(val);
+    QFuture<int> f = BobUIFuture::makeReadyValueFuture(val);
     auto variant = QVariant::fromValue(f);
     QVERIFY(variant.convert(voidType));
 
@@ -4541,9 +4541,9 @@ void tst_QFuture::convertQMetaType()
 void tst_QFuture::whenAllwhenAnyOverloadResolution()
 {
     // Compile-only test. These could fail to compile due to picking a wrong
-    // overload of *Impl() methods. See QTBUG-131959
-    [[maybe_unused]] auto f = QtFuture::whenAll(QFuture<void>{}, QFuture<void>{});
-    [[maybe_unused]] auto ff = QtFuture::whenAny(QFuture<void>{}, QFuture<void>{});
+    // overload of *Impl() methods. See BOBUIBUG-131959
+    [[maybe_unused]] auto f = BobUIFuture::whenAll(QFuture<void>{}, QFuture<void>{});
+    [[maybe_unused]] auto ff = BobUIFuture::whenAny(QFuture<void>{}, QFuture<void>{});
 }
 
 template<class OutputContainer>
@@ -4557,9 +4557,9 @@ void testWhenAllIterators()
     bool finished = false;
     QFuture<OutputContainer> whenAll;
     if constexpr (std::is_same_v<QList<QFuture<int>>, OutputContainer>)
-        whenAll = QtFuture::whenAll(futures.begin(), futures.end());
+        whenAll = BobUIFuture::whenAll(futures.begin(), futures.end());
     else
-        whenAll = QtFuture::whenAll<OutputContainer>(futures.begin(), futures.end());
+        whenAll = BobUIFuture::whenAll<OutputContainer>(futures.begin(), futures.end());
     whenAll.then([&](const OutputContainer &output) {
         QCOMPARE(output.size(), 3u);
         QCOMPARE(output[0].result(), 0);
@@ -4588,9 +4588,9 @@ void testWhenAllIterators()
     // Try with empty sequence
     QFuture<OutputContainer> whenAllEmpty;
     if constexpr (std::is_same_v<QList<QFuture<int>>, OutputContainer>)
-        whenAllEmpty = QtFuture::whenAll(futures.end(), futures.end());
+        whenAllEmpty = BobUIFuture::whenAll(futures.end(), futures.end());
     else
-        whenAllEmpty = QtFuture::whenAll<OutputContainer>(futures.end(), futures.end());
+        whenAllEmpty = BobUIFuture::whenAll<OutputContainer>(futures.end(), futures.end());
     QVERIFY(whenAllEmpty.isStarted());
     QVERIFY(whenAllEmpty.isFinished());
     QVERIFY(whenAllEmpty.result().empty());
@@ -4600,15 +4600,15 @@ void tst_QFuture::whenAllIterators()
 {
     // Try with different output containers
     testWhenAllIterators<QList<QFuture<int>>>();
-    if (QTest::currentTestFailed())
+    if (BOBUIest::currentTestFailed())
         QSKIP("testWhenAllIterators() with QList failed!");
 
     testWhenAllIterators<std::vector<QFuture<int>>>();
-    if (QTest::currentTestFailed())
+    if (BOBUIest::currentTestFailed())
         QSKIP("testWhenAllIterators() with std::vector failed!");
 
     testWhenAllIterators<QVarLengthArray<QFuture<int>>>();
-    if (QTest::currentTestFailed())
+    if (BOBUIest::currentTestFailed())
         QSKIP("testWhenAllIterators() with QVarLengthArray failed!");
 }
 
@@ -4618,7 +4618,7 @@ void tst_QFuture::whenAllIteratorsWithCanceled()
     QPromise<int> p1;
     QList<QFuture<int>> futures = { p0.future(), p1.future() };
     bool finished = false;
-    auto whenAll = QtFuture::whenAll(futures.begin(), futures.end())
+    auto whenAll = BobUIFuture::whenAll(futures.begin(), futures.end())
                            .then([&](const QList<QFuture<int>> &results) {
                                QCOMPARE(results.size(), 2);
                                QVERIFY(results[0].isCanceled());
@@ -4640,12 +4640,12 @@ void tst_QFuture::whenAllIteratorsWithCanceled()
 
 void tst_QFuture::whenAllIteratorsWithFailed()
 {
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
     QPromise<int> p0;
     QPromise<int> p1;
     QList<QFuture<int>> futures = { p0.future(), p1.future() };
     bool finished = false;
-    auto whenAll = QtFuture::whenAll(futures.begin(), futures.end())
+    auto whenAll = BobUIFuture::whenAll(futures.begin(), futures.end())
                            .then([&](QList<QFuture<int>> results) {
                                QCOMPARE(results.size(), 2);
                                QCOMPARE(results[1].result(), 1);
@@ -4693,10 +4693,10 @@ void testWhenAllDifferentTypes()
 
     QFuture<OutputContainer> whenAll;
     if constexpr (std::is_same_v<QList<Futures>, OutputContainer>) {
-        whenAll = QtFuture::whenAll(pInt1.future(), pInt2.future(), pVoid.future());
+        whenAll = BobUIFuture::whenAll(pInt1.future(), pInt2.future(), pVoid.future());
     } else {
         whenAll =
-                QtFuture::whenAll<OutputContainer>(pInt1.future(), pInt2.future(), pVoid.future());
+                BobUIFuture::whenAll<OutputContainer>(pInt1.future(), pInt2.future(), pVoid.future());
     }
 
     int sumOfInts = 0;
@@ -4737,15 +4737,15 @@ void tst_QFuture::whenAllDifferentTypes()
 #endif
     using Futures = std::variant<QFuture<int>, QFuture<int>, QFuture<void>>;
     testWhenAllDifferentTypes<QList<Futures>>();
-    if (QTest::currentTestFailed())
+    if (BOBUIest::currentTestFailed())
         QSKIP("testWhenAllDifferentTypes() with QList failed!");
 
     testWhenAllDifferentTypes<std::vector<Futures>>();
-    if (QTest::currentTestFailed())
+    if (BOBUIest::currentTestFailed())
         QSKIP("testWhenAllDifferentTypes() with std::vector failed!");
 
     testWhenAllDifferentTypes<QVarLengthArray<Futures>>();
-    if (QTest::currentTestFailed())
+    if (BOBUIest::currentTestFailed())
         QSKIP("testWhenAllDifferentTypes() with QVarLengthArray failed!");
 }
 
@@ -4758,7 +4758,7 @@ void tst_QFuture::whenAllDifferentTypesWithCanceled()
 
     bool finished = false;
     using Futures = std::variant<QFuture<int>, QFuture<QString>>;
-    auto whenAll = QtFuture::whenAll(pInt.future(), pString.future())
+    auto whenAll = BobUIFuture::whenAll(pInt.future(), pString.future())
                            .then([&](const QList<Futures> &results) {
                                finished = true;
                                for (auto future : results) {
@@ -4789,7 +4789,7 @@ void tst_QFuture::whenAllDifferentTypesWithCanceled()
 
 void tst_QFuture::whenAllDifferentTypesWithFailed()
 {
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
     QPromise<int> pInt;
     QPromise<QString> pString;
 
@@ -4797,7 +4797,7 @@ void tst_QFuture::whenAllDifferentTypesWithFailed()
 
     bool finished = false;
     using Futures = std::variant<QFuture<int>, QFuture<QString>>;
-    auto whenAll = QtFuture::whenAll(pInt.future(), pString.future())
+    auto whenAll = BobUIFuture::whenAll(pInt.future(), pString.future())
                            .then([&](const QList<Futures> &results) {
                                finished = true;
                                for (auto future : results) {
@@ -4843,9 +4843,9 @@ void tst_QFuture::whenAnyIterators()
     QPromise<int> p2;
     QList<QFuture<int>> futures = { p0.future(), p1.future(), p2.future() };
 
-    auto whenAny = QtFuture::whenAny(futures.begin(), futures.end());
+    auto whenAny = BobUIFuture::whenAny(futures.begin(), futures.end());
     int count = 0;
-    whenAny.then([&](const QtFuture::WhenAnyResult<int> &result) {
+    whenAny.then([&](const BobUIFuture::WhenAnyResult<int> &result) {
         QCOMPARE(result.index, 1);
         QCOMPARE(result.future.result(), 1);
         QVERIFY(!futures[0].isFinished());
@@ -4873,7 +4873,7 @@ void tst_QFuture::whenAnyIterators()
     p2.finish();
     QCOMPARE(count, 1);
 
-    auto whenAnyEmpty = QtFuture::whenAny(futures.end(), futures.end());
+    auto whenAnyEmpty = BobUIFuture::whenAny(futures.end(), futures.end());
     QVERIFY(whenAnyEmpty.isStarted());
     QVERIFY(whenAnyEmpty.isFinished());
     QCOMPARE(whenAnyEmpty.result().index, -1);
@@ -4889,8 +4889,8 @@ void tst_QFuture::whenAnyIteratorsWithCanceled()
     QPromise<int> p1;
     QList<QFuture<int>> futures = { p0.future(), p1.future() };
     int count = 0;
-    auto whenAny = QtFuture::whenAny(futures.begin(), futures.end())
-                           .then([&](const QtFuture::WhenAnyResult<int> &result) {
+    auto whenAny = BobUIFuture::whenAny(futures.begin(), futures.end())
+                           .then([&](const BobUIFuture::WhenAnyResult<int> &result) {
                                QCOMPARE(result.index, 1);
                                QVERIFY(result.future.isCanceled());
                                QVERIFY(!futures[0].isFinished());
@@ -4912,13 +4912,13 @@ void tst_QFuture::whenAnyIteratorsWithCanceled()
 
 void tst_QFuture::whenAnyIteratorsWithFailed()
 {
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
     QPromise<int> p0;
     QPromise<int> p1;
     QList<QFuture<int>> futures = { p0.future(), p1.future() };
     int count = 0;
-    auto whenAny = QtFuture::whenAny(futures.begin(), futures.end())
-                           .then([&](QtFuture::WhenAnyResult<int> result) {
+    auto whenAny = BobUIFuture::whenAny(futures.begin(), futures.end())
+                           .then([&](BobUIFuture::WhenAnyResult<int> result) {
                                QCOMPARE(result.index, 1);
                                QVERIFY(p1.future().isFinished());
                                QVERIFY(!p0.future().isFinished());
@@ -4952,7 +4952,7 @@ void tst_QFuture::whenAnyDifferentTypes()
     QPromise<int> pInt2;
     QPromise<void> pVoid;
 
-    auto whenAny = QtFuture::whenAny(pInt1.future(), pInt2.future(), pVoid.future());
+    auto whenAny = BobUIFuture::whenAny(pInt1.future(), pInt2.future(), pVoid.future());
     int count = 0;
     whenAny.then([&](const std::variant<QFuture<int>, QFuture<int>, QFuture<void>> &result) {
         QCOMPARE(result.index(), 1u);
@@ -4992,7 +4992,7 @@ void tst_QFuture::whenAnyDifferentTypesWithCanceled()
     QPromise<void> pVoid;
 
     int count = 0;
-    auto whenAny = QtFuture::whenAny(pInt.future(), pVoid.future())
+    auto whenAny = BobUIFuture::whenAny(pInt.future(), pVoid.future())
                            .then([&](const std::variant<QFuture<int>, QFuture<void>> &result) {
                                QCOMPARE(result.index(), 0u);
                                std::visit(overloaded { [&](const QFuture<int> &future) {
@@ -5019,12 +5019,12 @@ void tst_QFuture::whenAnyDifferentTypesWithCanceled()
 
 void tst_QFuture::whenAnyDifferentTypesWithFailed()
 {
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
     QPromise<int> pInt;
     QPromise<void> pVoid;
 
     int count = 0;
-    auto whenAny = QtFuture::whenAny(pInt.future(), pVoid.future())
+    auto whenAny = BobUIFuture::whenAny(pInt.future(), pVoid.future())
                            .then([&](const std::variant<QFuture<int>, QFuture<void>> &result) {
                                QCOMPARE(result.index(), 0u);
                                std::visit(overloaded { [&](QFuture<int> future) {
@@ -5142,36 +5142,36 @@ void tst_QFuture::continuationsDontLeak()
     QCOMPARE(InstanceCounter::count, 0);
 
     {
-        // QTBUG-116731: Must pass with ASan enabled
+        // BOBUIBUG-116731: Must pass with ASan enabled
         bool continuationIsRun = false;
-        auto f = QtFuture::makeReadyValueFuture(42);
-        QtFuture::whenAll(f).then([&](auto) { continuationIsRun = true; });
+        auto f = BobUIFuture::makeReadyValueFuture(42);
+        BobUIFuture::whenAll(f).then([&](auto) { continuationIsRun = true; });
         QVERIFY(continuationIsRun);
     }
 
     {
-        // QTBUG-116731: Must pass with ASan enabled
+        // BOBUIBUG-116731: Must pass with ASan enabled
         bool continuationIsRun = false;
-        auto f = QtFuture::makeReadyValueFuture(42);
+        auto f = BobUIFuture::makeReadyValueFuture(42);
         QList fs{f};
-        QtFuture::whenAll(fs.begin(), fs.end()).then([&](auto) { continuationIsRun = true; });
+        BobUIFuture::whenAll(fs.begin(), fs.end()).then([&](auto) { continuationIsRun = true; });
         QVERIFY(continuationIsRun);
     }
 
     {
-        // QTBUG-116731: Must pass with ASan enabled
+        // BOBUIBUG-116731: Must pass with ASan enabled
         bool continuationIsRun = false;
-        auto f = QtFuture::makeReadyValueFuture(42);
-        QtFuture::whenAny(f).then([&](auto) { continuationIsRun = true; });
+        auto f = BobUIFuture::makeReadyValueFuture(42);
+        BobUIFuture::whenAny(f).then([&](auto) { continuationIsRun = true; });
         QVERIFY(continuationIsRun);
     }
 
     {
-        // QTBUG-116731: Must pass with ASan enabled
+        // BOBUIBUG-116731: Must pass with ASan enabled
         bool continuationIsRun = false;
-        auto f = QtFuture::makeReadyValueFuture(42);
+        auto f = BobUIFuture::makeReadyValueFuture(42);
         QList fs{f};
-        QtFuture::whenAny(fs.begin(), fs.end()).then([&](auto) { continuationIsRun = true; });
+        BobUIFuture::whenAny(fs.begin(), fs.end()).then([&](auto) { continuationIsRun = true; });
         QVERIFY(continuationIsRun);
     }
 }
@@ -5203,7 +5203,7 @@ void tst_QFuture::cancelAfterFinishWithContinuations()
 
 void tst_QFuture::unwrap()
 {
-#if !QT_CONFIG(thread)
+#if !BOBUI_CONFIG(thread)
     QSKIP("This test requires threads");
 #endif
 
@@ -5211,7 +5211,7 @@ void tst_QFuture::unwrap()
     {
         QPromise<int> p;
         QFuture<QFuture<int>> f = p.future().then([] (int value) {
-            QFuture<int> nested = QtConcurrent::run([value] {
+            QFuture<int> nested = BobUIConcurrent::run([value] {
                 return value + 1;
             });
             return nested;
@@ -5264,7 +5264,7 @@ void tst_QFuture::unwrap()
     {
         QPromise<int> p;
         QFuture<int> f = p.future().then([] (int value) {
-            QFuture<int> nested = QtConcurrent::run([value] {
+            QFuture<int> nested = BobUIConcurrent::run([value] {
                 return value + 1;
             });
             return nested;
@@ -5285,12 +5285,12 @@ void tst_QFuture::unwrap()
         QCOMPARE(f.result(), -1);
     }
 
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
     // The chain has an exception, check that unwrap() propagates it.
     {
         QPromise<int> p;
         QFuture<int> f = p.future().then([] (int value) {
-            QFuture<int> nested = QtConcurrent::run([value] {
+            QFuture<int> nested = BobUIConcurrent::run([value] {
                 return value + 1;
             });
             return nested;
@@ -5311,13 +5311,13 @@ void tst_QFuture::unwrap()
         QCOMPARE(f.result(), -1);
     }
 
-#endif // QT_NO_EXCEPTIONS
+#endif // BOBUI_NO_EXCEPTIONS
 
     // The nested future is canceled
     {
         QPromise<int> p;
         QFuture<int> f = p.future().then([] (int value) {
-            QFuture<int> nested = QtConcurrent::run([value] {
+            QFuture<int> nested = BobUIConcurrent::run([value] {
                 return value + 1;
             });
             nested.cancel();
@@ -5339,12 +5339,12 @@ void tst_QFuture::unwrap()
         QCOMPARE(f.result(), -1);
     }
 
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
     // The nested future fails with an exception
     {
         QPromise<int> p;
         QFuture<int> f = p.future().then([] (int value) {
-            QFuture<int> nested = QtConcurrent::run([value] {
+            QFuture<int> nested = BobUIConcurrent::run([value] {
                 throw QException();
                 return value + 1;
             });
@@ -5365,7 +5365,7 @@ void tst_QFuture::unwrap()
         QVERIFY(f.isFinished());
         QCOMPARE(f.result(), -1);
     }
-#endif // QT_NO_EXCEPTIONS
+#endif // BOBUI_NO_EXCEPTIONS
 
     // Check that continuations are called in the right order
     {
@@ -5377,7 +5377,7 @@ void tst_QFuture::unwrap()
         auto f = p.future().then([&] {
             if (!firstThenInvoked && !secondThenInvoked && !nestedThenInvoked)
                 firstThenInvoked = true;
-            QFuture<void> nested = QtConcurrent::run([&] {
+            QFuture<void> nested = BobUIConcurrent::run([&] {
                 QVERIFY(firstThenInvoked);
                 QVERIFY(!nestedThenInvoked);
                 QVERIFY(!secondThenInvoked);
@@ -5400,7 +5400,7 @@ void tst_QFuture::unwrap()
 
         f.waitForFinished();
 
-        if (QTest::currentTestFailed())
+        if (BOBUIest::currentTestFailed())
             return;
 
         QVERIFY(firstThenInvoked);
@@ -5412,8 +5412,8 @@ void tst_QFuture::unwrap()
     {
         QPromise<int> p;
         QFuture<QFuture<QFuture<int>>> f = p.future().then([] (int value) {
-            QFuture<QFuture<int>> nested = QtConcurrent::run([value] {
-                QFuture<int> doubleNested = QtConcurrent::run([value] {
+            QFuture<QFuture<int>> nested = BobUIConcurrent::run([value] {
+                QFuture<int> doubleNested = BobUIConcurrent::run([value] {
                     return value + 1;
                 });
                 return doubleNested;
@@ -5442,8 +5442,8 @@ void tst_QFuture::unwrap()
         std::atomic<bool> nestedInvoked = false;
         std::atomic<bool> doubleNestedInvoked = false;
         QFuture<QFuture<QFuture<void>>> f = p.future().then([&] {
-            QFuture<QFuture<void>> nested = QtConcurrent::run([&] {
-                QFuture<void> doubleNested = QtConcurrent::run([&] {
+            QFuture<QFuture<void>> nested = BobUIConcurrent::run([&] {
+                QFuture<void> doubleNested = BobUIConcurrent::run([&] {
                     doubleNestedInvoked = true;
                 });
                 nestedInvoked = true;
@@ -5513,7 +5513,7 @@ void tst_QFuture::cancelChain()
         int thenCnt = 0;
         int onCancelCnt = 0;
 
-        auto f = QtFuture::makeReadyVoidFuture()
+        auto f = BobUIFuture::makeReadyVoidFuture()
                          .then([&, f = p1.future()]() {
                              ++thenCnt;
                              return f;
@@ -5544,7 +5544,7 @@ void tst_QFuture::cancelChain()
         int thenCnt = 0;
         int onCancelCnt = 0;
 
-        auto f = QtFuture::makeReadyVoidFuture()
+        auto f = BobUIFuture::makeReadyVoidFuture()
                          .then([&]() {
                              ++thenCnt;
                          })
@@ -5570,21 +5570,21 @@ void tst_QFuture::cancelChain()
 
 void tst_QFuture::cancelChainWithContext_data()
 {
-    QTest::addColumn<bool>("inOtherThread");
-    QTest::addRow("in-other-thread") << true;
-    QTest::addRow("in-main-thread") << false;
+    BOBUIest::addColumn<bool>("inOtherThread");
+    BOBUIest::addRow("in-other-thread") << true;
+    BOBUIest::addRow("in-main-thread") << false;
 }
 
 void tst_QFuture::cancelChainWithContext()
 {
-#if !QT_CONFIG(thread)
+#if !BOBUI_CONFIG(thread)
     QSKIP("This test requires threads");
 #endif
 
     QFETCH(const bool, inOtherThread);
 
-    auto tstThread = QThread::currentThread();
-    QThread *thread = inOtherThread ? new QThread
+    auto tstThread = BOBUIhread::currentThread();
+    BOBUIhread *thread = inOtherThread ? new BOBUIhread
                                     : tstThread;
     auto context = new QObject();
 
@@ -5613,27 +5613,27 @@ void tst_QFuture::cancelChainWithContext()
 
         auto f = p.future()
                          .then(context, [&]() {
-                             if (QThread::currentThread() != thread)
+                             if (BOBUIhread::currentThread() != thread)
                                  unexpectedThread = true;
                              ++thenCnt;
                          })
                          .then([&]() {
-                             if (QThread::currentThread() != thread)
+                             if (BOBUIhread::currentThread() != thread)
                                  unexpectedThread = true;
                              ++thenCnt;
                          })
                          .then([&]{
-                             if (QThread::currentThread() != thread)
+                             if (BOBUIhread::currentThread() != thread)
                                  unexpectedThread = true;
                              ++thenCnt;
                          })
                          .onCanceled(context, [&] {
-                             if (QThread::currentThread() != thread)
+                             if (BOBUIhread::currentThread() != thread)
                                  unexpectedThread = true;
                              ++onCancelCnt;
                          })
                          .then([&]{
-                             if (QThread::currentThread() != thread)
+                             if (BOBUIhread::currentThread() != thread)
                                  unexpectedThread = true;
                              ++thenCnt;
                          });
@@ -5664,12 +5664,12 @@ void tst_QFuture::cancelChainWithContext()
 
         auto f = p1.future()
                          .then(context, [&]() {
-                             if (QThread::currentThread() != thread)
+                             if (BOBUIhread::currentThread() != thread)
                                  unexpectedThread = true;
                              ++thenCnt;
                          })
                          .then([&, f = p2.future()]() {
-                             if (QThread::currentThread() != thread)
+                             if (BOBUIhread::currentThread() != thread)
                                  unexpectedThread = true;
                              ++thenCnt;
                              if (inOtherThread)
@@ -5677,17 +5677,17 @@ void tst_QFuture::cancelChainWithContext()
                              return f;
                          }).unwrap()
                          .then(context, [&]{
-                             if (QThread::currentThread() != thread)
+                             if (BOBUIhread::currentThread() != thread)
                                  unexpectedThread = true;
                              ++thenCnt;
                          })
                          .onCanceled([&] {
-                             if (QThread::currentThread() != thread)
+                             if (BOBUIhread::currentThread() != thread)
                                  unexpectedThread = true;
                              ++onCancelCnt;
                          })
                          .then(context, [&]{
-                             if (QThread::currentThread() != thread)
+                             if (BOBUIhread::currentThread() != thread)
                                  unexpectedThread = true;
                              ++thenCnt;
                          });
@@ -5714,27 +5714,27 @@ void tst_QFuture::cancelChainWithContext()
 
         auto f = p.future()
                          .then(context, [&]() {
-                             if (QThread::currentThread() != thread)
+                             if (BOBUIhread::currentThread() != thread)
                                  unexpectedThread = true;
                              ++thenCnt;
                          })
                          .then([&]() {
-                             if (QThread::currentThread() != thread)
+                             if (BOBUIhread::currentThread() != thread)
                                  unexpectedThread = true;
                              ++thenCnt;
                          })
                          .then([&]{
-                             if (QThread::currentThread() != thread)
+                             if (BOBUIhread::currentThread() != thread)
                                  unexpectedThread = true;
                              ++thenCnt;
                          })
                          .onCanceled(context, [&] {
-                             if (QThread::currentThread() != thread)
+                             if (BOBUIhread::currentThread() != thread)
                                  unexpectedThread = true;
                              ++onCancelCnt;
                          })
                          .then([&]{
-                             if (QThread::currentThread() != thread)
+                             if (BOBUIhread::currentThread() != thread)
                                  unexpectedThread = true;
                              ++thenCnt;
                          });
@@ -5765,7 +5765,7 @@ void tst_QFuture::cancelChainWithContext()
 
         auto f = p1.future()
                          .then(context, [&, f2 = p2.future()]() {
-                             if (QThread::currentThread() != thread)
+                             if (BOBUIhread::currentThread() != thread)
                                  unexpectedThread = true;
                              ++thenCnt;
                              if (inOtherThread)
@@ -5773,34 +5773,34 @@ void tst_QFuture::cancelChainWithContext()
                              return f2;
                          }).unwrap()
                          .onCanceled(context, [&] {
-                             if (QThread::currentThread() != thread)
+                             if (BOBUIhread::currentThread() != thread)
                                  unexpectedThread = true;
                              ++onCancelCnt;
                          })
                          .then([&]() {
-                             if (QThread::currentThread() != thread)
+                             if (BOBUIhread::currentThread() != thread)
                                  unexpectedThread = true;
                              ++thenCnt;
-                             return QtFuture::makeReadyVoidFuture();
+                             return BobUIFuture::makeReadyVoidFuture();
                          }).unwrap()
                          .onCanceled([&] {
-                             if (QThread::currentThread() != thread)
+                             if (BOBUIhread::currentThread() != thread)
                                  unexpectedThread = true;
                              ++onCancelCnt;
                          })
                          .then(context, [&]{
-                             if (QThread::currentThread() != thread)
+                             if (BOBUIhread::currentThread() != thread)
                                  unexpectedThread = true;
                              ++thenCnt;
-                             return QtFuture::makeReadyVoidFuture();
+                             return BobUIFuture::makeReadyVoidFuture();
                          }).unwrap()
                          .onCanceled([&] {
-                             if (QThread::currentThread() != thread)
+                             if (BOBUIhread::currentThread() != thread)
                                  unexpectedThread = true;
                              ++onCancelCnt;
                          })
                          .then(context, [&]{
-                             if (QThread::currentThread() != thread)
+                             if (BOBUIhread::currentThread() != thread)
                                  unexpectedThread = true;
                              ++thenCnt;
                          });
@@ -5858,5 +5858,5 @@ void tst_QFuture::cancelChainOnAnOverwrittenFuture()
     QCOMPARE_EQ(onCancelCnt, 0);
 }
 
-QTEST_MAIN(tst_QFuture)
+BOBUIEST_MAIN(tst_QFuture)
 #include "tst_qfuture.moc"

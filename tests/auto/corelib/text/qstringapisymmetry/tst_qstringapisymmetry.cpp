@@ -1,11 +1,11 @@
 // Copyright (C) 2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Marc Mutz <marc.mutz@kdab.com>
 // Copyright (C) 2019 Mail.ru Group.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#undef QT_NO_CAST_FROM_ASCII
-#undef QT_NO_CAST_TO_ASCII
-#undef QT_ASCII_CAST_WARNINGS
-#define QT_USE_QSTRINGBUILDER
+#undef BOBUI_NO_CAST_FROM_ASCII
+#undef BOBUI_NO_CAST_TO_ASCII
+#undef BOBUI_ASCII_CAST_WARNINGS
+#define BOBUI_USE_QSTRINGBUILDER
 
 #include <QChar>
 #include <QLatin1String>
@@ -14,14 +14,14 @@
 #include <QString>
 #include <QStringTokenizer>
 #include <QStringView>
-#include <QTest>
+#include <BOBUIest>
 #include <QVarLengthArray>
 
 #include "../../../../shared/localechange.h"
 
 #include <locale.h>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 Q_DECLARE_METATYPE(QLatin1String)
 
@@ -60,7 +60,7 @@ static constexpr int sign(int i) noexcept
 static QByteArray rowName(const QByteArray &data)
 {
     const int size = data.size();
-    QScopedArrayPointer<char> prettyC(QTest::toPrettyCString(data.constData(), qMin(16, size)));
+    QScopedArrayPointer<char> prettyC(BOBUIest::toPrettyCString(data.constData(), qMin(16, size)));
     QByteArray result = prettyC.data();
     result += " (";
     result += QByteArray::number(size);
@@ -267,7 +267,7 @@ private Q_SLOTS:
     void compare_QByteArray_std_string_view_data() { compare_data(); }
     void compare_QByteArray_std_string_view()
     {
-#ifdef QT_BYTEARRAY_CONVERTS_TO_STD_STRING_VIEW
+#ifdef BOBUI_BYTEARRAY_CONVERTS_TO_STD_STRING_VIEW
         compare_impl<QByteArray, std::string_view, false>();
 #endif
     }
@@ -1450,9 +1450,9 @@ void tst_QStringApiSymmetry::overload()
     // check the common overload sets defined above to be free of ambiguities
     // for arguments of type T
 
-    QT_WARNING_PUSH
+    BOBUI_WARNING_PUSH
     // GCC complains about "t" and "ct"
-    QT_WARNING_DISABLE_GCC("-Wmaybe-uninitialized")
+    BOBUI_WARNING_DISABLE_GCC("-Wmaybe-uninitialized")
 
     using CT = const T;
 
@@ -1520,7 +1520,7 @@ void tst_QStringApiSymmetry::overload()
             overload_ba_bav(CT());
         }
     }
-    QT_WARNING_POP
+    BOBUI_WARNING_POP
 }
 
 void tst_QStringApiSymmetry::overload_special()
@@ -1570,22 +1570,22 @@ void tst_QStringApiSymmetry::overload_special()
 
 void tst_QStringApiSymmetry::compare_data(bool hasConceptOfNullAndEmpty)
 {
-    QTest::addColumn<QStringView>("lhsUnicode");
-    QTest::addColumn<QLatin1String>("lhsLatin1");
-    QTest::addColumn<QStringView>("rhsUnicode");
-    QTest::addColumn<QLatin1String>("rhsLatin1");
-    QTest::addColumn<int>("caseSensitiveCompareResult");
-    QTest::addColumn<int>("caseInsensitiveCompareResult");
+    BOBUIest::addColumn<QStringView>("lhsUnicode");
+    BOBUIest::addColumn<QLatin1String>("lhsLatin1");
+    BOBUIest::addColumn<QStringView>("rhsUnicode");
+    BOBUIest::addColumn<QLatin1String>("rhsLatin1");
+    BOBUIest::addColumn<int>("caseSensitiveCompareResult");
+    BOBUIest::addColumn<int>("caseInsensitiveCompareResult");
 
     if (hasConceptOfNullAndEmpty) {
-        QTest::newRow("null <> null") << QStringView() << QLatin1String()
+        BOBUIest::newRow("null <> null") << QStringView() << QLatin1String()
                                       << QStringView() << QLatin1String()
                                       << 0 << 0;
         static const QString empty("");
-        QTest::newRow("null <> empty") << QStringView() << QLatin1String()
+        BOBUIest::newRow("null <> empty") << QStringView() << QLatin1String()
                                        << QStringView(empty) << QLatin1String("")
                                        << 0 << 0;
-        QTest::newRow("empty <> null") << QStringView(empty) << QLatin1String("")
+        BOBUIest::newRow("empty <> null") << QStringView(empty) << QLatin1String("")
                                        << QStringView() << QLatin1String()
                                        << 0 << 0;
     }
@@ -1596,7 +1596,7 @@ void tst_QStringApiSymmetry::compare_data(bool hasConceptOfNullAndEmpty)
             QString(QLatin1String(lhs)), \
             QString(QLatin1String(rhs)), \
         }; \
-        QTest::newRow(qUtf8Printable(QLatin1String("'" lhs "' <> '" rhs "': "))) \
+        BOBUIest::newRow(qUtf8Printable(QLatin1String("'" lhs "' <> '" rhs "': "))) \
             << QStringView(pinned[0]) << QLatin1String(lhs) \
             << QStringView(pinned[1]) << QLatin1String(rhs) \
             << sign(qstrcmp(lhs, rhs)) << caseless; \
@@ -1659,7 +1659,7 @@ MAKE(QAnyStringViewUsingL1)  { return {QAnyStringView{l1}}; }
 MAKE(QAnyStringViewUsingU8)  { return {QAnyStringView{u8}}; }
 MAKE(QAnyStringViewUsingU16) { return {QAnyStringView{sv}}; }
 MAKE(std::string)            { return u8.toStdString(); }
-#ifdef QT_BYTEARRAY_CONVERTS_TO_STD_STRING_VIEW
+#ifdef BOBUI_BYTEARRAY_CONVERTS_TO_STD_STRING_VIEW
 MAKE(std::string_view)       { return u8; }
 #else
 MAKE(std::string_view)       { return std::string_view(u8.data(), size_t(u8.size())); }
@@ -1694,11 +1694,11 @@ void tst_QStringApiSymmetry::compare_impl() const
     const auto rhs = make<RHS>(rhsUnicode, rhsLatin1, rhsU8);
 
     auto icResult = sign(
-            QAnyStringView::compare(QAnyStringView(lhs), QAnyStringView(rhs), Qt::CaseInsensitive));
+            QAnyStringView::compare(QAnyStringView(lhs), QAnyStringView(rhs), BobUI::CaseInsensitive));
     QCOMPARE_EQ(icResult, caseInsensitiveCompareResult);
 
     auto scResult = sign(
-            QAnyStringView::compare(QAnyStringView(lhs), QAnyStringView(rhs), Qt::CaseSensitive));
+            QAnyStringView::compare(QAnyStringView(lhs), QAnyStringView(rhs), BobUI::CaseSensitive));
     QCOMPARE_EQ(scResult, caseSensitiveCompareResult);
 
 #define CHECK(op) \
@@ -1725,8 +1725,8 @@ void tst_QStringApiSymmetry::compare_impl() const
     if constexpr (CheckCompareThreeWay) {
         // Test that all string-like types implemente compareThreeWay() as a friend
         // function.
-        const Qt::strong_ordering expectedOrdering =
-                Qt::compareThreeWay(caseSensitiveCompareResult, 0);
+        const BobUI::strong_ordering expectedOrdering =
+                BobUI::compareThreeWay(caseSensitiveCompareResult, 0);
         QCOMPARE_EQ(qCompareThreeWay(lhs, rhs), expectedOrdering);
     }
 }
@@ -1748,33 +1748,33 @@ void tst_QStringApiSymmetry::member_compare_impl() const
     const auto rhs = make<RHS>(rhsUnicode, rhsLatin1, rhsU8);
 
     if constexpr (has_nothrow_member_compare_v<LHS, RHS>)
-        QVERIFY(noexcept(lhs.compare(rhs, Qt::CaseSensitive)));
+        QVERIFY(noexcept(lhs.compare(rhs, BobUI::CaseSensitive)));
 
     QCOMPARE_EQ(sign(lhs.compare(rhs)),                      caseSensitiveCompareResult);
-    QCOMPARE_EQ(sign(lhs.compare(rhs, Qt::CaseSensitive)),   caseSensitiveCompareResult);
+    QCOMPARE_EQ(sign(lhs.compare(rhs, BobUI::CaseSensitive)),   caseSensitiveCompareResult);
     if (is_bytearray_like_v<LHS> && is_bytearray_like_v<RHS> &&
             caseSensitiveCompareResult != caseInsensitiveCompareResult &&
-            (!QtPrivate::isAscii(lhsUnicode) || !QtPrivate::isAscii(rhsUnicode)))
+            (!BobUIPrivate::isAscii(lhsUnicode) || !BobUIPrivate::isAscii(rhsUnicode)))
     {
         QEXPECT_FAIL("", "The types don't support non-ASCII case-insensitive comparison", Continue);
     }
-    QCOMPARE_EQ(sign(lhs.compare(rhs, Qt::CaseInsensitive)), caseInsensitiveCompareResult);
+    QCOMPARE_EQ(sign(lhs.compare(rhs, BobUI::CaseInsensitive)), caseInsensitiveCompareResult);
 }
 
 void tst_QStringApiSymmetry::localeAwareCompare_data()
 {
-    QTest::addColumn<QByteArray>("locale");
-    QTest::addColumn<QString>("s1");
-    QTest::addColumn<QString>("s2");
-    QTest::addColumn<int>("result");
+    BOBUIest::addColumn<QByteArray>("locale");
+    BOBUIest::addColumn<QString>("s1");
+    BOBUIest::addColumn<QString>("s2");
+    BOBUIest::addColumn<int>("result");
 
-#if defined(Q_OS_WIN) || defined(Q_OS_DARWIN) || QT_CONFIG(icu)
-    // Pull out current system locale's collation locale using Qt APIs,
+#if defined(Q_OS_WIN) || defined(Q_OS_DARWIN) || BOBUI_CONFIG(icu)
+    // Pull out current system locale's collation locale using BobUI APIs,
     // so that we go though the relevant system backend, that will match
     // the system collation logic in QString::localeAwareCompare_helper.
     const QByteArray current = QLocale::system().collation().name().toUtf8();
     const auto canTest = [current](const char *wanted) {
-#  if QT_CONFIG(icu)
+#  if BOBUI_CONFIG(icu)
         // ICU will correctly use en when relevant environment variables are set
         // to en.UTF-8, but setlocale() reports that as C, whose sort order is
         // simpler. Only believe we can run C tests if the environment variables
@@ -1821,120 +1821,120 @@ void tst_QStringApiSymmetry::localeAwareCompare_data()
         //     console.log("\u1111\u1171\u11B6".localeCompare("\ud4db")
 
         // example from Unicode 5.0, section 3.7, definition D70
-        QTest::newRow("normalize1")
+        BOBUIest::newRow("normalize1")
             << QByteArray("en_US")
             << QString::fromUtf8("o\xCC\x88")
             << QString::fromUtf8("\xC3\xB6") << 0;
         // examples from Unicode 5.0, chapter 3.11
-        QTest::newRow("normalize2")
+        BOBUIest::newRow("normalize2")
             << QByteArray("en_US")
             << QString::fromUtf8("\xC3\xA4\xCC\xA3")
             << QString::fromUtf8("a\xCC\xA3\xCC\x88") << 0;
-        QTest::newRow("normalize3")
+        BOBUIest::newRow("normalize3")
             << QByteArray("en_US")
             << QString::fromUtf8("a\xCC\x88\xCC\xA3")
             << QString::fromUtf8("a\xCC\xA3\xCC\x88") << 0;
-        QTest::newRow("normalize4")
+        BOBUIest::newRow("normalize4")
             << QByteArray("en_US")
             << QString::fromUtf8("\xE1\xBA\xA1\xCC\x88")
             << QString::fromUtf8("a\xCC\xA3\xCC\x88") << 0;
-        QTest::newRow("normalize5")
+        BOBUIest::newRow("normalize5")
             << QByteArray("en_US")
             << QString::fromUtf8("\xC3\xA4\xCC\x86")
             << QString::fromUtf8("a\xCC\x88\xCC\x86") << 0;
-        QTest::newRow("normalize6")
+        BOBUIest::newRow("normalize6")
             << QByteArray("en_US")
             << QString::fromUtf8("\xC4\x83\xCC\x88")
             << QString::fromUtf8("a\xCC\x86\xCC\x88") << 0;
         // example from Unicode 5.0, chapter 3.12
-        QTest::newRow("normalize7")
+        BOBUIest::newRow("normalize7")
             << QByteArray("en_US")
             << QString::fromUtf8("\xE1\x84\x91\xE1\x85\xB1\xE1\x86\xB6")
             << QString::fromUtf8("\xED\x93\x9B") << 0;
         // examples from UTS 10, Unicode Collation Algorithm
-        QTest::newRow("normalize8")
+        BOBUIest::newRow("normalize8")
             << QByteArray("en_US")
             << QString::fromUtf8("\xE2\x84\xAB")
             << QString::fromUtf8("\xC3\x85") << 0;
-        QTest::newRow("normalize9")
+        BOBUIest::newRow("normalize9")
             << QByteArray("en_US")
             << QString::fromUtf8("\xE2\x84\xAB")
             << QString::fromUtf8("A\xCC\x8A") << 0;
-        QTest::newRow("normalize10")
+        BOBUIest::newRow("normalize10")
             << QByteArray("en_US")
             << QString::fromUtf8("x\xCC\x9B\xCC\xA3")
             << QString::fromUtf8("x\xCC\xA3\xCC\x9B") << 0;
-        QTest::newRow("normalize11")
+        BOBUIest::newRow("normalize11")
             << QByteArray("en_US")
             << QString::fromUtf8("\xE1\xBB\xB1")
             << QString::fromUtf8("\xE1\xBB\xA5\xCC\x9B") << 0;
-        QTest::newRow("normalize12")
+        BOBUIest::newRow("normalize12")
             << QByteArray("en_US")
             << QString::fromUtf8("\xE1\xBB\xB1")
             << QString::fromUtf8("u\xCC\x9B\xCC\xA3") << 0;
-        QTest::newRow("normalize13")
+        BOBUIest::newRow("normalize13")
             << QByteArray("en_US")
             << QString::fromUtf8("\xE1\xBB\xB1")
             << QString::fromUtf8("\xC6\xB0\xCC\xA3") << 0;
-        QTest::newRow("normalize14")
+        BOBUIest::newRow("normalize14")
             << QByteArray("en_US")
             << QString::fromUtf8("\xE1\xBB\xB1")
             << QString::fromUtf8("u\xCC\xA3\xCC\x9B") << 0;
         // examples from UAX 15, Unicode Normalization Forms
-        QTest::newRow("normalize15")
+        BOBUIest::newRow("normalize15")
             << QByteArray("en_US")
             << QString::fromUtf8("\xC3\x87")
             << QString::fromUtf8("C\xCC\xA7") << 0;
-        QTest::newRow("normalize16")
+        BOBUIest::newRow("normalize16")
             << QByteArray("en_US")
             << QString::fromUtf8("q\xCC\x87\xCC\xA3")
             << QString::fromUtf8("q\xCC\xA3\xCC\x87") << 0;
-        QTest::newRow("normalize17")
+        BOBUIest::newRow("normalize17")
             << QByteArray("en_US")
             << QString::fromUtf8("\xEA\xB0\x80")
             << QString::fromUtf8("\xE1\x84\x80\xE1\x85\xA1") << 0;
-        QTest::newRow("normalize18")
+        BOBUIest::newRow("normalize18")
             << QByteArray("en_US")
             << QString::fromUtf8("\xE2\x84\xAB")
             << QString::fromUtf8("A\xCC\x8A") << 0;
-        QTest::newRow("normalize19")
+        BOBUIest::newRow("normalize19")
             << QByteArray("en_US")
             << QString::fromUtf8("\xE2\x84\xA6")
             << QString::fromUtf8("\xCE\xA9") << 0;
-        QTest::newRow("normalize20")
+        BOBUIest::newRow("normalize20")
             << QByteArray("en_US")
             << QString::fromUtf8("\xC3\x85")
             << QString::fromUtf8("A\xCC\x8A") << 0;
-        QTest::newRow("normalize21")
+        BOBUIest::newRow("normalize21")
             << QByteArray("en_US")
             << QString::fromUtf8("\xC3\xB4")
             << QString::fromUtf8("o\xCC\x82") << 0;
-        QTest::newRow("normalize22")
+        BOBUIest::newRow("normalize22")
             << QByteArray("en_US")
             << QString::fromUtf8("\xE1\xB9\xA9")
             << QString::fromUtf8("s\xCC\xA3\xCC\x87") << 0;
-        QTest::newRow("normalize23")
+        BOBUIest::newRow("normalize23")
             << QByteArray("en_US")
             << QString::fromUtf8("\xE1\xB8\x8B\xCC\xA3")
             << QString::fromUtf8("d\xCC\xA3\xCC\x87") << 0;
-        QTest::newRow("normalize24")
+        BOBUIest::newRow("normalize24")
             << QByteArray("en_US")
             << QString::fromUtf8("\xE1\xB8\x8B\xCC\xA3")
             << QString::fromUtf8("\xE1\xB8\x8D\xCC\x87") << 0;
-        QTest::newRow("normalize25")
+        BOBUIest::newRow("normalize25")
             << QByteArray("en_US")
             << QString::fromUtf8("q\xCC\x87\xCC\xA3")
             << QString::fromUtf8("q\xCC\xA3\xCC\x87") << 0;
 
-        QTest::newRow("en@5.gt.4") << QByteArray("en_US") << QString("5") << QString("4") << 1;
-        QTest::newRow("en@4.lt.6") << QByteArray("en_US") << QString("4") << QString("6") << -1;
-        QTest::newRow("en@5.l6.6") << QByteArray("en_US") << QString("5") << QString("6") << -1;
+        BOBUIest::newRow("en@5.gt.4") << QByteArray("en_US") << QString("5") << QString("4") << 1;
+        BOBUIest::newRow("en@4.lt.6") << QByteArray("en_US") << QString("4") << QString("6") << -1;
+        BOBUIest::newRow("en@5.l6.6") << QByteArray("en_US") << QString("5") << QString("6") << -1;
 
-        QTest::newRow("en@null.eq.null") << QByteArray("en_US") << QString() << QString() << 0;
-        QTest::newRow("en@empty.eq.null") << QByteArray("en_US") << QString("") << QString() << 0;
-        QTest::newRow("en@null.lt.non-empty") << QByteArray("en_US") << QString()
+        BOBUIest::newRow("en@null.eq.null") << QByteArray("en_US") << QString() << QString() << 0;
+        BOBUIest::newRow("en@empty.eq.null") << QByteArray("en_US") << QString("") << QString() << 0;
+        BOBUIest::newRow("en@null.lt.non-empty") << QByteArray("en_US") << QString()
                                               << QString("test") << -1;
-        QTest::newRow("en@empty.lt.non-empty") << QByteArray("en_US") << QString("")
+        BOBUIest::newRow("en@empty.lt.non-empty") << QByteArray("en_US") << QString("")
                                                << QString("test") << -1;
 
         countGroups++;
@@ -1946,15 +1946,15 @@ void tst_QStringApiSymmetry::localeAwareCompare_data()
         particularly the a-umlaut vs a-ring comparison.
     */
     if (canTest("C")) {
-        QTest::newRow("C@auml.lt.aring")
+        BOBUIest::newRow("C@auml.lt.aring")
             << QByteArray("C")
             << QString::fromLatin1("\xe4") // &auml;
             << QString::fromLatin1("\xe5") << -1;
-        QTest::newRow("C@auml.lt.ouml")
+        BOBUIest::newRow("C@auml.lt.ouml")
             << QByteArray("C")
             << QString::fromLatin1("\xe4")
             << QString::fromLatin1("\xf6") << -1; // &ouml;
-        QTest::newRow("C.aring.lt.ouml")
+        BOBUIest::newRow("C.aring.lt.ouml")
             << QByteArray("C")
             << QString::fromLatin1("\xe5") // &aring;
             << QString::fromLatin1("\xf6") << -1;
@@ -1968,19 +1968,19 @@ void tst_QStringApiSymmetry::localeAwareCompare_data()
         all come after z.
     */
     if (canTest("sv_SE")) {
-        QTest::newRow("swede@aring.lt.auml")
+        BOBUIest::newRow("swede@aring.lt.auml")
             << QByteArray("sv_SE")
             << QString::fromLatin1("\xe5")
             << QString::fromLatin1("\xe4") << -1;
-        QTest::newRow("swede@auml.lt.ouml")
+        BOBUIest::newRow("swede@auml.lt.ouml")
             << QByteArray("sv_SE")
             << QString::fromLatin1("\xe4")
             << QString::fromLatin1("\xf6") << -1;
-        QTest::newRow("swede.aring.lt.ouml")
+        BOBUIest::newRow("swede.aring.lt.ouml")
             << QByteArray("sv_SE")
             << QString::fromLatin1("\xe5")
             << QString::fromLatin1("\xf6") << -1;
-        QTest::newRow("swede.z.lt.aring")
+        BOBUIest::newRow("swede.z.lt.aring")
             << QByteArray("sv_SE")
             << QString::fromLatin1("z")
             << QString::fromLatin1("\xe5") << -1;
@@ -1993,15 +1993,15 @@ void tst_QStringApiSymmetry::localeAwareCompare_data()
         comes before a with ring above (E5).
     */
     if (canTest("nb_NO")) {
-        QTest::newRow("norsk.ae.lt.oslash")
+        BOBUIest::newRow("norsk.ae.lt.oslash")
             << QByteArray("nb_NO")
             << QString::fromLatin1("\xe6")
             << QString::fromLatin1("\xd8") << -1;
-        QTest::newRow("norsk.oslash.lt.aring")
+        BOBUIest::newRow("norsk.oslash.lt.aring")
             << QByteArray("nb_NO")
             << QString::fromLatin1("\xd8")
             << QString::fromLatin1("\xe5") << -1;
-        QTest::newRow("norsk.ae.lt.aring")
+        BOBUIest::newRow("norsk.ae.lt.aring")
             << QByteArray("nb_NO")
             << QString::fromLatin1("\xe6")
             << QString::fromLatin1("\xe5") << -1;
@@ -2014,15 +2014,15 @@ void tst_QStringApiSymmetry::localeAwareCompare_data()
         which comes before o diaresis (F6).
     */
     if (canTest("de_DE")) {
-        QTest::newRow("german.z.gt.auml")
+        BOBUIest::newRow("german.z.gt.auml")
             << QByteArray("de_DE")
             << QString::fromLatin1("z")
             << QString::fromLatin1("\xe4") << 1;
-        QTest::newRow("german.auml.lt.ouml")
+        BOBUIest::newRow("german.auml.lt.ouml")
             << QByteArray("de_DE")
             << QString::fromLatin1("\xe4")
             << QString::fromLatin1("\xf6") << -1;
-        QTest::newRow("german.z.gt.ouml")
+        BOBUIest::newRow("german.z.gt.ouml")
             << QByteArray("de_DE")
             << QString::fromLatin1("z")
             << QString::fromLatin1("\xf6") << 1;
@@ -2030,7 +2030,7 @@ void tst_QStringApiSymmetry::localeAwareCompare_data()
         countGroups++;
     }
     // Tell developers how to get all the results (bot don't spam Coin logs):
-    if (countGroups < 5 && !qgetenv("QTEST_ENVIRONMENT").split(' ').contains("ci")) {
+    if (countGroups < 5 && !qgetenv("BOBUIEST_ENVIRONMENT").split(' ').contains("ci")) {
         qDebug(R"(On platforms where this test cannot control the locale used by
 QString::localeAwareCompare(), it only runs test-cases for the locale in use.
 To test thoroughly, it is necessary to run this test repeatedly with each of
@@ -2050,7 +2050,7 @@ void tst_QStringApiSymmetry::localeAwareCompare_impl()
     QFETCH(int, result);
     locale += ".UTF-8"; // So we don't have to repeat it on every data row !
 
-    const QTestLocaleChange::TransientLocale tested(LC_ALL, locale.constData());
+    const BOBUIestLocaleChange::TransientLocale tested(LC_ALL, locale.constData());
     if (!tested.isValid())
         QSKIP(QByteArray("Test needs locale " + locale + " installed on this machine").constData());
 
@@ -2070,7 +2070,7 @@ void tst_QStringApiSymmetry::member_localeAwareCompare_impl()
     QFETCH(int, result);
     locale += ".UTF-8"; // So we don't have to repeat it on every data row !
 
-    const QTestLocaleChange::TransientLocale tested(LC_ALL, locale.constData());
+    const BOBUIestLocaleChange::TransientLocale tested(LC_ALL, locale.constData());
     if (!tested.isValid())
         QSKIP(QByteArray("Test needs locale " + locale + " installed on this machine").constData());
 
@@ -2117,34 +2117,34 @@ static QString ABC = QStringLiteral("ABC");
 
 void tst_QStringApiSymmetry::startsWith_data(bool rhsHasVariableLength)
 {
-    QTest::addColumn<QStringView>("haystackU16");
-    QTest::addColumn<QLatin1String>("haystackL1");
-    QTest::addColumn<QStringView>("needleU16");
-    QTest::addColumn<QLatin1String>("needleL1");
-    QTest::addColumn<bool>("resultCS");
-    QTest::addColumn<bool>("resultCIS");
+    BOBUIest::addColumn<QStringView>("haystackU16");
+    BOBUIest::addColumn<QLatin1String>("haystackL1");
+    BOBUIest::addColumn<QStringView>("needleU16");
+    BOBUIest::addColumn<QLatin1String>("needleL1");
+    BOBUIest::addColumn<bool>("resultCS");
+    BOBUIest::addColumn<bool>("resultCIS");
 
     if (rhsHasVariableLength) {
-        QTest::addRow("null ~= ^null")   << QStringView() << QLatin1String()
+        BOBUIest::addRow("null ~= ^null")   << QStringView() << QLatin1String()
                                          << QStringView() << QLatin1String() << true << true;
-        QTest::addRow("empty ~= ^null")  << QStringView(empty) << QLatin1String("")
+        BOBUIest::addRow("empty ~= ^null")  << QStringView(empty) << QLatin1String("")
                                          << QStringView() << QLatin1String() << true << true;
-        QTest::addRow("a ~= ^null")      << QStringView(a) << QLatin1String("a")
+        BOBUIest::addRow("a ~= ^null")      << QStringView(a) << QLatin1String("a")
                                          << QStringView() << QLatin1String() << true << true;
-        QTest::addRow("null ~= ^empty")  << QStringView() << QLatin1String()
+        BOBUIest::addRow("null ~= ^empty")  << QStringView() << QLatin1String()
                                          << QStringView(empty) << QLatin1String("") << false << false;
-        QTest::addRow("a ~= ^empty")     << QStringView(a) << QLatin1String("a")
+        BOBUIest::addRow("a ~= ^empty")     << QStringView(a) << QLatin1String("a")
                                          << QStringView(empty) << QLatin1String("") << true << true;
-        QTest::addRow("empty ~= ^empty") << QStringView(empty) << QLatin1String("")
+        BOBUIest::addRow("empty ~= ^empty") << QStringView(empty) << QLatin1String("")
                                          << QStringView(empty) << QLatin1String("") << true << true;
     }
-    QTest::addRow("null ~= ^a")      << QStringView() << QLatin1String()
+    BOBUIest::addRow("null ~= ^a")      << QStringView() << QLatin1String()
                                      << QStringView(a) << QLatin1String("a") << false << false;
-    QTest::addRow("empty ~= ^a")     << QStringView(empty) << QLatin1String("")
+    BOBUIest::addRow("empty ~= ^a")     << QStringView(empty) << QLatin1String("")
                                      << QStringView(a) << QLatin1String("a") << false << false;
 
 #define ROW(h, n, cs, cis) \
-    QTest::addRow("%s ~= ^%s", #h, #n) << QStringView(h) << QLatin1String(#h) \
+    BOBUIest::addRow("%s ~= ^%s", #h, #n) << QStringView(h) << QLatin1String(#h) \
                                        << QStringView(n) << QLatin1String(#n) \
                                        << bool(cs) << bool(cis)
     ROW(a,  a, 1, 1);
@@ -2198,40 +2198,40 @@ void tst_QStringApiSymmetry::startsWith_impl() const
     const auto needle = make<Needle>(needleU16, needleL1, needleU8);
 
     QCOMPARE_EQ(haystack.startsWith(needle), resultCS);
-    QCOMPARE_EQ(haystack.startsWith(needle, Qt::CaseSensitive), resultCS);
-    QCOMPARE_EQ(haystack.startsWith(needle, Qt::CaseInsensitive), resultCIS);
+    QCOMPARE_EQ(haystack.startsWith(needle, BobUI::CaseSensitive), resultCS);
+    QCOMPARE_EQ(haystack.startsWith(needle, BobUI::CaseInsensitive), resultCIS);
 }
 
 void tst_QStringApiSymmetry::endsWith_data(bool rhsHasVariableLength)
 {
-    QTest::addColumn<QStringView>("haystackU16");
-    QTest::addColumn<QLatin1String>("haystackL1");
-    QTest::addColumn<QStringView>("needleU16");
-    QTest::addColumn<QLatin1String>("needleL1");
-    QTest::addColumn<bool>("resultCS");
-    QTest::addColumn<bool>("resultCIS");
+    BOBUIest::addColumn<QStringView>("haystackU16");
+    BOBUIest::addColumn<QLatin1String>("haystackL1");
+    BOBUIest::addColumn<QStringView>("needleU16");
+    BOBUIest::addColumn<QLatin1String>("needleL1");
+    BOBUIest::addColumn<bool>("resultCS");
+    BOBUIest::addColumn<bool>("resultCIS");
 
     if (rhsHasVariableLength) {
-        QTest::addRow("null ~= null$")   << QStringView() << QLatin1String()
+        BOBUIest::addRow("null ~= null$")   << QStringView() << QLatin1String()
                                          << QStringView() << QLatin1String() << true << true;
-        QTest::addRow("empty ~= null$")  << QStringView(empty) << QLatin1String("")
+        BOBUIest::addRow("empty ~= null$")  << QStringView(empty) << QLatin1String("")
                                          << QStringView() << QLatin1String() << true << true;
-        QTest::addRow("a ~= null$")      << QStringView(a) << QLatin1String("a")
+        BOBUIest::addRow("a ~= null$")      << QStringView(a) << QLatin1String("a")
                                          << QStringView() << QLatin1String() << true << true;
-        QTest::addRow("null ~= empty$")  << QStringView() << QLatin1String()
+        BOBUIest::addRow("null ~= empty$")  << QStringView() << QLatin1String()
                                          << QStringView(empty) << QLatin1String("") << false << false;
-        QTest::addRow("a ~= empty$")     << QStringView(a) << QLatin1String("a")
+        BOBUIest::addRow("a ~= empty$")     << QStringView(a) << QLatin1String("a")
                                          << QStringView(empty) << QLatin1String("") << true << true;
-        QTest::addRow("empty ~= empty$") << QStringView(empty) << QLatin1String("")
+        BOBUIest::addRow("empty ~= empty$") << QStringView(empty) << QLatin1String("")
                                          << QStringView(empty) << QLatin1String("") << true << true;
     }
-    QTest::addRow("null ~= a$")      << QStringView() << QLatin1String()
+    BOBUIest::addRow("null ~= a$")      << QStringView() << QLatin1String()
                                      << QStringView(a) << QLatin1String("a") << false << false;
-    QTest::addRow("empty ~= a$")     << QStringView(empty) << QLatin1String("")
+    BOBUIest::addRow("empty ~= a$")     << QStringView(empty) << QLatin1String("")
                                      << QStringView(a) << QLatin1String("a") << false << false;
 
 #define ROW(h, n, cs, cis) \
-    QTest::addRow("%s ~= %s$", #h, #n) << QStringView(h) << QLatin1String(#h) \
+    BOBUIest::addRow("%s ~= %s$", #h, #n) << QStringView(h) << QLatin1String(#h) \
                                        << QStringView(n) << QLatin1String(#n) \
                                        << bool(cs) << bool(cis)
     ROW(a,  a, 1, 1);
@@ -2285,22 +2285,22 @@ void tst_QStringApiSymmetry::endsWith_impl() const
     const auto needle = make<Needle>(needleU16, needleL1, needleU8);
 
     QCOMPARE_EQ(haystack.endsWith(needle), resultCS);
-    QCOMPARE_EQ(haystack.endsWith(needle, Qt::CaseSensitive), resultCS);
-    QCOMPARE_EQ(haystack.endsWith(needle, Qt::CaseInsensitive), resultCIS);
+    QCOMPARE_EQ(haystack.endsWith(needle, BobUI::CaseSensitive), resultCS);
+    QCOMPARE_EQ(haystack.endsWith(needle, BobUI::CaseInsensitive), resultCIS);
 }
 
 void tst_QStringApiSymmetry::arg1_data(bool argHasVariableLength) const
 {
-    QTest::addColumn<QString>("formatU16");
-    QTest::addColumn<QString>("argumentU16");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<QString>("formatU16");
+    BOBUIest::addColumn<QString>("argumentU16");
+    BOBUIest::addColumn<QString>("expected");
 
     const char *null = nullptr;
     const char *empty = "";
 
     auto row = [](const char *fmt, const char *arg, const char *res) {
         auto protect = [](const char *s) { return s ? *s ? s : "<empty>" : "<null>"; };
-        QTest::addRow("%s/%s", protect(fmt), protect(arg))
+        BOBUIest::addRow("%s/%s", protect(fmt), protect(arg))
                 << QString::fromUtf8(fmt) << QString::fromUtf8(arg) << QString::fromUtf8(res);
     };
 
@@ -2354,42 +2354,42 @@ void tst_QStringApiSymmetry::arg1_impl() const
 
 void tst_QStringApiSymmetry::split_data(bool rhsHasVariableLength)
 {
-    QTest::addColumn<QStringView>("haystackU16");
-    QTest::addColumn<QLatin1String>("haystackL1");
-    QTest::addColumn<QStringView>("needleU16");
-    QTest::addColumn<QLatin1String>("needleL1");
-    QTest::addColumn<QStringList>("resultCS");
-    QTest::addColumn<QStringList>("resultCIS");
+    BOBUIest::addColumn<QStringView>("haystackU16");
+    BOBUIest::addColumn<QLatin1String>("haystackL1");
+    BOBUIest::addColumn<QStringView>("needleU16");
+    BOBUIest::addColumn<QLatin1String>("needleL1");
+    BOBUIest::addColumn<QStringList>("resultCS");
+    BOBUIest::addColumn<QStringList>("resultCIS");
 
     if (rhsHasVariableLength) {
-        QTest::addRow("null ~= null$")   << QStringView{} << QLatin1String{}
+        BOBUIest::addRow("null ~= null$")   << QStringView{} << QLatin1String{}
                                          << QStringView{} << QLatin1String{}
                                          << QStringList{{}, {}} << QStringList{{}, {}};
-        QTest::addRow("empty ~= null$")  << QStringView{empty} << QLatin1String("")
+        BOBUIest::addRow("empty ~= null$")  << QStringView{empty} << QLatin1String("")
                                          << QStringView{} << QLatin1String{}
                                          << QStringList{empty, empty} << QStringList{empty, empty};
-        QTest::addRow("a ~= null$")      << QStringView{a} << QLatin1String{"a"}
+        BOBUIest::addRow("a ~= null$")      << QStringView{a} << QLatin1String{"a"}
                                          << QStringView{} << QLatin1String{}
                                          << QStringList{empty, a, empty} << QStringList{empty, a, empty};
-        QTest::addRow("null ~= empty$")  << QStringView{} << QLatin1String{}
+        BOBUIest::addRow("null ~= empty$")  << QStringView{} << QLatin1String{}
                                          << QStringView{empty} << QLatin1String{""}
                                          << QStringList{{}, {}} << QStringList{{}, {}};
-        QTest::addRow("a ~= empty$")     << QStringView{a} << QLatin1String{"a"}
+        BOBUIest::addRow("a ~= empty$")     << QStringView{a} << QLatin1String{"a"}
                                          << QStringView{empty} << QLatin1String{""}
                                          << QStringList{empty, a, empty} << QStringList{empty, a, empty};
-        QTest::addRow("empty ~= empty$") << QStringView{empty} << QLatin1String{""}
+        BOBUIest::addRow("empty ~= empty$") << QStringView{empty} << QLatin1String{""}
                                          << QStringView{empty} << QLatin1String{""}
                                          << QStringList{empty, empty} << QStringList{empty, empty};
     }
-    QTest::addRow("null ~= a$")      << QStringView{} << QLatin1String{}
+    BOBUIest::addRow("null ~= a$")      << QStringView{} << QLatin1String{}
                                      << QStringView{a} << QLatin1String{"a"}
                                      << QStringList{{}} << QStringList{{}};
-    QTest::addRow("empty ~= a$")     << QStringView{empty} << QLatin1String{""}
+    BOBUIest::addRow("empty ~= a$")     << QStringView{empty} << QLatin1String{""}
                                      << QStringView{a} << QLatin1String{"a"}
                                      << QStringList{empty} << QStringList{empty};
 
 #define ROW(h, n, cs, cis) \
-    QTest::addRow("%s ~= %s$", #h, #n) << QStringView(h) << QLatin1String(#h) \
+    BOBUIest::addRow("%s ~= %s$", #h, #n) << QStringView(h) << QLatin1String(#h) \
                                        << QStringView(n) << QLatin1String(#n) \
                                        << QStringList cs << QStringList cis
     ROW(a,  a, ({empty, empty}), ({empty, empty}));
@@ -2464,10 +2464,10 @@ void tst_QStringApiSymmetry::split_impl() const
 
     QCOMPARE_EQ(toQStringList(haystack.split(needle)), resultCS);
     if constexpr (!std::is_same_v<Haystack, QByteArray>) {
-    QCOMPARE_EQ(toQStringList(haystack.split(needle, Qt::KeepEmptyParts, Qt::CaseSensitive)), resultCS);
-    QCOMPARE_EQ(toQStringList(haystack.split(needle, Qt::KeepEmptyParts, Qt::CaseInsensitive)), resultCIS);
-    QCOMPARE_EQ(toQStringList(haystack.split(needle, Qt::SkipEmptyParts, Qt::CaseSensitive)), skippedResultCS);
-    QCOMPARE_EQ(toQStringList(haystack.split(needle, Qt::SkipEmptyParts, Qt::CaseInsensitive)), skippedResultCIS);
+    QCOMPARE_EQ(toQStringList(haystack.split(needle, BobUI::KeepEmptyParts, BobUI::CaseSensitive)), resultCS);
+    QCOMPARE_EQ(toQStringList(haystack.split(needle, BobUI::KeepEmptyParts, BobUI::CaseInsensitive)), resultCIS);
+    QCOMPARE_EQ(toQStringList(haystack.split(needle, BobUI::SkipEmptyParts, BobUI::CaseSensitive)), skippedResultCS);
+    QCOMPARE_EQ(toQStringList(haystack.split(needle, BobUI::SkipEmptyParts, BobUI::CaseInsensitive)), skippedResultCIS);
     }
 }
 
@@ -2504,10 +2504,10 @@ void tst_QStringApiSymmetry::tok_impl() const
     const auto needle = make<Needle>(needleU16, needleL1, needleU8);
 
     QCOMPARE_EQ(toQStringList(qTokenize(haystack, needle)), resultCS);
-    QCOMPARE_EQ(toQStringList(qTokenize(haystack, needle, Qt::KeepEmptyParts, Qt::CaseSensitive)), resultCS);
-    QCOMPARE_EQ(toQStringList(qTokenize(haystack, needle, Qt::CaseInsensitive, Qt::KeepEmptyParts)), resultCIS);
-    QCOMPARE_EQ(toQStringList(qTokenize(haystack, needle, Qt::SkipEmptyParts, Qt::CaseSensitive)), skippedResultCS);
-    QCOMPARE_EQ(toQStringList(qTokenize(haystack, needle, Qt::CaseInsensitive, Qt::SkipEmptyParts)), skippedResultCIS);
+    QCOMPARE_EQ(toQStringList(qTokenize(haystack, needle, BobUI::KeepEmptyParts, BobUI::CaseSensitive)), resultCS);
+    QCOMPARE_EQ(toQStringList(qTokenize(haystack, needle, BobUI::CaseInsensitive, BobUI::KeepEmptyParts)), resultCIS);
+    QCOMPARE_EQ(toQStringList(qTokenize(haystack, needle, BobUI::SkipEmptyParts, BobUI::CaseSensitive)), skippedResultCS);
+    QCOMPARE_EQ(toQStringList(qTokenize(haystack, needle, BobUI::CaseInsensitive, BobUI::SkipEmptyParts)), skippedResultCIS);
 
     {
         const auto tok = qTokenize(deepCopied(haystack), deepCopied(needle));
@@ -2517,10 +2517,10 @@ void tst_QStringApiSymmetry::tok_impl() const
     }
 
     QCOMPARE_EQ(toQStringList(QStringTokenizer{haystack, needle}), resultCS);
-    QCOMPARE_EQ(toQStringList(QStringTokenizer{haystack, needle, Qt::KeepEmptyParts, Qt::CaseSensitive}), resultCS);
-    QCOMPARE_EQ(toQStringList(QStringTokenizer{haystack, needle, Qt::CaseInsensitive, Qt::KeepEmptyParts}), resultCIS);
-    QCOMPARE_EQ(toQStringList(QStringTokenizer{haystack, needle, Qt::SkipEmptyParts, Qt::CaseSensitive}), skippedResultCS);
-    QCOMPARE_EQ(toQStringList(QStringTokenizer{haystack, needle, Qt::CaseInsensitive, Qt::SkipEmptyParts}), skippedResultCIS);
+    QCOMPARE_EQ(toQStringList(QStringTokenizer{haystack, needle, BobUI::KeepEmptyParts, BobUI::CaseSensitive}), resultCS);
+    QCOMPARE_EQ(toQStringList(QStringTokenizer{haystack, needle, BobUI::CaseInsensitive, BobUI::KeepEmptyParts}), resultCIS);
+    QCOMPARE_EQ(toQStringList(QStringTokenizer{haystack, needle, BobUI::SkipEmptyParts, BobUI::CaseSensitive}), skippedResultCS);
+    QCOMPARE_EQ(toQStringList(QStringTokenizer{haystack, needle, BobUI::CaseInsensitive, BobUI::SkipEmptyParts}), skippedResultCIS);
 
     {
         const auto tok = QStringTokenizer{deepCopied(haystack), deepCopied(needle)};
@@ -2531,10 +2531,10 @@ void tst_QStringApiSymmetry::tok_impl() const
 
     if constexpr (has_tokenize_method_v<Haystack>) {
         QCOMPARE_EQ(toQStringList(haystack.tokenize(needle)), resultCS);
-        QCOMPARE_EQ(toQStringList(haystack.tokenize(needle, Qt::KeepEmptyParts, Qt::CaseSensitive)), resultCS);
-        QCOMPARE_EQ(toQStringList(haystack.tokenize(needle, Qt::CaseInsensitive, Qt::KeepEmptyParts)), resultCIS);
-        QCOMPARE_EQ(toQStringList(haystack.tokenize(needle, Qt::SkipEmptyParts, Qt::CaseSensitive)), skippedResultCS);
-        QCOMPARE_EQ(toQStringList(haystack.tokenize(needle, Qt::CaseInsensitive, Qt::SkipEmptyParts)), skippedResultCIS);
+        QCOMPARE_EQ(toQStringList(haystack.tokenize(needle, BobUI::KeepEmptyParts, BobUI::CaseSensitive)), resultCS);
+        QCOMPARE_EQ(toQStringList(haystack.tokenize(needle, BobUI::CaseInsensitive, BobUI::KeepEmptyParts)), resultCIS);
+        QCOMPARE_EQ(toQStringList(haystack.tokenize(needle, BobUI::SkipEmptyParts, BobUI::CaseSensitive)), skippedResultCS);
+        QCOMPARE_EQ(toQStringList(haystack.tokenize(needle, BobUI::CaseInsensitive, BobUI::SkipEmptyParts)), skippedResultCIS);
 
         {
             const auto tok = deepCopied(haystack).tokenize(deepCopied(needle));
@@ -2558,7 +2558,7 @@ void tst_QStringApiSymmetry::replace_split_impl() const
     QFETCH(const QStringView, needleU16);
     QFETCH(const QLatin1String, needleL1);
     QFETCH(const QStringList, resultCS);
-    [[maybe_unused]] // replace() doesn't, yet, have a Qt::CaseSensitivity parameter
+    [[maybe_unused]] // replace() doesn't, yet, have a BobUI::CaseSensitivity parameter
     QFETCH(const QStringList, resultCIS);
 
     const auto haystackU8 = haystackU16.toUtf8();
@@ -2595,7 +2595,7 @@ void tst_QStringApiSymmetry::mid_data()
 
     // mid() has a wider contract compared to sliced(), so test those cases here:
 #define ROW(base, p, n, r1, r2) \
-    QTest::addRow("%s %d %d", #base, p, n) << QStringView(base) << QLatin1String(#base) << p << n << QAnyStringView(r1) << QAnyStringView(r2)
+    BOBUIest::addRow("%s %d %d", #base, p, n) << QStringView(base) << QLatin1String(#base) << p << n << QAnyStringView(r1) << QAnyStringView(r2)
 
     ROW(a, -1, 0, a, null);
     ROW(a, -1, 2, a, a);
@@ -2670,7 +2670,7 @@ void tst_QStringApiSymmetry::left_data()
 
     // specific data testing out of bounds cases
 #define ROW(base, n, res) \
-    QTest::addRow("%s%d", #base, n) << QStringView(base) << QLatin1String(#base) << n << QAnyStringView(res);
+    BOBUIest::addRow("%s%d", #base, n) << QStringView(base) << QLatin1String(#base) << n << QAnyStringView(res);
 
     ROW(a, -1, a);
     ROW(a, 2, a);
@@ -2688,7 +2688,7 @@ void tst_QStringApiSymmetry::left_QByteArray_data()
 
     // specific data testing out of bounds cases
 #define ROW(base, n, res) \
-    QTest::addRow("%s%d", #base, n) << QStringView(base) << QLatin1String(#base) << n << QAnyStringView(res);
+    BOBUIest::addRow("%s%d", #base, n) << QStringView(base) << QLatin1String(#base) << n << QAnyStringView(res);
 
     ROW(a, -1, empty);
     ROW(a, 2, a);
@@ -2732,7 +2732,7 @@ void tst_QStringApiSymmetry::right_data()
 
     // specific data testing out of bounds cases
 #define ROW(base, n, res) \
-    QTest::addRow("%s%d", #base, n) << QStringView(base) << QLatin1String(#base) << n << QAnyStringView(res);
+    BOBUIest::addRow("%s%d", #base, n) << QStringView(base) << QLatin1String(#base) << n << QAnyStringView(res);
 
     ROW(a, -1, a);
     ROW(a, 2, a);
@@ -2750,7 +2750,7 @@ void tst_QStringApiSymmetry::right_QByteArray_data()
 
     // specific data testing out of bounds cases
 #define ROW(base, n, res) \
-    QTest::addRow("%s%d", #base, n) << QStringView(base) << QLatin1String(#base) << n << QAnyStringView(res);
+    BOBUIest::addRow("%s%d", #base, n) << QStringView(base) << QLatin1String(#base) << n << QAnyStringView(res);
 
     ROW(a, -1, empty);
     ROW(a, 2, a);
@@ -2790,18 +2790,18 @@ void tst_QStringApiSymmetry::right_impl()
 
 void tst_QStringApiSymmetry::sliced_data()
 {
-    QTest::addColumn<QStringView>("unicode");
-    QTest::addColumn<QLatin1String>("latin1");
-    QTest::addColumn<int>("pos");
-    QTest::addColumn<int>("n");
-    QTest::addColumn<QAnyStringView>("result");
-    QTest::addColumn<QAnyStringView>("result2");
+    BOBUIest::addColumn<QStringView>("unicode");
+    BOBUIest::addColumn<QLatin1String>("latin1");
+    BOBUIest::addColumn<int>("pos");
+    BOBUIest::addColumn<int>("n");
+    BOBUIest::addColumn<QAnyStringView>("result");
+    BOBUIest::addColumn<QAnyStringView>("result2");
 
-//    QTest::addRow("null") << QStringView() << QLatin1String() << 0 << 0 << QStringView() << QStringView();
-    QTest::addRow("empty") << QStringView(empty) << QLatin1String("") << 0 << 0 << QAnyStringView(empty) << QAnyStringView(empty);
+//    BOBUIest::addRow("null") << QStringView() << QLatin1String() << 0 << 0 << QStringView() << QStringView();
+    BOBUIest::addRow("empty") << QStringView(empty) << QLatin1String("") << 0 << 0 << QAnyStringView(empty) << QAnyStringView(empty);
 
 #define ROW(base, p, n, r1, r2) \
-    QTest::addRow("%s%d%d", #base, p, n) << QStringView(base) << QLatin1String(#base) << p << n << QAnyStringView(r1) << QAnyStringView(r2)
+    BOBUIest::addRow("%s%d%d", #base, p, n) << QStringView(base) << QLatin1String(#base) << p << n << QAnyStringView(r1) << QAnyStringView(r2)
 
     ROW(a, 0, 0, a, empty);
     ROW(a, 0, 1, a, a);
@@ -2884,18 +2884,18 @@ void tst_QStringApiSymmetry::sliced_impl()
 
 void tst_QStringApiSymmetry::first_data()
 {
-    QTest::addColumn<QStringView>("unicode");
-    QTest::addColumn<QLatin1String>("latin1");
-    QTest::addColumn<int>("n");
-    QTest::addColumn<QAnyStringView>("result");
+    BOBUIest::addColumn<QStringView>("unicode");
+    BOBUIest::addColumn<QLatin1String>("latin1");
+    BOBUIest::addColumn<int>("n");
+    BOBUIest::addColumn<QAnyStringView>("result");
 
-//    QTest::addRow("null") << QStringView() << QLatin1String() << 0 << QStringView();
-    QTest::addRow("empty") << QStringView(empty) << QLatin1String("") << 0 << QAnyStringView(empty);
+//    BOBUIest::addRow("null") << QStringView() << QLatin1String() << 0 << QStringView();
+    BOBUIest::addRow("empty") << QStringView(empty) << QLatin1String("") << 0 << QAnyStringView(empty);
 
     // Some classes' left() implementations have a wide contract, others a narrow one
     // so only test valid arguments here:
 #define ROW(base, n, res) \
-    QTest::addRow("%s%d", #base, n) << QStringView(base) << QLatin1String(#base) << n << QAnyStringView(res);
+    BOBUIest::addRow("%s%d", #base, n) << QStringView(base) << QLatin1String(#base) << n << QAnyStringView(res);
 
     ROW(a, 0, empty);
     ROW(a, 1, a);
@@ -2949,18 +2949,18 @@ void tst_QStringApiSymmetry::first_impl()
 
 void tst_QStringApiSymmetry::last_data()
 {
-    QTest::addColumn<QStringView>("unicode");
-    QTest::addColumn<QLatin1String>("latin1");
-    QTest::addColumn<int>("n");
-    QTest::addColumn<QAnyStringView>("result");
+    BOBUIest::addColumn<QStringView>("unicode");
+    BOBUIest::addColumn<QLatin1String>("latin1");
+    BOBUIest::addColumn<int>("n");
+    BOBUIest::addColumn<QAnyStringView>("result");
 
-//    QTest::addRow("null") << QStringView() << QLatin1String() << 0 << QStringView();
-    QTest::addRow("empty") << QStringView(empty) << QLatin1String("") << 0 << QAnyStringView(empty);
+//    BOBUIest::addRow("null") << QStringView() << QLatin1String() << 0 << QStringView();
+    BOBUIest::addRow("empty") << QStringView(empty) << QLatin1String("") << 0 << QAnyStringView(empty);
 
     // Some classes' last() implementations have a wide contract, others a narrow one
     // so only test valid arguments here:
 #define ROW(base, n, res) \
-    QTest::addRow("%s%d", #base, n) << QStringView(base) << QLatin1String(#base) << n << QAnyStringView(res);
+    BOBUIest::addRow("%s%d", #base, n) << QStringView(base) << QLatin1String(#base) << n << QAnyStringView(res);
 
     ROW(a, 0, empty);
     ROW(a, 1, a);
@@ -3006,18 +3006,18 @@ void tst_QStringApiSymmetry::last_impl()
 
 void tst_QStringApiSymmetry::chop_data()
 {
-    QTest::addColumn<QStringView>("unicode");
-    QTest::addColumn<QLatin1String>("latin1");
-    QTest::addColumn<int>("n");
-    QTest::addColumn<QAnyStringView>("result");
+    BOBUIest::addColumn<QStringView>("unicode");
+    BOBUIest::addColumn<QLatin1String>("latin1");
+    BOBUIest::addColumn<int>("n");
+    BOBUIest::addColumn<QAnyStringView>("result");
 
-//    QTest::addRow("null") << QStringView() << QLatin1String() << 0 << QStringView();
-    QTest::addRow("empty") << QStringView(empty) << QLatin1String("") << 0 << QAnyStringView(empty);
+//    BOBUIest::addRow("null") << QStringView() << QLatin1String() << 0 << QStringView();
+    BOBUIest::addRow("empty") << QStringView(empty) << QLatin1String("") << 0 << QAnyStringView(empty);
 
     // Some classes' truncate() implementations have a wide contract, others a narrow one
     // so only test valid arguents here:
 #define ROW(base, n, res) \
-    QTest::addRow("%s%d", #base, n) << QStringView(base) << QLatin1String(#base) << n << QAnyStringView(res);
+    BOBUIest::addRow("%s%d", #base, n) << QStringView(base) << QLatin1String(#base) << n << QAnyStringView(res);
 
     ROW(a, 0, a);
     ROW(a, 1, empty);
@@ -3071,18 +3071,18 @@ void tst_QStringApiSymmetry::chop_impl()
 
 void tst_QStringApiSymmetry::trimmed_data()
 {
-    QTest::addColumn<QString>("unicode");
-    QTest::addColumn<QAnyStringView>("result");
+    BOBUIest::addColumn<QString>("unicode");
+    BOBUIest::addColumn<QAnyStringView>("result");
 
     const auto latin1Whitespace = QLatin1StringView(" \r\n\t\f\v");
 
-    QTest::addRow("null") << QString() << QAnyStringView();
+    BOBUIest::addRow("null") << QString() << QAnyStringView();
 
     auto add = [latin1Whitespace](const QString &str) {
         auto row = [&](QLatin1StringView spaces) {
             const QString unicode = spaces + str + spaces;
-            const QScopedArrayPointer<const char> escaped(QTest::toString(unicode));
-            QTest::addRow("%s", escaped.data()) << unicode << QAnyStringView(str);
+            const QScopedArrayPointer<const char> escaped(BOBUIest::toString(unicode));
+            BOBUIest::addRow("%s", escaped.data()) << unicode << QAnyStringView(str);
         };
         row({}); // The len = 0 case of the following.
         for (qsizetype len = 1; len < latin1Whitespace.size(); ++len) {
@@ -3129,21 +3129,21 @@ void tst_QStringApiSymmetry::trimmed_impl()
 
 void tst_QStringApiSymmetry::toNumber_data()
 {
-    QTest::addColumn<QString>("data");
-    QTest::addColumn<qint64>("result");
-    QTest::addColumn<bool>("ok");
+    BOBUIest::addColumn<QString>("data");
+    BOBUIest::addColumn<qint64>("result");
+    BOBUIest::addColumn<bool>("ok");
 
-    QTest::addRow("0") << QString::fromUtf8("0") << qint64(0) << true;
-    QTest::addRow("a0") << QString::fromUtf8("a0") << qint64(0) << false;
-    QTest::addRow("10") << QString::fromUtf8("10") << qint64(10) << true;
-    QTest::addRow("-10") << QString::fromUtf8("-10") << qint64(-10) << true;
-    QTest::addRow("32767") << QString::fromUtf8("32767") << qint64(32767) << true;
-    QTest::addRow("32768") << QString::fromUtf8("32768") << qint64(32768) << true;
-    QTest::addRow("-32767") << QString::fromUtf8("-32767") << qint64(-32767) << true;
-    QTest::addRow("-32768") << QString::fromUtf8("-32768") << qint64(-32768) << true;
-    QTest::addRow("100x") << QString::fromUtf8("100x") << qint64(0) << false;
-    QTest::addRow("-100x") << QString::fromUtf8("-100x") << qint64(0) << false;
-    QTest::addRow("-min64") << QString::fromUtf8("--9223372036854775808") << qint64(0) << false;
+    BOBUIest::addRow("0") << QString::fromUtf8("0") << qint64(0) << true;
+    BOBUIest::addRow("a0") << QString::fromUtf8("a0") << qint64(0) << false;
+    BOBUIest::addRow("10") << QString::fromUtf8("10") << qint64(10) << true;
+    BOBUIest::addRow("-10") << QString::fromUtf8("-10") << qint64(-10) << true;
+    BOBUIest::addRow("32767") << QString::fromUtf8("32767") << qint64(32767) << true;
+    BOBUIest::addRow("32768") << QString::fromUtf8("32768") << qint64(32768) << true;
+    BOBUIest::addRow("-32767") << QString::fromUtf8("-32767") << qint64(-32767) << true;
+    BOBUIest::addRow("-32768") << QString::fromUtf8("-32768") << qint64(-32768) << true;
+    BOBUIest::addRow("100x") << QString::fromUtf8("100x") << qint64(0) << false;
+    BOBUIest::addRow("-100x") << QString::fromUtf8("-100x") << qint64(0) << false;
+    BOBUIest::addRow("-min64") << QString::fromUtf8("--9223372036854775808") << qint64(0) << false;
 }
 
 template<typename T>
@@ -3229,10 +3229,10 @@ void tst_QStringApiSymmetry::toNumber_impl()
 
 void tst_QStringApiSymmetry::toNumberWithBases_data()
 {
-    QTest::addColumn<QString>("data");
-    QTest::addColumn<int>("base");
-    QTest::addColumn<qint64>("result");
-    QTest::addColumn<bool>("ok");
+    BOBUIest::addColumn<QString>("data");
+    BOBUIest::addColumn<int>("base");
+    BOBUIest::addColumn<qint64>("result");
+    BOBUIest::addColumn<bool>("ok");
 
     constexpr struct {
         const char prefix[3];
@@ -3257,7 +3257,7 @@ void tst_QStringApiSymmetry::toNumberWithBases_data()
                     }
                     Q_UNREACHABLE();
                 };
-                QTest::addRow("base%2d: %s%s", base, e.prefix, input)
+                BOBUIest::addRow("base%2d: %s%s", base, e.prefix, input)
                         << data << base << select(e.base /* NOT base! */) << result;
             };
             row(e.base); // explicit base
@@ -3334,12 +3334,12 @@ void tst_QStringApiSymmetry::toNumberWithBases_impl()
 
 void tst_QStringApiSymmetry::count_data()
 {
-    QTest::addColumn<QString>("data");
-    QTest::addColumn<QString>("needle");
-    QTest::addColumn<qsizetype>("result");
+    BOBUIest::addColumn<QString>("data");
+    BOBUIest::addColumn<QString>("needle");
+    BOBUIest::addColumn<qsizetype>("result");
 
-    QTest::addRow("xxx") << QString::fromUtf8("xxx") << QString::fromUtf8("x") << qsizetype(3);
-    QTest::addRow("xyzaaaxyz") << QString::fromUtf8("xyzaaaxyz") << QString::fromUtf8("xyz") << qsizetype(2);
+    BOBUIest::addRow("xxx") << QString::fromUtf8("xxx") << QString::fromUtf8("x") << qsizetype(3);
+    BOBUIest::addRow("xyzaaaxyz") << QString::fromUtf8("xyzaaaxyz") << QString::fromUtf8("xyz") << qsizetype(2);
 }
 
 template<typename Haystack, typename Needle>
@@ -3377,19 +3377,19 @@ void tst_QStringApiSymmetry::count_impl()
 
 void tst_QStringApiSymmetry::toLocal8Bit_data()
 {
-    QTest::addColumn<QString>("unicode");
-    QTest::addColumn<QByteArray>("local");
+    BOBUIest::addColumn<QString>("unicode");
+    BOBUIest::addColumn<QByteArray>("local");
 
     auto add = [](const char *local) {
         const QByteArray ba(local);
         QString s;
         for (char c : ba)
             s += QLatin1Char(c);
-        QTest::newRow(rowName(ba).constData()) << s << ba;
+        BOBUIest::newRow(rowName(ba).constData()) << s << ba;
     };
 
-    QTest::addRow("null") << QString() << QByteArray();
-    QTest::addRow("empty") << QString("") << QByteArray("");
+    BOBUIest::addRow("null") << QString() << QByteArray();
+    BOBUIest::addRow("empty") << QString("") << QByteArray("");
 
     add("Moebius");
     add(LONG_STRING_256);
@@ -3412,19 +3412,19 @@ void tst_QStringApiSymmetry::toLocal8Bit_impl()
 
 void tst_QStringApiSymmetry::toLatin1_data()
 {
-    QTest::addColumn<QString>("unicode");
-    QTest::addColumn<QByteArray>("latin1");
+    BOBUIest::addColumn<QString>("unicode");
+    BOBUIest::addColumn<QByteArray>("latin1");
 
     auto add = [](const char *l1) {
         const QByteArray ba(l1);
         QString s;
         for (char c : ba)
             s += QLatin1Char(c);
-        QTest::newRow(rowName(ba).constData()) << s << ba;
+        BOBUIest::newRow(rowName(ba).constData()) << s << ba;
     };
 
-    QTest::addRow("null") << QString() << QByteArray();
-    QTest::addRow("empty") << QString("") << QByteArray("");
+    BOBUIest::addRow("null") << QString() << QByteArray();
+    BOBUIest::addRow("empty") << QString("") << QByteArray("");
 
     add("M\xF6" "bius");
     add(LONG_STRING_256);
@@ -3447,17 +3447,17 @@ void tst_QStringApiSymmetry::toLatin1_impl()
 
 void tst_QStringApiSymmetry::toUtf8_data()
 {
-    QTest::addColumn<QString>("unicode");
-    QTest::addColumn<QByteArray>("utf8");
+    BOBUIest::addColumn<QString>("unicode");
+    BOBUIest::addColumn<QByteArray>("utf8");
 
     auto add = [](const char *u8) {
         QByteArray ba(u8);
         QString s = ba;
-        QTest::newRow(rowName(ba).constData()) << s << ba;
+        BOBUIest::newRow(rowName(ba).constData()) << s << ba;
     };
 
-    QTest::addRow("null") << QString() << QByteArray();
-    QTest::addRow("empty") << QString("") << QByteArray("");
+    BOBUIest::addRow("null") << QString() << QByteArray();
+    BOBUIest::addRow("empty") << QString("") << QByteArray("");
 
     add("M\xC3\xB6" "bius");
     add(LONG_STRING_256);
@@ -3480,8 +3480,8 @@ void tst_QStringApiSymmetry::toUtf8_impl()
 
 void tst_QStringApiSymmetry::toUcs4_data()
 {
-    QTest::addColumn<QString>("unicode");
-    QTest::addColumn<QList<uint>>("ucs4");
+    BOBUIest::addColumn<QString>("unicode");
+    BOBUIest::addColumn<QList<uint>>("ucs4");
 
     auto add = [](const char *l1) {
         const QByteArray ba(l1);
@@ -3491,11 +3491,11 @@ void tst_QStringApiSymmetry::toUcs4_data()
             s += QLatin1Char(c);
             ucs4.append(uint(uchar(c)));
         }
-        QTest::newRow(rowName(ba).constData()) << s << ucs4;
+        BOBUIest::newRow(rowName(ba).constData()) << s << ucs4;
     };
 
-    QTest::addRow("null") << QString() << QList<uint>();
-    QTest::addRow("empty") << QString("") << QList<uint>();
+    BOBUIest::addRow("null") << QString() << QList<uint>();
+    BOBUIest::addRow("empty") << QString("") << QList<uint>();
 
     add("M\xF6" "bius");
     add(LONG_STRING_256);
@@ -3517,41 +3517,41 @@ void tst_QStringApiSymmetry::toUcs4_impl()
 
 void tst_QStringApiSymmetry::indexOf_data(bool rhsHasVariableLength)
 {
-    QTest::addColumn<QString>("haystackU16");
-    QTest::addColumn<QLatin1String>("haystackL1");
-    QTest::addColumn<QString>("needleU16");
-    QTest::addColumn<QLatin1String>("needleL1");
-    QTest::addColumn<qsizetype>("startpos");
-    QTest::addColumn<qsizetype>("resultCS");
-    QTest::addColumn<qsizetype>("resultCIS");
+    BOBUIest::addColumn<QString>("haystackU16");
+    BOBUIest::addColumn<QLatin1String>("haystackL1");
+    BOBUIest::addColumn<QString>("needleU16");
+    BOBUIest::addColumn<QLatin1String>("needleL1");
+    BOBUIest::addColumn<qsizetype>("startpos");
+    BOBUIest::addColumn<qsizetype>("resultCS");
+    BOBUIest::addColumn<qsizetype>("resultCIS");
 
     constexpr qsizetype zeroPos = 0;
     constexpr qsizetype minus1Pos = -1;
 
     if (rhsHasVariableLength) {
-        QTest::addRow("haystack: null, needle: null") << null << QLatin1String()
+        BOBUIest::addRow("haystack: null, needle: null") << null << QLatin1String()
                                      << null << QLatin1String() << zeroPos << zeroPos << zeroPos;
-        QTest::addRow("haystack: empty, needle: null")  << empty << QLatin1String("")
+        BOBUIest::addRow("haystack: empty, needle: null")  << empty << QLatin1String("")
                                      << null << QLatin1String() << zeroPos << zeroPos << zeroPos;
-        QTest::addRow("haystack: a, needle: null") << a << QLatin1String("a")
+        BOBUIest::addRow("haystack: a, needle: null") << a << QLatin1String("a")
                                      << null << QLatin1String() << zeroPos << zeroPos << zeroPos;
-        QTest::addRow("haystack: null, needle: empty") << null << QLatin1String()
+        BOBUIest::addRow("haystack: null, needle: empty") << null << QLatin1String()
                                      << empty << QLatin1String("") << zeroPos << zeroPos << zeroPos;
-        QTest::addRow("haystack: a, needle: empty") << a << QLatin1String("a")
+        BOBUIest::addRow("haystack: a, needle: empty") << a << QLatin1String("a")
                                      << empty << QLatin1String("") << zeroPos << zeroPos << zeroPos;
-        QTest::addRow("haystack: empty, needle: empty") << empty << QLatin1String("")
+        BOBUIest::addRow("haystack: empty, needle: empty") << empty << QLatin1String("")
                                      << empty << QLatin1String("") << zeroPos << zeroPos << zeroPos;
     }
-    QTest::addRow("haystack: empty, needle: a") << empty << QLatin1String("")
+    BOBUIest::addRow("haystack: empty, needle: a") << empty << QLatin1String("")
                                      << a << QLatin1String("a") << zeroPos << minus1Pos << minus1Pos;
-    QTest::addRow("haystack: null, needle: a") << null << QLatin1String()
+    BOBUIest::addRow("haystack: null, needle: a") << null << QLatin1String()
                                      << a << QLatin1String("a") << zeroPos << minus1Pos << minus1Pos;
-    QTest::addRow("haystack: anything, needle: a, large negative offset")
+    BOBUIest::addRow("haystack: anything, needle: a, large negative offset")
             << "anything" << QLatin1String("anything") << a << QLatin1String("a") << qsizetype(-500)
             << minus1Pos << minus1Pos;
 
 #define ROW(h, n, st, cs, cis) \
-    QTest::addRow("haystack: %s, needle: %s, start: %d", #h, #n, st) \
+    BOBUIest::addRow("haystack: %s, needle: %s, start: %d", #h, #n, st) \
         << h << QLatin1String(#h) << n << QLatin1String(#n) \
         << qsizetype(st) << qsizetype(cs) << qsizetype(cis)
 
@@ -3612,8 +3612,8 @@ void tst_QStringApiSymmetry::indexOf_impl() const
     using size_type = typename Haystack::size_type;
 
     QCOMPARE_EQ(haystack.indexOf(needle, startpos), size_type(resultCS));
-    QCOMPARE_EQ(haystack.indexOf(needle, startpos, Qt::CaseSensitive), size_type(resultCS));
-    QCOMPARE_EQ(haystack.indexOf(needle, startpos, Qt::CaseInsensitive), size_type(resultCIS));
+    QCOMPARE_EQ(haystack.indexOf(needle, startpos, BobUI::CaseSensitive), size_type(resultCS));
+    QCOMPARE_EQ(haystack.indexOf(needle, startpos, BobUI::CaseInsensitive), size_type(resultCIS));
 }
 
 static QString ABCDEFGHIEfGEFG = QStringLiteral("ABCDEFGHIEfGEFG");
@@ -3625,34 +3625,34 @@ static QString Z = QStringLiteral("Z");
 
 void tst_QStringApiSymmetry::contains_data(bool rhsHasVariableLength)
 {
-    QTest::addColumn<QString>("haystackU16");
-    QTest::addColumn<QLatin1String>("haystackL1");
-    QTest::addColumn<QString>("needleU16");
-    QTest::addColumn<QLatin1String>("needleL1");
-    QTest::addColumn<bool>("resultCS");
-    QTest::addColumn<bool>("resultCIS");
+    BOBUIest::addColumn<QString>("haystackU16");
+    BOBUIest::addColumn<QLatin1String>("haystackL1");
+    BOBUIest::addColumn<QString>("needleU16");
+    BOBUIest::addColumn<QLatin1String>("needleL1");
+    BOBUIest::addColumn<bool>("resultCS");
+    BOBUIest::addColumn<bool>("resultCIS");
 
     if (rhsHasVariableLength) {
-        QTest::addRow("haystack: null, needle: null") << null << QLatin1String()
+        BOBUIest::addRow("haystack: null, needle: null") << null << QLatin1String()
                                      << null << QLatin1String() << true << true;
-        QTest::addRow("haystack: empty, needle: null")  << empty << QLatin1String("")
+        BOBUIest::addRow("haystack: empty, needle: null")  << empty << QLatin1String("")
                                      << null << QLatin1String() << true << true;
-        QTest::addRow("haystack: a, needle: null") << a << QLatin1String("a")
+        BOBUIest::addRow("haystack: a, needle: null") << a << QLatin1String("a")
                                      << null << QLatin1String() << true << true;
-        QTest::addRow("haystack: null, needle: empty") << null << QLatin1String()
+        BOBUIest::addRow("haystack: null, needle: empty") << null << QLatin1String()
                                      << empty << QLatin1String("") << true << true;
-        QTest::addRow("haystack: a, needle: empty") << a << QLatin1String("a")
+        BOBUIest::addRow("haystack: a, needle: empty") << a << QLatin1String("a")
                                      << empty << QLatin1String("") << true << true;
-        QTest::addRow("haystack: empty, needle: empty") << empty << QLatin1String("")
+        BOBUIest::addRow("haystack: empty, needle: empty") << empty << QLatin1String("")
                                      << empty << QLatin1String("") << true << true;
     }
-    QTest::addRow("haystack: empty, needle: a") << empty << QLatin1String("")
+    BOBUIest::addRow("haystack: empty, needle: a") << empty << QLatin1String("")
                                      << a << QLatin1String("a") << false << false;
-    QTest::addRow("haystack: null, needle: a") << null << QLatin1String()
+    BOBUIest::addRow("haystack: null, needle: a") << null << QLatin1String()
                                      << a << QLatin1String("a") << false << false;
 
 #define ROW(h, n, cs, cis) \
-    QTest::addRow("haystack: %s, needle: %s", #h, #n) << h << QLatin1String(#h) \
+    BOBUIest::addRow("haystack: %s, needle: %s", #h, #n) << h << QLatin1String(#h) \
                                        << n << QLatin1String(#n) \
                                        << cs << cis
 
@@ -3685,59 +3685,59 @@ void tst_QStringApiSymmetry::contains_impl() const
     const auto needle = make<Needle>(QStringView(needleU16), needleL1, needleU8);
 
     QCOMPARE_EQ(haystack.contains(needle), resultCS);
-    QCOMPARE_EQ(haystack.contains(needle, Qt::CaseSensitive), resultCS);
-    QCOMPARE_EQ(haystack.contains(needle, Qt::CaseInsensitive), resultCIS);
+    QCOMPARE_EQ(haystack.contains(needle, BobUI::CaseSensitive), resultCS);
+    QCOMPARE_EQ(haystack.contains(needle, BobUI::CaseInsensitive), resultCIS);
 }
 
 void tst_QStringApiSymmetry::lastIndexOf_data(bool rhsHasVariableLength)
 {
-    QTest::addColumn<QString>("haystackU16");
-    QTest::addColumn<QLatin1String>("haystackL1");
-    QTest::addColumn<QString>("needleU16");
-    QTest::addColumn<QLatin1String>("needleL1");
-    QTest::addColumn<qsizetype>("startpos");
-    QTest::addColumn<qsizetype>("resultCS");
-    QTest::addColumn<qsizetype>("resultCIS");
+    BOBUIest::addColumn<QString>("haystackU16");
+    BOBUIest::addColumn<QLatin1String>("haystackL1");
+    BOBUIest::addColumn<QString>("needleU16");
+    BOBUIest::addColumn<QLatin1String>("needleL1");
+    BOBUIest::addColumn<qsizetype>("startpos");
+    BOBUIest::addColumn<qsizetype>("resultCS");
+    BOBUIest::addColumn<qsizetype>("resultCIS");
 
     constexpr qsizetype zeroPos = 0;
     constexpr qsizetype minus1Pos = -1;
 
     if (rhsHasVariableLength) {
-        QTest::addRow("haystack: null, needle: null") << null << QLatin1String()
+        BOBUIest::addRow("haystack: null, needle: null") << null << QLatin1String()
                                      << null << QLatin1String() << minus1Pos << minus1Pos << minus1Pos;
-        QTest::addRow("haystack: empty, needle: null")  << empty << QLatin1String("")
+        BOBUIest::addRow("haystack: empty, needle: null")  << empty << QLatin1String("")
                                      << null << QLatin1String() << minus1Pos << minus1Pos << minus1Pos;
-        QTest::addRow("haystack: a, needle: null") << a << QLatin1String("a")
+        BOBUIest::addRow("haystack: a, needle: null") << a << QLatin1String("a")
                                      << null << QLatin1String() << minus1Pos << zeroPos << zeroPos;
-        QTest::addRow("haystack: null, needle: empty") << null << QLatin1String()
+        BOBUIest::addRow("haystack: null, needle: empty") << null << QLatin1String()
                                      << empty << QLatin1String("") << minus1Pos << minus1Pos << minus1Pos;
-        QTest::addRow("haystack: a, needle: empty") << a << QLatin1String("a")
+        BOBUIest::addRow("haystack: a, needle: empty") << a << QLatin1String("a")
                                      << empty << QLatin1String("") << minus1Pos << zeroPos << zeroPos;
-        QTest::addRow("haystack: empty, needle: empty") << empty << QLatin1String("")
+        BOBUIest::addRow("haystack: empty, needle: empty") << empty << QLatin1String("")
                                      << empty << QLatin1String("") << minus1Pos << minus1Pos << minus1Pos;
     }
-    QTest::addRow("haystack: empty, needle: a") << empty << QLatin1String("")
+    BOBUIest::addRow("haystack: empty, needle: a") << empty << QLatin1String("")
                                      << a << QLatin1String("a") << minus1Pos << minus1Pos << minus1Pos;
-    QTest::addRow("haystack: null, needle: a") << null << QLatin1String()
+    BOBUIest::addRow("haystack: null, needle: a") << null << QLatin1String()
                                      << a << QLatin1String("a") << minus1Pos << minus1Pos << minus1Pos;
 
     if (rhsHasVariableLength) {
-        QTest::addRow("haystack: a, needle: null, start 1")
+        BOBUIest::addRow("haystack: a, needle: null, start 1")
             << a << QLatin1String("a")
             << null << QLatin1String() << qsizetype(1) << qsizetype(1) << qsizetype(1);
-        QTest::addRow("haystack: a, needle: empty, start 1")
+        BOBUIest::addRow("haystack: a, needle: empty, start 1")
             << a << QLatin1String("a")
             << empty << QLatin1String("") << qsizetype(1) << qsizetype(1) << qsizetype(1);
-        QTest::addRow("haystack: a, needle: null, start 2")
+        BOBUIest::addRow("haystack: a, needle: null, start 2")
             << a << QLatin1String("a")
             << null << QLatin1String() << qsizetype(2) << minus1Pos << minus1Pos;
-        QTest::addRow("haystack: a, needle: empty, start 2")
+        BOBUIest::addRow("haystack: a, needle: empty, start 2")
             << a << QLatin1String("a")
             << empty << QLatin1String("") << qsizetype(2) << minus1Pos << minus1Pos;
     }
 
 #define ROW(h, n, st, cs, cis) \
-    QTest::addRow("haystack: %s, needle: %s, start %d", #h, #n, st) << h << QLatin1String(#h) \
+    BOBUIest::addRow("haystack: %s, needle: %s, start %d", #h, #n, st) << h << QLatin1String(#h) \
                                        << n << QLatin1String(#n) \
                                        << qsizetype(st) << qsizetype(cs) << qsizetype(cis)
 
@@ -3801,27 +3801,27 @@ void tst_QStringApiSymmetry::lastIndexOf_impl() const
     using size_type = typename Haystack::size_type;
 
     QCOMPARE_EQ(haystack.lastIndexOf(needle, startpos), size_type(resultCS));
-    QCOMPARE_EQ(haystack.lastIndexOf(needle, startpos, Qt::CaseSensitive), size_type(resultCS));
-    QCOMPARE_EQ(haystack.lastIndexOf(needle, startpos, Qt::CaseInsensitive), size_type(resultCIS));
+    QCOMPARE_EQ(haystack.lastIndexOf(needle, startpos, BobUI::CaseSensitive), size_type(resultCS));
+    QCOMPARE_EQ(haystack.lastIndexOf(needle, startpos, BobUI::CaseInsensitive), size_type(resultCIS));
 
     if (startpos == haystack.size() ||
         (startpos == -1 && help::size(needle) > 0)) { // -1 skips past-the-end-match w/empty needle
         // check that calls without an explicit 'from' argument work, too:
         QCOMPARE_EQ(haystack.lastIndexOf(needle), size_type(resultCS));
-        QCOMPARE_EQ(haystack.lastIndexOf(needle, Qt::CaseSensitive), size_type(resultCS));
-        QCOMPARE_EQ(haystack.lastIndexOf(needle, Qt::CaseInsensitive), size_type(resultCIS));
+        QCOMPARE_EQ(haystack.lastIndexOf(needle, BobUI::CaseSensitive), size_type(resultCS));
+        QCOMPARE_EQ(haystack.lastIndexOf(needle, BobUI::CaseInsensitive), size_type(resultCIS));
     }
 }
 
 void tst_QStringApiSymmetry::indexOf_contains_lastIndexOf_count_regexp_data()
 {
-    QTest::addColumn<QString>("subject");
-    QTest::addColumn<QRegularExpression>("regexp");
-    QTest::addColumn<qsizetype>("leftFrom");
-    QTest::addColumn<qsizetype>("indexOf");
-    QTest::addColumn<qsizetype>("count");
-    QTest::addColumn<qsizetype>("rightFrom");
-    QTest::addColumn<qsizetype>("lastIndexOf");
+    BOBUIest::addColumn<QString>("subject");
+    BOBUIest::addColumn<QRegularExpression>("regexp");
+    BOBUIest::addColumn<qsizetype>("leftFrom");
+    BOBUIest::addColumn<qsizetype>("indexOf");
+    BOBUIest::addColumn<qsizetype>("count");
+    BOBUIest::addColumn<qsizetype>("rightFrom");
+    BOBUIest::addColumn<qsizetype>("lastIndexOf");
 
     const auto ROW = [](const char *subject,
                         const char *pattern,
@@ -3829,7 +3829,7 @@ void tst_QStringApiSymmetry::indexOf_contains_lastIndexOf_count_regexp_data()
                         qsizetype leftFrom, qsizetype indexOf, qsizetype count,
                         qsizetype rightFrom, qsizetype lastIndexOf)
     {
-        QTest::addRow("subject \"%s\" pattern \"%s\" options %d leftFrom %d rightFrom %d",
+        BOBUIest::addRow("subject \"%s\" pattern \"%s\" options %d leftFrom %d rightFrom %d",
                       subject, pattern, (int)options, (int)leftFrom, (int)rightFrom)
                 << subject
                 << QRegularExpression(pattern, options)
@@ -4042,66 +4042,66 @@ void tst_QStringApiSymmetry::indexOf_contains_lastIndexOf_count_regexp_impl() co
 
 void tst_QStringApiSymmetry::isValidUtf8_data()
 {
-    QTest::addColumn<QByteArray>("ba");
-    QTest::addColumn<bool>("valid");
+    BOBUIest::addColumn<QByteArray>("ba");
+    BOBUIest::addColumn<bool>("valid");
 
     int row = 0;
-    QTest::addRow("valid-%02d", row++) << QByteArray() << true;
-    QTest::addRow("valid-%02d", row++) << QByteArray("ascii") << true;
-    QTest::addRow("valid-%02d", row++)
+    BOBUIest::addRow("valid-%02d", row++) << QByteArray() << true;
+    BOBUIest::addRow("valid-%02d", row++) << QByteArray("ascii") << true;
+    BOBUIest::addRow("valid-%02d", row++)
             << QByteArray("\xc2\xa2\xe0\xa4\xb9\xf0\x90\x8d\x88") << true; // U+00A2 U+0939 U+10348
-    QTest::addRow("valid-%02d", row++) << QByteArray("\xf4\x8f\xbf\xbf") << true; // U+10FFFF
+    BOBUIest::addRow("valid-%02d", row++) << QByteArray("\xf4\x8f\xbf\xbf") << true; // U+10FFFF
 
     row = 0;
-    QTest::addRow("overlong-%02d", row++) << QByteArray("\xc0\x00") << false;
-    QTest::addRow("overlong-%02d", row++) << QByteArray("\xc1\xff") << false;
-    QTest::addRow("overlong-%02d", row++) << QByteArray("\xc1\xbf") << false;
-    QTest::addRow("overlong-%02d", row++) << QByteArray("\xc1\x01") << false;
-    QTest::addRow("overlong-%02d", row++) << QByteArray("\xe0\x00\x00") << false;
-    QTest::addRow("overlong-%02d", row++) << QByteArray("\xe0\xa0\x7f") << false;
-    QTest::addRow("overlong-%02d", row++) << QByteArray("\xf0\x00\x00\x00") << false;
-    QTest::addRow("overlong-%02d", row++) << QByteArray("\xf0\x90\x80\x7f") << false;
+    BOBUIest::addRow("overlong-%02d", row++) << QByteArray("\xc0\x00") << false;
+    BOBUIest::addRow("overlong-%02d", row++) << QByteArray("\xc1\xff") << false;
+    BOBUIest::addRow("overlong-%02d", row++) << QByteArray("\xc1\xbf") << false;
+    BOBUIest::addRow("overlong-%02d", row++) << QByteArray("\xc1\x01") << false;
+    BOBUIest::addRow("overlong-%02d", row++) << QByteArray("\xe0\x00\x00") << false;
+    BOBUIest::addRow("overlong-%02d", row++) << QByteArray("\xe0\xa0\x7f") << false;
+    BOBUIest::addRow("overlong-%02d", row++) << QByteArray("\xf0\x00\x00\x00") << false;
+    BOBUIest::addRow("overlong-%02d", row++) << QByteArray("\xf0\x90\x80\x7f") << false;
 
     row = 0;
-    QTest::addRow("short-%02d", row++) << QByteArray("\xc2") << false;
-    QTest::addRow("short-%02d", row++) << QByteArray("x\xc2") << false;
-    QTest::addRow("short-%02d", row++) << QByteArray("x\xc2y") << false;
-    QTest::addRow("short-%02d", row++) << QByteArray("\xc2y") << false;
-    QTest::addRow("short-%02d", row++) << QByteArray("\xe0\xa4") << false;
-    QTest::addRow("short-%02d", row++) << QByteArray("x\xe0\xa4") << false;
-    QTest::addRow("short-%02d", row++) << QByteArray("x\xe0\xa4y") << false;
-    QTest::addRow("short-%02d", row++) << QByteArray("\xe0\xa4y") << false;
-    QTest::addRow("short-%02d", row++) << QByteArray("\xe0") << false;
-    QTest::addRow("short-%02d", row++) << QByteArray("x\xe0") << false;
-    QTest::addRow("short-%02d", row++) << QByteArray("x\xe0y") << false;
-    QTest::addRow("short-%02d", row++) << QByteArray("\xe0y") << false;
-    QTest::addRow("short-%02d", row++) << QByteArray("\xf4\x8f\xbf") << false;
-    QTest::addRow("short-%02d", row++) << QByteArray("x\xf4\x8f\xbf") << false;
-    QTest::addRow("short-%02d", row++) << QByteArray("x\xf4\x8f\xbfy") << false;
-    QTest::addRow("short-%02d", row++) << QByteArray("\xf4\x8f\xbfy") << false;
-    QTest::addRow("short-%02d", row++) << QByteArray("\xf4\x8f") << false;
-    QTest::addRow("short-%02d", row++) << QByteArray("x\xf4\x8f") << false;
-    QTest::addRow("short-%02d", row++) << QByteArray("x\xf4\x8fy") << false;
-    QTest::addRow("short-%02d", row++) << QByteArray("\xf4\x8fy") << false;
-    QTest::addRow("short-%02d", row++) << QByteArray("\xf4") << false;
-    QTest::addRow("short-%02d", row++) << QByteArray("x\xf4") << false;
-    QTest::addRow("short-%02d", row++) << QByteArray("x\xf4y") << false;
-    QTest::addRow("short-%02d", row++) << QByteArray("\xf4y") << false;
+    BOBUIest::addRow("short-%02d", row++) << QByteArray("\xc2") << false;
+    BOBUIest::addRow("short-%02d", row++) << QByteArray("x\xc2") << false;
+    BOBUIest::addRow("short-%02d", row++) << QByteArray("x\xc2y") << false;
+    BOBUIest::addRow("short-%02d", row++) << QByteArray("\xc2y") << false;
+    BOBUIest::addRow("short-%02d", row++) << QByteArray("\xe0\xa4") << false;
+    BOBUIest::addRow("short-%02d", row++) << QByteArray("x\xe0\xa4") << false;
+    BOBUIest::addRow("short-%02d", row++) << QByteArray("x\xe0\xa4y") << false;
+    BOBUIest::addRow("short-%02d", row++) << QByteArray("\xe0\xa4y") << false;
+    BOBUIest::addRow("short-%02d", row++) << QByteArray("\xe0") << false;
+    BOBUIest::addRow("short-%02d", row++) << QByteArray("x\xe0") << false;
+    BOBUIest::addRow("short-%02d", row++) << QByteArray("x\xe0y") << false;
+    BOBUIest::addRow("short-%02d", row++) << QByteArray("\xe0y") << false;
+    BOBUIest::addRow("short-%02d", row++) << QByteArray("\xf4\x8f\xbf") << false;
+    BOBUIest::addRow("short-%02d", row++) << QByteArray("x\xf4\x8f\xbf") << false;
+    BOBUIest::addRow("short-%02d", row++) << QByteArray("x\xf4\x8f\xbfy") << false;
+    BOBUIest::addRow("short-%02d", row++) << QByteArray("\xf4\x8f\xbfy") << false;
+    BOBUIest::addRow("short-%02d", row++) << QByteArray("\xf4\x8f") << false;
+    BOBUIest::addRow("short-%02d", row++) << QByteArray("x\xf4\x8f") << false;
+    BOBUIest::addRow("short-%02d", row++) << QByteArray("x\xf4\x8fy") << false;
+    BOBUIest::addRow("short-%02d", row++) << QByteArray("\xf4\x8fy") << false;
+    BOBUIest::addRow("short-%02d", row++) << QByteArray("\xf4") << false;
+    BOBUIest::addRow("short-%02d", row++) << QByteArray("x\xf4") << false;
+    BOBUIest::addRow("short-%02d", row++) << QByteArray("x\xf4y") << false;
+    BOBUIest::addRow("short-%02d", row++) << QByteArray("\xf4y") << false;
 
     row = 0;
-    QTest::addRow("surrogates-%02d", row++) << QByteArray("\xed\x9f\xc0\xee\x80\x7f") << false;
-    QTest::addRow("surrogates-%02d", row++) << QByteArray("\xed\x9f\xc0") << false;
-    QTest::addRow("surrogates-%02d", row++) << QByteArray("\xee\x80\x7f") << false;
-    QTest::addRow("surrogates-%02d", row++) << QByteArray("\xee\x80\x7f\xed\x9f\xc0") << false;
+    BOBUIest::addRow("surrogates-%02d", row++) << QByteArray("\xed\x9f\xc0\xee\x80\x7f") << false;
+    BOBUIest::addRow("surrogates-%02d", row++) << QByteArray("\xed\x9f\xc0") << false;
+    BOBUIest::addRow("surrogates-%02d", row++) << QByteArray("\xee\x80\x7f") << false;
+    BOBUIest::addRow("surrogates-%02d", row++) << QByteArray("\xee\x80\x7f\xed\x9f\xc0") << false;
 
     row = 0;
-    QTest::addRow("other-%02d", row++) << QByteArray("\xf4\x8f\xbf\xc0") << false;
-    QTest::addRow("other-%02d", row++) << QByteArray("\xf7\x80\x80\x80") << false;
-    QTest::addRow("other-%02d", row++) << QByteArray("\xfd\xbf\xbf\xbf\xbf") << false;
-    QTest::addRow("other-%02d", row++) << QByteArray("\xfe\xbf\xbf\xbf\xbf\xbf") << false;
-    QTest::addRow("other-%02d", row++) << QByteArray("\xff\xbf\xbf\xbf\xbf\xbf\xbf") << false;
-    QTest::addRow("other-%02d", row++) << QByteArray("\x80") << false;
-    QTest::addRow("other-%02d", row++) << QByteArray("\xbf") << false;
+    BOBUIest::addRow("other-%02d", row++) << QByteArray("\xf4\x8f\xbf\xc0") << false;
+    BOBUIest::addRow("other-%02d", row++) << QByteArray("\xf7\x80\x80\x80") << false;
+    BOBUIest::addRow("other-%02d", row++) << QByteArray("\xfd\xbf\xbf\xbf\xbf") << false;
+    BOBUIest::addRow("other-%02d", row++) << QByteArray("\xfe\xbf\xbf\xbf\xbf\xbf") << false;
+    BOBUIest::addRow("other-%02d", row++) << QByteArray("\xff\xbf\xbf\xbf\xbf\xbf\xbf") << false;
+    BOBUIest::addRow("other-%02d", row++) << QByteArray("\x80") << false;
+    BOBUIest::addRow("other-%02d", row++) << QByteArray("\xbf") << false;
 }
 
 template<typename String>
@@ -4109,9 +4109,9 @@ void tst_QStringApiSymmetry::isValidUtf8_impl() const
 {
     QFETCH(QByteArray, ba);
     const String string(ba);
-    QTEST(string.isValidUtf8(), "valid");
+    BOBUIEST(string.isValidUtf8(), "valid");
 }
 
-QTEST_APPLESS_MAIN(tst_QStringApiSymmetry)
+BOBUIEST_APPLESS_MAIN(tst_QStringApiSymmetry)
 
 #include "tst_qstringapisymmetry.moc"

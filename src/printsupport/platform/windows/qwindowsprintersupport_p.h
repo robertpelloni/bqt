@@ -1,6 +1,6 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef WINDOWSPRINTERSUPPORT_H
 #define WINDOWSPRINTERSUPPORT_H
@@ -9,20 +9,20 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists for the convenience
+// This file is not part of the BobUI API. It exists for the convenience
 // of internal files. This header file may change from version to version
 // without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtPrintSupport/qtprintsupportglobal.h>
+#include <BobUIPrintSupport/bobuiprintsupportglobal.h>
 
 #include <qpa/qplatformprintersupport.h>
 #include <private/qglobal_p.h>
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Q_PRINTSUPPORT_EXPORT QWindowsPrinterSupport : public QPlatformPrinterSupport
 {
@@ -39,7 +39,7 @@ public:
     QString defaultPrintDeviceId() const override;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_PRINTER
+#endif // BOBUI_NO_PRINTER
 #endif // WINDOWSPRINTERSUPPORT_H

@@ -1,13 +1,13 @@
 // Copyright (C) 2018 Kitware, Inc.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef QMOCK5PLUGIN_H
 #define QMOCK5PLUGIN_H
 
 #include <QObject>
-#include <QtMockPlugins1/QMockPlugin>
+#include <BobUIMockPlugins1/QMockPlugin>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QMock5Plugin : public QObject, public QMockPlugin
 {
@@ -18,6 +18,6 @@ public:
     QString pluginName() const override;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QMOCK5PLUGIN_H

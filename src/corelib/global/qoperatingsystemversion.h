@@ -1,19 +1,19 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtCore/qglobal.h>
-#include <QtCore/qcompare.h>
-#include <QtCore/qversionnumber.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qversionnumber.h>
 
 #ifndef QOPERATINGSYSTEMVERSION_H
 #define QOPERATINGSYSTEMVERSION_H
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #if 0
-#  pragma qt_class(QOperatingSystemVersionBase)
-#  pragma qt_class(QOperatingSystemVersion)
-#  pragma qt_sync_stop_processing       // we have some ifdef'ery fooling syncqt
+#  pragma bobui_class(QOperatingSystemVersionBase)
+#  pragma bobui_class(QOperatingSystemVersion)
+#  pragma bobui_sync_stop_processing       // we have some ifdef'ery fooling syncbobui
 #endif
 
 class QString;
@@ -21,7 +21,7 @@ class QString;
 class QOperatingSystemVersionBase
 {
 public:
-    // ### Qt 7: Keep synchronized with the copy in QOperatingSystemVersion until Qt7,
+    // ### BobUI 7: Keep synchronized with the copy in QOperatingSystemVersion until BobUI7,
     // then remove this comment :)
     enum OSType {
         Unknown = 0,
@@ -87,13 +87,13 @@ protected:
     static Q_CORE_EXPORT int compare(QOperatingSystemVersionBase v1,
                                      QOperatingSystemVersionBase v2) noexcept;
 
-    friend Qt::partial_ordering compareThreeWay(const QOperatingSystemVersionBase &lhs,
+    friend BobUI::partial_ordering compareThreeWay(const QOperatingSystemVersionBase &lhs,
                                                 const QOperatingSystemVersionBase &rhs) noexcept
     {
         if (lhs.type() != rhs.type())
-            return Qt::partial_ordering::unordered;
+            return BobUI::partial_ordering::unordered;
         const int res = QOperatingSystemVersionBase::compare(lhs, rhs);
-        return Qt::compareThreeWay(res, 0);
+        return BobUI::compareThreeWay(res, 0);
     }
 #ifdef __cpp_lib_three_way_comparison
     friend std::partial_ordering
@@ -127,7 +127,7 @@ private:
     int m_micro;
 };
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0) && !defined(QT_BOOTSTRAPPED) && !defined(Q_QDOC)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0) && !defined(BOBUI_BOOTSTRAPPED) && !defined(Q_QDOC)
 class QOperatingSystemVersionUnexported : public QOperatingSystemVersionBase
 {
 public:
@@ -141,7 +141,7 @@ class QOperatingSystemVersion : public QOperatingSystemVersionBase
 public:
 #endif
 
-    // ### Qt7: Regroup with the rest below
+    // ### BobUI7: Regroup with the rest below
     static constexpr QOperatingSystemVersionBase MacOSSonoma { QOperatingSystemVersionBase::MacOS, 14 };
     static constexpr QOperatingSystemVersionBase MacOSSequoia { QOperatingSystemVersionBase::MacOS, 15 };
     static constexpr QOperatingSystemVersionBase MacOSTahoe { QOperatingSystemVersionBase::MacOS, 26 };
@@ -150,15 +150,15 @@ public:
     static constexpr QOperatingSystemVersionBase Windows11_24H2 { QOperatingSystemVersionBase::Windows, 10, 0, 26100 };
     static constexpr QOperatingSystemVersionBase Windows11_25H2 { QOperatingSystemVersionBase::Windows, 10, 0, 26200 };
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0) && !defined(QT_BOOTSTRAPPED) && !defined(Q_QDOC)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0) && !defined(BOBUI_BOOTSTRAPPED) && !defined(Q_QDOC)
 };
 
 class Q_CORE_EXPORT QOperatingSystemVersion : public QOperatingSystemVersionUnexported
 {
 #endif
 public:
-    // ### Qt7: Remove. Keep synchronized with QOperatingSystemVersionBase::OSType until then!
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0) && !defined(QT_BOOTSTRAPPED)
+    // ### BobUI7: Remove. Keep synchronized with QOperatingSystemVersionBase::OSType until then!
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0) && !defined(BOBUI_BOOTSTRAPPED)
     enum OSType {
         Unknown = 0,
         Windows,
@@ -171,10 +171,10 @@ public:
     };
 #endif
 
-    // ### Qt7: remove the branch with static const variables. Then group and
+    // ### BobUI7: remove the branch with static const variables. Then group and
     // sort the inline ones. Until then, new entries should be added to
     // QOperatingSystemVersionUnexported.
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0) && !defined(QT_BOOTSTRAPPED)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0) && !defined(BOBUI_BOOTSTRAPPED)
     static const QOperatingSystemVersion Windows7;
     static const QOperatingSystemVersion Windows8;
     static const QOperatingSystemVersion Windows8_1;
@@ -263,7 +263,7 @@ public:
     {
     }
 
-#if QT_CORE_REMOVED_SINCE(6, 3) || defined(Q_QDOC)
+#if BOBUI_CORE_REMOVED_SINCE(6, 3) || defined(Q_QDOC)
     static QOperatingSystemVersion current();
 #endif
 
@@ -272,7 +272,7 @@ public:
         return OSType(QOperatingSystemVersionBase::currentType());
     }
 
-#if QT_CORE_REMOVED_SINCE(6, 3) || defined(Q_QDOC)
+#if BOBUI_CORE_REMOVED_SINCE(6, 3) || defined(Q_QDOC)
     QVersionNumber version() const { return QOperatingSystemVersionBase::version(); }
 
     constexpr int majorVersion() const { return QOperatingSystemVersionBase::majorVersion(); }
@@ -281,30 +281,30 @@ public:
 
     constexpr int segmentCount() const
     { return QOperatingSystemVersionBase::segmentCount(); }
-#endif // QT_CORE_REMOVED_SINCE(6, 3)
+#endif // BOBUI_CORE_REMOVED_SINCE(6, 3)
 
     constexpr OSType type() const { return OSType(QOperatingSystemVersionBase::type()); }
-    QT7_ONLY(Q_CORE_EXPORT) bool isAnyOfType(std::initializer_list<OSType> types) const;
-#if QT_CORE_REMOVED_SINCE(6, 3) || defined(Q_QDOC)
+    BOBUI7_ONLY(Q_CORE_EXPORT) bool isAnyOfType(std::initializer_list<OSType> types) const;
+#if BOBUI_CORE_REMOVED_SINCE(6, 3) || defined(Q_QDOC)
     QString name() const;
 #endif
 
 private:
     QOperatingSystemVersion() = default;
 
-#if QT_CORE_REMOVED_SINCE(6, 3)
-    // ### Qt 7: Remove. It's only here for backwards compat with previous inline calls.
+#if BOBUI_CORE_REMOVED_SINCE(6, 3)
+    // ### BobUI 7: Remove. It's only here for backwards compat with previous inline calls.
     [[maybe_unused]] static int compare(const QOperatingSystemVersion &v1,
                                         const QOperatingSystemVersion &v2);
 #endif
 };
 Q_DECLARE_TYPEINFO(QOperatingSystemVersion, Q_PRIMITIVE_TYPE);
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 class QDebug;
 Q_CORE_EXPORT QDebug operator<<(QDebug debug, const QOperatingSystemVersion &ov);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QOPERATINGSYSTEMVERSION_H

@@ -1,19 +1,19 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QEVENTPOINT_H
 #define QEVENTPOINT_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtGui/qvector2d.h>
-#include <QtGui/qpointingdevice.h>
-#include <QtCore/qshareddata.h>
-#include <QtCore/qmetatype.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUIGui/qvector2d.h>
+#include <BobUIGui/qpointingdevice.h>
+#include <BobUICore/qshareddata.h>
+#include <BobUICore/qmetatype.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QEventPointPrivate;
-QT_DECLARE_QESDP_SPECIALIZATION_DTOR_WITH_EXPORT(QEventPointPrivate, Q_GUI_EXPORT)
+BOBUI_DECLARE_QESDP_SPECIALIZATION_DTOR_WITH_EXPORT(QEventPointPrivate, Q_GUI_EXPORT)
 class QMutableEventPoint;
 
 class Q_GUI_EXPORT QEventPoint
@@ -46,11 +46,11 @@ class Q_GUI_EXPORT QEventPoint
     Q_PROPERTY(QPointF globalLastPosition READ globalLastPosition CONSTANT)
 public:
     enum State : quint8 {
-        Unknown     = Qt::TouchPointUnknownState,
-        Stationary  = Qt::TouchPointStationary,
-        Pressed     = Qt::TouchPointPressed,
-        Updated     = Qt::TouchPointMoved,
-        Released    = Qt::TouchPointReleased
+        Unknown     = BobUI::TouchPointUnknownState,
+        Stationary  = BobUI::TouchPointStationary,
+        Pressed     = BobUI::TouchPointPressed,
+        Updated     = BobUI::TouchPointMoved,
+        Released    = BobUI::TouchPointReleased
     };
     Q_DECLARE_FLAGS(States, State)
     Q_FLAG(States)
@@ -60,7 +60,7 @@ public:
     QEventPoint(const QEventPoint &other) noexcept;
     QEventPoint &operator=(const QEventPoint &other) noexcept;
     QEventPoint(QEventPoint && other) noexcept = default;
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QEventPoint)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QEventPoint)
     bool operator==(const QEventPoint &other) const noexcept;
     bool operator!=(const QEventPoint &other) const noexcept { return !operator==(other); }
     ~QEventPoint();
@@ -81,33 +81,33 @@ public:
     QPointF globalLastPosition() const;
     QPointF normalizedPosition() const;
 
-#if QT_DEPRECATED_SINCE(6, 0)
-    // QEventPoint replaces QTouchEvent::TouchPoint, so we need all its old accessors, for now
-    QT_DEPRECATED_VERSION_X_6_0("Use position()")
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+    // QEventPoint replaces BOBUIouchEvent::TouchPoint, so we need all its old accessors, for now
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use position()")
     QPointF pos() const { return position(); }
-    QT_DEPRECATED_VERSION_X_6_0("Use pressPosition()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use pressPosition()")
     QPointF startPos() const { return pressPosition(); }
-    QT_DEPRECATED_VERSION_X_6_0("Use scenePosition()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use scenePosition()")
     QPointF scenePos() const { return scenePosition(); }
-    QT_DEPRECATED_VERSION_X_6_0("Use scenePressPosition()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use scenePressPosition()")
     QPointF startScenePos() const { return scenePressPosition(); }
-    QT_DEPRECATED_VERSION_X_6_0("Use globalPosition()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use globalPosition()")
     QPointF screenPos() const { return globalPosition(); }
-    QT_DEPRECATED_VERSION_X_6_0("Use globalPressPosition()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use globalPressPosition()")
     QPointF startScreenPos() const { return globalPressPosition(); }
-    QT_DEPRECATED_VERSION_X_6_0("Use globalPressPosition()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use globalPressPosition()")
     QPointF startNormalizedPos() const;
-    QT_DEPRECATED_VERSION_X_6_0("Use normalizedPosition()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use normalizedPosition()")
     QPointF normalizedPos() const { return normalizedPosition(); }
-    QT_DEPRECATED_VERSION_X_6_0("Use lastPosition()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use lastPosition()")
     QPointF lastPos() const { return lastPosition(); }
-    QT_DEPRECATED_VERSION_X_6_0("Use sceneLastPosition()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use sceneLastPosition()")
     QPointF lastScenePos() const { return sceneLastPosition(); }
-    QT_DEPRECATED_VERSION_X_6_0("Use globalLastPosition()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use globalLastPosition()")
     QPointF lastScreenPos() const { return globalLastPosition(); }
-    QT_DEPRECATED_VERSION_X_6_0("Use globalLastPosition()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use globalLastPosition()")
     QPointF lastNormalizedPos() const;
-#endif // QT_DEPRECATED_SINCE(6, 0)
+#endif // BOBUI_DEPRECATED_SINCE(6, 0)
     QVector2D velocity() const;
     State state() const;
     const QPointingDevice *device() const;
@@ -130,13 +130,13 @@ private:
     friend class QPointerEvent;
 };
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QEventPoint *);
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QEventPoint &);
 #endif
 
 Q_DECLARE_SHARED(QEventPoint)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QEVENTPOINT_H

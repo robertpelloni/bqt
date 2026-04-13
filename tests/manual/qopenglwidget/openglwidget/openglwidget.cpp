@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #define GL_GLEXT_PROTOTYPES
 
 #include "openglwidget.h"
-#include <QtWidgets/private/qwidget_p.h>
+#include <BobUIWidgets/private/qwidget_p.h>
 #include <QOpenGLFramebufferObject>
 #include <QWindow>
 #include <qpa/qplatformwindow.h>
 #include <QDebug>
-#include <QTimer>
+#include <BOBUIimer>
 
-#include <QtGui/QOpenGLFunctions>
-#include <QtGui/QGuiApplication>
-#include <QtGui/QMatrix4x4>
+#include <BobUIGui/QOpenGLFunctions>
+#include <BobUIGui/QGuiApplication>
+#include <BobUIGui/QMatrix4x4>
 #include <QOpenGLShaderProgram>
-#include <QtGui/QScreen>
+#include <BobUIGui/QScreen>
 
-#include <QtCore/qmath.h>
+#include <BobUICore/qmath.h>
 #include <qopengl.h>
 
 class OpenGLWidgetPrivate : protected QOpenGLFunctions
@@ -61,7 +61,7 @@ OpenGLWidget::OpenGLWidget(int interval, const QVector3D &rotAxis, QWidget *pare
     d->m_interval = interval;
     d->m_rotAxis = rotAxis;
     if (interval > 0) {
-        QTimer *timer = new QTimer(this);
+        BOBUIimer *timer = new BOBUIimer(this);
         connect(timer, SIGNAL(timeout()), this, SLOT(update()));
         timer->start(interval);
     }

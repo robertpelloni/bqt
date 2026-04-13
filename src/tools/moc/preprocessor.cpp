@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2014 Olivier Goffart <ogoffart@woboq.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "preprocessor.h"
 #include "utils.h"
@@ -10,9 +10,9 @@
 #include <qfileinfo.h>
 #include <qvarlengtharray.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace QtMiscUtils;
+using namespace BobUIMiscUtils;
 
 #include "ppkeywords.cpp"
 #include "keywords.cpp"
@@ -132,7 +132,7 @@ Symbols Preprocessor::tokenize(const QByteArray& input, int lineNum, Preprocesso
     // Preallocate some space to speed up the code below.
     // The magic divisor value was found by calculating the average ratio between
     // input size and the final size of symbols.
-    // This yielded a value of 16.x when compiling Qt Base.
+    // This yielded a value of 16.x when compiling BobUI Base.
     symbols.reserve(input.size() / 16);
     const char *begin = input.constData();
     const char *data = begin;
@@ -1290,7 +1290,7 @@ void Preprocessor::preprocess(const QByteArray &filename, Symbols &preprocessed)
         case SIGNALS:
         case SLOTS: {
             Symbol sym = symbol();
-            if (macros.contains("QT_NO_KEYWORDS"))
+            if (macros.contains("BOBUI_NO_KEYWORDS"))
                 sym.token = IDENTIFIER;
             else
                 sym.token = (token == SIGNALS ? Q_SIGNALS_TOKEN : Q_SLOTS_TOKEN);
@@ -1407,4 +1407,4 @@ void Preprocessor::setDebugIncludes(bool value)
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

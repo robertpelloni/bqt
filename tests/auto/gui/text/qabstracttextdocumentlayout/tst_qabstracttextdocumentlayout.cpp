@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qcoreapplication.h>
 #include <qdebug.h>
 #include <qabstracttextdocumentlayout.h>
 #include <qimage.h>
-#include <qtextobject.h>
+#include <bobuiextobject.h>
 #include <qfontmetrics.h>
 
 class tst_QAbstractTextDocumentLayout : public QObject
@@ -22,7 +22,7 @@ public:
 private slots:
     void getSetCheck();
     void maximumBlockCount();
-#ifndef QT_NO_TEXTHTMLPARSER
+#ifndef BOBUI_NO_TEXTHTMLPARSER
     void anchorAt();
     void imageAt();
     void formatAt();
@@ -41,7 +41,7 @@ class MyAbstractTextDocumentLayout : public QAbstractTextDocumentLayout
 {
     Q_OBJECT
 public:
-    MyAbstractTextDocumentLayout(QTextDocument *doc)
+    MyAbstractTextDocumentLayout(BOBUIextDocument *doc)
         : QAbstractTextDocumentLayout(doc)
         , gotFullLayout(false)
         , blockCount(0)
@@ -50,16 +50,16 @@ public:
     }
 
     void draw(QPainter *, const PaintContext &) override {}
-    int hitTest(const QPointF &, Qt::HitTestAccuracy) const override { return 0; }
+    int hitTest(const QPointF &, BobUI::HitTestAccuracy) const override { return 0; }
     int pageCount() const override { return 0; }
     QSizeF documentSize() const override { return QSizeF(); }
-    QRectF frameBoundingRect(QTextFrame *) const override { return QRectF(); }
-    QRectF blockBoundingRect(const QTextBlock &) const override { return QRectF(); }
+    QRectF frameBoundingRect(BOBUIextFrame *) const override { return QRectF(); }
+    QRectF blockBoundingRect(const BOBUIextBlock &) const override { return QRectF(); }
     void documentChanged(int from, int /* oldLength */, int length) override
     {
         ++changeEvents;
 
-        QTextBlock last = document()->lastBlock();
+        BOBUIextBlock last = document()->lastBlock();
         int lastPos = last.position() + last.length() - 1;
         if (from == 0 && length == lastPos)
             gotFullLayout = true;
@@ -76,7 +76,7 @@ public slots:
 // Testing get/set functions
 void tst_QAbstractTextDocumentLayout::getSetCheck()
 {
-    QTextDocument doc;
+    BOBUIextDocument doc;
     MyAbstractTextDocumentLayout obj1(&doc);
     // QPaintDevice * QAbstractTextDocumentLayout::paintDevice()
     // void QAbstractTextDocumentLayout::setPaintDevice(QPaintDevice *)
@@ -90,14 +90,14 @@ void tst_QAbstractTextDocumentLayout::getSetCheck()
 
 void tst_QAbstractTextDocumentLayout::maximumBlockCount()
 {
-    QTextDocument doc;
+    BOBUIextDocument doc;
     doc.setMaximumBlockCount(10);
 
     MyAbstractTextDocumentLayout layout(&doc);
     doc.setDocumentLayout(&layout);
     QObject::connect(&doc, SIGNAL(blockCountChanged(int)), &layout, SLOT(blockCountChanged(int)));
 
-    QTextCursor cursor(&doc);
+    BOBUIextCursor cursor(&doc);
     for (int i = 0; i < 10; ++i) {
         cursor.insertBlock();
         cursor.insertText("bla");
@@ -121,14 +121,14 @@ void tst_QAbstractTextDocumentLayout::maximumBlockCount()
     QCOMPARE(layout.blockCount, 10);
 }
 
-#ifndef QT_NO_TEXTHTMLPARSER
+#ifndef BOBUI_NO_TEXTHTMLPARSER
 void tst_QAbstractTextDocumentLayout::anchorAt()
 {
-    QTextDocument doc;
+    BOBUIextDocument doc;
     doc.setHtml("<a href=\"link\">foo</a>");
     QAbstractTextDocumentLayout *documentLayout = doc.documentLayout();
-    QTextBlock firstBlock = doc.begin();
-    QTextLayout *layout = firstBlock.layout();
+    BOBUIextBlock firstBlock = doc.begin();
+    BOBUIextLayout *layout = firstBlock.layout();
     layout->setPreeditArea(doc.toPlainText().size(), "xxx");
 
     doc.setPageSize(QSizeF(1000, 1000));
@@ -154,11 +154,11 @@ void tst_QAbstractTextDocumentLayout::anchorAt()
 
 void tst_QAbstractTextDocumentLayout::imageAt()
 {
-    QTextDocument doc;
+    BOBUIextDocument doc;
     doc.setHtml("foo<a href=\"link\"><img src=\"image\" width=\"50\" height=\"50\"/></a>");
     QAbstractTextDocumentLayout *documentLayout = doc.documentLayout();
-    QTextBlock firstBlock = doc.begin();
-    QTextLayout *layout = firstBlock.layout();
+    BOBUIextBlock firstBlock = doc.begin();
+    BOBUIextLayout *layout = firstBlock.layout();
     layout->setPreeditArea(doc.toPlainText().size(), "xxx");
 
     doc.setPageSize(QSizeF(1000, 1000));
@@ -179,11 +179,11 @@ void tst_QAbstractTextDocumentLayout::imageAt()
 
 void tst_QAbstractTextDocumentLayout::formatAt()
 {
-    QTextDocument doc;
+    BOBUIextDocument doc;
     doc.setHtml("foo<i><a href=\"link\"><img src=\"image\" width=\"50\" height=\"50\"/></a></i>");
     QAbstractTextDocumentLayout *documentLayout = doc.documentLayout();
-    QTextBlock firstBlock = doc.begin();
-    QTextLayout *layout = firstBlock.layout();
+    BOBUIextBlock firstBlock = doc.begin();
+    BOBUIextLayout *layout = firstBlock.layout();
     layout->setPreeditArea(doc.toPlainText().size(), "xxx");
 
     doc.setPageSize(QSizeF(1000, 1000));
@@ -193,7 +193,7 @@ void tst_QAbstractTextDocumentLayout::formatAt()
     QRect fooBr = metrics.boundingRect("foo");
     QPointF imagePoint(fooBr.width() + blockStart.x() + 25, blockStart.y() + 25);
 
-    QTextFormat format = documentLayout->formatAt(imagePoint);
+    BOBUIextFormat format = documentLayout->formatAt(imagePoint);
     QVERIFY(format.isCharFormat());
     QVERIFY(format.toCharFormat().isAnchor());
     QVERIFY(format.toCharFormat().fontItalic());
@@ -209,5 +209,5 @@ void tst_QAbstractTextDocumentLayout::formatAt()
 }
 #endif
 
-QTEST_MAIN(tst_QAbstractTextDocumentLayout)
+BOBUIEST_MAIN(tst_QAbstractTextDocumentLayout)
 #include "tst_qabstracttextdocumentlayout.moc"

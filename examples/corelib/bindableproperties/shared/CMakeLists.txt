@@ -1,5 +1,5 @@
-# Copyright (C) 2023 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+# Copyright (C) 2023 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 add_library(bindableproperties_shared STATIC
     subscriptionwindow.cpp
@@ -8,12 +8,12 @@ add_library(bindableproperties_shared STATIC
 )
 
 target_link_libraries(bindableproperties_shared PUBLIC
-    Qt6::Core
-    Qt6::Gui
-    Qt6::Widgets
+    BobUI6::Core
+    BobUI6::Gui
+    BobUI6::Widgets
 )
 
-qt_add_resources(bindableproperties_shared "countries"
+bobui_add_resources(bindableproperties_shared "countries"
     PREFIX
         "/"
     FILES

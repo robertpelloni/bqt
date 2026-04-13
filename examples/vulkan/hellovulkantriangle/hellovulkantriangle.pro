@@ -8,5 +8,5 @@ SOURCES += \
 RESOURCES += hellovulkantriangle.qrc
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/vulkan/hellovulkantriangle
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/vulkan/hellovulkantriangle
 INSTALLS += target

@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qwindowsprintersupport_p.h"
 
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
 
 #include "qwindowsprintdevice_p.h"
 
-#include <QtCore/QStringList>
+#include <BobUICore/QStringList>
 #include <private/qprintengine_win_p.h>
 #include <private/qprintdevice_p.h>
 
-#define QT_STATICPLUGIN
+#define BOBUI_STATICPLUGIN
 #include <qpa/qplatformprintplugin.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QWindowsPrinterSupport::QWindowsPrinterSupport()
     : QPlatformPrinterSupport()
@@ -65,13 +65,13 @@ public:
 
 QPlatformPrinterSupport *QWindowsPrinterSupportPlugin::create(const QString &key)
 {
-    if (key.compare(key, "windowsprintsupport"_L1, Qt::CaseInsensitive) == 0)
+    if (key.compare(key, "windowsprintsupport"_L1, BobUI::CaseInsensitive) == 0)
         return new QWindowsPrinterSupport;
     return nullptr;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "qwindowsprintersupport.moc"
 
-#endif // QT_NO_PRINTER
+#endif // BOBUI_NO_PRINTER

@@ -1,12 +1,12 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qeglfsopenwfdintegration.h"
 
 #include "wfd.h"
 #include "wfdext2.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #define MAX_NUM_OF_WFD_BUFFERS 3
 #define MAX_NUM_OF_WFD_DEVICES 4
@@ -46,7 +46,7 @@ void QEglFSOpenWFDIntegration::platformInit()
                               WFD_NONE};
 
     bool ok;
-    WFDint clientType = qgetenv("QT_OPENWFD_CLIENT_ID").toInt(&ok, 16);
+    WFDint clientType = qgetenv("BOBUI_OPENWFD_CLIENT_ID").toInt(&ok, 16);
 
     if (ok)
         dev_attribs[1] = clientType;
@@ -113,7 +113,7 @@ EGLNativeWindowType QEglFSOpenWFDIntegration::createNativeWindow(QPlatformWindow
     wfdEnumeratePipelines(mDevice, pipelineIds, numPipelines, nullptr);
 
     bool ok;
-    WFDint pipelineId = qgetenv("QT_OPENWFD_PIPELINE_ID").toInt(&ok);
+    WFDint pipelineId = qgetenv("BOBUI_OPENWFD_PIPELINE_ID").toInt(&ok);
 
     if (!ok)
         pipelineId = pipelineIds[0];
@@ -206,4 +206,4 @@ void QEglFSOpenWFDIntegration::platformDestroy()
         qWarning() << "Failed to release wfd device! Error = " << error;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

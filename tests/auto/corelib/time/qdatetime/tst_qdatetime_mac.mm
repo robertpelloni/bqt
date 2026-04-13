@@ -1,11 +1,11 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2014 Petroules Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/QDateTime>
-#include <QTest>
+#include <BobUICore/QDateTime>
+#include <BOBUIest>
 
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
 #include <CoreFoundation/CoreFoundation.h>
 #include <Foundation/Foundation.h>
@@ -17,31 +17,31 @@ void tst_QDateTime_macTypes()
     static const int kMsPerSecond = 1000;
 
     for (int i = 0; i < kMsPerSecond; ++i) {
-        QDateTime qtDateTime = QDateTime::fromMSecsSinceEpoch(i);
-        const CFDateRef cfDate = qtDateTime.toCFDate();
-        QCOMPARE(QDateTime::fromCFDate(cfDate), qtDateTime);
+        QDateTime bobuiDateTime = QDateTime::fromMSecsSinceEpoch(i);
+        const CFDateRef cfDate = bobuiDateTime.toCFDate();
+        QCOMPARE(QDateTime::fromCFDate(cfDate), bobuiDateTime);
         CFRelease(cfDate);
     }
     {
-        QDateTime qtDateTime = QDateTime::fromMSecsSinceEpoch(0);
-        const CFDateRef cfDate = qtDateTime.toCFDate();
-        QDateTime qtDateTimeCopy(qtDateTime);
-        qtDateTime.setSecsSinceEpoch(10000); // modify
-        QCOMPARE(QDateTime::fromCFDate(cfDate), qtDateTimeCopy);
+        QDateTime bobuiDateTime = QDateTime::fromMSecsSinceEpoch(0);
+        const CFDateRef cfDate = bobuiDateTime.toCFDate();
+        QDateTime bobuiDateTimeCopy(bobuiDateTime);
+        bobuiDateTime.setSecsSinceEpoch(10000); // modify
+        QCOMPARE(QDateTime::fromCFDate(cfDate), bobuiDateTimeCopy);
     }
     // QDateTime <-> NSDate
     for (int i = 0; i < kMsPerSecond; ++i) {
         QMacAutoReleasePool pool;
-        QDateTime qtDateTime = QDateTime::fromMSecsSinceEpoch(i);
-        const NSDate *nsDate = qtDateTime.toNSDate();
-        QCOMPARE(QDateTime::fromNSDate(nsDate), qtDateTime);
+        QDateTime bobuiDateTime = QDateTime::fromMSecsSinceEpoch(i);
+        const NSDate *nsDate = bobuiDateTime.toNSDate();
+        QCOMPARE(QDateTime::fromNSDate(nsDate), bobuiDateTime);
     }
     {
         QMacAutoReleasePool pool;
-        QDateTime qtDateTime = QDateTime::fromMSecsSinceEpoch(0);
-        const NSDate *nsDate = qtDateTime.toNSDate();
-        QDateTime qtDateTimeCopy(qtDateTime);
-        qtDateTime.setSecsSinceEpoch(10000); // modify
-        QCOMPARE(QDateTime::fromNSDate(nsDate), qtDateTimeCopy);
+        QDateTime bobuiDateTime = QDateTime::fromMSecsSinceEpoch(0);
+        const NSDate *nsDate = bobuiDateTime.toNSDate();
+        QDateTime bobuiDateTimeCopy(bobuiDateTime);
+        bobuiDateTime.setSecsSinceEpoch(10000); // modify
+        QCOMPARE(QDateTime::fromNSDate(nsDate), bobuiDateTimeCopy);
     }
 }

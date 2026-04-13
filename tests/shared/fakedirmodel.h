@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef FAKEDIRMODEL_H
 #define FAKEDIRMODEL_H
 
-#include <QtGui/QStandardItemModel>
-#include <QtGui/QStandardItem>
-#include <QtGui/QIcon>
-#include <QtGui/QPixmap>
-#include <QtGui/QImage>
-#include <QtCore/QStringList>
+#include <BobUIGui/QStandardItemModel>
+#include <BobUIGui/QStandardItem>
+#include <BobUIGui/QIcon>
+#include <BobUIGui/QPixmap>
+#include <BobUIGui/QImage>
+#include <BobUICore/QStringList>
 
 typedef QList<QStandardItem *> StandardItemList;
 
-static inline QIcon coloredIcon(Qt::GlobalColor color)
+static inline QIcon coloredIcon(BobUI::GlobalColor color)
 {
     QImage image(22, 22, QImage::Format_ARGB32);
     image.fill(color);
@@ -22,13 +22,13 @@ static inline QIcon coloredIcon(Qt::GlobalColor color)
 
 static void addFileEntry(const StandardItemList &directory, const QString &name, const QString &size)
 {
-    static const QIcon fileIcon = coloredIcon(Qt::blue);
+    static const QIcon fileIcon = coloredIcon(BobUI::blue);
     directory.front()->appendRow(StandardItemList() << new QStandardItem(fileIcon, name) << new QStandardItem(size));
 }
 
 static StandardItemList createDirEntry(const QString &name)
 {
-    static const QIcon dirIcon = coloredIcon(Qt::red);
+    static const QIcon dirIcon = coloredIcon(BobUI::red);
     StandardItemList result;
     result << new QStandardItem(dirIcon, name) << new QStandardItem;
     return result;

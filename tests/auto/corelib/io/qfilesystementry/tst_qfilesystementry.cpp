@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
-#include <QtCore/private/qfilesystementry_p.h>
+#include <BobUICore/private/qfilesystementry_p.h>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class tst_QFileSystemEntry : public QObject
 {
@@ -34,60 +34,60 @@ private slots:
 #if defined(Q_OS_WIN)
 void tst_QFileSystemEntry::getSetCheck_data()
 {
-    QTest::addColumn<QString>("nativeFilePath");
-    QTest::addColumn<QString>("internalnativeFilePath");
-    QTest::addColumn<QString>("filepath");
-    QTest::addColumn<QString>("filename");
-    QTest::addColumn<QString>("baseName");
-    QTest::addColumn<QString>("completeBasename");
-    QTest::addColumn<QString>("suffix");
-    QTest::addColumn<QString>("completeSuffix");
-    QTest::addColumn<bool>("absolute");
-    QTest::addColumn<bool>("relative");
+    BOBUIest::addColumn<QString>("nativeFilePath");
+    BOBUIest::addColumn<QString>("internalnativeFilePath");
+    BOBUIest::addColumn<QString>("filepath");
+    BOBUIest::addColumn<QString>("filename");
+    BOBUIest::addColumn<QString>("baseName");
+    BOBUIest::addColumn<QString>("completeBasename");
+    BOBUIest::addColumn<QString>("suffix");
+    BOBUIest::addColumn<QString>("completeSuffix");
+    BOBUIest::addColumn<bool>("absolute");
+    BOBUIest::addColumn<bool>("relative");
 
     QString absPrefix = QLatin1String("\\\\?\\");
     QString relPrefix = absPrefix
                 + QDir::toNativeSeparators(QDir::currentPath())
                 + QLatin1String("\\");
 
-    QTest::newRow("simple")
-            << QString("A:\\home\\qt\\in\\a\\dir.tar.gz")
-            << absPrefix +  QString("A:\\home\\qt\\in\\a\\dir.tar.gz")
-            << "A:/home/qt/in/a/dir.tar.gz"
+    BOBUIest::newRow("simple")
+            << QString("A:\\home\\bobui\\in\\a\\dir.tar.gz")
+            << absPrefix +  QString("A:\\home\\bobui\\in\\a\\dir.tar.gz")
+            << "A:/home/bobui/in/a/dir.tar.gz"
             << "dir.tar.gz" << "dir" << "dir.tar" << "gz" << "tar.gz" << true << false;
 
-    QTest::newRow("relative")
+    BOBUIest::newRow("relative")
             << QString("in\\a\\dir.tar.gz")
             << relPrefix +  QString("in\\a\\dir.tar.gz")
             << "in/a/dir.tar.gz"
             << "dir.tar.gz" << "dir" << "dir.tar" << "gz" << "tar.gz" << false <<true;
 
-    QTest::newRow("noSuffix")
+    BOBUIest::newRow("noSuffix")
             << QString("myDir\\myfile")
             << relPrefix + QString("myDir\\myfile")
             << "myDir/myfile" << "myfile" << "myfile" << "myfile" << "" << "" << false <<true;
 
-    QTest::newRow("noLongSuffix")
+    BOBUIest::newRow("noLongSuffix")
             << QString("myDir\\myfile.txt")
             << relPrefix + QString("myDir\\myfile.txt")
             << "myDir/myfile.txt" << "myfile.txt" << "myfile" << "myfile" << "txt" << "txt" << false << true;
 
-    QTest::newRow("endingSlash")
+    BOBUIest::newRow("endingSlash")
             << QString("myDir\\myfile.bla\\")
             << relPrefix + QString("myDir\\myfile.bla\\")
             << "myDir/myfile.bla/" << "" << "" << "" << "" << "" << false << true;
 
-    QTest::newRow("absolutePath")
+    BOBUIest::newRow("absolutePath")
             << QString("A:dir\\without\\leading\\backslash.bat")
             << absPrefix + QString("A:\\dir\\without\\leading\\backslash.bat")
             << "A:dir/without/leading/backslash.bat" << "backslash.bat" << "backslash" << "backslash" << "bat" << "bat" << false << false;
 
-    QTest::newRow("longpath")
+    BOBUIest::newRow("longpath")
             << uR"(\\?\D:\)"_s
             << absPrefix + QLatin1String(R"(D:\)")
             << "D:/" << "" << "" << "" << "" << "" << true << false;
 
-    QTest::newRow("uncprefix")
+    BOBUIest::newRow("uncprefix")
             << uR"(\\?\UNC\localhost\C$\tmp.txt)"_s
             << absPrefix + QLatin1String(R"(UNC\localhost\C$\tmp.txt)")
             << "//localhost/C$/tmp.txt" << "tmp.txt" << "tmp" << "tmp" << "txt" << "txt" << true
@@ -136,43 +136,43 @@ void tst_QFileSystemEntry::getSetCheck()
 
 void tst_QFileSystemEntry::getSetCheck_data()
 {
-    QTest::addColumn<QByteArray>("nativeFilePath");
-    QTest::addColumn<QString>("filepath");
-    QTest::addColumn<QString>("filename");
-    QTest::addColumn<QString>("basename");
-    QTest::addColumn<QString>("completeBasename");
-    QTest::addColumn<QString>("suffix");
-    QTest::addColumn<QString>("completeSuffix");
-    QTest::addColumn<bool>("absolute");
+    BOBUIest::addColumn<QByteArray>("nativeFilePath");
+    BOBUIest::addColumn<QString>("filepath");
+    BOBUIest::addColumn<QString>("filename");
+    BOBUIest::addColumn<QString>("basename");
+    BOBUIest::addColumn<QString>("completeBasename");
+    BOBUIest::addColumn<QString>("suffix");
+    BOBUIest::addColumn<QString>("completeSuffix");
+    BOBUIest::addColumn<bool>("absolute");
 
-    QTest::newRow("empty")
+    BOBUIest::newRow("empty")
         << QByteArray()
         << QString()
         << QString() << QString() << QString() << QString() << QString() << false;
 
-    QTest::newRow("simple")
-        << QByteArray("/home/qt/in/a/dir.tar.gz")
-        << "/home/qt/in/a/dir.tar.gz"
+    BOBUIest::newRow("simple")
+        << QByteArray("/home/bobui/in/a/dir.tar.gz")
+        << "/home/bobui/in/a/dir.tar.gz"
         << "dir.tar.gz" << "dir" << "dir.tar" << "gz" << "tar.gz" << true;
 
-    QTest::newRow("relative")
+    BOBUIest::newRow("relative")
         << QByteArray("in/a/dir.tar.gz")
         << "in/a/dir.tar.gz"
         << "dir.tar.gz" << "dir" << "dir.tar" << "gz" << "tar.gz" << false;
 
-    QTest::newRow("noSuffix")
+    BOBUIest::newRow("noSuffix")
         << QByteArray("myDir/myfile")
         << "myDir/myfile" << "myfile" << "myfile" << "myfile" << "" << "" << false;
 
-    QTest::newRow("noLongSuffix")
+    BOBUIest::newRow("noLongSuffix")
         << QByteArray("myDir/myfile.txt")
         << "myDir/myfile.txt" << "myfile.txt" << "myfile" << "myfile" << "txt" << "txt" << false;
 
-    QTest::newRow("endingSlash")
+    BOBUIest::newRow("endingSlash")
         << QByteArray("myDir/myfile.bla/")
         << "myDir/myfile.bla/" << "" << "" << "" << "" << "" << false;
 
-    QTest::newRow("relativePath")
+    BOBUIest::newRow("relativePath")
         << QByteArray("A:dir/without/leading/backslash.bat")
         << "A:dir/without/leading/backslash.bat" << "backslash.bat" << "backslash" << "backslash" << "bat" << "bat" << false;
 }
@@ -214,27 +214,27 @@ void tst_QFileSystemEntry::getSetCheck()
 
 void tst_QFileSystemEntry::suffix_data()
 {
-    QTest::addColumn<QString>("file");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<QString>("file");
+    BOBUIest::addColumn<QString>("expected");
 
-    QTest::newRow("empty") << QString() << QString();
-    QTest::newRow("noextension0") << "file" << "";
-    QTest::newRow("noextension1") << "/path/to/file" << "";
-    QTest::newRow("data0") << "file.tar" << "tar";
-    QTest::newRow("data1") << "file.tar.gz" << "gz";
-    QTest::newRow("data2") << "/path/file/file.tar.gz" << "gz";
-    QTest::newRow("data3") << "/path/file.tar" << "tar";
-    QTest::newRow("hidden1-1") << ".ext1" << "ext1";
-    QTest::newRow("hidden1-2") << ".ext" << "ext";
-    QTest::newRow("hidden1-3") << ".ex" << "ex";
-    QTest::newRow("hidden1-4") << ".e" << "e";
-    QTest::newRow("hidden2-1") << ".ext1.ext2" << "ext2";
-    QTest::newRow("hidden2-2") << ".ext.ext2" << "ext2";
-    QTest::newRow("hidden2-3") << ".ex.ext2" << "ext2";
-    QTest::newRow("hidden2-4") << ".e.ext2" << "ext2";
-    QTest::newRow("hidden2-5") << "..ext2" << "ext2";
-    QTest::newRow("dots") << "/path/file.with.dots/file..ext2" << "ext2";
-    QTest::newRow("dots2") << "/path/file.with.dots/.file..ext2" << "ext2";
+    BOBUIest::newRow("empty") << QString() << QString();
+    BOBUIest::newRow("noextension0") << "file" << "";
+    BOBUIest::newRow("noextension1") << "/path/to/file" << "";
+    BOBUIest::newRow("data0") << "file.tar" << "tar";
+    BOBUIest::newRow("data1") << "file.tar.gz" << "gz";
+    BOBUIest::newRow("data2") << "/path/file/file.tar.gz" << "gz";
+    BOBUIest::newRow("data3") << "/path/file.tar" << "tar";
+    BOBUIest::newRow("hidden1-1") << ".ext1" << "ext1";
+    BOBUIest::newRow("hidden1-2") << ".ext" << "ext";
+    BOBUIest::newRow("hidden1-3") << ".ex" << "ex";
+    BOBUIest::newRow("hidden1-4") << ".e" << "e";
+    BOBUIest::newRow("hidden2-1") << ".ext1.ext2" << "ext2";
+    BOBUIest::newRow("hidden2-2") << ".ext.ext2" << "ext2";
+    BOBUIest::newRow("hidden2-3") << ".ex.ext2" << "ext2";
+    BOBUIest::newRow("hidden2-4") << ".e.ext2" << "ext2";
+    BOBUIest::newRow("hidden2-5") << "..ext2" << "ext2";
+    BOBUIest::newRow("dots") << "/path/file.with.dots/file..ext2" << "ext2";
+    BOBUIest::newRow("dots2") << "/path/file.with.dots/.file..ext2" << "ext2";
 }
 
 void tst_QFileSystemEntry::suffix()
@@ -253,18 +253,18 @@ void tst_QFileSystemEntry::suffix()
 
 void tst_QFileSystemEntry::completeSuffix_data()
 {
-    QTest::addColumn<QString>("file");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<QString>("file");
+    BOBUIest::addColumn<QString>("expected");
 
-    QTest::newRow("empty") << QString() << QString();
-    QTest::newRow("noextension0") << "file" << "";
-    QTest::newRow("noextension1") << "/path/to/file" << "";
-    QTest::newRow("data0") << "file.tar" << "tar";
-    QTest::newRow("data1") << "file.tar.gz" << "tar.gz";
-    QTest::newRow("data2") << "/path/file/file.tar.gz" << "tar.gz";
-    QTest::newRow("data3") << "/path/file.tar" << "tar";
-    QTest::newRow("dots") << "/path/file.with.dots/file..ext2" << ".ext2";
-    QTest::newRow("dots2") << "/path/file.with.dots/.file..ext2" << "file..ext2";
+    BOBUIest::newRow("empty") << QString() << QString();
+    BOBUIest::newRow("noextension0") << "file" << "";
+    BOBUIest::newRow("noextension1") << "/path/to/file" << "";
+    BOBUIest::newRow("data0") << "file.tar" << "tar";
+    BOBUIest::newRow("data1") << "file.tar.gz" << "tar.gz";
+    BOBUIest::newRow("data2") << "/path/file/file.tar.gz" << "tar.gz";
+    BOBUIest::newRow("data3") << "/path/file.tar" << "tar";
+    BOBUIest::newRow("dots") << "/path/file.with.dots/file..ext2" << ".ext2";
+    BOBUIest::newRow("dots2") << "/path/file.with.dots/.file..ext2" << "file..ext2";
 }
 
 void tst_QFileSystemEntry::completeSuffix()
@@ -283,17 +283,17 @@ void tst_QFileSystemEntry::completeSuffix()
 
 void tst_QFileSystemEntry::baseName_data()
 {
-    QTest::addColumn<QString>("file");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<QString>("file");
+    BOBUIest::addColumn<QString>("expected");
 
-    QTest::newRow("empty") << QString() << QString();
-    QTest::newRow("data0") << "file.tar" << "file";
-    QTest::newRow("data1") << "file.tar.gz" << "file";
-    QTest::newRow("data2") << "/path/file/file.tar.gz" << "file";
-    QTest::newRow("data3") << "/path/file.tar" << "file";
-    QTest::newRow("data4") << "/path/file" << "file";
-    QTest::newRow("dots") << "/path/file.with.dots/file..ext2" << "file";
-    QTest::newRow("dots2") << "/path/file.with.dots/.file..ext2" << "";
+    BOBUIest::newRow("empty") << QString() << QString();
+    BOBUIest::newRow("data0") << "file.tar" << "file";
+    BOBUIest::newRow("data1") << "file.tar.gz" << "file";
+    BOBUIest::newRow("data2") << "/path/file/file.tar.gz" << "file";
+    BOBUIest::newRow("data3") << "/path/file.tar" << "file";
+    BOBUIest::newRow("data4") << "/path/file" << "file";
+    BOBUIest::newRow("dots") << "/path/file.with.dots/file..ext2" << "file";
+    BOBUIest::newRow("dots2") << "/path/file.with.dots/.file..ext2" << "";
 }
 
 void tst_QFileSystemEntry::baseName()
@@ -312,17 +312,17 @@ void tst_QFileSystemEntry::baseName()
 
 void tst_QFileSystemEntry::completeBaseName_data()
 {
-    QTest::addColumn<QString>("file");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<QString>("file");
+    BOBUIest::addColumn<QString>("expected");
 
-    QTest::newRow("empty") << QString() << QString();
-    QTest::newRow("data0") << "file.tar" << "file";
-    QTest::newRow("data1") << "file.tar.gz" << "file.tar";
-    QTest::newRow("data2") << "/path/file/file.tar.gz" << "file.tar";
-    QTest::newRow("data3") << "/path/file.tar" << "file";
-    QTest::newRow("data4") << "/path/file" << "file";
-    QTest::newRow("dots") << "/path/file.with.dots/file..ext2" << "file.";
-    QTest::newRow("dots2") << "/path/file.with.dots/.file..ext2" << ".file.";
+    BOBUIest::newRow("empty") << QString() << QString();
+    BOBUIest::newRow("data0") << "file.tar" << "file";
+    BOBUIest::newRow("data1") << "file.tar.gz" << "file.tar";
+    BOBUIest::newRow("data2") << "/path/file/file.tar.gz" << "file.tar";
+    BOBUIest::newRow("data3") << "/path/file.tar" << "file";
+    BOBUIest::newRow("data4") << "/path/file" << "file";
+    BOBUIest::newRow("dots") << "/path/file.with.dots/file..ext2" << "file.";
+    BOBUIest::newRow("dots2") << "/path/file.with.dots/.file..ext2" << ".file.";
 }
 
 void tst_QFileSystemEntry::completeBaseName()
@@ -342,16 +342,16 @@ void tst_QFileSystemEntry::completeBaseName()
 #if defined(Q_OS_WIN)
 void tst_QFileSystemEntry::absoluteOrRelative_data()
 {
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<bool>("isAbsolute");
-    QTest::addColumn<bool>("isRelative");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<bool>("isAbsolute");
+    BOBUIest::addColumn<bool>("isRelative");
 
-    QTest::newRow("empty") << QString() << false << true;
-    QTest::newRow("data0") << "file.tar" << false << true;
-    QTest::newRow("data1") << "/path/file/file.tar.gz" << false << false;
-    QTest::newRow("data1") << "C:path/file/file.tar.gz" << false << false;
-    QTest::newRow("data3") << "C:/path/file" << true << false;
-    QTest::newRow("data3") << "//machine/share" << true << false;
+    BOBUIest::newRow("empty") << QString() << false << true;
+    BOBUIest::newRow("data0") << "file.tar" << false << true;
+    BOBUIest::newRow("data1") << "/path/file/file.tar.gz" << false << false;
+    BOBUIest::newRow("data1") << "C:path/file/file.tar.gz" << false << false;
+    BOBUIest::newRow("data3") << "C:/path/file" << true << false;
+    BOBUIest::newRow("data3") << "//machine/share" << true << false;
 }
 
 void tst_QFileSystemEntry::absoluteOrRelative()
@@ -368,24 +368,24 @@ void tst_QFileSystemEntry::absoluteOrRelative()
 
 void tst_QFileSystemEntry::isClean_data()
 {
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<bool>("isClean");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<bool>("isClean");
 
-    QTest::newRow("empty") << QString() << true;
-    QTest::newRow("simple") << "foo" << true;
-    QTest::newRow("complex") << "/foo/bar/bz" << true;
-    QTest::newRow(".file") << "/foo/.file" << true;
-    QTest::newRow("..file") << "/foo/..file" << true;
-    QTest::newRow("...") << "/foo/.../bar" << true;
-    QTest::newRow("./") << "./" << false;
-    QTest::newRow("../") << "../" << false;
-    QTest::newRow(".") << "." << false;
-    QTest::newRow("..") << ".." << false;
-    QTest::newRow("/.") << "/." << false;
-    QTest::newRow("/..") << "/.." << false;
-    QTest::newRow("/../") << "foo/../bar" << false;
-    QTest::newRow("/./") << "foo/./bar" << false;
-    QTest::newRow("//") << "foo//bar" << false;
+    BOBUIest::newRow("empty") << QString() << true;
+    BOBUIest::newRow("simple") << "foo" << true;
+    BOBUIest::newRow("complex") << "/foo/bar/bz" << true;
+    BOBUIest::newRow(".file") << "/foo/.file" << true;
+    BOBUIest::newRow("..file") << "/foo/..file" << true;
+    BOBUIest::newRow("...") << "/foo/.../bar" << true;
+    BOBUIest::newRow("./") << "./" << false;
+    BOBUIest::newRow("../") << "../" << false;
+    BOBUIest::newRow(".") << "." << false;
+    BOBUIest::newRow("..") << ".." << false;
+    BOBUIest::newRow("/.") << "/." << false;
+    BOBUIest::newRow("/..") << "/.." << false;
+    BOBUIest::newRow("/../") << "foo/../bar" << false;
+    BOBUIest::newRow("/./") << "foo/./bar" << false;
+    BOBUIest::newRow("//") << "foo//bar" << false;
 }
 
 void tst_QFileSystemEntry::isClean()
@@ -425,5 +425,5 @@ void tst_QFileSystemEntry::defaultCtor()
     QVERIFY(entry.isEmpty());
 }
 
-QTEST_MAIN(tst_QFileSystemEntry)
+BOBUIEST_MAIN(tst_QFileSystemEntry)
 #include <tst_qfilesystementry.moc>

@@ -1,18 +1,18 @@
 // Copyright (C) 2017 Erik Larsson.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWAYLANDCLIENTEXTENSION_H
 #define QWAYLANDCLIENTEXTENSION_H
 
-#include <QtCore/QObject>
-#include <QtWaylandClient/qtwaylandclientglobal.h>
+#include <BobUICore/QObject>
+#include <BobUIWaylandClient/bobuiwaylandclientglobal.h>
 
 struct wl_interface;
 struct wl_registry;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 class QWaylandIntegration;
 }
 
@@ -29,7 +29,7 @@ public:
     QWaylandClientExtension(const int version);
     ~QWaylandClientExtension();
 
-    QtWaylandClient::QWaylandIntegration *integration() const;
+    BobUIWaylandClient::QWaylandIntegration *integration() const;
     int version() const;
     bool isActive() const;
 
@@ -95,6 +95,6 @@ public:
     }
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWAYLANDCLIENTEXTENSION_H

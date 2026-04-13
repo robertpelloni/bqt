@@ -1,5 +1,5 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QRHIVULKAN_P_H
 #define QRHIVULKAN_P_H
@@ -8,7 +8,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -21,7 +21,7 @@
 #include "qdxgihdrinfo_p.h"
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QVulkanFunctions;
 class QVulkanDeviceFunctions;
@@ -1112,6 +1112,6 @@ Q_DECLARE_TYPEINFO(QRhiVulkan::DeferredReleaseEntry, Q_RELOCATABLE_TYPE);
 Q_DECLARE_TYPEINFO(QRhiVulkan::TextureReadback, Q_RELOCATABLE_TYPE);
 Q_DECLARE_TYPEINFO(QRhiVulkan::BufferReadback, Q_RELOCATABLE_TYPE);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

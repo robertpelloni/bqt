@@ -1,39 +1,39 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "qwasmdom.h"
 
-#include <QtCore/qdebug.h>
-#include <QtCore/qdir.h>
-#include <QtCore/qfile.h>
-#include <QtCore/qpoint.h>
-#include <QtCore/qrect.h>
-#include <QtGui/qimage.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qdir.h>
+#include <BobUICore/qfile.h>
+#include <BobUICore/qpoint.h>
+#include <BobUICore/qrect.h>
+#include <BobUIGui/qimage.h>
 #include <private/qstdweb_p.h>
 #include <private/qwasmlocalfileengine_p.h>
-#include <QtCore/qurl.h>
-#include <QtCore/QBuffer>
+#include <BobUICore/qurl.h>
+#include <BobUICore/QBuffer>
 
 #include <utility>
 #include <emscripten/wire.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace dom {
 namespace {
-std::string dropActionToDropEffect(Qt::DropAction action)
+std::string dropActionToDropEffect(BobUI::DropAction action)
 {
     switch (action) {
-    case Qt::DropAction::CopyAction:
+    case BobUI::DropAction::CopyAction:
         return "copy";
-    case Qt::DropAction::IgnoreAction:
+    case BobUI::DropAction::IgnoreAction:
         return "none";
-    case Qt::DropAction::LinkAction:
+    case BobUI::DropAction::LinkAction:
         return "link";
-    case Qt::DropAction::MoveAction:
-    case Qt::DropAction::TargetMoveAction:
+    case BobUI::DropAction::MoveAction:
+    case BobUI::DropAction::TargetMoveAction:
         return "move";
-    case Qt::DropAction::ActionMask:
+    case BobUI::DropAction::ActionMask:
         Q_ASSERT(false);
         return "";
     }
@@ -66,7 +66,7 @@ void DataTransfer::setData(std::string format, std::string data)
                                emscripten::val(std::move(data)));
 }
 
-void DataTransfer::setDropAction(Qt::DropAction action)
+void DataTransfer::setDropAction(BobUI::DropAction action)
 {
     webDataTransfer.set("dropEffect", emscripten::val(dropActionToDropEffect(action)));
 }
@@ -77,7 +77,7 @@ void DataTransfer::setDataFromMimeData(const QMimeData &mimeData)
         if (format.startsWith("text/")) {
             auto data = mimeData.data(format);
             setData(format.toStdString(), QString::fromLocal8Bit(data).toStdString());
-        } else if (format == "application/x-qt-image") {
+        } else if (format == "application/x-bobui-image") {
             auto image = qvariant_cast<QImage>(mimeData.imageData());
             QByteArray byteArray;
             QBuffer buffer(&byteArray);
@@ -175,12 +175,12 @@ void DataTransfer::toMimeDataWithFile(std::function<void(QMimeData *)> callback)
                 }
 
                 // Read file content
-                QByteArray fileContent(webfile.size(), Qt::Uninitialized);
+                QByteArray fileContent(webfile.size(), BobUI::Uninitialized);
                 webfile.stream(fileContent.data(), [=]() {
-                    QDir qtTmpDir("/qt/tmp/"); // "tmp": indicate that these files won't stay around
-                    qtTmpDir.mkpath(qtTmpDir.path());
+                    QDir bobuiTmpDir("/bobui/tmp/"); // "tmp": indicate that these files won't stay around
+                    bobuiTmpDir.mkpath(bobuiTmpDir.path());
 
-                    QUrl fileUrl = QUrl::fromLocalFile(qtTmpDir.filePath(QString::fromStdString(webfile.name())));
+                    QUrl fileUrl = QUrl::fromLocalFile(bobuiTmpDir.filePath(QString::fromStdString(webfile.name())));
                     mimeContext->fileUrls.append(fileUrl);
 
                     QFile file(fileUrl.toLocalFile());
@@ -199,7 +199,7 @@ void DataTransfer::toMimeDataWithFile(std::function<void(QMimeData *)> callback)
                 // try to decode the image data. This handles the case where
                 // image data (i.e. not an image file) is pasted. The browsers
                 // will then create a fake "image.png" file which has the image
-                // data. As a side effect Qt will also decode the image for
+                // data. As a side effect BobUI will also decode the image for
                 // single-image-file drops, since there is no way to differentiate
                 // the fake "image.png" from a real one.
                 QString mimeFormat = QString::fromStdString(webfile.type());
@@ -212,8 +212,8 @@ void DataTransfer::toMimeDataWithFile(std::function<void(QMimeData *)> callback)
             break;
         }
         case ItemKind::String:
-            if (itemMimeType.contains("STRING", Qt::CaseSensitive)
-                || itemMimeType.contains("TEXT", Qt::CaseSensitive)) {
+            if (itemMimeType.contains("STRING", BobUI::CaseSensitive)
+                || itemMimeType.contains("TEXT", BobUI::CaseSensitive)) {
                 mimeContext->deref();
                 break;
             }
@@ -230,7 +230,7 @@ void DataTransfer::toMimeDataWithFile(std::function<void(QMimeData *)> callback)
                     QList<QUrl> urls;
                     urls.append(data);
                     mimeContext->mimeData->setUrls(urls);
-                } else if (itemMimeType == "application/x-qt-image") {
+                } else if (itemMimeType == "application/x-bobui-image") {
                     if (data.startsWith("QB64")) {
                         data.remove(0, 4);
                         auto ba = QByteArray::fromBase64(QByteArray::fromStdString(data.toStdString()));
@@ -343,4 +343,4 @@ void drawImageToWebImageDataArray(const QImage &sourceImage, emscripten::val des
 
 } // namespace dom
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

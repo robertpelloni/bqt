@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qdatawidgetmapper.h"
 
@@ -11,12 +11,12 @@
 
 #include "private/qobject_p.h"
 #include "private/qabstractitemmodel_p.h"
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
 #include <array>
 #include <iterator>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDataWidgetMapperPrivate: public QObjectPrivate
 {
@@ -25,32 +25,32 @@ public:
 
     QDataWidgetMapperPrivate()
         : model(QAbstractItemModelPrivate::staticEmptyModel()), delegate(nullptr),
-          orientation(Qt::Horizontal), submitPolicy(QDataWidgetMapper::AutoSubmit)
+          orientation(BobUI::Horizontal), submitPolicy(QDataWidgetMapper::AutoSubmit)
     {
     }
 
     QAbstractItemModel *model;
     QAbstractItemDelegate *delegate;
-    Qt::Orientation orientation;
+    BobUI::Orientation orientation;
     QDataWidgetMapper::SubmitPolicy submitPolicy;
     QPersistentModelIndex rootIndex;
     QPersistentModelIndex currentTopLeft;
 
     inline int itemCount()
     {
-        return orientation == Qt::Horizontal
+        return orientation == BobUI::Horizontal
             ? model->rowCount(rootIndex)
             : model->columnCount(rootIndex);
     }
 
     inline int currentIdx() const
     {
-        return orientation == Qt::Horizontal ? currentTopLeft.row() : currentTopLeft.column();
+        return orientation == BobUI::Horizontal ? currentTopLeft.row() : currentTopLeft.column();
     }
 
     inline QModelIndex indexAt(int itemPos)
     {
-        return orientation == Qt::Horizontal
+        return orientation == BobUI::Horizontal
             ? model->index(currentIdx(), itemPos, rootIndex)
             : model->index(itemPos, currentIdx(), rootIndex);
     }
@@ -128,7 +128,7 @@ bool QDataWidgetMapperPrivate::commit(const WidgetMapper &m)
     if (m.property.isEmpty())
         delegate->setModelData(m.widget, model, idx);
     else
-        model->setData(idx, m.widget->property(m.property), Qt::EditRole);
+        model->setData(idx, m.widget->property(m.property), BobUI::EditRole);
 
     return true;
 }
@@ -142,7 +142,7 @@ void QDataWidgetMapperPrivate::populate(WidgetMapper &m)
     if (m.property.isEmpty())
         delegate->setEditorData(m.widget, m.currentIndex);
     else
-        m.widget->setProperty(m.property, m.currentIndex.data(Qt::EditRole));
+        m.widget->setProperty(m.property, m.currentIndex.data(BobUI::EditRole));
 }
 
 void QDataWidgetMapperPrivate::populate()
@@ -219,7 +219,7 @@ void QDataWidgetMapperPrivate::modelDestroyed()
     of a data model to widgets.
     \ingroup model-view
     \ingroup advanced
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QDataWidgetMapper can be used to create data-aware widgets by mapping
     them to sections of an item model. A section is a column of a model
@@ -230,7 +230,7 @@ void QDataWidgetMapperPrivate::modelDestroyed()
     If the user edits the contents of a widget, the changes are read using
     the same property and written back to the model.
     By default, each widget's \l{Q_PROPERTY()}{user property} is used to
-    transfer data between the model and the widget. Since Qt 4.3, an
+    transfer data between the model and the widget. Since BobUI 4.3, an
     additional addMapping() function enables a named property to be used
     instead of the default user property.
 
@@ -240,11 +240,11 @@ void QDataWidgetMapperPrivate::modelDestroyed()
     Let us assume that we have an item model named \c{model} with the following contents:
 
     \table
-    \row \li 1 \li Qt Norway       \li Oslo
-    \row \li 2 \li Qt Australia    \li Brisbane
-    \row \li 3 \li Qt USA          \li Palo Alto
-    \row \li 4 \li Qt China        \li Beijing
-    \row \li 5 \li Qt Germany      \li Berlin
+    \row \li 1 \li BobUI Norway       \li Oslo
+    \row \li 2 \li BobUI Australia    \li Brisbane
+    \row \li 3 \li BobUI USA          \li Palo Alto
+    \row \li 4 \li BobUI China        \li Beijing
+    \row \li 5 \li BobUI Germany      \li Berlin
     \endtable
 
     The following code will map the columns of the model to widgets called \c mySpinBox,
@@ -253,7 +253,7 @@ void QDataWidgetMapperPrivate::modelDestroyed()
     \snippet code/src_gui_itemviews_qdatawidgetmapper.cpp 0
 
     After the call to toFirst(), \c mySpinBox displays the value \c{1}, \c myLineEdit
-    displays \c{Qt Norway} and \c myCountryChooser displays \c{Oslo}. The
+    displays \c{BobUI Norway} and \c myCountryChooser displays \c{Oslo}. The
     navigational functions toFirst(), toNext(), toPrevious(), toLast() and setCurrentIndex()
     can be used to navigate in the model and update the widgets with contents from
     the model.
@@ -668,7 +668,7 @@ void QDataWidgetMapper::setCurrentIndex(int index)
 
     if (index < 0 || index >= d->itemCount())
         return;
-    d->currentTopLeft = d->orientation == Qt::Horizontal
+    d->currentTopLeft = d->orientation == BobUI::Horizontal
                             ? d->model->index(index, 0, d->rootIndex)
                             : d->model->index(0, index, d->rootIndex);
     d->populate();
@@ -694,7 +694,7 @@ int QDataWidgetMapper::currentIndex() const
     \l {QItemSelectionModel}{selection model}.
 
     The following example illustrates how to update all widgets
-    with new data whenever the selection of a QTableView named
+    with new data whenever the selection of a BOBUIableView named
     \c myTableView changes:
 
     \snippet code/src_gui_itemviews_qdatawidgetmapper.cpp 2
@@ -710,7 +710,7 @@ void QDataWidgetMapper::setCurrentModelIndex(const QModelIndex &index)
         || index.parent() != d->rootIndex)
         return;
 
-    setCurrentIndex(d->orientation == Qt::Horizontal ? index.row() : index.column());
+    setCurrentIndex(d->orientation == BobUI::Horizontal ? index.row() : index.column());
 }
 
 /*!
@@ -734,37 +734,37 @@ void QDataWidgetMapper::clearMapping()
     \property QDataWidgetMapper::orientation
     \brief the orientation of the model
 
-    If the orientation is Qt::Horizontal (the default), a widget is
+    If the orientation is BobUI::Horizontal (the default), a widget is
     mapped to a column of a data model. The widget will be populated
     with the model's data from its mapped column and the row that
     currentIndex() points at.
 
-    Use Qt::Horizontal for tabular data that looks like this:
+    Use BobUI::Horizontal for tabular data that looks like this:
 
     \table
-    \row \li 1 \li Qt Norway       \li Oslo
-    \row \li 2 \li Qt Australia    \li Brisbane
-    \row \li 3 \li Qt USA          \li Silicon Valley
-    \row \li 4 \li Qt China        \li Beijing
-    \row \li 5 \li Qt Germany      \li Berlin
+    \row \li 1 \li BobUI Norway       \li Oslo
+    \row \li 2 \li BobUI Australia    \li Brisbane
+    \row \li 3 \li BobUI USA          \li Silicon Valley
+    \row \li 4 \li BobUI China        \li Beijing
+    \row \li 5 \li BobUI Germany      \li Berlin
     \endtable
 
-    If the orientation is set to Qt::Vertical, a widget is mapped to
+    If the orientation is set to BobUI::Vertical, a widget is mapped to
     a row. Calling setCurrentIndex() will change the current column.
     The widget will be populates with the model's data from its
     mapped row and the column that currentIndex() points at.
 
-    Use Qt::Vertical for tabular data that looks like this:
+    Use BobUI::Vertical for tabular data that looks like this:
 
     \table
     \row \li 1 \li 2 \li 3 \li 4 \li 5
-    \row \li Qt Norway \li Qt Australia \li Qt USA \li Qt China \li Qt Germany
+    \row \li BobUI Norway \li BobUI Australia \li BobUI USA \li BobUI China \li BobUI Germany
     \row \li Oslo \li Brisbane \li Silicon Valley \li Beijing \li Berlin
     \endtable
 
     Changing the orientation clears all existing mappings.
 */
-void QDataWidgetMapper::setOrientation(Qt::Orientation orientation)
+void QDataWidgetMapper::setOrientation(BobUI::Orientation orientation)
 {
     Q_D(QDataWidgetMapper);
 
@@ -775,7 +775,7 @@ void QDataWidgetMapper::setOrientation(Qt::Orientation orientation)
     d->orientation = orientation;
 }
 
-Qt::Orientation QDataWidgetMapper::orientation() const
+BobUI::Orientation QDataWidgetMapper::orientation() const
 {
     Q_D(const QDataWidgetMapper);
     return d->orientation;
@@ -804,6 +804,6 @@ QDataWidgetMapper::SubmitPolicy QDataWidgetMapper::submitPolicy() const
     return d->submitPolicy;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qdatawidgetmapper.cpp"

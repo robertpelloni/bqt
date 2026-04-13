@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "notificationclient.h"
 
@@ -30,13 +30,13 @@ int main(int argc, char *argv[])
     font.setPointSize(20);
     label.setFont(font);
     labelLayout.addWidget(&label);
-    labelLayout.setAlignment(Qt::AlignHCenter);
+    labelLayout.setAlignment(BobUI::AlignHCenter);
     mainLayout.addLayout(&labelLayout);
 
     QHBoxLayout smileysLayout;
     smileysLayout.addWidget(&sadButton);
     smileysLayout.addWidget(&happyButton);
-    smileysLayout.setAlignment(Qt::AlignCenter);
+    smileysLayout.setAlignment(BobUI::AlignCenter);
     mainLayout.addLayout(&smileysLayout);
     widget.setLayout(&mainLayout);
 

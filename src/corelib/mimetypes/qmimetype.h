@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2015 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author David Faure <david.faure@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QMIMETYPE_H
 #define QMIMETYPE_H
 
-#include <QtCore/qglobal.h>
+#include <BobUICore/qglobal.h>
 
-QT_REQUIRE_CONFIG(mimetype);
+BOBUI_REQUIRE_CONFIG(mimetype);
 
-#include <QtCore/qobjectdefs.h>
-#include <QtCore/qshareddata.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qstringlist.h>
+#include <BobUICore/qobjectdefs.h>
+#include <BobUICore/qshareddata.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qstringlist.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QMimeTypePrivate;
 class QMimeType;
@@ -43,14 +43,14 @@ public:
     QMimeType();
     QMimeType(const QMimeType &other);
     QMimeType &operator=(const QMimeType &other);
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QMimeType)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QMimeType)
     void swap(QMimeType &other) noexcept
     {
         d.swap(other.d);
     }
     explicit QMimeType(const QMimeTypePrivate &dd);
     ~QMimeType();
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
     bool operator==(const QMimeType &other) const;
 
     inline bool operator!=(const QMimeType &other) const
@@ -95,11 +95,11 @@ private:
 
 Q_DECLARE_SHARED(QMimeType)
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 class QDebug;
 Q_CORE_EXPORT QDebug operator<<(QDebug debug, const QMimeType &mime);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QMIMETYPE_H

@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QLIBRARYINFO_H
 #define QLIBRARYINFO_H
 
-#include <QtCore/qstring.h>
-#include <QtCore/qdatetime.h>
-#include <QtCore/qversionnumber.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qdatetime.h>
+#include <BobUICore/qversionnumber.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Q_CORE_EXPORT QLibraryInfo
 {
@@ -18,7 +18,7 @@ public:
     [[nodiscard]] Q_DECL_CONST_FUNCTION static bool isDebugBuild() noexcept;
     [[nodiscard]] Q_DECL_CONST_FUNCTION static bool isSharedBuild() noexcept;
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
     Q_DECL_CONST_FUNCTION static QVersionNumber version() noexcept;
 #endif
 
@@ -43,9 +43,9 @@ public:
     };
     static QString path(LibraryPath p);
     static QStringList paths(LibraryPath p);
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
     using LibraryLocation = LibraryPath;
-    QT_DEPRECATED_VERSION_X_6_0("Use path()")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use path()")
     static QString location(LibraryLocation location)
     { return path(location); }
 #endif
@@ -55,13 +55,13 @@ private:
     QLibraryInfo();
 };
 
-#if QT_DEPRECATED_SINCE(6, 9)
+#if BOBUI_DEPRECATED_SINCE(6, 9)
 
-QT_DEPRECATED_VERSION_X_6_9("Use QLibraryInfo::isSharedBuild() instead.")
+BOBUI_DEPRECATED_VERSION_X_6_9("Use QLibraryInfo::isSharedBuild() instead.")
 Q_CORE_EXPORT Q_DECL_CONST_FUNCTION bool qSharedBuild() noexcept;
 
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QLIBRARYINFO_H

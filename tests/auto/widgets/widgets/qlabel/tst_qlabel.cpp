@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
-#include <QTimer>
+#include <BOBUIest>
+#include <BOBUIimer>
 
 #include "qlabel.h"
 #include <qapplication.h>
@@ -18,7 +18,7 @@
 #include <qmath.h>
 #include <private/qlabel_p.h>
 
-#include <QtWidgets/private/qapplication_p.h>
+#include <BobUIWidgets/private/qapplication_p.h>
 
 class Widget : public QWidget
 {
@@ -48,7 +48,7 @@ private Q_SLOTS:
     void setText_data();
     void setText();
     void setTextFormat();
-#if QT_CONFIG(shortcut) && !defined(Q_OS_DARWIN)
+#if BOBUI_CONFIG(shortcut) && !defined(Q_OS_DARWIN)
     void setBuddy();
 #endif
     void setNum();
@@ -69,20 +69,20 @@ private Q_SLOTS:
     void unicodeText_data();
     void unicodeText();
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     void mnemonic_data();
     void mnemonic();
 #endif
     void selection();
 
-#ifndef QT_NO_CONTEXTMENU
-    void taskQTBUG_7902_contextMenuCrash();
+#ifndef BOBUI_NO_CONTEXTMENU
+    void taskBOBUIBUG_7902_contextMenuCrash();
     void contextMenu_data();
     void contextMenu();
 #endif
 
-    void taskQTBUG_48157_dprPixmap();
-    void taskQTBUG_48157_dprMovie();
+    void taskBOBUIBUG_48157_dprPixmap();
+    void taskBOBUIBUG_48157_dprMovie();
 
     void resourceProvider();
     void mouseEventPropagation_data();
@@ -103,14 +103,14 @@ void tst_QLabel::getSetCheck()
     obj1.setWordWrap(true);
     QVERIFY(obj1.wordWrap());
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     QWidget *var2 = new QWidget();
     obj1.setBuddy(var2);
     QCOMPARE(var2, obj1.buddy());
     obj1.setBuddy((QWidget *)0);
     QCOMPARE((QWidget *)0, obj1.buddy());
     delete var2;
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
     QMovie *var3 = new QMovie;
     obj1.setMovie(var3);
@@ -137,18 +137,18 @@ void tst_QLabel::cleanupTestCase()
 
 void tst_QLabel::init()
 {
-    testWidget->setTextFormat( Qt::AutoText );
-# if QT_CONFIG(shortcut)
+    testWidget->setTextFormat( BobUI::AutoText );
+# if BOBUI_CONFIG(shortcut)
     testWidget->setBuddy( 0 );
 #endif
     testWidget->setIndent( 0 );
-    testWidget->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
+    testWidget->setAlignment( BobUI::AlignLeft | BobUI::AlignVCenter );
     testWidget->setScaledContents( false );
 }
 
 void tst_QLabel::cleanup()
 {
-    if (QTest::currentTestFunction() == QLatin1String("setBuddy")) {
+    if (BOBUIest::currentTestFunction() == QLatin1String("setBuddy")) {
         testWidget->show();
 
         delete test_box; // this should delete tst_labl and test_edit as well.
@@ -156,7 +156,7 @@ void tst_QLabel::cleanup()
 }
 
 // Set buddy doesn't make much sense on OS X
-#if QT_CONFIG(shortcut) && !defined(Q_OS_DARWIN)
+#if BOBUI_CONFIG(shortcut) && !defined(Q_OS_DARWIN)
 void tst_QLabel::setBuddy()
 {
     testWidget->hide();
@@ -177,7 +177,7 @@ void tst_QLabel::setBuddy()
     test_label->setBuddy( test_edit );
     test_label->setFocus();
     QVERIFY( !test_edit->hasFocus() );
-    QTest::keyClick( test_box, 't', Qt::AltModifier );
+    BOBUIest::keyClick( test_box, 't', BobUI::AltModifier );
     QVERIFY( test_edit->hasFocus() );
 
     // Setting a new buddy should disconnect the old one's destroyed() signal
@@ -187,27 +187,27 @@ void tst_QLabel::setBuddy()
 
     // And deleting our own buddy should disconnect and not crash
     delete test_edit2;
-    QTest::keyClick(test_box, 't', Qt::AltModifier );
+    BOBUIest::keyClick(test_box, 't', BobUI::AltModifier );
 
     delete test_box;
 }
-#endif // QT_CONFIG(shortcut) && !Q_OS_DARWIN
+#endif // BOBUI_CONFIG(shortcut) && !Q_OS_DARWIN
 
 void tst_QLabel::setText_data()
 {
-    QTest::addColumn<QString>("txt");
-    QTest::addColumn<QString>("font");
+    BOBUIest::addColumn<QString>("txt");
+    BOBUIest::addColumn<QString>("font");
 
     QString prefix = "";
 #ifdef Q_OS_WIN32
     prefix = "win32_";
 #endif
 
-    QTest::newRow( QString(prefix + "data0").toLatin1() ) << QString("This is a single line") << QString("Helvetica");
-    QTest::newRow( QString(prefix + "data1").toLatin1() ) << QString("This is the first line\nThis is the second line") << QString("Courier");
-    QTest::newRow( QString(prefix + "data2").toLatin1() ) << QString("This is the first line\nThis is the second line\nThis is the third line") << QString("Helvetica");
-    QTest::newRow( QString(prefix + "data3").toLatin1() ) << QString("This is <b>bold</b> richtext") << QString("Courier");
-    QTest::newRow( QString(prefix + "data4").toLatin1() ) << QString("I Have a &shortcut") << QString("Helvetica");
+    BOBUIest::newRow( QString(prefix + "data0").toLatin1() ) << QString("This is a single line") << QString("Helvetica");
+    BOBUIest::newRow( QString(prefix + "data1").toLatin1() ) << QString("This is the first line\nThis is the second line") << QString("Courier");
+    BOBUIest::newRow( QString(prefix + "data2").toLatin1() ) << QString("This is the first line\nThis is the second line\nThis is the third line") << QString("Helvetica");
+    BOBUIest::newRow( QString(prefix + "data3").toLatin1() ) << QString("This is <b>bold</b> richtext") << QString("Courier");
+    BOBUIest::newRow( QString(prefix + "data4").toLatin1() ) << QString("I Have a &shortcut") << QString("Helvetica");
 }
 
 void tst_QLabel::setText()
@@ -223,14 +223,14 @@ void tst_QLabel::setText()
 void tst_QLabel::setTextFormat()
 {
     // lets' start with the simple stuff...
-    testWidget->setTextFormat( Qt::PlainText );
-    QVERIFY( testWidget->textFormat() == Qt::PlainText );
+    testWidget->setTextFormat( BobUI::PlainText );
+    QVERIFY( testWidget->textFormat() == BobUI::PlainText );
 
-    testWidget->setTextFormat( Qt::RichText );
-    QVERIFY( testWidget->textFormat() == Qt::RichText );
+    testWidget->setTextFormat( BobUI::RichText );
+    QVERIFY( testWidget->textFormat() == BobUI::RichText );
 
-    testWidget->setTextFormat( Qt::AutoText );
-    QVERIFY( testWidget->textFormat() == Qt::AutoText );
+    testWidget->setTextFormat( BobUI::AutoText );
+    QVERIFY( testWidget->textFormat() == BobUI::AutoText );
 }
 
 void tst_QLabel::setNum()
@@ -253,11 +253,11 @@ void tst_QLabel::clear()
 
 void tst_QLabel::wordWrap_data()
 {
-    QTest::addColumn<QString>("text");
+    BOBUIest::addColumn<QString>("text");
 
-    QTest::newRow("Plain text") << "Plain text1";
-    QTest::newRow("Rich text") << "<b>Rich text</b>";
-    QTest::newRow("Long text")
+    BOBUIest::newRow("Plain text") << "Plain text1";
+    BOBUIest::newRow("Rich text") << "<b>Rich text</b>";
+    BOBUIest::newRow("Long text")
                   << "This is a very long text to check that QLabel "
                      "does not wrap, even if the text would require wrapping to be fully displayed";
 }
@@ -285,20 +285,20 @@ void tst_QLabel::wordWrap()
 
 void tst_QLabel::eventPropagation_data()
 {
-    QTest::addColumn<QString>("text");
-    QTest::addColumn<int>("textInteractionFlags");
-    QTest::addColumn<int>("focusPolicy");
-    QTest::addColumn<bool>("propagation");
+    BOBUIest::addColumn<QString>("text");
+    BOBUIest::addColumn<int>("textInteractionFlags");
+    BOBUIest::addColumn<int>("focusPolicy");
+    BOBUIest::addColumn<bool>("propagation");
 
-    QTest::newRow("plain text1") << QString("plain text") << int(Qt::LinksAccessibleByMouse) << int(Qt::NoFocus) << true;
-    QTest::newRow("plain text2") << QString("plain text") << (int)Qt::TextSelectableByKeyboard << (int)Qt::ClickFocus << true;
-    QTest::newRow("plain text3") << QString("plain text") << (int)Qt::TextSelectableByMouse << (int)Qt::ClickFocus << false;
-    QTest::newRow("plain text4") << QString("plain text") << (int)Qt::NoTextInteraction << (int)Qt::NoFocus << true;
-    QTest::newRow("rich text1") << QString("<b>rich text</b>") << (int)Qt::LinksAccessibleByMouse << (int)Qt::NoFocus << true;
-    QTest::newRow("rich text2") << QString("<b>rich text</b>") << (int)Qt::TextSelectableByKeyboard << (int)Qt::ClickFocus << true;
-    QTest::newRow("rich text3") << QString("<b>rich text</b>") << (int)Qt::TextSelectableByMouse << (int)Qt::ClickFocus << false;
-    QTest::newRow("rich text4") << QString("<b>rich text</b>") << (int)Qt::NoTextInteraction << (int)Qt::NoFocus << true;
-    QTest::newRow("rich text5") << QString("<b>rich text</b>") << (int)Qt::LinksAccessibleByKeyboard << (int)Qt::StrongFocus << true;
+    BOBUIest::newRow("plain text1") << QString("plain text") << int(BobUI::LinksAccessibleByMouse) << int(BobUI::NoFocus) << true;
+    BOBUIest::newRow("plain text2") << QString("plain text") << (int)BobUI::TextSelectableByKeyboard << (int)BobUI::ClickFocus << true;
+    BOBUIest::newRow("plain text3") << QString("plain text") << (int)BobUI::TextSelectableByMouse << (int)BobUI::ClickFocus << false;
+    BOBUIest::newRow("plain text4") << QString("plain text") << (int)BobUI::NoTextInteraction << (int)BobUI::NoFocus << true;
+    BOBUIest::newRow("rich text1") << QString("<b>rich text</b>") << (int)BobUI::LinksAccessibleByMouse << (int)BobUI::NoFocus << true;
+    BOBUIest::newRow("rich text2") << QString("<b>rich text</b>") << (int)BobUI::TextSelectableByKeyboard << (int)BobUI::ClickFocus << true;
+    BOBUIest::newRow("rich text3") << QString("<b>rich text</b>") << (int)BobUI::TextSelectableByMouse << (int)BobUI::ClickFocus << false;
+    BOBUIest::newRow("rich text4") << QString("<b>rich text</b>") << (int)BobUI::NoTextInteraction << (int)BobUI::NoFocus << true;
+    BOBUIest::newRow("rich text5") << QString("<b>rich text</b>") << (int)BobUI::LinksAccessibleByKeyboard << (int)BobUI::StrongFocus << true;
 
     if (!test_box)
         test_box = new Widget;
@@ -316,9 +316,9 @@ void tst_QLabel::eventPropagation()
     // plain text (accepts mouse event _only_ when label selectable by mouse)
     test_label->setText(text);
     test_box->events.clear();
-    test_label->setTextInteractionFlags(Qt::TextInteractionFlags(textInteractionFlags));
+    test_label->setTextInteractionFlags(BobUI::TextInteractionFlags(textInteractionFlags));
     QCOMPARE(int(test_label->focusPolicy()), focusPolicy);
-    QTest::mousePress(test_label, Qt::LeftButton);
+    BOBUIest::mousePress(test_label, BobUI::LeftButton);
     QVERIFY(test_box->events.contains(QEvent::MouseButtonPress) == propagation); // should have propagated!
 }
 
@@ -326,20 +326,20 @@ void tst_QLabel::focusPolicy()
 {
     delete test_label;
     test_label = new QLabel;
-    QCOMPARE(test_label->focusPolicy(), Qt::NoFocus); // default
-    test_label->setFocusPolicy(Qt::StrongFocus);
+    QCOMPARE(test_label->focusPolicy(), BobUI::NoFocus); // default
+    test_label->setFocusPolicy(BobUI::StrongFocus);
     test_label->setText("Whatever"); // setting text should not change the focus policy
-    QCOMPARE(test_label->focusPolicy(), Qt::StrongFocus);
-    test_label->setTextInteractionFlags(Qt::TextSelectableByKeyboard); // this should
-    QCOMPARE(test_label->focusPolicy(), Qt::ClickFocus);
-    test_label->setFocusPolicy(Qt::StrongFocus);
+    QCOMPARE(test_label->focusPolicy(), BobUI::StrongFocus);
+    test_label->setTextInteractionFlags(BobUI::TextSelectableByKeyboard); // this should
+    QCOMPARE(test_label->focusPolicy(), BobUI::ClickFocus);
+    test_label->setFocusPolicy(BobUI::StrongFocus);
     test_label->setText("Whatever"); // setting text should not change the focus policy
-    QCOMPARE(test_label->focusPolicy(), Qt::StrongFocus);
-    test_label->setTextInteractionFlags(Qt::NoTextInteraction);
-    QCOMPARE(test_label->focusPolicy(), Qt::NoFocus);
-    test_label->setFocusPolicy(Qt::StrongFocus);
-    test_label->setTextInteractionFlags(Qt::NoTextInteraction);
-    QCOMPARE(test_label->focusPolicy(), Qt::StrongFocus); // is not touched since value didn't change
+    QCOMPARE(test_label->focusPolicy(), BobUI::StrongFocus);
+    test_label->setTextInteractionFlags(BobUI::NoTextInteraction);
+    QCOMPARE(test_label->focusPolicy(), BobUI::NoFocus);
+    test_label->setFocusPolicy(BobUI::StrongFocus);
+    test_label->setTextInteractionFlags(BobUI::NoTextInteraction);
+    QCOMPARE(test_label->focusPolicy(), BobUI::StrongFocus); // is not touched since value didn't change
     delete test_label;
 }
 
@@ -359,15 +359,15 @@ void tst_QLabel::sizeHint()
     label.setIndent(0);
     label.setMargin(0);
     label.setContentsMargins(0, 0, 0, 0);
-    label.setAlignment(Qt::AlignVCenter);
+    label.setAlignment(BobUI::AlignVCenter);
     int h = label.sizeHint().height();
 
     QLabel l1(QLatin1String("Test"));
     l1.setIndent(0);
     l1.setMargin(0);
     l1.setContentsMargins(0, 0, 0, 0);
-    l1.setAlignment(Qt::AlignVCenter);
-    l1.setTextInteractionFlags(Qt::TextSelectableByMouse);   // will now use qtextcontrol
+    l1.setAlignment(BobUI::AlignVCenter);
+    l1.setTextInteractionFlags(BobUI::TextSelectableByMouse);   // will now use bobuiextcontrol
     int h1 = l1.sizeHint().height();
 
     QFontMetricsF fontMetrics(QApplication::font());
@@ -377,7 +377,7 @@ void tst_QLabel::sizeHint()
 
     bool leadingOverflow = qCeil(ascent + descent) < qCeil(ascent + descent + leading);
     if (leadingOverflow)
-        QEXPECT_FAIL("", "See QTBUG-82954", Continue);
+        QEXPECT_FAIL("", "See BOBUIBUG-82954", Continue);
     QCOMPARE(h1, h);
 }
 
@@ -400,16 +400,16 @@ void tst_QLabel::task226479_movieResize()
     label.show();
     QMovie *movie = new QMovie( &label );
     label.setMovie(movie);
-    QVERIFY(QTest::qWaitForWindowExposed(&label));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&label));
     movie->setFileName(QFINDTESTDATA("red.png"));
     movie->start();
-    QTest::qWait(50);
+    BOBUIest::qWait(50);
     movie->stop();
     label.paintedRegion = QRegion();
     movie->setFileName(QFINDTESTDATA("green.png"));
     movie->start();
 
-    QTRY_COMPARE(label.paintedRegion , QRegion(label.rect()) );
+    BOBUIRY_COMPARE(label.paintedRegion , QRegion(label.rect()) );
 }
 
 void tst_QLabel::emptyPixmap()
@@ -426,14 +426,14 @@ void tst_QLabel::emptyPixmap()
 }
 
 /**
-    Test for QTBUG-4848 - unicode data corrupting QLabel display
+    Test for BOBUIBUG-4848 - unicode data corrupting QLabel display
 */
 void tst_QLabel::unicodeText_data()
 {
-    QTest::addColumn<QString>("text");
+    BOBUIest::addColumn<QString>("text");
 
     /*
-    The "glass" phrase in Thai was the initial report for bug QTBUG-4848, was
+    The "glass" phrase in Thai was the initial report for bug BOBUIBUG-4848, was
     originally found on http://www.columbia.edu/kermit/utf8.html.
 
     The phrase is from an internet tradition regarding a striking phrase
@@ -441,21 +441,21 @@ void tst_QLabel::unicodeText_data()
     below were generated by using http://translate.google.com.
 
     The glass phrase in Thai contains the ้ว character which manifests bug
-    QTBUG-4848
+    BOBUIBUG-4848
 
     The last long phrase is an excerpt from Churchills "on the beaches"
     speech, also translated using http://translate.google.com.
     */
 
-    QTest::newRow("english") << QString::fromUtf8("I can eat glass and it doesn't hurt me.");
-    QTest::newRow("thai") << QString::fromUtf8("ฉันจะกินแก้วและไม่เจ็บฉัน");
-    QTest::newRow("chinese") << QString::fromUtf8("我可以吃玻璃，并没有伤害我。");
-    QTest::newRow("arabic") << QString::fromUtf8("أستطيع أكل الزجاج ، وأنه لا يؤذيني.");
-    QTest::newRow("russian") << QString::fromUtf8("Я могу есть стекло, и не больно.");
-    QTest::newRow("korean") << QString::fromUtf8("유리를 먹을 수있는, 그리고 그게 날 다치게하지 않습니다.");
-    QTest::newRow("greek") << QString::fromUtf8("Μπορώ να φάτε γυαλί και δεν μου κάνει κακό.");
-    QTest::newRow("german") << QString::fromUtf8("Ich kann Glas essen und es macht mich nicht heiß.");
-    QTest::newRow("thai_long") << QString::fromUtf8("เราจะต่อสู้ในทะเลและมหาสมุทร. เราจะต่อสู้ด้วยความมั่นใจเติบโตและความเจริญเติบโตในอากาศเราจะปกป้องเกาะของเราค่าใช้จ่ายใดๆอาจ."
+    BOBUIest::newRow("english") << QString::fromUtf8("I can eat glass and it doesn't hurt me.");
+    BOBUIest::newRow("thai") << QString::fromUtf8("ฉันจะกินแก้วและไม่เจ็บฉัน");
+    BOBUIest::newRow("chinese") << QString::fromUtf8("我可以吃玻璃，并没有伤害我。");
+    BOBUIest::newRow("arabic") << QString::fromUtf8("أستطيع أكل الزجاج ، وأنه لا يؤذيني.");
+    BOBUIest::newRow("russian") << QString::fromUtf8("Я могу есть стекло, и не больно.");
+    BOBUIest::newRow("korean") << QString::fromUtf8("유리를 먹을 수있는, 그리고 그게 날 다치게하지 않습니다.");
+    BOBUIest::newRow("greek") << QString::fromUtf8("Μπορώ να φάτε γυαλί και δεν μου κάνει κακό.");
+    BOBUIest::newRow("german") << QString::fromUtf8("Ich kann Glas essen und es macht mich nicht heiß.");
+    BOBUIest::newRow("thai_long") << QString::fromUtf8("เราจะต่อสู้ในทะเลและมหาสมุทร. เราจะต่อสู้ด้วยความมั่นใจเติบโตและความเจริญเติบโตในอากาศเราจะปกป้องเกาะของเราค่าใช้จ่ายใดๆอาจ."
                                                     "เราจะต่อสู้บนชายหาดเราจะต่อสู้ในบริเวณเชื่อมโยงไปถึงเราจะต่อสู้ในช่องและในถนนที่เราจะต่อสู้ในภูเขานั้นเราจะไม่ยอม.");
 }
 
@@ -469,25 +469,25 @@ void tst_QLabel::unicodeText()
     layout->setContentsMargins(8, 8, 8, 8);
     frame.setLayout(layout);
     frame.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&frame));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&frame));
     QVERIFY(frame.isVisible());  // was successfully sized and shown
     testWidget->show();
 }
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 
 void tst_QLabel::mnemonic_data()
 {
-    QTest::addColumn<QString>("text");
-    QTest::addColumn<QString>("expectedDocText");
-    QTest::addColumn<QString>("expectedShortcutCursor");
+    BOBUIest::addColumn<QString>("text");
+    BOBUIest::addColumn<QString>("expectedDocText");
+    BOBUIest::addColumn<QString>("expectedShortcutCursor");
 
-    QTest::newRow("1") << QString("Normal") << QString("Normal") << QString();
-    QTest::newRow("2") << QString("&Simple") << QString("Simple") << QString("S");
-    QTest::newRow("3") << QString("Also &simple") << QString("Also simple") << QString("s");
-    QTest::newRow("4") << QString("&&With &Double &&amp;") << QString("&With Double &amp;") << QString("D");
-    QTest::newRow("5") << QString("Hep&&Hop") << QString("Hep&Hop") << QString("");
-    QTest::newRow("6") << QString("Hep&&&Hop") << QString("Hep&Hop") << QString("H");
+    BOBUIest::newRow("1") << QString("Normal") << QString("Normal") << QString();
+    BOBUIest::newRow("2") << QString("&Simple") << QString("Simple") << QString("S");
+    BOBUIest::newRow("3") << QString("Also &simple") << QString("Also simple") << QString("s");
+    BOBUIest::newRow("4") << QString("&&With &Double &&amp;") << QString("&With Double &amp;") << QString("D");
+    BOBUIest::newRow("5") << QString("Hep&&Hop") << QString("Hep&Hop") << QString("");
+    BOBUIest::newRow("6") << QString("Hep&&&Hop") << QString("Hep&Hop") << QString("H");
 }
 
 
@@ -505,14 +505,14 @@ void tst_QLabel::mnemonic()
     //lab->setText("plop &plop");
     QLineEdit *lineedit = new QLineEdit;
     lab->setBuddy(lineedit);
-    lab->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    lab->setTextInteractionFlags(BobUI::TextSelectableByMouse);
 
     hbox->addWidget(lab);
     hbox->addWidget(lineedit);
     hbox->addWidget(new QLineEdit);
     w.setLayout(hbox);
     w.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
 
     QLabelPrivate *d = static_cast<QLabelPrivate *>(QObjectPrivate::get(lab));
     QVERIFY(d->control);
@@ -520,14 +520,14 @@ void tst_QLabel::mnemonic()
     QCOMPARE(d->shortcutCursor.selectedText(), expectedShortcutCursor);
 }
 
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
 void tst_QLabel::selection()
 {
     QLabel label;
     label.setText("Hello world");
 
-    label.setTextInteractionFlags(Qt::TextSelectableByMouse);
+    label.setTextInteractionFlags(BobUI::TextSelectableByMouse);
 
     QVERIFY(!label.hasSelectedText());
     QCOMPARE(label.selectedText(), QString());
@@ -544,15 +544,15 @@ void tst_QLabel::selection()
     QCOMPARE(label.selectionStart(), 6);
 }
 
-#ifndef QT_NO_CONTEXTMENU
-void tst_QLabel::taskQTBUG_7902_contextMenuCrash()
+#ifndef BOBUI_NO_CONTEXTMENU
+void tst_QLabel::taskBOBUIBUG_7902_contextMenuCrash()
 {
     QLabel *w = new QLabel("Test or crash?");
-    w->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    w->setTextInteractionFlags(BobUI::TextSelectableByMouse);
     w->show();
-    QVERIFY(QTest::qWaitForWindowExposed(w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(w));
 
-    QTimer ti;
+    BOBUIimer ti;
     w->connect(&ti, SIGNAL(timeout()), w, SLOT(deleteLater()));
     ti.start(300);
 
@@ -560,40 +560,40 @@ void tst_QLabel::taskQTBUG_7902_contextMenuCrash()
                                                    w->mapToGlobal(w->rect().center()));
     qApp->postEvent(w, cme);
 
-    QTest::qWait(350);
+    BOBUIest::qWait(350);
     // No crash, it's allright.
 }
 
 void tst_QLabel::contextMenu_data()
 {
-    QTest::addColumn<QString>("text");
-    QTest::addColumn<Qt::TextInteractionFlag>("interactionFlags");
-    QTest::addColumn<bool>("showsContextMenu");
+    BOBUIest::addColumn<QString>("text");
+    BOBUIest::addColumn<BobUI::TextInteractionFlag>("interactionFlags");
+    BOBUIest::addColumn<bool>("showsContextMenu");
 
-    QTest::addRow("Read-only")  << "Plain Text"
-                                << Qt::NoTextInteraction
+    BOBUIest::addRow("Read-only")  << "Plain Text"
+                                << BobUI::NoTextInteraction
                                 << false;
-    QTest::addRow("Selectable") << "Plain Text"
-                                << Qt::TextEditorInteraction
+    BOBUIest::addRow("Selectable") << "Plain Text"
+                                << BobUI::TextEditorInteraction
                                 << true;
-    QTest::addRow("Link")       << "<a href=\"nowhere\">Rich text with link</a>"
-                                << Qt::TextBrowserInteraction
+    BOBUIest::addRow("Link")       << "<a href=\"nowhere\">Rich text with link</a>"
+                                << BobUI::TextBrowserInteraction
                                 << true;
-    QTest::addRow("Rich text")  << "<b>Rich text without link</b>"
-                                << Qt::TextBrowserInteraction
+    BOBUIest::addRow("Rich text")  << "<b>Rich text without link</b>"
+                                << BobUI::TextBrowserInteraction
                                 << true;
 }
 
 void tst_QLabel::contextMenu()
 {
     QFETCH(QString, text);
-    QFETCH(Qt::TextInteractionFlag, interactionFlags);
+    QFETCH(BobUI::TextInteractionFlag, interactionFlags);
     QFETCH(bool, showsContextMenu);
 
     QLabel label(text);
     label.setTextInteractionFlags(interactionFlags);
     label.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&label));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&label));
 
     const QPoint menuPosition = label.rect().center();
     QContextMenuEvent cme(QContextMenuEvent::Mouse, menuPosition, label.mapToGlobal(menuPosition));
@@ -602,7 +602,7 @@ void tst_QLabel::contextMenu()
 }
 #endif
 
-void tst_QLabel::taskQTBUG_48157_dprPixmap()
+void tst_QLabel::taskBOBUIBUG_48157_dprPixmap()
 {
     QLabel label;
     QPixmap pixmap;
@@ -612,7 +612,7 @@ void tst_QLabel::taskQTBUG_48157_dprPixmap()
     QCOMPARE(label.sizeHint(), pixmap.deviceIndependentSize().toSize());
 }
 
-void tst_QLabel::taskQTBUG_48157_dprMovie()
+void tst_QLabel::taskBOBUIBUG_48157_dprMovie()
 {
     QLabel label;
     QMovie movie;
@@ -642,44 +642,44 @@ void tst_QLabel::resourceProvider()
 }
 
 // Test if mouse events are correctly propagated to the parent widget,
-// even if a label contains rich text (QTBUG-110055)
+// even if a label contains rich text (BOBUIBUG-110055)
 void tst_QLabel::mouseEventPropagation_data()
 {
-    QTest::addColumn<const QString>("text");
-    QTest::addColumn<const Qt::TextInteractionFlag>("interaction");
-    QTest::addColumn<const QList<Qt::MouseButton>>("buttons");
-    QTest::addColumn<const bool>("expectPropagation");
+    BOBUIest::addColumn<const QString>("text");
+    BOBUIest::addColumn<const BobUI::TextInteractionFlag>("interaction");
+    BOBUIest::addColumn<const QList<BobUI::MouseButton>>("buttons");
+    BOBUIest::addColumn<const bool>("expectPropagation");
 
 
-    QTest::newRow("RichText")
+    BOBUIest::newRow("RichText")
             << QString("<b>This is a rich text propagating mouse events</b>")
-            << Qt::LinksAccessibleByMouse
-            << QList<Qt::MouseButton>{Qt::LeftButton, Qt::RightButton, Qt::MiddleButton}
+            << BobUI::LinksAccessibleByMouse
+            << QList<BobUI::MouseButton>{BobUI::LeftButton, BobUI::RightButton, BobUI::MiddleButton}
             << true;
-    QTest::newRow("PlainText")
+    BOBUIest::newRow("PlainText")
             << QString("This is a plain text propagating mouse events")
-            << Qt::LinksAccessibleByMouse
-            << QList<Qt::MouseButton>{Qt::LeftButton, Qt::RightButton, Qt::MiddleButton}
+            << BobUI::LinksAccessibleByMouse
+            << QList<BobUI::MouseButton>{BobUI::LeftButton, BobUI::RightButton, BobUI::MiddleButton}
             << true;
-    QTest::newRow("PlainTextConsume")
+    BOBUIest::newRow("PlainTextConsume")
             << QString("This is a plain text consuming mouse events")
-            << Qt::TextSelectableByMouse
-            << QList<Qt::MouseButton>{Qt::LeftButton}
+            << BobUI::TextSelectableByMouse
+            << QList<BobUI::MouseButton>{BobUI::LeftButton}
             << false;
-    QTest::newRow("RichTextConsume")
+    BOBUIest::newRow("RichTextConsume")
             << QString("<b>This is a rich text consuming mouse events</b>")
-            << Qt::TextSelectableByMouse
-            << QList<Qt::MouseButton>{Qt::LeftButton}
+            << BobUI::TextSelectableByMouse
+            << QList<BobUI::MouseButton>{BobUI::LeftButton}
             << false;
-    QTest::newRow("PlainTextNoInteraction")
+    BOBUIest::newRow("PlainTextNoInteraction")
             << QString("This is a text not interacting with mouse")
-            << Qt::NoTextInteraction
-            << QList<Qt::MouseButton>{Qt::LeftButton, Qt::RightButton, Qt::MiddleButton}
+            << BobUI::NoTextInteraction
+            << QList<BobUI::MouseButton>{BobUI::LeftButton, BobUI::RightButton, BobUI::MiddleButton}
             << true;
-    QTest::newRow("RichTextNoInteraction")
+    BOBUIest::newRow("RichTextNoInteraction")
             << QString("<b>This is a rich text not interacting with mouse</b>")
-            << Qt::NoTextInteraction
-            << QList<Qt::MouseButton>{Qt::LeftButton, Qt::RightButton, Qt::MiddleButton}
+            << BobUI::NoTextInteraction
+            << QList<BobUI::MouseButton>{BobUI::LeftButton, BobUI::RightButton, BobUI::MiddleButton}
             << true;
 }
 
@@ -708,8 +708,8 @@ void tst_QLabel::mouseEventPropagation()
     };
 
     QFETCH(const QString, text);
-    QFETCH(const Qt::TextInteractionFlag, interaction);
-    QFETCH(const QList<Qt::MouseButton>, buttons);
+    QFETCH(const BobUI::TextInteractionFlag, interaction);
+    QFETCH(const QList<BobUI::MouseButton>, buttons);
     QFETCH(const bool, expectPropagation);
 
     MouseEventWidget widget;
@@ -719,16 +719,16 @@ void tst_QLabel::mouseEventPropagation()
 
     layout->addWidget(label);
     widget.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&widget));
 
     const QPoint labelCenter = label->rect().center();
-    for (Qt::MouseButton mouseButton : buttons)
-        QTest::mouseClick(label, mouseButton, Qt::KeyboardModifiers(), labelCenter);
+    for (BobUI::MouseButton mouseButton : buttons)
+        BOBUIest::mouseClick(label, mouseButton, BobUI::KeyboardModifiers(), labelCenter);
 
     const uint count = expectPropagation ? buttons.count() : 0;
-    QTRY_COMPARE(widget.pressed(), count);
-    QTRY_COMPARE(widget.released(), count);
+    BOBUIRY_COMPARE(widget.pressed(), count);
+    BOBUIRY_COMPARE(widget.released(), count);
 }
 
-QTEST_MAIN(tst_QLabel)
+BOBUIEST_MAIN(tst_QLabel)
 #include "tst_qlabel.moc"

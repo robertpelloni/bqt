@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qeglfsemulatorscreen.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QEglFSEmulatorScreen::QEglFSEmulatorScreen(const QJsonObject &screenDescription)
     : QEglFSScreen(eglGetDisplay(EGL_DEFAULT_DISPLAY))
@@ -54,12 +54,12 @@ qreal QEglFSEmulatorScreen::refreshRate() const
     return m_refreshRate;
 }
 
-Qt::ScreenOrientation QEglFSEmulatorScreen::nativeOrientation() const
+BobUI::ScreenOrientation QEglFSEmulatorScreen::nativeOrientation() const
 {
     return m_nativeOrientation;
 }
 
-Qt::ScreenOrientation QEglFSEmulatorScreen::orientation() const
+BobUI::ScreenOrientation QEglFSEmulatorScreen::orientation() const
 {
     return m_orientation;
 }
@@ -129,11 +129,11 @@ void QEglFSEmulatorScreen::initFromJsonObject(const QJsonObject &description)
 
     value = description.value("nativeOrientation"_L1);
     if (!value.isUndefined() && value.isDouble())
-        m_nativeOrientation = static_cast<Qt::ScreenOrientation>(value.toInt());
+        m_nativeOrientation = static_cast<BobUI::ScreenOrientation>(value.toInt());
 
     value = description.value("orientation"_L1);
     if (!value.isUndefined() && value.isDouble())
-        m_orientation = static_cast<Qt::ScreenOrientation>(value.toInt());
+        m_orientation = static_cast<BobUI::ScreenOrientation>(value.toInt());
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

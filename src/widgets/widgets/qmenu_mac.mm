@@ -1,31 +1,31 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
 
-#include <qtwidgetsglobal.h>
+#include <bobuiwidgetsglobal.h>
 
-QT_USE_NAMESPACE
+BOBUI_USE_NAMESPACE
 
 #include "qmenu.h"
-#if QT_CONFIG(menubar)
+#if BOBUI_CONFIG(menubar)
 #include "qmenubar.h"
 #include "qmenubar_p.h"
 #endif
 
-#include <QtCore/QDebug>
-#include <QtGui/QGuiApplication>
-#include <QtGui/QWindow>
+#include <BobUICore/QDebug>
+#include <BobUIGui/QGuiApplication>
+#include <BobUIGui/QWindow>
 #include <qpa/qplatformnativeinterface.h>
 #include <qpa/qplatformmenu_p.h>
 
 using namespace QNativeInterface::Private;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
 
 /*!
     \fn NSMenu *QMenu::toNSMenu()
@@ -33,7 +33,7 @@ QT_BEGIN_NAMESPACE
 
     Returns the native NSMenu for this menu. Available on \macos only.
 
-    \note Qt sets the delegate on the native menu. If you need to set your own
+    \note BobUI sets the delegate on the native menu. If you need to set your own
     delegate, make sure you save the original one and forward any calls to it.
 */
 NSMenu *QMenu::toNSMenu()
@@ -70,15 +70,15 @@ void QMenuPrivate::moveWidgetToPlatformItem(QWidget *widget, QPlatformMenuItem* 
 
     // Make sure the widget doesn't prevent quitting the application,
     // just because it's a parent-less (top level) window.
-    widget->setAttribute(Qt::WA_QuitOnClose, false);
+    widget->setAttribute(BobUI::WA_QuitOnClose, false);
 
     // And that it blends nicely with the native menu background
-    widget->setAttribute(Qt::WA_TranslucentBackground);
+    widget->setAttribute(BobUI::WA_TranslucentBackground);
 
     // Trigger creation of the backing QWindow, the platform window, and its
     // underlying NSView and NSWindow. At this point the widget is still hidden,
     // so the corresponding NSWindow that is created is not shown.
-    widget->setAttribute(Qt::WA_NativeWindow);
+    widget->setAttribute(BobUI::WA_NativeWindow);
     QWindow *widgetWindow = widget->windowHandle();
     widgetWindow->create();
 
@@ -88,19 +88,19 @@ void QMenuPrivate::moveWidgetToPlatformItem(QWidget *widget, QPlatformMenuItem* 
     // QWidget will ignore the flag if there is no parentWidget().
     // And we need to do it after creating the platform window, as
     // QWidget will overwrite the window flags during creation.
-    widgetWindow->setFlag(Qt::SubWindow);
+    widgetWindow->setFlag(BobUI::SubWindow);
 
     // Finally, we can associate the underlying NSView with the menu item,
     // and show it. This will dispose of the created NSWindow, due to
-    // the Qt::SubWindow flag above. The widget will not actually be
+    // the BobUI::SubWindow flag above. The widget will not actually be
     // visible until it's re-parented into the NSMenu hierarchy.
     item->setNativeContents(WId(widgetWindow->winId()));
     widget->show();
 }
 
-#endif // QT_CONFIG(menu)
+#endif // BOBUI_CONFIG(menu)
 
-#if QT_CONFIG(menubar)
+#if BOBUI_CONFIG(menubar)
 
 /*!
     \fn NSMenu *QMenuBar::toNSMenu()
@@ -108,7 +108,7 @@ void QMenuPrivate::moveWidgetToPlatformItem(QWidget *widget, QPlatformMenuItem* 
 
     Returns the native NSMenu for this menu bar. Available on \macos only.
 
-    \note Qt may set the delegate on the native menu bar. If you need to set your
+    \note BobUI may set the delegate on the native menu bar. If you need to set your
     own delegate, make sure you save the original one and forward any calls to it.
 */
 NSMenu *QMenuBar::toNSMenu()
@@ -118,7 +118,7 @@ NSMenu *QMenuBar::toNSMenu()
 
     return nil;
 }
-#endif // QT_CONFIG(menubar)
+#endif // BOBUI_CONFIG(menubar)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 

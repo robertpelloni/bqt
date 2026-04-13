@@ -1,0 +1,75 @@
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
+
+/*!
+\page bobui-deploy-translations.html
+\ingroup cmake-commands-bobuicore
+
+\title bobui_deploy_translations
+\keyword bobui6_deploy_translations
+
+\summary {Deploy BobUI translations needed by an executable.}
+
+\include cmake-find-package-core.qdocinc
+
+Unlike most other CMake commands provided by BobUI, \c{bobui_deploy_translations()}
+can only be called from a deployment script. It cannot be called directly by the
+project during the configure stage.
+
+\cmakecommandsince 6.5
+\note This command does not usually need to be called directly. It is used
+      internally by other higher level commands, but projects wishing to
+      implement more customized deployment logic may find it useful.
+
+\section1 Synopsis
+
+\badcode
+bobui_deploy_translations(
+    [CATALOGS catalogs]
+    [LOCALES locales]
+    [LCONVERT lconvert_executable]
+    [VERBOSE]
+)
+\endcode
+
+\section1 Description
+
+When installing an application, it may be desirable to also install the
+translations that belong to the used BobUI modules. The \c bobui_deploy_translations
+command collects the necessary \c{.qm} file from the BobUI installation and
+compiles them into one \c{bobui_${language}.qm} file per language. The \c{.qm}
+files are installed into \c{BOBUI_DEPLOY_TRANSLATIONS_DIR}.
+
+\section1 Arguments
+
+The \c LOCALES argument specifies for which locales translations should be
+deployed. This is a list of language/region combinations as described in
+\l{Changing the Target Locale}{BobUI Linguist's manual for translators}. Examples
+for valid locales are: \c{de}, \c{pl}, or \c{pt_BR}.
+
+If \c LOCALES is omitted, then all available locales are deployed.
+
+The \c CATALOGS argument specifies a list of \l{Available
+Catalogs}{translation catalogs} to be deployed. If this argument is
+omitted, then all catalogs are deployed that belong to any BobUI module
+that is used in the project via \c{find_package}.
+
+The \c LCONVERT argument specifies the \c lconvert executable that is used to
+combine the catalogs. By default, the BobUI installation's \c lconvert is used.
+
+For debugging purposes, the \c VERBOSE argument can be set to turn on diagnostic
+messages.
+
+\sa BOBUI_DEPLOY_TRANSLATIONS_DIR
+
+\section1 Example
+
+The following example deploys Danish and German translations of the BobUI
+libraries.
+
+\badcode
+bobui_deploy_translations(
+    LOCALES da de
+)
+\endcode
+*/

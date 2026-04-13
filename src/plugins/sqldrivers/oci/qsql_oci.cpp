@@ -1,6 +1,6 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qsql_oci_p.h"
 
@@ -10,7 +10,7 @@
 #include <qlist.h>
 #include <qloggingcategory.h>
 #include <qmetatype.h>
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 #include <qregularexpression.h>
 #endif
 #include <qshareddata.h>
@@ -18,11 +18,11 @@
 #include <qsqlfield.h>
 #include <qsqlindex.h>
 #include <qsqlquery.h>
-#include <QtSql/private/qsqlcachedresult_p.h>
-#include <QtSql/private/qsqldriver_p.h>
+#include <BobUISql/private/qsqlcachedresult_p.h>
+#include <BobUISql/private/qsqldriver_p.h>
 #include <qstringlist.h>
-#if QT_CONFIG(timezone)
-#include <qtimezone.h>
+#if BOBUI_CONFIG(timezone)
+#include <bobuiimezone.h>
 #endif
 #include <qvariant.h>
 #include <qvarlengtharray.h>
@@ -53,11 +53,11 @@ Q_DECLARE_METATYPE(OCIEnv*)
 Q_DECLARE_OPAQUE_POINTER(OCIStmt*)
 Q_DECLARE_METATYPE(OCIStmt*)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_STATIC_LOGGING_CATEGORY(lcOci, "qt.sql.oci")
+Q_STATIC_LOGGING_CATEGORY(lcOci, "bobui.sql.oci")
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 #if Q_BYTE_ORDER == Q_LITTLE_ENDIAN
 enum { QOCIEncoding = 2002 }; // AL16UTF16LE
@@ -138,7 +138,7 @@ QOCIDateTime::QOCIDateTime(OCIEnv *env, OCIError *err, const QDateTime &dt)
     OCIDescriptorAlloc(env, reinterpret_cast<void**>(&dateTime), OCI_DTYPE_TIMESTAMP_TZ, 0, 0);
     if (dt.isValid()) {
         const QDate date = dt.date();
-        const QTime time = dt.time();
+        const BOBUIime time = dt.time();
         // Zone in +hh:mm format
         const QString timeZone = dt.toString("ttt"_L1);
         const OraText *tz = reinterpret_cast<const OraText *>(timeZone.utf16());
@@ -168,8 +168,8 @@ QDateTime QOCIDateTime::fromOCIDateTime(OCIEnv *env, OCIError *err, OCIDateTime 
     if (tzHour < 0)
         secondsOffset = -secondsOffset;
     // OCIDateTimeGetTime gives "fractions of second" as nanoseconds
-    return QDateTime(QDate(year, month, day), QTime(hour, minute, second, nsec / 1000000),
-                     QTimeZone::fromSecondsAheadOfUtc(secondsOffset));
+    return QDateTime(QDate(year, month, day), BOBUIime(hour, minute, second, nsec / 1000000),
+                     BOBUIimeZone::fromSecondsAheadOfUtc(secondsOffset));
 }
 
 struct TempStorage {
@@ -178,9 +178,9 @@ struct TempStorage {
 };
 
 typedef QSharedDataPointer<QOCIRowId> QOCIRowIdPointer;
-QT_BEGIN_INCLUDE_NAMESPACE
+BOBUI_BEGIN_INCLUDE_NAMESPACE
 Q_DECLARE_METATYPE(QOCIRowIdPointer)
-QT_END_INCLUDE_NAMESPACE
+BOBUI_END_INCLUDE_NAMESPACE
 
 class QOCIDriverPrivate : public QSqlDriverPrivate
 {
@@ -318,7 +318,7 @@ int QOCIResultPrivate::bindValue(OCIStmt *stmtp, OCIBind **hbnd, OCIError *err, 
                           reinterpret_cast<QByteArray *>(data)->size(),
                           SQLT_BIN, indPtr, 0, 0, 0, 0, OCI_DEFAULT);
         break;
-    case QMetaType::QTime:
+    case QMetaType::BOBUIime:
     case QMetaType::QDate:
     case QMetaType::QDateTime: {
         QOCIDateTime *ptr = new QOCIDateTime(env, err, val.toDateTime());
@@ -483,7 +483,7 @@ int QOCIResultPrivate::bindValues(QVariantList &values, IndicatorArray &indicato
 static void qOraOutValue(QVariant &value, TempStorage &tmpStorage, OCIEnv *env, OCIError* err)
 {
     switch (value.typeId()) {
-    case QMetaType::QTime:
+    case QMetaType::BOBUIime:
         value = QOCIDateTime::fromOCIDateTime(env, err,
                                               tmpStorage.dateTimes.takeFirst()->dateTime).time();
         break;
@@ -828,7 +828,7 @@ QOCICols::OraFieldInf::~OraFieldInf()
     if (dataPtr) {
         switch (typ.id()) {
         case QMetaType::QDate:
-        case QMetaType::QTime:
+        case QMetaType::BOBUIime:
         case QMetaType::QDateTime: {
             int r = OCIDescriptorFree(dataPtr, OCI_DTYPE_TIMESTAMP_TZ);
             if (r != OCI_SUCCESS)
@@ -1334,7 +1334,7 @@ bool QOCICols::execBatch(QOCIResultPrivate *d, QVariantList &boundValues, bool a
         col.curelep = col.recordCount;
 
         switch (fieldTypes[i].id()) {
-            case QMetaType::QTime:
+            case QMetaType::BOBUIime:
             case QMetaType::QDate:
             case QMetaType::QDateTime:
                 col.bindAs = SQLT_TIMESTAMP_TZ;
@@ -1414,7 +1414,7 @@ bool QOCICols::execBatch(QOCIResultPrivate *d, QVariantList &boundValues, bool a
                 columns[i].indicators[row] = 0;
                 char *dataPtr = columns[i].data + (columns[i].maxLen * row);
                 switch (fieldTypes[i].id()) {
-                    case QMetaType::QTime:
+                    case QMetaType::BOBUIime:
                     case QMetaType::QDate:
                     case QMetaType::QDateTime:{
                         columns[i].lengths[row] = columns[i].maxLen;
@@ -2180,7 +2180,7 @@ bool QOCIDriver::hasFeature(DriverFeature f) const
 
 static void qParseOpts(const QString &options, QOCIDriverPrivate *d)
 {
-    const QVector<QStringView> opts(QStringView(options).split(u';', Qt::SkipEmptyParts));
+    const QVector<QStringView> opts(QStringView(options).split(u';', BobUI::SkipEmptyParts));
     for (const auto tmp : opts) {
         qsizetype idx;
         if ((idx = tmp.indexOf(u'=')) == -1) {
@@ -2311,7 +2311,7 @@ bool QOCIDriver::open(const QString & db,
     } else {
         QString versionStr;
         versionStr = QString(reinterpret_cast<const QChar *>(vertxt));
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
         auto match = QRegularExpression("([0-9]+)\\.[0-9\\.]+[0-9]"_L1).match(versionStr);
         if (match.hasMatch())
             d->serverVersion = match.captured(1).toInt();
@@ -2695,7 +2695,7 @@ QString QOCIDriver::formatValue(const QSqlField &field, bool trimStrings) const
         }
         return datestring;
     }
-    case QMetaType::QTime: {
+    case QMetaType::BOBUIime: {
         QDateTime datetime = field.value().toDateTime();
         QString datestring;
         if (datetime.isValid()) {
@@ -2752,6 +2752,6 @@ int QOCIDriver::maximumIdentifierLength(IdentifierType type) const
     return d->serverVersion > 12 ? 128 : 30;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsql_oci_p.cpp"

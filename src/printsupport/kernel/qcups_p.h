@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QCUPS_P_H
 #define QCUPS_P_H
@@ -8,23 +8,23 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtPrintSupport/private/qtprintsupportglobal_p.h>
-#include <QtPrintSupport/private/qprint_p.h>
-#include "QtCore/qstring.h"
-#include "QtCore/qstringlist.h"
-#include "QtPrintSupport/qprinter.h"
-#include "QtCore/qdatetime.h"
+#include <BobUIPrintSupport/private/bobuiprintsupportglobal_p.h>
+#include <BobUIPrintSupport/private/qprint_p.h>
+#include "BobUICore/qstring.h"
+#include "BobUICore/qstringlist.h"
+#include "BobUIPrintSupport/qprinter.h"
+#include "BobUICore/qdatetime.h"
 
-QT_REQUIRE_CONFIG(cups);
+BOBUI_REQUIRE_CONFIG(cups);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QPrintDevice;
 
@@ -101,7 +101,7 @@ public:
     static void clearCupsOption(QPrinter *printer, const QString &option);
     static void clearCupsOptions(QPrinter *printer);
 
-    static void setJobHold(QPrinter *printer, const JobHoldUntil jobHold = NoHold, QTime holdUntilTime = QTime());
+    static void setJobHold(QPrinter *printer, const JobHoldUntil jobHold = NoHold, BOBUIime holdUntilTime = BOBUIime());
     static void setJobBilling(QPrinter *printer, const QString &jobBilling = QString());
     static void setJobPriority(QPrinter *printer, int priority = 50);
     static void setBannerPages(QPrinter *printer, const BannerPage startBannerPage, const BannerPage endBannerPage);
@@ -123,11 +123,11 @@ public:
 
     struct JobHoldUntilWithTime
     {
-        JobHoldUntilWithTime(JobHoldUntil jh = NoHold, QTime t = QTime())
+        JobHoldUntilWithTime(JobHoldUntil jh = NoHold, BOBUIime t = BOBUIime())
             : jobHold(jh), time(t) {}
 
         JobHoldUntil jobHold;
-        QTime time;
+        BOBUIime time;
     };
     static JobHoldUntilWithTime parseJobHoldUntil(const QString &jobHoldUntil);
 
@@ -139,16 +139,16 @@ Q_DECLARE_TYPEINFO(QCUPSSupport::PageSet,             Q_PRIMITIVE_TYPE);
 Q_DECLARE_TYPEINFO(QCUPSSupport::PagesPerSheetLayout, Q_PRIMITIVE_TYPE);
 Q_DECLARE_TYPEINFO(QCUPSSupport::PagesPerSheet,       Q_PRIMITIVE_TYPE);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN_TAGGED(QCUPSSupport::JobHoldUntil,
+BOBUI_DECL_METATYPE_EXTERN_TAGGED(QCUPSSupport::JobHoldUntil,
                                QCUPSSupport__JobHoldUntil, Q_PRINTSUPPORT_EXPORT)
-QT_DECL_METATYPE_EXTERN_TAGGED(QCUPSSupport::BannerPage,
+BOBUI_DECL_METATYPE_EXTERN_TAGGED(QCUPSSupport::BannerPage,
                                QCUPSSupport__BannerPage, Q_PRINTSUPPORT_EXPORT)
-QT_DECL_METATYPE_EXTERN_TAGGED(QCUPSSupport::PageSet, QCUPSSupport__PageSet, Q_PRINTSUPPORT_EXPORT)
-QT_DECL_METATYPE_EXTERN_TAGGED(QCUPSSupport::PagesPerSheetLayout,
+BOBUI_DECL_METATYPE_EXTERN_TAGGED(QCUPSSupport::PageSet, QCUPSSupport__PageSet, Q_PRINTSUPPORT_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN_TAGGED(QCUPSSupport::PagesPerSheetLayout,
                                QCUPSSupport__PagesPerSheetLayout, Q_PRINTSUPPORT_EXPORT)
-QT_DECL_METATYPE_EXTERN_TAGGED(QCUPSSupport::PagesPerSheet,
+BOBUI_DECL_METATYPE_EXTERN_TAGGED(QCUPSSupport::PagesPerSheet,
                                QCUPSSupport__PagesPerSheet, Q_PRINTSUPPORT_EXPORT)
 
 #endif

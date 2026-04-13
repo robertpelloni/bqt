@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QGRAPHICSANCHORLAYOUT_H
 #define QGRAPHICSANCHORLAYOUT_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qgraphicsitem.h>
-#include <QtWidgets/qgraphicslayout.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qgraphicsitem.h>
+#include <BobUIWidgets/qgraphicslayout.h>
 
-QT_REQUIRE_CONFIG(graphicsview);
+BOBUI_REQUIRE_CONFIG(graphicsview);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QGraphicsAnchorPrivate;
 class QGraphicsAnchorLayout;
@@ -43,17 +43,17 @@ public:
     QGraphicsAnchorLayout(QGraphicsLayoutItem *parent = nullptr);
     virtual ~QGraphicsAnchorLayout();
 
-    QGraphicsAnchor *addAnchor(QGraphicsLayoutItem *firstItem, Qt::AnchorPoint firstEdge,
-                               QGraphicsLayoutItem *secondItem, Qt::AnchorPoint secondEdge);
-    QGraphicsAnchor *anchor(QGraphicsLayoutItem *firstItem, Qt::AnchorPoint firstEdge,
-                            QGraphicsLayoutItem *secondItem, Qt::AnchorPoint secondEdge);
+    QGraphicsAnchor *addAnchor(QGraphicsLayoutItem *firstItem, BobUI::AnchorPoint firstEdge,
+                               QGraphicsLayoutItem *secondItem, BobUI::AnchorPoint secondEdge);
+    QGraphicsAnchor *anchor(QGraphicsLayoutItem *firstItem, BobUI::AnchorPoint firstEdge,
+                            QGraphicsLayoutItem *secondItem, BobUI::AnchorPoint secondEdge);
 
-    void addCornerAnchors(QGraphicsLayoutItem *firstItem, Qt::Corner firstCorner,
-                          QGraphicsLayoutItem *secondItem, Qt::Corner secondCorner);
+    void addCornerAnchors(QGraphicsLayoutItem *firstItem, BobUI::Corner firstCorner,
+                          QGraphicsLayoutItem *secondItem, BobUI::Corner secondCorner);
 
     void addAnchors(QGraphicsLayoutItem *firstItem,
                     QGraphicsLayoutItem *secondItem,
-                    Qt::Orientations orientations = Qt::Horizontal | Qt::Vertical);
+                    BobUI::Orientations orientations = BobUI::Horizontal | BobUI::Vertical);
 
     void setHorizontalSpacing(qreal spacing);
     void setVerticalSpacing(qreal spacing);
@@ -68,7 +68,7 @@ public:
 
     void invalidate() override;
 protected:
-    QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const override;
+    QSizeF sizeHint(BobUI::SizeHint which, const QSizeF &constraint = QSizeF()) const override;
 
 private:
     Q_DISABLE_COPY(QGraphicsAnchorLayout)
@@ -77,6 +77,6 @@ private:
     friend class QGraphicsAnchor;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

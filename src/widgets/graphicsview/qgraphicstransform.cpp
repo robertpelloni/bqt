@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 /*!
     \class QGraphicsTransform
@@ -8,7 +8,7 @@
     advanced transformations on QGraphicsItems.
     \since 4.6
     \ingroup graphicsview-api
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     As an alternative to QGraphicsItem::transform, QGraphicsTransform lets you
     create and control advanced transformations that can be configured
@@ -29,7 +29,7 @@
 
     Transformations are computed in true 3D space using QMatrix4x4.
     When the transformation is applied to a QGraphicsItem, it will be
-    projected back to a 2D QTransform.  When multiple QGraphicsTransform
+    projected back to a 2D BOBUIransform.  When multiple QGraphicsTransform
     objects are applied to a QGraphicsItem, all of the transformations
     are computed in true 3D space, with the projection back to 2D
     only occurring after the last QGraphicsTransform is applied.
@@ -55,10 +55,10 @@
 #include "qgraphicsitem_p.h"
 #include "qgraphicstransform_p.h"
 #include <QDebug>
-#include <QtCore/qmath.h>
-#include <QtCore/qnumeric.h>
+#include <BobUICore/qmath.h>
+#include <BobUICore/qnumeric.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QGraphicsTransformPrivate::~QGraphicsTransformPrivate()
 {
@@ -145,7 +145,7 @@ void QGraphicsTransform::update()
   \class QGraphicsScale
   \brief The QGraphicsScale class provides a scale transformation.
   \since 4.6
-  \inmodule QtWidgets
+  \inmodule BobUIWidgets
 
   QGraphicsScene provides certain parameters to help control how the scale
   should be applied.
@@ -161,7 +161,7 @@ void QGraphicsTransform::update()
   value will flip the item vertically. A negative zScale will flip the
   item end for end.
 
-  \sa QGraphicsTransform, QGraphicsItem::setScale(), QTransform::scale()
+  \sa QGraphicsTransform, QGraphicsItem::setScale(), BOBUIransform::scale()
 */
 
 class QGraphicsScalePrivate : public QGraphicsTransformPrivate
@@ -350,10 +350,10 @@ void QGraphicsScale::applyTo(QMatrix4x4 *matrix) const
     \brief The QGraphicsRotation class provides a rotation transformation around
     a given axis.
     \since 4.6
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     You can provide the desired axis by assigning a QVector3D to the axis property
-    or by passing a member if Qt::Axis to the setAxis convenience function.
+    or by passing a member if BobUI::Axis to the setAxis convenience function.
     By default the axis is (0, 0, 1) i.e., rotation around the Z axis.
 
     The angle property, which is provided by QGraphicsRotation, now
@@ -377,7 +377,7 @@ void QGraphicsScale::applyTo(QMatrix4x4 *matrix) const
     are performed in succession, they will not behave as expected unless
     they were all around the Z axis.
 
-    \sa QGraphicsTransform, QGraphicsItem::setRotation(), QTransform::rotate()
+    \sa QGraphicsTransform, QGraphicsItem::setRotation(), BOBUIransform::rotate()
 */
 
 class QGraphicsRotationPrivate : public QGraphicsTransformPrivate
@@ -483,7 +483,7 @@ void QGraphicsRotation::setAngle(qreal angle)
     around this axis. For example, if you would like to rotate an item
     around its X axis, you could pass (1, 0, 0) as the axis.
 
-    \sa QTransform, QGraphicsRotation::angle
+    \sa BOBUIransform, QGraphicsRotation::angle
 */
 QVector3D QGraphicsRotation::axis() const
 {
@@ -501,35 +501,35 @@ void QGraphicsRotation::setAxis(const QVector3D &axis)
 }
 
 /*!
-    \fn void QGraphicsRotation::setAxis(Qt::Axis axis)
+    \fn void QGraphicsRotation::setAxis(BobUI::Axis axis)
 
     Convenience function to set the axis to \a axis.
 
-    Note: the Qt::YAxis rotation for QTransform is inverted from the
+    Note: the BobUI::YAxis rotation for BOBUIransform is inverted from the
     correct mathematical rotation in 3D space.  The QGraphicsRotation
     class implements a correct mathematical rotation.  The following
     two sequences of code will perform the same transformation:
 
     \code
-    QTransform t;
-    t.rotate(45, Qt::YAxis);
+    BOBUIransform t;
+    t.rotate(45, BobUI::YAxis);
 
     QGraphicsRotation r;
-    r.setAxis(Qt::YAxis);
+    r.setAxis(BobUI::YAxis);
     r.setAngle(-45);
     \endcode
 */
-void QGraphicsRotation::setAxis(Qt::Axis axis)
+void QGraphicsRotation::setAxis(BobUI::Axis axis)
 {
     switch (axis)
     {
-    case Qt::XAxis:
+    case BobUI::XAxis:
         setAxis(QVector3D(1, 0, 0));
         break;
-    case Qt::YAxis:
+    case BobUI::YAxis:
         setAxis(QVector3D(0, 1, 0));
         break;
-    case Qt::ZAxis:
+    case BobUI::ZAxis:
         setAxis(QVector3D(0, 0, 1));
         break;
     }
@@ -558,6 +558,6 @@ void QGraphicsRotation::applyTo(QMatrix4x4 *matrix) const
     \sa QGraphicsRotation::axis
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qgraphicstransform.cpp"

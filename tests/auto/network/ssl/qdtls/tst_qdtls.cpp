@@ -1,26 +1,26 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QTestEventLoop>
+#include <BOBUIest>
+#include <BOBUIestEventLoop>
 
-#include <QtNetwork/qsslpresharedkeyauthenticator.h>
-#include <QtNetwork/qsslconfiguration.h>
-#include <QtNetwork/qhostaddress.h>
-#include <QtNetwork/qsslsocket.h>
-#include <QtNetwork/qsslcipher.h>
-#include <QtNetwork/qudpsocket.h>
-#include <QtNetwork/qsslerror.h>
-#include <QtNetwork/qsslkey.h>
-#include <QtNetwork/qdtls.h>
-#include <QtNetwork/qssl.h>
+#include <BobUINetwork/qsslpresharedkeyauthenticator.h>
+#include <BobUINetwork/qsslconfiguration.h>
+#include <BobUINetwork/qhostaddress.h>
+#include <BobUINetwork/qsslsocket.h>
+#include <BobUINetwork/qsslcipher.h>
+#include <BobUINetwork/qudpsocket.h>
+#include <BobUINetwork/qsslerror.h>
+#include <BobUINetwork/qsslkey.h>
+#include <BobUINetwork/qdtls.h>
+#include <BobUINetwork/qssl.h>
 
-#include <QtCore/qcryptographichash.h>
-#include <QtCore/qscopeguard.h>
-#include <QtCore/qbytearray.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qlist.h>
+#include <BobUICore/qcryptographichash.h>
+#include <BobUICore/qscopeguard.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qlist.h>
 
 #include "../shared/tlshelpers.h"
 
@@ -29,7 +29,7 @@
 
 using namespace std::chrono_literals;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace
 {
@@ -129,7 +129,7 @@ private:
     DtlsPtr serverCrypto;
     DtlsPtr clientCrypto;
 
-    QTestEventLoop testLoop;
+    BOBUIestEventLoop testLoop;
     static constexpr auto HandshakeTimeout = 5s;
     static constexpr auto DataExchangeTimeout = 1s;
 
@@ -137,7 +137,7 @@ private:
     QString certDirPath;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 Q_DECLARE_METATYPE(QSsl::SslProtocol)
 Q_DECLARE_METATYPE(QSslSocket::SslMode)
@@ -145,9 +145,9 @@ Q_DECLARE_METATYPE(QSslSocket::PeerVerifyMode)
 Q_DECLARE_METATYPE(QList<QSslCertificate>)
 Q_DECLARE_METATYPE(QSslKey)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-void qt_ForceTlsSecurityLevel();
+void bobui_ForceTlsSecurityLevel();
 
 void tst_QDtls::initTestCase()
 {
@@ -176,7 +176,7 @@ void tst_QDtls::initTestCase()
 
     hostName = QStringLiteral("bob.org");
 
-    qt_ForceTlsSecurityLevel();
+    bobui_ForceTlsSecurityLevel();
 }
 
 void tst_QDtls::init()
@@ -365,10 +365,10 @@ void tst_QDtls::setPeer()
 
 void tst_QDtls::handshake_data()
 {
-    QTest::addColumn<bool>("withCertificate");
+    BOBUIest::addColumn<bool>("withCertificate");
 
-    QTest::addRow("no-cert") << false;
-    QTest::addRow("with-cert") << true;
+    BOBUIest::addRow("no-cert") << false;
+    BOBUIest::addRow("with-cert") << true;
 }
 
 void tst_QDtls::handshake()
@@ -516,10 +516,10 @@ void tst_QDtls::sessionCipher()
 
 void tst_QDtls::cipherPreferences_data()
 {
-    QTest::addColumn<bool>("preferClient");
+    BOBUIest::addColumn<bool>("preferClient");
 
-    QTest::addRow("prefer-server") << true;
-    QTest::addRow("prefer-client") << false;
+    BOBUIest::addRow("prefer-server") << true;
+    BOBUIest::addRow("prefer-client") << false;
 }
 
 void tst_QDtls::cipherPreferences()
@@ -574,39 +574,39 @@ void tst_QDtls::cipherPreferences()
 
 void tst_QDtls::protocolVersionMatching_data()
 {
-    QTest::addColumn<QSsl::SslProtocol>("serverProtocol");
-    QTest::addColumn<QSsl::SslProtocol>("clientProtocol");
-    QTest::addColumn<bool>("works");
+    BOBUIest::addColumn<QSsl::SslProtocol>("serverProtocol");
+    BOBUIest::addColumn<QSsl::SslProtocol>("clientProtocol");
+    BOBUIest::addColumn<bool>("works");
 
     //OPENSSL_VERSION_NUMBER :
     //(OPENSSL_VERSION_MAJOR<<28) | (OPENSSL_VERSION_MINOR<<20) | (OPENSSL_VERSION_PATCH<<4)
     const long ossl311 = 0x30100010;
 
     if (QSslSocket::sslLibraryVersionNumber() < ossl311) {
-#if QT_DEPRECATED_SINCE(6, 3)
-QT_WARNING_PUSH QT_WARNING_DISABLE_DEPRECATED
-        QTest::addRow("DtlsV1_0 <-> DtlsV1_0") << QSsl::DtlsV1_0 << QSsl::DtlsV1_0 << true;
-        QTest::addRow("DtlsV1_0OrLater <-> DtlsV1_0") << QSsl::DtlsV1_0OrLater << QSsl::DtlsV1_0 << true;
-        QTest::addRow("DtlsV1_0 <-> DtlsV1_0OrLater") << QSsl::DtlsV1_0 << QSsl::DtlsV1_0OrLater << true;
-        QTest::addRow("DtlsV1_0OrLater <-> DtlsV1_0OrLater") << QSsl::DtlsV1_0OrLater << QSsl::DtlsV1_0OrLater << true;
-QT_WARNING_POP
-#endif // QT_DEPRECATED_SINCE(6, 3)
+#if BOBUI_DEPRECATED_SINCE(6, 3)
+BOBUI_WARNING_PUSH BOBUI_WARNING_DISABLE_DEPRECATED
+        BOBUIest::addRow("DtlsV1_0 <-> DtlsV1_0") << QSsl::DtlsV1_0 << QSsl::DtlsV1_0 << true;
+        BOBUIest::addRow("DtlsV1_0OrLater <-> DtlsV1_0") << QSsl::DtlsV1_0OrLater << QSsl::DtlsV1_0 << true;
+        BOBUIest::addRow("DtlsV1_0 <-> DtlsV1_0OrLater") << QSsl::DtlsV1_0 << QSsl::DtlsV1_0OrLater << true;
+        BOBUIest::addRow("DtlsV1_0OrLater <-> DtlsV1_0OrLater") << QSsl::DtlsV1_0OrLater << QSsl::DtlsV1_0OrLater << true;
+BOBUI_WARNING_POP
+#endif // BOBUI_DEPRECATED_SINCE(6, 3)
     }
 
-    QTest::addRow("DtlsV1_2 <-> DtlsV1_2") << QSsl::DtlsV1_2 << QSsl::DtlsV1_2 << true;
-    QTest::addRow("DtlsV1_2OrLater <-> DtlsV1_2") << QSsl::DtlsV1_2OrLater << QSsl::DtlsV1_2 << true;
-    QTest::addRow("DtlsV1_2 <-> DtlsV1_2OrLater") << QSsl::DtlsV1_2 << QSsl::DtlsV1_2OrLater << true;
-    QTest::addRow("DtlsV1_2OrLater <-> DtlsV1_2OrLater") << QSsl::DtlsV1_2OrLater << QSsl::DtlsV1_2OrLater << true;
+    BOBUIest::addRow("DtlsV1_2 <-> DtlsV1_2") << QSsl::DtlsV1_2 << QSsl::DtlsV1_2 << true;
+    BOBUIest::addRow("DtlsV1_2OrLater <-> DtlsV1_2") << QSsl::DtlsV1_2OrLater << QSsl::DtlsV1_2 << true;
+    BOBUIest::addRow("DtlsV1_2 <-> DtlsV1_2OrLater") << QSsl::DtlsV1_2 << QSsl::DtlsV1_2OrLater << true;
+    BOBUIest::addRow("DtlsV1_2OrLater <-> DtlsV1_2OrLater") << QSsl::DtlsV1_2OrLater << QSsl::DtlsV1_2OrLater << true;
 
     if (QSslSocket::sslLibraryVersionNumber() < ossl311) {
-#if QT_DEPRECATED_SINCE(6, 3)
-QT_WARNING_PUSH QT_WARNING_DISABLE_DEPRECATED
-        QTest::addRow("DtlsV1_0 <-> DtlsV1_2") << QSsl::DtlsV1_0 << QSsl::DtlsV1_2 << false;
-        QTest::addRow("DtlsV1_0 <-> DtlsV1_2OrLater") << QSsl::DtlsV1_0 << QSsl::DtlsV1_2OrLater << false;
-        QTest::addRow("DtlsV1_2 <-> DtlsV1_0") << QSsl::DtlsV1_2 << QSsl::DtlsV1_0 << false;
-        QTest::addRow("DtlsV1_2OrLater <-> DtlsV1_0") << QSsl::DtlsV1_2OrLater << QSsl::DtlsV1_0 << false;
-QT_WARNING_POP
-#endif // QT_DEPRECATED_SINCE(6, 3
+#if BOBUI_DEPRECATED_SINCE(6, 3)
+BOBUI_WARNING_PUSH BOBUI_WARNING_DISABLE_DEPRECATED
+        BOBUIest::addRow("DtlsV1_0 <-> DtlsV1_2") << QSsl::DtlsV1_0 << QSsl::DtlsV1_2 << false;
+        BOBUIest::addRow("DtlsV1_0 <-> DtlsV1_2OrLater") << QSsl::DtlsV1_0 << QSsl::DtlsV1_2OrLater << false;
+        BOBUIest::addRow("DtlsV1_2 <-> DtlsV1_0") << QSsl::DtlsV1_2 << QSsl::DtlsV1_0 << false;
+        BOBUIest::addRow("DtlsV1_2OrLater <-> DtlsV1_0") << QSsl::DtlsV1_2OrLater << QSsl::DtlsV1_0 << false;
+BOBUI_WARNING_POP
+#endif // BOBUI_DEPRECATED_SINCE(6, 3
     }
 }
 
@@ -648,10 +648,10 @@ void tst_QDtls::protocolVersionMatching()
 
 void tst_QDtls::verificationErrors_data()
 {
-    QTest::addColumn<bool>("abortHandshake");
+    BOBUIest::addColumn<bool>("abortHandshake");
 
-    QTest::addRow("abort-handshake") << true;
-    QTest::addRow("ignore-errors") << false;
+    BOBUIest::addRow("abort-handshake") << true;
+    BOBUIest::addRow("ignore-errors") << false;
 }
 
 void tst_QDtls::verificationErrors()
@@ -713,13 +713,13 @@ void tst_QDtls::verificationErrors()
 
 void tst_QDtls::presetExpectedErrors_data()
 {
-    QTest::addColumn<QList<QSslError>>("expectedTlsErrors");
-    QTest::addColumn<bool>("works");
+    BOBUIest::addColumn<QList<QSslError>>("expectedTlsErrors");
+    BOBUIest::addColumn<bool>("works");
 
     QList<QSslError> expectedErrors { { QSslError::HostNameMismatch, selfSignedCert } };
-    QTest::addRow("unexpected-self-signed") << expectedErrors << false;
+    BOBUIest::addRow("unexpected-self-signed") << expectedErrors << false;
     expectedErrors.push_back({QSslError::SelfSignedCertificate, selfSignedCert});
-    QTest::addRow("all-errors-ignored") << expectedErrors << true;
+    BOBUIest::addRow("all-errors-ignored") << expectedErrors << true;
 }
 
 void tst_QDtls::presetExpectedErrors()
@@ -755,11 +755,11 @@ void tst_QDtls::presetExpectedErrors()
 
 void tst_QDtls::verifyServerCertificate_data()
 {
-    QTest::addColumn<QSslSocket::PeerVerifyMode>("verifyMode");
-    QTest::addColumn<QList<QSslCertificate>>("serverCerts");
-    QTest::addColumn<QSslKey>("serverKey");
-    QTest::addColumn<QString>("peerName");
-    QTest::addColumn<bool>("encrypted");
+    BOBUIest::addColumn<QSslSocket::PeerVerifyMode>("verifyMode");
+    BOBUIest::addColumn<QList<QSslCertificate>>("serverCerts");
+    BOBUIest::addColumn<QSslKey>("serverKey");
+    BOBUIest::addColumn<QString>("peerName");
+    BOBUIest::addColumn<bool>("encrypted");
 
     {
         // A special case - null key (but with certificate):
@@ -768,7 +768,7 @@ void tst_QDtls::verifyServerCertificate_data()
 
         QSslKey nullKey;
         // Only one row - server must fail to start handshake immediately.
-        QTest::newRow("valid-server-cert-no-key : VerifyPeer") << QSslSocket::VerifyPeer << chain << nullKey << QString() << false;
+        BOBUIest::newRow("valid-server-cert-no-key : VerifyPeer") << QSslSocket::VerifyPeer << chain << nullKey << QString() << false;
     }
     {
         // Valid certificate:
@@ -786,12 +786,12 @@ void tst_QDtls::verifyServerCertificate_data()
 
         auto cert = chain.first();
         const QString name(cert.subjectInfo(QSslCertificate::CommonName).first());
-        QTest::newRow("valid-server-cert : AutoVerifyPeer") << QSslSocket::AutoVerifyPeer << chain << key << name << true;
-        QTest::newRow("valid-server-cert : QueryPeer") << QSslSocket::QueryPeer << chain << key << name << true;
-        QTest::newRow("valid-server-cert : VerifyNone") << QSslSocket::VerifyNone << chain << key << name << true;
-        QTest::newRow("valid-server-cert : VerifyPeer (add CA)") << QSslSocket::VerifyPeer << chain << key << name << true;
-        QTest::newRow("valid-server-cert : VerifyPeer (no CA)") << QSslSocket::VerifyPeer << chain << key << name << false;
-        QTest::newRow("valid-server-cert : VerifyPeer (name mismatch)") << QSslSocket::VerifyPeer << chain << key << QString() << false;
+        BOBUIest::newRow("valid-server-cert : AutoVerifyPeer") << QSslSocket::AutoVerifyPeer << chain << key << name << true;
+        BOBUIest::newRow("valid-server-cert : QueryPeer") << QSslSocket::QueryPeer << chain << key << name << true;
+        BOBUIest::newRow("valid-server-cert : VerifyNone") << QSslSocket::VerifyNone << chain << key << name << true;
+        BOBUIest::newRow("valid-server-cert : VerifyPeer (add CA)") << QSslSocket::VerifyPeer << chain << key << name << true;
+        BOBUIest::newRow("valid-server-cert : VerifyPeer (no CA)") << QSslSocket::VerifyPeer << chain << key << name << false;
+        BOBUIest::newRow("valid-server-cert : VerifyPeer (name mismatch)") << QSslSocket::VerifyPeer << chain << key << QString() << false;
     }
 }
 
@@ -850,18 +850,18 @@ void tst_QDtls::verifyServerCertificate()
 
 void tst_QDtls::verifyClientCertificate_data()
 {
-    QTest::addColumn<QSslSocket::PeerVerifyMode>("verifyMode");
-    QTest::addColumn<QList<QSslCertificate>>("clientCerts");
-    QTest::addColumn<QSslKey>("clientKey");
-    QTest::addColumn<bool>("encrypted");
+    BOBUIest::addColumn<QSslSocket::PeerVerifyMode>("verifyMode");
+    BOBUIest::addColumn<QList<QSslCertificate>>("clientCerts");
+    BOBUIest::addColumn<QSslKey>("clientKey");
+    BOBUIest::addColumn<bool>("encrypted");
     {
         // No certficates, no key:
         QList<QSslCertificate> chain;
         QSslKey key;
-        QTest::newRow("no-cert : AutoVerifyPeer") << QSslSocket::AutoVerifyPeer << chain << key << true;
-        QTest::newRow("no-cert : QueryPeer") << QSslSocket::QueryPeer << chain << key << true;
-        QTest::newRow("no-cert : VerifyNone") << QSslSocket::VerifyNone << chain << key << true;
-        QTest::newRow("no-cert : VerifyPeer") << QSslSocket::VerifyPeer << chain << key << false;
+        BOBUIest::newRow("no-cert : AutoVerifyPeer") << QSslSocket::AutoVerifyPeer << chain << key << true;
+        BOBUIest::newRow("no-cert : QueryPeer") << QSslSocket::QueryPeer << chain << key << true;
+        BOBUIest::newRow("no-cert : VerifyNone") << QSslSocket::VerifyNone << chain << key << true;
+        BOBUIest::newRow("no-cert : VerifyPeer") << QSslSocket::VerifyPeer << chain << key << false;
     }
     {
         const auto chain = QSslCertificate::fromPath(certDirPath + QStringLiteral("fluke.cert"));
@@ -872,10 +872,10 @@ void tst_QDtls::verifyClientCertificate_data()
         const QSslKey key(keyFile.readAll(), QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey);
         QVERIFY(!key.isNull());
 
-        QTest::newRow("self-signed-cert : AutoVerifyPeer") << QSslSocket::AutoVerifyPeer << chain << key << true;
-        QTest::newRow("self-signed-cert : QueryPeer") << QSslSocket::QueryPeer << chain << key << true;
-        QTest::newRow("self-signed-cert : VerifyNone") << QSslSocket::VerifyNone << chain << key << true;
-        QTest::newRow("self-signed-cert : VerifyPeer") << QSslSocket::VerifyPeer << chain << key << false;
+        BOBUIest::newRow("self-signed-cert : AutoVerifyPeer") << QSslSocket::AutoVerifyPeer << chain << key << true;
+        BOBUIest::newRow("self-signed-cert : QueryPeer") << QSslSocket::QueryPeer << chain << key << true;
+        BOBUIest::newRow("self-signed-cert : VerifyNone") << QSslSocket::VerifyNone << chain << key << true;
+        BOBUIest::newRow("self-signed-cert : VerifyPeer") << QSslSocket::VerifyPeer << chain << key << false;
     }
     {
         // Valid certificate, but wrong usage (server certificate):
@@ -887,10 +887,10 @@ void tst_QDtls::verifyClientCertificate_data()
         const QSslKey key(keyFile.readAll(), QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey);
         QVERIFY(!key.isNull());
 
-        QTest::newRow("valid-server-cert : AutoVerifyPeer") << QSslSocket::AutoVerifyPeer << chain << key << true;
-        QTest::newRow("valid-server-cert : QueryPeer") << QSslSocket::QueryPeer << chain << key << true;
-        QTest::newRow("valid-server-cert : VerifyNone") << QSslSocket::VerifyNone << chain << key << true;
-        QTest::newRow("valid-server-cert : VerifyPeer") << QSslSocket::VerifyPeer << chain << key << false;
+        BOBUIest::newRow("valid-server-cert : AutoVerifyPeer") << QSslSocket::AutoVerifyPeer << chain << key << true;
+        BOBUIest::newRow("valid-server-cert : QueryPeer") << QSslSocket::QueryPeer << chain << key << true;
+        BOBUIest::newRow("valid-server-cert : VerifyNone") << QSslSocket::VerifyNone << chain << key << true;
+        BOBUIest::newRow("valid-server-cert : VerifyPeer") << QSslSocket::VerifyPeer << chain << key << false;
     }
     {
         // Valid certificate, correct usage (client certificate):
@@ -902,19 +902,19 @@ void tst_QDtls::verifyClientCertificate_data()
         const QSslKey key(keyFile.readAll(), QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey);
         QVERIFY(!key.isNull());
 
-        QTest::newRow("valid-client-cert : AutoVerifyPeer") << QSslSocket::AutoVerifyPeer << chain << key << true;
-        QTest::newRow("valid-client-cert : QueryPeer") << QSslSocket::QueryPeer << chain << key << true;
-        QTest::newRow("valid-client-cert : VerifyNone") << QSslSocket::VerifyNone << chain << key << true;
-        QTest::newRow("valid-client-cert : VerifyPeer") << QSslSocket::VerifyPeer << chain << key << true;
+        BOBUIest::newRow("valid-client-cert : AutoVerifyPeer") << QSslSocket::AutoVerifyPeer << chain << key << true;
+        BOBUIest::newRow("valid-client-cert : QueryPeer") << QSslSocket::QueryPeer << chain << key << true;
+        BOBUIest::newRow("valid-client-cert : VerifyNone") << QSslSocket::VerifyNone << chain << key << true;
+        BOBUIest::newRow("valid-client-cert : VerifyPeer") << QSslSocket::VerifyPeer << chain << key << true;
 
         // Valid certificate, correct usage (client certificate), with chain:
         chain += QSslCertificate::fromPath(certDirPath + QStringLiteral("bogus-ca.crt"));
         QCOMPARE(chain.size(), 2);
 
-        QTest::newRow("valid-client-chain : AutoVerifyPeer") << QSslSocket::AutoVerifyPeer << chain << key << true;
-        QTest::newRow("valid-client-chain : QueryPeer") << QSslSocket::QueryPeer << chain << key << true;
-        QTest::newRow("valid-client-chain : VerifyNone") << QSslSocket::VerifyNone << chain << key << true;
-        QTest::newRow("valid-client-chain : VerifyPeer") << QSslSocket::VerifyPeer << chain << key << true;
+        BOBUIest::newRow("valid-client-chain : AutoVerifyPeer") << QSslSocket::AutoVerifyPeer << chain << key << true;
+        BOBUIest::newRow("valid-client-chain : QueryPeer") << QSslSocket::QueryPeer << chain << key << true;
+        BOBUIest::newRow("valid-client-chain : VerifyNone") << QSslSocket::VerifyNone << chain << key << true;
+        BOBUIest::newRow("valid-client-chain : VerifyPeer") << QSslSocket::VerifyPeer << chain << key << true;
     }
 }
 
@@ -1012,10 +1012,10 @@ void tst_QDtls::blacklistedCerificate()
 
 void tst_QDtls::readWriteEncrypted_data()
 {
-    QTest::addColumn<bool>("serverSideShutdown");
+    BOBUIest::addColumn<bool>("serverSideShutdown");
 
-    QTest::addRow("client-shutdown") << false;
-    QTest::addRow("server-shutdown") << true;
+    BOBUIest::addRow("client-shutdown") << false;
+    BOBUIest::addRow("server-shutdown") << true;
 }
 
 void tst_QDtls::readWriteEncrypted()
@@ -1127,7 +1127,7 @@ void tst_QDtls::datagramFragmentation()
     // Verify our dgram is not fragmented and some error set (either UnderlyingSocketError
     // if OpenSSL somehow had attempted a write or TlsFatalError in case OpenSSL
     // noticed how big the chunk is).
-    QVERIFY(clientCrypto->writeDatagramEncrypted(&clientSocket, QByteArray(1024 * 17, Qt::Uninitialized)) <= 0);
+    QVERIFY(clientCrypto->writeDatagramEncrypted(&clientSocket, QByteArray(1024 * 17, BobUI::Uninitialized)) <= 0);
     QVERIFY(clientCrypto->dtlsError() != QDtlsError::NoError);
     // Error to write does not mean QDtls is broken:
     QVERIFY(clientCrypto->isConnectionEncrypted());
@@ -1149,7 +1149,7 @@ void tst_QDtls::handshakeReadyRead()
     QHostAddress addr;
     quint16 port = 0;
 
-    QByteArray dgram(socket->pendingDatagramSize(), Qt::Uninitialized);
+    QByteArray dgram(socket->pendingDatagramSize(), BobUI::Uninitialized);
     const qint64 size = socket->readDatagram(dgram.data(), dgram.size(), &addr, &port);
     if (size != dgram.size())
         return;
@@ -1213,7 +1213,7 @@ void tst_QDtls::encryptedReadyRead()
     if (socket->pendingDatagramSize() <= 0)
         return;
 
-    QByteArray dtlsMessage(int(socket->pendingDatagramSize()), Qt::Uninitialized);
+    QByteArray dtlsMessage(int(socket->pendingDatagramSize()), BobUI::Uninitialized);
     QHostAddress addr;
     quint16 port = 0;
     const qint64 bytesRead = socket->readDatagram(dtlsMessage.data(), dtlsMessage.size(), &addr, &port);
@@ -1284,10 +1284,10 @@ void tst_QDtls::handleHandshakeTimeout()
 
 void tst_QDtls::clientServerData()
 {
-    QTest::addColumn<QSslSocket::SslMode>("mode");
+    BOBUIest::addColumn<QSslSocket::SslMode>("mode");
 
-    QTest::addRow("client") << QSslSocket::SslClientMode;
-    QTest::addRow("server") << QSslSocket::SslServerMode;
+    BOBUIest::addRow("client") << QSslSocket::SslClientMode;
+    BOBUIest::addRow("server") << QSslSocket::SslServerMode;
 }
 
 void tst_QDtls::connectHandshakeReadingSlots()
@@ -1326,8 +1326,8 @@ QHostAddress tst_QDtls::toNonAny(const QHostAddress &addr)
     return addr;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QTEST_MAIN(tst_QDtls)
+BOBUIEST_MAIN(tst_QDtls)
 
 #include "tst_qdtls.moc"

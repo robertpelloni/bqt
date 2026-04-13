@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#undef QT_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
+#undef BOBUI_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
 
 #include "qget.h"
 
@@ -13,41 +13,41 @@
 
 void printShortUsage()
 {
-    qDebug() << QCoreApplication::applicationName() << " [options] [list of urls]" << Qt::endl
-             << "Get one or more urls using QNetworkAccessManager" << Qt::endl
-             << "--help to display detailed usage" << Qt::endl;
+    qDebug() << QCoreApplication::applicationName() << " [options] [list of urls]" << BobUI::endl
+             << "Get one or more urls using QNetworkAccessManager" << BobUI::endl
+             << "--help to display detailed usage" << BobUI::endl;
 }
 
 void printUsage()
 {
-    qDebug() << QCoreApplication::applicationName() << " [options] [list of urls]" << Qt::endl
-             << "Get one or more urls using QNetworkAccessManager" << Qt::endl
+    qDebug() << QCoreApplication::applicationName() << " [options] [list of urls]" << BobUI::endl
+             << "Get one or more urls using QNetworkAccessManager" << BobUI::endl
              << "Options:"
-             << "--help                             This message" << Qt::endl
+             << "--help                             This message" << BobUI::endl
              << "--user=<username>                  Set username to use for authentication"
-             << Qt::endl
+             << BobUI::endl
              << "--password=<password>              Set password to use for authentication"
-             << Qt::endl
+             << BobUI::endl
              << "--proxy-user=<username>            Set username to use for proxy authentication"
-             << Qt::endl
+             << BobUI::endl
              << "--proxy-password=<password>        Set password to use for proxy authentication"
-             << Qt::endl
-             << "--proxy=on                         Use system proxy (default)" << Qt::endl
-             << "--proxy=off                        Don't use system proxy" << Qt::endl
-             << "--proxy=<host:port>[,type]         Use specified proxy" << Qt::endl
-             << "                   ,http           HTTP proxy (default)" << Qt::endl
-             << "                   ,socks          SOCKS5 proxy" << Qt::endl
-             << "                   ,ftp            FTP proxy" << Qt::endl
+             << BobUI::endl
+             << "--proxy=on                         Use system proxy (default)" << BobUI::endl
+             << "--proxy=off                        Don't use system proxy" << BobUI::endl
+             << "--proxy=<host:port>[,type]         Use specified proxy" << BobUI::endl
+             << "                   ,http           HTTP proxy (default)" << BobUI::endl
+             << "                   ,socks          SOCKS5 proxy" << BobUI::endl
+             << "                   ,ftp            FTP proxy" << BobUI::endl
              << "                   ,httpcaching    HTTP caching proxy (no CONNECT method)"
-             << Qt::endl
+             << BobUI::endl
              << "--headers=filename                 Set request headers from file contents"
-             << Qt::endl
+             << BobUI::endl
              << "--post=filename                    upload the file to the next url using HTTP POST"
-             << Qt::endl
+             << BobUI::endl
              << "--put=filename                     upload the file to the next url using HTTP PUT"
-             << Qt::endl
-             << "--content-type=<MIME>              set content-type header for upload" << Qt::endl
-             << "--serial                           don't run requests in parallel" << Qt::endl;
+             << BobUI::endl
+             << "--content-type=<MIME>              set content-type header for upload" << BobUI::endl
+             << "--serial                           don't run requests in parallel" << BobUI::endl;
 }
 
 int main(int argc, char *argv[])
@@ -174,6 +174,6 @@ int main(int argc, char *argv[])
             method = TransferItem::Get; //default for urls without a request type before it
         }
     }
-    QMetaObject::invokeMethod(&dl, "checkForAllDone", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(&dl, "checkForAllDone", BobUI::QueuedConnection);
     return app.exec();
 }

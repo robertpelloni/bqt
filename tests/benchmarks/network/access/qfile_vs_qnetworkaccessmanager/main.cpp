@@ -1,15 +1,15 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 #include <QDebug>
-#include <qtest.h>
-#include <QTest>
-#include <QTestEventLoop>
-#include <QtNetwork/qnetworkreply.h>
-#include <QtNetwork/qnetworkrequest.h>
-#include <QtNetwork/qnetworkaccessmanager.h>
-#include <QtCore/QTemporaryFile>
-#include <QtCore/QElapsedTimer>
-#include <QtCore/QFile>
+#include <bobuiest.h>
+#include <BOBUIest>
+#include <BOBUIestEventLoop>
+#include <BobUINetwork/qnetworkreply.h>
+#include <BobUINetwork/qnetworkrequest.h>
+#include <BobUINetwork/qnetworkaccessmanager.h>
+#include <BobUICore/BOBUIemporaryFile>
+#include <BobUICore/QElapsedTimer>
+#include <BobUICore/QFile>
 
 class qfile_vs_qnetworkaccessmanager : public QObject
 {
@@ -30,7 +30,7 @@ private slots:
 
 public:
     qint64 size;
-    QTemporaryFile testFile;
+    BOBUIemporaryFile testFile;
 
     qfile_vs_qnetworkaccessmanager() : QObject(), size(0) {};
 };
@@ -55,9 +55,9 @@ void qfile_vs_qnetworkaccessmanager::cleanupTestCase()
 void qfile_vs_qnetworkaccessmanager::qnamFileRead_iteration(QNetworkAccessManager &manager, QNetworkRequest &request)
 {
     QNetworkReply* reply = manager.get(request);
-    connect(reply, SIGNAL(finished()), &QTestEventLoop::instance(), SLOT(exitLoop()), Qt::QueuedConnection);
-    QTestEventLoop::instance().enterLoop(10);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    connect(reply, SIGNAL(finished()), &BOBUIestEventLoop::instance(), SLOT(exitLoop()), BobUI::QueuedConnection);
+    BOBUIestEventLoop::instance().enterLoop(10);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
     QByteArray qba = reply->readAll();
     delete reply;
 }
@@ -82,7 +82,7 @@ void qfile_vs_qnetworkaccessmanager::qnamFileRead()
     }
 
     qint64 elapsed = t.elapsed();
-    qDebug() << Qt::endl << "Finished!";
+    qDebug() << BobUI::endl << "Finished!";
     qDebug() << "Bytes:" << size;
     qDebug() << "Speed:" <<  (qreal(size*iterations) / 1024.0) / (qreal(elapsed) / 1000.0) << "KB/sec";
 }
@@ -115,7 +115,7 @@ void qfile_vs_qnetworkaccessmanager::qnamImmediateFileRead()
     }
 
     qint64 elapsed = t.elapsed();
-    qDebug() << Qt::endl << "Finished!";
+    qDebug() << BobUI::endl << "Finished!";
     qDebug() << "Bytes:" << size;
     qDebug() << "Speed:" <<  (qreal(size*iterations) / 1024.0) / (qreal(elapsed) / 1000.0) << "KB/sec";
 }
@@ -144,11 +144,11 @@ void qfile_vs_qnetworkaccessmanager::qfileFileRead()
     }
 
     qint64 elapsed = t.elapsed();
-    qDebug() << Qt::endl << "Finished!";
+    qDebug() << BobUI::endl << "Finished!";
     qDebug() << "Bytes:" << size;
     qDebug() << "Speed:" <<  (qreal(size*iterations) / 1024.0) / (qreal(elapsed) / 1000.0) << "KB/sec";
 }
 
-QTEST_MAIN(qfile_vs_qnetworkaccessmanager)
+BOBUIEST_MAIN(qfile_vs_qnetworkaccessmanager)
 
 #include "main.moc"

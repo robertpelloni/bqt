@@ -1,21 +1,21 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandprimaryselectionv1_p.h"
 #include "qwaylandinputdevice_p.h"
 #include "qwaylanddisplay_p.h"
 #include "qwaylandmimehelper_p.h"
 
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 
 #include <qpa/qplatformclipboard.h>
 
 #include <signal.h>
 #include <unistd.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 QWaylandPrimarySelectionDeviceManagerV1::QWaylandPrimarySelectionDeviceManagerV1(QWaylandDisplay *display, uint id, uint version)
     : zwp_primary_selection_device_manager_v1(display->wl_registry(), id, qMin(version, uint(1)))
@@ -52,7 +52,7 @@ void QWaylandPrimarySelectionOfferV1::zwp_primary_selection_offer_v1_offer(const
 
 QWaylandPrimarySelectionDeviceV1::QWaylandPrimarySelectionDeviceV1(
         QWaylandPrimarySelectionDeviceManagerV1 *manager, QWaylandInputDevice *seat)
-    : QtWayland::zwp_primary_selection_device_v1(manager->get_device(seat->wl_seat()))
+    : BobUIWayland::zwp_primary_selection_device_v1(manager->get_device(seat->wl_seat()))
     , m_display(manager->display())
     , m_seat(seat)
 {
@@ -101,7 +101,7 @@ void QWaylandPrimarySelectionDeviceV1::zwp_primary_selection_device_v1_selection
 }
 
 QWaylandPrimarySelectionSourceV1::QWaylandPrimarySelectionSourceV1(QWaylandPrimarySelectionDeviceManagerV1 *manager, QMimeData *mimeData)
-    : QtWayland::zwp_primary_selection_source_v1(manager->create_source())
+    : BobUIWayland::zwp_primary_selection_source_v1(manager->create_source())
     , m_mimeData(mimeData)
 {
     if (!mimeData)
@@ -134,8 +134,8 @@ void QWaylandPrimarySelectionSourceV1::zwp_primary_selection_source_v1_send(cons
     close(fd);
 }
 
-} // namespace QtWaylandClient
+} // namespace BobUIWaylandClient
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qwaylandprimaryselectionv1_p.cpp"

@@ -1,5 +1,5 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QRHI_H
 #define QRHI_H
@@ -10,23 +10,23 @@
 //
 // This file is part of the RHI API, with limited compatibility guarantees.
 // Usage of this API may make your code source and binary incompatible with
-// future versions of Qt.
+// future versions of BobUI.
 //
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qsize.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qvarlengtharray.h>
-#include <QtCore/qthread.h>
-#include <QtGui/qmatrix4x4.h>
-#include <QtGui/qcolor.h>
-#include <QtGui/qimage.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qsize.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qvarlengtharray.h>
+#include <BobUICore/bobuihread.h>
+#include <BobUIGui/qmatrix4x4.h>
+#include <BobUIGui/qcolor.h>
+#include <BobUIGui/qimage.h>
 #include <functional>
 #include <array>
 
 #include <rhi/qshader.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QWindow;
 class QRhi;
@@ -69,7 +69,7 @@ private:
 
     friend size_t qHash(const QRhiDepthStencilClearValue &v, size_t seed = 0) noexcept
     {
-        QtPrivate::QHashCombine hash(seed);
+        BobUIPrivate::QHashCombine hash(seed);
         seed = hash(seed, v.m_d);
         seed = hash(seed, v.m_s);
         return seed;
@@ -78,7 +78,7 @@ private:
 
 Q_DECLARE_TYPEINFO(QRhiDepthStencilClearValue, Q_RELOCATABLE_TYPE);
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QRhiDepthStencilClearValue &);
 #endif
 
@@ -118,7 +118,7 @@ private:
 
     friend size_t qHash(const QRhiViewport &v, size_t seed = 0) noexcept
     {
-        QtPrivate::QHashCombine hash(seed);
+        BobUIPrivate::QHashCombine hash(seed);
         seed = hash(seed, v.m_rect[0]);
         seed = hash(seed, v.m_rect[1]);
         seed = hash(seed, v.m_rect[2]);
@@ -131,7 +131,7 @@ private:
 
 Q_DECLARE_TYPEINFO(QRhiViewport, Q_RELOCATABLE_TYPE);
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QRhiViewport &);
 #endif
 
@@ -161,7 +161,7 @@ private:
 
     friend size_t qHash(const QRhiScissor &v, size_t seed = 0) noexcept
     {
-        QtPrivate::QHashCombine hash(seed);
+        BobUIPrivate::QHashCombine hash(seed);
         seed = hash(seed, v.m_rect[0]);
         seed = hash(seed, v.m_rect[1]);
         seed = hash(seed, v.m_rect[2]);
@@ -172,7 +172,7 @@ private:
 
 Q_DECLARE_TYPEINFO(QRhiScissor, Q_RELOCATABLE_TYPE);
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QRhiScissor &);
 #endif
 
@@ -215,7 +215,7 @@ private:
 
     friend size_t qHash(const QRhiVertexInputBinding &v, size_t seed = 0) noexcept
     {
-        QtPrivate::QHashCombine hash(seed);
+        BobUIPrivate::QHashCombine hash(seed);
         seed = hash(seed, v.m_stride);
         seed = hash(seed, v.m_classification);
         seed = hash(seed, v.m_instanceStepRate);
@@ -225,7 +225,7 @@ private:
 
 Q_DECLARE_TYPEINFO(QRhiVertexInputBinding, Q_RELOCATABLE_TYPE);
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QRhiVertexInputBinding &);
 #endif
 
@@ -303,7 +303,7 @@ private:
 
     friend size_t qHash(const QRhiVertexInputAttribute &v, size_t seed = 0) noexcept
     {
-        QtPrivate::QHashCombine hash(seed);
+        BobUIPrivate::QHashCombine hash(seed);
         seed = hash(seed, v.m_binding);
         seed = hash(seed, v.m_location);
         seed = hash(seed, v.m_format);
@@ -314,7 +314,7 @@ private:
 
 Q_DECLARE_TYPEINFO(QRhiVertexInputAttribute, Q_RELOCATABLE_TYPE);
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QRhiVertexInputAttribute &);
 #endif
 
@@ -363,7 +363,7 @@ private:
 
     friend size_t qHash(const QRhiVertexInputLayout &v, size_t seed = 0) noexcept
     {
-        QtPrivate::QHashCombine hash(seed);
+        BobUIPrivate::QHashCombine hash(seed);
         seed = hash(seed, v.m_bindings);
         seed = hash(seed, v.m_attributes);
         return seed;
@@ -372,7 +372,7 @@ private:
     friend Q_GUI_EXPORT QDebug operator<<(QDebug, const QRhiVertexInputLayout &);
 };
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QRhiVertexInputLayout &);
 #endif
 
@@ -420,7 +420,7 @@ private:
 
     friend size_t qHash(const QRhiShaderStage &v, size_t seed = 0) noexcept
     {
-        QtPrivate::QHashCombine hash(seed);
+        BobUIPrivate::QHashCombine hash(seed);
         seed = hash(seed, v.m_type);
         seed = hash(seed, v.m_shader);
         seed = hash(seed, v.m_shaderVariant);
@@ -430,7 +430,7 @@ private:
 
 Q_DECLARE_TYPEINFO(QRhiShaderStage, Q_RELOCATABLE_TYPE);
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QRhiShaderStage &);
 #endif
 
@@ -569,7 +569,7 @@ Q_DECLARE_TYPEINFO(QRhiShaderResourceBinding, Q_PRIMITIVE_TYPE);
 Q_GUI_EXPORT bool operator==(const QRhiShaderResourceBinding &a, const QRhiShaderResourceBinding &b) noexcept;
 Q_GUI_EXPORT bool operator!=(const QRhiShaderResourceBinding &a, const QRhiShaderResourceBinding &b) noexcept;
 Q_GUI_EXPORT size_t qHash(const QRhiShaderResourceBinding &b, size_t seed = 0) noexcept;
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QRhiShaderResourceBinding &);
 #endif
 
@@ -1284,19 +1284,19 @@ protected:
     QRhiShaderResourceBindings(QRhiImplementation *rhi);
     QVarLengthArray<QRhiShaderResourceBinding, BINDING_PREALLOC> m_bindings;
     size_t m_layoutDescHash = 0;
-    // Intentionally not using QVLA for m_layoutDesc: clients like Qt Quick are much
+    // Intentionally not using QVLA for m_layoutDesc: clients like BobUI Quick are much
     // better served with an implicitly shared container here, because they will likely
     // throw this directly into structs serving as cache keys.
     QVector<quint32> m_layoutDesc;
     friend class QRhiImplementation;
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
     friend Q_GUI_EXPORT QDebug operator<<(QDebug, const QRhiShaderResourceBindings &);
 #endif
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QRhiShaderResourceBindings::UpdateFlags)
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QRhiShaderResourceBindings &);
 #endif
 
@@ -1580,7 +1580,7 @@ struct QRhiSwapChainHdrInfo
 
 Q_DECLARE_TYPEINFO(QRhiSwapChainHdrInfo, Q_RELOCATABLE_TYPE);
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QRhiSwapChainHdrInfo &);
 #endif
 
@@ -1826,7 +1826,7 @@ struct Q_GUI_EXPORT QRhiDriverInfo
 
 Q_DECLARE_TYPEINFO(QRhiDriverInfo, Q_RELOCATABLE_TYPE);
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QRhiDriverInfo &);
 #endif
 
@@ -1844,7 +1844,7 @@ struct Q_GUI_EXPORT QRhiStats
 
 Q_DECLARE_TYPEINFO(QRhiStats, Q_RELOCATABLE_TYPE);
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QRhiStats &);
 #endif
 
@@ -1987,7 +1987,7 @@ public:
     const char *backendName() const;
     static const char *backendName(Implementation impl);
     QRhiDriverInfo driverInfo() const;
-    QThread *thread() const;
+    BOBUIhread *thread() const;
 
     using CleanupCallback = std::function<void(QRhi *)>;
     void addCleanupCallback(const CleanupCallback &callback);
@@ -2098,7 +2098,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(QRhi::Flags)
 Q_DECLARE_OPERATORS_FOR_FLAGS(QRhi::BeginFrameFlags)
 Q_DECLARE_OPERATORS_FOR_FLAGS(QRhi::EndFrameFlags)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include <rhi/qrhi_platform.h>
 

@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qlayout.h"
 
@@ -11,7 +11,7 @@
 #include "qwidget_p.h"
 #include "qlayout_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static int menuBarHeightForWidth(QWidget *menubar, int w)
 {
@@ -32,7 +32,7 @@ static int menuBarHeightForWidth(QWidget *menubar, int w)
     \brief The QLayout class is the base class of geometry managers.
 
     \ingroup geomanagement
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     This is an abstract base class inherited by the concrete classes
     QBoxLayout, QGridLayout, QFormLayout, and QStackedLayout.
@@ -97,11 +97,11 @@ QLayout::QLayout(QLayoutPrivate &dd, QLayout *lay, QWidget *w)
         } else {
             d->topLevel = true;
             w->d_func()->layout = this;
-            QT_TRY {
+            BOBUI_TRY {
                 invalidate();
-            } QT_CATCH(...) {
+            } BOBUI_CATCH(...) {
                 w->d_func()->layout = nullptr;
-                QT_RETHROW;
+                BOBUI_RETHROW;
             }
         }
     }
@@ -187,7 +187,7 @@ void QLayout::addWidget(QWidget *w)
     true if \a w is found in this layout (not including child
     layouts); otherwise returns \c false.
 */
-bool QLayout::setAlignment(QWidget *w, Qt::Alignment alignment)
+bool QLayout::setAlignment(QWidget *w, BobUI::Alignment alignment)
 {
     int i = 0;
     QLayoutItem *item = itemAt(i);
@@ -210,7 +210,7 @@ bool QLayout::setAlignment(QWidget *w, Qt::Alignment alignment)
   returns \c true if \a l is found in this layout (not including child
   layouts); otherwise returns \c false.
 */
-bool QLayout::setAlignment(QLayout *l, Qt::Alignment alignment)
+bool QLayout::setAlignment(QLayout *l, BobUI::Alignment alignment)
 {
     int i = 0;
     QLayoutItem *item = itemAt(i);
@@ -501,7 +501,7 @@ void QLayoutPrivate::doResize()
 {
     Q_Q(QLayout);
     QWidget *mw = q->parentWidget();
-    QRect rect = mw->testAttribute(Qt::WA_LayoutOnEntireRect) ? mw->rect() : mw->contentsRect();
+    QRect rect = mw->testAttribute(BobUI::WA_LayoutOnEntireRect) ? mw->rect() : mw->contentsRect();
     const int mbh = menuBarHeightForWidth(menubar, rect.width());
     const int mbTop = rect.top();
     rect.setTop(mbTop + mbh);
@@ -729,12 +729,12 @@ bool QLayout::adoptLayout(QLayout *layout)
     return ok;
 }
 
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
 static bool layoutDebug()
 {
     static int checked_env = -1;
     if (checked_env == -1)
-        checked_env = !!qEnvironmentVariableIntValue("QT_LAYOUT_DEBUG");
+        checked_env = !!qEnvironmentVariableIntValue("BOBUI_LAYOUT_DEBUG");
 
     return checked_env;
 }
@@ -753,7 +753,7 @@ void QLayoutPrivate::reparentChildWidgets(QWidget *mw)
         QLayoutItem *item = q->itemAt(i);
         if (QWidget *w = item->widget()) {
             QWidget *pw = w->parentWidget();
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
             if (Q_UNLIKELY(pw && pw != mw && layoutDebug())) {
                 qWarning("QLayout::addChildLayout: widget %s \"%ls\" in wrong parent; moved to correct parent",
                          w->metaObject()->className(), qUtf16Printable(w->objectName()));
@@ -763,7 +763,7 @@ void QLayoutPrivate::reparentChildWidgets(QWidget *mw)
             if (pw != mw)
                 w->setParent(mw);
             if (needShow)
-                QMetaObject::invokeMethod(w, "_q_showIfNotHidden", Qt::QueuedConnection); //show later
+                QMetaObject::invokeMethod(w, "_q_showIfNotHidden", BobUI::QueuedConnection); //show later
         } else if (QLayout *l = item->layout()) {
             l->d_func()->reparentChildWidgets(mw);
         }
@@ -772,7 +772,7 @@ void QLayoutPrivate::reparentChildWidgets(QWidget *mw)
 
 /*!
     \class QLayoutPrivate
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
     \internal
 */
 
@@ -831,12 +831,12 @@ void QLayout::addChildWidget(QWidget *w)
     QWidget *mw = parentWidget();
     QWidget *pw = w->parentWidget();
 
-    //Qt::WA_LaidOut is never reset. It only means that the widget at some point has
+    //BobUI::WA_LaidOut is never reset. It only means that the widget at some point has
     //been in a layout.
-    if (pw && w->testAttribute(Qt::WA_LaidOut)) {
+    if (pw && w->testAttribute(BobUI::WA_LaidOut)) {
         QLayout *l = pw->layout();
         if (l && removeWidgetRecursively(l, w)) {
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
             if (Q_UNLIKELY(layoutDebug()))
                 qWarning("QLayout::addChildWidget: %s \"%ls\" is already in a layout; moved to new layout",
                          w->metaObject()->className(), qUtf16Printable(w->objectName()));
@@ -844,7 +844,7 @@ void QLayout::addChildWidget(QWidget *w)
         }
     }
     if (pw && mw && pw != mw) {
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
             if (Q_UNLIKELY(layoutDebug()))
                 qWarning("QLayout::addChildWidget: %s \"%ls\" in wrong parent; moved to correct parent",
                          w->metaObject()->className(), qUtf16Printable(w->objectName()));
@@ -854,9 +854,9 @@ void QLayout::addChildWidget(QWidget *w)
     bool needShow = mw && mw->isVisible() && !QWidgetPrivate::get(w)->isExplicitlyHidden();
     if (!pw && mw)
         w->setParent(mw);
-    w->setAttribute(Qt::WA_LaidOut);
+    w->setAttribute(BobUI::WA_LaidOut);
     if (needShow)
-        QMetaObject::invokeMethod(w, "_q_showIfNotHidden", Qt::QueuedConnection); //show later
+        QMetaObject::invokeMethod(w, "_q_showIfNotHidden", BobUI::QueuedConnection); //show later
 }
 
 /*!
@@ -916,19 +916,19 @@ QSize QLayout::maximumSize() const
 
 /*!
     Returns whether this layout can make use of more space than
-    sizeHint(). A value of Qt::Vertical or Qt::Horizontal means that
-    it wants to grow in only one dimension, whereas Qt::Vertical |
-    Qt::Horizontal means that it wants to grow in both dimensions.
+    sizeHint(). A value of BobUI::Vertical or BobUI::Horizontal means that
+    it wants to grow in only one dimension, whereas BobUI::Vertical |
+    BobUI::Horizontal means that it wants to grow in both dimensions.
 
-    The default implementation returns Qt::Horizontal | Qt::Vertical.
+    The default implementation returns BobUI::Horizontal | BobUI::Vertical.
     Subclasses reimplement it to return a meaningful value based on
     their child widgets's \l{QSizePolicy}{size policies}.
 
     \sa sizeHint()
 */
-Qt::Orientations QLayout::expandingDirections() const
+BobUI::Orientations QLayout::expandingDirections() const
 {
-    return Qt::Horizontal | Qt::Vertical;
+    return BobUI::Horizontal | BobUI::Vertical;
 }
 
 void QLayout::activateRecursiveHelper(QLayoutItem *item)
@@ -1033,7 +1033,7 @@ bool QLayout::activate()
             maxSize.setHeight(totalMaxSz.height());
             break;
         case SetDefaultConstraint: {
-            bool heightSet = explMin & Qt::Vertical;
+            bool heightSet = explMin & BobUI::Vertical;
             if (mw->isWindow()) {
                 if (!heightSet) {
                     totalMinSz = totalMinimumSize();
@@ -1076,7 +1076,7 @@ bool QLayout::activate()
             maxSize.setWidth(totalMaxSz.width());
             break;
         case SetDefaultConstraint: {
-            const bool widthSet = explMin & Qt::Horizontal;
+            const bool widthSet = explMin & BobUI::Horizontal;
             if (mw->isWindow()) {
                 if (!widthSet) {
                     if (totalMinSz == empty)
@@ -1138,7 +1138,7 @@ bool QLayout::activate()
     Searches for widget \a from and replaces it with widget \a to if found.
     Returns the layout item that contains the widget \a from on success.
     Otherwise \nullptr is returned.
-    If \a options contains \c Qt::FindChildrenRecursively  (the default),
+    If \a options contains \c BobUI::FindChildrenRecursively  (the default),
     sub-layouts are searched for doing the replacement.
     Any other flag in \a options is ignored.
 
@@ -1150,13 +1150,13 @@ bool QLayout::activate()
     longer managed by the layout and may need to be deleted or hidden. The
     parent of widget \a from is left unchanged.
 
-    This function works for the built-in Qt layouts, but might not work for
+    This function works for the built-in BobUI layouts, but might not work for
     custom layouts.
 
     \sa indexOf()
 */
 
-QLayoutItem *QLayout::replaceWidget(QWidget *from, QWidget *to, Qt::FindChildOptions options)
+QLayoutItem *QLayout::replaceWidget(QWidget *from, QWidget *to, BobUI::FindChildOptions options)
 {
     Q_D(QLayout);
     if (!from || !to)
@@ -1176,7 +1176,7 @@ QLayoutItem *QLayout::replaceWidget(QWidget *from, QWidget *to, Qt::FindChildOpt
             break;
         }
 
-        if (item->layout() && (options & Qt::FindChildrenRecursively)) {
+        if (item->layout() && (options & BobUI::FindChildrenRecursively)) {
             QLayoutItem *r = item->layout()->replaceWidget(from, to, options);
             if (r)
                 return r;
@@ -1410,7 +1410,7 @@ QLayout::SizeConstraint QLayout::verticalSizeConstraint() const
 QRect QLayout::alignmentRect(const QRect &r) const
 {
     QSize s = sizeHint();
-    Qt::Alignment a = alignment();
+    BobUI::Alignment a = alignment();
 
     /*
       This is a hack to obtain the real maximum size, not
@@ -1422,12 +1422,12 @@ QRect QLayout::alignmentRect(const QRect &r) const
     QSize ms = that->maximumSize();
     that->setAlignment(a);
 
-    if ((expandingDirections() & Qt::Horizontal) ||
-         !(a & Qt::AlignHorizontal_Mask)) {
+    if ((expandingDirections() & BobUI::Horizontal) ||
+         !(a & BobUI::AlignHorizontal_Mask)) {
         s.setWidth(qMin(r.width(), ms.width()));
     }
-    if ((expandingDirections() & Qt::Vertical) ||
-         !(a & Qt::AlignVertical_Mask)) {
+    if ((expandingDirections() & BobUI::Vertical) ||
+         !(a & BobUI::AlignVertical_Mask)) {
         s.setHeight(qMin(r.height(), ms.height()));
     } else if (hasHeightForWidth()) {
         int hfw = heightForWidth(s.width());
@@ -1439,16 +1439,16 @@ QRect QLayout::alignmentRect(const QRect &r) const
     int x = r.x();
     int y = r.y();
 
-    if (a & Qt::AlignBottom)
+    if (a & BobUI::AlignBottom)
         y += (r.height() - s.height());
-    else if (!(a & Qt::AlignTop))
+    else if (!(a & BobUI::AlignTop))
         y += (r.height() - s.height()) / 2;
 
     QWidget *parent = parentWidget();
     a = QStyle::visualAlignment(parent ? parent->layoutDirection() : QGuiApplication::layoutDirection(), a);
-    if (a & Qt::AlignRight)
+    if (a & BobUI::AlignRight)
         x += (r.width() - s.width());
-    else if (!(a & Qt::AlignLeft))
+    else if (!(a & BobUI::AlignLeft))
         x += (r.width() - s.width()) / 2;
 
     return QRect(x, y, s.width(), s.height());
@@ -1580,6 +1580,6 @@ QSize QLayout::closestAcceptableSize(const QWidget *widget, const QSize &size)
     return result;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qlayout.cpp"

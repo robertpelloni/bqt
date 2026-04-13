@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QABSTRACTSCROLLAREA_H
 #define QABSTRACTSCROLLAREA_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qframe.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qframe.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
-#if QT_CONFIG(scrollarea)
+#if BOBUI_CONFIG(scrollarea)
 
 class QMargins;
 class QScrollBar;
@@ -21,9 +21,9 @@ class Q_WIDGETS_EXPORT QAbstractScrollArea : public QFrame
 {
     Q_OBJECT
 
-    Q_PROPERTY(Qt::ScrollBarPolicy verticalScrollBarPolicy READ verticalScrollBarPolicy
+    Q_PROPERTY(BobUI::ScrollBarPolicy verticalScrollBarPolicy READ verticalScrollBarPolicy
                WRITE setVerticalScrollBarPolicy)
-    Q_PROPERTY(Qt::ScrollBarPolicy horizontalScrollBarPolicy READ horizontalScrollBarPolicy
+    Q_PROPERTY(BobUI::ScrollBarPolicy horizontalScrollBarPolicy READ horizontalScrollBarPolicy
                WRITE setHorizontalScrollBarPolicy)
     Q_PROPERTY(SizeAdjustPolicy sizeAdjustPolicy READ sizeAdjustPolicy WRITE setSizeAdjustPolicy)
 
@@ -38,21 +38,21 @@ public:
     };
     Q_ENUM(SizeAdjustPolicy)
 
-    Qt::ScrollBarPolicy verticalScrollBarPolicy() const;
-    void setVerticalScrollBarPolicy(Qt::ScrollBarPolicy);
+    BobUI::ScrollBarPolicy verticalScrollBarPolicy() const;
+    void setVerticalScrollBarPolicy(BobUI::ScrollBarPolicy);
     QScrollBar *verticalScrollBar() const;
     void setVerticalScrollBar(QScrollBar *scrollbar);
 
-    Qt::ScrollBarPolicy horizontalScrollBarPolicy() const;
-    void setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy);
+    BobUI::ScrollBarPolicy horizontalScrollBarPolicy() const;
+    void setHorizontalScrollBarPolicy(BobUI::ScrollBarPolicy);
     QScrollBar *horizontalScrollBar() const;
     void setHorizontalScrollBar(QScrollBar *scrollbar);
 
     QWidget *cornerWidget() const;
     void setCornerWidget(QWidget *widget);
 
-    void addScrollBarWidget(QWidget *widget, Qt::Alignment alignment);
-    QWidgetList scrollBarWidgets(Qt::Alignment alignment);
+    void addScrollBarWidget(QWidget *widget, BobUI::Alignment alignment);
+    QWidgetList scrollBarWidgets(BobUI::Alignment alignment);
 
     QWidget *viewport() const;
     void setViewport(QWidget *widget);
@@ -83,13 +83,13 @@ protected:
     void mouseReleaseEvent(QMouseEvent *) override;
     void mouseDoubleClickEvent(QMouseEvent *) override;
     void mouseMoveEvent(QMouseEvent *) override;
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
     void wheelEvent(QWheelEvent *) override;
 #endif
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
     void contextMenuEvent(QContextMenuEvent *) override;
 #endif
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     void dragEnterEvent(QDragEnterEvent *) override;
     void dragMoveEvent(QDragMoveEvent *) override;
     void dragLeaveEvent(QDragLeaveEvent *) override;
@@ -113,8 +113,8 @@ private:
     friend class QWidgetPrivate;
 };
 
-#endif // QT_CONFIG(scrollarea)
+#endif // BOBUI_CONFIG(scrollarea)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QABSTRACTSCROLLAREA_H

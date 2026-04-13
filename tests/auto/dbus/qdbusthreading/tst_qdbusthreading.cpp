@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QTestEventLoop>
+#include <BOBUIest>
+#include <BOBUIestEventLoop>
 #include <QVarLengthArray>
-#include <QThread>
+#include <BOBUIhread>
 #include <QObject>
 #include <QSemaphore>
 #include <QMutex>
@@ -16,7 +16,7 @@
 #include <QDBusConnectionInterface>
 #include <QDBusInterface>
 
-class Thread : public QThread
+class Thread : public BOBUIhread
 {
     Q_OBJECT
     static int counter;
@@ -24,7 +24,7 @@ public:
     Thread(bool automatic = true);
     void run() override;
 
-    using QThread::exec;
+    using BOBUIhread::exec;
 };
 int Thread::counter;
 
@@ -44,7 +44,7 @@ public:
         Object_method
     } functionSpy;
 
-    QThread *threadSpy;
+    BOBUIhread *threadSpy;
     int signalSpy;
 
     tst_QDBusThreading();
@@ -100,7 +100,7 @@ public Q_SLOTS:
     void method()
     {
         tst_QDBusThreading::self()->functionSpy = tst_QDBusThreading::Adaptor_method;
-        tst_QDBusThreading::self()->threadSpy = QThread::currentThread();
+        tst_QDBusThreading::self()->threadSpy = BOBUIhread::currentThread();
         emit signal();
     }
 
@@ -121,14 +121,14 @@ public:
 
     ~Object()
     {
-        QMetaObject::invokeMethod(QThread::currentThread(), "quit", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(BOBUIhread::currentThread(), "quit", BobUI::QueuedConnection);
     }
 
 public Q_SLOTS:
     void method()
     {
         tst_QDBusThreading::self()->functionSpy = tst_QDBusThreading::Object_method;
-        tst_QDBusThreading::self()->threadSpy = QThread::currentThread();
+        tst_QDBusThreading::self()->threadSpy = BOBUIhread::currentThread();
         emit signal();
         deleteLater();
     }
@@ -153,8 +153,8 @@ Thread::Thread(bool automatic)
     setObjectName(QString::fromLatin1("Aux thread %1").arg(++counter));
     connect(this, SIGNAL(started()), tst_QDBusThreading::self(), SLOT(threadStarted()));
     connect(this, SIGNAL(finished()), tst_QDBusThreading::self(), SLOT(threadFinished()),
-            Qt::DirectConnection);
-    connect(this, SIGNAL(finished()), this, SLOT(deleteLater()), Qt::DirectConnection);
+            BobUI::DirectConnection);
+    connect(this, SIGNAL(finished()), this, SLOT(deleteLater()), BobUI::DirectConnection);
     if (automatic)
         start();
 }
@@ -162,9 +162,9 @@ Thread::Thread(bool automatic)
 void Thread::run()
 {
     QVarLengthArray<char, 56> name;
-    name.append(QTest::currentTestFunction(), qstrlen(QTest::currentTestFunction()));
+    name.append(BOBUIest::currentTestFunction(), qstrlen(BOBUIest::currentTestFunction()));
     name.append("_thread", sizeof "_thread");
-    QMetaObject::invokeMethod(tst_QDBusThreading::self(), name.constData(), Qt::DirectConnection);
+    QMetaObject::invokeMethod(tst_QDBusThreading::self(), name.constData(), BobUI::DirectConnection);
 }
 
 static const char myConnectionName[] = "connection";
@@ -184,13 +184,13 @@ void tst_QDBusThreading::joinThreads()
 
 bool tst_QDBusThreading::waitForSignal(QObject *obj, const char *signal, int delay)
 {
-    QObject::connect(obj, signal, &QTestEventLoop::instance(), SLOT(exitLoop()));
+    QObject::connect(obj, signal, &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
     QPointer<QObject> safe = obj;
 
-    QTestEventLoop::instance().enterLoop(delay);
+    BOBUIestEventLoop::instance().enterLoop(delay);
     if (!safe.isNull())
-        QObject::disconnect(safe, signal, &QTestEventLoop::instance(), SLOT(exitLoop()));
-    return QTestEventLoop::instance().timeout();
+        QObject::disconnect(safe, signal, &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
+    return BOBUIestEventLoop::instance().timeout();
 }
 
 void tst_QDBusThreading::cleanup()
@@ -208,7 +208,7 @@ void tst_QDBusThreading::cleanup()
     delete loop;
     loop = 0;
 
-    QTest::qWait(500);
+    BOBUIest::qWait(500);
 }
 
 void tst_QDBusThreading::dyingThread_thread()
@@ -219,11 +219,11 @@ void tst_QDBusThreading::dyingThread_thread()
 void tst_QDBusThreading::dyingThread()
 {
     Thread *th = new Thread(false);
-    QTestEventLoop::instance().connect(th, SIGNAL(destroyed(QObject*)), SLOT(exitLoop()));
+    BOBUIestEventLoop::instance().connect(th, SIGNAL(destroyed(QObject*)), SLOT(exitLoop()));
     th->start();
 
-    QTestEventLoop::instance().enterLoop(10);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(10);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     QDBusConnection con(myConnectionName);
     QDBusConnection::disconnectFromBus(myConnectionName);
@@ -235,10 +235,10 @@ void tst_QDBusThreading::dyingThread()
     QVERIFY(reply.value().contains(con.baseService()));
 
     con.interface()->callWithCallback("ListNames", QVariantList(),
-                                      &QTestEventLoop::instance(), SLOT(exitLoop()));
+                                      &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
 
-    QTestEventLoop::instance().enterLoop(1);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(1);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 }
 
 void tst_QDBusThreading::lastInstanceInOtherThread_thread()
@@ -366,7 +366,7 @@ void tst_QDBusThreading::registerObjectInOtherThread_thread()
         QDBusConnection::sessionBus().registerObject("/", obj, QDBusConnection::ExportAllSlots | QDBusConnection::ExportAllSignals);
 
         sem2.release();
-        static_cast<Thread *>(QThread::currentThread())->exec();
+        static_cast<Thread *>(BOBUIhread::currentThread())->exec();
     }
 
     sem2.release();
@@ -375,7 +375,7 @@ void tst_QDBusThreading::registerObjectInOtherThread_thread()
 void tst_QDBusThreading::registerObjectInOtherThread()
 {
     QVERIFY(QDBusConnection::sessionBus().isConnected());
-    QThread *th = new Thread;
+    BOBUIhread *th = new Thread;
     sem2.acquire();
 
     signalSpy = 0;
@@ -385,7 +385,7 @@ void tst_QDBusThreading::registerObjectInOtherThread()
 
     connect(&iface, SIGNAL(signal()), SLOT(signalSpySlot()));
 
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
     QCOMPARE(signalSpy, 0);
 
     functionSpy = NoMethod;
@@ -395,7 +395,7 @@ void tst_QDBusThreading::registerObjectInOtherThread()
     QCOMPARE(functionSpy, Object_method);
     QCOMPARE(threadSpy, th);
 
-    QTRY_COMPARE(signalSpy, 1);
+    BOBUIRY_COMPARE(signalSpy, 1);
 
     sem2.acquire();             // the object is gone
     functionSpy = NoMethod;
@@ -403,7 +403,7 @@ void tst_QDBusThreading::registerObjectInOtherThread()
     reply = iface.call("method");
     QVERIFY(!reply.isValid());
     QCOMPARE(functionSpy, NoMethod);
-    QCOMPARE(threadSpy, (QThread*)0);
+    QCOMPARE(threadSpy, (BOBUIhread*)0);
 }
 
 void tst_QDBusThreading::registerAdaptorInOtherThread_thread()
@@ -414,7 +414,7 @@ void tst_QDBusThreading::registerAdaptorInOtherThread_thread()
                                                      QDBusConnection::ExportAllSlots | QDBusConnection::ExportAllSignals);
 
         sem2.release();
-        static_cast<Thread *>(QThread::currentThread())->exec();
+        static_cast<Thread *>(BOBUIhread::currentThread())->exec();
     }
 
     sem2.release();
@@ -423,7 +423,7 @@ void tst_QDBusThreading::registerAdaptorInOtherThread_thread()
 void tst_QDBusThreading::registerAdaptorInOtherThread()
 {
     QVERIFY(QDBusConnection::sessionBus().isConnected());
-    QThread *th = new Thread;
+    BOBUIhread *th = new Thread;
     sem2.acquire();
 
     QDBusInterface object(QDBusConnection::sessionBus().baseService(), "/", "local.Object");
@@ -442,7 +442,7 @@ void tst_QDBusThreading::registerAdaptorInOtherThread()
     QCOMPARE(functionSpy, Adaptor_method);
     QCOMPARE(threadSpy, th);
 
-    QTRY_COMPARE(signalSpy, 1);
+    BOBUIRY_COMPARE(signalSpy, 1);
 
     functionSpy = NoMethod;
     threadSpy = 0;
@@ -451,7 +451,7 @@ void tst_QDBusThreading::registerAdaptorInOtherThread()
     QCOMPARE(functionSpy, Object_method);
     QCOMPARE(threadSpy, th);
 
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
     QCOMPARE(signalSpy, 1);
 
     sem2.acquire();             // the object is gone
@@ -460,11 +460,11 @@ void tst_QDBusThreading::registerAdaptorInOtherThread()
     reply = adaptor.call("method");
     QVERIFY(!reply.isValid());
     QCOMPARE(functionSpy, NoMethod);
-    QCOMPARE(threadSpy, (QThread*)0);
+    QCOMPARE(threadSpy, (BOBUIhread*)0);
     reply = object.call("method");
     QVERIFY(!reply.isValid());
     QCOMPARE(functionSpy, NoMethod);
-    QCOMPARE(threadSpy, (QThread*)0);
+    QCOMPARE(threadSpy, (BOBUIhread*)0);
 }
 
 void tst_QDBusThreading::callbackInMainThread_thread()
@@ -472,7 +472,7 @@ void tst_QDBusThreading::callbackInMainThread_thread()
     QDBusConnection::connectToBus(QDBusConnection::SessionBus, myConnectionName);
     sem2.release();
 
-    static_cast<Thread *>(QThread::currentThread())->exec();
+    static_cast<Thread *>(BOBUIhread::currentThread())->exec();
     QDBusConnection::disconnectFromBus(myConnectionName);
 }
 
@@ -485,9 +485,9 @@ void tst_QDBusThreading::callbackInMainThread()
 
     QDBusConnection con(myConnectionName);
     con.interface()->callWithCallback("ListNames", QVariantList(),
-                                      &QTestEventLoop::instance(), SLOT(exitLoop()));
-    QTestEventLoop::instance().enterLoop(10);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+                                      &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
+    BOBUIestEventLoop::instance().enterLoop(10);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     QMetaObject::invokeMethod(th, "quit");
     waitForSignal(th, SIGNAL(finished()));
@@ -496,7 +496,7 @@ void tst_QDBusThreading::callbackInMainThread()
 void tst_QDBusThreading::callbackInAuxThread_thread()
 {
     QDBusConnection con(QDBusConnection::sessionBus());
-    QTestEventLoop ownLoop;
+    BOBUIestEventLoop ownLoop;
     con.interface()->callWithCallback("ListNames", QVariantList(),
                                       &ownLoop, SLOT(exitLoop()));
     ownLoop.enterLoop(10);
@@ -536,7 +536,7 @@ void tst_QDBusThreading::callbackInAnotherAuxThread_thread()
         // second thread
         // try waiting for a message
         QDBusConnection con(myConnectionName);
-        QTestEventLoop ownLoop;
+        BOBUIestEventLoop ownLoop;
         con.interface()->callWithCallback("ListNames", QVariantList(),
                                           &ownLoop, SLOT(exitLoop()));
         ownLoop.enterLoop(1);
@@ -570,5 +570,5 @@ void tst_QDBusThreading::callbackInAnotherAuxThread()
 // - delete an object at the moment the call is being delivered
 // - keep a global-static QDBusConnection for a thread-created connection
 
-QTEST_MAIN(tst_QDBusThreading)
+BOBUIEST_MAIN(tst_QDBusThreading)
 #include "tst_qdbusthreading.moc"

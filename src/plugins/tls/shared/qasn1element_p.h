@@ -1,6 +1,6 @@
 // Copyright (C) 2014 Jeremy Lainé <jeremy.laine@m4x.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 
 #ifndef QASN1ELEMENT_P_H
@@ -10,18 +10,18 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists purely as an
+// This file is not part of the BobUI API. It exists purely as an
 // implementation detail. This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtNetwork/private/qtnetworkglobal_p.h>
-#include <QtCore/qdatetime.h>
-#include <QtCore/qmap.h>
+#include <BobUINetwork/private/bobuinetworkglobal_p.h>
+#include <BobUICore/qdatetime.h>
+#include <BobUICore/qmap.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // General
 #define RSADSI_OID "1.2.840.113549."
@@ -156,6 +156,6 @@ inline bool operator==(const QAsn1Element &e1, const QAsn1Element &e2)
 inline bool operator!=(const QAsn1Element &e1, const QAsn1Element &e2)
 { return e1.mType != e2.mType || e1.mValue != e2.mValue; }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

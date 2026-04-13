@@ -1,4 +1,4 @@
-defineTest(qtToolchainError) {
+defineTest(bobuiToolchainError) {
     msg = \
         $$1 \
         "===================" \
@@ -8,14 +8,14 @@ defineTest(qtToolchainError) {
     error($$join(msg, $$escape_expand(\\n)))
 }
 
-defineTest(qtCompilerError) {
+defineTest(bobuiCompilerError) {
     !cross_compile: \
         what =
     else: host_build: \
         what = " host"
     else: \
         what = " target"
-    qtToolchainError("Cannot run$$what compiler '$$1'. Output:", $$2, \
+    bobuiToolchainError("Cannot run$$what compiler '$$1'. Output:", $$2, \
                      "Maybe you forgot to setup the environment?")
 }
 
@@ -28,16 +28,16 @@ else: \
 # Determine and cache the compiler version
 #
 
-defineReplace(qtVariablesFromMSVC) {
+defineReplace(bobuiVariablesFromMSVC) {
     ret = $$system("$$1 -nologo -E $$2 $$system_quote($$PWD/data/macros.cpp) 2>NUL", lines, ec)
-    !equals(ec, 0): qtCompilerError($$1, $$ret)
+    !equals(ec, 0): bobuiCompilerError($$1, $$ret)
     return($$ret)
 }
 
-defineReplace(qtVariablesFromGCC) {
+defineReplace(bobuiVariablesFromGCC) {
     ret = $$system("$$1 -E $$system_quote($$PWD/data/macros.cpp) \
         2>$$QMAKE_SYSTEM_NULL_DEVICE", lines, ec)
-    !equals(ec, 0): qtCompilerError($$1, $$ret)
+    !equals(ec, 0): bobuiCompilerError($$1, $$ret)
     return($$ret)
 }
 
@@ -45,7 +45,7 @@ isEmpty($${target_prefix}.COMPILER_MACROS) {
     msvc {
         clang_cl {
             # We need to obtain the cl.exe version first
-            vars = $$qtVariablesFromMSVC(cl)
+            vars = $$bobuiVariablesFromMSVC(cl)
             for (v, vars) {
                 isEmpty(v)|contains(v, $${LITERAL_HASH}.*): next()
                 eval($$v)
@@ -56,12 +56,12 @@ isEmpty($${target_prefix}.COMPILER_MACROS) {
                                                  "-fms-compatibility-version=\\1.\\2.\\3")
             cache($${target_prefix}.QMAKE_CFLAGS_MSVC_COMPAT, set stash, QMAKE_CFLAGS_MSVC_COMPAT)
             $${target_prefix}.COMPILER_MACROS += QMAKE_CFLAGS_MSVC_COMPAT
-            vars = $$qtVariablesFromMSVC($$QMAKE_CXX, $$QMAKE_CFLAGS_MSVC_COMPAT)
+            vars = $$bobuiVariablesFromMSVC($$QMAKE_CXX, $$QMAKE_CFLAGS_MSVC_COMPAT)
         } else {
-            vars = $$qtVariablesFromMSVC($$QMAKE_CXX)
+            vars = $$bobuiVariablesFromMSVC($$QMAKE_CXX)
         }
     } else: gcc|ghs {
-        vars = $$qtVariablesFromGCC($$QMAKE_CXX)
+        vars = $$bobuiVariablesFromGCC($$QMAKE_CXX)
     }
     for (v, vars) {
         !contains(v, "[A-Z_]+ = .*"): next()
@@ -82,7 +82,7 @@ isEmpty($${target_prefix}.COMPILER_MACROS) {
 
 # Populate QMAKE_COMPILER_DEFINES and some compatibility variables.
 # The $$format_number() calls strip leading zeros to avoid misinterpretation as octal.
-QMAKE_COMPILER_DEFINES += __cplusplus=$$QT_COMPILER_STDCXX
+QMAKE_COMPILER_DEFINES += __cplusplus=$$BOBUI_COMPILER_STDCXX
 !isEmpty(QMAKE_MSC_VER): \
     QMAKE_COMPILER_DEFINES += _MSC_VER=$$QMAKE_MSC_VER _MSC_FULL_VER=$$QMAKE_MSC_FULL_VER
 !isEmpty(QMAKE_ICC_VER): \
@@ -120,7 +120,7 @@ clang_cl|intel_icl {
 # Determine and cache the default search paths
 #
 
-defineReplace(qtMakeExpand) {
+defineReplace(bobuiMakeExpand) {
     out = "$$1"
     for(ever) {
         m = $$replace(out, ".*\\$\\(EXPORT_([^)]+)\\).*", \\1)
@@ -130,7 +130,7 @@ defineReplace(qtMakeExpand) {
     }
 }
 
-defineReplace(qtSplitPathList) {
+defineReplace(bobuiSplitPathList) {
     paths = $$split(1, $$QMAKE_DIRLIST_SEP)
     ret =
     for (p, paths): \
@@ -138,7 +138,7 @@ defineReplace(qtSplitPathList) {
     return($$ret)
 }
 
-defineReplace(qtNmakePathList) {
+defineReplace(bobuiNmakePathList) {
     paths =
     for (p, 1): \
         paths += $$shell_path($$p)
@@ -207,8 +207,8 @@ isEmpty($${target_prefix}.INCDIRS) {
             # Just preprocess, might not pick up library paths
             cxx_flags += -E -v
 
-        output = $$system("$$cmd_prefix $$QMAKE_CXX $$qtMakeExpand($$cxx_flags) -xc++ - 2>&1 $$cmd_suffix", lines, ec)
-        !equals(ec, 0): qtCompilerError($$QMAKE_CXX, $$output)
+        output = $$system("$$cmd_prefix $$QMAKE_CXX $$bobuiMakeExpand($$cxx_flags) -xc++ - 2>&1 $$cmd_suffix", lines, ec)
+        !equals(ec, 0): bobuiCompilerError($$QMAKE_CXX, $$output)
 
         rim_qcc {
             for (line, output) {
@@ -271,7 +271,7 @@ isEmpty($${target_prefix}.INCDIRS) {
             # What's more, -print-search-dirs can't be used on clang on Apple because it
             # won't print all the library paths (only the clang-internal ones).
             output = $$system("$$cmd_prefix $$QMAKE_LINK $$QMAKE_LFLAGS -print-search-dirs", lines, ec)
-            !equals(ec, 0): qtCompilerError($$QMAKE_LINK, $$output)
+            !equals(ec, 0): bobuiCompilerError($$QMAKE_LINK, $$output)
 
             for (line, output) {
                 contains(line, "^libraries: .*") {
@@ -298,7 +298,7 @@ isEmpty($${target_prefix}.INCDIRS) {
     } else: ghs {
         cmd = $$QMAKE_CXX $$QMAKE_CXXFLAGS -$${LITERAL_HASH} -o /tmp/fake_output /tmp/fake_input.cpp
         output = $$system("$$cmd", blob, ec)
-        !equals(ec, 0): qtCompilerError($$QMAKE_CXX, $$output)
+        !equals(ec, 0): bobuiCompilerError($$QMAKE_CXX, $$output)
         output ~= s/\\\\\\n {8}//g
         output = $$split(output, $$escape_expand(\\n))
         for (line, output) {
@@ -383,7 +383,7 @@ isEmpty($${target_prefix}.INCDIRS) {
 
         output = $$system("$$cmd 2>&1", lines, ec)
         !equals(ec, 0): \
-            qtToolchainError("SDK setup script failed. Output:", $$output, \
+            bobuiToolchainError("SDK setup script failed. Output:", $$output, \
                              "Command was: $$cmd")
         lines = $$output
         for(ever) {
@@ -394,16 +394,16 @@ isEmpty($${target_prefix}.INCDIRS) {
                 break()
         }
         !count(lines, 3): \
-            qtToolchainError("SDK setup script returned unexpected output:", $$output, \
+            bobuiToolchainError("SDK setup script returned unexpected output:", $$output, \
                              "Command was: $$cmd")
 
         # These contain only paths for the target.
-        QMAKE_DEFAULT_INCDIRS = $$qtSplitPathList($$member(lines, 0))
-        QMAKE_DEFAULT_LIBDIRS = $$qtSplitPathList($$member(lines, 1))
+        QMAKE_DEFAULT_INCDIRS = $$bobuiSplitPathList($$member(lines, 0))
+        QMAKE_DEFAULT_LIBDIRS = $$bobuiSplitPathList($$member(lines, 1))
         # PATH is inherently for the host, and paths that are not shadowed
         # by vcvarsall.bat are assumed to contain only tools that work for
         # both host and target builds.
-        QMAKE_DEFAULT_PATH = $$qtSplitPathList($$member(lines, 2))
+        QMAKE_DEFAULT_PATH = $$bobuiSplitPathList($$member(lines, 2))
         # We de-duplicate, because the script just prepends to the paths for
         # the host, some of which are identical to the ones for the target.
         QMAKE_DEFAULT_PATH = $$unique(QMAKE_DEFAULT_PATH)
@@ -434,11 +434,11 @@ isEmpty($${target_prefix}.INCDIRS) {
 
 msvc_cross {
     qmake_inc_exp.name = INCLUDE
-    qmake_inc_exp.value = $$qtNmakePathList($$QMAKE_DEFAULT_INCDIRS)
+    qmake_inc_exp.value = $$bobuiNmakePathList($$QMAKE_DEFAULT_INCDIRS)
     qmake_lib_exp.name = LIB
-    qmake_lib_exp.value = $$qtNmakePathList($$QMAKE_DEFAULT_LIBDIRS)
+    qmake_lib_exp.value = $$bobuiNmakePathList($$QMAKE_DEFAULT_LIBDIRS)
     qmake_path_exp.name = PATH
-    qmake_path_exp.value = $$qtNmakePathList($$QMAKE_DEFAULT_PATH)
+    qmake_path_exp.value = $$bobuiNmakePathList($$QMAKE_DEFAULT_PATH)
     QMAKE_EXPORTED_VARIABLES += qmake_inc_exp qmake_lib_exp qmake_path_exp
 }
 

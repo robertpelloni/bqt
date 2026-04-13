@@ -1,26 +1,26 @@
 // Copyright (C) 2013 BlackBerry Limited. All rights reserved.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:file-selection
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:file-selection
 
 #include "qfileselector.h"
 #include "qfileselector_p.h"
 
-#include <QtCore/QFile>
-#include <QtCore/QDir>
-#include <QtCore/QMutex>
-#include <QtCore/private/qlocking_p.h>
-#include <QtCore/QUrl>
-#include <QtCore/QFileInfo>
-#include <QtCore/QLocale>
-#include <QtCore/QDebug>
+#include <BobUICore/QFile>
+#include <BobUICore/QDir>
+#include <BobUICore/QMutex>
+#include <BobUICore/private/qlocking_p.h>
+#include <BobUICore/QUrl>
+#include <BobUICore/QFileInfo>
+#include <BobUICore/QLocale>
+#include <BobUICore/QDebug>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 //Environment variable to allow tooling full control of file selectors
-static const char env_override[] = "QT_NO_BUILTIN_SELECTORS";
+static const char env_override[] = "BOBUI_NO_BUILTIN_SELECTORS";
 
 Q_GLOBAL_STATIC(QFileSelectorSharedData, sharedData);
 Q_CONSTINIT static QBasicMutex sharedDataMutex;
@@ -32,7 +32,7 @@ QFileSelectorPrivate::QFileSelectorPrivate()
 
 /*!
     \class QFileSelector
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief QFileSelector provides a convenient way of selecting file variants.
     \since 5.2
 
@@ -93,7 +93,7 @@ QFileSelectorPrivate::QFileSelectorPrivate()
     \li locale, same as QLocale().name().
     \endlist
 
-    Further selectors will be added from the \c QT_FILE_SELECTORS environment variable, which
+    Further selectors will be added from the \c BOBUI_FILE_SELECTORS environment variable, which
     when set should be a set of comma separated selectors. Note that this variable will only be
     read once; selectors may not update if the variable changes while the application is running.
     The initial set of selectors are evaluated only once, on first use.
@@ -109,7 +109,7 @@ QFileSelectorPrivate::QFileSelectorPrivate()
 
     \list 1
     \li Selectors set via setExtraSelectors(), in the order they are in the list
-    \li Selectors in the \c QT_FILE_SELECTORS environment variable, from left to right
+    \li Selectors in the \c BOBUI_FILE_SELECTORS environment variable, from left to right
     \li Locale
     \li Platform
     \endlist
@@ -283,7 +283,7 @@ void QFileSelector::setExtraSelectors(const QStringList &list)
 QStringList QFileSelector::allSelectors() const
 {
     Q_D(const QFileSelector);
-    const auto locker = qt_scoped_lock(sharedDataMutex);
+    const auto locker = bobui_scoped_lock(sharedDataMutex);
     QFileSelectorPrivate::updateSelectors();
     return d->extras + sharedData->staticSelectors;
 }
@@ -294,8 +294,8 @@ void QFileSelectorPrivate::updateSelectors()
         return; //Already loaded
 
     QLatin1Char pathSep(',');
-    QStringList envSelectors = QString::fromLatin1(qgetenv("QT_FILE_SELECTORS"))
-                                .split(pathSep, Qt::SkipEmptyParts);
+    QStringList envSelectors = QString::fromLatin1(qgetenv("BOBUI_FILE_SELECTORS"))
+                                .split(pathSep, BobUI::SkipEmptyParts);
     if (envSelectors.size())
         sharedData->staticSelectors << envSelectors;
 
@@ -333,19 +333,19 @@ QStringList QFileSelectorPrivate::platformSelectors()
 
 void QFileSelectorPrivate::addStatics(const QStringList &statics)
 {
-    const auto locker = qt_scoped_lock(sharedDataMutex);
+    const auto locker = bobui_scoped_lock(sharedDataMutex);
     sharedData->preloadedStatics << statics;
     sharedData->staticSelectors.clear();
 }
 
 qsizetype QFileSelectorPrivate::removeStatics(const QStringList &statics)
 {
-    const auto locker = qt_scoped_lock(sharedDataMutex);
+    const auto locker = bobui_scoped_lock(sharedDataMutex);
     // Clearing staticSelectors ensures that it's repopulated in QFileSelectorPrivate::updateSelectors()
     sharedData->staticSelectors.clear();
-    return sharedData->preloadedStatics.removeIf([statics](auto &s) {return statics.contains(s, Qt::CaseSensitive);});
+    return sharedData->preloadedStatics.removeIf([statics](auto &s) {return statics.contains(s, BobUI::CaseSensitive);});
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qfileselector.cpp"

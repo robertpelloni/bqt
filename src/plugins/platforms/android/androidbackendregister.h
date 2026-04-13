@@ -1,21 +1,21 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef ANDROIDBACKENDREGISTER_H
 #define ANDROIDBACKENDREGISTER_H
 
 #include <type_traits>
 
-#include <QtCore/qjnienvironment.h>
-#include <QtCore/qjnitypes.h>
-#include <QtCore/qjniobject.h>
+#include <BobUICore/qjnienvironment.h>
+#include <BobUICore/qjnitypes.h>
+#include <BobUICore/qjniobject.h>
 
-#include <QtCore/qstring.h>
-#include <QtCore/qmap.h>
-#include <QtCore/qmutex.h>
-#include <QtCore/qloggingcategory.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qmap.h>
+#include <BobUICore/qmutex.h>
+#include <BobUICore/qloggingcategory.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcAndroidBackendRegister)
 
@@ -25,13 +25,13 @@ Q_DECLARE_LOGGING_CATEGORY(lcAndroidBackendRegister)
     This class is used to [un]register QJniObjects which implement specific interfaces. These
     objects can then be fetched or directly called by using that interface.
 
-    This is intended to decouple the Qt C++ code from the underlying Java implementation, as Qt now
+    This is intended to decouple the BobUI C++ code from the underlying Java implementation, as BobUI now
     has multiple separate usecases, each of which may have different implementations and support
     different features.
 
     To use this register, the interface must be declared as a JNI class via Q_DECLARE_JNI_CLASS:
 
-    Q_DECLARE_JNI_CLASS(ImaginaryInterface, "org/qtproject/qt/android/ImaginaryInterface")
+    Q_DECLARE_JNI_CLASS(ImaginaryInterface, "org/bobuiproject/bobui/android/ImaginaryInterface")
 
     Where ImaginaryInterface is a Java interface like this:
 
@@ -44,13 +44,13 @@ Q_DECLARE_LOGGING_CATEGORY(lcAndroidBackendRegister)
 
     Use the convenience method callInterface() to call a method directly:
 
-    AndroidBackendRegister *reg = QtAndroid::backendRegister();
+    AndroidBackendRegister *reg = BobUIAndroid::backendRegister();
     int imaginary, imaginary2;
-    reg->callInterface<QtJniTypes::ImaginaryInterface, void>("doSomething", imaginary, imaginary2);
+    reg->callInterface<BobUIJniTypes::ImaginaryInterface, void>("doSomething", imaginary, imaginary2);
 
     Or get the QJniObject directly and use it as you would any other QJniObject:
-    AndroidBackendRegister *reg = QtAndroid::backendRegister();
-    auto imaginary = reg->getInterface<QtJniTypes::ImaginaryInterface>();
+    AndroidBackendRegister *reg = BobUIAndroid::backendRegister();
+    auto imaginary = reg->getInterface<BobUIJniTypes::ImaginaryInterface>();
     // ... do whatever with QJniObject
 
     In order to register a new interface on the Java side, the BackendRegister class must be used,
@@ -67,11 +67,11 @@ Q_DECLARE_LOGGING_CATEGORY(lcAndroidBackendRegister)
     to unregister, not the object that implements the interface as well.
 
     If the interface needs to be available as soon as possible, it should be registered immediately
-    after Qt has started, by using the QtNative app state listener functionality.
+    after BobUI has started, by using the BobUINative app state listener functionality.
 */
 
 template <typename T>
-using ValidInterfaceType = std::enable_if_t<std::is_base_of_v<QtJniTypes::JObjectBase, T>, bool>;
+using ValidInterfaceType = std::enable_if_t<std::is_base_of_v<BobUIJniTypes::JObjectBase, T>, bool>;
 
 class AndroidBackendRegister
 {
@@ -89,13 +89,13 @@ public:
     [[nodiscard]] T getInterface()
     {
         QMutexLocker lock(&m_registerMutex);
-        return m_register.value(QString(QtJniTypes::Traits<T>::className().data()));
+        return m_register.value(QString(BobUIJniTypes::Traits<T>::className().data()));
     }
 
     template <typename Object>
     using IsObjectType =
             typename std::disjunction<std::is_base_of<QJniObject, Object>,
-                                      std::is_base_of<QtJniTypes::JObjectBase, Object>>;
+                                      std::is_base_of<BobUIJniTypes::JObjectBase, Object>>;
 
     /*
         \internal
@@ -113,7 +113,7 @@ public:
             return obj.template callMethod<Ret, Args...>(func, std::forward<Args>(args)...);
         } else {
             qWarning() << "No interface with className"
-                       << QtJniTypes::Traits<Interface>::className() << "has been registered.";
+                       << BobUIJniTypes::Traits<Interface>::className() << "has been registered.";
         }
 
         if constexpr (IsObjectType<Ret>::value)
@@ -134,6 +134,6 @@ private:
     Q_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE(unregisterBackend)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // ANDROIDBACKENDREGISTER_H

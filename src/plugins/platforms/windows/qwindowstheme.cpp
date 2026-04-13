@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtCore/qt_windows.h>
+#include <BobUICore/bobui_windows.h>
 
 #include "qwindowstheme.h"
 #include "qwindowsmenu.h"
@@ -9,7 +9,7 @@
 #include "qwindowscontext.h"
 #include "qwindowsiconengine.h"
 #include "qwindowsintegration.h"
-#if QT_CONFIG(systemtrayicon)
+#if BOBUI_CONFIG(systemtrayicon)
 #  include "qwindowssystemtrayicon.h"
 #endif
 #include "qwindowsscreen.h"
@@ -20,41 +20,41 @@
 #include <commoncontrols.h>
 #include <shellapi.h>
 
-#include <QtCore/qapplicationstatic.h>
-#include <QtCore/qvariant.h>
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qdebug.h>
-#include <QtCore/qsysinfo.h>
-#include <QtCore/qcache.h>
-#include <QtCore/qthread.h>
-#include <QtCore/qqueue.h>
-#include <QtCore/qmutex.h>
-#include <QtCore/qwaitcondition.h>
-#include <QtCore/qoperatingsystemversion.h>
-#include <QtGui/qcolor.h>
-#include <QtGui/qpalette.h>
-#include <QtGui/qguiapplication.h>
-#include <QtGui/qpainter.h>
-#include <QtGui/qpixmapcache.h>
+#include <BobUICore/qapplicationstatic.h>
+#include <BobUICore/qvariant.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qsysinfo.h>
+#include <BobUICore/qcache.h>
+#include <BobUICore/bobuihread.h>
+#include <BobUICore/qqueue.h>
+#include <BobUICore/qmutex.h>
+#include <BobUICore/qwaitcondition.h>
+#include <BobUICore/qoperatingsystemversion.h>
+#include <BobUIGui/qcolor.h>
+#include <BobUIGui/qpalette.h>
+#include <BobUIGui/qguiapplication.h>
+#include <BobUIGui/qpainter.h>
+#include <BobUIGui/qpixmapcache.h>
 #include <qpa/qwindowsysteminterface.h>
-#include <QtGui/private/qabstractfileiconengine_p.h>
-#include <QtGui/private/qwindowsfontdatabase_p.h>
+#include <BobUIGui/private/qabstractfileiconengine_p.h>
+#include <BobUIGui/private/qwindowsfontdatabase_p.h>
 #include <private/qhighdpiscaling_p.h>
 #include <private/qwinregistry_p.h>
-#include <QtCore/private/qfunctions_win_p.h>
-#include <QtGui/private/qwindowsthemecache_p.h>
+#include <BobUICore/private/qfunctions_win_p.h>
+#include <BobUIGui/private/qwindowsthemecache_p.h>
 
 #include <algorithm>
 
-#if QT_CONFIG(cpp_winrt)
-#   include <QtCore/private/qt_winrtbase_p.h>
+#if BOBUI_CONFIG(cpp_winrt)
+#   include <BobUICore/private/bobui_winrtbase_p.h>
 
 #   include <winrt/Windows.UI.ViewManagement.h>
-#endif // QT_CONFIG(cpp_winrt)
+#endif // BOBUI_CONFIG(cpp_winrt)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static inline bool booleanSystemParametersInfo(UINT what, bool defaultValue)
 {
@@ -89,7 +89,7 @@ enum AccentColorLevel {
     AccentColorLightest
 };
 
-#if QT_CONFIG(cpp_winrt)
+#if BOBUI_CONFIG(cpp_winrt)
 static constexpr QColor getSysColor(winrt::Windows::UI::Color &&color)
 {
     return QColor(color.R, color.G, color.B, color.A);
@@ -102,7 +102,7 @@ static inline QColor getSysColor(int index)
     return QColor(GetRValue(cr), GetGValue(cr), GetBValue(cr));
 }
 
-[[maybe_unused]] [[nodiscard]] static inline QColor qt_accentColor(AccentColorLevel level)
+[[maybe_unused]] [[nodiscard]] static inline QColor bobui_accentColor(AccentColorLevel level)
 {
     QColor accent;
     QColor accentLight;
@@ -112,8 +112,8 @@ static inline QColor getSysColor(int index)
     QColor accentDarker;
     QColor accentDarkest;
 
-#if QT_CONFIG(cpp_winrt)
-    QT_TRY {
+#if BOBUI_CONFIG(cpp_winrt)
+    BOBUI_TRY {
         using namespace winrt::Windows::UI::ViewManagement;
         const auto settings = UISettings();
         accent = getSysColor(settings.GetColorValue(UIColorType::Accent));
@@ -123,7 +123,7 @@ static inline QColor getSysColor(int index)
         accentDark = getSysColor(settings.GetColorValue(UIColorType::AccentDark1));
         accentDarker = getSysColor(settings.GetColorValue(UIColorType::AccentDark2));
         accentDarkest = getSysColor(settings.GetColorValue(UIColorType::AccentDark3));
-    } QT_CATCH(...) {
+    } BOBUI_CATCH(...) {
         // pass, just fall back to WIN32 API implementation
     }
 #endif
@@ -141,7 +141,7 @@ static inline QColor getSysColor(int index)
             if (!value.isValid())
                 return {};
             // The retrieved value is in the #AABBGGRR format, we need to
-            // convert it to the #AARRGGBB format which Qt expects.
+            // convert it to the #AARRGGBB format which BobUI expects.
             const QColor abgr = QColor::fromRgba(qvariant_cast<DWORD>(value));
             if (!abgr.isValid())
                 return {};
@@ -175,10 +175,10 @@ static inline QColor getSysColor(int index)
     }
 }
 
-// QTBUG-48823/Windows 10: SHGetFileInfo() (as called by item views on file system
+// BOBUIBUG-48823/Windows 10: SHGetFileInfo() (as called by item views on file system
 // models has been observed to trigger a WM_PAINT on the mainwindow. Suppress the
 // behavior by running it in a thread.
-class QShGetFileInfoThread : public QThread
+class QShGetFileInfoThread : public BOBUIhread
 {
 public:
     struct Task
@@ -204,7 +204,7 @@ public:
     };
 
     QShGetFileInfoThread()
-        : QThread()
+        : BOBUIhread()
     {
         start();
     }
@@ -286,9 +286,9 @@ static inline QPalette standardPalette()
     QColor lightColor(backgroundColor.lighter());
     QColor darkColor(backgroundColor.darker());
     const QBrush darkBrush(darkColor);
-    QColor midColor(Qt::gray);
-    QPalette palette(Qt::black, backgroundColor, lightColor, darkColor,
-                     midColor, Qt::black, Qt::white);
+    QColor midColor(BobUI::gray);
+    QPalette palette(BobUI::black, backgroundColor, lightColor, darkColor,
+                     midColor, BobUI::black, BobUI::white);
     palette.setBrush(QPalette::Disabled, QPalette::WindowText, darkBrush);
     palette.setBrush(QPalette::Disabled, QPalette::Text, darkBrush);
     palette.setBrush(QPalette::Disabled, QPalette::ButtonText, darkBrush);
@@ -313,10 +313,10 @@ void QWindowsTheme::populateLightSystemBasePalette(QPalette &result)
     const QColor background = getSysColor(COLOR_BTNFACE);
     const QColor textColor = getSysColor(COLOR_WINDOWTEXT);
 
-    const QColor accent = qt_accentColor(AccentColorNormal);
-    const QColor accentDark = qt_accentColor(AccentColorDark);
-    const QColor accentDarker = qt_accentColor(AccentColorDarker);
-    const QColor accentDarkest = qt_accentColor(AccentColorDarkest);
+    const QColor accent = bobui_accentColor(AccentColorNormal);
+    const QColor accentDark = bobui_accentColor(AccentColorDark);
+    const QColor accentDarker = bobui_accentColor(AccentColorDarker);
+    const QColor accentDarkest = bobui_accentColor(AccentColorDarkest);
 
     const QColor linkColor = highContrastEnabled ? getSysColor(COLOR_HOTLIGHT) : accentDarker;
     const QColor linkColorVisited = highContrastEnabled ? linkColor.darker(120) : accentDarkest;
@@ -358,37 +358,37 @@ void QWindowsTheme::populateDarkSystemBasePalette(QPalette &result)
 {
     QColor foreground;
     QColor background;
-#if QT_CONFIG(cpp_winrt)
+#if BOBUI_CONFIG(cpp_winrt)
     // We have to craft a palette from these colors. The settings.UIElementColor(UIElementType) API
     // returns the old system colors, not the dark mode colors. If the background is black (which it
     // usually), then override it with a dark gray instead so that we can go up and down the lightness.
-    if (QWindowsTheme::queryColorScheme() == Qt::ColorScheme::Dark) {
-        QT_TRY {
+    if (QWindowsTheme::queryColorScheme() == BobUI::ColorScheme::Dark) {
+        BOBUI_TRY {
             using namespace winrt::Windows::UI::ViewManagement;
             const auto settings = UISettings();
             // the system is actually running in dark mode, so UISettings will give us dark colors
             foreground = getSysColor(settings.GetColorValue(UIColorType::Foreground));
             background = [&settings]() -> QColor {
                 auto systemBackground = getSysColor(settings.GetColorValue(UIColorType::Background));
-                if (systemBackground == Qt::black)
+                if (systemBackground == BobUI::black)
                     systemBackground = QColor(0x1E, 0x1E, 0x1E);
                 return systemBackground;
             }();
-        } QT_CATCH(...) {
+        } BOBUI_CATCH(...) {
             // pass, just fall back to WIN32 API implementation
         }
     }
 #endif
     if (!background.isValid()) {
         // If the system is running in light mode, then we need to make up our own dark palette
-        foreground = Qt::white;
+        foreground = BobUI::white;
         background = QColor(0x1E, 0x1E, 0x1E);
     }
 
-    const QColor accent = qt_accentColor(AccentColorNormal);
-    const QColor accentDarkest = qt_accentColor(AccentColorDarkest);
-    const QColor accentLighter = qt_accentColor(AccentColorLighter);
-    const QColor accentLightest = qt_accentColor(AccentColorLightest);
+    const QColor accent = bobui_accentColor(AccentColorNormal);
+    const QColor accentDarkest = bobui_accentColor(AccentColorDarkest);
+    const QColor accentLighter = bobui_accentColor(AccentColorLighter);
+    const QColor accentLightest = bobui_accentColor(AccentColorLightest);
     const QColor linkColor = accentLightest;
     const QColor buttonColor = background.lighter(200);
 
@@ -402,13 +402,13 @@ void QWindowsTheme::populateDarkSystemBasePalette(QPalette &result)
     result.setColor(QPalette::All, QPalette::Midlight, buttonColor.lighter(150));
     result.setColor(QPalette::All, QPalette::Dark, buttonColor.darker(200));
     result.setColor(QPalette::All, QPalette::Mid, buttonColor.darker(150));
-    result.setColor(QPalette::All, QPalette::Shadow, Qt::black);
+    result.setColor(QPalette::All, QPalette::Shadow, BobUI::black);
 
     result.setColor(QPalette::All, QPalette::Base, background.lighter(150));
     result.setColor(QPalette::All, QPalette::Window, background);
 
     result.setColor(QPalette::All, QPalette::Highlight, accent);
-    result.setColor(QPalette::All, QPalette::HighlightedText, accent.lightness() > 128 ? Qt::black : Qt::white);
+    result.setColor(QPalette::All, QPalette::HighlightedText, accent.lightness() > 128 ? BobUI::black : BobUI::white);
     result.setColor(QPalette::All, QPalette::Link, linkColor);
     result.setColor(QPalette::All, QPalette::LinkVisited, accentLighter);
     result.setColor(QPalette::All, QPalette::AlternateBase, accentDarkest);
@@ -443,9 +443,9 @@ static inline QPalette toolTipPalette(const QPalette &systemPalette, bool light,
     result.setColor(QPalette::Disabled, QPalette::WindowText, disabled);
     result.setColor(QPalette::Disabled, QPalette::Text, disabled);
     result.setColor(QPalette::Disabled, QPalette::ToolTipText, disabled);
-    result.setColor(QPalette::Disabled, QPalette::Base, Qt::white);
-    result.setColor(QPalette::Disabled, QPalette::BrightText, Qt::white);
-    result.setColor(QPalette::Disabled, QPalette::ToolTipBase, Qt::white);
+    result.setColor(QPalette::Disabled, QPalette::Base, BobUI::white);
+    result.setColor(QPalette::Disabled, QPalette::BrightText, BobUI::white);
+    result.setColor(QPalette::Disabled, QPalette::ToolTipBase, BobUI::white);
     return result;
 }
 
@@ -505,7 +505,7 @@ static inline QPalette *menuBarPalette(const QPalette &menuPalette, bool light)
 const char *QWindowsTheme::name = "windows";
 QWindowsTheme *QWindowsTheme::m_instance = nullptr;
 
-LRESULT QT_WIN_CALLBACK qThemeChangeObserverWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT BOBUI_WIN_CALLBACK qThemeChangeObserverWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message) {
     case WM_SETTINGCHANGE:
@@ -541,7 +541,7 @@ LRESULT QT_WIN_CALLBACK qThemeChangeObserverWndProc(HWND hwnd, UINT message, WPA
 QWindowsTheme::QWindowsTheme()
 {
     m_instance = this;
-    s_colorScheme = Qt::ColorScheme::Unknown; // Used inside QWindowsTheme::effectiveColorScheme();
+    s_colorScheme = BobUI::ColorScheme::Unknown; // Used inside QWindowsTheme::effectiveColorScheme();
     s_colorScheme = QWindowsTheme::effectiveColorScheme();
     std::fill(m_fonts, m_fonts + NFonts, nullptr);
     std::fill(m_palettes, m_palettes + NPalettes, nullptr);
@@ -633,7 +633,7 @@ QVariant QWindowsTheme::themeHint(ThemeHint hint) const
     case WheelScrollLines: {
         int result = 3;
         const DWORD scrollLines = dWordSystemParametersInfo(SPI_GETWHEELSCROLLLINES, DWORD(result));
-        if (scrollLines != DWORD(-1)) // Special value meaning "scroll one screen", unimplemented in Qt.
+        if (scrollLines != DWORD(-1)) // Special value meaning "scroll one screen", unimplemented in BobUI.
             result = int(scrollLines);
         return QVariant(result);
     }
@@ -647,35 +647,35 @@ QVariant QWindowsTheme::themeHint(ThemeHint hint) const
     return QPlatformTheme::themeHint(hint);
 }
 
-Qt::ColorScheme QWindowsTheme::colorScheme() const
+BobUI::ColorScheme QWindowsTheme::colorScheme() const
 {
     return QWindowsTheme::effectiveColorScheme();
 }
 
-Qt::ColorScheme QWindowsTheme::effectiveColorScheme()
+BobUI::ColorScheme QWindowsTheme::effectiveColorScheme()
 {
     auto integration = QWindowsIntegration::instance();
     if (queryHighContrast())
-        return Qt::ColorScheme::Unknown;
-    if (s_colorSchemeOverride != Qt::ColorScheme::Unknown)
+        return BobUI::ColorScheme::Unknown;
+    if (s_colorSchemeOverride != BobUI::ColorScheme::Unknown)
         return s_colorSchemeOverride;
-    if (s_colorScheme != Qt::ColorScheme::Unknown)
+    if (s_colorScheme != BobUI::ColorScheme::Unknown)
         return s_colorScheme;
     if (!integration->darkModeHandling().testFlag(QWindowsApplication::DarkModeStyle))
-        return Qt::ColorScheme::Light;
+        return BobUI::ColorScheme::Light;
     return queryColorScheme();
 }
 
-void QWindowsTheme::requestColorScheme(Qt::ColorScheme scheme)
+void QWindowsTheme::requestColorScheme(BobUI::ColorScheme scheme)
 {
     s_colorSchemeOverride = scheme;
     handleThemeChange();
 }
 
-Qt::ContrastPreference QWindowsTheme::contrastPreference() const
+BobUI::ContrastPreference QWindowsTheme::contrastPreference() const
 {
-    return queryHighContrast() ? Qt::ContrastPreference::HighContrast
-                               : Qt::ContrastPreference::NoPreference;
+    return queryHighContrast() ? BobUI::ContrastPreference::HighContrast
+                               : BobUI::ContrastPreference::NoPreference;
 }
 
 void QWindowsTheme::handleThemeChange()
@@ -687,14 +687,14 @@ void QWindowsTheme::handleThemeChange()
     QWindowsThemeCache::clearAllThemeCaches();
 
     const auto oldColorScheme = s_colorScheme;
-    s_colorScheme = Qt::ColorScheme::Unknown; // make effectiveColorScheme() query registry
+    s_colorScheme = BobUI::ColorScheme::Unknown; // make effectiveColorScheme() query registry
     s_colorScheme = effectiveColorScheme();
     if (s_colorScheme != oldColorScheme) {
         // Only propagate color scheme changes if the scheme actually changed
         integration->updateApplicationBadge();
 
         for (QWindowsWindow *w : std::as_const(QWindowsContext::instance()->windows()))
-            w->setDarkBorder(s_colorScheme == Qt::ColorScheme::Dark);
+            w->setDarkBorder(s_colorScheme == BobUI::ColorScheme::Dark);
     }
 
     // But always reset palette and fonts, and signal the theme
@@ -715,7 +715,7 @@ void QWindowsTheme::refreshPalettes()
     if (!QGuiApplication::desktopSettingsAware())
         return;
     const bool light =
-        effectiveColorScheme() != Qt::ColorScheme::Dark
+        effectiveColorScheme() != BobUI::ColorScheme::Dark
         || !QWindowsIntegration::instance()->darkModeHandling().testFlag(QWindowsApplication::DarkModeStyle);
     clearPalettes();
     m_palettes[SystemPalette] = new QPalette(QWindowsTheme::systemPalette(s_colorScheme));
@@ -724,25 +724,25 @@ void QWindowsTheme::refreshPalettes()
     m_palettes[MenuBarPalette] = menuBarPalette(*m_palettes[MenuPalette], light);
     if (!light) {
         m_palettes[CheckBoxPalette] = new QPalette(*m_palettes[SystemPalette]);
-        m_palettes[CheckBoxPalette]->setColor(QPalette::Active, QPalette::Base, qt_accentColor(AccentColorNormal));
-        m_palettes[CheckBoxPalette]->setColor(QPalette::Active, QPalette::Button, qt_accentColor(AccentColorLighter));
-        m_palettes[CheckBoxPalette]->setColor(QPalette::Inactive, QPalette::Base, qt_accentColor(AccentColorDarkest));
+        m_palettes[CheckBoxPalette]->setColor(QPalette::Active, QPalette::Base, bobui_accentColor(AccentColorNormal));
+        m_palettes[CheckBoxPalette]->setColor(QPalette::Active, QPalette::Button, bobui_accentColor(AccentColorLighter));
+        m_palettes[CheckBoxPalette]->setColor(QPalette::Inactive, QPalette::Base, bobui_accentColor(AccentColorDarkest));
         m_palettes[RadioButtonPalette] = new QPalette(*m_palettes[CheckBoxPalette]);
     }
 }
 
-QPalette QWindowsTheme::systemPalette(Qt::ColorScheme colorScheme)
+QPalette QWindowsTheme::systemPalette(BobUI::ColorScheme colorScheme)
 {
     QPalette result = standardPalette();
 
     switch (colorScheme) {
-    case Qt::ColorScheme::Unknown:
+    case BobUI::ColorScheme::Unknown:
         // when a high-contrast theme is active or when we fail to read, assume light
         Q_FALLTHROUGH();
-    case Qt::ColorScheme::Light:
+    case BobUI::ColorScheme::Light:
         populateLightSystemBasePalette(result);
         break;
-    case Qt::ColorScheme::Dark:
+    case BobUI::ColorScheme::Dark:
         populateDarkSystemBasePalette(result);
         break;
     }
@@ -790,7 +790,7 @@ void QWindowsTheme::refresh()
     refreshFonts();
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug d, const NONCLIENTMETRICS &m)
 {
     QDebugStateSaver saver(d);
@@ -810,7 +810,7 @@ QDebug operator<<(QDebug d, const NONCLIENTMETRICS &m)
     d << ')';
     return d;
 }
-#endif // QT_NO_DEBUG_STREAM
+#endif // BOBUI_NO_DEBUG_STREAM
 
 void QWindowsTheme::refreshFonts()
 {
@@ -865,7 +865,7 @@ QPlatformDialogHelper *QWindowsTheme::createPlatformDialogHelper(DialogType type
     return QWindowsDialogs::createHelper(type);
 }
 
-#if QT_CONFIG(systemtrayicon)
+#if BOBUI_CONFIG(systemtrayicon)
 QPlatformSystemTrayIcon *QWindowsTheme::createPlatformSystemTrayIcon() const
 {
     return new QWindowsSystemTrayIcon;
@@ -889,7 +889,7 @@ void QWindowsTheme::refreshIconPixmapSizes()
 }
 
 // Defined in qpixmap_win.cpp
-Q_GUI_EXPORT QPixmap qt_pixmapFromWinHICON(HICON icon);
+Q_GUI_EXPORT QPixmap bobui_pixmapFromWinHICON(HICON icon);
 
 static QPixmap loadIconFromShell32(int resourceId, QSizeF size)
 {
@@ -899,7 +899,7 @@ static QPixmap loadIconFromShell32(int resourceId, QSizeF size)
         static_cast<HICON>(LoadImage(shell32, MAKEINTRESOURCE(resourceId),
                                      IMAGE_ICON, int(size.width()), int(size.height()), 0));
     if (iconHandle) {
-        QPixmap iconpixmap = qt_pixmapFromWinHICON(iconHandle);
+        QPixmap iconpixmap = bobui_pixmapFromWinHICON(iconHandle);
         DestroyIcon(iconHandle);
         return iconpixmap;
     }
@@ -992,7 +992,7 @@ QPixmap QWindowsTheme::standardPixmap(StandardPixmap sp, const QSizeF &pixmapSiz
     }
 
     // Even with SHGSI_LINKOVERLAY flag set, loaded Icon with SHDefExtractIcon doesn't have
-    // any overlay, so we avoid SHGSI_LINKOVERLAY flag and draw it manually (QTBUG-131843)
+    // any overlay, so we avoid SHGSI_LINKOVERLAY flag and draw it manually (BOBUIBUG-131843)
     const auto drawLinkOverlayIconIfNeeded = [](StandardPixmap sp, QPixmap &pixmap, QSizeF pixmapSize) {
         if (sp == FileLinkIcon || sp == DirLinkIcon || sp == DirLinkOpenIcon) {
             QPainter painter(&pixmap);
@@ -1013,7 +1013,7 @@ QPixmap QWindowsTheme::standardPixmap(StandardPixmap sp, const QSizeF &pixmapSiz
             const auto iconSize = pixmapSize.width();
             HICON icon;
             if (SHDefExtractIcon(iconInfo.szPath, iconInfo.iIcon, 0, &icon, nullptr, iconSize) == S_OK) {
-                QPixmap pixmap = qt_pixmapFromWinHICON(icon);
+                QPixmap pixmap = bobui_pixmapFromWinHICON(icon);
                 DestroyIcon(icon);
                 if (!pixmap.isNull()) {
                     drawLinkOverlayIconIfNeeded(sp, pixmap, pixmap.size());
@@ -1033,7 +1033,7 @@ QPixmap QWindowsTheme::standardPixmap(StandardPixmap sp, const QSizeF &pixmapSiz
 
     if (iconName) {
         HICON iconHandle = LoadIcon(nullptr, iconName);
-        QPixmap pixmap = qt_pixmapFromWinHICON(iconHandle);
+        QPixmap pixmap = bobui_pixmapFromWinHICON(iconHandle);
         DestroyIcon(iconHandle);
         if (!pixmap.isNull())
             return pixmap;
@@ -1049,7 +1049,7 @@ enum { // Shell image list ids
 
 static QString dirIconPixmapCacheKey(int iIcon, int iconSize, int imageListSize)
 {
-    QString key = "qt_dir_"_L1 + QString::number(iIcon);
+    QString key = "bobui_dir_"_L1 + QString::number(iIcon);
     if (iconSize == SHGFI_LARGEICON)
         key += u'l';
     switch (imageListSize) {
@@ -1098,7 +1098,7 @@ static QPixmap pixmapFromShellImageList(int iImageList, int iIcon)
     HICON hIcon;
     hr = imageList->GetIcon(iIcon, ILD_TRANSPARENT, &hIcon);
     if (hr == S_OK) {
-        result = qt_pixmapFromWinHICON(hIcon);
+        result = bobui_pixmapFromWinHICON(hIcon);
         DestroyIcon(hIcon);
     }
     imageList->Release();
@@ -1123,19 +1123,19 @@ QString QWindowsFileIconEngine::cacheKey() const
 {
     // Cache directories unless custom or drives, which have custom icons depending on type
     if ((options() & QPlatformTheme::DontUseCustomDirectoryIcons) && fileInfo().isDir() && !fileInfo().isRoot())
-        return QStringLiteral("qt_/directory/");
+        return QStringLiteral("bobui_/directory/");
     if (!fileInfo().isFile())
         return QString();
     // Return "" for .exe, .lnk and .ico extensions.
     // It is faster to just look at the file extensions;
-    // avoiding slow QFileInfo::isExecutable() (QTBUG-13182)
+    // avoiding slow QFileInfo::isExecutable() (BOBUIBUG-13182)
     QString suffix = fileInfo().suffix();
-    if (!suffix.compare(u"exe", Qt::CaseInsensitive)
-        || !suffix.compare(u"lnk", Qt::CaseInsensitive)
-        || !suffix.compare(u"ico", Qt::CaseInsensitive)) {
+    if (!suffix.compare(u"exe", BobUI::CaseInsensitive)
+        || !suffix.compare(u"lnk", BobUI::CaseInsensitive)
+        || !suffix.compare(u"ico", BobUI::CaseInsensitive)) {
         return QString();
     }
-    return "qt_."_L1
+    return "bobui_."_L1
         + (suffix.isEmpty() ? fileInfo().fileName() : std::move(suffix).toUpper()); // handle "Makefile"                                    ;)
 }
 
@@ -1208,7 +1208,7 @@ QPixmap QWindowsFileIconEngine::filePixmap(const QSize &size, QIcon::Mode, QIcon
                     pixmap = pixmapFromShellImageList(sHIL_EXTRALARGE, task->iIcon);
             }
             if (pixmap.isNull())
-                pixmap = qt_pixmapFromWinHICON(task->hIcon);
+                pixmap = bobui_pixmapFromWinHICON(task->hIcon);
             if (!pixmap.isNull()) {
                 if (cacheableDirIcon) {
                     QMutexLocker locker(&mx);
@@ -1258,16 +1258,16 @@ bool QWindowsTheme::useNativeMenus()
     return result;
 }
 
-Qt::ColorScheme QWindowsTheme::queryColorScheme()
+BobUI::ColorScheme QWindowsTheme::queryColorScheme()
 {
     if (queryHighContrast())
-        return Qt::ColorScheme::Unknown;
+        return BobUI::ColorScheme::Unknown;
 
     QWinRegistryKey personalizeKey{
         HKEY_CURRENT_USER, LR"(Software\Microsoft\Windows\CurrentVersion\Themes\Personalize)"
     };
     const bool useDarkTheme = personalizeKey.value<DWORD>(L"AppsUseLightTheme") == 0;
-    return useDarkTheme ? Qt::ColorScheme::Dark : Qt::ColorScheme::Light;
+    return useDarkTheme ? BobUI::ColorScheme::Dark : BobUI::ColorScheme::Light;
 }
 
 bool QWindowsTheme::queryHighContrast()
@@ -1306,4 +1306,4 @@ void QWindowsTheme::showPlatformMenuBar()
     qCDebug(lcQpaMenus) << __FUNCTION__;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

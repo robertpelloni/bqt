@@ -1,18 +1,18 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <qpa/qwindowsysteminterface.h>
 #include <private/qguiapplication_p.h>
-#include <QtCore/qfile.h>
-#include <QtGui/private/qwindow_p.h>
-#include <QtGui/private/qhighdpiscaling_p.h>
+#include <BobUICore/qfile.h>
+#include <BobUIGui/private/qwindow_p.h>
+#include <BobUIGui/private/qhighdpiscaling_p.h>
 #include <private/qpixmapcache_p.h>
-#include <QtGui/qopenglfunctions.h>
+#include <BobUIGui/qopenglfunctions.h>
 #include <QBuffer>
 
 #include "qwasmbase64iconstore.h"
 #include "qwasmdom.h"
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
 #include "qwasmclipboard.h"
 #endif
 #include "qwasmintegration.h"
@@ -23,7 +23,7 @@
 #include "qwasmevent.h"
 #include "qwasmeventdispatcher.h"
 #include "qwasmaccessibility.h"
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 #include "qwasmdrag.h"
 #endif
 #include "qwasmopenglcontext.h"
@@ -33,12 +33,12 @@
 
 #include <emscripten/val.h>
 
-#include <QtCore/private/qstdweb_p.h>
+#include <BobUICore/private/qstdweb_p.h>
 #include <QKeySequence>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_GUI_EXPORT int qt_defaultDpiX();
+Q_GUI_EXPORT int bobui_defaultDpiX();
 
 QWasmWindow::QWasmWindow(QWindow *w,
                          QWasmCompositor *compositor, QWasmBackingStore *backingStore,
@@ -55,7 +55,7 @@ QWasmWindow::QWasmWindow(QWindow *w,
       m_inputElement(m_document.call<emscripten::val>("createElement", emscripten::val("input")))
 
 {
-    m_decoratedWindow.set("className", "qt-decorated-window");
+    m_decoratedWindow.set("className", "bobui-decorated-window");
     m_decoratedWindow["style"].set("display", std::string("none"));
 
     m_nonClientArea = std::make_unique<NonClientArea>(this, m_decoratedWindow);
@@ -72,17 +72,17 @@ QWasmWindow::QWasmWindow(QWindow *w,
     if (nativeHandle) {
         m_window = *(emscripten::val *)(nativeHandle);
         m_winId = nativeHandle;
-        m_decoratedWindow.set("id", "qt-window-" + std::to_string(m_winId));
+        m_decoratedWindow.set("id", "bobui-window-" + std::to_string(m_winId));
         m_decoratedWindow.call<void>("appendChild", m_window);
         return;
     }
 
-    m_window.set("className", "qt-window");
+    m_window.set("className", "bobui-window");
     m_decoratedWindow.call<void>("appendChild", m_window);
 
-    m_canvas["classList"].call<void>("add", emscripten::val("qt-window-canvas"));
+    m_canvas["classList"].call<void>("add", emscripten::val("bobui-window-canvas"));
 
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
     if (QWasmClipboard::shouldInstallWindowEventHandlers()) {
         m_cutCallback = QWasmEventHandler(m_canvas, "cut", QWasmClipboard::cut);
         m_copyCallback = QWasmEventHandler(m_canvas, "copy", QWasmClipboard::copy);
@@ -94,7 +94,7 @@ QWasmWindow::QWasmWindow(QWindow *w,
     // focus on behalf of the window any time the window has focus in general, but none
     // of the special child elements such as the inputElment or a11y elements have focus.
     // Set inputMode=none set to prevent the virtual keyboard from popping up.
-    m_focusHelper["classList"].call<void>("add", emscripten::val("qt-window-focus-helper"));
+    m_focusHelper["classList"].call<void>("add", emscripten::val("bobui-window-focus-helper"));
     m_focusHelper.set("inputMode", std::string("none"));
     m_focusHelper.call<void>("setAttribute", std::string("contenteditable"), std::string("true"));
     m_focusHelper["style"].set("position", "absolute");
@@ -106,9 +106,9 @@ QWasmWindow::QWasmWindow(QWindow *w,
     m_focusHelper["style"].set("opacity", 0);
     m_window.call<void>("appendChild", m_focusHelper);
 
-    // Set up m_inputElement, which takes focus whenever a Qt text input UI element has
+    // Set up m_inputElement, which takes focus whenever a BobUI text input UI element has
     // foucus.
-    m_inputElement["classList"].call<void>("add", emscripten::val("qt-window-input-element"));
+    m_inputElement["classList"].call<void>("add", emscripten::val("bobui-window-input-element"));
     m_inputElement.call<void>("setAttribute", std::string("contenteditable"), std::string("true"));
     m_inputElement.set("type", "text");
     m_inputElement["style"].set("position", "absolute");
@@ -127,7 +127,7 @@ QWasmWindow::QWasmWindow(QWindow *w,
 
     m_window.call<void>("appendChild", m_canvas);
 
-    m_a11yContainer["classList"].call<void>("add", emscripten::val("qt-window-a11y-container"));
+    m_a11yContainer["classList"].call<void>("add", emscripten::val("bobui-window-a11y-container"));
     m_window.call<void>("appendChild", m_a11yContainer);
 
     if (QWasmAccessibility::isEnabled())
@@ -138,7 +138,7 @@ QWasmWindow::QWasmWindow(QWindow *w,
         m_context2d = m_canvas.call<emscripten::val>("getContext", emscripten::val("2d"));
 
     m_winId = WId(&m_window);
-    m_decoratedWindow.set("id", "qt-window-" + std::to_string(m_winId));
+    m_decoratedWindow.set("id", "bobui-window-" + std::to_string(m_winId));
     emscripten::val::module_property("specialHTMLTargets").set(canvasSelector(), m_canvas);
 
     m_flags = window()->flags();
@@ -153,7 +153,7 @@ QWasmWindow::QWasmWindow(QWindow *w,
     m_modalityChangedConnection =
             QObject::connect(
                 window(), &QWindow::modalityChanged,
-                window(), [this](Qt::WindowModality) { onModalityChanged(); });
+                window(), [this](BobUI::WindowModality) { onModalityChanged(); });
 
     setParent(parent());
 }
@@ -179,7 +179,7 @@ void QWasmWindow::registerEventHandlers()
         [this](emscripten::val event) { this->handlePointerEnterLeaveEvent(PointerEvent(EventType::PointerLeave, event)); }
     );
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     m_window.call<void>("setAttribute", emscripten::val("draggable"), emscripten::val("true"));
     m_dragStartCallback = QWasmEventHandler(m_window, "dragstart",
         [this](emscripten::val event) {
@@ -217,7 +217,7 @@ void QWasmWindow::registerEventHandlers()
             QWasmDrag::instance()->onNativeDragLeave(&dragEvent);
         }
     );
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
 
     m_wheelEventCallback = QWasmEventHandler(m_window, "wheel",
         [this](emscripten::val event) { this->handleWheelEvent(event); });
@@ -243,7 +243,7 @@ QWasmWindow::~QWasmWindow()
 {
     QWasmOpenGLContext::destroyWebGLContext(this);
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     QWasmAccessibility::onRemoveWindow(window());
 #endif
     QObject::disconnect(m_transientWindowChangedConnection);
@@ -311,7 +311,7 @@ QWasmWindow *QWasmWindow::transientParent() const
     return fromWindow(window()->transientParent());
 }
 
-Qt::WindowFlags QWasmWindow::windowFlags() const
+BobUI::WindowFlags QWasmWindow::windowFlags() const
 {
     return window()->flags();
 }
@@ -323,18 +323,18 @@ bool QWasmWindow::isModal() const
 
 void QWasmWindow::onRestoreClicked()
 {
-    window()->setWindowState(Qt::WindowNoState);
+    window()->setWindowState(BobUI::WindowNoState);
 }
 
 void QWasmWindow::onMaximizeClicked()
 {
-    window()->setWindowState(Qt::WindowMaximized);
+    window()->setWindowState(BobUI::WindowMaximized);
 }
 
 void QWasmWindow::onToggleMaximized()
 {
-    window()->setWindowState(m_state.testFlag(Qt::WindowMaximized) ? Qt::WindowNoState
-                                                                   : Qt::WindowMaximized);
+    window()->setWindowState(m_state.testFlag(BobUI::WindowMaximized) ? BobUI::WindowNoState
+                                                                   : BobUI::WindowMaximized);
 }
 
 void QWasmWindow::onCloseClicked()
@@ -374,7 +374,7 @@ void QWasmWindow::initialize()
         setWindowIcon(window()->icon());
     QPlatformWindow::setGeometry(m_normalGeometry);
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     // Add accessibility-enable button. The user can activate this
     // button to opt-in to accessibility.
     if (window()->isTopLevel())
@@ -413,9 +413,9 @@ void QWasmWindow::setGeometry(const QRect &rect)
     const auto margins = frameMargins();
 
     const QRect clientAreaRect = ([this, &rect, &margins]() {
-        if (m_state.testFlag(Qt::WindowFullScreen))
+        if (m_state.testFlag(BobUI::WindowFullScreen))
             return platformScreen()->geometry();
-        if (m_state.testFlag(Qt::WindowMaximized))
+        if (m_state.testFlag(BobUI::WindowMaximized))
             return platformScreen()->availableGeometry().marginsRemoved(frameMargins());
 
         auto offset = rect.topLeft() - (!parent() ? screen()->geometry().topLeft() : QPoint());
@@ -463,7 +463,7 @@ void QWasmWindow::setGeometry(const QRect &rect)
     m_canvas.set("height", canvasSize.height());
 
     bool shouldInvalidate = true;
-    if (!m_state.testFlag(Qt::WindowFullScreen) && !m_state.testFlag(Qt::WindowMaximized)) {
+    if (!m_state.testFlag(BobUI::WindowFullScreen) && !m_state.testFlag(BobUI::WindowMaximized)) {
         shouldInvalidate = m_normalGeometry.size() != clientAreaRect.size();
         m_normalGeometry = clientAreaRect;
     }
@@ -493,7 +493,7 @@ void QWasmWindow::setVisible(bool visible)
 
     if (visible) {
         applyWindowState();
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
         QWasmAccessibility::onShowWindow(window());
 #endif
     }
@@ -555,13 +555,13 @@ void QWasmWindow::onActivationChanged(bool active)
     dom::syncCSSClassWith(m_decoratedWindow, "inactive", !active);
 }
 
-void QWasmWindow::setWindowFlags(Qt::WindowFlags flags)
+void QWasmWindow::setWindowFlags(BobUI::WindowFlags flags)
 {
     flags = fixTopLevelWindowFlags(flags);
 
-    if ((flags.testFlag(Qt::WindowStaysOnTopHint) != m_flags.testFlag(Qt::WindowStaysOnTopHint))
-        || (flags.testFlag(Qt::WindowStaysOnBottomHint)
-            != m_flags.testFlag(Qt::WindowStaysOnBottomHint))
+    if ((flags.testFlag(BobUI::WindowStaysOnTopHint) != m_flags.testFlag(BobUI::WindowStaysOnTopHint))
+        || (flags.testFlag(BobUI::WindowStaysOnBottomHint)
+            != m_flags.testFlag(BobUI::WindowStaysOnBottomHint))
         || shouldBeAboveTransientParentFlags(flags) != shouldBeAboveTransientParentFlags(m_flags)) {
         onPositionPreferenceChanged(positionPreferenceFromWindowFlags(flags));
     }
@@ -571,23 +571,23 @@ void QWasmWindow::setWindowFlags(Qt::WindowFlags flags)
     dom::syncCSSClassWith(m_decoratedWindow, "has-shadow", hasShadow());
     dom::syncCSSClassWith(m_decoratedWindow, "has-title", hasTitleBar());
     dom::syncCSSClassWith(m_decoratedWindow, "transparent-for-input",
-                          flags.testFlag(Qt::WindowTransparentForInput));
+                          flags.testFlag(BobUI::WindowTransparentForInput));
 
     m_nonClientArea->titleBar()->setMaximizeVisible(hasMaximizeButton());
-    m_nonClientArea->titleBar()->setCloseVisible(m_flags.testFlag(Qt::WindowCloseButtonHint));
+    m_nonClientArea->titleBar()->setCloseVisible(m_flags.testFlag(BobUI::WindowCloseButtonHint));
 }
 
-void QWasmWindow::setWindowState(Qt::WindowStates newState)
+void QWasmWindow::setWindowState(BobUI::WindowStates newState)
 {
-    // Child windows can not have window states other than Qt::WindowActive
+    // Child windows can not have window states other than BobUI::WindowActive
     if (parent())
-        newState &= Qt::WindowActive;
+        newState &= BobUI::WindowActive;
 
-    const Qt::WindowStates oldState = m_state;
+    const BobUI::WindowStates oldState = m_state;
 
-    if (newState.testFlag(Qt::WindowMinimized)) {
-        newState.setFlag(Qt::WindowMinimized, false);
-        qWarning("Qt::WindowMinimized is not implemented in wasm");
+    if (newState.testFlag(BobUI::WindowMinimized)) {
+        newState.setFlag(BobUI::WindowMinimized, false);
+        qWarning("BobUI::WindowMinimized is not implemented in wasm");
         window()->setWindowStates(newState);
         return;
     }
@@ -612,7 +612,7 @@ void QWasmWindow::setWindowIcon(const QIcon &icon)
     auto pixmap = icon.pixmap(10 * dpi, 10 * dpi);
     if (pixmap.isNull()) {
         m_nonClientArea->titleBar()->setIcon(
-                Base64IconStore::get()->getIcon(Base64IconStore::IconType::QtLogo), "svg+xml");
+                Base64IconStore::get()->getIcon(Base64IconStore::IconType::BobUILogo), "svg+xml");
         return;
     }
 
@@ -626,8 +626,8 @@ void QWasmWindow::applyWindowState()
 {
     QRect newGeom;
 
-    const bool isFullscreen = m_state.testFlag(Qt::WindowFullScreen);
-    const bool isMaximized = m_state.testFlag(Qt::WindowMaximized);
+    const bool isFullscreen = m_state.testFlag(BobUI::WindowFullScreen);
+    const bool isMaximized = m_state.testFlag(BobUI::WindowMaximized);
     if (isFullscreen)
         newGeom = platformScreen()->geometry();
     else if (isMaximized)
@@ -671,7 +671,7 @@ bool QWasmWindow::processKey(const KeyEvent &event)
     constexpr bool ProceedToNativeEvent = false;
     Q_ASSERT(event.type == EventType::KeyDown || event.type == EventType::KeyUp);
 
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
     const auto clipboardResult =
             QWasmIntegration::get()->getWasmClipboard()->processKeyboard(event);
 
@@ -684,7 +684,7 @@ bool QWasmWindow::processKey(const KeyEvent &event)
             0, event.type == EventType::KeyDown ? QEvent::KeyPress : QEvent::KeyRelease, event.key,
             event.modifiers, event.text, event.autoRepeat);
 
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
     return clipboardResult == ProcessKeyboardResult::NativeClipboardEventAndCopiedDataNeeded
             ? ProceedToNativeEvent
             : result;
@@ -695,7 +695,7 @@ bool QWasmWindow::processKey(const KeyEvent &event)
 
 void QWasmWindow::handleKeyForInputContextEvent(const KeyEvent &keyEvent)
 {
-    // Don't send Qt key events if the key event is a part of input composition,
+    // Don't send BobUI key events if the key event is a part of input composition,
     // let those be handled by by the input event key handler. Check for the
     // keyCode 229 as well as isComposing in order catch all cases (see mdn
     // docs for the keyDown event)
@@ -725,8 +725,8 @@ bool QWasmWindow::processKeyForInputContext(const KeyEvent &event)
             0, event.type == EventType::KeyDown ? QEvent::KeyPress : QEvent::KeyRelease, event.key,
             event.modifiers, event.text);
 
-#if QT_CONFIG(clipboard)
-    // Copy/Cut callback required to copy qtClipboard to system clipboard
+#if BOBUI_CONFIG(clipboard)
+    // Copy/Cut callback required to copy bobuiClipboard to system clipboard
     if (keySeq == QKeySequence::Copy || keySeq == QKeySequence::Cut)
         return false;
 #endif
@@ -814,8 +814,8 @@ void QWasmWindow::processPointer(const PointerEvent &event)
     case EventType::PointerDown:
         m_window.call<void>("setPointerCapture", event.pointerId);
 
-        if ((window()->flags() & Qt::WindowDoesNotAcceptFocus)
-                    != Qt::WindowDoesNotAcceptFocus
+        if ((window()->flags() & BobUI::WindowDoesNotAcceptFocus)
+                    != BobUI::WindowDoesNotAcceptFocus
             && window()->isTopLevel())
                 window()->requestActivate();
         break;
@@ -870,10 +870,10 @@ bool QWasmWindow::deliverPointerEvent(const PointerEvent &event)
             default:
                 return false;
         }
-        // Tilt in the browser is in the range +-90, but QTabletEvent only goes to +-60.
+        // Tilt in the browser is in the range +-90, but BOBUIabletEvent only goes to +-60.
         qreal xTilt = qBound(-60.0, event.tiltX, 60.0);
         qreal yTilt = qBound(-60.0, event.tiltY, 60.0);
-        // Barrel rotation is reported as 0 to 359, but QTabletEvent wants a signed value.
+        // Barrel rotation is reported as 0 to 359, but BOBUIabletEvent wants a signed value.
         qreal rotation = event.twist > 180.0 ? 360.0 - event.twist : event.twist;
         return QWindowSystemInterface::handleTabletEvent(
             window(), QWasmIntegration::getTimestamp(), platformScreen()->tabletDevice(),
@@ -949,7 +949,7 @@ void QWasmWindow::handleWheelEvent(const emscripten::val &event)
 
 bool QWasmWindow::processWheel(const WheelEvent &event)
 {
-    // Web scroll deltas are inverted from Qt deltas - negate.
+    // Web scroll deltas are inverted from BobUI deltas - negate.
     const int scrollFactor = -([&event]() {
         switch (event.deltaMode) {
         case DeltaMode::Pixel:
@@ -967,28 +967,28 @@ bool QWasmWindow::processWheel(const WheelEvent &event)
     return QWindowSystemInterface::handleWheelEvent(
             window(), QWasmIntegration::getTimestamp(), window()->mapFromGlobal(pointInScreen),
             pointInScreen, (event.delta * scrollFactor).toPoint(),
-            (event.delta * scrollFactor).toPoint(), event.modifiers, Qt::NoScrollPhase,
-            Qt::MouseEventNotSynthesized, event.webkitDirectionInvertedFromDevice);
+            (event.delta * scrollFactor).toPoint(), event.modifiers, BobUI::NoScrollPhase,
+            BobUI::MouseEventNotSynthesized, event.webkitDirectionInvertedFromDevice);
 }
 
 // Fix top level window flags in case only the type flags are passed.
-Qt::WindowFlags QWasmWindow::fixTopLevelWindowFlags(Qt::WindowFlags flags) const
+BobUI::WindowFlags QWasmWindow::fixTopLevelWindowFlags(BobUI::WindowFlags flags) const
 {
-    if (!(flags.testFlag(Qt::CustomizeWindowHint))) {
-        if (flags.testFlag(Qt::Window)) {
-            flags |= Qt::WindowTitleHint | Qt::WindowSystemMenuHint
-                  |Qt::WindowMaximizeButtonHint|Qt::WindowCloseButtonHint;
+    if (!(flags.testFlag(BobUI::CustomizeWindowHint))) {
+        if (flags.testFlag(BobUI::Window)) {
+            flags |= BobUI::WindowTitleHint | BobUI::WindowSystemMenuHint
+                  |BobUI::WindowMaximizeButtonHint|BobUI::WindowCloseButtonHint;
         }
-        if (flags.testFlag(Qt::Dialog) || flags.testFlag(Qt::Tool))
-            flags |= Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint;
+        if (flags.testFlag(BobUI::Dialog) || flags.testFlag(BobUI::Tool))
+            flags |= BobUI::WindowTitleHint | BobUI::WindowSystemMenuHint | BobUI::WindowCloseButtonHint;
 
-        if ((flags & Qt::WindowType_Mask) == Qt::SplashScreen)
-            flags |= Qt::FramelessWindowHint;
+        if ((flags & BobUI::WindowType_Mask) == BobUI::SplashScreen)
+            flags |= BobUI::FramelessWindowHint;
     }
     return flags;
 }
 
-bool QWasmWindow::shouldBeAboveTransientParentFlags(Qt::WindowFlags flags) const
+bool QWasmWindow::shouldBeAboveTransientParentFlags(BobUI::WindowFlags flags) const
 {
     if (!transientParent())
         return false;
@@ -996,10 +996,10 @@ bool QWasmWindow::shouldBeAboveTransientParentFlags(Qt::WindowFlags flags) const
     if (isModal())
         return true;
 
-    if (flags.testFlag(Qt::Tool) ||
-        flags.testFlag(Qt::SplashScreen) ||
-        flags.testFlag(Qt::ToolTip) ||
-        flags.testFlag(Qt::Popup))
+    if (flags.testFlag(BobUI::Tool) ||
+        flags.testFlag(BobUI::SplashScreen) ||
+        flags.testFlag(BobUI::ToolTip) ||
+        flags.testFlag(BobUI::Popup))
     {
         return true;
     }
@@ -1007,13 +1007,13 @@ bool QWasmWindow::shouldBeAboveTransientParentFlags(Qt::WindowFlags flags) const
     return false;
 }
 
-QWasmWindowStack<>::PositionPreference QWasmWindow::positionPreferenceFromWindowFlags(Qt::WindowFlags flags) const
+QWasmWindowStack<>::PositionPreference QWasmWindow::positionPreferenceFromWindowFlags(BobUI::WindowFlags flags) const
 {
     flags = fixTopLevelWindowFlags(flags);
 
-    if (flags.testFlag(Qt::WindowStaysOnTopHint))
+    if (flags.testFlag(BobUI::WindowStaysOnTopHint))
         return QWasmWindowStack<>::PositionPreference::StayOnTop;
-    if (flags.testFlag(Qt::WindowStaysOnBottomHint))
+    if (flags.testFlag(BobUI::WindowStaysOnBottomHint))
         return QWasmWindowStack<>::PositionPreference::StayOnBottom;
     if (shouldBeAboveTransientParentFlags(flags))
         return QWasmWindowStack<>::PositionPreference::StayAboveTransientParent;
@@ -1037,36 +1037,36 @@ void QWasmWindow::requestUpdate()
 
 bool QWasmWindow::hasFrame() const
 {
-    return !m_flags.testFlag(Qt::FramelessWindowHint);
+    return !m_flags.testFlag(BobUI::FramelessWindowHint);
 }
 
 bool QWasmWindow::hasBorder() const
 {
-    return hasFrame() && !m_state.testFlag(Qt::WindowFullScreen) && !m_flags.testFlag(Qt::SubWindow)
+    return hasFrame() && !m_state.testFlag(BobUI::WindowFullScreen) && !m_flags.testFlag(BobUI::SubWindow)
             && !windowIsPopupType(m_flags) && !parent();
 }
 
 bool QWasmWindow::hasTitleBar() const
 {
-    return hasBorder() && m_flags.testFlag(Qt::WindowTitleHint);
+    return hasBorder() && m_flags.testFlag(BobUI::WindowTitleHint);
 }
 
 bool QWasmWindow::hasShadow() const
 {
-    return hasBorder() && !m_flags.testFlag(Qt::NoDropShadowWindowHint);
+    return hasBorder() && !m_flags.testFlag(BobUI::NoDropShadowWindowHint);
 }
 
 bool QWasmWindow::hasMaximizeButton() const
 {
-    return !m_state.testFlag(Qt::WindowMaximized) && m_flags.testFlag(Qt::WindowMaximizeButtonHint);
+    return !m_state.testFlag(BobUI::WindowMaximized) && m_flags.testFlag(BobUI::WindowMaximizeButtonHint);
 }
 
-bool QWasmWindow::windowIsPopupType(Qt::WindowFlags flags) const
+bool QWasmWindow::windowIsPopupType(BobUI::WindowFlags flags) const
 {
-    if (flags.testFlag(Qt::Tool))
-        return false; // Qt::Tool has the Popup bit set but isn't an actual Popup window
+    if (flags.testFlag(BobUI::Tool))
+        return false; // BobUI::Tool has the Popup bit set but isn't an actual Popup window
 
-    return (flags.testFlag(Qt::Popup));
+    return (flags.testFlag(BobUI::Popup));
 }
 
 void QWasmWindow::requestActivateWindow()
@@ -1166,7 +1166,7 @@ void QWasmWindow::setParent(const QPlatformWindow *)
 
 std::string QWasmWindow::canvasSelector() const
 {
-    return "!qtwindow" + std::to_string(m_winId);
+    return "!bobuiwindow" + std::to_string(m_winId);
 }
 
 emscripten::val QWasmWindow::containerElement()
@@ -1196,4 +1196,4 @@ void QWasmWindow::onParentChanged(QWasmWindowTreeNode *previous, QWasmWindowTree
     QWasmWindowTreeNode::onParentChanged(previous, current, positionPreference);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

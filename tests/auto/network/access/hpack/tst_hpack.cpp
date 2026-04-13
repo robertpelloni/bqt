@@ -1,20 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2014 Governikus GmbH & Co. KG.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QRandomGenerator>
 
-#include <QtNetwork/private/bitstreams_p.h>
-#include <QtNetwork/private/hpack_p.h>
+#include <BobUINetwork/private/bitstreams_p.h>
+#include <BobUINetwork/private/hpack_p.h>
 
-#include <QtCore/qbytearray.h>
+#include <BobUICore/qbytearray.h>
 
 #include <cstdlib>
 #include <vector>
 #include <string>
 
-QT_USE_NAMESPACE
+BOBUI_USE_NAMESPACE
 
 using namespace HPack;
 
@@ -497,9 +497,9 @@ void tst_Hpack::dynamicTableSizeUpdate()
 
 void  tst_Hpack::hpackEncodeRequest_data()
 {
-    QTest::addColumn<bool>("compression");
-    QTest::newRow("no-string-compression") << false;
-    QTest::newRow("with-string-compression") << true;
+    BOBUIest::addColumn<bool>("compression");
+    BOBUIest::newRow("no-string-compression") << false;
+    BOBUIest::newRow("with-string-compression") << true;
 }
 
 void tst_Hpack::hpackEncodeRequest(bool withHuffman)
@@ -659,9 +659,9 @@ void tst_Hpack::hpackEncodeRequest()
 
 void tst_Hpack::hpackDecodeRequest_data()
 {
-    QTest::addColumn<bool>("compression");
-    QTest::newRow("no-string-compression") << false;
-    QTest::newRow("with-string-compression") << true;
+    BOBUIest::addColumn<bool>("compression");
+    BOBUIest::newRow("no-string-compression") << false;
+    BOBUIest::newRow("with-string-compression") << true;
 }
 
 void tst_Hpack::hpackDecodeRequest()
@@ -826,6 +826,6 @@ void tst_Hpack::hpackDecodeResponse()
     }
 }
 
-QTEST_MAIN(tst_Hpack)
+BOBUIEST_MAIN(tst_Hpack)
 
 #include "tst_hpack.moc"

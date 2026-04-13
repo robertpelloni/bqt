@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/QtCore>
-#include <QTest>
+#include <BobUICore/BobUICore>
+#include <BOBUIest>
 
 #include <math.h>
 #include <condition_variable>
@@ -51,7 +51,7 @@ template <> std::condition_variable     *get() { return &cv; }
 template <> std::condition_variable_any *get() { return &cva; }
 
 template <class Cond, class Mutex, class Locker>
-class OscillateThread : public QThread
+class OscillateThread : public BOBUIhread
 {
 public:
     Mutex *mutex;
@@ -77,7 +77,7 @@ public:
 };
 
 template <class Mutex, class Locker>
-class OscillateThread<QWaitCondition, Mutex, Locker> : public QThread
+class OscillateThread<QWaitCondition, Mutex, Locker> : public BOBUIhread
 {
 public:
     Mutex *mutex;
@@ -122,12 +122,12 @@ void oscillate(unsigned long timeout) {
 
 void tst_QWaitCondition::oscillate_mutex_data()
 {
-    QTest::addColumn<unsigned long>("timeout");
+    BOBUIest::addColumn<unsigned long>("timeout");
 
-    QTest::newRow("0") << 0ul;
-    QTest::newRow("1") << 1ul;
-    QTest::newRow("1000") << 1000ul;
-    QTest::newRow("forever") << ULONG_MAX;
+    BOBUIest::newRow("0") << 0ul;
+    BOBUIest::newRow("1") << 1ul;
+    BOBUIest::newRow("1000") << 1000ul;
+    BOBUIest::newRow("forever") << ULONG_MAX;
 }
 
 void tst_QWaitCondition::oscillate_QWaitCondition_QMutex()
@@ -169,6 +169,6 @@ void tst_QWaitCondition::oscillate_std_condition_variable_any_QReadWriteLock()
     oscillate<std::condition_variable_any, QReadWriteLock, WriteLocker>(timeout);
 }
 
-QTEST_MAIN(tst_QWaitCondition)
+BOBUIEST_MAIN(tst_QWaitCondition)
 
 #include "tst_bench_qwaitcondition.moc"

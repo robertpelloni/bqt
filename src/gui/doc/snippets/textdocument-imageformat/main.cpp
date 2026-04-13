@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 #include <QApplication>
-#include <QTextBlock>
-#include <QTextEdit>
+#include <BOBUIextBlock>
+#include <BOBUIextEdit>
 
 QString tr(const char *text)
 {
@@ -12,18 +12,18 @@ QString tr(const char *text)
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    QTextEdit *editor = new QTextEdit;
+    BOBUIextEdit *editor = new BOBUIextEdit;
 
-    QTextDocument *document = new QTextDocument(editor);
-    QTextCursor cursor(document);
+    BOBUIextDocument *document = new BOBUIextDocument(editor);
+    BOBUIextCursor cursor(document);
 
-    QTextImageFormat imageFormat;
+    BOBUIextImageFormat imageFormat;
     imageFormat.setName(":/images/advert.png");
     cursor.insertImage(imageFormat);
 
-    QTextBlock block = cursor.block();
-    QTextFragment fragment;
-    QTextBlock::iterator it;
+    BOBUIextBlock block = cursor.block();
+    BOBUIextFragment fragment;
+    BOBUIextBlock::iterator it;
 
     for (it = block.begin(); !(it.atEnd()); ++it) {
         fragment = it.fragment();
@@ -34,15 +34,15 @@ int main(int argc, char *argv[])
 
 //! [0]
     if (fragment.isValid()) {
-        QTextImageFormat newImageFormat = fragment.charFormat().toImageFormat();
+        BOBUIextImageFormat newImageFormat = fragment.charFormat().toImageFormat();
 
         if (newImageFormat.isValid()) {
             newImageFormat.setName(":/images/newimage.png");
-            QTextCursor helper = cursor;
+            BOBUIextCursor helper = cursor;
 
             helper.setPosition(fragment.position());
             helper.setPosition(fragment.position() + fragment.length(),
-                                QTextCursor::KeepAnchor);
+                                BOBUIextCursor::KeepAnchor);
             helper.setCharFormat(newImageFormat);
 //! [0] //! [1]
         }

@@ -1,16 +1,16 @@
 // Copyright (C) 2014 Robin Burchell <robin.burchell@viroteck.net>
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QOSCMESSAGE_P_H
 #define QOSCMESSAGE_P_H
 
-#include <QtCore/QByteArray>
-#include <QtCore/QVariant>
-#include <QtCore/QList>
+#include <BobUICore/QByteArray>
+#include <BobUICore/QVariant>
+#include <BobUICore/QList>
 
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QOscMessage
 {
@@ -31,6 +31,6 @@ private:
 };
 Q_DECLARE_TYPEINFO(QOscMessage, Q_RELOCATABLE_TYPE);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

@@ -1,22 +1,22 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "../../../../src/plugins/platforms/wasm/qwasmwindowstack.h"
 
-#include <QtGui/QWindow>
-#include <QTest>
+#include <BobUIGui/QWindow>
+#include <BOBUIest>
 #include <emscripten/val.h>
 
 class TestWindow
 {
 public:
     TestWindow *transientParent() const { return m_transientParent; }
-    Qt::WindowFlags windowFlags() const { return m_windowFlags; }
+    BobUI::WindowFlags windowFlags() const { return m_windowFlags; }
     bool isModal() const { return m_isModal; }
 
 public:
     TestWindow *m_transientParent = nullptr;
-    Qt::WindowFlags m_windowFlags = {};
+    BobUI::WindowFlags m_windowFlags = {};
     bool m_isModal = false;
 };
 
@@ -777,7 +777,7 @@ void tst_QWasmWindowStack::stayAboveParentOnBottom1()
 {
     QWasmWindow windows[5];
     windows[4].m_transientParent = &windows[0];
-    windows[4].m_windowFlags = Qt::Tool;
+    windows[4].m_windowFlags = BobUI::Tool;
 
     QWasmWindowStack stack(m_mockCallback);
 
@@ -828,7 +828,7 @@ void tst_QWasmWindowStack::stayAboveParentOnBottom2()
 {
     QWasmWindow windows[5];
     windows[4].m_transientParent = &windows[0];
-    windows[4].m_windowFlags = Qt::Tool;
+    windows[4].m_windowFlags = BobUI::Tool;
 
     QWasmWindowStack stack(m_mockCallback);
 
@@ -879,7 +879,7 @@ void tst_QWasmWindowStack::stayAboveParentOnBottom3()
 {
     QWasmWindow windows[5];
     windows[4].m_transientParent = &windows[0];
-    windows[4].m_windowFlags = Qt::Tool;
+    windows[4].m_windowFlags = BobUI::Tool;
 
     QWasmWindowStack stack(m_mockCallback);
 
@@ -930,7 +930,7 @@ void tst_QWasmWindowStack::stayAboveParentRegular()
 {
     QWasmWindow windows[5];
     windows[4].m_transientParent = &windows[1];
-    windows[4].m_windowFlags = Qt::Tool;
+    windows[4].m_windowFlags = BobUI::Tool;
 
     QWasmWindowStack stack(m_mockCallback);
 
@@ -978,7 +978,7 @@ void tst_QWasmWindowStack::stayAboveParentOnTop()
 {
     QWasmWindow windows[5];
     windows[3].m_transientParent = &windows[2];
-    windows[3].m_windowFlags = Qt::Tool;
+    windows[3].m_windowFlags = BobUI::Tool;
 
     QWasmWindowStack stack(m_mockCallback);
 
@@ -1022,5 +1022,5 @@ void tst_QWasmWindowStack::stayAboveParentOnTop()
 }
 
 
-QTEST_MAIN(tst_QWasmWindowStack)
+BOBUIEST_MAIN(tst_QWasmWindowStack)
 #include "tst_qwasmwindowstack.moc"

@@ -1,6 +1,6 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
-#include <QtWidgets>
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
+#include <BobUIWidgets>
 
 #include <emscripten.h>
 #include <emscripten/val.h>
@@ -47,7 +47,7 @@ Q_OBJECT
 public:
     ForeginWindowContainer() {
 
-        QCheckBox *test = new QCheckBox("Qt CheckBox");
+        QCheckBox *test = new QCheckBox("BobUI CheckBox");
         test->setGeometry(20, 20, 150, 20);
         test->setParent(this);
 
@@ -81,7 +81,7 @@ int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
 
-    QGuiApplication::styleHints()->setColorScheme(Qt::ColorScheme::Light);
+    QGuiApplication::styleHints()->setColorScheme(BobUI::ColorScheme::Light);
 
     ForeginWindowContainer container;
     container.showNormal();

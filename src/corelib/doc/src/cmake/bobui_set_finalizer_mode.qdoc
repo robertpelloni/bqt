@@ -1,0 +1,90 @@
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
+
+/*!
+\page bobui-set-finalizer-mode.html
+\ingroup cmake-commands-bobuicore
+
+\title bobui_set_finalizer_mode
+\keyword bobui6_set_finalizer_mode
+
+\summary {Customizes aspects of a target's finalization.}
+
+\cmakecommandsince 6.2
+\preliminarycmakecommand
+
+\section1 Synopsis
+
+\badcode
+bobui_set_finalizer_mode(target
+    ENABLE | DISABLE
+    MODES modes...
+)
+\endcode
+
+\versionlessCMakeCommandsNote bobui6_set_finalizer_mode()
+
+\section1 Description
+
+This command is used to customize some aspects of the finalization of a
+specific \c target. It only has an effect if called before \c target is
+finalized, which occurs in one of the following scenarios:
+
+\list
+\li The project explicitly calls \l{bobui6_finalize_target}{bobui_finalize_target()}
+    for the \c target. This usually means the \c MANUAL_FINALIZATION keyword was
+    passed to \l{bobui6_add_executable}{bobui_add_executable()} when the \c target
+    was defined.
+\li CMake 3.17 or earlier is being used, in which case finalization always
+    occurs immediately as part of the call to
+    \l{bobui6_add_executable}{bobui_add_executable()}.
+\li CMake 3.18 or later is being used, the \c MANUAL_FINALIZATION keyword was
+    not passed to \l{bobui6_add_executable}{bobui_add_executable()} when the \c target
+    was defined, and deferred finalization has been completed at the end of the
+    \c target's directory scope.
+\endlist
+
+\c{bobui_set_finalizer_mode()} is used to enable or disable a list of \e modes,
+where a mode corresponds to a specific aspect of finalization. The currently
+supported finalization modes are:
+
+\table
+\header
+    \li Mode
+    \li Default
+    \li Finalization behavior
+\row
+    \li \c static_plugins
+    \li Enabled
+    \li When BobUI is built statically, it creates initializer object libraries
+        for its static plugins. If \c target is an executable and this
+        finalization mode is enabled, any plugin initializer object libraries
+        needed by the \c target will be directly linked to it. This
+        prevents cycles between BobUI-provided static libraries and may reduce
+        link time. When this finalizer mode is disabled, each plugin
+        initializer is instead propagated via usage requirements of its
+        associated BobUI library, which may cause cycles. If BobUI is not built
+        statically, this finalizer mode is not relevant and isn't used.
+\endtable
+
+\sa {bobui6_finalize_target}{bobui_finalize_target()}
+
+\section1 Example
+
+The following example assumes you are using CMake 3.19 or later (required for
+deferred finalization):
+
+\badcode
+bobui_add_executable(my_app main.cpp)
+bobui_set_finalizer_mode(my_app ENABLE MODES static_plugins)
+\endcode
+
+The same example using manual finalization might look like this:
+
+\badcode
+bobui_add_executable(my_app MANUAL_FINALIZATION main.cpp)
+bobui_set_finalizer_mode(my_app ENABLE MODES static_plugins)
+bobui_finalize_target(my_app)
+\endcode
+
+*/

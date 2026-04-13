@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QJSONDOCUMENT_H
 #define QJSONDOCUMENT_H
 
-#include <QtCore/qcompare.h>
-#include <QtCore/qjsonparseerror.h>
-#if (QT_VERSION >= QT_VERSION_CHECK(7, 0, 0)) || defined(QT_BOOTSTRAPPED)
-#include <QtCore/qjsonvalue.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qjsonparseerror.h>
+#if (BOBUI_VERSION >= BOBUI_VERSION_CHECK(7, 0, 0)) || defined(BOBUI_BOOTSTRAPPED)
+#include <BobUICore/qjsonvalue.h>
 #endif
-#include <QtCore/qlatin1stringview.h>
-#include <QtCore/qscopedpointer.h>
-#include <QtCore/qstringview.h>
+#include <BobUICore/qlatin1stringview.h>
+#include <BobUICore/qscopedpointer.h>
+#include <BobUICore/qstringview.h>
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDebug;
 class QCborValue;
@@ -57,7 +57,7 @@ public:
     static QJsonDocument fromVariant(const QVariant &variant);
     QVariant toVariant() const;
 
-#if (QT_VERSION < QT_VERSION_CHECK(7, 0, 0)) && !defined(QT_BOOTSTRAPPED)
+#if (BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)) && !defined(BOBUI_BOOTSTRAPPED)
     enum JsonFormat {
         Indented,
         Compact
@@ -91,7 +91,7 @@ public:
     const QJsonValue operator[](QStringView key) const;
     const QJsonValue operator[](QLatin1StringView key) const;
     const QJsonValue operator[](qsizetype i) const;
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
     bool operator==(const QJsonDocument &other) const;
     bool operator!=(const QJsonDocument &other) const { return !operator==(other); }
 #endif
@@ -112,15 +112,15 @@ private:
 
 Q_DECLARE_SHARED(QJsonDocument)
 
-#if !defined(QT_NO_DEBUG_STREAM)
+#if !defined(BOBUI_NO_DEBUG_STREAM)
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QJsonDocument &);
 #endif
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QJsonDocument &);
 Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QJsonDocument &);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QJSONDOCUMENT_H

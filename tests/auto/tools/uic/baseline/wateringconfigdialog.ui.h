@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'wateringconfigdialog.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,23 +9,23 @@
 #ifndef WATERINGCONFIGDIALOG_H
 #define WATERINGCONFIGDIALOG_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QAbstractButton>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QFrame>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QSpinBox>
-#include <QtWidgets/QTimeEdit>
-#include <QtWidgets/QVBoxLayout>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QAbstractButton>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QCheckBox>
+#include <BobUIWidgets/QComboBox>
+#include <BobUIWidgets/QDialog>
+#include <BobUIWidgets/QDialogButtonBox>
+#include <BobUIWidgets/QFrame>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/QSpinBox>
+#include <BobUIWidgets/BOBUIimeEdit>
+#include <BobUIWidgets/QVBoxLayout>
 #include "helpbrowser.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_WateringConfigDialog
 {
@@ -46,7 +46,7 @@ public:
     QSpacerItem *spacerItem4;
     QSpacerItem *spacerItem5;
     QLabel *label;
-    QTimeEdit *startTimeEdit;
+    BOBUIimeEdit *startTimeEdit;
     QLabel *label_4;
     QSpinBox *amountSpinBox;
     QLabel *label_5;
@@ -152,7 +152,7 @@ public:
 
         gridLayout->addWidget(label, 8, 0, 1, 1);
 
-        startTimeEdit = new QTimeEdit(WateringConfigDialog);
+        startTimeEdit = new BOBUIimeEdit(WateringConfigDialog);
         startTimeEdit->setObjectName("startTimeEdit");
 
         gridLayout->addWidget(startTimeEdit, 8, 1, 1, 3);
@@ -234,7 +234,7 @@ public:
 
         buttonBox = new QDialogButtonBox(WateringConfigDialog);
         buttonBox->setObjectName("buttonBox");
-        buttonBox->setOrientation(Qt::Orientation::Horizontal);
+        buttonBox->setOrientation(BobUI::Orientation::Horizontal);
         buttonBox->setStandardButtons(QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok);
 
         vboxLayout->addWidget(buttonBox);
@@ -287,6 +287,6 @@ namespace Ui {
     class WateringConfigDialog: public Ui_WateringConfigDialog {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // WATERINGCONFIGDIALOG_H

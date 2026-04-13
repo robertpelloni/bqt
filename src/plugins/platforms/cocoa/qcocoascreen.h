@@ -1,6 +1,6 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QCOCOASCREEN_H
 #define QCOCOASCREEN_H
@@ -8,7 +8,7 @@
 #include "qcocoacursor.h"
 
 #include <qpa/qplatformintegration.h>
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
 #include <CoreGraphics/CoreGraphics.h>
 #include <CoreVideo/CoreVideo.h>
@@ -16,7 +16,7 @@
 #import <AppKit/NSScreen.h>
 #import <Foundation/NSArray.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QCocoaIntegration;
 
@@ -42,7 +42,7 @@ public:
     QWindow *topLevelAt(const QPoint &point) const override;
     QList<QPlatformScreen *> virtualSiblings() const override;
     QPlatformScreen::SubpixelAntialiasingType subpixelAntialiasingTypeHint() const override;
-    Qt::ScreenOrientation orientation() const override;
+    BobUI::ScreenOrientation orientation() const override;
 
     // ----------------------------------------------------
 
@@ -107,19 +107,19 @@ private:
     friend QDebug operator<<(QDebug debug, const QCocoaScreen *screen);
 };
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug debug, const QCocoaScreen *screen);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #if defined(__OBJC__)
 
 // @compatibility_alias doesn't work with categories or their methods
-#define qt_displayId QT_MANGLE_NAMESPACE(qt_displayId)
+#define bobui_displayId BOBUI_MANGLE_NAMESPACE(bobui_displayId)
 
-@interface NSScreen (QtExtras)
-@property(readonly) CGDirectDisplayID qt_displayId;
+@interface NSScreen (BobUIExtras)
+@property(readonly) CGDirectDisplayID bobui_displayId;
 @end
 #endif
 

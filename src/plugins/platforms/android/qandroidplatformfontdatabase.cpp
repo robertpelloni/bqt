@@ -1,14 +1,14 @@
 // Copyright (C) 2012 BogDan Vatra <bogdan@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include <QDir>
 #include <QLocale>
 
 #include "qandroidplatformfontdatabase.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QString QAndroidPlatformFontDatabase::fontDir() const
 {
@@ -26,7 +26,7 @@ void QAndroidPlatformFontDatabase::populateFontDatabase()
     QDir dir(fontpath);
 
     if (Q_UNLIKELY(!dir.exists())) {
-        qFatal("QFontDatabase: Cannot find font directory %s - is Qt installed correctly?",
+        qFatal("QFontDatabase: Cannot find font directory %s - is BobUI installed correctly?",
                qPrintable(fontpath));
     }
 
@@ -86,14 +86,14 @@ QStringList QAndroidPlatformFontDatabase::fallbacksForFamily(const QString &fami
     }
 
     if (styleHint == QFont::Monospace || styleHint == QFont::Courier)
-        result.append(QString(qgetenv("QT_ANDROID_FONTS_MONOSPACE")).split(u';'));
+        result.append(QString(qgetenv("BOBUI_ANDROID_FONTS_MONOSPACE")).split(u';'));
     else if (styleHint == QFont::Serif)
-        result.append(QString(qgetenv("QT_ANDROID_FONTS_SERIF")).split(u';'));
+        result.append(QString(qgetenv("BOBUI_ANDROID_FONTS_SERIF")).split(u';'));
     else
-        result.append(QString(qgetenv("QT_ANDROID_FONTS")).split(u';'));
+        result.append(QString(qgetenv("BOBUI_ANDROID_FONTS")).split(u';'));
     result.append(QFreeTypeFontDatabase::fallbacksForFamily(family, style, styleHint, script));
 
     return result;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

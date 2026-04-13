@@ -12,7 +12,7 @@
     <string>${MACOSX_BUNDLE_BUNDLE_NAME}</string>
 
     <key>CFBundleDisplayName</key>
-    <string>${QT_INTERNAL_DOLLAR_VAR}{PRODUCT_NAME}</string>
+    <string>${BOBUI_INTERNAL_DOLLAR_VAR}{PRODUCT_NAME}</string>
 
     <key>CFBundleIdentifier</key>
     <string>${MACOSX_BUNDLE_GUI_IDENTIFIER}</string>

@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qpagesetupdialog.h"
 #include <private/qpagesetupdialog_p.h>
 
-#include <QtPrintSupport/qprinter.h>
+#include <BobUIPrintSupport/qprinter.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QPageSetupDialog
@@ -17,7 +17,7 @@ QT_BEGIN_NAMESPACE
 
     \ingroup standard-dialogs
     \ingroup printing
-    \inmodule QtPrintSupport
+    \inmodule BobUIPrintSupport
 
     On Windows and \macos the page setup dialog is implemented using
     the native page setup dialogs.
@@ -143,4 +143,4 @@ void QPageSetupDialog::done(int result)
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

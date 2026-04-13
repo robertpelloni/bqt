@@ -4,10 +4,10 @@
 // No need for backend classes with function pointers with ES2.
 // All function addresses are independent of context and display.
 
-#endif // !QT_CONFIG(opengles2)
+#endif // !BOBUI_CONFIG(opengles2)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_OPENGL
+#endif // BOBUI_NO_OPENGL
 
 #endif

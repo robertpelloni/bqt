@@ -1,20 +1,20 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2022 Intel Corporation.
 // Copyright (C) 2021 Klarälvdalens Datakonsult AB.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#define QT_SHAREDPOINTER_TRACK_POINTERS
+#define BOBUI_SHAREDPOINTER_TRACK_POINTERS
 #include "qsharedpointer.h"
-#include <QTest>
-#include <QtTest/private/qcomparisontesthelper_p.h>
+#include <BOBUIest>
+#include <BobUITest/private/qcomparisontesthelper_p.h>
 
 #include <QPointer>
 #include <QRandomGenerator>
-#include <QtCore/QHash>
-#include <QtCore/QList>
-#include <QtCore/QMap>
-#include <QtCore/QThread>
-#include <QtCore/private/qvolatile_p.h>
+#include <BobUICore/QHash>
+#include <BobUICore/QList>
+#include <BobUICore/QMap>
+#include <BobUICore/BOBUIhread>
+#include <BobUICore/private/qvolatile_p.h>
 
 #include "forwarddeclared.h"
 #include "nontracked.h"
@@ -29,11 +29,11 @@
 #include <sys/resource.h>
 #endif
 
-QT_BEGIN_NAMESPACE
-namespace QtSharedPointer {
+BOBUI_BEGIN_NAMESPACE
+namespace BobUISharedPointer {
     Q_CORE_EXPORT void internalSafetyCheckCleanCheck();
 }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 class tst_QSharedPointer: public QObject
 {
@@ -64,7 +64,7 @@ private slots:
     void differentPointers();
     void virtualBaseDifferentPointers();
     void virtualBaseWeakPointerConversions();
-#ifndef QTEST_NO_RTTI
+#ifndef BOBUIEST_NO_RTTI
     void dynamicCast();
     void dynamicCastDifferentPointers();
     void dynamicCastVirtualBase();
@@ -106,8 +106,8 @@ public slots:
 public:
     inline void safetyCheck()
     {
-#ifdef QT_BUILD_INTERNAL
-        QtSharedPointer::internalSafetyCheckCleanCheck();
+#ifdef BOBUI_BUILD_INTERNAL
+        BobUISharedPointer::internalSafetyCheckCleanCheck();
 #endif
     }
 };
@@ -127,12 +127,12 @@ void tst_QSharedPointer::initTestCase()
 }
 
 template<typename T> static inline
-QtSharedPointer::ExternalRefCountData *refCountData(const QSharedPointer<T> &b)
+BobUISharedPointer::ExternalRefCountData *refCountData(const QSharedPointer<T> &b)
 {
     // access d-pointer:
     struct Dummy {
         void* value;
-        QtSharedPointer::ExternalRefCountData* data;
+        BobUISharedPointer::ExternalRefCountData* data;
     };
     // sanity checks:
     static_assert(sizeof(QSharedPointer<T>) == sizeof(Dummy));
@@ -230,20 +230,20 @@ class DerivedData;
 
 void tst_QSharedPointer::compareCompiles()
 {
-    QTestPrivate::testAllComparisonOperatorsCompile<QSharedPointer<Data>>();
-    QTestPrivate::testAllComparisonOperatorsCompile<QSharedPointer<Data>, Data*>();
-    QTestPrivate::testAllComparisonOperatorsCompile<QSharedPointer<Data>, std::nullptr_t>();
-    QTestPrivate::testAllComparisonOperatorsCompile<QSharedPointer<QObject>,
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QSharedPointer<Data>>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QSharedPointer<Data>, Data*>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QSharedPointer<Data>, std::nullptr_t>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QSharedPointer<QObject>,
                                                     QSharedPointer<QWidget>>();
-    QTestPrivate::testAllComparisonOperatorsCompile<QSharedPointer<Data>, DerivedData*>();
-    QTestPrivate::testAllComparisonOperatorsCompile<QSharedPointer<DerivedData>, Data*>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QSharedPointer<Data>, DerivedData*>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QSharedPointer<DerivedData>, Data*>();
 }
 
 void tst_QSharedPointer::basics_data()
 {
-    QTest::addColumn<bool>("isNull");
-    QTest::newRow("null") << true;
-    QTest::newRow("non-null") << false;
+    BOBUIest::addColumn<bool>("isNull");
+    BOBUIest::newRow("null") << true;
+    BOBUIest::newRow("non-null") << false;
 }
 
 void tst_QSharedPointer::basics()
@@ -285,9 +285,9 @@ void tst_QSharedPointer::basics()
             QCOMPARE(&dataReference, aData);
         }
 
-        QT_TEST_ALL_COMPARISON_OPS(ptr, aData, Qt::strong_ordering::equal);
+        BOBUI_TEST_ALL_COMPARISON_OPS(ptr, aData, BobUI::strong_ordering::equal);
 
-        QT_TEST_EQUALITY_OPS(ptr, otherData, false);
+        BOBUI_TEST_EQUALITY_OPS(ptr, otherData, false);
     }
     QVERIFY(!refCountData(ptr) || refCountData(ptr)->weakref.loadRelaxed() == 1);
     QVERIFY(!refCountData(ptr) || refCountData(ptr)->strongref.loadRelaxed() == 1);
@@ -295,7 +295,7 @@ void tst_QSharedPointer::basics()
     {
         // create another object:
         QSharedPointer<Data> otherCopy(otherData);
-        QT_TEST_EQUALITY_OPS(ptr, otherCopy, false);
+        BOBUI_TEST_EQUALITY_OPS(ptr, otherCopy, false);
 
         // otherData is deleted here
     }
@@ -305,7 +305,7 @@ void tst_QSharedPointer::basics()
     {
         // create a copy:
         QSharedPointer<Data> copy(ptr);
-        QT_TEST_ALL_COMPARISON_OPS(ptr, copy, Qt::strong_ordering::equal);
+        BOBUI_TEST_ALL_COMPARISON_OPS(ptr, copy, BobUI::strong_ordering::equal);
         QCOMPARE(copy, ptr);
         QCOMPARE(ptr, copy);
 
@@ -382,9 +382,9 @@ void tst_QSharedPointer::operators()
     QVERIFY(p1 < p2.get());
     QVERIFY(p1.data() < p2);
     QVERIFY(p1.get() < p2);
-    QT_TEST_ALL_COMPARISON_OPS(p1, p2, Qt::strong_ordering::less);
-    QT_TEST_ALL_COMPARISON_OPS(p2, p2, Qt::strong_ordering::equal);
-    QT_TEST_ALL_COMPARISON_OPS(p1, p1, Qt::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(p1, p2, BobUI::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(p2, p2, BobUI::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(p1, p1, BobUI::strong_ordering::equal);
 
     // qHash
     QCOMPARE(qHash(p1), qHash(p1.data()));
@@ -399,18 +399,18 @@ void tst_QSharedPointer::nullptrOps()
     QSharedPointer<char> p2 = nullptr;
     QSharedPointer<char> null;
 
-    QT_TEST_ALL_COMPARISON_OPS(p1, null, Qt::strong_ordering::equal);
-    QT_TEST_ALL_COMPARISON_OPS(p1, nullptr, Qt::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(p1, null, BobUI::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(p1, nullptr, BobUI::strong_ordering::equal);
     QVERIFY(!p1);
     QVERIFY(!p1.data());
     QVERIFY(!p1.get());
 
-    QT_TEST_ALL_COMPARISON_OPS(p2, null, Qt::strong_ordering::equal);
-    QT_TEST_ALL_COMPARISON_OPS(p2, nullptr, Qt::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(p2, null, BobUI::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(p2, nullptr, BobUI::strong_ordering::equal);
     QVERIFY(!p2);
     QVERIFY(!p2.data());
     QVERIFY(!p2.get());
-    QT_TEST_ALL_COMPARISON_OPS(p1, p2, Qt::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(p1, p2, BobUI::strong_ordering::equal);
 
     QWeakPointer<char> wp1 = p1;
     QVERIFY(wp1 == nullptr);
@@ -419,9 +419,9 @@ void tst_QSharedPointer::nullptrOps()
     QCOMPARE(nullptr, wp1);
 
     QSharedPointer<char> p3 = p1;
-    QT_TEST_ALL_COMPARISON_OPS(p1, p3, Qt::strong_ordering::equal);
-    QT_TEST_ALL_COMPARISON_OPS(p3, null, Qt::strong_ordering::equal);
-    QT_TEST_ALL_COMPARISON_OPS(p3, nullptr, Qt::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(p1, p3, BobUI::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(p3, null, BobUI::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(p3, nullptr, BobUI::strong_ordering::equal);
     QVERIFY(!p3.data());
     QVERIFY(!p3.get());
 
@@ -437,11 +437,11 @@ void tst_QSharedPointer::nullptrOps()
     QVERIFY(p4);
     QVERIFY(p4.data());
     QVERIFY(p4.get());
-    QT_TEST_EQUALITY_OPS(p4, nullptr, false);
-    QT_TEST_EQUALITY_OPS(p4, p1, false);
-    QT_TEST_EQUALITY_OPS(p4, p2, false);
-    QT_TEST_EQUALITY_OPS(p4, null, false);
-    QT_TEST_EQUALITY_OPS(p4, p3, false);
+    BOBUI_TEST_EQUALITY_OPS(p4, nullptr, false);
+    BOBUI_TEST_EQUALITY_OPS(p4, p1, false);
+    BOBUI_TEST_EQUALITY_OPS(p4, p2, false);
+    BOBUI_TEST_EQUALITY_OPS(p4, null, false);
+    BOBUI_TEST_EQUALITY_OPS(p4, p3, false);
 
     QWeakPointer<char> wp2 = p4;
     QVERIFY(wp2 != nullptr);
@@ -588,8 +588,8 @@ void tst_QSharedPointer::useOfForwardDeclared()
 
 void tst_QSharedPointer::memoryManagement()
 {
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_CLANG("-Wself-assign-overloaded")
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_CLANG("-Wself-assign-overloaded")
 
     int generation = Data::generationCounter + 1;
     int destructorCounter = Data::destructorCounter;
@@ -652,7 +652,7 @@ QT_WARNING_DISABLE_CLANG("-Wself-assign-overloaded")
     QVERIFY(ptr.isNull());
     QVERIFY(ptr == 0);
     QCOMPARE(ptr.data(), (Data*)0);
-QT_WARNING_POP
+BOBUI_WARNING_POP
 }
 
 void tst_QSharedPointer::dropLastReferenceOfForwardDeclared()
@@ -849,7 +849,7 @@ void tst_QSharedPointer::downCast()
         {
             QSharedPointer<DerivedData> ptr = QSharedPointer<DerivedData>(new DerivedData);
             baseptr = ptr;
-            QT_TEST_ALL_COMPARISON_OPS(baseptr, ptr, Qt::strong_ordering::equal);
+            BOBUI_TEST_ALL_COMPARISON_OPS(baseptr, ptr, BobUI::strong_ordering::equal);
         }
     }
     QCOMPARE(DerivedData::derivedDestructorCounter, destructorCount + 1);
@@ -1384,7 +1384,7 @@ void tst_QSharedPointer::virtualBaseWeakPointerConversions()
     safetyCheck();
 }
 
-#ifndef QTEST_NO_RTTI
+#ifndef BOBUIEST_NO_RTTI
 void tst_QSharedPointer::dynamicCast()
 {
     DerivedData *aData = new DerivedData;
@@ -1570,7 +1570,7 @@ void tst_QSharedPointer::constCorrectness()
         ptr = cptr;
         QSharedPointer<Data> other = qSharedPointerCast<Data>(cptr);
 
-#ifndef QT_NO_DYNAMIC_CAST
+#ifndef BOBUI_NO_DYNAMIC_CAST
         other = qSharedPointerDynamicCast<Data>(cptr);
 #endif
 
@@ -1917,7 +1917,7 @@ void tst_QSharedPointer::creating()
     {
         QSharedPointer<Data> ptr = QSharedPointer<Data>::create();
         QWeakPointer<Data> weakptr = ptr;
-        QtSharedPointer::ExternalRefCountData *d = refCountData(ptr);
+        BobUISharedPointer::ExternalRefCountData *d = refCountData(ptr);
 
         ptr.clear();
         QVERIFY(ptr.isNull());
@@ -2088,7 +2088,7 @@ class ThreadData
     QAtomicInt * volatile ptr;
 public:
     ThreadData(QAtomicInt *p) : ptr(p) { }
-    ~ThreadData() { QtPrivate::volatilePreIncrement(ptr); }
+    ~ThreadData() { BobUIPrivate::volatilePreIncrement(ptr); }
     void ref()
     {
         // if we're called after the destructor, we'll crash
@@ -2096,7 +2096,7 @@ public:
     }
 };
 
-class StrongThread: public QThread
+class StrongThread: public BOBUIhread
 {
 protected:
     void run() override
@@ -2109,7 +2109,7 @@ public:
     QSharedPointer<ThreadData> ptr;
 };
 
-class WeakThread: public QThread
+class WeakThread: public BOBUIhread
 {
 protected:
     void run() override
@@ -2126,23 +2126,23 @@ public:
 
 void tst_QSharedPointer::threadStressTest_data()
 {
-    QTest::addColumn<int>("strongThreadCount");
-    QTest::addColumn<int>("weakThreadCount");
+    BOBUIest::addColumn<int>("strongThreadCount");
+    BOBUIest::addColumn<int>("weakThreadCount");
 
-    QTest::newRow("0+0") << 0 << 0;
-    QTest::newRow("1+0") << 1 << 0;
-    QTest::newRow("2+0") << 2 << 0;
-    QTest::newRow("10+0") << 10 << 0;
+    BOBUIest::newRow("0+0") << 0 << 0;
+    BOBUIest::newRow("1+0") << 1 << 0;
+    BOBUIest::newRow("2+0") << 2 << 0;
+    BOBUIest::newRow("10+0") << 10 << 0;
 
-    QTest::newRow("0+1") << 0 << 1;
-    QTest::newRow("1+1") << 1 << 1;
+    BOBUIest::newRow("0+1") << 0 << 1;
+    BOBUIest::newRow("1+1") << 1 << 1;
 
-    QTest::newRow("2+10") << 2 << 10;
+    BOBUIest::newRow("2+10") << 2 << 10;
 
-    QTest::newRow("5+10") << 5 << 10;
-    QTest::newRow("5+30") << 5 << 30;
+    BOBUIest::newRow("5+10") << 5 << 10;
+    BOBUIest::newRow("5+30") << 5 << 30;
 
-    QTest::newRow("100+100") << 100 << 100;
+    BOBUIest::newRow("100+100") << 100 << 100;
 }
 
 void tst_QSharedPointer::threadStressTest()
@@ -2158,7 +2158,7 @@ void tst_QSharedPointer::threadStressTest()
     memset(guard2, 0, sizeof guard2);
 
     for (int r = 0; r < 5; ++r) {
-        QList<QThread*> allThreads(6 * qMax(strongThreadCount, weakThreadCount) + 3, 0);
+        QList<BOBUIhread*> allThreads(6 * qMax(strongThreadCount, weakThreadCount) + 3, 0);
         QSharedPointer<ThreadData> base = QSharedPointer<ThreadData>(new ThreadData(&counter));
         counter.storeRelaxed(0);
 
@@ -2276,10 +2276,10 @@ void tst_QSharedPointer::validConstructs()
         Data *aData = new Data;
         QSharedPointer<Data> ptr1 = QSharedPointer<Data>(aData);
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_CLANG("-Wself-assign-overloaded")
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_CLANG("-Wself-assign-overloaded")
         ptr1 = ptr1;            // valid
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
         QSharedPointer<Data> ptr2(ptr1);
 
@@ -2292,156 +2292,156 @@ QT_WARNING_POP
 }
 
 #if 0
-typedef bool (QTest::QExternalTest:: * TestFunction)(const QByteArray &body);
+typedef bool (BOBUIest::QExternalTest:: * TestFunction)(const QByteArray &body);
 Q_DECLARE_METATYPE(TestFunction)
 void tst_QSharedPointer::invalidConstructs_data()
 {
-    QTest::addColumn<TestFunction>("testFunction");
-    QTest::addColumn<QString>("code");
-    QTest::newRow("sanity-checking") << &QTest::QExternalTest::tryCompile << "";
+    BOBUIest::addColumn<TestFunction>("testFunction");
+    BOBUIest::addColumn<QString>("code");
+    BOBUIest::newRow("sanity-checking") << &BOBUIest::QExternalTest::tryCompile << "";
 
     // QSharedPointer<void> is not allowed
-    QTest::newRow("void") << &QTest::QExternalTest::tryCompileFail << "QSharedPointer<void> ptr;";
+    BOBUIest::newRow("void") << &BOBUIest::QExternalTest::tryCompileFail << "QSharedPointer<void> ptr;";
 
     // implicit initialization
-    QTest::newRow("implicit-initialization1")
-        << &QTest::QExternalTest::tryCompileFail
+    BOBUIest::newRow("implicit-initialization1")
+        << &BOBUIest::QExternalTest::tryCompileFail
         << "QSharedPointer<Data> ptr = new Data;";
-    QTest::newRow("implicit-initialization2")
-        << &QTest::QExternalTest::tryCompileFail
+    BOBUIest::newRow("implicit-initialization2")
+        << &BOBUIest::QExternalTest::tryCompileFail
         << "QSharedPointer<Data> ptr;"
            "ptr = new Data;";
-    QTest::newRow("implicit-initialization3")
-        << &QTest::QExternalTest::tryCompileFail
+    BOBUIest::newRow("implicit-initialization3")
+        << &BOBUIest::QExternalTest::tryCompileFail
         << "QWeakPointer<Data> ptr = new Data;";
-    QTest::newRow("implicit-initialization4")
-        << &QTest::QExternalTest::tryCompileFail
+    BOBUIest::newRow("implicit-initialization4")
+        << &BOBUIest::QExternalTest::tryCompileFail
         << "QWeakPointer<Data> ptr;"
            "ptr = new Data;";
 
     // use of forward-declared class
-    QTest::newRow("creating-forward-declaration")
-        << &QTest::QExternalTest::tryCompileFail
+    BOBUIest::newRow("creating-forward-declaration")
+        << &BOBUIest::QExternalTest::tryCompileFail
         << "QSharedPointer<ForwardDeclared>::create();";
 
     // upcast without cast operator:
-    QTest::newRow("upcast1")
-        << &QTest::QExternalTest::tryCompileFail
+    BOBUIest::newRow("upcast1")
+        << &BOBUIest::QExternalTest::tryCompileFail
         << "QSharedPointer<Data> baseptr = QSharedPointer<Data>(new DerivedData);\n"
            "QSharedPointer<DerivedData> ptr(baseptr);";
-    QTest::newRow("upcast2")
-        << &QTest::QExternalTest::tryCompileFail
+    BOBUIest::newRow("upcast2")
+        << &BOBUIest::QExternalTest::tryCompileFail
         << "QSharedPointer<Data> baseptr = QSharedPointer<Data>(new DerivedData);\n"
            "QSharedPointer<DerivedData> ptr;\n"
            "ptr = baseptr;";
 
     // dropping of const
-    QTest::newRow("const-dropping1")
-        << &QTest::QExternalTest::tryCompileFail
+    BOBUIest::newRow("const-dropping1")
+        << &BOBUIest::QExternalTest::tryCompileFail
         << "QSharedPointer<const Data> baseptr = QSharedPointer<const Data>(new Data);\n"
            "QSharedPointer<Data> ptr(baseptr);";
-    QTest::newRow("const-dropping2")
-        << &QTest::QExternalTest::tryCompileFail
+    BOBUIest::newRow("const-dropping2")
+        << &BOBUIest::QExternalTest::tryCompileFail
         << "QSharedPointer<const Data> baseptr = QSharedPointer<const Data>(new Data);\n"
            "QSharedPointer<Data> ptr;"
            "ptr = baseptr;";
-    QTest::newRow("const-dropping-static-cast")
-        << &QTest::QExternalTest::tryCompileFail
+    BOBUIest::newRow("const-dropping-static-cast")
+        << &BOBUIest::QExternalTest::tryCompileFail
         << "QSharedPointer<const Data> baseptr = QSharedPointer<const Data>(new Data);\n"
         "qSharedPointerCast<DerivedData>(baseptr);";
-#ifndef QTEST_NO_RTTI
-    QTest::newRow("const-dropping-dynamic-cast")
-        << &QTest::QExternalTest::tryCompileFail
+#ifndef BOBUIEST_NO_RTTI
+    BOBUIest::newRow("const-dropping-dynamic-cast")
+        << &BOBUIest::QExternalTest::tryCompileFail
         << "QSharedPointer<const Data> baseptr = QSharedPointer<const Data>(new Data);\n"
         "qSharedPointerDynamicCast<DerivedData>(baseptr);";
 #endif
-    QTest::newRow("const-dropping-object-cast1")
-        << &QTest::QExternalTest::tryCompileFail
+    BOBUIest::newRow("const-dropping-object-cast1")
+        << &BOBUIest::QExternalTest::tryCompileFail
         << "QSharedPointer<const QObject> baseptr = QSharedPointer<const QObject>(new QObject);\n"
         "qSharedPointerObjectCast<QCoreApplication>(baseptr);";
-    QTest::newRow("const-dropping-object-cast2")
-        << &QTest::QExternalTest::tryCompileFail
+    BOBUIest::newRow("const-dropping-object-cast2")
+        << &BOBUIest::QExternalTest::tryCompileFail
         << "QSharedPointer<const QObject> baseptr = QSharedPointer<const QObject>(new QObject);\n"
         "qobject_cast<QCoreApplication *>(baseptr);";
 
     // arithmethics through automatic cast operators
-    QTest::newRow("arithmethic1")
-        << &QTest::QExternalTest::tryCompileFail
+    BOBUIest::newRow("arithmethic1")
+        << &BOBUIest::QExternalTest::tryCompileFail
         << "QSharedPointer<int> a;"
            "QSharedPointer<Data> b;\n"
            "if (a == b) return;";
-    QTest::newRow("arithmethic2")
-        << &QTest::QExternalTest::tryCompileFail
+    BOBUIest::newRow("arithmethic2")
+        << &BOBUIest::QExternalTest::tryCompileFail
         << "QSharedPointer<int> a;"
            "QSharedPointer<Data> b;\n"
            "if (a + b) return;";
 
     // two objects with the same pointer
-    QTest::newRow("same-pointer")
-        << &QTest::QExternalTest::tryRunFail
+    BOBUIest::newRow("same-pointer")
+        << &BOBUIest::QExternalTest::tryRunFail
         << "Data *aData = new Data;\n"
            "QSharedPointer<Data> ptr1 = QSharedPointer<Data>(aData);\n"
            "QSharedPointer<Data> ptr2 = QSharedPointer<Data>(aData);\n";
 
     // two QObjects with the same pointer
-    QTest::newRow("same-pointer-to-qobject")
-        << &QTest::QExternalTest::tryRunFail
+    BOBUIest::newRow("same-pointer-to-qobject")
+        << &BOBUIest::QExternalTest::tryRunFail
         << "QObject *anObj = new QObject;\n"
            "QSharedPointer<QObject> ptr1 = QSharedPointer<QObject>(anObj);\n"
            "QSharedPointer<QObject> ptr2 = QSharedPointer<QObject>(anObj);\n";
 
     // re-creation:
-    QTest::newRow("re-creation")
-        << &QTest::QExternalTest::tryRunFail
+    BOBUIest::newRow("re-creation")
+        << &BOBUIest::QExternalTest::tryRunFail
         << "Data *aData = new Data;\n"
            "QSharedPointer<Data> ptr1 = QSharedPointer<Data>(aData);"
            "ptr1 = QSharedPointer<Data>(aData);";
 
     // any type of cast for unrelated types:
     // (we have no reinterpret_cast)
-    QTest::newRow("invalid-cast1")
-        << &QTest::QExternalTest::tryCompileFail
+    BOBUIest::newRow("invalid-cast1")
+        << &BOBUIest::QExternalTest::tryCompileFail
         << "QSharedPointer<Data> ptr1;\n"
            "QSharedPointer<int> ptr2 = qSharedPointerCast<int>(ptr1);";
-#ifndef QTEST_NO_RTTI
-    QTest::newRow("invalid-cast2")
-        << &QTest::QExternalTest::tryCompileFail
+#ifndef BOBUIEST_NO_RTTI
+    BOBUIest::newRow("invalid-cast2")
+        << &BOBUIest::QExternalTest::tryCompileFail
         << "QSharedPointer<Data> ptr1;\n"
            "QSharedPointer<int> ptr2 = qSharedPointerDynamicCast<int>(ptr1);";
 #endif
-    QTest::newRow("invalid-cast3")
-        << &QTest::QExternalTest::tryCompileFail
+    BOBUIest::newRow("invalid-cast3")
+        << &BOBUIest::QExternalTest::tryCompileFail
         << "QSharedPointer<Data> ptr1;\n"
            "QSharedPointer<int> ptr2 = qSharedPointerConstCast<int>(ptr1);";
-    QTest::newRow("invalid-cast4")
-        << &QTest::QExternalTest::tryCompileFail
+    BOBUIest::newRow("invalid-cast4")
+        << &BOBUIest::QExternalTest::tryCompileFail
         << "QSharedPointer<Data> ptr1;\n"
            "QSharedPointer<int> ptr2 = qSharedPointerObjectCast<int>(ptr1);";
 
-    QTest::newRow("weak-pointer-from-regular-pointer")
-        << &QTest::QExternalTest::tryCompileFail
+    BOBUIest::newRow("weak-pointer-from-regular-pointer")
+        << &BOBUIest::QExternalTest::tryCompileFail
         << "Data *ptr = nullptr;\n"
            "QWeakPointer<Data> weakptr(ptr);\n";
 
-    QTest::newRow("shared-pointer-implicit-from-uninitialized")
-        << &QTest::QExternalTest::tryCompileFail
+    BOBUIest::newRow("shared-pointer-implicit-from-uninitialized")
+        << &BOBUIest::QExternalTest::tryCompileFail
         << "Data *ptr = nullptr;\n"
-           "QSharedPointer<Data> weakptr = Qt::Uninitialized;\n";
+           "QSharedPointer<Data> weakptr = BobUI::Uninitialized;\n";
 
-    QTest::newRow("incompatible-custom-deleter1")
-        << &QTest::QExternalTest::tryCompileFail
+    BOBUIest::newRow("incompatible-custom-deleter1")
+        << &BOBUIest::QExternalTest::tryCompileFail
         << "extern void incompatibleCustomDeleter(int *);\n"
            "QSharedPointer<Data> ptr(new Data, incompatibleCustomDeleter);\n";
-    QTest::newRow("incompatible-custom-deleter2")
-        << &QTest::QExternalTest::tryCompileFail
+    BOBUIest::newRow("incompatible-custom-deleter2")
+        << &BOBUIest::QExternalTest::tryCompileFail
         << "struct IncompatibleCustomDeleter { void operator()(int *); };\n"
            "QSharedPointer<Data> ptr(new Data, IncompatibleCustomDeleter());\n";
-    QTest::newRow("incompatible-custom-lambda-deleter")
-        << &QTest::QExternalTest::tryCompileFail
+    BOBUIest::newRow("incompatible-custom-lambda-deleter")
+        << &BOBUIest::QExternalTest::tryCompileFail
         << "QSharedPointer<Data> ptr(new Data, [](int *) {});\n";
 
-    QTest::newRow("incompatible-overload")
-        << &QTest::QExternalTest::tryCompileFail
+    BOBUIest::newRow("incompatible-overload")
+        << &BOBUIest::QExternalTest::tryCompileFail
         << "void foo(QSharedPointer<DerivedData>) {}\n"
            "void bar() { foo(QSharedPointer<Data>()); }\n";
 }
@@ -2451,17 +2451,17 @@ void tst_QSharedPointer::invalidConstructs()
 #ifdef Q_CC_MINGW
     QSKIP("The maintainer of QSharedPointer: 'We don't know what the problem is so skip the tests.'");
 #endif
-#ifdef QTEST_CROSS_COMPILED
+#ifdef BOBUIEST_CROSS_COMPILED
     QSKIP("This test does not work on cross compiled systems");
 #endif
 
-    QTest::QExternalTest test;
-    test.setQtModules(QTest::QExternalTest::QtCore);
+    BOBUIest::QExternalTest test;
+    test.setBobUIModules(BOBUIest::QExternalTest::BobUICore);
     test.setProgramHeader(
-        "#define QT_SHAREDPOINTER_TRACK_POINTERS\n"
-        "#define QT_DEBUG\n"
-        "#include <QtCore/qsharedpointer.h>\n"
-        "#include <QtCore/qcoreapplication.h>\n"
+        "#define BOBUI_SHAREDPOINTER_TRACK_POINTERS\n"
+        "#define BOBUI_DEBUG\n"
+        "#include <BobUICore/qsharedpointer.h>\n"
+        "#include <BobUICore/qcoreapplication.h>\n"
         "\n"
         "struct Data { int i; };\n"
         "struct DerivedData: public Data { int j; };\n"
@@ -2488,7 +2488,7 @@ void tst_QSharedPointer::invalidConstructs()
     QByteArray body = code.toLatin1();
 
     bool result = (test.*testFunction)(body);
-    if (!result || qgetenv("QTEST_EXTERNAL_DEBUG").toInt() > 0) {
+    if (!result || qgetenv("BOBUIEST_EXTERNAL_DEBUG").toInt() > 0) {
         qDebug("External test output:");
 #ifdef Q_CC_MSVC
         // MSVC prints errors to stdout
@@ -2522,7 +2522,7 @@ void tst_QSharedPointer::qvariantCast()
         QCOMPARE(other->objectName(), QString::fromLatin1("A test name"));
     }
     {
-        QSharedPointer<QThread> other = qSharedPointerFromVariant<QThread>(v);
+        QSharedPointer<BOBUIhread> other = qSharedPointerFromVariant<BOBUIhread>(v);
         QVERIFY(!other);
     }
     // Intentionally does not compile.
@@ -2799,7 +2799,7 @@ void tst_QSharedPointer::sharedFromThis()
     QCOMPARE(Data::destructorCounter, destructions + 6);
 }
 
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
 class ThrowData: public Data
 {
 public:
@@ -2819,11 +2819,11 @@ public:
 };
 int ThrowData::childDestructorCounter = 0;
 int ThrowData::childGenerationCounter = 0;
-#endif // !QT_NO_EXCEPTIONS
+#endif // !BOBUI_NO_EXCEPTIONS
 
 void tst_QSharedPointer::constructorThrow()
 {
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
     int generation = Data::generationCounter;
     int destructorCounter = Data::destructorCounter;
 
@@ -2844,7 +2844,7 @@ void tst_QSharedPointer::constructorThrow()
     QCOMPARE(Data::destructorCounter, destructorCounter + 1);
 #else
     QSKIP("Needs exceptions");
-#endif // !QT_NO_EXCEPTIONS
+#endif // !BOBUI_NO_EXCEPTIONS
 }
 
 namespace ReentrancyWhileDestructing {
@@ -2890,7 +2890,7 @@ namespace ReentrancyWhileDestructing {
     };
 }
 
-// This is a regression test for QTBUG-11730, where there would be a crash if
+// This is a regression test for BOBUIBUG-11730, where there would be a crash if
 // the destructor of a QSharedPointer object being deleted recursed back into
 // the same QSharedPointer object.  There are no explicit verification steps
 // in this test -- it is sufficient that the code does not crash.
@@ -3079,5 +3079,5 @@ void tst_QSharedPointer::ownerComparisons()
 #undef CHECK_NOT_EQ
 }
 
-QTEST_MAIN(tst_QSharedPointer)
+BOBUIEST_MAIN(tst_QSharedPointer)
 #include "tst_qsharedpointer.moc"

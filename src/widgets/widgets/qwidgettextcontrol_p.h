@@ -1,6 +1,6 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QWIDGETTEXTCONTROL_P_H
 #define QWIDGETTEXTCONTROL_P_H
@@ -9,56 +9,56 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
-#include <QtGui/qtextdocument.h>
-#include <QtGui/qtextoption.h>
-#include <QtGui/qtextcursor.h>
-#include <QtGui/qtextformat.h>
-#if QT_CONFIG(textedit)
-#include <QtWidgets/qtextedit.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
+#include <BobUIGui/bobuiextdocument.h>
+#include <BobUIGui/bobuiextoption.h>
+#include <BobUIGui/bobuiextcursor.h>
+#include <BobUIGui/bobuiextformat.h>
+#if BOBUI_CONFIG(textedit)
+#include <BobUIWidgets/bobuiextedit.h>
 #endif
-#if QT_CONFIG(menu)
-#include <QtWidgets/qmenu.h>
+#if BOBUI_CONFIG(menu)
+#include <BobUIWidgets/qmenu.h>
 #endif
-#include <QtCore/qrect.h>
-#include <QtGui/qabstracttextdocumentlayout.h>
-#include <QtGui/qtextdocumentfragment.h>
-#include <QtGui/qclipboard.h>
-#include <QtCore/qmimedata.h>
-#include <QtGui/private/qinputcontrol_p.h>
+#include <BobUICore/qrect.h>
+#include <BobUIGui/qabstracttextdocumentlayout.h>
+#include <BobUIGui/bobuiextdocumentfragment.h>
+#include <BobUIGui/qclipboard.h>
+#include <BobUICore/qmimedata.h>
+#include <BobUIGui/private/qinputcontrol_p.h>
 
-QT_REQUIRE_CONFIG(widgettextcontrol);
+BOBUI_REQUIRE_CONFIG(widgettextcontrol);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QStyleSheet;
-class QTextDocument;
+class BOBUIextDocument;
 class QMenu;
 class QWidgetTextControlPrivate;
 class QAbstractScrollArea;
 class QEvent;
 class QRegularExpression;
-class QTimerEvent;
+class BOBUIimerEvent;
 
 class Q_WIDGETS_EXPORT QWidgetTextControl : public QInputControl
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(QWidgetTextControl)
-#ifndef QT_NO_TEXTHTMLPARSER
+#ifndef BOBUI_NO_TEXTHTMLPARSER
     Q_PROPERTY(QString html READ toHtml WRITE setHtml NOTIFY textChanged USER true)
 #endif
     Q_PROPERTY(bool overwriteMode READ overwriteMode WRITE setOverwriteMode)
     Q_PROPERTY(bool acceptRichText READ acceptRichText WRITE setAcceptRichText)
     Q_PROPERTY(int cursorWidth READ cursorWidth WRITE setCursorWidth)
-    Q_PROPERTY(Qt::TextInteractionFlags textInteractionFlags READ textInteractionFlags
+    Q_PROPERTY(BobUI::TextInteractionFlags textInteractionFlags READ textInteractionFlags
                WRITE setTextInteractionFlags)
     Q_PROPERTY(bool openExternalLinks READ openExternalLinks WRITE setOpenExternalLinks)
     Q_PROPERTY(bool ignoreUnusedNavigationEvents READ ignoreUnusedNavigationEvents
@@ -66,47 +66,47 @@ class Q_WIDGETS_EXPORT QWidgetTextControl : public QInputControl
 public:
     explicit QWidgetTextControl(QObject *parent = nullptr);
     explicit QWidgetTextControl(const QString &text, QObject *parent = nullptr);
-    explicit QWidgetTextControl(QTextDocument *doc, QObject *parent = nullptr);
+    explicit QWidgetTextControl(BOBUIextDocument *doc, QObject *parent = nullptr);
     virtual ~QWidgetTextControl();
 
-    void setDocument(QTextDocument *document);
-    QTextDocument *document() const;
+    void setDocument(BOBUIextDocument *document);
+    BOBUIextDocument *document() const;
 
-    void setTextCursor(const QTextCursor &cursor, bool selectionClipboard = false);
-    QTextCursor textCursor() const;
+    void setTextCursor(const BOBUIextCursor &cursor, bool selectionClipboard = false);
+    BOBUIextCursor textCursor() const;
 
-    void setTextInteractionFlags(Qt::TextInteractionFlags flags);
-    Qt::TextInteractionFlags textInteractionFlags() const;
+    void setTextInteractionFlags(BobUI::TextInteractionFlags flags);
+    BobUI::TextInteractionFlags textInteractionFlags() const;
 
-    void mergeCurrentCharFormat(const QTextCharFormat &modifier);
+    void mergeCurrentCharFormat(const BOBUIextCharFormat &modifier);
 
-    void setCurrentCharFormat(const QTextCharFormat &format);
-    QTextCharFormat currentCharFormat() const;
+    void setCurrentCharFormat(const BOBUIextCharFormat &format);
+    BOBUIextCharFormat currentCharFormat() const;
 
-    bool find(const QString &exp, QTextDocument::FindFlags options = { });
-#if QT_CONFIG(regularexpression)
-    bool find(const QRegularExpression &exp, QTextDocument::FindFlags options = { });
+    bool find(const QString &exp, BOBUIextDocument::FindFlags options = { });
+#if BOBUI_CONFIG(regularexpression)
+    bool find(const QRegularExpression &exp, BOBUIextDocument::FindFlags options = { });
 #endif
 
     QString toPlainText() const;
-#ifndef QT_NO_TEXTHTMLPARSER
+#ifndef BOBUI_NO_TEXTHTMLPARSER
     QString toHtml() const;
 #endif
-#if QT_CONFIG(textmarkdownwriter)
-    QString toMarkdown(QTextDocument::MarkdownFeatures features = QTextDocument::MarkdownDialectGitHub) const;
+#if BOBUI_CONFIG(textmarkdownwriter)
+    QString toMarkdown(BOBUIextDocument::MarkdownFeatures features = BOBUIextDocument::MarkdownDialectGitHub) const;
 #endif
 
     virtual void ensureCursorVisible();
 
     Q_INVOKABLE virtual QVariant loadResource(int type, const QUrl &name);
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
     QMenu *createStandardContextMenu(const QPointF &pos, QWidget *parent);
 #endif
 
-    QTextCursor cursorForPosition(const QPointF &pos) const;
-    QRectF cursorRect(const QTextCursor &cursor) const;
+    BOBUIextCursor cursorForPosition(const QPointF &pos) const;
+    QRectF cursorRect(const BOBUIextCursor &cursor) const;
     QRectF cursorRect() const;
-    QRectF selectionRect(const QTextCursor &cursor) const;
+    QRectF selectionRect(const BOBUIextCursor &cursor) const;
     QRectF selectionRect() const;
 
     virtual QString anchorAt(const QPointF &pos) const;
@@ -114,7 +114,7 @@ public:
 
     QString anchorAtCursor() const;
 
-    QTextBlock blockWithMarkerAt(const QPointF &pos) const;
+    BOBUIextBlock blockWithMarkerAt(const QPointF &pos) const;
 
     bool overwriteMode() const;
     void setOverwriteMode(bool overwrite);
@@ -125,9 +125,9 @@ public:
     bool acceptRichText() const;
     void setAcceptRichText(bool accept);
 
-#if QT_CONFIG(textedit)
-    void setExtraSelections(const QList<QTextEdit::ExtraSelection> &selections);
-    QList<QTextEdit::ExtraSelection> extraSelections() const;
+#if BOBUI_CONFIG(textedit)
+    void setExtraSelections(const QList<BOBUIextEdit::ExtraSelection> &selections);
+    QList<BOBUIextEdit::ExtraSelection> extraSelections() const;
 #endif
 
     void setTextWidth(qreal width);
@@ -140,7 +140,7 @@ public:
     void setIgnoreUnusedNavigationEvents(bool ignore);
     bool ignoreUnusedNavigationEvents() const;
 
-    void moveCursor(QTextCursor::MoveOperation op, QTextCursor::MoveMode mode = QTextCursor::MoveAnchor);
+    void moveCursor(BOBUIextCursor::MoveOperation op, BOBUIextCursor::MoveMode mode = BOBUIextCursor::MoveAnchor);
 
     bool canPaste() const;
 
@@ -157,18 +157,18 @@ public:
 
     void print(QPagedPaintDevice *printer) const;
 
-    virtual int hitTest(const QPointF &point, Qt::HitTestAccuracy accuracy) const;
-    virtual QRectF blockBoundingRect(const QTextBlock &block) const;
+    virtual int hitTest(const QPointF &point, BobUI::HitTestAccuracy accuracy) const;
+    virtual QRectF blockBoundingRect(const BOBUIextBlock &block) const;
     QAbstractTextDocumentLayout::PaintContext getPaintContext(QWidget *widget) const;
 
 public Q_SLOTS:
     void setPlainText(const QString &text);
-#if QT_CONFIG(textmarkdownreader)
+#if BOBUI_CONFIG(textmarkdownreader)
     void setMarkdown(const QString &text);
 #endif
     void setHtml(const QString &text);
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     void cut();
     void copy();
     void paste(QClipboard::Mode mode = QClipboard::Clipboard);
@@ -181,7 +181,7 @@ public Q_SLOTS:
     void selectAll();
 
     void insertPlainText(const QString &text);
-#ifndef QT_NO_TEXTHTMLPARSER
+#ifndef BOBUI_NO_TEXTHTMLPARSER
     void insertHtml(const QString &text);
 #endif
 
@@ -195,7 +195,7 @@ Q_SIGNALS:
     void textChanged();
     void undoAvailable(bool b);
     void redoAvailable(bool b);
-    void currentCharFormatChanged(const QTextCharFormat &format);
+    void currentCharFormatChanged(const BOBUIextCharFormat &format);
     void copyAvailable(bool b);
     void selectionChanged();
     void cursorPositionChanged();
@@ -208,7 +208,7 @@ Q_SIGNALS:
     void microFocusChanged();
     void linkActivated(const QString &link);
     void linkHovered(const QString &);
-    void blockMarkerHovered(const QTextBlock &block);
+    void blockMarkerHovered(const BOBUIextBlock &block);
     void modificationChanged(bool m);
 
 public:
@@ -216,26 +216,26 @@ public:
     QPalette palette() const;
     void setPalette(const QPalette &pal);
 
-    virtual void processEvent(QEvent *e, const QTransform &transform, QWidget *contextWidget = nullptr);
+    virtual void processEvent(QEvent *e, const BOBUIransform &transform, QWidget *contextWidget = nullptr);
     void processEvent(QEvent *e, const QPointF &coordinateOffset = QPointF(), QWidget *contextWidget = nullptr);
 
     // control methods
     void drawContents(QPainter *painter, const QRectF &rect = QRectF(), QWidget *widget = nullptr);
 
-    void setFocus(bool focus, Qt::FocusReason = Qt::OtherFocusReason);
+    void setFocus(bool focus, BobUI::FocusReason = BobUI::OtherFocusReason);
 
-    virtual QVariant inputMethodQuery(Qt::InputMethodQuery property, QVariant argument) const;
+    virtual QVariant inputMethodQuery(BobUI::InputMethodQuery property, QVariant argument) const;
 
     virtual QMimeData *createMimeDataFromSelection() const;
     virtual bool canInsertFromMimeData(const QMimeData *source) const;
     virtual void insertFromMimeData(const QMimeData *source);
 
-    bool setFocusToAnchor(const QTextCursor &newCursor);
+    bool setFocusToAnchor(const BOBUIextCursor &newCursor);
     bool setFocusToNextOrPreviousAnchor(bool next);
-    bool findNextPrevAnchor(const QTextCursor& from, bool next, QTextCursor& newAnchor);
+    bool findNextPrevAnchor(const BOBUIextCursor& from, bool next, BOBUIextCursor& newAnchor);
 
 protected:
-    virtual void timerEvent(QTimerEvent *e) override;
+    virtual void timerEvent(BOBUIimerEvent *e) override;
 
     virtual bool event(QEvent *e) override;
 
@@ -246,7 +246,7 @@ private:
 };
 
 
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
 class QUnicodeControlCharacterMenu : public QMenu
 {
     Q_OBJECT
@@ -259,14 +259,14 @@ private Q_SLOTS:
 private:
     QObject *editWidget;
 };
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
 
 
 // also used by QLabel
-class QTextEditMimeData : public QMimeData
+class BOBUIextEditMimeData : public QMimeData
 {
 public:
-    inline QTextEditMimeData(const QTextDocumentFragment &aFragment) : fragment(aFragment) {}
+    inline BOBUIextEditMimeData(const BOBUIextDocumentFragment &aFragment) : fragment(aFragment) {}
 
     virtual QStringList formats() const override;
     bool hasFormat(const QString &format) const override;
@@ -276,14 +276,14 @@ protected:
 private:
     void setup() const;
 
-    mutable QTextDocumentFragment fragment;
+    mutable BOBUIextDocumentFragment fragment;
 };
 
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
 // also used by QLineEdit
 void setActionIcon(QAction *action, const QString &name);
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWidgetTextControl_H

@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWINDOWSCURSOR_H
 #define QWINDOWSCURSOR_H
 
-#include <QtCore/qt_windows.h>
+#include <BobUICore/bobui_windows.h>
 
 #include <qpa/qplatformcursor.h>
-#include <QtCore/qsharedpointer.h>
-#include <QtCore/qhash.h>
+#include <BobUICore/qsharedpointer.h>
+#include <BobUICore/qhash.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct QWindowsPixmapCursorCacheKey
 {
@@ -92,21 +92,21 @@ public:
 
     static HCURSOR createPixmapCursor(QPixmap pixmap, const QPoint &hotSpot, qreal scaleFactor = 1);
     static HCURSOR createPixmapCursor(const PixmapCursor &pc, qreal scaleFactor = 1) { return createPixmapCursor(pc.pixmap, pc.hotSpot, scaleFactor); }
-    static PixmapCursor customCursor(Qt::CursorShape cursorShape, const QPlatformScreen *screen = nullptr);
+    static PixmapCursor customCursor(BobUI::CursorShape cursorShape, const QPlatformScreen *screen = nullptr);
 
-    static HCURSOR createCursorFromShape(Qt::CursorShape cursorShape, const QPlatformScreen *screen = nullptr);
+    static HCURSOR createCursorFromShape(BobUI::CursorShape cursorShape, const QPlatformScreen *screen = nullptr);
     static QPoint mousePosition();
     static State cursorState();
 
-    CursorHandlePtr standardWindowCursor(Qt::CursorShape s = Qt::ArrowCursor);
+    CursorHandlePtr standardWindowCursor(BobUI::CursorShape s = BobUI::ArrowCursor);
     CursorHandlePtr pixmapWindowCursor(const QCursor &c);
 
-    QPixmap dragDefaultCursor(Qt::DropAction action) const;
+    QPixmap dragDefaultCursor(BobUI::DropAction action) const;
 
     HCURSOR hCursor(const QCursor &c) const;
 
 private:
-    typedef QHash<Qt::CursorShape, CursorHandlePtr> StandardCursorCache;
+    typedef QHash<BobUI::CursorShape, CursorHandlePtr> StandardCursorCache;
     typedef QHash<QWindowsPixmapCursorCacheKey, CursorHandlePtr> PixmapCursorCache;
 
     CursorHandlePtr cursorHandle(const QCursor &c);
@@ -125,6 +125,6 @@ private:
     static POINT m_cursorPositionCache;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWINDOWSCURSOR_H

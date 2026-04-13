@@ -1,13 +1,13 @@
 // Copyright (C) 2021 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Marc Mutz <marc.mutz@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#define QT_CORE_BUILD_REMOVED_API
+#define BOBUI_CORE_BUILD_REMOVED_API
 
 #include "qglobal.h"
 
-QT_USE_NAMESPACE
+BOBUI_USE_NAMESPACE
 
-#if QT_CORE_REMOVED_SINCE(6, 1)
+#if BOBUI_CORE_REMOVED_SINCE(6, 1)
 
 #include "qmetatype.h"
 
@@ -16,9 +16,9 @@ int QMetaType::id() const
     return registerHelper();
 }
 
-#endif // QT_CORE_REMOVED_SINCE(6, 1)
+#endif // BOBUI_CORE_REMOVED_SINCE(6, 1)
 
-#if QT_CORE_REMOVED_SINCE(6, 2)
+#if BOBUI_CORE_REMOVED_SINCE(6, 2)
 
 #include "qbindingstorage.h"
 
@@ -27,13 +27,13 @@ void QBindingStorage::maybeUpdateBindingAndRegister_helper(const QUntypedPropert
     registerDependency_helper(data);
 }
 
-#endif // QT_CORE_REMOVED_SINCE(6, 2)
+#endif // BOBUI_CORE_REMOVED_SINCE(6, 2)
 
-#if QT_CORE_REMOVED_SINCE(6, 3)
+#if BOBUI_CORE_REMOVED_SINCE(6, 3)
 
 #include "qbytearraymatcher.h"
 
-# if QT_POINTER_SIZE != 4
+# if BOBUI_POINTER_SIZE != 4
 
 int QStaticByteArrayMatcherBase::indexOfIn(const char *h, uint hl, const char *n, int nl, int from) const noexcept
 {
@@ -42,7 +42,7 @@ int QStaticByteArrayMatcherBase::indexOfIn(const char *h, uint hl, const char *n
     return r;
 }
 
-# endif // QT_POINTER_SIZE != 4
+# endif // BOBUI_POINTER_SIZE != 4
 
 qsizetype QByteArrayMatcher::indexIn(const QByteArray &ba, qsizetype from) const
 {
@@ -63,7 +63,7 @@ QByteArray QCryptographicHash::hash(const QByteArray &data, Algorithm method)
 
 #include "qdatastream.h"
 
-# ifndef QT_NO_DATASTREAM
+# ifndef BOBUI_NO_DATASTREAM
 # include "qfloat16.h"
 
 QDataStream &QDataStream::operator>>(qfloat16 &f)
@@ -112,8 +112,8 @@ QUuid QUuid::fromRfc4122(const QByteArray &bytes)
 
 #include "qbytearraylist.h"
 
-# if QT_POINTER_SIZE != 4
-QByteArray QtPrivate::QByteArrayList_join(const QByteArrayList *that, const char *sep, int seplen)
+# if BOBUI_POINTER_SIZE != 4
+QByteArray BobUIPrivate::QByteArrayList_join(const QByteArrayList *that, const char *sep, int seplen)
 {
     return QByteArrayList_join(that, sep, qsizetype(seplen));
 }
@@ -161,11 +161,11 @@ QByteArray QUrl::toAce(const QString &domain)
     return toAce(domain, {});
 }
 
-#endif // QT_CORE_REMOVED_SINCE(6, 3)
+#endif // BOBUI_CORE_REMOVED_SINCE(6, 3)
 
-#if QT_CORE_REMOVED_SINCE(6, 4)
+#if BOBUI_CORE_REMOVED_SINCE(6, 4)
 
-#include "qbytearray.h" // uses QT_CORE_INLINE_SINCE
+#include "qbytearray.h" // uses BOBUI_CORE_INLINE_SINCE
 
 #include "qcalendar.h"
 
@@ -196,9 +196,9 @@ void QObject::setObjectName(const QString &name)
     setObjectName<void>(name);
 }
 
-#include "qlocale.h" // uses QT_CORE_INLINE_SINCE
+#include "qlocale.h" // uses BOBUI_CORE_INLINE_SINCE
 
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
 
 #include "qsettings.h"
 
@@ -242,12 +242,12 @@ QVariant QSettings::value(const QString &key) const
     return value(qToAnyStringViewIgnoringNull(key));
 }
 
-#endif // QT_CONFIG(settings)
+#endif // BOBUI_CONFIG(settings)
 
 #include "qversionnumber.h"
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
 
 QVersionNumber QVersionNumber::fromString(const QString &string, int *suffixIndex)
 {
@@ -264,15 +264,15 @@ QVersionNumber QVersionNumber::fromString(QLatin1StringView string, int *suffixI
     return fromString(QAnyStringView{string}, suffixIndex);
 }
 
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
 // #include <qotherheader.h>
 // // implement removed functions from qotherheader.h
 // order sections alphabetically to reduce chances of merge conflicts
 
-#endif // QT_CORE_REMOVED_SINCE(6, 4)
+#endif // BOBUI_CORE_REMOVED_SINCE(6, 4)
 
-#if QT_CORE_REMOVED_SINCE(6, 5)
+#if BOBUI_CORE_REMOVED_SINCE(6, 5)
 
 #include "qbasictimer.h" // inlined API
 
@@ -282,17 +282,17 @@ QT_WARNING_POP
 
 uint QDir::count() const
 {
-    return uint(count(QT6_CALL_NEW_OVERLOAD));
+    return uint(count(BOBUI6_CALL_NEW_OVERLOAD));
 }
 
-#if QT_POINTER_SIZE != 4
+#if BOBUI_POINTER_SIZE != 4
 QString QDir::operator[](int i) const
 {
     return operator[](qsizetype{i});
 }
 #endif
 
-#include "qtenvironmentvariables.h"
+#include "bobuienvironmentvariables.h"
 
 bool qputenv(const char *varName, const QByteArray &value)
 {
@@ -307,7 +307,7 @@ int QMetaType::idHelper() const
     return registerHelper(d_ptr);
 }
 
-#if QT_CONFIG(sharedmemory)
+#if BOBUI_CONFIG(sharedmemory)
 #include "qsharedmemory.h"
 
 void QSharedMemory::setNativeKey(const QString &key)
@@ -334,7 +334,7 @@ QVariant::QVariant(const QLineF &l) : QVariant(QVariant::fromValue(l)) {}
 QVariant::QVariant(const QSize &s) : QVariant(QVariant::fromValue(s)) {}
 QVariant::QVariant(const QSizeF &s) : QVariant(QVariant::fromValue(s)) {}
 
-#if QT_CONFIG(xmlstreamreader)
+#if BOBUI_CONFIG(xmlstreamreader)
 
 #include "qxmlstream.h"
 
@@ -367,9 +367,9 @@ void QXmlStreamReader::addData(const char *data)
     addData(QAnyStringView(data));
 }
 
-#endif // QT_CONFIG(xmlstreamreader)
+#endif // BOBUI_CONFIG(xmlstreamreader)
 
-#if QT_CONFIG(xmlstreamwriter)
+#if BOBUI_CONFIG(xmlstreamwriter)
 
 #include "qxmlstream.h"
 
@@ -474,7 +474,7 @@ void QXmlStreamWriter::writeStartElement(const QString &namespaceUri, const QStr
                       qToAnyStringViewIgnoringNull(name));
 }
 
-#endif // QT_CONFIG(xmlstreamwriter)
+#endif // BOBUI_CONFIG(xmlstreamwriter)
 
 // inlined API
 #include "qfloat16.h"
@@ -484,9 +484,9 @@ void QXmlStreamWriter::writeStartElement(const QString &namespaceUri, const QStr
 // // implement removed functions from qotherheader.h
 // order sections alphabetically to reduce chances of merge conflicts
 
-#endif // QT_CORE_REMOVED_SINCE(6, 5)
+#endif // BOBUI_CORE_REMOVED_SINCE(6, 5)
 
-#if QT_CORE_REMOVED_SINCE(6, 6)
+#if BOBUI_CORE_REMOVED_SINCE(6, 6)
 
 #include "qmessageauthenticationcode.h"
 
@@ -528,7 +528,7 @@ qsizetype QString::toUcs4_helper(const ushort *uc, qsizetype length, uint *out)
                          reinterpret_cast<char32_t *>(out));
 }
 
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
 #include "qreadwritelock.h"
 
 bool QReadWriteLock::tryLockForRead()
@@ -541,22 +541,22 @@ bool QReadWriteLock::tryLockForWrite()
     return tryLockForWrite(0);
 }
 
-#include "qthreadpool.h"
-#include "private/qthreadpool_p.h"
+#include "bobuihreadpool.h"
+#include "private/bobuihreadpool_p.h"
 
-void QThreadPool::start(std::function<void()> functionToRun, int priority)
+void BOBUIhreadPool::start(std::function<void()> functionToRun, int priority)
 {
     if (!functionToRun)
         return;
     start(QRunnable::create(std::move(functionToRun)), priority);
 }
 
-bool QThreadPool::tryStart(std::function<void()> functionToRun)
+bool BOBUIhreadPool::tryStart(std::function<void()> functionToRun)
 {
     if (!functionToRun)
         return false;
 
-    Q_D(QThreadPool);
+    Q_D(BOBUIhreadPool);
     QMutexLocker locker(&d->mutex);
     if (!d->allThreads.isEmpty() && d->areAllThreadsActive())
         return false;
@@ -568,7 +568,7 @@ bool QThreadPool::tryStart(std::function<void()> functionToRun)
     return false;
 }
 
-void QThreadPool::startOnReservedThread(std::function<void()> functionToRun)
+void BOBUIhreadPool::startOnReservedThread(std::function<void()> functionToRun)
 {
     if (!functionToRun)
         return releaseThread();
@@ -576,9 +576,9 @@ void QThreadPool::startOnReservedThread(std::function<void()> functionToRun)
     startOnReservedThread(QRunnable::create(std::move(functionToRun)));
 }
 
-#endif // QT_CONFIG(thread)
+#endif // BOBUI_CONFIG(thread)
 
-#if QT_CONFIG(xmlstream)
+#if BOBUI_CONFIG(xmlstream)
 
 #include "qxmlstream.h"
 
@@ -610,7 +610,7 @@ QStringView QXmlStreamAttributes::value(QLatin1StringView qualifiedName) const
 #endif // xmlstream
 
 // inlined API
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
 #include "qmutex.h"
 #include "qreadwritelock.h"
 #include "qsemaphore.h"
@@ -620,9 +620,9 @@ QStringView QXmlStreamAttributes::value(QLatin1StringView qualifiedName) const
 // // implement removed functions from qotherheader.h
 // order sections alphabetically to reduce chances of merge conflicts
 
-#endif // QT_CORE_REMOVED_SINCE(6, 6)
+#endif // BOBUI_CORE_REMOVED_SINCE(6, 6)
 
-#if QT_CORE_REMOVED_SINCE(6, 7)
+#if BOBUI_CORE_REMOVED_SINCE(6, 7)
 
 #include "qbitarray.h"
 
@@ -655,7 +655,7 @@ QByteArray QByteArray::mid(qsizetype pos, qsizetype len) const
 {
     qsizetype p = pos;
     qsizetype l = len;
-    using namespace QtPrivate;
+    using namespace BobUIPrivate;
     switch (QContainerImplHelper::mid(size(), &p, &l)) {
     case QContainerImplHelper::Null:
         return QByteArray();
@@ -694,13 +694,13 @@ QCborError QCborStreamReader::lastError()
 
 #include "qdatetime.h" // also inlined API
 
-QDateTime::QDateTime(QDate date, QTime time, const QTimeZone &timeZone)
+QDateTime::QDateTime(QDate date, BOBUIime time, const BOBUIimeZone &timeZone)
     : QDateTime(date, time, timeZone, TransitionResolution::LegacyBehavior) {}
-QDateTime::QDateTime(QDate date, QTime time)
+QDateTime::QDateTime(QDate date, BOBUIime time)
     : QDateTime(date, time, TransitionResolution::LegacyBehavior) {}
 void QDateTime::setDate(QDate date) { setDate(date, TransitionResolution::LegacyBehavior); }
-void QDateTime::setTime(QTime time) { setTime(time, TransitionResolution::LegacyBehavior); }
-void QDateTime::setTimeZone(const QTimeZone &toZone)
+void QDateTime::setTime(BOBUIime time) { setTime(time, TransitionResolution::LegacyBehavior); }
+void QDateTime::setTimeZone(const BOBUIimeZone &toZone)
 {
     setTimeZone(toZone, TransitionResolution::LegacyBehavior);
 }
@@ -776,7 +776,7 @@ QString QLocale::bcp47Name() const
     return bcp47Name(TagSeparator::Dash);
 }
 
-#if QT_CONFIG(datestring)
+#if BOBUI_CONFIG(datestring)
 
 QDate QLocale::toDate(const QString &string, FormatType format) const
 {
@@ -822,32 +822,32 @@ QDateTime QLocale::toDateTime(const QString &string, const QString &format, QCal
 
 #include "qobject.h"
 
-void qt_qFindChildren_helper(const QObject *parent, const QMetaObject &mo,
-                             QList<void*> *list, Qt::FindChildOptions options)
+void bobui_qFindChildren_helper(const QObject *parent, const QMetaObject &mo,
+                             QList<void*> *list, BobUI::FindChildOptions options)
 {
-    qt_qFindChildren_helper(parent, QAnyStringView(), mo, list, options);
+    bobui_qFindChildren_helper(parent, QAnyStringView(), mo, list, options);
 }
 
-void qt_qFindChildren_helper(const QObject *parent, const QString &name, const QMetaObject &mo,
-                             QList<void*> *list, Qt::FindChildOptions options)
+void bobui_qFindChildren_helper(const QObject *parent, const QString &name, const QMetaObject &mo,
+                             QList<void*> *list, BobUI::FindChildOptions options)
 {
-    qt_qFindChildren_helper(parent, QAnyStringView{name}, mo, list, options);
+    bobui_qFindChildren_helper(parent, QAnyStringView{name}, mo, list, options);
 }
 
-QObject *qt_qFindChild_helper(const QObject *parent, const QString &name, const QMetaObject &mo,
-                              Qt::FindChildOptions options)
+QObject *bobui_qFindChild_helper(const QObject *parent, const QString &name, const QMetaObject &mo,
+                              BobUI::FindChildOptions options)
 {
-    return qt_qFindChild_helper(parent, QAnyStringView{name}, mo, options);
+    return bobui_qFindChild_helper(parent, QAnyStringView{name}, mo, options);
 }
 
-void QObject::moveToThread(QThread *targetThread)
+void QObject::moveToThread(BOBUIhread *targetThread)
 {
-    moveToThread(targetThread, QT6_CALL_NEW_OVERLOAD);
+    moveToThread(targetThread, BOBUI6_CALL_NEW_OVERLOAD);
 }
 
 #include "qobjectdefs.h"
 
-bool QMetaObject::invokeMethodImpl(QObject *object, QtPrivate::QSlotObjectBase *slot, Qt::ConnectionType type, void *ret)
+bool QMetaObject::invokeMethodImpl(QObject *object, BobUIPrivate::QSlotObjectBase *slot, BobUI::ConnectionType type, void *ret)
 {
     return invokeMethodImpl(object, slot, type, 1, &ret, nullptr, nullptr);
 }
@@ -872,7 +872,7 @@ QString QString::mid(qsizetype position, qsizetype n) const
 {
     qsizetype p = position;
     qsizetype l = n;
-    using namespace QtPrivate;
+    using namespace BobUIPrivate;
     switch (QContainerImplHelper::mid(size(), &p, &l)) {
     case QContainerImplHelper::Null:
         return QString();
@@ -900,14 +900,14 @@ QString QString::chopped(qsizetype n) const
 { return sliced(0, size() - n); }
 #endif
 
-#include "qtimezone.h"
+#include "bobuiimezone.h"
 
-bool QTimeZone::operator==(const QTimeZone &other) const
+bool BOBUIimeZone::operator==(const BOBUIimeZone &other) const
 {
     return comparesEqual(*this, other);
 }
 
-bool QTimeZone::operator!=(const QTimeZone &other) const
+bool BOBUIimeZone::operator!=(const BOBUIimeZone &other) const
 {
     return !comparesEqual(*this, other);
 }
@@ -924,11 +924,11 @@ QUrl QUrl::fromEncoded(const QByteArray &input, ParsingMode mode)
 // // implement removed functions from qotherheader.h
 // order sections alphabetically to reduce chances of merge conflicts
 
-#endif // QT_CORE_REMOVED_SINCE(6, 7)
+#endif // BOBUI_CORE_REMOVED_SINCE(6, 7)
 
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
 
-#if QT_CONFIG(itemmodel)
+#if BOBUI_CONFIG(itemmodel)
 #include "qabstractitemmodel.h"
 
 bool QPersistentModelIndex::operator<(const QPersistentModelIndex &other) const noexcept
@@ -951,20 +951,20 @@ bool QPersistentModelIndex::operator!=(const QModelIndex &other) const noexcept
     return !comparesEqual(*this, other);
 }
 
-#endif // QT_CONFIG(itemmodel)
+#endif // BOBUI_CONFIG(itemmodel)
 
 #include "qbitarray.h" // inlined API
 
 #include "qbytearray.h" // inlined API
 
-QT_BEGIN_NAMESPACE
-namespace QtPrivate {
+BOBUI_BEGIN_NAMESPACE
+namespace BobUIPrivate {
 Q_CORE_EXPORT qsizetype lastIndexOf(QByteArrayView haystack, qsizetype from, char needle) noexcept
 {
     return lastIndexOf(haystack, from, uchar(needle));
 }
 }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "qcborarray.h" // inlined API
 
@@ -981,9 +981,9 @@ QDataStream &QDataStream::operator<<(bool i)
 
 #include "qdebug.h"
 
-Q_CORE_EXPORT void qt_QMetaEnum_flagDebugOperator(QDebug &debug, size_t sizeofT, int value)
+Q_CORE_EXPORT void bobui_QMetaEnum_flagDebugOperator(QDebug &debug, size_t sizeofT, int value)
 {
-    qt_QMetaEnum_flagDebugOperator(debug, sizeofT, uint(value));
+    bobui_QMetaEnum_flagDebugOperator(debug, sizeofT, uint(value));
 }
 
 #include "qdir.h" // inlined API
@@ -993,14 +993,14 @@ bool QDir::operator==(const QDir &dir) const
     return comparesEqual(*this, dir);
 }
 
-#if QT_CONFIG(easingcurve)
+#if BOBUI_CONFIG(easingcurve)
 #include "qeasingcurve.h"
 
 bool QEasingCurve::operator==(const QEasingCurve &other) const
 {
     return comparesEqual(*this, other);
 }
-#endif // QT_CONFIG(easingcurve)
+#endif // BOBUI_CONFIG(easingcurve)
 
 #include "qfileinfo.h" // inlined API
 
@@ -1009,7 +1009,7 @@ bool QFileInfo::operator==(const QFileInfo &fileinfo) const
     return comparesEqual(*this, fileinfo);
 }
 
-#if QT_CONFIG(itemmodel)
+#if BOBUI_CONFIG(itemmodel)
 #include "qitemselectionmodel.h" // inlined API
 #endif // itemmodel
 
@@ -1059,19 +1059,19 @@ bool QJsonValue::operator!=(const QJsonValue &other) const
 
 #include "qline.h" // inlined API
 
-#if QT_CONFIG(mimetype)
+#if BOBUI_CONFIG(mimetype)
 #include "qmimetype.h"
 
 bool QMimeType::operator==(const QMimeType &other) const
 {
     return comparesEqual(*this, other);
 }
-#endif // QT_CONFIG(mimetype)
+#endif // BOBUI_CONFIG(mimetype)
 
 #include "qobject.h"
 #include "qnumeric.h"
 
-int QObject::startTimer(std::chrono::milliseconds time, Qt::TimerType timerType)
+int QObject::startTimer(std::chrono::milliseconds time, BobUI::TimerType timerType)
 {
     using namespace std::chrono;
     using ratio = std::ratio_divide<std::milli, std::nano>;
@@ -1084,16 +1084,16 @@ int QObject::startTimer(std::chrono::milliseconds time, Qt::TimerType timerType)
     return startTimer(nanoseconds{r}, timerType);
 }
 
-#if QT_CONFIG(processenvironment)
+#if BOBUI_CONFIG(processenvironment)
 #include "qprocess.h" // inlined API
 
 bool QProcessEnvironment::operator==(const QProcessEnvironment &other) const
 {
     return comparesEqual(*this, other);
 }
-#endif // QT_CONFIG(processenvironment)
+#endif // BOBUI_CONFIG(processenvironment)
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 #include "qregularexpression.h"
 
 bool QRegularExpressionMatch::hasCaptured(QStringView name) const
@@ -1130,21 +1130,21 @@ bool QRegularExpression::operator==(const QRegularExpression &other) const
 {
     return comparesEqual(*this, other);
 }
-#endif // QT_CONFIG(regularexpression)
+#endif // BOBUI_CONFIG(regularexpression)
 
-#if QT_CONFIG(future)
+#if BOBUI_CONFIG(future)
 #include "qresultstore.h"
 
-bool QtPrivate::ResultIteratorBase::operator==(const QtPrivate::ResultIteratorBase &other) const
+bool BobUIPrivate::ResultIteratorBase::operator==(const BobUIPrivate::ResultIteratorBase &other) const
 {
     return comparesEqual(*this, other);
 }
 
-bool QtPrivate::ResultIteratorBase::operator!=(const QtPrivate::ResultIteratorBase &other) const
+bool BobUIPrivate::ResultIteratorBase::operator!=(const BobUIPrivate::ResultIteratorBase &other) const
 {
     return !comparesEqual(*this, other);
 }
-#endif // QT_CONFIG(future)
+#endif // BOBUI_CONFIG(future)
 
 #include "qstring.h" // inlined API
 
@@ -1159,23 +1159,23 @@ auto QStringConverter::encodingForName(const char *name) noexcept -> std::option
     return encodingForName(QAnyStringView{name});
 }
 
-#if QT_CONFIG(thread)
-#  include "qthreadpool.h" // inlined API
+#if BOBUI_CONFIG(thread)
+#  include "bobuihreadpool.h" // inlined API
 #endif
 
-#include "qtimer.h" // inlined API
+#include "bobuiimer.h" // inlined API
                     // removed inline API (MSVC)
 
-void QTimer::singleShot(std::chrono::milliseconds interval, Qt::TimerType timerType,
+void BOBUIimer::singleShot(std::chrono::milliseconds interval, BobUI::TimerType timerType,
                         const QObject *receiver, const char *member)
 {
     singleShot(from_msecs(interval), timerType, receiver, member);
 }
 
-void QTimer::singleShotImpl(std::chrono::milliseconds interval, Qt::TimerType timerType,
-                            const QObject *receiver, QtPrivate::QSlotObjectBase *slotObj)
+void BOBUIimer::singleShotImpl(std::chrono::milliseconds interval, BobUI::TimerType timerType,
+                            const QObject *receiver, BobUIPrivate::QSlotObjectBase *slotObj)
 {
-    QtPrivate::SlotObjUniquePtr slot(slotObj); // don't leak if from_msecs throws
+    BobUIPrivate::SlotObjUniquePtr slot(slotObj); // don't leak if from_msecs throws
     const auto ns = from_msecs(interval);
     singleShotImpl(ns, timerType, receiver, slot.release());
 }
@@ -1211,7 +1211,7 @@ void QBasicTimer::start(std::chrono::milliseconds duration, QObject *object)
     start(std::chrono::nanoseconds(duration), object);
 }
 
-void QBasicTimer::start(std::chrono::milliseconds duration, Qt::TimerType timerType, QObject *obj)
+void QBasicTimer::start(std::chrono::milliseconds duration, BobUI::TimerType timerType, QObject *obj)
 {
     start(std::chrono::nanoseconds(duration), timerType, obj);
 }
@@ -1238,41 +1238,41 @@ QUuid QUuid::createUuidV5(const QUuid &ns, const QByteArray &baseData) noexcept
     return createUuidV5(ns, qToByteArrayViewIgnoringNull(baseData));
 }
 
-#if QT_CONFIG(xmlstream)
+#if BOBUI_CONFIG(xmlstream)
 #include "qxmlstream.h" // inlined API
-#endif // QT_CONFIG(xmlstream)
+#endif // BOBUI_CONFIG(xmlstream)
 
 // #include "qotherheader.h"
 // // implement removed functions from qotherheader.h
 // order sections alphabetically to reduce chances of merge conflicts
 
-#endif // QT_CORE_REMOVED_SINCE(6, 8)
+#endif // BOBUI_CORE_REMOVED_SINCE(6, 8)
 
-#if QT_CORE_REMOVED_SINCE(6, 9)
+#if BOBUI_CORE_REMOVED_SINCE(6, 9)
 
 #include "qchar.h" // inlined API
 
 
 #include "qexceptionhandling.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 Q_NORETURN void qTerminate() noexcept
 {
     std::terminate();
 }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 
 #include "qmetatype.h"
 
 bool QMetaType::isRegistered() const
 {
-    return isRegistered(QT6_CALL_NEW_OVERLOAD);
+    return isRegistered(BOBUI6_CALL_NEW_OVERLOAD);
 }
 
 bool QMetaType::isValid() const
 {
-    return isValid(QT6_CALL_NEW_OVERLOAD);
+    return isValid(BOBUI6_CALL_NEW_OVERLOAD);
 }
 
 
@@ -1291,7 +1291,7 @@ QByteArray QMetaEnum::valueToKeys(int value) const
 
 #include "qmutex.h"
 
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
 void QBasicMutex::destroyInternal(QMutexPrivate *d)
 {
     destroyInternal(static_cast<void *>(d));
@@ -1353,12 +1353,12 @@ QString QString::arg(QLatin1StringView a, int fieldWidth, QChar fillChar) const
     return arg(QAnyStringView(a), fieldWidth, fillChar);
 }
 
-QString QtPrivate::argToQString(QStringView pattern, size_t n, const ArgBase **args)
+QString BobUIPrivate::argToQString(QStringView pattern, size_t n, const ArgBase **args)
 {
     return argToQString(QAnyStringView{pattern}, n, args);
 }
 
-QString QtPrivate::argToQString(QLatin1StringView pattern, size_t n, const ArgBase **args)
+QString BobUIPrivate::argToQString(QLatin1StringView pattern, size_t n, const ArgBase **args)
 {
     return argToQString(QAnyStringView{pattern}, n, args);
 }
@@ -1368,34 +1368,34 @@ QString QtPrivate::argToQString(QLatin1StringView pattern, size_t n, const ArgBa
 
 bool QUuid::isNull() const noexcept
 {
-    return isNull(QT6_CALL_NEW_OVERLOAD);
+    return isNull(BOBUI6_CALL_NEW_OVERLOAD);
 }
 
 QUuid::Variant QUuid::variant() const noexcept
 {
-    return variant(QT6_CALL_NEW_OVERLOAD);
+    return variant(BOBUI6_CALL_NEW_OVERLOAD);
 }
 
 QUuid::Version QUuid::version() const noexcept
 {
-    return version(QT6_CALL_NEW_OVERLOAD);
+    return version(BOBUI6_CALL_NEW_OVERLOAD);
 }
 
 // #include "qotherheader.h"
 // // implement removed functions from qotherheader.h
 // order sections alphabetically to reduce chances of merge conflicts
 
-#endif // QT_CORE_REMOVED_SINCE(6, 9)
+#endif // BOBUI_CORE_REMOVED_SINCE(6, 9)
 
-#if QT_CORE_REMOVED_SINCE(6, 10)
+#if BOBUI_CORE_REMOVED_SINCE(6, 10)
 
 #include "qcborstreamwriter.h"      // Q_WEAK_OVERLOAD added
 
 #include "qcoreapplication.h"
 
-#if QT_CONFIG(permissions)
+#if BOBUI_CONFIG(permissions)
 void QCoreApplication::requestPermission(const QPermission &requestedPermission,
-    QtPrivate::QSlotObjectBase *slotObjRaw, const QObject *context)
+    BobUIPrivate::QSlotObjectBase *slotObjRaw, const QObject *context)
 {
     return requestPermissionImpl(requestedPermission, slotObjRaw, context);
 }
@@ -1418,18 +1418,18 @@ bool QDir::mkpath(const QString &dirPath) const
     return mkpath(dirPath, std::nullopt);
 }
 
-#if QT_CONFIG(future)
+#if BOBUI_CONFIG(future)
 #include "qfuture.h" // for ContinuationWrapper
 #include "qfutureinterface.h"
 
-void QtPrivate::watchContinuationImpl(const QObject *context,
-                                      QtPrivate::QSlotObjectBase *slotObj,
+void BobUIPrivate::watchContinuationImpl(const QObject *context,
+                                      BobUIPrivate::QSlotObjectBase *slotObj,
                                       QFutureInterfaceBase &fi)
 {
     Q_ASSERT(context);
     Q_ASSERT(slotObj);
 
-    auto slot = QtPrivate::SlotObjUniquePtr(slotObj);
+    auto slot = BobUIPrivate::SlotObjUniquePtr(slotObj);
 
     // That is now a double-inderection, because the setContinuation() overload
     // also uses QSlotObjectBase approach. But that's a solution for backwards
@@ -1437,7 +1437,7 @@ void QtPrivate::watchContinuationImpl(const QObject *context,
     // We pass a default-constructed QVariant() and an Unknown type, because
     // that's effectively the same as passing a nullptr continuationData, and
     // that's what the old code was doing.
-    fi.setContinuation(context, QtPrivate::ContinuationWrapper([slot = std::move(slot)]()
+    fi.setContinuation(context, BobUIPrivate::ContinuationWrapper([slot = std::move(slot)]()
     {
         void *args[] = { nullptr }; // for `void` return value
         slot->call(nullptr, args);
@@ -1456,7 +1456,7 @@ void QFutureInterfaceBase::setContinuation(std::function<void(const QFutureInter
     // then-continuations
     setContinuation(std::move(func), continuationFutureData, ContinuationType::Then);
 }
-#endif // QT_CONFIG(future)
+#endif // BOBUI_CONFIG(future)
 
 #include "qlockfile.h" // inlined API
 
@@ -1484,9 +1484,9 @@ bool QObject::doSetProperty(const char *name, const QVariant *lvalue, QVariant *
 // // implement removed functions from qotherheader.h
 // order sections alphabetically to reduce chances of merge conflicts
 
-#endif // QT_CORE_REMOVED_SINCE(6, 10)
+#endif // BOBUI_CORE_REMOVED_SINCE(6, 10)
 
-#if QT_CORE_REMOVED_SINCE(6, 11)
+#if BOBUI_CORE_REMOVED_SINCE(6, 11)
 
 #include "qbytearray.h"
 
@@ -1495,7 +1495,7 @@ QByteArray QByteArray::percentDecoded(char percent) const
     return fromPercentEncoding(*this, percent);
 }
 
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
 // some of the previously inlined API became removed
 #include "qreadwritelock.h"
 
@@ -1523,7 +1523,7 @@ void QReadWriteLock::unlock()
 {
     QBasicReadWriteLock::unlock();
 }
-#endif // QT_CONFIG(thread)
+#endif // BOBUI_CONFIG(thread)
 
 #include "qsavefile.h"
 
@@ -1532,10 +1532,10 @@ QSaveFile::QSaveFile(const QString &name)
 {
 }
 
-#include "qtimer.h"
+#include "bobuiimer.h"
 
-void QTimer::singleShotImpl(int msec, Qt::TimerType timerType,
-                            const QObject *receiver, QtPrivate::QSlotObjectBase *slotObj)
+void BOBUIimer::singleShotImpl(int msec, BobUI::TimerType timerType,
+                            const QObject *receiver, BobUIPrivate::QSlotObjectBase *slotObj)
 {
     singleShotImpl(std::chrono::milliseconds{msec}, timerType, receiver, slotObj);
 }
@@ -1544,4 +1544,4 @@ void QTimer::singleShotImpl(int msec, Qt::TimerType timerType,
 // // implement removed functions from qotherheader.h
 // order sections alphabetically to reduce chances of merge conflicts
 
-#endif // QT_CORE_REMOVED_SINCE(6, 11)
+#endif // BOBUI_CORE_REMOVED_SINCE(6, 11)

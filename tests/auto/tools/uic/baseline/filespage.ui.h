@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'filespage.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,16 +9,16 @@
 #ifndef FILESPAGE_H
 #define FILESPAGE_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QListWidget>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QListWidget>
+#include <BobUIWidgets/QPushButton>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_FilesPage
 {
@@ -92,6 +92,6 @@ namespace Ui {
     class FilesPage: public Ui_FilesPage {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // FILESPAGE_H

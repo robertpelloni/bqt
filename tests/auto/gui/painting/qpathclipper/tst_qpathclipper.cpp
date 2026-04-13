@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 #include "private/qpathclipper_p.h"
 #include "paths.h"
 #include "pathcompare.h"
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qpainterpath.h>
 #include <qpolygon.h>
@@ -59,8 +59,8 @@ private slots:
     void task209056();
     void task251909();
 
-    void qtbug3778();
-    void qtbug60024();
+    void bobuibug3778();
+    void bobuibug60024();
 };
 
 Q_DECLARE_METATYPE(QPainterPath)
@@ -127,7 +127,7 @@ void tst_QPathClipper::initTestCase()
     for (int i = 0; i < paths.size(); ++i) {
         QRectF bounds = paths[i].boundingRect();
 
-        QTransform m(1, 0,
+        BOBUIransform m(1, 0,
                      0, 1,
                      -bounds.center().x(), -bounds.center().y());
 
@@ -280,69 +280,69 @@ static QPainterPath samplePath14()
 void tst_QPathClipper::clip_data()
 {
     //create the testtable instance and define the elements
-    QTest::addColumn<QPainterPath>("subject");
-    QTest::addColumn<QPainterPath>("clip");
-    QTest::addColumn<QPathClipper::Operation>("op");
-    QTest::addColumn<QPainterPath>("result");
+    BOBUIest::addColumn<QPainterPath>("subject");
+    BOBUIest::addColumn<QPainterPath>("clip");
+    BOBUIest::addColumn<QPathClipper::Operation>("op");
+    BOBUIest::addColumn<QPainterPath>("result");
 
     //next we fill it with data
-    QTest::newRow( "simple1" )  << Paths::frame3()
+    BOBUIest::newRow( "simple1" )  << Paths::frame3()
                                 << Paths::frame4()
                                 << QPathClipper::BoolAnd
                                 << samplePath1();
 
-    QTest::newRow( "simple2" )  << Paths::frame3()
-                                << Paths::frame4() * QTransform().translate(0, -100)
+    BOBUIest::newRow( "simple2" )  << Paths::frame3()
+                                << Paths::frame4() * BOBUIransform().translate(0, -100)
                                 << QPathClipper::BoolAnd
                                 << samplePath2();
 
-    QTest::newRow( "simple3" )  << Paths::frame3()
-                                << Paths::frame4() * QTransform().translate(0, -150)
+    BOBUIest::newRow( "simple3" )  << Paths::frame3()
+                                << Paths::frame4() * BOBUIransform().translate(0, -150)
                                 << QPathClipper::BoolAnd
                                 << samplePath3();
 
-    QTest::newRow( "simple4" )  << Paths::frame3()
-                                << Paths::frame4() * QTransform().translate(200, -150)
+    BOBUIest::newRow( "simple4" )  << Paths::frame3()
+                                << Paths::frame4() * BOBUIransform().translate(200, -150)
                                 << QPathClipper::BoolAnd
                                 << samplePath4();
 
-    QTest::newRow( "simple5" )  << Paths::frame3()
-                                << Paths::frame4() * QTransform().translate(500, -150)
+    BOBUIest::newRow( "simple5" )  << Paths::frame3()
+                                << Paths::frame4() * BOBUIransform().translate(500, -150)
                                 << QPathClipper::BoolAnd
                                 << samplePath5();
 
-    QTest::newRow( "simple6" )  << Paths::frame3()
-                                << Paths::frame4() * QTransform().translate(500, -150)
+    BOBUIest::newRow( "simple6" )  << Paths::frame3()
+                                << Paths::frame4() * BOBUIransform().translate(500, -150)
                                 << QPathClipper::BoolOr
                                 << samplePath6();
 
-    QTest::newRow( "simple7" )  << Paths::frame3()
-                                << Paths::frame4() * QTransform().translate(500, 0)
+    BOBUIest::newRow( "simple7" )  << Paths::frame3()
+                                << Paths::frame4() * BOBUIransform().translate(500, 0)
                                 << QPathClipper::BoolAnd
                                 << samplePath7();
 
-    QTest::newRow( "simple8" )  << Paths::frame3()
-                                << Paths::frame4() * QTransform().translate(500, 200)
+    BOBUIest::newRow( "simple8" )  << Paths::frame3()
+                                << Paths::frame4() * BOBUIransform().translate(500, 200)
                                 << QPathClipper::BoolAnd
                                 << samplePath8();
 
-    QTest::newRow( "simple9" )  << Paths::frame3()
-                                << Paths::frame4() * QTransform().translate(480, 220)
+    BOBUIest::newRow( "simple9" )  << Paths::frame3()
+                                << Paths::frame4() * BOBUIransform().translate(480, 220)
                                 << QPathClipper::BoolAnd
                                 << samplePath9();
 
-    QTest::newRow( "simple10" )  << Paths::frame3()
-                                 << Paths::frame4() * QTransform().translate(280, 220)
+    BOBUIest::newRow( "simple10" )  << Paths::frame3()
+                                 << Paths::frame4() * BOBUIransform().translate(280, 220)
                                  << QPathClipper::BoolAnd
                                  << samplePath10();
 
-    QTest::newRow( "simple_move_to1" )  << Paths::rect4()
-                                       << Paths::rect2() * QTransform().translate(-20, 50)
+    BOBUIest::newRow( "simple_move_to1" )  << Paths::rect4()
+                                       << Paths::rect2() * BOBUIransform().translate(-20, 50)
                                        << QPathClipper::BoolAnd
                                        << samplePath13();
 
-    QTest::newRow( "simple_move_to2" )  << Paths::rect4()
-                                        << Paths::rect2() * QTransform().translate(-20, 0)
+    BOBUIest::newRow( "simple_move_to2" )  << Paths::rect4()
+                                        << Paths::rect2() * BOBUIransform().translate(-20, 0)
                                         << QPathClipper::BoolAnd
                                         << samplePath14();
 }
@@ -434,9 +434,9 @@ void tst_QPathClipper::clipTest(int subjectIndex, int clipIndex, QPathClipper::O
     p.setRenderHint(QPainter::Antialiasing);
     p.scale(scale, scale);
     p.translate(-bounds.topLeft());
-    p.setPen(QPen(Qt::black, 0));
+    p.setPen(QPen(BobUI::black, 0));
     p.drawPath(subject);
-    p.setPen(QPen(Qt::red, 0));
+    p.setPen(QPen(BobUI::red, 0));
     p.drawPath(clip);
     p.end();
 
@@ -775,8 +775,8 @@ void tst_QPathClipper::testIntersections7()
 
 void tst_QPathClipper::testIntersections8()
 {
-    QPainterPath path1 = Paths::node() * QTransform().translate(100, 50);
-    QPainterPath path2 = Paths::node() * QTransform().translate(150, 50);
+    QPainterPath path1 = Paths::node() * BOBUIransform().translate(100, 50);
+    QPainterPath path2 = Paths::node() * BOBUIransform().translate(150, 50);
 
     QVERIFY(path1.intersects(path2));
     QVERIFY(path2.intersects(path1));
@@ -788,25 +788,25 @@ void tst_QPathClipper::testIntersections8()
     QVERIFY(path2.intersects(path1));
 
     path1 = Paths::node();
-    path2 = Paths::node() * QTransform().translate(0, 30);
+    path2 = Paths::node() * BOBUIransform().translate(0, 30);
 
     QVERIFY(path1.intersects(path2));
     QVERIFY(path2.intersects(path1));
 
     path1 = Paths::node();
-    path2 = Paths::node() * QTransform().translate(30, 0);
+    path2 = Paths::node() * BOBUIransform().translate(30, 0);
 
     QVERIFY(path1.intersects(path2));
     QVERIFY(path2.intersects(path1));
 
     path1 = Paths::node();
-    path2 = Paths::node() * QTransform().translate(30, 30);
+    path2 = Paths::node() * BOBUIransform().translate(30, 30);
 
     QVERIFY(path1.intersects(path2));
     QVERIFY(path2.intersects(path1));
 
     path1 = Paths::node();
-    path2 = Paths::node() * QTransform().translate(1, 1);
+    path2 = Paths::node() * BOBUIransform().translate(1, 1);
 
     QVERIFY(path1.intersects(path2));
     QVERIFY(path2.intersects(path1));
@@ -1136,7 +1136,7 @@ static bool strictContains(const QPainterPath &a, const QPainterPath &b)
 
 void tst_QPathClipper::task204301_data()
 {
-    QTest::addColumn<QPolygonF>("points");
+    BOBUIest::addColumn<QPolygonF>("points");
 
     {
         QPointF a(51.09013255685567855835, 31.30814891308546066284);
@@ -1149,7 +1149,7 @@ void tst_QPathClipper::task204301_data()
         QPointF h(5.16609844751656055450, 24.52046275138854980469);
         QPolygonF v;
         v << a << b << c << d << e << f << g << h;
-        QTest::newRow("failed_on_linux") << v;
+        BOBUIest::newRow("failed_on_linux") << v;
     }
 
     {
@@ -1163,7 +1163,7 @@ void tst_QPathClipper::task204301_data()
         QPointF h(1.650695800781250, 27.232055664062500);
         QPolygonF v;
         v << a << b << c << d << e << f << g << h;
-        QTest::newRow("failed_on_windows") << v;
+        BOBUIest::newRow("failed_on_windows") << v;
     }
 }
 
@@ -1244,7 +1244,7 @@ void tst_QPathClipper::task251909()
     QVERIFY(result.elementCount() <= 5);
 }
 
-void tst_QPathClipper::qtbug3778()
+void tst_QPathClipper::bobuibug3778()
 {
     if (sizeof(double) != sizeof(qreal)) {
         QSKIP("This test only works for qreal=double, otherwise ends in rounding errors");
@@ -1274,7 +1274,7 @@ void tst_QPathClipper::qtbug3778()
     QVERIFY(p12.contains(QPointF(100, 100)));
 }
 
-void tst_QPathClipper::qtbug60024()
+void tst_QPathClipper::bobuibug60024()
 {
     QPolygonF poly1, poly2;
     poly1 << QPointF(508.331,1010.23) ;
@@ -1528,7 +1528,7 @@ void tst_QPathClipper::qtbug60024()
     QVERIFY(path1.intersected(path2).isEmpty());
 }
 
-QTEST_MAIN(tst_QPathClipper)
+BOBUIEST_MAIN(tst_QPathClipper)
 
 
 #include "tst_qpathclipper.moc"

@@ -1,16 +1,16 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QNETWORKINFORMATION_H
 #define QNETWORKINFORMATION_H
 
-#include <QtNetwork/qtnetworkglobal.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qstringview.h>
-#include <QtCore/qstringlist.h>
+#include <BobUINetwork/bobuinetworkglobal.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qstringview.h>
+#include <BobUICore/qstringlist.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QNetworkInformationBackend;
 class QNetworkInformationPrivate;
@@ -69,9 +69,9 @@ public:
     static bool loadDefaultBackend();
     static bool loadBackendByName(QStringView backend);
     static bool loadBackendByFeatures(Features features);
-#if QT_DEPRECATED_SINCE(6,4)
-    QT_DEPRECATED_VERSION_X_6_4("Use loadBackendByName") static bool load(QStringView backend);
-    QT_DEPRECATED_VERSION_X_6_4("Use loadBackendByFeatures") static bool load(Features features);
+#if BOBUI_DEPRECATED_SINCE(6,4)
+    BOBUI_DEPRECATED_VERSION_X_6_4("Use loadBackendByName") static bool load(QStringView backend);
+    BOBUI_DEPRECATED_VERSION_X_6_4("Use loadBackendByFeatures") static bool load(Features features);
 #endif
     static QStringList availableBackends();
     static QNetworkInformation *instance();
@@ -92,6 +92,6 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QNetworkInformation::Features)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

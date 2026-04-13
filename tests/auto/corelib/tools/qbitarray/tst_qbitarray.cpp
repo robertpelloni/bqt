@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtTest/private/qcomparisontesthelper_p.h>
-#include <QtCore/QBuffer>
-#include <QtCore/QDataStream>
+#include <BOBUIest>
+#include <BobUITest/private/qcomparisontesthelper_p.h>
+#include <BobUICore/QBuffer>
+#include <BobUICore/QDataStream>
 
 #include "qbitarray.h"
 
-#include <QtCore/qelapsedtimer.h>
-#include <QtCore/qscopeguard.h>
+#include <BobUICore/qelapsedtimer.h>
+#include <BobUICore/qscopeguard.h>
 
 /**
  * Helper function to initialize a bitarray from a string
@@ -89,7 +89,7 @@ private slots:
 
 void tst_QBitArray::compareCompiles()
 {
-    QTestPrivate::testEqualityOperatorsCompile<QBitArray>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QBitArray>();
 }
 
 void tst_QBitArray::canHandleIntMaxBits()
@@ -118,7 +118,7 @@ void tst_QBitArray::canHandleIntMaxBits()
         QByteArray serialized;
         if constexpr (sizeof(void*) > sizeof(int)) {
             QDataStream ds(&serialized, QIODevice::WriteOnly);
-            ds.setVersion(QDataStream::Qt_5_15);
+            ds.setVersion(QDataStream::BobUI_5_15);
             ds << ba;
             QCOMPARE(ds.status(), QDataStream::Status::SizeLimitExceeded);
             serialized.clear();
@@ -133,7 +133,7 @@ void tst_QBitArray::canHandleIntMaxBits()
             QBitArray ba2;
             ds >> ba2;
             QCOMPARE(ds.status(), QDataStream::Status::Ok);
-            QT_TEST_EQUALITY_OPS(ba, ba2, true);
+            BOBUI_TEST_EQUALITY_OPS(ba, ba2, true);
         }
     } catch (const std::bad_alloc &) {
         QSKIP("Failed to allocate sufficient memory");
@@ -143,25 +143,25 @@ void tst_QBitArray::canHandleIntMaxBits()
 void tst_QBitArray::size_data()
 {
     //create the testtable instance and define the elements
-    QTest::addColumn<int>("count");
-    QTest::addColumn<QString>("res");
+    BOBUIest::addColumn<int>("count");
+    BOBUIest::addColumn<QString>("res");
 
     //next we fill it with data
-    QTest::newRow( "data0" )  << 1 << QString("1");
-    QTest::newRow( "data1" )  << 2 << QString("11");
-    QTest::newRow( "data2" )  << 3 << QString("111");
-    QTest::newRow( "data3" )  << 9 << QString("111111111");
-    QTest::newRow( "data4" )  << 10 << QString("1111111111");
-    QTest::newRow( "data5" )  << 17 << QString("11111111111111111");
-    QTest::newRow( "data6" )  << 18 << QString("111111111111111111");
-    QTest::newRow( "data7" )  << 19 << QString("1111111111111111111");
-    QTest::newRow( "data8" )  << 20 << QString("11111111111111111111");
-    QTest::newRow( "data9" )  << 21 << QString("111111111111111111111");
-    QTest::newRow( "data10" )  << 22 << QString("1111111111111111111111");
-    QTest::newRow( "data11" )  << 23 << QString("11111111111111111111111");
-    QTest::newRow( "data12" )  << 24 << QString("111111111111111111111111");
-    QTest::newRow( "data13" )  << 25 << QString("1111111111111111111111111");
-    QTest::newRow( "data14" )  << 32 << QString("11111111111111111111111111111111");
+    BOBUIest::newRow( "data0" )  << 1 << QString("1");
+    BOBUIest::newRow( "data1" )  << 2 << QString("11");
+    BOBUIest::newRow( "data2" )  << 3 << QString("111");
+    BOBUIest::newRow( "data3" )  << 9 << QString("111111111");
+    BOBUIest::newRow( "data4" )  << 10 << QString("1111111111");
+    BOBUIest::newRow( "data5" )  << 17 << QString("11111111111111111");
+    BOBUIest::newRow( "data6" )  << 18 << QString("111111111111111111");
+    BOBUIest::newRow( "data7" )  << 19 << QString("1111111111111111111");
+    BOBUIest::newRow( "data8" )  << 20 << QString("11111111111111111111");
+    BOBUIest::newRow( "data9" )  << 21 << QString("111111111111111111111");
+    BOBUIest::newRow( "data10" )  << 22 << QString("1111111111111111111111");
+    BOBUIest::newRow( "data11" )  << 23 << QString("11111111111111111111111");
+    BOBUIest::newRow( "data12" )  << 24 << QString("111111111111111111111111");
+    BOBUIest::newRow( "data13" )  << 25 << QString("1111111111111111111111111");
+    BOBUIest::newRow( "data14" )  << 32 << QString("11111111111111111111111111111111");
 }
 
 void tst_QBitArray::size()
@@ -179,28 +179,28 @@ void tst_QBitArray::size()
         else
             S+= QLatin1Char('0');
     }
-    QTEST(S,"res");
+    BOBUIEST(S,"res");
 }
 
 void tst_QBitArray::countBits_data()
 {
-    QTest::addColumn<QString>("bitField");
-    QTest::addColumn<int>("numBits");
-    QTest::addColumn<int>("onBits");
+    BOBUIest::addColumn<QString>("bitField");
+    BOBUIest::addColumn<int>("numBits");
+    BOBUIest::addColumn<int>("onBits");
 
-    QTest::newRow("empty") << QString() << 0 << 0;
-    QTest::newRow("1") << QString("1") << 1 << 1;
-    QTest::newRow("101") << QString("101") << 3 << 2;
-    QTest::newRow("101100001") << QString("101100001") << 9 << 4;
-    QTest::newRow("101100001101100001") << QString("101100001101100001") << 18 << 8;
-    QTest::newRow("101100001101100001101100001101100001") << QString("101100001101100001101100001101100001") << 36 << 16;
-    QTest::newRow("00000000000000000000000000000000000") << QString("00000000000000000000000000000000000") << 35 << 0;
-    QTest::newRow("11111111111111111111111111111111111") << QString("11111111111111111111111111111111111") << 35 << 35;
-    QTest::newRow("11111111111111111111111111111111") << QString("11111111111111111111111111111111") << 32 << 32;
-    QTest::newRow("11111111111111111111111111111111111111111111111111111111")
+    BOBUIest::newRow("empty") << QString() << 0 << 0;
+    BOBUIest::newRow("1") << QString("1") << 1 << 1;
+    BOBUIest::newRow("101") << QString("101") << 3 << 2;
+    BOBUIest::newRow("101100001") << QString("101100001") << 9 << 4;
+    BOBUIest::newRow("101100001101100001") << QString("101100001101100001") << 18 << 8;
+    BOBUIest::newRow("101100001101100001101100001101100001") << QString("101100001101100001101100001101100001") << 36 << 16;
+    BOBUIest::newRow("00000000000000000000000000000000000") << QString("00000000000000000000000000000000000") << 35 << 0;
+    BOBUIest::newRow("11111111111111111111111111111111111") << QString("11111111111111111111111111111111111") << 35 << 35;
+    BOBUIest::newRow("11111111111111111111111111111111") << QString("11111111111111111111111111111111") << 32 << 32;
+    BOBUIest::newRow("11111111111111111111111111111111111111111111111111111111")
         << QString("11111111111111111111111111111111111111111111111111111111") << 56 << 56;
-    QTest::newRow("00000000000000000000000000000000") << QString("00000000000000000000000000000000") << 32 << 0;
-    QTest::newRow("00000000000000000000000000000000000000000000000000000000")
+    BOBUIest::newRow("00000000000000000000000000000000") << QString("00000000000000000000000000000000") << 32 << 0;
+    BOBUIest::newRow("00000000000000000000000000000000000000000000000000000000")
         << QString("00000000000000000000000000000000000000000000000000000000") << 56 << 0;
 }
 
@@ -217,7 +217,7 @@ void tst_QBitArray::countBits()
     }
 
     QCOMPARE(bits.size(), numBits);
-    // NOLINTNEXTLINE(qt-port-to-std-compatible-api): We want to test count() and size()
+    // NOLINTNEXTLINE(bobui-port-to-std-compatible-api): We want to test count() and size()
     QCOMPARE(bits.count(), numBits);
     QCOMPARE(bits.count(true), onBits);
     QCOMPARE(bits.count(false), numBits - onBits);
@@ -274,19 +274,19 @@ void tst_QBitArray::isEmpty()
     QVERIFY(!a1.isNull());
     QVERIFY(a1.size() == 2);
 
-    QT_TEST_EQUALITY_OPS(a1, a2, false);
-    QT_TEST_EQUALITY_OPS(a2, a3, false);
-    QT_TEST_EQUALITY_OPS(QBitArray(), QBitArray(), true);
+    BOBUI_TEST_EQUALITY_OPS(a1, a2, false);
+    BOBUI_TEST_EQUALITY_OPS(a2, a3, false);
+    BOBUI_TEST_EQUALITY_OPS(QBitArray(), QBitArray(), true);
     a3 = a2;
-    QT_TEST_EQUALITY_OPS(a2, a3, true);
+    BOBUI_TEST_EQUALITY_OPS(a2, a3, true);
 }
 
 void tst_QBitArray::swap()
 {
     QBitArray b1 = QStringToQBitArray("1"), b2 = QStringToQBitArray("10");
     b1.swap(b2);
-    QT_TEST_EQUALITY_OPS(b1,QStringToQBitArray("10"), true);
-    QT_TEST_EQUALITY_OPS(b2,QStringToQBitArray("1"), true);
+    BOBUI_TEST_EQUALITY_OPS(b1,QStringToQBitArray("10"), true);
+    BOBUI_TEST_EQUALITY_OPS(b2,QStringToQBitArray("1"), true);
 }
 
 void tst_QBitArray::fill()
@@ -316,15 +316,15 @@ void tst_QBitArray::fill()
 
 void tst_QBitArray::toggleBit_data()
 {
-    QTest::addColumn<int>("index");
-    QTest::addColumn<QBitArray>("input");
-    QTest::addColumn<QBitArray>("res");
+    BOBUIest::addColumn<int>("index");
+    BOBUIest::addColumn<QBitArray>("input");
+    BOBUIest::addColumn<QBitArray>("res");
     // 8 bits, toggle first bit
-    QTest::newRow( "data0" )  << 0 << QStringToQBitArray(QString("11111111")) << QStringToQBitArray(QString("01111111"));
+    BOBUIest::newRow( "data0" )  << 0 << QStringToQBitArray(QString("11111111")) << QStringToQBitArray(QString("01111111"));
     // 8 bits
-    QTest::newRow( "data1" )  << 1 << QStringToQBitArray(QString("11111111")) << QStringToQBitArray(QString("10111111"));
+    BOBUIest::newRow( "data1" )  << 1 << QStringToQBitArray(QString("11111111")) << QStringToQBitArray(QString("10111111"));
     // 11 bits, toggle last bit
-    QTest::newRow( "data2" )  << 10 << QStringToQBitArray(QString("11111111111")) << QStringToQBitArray(QString("11111111110"));
+    BOBUIest::newRow( "data2" )  << 10 << QStringToQBitArray(QString("11111111111")) << QStringToQBitArray(QString("11111111110"));
 
 }
 
@@ -336,47 +336,47 @@ void tst_QBitArray::toggleBit()
 
     input.toggleBit(index);
 
-    QT_TEST_EQUALITY_OPS(input, res, true);
+    BOBUI_TEST_EQUALITY_OPS(input, res, true);
 }
 
 void tst_QBitArray::operator_andeq_data()
 {
-    QTest::addColumn<QBitArray>("input1");
-    QTest::addColumn<QBitArray>("input2");
-    QTest::addColumn<QBitArray>("res");
+    BOBUIest::addColumn<QBitArray>("input1");
+    BOBUIest::addColumn<QBitArray>("input2");
+    BOBUIest::addColumn<QBitArray>("res");
 
-    QTest::newRow( "data0" )   << QStringToQBitArray(QString("11111111"))
+    BOBUIest::newRow( "data0" )   << QStringToQBitArray(QString("11111111"))
                             << QStringToQBitArray(QString("00101100"))
                             << QStringToQBitArray(QString("00101100"));
 
 
-    QTest::newRow( "data1" )   << QStringToQBitArray(QString("11011011"))
+    BOBUIest::newRow( "data1" )   << QStringToQBitArray(QString("11011011"))
                             << QStringToQBitArray(QString("00101100"))
                             << QStringToQBitArray(QString("00001000"));
 
-    QTest::newRow( "data2" )   << QStringToQBitArray(QString("11011011111"))
+    BOBUIest::newRow( "data2" )   << QStringToQBitArray(QString("11011011111"))
                             << QStringToQBitArray(QString("00101100"))
                             << QStringToQBitArray(QString("00001000000"));
 
-    QTest::newRow( "data3" )   << QStringToQBitArray(QString("11011011"))
+    BOBUIest::newRow( "data3" )   << QStringToQBitArray(QString("11011011"))
                             << QStringToQBitArray(QString("00101100111"))
                             << QStringToQBitArray(QString("00001000000"));
 
-    QTest::newRow( "data4" )   << QStringToQBitArray(QString())
+    BOBUIest::newRow( "data4" )   << QStringToQBitArray(QString())
                             << QStringToQBitArray(QString("00101100111"))
                             << QStringToQBitArray(QString("00000000000"));
 
-    QTest::newRow( "data5" ) << QStringToQBitArray(QString("00101100111"))
+    BOBUIest::newRow( "data5" ) << QStringToQBitArray(QString("00101100111"))
                              << QStringToQBitArray(QString())
                              << QStringToQBitArray(QString("00000000000"));
 
-    QTest::newRow( "data6" ) << QStringToQBitArray(QString())
+    BOBUIest::newRow( "data6" ) << QStringToQBitArray(QString())
                              << QStringToQBitArray(QString())
                              << QStringToQBitArray(QString());
 }
 
 #define COMPARE_BITARRAY_EQ(actual, expected)       do {        \
-        QT_TEST_EQUALITY_OPS(actual, expected, true);           \
+        BOBUI_TEST_EQUALITY_OPS(actual, expected, true);           \
         QCOMPARE(actual.count(), expected.count());             \
         QCOMPARE(actual.count(true), expected.count(true));     \
         QCOMPARE(actual.count(false), expected.count(false));   \
@@ -409,9 +409,9 @@ void tst_QBitArray::operator_andeq()
     result &= detached(input1);
     COMPARE_BITARRAY_EQ(result, res);
 
-QT_WARNING_PUSH
+BOBUI_WARNING_PUSH
 // Android clang emits warning: explicitly assigning value of variable of type 'QBitArray' to itself
-QT_WARNING_DISABLE_CLANG("-Wself-assign-overloaded")
+BOBUI_WARNING_DISABLE_CLANG("-Wself-assign-overloaded")
     // operation is idempotent
     result &= result;
     COMPARE_BITARRAY_EQ(result, res);
@@ -419,7 +419,7 @@ QT_WARNING_DISABLE_CLANG("-Wself-assign-overloaded")
     COMPARE_BITARRAY_EQ(result, res);
     result &= detached(result);
     COMPARE_BITARRAY_EQ(result, res);
-QT_WARNING_POP
+BOBUI_WARNING_POP
 }
 
 void tst_QBitArray::operator_and()
@@ -454,40 +454,40 @@ void tst_QBitArray::operator_and()
 
 void tst_QBitArray::operator_oreq_data()
 {
-    QTest::addColumn<QBitArray>("input1");
-    QTest::addColumn<QBitArray>("input2");
-    QTest::addColumn<QBitArray>("res");
+    BOBUIest::addColumn<QBitArray>("input1");
+    BOBUIest::addColumn<QBitArray>("input2");
+    BOBUIest::addColumn<QBitArray>("res");
 
-    QTest::newRow( "data0" )   << QStringToQBitArray(QString("11111111"))
+    BOBUIest::newRow( "data0" )   << QStringToQBitArray(QString("11111111"))
                             << QStringToQBitArray(QString("00101100"))
                             << QStringToQBitArray(QString("11111111"));
 
 
-    QTest::newRow( "data1" )   << QStringToQBitArray(QString("11011011"))
+    BOBUIest::newRow( "data1" )   << QStringToQBitArray(QString("11011011"))
                             << QStringToQBitArray(QString("00101100"))
                             << QStringToQBitArray(QString("11111111"));
 
-    QTest::newRow( "data2" )   << QStringToQBitArray(QString("01000010"))
+    BOBUIest::newRow( "data2" )   << QStringToQBitArray(QString("01000010"))
                             << QStringToQBitArray(QString("10100001"))
                             << QStringToQBitArray(QString("11100011"));
 
-    QTest::newRow( "data3" )   << QStringToQBitArray(QString("11011011"))
+    BOBUIest::newRow( "data3" )   << QStringToQBitArray(QString("11011011"))
                             << QStringToQBitArray(QString("00101100000"))
                             << QStringToQBitArray(QString("11111111000"));
 
-    QTest::newRow( "data4" )   << QStringToQBitArray(QString("11011011111"))
+    BOBUIest::newRow( "data4" )   << QStringToQBitArray(QString("11011011111"))
                             << QStringToQBitArray(QString("00101100"))
                             << QStringToQBitArray(QString("11111111111"));
 
-    QTest::newRow( "data5" )   << QStringToQBitArray(QString())
+    BOBUIest::newRow( "data5" )   << QStringToQBitArray(QString())
                             << QStringToQBitArray(QString("00101100111"))
                             << QStringToQBitArray(QString("00101100111"));
 
-    QTest::newRow( "data6" ) << QStringToQBitArray(QString("00101100111"))
+    BOBUIest::newRow( "data6" ) << QStringToQBitArray(QString("00101100111"))
                              << QStringToQBitArray(QString())
                              << QStringToQBitArray(QString("00101100111"));
 
-    QTest::newRow( "data7" ) << QStringToQBitArray(QString())
+    BOBUIest::newRow( "data7" ) << QStringToQBitArray(QString())
                              << QStringToQBitArray(QString())
                              << QStringToQBitArray(QString());
 }
@@ -519,9 +519,9 @@ void tst_QBitArray::operator_oreq()
     result |= detached(input1);
     COMPARE_BITARRAY_EQ(result, res);
 
-QT_WARNING_PUSH
+BOBUI_WARNING_PUSH
 // Android clang emits warning: explicitly assigning value of variable of type 'QBitArray' to itself
-QT_WARNING_DISABLE_CLANG("-Wself-assign-overloaded")
+BOBUI_WARNING_DISABLE_CLANG("-Wself-assign-overloaded")
     // operation is idempotent
     result |= result;
     COMPARE_BITARRAY_EQ(result, res);
@@ -529,7 +529,7 @@ QT_WARNING_DISABLE_CLANG("-Wself-assign-overloaded")
     COMPARE_BITARRAY_EQ(result, res);
     result |= detached(result);
     COMPARE_BITARRAY_EQ(result, res);
-QT_WARNING_POP
+BOBUI_WARNING_POP
 }
 
 void tst_QBitArray::operator_or()
@@ -564,38 +564,38 @@ void tst_QBitArray::operator_or()
 
 void tst_QBitArray::operator_xoreq_data()
 {
-    QTest::addColumn<QBitArray>("input1");
-    QTest::addColumn<QBitArray>("input2");
-    QTest::addColumn<QBitArray>("res");
-    QTest::newRow( "data0" )   << QStringToQBitArray(QString("11111111"))
+    BOBUIest::addColumn<QBitArray>("input1");
+    BOBUIest::addColumn<QBitArray>("input2");
+    BOBUIest::addColumn<QBitArray>("res");
+    BOBUIest::newRow( "data0" )   << QStringToQBitArray(QString("11111111"))
                             << QStringToQBitArray(QString("00101100"))
                             << QStringToQBitArray(QString("11010011"));
 
-    QTest::newRow( "data1" )   << QStringToQBitArray(QString("11011011"))
+    BOBUIest::newRow( "data1" )   << QStringToQBitArray(QString("11011011"))
                             << QStringToQBitArray(QString("00101100"))
                             << QStringToQBitArray(QString("11110111"));
 
-    QTest::newRow( "data2" )   << QStringToQBitArray(QString("01000010"))
+    BOBUIest::newRow( "data2" )   << QStringToQBitArray(QString("01000010"))
                             << QStringToQBitArray(QString("10100001"))
                             << QStringToQBitArray(QString("11100011"));
 
-    QTest::newRow( "data3" )   << QStringToQBitArray(QString("01000010"))
+    BOBUIest::newRow( "data3" )   << QStringToQBitArray(QString("01000010"))
                             << QStringToQBitArray(QString("10100001101"))
                             << QStringToQBitArray(QString("11100011101"));
 
-    QTest::newRow( "data4" )   << QStringToQBitArray(QString("01000010111"))
+    BOBUIest::newRow( "data4" )   << QStringToQBitArray(QString("01000010111"))
                             << QStringToQBitArray(QString("101000011"))
                             << QStringToQBitArray(QString("11100011011"));
 
-    QTest::newRow( "data5" )   << QStringToQBitArray(QString())
+    BOBUIest::newRow( "data5" )   << QStringToQBitArray(QString())
                             << QStringToQBitArray(QString("00101100111"))
                             << QStringToQBitArray(QString("00101100111"));
 
-    QTest::newRow( "data6" ) << QStringToQBitArray(QString("00101100111"))
+    BOBUIest::newRow( "data6" ) << QStringToQBitArray(QString("00101100111"))
                              << QStringToQBitArray(QString())
                              << QStringToQBitArray(QString("00101100111"));
 
-    QTest::newRow( "data7" ) << QStringToQBitArray(QString())
+    BOBUIest::newRow( "data7" ) << QStringToQBitArray(QString())
                              << QStringToQBitArray(QString())
                              << QStringToQBitArray(QString());
 }
@@ -630,33 +630,33 @@ void tst_QBitArray::operator_xoreq()
     // XORing with oneself is nilpotent
     result = input1;
     result ^= input1;
-    QT_TEST_EQUALITY_OPS(result, QBitArray(input1.size()), true);
+    BOBUI_TEST_EQUALITY_OPS(result, QBitArray(input1.size()), true);
     result = input1;
     result ^= QBitArray(result);
-    QT_TEST_EQUALITY_OPS(result, QBitArray(input1.size()), true);
+    BOBUI_TEST_EQUALITY_OPS(result, QBitArray(input1.size()), true);
     result = input1;
     result ^= detached(result);
-    QT_TEST_EQUALITY_OPS(result, QBitArray(input1.size()), true);
+    BOBUI_TEST_EQUALITY_OPS(result, QBitArray(input1.size()), true);
 
     result = input2;
     result ^= input2;
-    QT_TEST_EQUALITY_OPS(result, QBitArray(input2.size()), true);
+    BOBUI_TEST_EQUALITY_OPS(result, QBitArray(input2.size()), true);
     result = input2;
     result ^= QBitArray(input2);
-    QT_TEST_EQUALITY_OPS(result, QBitArray(input2.size()), true);
+    BOBUI_TEST_EQUALITY_OPS(result, QBitArray(input2.size()), true);
     result = input2;
     result ^= detached(input2);
-    QT_TEST_EQUALITY_OPS(result, QBitArray(input2.size()), true);
+    BOBUI_TEST_EQUALITY_OPS(result, QBitArray(input2.size()), true);
 
     result = res;
     result ^= res;
-    QT_TEST_EQUALITY_OPS(result, QBitArray(res.size()), true);
+    BOBUI_TEST_EQUALITY_OPS(result, QBitArray(res.size()), true);
     result = res;
     result ^= QBitArray(res);
-    QT_TEST_EQUALITY_OPS(result, QBitArray(res.size()), true);
+    BOBUI_TEST_EQUALITY_OPS(result, QBitArray(res.size()), true);
     result = res;
     result ^= detached(res);
-    QT_TEST_EQUALITY_OPS(result, QBitArray(res.size()), true);
+    BOBUI_TEST_EQUALITY_OPS(result, QBitArray(res.size()), true);
 }
 
 void tst_QBitArray::operator_xor()
@@ -682,63 +682,63 @@ void tst_QBitArray::operator_xor()
 
     // XORing with oneself is nilpotent
     result = input1 ^ input1;
-    QT_TEST_EQUALITY_OPS(result, QBitArray(input1.size()), true);
+    BOBUI_TEST_EQUALITY_OPS(result, QBitArray(input1.size()), true);
     result = input1 ^ QBitArray(input1);
-    QT_TEST_EQUALITY_OPS(result, QBitArray(input1.size()), true);
+    BOBUI_TEST_EQUALITY_OPS(result, QBitArray(input1.size()), true);
     result = input1 ^ detached(input1);
-    QT_TEST_EQUALITY_OPS(result, QBitArray(input1.size()), true);
+    BOBUI_TEST_EQUALITY_OPS(result, QBitArray(input1.size()), true);
 
     result = input2 ^ input2;
-    QT_TEST_EQUALITY_OPS(result, QBitArray(input2.size()), true);
+    BOBUI_TEST_EQUALITY_OPS(result, QBitArray(input2.size()), true);
     result = input2 ^ QBitArray(input2);
-    QT_TEST_EQUALITY_OPS(result, QBitArray(input2.size()), true);
+    BOBUI_TEST_EQUALITY_OPS(result, QBitArray(input2.size()), true);
     result = input2 ^ detached(input2);
-    QT_TEST_EQUALITY_OPS(result, QBitArray(input2.size()), true);
+    BOBUI_TEST_EQUALITY_OPS(result, QBitArray(input2.size()), true);
 
     result = res ^ res;
-    QT_TEST_EQUALITY_OPS(result, QBitArray(res.size()), true);
+    BOBUI_TEST_EQUALITY_OPS(result, QBitArray(res.size()), true);
     result = res ^ QBitArray(res);
-    QT_TEST_EQUALITY_OPS(result, QBitArray(res.size()), true);
+    BOBUI_TEST_EQUALITY_OPS(result, QBitArray(res.size()), true);
     result = res ^ detached(res);
-    QT_TEST_EQUALITY_OPS(result, QBitArray(res.size()), true);
+    BOBUI_TEST_EQUALITY_OPS(result, QBitArray(res.size()), true);
 }
 
 void tst_QBitArray::operator_neg_data()
 {
-    QTest::addColumn<QBitArray>("input");
-    QTest::addColumn<QBitArray>("res");
+    BOBUIest::addColumn<QBitArray>("input");
+    BOBUIest::addColumn<QBitArray>("res");
 
-    QTest::newRow( "data0" )   << QStringToQBitArray(QString("11111111"))
+    BOBUIest::newRow( "data0" )   << QStringToQBitArray(QString("11111111"))
                                << QStringToQBitArray(QString("00000000"));
 
-    QTest::newRow( "data1" )   << QStringToQBitArray(QString("11011011"))
+    BOBUIest::newRow( "data1" )   << QStringToQBitArray(QString("11011011"))
                                << QStringToQBitArray(QString("00100100"));
 
-    QTest::newRow( "data2" )   << QStringToQBitArray(QString("00000000"))
+    BOBUIest::newRow( "data2" )   << QStringToQBitArray(QString("00000000"))
                                << QStringToQBitArray(QString("11111111"));
 
-    QTest::newRow( "data3" )   << QStringToQBitArray(QString())
+    BOBUIest::newRow( "data3" )   << QStringToQBitArray(QString())
                                << QStringToQBitArray(QString());
 
-    QTest::newRow( "data4" )   << QStringToQBitArray("1")
+    BOBUIest::newRow( "data4" )   << QStringToQBitArray("1")
                                << QStringToQBitArray("0");
 
-    QTest::newRow( "data5" )   << QStringToQBitArray("0")
+    BOBUIest::newRow( "data5" )   << QStringToQBitArray("0")
                                << QStringToQBitArray("1");
 
-    QTest::newRow( "data6" )   << QStringToQBitArray("01")
+    BOBUIest::newRow( "data6" )   << QStringToQBitArray("01")
                                << QStringToQBitArray("10");
 
-    QTest::newRow( "data7" )   << QStringToQBitArray("1110101")
+    BOBUIest::newRow( "data7" )   << QStringToQBitArray("1110101")
                                << QStringToQBitArray("0001010");
 
-    QTest::newRow( "data8" )   << QStringToQBitArray("01110101")
+    BOBUIest::newRow( "data8" )   << QStringToQBitArray("01110101")
                                << QStringToQBitArray("10001010");
 
-    QTest::newRow( "data9" )   << QStringToQBitArray("011101010")
+    BOBUIest::newRow( "data9" )   << QStringToQBitArray("011101010")
                                << QStringToQBitArray("100010101");
 
-    QTest::newRow( "data10" )   << QStringToQBitArray("0111010101111010")
+    BOBUIest::newRow( "data10" )   << QStringToQBitArray("0111010101111010")
                                 << QStringToQBitArray("1000101010000101");
 }
 
@@ -750,28 +750,28 @@ void tst_QBitArray::operator_neg()
     input = ~input;
 
     COMPARE_BITARRAY_EQ(input, res);
-    QT_TEST_EQUALITY_OPS(~~input, res, true);     // performs two in-place negations
+    BOBUI_TEST_EQUALITY_OPS(~~input, res, true);     // performs two in-place negations
 }
 
 void tst_QBitArray::datastream_data()
 {
-    QTest::addColumn<QString>("bitField");
-    QTest::addColumn<int>("numBits");
-    QTest::addColumn<int>("onBits");
+    BOBUIest::addColumn<QString>("bitField");
+    BOBUIest::addColumn<int>("numBits");
+    BOBUIest::addColumn<int>("onBits");
 
-    QTest::newRow("empty") << QString() << 0 << 0;
-    QTest::newRow("1") << QString("1") << 1 << 1;
-    QTest::newRow("101") << QString("101") << 3 << 2;
-    QTest::newRow("101100001") << QString("101100001") << 9 << 4;
-    QTest::newRow("101100001101100001") << QString("101100001101100001") << 18 << 8;
-    QTest::newRow("101100001101100001101100001101100001") << QString("101100001101100001101100001101100001") << 36 << 16;
-    QTest::newRow("00000000000000000000000000000000000") << QString("00000000000000000000000000000000000") << 35 << 0;
-    QTest::newRow("11111111111111111111111111111111111") << QString("11111111111111111111111111111111111") << 35 << 35;
-    QTest::newRow("11111111111111111111111111111111") << QString("11111111111111111111111111111111") << 32 << 32;
-    QTest::newRow("11111111111111111111111111111111111111111111111111111111")
+    BOBUIest::newRow("empty") << QString() << 0 << 0;
+    BOBUIest::newRow("1") << QString("1") << 1 << 1;
+    BOBUIest::newRow("101") << QString("101") << 3 << 2;
+    BOBUIest::newRow("101100001") << QString("101100001") << 9 << 4;
+    BOBUIest::newRow("101100001101100001") << QString("101100001101100001") << 18 << 8;
+    BOBUIest::newRow("101100001101100001101100001101100001") << QString("101100001101100001101100001101100001") << 36 << 16;
+    BOBUIest::newRow("00000000000000000000000000000000000") << QString("00000000000000000000000000000000000") << 35 << 0;
+    BOBUIest::newRow("11111111111111111111111111111111111") << QString("11111111111111111111111111111111111") << 35 << 35;
+    BOBUIest::newRow("11111111111111111111111111111111") << QString("11111111111111111111111111111111") << 32 << 32;
+    BOBUIest::newRow("11111111111111111111111111111111111111111111111111111111")
         << QString("11111111111111111111111111111111111111111111111111111111") << 56 << 56;
-    QTest::newRow("00000000000000000000000000000000") << QString("00000000000000000000000000000000") << 32 << 0;
-    QTest::newRow("00000000000000000000000000000000000000000000000000000000")
+    BOBUIest::newRow("00000000000000000000000000000000") << QString("00000000000000000000000000000000") << 32 << 0;
+    BOBUIest::newRow("00000000000000000000000000000000000000000000000000000000")
         << QString("00000000000000000000000000000000000000000000000000000000") << 56 << 0;
 }
 
@@ -818,36 +818,36 @@ void tst_QBitArray::datastream()
 void tst_QBitArray::invertOnNull() const
 {
     QBitArray a;
-    QT_TEST_EQUALITY_OPS(a = ~a, QBitArray(), true);
+    BOBUI_TEST_EQUALITY_OPS(a = ~a, QBitArray(), true);
 }
 
 void tst_QBitArray::operator_noteq_data()
 {
-    QTest::addColumn<QBitArray>("input1");
-    QTest::addColumn<QBitArray>("input2");
-    QTest::addColumn<bool>("res");
+    BOBUIest::addColumn<QBitArray>("input1");
+    BOBUIest::addColumn<QBitArray>("input2");
+    BOBUIest::addColumn<bool>("res");
 
-    QTest::newRow("data0") << QStringToQBitArray(QString("11111111"))
+    BOBUIest::newRow("data0") << QStringToQBitArray(QString("11111111"))
                            << QStringToQBitArray(QString("00101100"))
                            << true;
 
-    QTest::newRow("data1") << QStringToQBitArray(QString("11011011"))
+    BOBUIest::newRow("data1") << QStringToQBitArray(QString("11011011"))
                            << QStringToQBitArray(QString("11011011"))
                            << false;
 
-    QTest::newRow("data2") << QStringToQBitArray(QString())
+    BOBUIest::newRow("data2") << QStringToQBitArray(QString())
                            << QStringToQBitArray(QString("00101100111"))
                            << true;
 
-    QTest::newRow("data3") << QStringToQBitArray(QString())
+    BOBUIest::newRow("data3") << QStringToQBitArray(QString())
                            << QStringToQBitArray(QString())
                            << false;
 
-    QTest::newRow("data4") << QStringToQBitArray(QString("00101100"))
+    BOBUIest::newRow("data4") << QStringToQBitArray(QString("00101100"))
                            << QStringToQBitArray(QString("11111111"))
                            << true;
 
-    QTest::newRow("data5") << QStringToQBitArray(QString("00101100111"))
+    BOBUIest::newRow("data5") << QStringToQBitArray(QString("00101100111"))
                            << QStringToQBitArray(QString())
                            << true;
 }
@@ -859,7 +859,7 @@ void tst_QBitArray::operator_noteq()
     QFETCH(bool, res);
 
     bool b = input1 != input2;
-    QT_TEST_EQUALITY_OPS(b, res, true);
+    BOBUI_TEST_EQUALITY_OPS(b, res, true);
 }
 
 void tst_QBitArray::resize()
@@ -868,35 +868,35 @@ void tst_QBitArray::resize()
     QBitArray a = QStringToQBitArray(QString("11"));
     a.resize(10);
     QVERIFY(a.size() == 10);
-    QT_TEST_EQUALITY_OPS( a, QStringToQBitArray(QString("1100000000")), true);
+    BOBUI_TEST_EQUALITY_OPS( a, QStringToQBitArray(QString("1100000000")), true);
 
     a.setBit(9);
     a.resize(9);
     // now the bit in a should have been gone:
-    QT_TEST_EQUALITY_OPS( a, QStringToQBitArray(QString("110000000")), true);
+    BOBUI_TEST_EQUALITY_OPS( a, QStringToQBitArray(QString("110000000")), true);
 
     // grow the array back and check the new bit
     a.resize(10);
-    QT_TEST_EQUALITY_OPS( a, QStringToQBitArray(QString("1100000000")), true);
+    BOBUI_TEST_EQUALITY_OPS( a, QStringToQBitArray(QString("1100000000")), true);
 
     // other test with and
     a.resize(9);
     QBitArray b = QStringToQBitArray(QString("1111111111"));
     b &= a;
-    QT_TEST_EQUALITY_OPS( b, QStringToQBitArray(QString("1100000000")), true);
+    BOBUI_TEST_EQUALITY_OPS( b, QStringToQBitArray(QString("1100000000")), true);
 
 }
 
 void tst_QBitArray::fromBits_data()
 {
-    QTest::addColumn<QByteArray>("data");
-    QTest::addColumn<int>("size");
-    QTest::addColumn<QBitArray>("expected");
+    BOBUIest::addColumn<QByteArray>("data");
+    BOBUIest::addColumn<int>("size");
+    BOBUIest::addColumn<QBitArray>("expected");
 
-    QTest::newRow("empty") << QByteArray() << 0 << QBitArray();
+    BOBUIest::newRow("empty") << QByteArray() << 0 << QBitArray();
 
     auto add = [](const QByteArray &tag, const char *data) {
-        QTest::newRow(tag) << QByteArray(data, (tag.size() + 7) / 8) << tag.size()
+        BOBUIest::newRow(tag) << QByteArray(data, (tag.size() + 7) / 8) << tag.size()
                            << QStringToQBitArray(tag);
     };
 
@@ -937,84 +937,84 @@ void tst_QBitArray::fromBits()
     QFETCH(QBitArray, expected);
 
     QBitArray fromBits = QBitArray::fromBits(data, size);
-    QT_TEST_EQUALITY_OPS(fromBits, expected, true);
+    BOBUI_TEST_EQUALITY_OPS(fromBits, expected, true);
 
-    QT_TEST_EQUALITY_OPS(QBitArray::fromBits(fromBits.bits(), fromBits.size()), expected, true);
+    BOBUI_TEST_EQUALITY_OPS(QBitArray::fromBits(fromBits.bits(), fromBits.size()), expected, true);
 }
 
 void tst_QBitArray::toUInt32_data()
 {
-    QTest::addColumn<QBitArray>("data");
-    QTest::addColumn<int>("endianness");
-    QTest::addColumn<bool>("check");
-    QTest::addColumn<quint32>("result");
+    BOBUIest::addColumn<QBitArray>("data");
+    BOBUIest::addColumn<int>("endianness");
+    BOBUIest::addColumn<bool>("check");
+    BOBUIest::addColumn<quint32>("result");
 
-    QTest::newRow("ctor")           << QBitArray()
+    BOBUIest::newRow("ctor")           << QBitArray()
                                     << static_cast<int>(QSysInfo::Endian::LittleEndian)
                                     << true
                                     << quint32(0);
 
-    QTest::newRow("empty")          << QBitArray(0)
+    BOBUIest::newRow("empty")          << QBitArray(0)
                                     << static_cast<int>(QSysInfo::Endian::LittleEndian)
                                     << true
                                     << quint32(0);
 
-    QTest::newRow("LittleEndian4")  << QStringToQBitArray(QString("0111"))
+    BOBUIest::newRow("LittleEndian4")  << QStringToQBitArray(QString("0111"))
                                     << static_cast<int>(QSysInfo::Endian::LittleEndian)
                                     << true
                                     << quint32(14);
 
-    QTest::newRow("BigEndian4")     << QStringToQBitArray(QString("0111"))
+    BOBUIest::newRow("BigEndian4")     << QStringToQBitArray(QString("0111"))
                                     << static_cast<int>(QSysInfo::Endian::BigEndian)
                                     << true
                                     << quint32(7);
 
-    QTest::newRow("LittleEndian8")  << QStringToQBitArray(QString("01111111"))
+    BOBUIest::newRow("LittleEndian8")  << QStringToQBitArray(QString("01111111"))
                                     << static_cast<int>(QSysInfo::Endian::LittleEndian)
                                     << true
                                     << quint32(254);
 
-    QTest::newRow("BigEndian8")     << QStringToQBitArray(QString("01111111"))
+    BOBUIest::newRow("BigEndian8")     << QStringToQBitArray(QString("01111111"))
                                     << static_cast<int>(QSysInfo::Endian::BigEndian)
                                     << true
                                     << quint32(127);
 
-    QTest::newRow("LittleEndian16") << QStringToQBitArray(QString("0111111111111111"))
+    BOBUIest::newRow("LittleEndian16") << QStringToQBitArray(QString("0111111111111111"))
                                     << static_cast<int>(QSysInfo::Endian::LittleEndian)
                                     << true
                                     << quint32(65534);
 
-    QTest::newRow("BigEndian16")    << QStringToQBitArray(QString("0111111111111111"))
+    BOBUIest::newRow("BigEndian16")    << QStringToQBitArray(QString("0111111111111111"))
                                     << static_cast<int>(QSysInfo::Endian::BigEndian)
                                     << true
                                     << quint32(32767);
 
-    QTest::newRow("LittleEndian31") << QBitArray(31, true)
+    BOBUIest::newRow("LittleEndian31") << QBitArray(31, true)
                                     << static_cast<int>(QSysInfo::Endian::LittleEndian)
                                     << true
                                     << quint32(2147483647);
 
-    QTest::newRow("BigEndian31")    << QBitArray(31, true)
+    BOBUIest::newRow("BigEndian31")    << QBitArray(31, true)
                                     << static_cast<int>(QSysInfo::Endian::BigEndian)
                                     << true
                                     << quint32(2147483647);
 
-    QTest::newRow("LittleEndian32") << QBitArray(32, true)
+    BOBUIest::newRow("LittleEndian32") << QBitArray(32, true)
                                     << static_cast<int>(QSysInfo::Endian::LittleEndian)
                                     << true
                                     << quint32(4294967295);
 
-    QTest::newRow("BigEndian32")    << QBitArray(32, true)
+    BOBUIest::newRow("BigEndian32")    << QBitArray(32, true)
                                     << static_cast<int>(QSysInfo::Endian::BigEndian)
                                     << true
                                     << quint32(4294967295);
 
-    QTest::newRow("LittleEndian33") << QBitArray(33, true)
+    BOBUIest::newRow("LittleEndian33") << QBitArray(33, true)
                                     << static_cast<int>(QSysInfo::Endian::LittleEndian)
                                     << false
                                     << quint32(0);
 
-    QTest::newRow("BigEndian33")    << QBitArray(33, true)
+    BOBUIest::newRow("BigEndian33")    << QBitArray(33, true)
                                     << static_cast<int>(QSysInfo::Endian::BigEndian)
                                     << false
                                     << quint32(0);
@@ -1032,5 +1032,5 @@ void tst_QBitArray::toUInt32()
     QCOMPARE(ok, check);
 }
 
-QTEST_APPLESS_MAIN(tst_QBitArray)
+BOBUIEST_APPLESS_MAIN(tst_QBitArray)
 #include "tst_qbitarray.moc"

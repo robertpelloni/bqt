@@ -1,7 +1,7 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2021 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
-#include <QTest>
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
+#include <BOBUIest>
 
 #include <QCoreApplication>
 #include <QDebug>
@@ -67,11 +67,11 @@ void tst_QPlugin::loadDebugPlugin()
         QObject *object = loader.instance();
         QVERIFY(object != 0);
 #else
-#  if defined(CMAKE_BUILD) && defined(QT_NO_DEBUG)
+#  if defined(CMAKE_BUILD) && defined(BOBUI_NO_DEBUG)
     QSKIP("Skipping test as it is not possible to disable build targets based on configuration with CMake");
 #  endif
         // loading a plugin is dependent on which lib we are running against
-#  if defined(QT_NO_DEBUG)
+#  if defined(BOBUI_NO_DEBUG)
         // release build, we cannot load debug plugins
         QVERIFY(!loader.load());
 #  else
@@ -100,11 +100,11 @@ void tst_QPlugin::loadReleasePlugin()
         QObject *object = loader.instance();
         QVERIFY(object != 0);
 #else
-#  if defined(CMAKE_BUILD) && !defined(QT_NO_DEBUG)
+#  if defined(CMAKE_BUILD) && !defined(BOBUI_NO_DEBUG)
     QSKIP("Skipping test as it is not possible to disable build targets based on configuration with CMake");
 #  endif
         // loading a plugin is dependent on which lib we are running against
-#  if defined(QT_NO_DEBUG)
+#  if defined(BOBUI_NO_DEBUG)
         // release build, we can load debug plugins
         QVERIFY(loader.load());
         QObject *object = loader.instance();
@@ -119,9 +119,9 @@ void tst_QPlugin::loadReleasePlugin()
 
 void tst_QPlugin::scanInvalidPlugin_data()
 {
-    QTest::addColumn<QByteArray>("metadata");
-    QTest::addColumn<bool>("loads");
-    QTest::addColumn<QString>("errMsg");
+    BOBUIest::addColumn<QByteArray>("metadata");
+    BOBUIest::addColumn<bool>("loads");
+    BOBUIest::addColumn<QString>("errMsg");
 
     // CBOR metadata
     static constexpr QPluginMetaData::MagicHeader header = {};
@@ -130,33 +130,33 @@ void tst_QPlugin::scanInvalidPlugin_data()
 
     QByteArray cborValid = [] {
         QCborMap m;
-        m.insert(int(QtPluginMetaDataKeys::IID), QLatin1String("org.qt-project.tst_qplugin"));
-        m.insert(int(QtPluginMetaDataKeys::ClassName), QLatin1String("tst"));
-        m.insert(int(QtPluginMetaDataKeys::MetaData), QCborMap());
+        m.insert(int(BobUIPluginMetaDataKeys::IID), QLatin1String("org.bobui-project.tst_qplugin"));
+        m.insert(int(BobUIPluginMetaDataKeys::ClassName), QLatin1String("tst"));
+        m.insert(int(BobUIPluginMetaDataKeys::MetaData), QCborMap());
         return QCborValue(m).toCbor();
     }();
-    QTest::newRow("cbor-control") << (cprefix + cborValid) << true << "";
+    BOBUIest::newRow("cbor-control") << (cprefix + cborValid) << true << "";
 
-    cprefix[MagicLen + 1] = QT_VERSION_MAJOR + 1;
-    QTest::newRow("cbor-major-too-new") << (cprefix + cborValid) << false << "";
+    cprefix[MagicLen + 1] = BOBUI_VERSION_MAJOR + 1;
+    BOBUIest::newRow("cbor-major-too-new") << (cprefix + cborValid) << false << "";
 
-    cprefix[MagicLen + 1] = QT_VERSION_MAJOR - 1;
-    QTest::newRow("cbor-major-too-old") << (cprefix + cborValid) << false << "";
+    cprefix[MagicLen + 1] = BOBUI_VERSION_MAJOR - 1;
+    BOBUIest::newRow("cbor-major-too-old") << (cprefix + cborValid) << false << "";
 
-    cprefix[MagicLen + 1] = QT_VERSION_MAJOR;
-    cprefix[MagicLen + 2] = QT_VERSION_MINOR + 1;
-    QTest::newRow("cbor-minor-too-new") << (cprefix + cborValid) << false << "";
+    cprefix[MagicLen + 1] = BOBUI_VERSION_MAJOR;
+    cprefix[MagicLen + 2] = BOBUI_VERSION_MINOR + 1;
+    BOBUIest::newRow("cbor-minor-too-new") << (cprefix + cborValid) << false << "";
 
-    cprefix[MagicLen + 2] = QT_VERSION_MINOR;
-    QTest::newRow("cbor-invalid") << (cprefix + "\xff") << false
+    cprefix[MagicLen + 2] = BOBUI_VERSION_MINOR;
+    BOBUIest::newRow("cbor-invalid") << (cprefix + "\xff") << false
                                   << " Metadata parsing error: Invalid CBOR stream: unexpected 'break' byte";
-    QTest::newRow("cbor-not-map1") << (cprefix + "\x01") << false
+    BOBUIest::newRow("cbor-not-map1") << (cprefix + "\x01") << false
                                    << " Unexpected metadata contents";
-    QTest::newRow("cbor-not-map2") << (cprefix + "\x81\x01") << false
+    BOBUIest::newRow("cbor-not-map2") << (cprefix + "\x81\x01") << false
                                    << " Unexpected metadata contents";
 
     ++cprefix[MagicLen + 0];
-    QTest::newRow("cbor-major-too-new-invalid")
+    BOBUIest::newRow("cbor-major-too-new-invalid")
         << (cprefix + cborValid) << false << " Invalid metadata version";
 }
 
@@ -194,7 +194,7 @@ void tst_QPlugin::scanInvalidPlugin()
 
     // copy the file
     QFileInfo fn(invalidPluginName);
-    QTemporaryDir tmpdir;
+    BOBUIemporaryDir tmpdir;
     QVERIFY(tmpdir.isValid());
 
     QString newName = tmpdir.path() + '/' + fn.fileName();
@@ -204,7 +204,7 @@ void tst_QPlugin::scanInvalidPlugin()
         QFile f(newName);
 #ifdef Q_OS_ANDROID
         // set write permission to plugin file that's copied from read-only location
-        if (QtAndroidPrivate::isUncompressedNativeLibs())
+        if (BobUIAndroidPrivate::isUncompressedNativeLibs())
             f.setPermissions(QFileDevice::WriteOwner | f.permissions());
 #endif
         QVERIFY(f.open(QIODevice::ReadWrite | QIODevice::Unbuffered));
@@ -227,7 +227,7 @@ void tst_QPlugin::scanInvalidPlugin()
 
 #if defined(Q_OS_QNX)
     // On QNX plugin access is still too early
-    QTest::qSleep(1000);
+    BOBUIest::qSleep(1000);
 #endif
 
     // now try to load this
@@ -239,5 +239,5 @@ void tst_QPlugin::scanInvalidPlugin()
         loader.unload();
 }
 
-QTEST_MAIN(tst_QPlugin)
+BOBUIEST_MAIN(tst_QPlugin)
 #include "tst_qplugin.moc"

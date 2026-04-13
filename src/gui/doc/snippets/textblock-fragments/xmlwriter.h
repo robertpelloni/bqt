@@ -1,32 +1,32 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef XMLWRITER_H
 #define XMLWRITER_H
 
 #include <QDomDocument>
-#include <QTextBlock>
+#include <BOBUIextBlock>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-class QTextDocument;
+class BOBUIextDocument;
 
 class XmlWriter
 {
 public:
-    XmlWriter(QTextDocument *document) : textDocument(document) {}
+    XmlWriter(BOBUIextDocument *document) : textDocument(document) {}
     QDomDocument *toXml();
 
 private:
-    void readFragment(const QTextBlock &currentBlock, QDomElement blockElement,
+    void readFragment(const BOBUIextBlock &currentBlock, QDomElement blockElement,
                       QDomDocument *document);
-    void processBlock(const QTextBlock &currentBlock);
-    void processFragment(const QTextFragment &currentFragment);
+    void processBlock(const BOBUIextBlock &currentBlock);
+    void processFragment(const BOBUIextFragment &currentFragment);
 
     QDomDocument *document;
-    QTextDocument *textDocument;
+    BOBUIextDocument *textDocument;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

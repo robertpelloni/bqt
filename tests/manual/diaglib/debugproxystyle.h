@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef DEBUGPROXYSTYLE_H
 #define DEBUGPROXYSTYLE_H
 
 #include <QProxyStyle>
 
-namespace QtDiag {
+namespace BobUIDiag {
 
 class DebugProxyStyle : public QProxyStyle {
     Q_OBJECT
@@ -29,6 +29,6 @@ public:
     QPixmap generatedIconPixmap(QIcon::Mode iconMode, const QPixmap &pixmap, const QStyleOption *opt) const override;
 };
 
-} // namespace QtDiag
+} // namespace BobUIDiag
 
 #endif // DEBUGPROXYSTYLE_H

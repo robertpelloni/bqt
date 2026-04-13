@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "webview.h"
 #include "webview_p.h"
-#include <QtGui>
+#include <BobUIGui>
 
 static const int MotionEndWaitTime = 2000;
 static const int TileSideLength = 128;
@@ -18,9 +18,9 @@ WebViewPrivate::WebViewPrivate(WebView *w)
 
     web->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     web->page()->mainFrame()->setScrollBarPolicy(
-        Qt::Horizontal, Qt::ScrollBarAlwaysOff);
+        BobUI::Horizontal, BobUI::ScrollBarAlwaysOff);
     web->page()->mainFrame()->setScrollBarPolicy(
-        Qt::Vertical, Qt::ScrollBarAlwaysOff);
+        BobUI::Vertical, BobUI::ScrollBarAlwaysOff);
     web->setZValue(3);
 
 //    cache = new WebViewCache(web);
@@ -245,9 +245,9 @@ void WebView::scrollContentsBy(qreal dx, qreal dy)
     d->web->setPos(x, y);
 }
 
-QSizeF WebView::sizeHint(Qt::SizeHint which, const QSizeF & constraint) const
+QSizeF WebView::sizeHint(BobUI::SizeHint which, const QSizeF & constraint) const
 {
-    if (which == Qt::PreferredSize) {
+    if (which == BobUI::PreferredSize) {
         QSizeF contentSize = d->web->page()->mainFrame()->contentsSize();
         return contentSize;
     }

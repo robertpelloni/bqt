@@ -1,13 +1,13 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QObject>
 #include <QScopeGuard>
 #include <private/qwinregistry_p.h>
-#include <qt_windows.h>
+#include <bobui_windows.h>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static constexpr const wchar_t TEST_KEY[] = LR"(SOFTWARE\tst_qwinregistrykey)";
 
@@ -284,10 +284,10 @@ void tst_qwinregistrykey::valueChanged()
     for (int i = 0; i < 10; ++i) {
         valueChanged = false;
         QVERIFY(write(testKey, L"valueThatCanChange", i));
-        QTRY_VERIFY(valueChanged);
+        BOBUIRY_VERIFY(valueChanged);
     }
 }
 
-QTEST_MAIN(tst_qwinregistrykey)
+BOBUIEST_MAIN(tst_qwinregistrykey)
 
 #include "tst_qwinregistrykey.moc"

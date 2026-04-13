@@ -1,24 +1,24 @@
-Qt 5.13.2 is a bug-fix release. It maintains both forward and backward
-compatibility (source and binary) with Qt 5.13.0 through 5.13.1.
+BobUI 5.13.2 is a bug-fix release. It maintains both forward and backward
+compatibility (source and binary) with BobUI 5.13.0 through 5.13.1.
 
 For more details, refer to the online documentation included in this
 distribution. The documentation is also available online:
 
-https://doc.qt.io/qt-5/index.html
+https://doc.bobui.io/bobui-5/index.html
 
-The Qt version 5.13 series is binary compatible with the 5.12.x series.
+The BobUI version 5.13 series is binary compatible with the 5.12.x series.
 Applications compiled for 5.12 will continue to run with 5.13.
 
 Some of the changes listed in this file include issue tracking numbers
-corresponding to tasks in the Qt Bug Tracker:
+corresponding to tasks in the BobUI Bug Tracker:
 
-https://bugreports.qt.io/
+https://bugreports.bobui.io/
 
 Each of these identifiers can be entered in the bug tracker to obtain more
 information about a particular change.
 
 ****************************************************************************
-*                                  QtCore                                  *
+*                                  BobUICore                                  *
 ****************************************************************************
 
  - Fixed a bug that made qErrnoWarning() say there was no error when
@@ -37,18 +37,18 @@ information about a particular change.
  - QObject:
    * Fixed a resource leak caused by a race condition if multiple QObjects
      were created at the same time, for the first time in an application,
-     from multiple threads (implies threads not started with QThread).
+     from multiple threads (implies threads not started with BOBUIhread).
 
 ****************************************************************************
-*                                  QtGui                                   *
+*                                  BobUIGui                                   *
 ****************************************************************************
 
  - Text:
-   * [QTBUG-69546] Fixed a crash bug in
-     QTextDocument::clearUndoRedoStacks(QTextDocument::UndoStack).
+   * [BOBUIBUG-69546] Fixed a crash bug in
+     BOBUIextDocument::clearUndoRedoStacks(BOBUIextDocument::UndoStack).
 
 ****************************************************************************
-*                                  QtSQL                                   *
+*                                  BobUISQL                                   *
 ****************************************************************************
 
  - sqlite:
@@ -59,11 +59,11 @@ information about a particular change.
 ****************************************************************************
 
  - Linux:
-   * [QTBUG-61916] Added an environment variable
-     QT_QPA_PRESERVE_CONSOLE_STATE that can be used to prevent Qt from
+   * [BOBUIBUG-61916] Added an environment variable
+     BOBUI_QPA_PRESERVE_CONSOLE_STATE that can be used to prevent BobUI from
      altering the tty screen and cursor settings when running with
      platforms like linuxfb and eglfs.
 
  - Android:
-   * [QTBUG-76036] Fixed an issue where menus would not work on 64 bit
+   * [BOBUIBUG-76036] Fixed an issue where menus would not work on 64 bit
      builds.

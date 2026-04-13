@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QEVDEVKEYBOARDHANDLER_P_H
 #define QEVDEVKEYBOARDHANDLER_P_H
@@ -8,7 +8,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -17,15 +17,15 @@
 
 #include <qobject.h>
 #include <qloggingcategory.h>
-#include <QtInputSupport/private/qfdcontainer_p.h>
-#include <QtInputSupport/private/qkeyboardmap_p.h>
-#include <QtInputSupport/private/qkeycodeaction_p.h>
+#include <BobUIInputSupport/private/qfdcontainer_p.h>
+#include <BobUIInputSupport/private/qkeyboardmap_p.h>
+#include <BobUIInputSupport/private/qkeycodeaction_p.h>
 
 #include <private/qglobal_p.h>
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(qLcEvdevKey)
 
@@ -50,8 +50,8 @@ public:
     void switchLang();
 
 private:
-    void processKeyEvent(int nativecode, int unicode, int qtcode,
-                         Qt::KeyboardModifiers modifiers, bool isPress, bool autoRepeat);
+    void processKeyEvent(int nativecode, int unicode, int bobuicode,
+                         BobUI::KeyboardModifiers modifiers, bool isPress, bool autoRepeat);
     void switchLed(int, bool);
 
     QString m_device;
@@ -78,6 +78,6 @@ private:
 };
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QEVDEVKEYBOARDHANDLER_P_H

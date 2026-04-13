@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylanddnd_p.h"
 
@@ -9,13 +9,13 @@
 #include "qwaylandinputdevice_p.h"
 #include "qwaylanddisplay_p.h"
 
-#include <QtGui/private/qshapedpixmapdndwindow_p.h>
+#include <BobUIGui/private/qshapedpixmapdndwindow_p.h>
 
 #include <QDebug>
 
-QT_BEGIN_NAMESPACE
-#if QT_CONFIG(draganddrop)
-namespace QtWaylandClient {
+BOBUI_BEGIN_NAMESPACE
+#if BOBUI_CONFIG(draganddrop)
+namespace BobUIWaylandClient {
 
 QWaylandDrag::QWaylandDrag(QWaylandDisplay *display)
     : m_display(display)
@@ -40,7 +40,7 @@ void QWaylandDrag::startDrag()
     } else {
         // Cancelling immediately does not work, since the event loop for QDrag::exec is started
         // after this function returns.
-        QMetaObject::invokeMethod(this, [this](){ cancelDrag(); }, Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this, [this](){ cancelDrag(); }, BobUI::QueuedConnection);
     }
 }
 
@@ -54,7 +54,7 @@ void QWaylandDrag::cancel()
         drag()->deleteLater();
 }
 
-void QWaylandDrag::move(const QPoint &globalPos, Qt::MouseButtons b, Qt::KeyboardModifiers mods)
+void QWaylandDrag::move(const QPoint &globalPos, BobUI::MouseButtons b, BobUI::KeyboardModifiers mods)
 {
     Q_UNUSED(globalPos);
     Q_UNUSED(b);
@@ -62,7 +62,7 @@ void QWaylandDrag::move(const QPoint &globalPos, Qt::MouseButtons b, Qt::Keyboar
     // Do nothing
 }
 
-void QWaylandDrag::drop(const QPoint &globalPos, Qt::MouseButtons b, Qt::KeyboardModifiers mods)
+void QWaylandDrag::drop(const QPoint &globalPos, BobUI::MouseButtons b, BobUI::KeyboardModifiers mods)
 {
     QBasicDrag::drop(globalPos, b, mods);
 }
@@ -75,29 +75,29 @@ void QWaylandDrag::endDrag()
 void QWaylandDrag::setResponse(bool accepted)
 {
     // This method is used for old DataDevices where the drag action is not communicated
-    Qt::DropAction action = defaultAction(drag()->supportedActions(), m_display->currentInputDevice()->modifiers());
-    setResponse(QPlatformDropQtResponse(accepted, action));
+    BobUI::DropAction action = defaultAction(drag()->supportedActions(), m_display->currentInputDevice()->modifiers());
+    setResponse(QPlatformDropBobUIResponse(accepted, action));
 }
 
-void QWaylandDrag::setResponse(const QPlatformDropQtResponse &response)
+void QWaylandDrag::setResponse(const QPlatformDropBobUIResponse &response)
 {
     setCanDrop(response.isAccepted());
 
     if (canDrop()) {
         updateCursor(response.acceptedAction());
     } else {
-        updateCursor(Qt::IgnoreAction);
+        updateCursor(BobUI::IgnoreAction);
     }
 }
 
-void QWaylandDrag::setDropResponse(const QPlatformDropQtResponse &response)
+void QWaylandDrag::setDropResponse(const QPlatformDropBobUIResponse &response)
 {
-    setExecutedDropAction(response.isAccepted() ? response.acceptedAction() : Qt::IgnoreAction);
+    setExecutedDropAction(response.isAccepted() ? response.acceptedAction() : BobUI::IgnoreAction);
 }
 
 void QWaylandDrag::finishDrag()
 {
-    QKeyEvent event(QEvent::KeyPress, Qt::Key_Escape, Qt::NoModifier);
+    QKeyEvent event(QEvent::KeyPress, BobUI::Key_Escape, BobUI::NoModifier);
     eventFilter(shapedPixmapWindow(), &event);
 
     if (drag())
@@ -111,4 +111,4 @@ bool QWaylandDrag::ownsDragObject() const
 
 }
 #endif  // draganddrop
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

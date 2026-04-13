@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qdevicediscovery_static_p.h"
 
@@ -9,7 +9,7 @@
 #include <QHash>
 #include <QDir>
 #include <QLoggingCategory>
-#include <QtCore/private/qcore_unix_p.h>
+#include <BobUICore/private/qcore_unix_p.h>
 
 #ifdef Q_OS_FREEBSD
 #include <dev/evdev/input.h>
@@ -45,11 +45,11 @@ static bool testBit(long bit, const long *field)
     return (field[bit / LONG_BITS] >> bit % LONG_BITS) & 1;
 }
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_STATIC_LOGGING_CATEGORY(lcDD, "qt.qpa.input")
+Q_STATIC_LOGGING_CATEGORY(lcDD, "bobui.qpa.input")
 
 QDeviceDiscovery *QDeviceDiscovery::create(QDeviceTypes types, QObject *parent)
 {
@@ -76,11 +76,11 @@ QStringList QDeviceDiscoveryStatic::scanConnectedDevices()
 
     // check for input devices
     if (m_types & Device_InputMask)
-        addDevices(QT_EVDEV_DEVICE_PATH);
+        addDevices(BOBUI_EVDEV_DEVICE_PATH);
 
     // check for drm devices
     if (m_types & Device_VideoMask)
-        addDevices(QT_DRM_DEVICE_PATH);
+        addDevices(BOBUI_DRM_DEVICE_PATH);
 
     qCDebug(lcDD) << "Found matching devices" << devices;
 
@@ -89,7 +89,7 @@ QStringList QDeviceDiscoveryStatic::scanConnectedDevices()
 
 bool QDeviceDiscoveryStatic::checkDeviceType(const QString &device)
 {
-    int fd = QT_OPEN(device.toLocal8Bit().constData(), O_RDONLY | O_NDELAY, 0);
+    int fd = BOBUI_OPEN(device.toLocal8Bit().constData(), O_RDONLY | O_NDELAY, 0);
     if (Q_UNLIKELY(fd == -1)) {
         qWarning() << "Device discovery cannot open device" << device;
         return false;
@@ -97,8 +97,8 @@ bool QDeviceDiscoveryStatic::checkDeviceType(const QString &device)
 
     qCDebug(lcDD) << "doing static device discovery for " << device;
 
-    if ((m_types & Device_DRM) && device.contains(QT_DRM_DEVICE_PREFIX ""_L1)) {
-        QT_CLOSE(fd);
+    if ((m_types & Device_DRM) && device.contains(BOBUI_DRM_DEVICE_PREFIX ""_L1)) {
+        BOBUI_CLOSE(fd);
         return true;
     }
 
@@ -113,7 +113,7 @@ bool QDeviceDiscoveryStatic::checkDeviceType(const QString &device)
     ioctl(fd, EVIOCGBIT(EV_KEY, sizeof(bitsKey)), bitsKey);
     ioctl(fd, EVIOCGBIT(EV_REL, sizeof(bitsRel)), bitsRel);
 
-    QT_CLOSE(fd);
+    BOBUI_CLOSE(fd);
 
     if ((m_types & Device_Keyboard)) {
         if (testBit(KEY_Q, bitsKey)) {
@@ -158,4 +158,4 @@ bool QDeviceDiscoveryStatic::checkDeviceType(const QString &device)
     return false;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

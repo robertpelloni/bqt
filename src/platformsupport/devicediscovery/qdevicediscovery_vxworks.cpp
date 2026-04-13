@@ -1,5 +1,5 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qdevicediscovery_vxworks_p.h"
 
@@ -9,7 +9,7 @@
 #include <QHash>
 #include <QDir>
 #include <QLoggingCategory>
-#include <QtCore/private/qcore_unix_p.h>
+#include <BobUICore/private/qcore_unix_p.h>
 
 #include <evdevLib.h>
 #include <fcntl.h>
@@ -17,11 +17,11 @@
 #define LONG_BITS (sizeof(long) * 8 )
 #define LONG_FIELD_SIZE(bits) ((bits / LONG_BITS) + 1)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_STATIC_LOGGING_CATEGORY(lcDD, "qt.qpa.input")
+Q_STATIC_LOGGING_CATEGORY(lcDD, "bobui.qpa.input")
 
 QDeviceDiscovery *QDeviceDiscovery::create(QDeviceTypes types, QObject *parent)
 {
@@ -56,7 +56,7 @@ QStringList QDeviceDiscoveryVxWorks::scanConnectedDevices()
 
 bool QDeviceDiscoveryVxWorks::checkDeviceType(const QString &device)
 {
-    int fd = QT_OPEN(device.toLocal8Bit().constData(), O_RDONLY | O_NDELAY, 0);
+    int fd = BOBUI_OPEN(device.toLocal8Bit().constData(), O_RDONLY | O_NDELAY, 0);
     if (Q_UNLIKELY(fd == -1)) {
         // This is changed to debug type message due the nature of scanning
         // and adding new device for VxWorks by getting dev count from
@@ -67,8 +67,8 @@ bool QDeviceDiscoveryVxWorks::checkDeviceType(const QString &device)
 
     qCDebug(lcDD) << "doing static device discovery for " << device;
 
-    if ((m_types & Device_DRM) && device.contains(QT_DRM_DEVICE_PREFIX ""_L1)) {
-        QT_CLOSE(fd);
+    if ((m_types & Device_DRM) && device.contains(BOBUI_DRM_DEVICE_PREFIX ""_L1)) {
+        BOBUI_CLOSE(fd);
         return true;
     }
 
@@ -77,7 +77,7 @@ bool QDeviceDiscoveryVxWorks::checkDeviceType(const QString &device)
         if ((m_types & Device_Keyboard) && (devCap & EV_DEV_KEY)) {
             if (!(devCap & EV_DEV_REL) && !(devCap & EV_DEV_ABS)) {
                 qCDebug(lcDD) << "DeviceDiscovery found keyboard at" << device;
-                QT_CLOSE(fd);
+                BOBUI_CLOSE(fd);
                 return true;
             }
         }
@@ -85,7 +85,7 @@ bool QDeviceDiscoveryVxWorks::checkDeviceType(const QString &device)
         if (m_types & Device_Mouse) {
             if ((devCap & EV_DEV_REL) && (devCap & EV_DEV_KEY) && !(devCap & EV_DEV_ABS)) {
                 qCDebug(lcDD) << "DeviceDiscovery found mouse at" << device;
-                QT_CLOSE(fd);
+                BOBUI_CLOSE(fd);
                 return true;
             }
         }
@@ -93,14 +93,14 @@ bool QDeviceDiscoveryVxWorks::checkDeviceType(const QString &device)
         if ((m_types & (Device_Touchpad | Device_Touchscreen))) {
             if ((m_types & Device_Touchscreen) && (devCap & EV_DEV_ABS && (devCap & EV_DEV_KEY))) {
                 qCDebug(lcDD) << "DeviceDiscovery found touchscreen at" << device;
-                QT_CLOSE(fd);
+                BOBUI_CLOSE(fd);
                 return true;
             }
         }
     }
-    QT_CLOSE(fd);
+    BOBUI_CLOSE(fd);
 
     return false;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

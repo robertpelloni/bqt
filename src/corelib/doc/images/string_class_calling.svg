@@ -69,7 +69,7 @@
       transform="translate(0, -6)"
       class="text-style">
       <tspan x="0" dy="0em">Choosing a string class</tspan>
-      <tspan x="0" dy="1.2em">for calling Qt functions</tspan>
+      <tspan x="0" dy="1.2em">for calling BobUI functions</tspan>
     </text>
   </g>
 

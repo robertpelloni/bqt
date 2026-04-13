@@ -1,12 +1,12 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwasmanimationdriver_p.h"
 #include "qwasmsuspendresumecontrol_p.h"
 
 #include <emscripten/val.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 // QWasmAnimationDriver drives animations using requestAnimationFrame(). This
@@ -87,7 +87,7 @@ void QWasmAnimationDriver::start()
 
     // Start fallback timer to ensure animations advance even if animaton frame callbacks stop coming
     fallbackTimer.setInterval(FallbackTimerInterval);
-    connect(&fallbackTimer, &QTimer::timeout, this, &QWasmAnimationDriver::handleFallbackTimeout);
+    connect(&fallbackTimer, &BOBUIimer::timeout, this, &QWasmAnimationDriver::handleFallbackTimeout);
     fallbackTimer.start();
 
     QAnimationDriver::start();
@@ -100,7 +100,7 @@ void QWasmAnimationDriver::stop()
 
     // Stop and disconnect the fallback timer
     fallbackTimer.stop();
-    disconnect(&fallbackTimer, &QTimer::timeout, this, &QWasmAnimationDriver::handleFallbackTimeout);
+    disconnect(&fallbackTimer, &BOBUIimer::timeout, this, &QWasmAnimationDriver::handleFallbackTimeout);
 
     // Deregister the animation frame callback
     if (m_animateCallbackHandle != 0) {
@@ -126,4 +126,4 @@ void QWasmAnimationDriver::handleAnimationFrame(double timestamp)
     advance();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

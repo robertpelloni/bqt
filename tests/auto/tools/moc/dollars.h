@@ -1,5 +1,5 @@
 // Copyright (C) 2013 Olivier Goffart <ogoffart@woboq.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef DOLLARS_H
 #define DOLLARS_H

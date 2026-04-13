@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qfilesystemengine_p.h"
-#include <QtCore/qdir.h>
-#include <QtCore/qset.h>
-#include <QtCore/qstringbuilder.h>
-#include <QtCore/private/qabstractfileengine_p.h>
-#ifdef QT_BUILD_CORE_LIB
-#include <QtCore/private/qresource_p.h>
+#include <BobUICore/qdir.h>
+#include <BobUICore/qset.h>
+#include <BobUICore/qstringbuilder.h>
+#include <BobUICore/private/qabstractfileengine_p.h>
+#ifdef BOBUI_BUILD_CORE_LIB
+#include <BobUICore/private/qresource_p.h>
 #endif
-#include <QtCore/private/qduplicatetracker_p.h>
+#include <BobUICore/private/qduplicatetracker_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*! \class QFileSystemEngine
     \internal
@@ -21,7 +21,7 @@ QT_BEGIN_NAMESPACE
     methods, which work with files on physical disk drives; using such methods
     directly is faster than using a custom file engine (see QAbstractFileEngine
     and its sub-classes). Typically, you need a custom file engine when working
-    with virtual file systems (for example QResource). Various Qt classes,
+    with virtual file systems (for example QResource). Various BobUI classes,
     for example QDir, QFile, and QFileInfo, can handle both types of files by
     detecting the file path scheme, for example, \c file:///, \c :/someresource
     (QResource).
@@ -116,10 +116,10 @@ static bool _q_createLegacyEngine_recursive(QFileSystemEntry &entry, QFileSystem
                                             bool resolvingEntry = false)
 {
     QString const &filePath = entry.filePath();
-    if ((engine = qt_custom_file_engine_handler_create(filePath)))
+    if ((engine = bobui_custom_file_engine_handler_create(filePath)))
         return _q_checkEntry(engine, resolvingEntry);
 
-#if defined(QT_BUILD_CORE_LIB)
+#if defined(BOBUI_BUILD_CORE_LIB)
     for (qsizetype prefixSeparator = 0; prefixSeparator < filePath.size(); ++prefixSeparator) {
         QChar const ch = filePath[prefixSeparator];
         if (ch == u'/')
@@ -154,14 +154,14 @@ static bool _q_createLegacyEngine_recursive(QFileSystemEntry &entry, QFileSystem
         //  if (!ch.isLetterOrNumber())
         //      break;
     }
-#endif // defined(QT_BUILD_CORE_LIB)
+#endif // defined(BOBUI_BUILD_CORE_LIB)
 
     return _q_checkEntry(entry, data, resolvingEntry);
 }
 
-Q_CORE_EXPORT bool qt_isCaseSensitive(const QFileSystemEntry &entry, QFileSystemMetaData &data)
+Q_CORE_EXPORT bool bobui_isCaseSensitive(const QFileSystemEntry &entry, QFileSystemMetaData &data)
 {
-    // called from QtGui (QFileSystemModel, QFileInfoGatherer)
+    // called from BobUIGui (QFileSystemModel, QFileInfoGatherer)
     return QFileSystemEngine::isCaseSensitive(entry, data);
 }
 
@@ -241,4 +241,4 @@ QFileSystemEntry QFileSystemEngine::getJunctionTarget(const QFileSystemEntry &li
 #endif
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

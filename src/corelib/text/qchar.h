@@ -1,16 +1,16 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QCHAR_H
 #define QCHAR_H
 
-#include <QtCore/qglobal.h>
-#include <QtCore/qcompare.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qcompare.h>
 
 #include <functional> // for std::hash
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QString;
 
@@ -24,16 +24,16 @@ public:
     friend constexpr bool
     comparesEqual(const QLatin1Char &lhs, const QLatin1Char &rhs) noexcept
     { return lhs.ch == rhs.ch; }
-    friend constexpr Qt::strong_ordering
+    friend constexpr BobUI::strong_ordering
     compareThreeWay(const QLatin1Char &lhs, const QLatin1Char &rhs) noexcept
-    { return Qt::compareThreeWay(uchar(lhs.ch), uchar(rhs.ch)); }
+    { return BobUI::compareThreeWay(uchar(lhs.ch), uchar(rhs.ch)); }
     Q_DECLARE_STRONGLY_ORDERED_LITERAL_TYPE(QLatin1Char)
 
     friend constexpr bool comparesEqual(const QLatin1Char &lhs, char rhs) noexcept
     { return lhs.toLatin1() == rhs; }
-    friend constexpr Qt::strong_ordering
+    friend constexpr BobUI::strong_ordering
     compareThreeWay(const QLatin1Char &lhs, char rhs) noexcept
-    { return Qt::compareThreeWay(uchar(lhs.toLatin1()), uchar(rhs)); }
+    { return BobUI::compareThreeWay(uchar(lhs.toLatin1()), uchar(rhs)); }
     Q_DECLARE_STRONGLY_ORDERED_LITERAL_TYPE(QLatin1Char, char)
 
 private:
@@ -44,8 +44,8 @@ private:
     char ch;
 };
 
-#define QT_CHAR_FASTCALL QT7_ONLY(Q_CORE_EXPORT) QT_FASTCALL
-class QT6_ONLY(Q_CORE_EXPORT) QChar {
+#define BOBUI_CHAR_FASTCALL BOBUI7_ONLY(Q_CORE_EXPORT) BOBUI_FASTCALL
+class BOBUI6_ONLY(Q_CORE_EXPORT) QChar {
 public:
     enum SpecialCharacter {
         Null = 0x0000,
@@ -66,8 +66,8 @@ public:
         LastValidCodePoint = 0x10ffff
     };
 
-#ifdef QT_IMPLICIT_QCHAR_CONSTRUCTION
-#error This macro has been removed in Qt 6.8.
+#ifdef BOBUI_IMPLICIT_QCHAR_CONSTRUCTION
+#error This macro has been removed in BobUI 6.8.
 #endif
 private:
     using is_wide_wchar_t = std::bool_constant<(sizeof(wchar_t) > 2)>;
@@ -113,11 +113,11 @@ private:
         >;
 public:
     constexpr Q_IMPLICIT QChar() noexcept : ucs(0) {}
-#if QT_CORE_REMOVED_SINCE(6, 9) || defined(Q_QDOC)
+#if BOBUI_CORE_REMOVED_SINCE(6, 9) || defined(Q_QDOC)
     constexpr Q_IMPLICIT QChar(ushort rc) noexcept : ucs(rc) {}
 #endif
     constexpr explicit QChar(uchar c, uchar r) noexcept : ucs(char16_t((r << 8) | c)) {}
-#if QT_CORE_REMOVED_SINCE(6, 9) || defined(Q_QDOC)
+#if BOBUI_CORE_REMOVED_SINCE(6, 9) || defined(Q_QDOC)
     constexpr Q_IMPLICIT QChar(short rc) noexcept : ucs(char16_t(rc)) {}
     constexpr explicit QChar(uint rc) noexcept : ucs((Q_ASSERT(rc <= 0xffff), char16_t(rc))) {}
     constexpr explicit QChar(int rc) noexcept : QChar(uint(rc)) {}
@@ -127,26 +127,26 @@ public:
 #if defined(Q_OS_WIN) || defined(Q_QDOC)
     constexpr Q_IMPLICIT QChar(wchar_t ch) noexcept : ucs(char16_t(ch)) {}
 #endif
-#endif // QT_CORE_REMOVED_SINCE(6, 9)
+#endif // BOBUI_CORE_REMOVED_SINCE(6, 9)
     template <typename Char, if_implicit_conversion_char<Char> = true>
     constexpr Q_IMPLICIT QChar(const Char ch) noexcept : ucs(char16_t(ch)) {}
     template <typename Char, if_explicit_conversion_char<Char> = true>
     constexpr explicit QChar(const Char ch) noexcept
         : ucs((Q_ASSERT(char32_t(ch) <= 0xffff), char16_t(ch))) {}
 
-#ifndef QT_NO_CAST_FROM_ASCII
+#ifndef BOBUI_NO_CAST_FROM_ASCII
     // Always implicit -- allow for 'x' => QChar conversions
-#if QT_CORE_REMOVED_SINCE(6, 9) || defined(Q_QDOC)
-    QT_ASCII_CAST_WARN constexpr Q_IMPLICIT QChar(char c) noexcept : ucs(uchar(c)) { }
+#if BOBUI_CORE_REMOVED_SINCE(6, 9) || defined(Q_QDOC)
+    BOBUI_ASCII_CAST_WARN constexpr Q_IMPLICIT QChar(char c) noexcept : ucs(uchar(c)) { }
 #endif
     template <typename Char, if_implicit_ascii_warn_char<Char> = true>
-    QT_ASCII_CAST_WARN constexpr Q_IMPLICIT QChar(const Char ch) noexcept : ucs(uchar(ch)) {}
-#ifndef QT_RESTRICTED_CAST_FROM_ASCII
-#if QT_CORE_REMOVED_SINCE(6, 9) || defined(Q_QDOC)
-    QT_ASCII_CAST_WARN constexpr explicit QChar(uchar c) noexcept : ucs(c) { }
+    BOBUI_ASCII_CAST_WARN constexpr Q_IMPLICIT QChar(const Char ch) noexcept : ucs(uchar(ch)) {}
+#ifndef BOBUI_RESTRICTED_CAST_FROM_ASCII
+#if BOBUI_CORE_REMOVED_SINCE(6, 9) || defined(Q_QDOC)
+    BOBUI_ASCII_CAST_WARN constexpr explicit QChar(uchar c) noexcept : ucs(c) { }
 #endif
     template <typename Char, if_explicit_ascii_warn_char<Char> = true>
-    QT_ASCII_CAST_WARN constexpr explicit QChar(const Char c) noexcept : ucs(c) { }
+    BOBUI_ASCII_CAST_WARN constexpr explicit QChar(const Char c) noexcept : ucs(c) { }
 #endif
 #endif
 
@@ -590,39 +590,39 @@ public:
         return char16_t(ucs4%0x400 + 0xdc00);
     }
 
-    Q_DECL_CONST_FUNCTION static Category QT_CHAR_FASTCALL category(char32_t ucs4) noexcept;
-    Q_DECL_CONST_FUNCTION static Direction QT_CHAR_FASTCALL direction(char32_t ucs4) noexcept;
-    Q_DECL_CONST_FUNCTION static JoiningType QT_CHAR_FASTCALL joiningType(char32_t ucs4) noexcept;
-    Q_DECL_CONST_FUNCTION static unsigned char QT_CHAR_FASTCALL combiningClass(char32_t ucs4) noexcept;
+    Q_DECL_CONST_FUNCTION static Category BOBUI_CHAR_FASTCALL category(char32_t ucs4) noexcept;
+    Q_DECL_CONST_FUNCTION static Direction BOBUI_CHAR_FASTCALL direction(char32_t ucs4) noexcept;
+    Q_DECL_CONST_FUNCTION static JoiningType BOBUI_CHAR_FASTCALL joiningType(char32_t ucs4) noexcept;
+    Q_DECL_CONST_FUNCTION static unsigned char BOBUI_CHAR_FASTCALL combiningClass(char32_t ucs4) noexcept;
 
-    Q_DECL_CONST_FUNCTION static char32_t QT_CHAR_FASTCALL mirroredChar(char32_t ucs4) noexcept;
-    Q_DECL_CONST_FUNCTION static bool QT_CHAR_FASTCALL hasMirrored(char32_t ucs4) noexcept;
+    Q_DECL_CONST_FUNCTION static char32_t BOBUI_CHAR_FASTCALL mirroredChar(char32_t ucs4) noexcept;
+    Q_DECL_CONST_FUNCTION static bool BOBUI_CHAR_FASTCALL hasMirrored(char32_t ucs4) noexcept;
 
-    static QString QT_CHAR_FASTCALL decomposition(char32_t ucs4);
-    Q_DECL_CONST_FUNCTION static Decomposition QT_CHAR_FASTCALL decompositionTag(char32_t ucs4) noexcept;
+    static QString BOBUI_CHAR_FASTCALL decomposition(char32_t ucs4);
+    Q_DECL_CONST_FUNCTION static Decomposition BOBUI_CHAR_FASTCALL decompositionTag(char32_t ucs4) noexcept;
 
-    Q_DECL_CONST_FUNCTION static int QT_CHAR_FASTCALL digitValue(char32_t ucs4) noexcept;
-    Q_DECL_CONST_FUNCTION static char32_t QT_CHAR_FASTCALL toLower(char32_t ucs4) noexcept;
-    Q_DECL_CONST_FUNCTION static char32_t QT_CHAR_FASTCALL toUpper(char32_t ucs4) noexcept;
-    Q_DECL_CONST_FUNCTION static char32_t QT_CHAR_FASTCALL toTitleCase(char32_t ucs4) noexcept;
-    Q_DECL_CONST_FUNCTION static char32_t QT_CHAR_FASTCALL toCaseFolded(char32_t ucs4) noexcept;
+    Q_DECL_CONST_FUNCTION static int BOBUI_CHAR_FASTCALL digitValue(char32_t ucs4) noexcept;
+    Q_DECL_CONST_FUNCTION static char32_t BOBUI_CHAR_FASTCALL toLower(char32_t ucs4) noexcept;
+    Q_DECL_CONST_FUNCTION static char32_t BOBUI_CHAR_FASTCALL toUpper(char32_t ucs4) noexcept;
+    Q_DECL_CONST_FUNCTION static char32_t BOBUI_CHAR_FASTCALL toTitleCase(char32_t ucs4) noexcept;
+    Q_DECL_CONST_FUNCTION static char32_t BOBUI_CHAR_FASTCALL toCaseFolded(char32_t ucs4) noexcept;
 
-    Q_DECL_CONST_FUNCTION static Script QT_CHAR_FASTCALL script(char32_t ucs4) noexcept;
+    Q_DECL_CONST_FUNCTION static Script BOBUI_CHAR_FASTCALL script(char32_t ucs4) noexcept;
 
-    Q_DECL_CONST_FUNCTION static UnicodeVersion QT_CHAR_FASTCALL unicodeVersion(char32_t ucs4) noexcept;
+    Q_DECL_CONST_FUNCTION static UnicodeVersion BOBUI_CHAR_FASTCALL unicodeVersion(char32_t ucs4) noexcept;
 
-    Q_DECL_CONST_FUNCTION static UnicodeVersion QT_CHAR_FASTCALL currentUnicodeVersion() noexcept;
+    Q_DECL_CONST_FUNCTION static UnicodeVersion BOBUI_CHAR_FASTCALL currentUnicodeVersion() noexcept;
 
-    Q_DECL_CONST_FUNCTION static bool QT_CHAR_FASTCALL isPrint(char32_t ucs4) noexcept;
+    Q_DECL_CONST_FUNCTION static bool BOBUI_CHAR_FASTCALL isPrint(char32_t ucs4) noexcept;
     Q_DECL_CONST_FUNCTION static constexpr inline bool isSpace(char32_t ucs4) noexcept
     {
         // note that [0x09..0x0d] + 0x85 are exceptional Cc-s and must be handled explicitly
         return ucs4 == 0x20 || (ucs4 <= 0x0d && ucs4 >= 0x09)
                 || (ucs4 > 127 && (ucs4 == 0x85 || ucs4 == 0xa0 || QChar::isSpace_helper(ucs4)));
     }
-    Q_DECL_CONST_FUNCTION static bool QT_CHAR_FASTCALL isMark(char32_t ucs4) noexcept;
-    Q_DECL_CONST_FUNCTION static bool QT_CHAR_FASTCALL isPunct(char32_t ucs4) noexcept;
-    Q_DECL_CONST_FUNCTION static bool QT_CHAR_FASTCALL isSymbol(char32_t ucs4) noexcept;
+    Q_DECL_CONST_FUNCTION static bool BOBUI_CHAR_FASTCALL isMark(char32_t ucs4) noexcept;
+    Q_DECL_CONST_FUNCTION static bool BOBUI_CHAR_FASTCALL isPunct(char32_t ucs4) noexcept;
+    Q_DECL_CONST_FUNCTION static bool BOBUI_CHAR_FASTCALL isSymbol(char32_t ucs4) noexcept;
     Q_DECL_CONST_FUNCTION static constexpr inline bool isLetter(char32_t ucs4) noexcept
     {
         return (ucs4 >= 'A' && ucs4 <= 'z' && (ucs4 >= 'a' || ucs4 <= 'Z'))
@@ -647,50 +647,50 @@ public:
 
     friend constexpr bool comparesEqual(const QChar &lhs, const QChar &rhs) noexcept
     { return lhs.ucs == rhs.ucs; }
-    friend constexpr Qt::strong_ordering
+    friend constexpr BobUI::strong_ordering
     compareThreeWay(const QChar &lhs, const QChar &rhs) noexcept
-    { return Qt::compareThreeWay(lhs.ucs, rhs.ucs); }
+    { return BobUI::compareThreeWay(lhs.ucs, rhs.ucs); }
     Q_DECLARE_STRONGLY_ORDERED_LITERAL_TYPE(QChar)
 
     friend constexpr bool comparesEqual(const QChar &lhs, std::nullptr_t) noexcept
     { return lhs.isNull(); }
-    friend constexpr Qt::strong_ordering
+    friend constexpr BobUI::strong_ordering
     compareThreeWay(const QChar &lhs, std::nullptr_t) noexcept
-    { return lhs.isNull() ? Qt::strong_ordering::equivalent : Qt::strong_ordering::greater; }
+    { return lhs.isNull() ? BobUI::strong_ordering::equivalent : BobUI::strong_ordering::greater; }
     Q_DECLARE_STRONGLY_ORDERED_LITERAL_TYPE(QChar, std::nullptr_t)
 
 private:
-    Q_DECL_CONST_FUNCTION static bool QT_CHAR_FASTCALL isSpace_helper(char32_t ucs4) noexcept;
-    Q_DECL_CONST_FUNCTION static bool QT_CHAR_FASTCALL isLetter_helper(char32_t ucs4) noexcept;
-    Q_DECL_CONST_FUNCTION static bool QT_CHAR_FASTCALL isNumber_helper(char32_t ucs4) noexcept;
-    Q_DECL_CONST_FUNCTION static bool QT_CHAR_FASTCALL isLetterOrNumber_helper(char32_t ucs4) noexcept;
+    Q_DECL_CONST_FUNCTION static bool BOBUI_CHAR_FASTCALL isSpace_helper(char32_t ucs4) noexcept;
+    Q_DECL_CONST_FUNCTION static bool BOBUI_CHAR_FASTCALL isLetter_helper(char32_t ucs4) noexcept;
+    Q_DECL_CONST_FUNCTION static bool BOBUI_CHAR_FASTCALL isNumber_helper(char32_t ucs4) noexcept;
+    Q_DECL_CONST_FUNCTION static bool BOBUI_CHAR_FASTCALL isLetterOrNumber_helper(char32_t ucs4) noexcept;
 
     // defined in qstring.cpp, because we need to go via QUtf8StringView
-    static bool QT_CHAR_FASTCALL
+    static bool BOBUI_CHAR_FASTCALL
     Q_DECL_CONST_FUNCTION equal_helper(QChar lhs, const char *rhs) noexcept;
-    static int QT_CHAR_FASTCALL
+    static int BOBUI_CHAR_FASTCALL
     Q_DECL_CONST_FUNCTION compare_helper(QChar lhs, const char *rhs) noexcept;
 
-#if !defined(QT_NO_CAST_FROM_ASCII) && !defined(QT_RESTRICTED_CAST_FROM_ASCII)
+#if !defined(BOBUI_NO_CAST_FROM_ASCII) && !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII)
     Q_WEAK_OVERLOAD
     friend bool comparesEqual(const QChar &lhs, const char *rhs) noexcept
     { return equal_helper(lhs, rhs); }
     Q_WEAK_OVERLOAD
-    friend Qt::strong_ordering compareThreeWay(const QChar &lhs, const char *rhs) noexcept
+    friend BobUI::strong_ordering compareThreeWay(const QChar &lhs, const char *rhs) noexcept
     {
         const int res = compare_helper(lhs, rhs);
-        return Qt::compareThreeWay(res, 0);
+        return BobUI::compareThreeWay(res, 0);
     }
-    Q_DECLARE_STRONGLY_ORDERED(QChar, const char *, Q_WEAK_OVERLOAD QT_ASCII_CAST_WARN)
-#endif // !defined(QT_NO_CAST_FROM_ASCII) && !defined(QT_RESTRICTED_CAST_FROM_ASCII)
+    Q_DECLARE_STRONGLY_ORDERED(QChar, const char *, Q_WEAK_OVERLOAD BOBUI_ASCII_CAST_WARN)
+#endif // !defined(BOBUI_NO_CAST_FROM_ASCII) && !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII)
 
     char16_t ucs;
 };
-#undef QT_CHAR_FASTCALL
+#undef BOBUI_CHAR_FASTCALL
 
 Q_DECLARE_TYPEINFO(QChar, Q_PRIMITIVE_TYPE);
 
-namespace Qt {
+namespace BobUI {
 inline namespace Literals {
 inline namespace StringLiterals {
 
@@ -701,16 +701,16 @@ constexpr inline QLatin1Char operator""_L1(char ch) noexcept
 
 } // StringLiterals
 } // Literals
-} // Qt
+} // BobUI
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 namespace std {
 template <>
-struct hash<QT_PREPEND_NAMESPACE(QChar)>
+struct hash<BOBUI_PREPEND_NAMESPACE(QChar)>
 {
     template <typename = void> // for transparent constexpr tracking
-    constexpr size_t operator()(QT_PREPEND_NAMESPACE(QChar) c) const
+    constexpr size_t operator()(BOBUI_PREPEND_NAMESPACE(QChar) c) const
         noexcept(noexcept(std::hash<char16_t>{}(u' ')))
     {
         return std::hash<char16_t>{}(c.unicode());
@@ -720,4 +720,4 @@ struct hash<QT_PREPEND_NAMESPACE(QChar)>
 
 #endif // QCHAR_H
 
-#include <QtCore/qstringview.h> // for QChar::fromUcs4() definition
+#include <BobUICore/qstringview.h> // for QChar::fromUcs4() definition

@@ -1,20 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QBLENDFUNCTIONS_P_H
 #define QBLENDFUNCTIONS_P_H
 
-#include <QtGui/private/qtguiglobal_p.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
 #include <qmath.h>
 #include "qdrawhelper_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -22,7 +22,7 @@ QT_BEGIN_NAMESPACE
 //
 
 template <typename SRC, typename T>
-void qt_scale_image_16bit(uchar *destPixels, int dbpl,
+void bobui_scale_image_16bit(uchar *destPixels, int dbpl,
                           const uchar *srcPixels, int sbpl, int srch,
                           const QRectF &targetRect,
                           const QRectF &srcRect,
@@ -35,10 +35,10 @@ void qt_scale_image_16bit(uchar *destPixels, int dbpl,
     const int ix = 0x00010000 * sx;
     const int iy = 0x00010000 * sy;
 
-//     qDebug() << "scale:" << Qt::endl
-//              << " - target" << targetRect << Qt::endl
-//              << " - source" << srcRect << Qt::endl
-//              << " - clip" << clip << Qt::endl
+//     qDebug() << "scale:" << BobUI::endl
+//              << " - target" << targetRect << BobUI::endl
+//              << " - source" << srcRect << BobUI::endl
+//              << " - clip" << clip << BobUI::endl
 //              << " - sx=" << sx << " sy=" << sy << " ix=" << ix << " iy=" << iy;
 
     QRect tr = targetRect.normalized().toRect();
@@ -113,7 +113,7 @@ void qt_scale_image_16bit(uchar *destPixels, int dbpl,
     }
 }
 
-template <typename T> void qt_scale_image_32bit(uchar *destPixels, int dbpl,
+template <typename T> void bobui_scale_image_32bit(uchar *destPixels, int dbpl,
                                                 const uchar *srcPixels, int sbpl, int srch,
                                                 const QRectF &targetRect,
                                                 const QRectF &srcRect,
@@ -126,10 +126,10 @@ template <typename T> void qt_scale_image_32bit(uchar *destPixels, int dbpl,
     const int ix = 0x00010000 * sx;
     const int iy = 0x00010000 * sy;
 
-//     qDebug() << "scale:" << Qt::endl
-//              << " - target" << targetRect << Qt::endl
-//              << " - source" << srcRect << Qt::endl
-//              << " - clip" << clip << Qt::endl
+//     qDebug() << "scale:" << BobUI::endl
+//              << " - target" << targetRect << BobUI::endl
+//              << " - source" << srcRect << BobUI::endl
+//              << " - clip" << clip << BobUI::endl
 //              << " - sx=" << sx << " sy=" << sy << " ix=" << ix << " iy=" << iy;
 
     QRect tr = targetRect.normalized().toRect();
@@ -194,16 +194,16 @@ template <typename T> void qt_scale_image_32bit(uchar *destPixels, int dbpl,
     }
 }
 
-struct QTransformImageVertex
+struct BOBUIransformImageVertex
 {
     qreal x, y, u, v; // destination coordinates (x, y) and source coordinates (u, v)
 };
 
 template <class SrcT, class DestT, class Blender>
-void qt_transform_image_rasterize(DestT *destPixels, int dbpl,
+void bobui_transform_image_rasterize(DestT *destPixels, int dbpl,
                                   const SrcT *srcPixels, int sbpl,
-                                  const QTransformImageVertex &topLeft, const QTransformImageVertex &bottomLeft,
-                                  const QTransformImageVertex &topRight, const QTransformImageVertex &bottomRight,
+                                  const BOBUIransformImageVertex &topLeft, const BOBUIransformImageVertex &bottomLeft,
+                                  const BOBUIransformImageVertex &topRight, const BOBUIransformImageVertex &bottomRight,
                                   const QRect &sourceRect,
                                   const QRect &clip,
                                   qreal topY, qreal bottomY,
@@ -336,12 +336,12 @@ void qt_transform_image_rasterize(DestT *destPixels, int dbpl,
 }
 
 template <class SrcT, class DestT, class Blender>
-void qt_transform_image(DestT *destPixels, int dbpl,
+void bobui_transform_image(DestT *destPixels, int dbpl,
                         const SrcT *srcPixels, int sbpl,
                         const QRectF &targetRect,
                         const QRectF &sourceRect,
                         const QRect &clip,
-                        const QTransform &targetRectTransform,
+                        const BOBUIransform &targetRectTransform,
                         Blender blender)
 {
     enum Corner
@@ -353,7 +353,7 @@ void qt_transform_image(DestT *destPixels, int dbpl,
     };
 
     // map source rectangle to destination.
-    QTransformImageVertex v[4];
+    BOBUIransformImageVertex v[4];
     v[TopLeft].u = v[BottomLeft].u = sourceRect.left();
     v[TopLeft].v = v[TopRight].v = sourceRect.top();
     v[TopRight].u = v[BottomRight].u = sourceRect.right();
@@ -373,7 +373,7 @@ void qt_transform_image(DestT *destPixels, int dbpl,
     switch (topmost) {
     case 1:
         {
-            QTransformImageVertex t = v[0];
+            BOBUIransformImageVertex t = v[0];
             for (int i = 0; i < 3; ++i)
                 v[i] = v[i+1];
             v[3] = t;
@@ -385,7 +385,7 @@ void qt_transform_image(DestT *destPixels, int dbpl,
         break;
     case 3:
         {
-            QTransformImageVertex t = v[3];
+            BOBUIransformImageVertex t = v[3];
             for (int i = 3; i > 0; --i)
                 v[i] = v[i-1];
             v[0] = t;
@@ -401,8 +401,8 @@ void qt_transform_image(DestT *destPixels, int dbpl,
     if (dx1 * dy2 - dx2 * dy1 > 0)
         qSwap(v[1], v[3]);
 
-    QTransformImageVertex u = {v[1].x - v[0].x, v[1].y - v[0].y, v[1].u - v[0].u, v[1].v - v[0].v};
-    QTransformImageVertex w = {v[2].x - v[0].x, v[2].y - v[0].y, v[2].u - v[0].u, v[2].v - v[0].v};
+    BOBUIransformImageVertex u = {v[1].x - v[0].x, v[1].y - v[0].y, v[1].u - v[0].u, v[1].v - v[0].v};
+    BOBUIransformImageVertex w = {v[2].x - v[0].x, v[2].y - v[0].y, v[2].u - v[0].u, v[2].v - v[0].v};
 
     qreal det = u.x * w.y - u.y * w.x;
     if (det == 0)
@@ -433,16 +433,16 @@ void qt_transform_image(DestT *destPixels, int dbpl,
 
     // rasterize trapezoids.
     if (v[1].y < v[3].y) {
-        qt_transform_image_rasterize(destPixels, dbpl, srcPixels, sbpl, v[0], v[1], v[0], v[3], sourceRectI, clip, v[0].y, v[1].y, dudx, dvdx, dudy, dvdy, u0, v0, blender);
-        qt_transform_image_rasterize(destPixels, dbpl, srcPixels, sbpl, v[1], v[2], v[0], v[3], sourceRectI, clip, v[1].y, v[3].y, dudx, dvdx, dudy, dvdy, u0, v0, blender);
-        qt_transform_image_rasterize(destPixels, dbpl, srcPixels, sbpl, v[1], v[2], v[3], v[2], sourceRectI, clip, v[3].y, v[2].y, dudx, dvdx, dudy, dvdy, u0, v0, blender);
+        bobui_transform_image_rasterize(destPixels, dbpl, srcPixels, sbpl, v[0], v[1], v[0], v[3], sourceRectI, clip, v[0].y, v[1].y, dudx, dvdx, dudy, dvdy, u0, v0, blender);
+        bobui_transform_image_rasterize(destPixels, dbpl, srcPixels, sbpl, v[1], v[2], v[0], v[3], sourceRectI, clip, v[1].y, v[3].y, dudx, dvdx, dudy, dvdy, u0, v0, blender);
+        bobui_transform_image_rasterize(destPixels, dbpl, srcPixels, sbpl, v[1], v[2], v[3], v[2], sourceRectI, clip, v[3].y, v[2].y, dudx, dvdx, dudy, dvdy, u0, v0, blender);
     } else {
-        qt_transform_image_rasterize(destPixels, dbpl, srcPixels, sbpl, v[0], v[1], v[0], v[3], sourceRectI, clip, v[0].y, v[3].y, dudx, dvdx, dudy, dvdy, u0, v0, blender);
-        qt_transform_image_rasterize(destPixels, dbpl, srcPixels, sbpl, v[0], v[1], v[3], v[2], sourceRectI, clip, v[3].y, v[1].y, dudx, dvdx, dudy, dvdy, u0, v0, blender);
-        qt_transform_image_rasterize(destPixels, dbpl, srcPixels, sbpl, v[1], v[2], v[3], v[2], sourceRectI, clip, v[1].y, v[2].y, dudx, dvdx, dudy, dvdy, u0, v0, blender);
+        bobui_transform_image_rasterize(destPixels, dbpl, srcPixels, sbpl, v[0], v[1], v[0], v[3], sourceRectI, clip, v[0].y, v[3].y, dudx, dvdx, dudy, dvdy, u0, v0, blender);
+        bobui_transform_image_rasterize(destPixels, dbpl, srcPixels, sbpl, v[0], v[1], v[3], v[2], sourceRectI, clip, v[3].y, v[1].y, dudx, dvdx, dudy, dvdy, u0, v0, blender);
+        bobui_transform_image_rasterize(destPixels, dbpl, srcPixels, sbpl, v[1], v[2], v[3], v[2], sourceRectI, clip, v[1].y, v[2].y, dudx, dvdx, dudy, dvdy, u0, v0, blender);
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QBLENDFUNCTIONS_P_H

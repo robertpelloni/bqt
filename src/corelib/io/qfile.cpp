@@ -1,7 +1,7 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2017 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qplatformdefs.h"
 #include "qdebug.h"
@@ -10,24 +10,24 @@
 #include "qfsfileengine_p.h"
 #include "qlist.h"
 #include "qsavefile.h"
-#include "qtemporaryfile.h"
+#include "bobuiemporaryfile.h"
 #include "private/qiodevice_p.h"
 #include "private/qfile_p.h"
 #include "private/qfilesystemengine_p.h"
 #include "private/qsavefile_p.h"
 #include "private/qsystemerror_p.h"
-#include "private/qtemporaryfile_p.h"
-#if defined(QT_BUILD_CORE_LIB)
+#include "private/bobuiemporaryfile_p.h"
+#if defined(BOBUI_BUILD_CORE_LIB)
 # include "qcoreapplication.h"
 #endif
 
-#ifdef QT_NO_QOBJECT
+#ifdef BOBUI_NO_QOBJECT
 #define tr(X) QString::fromLatin1(X)
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 Q_DECL_COLD_FUNCTION
 static bool file_already_open(QFile &file, const char *where = nullptr)
@@ -48,7 +48,7 @@ QFilePrivate::~QFilePrivate()
 bool
 QFilePrivate::openExternalFile(QIODevice::OpenMode flags, int fd, QFile::FileHandleFlags handleFlags)
 {
-#ifdef QT_NO_FSFILEENGINE
+#ifdef BOBUI_NO_FSFILEENGINE
     Q_UNUSED(flags);
     Q_UNUSED(fd);
     return false;
@@ -63,7 +63,7 @@ QFilePrivate::openExternalFile(QIODevice::OpenMode flags, int fd, QFile::FileHan
 bool
 QFilePrivate::openExternalFile(QIODevice::OpenMode flags, FILE *fh, QFile::FileHandleFlags handleFlags)
 {
-#ifdef QT_NO_FSFILEENGINE
+#ifdef BOBUI_NO_FSFILEENGINE
     Q_UNUSED(flags);
     Q_UNUSED(fh);
     return false;
@@ -86,7 +86,7 @@ QAbstractFileEngine *QFilePrivate::engine() const
 
 /*!
     \class QFile
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QFile class provides an interface for reading from and writing to files.
 
     \ingroup io
@@ -94,8 +94,8 @@ QAbstractFileEngine *QFilePrivate::engine() const
     \reentrant
 
     QFile is an I/O device for reading and writing text and binary
-    files and \l{The Qt Resource System}{resources}. A QFile may be
-    used by itself or, more conveniently, with a QTextStream or
+    files and \l{The BobUI Resource System}{resources}. A QFile may be
+    used by itself or, more conveniently, with a BOBUIextStream or
     QDataStream.
 
     The file name is usually passed in the constructor, but it can be
@@ -109,7 +109,7 @@ QAbstractFileEngine *QFilePrivate::engine() const
 
     The file is opened with open(), closed with close(), and flushed
     with flush(). Data is usually read and written using QDataStream
-    or QTextStream, but you can also call the QIODevice-inherited
+    or BOBUIextStream, but you can also call the QIODevice-inherited
     functions read(), readLine(), readAll(), write(). QFile also
     inherits getChar(), putChar(), and ungetChar(), which work one
     character at a time.
@@ -125,25 +125,25 @@ QAbstractFileEngine *QFilePrivate::engine() const
 
     \snippet file/file.cpp 0
 
-    The \l{QIODeviceBase::}{Text} flag passed to open() tells Qt to convert
+    The \l{QIODeviceBase::}{Text} flag passed to open() tells BobUI to convert
     Windows-style line terminators ("\\r\\n") into C++-style
     terminators ("\\n"). By default, QFile assumes binary, i.e. it
     doesn't perform any conversion on the bytes stored in the file.
 
     \section1 Using Streams to Read Files
 
-    The next example uses QTextStream to read a text file
+    The next example uses BOBUIextStream to read a text file
     line by line:
 
     \snippet file/file.cpp 1
 
-    QTextStream takes care of converting the 8-bit data stored on
+    BOBUIextStream takes care of converting the 8-bit data stored on
     disk into a 16-bit Unicode QString. By default, it assumes that
     the file is encoded in UTF-8. This can be changed using
-    \l QTextStream::setEncoding().
+    \l BOBUIextStream::setEncoding().
 
     To write text, we can use operator<<(), which is overloaded to
-    take a QTextStream on the left and various data types (including
+    take a BOBUIextStream on the left and various data types (including
     QString) on the right:
 
     \snippet file/file.cpp 2
@@ -154,14 +154,14 @@ QAbstractFileEngine *QFilePrivate::engine() const
 
     \section1 Signals
 
-    Unlike other QIODevice implementations, such as QTcpSocket, QFile does not
+    Unlike other QIODevice implementations, such as BOBUIcpSocket, QFile does not
     emit the aboutToClose(), bytesWritten(), or readyRead() signals. This
     implementation detail means that QFile is not suitable for reading and
     writing certain types of files, such as device files on Unix platforms.
 
     \section1 Platform Specific Issues
 
-    \l{Input/Output and Networking}{Qt APIs related to I/O} use UTF-16 based
+    \l{Input/Output and Networking}{BobUI APIs related to I/O} use UTF-16 based
     QStrings to represent file paths. Standard C++ APIs (\c <cstdio> or
     \c <iostream>) or platform-specific APIs however often need a 8-bit encoded
     path. You can use encodeName() and decodeName() to convert between both
@@ -174,7 +174,7 @@ QAbstractFileEngine *QFilePrivate::engine() const
     there is more data to read (since atEnd() will return true for a file that
     claims to have size 0). Instead, you should either call readAll(), or call
     read() or readLine() repeatedly until no more data can be read. The next
-    example uses QTextStream to read \c /proc/modules line by line:
+    example uses BOBUIextStream to read \c /proc/modules line by line:
 
     \snippet file/file.cpp 3
 
@@ -185,19 +185,19 @@ QAbstractFileEngine *QFilePrivate::engine() const
     directory usually is not writable, but it is still possible to
     create files in it.
 
-    Qt's understanding of file permissions is limited, which affects especially
-    the \l QFile::setPermissions() function. On Windows, Qt will set only the
+    BobUI's understanding of file permissions is limited, which affects especially
+    the \l QFile::setPermissions() function. On Windows, BobUI will set only the
     legacy read-only flag, and that only when none of the Write* flags are
-    passed. Qt does not manipulate access control lists (ACLs), which makes this
+    passed. BobUI does not manipulate access control lists (ACLs), which makes this
     function mostly useless for NTFS volumes. It may still be of use for USB
     sticks that use VFAT file systems. POSIX ACLs are not manipulated, either.
 
     \include android-content-uri-limitations.qdocinc
 
-    \sa QTextStream, QDataStream, QFileInfo, QDir, {The Qt Resource System}
+    \sa BOBUIextStream, QDataStream, QFileInfo, QDir, {The BobUI Resource System}
 */
 
-#ifdef QT_NO_QOBJECT
+#ifdef BOBUI_NO_QOBJECT
 QFile::QFile()
     : QFileDevice(*new QFilePrivate)
 {
@@ -230,12 +230,12 @@ QFile::QFile(QObject *parent)
     Constructs a new file object to represent the file with the given \a name.
 
 //! [qfile-explicit-constructor-note]
-    \note In versions up to and including Qt 6.8, this constructor is
-    implicit, for backward compatibility. Starting from Qt 6.9 this
+    \note In versions up to and including BobUI 6.8, this constructor is
+    implicit, for backward compatibility. Starting from BobUI 6.9 this
     constructor is unconditionally \c{explicit}. Users can force this
-    constructor to be \c{explicit} even in earlier versions of Qt by
-    defining the \c{QT_EXPLICIT_QFILE_CONSTRUCTION_FROM_PATH} macro
-    before including any Qt header.
+    constructor to be \c{explicit} even in earlier versions of BobUI by
+    defining the \c{BOBUI_EXPLICIT_QFILE_CONSTRUCTION_FROM_PATH} macro
+    before including any BobUI header.
 //! [qfile-explicit-constructor-note]
 */
 QFile::QFile(const QString &name)
@@ -296,7 +296,7 @@ QString QFile::fileName() const
     \snippet code/src_corelib_io_qfile.cpp 0
 
     Note that the directory separator "/" works for all operating
-    systems supported by Qt.
+    systems supported by BobUI.
 
     \sa fileName(), QFileInfo, QDir
 */
@@ -457,7 +457,7 @@ QFile::remove(const QString &fileName)
 /*!
     \since 6.9
 
-    Returns \c true if Qt supports moving files to a trash (recycle bin) in the
+    Returns \c true if BobUI supports moving files to a trash (recycle bin) in the
     current operating system using the moveToTrash() function, \c false
     otherwise. Note that this function returning \c true does not imply
     moveToTrash() will succeed. In particular, this function does not check if
@@ -565,7 +565,7 @@ QFile::moveToTrash(const QString &fileName, QString *pathInTrash)
 
     The file is closed before it is renamed.
 
-    If the rename operation fails, Qt will attempt to copy this file's
+    If the rename operation fails, BobUI will attempt to copy this file's
     contents to \a newName, and then remove this file, keeping only
     \a newName. If that copy operation fails or this file can't be removed,
     the destination file \a newName is removed to restore the old state.
@@ -578,7 +578,7 @@ QFile::rename(const QString &newName)
 {
     Q_D(QFile);
 
-    // if this is a QTemporaryFile, the virtual fileName() call here may do something
+    // if this is a BOBUIemporaryFile, the virtual fileName() call here may do something
     if (fileName().isEmpty()) {
         qWarning("QFile::rename: Empty or null file name");
         return false;
@@ -605,16 +605,16 @@ QFile::rename(const QString &newName)
         QByteArray fileId = d->fileEngine ?
                     d->fileEngine->id() :
                     QFileSystemEngine::id(QFileSystemEntry(d->fileName));
-        changingCase = (fileId == targetId && d->fileName.compare(newName, Qt::CaseInsensitive) == 0);
+        changingCase = (fileId == targetId && d->fileName.compare(newName, BobUI::CaseInsensitive) == 0);
         if (!changingCase) {
             d->setError(QFile::RenameError, tr("Destination file exists"));
             return false;
         }
 
-#if defined(Q_OS_LINUX) && QT_CONFIG(temporaryfile)
+#if defined(Q_OS_LINUX) && BOBUI_CONFIG(temporaryfile)
         // rename() on Linux simply does nothing when renaming "foo" to "Foo" on a case-insensitive
         // FS, such as FAT32. Move the file away and rename in 2 steps to work around.
-        QTemporaryFileName tfn(d->fileName);
+        BOBUIemporaryFileName tfn(d->fileName);
         QFileSystemEntry src(d->fileName);
         QSystemError error;
         for (int attempt = 0; attempt < 16; ++attempt) {
@@ -672,7 +672,7 @@ QFile::rename(const QString &newName)
             return false;
         }
 
-#if QT_CONFIG(temporaryfile)
+#if BOBUI_CONFIG(temporaryfile)
         // copy the file to the destination first
         if (d->copy(newName)) {
             // succeeded, remove the original
@@ -773,7 +773,7 @@ QFile::link(const QString &fileName, const QString &linkName)
     return QFile(fileName).link(linkName);
 }
 
-#if QT_CONFIG(temporaryfile)    // dangerous without QTemporaryFile
+#if BOBUI_CONFIG(temporaryfile)    // dangerous without BOBUIemporaryFile
 bool QFilePrivate::copy(const QString &newName)
 {
     Q_Q(QFile);
@@ -894,7 +894,7 @@ QFile::copy(const QString &fileName, const QString &newName)
 {
     return QFile(fileName).copy(newName);
 }
-#endif // QT_CONFIG(temporaryfile)
+#endif // BOBUI_CONFIG(temporaryfile)
 
 /*!
     Opens the file using \a mode flags, returning \c true if successful;
@@ -913,7 +913,7 @@ QFile::copy(const QString &fileName, const QString &newName)
     of the file name, otherwise, it won't be possible to create this
     non-existing file.
 
-    \sa QT_USE_NODISCARD_FILE_OPEN, setFileName()
+    \sa BOBUI_USE_NODISCARD_FILE_OPEN, setFileName()
 */
 bool QFile::open(OpenMode mode)
 {
@@ -957,7 +957,7 @@ bool QFile::open(OpenMode mode)
     such permissions will generate warnings when the Security tab of the Properties dialog
     is opened. Granting the group all permissions granted to others avoids such warnings.
 
-    \sa QIODevice::OpenMode, setFileName(), QT_USE_NODISCARD_FILE_OPEN
+    \sa QIODevice::OpenMode, setFileName(), BOBUI_USE_NODISCARD_FILE_OPEN
     \since 6.3
 */
 bool QFile::open(OpenMode mode, QFile::Permissions permissions)
@@ -1014,13 +1014,13 @@ bool QFile::open(OpenMode mode, QFile::Permissions permissions)
            you cannot use this QFile with a QFileInfo.
     \endlist
 
-    \sa close(), QT_USE_NODISCARD_FILE_OPEN
+    \sa close(), BOBUI_USE_NODISCARD_FILE_OPEN
 
     \b{Note for the Windows Platform}
 
     \a fh must be opened in binary mode (i.e., the mode string must contain
     'b', as in "rb" or "wb") when accessing files and other random-access
-    devices. Qt will translate the end-of-line characters if you pass
+    devices. BobUI will translate the end-of-line characters if you pass
     QIODevice::Text to \a mode. Sequential devices, such as stdin and stdout,
     are unaffected by this limitation.
 
@@ -1048,7 +1048,7 @@ bool QFile::open(FILE *fh, OpenMode mode, FileHandleFlags handleFlags)
     if (d->openExternalFile(mode | Unbuffered, fh, handleFlags)) {
         QIODevice::open(mode);
         if (!(mode & Append) && !isSequential()) {
-            qint64 pos = (qint64)QT_FTELL(fh);
+            qint64 pos = (qint64)BOBUI_FTELL(fh);
             if (pos != -1) {
                 // Skip redundant checks in QFileDevice::seek().
                 QIODevice::seek(pos);
@@ -1080,7 +1080,7 @@ bool QFile::open(FILE *fh, OpenMode mode, FileHandleFlags handleFlags)
     \warning Since this function opens the file without specifying the file name,
              you cannot use this QFile with a QFileInfo.
 
-    \sa close(), QT_USE_NODISCARD_FILE_OPEN
+    \sa close(), BOBUI_USE_NODISCARD_FILE_OPEN
 */
 bool QFile::open(int fd, OpenMode mode, FileHandleFlags handleFlags)
 {
@@ -1100,7 +1100,7 @@ bool QFile::open(int fd, OpenMode mode, FileHandleFlags handleFlags)
     if (d->openExternalFile(mode | Unbuffered, fd, handleFlags)) {
         QIODevice::open(mode);
         if (!(mode & Append) && !isSequential()) {
-            qint64 pos = (qint64)QT_LSEEK(fd, QT_OFF_T(0), SEEK_CUR);
+            qint64 pos = (qint64)BOBUI_LSEEK(fd, BOBUI_OFF_T(0), SEEK_CUR);
             if (pos != -1) {
                 // Skip redundant checks in QFileDevice::seek().
                 QIODevice::seek(pos);
@@ -1290,7 +1290,7 @@ qint64 QFile::size() const
 /*!
     \class QNtfsPermissionCheckGuard
     \since 6.6
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QNtfsPermissionCheckGuard class is a RAII class to manage NTFS
     permission checking.
 
@@ -1309,13 +1309,13 @@ qint64 QFile::size() const
 
     This class is available only on Windows.
 
-    \section1 qt_ntfs_permission_lookup
+    \section1 bobui_ntfs_permission_lookup
 
-    Prior to Qt 6.6, the user had to directly manipulate the global variable
-    \c qt_ntfs_permission_lookup. However, this was a non-atomic global
+    Prior to BobUI 6.6, the user had to directly manipulate the global variable
+    \c bobui_ntfs_permission_lookup. However, this was a non-atomic global
     variable and as such it was prone to data races.
 
-    The variable \c qt_ntfs_permission_lookup is therefore deprecated since Qt
+    The variable \c bobui_ntfs_permission_lookup is therefore deprecated since BobUI
     6.6.
 */
 
@@ -1343,13 +1343,13 @@ qint64 QFile::size() const
     are other users.
 
     This function is only available on Windows and makes the direct
-    manipulation of \l qt_ntfs_permission_lookup obsolete.
+    manipulation of \l bobui_ntfs_permission_lookup obsolete.
 
     This is a low-level function, please consider the RAII class
     \l QNtfsPermissionCheckGuard instead.
 
     \note The thread-safety of this function holds only as long as there are no
-    concurrent updates to \l qt_ntfs_permission_lookup.
+    concurrent updates to \l bobui_ntfs_permission_lookup.
 */
 
 /*!
@@ -1362,14 +1362,14 @@ qint64 QFile::size() const
     check is disabled, meaning that there are no more users.
 
     This function is only available on Windows and makes the direct
-    manipulation of \l qt_ntfs_permission_lookup obsolete.
+    manipulation of \l bobui_ntfs_permission_lookup obsolete.
 
     This is a low-level function and must (only) be called to match one earlier
     call to qEnableNtfsPermissionChecks(). Please consider the RAII class
     \l QNtfsPermissionCheckGuard instead.
 
     \note The thread-safety of this function holds only as long as there are no
-    concurrent updates to \l qt_ntfs_permission_lookup.
+    concurrent updates to \l bobui_ntfs_permission_lookup.
 */
 
 /*!
@@ -1382,13 +1382,13 @@ qint64 QFile::size() const
     \c true if the check is enabled.
 
     This function is only available on Windows and makes the direct
-    manipulation of \l qt_ntfs_permission_lookup obsolete.
+    manipulation of \l bobui_ntfs_permission_lookup obsolete.
 
     \note The thread-safety of this function holds only as long as there are no
-    concurrent updates to \l qt_ntfs_permission_lookup.
+    concurrent updates to \l bobui_ntfs_permission_lookup.
 */
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 void QFilePrivate::writeToDebugStream(QDebug &dbg) const
 {
     Q_Q(const QFile);
@@ -1397,8 +1397,8 @@ void QFilePrivate::writeToDebugStream(QDebug &dbg) const
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 #include "moc_qfile.cpp"
 #endif

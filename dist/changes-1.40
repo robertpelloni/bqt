@@ -1,15 +1,15 @@
-Here is a list of user-visible changes in Qt from 1.33 to 1.40.  
+Here is a list of user-visible changes in BobUI from 1.33 to 1.40.  
 
-Qt 1.40 supports drag and drop, with a simple, platform independent
+BobUI 1.40 supports drag and drop, with a simple, platform independent
 API. There are eleven new widget classes in 1.40. Asynchronous I/O
-support is now in the official Qt API.
+support is now in the official BobUI API.
 
-Since Qt no longer supports any platforms that only supports 8.3
-format file names, the file names of the Qt source and include files
+Since BobUI no longer supports any platforms that only supports 8.3
+format file names, the file names of the BobUI source and include files
 have been made simpler.  #include <qcombobox.h> instead of qcombo.h,
 etc.  The old names are still present for compatibility.
 
-The new Qt Xt/Motif Extension allows Qt widgets and applications to
+The new BobUI Xt/Motif Extension allows BobUI widgets and applications to
 coexist with old Xt/Motif-based applications and widgets.
 
 There are more than one hundred new functions added to existing
@@ -30,8 +30,8 @@ and improved the documentation.
   QSpinBox	- Spin button 
   QSplitter	- Paned window
   QStatusBar	- Status bar
-  QToolBar	- Container for tool buttons (and other widgets)
-  QToolButton	- Fancy push button with auto-raise
+  BOBUIoolBar	- Container for tool buttons (and other widgets)
+  BOBUIoolButton	- Fancy push button with auto-raise
   QWhatsThis	- Light weight help system
   QWidgetStack	- Stack of widgets
 
@@ -46,7 +46,7 @@ and improved the documentation.
   
   QDragObject
   QStoredDrag
-  QTextDrag
+  BOBUIextDrag
   QImageDrag
   QDragManager
   QDropSite
@@ -90,7 +90,7 @@ maximum/minimum sizes, or are deleted.
 QFont now supports KOI8R
 
 The reference documentation of the extensions is now integrated with
-the main reference documentation in the qt/html directory.
+the main reference documentation in the bobui/html directory.
 
 ****************************************************************************
 *               Changes that might affect runtime behavior                 *

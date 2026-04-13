@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
-#include <QtGui/QGuiApplication>
-#include <QtGui/QClipboard>
-#include <QtGui/QImage>
-#include <QtGui/QColor>
-#include <QtCore/QStringList>
-#include <QtCore/QCommandLineParser>
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
+#include <BobUIGui/QGuiApplication>
+#include <BobUIGui/QClipboard>
+#include <BobUIGui/QImage>
+#include <BobUIGui/QColor>
+#include <BobUICore/QStringList>
+#include <BobUICore/QCommandLineParser>
 
 int main(int argc, char **argv)
 {
@@ -22,7 +22,7 @@ int main(int argc, char **argv)
     parser.process(QCoreApplication::arguments());
 
     if (parser.isSet(imageOption)) {
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
         const QImage actual = QGuiApplication::clipboard()->image();
 #else
         const QImage actual;
@@ -36,7 +36,7 @@ int main(int argc, char **argv)
         if (qAlpha(pixel00))
             return 2;
         const QRgb pixel01 = actual.pixel(QPoint(1, 0));
-        if (pixel01 != QColor(Qt::blue).rgba())
+        if (pixel01 != QColor(BobUI::blue).rgba())
             return 3;
         return 0;
     }
@@ -45,7 +45,7 @@ int main(int argc, char **argv)
     if (parser.isSet(textOption))
         expected = parser.value(textOption);
     if (!expected.isEmpty()) {
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
         const QString actual = QGuiApplication::clipboard()->text();
 #else
         const QString actual;

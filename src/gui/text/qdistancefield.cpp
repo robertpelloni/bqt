@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qdistancefield_p.h"
 #include <qmath.h>
-#include <QtCore/qalloc.h>
+#include <BobUICore/qalloc.h>
 #include <private/qdatabuffer_p.h>
 #include <private/qimage_p.h>
 #include <private/qpathsimplifier_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_STATIC_LOGGING_CATEGORY(lcDistanceField, "qt.distanceField");
+Q_STATIC_LOGGING_CATEGORY(lcDistanceField, "bobui.distanceField");
 
 namespace
 {
@@ -468,7 +468,7 @@ static void makeDistanceField(QDistanceFieldData *data, const QPainterPath &path
     int imgWidth = data->width;
     int imgHeight = data->height;
 
-    QTransform transform;
+    BOBUIransform transform;
     transform.translate(offs, offs);
     transform.scale(qreal(1) / dfScale, qreal(1) / dfScale);
 
@@ -712,10 +712,10 @@ static bool imageHasNarrowOutlines(const QImage &im)
     return minHThick == 1 || minVThick == 1;
 }
 
-static int QT_DISTANCEFIELD_DEFAULT_BASEFONTSIZE = 54;
-static int QT_DISTANCEFIELD_DEFAULT_SCALE = 16;
-static int QT_DISTANCEFIELD_DEFAULT_RADIUS = 80;
-static int QT_DISTANCEFIELD_DEFAULT_HIGHGLYPHCOUNT = 2000;
+static int BOBUI_DISTANCEFIELD_DEFAULT_BASEFONTSIZE = 54;
+static int BOBUI_DISTANCEFIELD_DEFAULT_SCALE = 16;
+static int BOBUI_DISTANCEFIELD_DEFAULT_RADIUS = 80;
+static int BOBUI_DISTANCEFIELD_DEFAULT_HIGHGLYPHCOUNT = 2000;
 
 static void initialDistanceFieldFactor()
 {
@@ -724,29 +724,29 @@ static void initialDistanceFieldFactor()
         return;
     initialized = true;
 
-    if (qEnvironmentVariableIsSet("QT_DISTANCEFIELD_DEFAULT_BASEFONTSIZE")) {
-        QT_DISTANCEFIELD_DEFAULT_BASEFONTSIZE = qEnvironmentVariableIntValue("QT_DISTANCEFIELD_DEFAULT_BASEFONTSIZE");
-        qCDebug(lcDistanceField) << "set the QT_DISTANCEFIELD_DEFAULT_BASEFONTSIZE:" << QT_DISTANCEFIELD_DEFAULT_BASEFONTSIZE;
+    if (qEnvironmentVariableIsSet("BOBUI_DISTANCEFIELD_DEFAULT_BASEFONTSIZE")) {
+        BOBUI_DISTANCEFIELD_DEFAULT_BASEFONTSIZE = qEnvironmentVariableIntValue("BOBUI_DISTANCEFIELD_DEFAULT_BASEFONTSIZE");
+        qCDebug(lcDistanceField) << "set the BOBUI_DISTANCEFIELD_DEFAULT_BASEFONTSIZE:" << BOBUI_DISTANCEFIELD_DEFAULT_BASEFONTSIZE;
     }
 
-    if (qEnvironmentVariableIsSet("QT_DISTANCEFIELD_DEFAULT_SCALE")) {
-        QT_DISTANCEFIELD_DEFAULT_SCALE = qEnvironmentVariableIntValue("QT_DISTANCEFIELD_DEFAULT_SCALE");
-        qCDebug(lcDistanceField) << "set the QT_DISTANCEFIELD_DEFAULT_SCALE:" << QT_DISTANCEFIELD_DEFAULT_SCALE;
+    if (qEnvironmentVariableIsSet("BOBUI_DISTANCEFIELD_DEFAULT_SCALE")) {
+        BOBUI_DISTANCEFIELD_DEFAULT_SCALE = qEnvironmentVariableIntValue("BOBUI_DISTANCEFIELD_DEFAULT_SCALE");
+        qCDebug(lcDistanceField) << "set the BOBUI_DISTANCEFIELD_DEFAULT_SCALE:" << BOBUI_DISTANCEFIELD_DEFAULT_SCALE;
     }
-    if (qEnvironmentVariableIsSet("QT_DISTANCEFIELD_DEFAULT_RADIUS")) {
-        QT_DISTANCEFIELD_DEFAULT_RADIUS = qEnvironmentVariableIntValue("QT_DISTANCEFIELD_DEFAULT_RADIUS");
-        qCDebug(lcDistanceField) << "set the QT_DISTANCEFIELD_DEFAULT_RADIUS:" << QT_DISTANCEFIELD_DEFAULT_RADIUS;
+    if (qEnvironmentVariableIsSet("BOBUI_DISTANCEFIELD_DEFAULT_RADIUS")) {
+        BOBUI_DISTANCEFIELD_DEFAULT_RADIUS = qEnvironmentVariableIntValue("BOBUI_DISTANCEFIELD_DEFAULT_RADIUS");
+        qCDebug(lcDistanceField) << "set the BOBUI_DISTANCEFIELD_DEFAULT_RADIUS:" << BOBUI_DISTANCEFIELD_DEFAULT_RADIUS;
     }
-    if (qEnvironmentVariableIsSet("QT_DISTANCEFIELD_DEFAULT_HIGHGLYPHCOUNT")) {
-        QT_DISTANCEFIELD_DEFAULT_HIGHGLYPHCOUNT = qEnvironmentVariableIntValue("QT_DISTANCEFIELD_DEFAULT_HIGHGLYPHCOUNT");
-        qCDebug(lcDistanceField) << "set the QT_DISTANCEFIELD_DEFAULT_HIGHGLYPHCOUNT:" << QT_DISTANCEFIELD_DEFAULT_HIGHGLYPHCOUNT;
+    if (qEnvironmentVariableIsSet("BOBUI_DISTANCEFIELD_DEFAULT_HIGHGLYPHCOUNT")) {
+        BOBUI_DISTANCEFIELD_DEFAULT_HIGHGLYPHCOUNT = qEnvironmentVariableIntValue("BOBUI_DISTANCEFIELD_DEFAULT_HIGHGLYPHCOUNT");
+        qCDebug(lcDistanceField) << "set the BOBUI_DISTANCEFIELD_DEFAULT_HIGHGLYPHCOUNT:" << BOBUI_DISTANCEFIELD_DEFAULT_HIGHGLYPHCOUNT;
     }
 }
 
-bool qt_fontHasNarrowOutlines(QFontEngine *fontEngine)
+bool bobui_fontHasNarrowOutlines(QFontEngine *fontEngine)
 {
     initialDistanceFieldFactor();
-    QFontEngine *fe = fontEngine->cloneWithSize(QT_DISTANCEFIELD_DEFAULT_BASEFONTSIZE);
+    QFontEngine *fe = fontEngine->cloneWithSize(BOBUI_DISTANCEFIELD_DEFAULT_BASEFONTSIZE);
     if (!fe)
         return false;
 
@@ -754,7 +754,7 @@ bool qt_fontHasNarrowOutlines(QFontEngine *fontEngine)
 
     const glyph_t glyph = fe->glyphIndex('O');
     if (glyph != 0)
-        im = fe->alphaMapForGlyph(glyph, QFixedPoint(), QTransform());
+        im = fe->alphaMapForGlyph(glyph, QFixedPoint(), BOBUIransform());
 
     Q_ASSERT(fe->ref.loadRelaxed() == 0);
     delete fe;
@@ -762,11 +762,11 @@ bool qt_fontHasNarrowOutlines(QFontEngine *fontEngine)
     return imageHasNarrowOutlines(im);
 }
 
-bool qt_fontHasNarrowOutlines(const QRawFont &f)
+bool bobui_fontHasNarrowOutlines(const QRawFont &f)
 {
     QRawFont font = f;
     initialDistanceFieldFactor();
-    font.setPixelSize(QT_DISTANCEFIELD_DEFAULT_BASEFONTSIZE);
+    font.setPixelSize(BOBUI_DISTANCEFIELD_DEFAULT_BASEFONTSIZE);
     if (!font.isValid())
         return false;
 
@@ -778,40 +778,40 @@ bool qt_fontHasNarrowOutlines(const QRawFont &f)
                                                         QRawFont::PixelAntialiasing));
 }
 
-int QT_DISTANCEFIELD_BASEFONTSIZE(bool narrowOutlineFont)
+int BOBUI_DISTANCEFIELD_BASEFONTSIZE(bool narrowOutlineFont)
 {
     initialDistanceFieldFactor();
 
     if (Q_UNLIKELY(narrowOutlineFont))
-        return QT_DISTANCEFIELD_DEFAULT_BASEFONTSIZE * 2;
+        return BOBUI_DISTANCEFIELD_DEFAULT_BASEFONTSIZE * 2;
     else
-        return QT_DISTANCEFIELD_DEFAULT_BASEFONTSIZE;
+        return BOBUI_DISTANCEFIELD_DEFAULT_BASEFONTSIZE;
 }
 
-int QT_DISTANCEFIELD_SCALE(bool narrowOutlineFont)
+int BOBUI_DISTANCEFIELD_SCALE(bool narrowOutlineFont)
 {
     initialDistanceFieldFactor();
 
     if (Q_UNLIKELY(narrowOutlineFont))
-        return QT_DISTANCEFIELD_DEFAULT_SCALE / 2;
+        return BOBUI_DISTANCEFIELD_DEFAULT_SCALE / 2;
     else
-        return QT_DISTANCEFIELD_DEFAULT_SCALE;
+        return BOBUI_DISTANCEFIELD_DEFAULT_SCALE;
 }
 
-int QT_DISTANCEFIELD_RADIUS(bool narrowOutlineFont)
+int BOBUI_DISTANCEFIELD_RADIUS(bool narrowOutlineFont)
 {
     initialDistanceFieldFactor();
 
     if (Q_UNLIKELY(narrowOutlineFont))
-        return QT_DISTANCEFIELD_DEFAULT_RADIUS / 2;
+        return BOBUI_DISTANCEFIELD_DEFAULT_RADIUS / 2;
     else
-        return QT_DISTANCEFIELD_DEFAULT_RADIUS;
+        return BOBUI_DISTANCEFIELD_DEFAULT_RADIUS;
 }
 
-int QT_DISTANCEFIELD_HIGHGLYPHCOUNT()
+int BOBUI_DISTANCEFIELD_HIGHGLYPHCOUNT()
 {
     initialDistanceFieldFactor();
-    return QT_DISTANCEFIELD_DEFAULT_HIGHGLYPHCOUNT;
+    return BOBUI_DISTANCEFIELD_DEFAULT_HIGHGLYPHCOUNT;
 }
 
 QDistanceFieldData::QDistanceFieldData(const QDistanceFieldData &other)
@@ -829,7 +829,7 @@ QDistanceFieldData::QDistanceFieldData(const QDistanceFieldData &other)
 
 QDistanceFieldData::~QDistanceFieldData()
 {
-    QtPrivate::sizedFree(data, nbytes);
+    BobUIPrivate::sizedFree(data, nbytes);
 }
 
 QDistanceFieldData *QDistanceFieldData::create(const QSize &size)
@@ -852,17 +852,17 @@ QDistanceFieldData *QDistanceFieldData::create(QSize size, const QPainterPath &p
     QDistanceFieldData *data = create(size);
     makeDistanceField(data,
                       path,
-                      QT_DISTANCEFIELD_SCALE(doubleResolution),
-                      QT_DISTANCEFIELD_RADIUS(doubleResolution) / QT_DISTANCEFIELD_SCALE(doubleResolution));
+                      BOBUI_DISTANCEFIELD_SCALE(doubleResolution),
+                      BOBUI_DISTANCEFIELD_RADIUS(doubleResolution) / BOBUI_DISTANCEFIELD_SCALE(doubleResolution));
     return data;
 }
 
 
 QDistanceFieldData *QDistanceFieldData::create(const QPainterPath &path, bool doubleResolution)
 {
-    int dfMargin = QT_DISTANCEFIELD_RADIUS(doubleResolution) / QT_DISTANCEFIELD_SCALE(doubleResolution);
-    int glyphWidth = qCeil(path.boundingRect().width() / QT_DISTANCEFIELD_SCALE(doubleResolution)) + dfMargin * 2;
-    int glyphHeight = qCeil(path.boundingRect().height() / QT_DISTANCEFIELD_SCALE(doubleResolution)) + dfMargin * 2;
+    int dfMargin = BOBUI_DISTANCEFIELD_RADIUS(doubleResolution) / BOBUI_DISTANCEFIELD_SCALE(doubleResolution);
+    int glyphWidth = qCeil(path.boundingRect().width() / BOBUI_DISTANCEFIELD_SCALE(doubleResolution)) + dfMargin * 2;
+    int glyphHeight = qCeil(path.boundingRect().height() / BOBUI_DISTANCEFIELD_SCALE(doubleResolution)) + dfMargin * 2;
 
     return create(QSize(glyphWidth, glyphHeight), path, doubleResolution);
 }
@@ -892,7 +892,7 @@ QDistanceField::QDistanceField(QSize size, const QPainterPath &path, glyph_t gly
 {
     QPainterPath dfPath = path;
     dfPath.translate(-dfPath.boundingRect().topLeft());
-    dfPath.setFillRule(Qt::WindingFill);
+    dfPath.setFillRule(BobUI::WindingFill);
 
     d = QDistanceFieldData::create(size, dfPath, doubleResolution);
     d->glyph = glyph;
@@ -902,7 +902,7 @@ QDistanceField::QDistanceField(const QPainterPath &path, glyph_t glyph, bool dou
 {
     QPainterPath dfPath = path;
     dfPath.translate(-dfPath.boundingRect().topLeft());
-    dfPath.setFillRule(Qt::WindingFill);
+    dfPath.setFillRule(BobUI::WindingFill);
 
     d = QDistanceFieldData::create(dfPath, doubleResolution);
     d->glyph = glyph;
@@ -927,11 +927,11 @@ glyph_t QDistanceField::glyph() const
 void QDistanceField::setGlyph(const QRawFont &font, glyph_t glyph, bool doubleResolution)
 {
     QRawFont renderFont = font;
-    renderFont.setPixelSize(QT_DISTANCEFIELD_BASEFONTSIZE(doubleResolution) * QT_DISTANCEFIELD_SCALE(doubleResolution));
+    renderFont.setPixelSize(BOBUI_DISTANCEFIELD_BASEFONTSIZE(doubleResolution) * BOBUI_DISTANCEFIELD_SCALE(doubleResolution));
 
     QPainterPath path = renderFont.pathForGlyph(glyph);
     path.translate(-path.boundingRect().topLeft());
-    path.setFillRule(Qt::WindingFill);
+    path.setFillRule(BobUI::WindingFill);
 
     d = QDistanceFieldData::create(path, doubleResolution);
     d->glyph = glyph;
@@ -943,7 +943,7 @@ void QDistanceField::setGlyph(QFontEngine *fontEngine, glyph_t glyph, bool doubl
     QPainterPath path;
     fontEngine->addGlyphsToPath(&glyph, &position, 1, &path, { });
     path.translate(-path.boundingRect().topLeft());
-    path.setFillRule(Qt::WindingFill);
+    path.setFillRule(BobUI::WindingFill);
 
     d = QDistanceFieldData::create(path, doubleResolution);
     d->glyph = glyph;
@@ -1064,7 +1064,7 @@ QImage QDistanceField::toImage(QImage::Format format) const
     if (isNull())
         return QImage();
 
-    QImage image(d->width, d->height, qt_depthForFormat(format) == 8 ?
+    QImage image(d->width, d->height, bobui_depthForFormat(format) == 8 ?
                                       format : QImage::Format_ARGB32_Premultiplied);
     if (image.isNull())
         return image;
@@ -1087,5 +1087,5 @@ QImage QDistanceField::toImage(QImage::Format format) const
     return image;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 

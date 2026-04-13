@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 #include <QCoreApplication>
 #include <QDebug>
 #include <QVariant>
@@ -40,7 +40,7 @@ QDebug operator<<(QDebug dbg, const Message &message);
 QDebug operator<<(QDebug dbg, const Message &message)
 {
     QDebugStateSaver saver(dbg);
-    const QList<QStringView> pieces = message.body().split(u"\r\n", Qt::SkipEmptyParts);
+    const QList<QStringView> pieces = message.body().split(u"\r\n", BobUI::SkipEmptyParts);
     if (pieces.isEmpty())
         dbg.nospace() << "Message()";
     else if (pieces.size() == 1)

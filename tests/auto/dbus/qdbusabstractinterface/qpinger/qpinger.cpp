@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QCoreApplication>
 
@@ -12,14 +12,14 @@
 
 #include "../interface.h"
 
-static const char serviceName[] = "org.qtproject.autotests.qpinger";
-static const char objectPath[] = "/org/qtproject/qpinger";
+static const char serviceName[] = "org.bobuiproject.autotests.qpinger";
+static const char objectPath[] = "/org/bobuiproject/qpinger";
 //static const char *interfaceName = serviceName;
 
 class PingerServer : public QDBusServer, protected QDBusContext
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "org.qtproject.autotests.qpinger")
+    Q_CLASSINFO("D-Bus Interface", "org.bobuiproject.autotests.qpinger")
 public:
     PingerServer(QObject *parent = nullptr)
         : QDBusServer(parent),

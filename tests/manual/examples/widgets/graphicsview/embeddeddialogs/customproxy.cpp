@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "customproxy.h"
 
@@ -7,12 +7,12 @@
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 
-CustomProxy::CustomProxy(QGraphicsItem *parent, Qt::WindowFlags wFlags)
-    : QGraphicsProxyWidget(parent, wFlags), timeLine(new QTimeLine(250, this))
+CustomProxy::CustomProxy(QGraphicsItem *parent, BobUI::WindowFlags wFlags)
+    : QGraphicsProxyWidget(parent, wFlags), timeLine(new BOBUIimeLine(250, this))
 {
-    connect(timeLine, &QTimeLine::valueChanged,
+    connect(timeLine, &BOBUIimeLine::valueChanged,
             this, &CustomProxy::updateStep);
-    connect(timeLine, &QTimeLine::stateChanged,
+    connect(timeLine, &BOBUIimeLine::stateChanged,
             this, &CustomProxy::stateChanged);
 }
 
@@ -35,7 +35,7 @@ void CustomProxy::paintWindowFrame(QPainter *painter, const QStyleOptionGraphics
         QPainterPath path;
         path.addRect(right);
         path.addRect(bottom);
-        painter->setPen(Qt::NoPen);
+        painter->setPen(BobUI::NoPen);
         painter->setBrush(color);
         painter->drawPath(path);
     } else if (intersectsBottom) {
@@ -59,7 +59,7 @@ void CustomProxy::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
     QGraphicsProxyWidget::hoverLeaveEvent(event);
     if (!popupShown
-            && (timeLine->direction() != QTimeLine::Backward || qFuzzyIsNull(timeLine->currentValue()))) {
+            && (timeLine->direction() != BOBUIimeLine::Backward || qFuzzyIsNull(timeLine->currentValue()))) {
         zoomOut();
     }
 }
@@ -96,38 +96,38 @@ QVariant CustomProxy::itemChange(GraphicsItemChange change, const QVariant &valu
 void CustomProxy::updateStep(qreal step)
 {
     QRectF r = boundingRect();
-    setTransform(QTransform()
+    setTransform(BOBUIransform()
                  .translate(r.width() / 2, r.height() / 2)
-                 .rotate(step * 30, Qt::XAxis)
-                 .rotate(step * 10, Qt::YAxis)
-                 .rotate(step * 5, Qt::ZAxis)
+                 .rotate(step * 30, BobUI::XAxis)
+                 .rotate(step * 10, BobUI::YAxis)
+                 .rotate(step * 5, BobUI::ZAxis)
                  .scale(1 + 1.5 * step, 1 + 1.5 * step)
                  .translate(-r.width() / 2, -r.height() / 2));
 }
 
-void CustomProxy::stateChanged(QTimeLine::State state)
+void CustomProxy::stateChanged(BOBUIimeLine::State state)
 {
-    if (state == QTimeLine::Running) {
-        if (timeLine->direction() == QTimeLine::Forward)
+    if (state == BOBUIimeLine::Running) {
+        if (timeLine->direction() == BOBUIimeLine::Forward)
             setCacheMode(ItemCoordinateCache);
-    } else if (state == QTimeLine::NotRunning) {
-        if (timeLine->direction() == QTimeLine::Backward)
+    } else if (state == BOBUIimeLine::NotRunning) {
+        if (timeLine->direction() == BOBUIimeLine::Backward)
             setCacheMode(DeviceCoordinateCache);
     }
 }
 
 void CustomProxy::zoomIn()
 {
-    if (timeLine->direction() != QTimeLine::Forward)
-        timeLine->setDirection(QTimeLine::Forward);
-    if (timeLine->state() == QTimeLine::NotRunning)
+    if (timeLine->direction() != BOBUIimeLine::Forward)
+        timeLine->setDirection(BOBUIimeLine::Forward);
+    if (timeLine->state() == BOBUIimeLine::NotRunning)
         timeLine->start();
 }
 
 void CustomProxy::zoomOut()
 {
-    if (timeLine->direction() != QTimeLine::Backward)
-        timeLine->setDirection(QTimeLine::Backward);
-    if (timeLine->state() == QTimeLine::NotRunning)
+    if (timeLine->direction() != BOBUIimeLine::Backward)
+        timeLine->setDirection(BOBUIimeLine::Backward);
+    if (timeLine->state() == BOBUIimeLine::NotRunning)
         timeLine->start();
 }

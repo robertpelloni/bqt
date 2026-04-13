@@ -1,16 +1,16 @@
-// Copyright (C) 2026 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2026 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QEventLoop>
-#include <QTimer>
+#include <BOBUIimer>
 #include <QJniObject>
-#include <QtCore/private/qandroidextras_p.h>
+#include <BobUICore/private/qandroidextras_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
-using namespace QtJniTypes;
+using namespace BobUI::StringLiterals;
+using namespace BobUIJniTypes;
 
 Q_DECLARE_JNI_CLASS(ComponentName, "android/content/ComponentName")
 
@@ -25,16 +25,16 @@ private slots:
 
 void tst_AndroidActivityAlias::launchAliasActivity_data()
 {
-    QTest::addColumn<QString>("aliasClass");
-    QTest::addColumn<int>("requestCode");
+    BOBUIest::addColumn<QString>("aliasClass");
+    BOBUIest::addColumn<int>("requestCode");
 
-    QTest::newRow("alias_without_metadata")
+    BOBUIest::newRow("alias_without_metadata")
         << QStringLiteral("Alias")
         << 12345;
-    QTest::newRow("alias_with_metadata")
+    BOBUIest::newRow("alias_with_metadata")
         << QStringLiteral("AliasWithMetaData")
         << 12346;
-    QTest::newRow("alias_with_invalid_metadata")
+    BOBUIest::newRow("alias_with_invalid_metadata")
         << QStringLiteral("AliasWithInvalidMetaData")
         << 12347;
 }
@@ -53,9 +53,9 @@ void tst_AndroidActivityAlias::launchAliasActivity()
 
     AliasActivityResult result;
     QEventLoop loop;
-    QTimer timeout;
+    BOBUIimer timeout;
     timeout.setSingleShot(true);
-    QObject::connect(&timeout, &QTimer::timeout, &loop, &QEventLoop::quit);
+    QObject::connect(&timeout, &BOBUIimer::timeout, &loop, &QEventLoop::quit);
     timeout.start(5000);
 
     static QString EXTRA_FINISH_IMMEDIATELY = "finish_immediately";
@@ -72,7 +72,7 @@ void tst_AndroidActivityAlias::launchAliasActivity()
     intent.callMethod<Intent>("setComponent", component);
     intent.callMethod<Intent>("putExtra", EXTRA_FINISH_IMMEDIATELY, true);
 
-    QtAndroidPrivate::startActivity(intent, requestCode,
+    BobUIAndroidPrivate::startActivity(intent, requestCode,
         [&](int, int resultCode, const Intent &data) {
             result.finished = true;
             result.resultCode = resultCode;
@@ -80,7 +80,7 @@ void tst_AndroidActivityAlias::launchAliasActivity()
                 result.aliasComponent =
                     data.callMethod<QString>("getStringExtra", EXTRA_ALIAS_COMPONENT);
             }
-            QMetaObject::invokeMethod(&loop, &QEventLoop::quit, Qt::QueuedConnection);
+            QMetaObject::invokeMethod(&loop, &QEventLoop::quit, BobUI::QueuedConnection);
         }
     );
 
@@ -92,7 +92,7 @@ void tst_AndroidActivityAlias::launchAliasActivity()
     QCOMPARE(result.aliasComponent, fullAliasClass);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QTEST_MAIN(tst_AndroidActivityAlias)
+BOBUIEST_MAIN(tst_AndroidActivityAlias)
 #include "tst_androidactivityalias.moc"

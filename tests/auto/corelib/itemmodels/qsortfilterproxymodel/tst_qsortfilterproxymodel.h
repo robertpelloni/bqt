@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef TST_QSORTFILTERPROXYMODEL_H
 #define TST_QSORTFILTERPROXYMODEL_H
@@ -52,7 +52,7 @@ private slots:
 
     void filterTable();
     void filterCurrent();
-    void filter_qtbug30662();
+    void filter_bobuibug30662();
 
     void changeSourceLayout();
     void changeSourceLayoutFilteredOut();
@@ -64,9 +64,9 @@ private slots:
     void changeFilter();
     void changeSourceData_data();
     void changeSourceData();
-    void changeSourceDataKeepsStableSorting_qtbug1548();
-    void changeSourceDataForwardsRoles_qtbug35440();
-    void changeSourceDataProxySendDataChanged_qtbug87781();
+    void changeSourceDataKeepsStableSorting_bobuibug1548();
+    void changeSourceDataForwardsRoles_bobuibug35440();
+    void changeSourceDataProxySendDataChanged_bobuibug87781();
     void changeSourceDataTreeModel();
     void changeSourceDataProxyFilterSingleColumn();
     void changeSourceDataProxyFilterMultipleColumns();

@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "tabswidget.h"
 
@@ -22,7 +22,7 @@ GeneralTab::GeneralTab(QWidget *parent)
     layout->addWidget(new QRadioButton("Radio 1"));
     layout->addWidget(new QRadioButton("Radio 2"));
 
-    QSlider *slider = new QSlider(Qt::Horizontal);
+    QSlider *slider = new QSlider(BobUI::Horizontal);
     slider->setTickInterval(10);
     slider->setTickPosition(QSlider::TicksAbove);
     layout->addWidget(slider);
@@ -33,8 +33,8 @@ GeneralTab::GeneralTab(QWidget *parent)
     layout->addWidget(spin);
     layout->addStretch();
 
-    QScrollBar *scrollBar = new QScrollBar(Qt::Horizontal);
-    scrollBar->setFocusPolicy(Qt::StrongFocus);
+    QScrollBar *scrollBar = new QScrollBar(BobUI::Horizontal);
+    scrollBar->setFocusPolicy(BobUI::StrongFocus);
     layout->addWidget(scrollBar);
 
     setLayout(layout);

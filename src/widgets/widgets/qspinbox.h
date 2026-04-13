@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSPINBOX_H
 #define QSPINBOX_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qabstractspinbox.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qabstractspinbox.h>
 
-QT_REQUIRE_CONFIG(spinbox);
+BOBUI_REQUIRE_CONFIG(spinbox);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QSpinBoxPrivate;
 class Q_WIDGETS_EXPORT QSpinBox : public QAbstractSpinBox
@@ -140,6 +140,6 @@ private:
     Q_DECLARE_PRIVATE(QDoubleSpinBox)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSPINBOX_H

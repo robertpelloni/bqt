@@ -1,51 +1,51 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qplatformdefs.h"
-#include <QtPrintSupport/private/qtprintsupportglobal_p.h>
+#include <BobUIPrintSupport/private/bobuiprintsupportglobal_p.h>
 
 #include "private/qabstractprintdialog_p.h"
-#if QT_CONFIG(messagebox)
-#include <QtWidgets/qmessagebox.h>
+#if BOBUI_CONFIG(messagebox)
+#include <BobUIWidgets/qmessagebox.h>
 #endif
 #include "qprintdialog.h"
-#if QT_CONFIG(filedialog)
+#if BOBUI_CONFIG(filedialog)
 #include "qfiledialog.h"
 #endif
-#include <QtCore/qdebug.h>
-#include <QtCore/qdir.h>
-#include <QtCore/qglobal.h>
-#include <QtCore/qstringconverter.h>
-#include <QtGui/qevent.h>
-#if QT_CONFIG(filesystemmodel)
-#include <QtGui/qfilesystemmodel.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qdir.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qstringconverter.h>
+#include <BobUIGui/qevent.h>
+#if BOBUI_CONFIG(filesystemmodel)
+#include <BobUIGui/qfilesystemmodel.h>
 #endif
-#include <QtWidgets/qstyleditemdelegate.h>
-#include <QtWidgets/qformlayout.h>
-#include <QtPrintSupport/qprinter.h>
+#include <BobUIWidgets/qstyleditemdelegate.h>
+#include <BobUIWidgets/qformlayout.h>
+#include <BobUIPrintSupport/qprinter.h>
 
 #include <qpa/qplatformprintplugin.h>
 #include <qpa/qplatformprintersupport.h>
 
 #include <private/qprintdevice_p.h>
 
-#include <QtWidgets/qdialogbuttonbox.h>
+#include <BobUIWidgets/qdialogbuttonbox.h>
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 #include <qregularexpression.h>
 #endif
 
-#if QT_CONFIG(completer)
+#if BOBUI_CONFIG(completer)
 #include <private/qcompleter_p.h>
 #endif
 #include "ui_qprintpropertieswidget.h"
 #include "ui_qprintsettingsoutput.h"
 #include "ui_qprintwidget.h"
 
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
 Q_DECLARE_METATYPE(const ppd_option_t *)
 #include <private/qcups_p.h>
-#if QT_CONFIG(cupsjobwidget)
+#if BOBUI_CONFIG(cupsjobwidget)
 #include "qcupsjobwidget_p.h"
 #endif
 #endif
@@ -88,9 +88,9 @@ static void _q_pdu_initResources()
     Q_INIT_RESOURCE(qprintdialog);
 }
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class QPrintPropertiesDialog : public QDialog
 {
@@ -111,16 +111,16 @@ private:
     void showEvent(QShowEvent *event) override;
 
     friend class QUnixPrintWidgetPrivate;
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
     QPrinter *m_printer;
 #endif
     Ui::QPrintPropertiesWidget widget;
     QDialogButtonBox *m_buttons;
-#if QT_CONFIG(cupsjobwidget)
+#if BOBUI_CONFIG(cupsjobwidget)
     QCupsJobWidget *m_jobOptions;
 #endif
 
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
     bool createAdvancedOptionsWidget();
     void setPrinterAdvancedCupsOptions() const;
     void revertAdvancedOptionsToSavedValues() const;
@@ -180,7 +180,7 @@ public:
 
     void updateWidget();
 
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
     void setPpdDuplex(QPrinter::DuplexMode mode);
     ppd_option_t *m_duplexPpdOption;
 #endif
@@ -203,12 +203,12 @@ public:
     void selectPrinter(const QPrinter::OutputFormat outputFormat);
 
     void _q_togglePageSetCombo(bool);
-#if QT_CONFIG(messagebox)
+#if BOBUI_CONFIG(messagebox)
     void _q_checkFields();
 #endif
     void _q_collapseOrExpandDialog();
 
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
     void updatePpdDuplexOption(QRadioButton *radio);
 #endif
     void setupPrinter();
@@ -244,7 +244,7 @@ QPrintPropertiesDialog::QPrintPropertiesDialog(QPrinter *printer, QPrintDevice *
                                                QPrinter::OutputFormat outputFormat, const QString &printerName,
                                                QAbstractPrintDialog *parent)
     : QDialog(parent)
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
     , m_printer(printer)
 #endif
 {
@@ -252,7 +252,7 @@ QPrintPropertiesDialog::QPrintPropertiesDialog(QPrinter *printer, QPrintDevice *
     QVBoxLayout *lay = new QVBoxLayout(this);
     QWidget *content = new QWidget(this);
     widget.setupUi(content);
-    m_buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this);
+    m_buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, BobUI::Horizontal, this);
     lay->addWidget(content);
     lay->addWidget(m_buttons);
 
@@ -261,13 +261,13 @@ QPrintPropertiesDialog::QPrintPropertiesDialog(QPrinter *printer, QPrintDevice *
 
     widget.pageSetup->setPrinter(printer, currentPrintDevice, outputFormat, printerName);
 
-#if QT_CONFIG(cupsjobwidget)
+#if BOBUI_CONFIG(cupsjobwidget)
     m_jobOptions = new QCupsJobWidget(printer, currentPrintDevice);
     widget.tabs->insertTab(1, m_jobOptions, tr("Job Options"));
 #endif
 
     const int advancedTabIndex = widget.tabs->indexOf(widget.cupsPropertiesPage);
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
     m_currentPrintDevice = currentPrintDevice;
     const bool anyWidgetCreated = createAdvancedOptionsWidget();
 
@@ -289,16 +289,16 @@ QPrintPropertiesDialog::~QPrintPropertiesDialog()
 
 void QPrintPropertiesDialog::setupPrinter() const
 {
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
     QCUPSSupport::clearCupsOptions(m_printer);
 #endif
 
     widget.pageSetup->setupPrinter();
-#if QT_CONFIG(cupsjobwidget)
+#if BOBUI_CONFIG(cupsjobwidget)
     m_jobOptions->setupPrinter();
 #endif
 
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
     // Set Color by default, that will change if the "ColorModel" property is available
     m_printer->setColorMode(QPrinter::Color);
 
@@ -310,11 +310,11 @@ void QPrintPropertiesDialog::reject()
 {
     widget.pageSetup->revertToSavedValues();
 
-#if QT_CONFIG(cupsjobwidget)
+#if BOBUI_CONFIG(cupsjobwidget)
     m_jobOptions->revertToSavedValues();
 #endif
 
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
     revertAdvancedOptionsToSavedValues();
 #endif
     QDialog::reject();
@@ -322,7 +322,7 @@ void QPrintPropertiesDialog::reject()
 
 void QPrintPropertiesDialog::accept()
 {
-#if QT_CONFIG(cups) && QT_CONFIG(messagebox)
+#if BOBUI_CONFIG(cups) && BOBUI_CONFIG(messagebox)
     if (widget.pageSetup->hasPpdConflict()) {
         widget.tabs->setCurrentWidget(widget.tabPage);
         const QMessageBox::StandardButton answer = QMessageBox::warning(this, tr("Page Setup Conflicts"),
@@ -341,7 +341,7 @@ void QPrintPropertiesDialog::accept()
     advancedOptionsUpdateSavedValues();
 #endif
 
-#if QT_CONFIG(cupsjobwidget)
+#if BOBUI_CONFIG(cupsjobwidget)
     m_jobOptions->updateSavedValues();
 #endif
 
@@ -352,13 +352,13 @@ void QPrintPropertiesDialog::accept()
 
 void QPrintPropertiesDialog::showEvent(QShowEvent *event)
 {
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
     widget.conflictsLabel->setVisible(anyPpdOptionConflict());
 #endif
     QDialog::showEvent(event);
 }
 
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
 
 // Used to store the ppd_option_t for each QComboBox that represents an advanced option
 static const char *ppdOptionProperty = "_q_ppd_option";
@@ -600,11 +600,11 @@ void QPrintDialogPrivate::init()
     bottom = new QWidget(q);
     options.setupUi(bottom);
     options.color->setIconSize(QSize(32, 32));
-    options.color->setIcon(QIcon(":/qt-project.org/dialogs/qprintdialog/images/status-color.png"_L1));
+    options.color->setIcon(QIcon(":/bobui-project.org/dialogs/qprintdialog/images/status-color.png"_L1));
     options.grayscale->setIconSize(QSize(32, 32));
-    options.grayscale->setIcon(QIcon(":/qt-project.org/dialogs/qprintdialog/images/status-gray-scale.png"_L1));
+    options.grayscale->setIcon(QIcon(":/bobui-project.org/dialogs/qprintdialog/images/status-gray-scale.png"_L1));
 
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
     // Add Page Set widget if CUPS is available
     options.pageSetCombo->addItem(tr("All Pages"), QVariant::fromValue(QCUPSSupport::AllPages));
     options.pageSetCombo->addItem(tr("Odd Pages"), QVariant::fromValue(QCUPSSupport::OddPages));
@@ -618,7 +618,7 @@ void QPrintDialogPrivate::init()
 
     top->d->setOptionsPane(this);
 
-    buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, q);
+    buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, BobUI::Horizontal, q);
     collapseButton = new QPushButton(QPrintDialog::tr("&Options >>"), buttons);
     buttons->addButton(collapseButton, QDialogButtonBox::ResetRole);
     bottom->setVisible(false);
@@ -632,7 +632,7 @@ void QPrintDialogPrivate::init()
     lay->addWidget(bottom);
     lay->addWidget(buttons);
 
-#if !QT_CONFIG(messagebox)
+#if !BOBUI_CONFIG(messagebox)
     QObject::connect(buttons, SIGNAL(accepted()), q, SLOT(accept()));
 #else
     QObject::connect(buttons, SIGNAL(accepted()), q, SLOT(_q_checkFields()));
@@ -651,7 +651,7 @@ void QPrintDialogPrivate::init()
     QObject::connect(options.duplexLong, &QAbstractButton::clicked, q, [this] { setExplicitDuplexMode(QPrint::DuplexLongSide); });
     QObject::connect(options.duplexShort, &QAbstractButton::clicked, q, [this] { setExplicitDuplexMode(QPrint::DuplexShortSide); });
 
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
     QObject::connect(options.noDuplex, &QAbstractButton::toggled, q, [this] { updatePpdDuplexOption(options.noDuplex); });
     QObject::connect(options.duplexLong, &QAbstractButton::toggled, q, [this] { updatePpdDuplexOption(options.duplexLong); });
     QObject::connect(options.duplexShort, &QAbstractButton::toggled, q, [this] { updatePpdDuplexOption(options.duplexShort); });
@@ -703,7 +703,7 @@ void QPrintDialogPrivate::selectPrinter(const QPrinter::OutputFormat outputForma
         else
             options.pageSetCombo->setEnabled(true);
 
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
         // Disable complex page ranges widget when printing to pdf
         // It doesn't work since it relies on cups to do the heavy lifting and cups
         // is not used when printing to PDF
@@ -714,7 +714,7 @@ void QPrintDialogPrivate::selectPrinter(const QPrinter::OutputFormat outputForma
 #endif
 }
 
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
 
 void QPrintDialogPrivate::updatePpdDuplexOption(QRadioButton *radio)
 {
@@ -753,7 +753,7 @@ void QPrintDialogPrivate::setupPrinter()
             p->setDuplex(QPrinter::DuplexShortSide);
     }
 
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
     // When printing to a device the colorMode will be set by the advanced panel
     if (p->outputFormat() == QPrinter::PdfFormat)
 #endif
@@ -783,7 +783,7 @@ void QPrintDialogPrivate::setupPrinter()
         }
     }
 
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
     if (options.pagesRadioButton->isChecked()) {
         const QPageRanges ranges = QPageRanges::fromString(options.pagesLineEdit->text());
         p->setPrintRange(QPrinter::AllPages);
@@ -853,14 +853,14 @@ void QPrintDialogPrivate::_q_collapseOrExpandDialog()
     }
 }
 
-#if QT_CONFIG(messagebox)
+#if BOBUI_CONFIG(messagebox)
 void QPrintDialogPrivate::_q_checkFields()
 {
     Q_Q(QPrintDialog);
     if (top->d->checkFields())
         q->accept();
 }
-#endif // QT_CONFIG(messagebox)
+#endif // BOBUI_CONFIG(messagebox)
 
 
 void QPrintDialogPrivate::updateWidgets()
@@ -875,7 +875,7 @@ void QPrintDialogPrivate::updateWidgets()
     options.printCurrentPage->setVisible(q->testOption(QPrintDialog::PrintCurrentPage));
     options.collate->setVisible(q->testOption(QPrintDialog::PrintCollateCopies));
 
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
     // Don't display Page Set if only Selection or Current Page are enabled
     if (!q->testOption(QPrintDialog::PrintPageRange)
         && (q->testOption(QPrintDialog::PrintSelection) || q->testOption(QPrintDialog::PrintCurrentPage))) {
@@ -989,7 +989,7 @@ int QPrintDialog::exec()
 void QPrintDialog::accept()
 {
     Q_D(QPrintDialog);
-#if QT_CONFIG(cups) && QT_CONFIG(messagebox)
+#if BOBUI_CONFIG(cups) && BOBUI_CONFIG(messagebox)
     if (d->options.pagesRadioButton->isChecked()) {
         const QString rangesText = d->options.pagesLineEdit->text();
         if (rangesText.isEmpty() || QPageRanges::fromString(rangesText).isEmpty()) {
@@ -1030,7 +1030,7 @@ void QPrintDialog::accept()
 */
 QUnixPrintWidgetPrivate::QUnixPrintWidgetPrivate(QUnixPrintWidget *p, QPrinter *prn)
     : parent(p), propertiesDialog(nullptr), printer(prn),
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
       m_duplexPpdOption(nullptr),
 #endif
       optionsPane(nullptr), filePrintersAdded(false)
@@ -1057,7 +1057,7 @@ QUnixPrintWidgetPrivate::QUnixPrintWidgetPrivate(QUnixPrintWidget *p, QPrinter *
     }
     widget.properties->setEnabled(true);
 
-#if QT_CONFIG(filesystemmodel) && QT_CONFIG(completer)
+#if BOBUI_CONFIG(filesystemmodel) && BOBUI_CONFIG(completer)
     QFileSystemModel *fsm = new QFileSystemModel(widget.filename);
     fsm->setRootPath(QDir::homePath());
     widget.filename->setCompleter(new QCompleter(fsm, widget.filename));
@@ -1126,7 +1126,7 @@ void QUnixPrintWidgetPrivate::_q_printerChanged(int index)
         propertiesDialog = nullptr;
     }
 
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
     m_duplexPpdOption = nullptr;
 #endif
 
@@ -1165,7 +1165,7 @@ void QUnixPrintWidgetPrivate::_q_printerChanged(int index)
             optionsPane->selectPrinter(QPrinter::NativeFormat);
     }
 
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
     m_duplexPpdOption = QCUPSSupport::findPpdOption("Duplex", &m_currentPrintDevice);
 #endif
 }
@@ -1180,7 +1180,7 @@ void QUnixPrintWidgetPrivate::setOptionsPane(QPrintDialogPrivate *pane)
 void QUnixPrintWidgetPrivate::_q_btnBrowseClicked()
 {
     QString filename = widget.filename->text();
-#if QT_CONFIG(filedialog)
+#if BOBUI_CONFIG(filedialog)
     filename = QFileDialog::getSaveFileName(parent, QPrintDialog::tr("Print To File ..."), filename,
                                             QString(), nullptr, QFileDialog::DontConfirmOverwrite);
 #else
@@ -1192,7 +1192,7 @@ void QUnixPrintWidgetPrivate::_q_btnBrowseClicked()
     }
 }
 
-#if QT_CONFIG(messagebox)
+#if BOBUI_CONFIG(messagebox)
 bool QUnixPrintWidgetPrivate::checkFields()
 {
     if (widget.filename->isEnabled()) {
@@ -1223,7 +1223,7 @@ bool QUnixPrintWidgetPrivate::checkFields()
         }
     }
 
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
     if (propertiesDialog) {
         QCUPSSupport::PagesPerSheet pagesPerSheet = qvariant_cast<QCUPSSupport::PagesPerSheet>(propertiesDialog->widget.pageSetup->m_ui.pagesPerSheetCombo
                                                                     ->currentData());
@@ -1243,7 +1243,7 @@ bool QUnixPrintWidgetPrivate::checkFields()
     // Every test passed. Accept the dialog.
     return true;
 }
-#endif // QT_CONFIG(messagebox)
+#endif // BOBUI_CONFIG(messagebox)
 
 void QUnixPrintWidgetPrivate::setupPrinterProperties()
 {
@@ -1263,7 +1263,7 @@ void QUnixPrintWidgetPrivate::setupPrinterProperties()
     propertiesDialog = new QPrintPropertiesDialog(q->printer(), &m_currentPrintDevice, outputFormat, printerName, q);
 }
 
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
 void QUnixPrintWidgetPrivate::setPpdDuplex(QPrinter::DuplexMode mode)
 {
     auto values = QStringList{} << QStringLiteral("Duplex");
@@ -1281,7 +1281,7 @@ void QUnixPrintWidgetPrivate::_q_btnPropertiesClicked()
         setupPrinterProperties();
     propertiesDialog->exec();
 
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
     // update the warning icon on the duplex options if needed
     optionsPane->updatePpdDuplexOption(optionsPane->options.noDuplex);
     optionsPane->updatePpdDuplexOption(optionsPane->options.duplexLong);
@@ -1334,7 +1334,7 @@ QUnixPrintWidget::QUnixPrintWidget(QPrinter *printer, QWidget *parent)
             if (printer->docName().isEmpty()) {
                 cur += "print.pdf"_L1;
             } else {
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
                 const QRegularExpression re(QStringLiteral("(.*)\\.\\S+"));
                 auto match = re.match(printer->docName());
                 if (match.hasMatch())
@@ -1375,15 +1375,15 @@ void QUnixPrintWidget::updatePrinter()
     d->setupPrinter();
 }
 
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-#endif // QT_CONFIG(cups)
+#endif // BOBUI_CONFIG(cups)
 #endif // defined (Q_OS_UNIX)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qprintdialog.cpp"
 #include "qprintdialog_unix.moc"

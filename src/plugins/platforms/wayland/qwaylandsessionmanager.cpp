@@ -1,9 +1,9 @@
 // Copyright (C) 2024 David Edmundson <davidedmundson@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandsessionmanager_p.h"
 
-#ifndef QT_NO_SESSIONMANAGER
+#ifndef BOBUI_NO_SESSIONMANAGER
 
 #include "qwaylanddisplay_p.h"
 #include "qwaylandwindow_p.h"
@@ -11,11 +11,11 @@
 #include <private/qsessionmanager_p.h>
 #include <private/qguiapplication_p.h>
 
-#include <QtCore/QDebug>
+#include <BobUICore/QDebug>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 QWaylandSessionManager::QWaylandSessionManager(QWaylandDisplay *display, const QString &id)
     : QObject(nullptr)
@@ -48,9 +48,9 @@ void QWaylandSessionManager::setSessionId(const QString &id)
 
 void QWaylandSessionManager::startSession()
 {
-    QtWayland::xx_session_manager_v1::reason restoreReason = QtWayland::xx_session_manager_v1::reason_launch;
+    BobUIWayland::xx_session_manager_v1::reason restoreReason = BobUIWayland::xx_session_manager_v1::reason_launch;
     if (!sessionId().isEmpty()) {
-        restoreReason = QtWayland::xx_session_manager_v1::reason_session_restore;
+        restoreReason = BobUIWayland::xx_session_manager_v1::reason_session_restore;
     }
     mSession.reset(new QWaylandSession(this));
     mSession->init(mDisplay->xxSessionManager()->get_session(restoreReason, sessionId()));
@@ -86,6 +86,6 @@ void QWaylandSession::xx_session_v1_replaced() {
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

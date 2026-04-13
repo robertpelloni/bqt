@@ -1,11 +1,11 @@
 // Copyright (C) 2015 Olivier Goffart <ogoffart@woboq.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
-#include <QtCore/qobject.h>
-#include <QtCore/qmetaobject.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qmetaobject.h>
 
 class tst_QMetaEnum : public QObject
 {
@@ -132,7 +132,7 @@ void tst_QMetaEnum::fromType()
     QCOMPARE(meta.metaType(), QMetaType::fromType<Flags64>());
 }
 
-Q_DECLARE_METATYPE(Qt::WindowFlags)
+Q_DECLARE_METATYPE(BobUI::WindowFlags)
 
 template <typename E> quint64 toUnderlying(E e, std::enable_if_t<std::is_enum_v<E>, bool> = true)
 {
@@ -148,33 +148,33 @@ template <typename E> quint64 toUnderlying(QFlags<E> f)
 
 void tst_QMetaEnum::keyToValue_data()
 {
-    QTest::addColumn<QMetaEnum>("me");
-    QTest::addColumn<QByteArray>("key");
-    QTest::addColumn<quint64>("value");
-    QTest::addColumn<bool>("success");
+    BOBUIest::addColumn<QMetaEnum>("me");
+    BOBUIest::addColumn<QByteArray>("key");
+    BOBUIest::addColumn<quint64>("value");
+    BOBUIest::addColumn<bool>("success");
 
     QByteArray notfoundkey = QByteArray::fromRawData("Foobar", 6);
     auto addNotFoundRow = [&](auto value) {
         QMetaEnum me = QMetaEnum::fromType<decltype(value)>();
 
-        QTest::addRow("notfound-%s", me.name())
+        BOBUIest::addRow("notfound-%s", me.name())
                 << me << notfoundkey << quint64(value) << false;
     };
     auto addRow = [&](const char *name, auto value) {
         using T = decltype(value);
         QMetaEnum me = QMetaEnum::fromType<T>();
-        QTest::addRow("%s", name) << me << QByteArray(name) << toUnderlying(value) << true;
+        BOBUIest::addRow("%s", name) << me << QByteArray(name) << toUnderlying(value) << true;
 
         if constexpr (sizeof(value) == sizeof(int)) {
             // repeat with the upper half negated
             quint64 v = toUnderlying(value);
             v ^= Q_UINT64_C(0xffff'ffff'0000'0000);
-            QTest::addRow("mangled-%s", name) << me << notfoundkey << v << false;
+            BOBUIest::addRow("mangled-%s", name) << me << notfoundkey << v << false;
         }
     };
-    addRow("Window", Qt::Window);
-    addRow("Dialog", Qt::Dialog);
-    addRow("WindowFullscreenButtonHint", Qt::WindowFullscreenButtonHint);
+    addRow("Window", BobUI::Window);
+    addRow("Dialog", BobUI::Dialog);
+    addRow("WindowFullscreenButtonHint", BobUI::WindowFullscreenButtonHint);
 
     addNotFoundRow(SuperEnum(2));
     addRow("SuperValue1", SuperValue1);
@@ -253,62 +253,62 @@ void tst_QMetaEnum::keyToValue()
 
 void tst_QMetaEnum::valuesToKeys_data()
 {
-   QTest::addColumn<QMetaEnum>("me");
-   QTest::addColumn<quint64>("flags");
-   QTest::addColumn<QByteArray>("expected");
+   BOBUIest::addColumn<QMetaEnum>("me");
+   BOBUIest::addColumn<quint64>("flags");
+   BOBUIest::addColumn<QByteArray>("expected");
 
-   QTest::newRow("Window")
-       << QMetaEnum::fromType<Qt::WindowFlags>()
-       << quint64(Qt::Window)
+   BOBUIest::newRow("Window")
+       << QMetaEnum::fromType<BobUI::WindowFlags>()
+       << quint64(BobUI::Window)
        << QByteArrayLiteral("Window");
 
-   // Verify that Qt::Dialog does not cause 'Window' to appear in the output.
-   QTest::newRow("Frameless_Dialog")
-       << QMetaEnum::fromType<Qt::WindowFlags>()
-       << quint64(Qt::Dialog | Qt::FramelessWindowHint)
+   // Verify that BobUI::Dialog does not cause 'Window' to appear in the output.
+   BOBUIest::newRow("Frameless_Dialog")
+       << QMetaEnum::fromType<BobUI::WindowFlags>()
+       << quint64(BobUI::Dialog | BobUI::FramelessWindowHint)
        << QByteArrayLiteral("Dialog|FramelessWindowHint");
 
-   // Similarly, Qt::WindowMinMaxButtonsHint should not show up as
+   // Similarly, BobUI::WindowMinMaxButtonsHint should not show up as
    // WindowMinimizeButtonHint|WindowMaximizeButtonHint
-   QTest::newRow("Tool_MinMax_StaysOnTop")
-       << QMetaEnum::fromType<Qt::WindowFlags>()
-       << quint64(Qt::Tool | Qt::WindowMinMaxButtonsHint | Qt::WindowStaysOnTopHint)
+   BOBUIest::newRow("Tool_MinMax_StaysOnTop")
+       << QMetaEnum::fromType<BobUI::WindowFlags>()
+       << quint64(BobUI::Tool | BobUI::WindowMinMaxButtonsHint | BobUI::WindowStaysOnTopHint)
        << QByteArrayLiteral("Tool|WindowMinMaxButtonsHint|WindowStaysOnTopHint");
 
    // Verify that upper bits set don't cause a mistaken detection
-   QTest::newRow("upperbits-Window")
-           << QMetaEnum::fromType<Qt::WindowFlags>()
-           << (quint64(Qt::Window) | Q_UINT64_C(0x1'0000'0000))
+   BOBUIest::newRow("upperbits-Window")
+           << QMetaEnum::fromType<BobUI::WindowFlags>()
+           << (quint64(BobUI::Window) | Q_UINT64_C(0x1'0000'0000))
            << QByteArray();
 
-   QTest::newRow("INT_MIN-as-enum")
+   BOBUIest::newRow("INT_MIN-as-enum")
            << QMetaEnum::fromType<SuperEnum>()
            << quint64(SuperValue2)
            << QByteArrayLiteral("SuperValue2");
-   QTest::newRow("mangled-INT_MIN-as-enum")
+   BOBUIest::newRow("mangled-INT_MIN-as-enum")
            << QMetaEnum::fromType<SuperEnum>()
            << quint64(uint(SuperValue2))
            << QByteArray();
 
-   QTest::newRow("INT_MIN-as-flags")
+   BOBUIest::newRow("INT_MIN-as-flags")
            << QMetaEnum::fromType<Flags>()
            << quint64(uint(Flag2))
            << QByteArrayLiteral("Flag2");
-   QTest::newRow("mangled-INT_MIN-as-flags")
+   BOBUIest::newRow("mangled-INT_MIN-as-flags")
            << QMetaEnum::fromType<Flags>()
            << quint64(Flag2)
            << QByteArray();
 
-   QTest::newRow("Flag32_2")
+   BOBUIest::newRow("Flag32_2")
            << QMetaEnum::fromType<Flags32>()
            << quint64(uint(Flag32_2))
            << QByteArrayLiteral("Flag32_2");
-   QTest::newRow("mangled-Flag32_2")
+   BOBUIest::newRow("mangled-Flag32_2")
            << QMetaEnum::fromType<Flags32>()
            << quint64(int(Flag32_2))
            << QByteArray();
 
-   QTest::newRow("Flag64_all")
+   BOBUIest::newRow("Flag64_all")
            << QMetaEnum::fromType<Flags64>()
            << quint64(Flag64_1 | Flag64_2 | Flag64_3)
            << QByteArrayLiteral("Flag64_1|Flag64_2|Flag64_3");
@@ -343,13 +343,13 @@ void tst_QMetaEnum::defaultConstructed()
     QCOMPARE(e.metaType(), QMetaType());
 }
 
-static_assert(QtPrivate::IsQEnumHelper<tst_QMetaEnum::SuperEnum>::Value);
-static_assert(QtPrivate::IsQEnumHelper<Qt::WindowFlags>::Value);
-static_assert(QtPrivate::IsQEnumHelper<Qt::Orientation>::Value);
-static_assert(!QtPrivate::IsQEnumHelper<int>::Value);
-static_assert(!QtPrivate::IsQEnumHelper<QObject>::Value);
-static_assert(!QtPrivate::IsQEnumHelper<QObject*>::Value);
-static_assert(!QtPrivate::IsQEnumHelper<void>::Value);
+static_assert(BobUIPrivate::IsQEnumHelper<tst_QMetaEnum::SuperEnum>::Value);
+static_assert(BobUIPrivate::IsQEnumHelper<BobUI::WindowFlags>::Value);
+static_assert(BobUIPrivate::IsQEnumHelper<BobUI::Orientation>::Value);
+static_assert(!BobUIPrivate::IsQEnumHelper<int>::Value);
+static_assert(!BobUIPrivate::IsQEnumHelper<QObject>::Value);
+static_assert(!BobUIPrivate::IsQEnumHelper<QObject*>::Value);
+static_assert(!BobUIPrivate::IsQEnumHelper<void>::Value);
 
-QTEST_MAIN(tst_QMetaEnum)
+BOBUIEST_MAIN(tst_QMetaEnum)
 #include "tst_qmetaenum.moc"

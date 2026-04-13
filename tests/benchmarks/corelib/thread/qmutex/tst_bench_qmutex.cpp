@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/QtCore>
-#include <QTest>
-#include <QtCore/private/qvolatile_p.h>
+#include <BobUICore/BobUICore>
+#include <BOBUIest>
+#include <BobUICore/private/qvolatile_p.h>
 
 #include <math.h>
 
@@ -53,7 +53,7 @@ void NativeMutexUnlock(NativeMutexType *mutex)
 }
 #endif
 #elif defined(Q_OS_WIN)
-#  include <qt_windows.h>
+#  include <bobui_windows.h>
 typedef CRITICAL_SECTION NativeMutexType;
 void NativeMutexInitialize(NativeMutexType *mutex)
 {
@@ -86,7 +86,7 @@ public:
     tst_QMutex()
     {
         // at least 2 threads, even on single cpu/core machines
-        threadCount = qMax(2, QThread::idealThreadCount());
+        threadCount = qMax(2, BOBUIhread::idealThreadCount());
         qDebug("thread count: %d", threadCount);
     }
 
@@ -116,11 +116,11 @@ QSemaphore tst_QMutex::semaphore4;
 
 void tst_QMutex::noThread_data()
 {
-    QTest::addColumn<int>("t");
+    BOBUIest::addColumn<int>("t");
 
-    QTest::newRow("noLock") << 1;
-    QTest::newRow("QMutex") << 3;
-    QTest::newRow("QMutexLocker") << 4;
+    BOBUIest::newRow("noLock") << 1;
+    BOBUIest::newRow("QMutex") << 3;
+    BOBUIest::newRow("QMutexLocker") << 4;
 }
 
 void tst_QMutex::noThread()
@@ -135,7 +135,7 @@ void tst_QMutex::noThread()
             QBENCHMARK {
                 count = 0;
                 for (int i = 0; i < N; i++) {
-                    QtPrivate::volatilePreIncrement(count);
+                    BobUIPrivate::volatilePreIncrement(count);
                 }
             }
             break;
@@ -144,7 +144,7 @@ void tst_QMutex::noThread()
                 count = 0;
                 for (int i = 0; i < N; i++) {
                     mtx.lock();
-                    QtPrivate::volatilePreIncrement(count);
+                    BobUIPrivate::volatilePreIncrement(count);
                     mtx.unlock();
                 }
             }
@@ -154,7 +154,7 @@ void tst_QMutex::noThread()
                 count = 0;
                 for (int i = 0; i < N; i++) {
                     QMutexLocker locker(&mtx);
-                    QtPrivate::volatilePreIncrement(count);
+                    BobUIPrivate::volatilePreIncrement(count);
                 }
             }
             break;
@@ -209,25 +209,25 @@ void tst_QMutex::uncontendedQMutexLocker()
 
 void tst_QMutex::contendedNative_data()
 {
-    QTest::addColumn<int>("iterations");
-    QTest::addColumn<int>("msleepDuration");
-    QTest::addColumn<bool>("use2mutexes");
+    BOBUIest::addColumn<int>("iterations");
+    BOBUIest::addColumn<int>("msleepDuration");
+    BOBUIest::addColumn<bool>("use2mutexes");
 
-    QTest::newRow("baseline")               <<    0 <<  -1 << false;
+    BOBUIest::newRow("baseline")               <<    0 <<  -1 << false;
 
-    QTest::newRow("no msleep, 1 mutex")     << 1000 <<  -1 << false;
-    QTest::newRow("no msleep, 2 mutexes")   << 1000 <<  -1 << true;
-    QTest::newRow("msleep(0), 1 mutex")     << 1000 <<   0 << false;
-    QTest::newRow("msleep(0), 2 mutexes")   << 1000 <<   0 << true;
-    QTest::newRow("msleep(1), 1 mutex")     <<   10 <<   1 << false;
-    QTest::newRow("msleep(1), 2 mutexes")   <<   10 <<   1 << true;
-    QTest::newRow("msleep(2), 1 mutex")     <<   10 <<   2 << false;
-    QTest::newRow("msleep(2), 2 mutexes")   <<   10 <<   2 << true;
-    QTest::newRow("msleep(10), 1 mutex")    <<   10 <<  10 << false;
-    QTest::newRow("msleep(10), 2 mutexes")  <<   10 <<  10 << true;
+    BOBUIest::newRow("no msleep, 1 mutex")     << 1000 <<  -1 << false;
+    BOBUIest::newRow("no msleep, 2 mutexes")   << 1000 <<  -1 << true;
+    BOBUIest::newRow("msleep(0), 1 mutex")     << 1000 <<   0 << false;
+    BOBUIest::newRow("msleep(0), 2 mutexes")   << 1000 <<   0 << true;
+    BOBUIest::newRow("msleep(1), 1 mutex")     <<   10 <<   1 << false;
+    BOBUIest::newRow("msleep(1), 2 mutexes")   <<   10 <<   1 << true;
+    BOBUIest::newRow("msleep(2), 1 mutex")     <<   10 <<   2 << false;
+    BOBUIest::newRow("msleep(2), 2 mutexes")   <<   10 <<   2 << true;
+    BOBUIest::newRow("msleep(10), 1 mutex")    <<   10 <<  10 << false;
+    BOBUIest::newRow("msleep(10), 2 mutexes")  <<   10 <<  10 << true;
 }
 
-class NativeMutexThread : public QThread
+class NativeMutexThread : public BOBUIhread
 {
     NativeMutexType *mutex1, *mutex2;
     int iterations;
@@ -255,7 +255,7 @@ public:
                     NativeMutexUnlock(mutex2);
                 NativeMutexUnlock(mutex1);
 
-                QThread::yieldCurrentThread();
+                BOBUIhread::yieldCurrentThread();
             }
             tst_QMutex::semaphore3.release();
             tst_QMutex::semaphore4.acquire();
@@ -298,7 +298,7 @@ void tst_QMutex::contendedNative()
     NativeMutexDestroy(&mutex2);
 }
 
-class QMutexThread : public QThread
+class QMutexThread : public BOBUIhread
 {
     QMutex *mutex1, *mutex2;
     int iterations;
@@ -326,7 +326,7 @@ public:
                     mutex2->unlock();
                 mutex1->unlock();
 
-                QThread::yieldCurrentThread();
+                BOBUIhread::yieldCurrentThread();
             }
             tst_QMutex::semaphore3.release();
             tst_QMutex::semaphore4.acquire();
@@ -364,7 +364,7 @@ void tst_QMutex::contendedQMutex()
     qDeleteAll(threads);
 }
 
-class QMutexLockerThread : public QThread
+class QMutexLockerThread : public BOBUIhread
 {
     QMutex *mutex1, *mutex2;
     int iterations;
@@ -390,7 +390,7 @@ public:
                         sleep(msleepDuration);
                 }
 
-                QThread::yieldCurrentThread();
+                BOBUIhread::yieldCurrentThread();
             }
             tst_QMutex::semaphore3.release();
             tst_QMutex::semaphore4.acquire();
@@ -428,6 +428,6 @@ void tst_QMutex::contendedQMutexLocker()
     qDeleteAll(threads);
 }
 
-QTEST_MAIN(tst_QMutex)
+BOBUIEST_MAIN(tst_QMutex)
 
 #include "tst_bench_qmutex.moc"

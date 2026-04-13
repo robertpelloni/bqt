@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QDATABUFFER_P_H
 #define QDATABUFFER_P_H
@@ -8,22 +8,22 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
+// This file is not part of the BobUI API.  It exists for the convenience
+// of other BobUI classes.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
 
-#include "QtCore/qalloc.h"
-#include "QtCore/qbytearray.h"
-#include "QtCore/qtypeinfo.h"
+#include "BobUICore/qalloc.h"
+#include "BobUICore/qbytearray.h"
+#include "BobUICore/bobuiypeinfo.h"
 
 #include <stdlib.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 template <typename Type> class QDataBuffer
 {
@@ -33,10 +33,10 @@ public:
     {
         capacity = res;
         if (res) {
-            QT_WARNING_PUSH
-            QT_WARNING_DISABLE_GCC("-Walloc-size-larger-than=")
-            buffer = (Type*) QtPrivate::fittedMalloc(0, &capacity, sizeof(Type));
-            QT_WARNING_POP
+            BOBUI_WARNING_PUSH
+            BOBUI_WARNING_DISABLE_GCC("-Walloc-size-larger-than=")
+            buffer = (Type*) BobUIPrivate::fittedMalloc(0, &capacity, sizeof(Type));
+            BOBUI_WARNING_POP
             Q_CHECK_PTR(buffer);
         } else {
             buffer = nullptr;
@@ -46,9 +46,9 @@ public:
 
     ~QDataBuffer()
     {
-        static_assert(!QTypeInfo<Type>::isComplex);
+        static_assert(!BOBUIypeInfo<Type>::isComplex);
         if (buffer)
-            QtPrivate::sizedFree(buffer, capacity, sizeof(Type));
+            BobUIPrivate::sizedFree(buffer, capacity, sizeof(Type));
     }
 
     inline void reset() { siz = 0; }
@@ -87,7 +87,7 @@ public:
                 capacity = 1;
             while (capacity < size)
                 capacity *= 2;
-            auto ptr = QtPrivate::fittedRealloc(static_cast<void*>(buffer), 0, &capacity, sizeof(Type));
+            auto ptr = BobUIPrivate::fittedRealloc(static_cast<void*>(buffer), 0, &capacity, sizeof(Type));
             Q_CHECK_PTR(ptr);
             buffer = static_cast<Type*>(ptr);
         }
@@ -97,12 +97,12 @@ public:
         Q_ASSERT(capacity >= size);
         if (size) {
             capacity = size;
-            const auto ptr = QtPrivate::fittedRealloc(static_cast<void*>(buffer), 0, &capacity, sizeof(Type));
+            const auto ptr = BobUIPrivate::fittedRealloc(static_cast<void*>(buffer), 0, &capacity, sizeof(Type));
             Q_CHECK_PTR(ptr);
             buffer = static_cast<Type*>(ptr);
             siz = std::min(siz, size);
         } else {
-            QtPrivate::sizedFree(buffer, capacity, sizeof(Type));
+            BobUIPrivate::sizedFree(buffer, capacity, sizeof(Type));
             capacity = size;
             buffer = nullptr;
             siz = 0;
@@ -123,6 +123,6 @@ private:
     Type *buffer;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QDATABUFFER_P_H

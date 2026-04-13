@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "controllerwindow.h"
 
@@ -41,55 +41,55 @@ ControllerWindow::ControllerWindow(QWidget *parent)
 //! [1]
 void ControllerWindow::updatePreview()
 {
-    Qt::WindowFlags flags;
+    BobUI::WindowFlags flags;
 
     if (windowRadioButton->isChecked())
-        flags = Qt::Window;
+        flags = BobUI::Window;
     else if (dialogRadioButton->isChecked())
-        flags = Qt::Dialog;
+        flags = BobUI::Dialog;
     else if (sheetRadioButton->isChecked())
-        flags = Qt::Sheet;
+        flags = BobUI::Sheet;
     else if (drawerRadioButton->isChecked())
-        flags = Qt::Drawer;
+        flags = BobUI::Drawer;
     else if (popupRadioButton->isChecked())
-        flags = Qt::Popup;
+        flags = BobUI::Popup;
     else if (toolRadioButton->isChecked())
-        flags = Qt::Tool;
+        flags = BobUI::Tool;
     else if (toolTipRadioButton->isChecked())
-        flags = Qt::ToolTip;
+        flags = BobUI::ToolTip;
     else if (splashScreenRadioButton->isChecked())
-        flags = Qt::SplashScreen;
+        flags = BobUI::SplashScreen;
 //! [1] //! [2]
 //! [2] //! [3]
 
     if (msWindowsFixedSizeDialogCheckBox->isChecked())
-        flags |= Qt::MSWindowsFixedSizeDialogHint;
+        flags |= BobUI::MSWindowsFixedSizeDialogHint;
     if (x11BypassWindowManagerCheckBox->isChecked())
-        flags |= Qt::X11BypassWindowManagerHint;
+        flags |= BobUI::X11BypassWindowManagerHint;
     if (framelessWindowCheckBox->isChecked())
-        flags |= Qt::FramelessWindowHint;
+        flags |= BobUI::FramelessWindowHint;
     if (windowNoShadowCheckBox->isChecked())
-        flags |= Qt::NoDropShadowWindowHint;
+        flags |= BobUI::NoDropShadowWindowHint;
     if (windowTitleCheckBox->isChecked())
-        flags |= Qt::WindowTitleHint;
+        flags |= BobUI::WindowTitleHint;
     if (windowSystemMenuCheckBox->isChecked())
-        flags |= Qt::WindowSystemMenuHint;
+        flags |= BobUI::WindowSystemMenuHint;
     if (windowMinimizeButtonCheckBox->isChecked())
-        flags |= Qt::WindowMinimizeButtonHint;
+        flags |= BobUI::WindowMinimizeButtonHint;
     if (windowMaximizeButtonCheckBox->isChecked())
-        flags |= Qt::WindowMaximizeButtonHint;
+        flags |= BobUI::WindowMaximizeButtonHint;
     if (windowCloseButtonCheckBox->isChecked())
-        flags |= Qt::WindowCloseButtonHint;
+        flags |= BobUI::WindowCloseButtonHint;
     if (windowContextHelpButtonCheckBox->isChecked())
-        flags |= Qt::WindowContextHelpButtonHint;
+        flags |= BobUI::WindowContextHelpButtonHint;
     if (windowShadeButtonCheckBox->isChecked())
-        flags |= Qt::WindowShadeButtonHint;
+        flags |= BobUI::WindowShadeButtonHint;
     if (windowStaysOnTopCheckBox->isChecked())
-        flags |= Qt::WindowStaysOnTopHint;
+        flags |= BobUI::WindowStaysOnTopHint;
     if (windowStaysOnBottomCheckBox->isChecked())
-        flags |= Qt::WindowStaysOnBottomHint;
+        flags |= BobUI::WindowStaysOnBottomHint;
     if (customizeWindowHintCheckBox->isChecked())
-        flags |= Qt::CustomizeWindowHint;
+        flags |= BobUI::CustomizeWindowHint;
 
     previewWindow->setWindowFlags(flags);
 //! [3] //! [4]

@@ -1,22 +1,22 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## tst_qfileinfo Test:
 #####################################################################
 
-if(NOT QT_BUILD_STANDALONE_TESTS AND NOT QT_BUILDING_QT)
+if(NOT BOBUI_BUILD_STANDALONE_TESTS AND NOT BOBUI_BUILDING_BOBUI)
     cmake_minimum_required(VERSION 3.16)
     project(tst_qfileinfo LANGUAGES CXX)
-    find_package(Qt6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
+    find_package(BobUI6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
 endif()
 
-qt_internal_add_test(tst_qfileinfo
+bobui_internal_add_test(tst_qfileinfo
     SOURCES
         tst_qfileinfo.cpp
     LIBRARIES
-        Qt::CorePrivate
-        Qt::TestPrivate
+        BobUI::CorePrivate
+        BobUI::TestPrivate
 )
 
 # Resources:
@@ -24,7 +24,7 @@ set(qfileinfo_resource_files
     "resources/"
 )
 
-qt_internal_add_resource(tst_qfileinfo "qfileinfo"
+bobui_internal_add_resource(tst_qfileinfo "qfileinfo"
     PREFIX
         "/tst_qfileinfo/"
     FILES
@@ -37,7 +37,7 @@ set(testdata_resource_files
     "tst_qfileinfo.cpp"
 )
 
-qt_internal_add_resource(tst_qfileinfo "testdata"
+bobui_internal_add_resource(tst_qfileinfo "testdata"
     PREFIX
         "/testdata"
     FILES
@@ -48,7 +48,7 @@ qt_internal_add_resource(tst_qfileinfo "testdata"
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(tst_qfileinfo CONDITION WIN32
+bobui_internal_extend_target(tst_qfileinfo CONDITION WIN32
     LIBRARIES
         advapi32
         netapi32

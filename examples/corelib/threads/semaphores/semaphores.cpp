@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtCore>
+#include <BobUICore>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,7 +17,7 @@ QSemaphore usedBytes;
 //! [0]
 
 //! [1]
-class Producer : public QThread
+class Producer : public BOBUIhread
 //! [1] //! [2]
 {
 public:
@@ -33,7 +33,7 @@ public:
 //! [2]
 
 //! [3]
-class Consumer : public QThread
+class Consumer : public BOBUIhread
 //! [3] //! [4]
 {
 public:

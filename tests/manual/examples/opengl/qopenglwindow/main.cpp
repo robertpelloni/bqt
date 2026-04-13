@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QOpenGLWindow>
 #include <QScreen>
@@ -85,9 +85,9 @@ void OpenGLWindow::paintGL()
 
     p.fillPath(painterPathForTriangle(), QBrush(QGradient(QGradient::NightFade)));
 
-    QTransform text_transform = (m_window_painter_matrix * m_view * m_model_text).toTransform();
+    BOBUIransform text_transform = (m_window_painter_matrix * m_view * m_model_text).toTransform();
     p.setTransform(text_transform, false);
-    p.setPen(QPen(Qt::black));
+    p.setPen(QPen(BobUI::black));
     m_text_layout.prepare(text_transform);
     qreal x = - (m_text_layout.size().width() / 2);
     qreal y = 0;
@@ -114,7 +114,7 @@ void OpenGLWindow::resizeGL(int w, int h)
 
 void OpenGLWindow::keyPressEvent(QKeyEvent *e)
 {
-    if (e->key() == Qt::Key_P) { // pause
+    if (e->key() == BobUI::Key_P) { // pause
         m_animate = !m_animate;
         setAnimating(m_animate);
     }

@@ -1,4 +1,4 @@
-QT += network widgets
+BOBUI += network widgets
 
 HEADERS       = client.h \
                 consumer.h \
@@ -12,5 +12,5 @@ SOURCES       = client.cpp \
                 main.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/network/multistreamclient
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/network/multistreamclient
 INSTALLS += target

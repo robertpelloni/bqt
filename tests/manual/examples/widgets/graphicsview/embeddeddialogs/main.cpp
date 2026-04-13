@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "customproxy.h"
 #include "embeddeddialog.h"
@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
 
     for (int y = 0; y < gridSize; ++y) {
         for (int x = 0; x < gridSize; ++x) {
-            CustomProxy *proxy = new CustomProxy(nullptr, Qt::Window);
+            CustomProxy *proxy = new CustomProxy(nullptr, BobUI::Window);
             proxy->setWidget(new EmbeddedDialog);
 
             QRectF rect = proxy->boundingRect();

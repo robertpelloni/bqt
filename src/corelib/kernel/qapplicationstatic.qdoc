@@ -1,9 +1,9 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \headerfile <QApplicationStatic>
-    \inmodule QtCore
+    \inmodule BobUICore
 */
 
 /*!
@@ -79,9 +79,9 @@
     See \l Q_GLOBAL_STATIC implementation details for an introduction.
 
     Q_APPLICATION_STATIC uses the same \l QGlobalStatic public class that
-    Q_GLOBAL_STATIC does, but instead uses a QtGlobalStatic::ApplicationHolder
+    Q_GLOBAL_STATIC does, but instead uses a BobUIGlobalStatic::ApplicationHolder
     template class as the template parameter. The differences to
-    QtGlobalStatic::Holder are:
+    BobUIGlobalStatic::Holder are:
 
     \list
         \li The ApplicationHolder class is empty. Unlike Holder, the storage is

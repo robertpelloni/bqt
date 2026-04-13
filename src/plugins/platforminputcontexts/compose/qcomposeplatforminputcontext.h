@@ -1,18 +1,18 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QCOMPOSEPLATFORMINPUTCONTEXT_H
 #define QCOMPOSEPLATFORMINPUTCONTEXT_H
 
-#include <QtCore/QLoggingCategory>
+#include <BobUICore/QLoggingCategory>
 
 #include <qpa/qplatforminputcontext.h>
 
 #include <xkbcommon/xkbcommon-compose.h>
 
 Q_DECLARE_OPAQUE_POINTER(xkb_context *)
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcXkbCompose)
 
@@ -28,7 +28,7 @@ public:
     bool isValid() const override;
     void setFocusObject(QObject *object) override;
     void reset() override;
-    void update(Qt::InputMethodQueries) override;
+    void update(BobUI::InputMethodQueries) override;
 
     bool filterEvent(const QEvent *event) override;
 
@@ -46,6 +46,6 @@ private:
     struct xkb_context *m_XkbContext = nullptr;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCOMPOSEPLATFORMINPUTCONTEXT_H

@@ -2,8 +2,8 @@ TARGET = mv_formatting
 
 TEMPLATE = app
 
-QT += widgets
-requires(qtConfig(tableview))
+BOBUI += widgets
+requires(bobuiConfig(tableview))
 
 SOURCES += main.cpp \
            mymodel.cpp
@@ -11,5 +11,5 @@ SOURCES += main.cpp \
 HEADERS += mymodel.h
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/tutorials/modelview/2_formatting
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/tutorials/modelview/2_formatting
 INSTALLS += target

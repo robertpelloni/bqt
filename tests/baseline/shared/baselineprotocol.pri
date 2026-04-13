@@ -1,6 +1,6 @@
 INCLUDEPATH += $$PWD
 
-QT *= network
+BOBUI *= network
 
 SOURCES += \
         $$PWD/baselineprotocol.cpp \

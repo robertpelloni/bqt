@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
@@ -10,9 +10,9 @@
 
 class DiagramScene;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QAction;
-class QToolBox;
+class BOBUIoolBox;
 class QSpinBox;
 class QComboBox;
 class QFontComboBox;
@@ -20,10 +20,10 @@ class QButtonGroup;
 class QLineEdit;
 class QGraphicsTextItem;
 class QFont;
-class QToolButton;
+class BOBUIoolButton;
 class QAbstractButton;
 class QGraphicsView;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 //! [0]
 class MainWindow : public QMainWindow
@@ -85,10 +85,10 @@ private:
     QMenu *itemMenu;
     QMenu *aboutMenu;
 
-    QToolBar *textToolBar;
-    QToolBar *editToolBar;
-    QToolBar *colorToolBar;
-    QToolBar *pointerToolbar;
+    BOBUIoolBar *textToolBar;
+    BOBUIoolBar *editToolBar;
+    BOBUIoolBar *colorToolBar;
+    BOBUIoolBar *pointerToolbar;
 
     QComboBox *sceneScaleCombo;
     QComboBox *itemColorCombo;
@@ -96,13 +96,13 @@ private:
     QComboBox *fontSizeCombo;
     QFontComboBox *fontCombo;
 
-    QToolBox *toolBox;
+    BOBUIoolBox *toolBox;
     QButtonGroup *buttonGroup;
     QButtonGroup *pointerTypeGroup;
     QButtonGroup *backgroundButtonGroup;
-    QToolButton *fontColorToolButton;
-    QToolButton *fillColorToolButton;
-    QToolButton *lineColorToolButton;
+    BOBUIoolButton *fontColorToolButton;
+    BOBUIoolButton *fillColorToolButton;
+    BOBUIoolButton *lineColorToolButton;
     QAction *boldAction;
     QAction *underlineAction;
     QAction *italicAction;

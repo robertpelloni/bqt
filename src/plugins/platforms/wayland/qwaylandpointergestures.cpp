@@ -1,13 +1,13 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandpointergestures_p.h"
 #include "qwaylanddisplay_p.h"
 #include "qwaylandinputdevice_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 QWaylandPointerGestures::QWaylandPointerGestures(QWaylandDisplay *display, uint id, uint version)
     : zwp_pointer_gestures_v1(display->wl_registry(), id, qMin(version, uint(1)))
@@ -48,7 +48,7 @@ void QWaylandPointerGestureSwipe::zwp_pointer_gesture_swipe_v1_begin(uint32_t se
                                                                      struct ::wl_surface *surface,
                                                                      uint32_t fingers)
 {
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     mFocus = QWaylandWindow::fromWlSurface(surface);
     if (!mFocus) {
         return;
@@ -61,7 +61,7 @@ void QWaylandPointerGestureSwipe::zwp_pointer_gesture_swipe_v1_begin(uint32_t se
     qCDebug(lcQpaWaylandInput) << "zwp_pointer_gesture_swipe_v1_begin @ "
                                << pointer->mSurfacePos << "fingers" << fingers;
 
-    auto e = QWaylandPointerGestureSwipeEvent(mFocus, Qt::GestureStarted, time,
+    auto e = QWaylandPointerGestureSwipeEvent(mFocus, BobUI::GestureStarted, time,
                                               pointer->mSurfacePos, pointer->mGlobalPos, mFingers,
                                               QPointF());
 
@@ -72,7 +72,7 @@ void QWaylandPointerGestureSwipe::zwp_pointer_gesture_swipe_v1_begin(uint32_t se
 void QWaylandPointerGestureSwipe::zwp_pointer_gesture_swipe_v1_update(uint32_t time,
                                                                       wl_fixed_t dx, wl_fixed_t dy)
 {
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     if (!mFocus) {
         return;
     }
@@ -82,7 +82,7 @@ void QWaylandPointerGestureSwipe::zwp_pointer_gesture_swipe_v1_update(uint32_t t
     qCDebug(lcQpaWaylandInput) << "zwp_pointer_gesture_swipe_v1_update @ "
                                << pointer->mSurfacePos << "delta" << delta;
 
-    auto e = QWaylandPointerGestureSwipeEvent(mFocus, Qt::GestureUpdated, time,
+    auto e = QWaylandPointerGestureSwipeEvent(mFocus, BobUI::GestureUpdated, time,
                                               pointer->mSurfacePos, pointer->mGlobalPos, mFingers, delta);
 
     mFocus->handleSwipeGesture(mParent, e);
@@ -92,7 +92,7 @@ void QWaylandPointerGestureSwipe::zwp_pointer_gesture_swipe_v1_update(uint32_t t
 void QWaylandPointerGestureSwipe::zwp_pointer_gesture_swipe_v1_end(uint32_t serial, uint32_t time,
                                                                    int32_t cancelled)
 {
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     if (!mFocus) {
         return;
     }
@@ -102,7 +102,7 @@ void QWaylandPointerGestureSwipe::zwp_pointer_gesture_swipe_v1_end(uint32_t seri
     qCDebug(lcQpaWaylandInput) << "zwp_pointer_gesture_swipe_v1_end @ "
                                << pointer->mSurfacePos << (cancelled ? "CANCELED" : "");
 
-    auto gestureType = cancelled ? Qt::GestureFinished : Qt::GestureCanceled;
+    auto gestureType = cancelled ? BobUI::GestureFinished : BobUI::GestureCanceled;
 
     auto e = QWaylandPointerGestureSwipeEvent(mFocus, gestureType, time,
                                               pointer->mSurfacePos, pointer->mGlobalPos, mFingers,
@@ -129,7 +129,7 @@ void QWaylandPointerGesturePinch::zwp_pointer_gesture_pinch_v1_begin(uint32_t se
                                                                      struct ::wl_surface *surface,
                                                                      uint32_t fingers)
 {
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     mFocus = QWaylandWindow::fromWlSurface(surface);
     if (!mFocus) {
         return;
@@ -142,7 +142,7 @@ void QWaylandPointerGesturePinch::zwp_pointer_gesture_pinch_v1_begin(uint32_t se
     qCDebug(lcQpaWaylandInput) << "zwp_pointer_gesture_pinch_v1_begin @ "
                                << pointer->mSurfacePos << "fingers" << fingers;
 
-    auto e = QWaylandPointerGesturePinchEvent(mFocus, Qt::GestureStarted, time,
+    auto e = QWaylandPointerGesturePinchEvent(mFocus, BobUI::GestureStarted, time,
                                               pointer->mSurfacePos, pointer->mGlobalPos, mFingers,
                                               QPointF(), 0, 0);
 
@@ -155,7 +155,7 @@ void QWaylandPointerGesturePinch::zwp_pointer_gesture_pinch_v1_update(uint32_t t
                                                                       wl_fixed_t scale,
                                                                       wl_fixed_t rotation)
 {
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     if (!mFocus) {
         return;
     }
@@ -169,7 +169,7 @@ void QWaylandPointerGesturePinch::zwp_pointer_gesture_pinch_v1_update(uint32_t t
                                << "scale" << mLastScale << "->" << rscale
                                << "delta" << rscale - mLastScale << "rot" << rot;
 
-    auto e = QWaylandPointerGesturePinchEvent(mFocus, Qt::GestureUpdated, time,
+    auto e = QWaylandPointerGesturePinchEvent(mFocus, BobUI::GestureUpdated, time,
                                               pointer->mSurfacePos, pointer->mGlobalPos, mFingers,
                                               delta, rscale - mLastScale, rot);
 
@@ -182,7 +182,7 @@ void QWaylandPointerGesturePinch::zwp_pointer_gesture_pinch_v1_update(uint32_t t
 void QWaylandPointerGesturePinch::zwp_pointer_gesture_pinch_v1_end(uint32_t serial, uint32_t time,
                                                                    int32_t cancelled)
 {
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     if (!mFocus) {
         return;
     }
@@ -192,7 +192,7 @@ void QWaylandPointerGesturePinch::zwp_pointer_gesture_pinch_v1_end(uint32_t seri
     qCDebug(lcQpaWaylandInput) << "zwp_pointer_gesture_swipe_v1_end @ "
                                << pointer->mSurfacePos << (cancelled ? "CANCELED" : "");
 
-    auto gestureType = cancelled ? Qt::GestureFinished : Qt::GestureCanceled;
+    auto gestureType = cancelled ? BobUI::GestureFinished : BobUI::GestureCanceled;
 
     auto e = QWaylandPointerGesturePinchEvent(mFocus, gestureType, time,
                                               pointer->mSurfacePos, pointer->mGlobalPos, mFingers,
@@ -206,6 +206,6 @@ void QWaylandPointerGesturePinch::zwp_pointer_gesture_pinch_v1_end(uint32_t seri
 #endif
 }
 
-} // namespace QtWaylandClient
+} // namespace BobUIWaylandClient
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

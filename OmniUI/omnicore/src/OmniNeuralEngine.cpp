@@ -20,7 +20,7 @@ OmniNeuralEngine::OmniNeuralEngine(QObject *parent)
       m_streamFramerate(10) // 10 FPS is usually enough for an LLM to "see" a UI without overwhelming IPC
 {
     setObjectName("OmniNeuralEngine");
-    connect(&m_streamTimer, &QTimer::timeout, this, &OmniNeuralEngine::processStreamFrame);
+    connect(&m_streamTimer, &BOBUIimer::timeout, this, &OmniNeuralEngine::processStreamFrame);
 }
 
 OmniNeuralEngine::~OmniNeuralEngine() {
@@ -128,7 +128,7 @@ bool OmniNeuralEngine::executeAction(const QString& targetObjectName, const QStr
     if (!m_rootItem || targetObjectName.isEmpty()) return false;
 
     // Search for the target item by objectName recursively
-    QQuickItem* target = m_rootItem->findChild<QQuickItem*>(targetObjectName, Qt::FindChildrenRecursively);
+    QQuickItem* target = m_rootItem->findChild<QQuickItem*>(targetObjectName, BobUI::FindChildrenRecursively);
     if (!target) {
         qWarning() << "OmniNeural: Action failed. Could not find target:" << targetObjectName;
         return false;
@@ -139,8 +139,8 @@ bool OmniNeuralEngine::executeAction(const QString& targetObjectName, const QStr
     if (action == "click") {
         // Simulate a native left-click at the center of the widget bounds
         QPointF center = target->boundingRect().center();
-        QMouseEvent pressEvent(QEvent::MouseButtonPress, center, target->mapToGlobal(center), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-        QMouseEvent releaseEvent(QEvent::MouseButtonRelease, center, target->mapToGlobal(center), Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
+        QMouseEvent pressEvent(QEvent::MouseButtonPress, center, target->mapToGlobal(center), BobUI::LeftButton, BobUI::LeftButton, BobUI::NoModifier);
+        QMouseEvent releaseEvent(QEvent::MouseButtonRelease, center, target->mapToGlobal(center), BobUI::LeftButton, BobUI::NoButton, BobUI::NoModifier);
         
         QCoreApplication::sendEvent(target, &pressEvent);
         QCoreApplication::sendEvent(target, &releaseEvent);
@@ -149,8 +149,8 @@ bool OmniNeuralEngine::executeAction(const QString& targetObjectName, const QStr
     else if (action == "type") {
         // Send key events for the payload string natively
         for (QChar c : payload) {
-            QKeyEvent keyPress(QEvent::KeyPress, 0, Qt::NoModifier, QString(c));
-            QKeyEvent keyRelease(QEvent::KeyRelease, 0, Qt::NoModifier, QString(c));
+            QKeyEvent keyPress(QEvent::KeyPress, 0, BobUI::NoModifier, QString(c));
+            QKeyEvent keyRelease(QEvent::KeyRelease, 0, BobUI::NoModifier, QString(c));
             QCoreApplication::sendEvent(target, &keyPress);
             QCoreApplication::sendEvent(target, &keyRelease);
         }

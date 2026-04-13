@@ -203,8 +203,8 @@ Project_IS_TOP_LEVEL:STATIC=ON
 //Value Computed by CMake
 Project_SOURCE_DIR:STATIC=C:/Users/hyper/workspace/bobui/tests/auto/cmake/test_multiple_find_package/subdir1
 
-//The directory containing a CMake configuration file for Qt6Core.
-Qt6Core_DIR:PATH=Qt6Core_DIR-NOTFOUND
+//The directory containing a CMake configuration file for BobUI6Core.
+BobUI6Core_DIR:PATH=BobUI6Core_DIR-NOTFOUND
 
 
 ########################

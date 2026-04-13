@@ -1,14 +1,14 @@
-// Copyright (C) 2018 The Qt Company Ltd.
+// Copyright (C) 2018 The BobUI Company Ltd.
 // Copyright (C) 2018 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include <private/qdrawhelper_x86_p.h>
 
-#if defined(QT_COMPILER_SUPPORTS_SSSE3)
+#if defined(BOBUI_COMPILER_SUPPORTS_SSSE3)
 
 #include <private/qdrawingprimitive_sse2_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /* The instruction palignr uses direct arguments, so we have to generate the code fo the different
    shift (4, 8, 12). Checking the alignment inside the loop is unfortunately way too slow.
@@ -98,7 +98,7 @@ BLEND_SOURCE_OVER_ARGB32_SSSE3(quint32 *dst, const quint32 *src, int length,
         blend_pixel(dst[x], src[x]);
 }
 
-void qt_blend_argb32_on_argb32_ssse3(uchar *destPixels, int dbpl,
+void bobui_blend_argb32_on_argb32_ssse3(uchar *destPixels, int dbpl,
                                      const uchar *srcPixels, int sbpl,
                                      int w, int h,
                                      int const_alpha)
@@ -135,7 +135,7 @@ void qt_blend_argb32_on_argb32_ssse3(uchar *destPixels, int dbpl,
     }
 }
 
-const uint *QT_FASTCALL fetchPixelsBPP24_ssse3(uint *buffer, const uchar *src, int index, int count)
+const uint *BOBUI_FASTCALL fetchPixelsBPP24_ssse3(uint *buffer, const uchar *src, int index, int count)
 {
     const quint24 *s = reinterpret_cast<const quint24 *>(src);
     for (int i = 0; i < count; ++i)
@@ -143,17 +143,17 @@ const uint *QT_FASTCALL fetchPixelsBPP24_ssse3(uint *buffer, const uchar *src, i
     return buffer;
 }
 
-extern void QT_FASTCALL qt_convert_rgb888_to_rgb32_ssse3(quint32 *dst, const uchar *src, int len);
+extern void BOBUI_FASTCALL bobui_convert_rgb888_to_rgb32_ssse3(quint32 *dst, const uchar *src, int len);
 
-const uint * QT_FASTCALL qt_fetchUntransformed_888_ssse3(uint *buffer, const Operator *, const QSpanData *data,
+const uint * BOBUI_FASTCALL bobui_fetchUntransformed_888_ssse3(uint *buffer, const Operator *, const QSpanData *data,
                                                          int y, int x, int length)
 {
     const uchar *line = data->texture.scanLine(y) + x * 3;
-    qt_convert_rgb888_to_rgb32_ssse3(buffer, line, length);
+    bobui_convert_rgb888_to_rgb32_ssse3(buffer, line, length);
     return buffer;
 }
 
-void qt_memfill24_ssse3(quint24 *dest, quint24 color, qsizetype count)
+void bobui_memfill24_ssse3(quint24 *dest, quint24 color, qsizetype count)
 {
     // LCM of 12 and 16 bytes is 48 bytes (16 px)
     quint32 v = color;
@@ -218,7 +218,7 @@ void qt_memfill24_ssse3(quint24 *dest, quint24 color, qsizetype count)
     }
 }
 
-void QT_FASTCALL rbSwap_888_ssse3(uchar *dst, const uchar *src, int count)
+void BOBUI_FASTCALL rbSwap_888_ssse3(uchar *dst, const uchar *src, int count)
 {
     int i = 0;
 
@@ -261,6 +261,6 @@ void QT_FASTCALL rbSwap_888_ssse3(uchar *dst, const uchar *src, int count)
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_COMPILER_SUPPORTS_SSSE3
+#endif // BOBUI_COMPILER_SUPPORTS_SSSE3

@@ -1,26 +1,26 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QACCESSIBLE_BASE_H
 #define QACCESSIBLE_BASE_H
 
-#include <QtGui/qtguiglobal.h>
-#if QT_CONFIG(accessibility)
+#include <BobUIGui/bobuiguiglobal.h>
+#if BOBUI_CONFIG(accessibility)
 
 #if 0
 // QAccessible class is handled in qaccessible.h
-#pragma qt_sync_stop_processing
+#pragma bobui_sync_stop_processing
 #endif
 
-#include <QtCore/qobjectdefs.h>
+#include <BobUICore/qobjectdefs.h>
 
 #include <cstring> // memset, memcmp
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QAccessibleInterface;
 class QAccessibleEvent;
-class QTextCursor;
+class BOBUIextCursor;
 
 class Q_GUI_EXPORT QAccessible
 {
@@ -175,7 +175,7 @@ public:
         // quint64 alertMedium : 1;
         // quint64 alertHigh : 1;
 
-        Q_DECL_UNUSED_MEMBER quint64 qt_reserved : 27;
+        Q_DECL_UNUSED_MEMBER quint64 bobui_reserved : 27;
 
         State() {
             std::memset(this, 0, sizeof(State));
@@ -261,7 +261,7 @@ public:
         Splitter       = 0x0000003E,
         // Reserved space in case MSAA roles needs to be added
 
-        // Additional Qt roles where enum value does not map directly to MSAA:
+        // Additional BobUI roles where enum value does not map directly to MSAA:
         LayeredPane    = 0x00000080,
         Terminal       = 0x00000081,
         Desktop        = 0x00000082,
@@ -426,7 +426,7 @@ public:
 
     static void cleanup();
 
-    static std::pair< int, int > qAccessibleTextBoundaryHelper(const QTextCursor &cursor, TextBoundaryType boundaryType);
+    static std::pair< int, int > qAccessibleTextBoundaryHelper(const BOBUIextCursor &cursor, TextBoundaryType boundaryType);
 
 private:
     static UpdateHandler updateHandler;
@@ -439,7 +439,7 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QAccessible::Relation)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)
 #endif // QACCESSIBLE_BASE_H

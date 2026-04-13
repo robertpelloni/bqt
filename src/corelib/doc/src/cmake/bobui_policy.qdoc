@@ -1,0 +1,65 @@
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
+
+/*!
+\page bobui-policy.html
+\ingroup cmake-commands-bobuicore
+
+\title bobui_policy
+\keyword bobui6_policy
+
+\summary {Modify the default behavior of BobUI's CMake API.}
+
+\include cmake-find-package-core.qdocinc
+
+\cmakecommandsince 6.5
+
+\section1 Synopsis
+
+\badcode
+bobui_policy(
+    [SET <policy_name> behavior]
+    [GET <policy_name> <variable>]
+)
+\endcode
+
+\versionlessCMakeCommandsNote bobui6_policy()
+
+\section1 Description
+
+This command has two modes:
+
+\list
+\li When the \c{SET} keyword is used, this command can be used to opt in to
+    behavior changes in BobUI's CMake API, or to explicitly opt out of them.
+\li When the \c{GET} keyword is used, \c{<variable>} is set to the current
+    behavior for the policy, i.e. \c OLD or \c NEW.
+\endlist
+
+\c{<policy_name>} must be the name of one of the \l{BobUI CMake policies}.
+Policy names have the form of \c{BOBUIP<NNNN>} where <NNNN> is
+an integer specifying the index of the policy. Using an invalid policy
+name results in an error.
+
+Code supporting older BobUI versions can check the existence of a policy by
+checking the value of the \c{BOBUI_KNOWN_POLICY_<policy_name>} variable before
+getting the value of \c <policy_name> or setting its behavior.
+
+\badcode
+if(BOBUI_KNOWN_POLICY_<policy_name>)
+    bobui_policy(SET <policy_name> NEW)
+endif()
+\endcode
+
+You can set \c behavior to one of the following options:
+
+\list
+\li \c{NEW} to opt into the new behavior
+\li \c{OLD} to explicitly opt-out of it
+\endlist
+
+\bobuipolicydeprecatedbehavior
+
+\sa bobui_standard_project_setup
+
+*/

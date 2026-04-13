@@ -1,7 +1,7 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 class CursorWindow : public QRasterWindow
 {
@@ -10,7 +10,7 @@ public:
     :m_cursor(cursor)
     ,m_color(color)
     {
-        if (cursor.shape() == Qt::ArrowCursor)
+        if (cursor.shape() == BobUI::ArrowCursor)
             unsetCursor();
         else
             setCursor(cursor);
@@ -26,7 +26,7 @@ public:
     {
         // Toggle cursor
         QCursor newCursor = (cursor().shape() == m_cursor.shape()) ? QCursor() : m_cursor;
-        if (newCursor.shape() == Qt::ArrowCursor)
+        if (newCursor.shape() == BobUI::ArrowCursor)
             unsetCursor();
         else
             setCursor(newCursor);
@@ -44,7 +44,7 @@ public:
     :m_cursor(cursor)
     ,m_color(color)
     {
-        if (cursor.shape() == Qt::ArrowCursor)
+        if (cursor.shape() == BobUI::ArrowCursor)
             unsetCursor();
         else
             setCursor(cursor);
@@ -60,7 +60,7 @@ public:
     {
         // Toggle cursor
         QCursor newCursor = (cursor().shape() == m_cursor.shape()) ? QCursor() : m_cursor;
-        if (newCursor.shape() == Qt::ArrowCursor)
+        if (newCursor.shape() == BobUI::ArrowCursor)
             unsetCursor();
         else
             setCursor(newCursor);
@@ -81,25 +81,25 @@ int main(int argc, char **argv)
         // Setting the cursor for the window overrides the cursor for the
         // container. The example starts out with a window cursor; click
         // to fall back to the container cursor.
-        CursorWindow *w1 = new CursorWindow(QCursor(Qt::OpenHandCursor), QColor(Qt::red).darker());
+        CursorWindow *w1 = new CursorWindow(QCursor(BobUI::OpenHandCursor), QColor(BobUI::red).darker());
         QWidget* container = QWidget::createWindowContainer(w1);
         container->resize(200, 200);
-        container->setCursor(Qt::PointingHandCursor);
+        container->setCursor(BobUI::PointingHandCursor);
         container->show();
     }
 
     {
         // Similar to above, but with a top-level QWiget
-        CursorWidget *w1 = new CursorWidget(QCursor(Qt::IBeamCursor), QColor(Qt::green).darker());
+        CursorWidget *w1 = new CursorWidget(QCursor(BobUI::IBeamCursor), QColor(BobUI::green).darker());
         w1->resize(200, 200);
 
-        CursorWindow *w2 = new CursorWindow(QCursor(Qt::OpenHandCursor), QColor(Qt::red).darker());
+        CursorWindow *w2 = new CursorWindow(QCursor(BobUI::OpenHandCursor), QColor(BobUI::red).darker());
         QWidget* container = QWidget::createWindowContainer(w2);
         container->winId(); // must make the container native, otherwise setCursor
                             // sets the cursor on a QWindowContainerClassWindow which
                             // is outside the QWindow hierarchy (macOS).
         container->setParent(w1);
-        container->setCursor(Qt::PointingHandCursor);
+        container->setCursor(BobUI::PointingHandCursor);
         container->setGeometry(0, 0, 100, 100);
 
         w1->show();

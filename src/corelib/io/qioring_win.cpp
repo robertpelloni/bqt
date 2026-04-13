@@ -1,30 +1,30 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qioring_p.h"
 
-QT_REQUIRE_CONFIG(windows_ioring);
+BOBUI_REQUIRE_CONFIG(windows_ioring);
 
-#include <QtCore/qcompilerdetection.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qscopedvaluerollback.h>
+#include <BobUICore/qcompilerdetection.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qscopedvaluerollback.h>
 
-#include <qt_windows.h>
+#include <bobui_windows.h>
 #include <ioringapi.h>
 
-#include <QtCore/q26numeric.h>
+#include <BobUICore/q26numeric.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // We don't really build for 32-bit windows anymore, but this code is definitely wrong if someone
 // does.
 static_assert(sizeof(qsizetype) > sizeof(UINT32),
               "This code is written with assuming 64-bit Windows.");
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 #define FOREACH_WIN_IORING_FUNCTION(Fn) \
     Fn(BuildIoRingReadFile) \
     Fn(BuildIoRingWriteFile) \
@@ -40,7 +40,7 @@ namespace QtPrivate {
     /**/
 struct IORingApiTable
 {
-#if QT_CONFIG(windows_ioring_runtime)
+#if BOBUI_CONFIG(windows_ioring_runtime)
 #  define DefineIORingFunction(Name)      \
       using Name##Fn = decltype(&::Name); \
       Name##Fn Name = nullptr;
@@ -57,7 +57,7 @@ struct IORingApiTable
 
 static const IORingApiTable *getApiTable()
 {
-#if !QT_CONFIG(windows_ioring_runtime)
+#if !BOBUI_CONFIG(windows_ioring_runtime)
     Q_CONSTINIT static const IORingApiTable apiTable;
     // The table is directly initialized, so we always succeed:
     constexpr bool success = true;
@@ -86,7 +86,7 @@ static const IORingApiTable *getApiTable()
 #endif // windows_ioring_runtime
     return success ? std::addressof(apiTable) : nullptr;
 }
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 static HRESULT buildReadOperation(HIORING ioRingHandle, qintptr fd, QSpan<std::byte> destination,
                                   quint64 offset, quintptr userData)
@@ -96,7 +96,7 @@ static HRESULT buildReadOperation(HIORING ioRingHandle, qintptr fd, QSpan<std::b
     const IORING_BUFFER_REF bufferRef(destination.data());
     const auto maxSize = q26::saturate_cast<UINT32>(destination.size());
     Q_ASSERT(maxSize == destination.size());
-    const auto *apiTable = QtPrivate::getApiTable();
+    const auto *apiTable = BobUIPrivate::getApiTable();
     Q_ASSERT(apiTable); // If we got this far it needs to be here
     return apiTable->BuildIoRingReadFile(ioRingHandle, fileRef, bufferRef, maxSize, offset,
                                          userData, IOSQE_FLAGS_NONE);
@@ -110,7 +110,7 @@ static HRESULT buildWriteOperation(HIORING ioRingHandle, qintptr fd, QSpan<const
     const IORING_BUFFER_REF bufferRef(const_cast<std::byte *>(source.data()));
     const auto maxSize = q26::saturate_cast<UINT32>(source.size());
     Q_ASSERT(maxSize == source.size());
-    const auto *apiTable = QtPrivate::getApiTable();
+    const auto *apiTable = BobUIPrivate::getApiTable();
     Q_ASSERT(apiTable); // If we got this far it needs to be here
     // @todo: FILE_WRITE_FLAGS can be set to write-through, could be used for Unbuffered mode.
     return apiTable->BuildIoRingWriteFile(ioRingHandle, fileRef, bufferRef, maxSize, offset,
@@ -130,7 +130,7 @@ bool QIORing::initializeIORing()
     if (initialized)
         return true;
 
-    if (apiTable = QtPrivate::getApiTable(); !apiTable) {
+    if (apiTable = BobUIPrivate::getApiTable(); !apiTable) {
         qCWarning(lcQIORing, "Failed to retrieve API table");
         return false;
     }
@@ -148,7 +148,7 @@ bool QIORing::initializeIORing()
 
     IORING_CREATE_FLAGS flags;
     memset(&flags, 0, sizeof(flags));
-#if !defined(QT_DEBUG) && QT_CONFIG(windows_ioring_skip_builder_param_checks)
+#if !defined(BOBUI_DEBUG) && BOBUI_CONFIG(windows_ioring_skip_builder_param_checks)
     flags.Advisory |= IORING_CREATE_SKIP_BUILDER_PARAM_CHECKS;
 #endif
     HRESULT hr = apiTable->CreateIoRing(IORING_VERSION_3, flags, sqEntries, cqEntries,
@@ -211,7 +211,7 @@ void QIORing::completionReady()
         }
         qCDebug(lcQIORing) << "Got completed entry. Operation:" << request->operation()
                            << "- UserData pointer:" << request
-                           << "- Result:" << qt_error_string(entry.ResultCode) << '('
+                           << "- Result:" << bobui_error_string(entry.ResultCode) << '('
                            << QByteArray("0x"_ba + QByteArray::number(entry.ResultCode, 16)).data()
                            << ')';
         switch (request->operation()) {
@@ -277,12 +277,12 @@ void QIORing::completionReady()
             invokeCallback(flushRequest);
             break;
         }
-        case QtPrivate::Operation::Cancel: {
+        case BobUIPrivate::Operation::Cancel: {
             auto cancelRequest = request->takeRequestData<Operation::Cancel>();
             invokeCallback(cancelRequest);
             break;
         }
-        case QtPrivate::Operation::Stat:
+        case BobUIPrivate::Operation::Stat:
             Q_UNREACHABLE_RETURN(); // Completes synchronously
             break;
         case Operation::NumOperations:
@@ -359,17 +359,17 @@ static HANDLE openFile(const QIORingRequest<QIORing::Operation::Open> &openReque
 bool QIORing::supportsOperation(Operation op)
 {
     switch (op) {
-    case QtPrivate::Operation::Open:
-    case QtPrivate::Operation::Close:
-    case QtPrivate::Operation::Read:
-    case QtPrivate::Operation::Write:
-    case QtPrivate::Operation::Flush:
-    case QtPrivate::Operation::Cancel:
-    case QtPrivate::Operation::Stat:
-    case QtPrivate::Operation::VectoredRead:
-    case QtPrivate::Operation::VectoredWrite:
+    case BobUIPrivate::Operation::Open:
+    case BobUIPrivate::Operation::Close:
+    case BobUIPrivate::Operation::Read:
+    case BobUIPrivate::Operation::Write:
+    case BobUIPrivate::Operation::Flush:
+    case BobUIPrivate::Operation::Cancel:
+    case BobUIPrivate::Operation::Stat:
+    case BobUIPrivate::Operation::VectoredRead:
+    case BobUIPrivate::Operation::VectoredWrite:
         return true;
-    case QtPrivate::Operation::NumOperations:
+    case BobUIPrivate::Operation::NumOperations:
         return false;
     }
     return false; // Not unreachable, we could allow more for io_uring
@@ -449,13 +449,13 @@ void QIORing::prepareRequests()
         lastUnqueuedIterator = it;
 }
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 template <typename T>
 using DetectHasFd = decltype(std::declval<const T &>().fd);
 
 template <typename T>
 constexpr bool OperationHasFd_v = qxp::is_detected_v<DetectHasFd, T>;
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 auto QIORing::prepareRequest(GenericRequestType &request) -> RequestPrepResult
 {
@@ -500,7 +500,7 @@ auto QIORing::prepareRequest(GenericRequestType &request) -> RequestPrepResult
         auto offset = readRequest->offset;
         if (span.size() > MaxReadWriteLen) {
             qCDebug(lcQIORing) << "Requested Read of size" << span.size() << "has to be split";
-            auto *extra = request.getOrInitializeExtra<QtPrivate::ReadWriteExtra>();
+            auto *extra = request.getOrInitializeExtra<BobUIPrivate::ReadWriteExtra>();
             if (extra->spanOffset == 0)
                 ++ongoingSplitOperations;
             const qsizetype remaining = span.size() - extra->spanOffset;
@@ -517,7 +517,7 @@ auto QIORing::prepareRequest(GenericRequestType &request) -> RequestPrepResult
         auto offset = vectoredReadRequest->offset;
         if (Q_LIKELY(vectoredReadRequest->destinations.size() > 1
                      || span.size() > MaxReadWriteLen)) {
-            auto *extra = request.getOrInitializeExtra<QtPrivate::ReadWriteExtra>();
+            auto *extra = request.getOrInitializeExtra<BobUIPrivate::ReadWriteExtra>();
             if (extra->spanOffset == 0 && extra->spanIndex == 0)
                 ++ongoingSplitOperations;
             extra->numSpans = vectoredReadRequest->destinations.size();
@@ -538,7 +538,7 @@ auto QIORing::prepareRequest(GenericRequestType &request) -> RequestPrepResult
         auto offset = writeRequest->offset;
         if (span.size() > MaxReadWriteLen) {
             qCDebug(lcQIORing) << "Requested Write of size" << span.size() << "has to be split";
-            auto *extra = request.getOrInitializeExtra<QtPrivate::ReadWriteExtra>();
+            auto *extra = request.getOrInitializeExtra<BobUIPrivate::ReadWriteExtra>();
             if (extra->spanOffset == 0)
                 ++ongoingSplitOperations;
             const qsizetype remaining = span.size() - extra->spanOffset;
@@ -555,7 +555,7 @@ auto QIORing::prepareRequest(GenericRequestType &request) -> RequestPrepResult
         auto offset = vectoredWriteRequest->offset;
         if (Q_LIKELY(vectoredWriteRequest->sources.size() > 1
                      || span.size() > MaxReadWriteLen)) {
-            auto *extra = request.getOrInitializeExtra<QtPrivate::ReadWriteExtra>();
+            auto *extra = request.getOrInitializeExtra<BobUIPrivate::ReadWriteExtra>();
             if (extra->spanOffset == 0 && extra->spanIndex == 0)
                 ++ongoingSplitOperations;
             extra->numSpans = vectoredWriteRequest->sources.size();
@@ -581,7 +581,7 @@ auto QIORing::prepareRequest(GenericRequestType &request) -> RequestPrepResult
                                             IOSQE_FLAGS_DRAIN_PRECEDING_OPS);
         break;
     }
-    case QtPrivate::Operation::Stat: {
+    case BobUIPrivate::Operation::Stat: {
         auto statRequest = request.takeRequestData<Operation::Stat>();
         FILE_STANDARD_INFO info;
         // NOLINTNEXTLINE(performance-no-int-to-ptr)
@@ -624,7 +624,7 @@ auto QIORing::prepareRequest(GenericRequestType &request) -> RequestPrepResult
         }
         qintptr fd = -1;
         invokeOnOp(*otherOperation, [&fd](auto *request) {
-            if constexpr (QtPrivate::OperationHasFd_v<decltype(*request)>)
+            if constexpr (BobUIPrivate::OperationHasFd_v<decltype(*request)>)
                 fd = request->fd;
         });
         if (fd == -1) {
@@ -656,7 +656,7 @@ bool QIORing::verifyFd(GenericRequestType &req)
 {
     bool result = true;
     invokeOnOp(req, [&](auto *request) {
-        if constexpr (QtPrivate::OperationHasFd_v<decltype(*request)>) {
+        if constexpr (BobUIPrivate::OperationHasFd_v<decltype(*request)>) {
             result = quintptr(request->fd) > 0 && quintptr(request->fd) != quintptr(INVALID_HANDLE_VALUE);
         }
     });
@@ -666,20 +666,20 @@ bool QIORing::verifyFd(GenericRequestType &req)
 void QIORing::GenericRequestType::cleanupExtra(Operation op, void *extra)
 {
     switch (op) {
-    case QtPrivate::Operation::Read:
-    case QtPrivate::Operation::VectoredRead:
-    case QtPrivate::Operation::Write:
-    case QtPrivate::Operation::VectoredWrite:
-        delete static_cast<QtPrivate::ReadWriteExtra *>(extra);
+    case BobUIPrivate::Operation::Read:
+    case BobUIPrivate::Operation::VectoredRead:
+    case BobUIPrivate::Operation::Write:
+    case BobUIPrivate::Operation::VectoredWrite:
+        delete static_cast<BobUIPrivate::ReadWriteExtra *>(extra);
         break;
-    case QtPrivate::Operation::Open:
-    case QtPrivate::Operation::Close:
-    case QtPrivate::Operation::Flush:
-    case QtPrivate::Operation::Stat:
-    case QtPrivate::Operation::Cancel:
-    case QtPrivate::Operation::NumOperations:
+    case BobUIPrivate::Operation::Open:
+    case BobUIPrivate::Operation::Close:
+    case BobUIPrivate::Operation::Flush:
+    case BobUIPrivate::Operation::Stat:
+    case BobUIPrivate::Operation::Cancel:
+    case BobUIPrivate::Operation::NumOperations:
         break;
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,12 +1,12 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2012 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include <qdebug.h>
 
 #include "qvalidator.h"
-#ifndef QT_NO_VALIDATOR
+#ifndef BOBUI_NO_VALIDATOR
 #include "private/qobject_p.h"
 #include "private/qlocale_p.h"
 #include "private/qnumeric_p.h"
@@ -15,12 +15,12 @@
 #include <limits.h>
 #include <cmath>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QValidator
     \brief The QValidator class provides validation of input text.
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     The class itself is abstract. Two subclasses, \l QIntValidator and
     \l QDoubleValidator, provide basic numeric-range checking, and \l
@@ -258,7 +258,7 @@ void QValidator::fixup(QString &) const
     \class QIntValidator
     \brief The QIntValidator class provides a validator that ensures
     a string contains a valid integer within a specified range.
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     Example of use:
 
@@ -533,7 +533,7 @@ public:
 
     \brief The QDoubleValidator class provides range checking of
     floating-point numbers.
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     QDoubleValidator provides an upper bound, a lower bound, and a
     limit on the number of digits after the decimal point.
@@ -914,11 +914,11 @@ QDoubleValidator::Notation QDoubleValidator::notation() const
     return d->notation;
 }
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 
 /*!
     \class QRegularExpressionValidator
-    \inmodule QtGui
+    \inmodule BobUIGui
     \brief The QRegularExpressionValidator class is used to check a string
     against a regular expression.
 
@@ -1066,10 +1066,10 @@ void QRegularExpressionValidatorPrivate::setRegularExpression(const QRegularExpr
     }
 }
 
-#endif // QT_CONFIG(regularexpression)
+#endif // BOBUI_CONFIG(regularexpression)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qvalidator.cpp"
 
-#endif // QT_NO_VALIDATOR
+#endif // BOBUI_NO_VALIDATOR

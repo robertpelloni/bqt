@@ -1,13 +1,13 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QPermission>
 
-#include <QTest>
+#include <BOBUIest>
 
 struct DummyPermission // a minimal QPermission-compatible type
 {
-    using QtPermissionHelper = void;
+    using BobUIPermissionHelper = void;
     int state = 0;
 };
 Q_DECLARE_METATYPE(DummyPermission)
@@ -168,7 +168,7 @@ void tst_QPermission::functorWithoutContext()
 
     DummyPermission dummy;
 #ifdef Q_OS_DARWIN
-    QTest::ignoreMessage(QtWarningMsg, QRegularExpression(".*Could not find permission plugin for DummyPermission.*"));
+    BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression(".*Could not find permission plugin for DummyPermission.*"));
 #endif
 
     qApp->requestPermission(dummy, [](const QPermission &permission){
@@ -192,8 +192,8 @@ void tst_QPermission::functorWithContextInThread()
     int argc = 0;
     char *argv = nullptr;
     QCoreApplication app(argc, &argv);
-    QThread::currentThread()->setObjectName("main thread");
-    QThread receiverThread;
+    BOBUIhread::currentThread()->setObjectName("main thread");
+    BOBUIhread receiverThread;
     receiverThread.setObjectName("receiverThread");
     QObject receiver;
     receiver.moveToThread(&receiverThread);
@@ -205,15 +205,15 @@ void tst_QPermission::functorWithContextInThread()
 
     DummyPermission dummy;
 #ifdef Q_OS_DARWIN
-    QTest::ignoreMessage(QtWarningMsg, QRegularExpression(".*Could not find permission plugin for DummyPermission.*"));
+    BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression(".*Could not find permission plugin for DummyPermission.*"));
 #endif
-    QThread *permissionReceiverThread = nullptr;
+    BOBUIhread *permissionReceiverThread = nullptr;
     qApp->requestPermission(dummy, &receiver, [&](const QPermission &permission){
         auto dummy = permission.value<DummyPermission>();
         QVERIFY(dummy);
-        permissionReceiverThread = QThread::currentThread();
+        permissionReceiverThread = BOBUIhread::currentThread();
     });
-    QTRY_COMPARE(permissionReceiverThread, &receiverThread);
+    BOBUIRY_COMPARE(permissionReceiverThread, &receiverThread);
 }
 
 void tst_QPermission::receiverInThread()
@@ -221,8 +221,8 @@ void tst_QPermission::receiverInThread()
     int argc = 0;
     char *argv = nullptr;
     QCoreApplication app(argc, &argv);
-    QThread::currentThread()->setObjectName("main thread");
-    QThread receiverThread;
+    BOBUIhread::currentThread()->setObjectName("main thread");
+    BOBUIhread receiverThread;
     receiverThread.setObjectName("receiverThread");
     class Receiver : public QObject
     {
@@ -232,10 +232,10 @@ void tst_QPermission::receiverInThread()
         {
             auto dummy = permission.value<DummyPermission>();
             QVERIFY(dummy);
-            permissionReceiverThread = QThread::currentThread();
+            permissionReceiverThread = BOBUIhread::currentThread();
         }
 
-        QThread *permissionReceiverThread = nullptr;
+        BOBUIhread *permissionReceiverThread = nullptr;
     } receiver;
     receiver.moveToThread(&receiverThread);
     receiverThread.start();
@@ -246,11 +246,11 @@ void tst_QPermission::receiverInThread()
 
     DummyPermission dummy;
 #ifdef Q_OS_DARWIN
-    QTest::ignoreMessage(QtWarningMsg, QRegularExpression(".*Could not find permission plugin for DummyPermission.*"));
+    BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression(".*Could not find permission plugin for DummyPermission.*"));
 #endif
 
     qApp->requestPermission(dummy, &receiver, &Receiver::handlePermission);
-    QTRY_COMPARE(receiver.permissionReceiverThread, &receiverThread);
+    BOBUIRY_COMPARE(receiver.permissionReceiverThread, &receiverThread);
 
     // compile tests: none of these work and the error output isn't horrible
     // qApp->requestPermission(dummy, &receiver, "&tst_QPermission::receiverInThread");
@@ -268,7 +268,7 @@ void tst_QPermission::destroyedContextObject()
 
     DummyPermission dummy;
 #ifdef Q_OS_DARWIN
-    QTest::ignoreMessage(QtWarningMsg, QRegularExpression(".*Could not find permission plugin for DummyPermission.*"));
+    BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression(".*Could not find permission plugin for DummyPermission.*"));
 #endif
     bool permissionReceived = false;
     qApp->requestPermission(dummy, context, [&]{
@@ -276,9 +276,9 @@ void tst_QPermission::destroyedContextObject()
     });
     QVERIFY2(!permissionReceived, "Permission received synchronously");
     delete context;
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
     QVERIFY(!permissionReceived);
 }
 
-QTEST_APPLESS_MAIN(tst_QPermission)
+BOBUIEST_APPLESS_MAIN(tst_QPermission)
 #include "tst_qpermission.moc"

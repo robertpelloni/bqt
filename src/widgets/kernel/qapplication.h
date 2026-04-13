@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QAPPLICATION_H
 #define QAPPLICATION_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtCore/qcoreapplication.h>
-#include <QtGui/qwindowdefs.h>
-#include <QtCore/qpoint.h>
-#include <QtCore/qsize.h>
-#include <QtGui/qcursor.h>
-#include <QtGui/qguiapplication.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUIGui/qwindowdefs.h>
+#include <BobUICore/qpoint.h>
+#include <BobUICore/qsize.h>
+#include <BobUIGui/qcursor.h>
+#include <BobUIGui/qguiapplication.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QStyle;
@@ -35,12 +35,12 @@ class Q_WIDGETS_EXPORT QApplication : public QGuiApplication
     Q_PROPERTY(int cursorFlashTime READ cursorFlashTime WRITE setCursorFlashTime)
     Q_PROPERTY(int doubleClickInterval  READ doubleClickInterval WRITE setDoubleClickInterval)
     Q_PROPERTY(int keyboardInputInterval READ keyboardInputInterval WRITE setKeyboardInputInterval)
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
     Q_PROPERTY(int wheelScrollLines  READ wheelScrollLines WRITE setWheelScrollLines)
 #endif
     Q_PROPERTY(int startDragTime  READ startDragTime WRITE setStartDragTime)
     Q_PROPERTY(int startDragDistance  READ startDragDistance WRITE setStartDragDistance)
-#ifndef QT_NO_STYLE_STYLESHEET
+#ifndef BOBUI_NO_STYLE_STYLESHEET
     Q_PROPERTY(QString styleSheet READ styleSheet WRITE setStyleSheet)
 #endif
     Q_PROPERTY(bool autoSipEnabled READ autoSipEnabled WRITE setAutoSipEnabled)
@@ -66,8 +66,8 @@ public:
     static QFont font(const char *className);
     static void setFont(const QFont &, const char* className = nullptr);
 
-#if QT_DEPRECATED_SINCE(6,0)
-    QT_DEPRECATED_VERSION_X_6_0("Use QFontMetricsF(qApp->font()) instead.")
+#if BOBUI_DEPRECATED_SINCE(6,0)
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use QFontMetricsF(qApp->font()) instead.")
     static QFontMetrics fontMetrics();
 #endif
 
@@ -80,8 +80,8 @@ public:
 
     static QWidget *activeWindow();
 
-#if QT_DEPRECATED_SINCE(6, 5)
-    QT_DEPRECATED_VERSION_X_6_5("Use QWidget::activateWindow() instead.")
+#if BOBUI_DEPRECATED_SINCE(6, 5)
+    BOBUI_DEPRECATED_VERSION_X_6_5("Use QWidget::activateWindow() instead.")
     static void setActiveWindow(QWidget* act);
 #endif
 
@@ -102,7 +102,7 @@ public:
     static void setKeyboardInputInterval(int);
     static int keyboardInputInterval();
 
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
     static void setWheelScrollLines(int);
     static int wheelScrollLines();
 #endif
@@ -112,18 +112,18 @@ public:
     static void setStartDragDistance(int l);
     static int startDragDistance();
 
-    static bool isEffectEnabled(Qt::UIEffect);
-    static void setEffectEnabled(Qt::UIEffect, bool enable = true);
+    static bool isEffectEnabled(BobUI::UIEffect);
+    static void setEffectEnabled(BobUI::UIEffect, bool enable = true);
 
     static int exec();
     bool notify(QObject *, QEvent *) override;
 
-#ifdef QT_KEYPAD_NAVIGATION
-    static void setNavigationMode(Qt::NavigationMode mode);
-    static Qt::NavigationMode navigationMode();
+#ifdef BOBUI_KEYPAD_NAVIGATION
+    static void setNavigationMode(BobUI::NavigationMode mode);
+    static BobUI::NavigationMode navigationMode();
 #endif
 
-    QT_DECLARE_NATIVE_INTERFACE_ACCESSOR(QApplication)
+    BOBUI_DECLARE_NATIVE_INTERFACE_ACCESSOR(QApplication)
 
 Q_SIGNALS:
     void focusChanged(QWidget *old, QWidget *now);
@@ -132,17 +132,17 @@ public:
     QString styleSheet() const;
     bool autoSipEnabled() const;
 public Q_SLOTS:
-#ifndef QT_NO_STYLE_STYLESHEET
+#ifndef BOBUI_NO_STYLE_STYLESHEET
     void setStyleSheet(const QString& sheet);
 #endif
     void setAutoSipEnabled(const bool enabled);
     static void closeAllWindows();
-    static void aboutQt();
+    static void aboutBobUI();
 
 protected:
     bool event(QEvent *) override;
-#  if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
-    QT_DEPRECATED_VERSION_X_6_10("This feature will be removed in Qt 7")
+#  if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
+    BOBUI_DEPRECATED_VERSION_X_6_10("This feature will be removed in BobUI 7")
     bool compressEvent(QEvent *, QObject *receiver, QPostEventList *) override;
 #  endif
 
@@ -157,20 +157,20 @@ private:
     friend class QWidget;
     friend class QWidgetPrivate;
     friend class QWidgetWindow;
-    friend class QTranslator;
+    friend class BOBUIranslator;
     friend class QWidgetAnimator;
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     friend class QShortcut;
     friend class QLineEdit;
     friend class QWidgetTextControl;
 #endif
     friend class QAction;
 
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     friend class QGestureManager;
 #endif
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QAPPLICATION_H

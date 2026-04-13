@@ -1,5 +1,5 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qrhivulkan_p.h"
 #include <qpa/qplatformvulkaninstance.h>
@@ -9,46 +9,46 @@
 #define VMA_STATIC_VULKAN_FUNCTIONS 0
 #define VMA_RECORDING_ENABLED 0
 #define VMA_DEDICATED_ALLOCATION 0
-QT_BEGIN_NAMESPACE
-Q_STATIC_LOGGING_CATEGORY(QRHI_LOG_VMA, "qt.rhi.vma")
-QT_END_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
+Q_STATIC_LOGGING_CATEGORY(QRHI_LOG_VMA, "bobui.rhi.vma")
+BOBUI_END_NAMESPACE
 #define VMA_ASSERT(expr) Q_ASSERT(expr)
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
 #define VMA_DEBUG_INITIALIZE_ALLOCATIONS 1
-#define VMA_DEBUG_LOG(str) QT_PREPEND_NAMESPACE(qDebug)(QT_PREPEND_NAMESPACE(QRHI_LOG_VMA), (str))
-#define VMA_DEBUG_LOG_FORMAT(format, ...) QT_PREPEND_NAMESPACE(qDebug)(QT_PREPEND_NAMESPACE(QRHI_LOG_VMA), format, __VA_ARGS__)
+#define VMA_DEBUG_LOG(str) BOBUI_PREPEND_NAMESPACE(qDebug)(BOBUI_PREPEND_NAMESPACE(QRHI_LOG_VMA), (str))
+#define VMA_DEBUG_LOG_FORMAT(format, ...) BOBUI_PREPEND_NAMESPACE(qDebug)(BOBUI_PREPEND_NAMESPACE(QRHI_LOG_VMA), format, __VA_ARGS__)
 #endif
 template<typename... Args>
 static void debugVmaLeak(const char *format, Args&&... args)
 {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     // debug builds: just do it always
     static bool leakCheck = true;
 #else
     // release builds: opt-in
-    static bool leakCheck = QT_PREPEND_NAMESPACE(qEnvironmentVariableIntValue)("QT_RHI_LEAK_CHECK");
+    static bool leakCheck = BOBUI_PREPEND_NAMESPACE(qEnvironmentVariableIntValue)("BOBUI_RHI_LEAK_CHECK");
 #endif
     if (leakCheck)
-        QT_PREPEND_NAMESPACE(qWarning)(QT_PREPEND_NAMESPACE(QRHI_LOG_VMA), format, std::forward<Args>(args)...);
+        BOBUI_PREPEND_NAMESPACE(qWarning)(BOBUI_PREPEND_NAMESPACE(QRHI_LOG_VMA), format, std::forward<Args>(args)...);
 }
 #define VMA_LEAK_LOG_FORMAT(format, ...) debugVmaLeak(format, __VA_ARGS__)
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_GCC("-Wsuggest-override")
-QT_WARNING_DISABLE_GCC("-Wundef")
-QT_WARNING_DISABLE_CLANG("-Wundef")
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_GCC("-Wsuggest-override")
+BOBUI_WARNING_DISABLE_GCC("-Wundef")
+BOBUI_WARNING_DISABLE_CLANG("-Wundef")
 #if defined(Q_CC_CLANG) && Q_CC_CLANG >= 1100
-QT_WARNING_DISABLE_CLANG("-Wdeprecated-copy")
+BOBUI_WARNING_DISABLE_CLANG("-Wdeprecated-copy")
 #endif
 #include "vk_mem_alloc.h"
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
 #include <qmath.h>
 #include <QVulkanFunctions>
-#include <QtGui/qwindow.h>
+#include <BobUIGui/qwindow.h>
 #include <private/qvulkandefaultinstance_p.h>
 #include <optional>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*
   Vulkan 1.0 backend. Provides a double-buffered swapchain that throttles the
@@ -82,7 +82,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \class QRhiVulkanInitParams
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Vulkan specific initialization parameters.
@@ -213,7 +213,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \class QRhiVulkanNativeHandles
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Collects device, queue, and other Vulkan objects that are used by the QRhi.
@@ -272,7 +272,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \class QRhiVulkanCommandBufferNativeHandles
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Holds the Vulkan command buffer object that is backing a QRhiCommandBuffer.
@@ -295,7 +295,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \class QRhiVulkanRenderPassNativeHandles
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Holds the Vulkan render pass object backing a QRhiRenderPassDescriptor.
@@ -312,7 +312,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \class QRhiVulkanQueueSubmitParams
-    \inmodule QtGui
+    \inmodule BobUIGui
     \since 6.9
     \brief References additional Vulkan API objects that get passed to \c vkQueueSubmit().
 
@@ -433,9 +433,9 @@ QRhiVulkan::QRhiVulkan(QRhiVulkanInitParams *params, QRhiVulkanNativeHandles *im
 {
     inst = params->inst;
     if (!inst) {
-        // This builds on the fact that Qt Quick also uses QVulkanDefaultInstance. While
+        // This builds on the fact that BobUI Quick also uses QVulkanDefaultInstance. While
         // this way we can support a null inst, it has consequences, so only do it with a
-        // warning. (e.g. if Qt Quick initializes afterwards, its attempt to set flags on
+        // warning. (e.g. if BobUI Quick initializes afterwards, its attempt to set flags on
         // QVulkanDefaultInstance will be futile)
         qWarning("QRhi for Vulkan attempted to be initialized without a QVulkanInstance; using QVulkanDefaultInstance.");
         inst = QVulkanDefaultInstance::instance();
@@ -544,7 +544,7 @@ bool QRhiVulkan::create(QRhi::Flags flags)
 
     globalVulkanInstance = inst; // used for function resolving in vkmemalloc callbacks
     f = inst->functions();
-    if (QRHI_LOG_INFO().isEnabled(QtDebugMsg)) {
+    if (QRHI_LOG_INFO().isEnabled(BobUIDebugMsg)) {
         qCDebug(QRHI_LOG_INFO, "Enabled instance extensions:");
         for (const char *ext : inst->extensions())
             qCDebug(QRHI_LOG_INFO, "  %s", ext);
@@ -578,8 +578,8 @@ bool QRhiVulkan::create(QRhi::Flags flags)
 
         int physDevIndex = -1;
         int requestedPhysDevIndex = -1;
-        if (qEnvironmentVariableIsSet("QT_VK_PHYSICAL_DEVICE_INDEX"))
-            requestedPhysDevIndex = qEnvironmentVariableIntValue("QT_VK_PHYSICAL_DEVICE_INDEX");
+        if (qEnvironmentVariableIsSet("BOBUI_VK_PHYSICAL_DEVICE_INDEX"))
+            requestedPhysDevIndex = qEnvironmentVariableIntValue("BOBUI_VK_PHYSICAL_DEVICE_INDEX");
 
         if (requestedPhysDevIndex < 0 && requestedRhiAdapter) {
             VkPhysicalDevice requestedPhysDev = static_cast<QVulkanAdapter *>(requestedRhiAdapter)->physDev;
@@ -849,19 +849,19 @@ bool QRhiVulkan::create(QRhi::Flags flags)
             }
         }
 
-        QByteArrayList envExtList = qgetenv("QT_VULKAN_DEVICE_EXTENSIONS").split(';');
+        QByteArrayList envExtList = qgetenv("BOBUI_VULKAN_DEVICE_EXTENSIONS").split(';');
         for (const QByteArray &ext : envExtList) {
             if (!ext.isEmpty() && !requestedDevExts.contains(ext)) {
                 if (devExts.contains(ext)) {
                     requestedDevExts.append(ext.constData());
                 } else {
-                    qWarning("Device extension %s requested in QT_VULKAN_DEVICE_EXTENSIONS is not supported",
+                    qWarning("Device extension %s requested in BOBUI_VULKAN_DEVICE_EXTENSIONS is not supported",
                              ext.constData());
                 }
             }
         }
 
-        if (QRHI_LOG_INFO().isEnabled(QtDebugMsg)) {
+        if (QRHI_LOG_INFO().isEnabled(BobUIDebugMsg)) {
             qCDebug(QRHI_LOG_INFO, "Enabling device extensions:");
             for (const char *ext : requestedDevExts)
                 qCDebug(QRHI_LOG_INFO, "  %s", ext);
@@ -1072,8 +1072,8 @@ bool QRhiVulkan::create(QRhi::Flags flags)
         allocatorInfo.instance = inst->vkInstance();
 
         // Logic would dictate setting allocatorInfo.vulkanApiVersion to caps.apiVersion.
-        // However, VMA has asserts to test if the header version Qt was built with is
-        // older than the runtime version. This is nice, but a bit unnecessary (in Qt we'd
+        // However, VMA has asserts to test if the header version BobUI was built with is
+        // older than the runtime version. This is nice, but a bit unnecessary (in BobUI we'd
         // rather prefer losing the affected features automatically, and perhaps printing
         // a warning, instead of aborting the application). Restrict the runtime version
         // passed in based on the preprocessor macro to keep VMA happy.
@@ -9022,7 +9022,7 @@ bool QVkSwapChain::ensureSurface()
             if (ok) {
                 colorFormat = formats[i].format;
                 colorSpace = formats[i].colorSpace;
-#if QT_CONFIG(wayland)
+#if BOBUI_CONFIG(wayland)
                 // On Wayland, only one color management surface can be created at a time without
                 // triggering a protocol error, and we create one ourselves in some situations.
                 // To avoid this problem, use VK_COLOR_SPACE_PASS_THROUGH_EXT when supported,
@@ -9209,4 +9209,4 @@ bool QVkSwapChain::createOrResize()
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

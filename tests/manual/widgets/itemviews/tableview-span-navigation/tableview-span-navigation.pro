@@ -3,6 +3,6 @@ TEMPLATE = app
 TARGET = tableview-span-navigation
 INCLUDEPATH += .
 
-QT += widgets
+BOBUI += widgets
 
 SOURCES += main.cpp

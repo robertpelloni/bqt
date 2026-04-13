@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
-#include <QtCore>
-#include <QtWidgets/QTreeView>
-#include <qtest.h>
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
+#include <BobUICore>
+#include <BobUIWidgets/BOBUIreeView>
+#include <bobuiest.h>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class LotsOfSignals : public QObject // for the unconnected() test
 {
@@ -106,11 +106,11 @@ private slots:
 
 void tst_QMetaObject::indexOfProperty_data()
 {
-    QTest::addColumn<QByteArray>("name");
-    const QMetaObject *mo = &QTreeView::staticMetaObject;
+    BOBUIest::addColumn<QByteArray>("name");
+    const QMetaObject *mo = &BOBUIreeView::staticMetaObject;
     for (int i = 0; i < mo->propertyCount(); ++i) {
         QMetaProperty prop = mo->property(i);
-        QTest::newRow(prop.name()) << QByteArray(prop.name());
+        BOBUIest::newRow(prop.name()) << QByteArray(prop.name());
     }
 }
 
@@ -118,7 +118,7 @@ void tst_QMetaObject::indexOfProperty()
 {
     QFETCH(QByteArray, name);
     const char *p = name.constData();
-    const QMetaObject *mo = &QTreeView::staticMetaObject;
+    const QMetaObject *mo = &BOBUIreeView::staticMetaObject;
     QBENCHMARK {
         (void)mo->indexOfProperty(p);
     }
@@ -126,12 +126,12 @@ void tst_QMetaObject::indexOfProperty()
 
 void tst_QMetaObject::indexOfMethod_data()
 {
-    QTest::addColumn<QByteArray>("method");
-    const QMetaObject *mo = &QTreeView::staticMetaObject;
+    BOBUIest::addColumn<QByteArray>("method");
+    const QMetaObject *mo = &BOBUIreeView::staticMetaObject;
     for (int i = 0; i < mo->methodCount(); ++i) {
         QMetaMethod method = mo->method(i);
         QByteArray sig = method.methodSignature();
-        QTest::newRow(sig) << sig;
+        BOBUIest::newRow(sig) << sig;
     }
 }
 
@@ -139,7 +139,7 @@ void tst_QMetaObject::indexOfMethod()
 {
     QFETCH(QByteArray, method);
     const char *p = method.constData();
-    const QMetaObject *mo = &QTreeView::staticMetaObject;
+    const QMetaObject *mo = &BOBUIreeView::staticMetaObject;
     QBENCHMARK {
         (void)mo->indexOfMethod(p);
     }
@@ -147,14 +147,14 @@ void tst_QMetaObject::indexOfMethod()
 
 void tst_QMetaObject::indexOfSignal_data()
 {
-    QTest::addColumn<QByteArray>("signal");
-    const QMetaObject *mo = &QTreeView::staticMetaObject;
+    BOBUIest::addColumn<QByteArray>("signal");
+    const QMetaObject *mo = &BOBUIreeView::staticMetaObject;
     for (int i = 0; i < mo->methodCount(); ++i) {
         QMetaMethod method = mo->method(i);
         if (method.methodType() != QMetaMethod::Signal)
             continue;
         QByteArray sig = method.methodSignature();
-        QTest::newRow(sig) << sig;
+        BOBUIest::newRow(sig) << sig;
     }
 }
 
@@ -162,7 +162,7 @@ void tst_QMetaObject::indexOfSignal()
 {
     QFETCH(QByteArray, signal);
     const char *p = signal.constData();
-    const QMetaObject *mo = &QTreeView::staticMetaObject;
+    const QMetaObject *mo = &BOBUIreeView::staticMetaObject;
     QBENCHMARK {
         (void)mo->indexOfSignal(p);
     }
@@ -170,14 +170,14 @@ void tst_QMetaObject::indexOfSignal()
 
 void tst_QMetaObject::indexOfSlot_data()
 {
-    QTest::addColumn<QByteArray>("slot");
-    const QMetaObject *mo = &QTreeView::staticMetaObject;
+    BOBUIest::addColumn<QByteArray>("slot");
+    const QMetaObject *mo = &BOBUIreeView::staticMetaObject;
     for (int i = 0; i < mo->methodCount(); ++i) {
         QMetaMethod method = mo->method(i);
         if (method.methodType() != QMetaMethod::Slot)
             continue;
         QByteArray sig = method.methodSignature();
-        QTest::newRow(sig) << sig;
+        BOBUIest::newRow(sig) << sig;
     }
 }
 
@@ -185,7 +185,7 @@ void tst_QMetaObject::indexOfSlot()
 {
     QFETCH(QByteArray, slot);
     const char *p = slot.constData();
-    const QMetaObject *mo = &QTreeView::staticMetaObject;
+    const QMetaObject *mo = &BOBUIreeView::staticMetaObject;
     QBENCHMARK {
         (void)mo->indexOfSlot(p);
     }
@@ -193,13 +193,13 @@ void tst_QMetaObject::indexOfSlot()
 
 void tst_QMetaObject::unconnected_data()
 {
-    QTest::addColumn<int>("signal_index");
-    QTest::newRow("signal--9") << 9;
-    QTest::newRow("signal--32") << 32;
-    QTest::newRow("signal--33") << 33;
-    QTest::newRow("signal--64") << 64;
-    QTest::newRow("signal--65") << 65;
-    QTest::newRow("signal--70") << 70;
+    BOBUIest::addColumn<int>("signal_index");
+    BOBUIest::newRow("signal--9") << 9;
+    BOBUIest::newRow("signal--32") << 32;
+    BOBUIest::newRow("signal--33") << 33;
+    BOBUIest::newRow("signal--64") << 64;
+    BOBUIest::newRow("signal--65") << 65;
+    BOBUIest::newRow("signal--70") << 70;
 }
 
 void tst_QMetaObject::unconnected()
@@ -218,12 +218,12 @@ void tst_QMetaObject::unconnected()
 
 void tst_QMetaObject::normalizedSignature_data()
 {
-    QTest::addColumn<QByteArray>("signature");
+    BOBUIest::addColumn<QByteArray>("signature");
 
-    QTest::newRow("const5") << "void foo(const int, int const, const int &, int const &)"_ba;
-    QTest::newRow("const12") << "void foo(Foo<Bar>const*const *const)"_ba;
-    QTest::newRow("QVector1") << "void foo(const Template<QVector, MyQList const>)"_ba;
-    QTest::newRow("refref") << "const char* foo(const X &&,X const &&, const X* &&) && "_ba;
+    BOBUIest::newRow("const5") << "void foo(const int, int const, const int &, int const &)"_ba;
+    BOBUIest::newRow("const12") << "void foo(Foo<Bar>const*const *const)"_ba;
+    BOBUIest::newRow("QVector1") << "void foo(const Template<QVector, MyQList const>)"_ba;
+    BOBUIest::newRow("refref") << "const char* foo(const X &&,X const &&, const X* &&) && "_ba;
 }
 
 
@@ -236,6 +236,6 @@ void tst_QMetaObject::normalizedSignature()
     }
 }
 
-QTEST_MAIN(tst_QMetaObject)
+BOBUIEST_MAIN(tst_QMetaObject)
 
 #include "tst_bench_qmetaobject.moc"

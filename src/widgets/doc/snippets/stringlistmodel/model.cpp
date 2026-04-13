@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 /*
   model.cpp
@@ -42,7 +42,7 @@ QVariant StringListModel::data(const QModelIndex &index, int role) const
     if (index.row() >= stringList.size())
         return QVariant();
 
-    if (role == Qt::DisplayRole)
+    if (role == BobUI::DisplayRole)
         return stringList.at(index.row());
     else
         return QVariant();
@@ -67,7 +67,7 @@ QVariant StringListModel::data(const QModelIndex &index, int role) const
     if (index.row() >= stringList.size())
         return QVariant();
 
-    if (role == Qt::DisplayRole || role == Qt::EditRole)
+    if (role == BobUI::DisplayRole || role == BobUI::EditRole)
         return stringList.at(index.row());
     else
         return QVariant();
@@ -81,13 +81,13 @@ QVariant StringListModel::data(const QModelIndex &index, int role) const
 */
 
 //! [2]
-QVariant StringListModel::headerData(int section, Qt::Orientation orientation,
+QVariant StringListModel::headerData(int section, BobUI::Orientation orientation,
                                      int role) const
 {
-    if (role != Qt::DisplayRole)
+    if (role != BobUI::DisplayRole)
         return QVariant();
 
-    if (orientation == Qt::Horizontal)
+    if (orientation == BobUI::Horizontal)
         return QStringLiteral("Column %1").arg(section);
     else
         return QStringLiteral("Row %1").arg(section);
@@ -100,12 +100,12 @@ QVariant StringListModel::headerData(int section, Qt::Orientation orientation,
 */
 
 //! [3]
-Qt::ItemFlags StringListModel::flags(const QModelIndex &index) const
+BobUI::ItemFlags StringListModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return Qt::ItemIsEnabled;
+        return BobUI::ItemIsEnabled;
 
-    return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
+    return QAbstractItemModel::flags(index) | BobUI::ItemIsEditable;
 }
 //! [3]
 
@@ -124,7 +124,7 @@ Qt::ItemFlags StringListModel::flags(const QModelIndex &index) const
 bool StringListModel::setData(const QModelIndex &index,
                               const QVariant &value, int role)
 {
-    if (index.isValid() && role == Qt::EditRole) {
+    if (index.isValid() && role == BobUI::EditRole) {
 
         stringList.replace(index.row(), value.toString());
         emit dataChanged(index, index, {role});

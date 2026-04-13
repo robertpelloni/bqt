@@ -1,26 +1,26 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2018 Intel Corporation.
 // Copyright (C) 2014 Olivier Goffart <ogoffart@woboq.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QMETATYPE_H
 #define QMETATYPE_H
 
-#include <QtCore/qglobal.h>
-#include <QtCore/qatomic.h>
-#include <QtCore/qbytearray.h>
-#include <QtCore/qcompare.h>
-#include <QtCore/qdatastream.h>
-#include <QtCore/qflags.h>
-#include <QtCore/qfloat16.h>
-#include <QtCore/qhashfunctions.h>
-#include <QtCore/qiterable.h>
-#include <QtCore/qmetacontainer.h>
-#ifndef QT_NO_QOBJECT
-#include <QtCore/qobjectdefs.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qatomic.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qdatastream.h>
+#include <BobUICore/qflags.h>
+#include <BobUICore/qfloat16.h>
+#include <BobUICore/qhashfunctions.h>
+#include <BobUICore/qiterable.h>
+#include <BobUICore/qmetacontainer.h>
+#ifndef BOBUI_NO_QOBJECT
+#include <BobUICore/qobjectdefs.h>
 #endif
-#include <QtCore/qscopeguard.h>
-#include <QtCore/qttypetraits.h>
+#include <BobUICore/qscopeguard.h>
+#include <BobUICore/bobuitypetraits.h>
 
 #include <array>
 #include <new>
@@ -29,13 +29,13 @@
 #include <map>
 #include <functional>
 #include <optional>
-#include <QtCore/qxptype_traits.h>
+#include <BobUICore/qxptype_traits.h>
 
 #ifdef Bool
 #error qmetatype.h must be included before any header file that defines Bool
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // from qcborcommon.h
 enum class QCborSimpleType : quint8;
@@ -47,7 +47,7 @@ template <typename T>
 inline constexpr int qMetaTypeId();
 
 // F is a tuple: (QMetaType::TypeName, QMetaType::TypeNameID, RealType)
-#define QT_FOR_EACH_STATIC_PRIMITIVE_NON_VOID_TYPE(F)\
+#define BOBUI_FOR_EACH_STATIC_PRIMITIVE_NON_VOID_TYPE(F)\
     F(Bool, 1, bool) \
     F(Int, 2, int) \
     F(UInt, 3, uint) \
@@ -67,48 +67,48 @@ inline constexpr int qMetaTypeId();
     F(Nullptr, 51, std::nullptr_t) \
     F(QCborSimpleType, 52, QCborSimpleType) \
 
-#define QT_FOR_EACH_STATIC_PRIMITIVE_TYPE(F)        \
-    QT_FOR_EACH_STATIC_PRIMITIVE_NON_VOID_TYPE(F)   \
+#define BOBUI_FOR_EACH_STATIC_PRIMITIVE_TYPE(F)        \
+    BOBUI_FOR_EACH_STATIC_PRIMITIVE_NON_VOID_TYPE(F)   \
     F(Void, 43, void) \
 
-#define QT_FOR_EACH_STATIC_PRIMITIVE_POINTER(F)     \
+#define BOBUI_FOR_EACH_STATIC_PRIMITIVE_POINTER(F)     \
     F(VoidStar, 31, void*) \
 
-#if QT_CONFIG(easingcurve)
-#define QT_FOR_EACH_STATIC_EASINGCURVE(F)\
+#if BOBUI_CONFIG(easingcurve)
+#define BOBUI_FOR_EACH_STATIC_EASINGCURVE(F)\
     F(QEasingCurve, 29, QEasingCurve)
 #else
-#define QT_FOR_EACH_STATIC_EASINGCURVE(F)
+#define BOBUI_FOR_EACH_STATIC_EASINGCURVE(F)
 #endif
 
-#if QT_CONFIG(itemmodel)
-#define QT_FOR_EACH_STATIC_ITEMMODEL_CLASS(F)\
+#if BOBUI_CONFIG(itemmodel)
+#define BOBUI_FOR_EACH_STATIC_ITEMMODEL_CLASS(F)\
     F(QModelIndex, 42, QModelIndex) \
     F(QPersistentModelIndex, 50, QPersistentModelIndex)
 #else
-#define QT_FOR_EACH_STATIC_ITEMMODEL_CLASS(F)
+#define BOBUI_FOR_EACH_STATIC_ITEMMODEL_CLASS(F)
 #endif
 
-#if QT_CONFIG(regularexpression)
-#  define QT_FOR_EACH_STATIC_REGULAR_EXPRESSION(F) \
+#if BOBUI_CONFIG(regularexpression)
+#  define BOBUI_FOR_EACH_STATIC_REGULAR_EXPRESSION(F) \
     F(QRegularExpression, 44, QRegularExpression)
 #else
-#  define QT_FOR_EACH_STATIC_REGULAR_EXPRESSION(F)
+#  define BOBUI_FOR_EACH_STATIC_REGULAR_EXPRESSION(F)
 #endif
-#ifndef QT_NO_VARIANT
-#  define QT_FOR_EACH_STATIC_QVARIANT(F) \
+#ifndef BOBUI_NO_VARIANT
+#  define BOBUI_FOR_EACH_STATIC_QVARIANT(F) \
     F(QVariant, 41, QVariant)
 #else
-#  define QT_FOR_EACH_STATIC_QVARIANT(F)
+#  define BOBUI_FOR_EACH_STATIC_QVARIANT(F)
 #endif
 
-#define QT_FOR_EACH_STATIC_CORE_CLASS(F)\
+#define BOBUI_FOR_EACH_STATIC_CORE_CLASS(F)\
     F(QChar, 7, QChar) \
     F(QString, 10, QString) \
     F(QByteArray, 12, QByteArray) \
     F(QBitArray, 13, QBitArray) \
     F(QDate, 14, QDate) \
-    F(QTime, 15, QTime) \
+    F(BOBUIime, 15, BOBUIime) \
     F(QDateTime, 16, QDateTime) \
     F(QUrl, 17, QUrl) \
     F(QLocale, 18, QLocale) \
@@ -120,10 +120,10 @@ inline constexpr int qMetaTypeId();
     F(QLineF, 24, QLineF) \
     F(QPoint, 25, QPoint) \
     F(QPointF, 26, QPointF) \
-    QT_FOR_EACH_STATIC_EASINGCURVE(F) \
+    BOBUI_FOR_EACH_STATIC_EASINGCURVE(F) \
     F(QUuid, 30, QUuid) \
-    QT_FOR_EACH_STATIC_QVARIANT(F) \
-    QT_FOR_EACH_STATIC_REGULAR_EXPRESSION(F) \
+    BOBUI_FOR_EACH_STATIC_QVARIANT(F) \
+    BOBUI_FOR_EACH_STATIC_REGULAR_EXPRESSION(F) \
     F(QJsonValue, 45, QJsonValue) \
     F(QJsonObject, 46, QJsonObject) \
     F(QJsonArray, 47, QJsonArray) \
@@ -132,35 +132,35 @@ inline constexpr int qMetaTypeId();
     F(QCborArray, 54, QCborArray) \
     F(QCborMap, 55, QCborMap) \
     F(Float16, 63, qfloat16) \
-    QT_FOR_EACH_STATIC_ITEMMODEL_CLASS(F)
+    BOBUI_FOR_EACH_STATIC_ITEMMODEL_CLASS(F)
 
-#define QT_FOR_EACH_STATIC_CORE_POINTER(F)\
+#define BOBUI_FOR_EACH_STATIC_CORE_POINTER(F)\
     F(QObjectStar, 39, QObject*)
 
-#ifndef QT_NO_VARIANT
-#  define QT_FOR_EACH_STATIC_CORE_QVARIANT_TEMPLATE(F) \
+#ifndef BOBUI_NO_VARIANT
+#  define BOBUI_FOR_EACH_STATIC_CORE_QVARIANT_TEMPLATE(F) \
     F(QVariantMap, 8, QVariantMap) \
     F(QVariantList, 9, QVariantList) \
     F(QVariantHash, 28, QVariantHash) \
     F(QVariantPair, 58, QVariantPair) \
     /**/
 #else
-#  define QT_FOR_EACH_STATIC_CORE_QVARIANT_TEMPLATE(F)
-#endif // QT_NO_VARIANT
+#  define BOBUI_FOR_EACH_STATIC_CORE_QVARIANT_TEMPLATE(F)
+#endif // BOBUI_NO_VARIANT
 
-#define QT_FOR_EACH_STATIC_CORE_TEMPLATE(F) \
-    QT_FOR_EACH_STATIC_CORE_QVARIANT_TEMPLATE(F) \
+#define BOBUI_FOR_EACH_STATIC_CORE_TEMPLATE(F) \
+    BOBUI_FOR_EACH_STATIC_CORE_QVARIANT_TEMPLATE(F) \
     F(QByteArrayList, 49, QByteArrayList) \
     F(QStringList, 11, QStringList)
 
-#if QT_CONFIG(shortcut)
-#define QT_FOR_EACH_STATIC_KEYSEQUENCE_CLASS(F)\
+#if BOBUI_CONFIG(shortcut)
+#define BOBUI_FOR_EACH_STATIC_KEYSEQUENCE_CLASS(F)\
     F(QKeySequence, 0x100b, QKeySequence)
 #else
-#define QT_FOR_EACH_STATIC_KEYSEQUENCE_CLASS(F)
+#define BOBUI_FOR_EACH_STATIC_KEYSEQUENCE_CLASS(F)
 #endif
 
-#define QT_FOR_EACH_STATIC_GUI_CLASS(F)\
+#define BOBUI_FOR_EACH_STATIC_GUI_CLASS(F)\
     F(QFont, 0x1000, QFont) \
     F(QPixmap, 0x1001, QPixmap) \
     F(QBrush, 0x1002, QBrush) \
@@ -172,11 +172,11 @@ inline constexpr int qMetaTypeId();
     F(QRegion, 0x1008, QRegion) \
     F(QBitmap, 0x1009, QBitmap) \
     F(QCursor, 0x100a, QCursor) \
-    QT_FOR_EACH_STATIC_KEYSEQUENCE_CLASS(F) \
+    BOBUI_FOR_EACH_STATIC_KEYSEQUENCE_CLASS(F) \
     F(QPen, 0x100c, QPen) \
-    F(QTextLength, 0x100d, QTextLength) \
-    F(QTextFormat, 0x100e, QTextFormat) \
-    F(QTransform, 0x1010, QTransform) \
+    F(BOBUIextLength, 0x100d, BOBUIextLength) \
+    F(BOBUIextFormat, 0x100e, BOBUIextFormat) \
+    F(BOBUIransform, 0x1010, BOBUIransform) \
     F(QMatrix4x4, 0x1011, QMatrix4x4) \
     F(QVector2D, 0x1012, QVector2D) \
     F(QVector3D, 0x1013, QVector3D) \
@@ -186,11 +186,11 @@ inline constexpr int qMetaTypeId();
     F(QColorSpace, 0x1017, QColorSpace) \
 
 
-#define QT_FOR_EACH_STATIC_WIDGETS_CLASS(F)\
+#define BOBUI_FOR_EACH_STATIC_WIDGETS_CLASS(F)\
     F(QSizePolicy, 0x2000, QSizePolicy) \
 
 // F is a tuple: (QMetaType::TypeName, QMetaType::TypeNameID, AliasingType, "RealType")
-#define QT_FOR_EACH_STATIC_ALIAS_TYPE(F)\
+#define BOBUI_FOR_EACH_STATIC_ALIAS_TYPE(F)\
     F(ULong, -1, ulong, "unsigned long") \
     F(UInt, -1, uint, "unsigned int") \
     F(UShort, -1, ushort, "unsigned short") \
@@ -207,43 +207,43 @@ inline constexpr int qMetaTypeId();
     F(ULongLong, -1, qulonglong, "quint64") \
     F(QByteArrayList, -1, QByteArrayList, "QList<QByteArray>") \
     F(QStringList, -1, QStringList, "QList<QString>") \
-    QT_FOR_EACH_STATIC_VARIANT_ALIAS_TYPE(F)
+    BOBUI_FOR_EACH_STATIC_VARIANT_ALIAS_TYPE(F)
 
-#ifndef QT_NO_VARIANT
-#define QT_FOR_EACH_STATIC_VARIANT_ALIAS_TYPE(F) \
+#ifndef BOBUI_NO_VARIANT
+#define BOBUI_FOR_EACH_STATIC_VARIANT_ALIAS_TYPE(F) \
     F(QVariantList, -1, QVariantList, "QList<QVariant>") \
     F(QVariantMap, -1, QVariantMap, "QMap<QString,QVariant>") \
     F(QVariantHash, -1, QVariantHash, "QHash<QString,QVariant>") \
     F(QVariantPair, -1, QVariantPair, "QPair<QVariant,QVariant>") \
     /**/
 #else
-#define QT_FOR_EACH_STATIC_VARIANT_ALIAS_TYPE(F)
+#define BOBUI_FOR_EACH_STATIC_VARIANT_ALIAS_TYPE(F)
 #endif
 
-#define QT_FOR_EACH_STATIC_TYPE(F)\
-    QT_FOR_EACH_STATIC_PRIMITIVE_TYPE(F)\
-    QT_FOR_EACH_STATIC_PRIMITIVE_POINTER(F)\
-    QT_FOR_EACH_STATIC_CORE_CLASS(F)\
-    QT_FOR_EACH_STATIC_CORE_POINTER(F)\
-    QT_FOR_EACH_STATIC_CORE_TEMPLATE(F)\
-    QT_FOR_EACH_STATIC_GUI_CLASS(F)\
-    QT_FOR_EACH_STATIC_WIDGETS_CLASS(F)\
+#define BOBUI_FOR_EACH_STATIC_TYPE(F)\
+    BOBUI_FOR_EACH_STATIC_PRIMITIVE_TYPE(F)\
+    BOBUI_FOR_EACH_STATIC_PRIMITIVE_POINTER(F)\
+    BOBUI_FOR_EACH_STATIC_CORE_CLASS(F)\
+    BOBUI_FOR_EACH_STATIC_CORE_POINTER(F)\
+    BOBUI_FOR_EACH_STATIC_CORE_TEMPLATE(F)\
+    BOBUI_FOR_EACH_STATIC_GUI_CLASS(F)\
+    BOBUI_FOR_EACH_STATIC_WIDGETS_CLASS(F)\
 
-#define QT_DEFINE_METATYPE_ID(TypeName, Id, Name) \
+#define BOBUI_DEFINE_METATYPE_ID(TypeName, Id, Name) \
     TypeName = Id,
 
-#define QT_FOR_EACH_AUTOMATIC_TEMPLATE_1ARG(F) \
+#define BOBUI_FOR_EACH_AUTOMATIC_TEMPLATE_1ARG(F) \
     F(QList) \
     F(QQueue) \
     F(QStack) \
     F(QSet) \
     /*end*/
 
-#define QT_FOR_EACH_AUTOMATIC_TEMPLATE_2ARG(F) \
+#define BOBUI_FOR_EACH_AUTOMATIC_TEMPLATE_2ARG(F) \
     F(QHash, class) \
     F(QMap, class)
 
-#define QT_FOR_EACH_AUTOMATIC_TEMPLATE_SMART_POINTER(F) \
+#define BOBUI_FOR_EACH_AUTOMATIC_TEMPLATE_SMART_POINTER(F) \
     F(QSharedPointer) \
     F(QWeakPointer) \
     F(QPointer)
@@ -251,7 +251,7 @@ inline constexpr int qMetaTypeId();
 class QDataStream;
 struct QMetaObject;
 
-namespace QtPrivate
+namespace BobUIPrivate
 {
 
 class QMetaTypeInterface;
@@ -259,8 +259,8 @@ class QMetaTypeInterface;
 // MSVC is the only supported compiler that includes the type of a variable in
 // its mangled form, so it's not binary-compatible to drop the const in
 // QMetaTypeInterfaceWrapper::metaType for it, which means we must keep the
-// mutable field until Qt 7.
-#if QT_VERSION >= QT_VERSION_CHECK(7, 0, 0) || defined(QT_BOOTSTRAPPED) || !defined(Q_CC_MSVC)
+// mutable field until BobUI 7.
+#if BOBUI_VERSION >= BOBUI_VERSION_CHECK(7, 0, 0) || defined(BOBUI_BOOTSTRAPPED) || !defined(Q_CC_MSVC)
 #  define QMTI_MUTABLE
 using NonConstMetaTypeInterface = QMetaTypeInterface;
 #else
@@ -334,7 +334,7 @@ To convertImplicit(const From& from)
 
     template<typename T>
     struct IsEnumOrFlags : std::disjunction<std::is_enum<T>, IsQFlags<T>> {};
-}  // namespace QtPrivate
+}  // namespace BobUIPrivate
 
 class Q_CORE_EXPORT QMetaType {
 public:
@@ -342,7 +342,7 @@ public:
     // The code that actually gets compiled.
     enum Type {
         // these are merged with QVariant
-        QT_FOR_EACH_STATIC_TYPE(QT_DEFINE_METATYPE_ID)
+        BOBUI_FOR_EACH_STATIC_TYPE(BOBUI_DEFINE_METATYPE_ID)
 
         FirstCoreType = Bool,
         LastCoreType = Float16,
@@ -365,7 +365,7 @@ public:
         UChar = 37, Float = 38,
         VoidStar = 31,
         QChar = 7, QString = 10, QStringList = 11, QByteArray = 12,
-        QBitArray = 13, QDate = 14, QTime = 15, QDateTime = 16, QUrl = 17,
+        QBitArray = 13, QDate = 14, BOBUIime = 15, QDateTime = 16, QUrl = 17,
         QLocale = 18, QRect = 19, QRectF = 20, QSize = 21, QSizeF = 22,
         QLine = 23, QLineF = 24, QPoint = 25, QPointF = 26,
         QEasingCurve = 29, QUuid = 30, QVariant = 41, QModelIndex = 42,
@@ -382,8 +382,8 @@ public:
         // Gui types
         QFont = 0x1000, QPixmap = 0x1001, QBrush = 0x1002, QColor = 0x1003, QPalette = 0x1004,
         QIcon = 0x1005, QImage = 0x1006, QPolygon = 0x1007, QRegion = 0x1008, QBitmap = 0x1009,
-        QCursor = 0x100a, QKeySequence = 0x100b, QPen = 0x100c, QTextLength = 0x100d, QTextFormat = 0x100e,
-        QTransform = 0x1010, QMatrix4x4 = 0x1011, QVector2D = 0x1012,
+        QCursor = 0x100a, QKeySequence = 0x100b, QPen = 0x100c, BOBUIextLength = 0x100d, BOBUIextFormat = 0x100e,
+        BOBUIransform = 0x1010, QMatrix4x4 = 0x1011, QVector2D = 0x1012,
         QVector3D = 0x1013, QVector4D = 0x1014, QQuaternion = 0x1015, QPolygonF = 0x1016, QColorSpace = 0x1017,
 
         // Widget types
@@ -398,7 +398,7 @@ public:
         NeedsConstruction = 0x1,
         NeedsDestruction = 0x2,
         RelocatableType = 0x4,
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
         MovableType Q_DECL_ENUMERATOR_DEPRECATED_X("Use RelocatableType instead.") = RelocatableType,
 #endif
         PointerToQObject = 0x8,
@@ -418,61 +418,61 @@ public:
     };
     Q_DECLARE_FLAGS(TypeFlags, TypeFlag)
 
-    static void registerNormalizedTypedef(const QT_PREPEND_NAMESPACE(QByteArray) &normalizedTypeName, QMetaType type);
+    static void registerNormalizedTypedef(const BOBUI_PREPEND_NAMESPACE(QByteArray) &normalizedTypeName, QMetaType type);
 
-#if QT_DEPRECATED_SINCE(6, 0)
-    QT_DEPRECATED_VERSION_6_0
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+    BOBUI_DEPRECATED_VERSION_6_0
     static int type(const char *typeName)
     { return QMetaType::fromName(typeName).id(); }
-    QT_DEPRECATED_VERSION_6_0
-    static int type(const QT_PREPEND_NAMESPACE(QByteArray) &typeName)
+    BOBUI_DEPRECATED_VERSION_6_0
+    static int type(const BOBUI_PREPEND_NAMESPACE(QByteArray) &typeName)
     { return QMetaType::fromName(typeName).id(); }
-    QT_DEPRECATED_VERSION_6_0
+    BOBUI_DEPRECATED_VERSION_6_0
     static const char *typeName(int type)
     { return QMetaType(type).name(); }
-    QT_DEPRECATED_VERSION_6_0
+    BOBUI_DEPRECATED_VERSION_6_0
     static int sizeOf(int type)
     { return int(QMetaType(type).sizeOf()); }
-    QT_DEPRECATED_VERSION_6_0
+    BOBUI_DEPRECATED_VERSION_6_0
     static TypeFlags typeFlags(int type)
     { return QMetaType(type).flags(); }
-    QT_DEPRECATED_VERSION_6_0
+    BOBUI_DEPRECATED_VERSION_6_0
     static const QMetaObject *metaObjectForType(int type)
     { return QMetaType(type).metaObject(); }
-    QT_DEPRECATED_VERSION_6_0
+    BOBUI_DEPRECATED_VERSION_6_0
     static void *create(int type, const void *copy = nullptr)
     { return QMetaType(type).create(copy); }
-    QT_DEPRECATED_VERSION_6_0
+    BOBUI_DEPRECATED_VERSION_6_0
     static void destroy(int type, void *data)
     { return QMetaType(type).destroy(data); }
-    QT_DEPRECATED_VERSION_6_0
+    BOBUI_DEPRECATED_VERSION_6_0
     static void *construct(int type, void *where, const void *copy)
     { return QMetaType(type).construct(where, copy); }
-    QT_DEPRECATED_VERSION_6_0
+    BOBUI_DEPRECATED_VERSION_6_0
     static void destruct(int type, void *where)
     { return QMetaType(type).destruct(where); }
 #endif
     static bool isRegistered(int type);
 
     explicit QMetaType(int type);
-    explicit constexpr QMetaType(const QtPrivate::QMetaTypeInterface *d) : d_ptr(d) {}
+    explicit constexpr QMetaType(const BobUIPrivate::QMetaTypeInterface *d) : d_ptr(d) {}
     constexpr QMetaType() = default;
 
-#if QT_CORE_REMOVED_SINCE(6, 9)
+#if BOBUI_CORE_REMOVED_SINCE(6, 9)
     bool isValid() const;
     bool isRegistered() const;
 #endif
-    constexpr bool isValid(QT6_DECL_NEW_OVERLOAD) const noexcept;
-    inline bool isRegistered(QT6_DECL_NEW_OVERLOAD) const noexcept;
+    constexpr bool isValid(BOBUI6_DECL_NEW_OVERLOAD) const noexcept;
+    inline bool isRegistered(BOBUI6_DECL_NEW_OVERLOAD) const noexcept;
     void registerType() const
     {
         // "register" is a reserved keyword
         registerHelper();
     }
-#if QT_CORE_REMOVED_SINCE(6, 1) || defined(Q_QDOC)
+#if BOBUI_CORE_REMOVED_SINCE(6, 1) || defined(Q_QDOC)
     int id() const;
 #else
-    // ### Qt 7: Remove traces of out of line version
+    // ### BobUI 7: Remove traces of out of line version
     // unused int parameter is used to avoid ODR violation
     int id(int = 0) const
     {
@@ -499,16 +499,16 @@ public:
     bool isEqualityComparable() const;
     bool isOrdered() const;
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
     bool save(QDataStream &stream, const void *data) const;
     bool load(QDataStream &stream, void *data) const;
     bool hasRegisteredDataStreamOperators() const;
 
-#if QT_DEPRECATED_SINCE(6, 0)
-    QT_DEPRECATED_VERSION_6_0
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+    BOBUI_DEPRECATED_VERSION_6_0
     static bool save(QDataStream &stream, int type, const void *data)
     { return QMetaType(type).save(stream, data); }
-    QT_DEPRECATED_VERSION_6_0
+    BOBUI_DEPRECATED_VERSION_6_0
     static bool load(QDataStream &stream, int type, void *data)
     { return QMetaType(type).load(stream, data); }
 #endif
@@ -533,22 +533,22 @@ private:
         return aId == bId;
     }
     Q_DECLARE_EQUALITY_COMPARABLE_NON_NOEXCEPT(QMetaType)
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 private:
     friend Q_CORE_EXPORT QDebug operator<<(QDebug d, QMetaType m);
 public:
     bool debugStream(QDebug& dbg, const void *rhs);
     bool hasRegisteredDebugStreamOperator() const;
 
-#if QT_DEPRECATED_SINCE(6, 0)
-    QT_DEPRECATED_VERSION_6_0
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+    BOBUI_DEPRECATED_VERSION_6_0
     static bool debugStream(QDebug& dbg, const void *rhs, int typeId)
     { return QMetaType(typeId).debugStream(dbg, rhs); }
     template<typename T>
-    QT_DEPRECATED_VERSION_6_0
+    BOBUI_DEPRECATED_VERSION_6_0
     static bool hasRegisteredDebugStreamOperator()
     { return QMetaType::fromType<T>().hasRegisteredDebugStreamOperator(); }
-    QT_DEPRECATED_VERSION_6_0
+    BOBUI_DEPRECATED_VERSION_6_0
     static bool hasRegisteredDebugStreamOperator(int typeId)
     { return QMetaType(typeId).hasRegisteredDebugStreamOperator(); }
 #endif
@@ -565,7 +565,7 @@ public:
     template<typename From, typename To>
     static bool registerConverter()
     {
-        return registerConverter<From, To>(QtPrivate::convertImplicit<From, To>);
+        return registerConverter<From, To>(BobUIPrivate::convertImplicit<From, To>);
     }
 
     // member function as in "QString QFont::toString() const"
@@ -701,11 +701,11 @@ public:
 
     static bool view(QMetaType fromType, void *from, QMetaType toType, void *to);
     static bool canView(QMetaType fromType, QMetaType toType);
-#if QT_DEPRECATED_SINCE(6, 0)
-    QT_DEPRECATED_VERSION_6_0
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+    BOBUI_DEPRECATED_VERSION_6_0
     static bool convert(const void *from, int fromTypeId, void *to, int toTypeId)
     { return convert(QMetaType(fromTypeId), from, QMetaType(toTypeId), to); }
-    QT_DEPRECATED_VERSION_6_0
+    BOBUI_DEPRECATED_VERSION_6_0
     static bool compare(const void *lhs, const void *rhs, int typeId, int *result)
     {
         QMetaType t(typeId);
@@ -724,7 +724,7 @@ public:
             return true;
         }
     }
-    QT_DEPRECATED_VERSION_6_0
+    BOBUI_DEPRECATED_VERSION_6_0
     static bool equals(const void *lhs, const void *rhs, int typeId, int *result)
     {
         QMetaType t(typeId);
@@ -754,10 +754,10 @@ public:
     static bool hasRegisteredMutableViewFunction(QMetaType fromType, QMetaType toType);
 
 #ifndef Q_QDOC
-    template<typename, bool> friend struct QtPrivate::SequentialValueTypeIsMetaType;
-    template<typename, bool> friend struct QtPrivate::AssociativeValueTypeIsMetaType;
-    template<typename, bool> friend struct QtPrivate::IsMetaTypePair;
-    template<typename, typename> friend struct QtPrivate::MetaTypeSmartPointerHelper;
+    template<typename, bool> friend struct BobUIPrivate::SequentialValueTypeIsMetaType;
+    template<typename, bool> friend struct BobUIPrivate::AssociativeValueTypeIsMetaType;
+    template<typename, bool> friend struct BobUIPrivate::IsMetaTypePair;
+    template<typename, typename> friend struct BobUIPrivate::MetaTypeSmartPointerHelper;
 #endif
     static bool registerConverterFunction(const ConverterFunction &f, QMetaType from, QMetaType to);
     static void unregisterConverterFunction(QMetaType from, QMetaType to);
@@ -767,21 +767,21 @@ public:
 
     static void unregisterMetaType(QMetaType type);
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
-    constexpr const QtPrivate::QMetaTypeInterface *iface() { return d_ptr; }
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
+    constexpr const BobUIPrivate::QMetaTypeInterface *iface() { return d_ptr; }
 #endif
-    constexpr const QtPrivate::QMetaTypeInterface *iface() const { return d_ptr; }
+    constexpr const BobUIPrivate::QMetaTypeInterface *iface() const { return d_ptr; }
 
 private:
-    Q_DECL_PURE_FUNCTION static bool isDefaultConstructible(const QtPrivate::QMetaTypeInterface *) noexcept;
-    Q_DECL_PURE_FUNCTION static bool isCopyConstructible(const QtPrivate::QMetaTypeInterface *) noexcept;
-    Q_DECL_PURE_FUNCTION static bool isMoveConstructible(const QtPrivate::QMetaTypeInterface *) noexcept;
-    Q_DECL_PURE_FUNCTION static bool isDestructible(const QtPrivate::QMetaTypeInterface *) noexcept;
+    Q_DECL_PURE_FUNCTION static bool isDefaultConstructible(const BobUIPrivate::QMetaTypeInterface *) noexcept;
+    Q_DECL_PURE_FUNCTION static bool isCopyConstructible(const BobUIPrivate::QMetaTypeInterface *) noexcept;
+    Q_DECL_PURE_FUNCTION static bool isMoveConstructible(const BobUIPrivate::QMetaTypeInterface *) noexcept;
+    Q_DECL_PURE_FUNCTION static bool isDestructible(const BobUIPrivate::QMetaTypeInterface *) noexcept;
 
-#if QT_CORE_REMOVED_SINCE(6, 5)
+#if BOBUI_CORE_REMOVED_SINCE(6, 5)
     int idHelper() const;
 #endif
-    static int registerHelper(const QtPrivate::QMetaTypeInterface *iface);
+    static int registerHelper(const BobUIPrivate::QMetaTypeInterface *iface);
     int registerHelper() const
     {
         if (d_ptr) {
@@ -795,20 +795,20 @@ private:
     friend int qRegisterMetaType(QMetaType meta);
 
     friend class QVariant;
-    const QtPrivate::QMetaTypeInterface *d_ptr = nullptr;
+    const BobUIPrivate::QMetaTypeInterface *d_ptr = nullptr;
 };
 
-#undef QT_DEFINE_METATYPE_ID
+#undef BOBUI_DEFINE_METATYPE_ID
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QMetaType::TypeFlags)
 
-#define QT_METATYPE_PRIVATE_DECLARE_TYPEINFO(C, F)  \
+#define BOBUI_METATYPE_PRIVATE_DECLARE_TYPEINFO(C, F)  \
     }                                               \
-    Q_DECLARE_TYPEINFO(QtMetaTypePrivate:: C, (F)); \
-    namespace QtMetaTypePrivate {
+    Q_DECLARE_TYPEINFO(BobUIMetaTypePrivate:: C, (F)); \
+    namespace BobUIMetaTypePrivate {
 
 
-namespace QtMetaTypePrivate {
+namespace BobUIMetaTypePrivate {
 
 class QPairVariantInterfaceImpl
 {
@@ -849,7 +849,7 @@ public:
     inline void first(void *dataPtr) const { _getFirst(&_pair, dataPtr); }
     inline void second(void *dataPtr) const { _getSecond(&_pair, dataPtr); }
 };
-QT_METATYPE_PRIVATE_DECLARE_TYPEINFO(QPairVariantInterfaceImpl, Q_RELOCATABLE_TYPE)
+BOBUI_METATYPE_PRIVATE_DECLARE_TYPEINFO(QPairVariantInterfaceImpl, Q_RELOCATABLE_TYPE)
 
 template<typename From>
 struct QPairVariantInterfaceConvertFunctor;
@@ -867,12 +867,12 @@ struct QPairVariantInterfaceConvertFunctor<std::pair<T, U> >
 
 class QObject;
 
-#define QT_FORWARD_DECLARE_SHARED_POINTER_TYPES_ITER(Name) \
+#define BOBUI_FORWARD_DECLARE_SHARED_POINTER_TYPES_ITER(Name) \
     template <class T> class Name; \
 
-QT_FOR_EACH_AUTOMATIC_TEMPLATE_SMART_POINTER(QT_FORWARD_DECLARE_SHARED_POINTER_TYPES_ITER)
+BOBUI_FOR_EACH_AUTOMATIC_TEMPLATE_SMART_POINTER(BOBUI_FORWARD_DECLARE_SHARED_POINTER_TYPES_ITER)
 
-namespace QtPrivate
+namespace BobUIPrivate
 {
     namespace detail {
     template<typename T, typename ODR_VIOLATION_PREVENTER>
@@ -931,7 +931,7 @@ namespace QtPrivate
         typedef qint8 yes_type;
         typedef qint64 no_type;
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
         static yes_type checkType(QObject* );
         static yes_type checkType(const QObject* );
 #endif
@@ -943,13 +943,13 @@ namespace QtPrivate
     struct IsGadgetHelper { enum { IsRealGadget = false, IsGadgetOrDerivedFrom = false }; };
 
     template<typename T>
-    struct IsGadgetHelper<T, typename T::QtGadgetHelper>
+    struct IsGadgetHelper<T, typename T::BobUIGadgetHelper>
     {
         template <typename X>
         static char checkType(void (X::*)());
         static void *checkType(void (T::*)());
         enum {
-            IsRealGadget = sizeof(checkType(&T::qt_check_for_QGADGET_macro)) == sizeof(void *),
+            IsRealGadget = sizeof(checkType(&T::bobui_check_for_QGADGET_macro)) == sizeof(void *),
             IsGadgetOrDerivedFrom = true
         };
     };
@@ -961,29 +961,29 @@ namespace QtPrivate
     struct IsPointerToGadgetHelper { enum { IsRealGadget = false, IsGadgetOrDerivedFrom = false }; };
 
     template<typename T>
-    struct IsPointerToGadgetHelper<T*, typename T::QtGadgetHelper>
+    struct IsPointerToGadgetHelper<T*, typename T::BobUIGadgetHelper>
     {
         using BaseType = T;
         template <typename X>
         static char checkType(void (X::*)());
         static void *checkType(void (T::*)());
         enum {
-            IsRealGadget = !IsPointerToTypeDerivedFromQObject<T*>::Value && sizeof(checkType(&T::qt_check_for_QGADGET_macro)) == sizeof(void *),
+            IsRealGadget = !IsPointerToTypeDerivedFromQObject<T*>::Value && sizeof(checkType(&T::bobui_check_for_QGADGET_macro)) == sizeof(void *),
             IsGadgetOrDerivedFrom = !IsPointerToTypeDerivedFromQObject<T*>::Value
         };
     };
 
 
-    template<typename T> char qt_getEnumMetaObject(const T&);
+    template<typename T> char bobui_getEnumMetaObject(const T&);
 
     template<typename T>
     struct IsQEnumHelper {
         static const T &declval();
-        // If the type was declared with Q_ENUM, the friend qt_getEnumMetaObject() declared in the
+        // If the type was declared with Q_ENUM, the friend bobui_getEnumMetaObject() declared in the
         // Q_ENUM macro will be chosen by ADL, and the return type will be QMetaObject*.
         // Otherwise the chosen overload will be the catch all template function
-        // qt_getEnumMetaObject(T) which returns 'char'
-        enum { Value = sizeof(qt_getEnumMetaObject(declval())) == sizeof(QMetaObject*) };
+        // bobui_getEnumMetaObject(T) which returns 'char'
+        enum { Value = sizeof(bobui_getEnumMetaObject(declval())) == sizeof(QMetaObject*) };
     };
     template<> struct IsQEnumHelper<void> { enum { Value = false }; };
 
@@ -994,7 +994,7 @@ namespace QtPrivate
         using MetaObjectFn = const QMetaObject *(*)(const QMetaTypeInterface *);
         static constexpr MetaObjectFn metaObjectFunction = nullptr;
     };
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     template<typename T>
     struct MetaObjectForType<T*, typename std::enable_if<IsPointerToTypeDerivedFromQObject<T*>::Value>::type>
     {
@@ -1024,7 +1024,7 @@ namespace QtPrivate
     template<typename T>
     struct MetaObjectForType<T, typename std::enable_if<IsQEnumHelper<T>::Value>::type >
     {
-        static constexpr const QMetaObject *value() { return qt_getEnumMetaObject(T()); }
+        static constexpr const QMetaObject *value() { return bobui_getEnumMetaObject(T()); }
         static constexpr const QMetaObject *metaObjectFunction(const QMetaTypeInterface *) { return value(); }
     };
 #endif
@@ -1075,7 +1075,7 @@ namespace QtPrivate
         enum { Value = false };
     };
 
-    template<typename T, bool = QtPrivate::IsSequentialContainer<T>::Value>
+    template<typename T, bool = BobUIPrivate::IsSequentialContainer<T>::Value>
     struct SequentialContainerTransformationHelper
     {
         static bool registerConverter()
@@ -1108,7 +1108,7 @@ namespace QtPrivate
     {
     };
 
-    template<typename T, bool = QtPrivate::IsAssociativeContainer<T>::Value>
+    template<typename T, bool = BobUIPrivate::IsAssociativeContainer<T>::Value>
     struct AssociativeContainerTransformationHelper
     {
         static bool registerConverter()
@@ -1191,7 +1191,7 @@ namespace QtPrivate
         static bool registerConverter() { return false; }
     };
 
-#if QT_CONFIG(future)
+#if BOBUI_CONFIG(future)
     template<typename T>
     struct MetaTypeQFutureHelper
     {
@@ -1214,13 +1214,13 @@ namespace QtPrivate
         }
         return true;
     }
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 template <typename T, int =
-    QtPrivate::IsPointerToTypeDerivedFromQObject<T>::Value ? QMetaType::PointerToQObject :
-    QtPrivate::IsRealGadget<T>::value                      ? QMetaType::IsGadget :
-    QtPrivate::IsPointerToGadgetHelper<T>::IsRealGadget    ? QMetaType::PointerToGadget :
-    QtPrivate::IsQEnumHelper<T>::Value                     ? QMetaType::IsEnumeration : 0>
+    BobUIPrivate::IsPointerToTypeDerivedFromQObject<T>::Value ? QMetaType::PointerToQObject :
+    BobUIPrivate::IsRealGadget<T>::value                      ? QMetaType::IsGadget :
+    BobUIPrivate::IsPointerToGadgetHelper<T>::IsRealGadget    ? QMetaType::PointerToGadget :
+    BobUIPrivate::IsQEnumHelper<T>::Value                     ? QMetaType::IsEnumeration : 0>
 struct QMetaTypeIdQObject
 {
     enum {
@@ -1238,7 +1238,7 @@ struct QMetaTypeId2
 {
     using NameAsArrayType = void;
     enum { Defined = QMetaTypeId<T>::Defined, IsBuiltIn=false };
-    static inline constexpr int qt_metatype_id() { return QMetaTypeId<T>::qt_metatype_id(); }
+    static inline constexpr int bobui_metatype_id() { return QMetaTypeId<T>::bobui_metatype_id(); }
 };
 
 template <typename T>
@@ -1249,17 +1249,17 @@ struct QMetaTypeId2<T&>
 {
     using NameAsArrayType = void;
     enum { Defined = false, IsBuiltIn = false };
-    static inline constexpr int qt_metatype_id() { return 0; }
+    static inline constexpr int bobui_metatype_id() { return 0; }
 };
 
-namespace QtPrivate {
+namespace BobUIPrivate {
     template <typename T, bool Defined = QMetaTypeId2<T>::Defined>
     struct QMetaTypeIdHelper {
-        static inline constexpr int qt_metatype_id()
-        { return QMetaTypeId2<T>::qt_metatype_id(); }
+        static inline constexpr int bobui_metatype_id()
+        { return QMetaTypeId2<T>::bobui_metatype_id(); }
     };
     template <typename T> struct QMetaTypeIdHelper<T, false> {
-        static inline constexpr int qt_metatype_id()
+        static inline constexpr int bobui_metatype_id()
         { return -1; }
     };
 
@@ -1300,15 +1300,15 @@ namespace QtPrivate {
     {
         QObject* operator()(const QWeakPointer<T> &p) const
         {
-            return QtPrivate::EnableInternalDataWrap<T>::internalData(p);
+            return BobUIPrivate::EnableInternalDataWrap<T>::internalData(p);
         }
     };
 }
 
 template <typename T>
-int qRegisterNormalizedMetaTypeImplementation(const QT_PREPEND_NAMESPACE(QByteArray) &normalizedTypeName)
+int qRegisterNormalizedMetaTypeImplementation(const BOBUI_PREPEND_NAMESPACE(QByteArray) &normalizedTypeName)
 {
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     Q_ASSERT_X(normalizedTypeName == QMetaObject::normalizedType(normalizedTypeName.constData()),
                "qRegisterNormalizedMetaType",
                "qRegisterNormalizedMetaType was called with a not normalized type name, "
@@ -1318,14 +1318,14 @@ int qRegisterNormalizedMetaTypeImplementation(const QT_PREPEND_NAMESPACE(QByteAr
     const QMetaType metaType = QMetaType::fromType<T>();
     const int id = metaType.id();
 
-    QtPrivate::SequentialContainerTransformationHelper<T>::registerConverter();
-    QtPrivate::SequentialContainerTransformationHelper<T>::registerMutableView();
-    QtPrivate::AssociativeContainerTransformationHelper<T>::registerConverter();
-    QtPrivate::AssociativeContainerTransformationHelper<T>::registerMutableView();
-    QtPrivate::MetaTypePairHelper<T>::registerConverter();
-    QtPrivate::MetaTypeSmartPointerHelper<T>::registerConverter();
-#if QT_CONFIG(future)
-    QtPrivate::MetaTypeQFutureHelper<T>::registerConverter();
+    BobUIPrivate::SequentialContainerTransformationHelper<T>::registerConverter();
+    BobUIPrivate::SequentialContainerTransformationHelper<T>::registerMutableView();
+    BobUIPrivate::AssociativeContainerTransformationHelper<T>::registerConverter();
+    BobUIPrivate::AssociativeContainerTransformationHelper<T>::registerMutableView();
+    BobUIPrivate::MetaTypePairHelper<T>::registerConverter();
+    BobUIPrivate::MetaTypeSmartPointerHelper<T>::registerConverter();
+#if BOBUI_CONFIG(future)
+    BobUIPrivate::MetaTypeQFutureHelper<T>::registerConverter();
 #endif
 
     if (normalizedTypeName != metaType.name())
@@ -1338,47 +1338,47 @@ int qRegisterNormalizedMetaTypeImplementation(const QT_PREPEND_NAMESPACE(QByteAr
 // But the split allows to
 // - in a header:
 //   - define a specialization of this template calling an out-of-line function
-//     (QT_DECL_METATYPE_EXTERN{,_TAGGED})
+//     (BOBUI_DECL_METATYPE_EXTERN{,_TAGGED})
 // - in the .cpp file:
 //   - define the out-of-line wrapper to call the -Implementation
-//     (QT_IMPL_METATYPE_EXTERN{,_TAGGED})
+//     (BOBUI_IMPL_METATYPE_EXTERN{,_TAGGED})
 // The _TAGGED variants let you choose a tag (must be a C identifier) to disambiguate
 // the out-of-line function; the non-_TAGGED variants use the passed class name as tag.
 template <typename T>
-int qRegisterNormalizedMetaType(const QT_PREPEND_NAMESPACE(QByteArray) &normalizedTypeName)
+int qRegisterNormalizedMetaType(const BOBUI_PREPEND_NAMESPACE(QByteArray) &normalizedTypeName)
 {
     return qRegisterNormalizedMetaTypeImplementation<T>(normalizedTypeName);
 }
 
-#if defined(QT_BOOTSTRAPPED)
-#define QT_DECL_METATYPE_EXTERN_TAGGED(TYPE, TAG, EXPORT)
-#define QT_IMPL_METATYPE_EXTERN_TAGGED(TYPE, TAG)
+#if defined(BOBUI_BOOTSTRAPPED)
+#define BOBUI_DECL_METATYPE_EXTERN_TAGGED(TYPE, TAG, EXPORT)
+#define BOBUI_IMPL_METATYPE_EXTERN_TAGGED(TYPE, TAG)
 #else
-#define QT_DECL_METATYPE_EXTERN_TAGGED(TYPE, TAG, EXPORT) \
-    QT_BEGIN_NAMESPACE \
+#define BOBUI_DECL_METATYPE_EXTERN_TAGGED(TYPE, TAG, EXPORT) \
+    BOBUI_BEGIN_NAMESPACE \
     EXPORT int qRegisterNormalizedMetaType_ ## TAG (const QByteArray &); \
     template <> inline int qRegisterNormalizedMetaType< TYPE >(const QByteArray &name) \
     { return qRegisterNormalizedMetaType_ ## TAG (name); } \
-    QT_END_NAMESPACE \
+    BOBUI_END_NAMESPACE \
     Q_DECLARE_METATYPE(TYPE) \
     /* end */
-#define QT_IMPL_METATYPE_EXTERN_TAGGED(TYPE, TAG) \
+#define BOBUI_IMPL_METATYPE_EXTERN_TAGGED(TYPE, TAG) \
     int qRegisterNormalizedMetaType_ ## TAG (const QByteArray &name) \
     { return qRegisterNormalizedMetaTypeImplementation< TYPE >(name); } \
     /* end */
 #endif
-#define QT_DECL_METATYPE_EXTERN(TYPE, EXPORT) \
-    QT_DECL_METATYPE_EXTERN_TAGGED(TYPE, TYPE, EXPORT)
-#define QT_IMPL_METATYPE_EXTERN(TYPE) \
-    QT_IMPL_METATYPE_EXTERN_TAGGED(TYPE, TYPE)
+#define BOBUI_DECL_METATYPE_EXTERN(TYPE, EXPORT) \
+    BOBUI_DECL_METATYPE_EXTERN_TAGGED(TYPE, TYPE, EXPORT)
+#define BOBUI_IMPL_METATYPE_EXTERN(TYPE) \
+    BOBUI_IMPL_METATYPE_EXTERN_TAGGED(TYPE, TYPE)
 
 template <typename T>
 int qRegisterMetaType(const char *typeName)
 {
-#ifdef QT_NO_QOBJECT
-    QT_PREPEND_NAMESPACE(QByteArray) normalizedTypeName = typeName;
+#ifdef BOBUI_NO_QOBJECT
+    BOBUI_PREPEND_NAMESPACE(QByteArray) normalizedTypeName = typeName;
 #else
-    QT_PREPEND_NAMESPACE(QByteArray) normalizedTypeName = QMetaObject::normalizedType(typeName);
+    BOBUI_PREPEND_NAMESPACE(QByteArray) normalizedTypeName = QMetaObject::normalizedType(typeName);
 #endif
     return qRegisterNormalizedMetaType<T>(normalizedTypeName);
 }
@@ -1408,7 +1408,7 @@ inline int qRegisterMetaType(QMetaType meta)
     return meta.registerHelper();
 }
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 template <typename T>
 struct QMetaTypeIdQObject<T*, QMetaType::PointerToQObject>
 {
@@ -1416,7 +1416,7 @@ struct QMetaTypeIdQObject<T*, QMetaType::PointerToQObject>
         Defined = 1
     };
 
-    static int qt_metatype_id()
+    static int bobui_metatype_id()
     {
         Q_CONSTINIT static QBasicAtomicInt metatype_id = Q_BASIC_ATOMIC_INITIALIZER(0);
         if (const int id = metatype_id.loadAcquire())
@@ -1438,7 +1438,7 @@ struct QMetaTypeIdQObject<T, QMetaType::IsGadget>
         Defined = std::is_default_constructible<T>::value
     };
 
-    static int qt_metatype_id()
+    static int bobui_metatype_id()
     {
         Q_CONSTINIT static QBasicAtomicInt metatype_id = Q_BASIC_ATOMIC_INITIALIZER(0);
         if (const int id = metatype_id.loadAcquire())
@@ -1457,7 +1457,7 @@ struct QMetaTypeIdQObject<T*, QMetaType::PointerToGadget>
         Defined = 1
     };
 
-    static int qt_metatype_id()
+    static int bobui_metatype_id()
     {
         Q_CONSTINIT static QBasicAtomicInt metatype_id = Q_BASIC_ATOMIC_INITIALIZER(0);
         if (const int id = metatype_id.loadAcquire())
@@ -1479,13 +1479,13 @@ struct QMetaTypeIdQObject<T, QMetaType::IsEnumeration>
         Defined = 1
     };
 
-    static int qt_metatype_id()
+    static int bobui_metatype_id()
     {
         Q_CONSTINIT static QBasicAtomicInt metatype_id = Q_BASIC_ATOMIC_INITIALIZER(0);
         if (const int id = metatype_id.loadAcquire())
             return id;
-        const char *eName = qt_getEnumName(T());
-        const char *cName = qt_getEnumMetaObject(T())->className();
+        const char *eName = bobui_getEnumName(T());
+        const char *cName = bobui_getEnumMetaObject(T())->className();
         QByteArray typeName;
         typeName.reserve(strlen(cName) + 2 + strlen(eName));
         typeName.append(cName).append("::").append(eName);
@@ -1497,27 +1497,27 @@ struct QMetaTypeIdQObject<T, QMetaType::IsEnumeration>
 #endif
 
 #define Q_DECLARE_OPAQUE_POINTER(POINTER)                               \
-    QT_BEGIN_NAMESPACE namespace QtPrivate {                            \
+    BOBUI_BEGIN_NAMESPACE namespace BobUIPrivate {                            \
     template <> struct IsPointerDeclaredOpaque<POINTER>                 \
         : std::true_type {};                                            \
-    } QT_END_NAMESPACE                                                  \
+    } BOBUI_END_NAMESPACE                                                  \
     /**/
 
 #ifndef Q_MOC_RUN
 #define Q_DECLARE_METATYPE(TYPE) Q_DECLARE_METATYPE_IMPL(TYPE)
 #define Q_DECLARE_METATYPE_IMPL(TYPE)                                   \
-    QT_BEGIN_NAMESPACE                                                  \
+    BOBUI_BEGIN_NAMESPACE                                                  \
     template <>                                                         \
     struct QMetaTypeId< TYPE >                                          \
     {                                                                   \
         enum { Defined = 1 };                                           \
-        static_assert(QtPrivate::checkTypeIsSuitableForMetaType<TYPE>());   \
-        static int qt_metatype_id()                                     \
+        static_assert(BobUIPrivate::checkTypeIsSuitableForMetaType<TYPE>());   \
+        static int bobui_metatype_id()                                     \
             {                                                           \
                 Q_CONSTINIT static QBasicAtomicInt metatype_id = Q_BASIC_ATOMIC_INITIALIZER(0); \
                 if (const int id = metatype_id.loadAcquire())           \
                     return id;                                          \
-                constexpr auto arr = QtPrivate::typenameHelper<TYPE>(); \
+                constexpr auto arr = BobUIPrivate::typenameHelper<TYPE>(); \
                 auto name = arr.data();                                 \
                 if (QByteArrayView(name) == (#TYPE)) {                  \
                     const int id = qRegisterNormalizedMetaType<TYPE>(name); \
@@ -1529,38 +1529,38 @@ struct QMetaTypeIdQObject<T, QMetaType::IsEnumeration>
                 return newId;                                           \
             }                                                           \
     };                                                                  \
-    QT_END_NAMESPACE
+    BOBUI_END_NAMESPACE
 #endif // Q_MOC_RUN
 
 #define Q_DECLARE_BUILTIN_METATYPE(TYPE, METATYPEID, NAME) \
-    QT_BEGIN_NAMESPACE \
+    BOBUI_BEGIN_NAMESPACE \
     template<> struct QMetaTypeId2<NAME> \
     { \
         using NameAsArrayType = std::array<char, sizeof(#NAME)>; \
         enum { Defined = 1, IsBuiltIn = true, MetaType = METATYPEID };   \
-        static inline constexpr int qt_metatype_id() { return METATYPEID; } \
+        static inline constexpr int bobui_metatype_id() { return METATYPEID; } \
         static constexpr NameAsArrayType nameAsArray = { #NAME }; \
     }; \
-    QT_END_NAMESPACE
+    BOBUI_END_NAMESPACE
 
-#define QT_FORWARD_DECLARE_STATIC_TYPES_ITER(TypeName, TypeId, Name) \
+#define BOBUI_FORWARD_DECLARE_STATIC_TYPES_ITER(TypeName, TypeId, Name) \
     class Name;
 
-QT_FOR_EACH_STATIC_CORE_CLASS(QT_FORWARD_DECLARE_STATIC_TYPES_ITER)
-QT_FOR_EACH_STATIC_GUI_CLASS(QT_FORWARD_DECLARE_STATIC_TYPES_ITER)
-QT_FOR_EACH_STATIC_WIDGETS_CLASS(QT_FORWARD_DECLARE_STATIC_TYPES_ITER)
+BOBUI_FOR_EACH_STATIC_CORE_CLASS(BOBUI_FORWARD_DECLARE_STATIC_TYPES_ITER)
+BOBUI_FOR_EACH_STATIC_GUI_CLASS(BOBUI_FORWARD_DECLARE_STATIC_TYPES_ITER)
+BOBUI_FOR_EACH_STATIC_WIDGETS_CLASS(BOBUI_FORWARD_DECLARE_STATIC_TYPES_ITER)
 
-#undef QT_FORWARD_DECLARE_STATIC_TYPES_ITER
+#undef BOBUI_FORWARD_DECLARE_STATIC_TYPES_ITER
 
 #define Q_DECLARE_METATYPE_TEMPLATE_1ARG(SINGLE_ARG_TEMPLATE) \
-QT_BEGIN_NAMESPACE \
+BOBUI_BEGIN_NAMESPACE \
 template <typename T> \
 struct QMetaTypeId< SINGLE_ARG_TEMPLATE<T> > \
 { \
     enum { \
         Defined = QMetaTypeId2<T>::Defined \
     }; \
-    static int qt_metatype_id() \
+    static int bobui_metatype_id() \
     { \
         Q_CONSTINIT static QBasicAtomicInt metatype_id = Q_BASIC_ATOMIC_INITIALIZER(0); \
         if (const int id = metatype_id.loadRelaxed()) \
@@ -1578,17 +1578,17 @@ struct QMetaTypeId< SINGLE_ARG_TEMPLATE<T> > \
         return newId; \
     } \
 }; \
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #define Q_DECLARE_METATYPE_TEMPLATE_2ARG(DOUBLE_ARG_TEMPLATE) \
-QT_BEGIN_NAMESPACE \
+BOBUI_BEGIN_NAMESPACE \
 template<typename T, typename U> \
 struct QMetaTypeId< DOUBLE_ARG_TEMPLATE<T, U> > \
 { \
     enum { \
         Defined = QMetaTypeId2<T>::Defined && QMetaTypeId2<U>::Defined \
     }; \
-    static int qt_metatype_id() \
+    static int bobui_metatype_id() \
     { \
         Q_CONSTINIT static QBasicAtomicInt metatype_id = Q_BASIC_ATOMIC_INITIALIZER(0); \
         if (const int id = metatype_id.loadAcquire()) \
@@ -1609,9 +1609,9 @@ struct QMetaTypeId< DOUBLE_ARG_TEMPLATE<T, U> > \
         return newId; \
     } \
 }; \
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 template<typename T, bool /* isSharedPointerToQObjectDerived */ = false>
 struct SharedPointerMetaTypeIdHelper
@@ -1619,7 +1619,7 @@ struct SharedPointerMetaTypeIdHelper
     enum {
         Defined = 0
     };
-    static int qt_metatype_id()
+    static int bobui_metatype_id()
     {
         return -1;
     }
@@ -1628,15 +1628,15 @@ struct SharedPointerMetaTypeIdHelper
 }
 
 #define Q_DECLARE_SMART_POINTER_METATYPE(SMART_POINTER) \
-QT_BEGIN_NAMESPACE \
-namespace QtPrivate { \
+BOBUI_BEGIN_NAMESPACE \
+namespace BobUIPrivate { \
 template<typename T> \
 struct SharedPointerMetaTypeIdHelper<SMART_POINTER<T>, true> \
 { \
     enum { \
         Defined = 1 \
     }; \
-    static int qt_metatype_id() \
+    static int bobui_metatype_id() \
     { \
         Q_CONSTINIT static QBasicAtomicInt metatype_id = Q_BASIC_ATOMIC_INITIALIZER(0); \
         if (const int id = metatype_id.loadAcquire()) \
@@ -1659,7 +1659,7 @@ struct MetaTypeSmartPointerHelper<SMART_POINTER<T> , \
     { \
         const QMetaType to = QMetaType(QMetaType::QObjectStar); \
         if (!QMetaType::hasRegisteredConverterFunction(QMetaType::fromType<SMART_POINTER<T>>(), to)) { \
-            QtPrivate::QSmartPointerConvertFunctor<SMART_POINTER<T> > o; \
+            BobUIPrivate::QSmartPointerConvertFunctor<SMART_POINTER<T> > o; \
             return QMetaType::registerConverter<SMART_POINTER<T>, QObject*>(o); \
         } \
         return true; \
@@ -1668,30 +1668,30 @@ struct MetaTypeSmartPointerHelper<SMART_POINTER<T> , \
 } \
 template <typename T> \
 struct QMetaTypeId< SMART_POINTER<T> > \
-    : QtPrivate::SharedPointerMetaTypeIdHelper< SMART_POINTER<T>, \
-                                                QtPrivate::IsPointerToTypeDerivedFromQObject<T*>::Value> \
+    : BobUIPrivate::SharedPointerMetaTypeIdHelper< SMART_POINTER<T>, \
+                                                BobUIPrivate::IsPointerToTypeDerivedFromQObject<T*>::Value> \
 { \
 };\
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #define Q_DECLARE_SEQUENTIAL_CONTAINER_METATYPE(SINGLE_ARG_TEMPLATE) \
-    QT_BEGIN_NAMESPACE \
-    namespace QtPrivate { \
+    BOBUI_BEGIN_NAMESPACE \
+    namespace BobUIPrivate { \
     template<typename T> \
     struct IsSequentialContainer<SINGLE_ARG_TEMPLATE<T> > \
     { \
         enum { Value = true }; \
     }; \
     } \
-    QT_END_NAMESPACE \
+    BOBUI_END_NAMESPACE \
     Q_DECLARE_METATYPE_TEMPLATE_1ARG(SINGLE_ARG_TEMPLATE)
 
 #define Q_DECLARE_SEQUENTIAL_CONTAINER_METATYPE_ITER(TEMPLATENAME) \
     Q_DECLARE_SEQUENTIAL_CONTAINER_METATYPE(TEMPLATENAME)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_FOR_EACH_AUTOMATIC_TEMPLATE_1ARG(Q_DECLARE_SEQUENTIAL_CONTAINER_METATYPE_ITER)
+BOBUI_FOR_EACH_AUTOMATIC_TEMPLATE_1ARG(Q_DECLARE_SEQUENTIAL_CONTAINER_METATYPE_ITER)
 
 #undef Q_DECLARE_SEQUENTIAL_CONTAINER_METATYPE_ITER
 
@@ -1699,15 +1699,15 @@ Q_DECLARE_SEQUENTIAL_CONTAINER_METATYPE(std::vector)
 Q_DECLARE_SEQUENTIAL_CONTAINER_METATYPE(std::list)
 
 #define Q_DECLARE_ASSOCIATIVE_CONTAINER_METATYPE(TEMPLATENAME) \
-    QT_BEGIN_NAMESPACE \
-    namespace QtPrivate { \
+    BOBUI_BEGIN_NAMESPACE \
+    namespace BobUIPrivate { \
     template<typename T, typename U> \
     struct IsAssociativeContainer<TEMPLATENAME<T, U> > \
     { \
         enum { Value = true }; \
     }; \
     } \
-    QT_END_NAMESPACE \
+    BOBUI_END_NAMESPACE \
     Q_DECLARE_METATYPE_TEMPLATE_2ARG(TEMPLATENAME)
 
 Q_DECLARE_ASSOCIATIVE_CONTAINER_METATYPE(QHash)
@@ -1719,20 +1719,20 @@ Q_DECLARE_METATYPE_TEMPLATE_2ARG(std::pair)
 #define Q_DECLARE_METATYPE_TEMPLATE_SMART_POINTER_ITER(TEMPLATENAME) \
     Q_DECLARE_SMART_POINTER_METATYPE(TEMPLATENAME)
 
-QT_FOR_EACH_AUTOMATIC_TEMPLATE_SMART_POINTER(Q_DECLARE_METATYPE_TEMPLATE_SMART_POINTER_ITER)
+BOBUI_FOR_EACH_AUTOMATIC_TEMPLATE_SMART_POINTER(Q_DECLARE_METATYPE_TEMPLATE_SMART_POINTER_ITER)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #undef Q_DECLARE_METATYPE_TEMPLATE_SMART_POINTER_ITER
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_FOR_EACH_STATIC_TYPE(Q_DECLARE_BUILTIN_METATYPE)
+BOBUI_FOR_EACH_STATIC_TYPE(Q_DECLARE_BUILTIN_METATYPE)
 
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 // out-of-line helpers to reduce template code bloat ("SCARY") and improve compile times:
 Q_CORE_EXPORT bool hasRegisteredConverterFunctionToPairVariantInterface(QMetaType m);
 Q_CORE_EXPORT bool hasRegisteredConverterFunctionToIterableMetaSequence(QMetaType m);
@@ -1742,16 +1742,16 @@ Q_CORE_EXPORT bool hasRegisteredMutableViewFunctionToIterableMetaAssociation(QMe
 }
 
 template <typename T>
-inline bool QtPrivate::IsMetaTypePair<T, true>::registerConverter()
+inline bool BobUIPrivate::IsMetaTypePair<T, true>::registerConverter()
 {
-    if (!QtPrivate::hasRegisteredConverterFunctionToPairVariantInterface(QMetaType::fromType<T>())) {
-        QtMetaTypePrivate::QPairVariantInterfaceConvertFunctor<T> o;
-        return QMetaType::registerConverter<T, QtMetaTypePrivate::QPairVariantInterfaceImpl>(o);
+    if (!BobUIPrivate::hasRegisteredConverterFunctionToPairVariantInterface(QMetaType::fromType<T>())) {
+        BobUIMetaTypePrivate::QPairVariantInterfaceConvertFunctor<T> o;
+        return QMetaType::registerConverter<T, BobUIMetaTypePrivate::QPairVariantInterfaceImpl>(o);
     }
     return true;
 }
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 template<typename From>
 struct QSequentialIterableConvertFunctor
@@ -1776,7 +1776,7 @@ struct SequentialValueTypeIsMetaType<T, true>
 {
     static bool registerConverter()
     {
-        if (!QtPrivate::hasRegisteredConverterFunctionToIterableMetaSequence(QMetaType::fromType<T>())) {
+        if (!BobUIPrivate::hasRegisteredConverterFunctionToIterableMetaSequence(QMetaType::fromType<T>())) {
             QSequentialIterableConvertFunctor<T> o;
             return QMetaType::registerConverter<T, QIterable<QMetaSequence>>(o);
         }
@@ -1785,7 +1785,7 @@ struct SequentialValueTypeIsMetaType<T, true>
 
     static bool registerMutableView()
     {
-        if (!QtPrivate::hasRegisteredMutableViewFunctionToIterableMetaSequence(QMetaType::fromType<T>())) {
+        if (!BobUIPrivate::hasRegisteredMutableViewFunctionToIterableMetaSequence(QMetaType::fromType<T>())) {
             QSequentialIterableMutableViewFunctor<T> o;
             return QMetaType::registerMutableView<T, QIterable<QMetaSequence>>(o);
         }
@@ -1818,7 +1818,7 @@ struct AssociativeKeyTypeIsMetaType<T, true> : AssociativeMappedTypeIsMetaType<T
 {
     static bool registerConverter()
     {
-        if (!QtPrivate::hasRegisteredConverterFunctionToIterableMetaAssociation(QMetaType::fromType<T>())) {
+        if (!BobUIPrivate::hasRegisteredConverterFunctionToIterableMetaAssociation(QMetaType::fromType<T>())) {
             QAssociativeIterableConvertFunctor<T> o;
             return QMetaType::registerConverter<T, QIterable<QMetaAssociation>>(o);
         }
@@ -1827,7 +1827,7 @@ struct AssociativeKeyTypeIsMetaType<T, true> : AssociativeMappedTypeIsMetaType<T
 
     static bool registerMutableView()
     {
-        if (!QtPrivate::hasRegisteredMutableViewFunctionToIterableMetaAssociation(QMetaType::fromType<T>())) {
+        if (!BobUIPrivate::hasRegisteredMutableViewFunctionToIterableMetaAssociation(QMetaType::fromType<T>())) {
             QAssociativeIterableMutableViewFunctor<T> o;
             return QMetaType::registerMutableView<T, QIterable<QMetaAssociation>>(o);
         }
@@ -1835,7 +1835,7 @@ struct AssociativeKeyTypeIsMetaType<T, true> : AssociativeMappedTypeIsMetaType<T
     }
 };
 
-struct QTypeNormalizer
+struct BOBUIypeNormalizer
 {
     char *output;
     int len = 0;
@@ -2024,11 +2024,11 @@ private:
                 || skipToken(begin, end, "enum", true);
     }
 
-    constexpr void skipQtNamespace(const char *&begin, const char *end)
+    constexpr void skipBobUINamespace(const char *&begin, const char *end)
     {
-#ifdef QT_NAMESPACE
+#ifdef BOBUI_NAMESPACE
         const char *nsbeg = begin;
-        if (skipToken(nsbeg, end, QT_STRINGIFY(QT_NAMESPACE)) && nsbeg + 2 < end && nsbeg[0] == ':'
+        if (skipToken(nsbeg, end, BOBUI_STRINGIFY(BOBUI_NAMESPACE)) && nsbeg + 2 < end && nsbeg[0] == ':'
             && nsbeg[1] == ':') {
             begin = nsbeg + 2;
             while (begin != end && is_space(*begin))
@@ -2074,7 +2074,7 @@ public:
                 if (begin == end)
                     break;
 
-                skipQtNamespace(begin, end);
+                skipBobUINamespace(begin, end);
                 if (begin == end)
                     break;
 
@@ -2180,7 +2180,7 @@ public:
         }
 
         skipStructClassOrEnum(begin, end);
-        skipQtNamespace(begin, end);
+        skipBobUINamespace(begin, end);
 
         if (skipToken(begin, end, "QVector")) {
             // Replace QVector by QList
@@ -2233,7 +2233,7 @@ public:
 // size
 constexpr int qNormalizeType(const char *begin, const char *end, char *output)
 {
-    return QTypeNormalizer { output }.normalizeType(begin, end);
+    return BOBUIypeNormalizer { output }.normalizeType(begin, end);
 }
 
 template<typename T>
@@ -2283,19 +2283,19 @@ constexpr auto typenameHelper()
         return result;
     } else {
         constexpr auto prefix = sizeof(
-#ifdef QT_NAMESPACE
-            QT_STRINGIFY(QT_NAMESPACE) "::"
+#ifdef BOBUI_NAMESPACE
+            BOBUI_STRINGIFY(BOBUI_NAMESPACE) "::"
 #endif
 #if defined(Q_CC_MSVC) && defined(Q_CC_CLANG)
-            "auto __cdecl QtPrivate::TypeNameHelper::typenameHelper(void) [T = "
+            "auto __cdecl BobUIPrivate::TypeNameHelper::typenameHelper(void) [T = "
 #elif defined(Q_CC_MSVC)
-            "auto __cdecl QtPrivate::TypeNameHelper::typenameHelper<"
+            "auto __cdecl BobUIPrivate::TypeNameHelper::typenameHelper<"
 #elif defined(Q_CC_CLANG)
-            "auto QtPrivate::TypeNameHelper::typenameHelper() [T = "
+            "auto BobUIPrivate::TypeNameHelper::typenameHelper() [T = "
 #elif defined(Q_CC_GHS)
-            "auto QtPrivate::TypeNameHelper::typenameHelper<T>()[with T="
+            "auto BobUIPrivate::TypeNameHelper::typenameHelper<T>()[with T="
 #else
-            "constexpr auto QtPrivate::TypeNameHelper::typenameHelper() [with T = "
+            "constexpr auto BobUIPrivate::TypeNameHelper::typenameHelper() [with T = "
 #endif
             ) - 1;
 #if defined(Q_CC_MSVC) && !defined(Q_CC_CLANG)
@@ -2314,10 +2314,10 @@ constexpr auto typenameHelper()
         constexpr auto func = Q_FUNC_INFO;
         constexpr const char *begin = func + prefix;
         constexpr const char *end = func + sizeof(Q_FUNC_INFO) - suffix;
-        constexpr int len = QTypeNormalizer{ nullptr }.normalizeTypeFromSignature(begin, end);
+        constexpr int len = BOBUIypeNormalizer{ nullptr }.normalizeTypeFromSignature(begin, end);
 #endif
         std::array<char, len + 1> result {};
-        QTypeNormalizer{ result.data() }.normalizeTypeFromSignature(begin, end);
+        BOBUIypeNormalizer{ result.data() }.normalizeTypeFromSignature(begin, end);
         return result;
     }
 }
@@ -2334,14 +2334,14 @@ struct BuiltinMetaType<T, std::enable_if_t<QMetaTypeId2<T>::IsBuiltIn>>
 {
 };
 
-template<typename T, bool = (QTypeTraits::has_operator_equal_v<T> && !std::is_pointer_v<T>)>
+template<typename T, bool = (BOBUIypeTraits::has_operator_equal_v<T> && !std::is_pointer_v<T>)>
 struct QEqualityOperatorForType
 {
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_FLOAT_COMPARE
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_FLOAT_COMPARE
     static bool equals(const QMetaTypeInterface *, const void *a, const void *b)
     { return *reinterpret_cast<const T *>(a) == *reinterpret_cast<const T *>(b); }
-QT_WARNING_POP
+BOBUI_WARNING_POP
 };
 
 template<typename T>
@@ -2350,7 +2350,7 @@ struct QEqualityOperatorForType <T, false>
     static constexpr QMetaTypeInterface::EqualsFn equals = nullptr;
 };
 
-template<typename T, bool = (QTypeTraits::has_operator_less_than_v<T> && !std::is_pointer_v<T>)>
+template<typename T, bool = (BOBUIypeTraits::has_operator_less_than_v<T> && !std::is_pointer_v<T>)>
 struct QLessThanOperatorForType
 {
     static bool lessThan(const QMetaTypeInterface *, const void *a, const void *b)
@@ -2363,13 +2363,13 @@ struct QLessThanOperatorForType <T, false>
     static constexpr QMetaTypeInterface::LessThanFn lessThan = nullptr;
 };
 
-template<typename T, bool = (QTypeTraits::has_ostream_operator_v<QDebug, T> && !std::is_pointer_v<T>)>
+template<typename T, bool = (BOBUIypeTraits::has_ostream_operator_v<QDebug, T> && !std::is_pointer_v<T>)>
 struct QDebugStreamOperatorForType
 {
     static constexpr QMetaTypeInterface::DebugStreamFn debugStream = nullptr;
 };
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 template<typename T>
 struct QDebugStreamOperatorForType <T, true>
 {
@@ -2378,14 +2378,14 @@ struct QDebugStreamOperatorForType <T, true>
 };
 #endif
 
-template<typename T, bool = QTypeTraits::has_stream_operator_v<QDataStream, T>>
+template<typename T, bool = BOBUIypeTraits::has_stream_operator_v<QDataStream, T>>
 struct QDataStreamOperatorForType
 {
     static constexpr QMetaTypeInterface::DataStreamOutFn dataStreamOut = nullptr;
     static constexpr QMetaTypeInterface::DataStreamInFn dataStreamIn = nullptr;
 };
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 template<typename T>
 struct QDataStreamOperatorForType <T, true>
 {
@@ -2410,16 +2410,16 @@ struct QDataStreamOperatorForType <T, true>
 #  pragma GCC visibility push(hidden)
 #endif
 
-// ### Qt 7: consider removing this infrastructure if nothing uses it
+// ### BobUI 7: consider removing this infrastructure if nothing uses it
 // (see also getCopyCtr())
 namespace QMetaTypeCopyTraits
 {
     // Hack to suppress deprecation warnings from types
-    // with deprecated copy operations, cf. QTBUG-132752
+    // with deprecated copy operations, cf. BOBUIBUG-132752
     template <typename T>
     using HasDeprecatedCopyConstructorTest = typename T::_q_hasDeprecatedCopyConstructor;
 
-#if !defined(QT_BOOTSTRAPPED)
+#if !defined(BOBUI_BOOTSTRAPPED)
     Q_CORE_EXPORT void warnAboutDeprecatedCopy(const char *name);
 #endif
 } // namespace QMetaTypeCopyTraits
@@ -2433,9 +2433,9 @@ public:
     static constexpr unsigned flags()
     {
         uint flags = 0;
-        if constexpr (QTypeInfo<S>::isRelocatable)
+        if constexpr (BOBUIypeInfo<S>::isRelocatable)
             flags |= QMetaType::RelocatableType;
-        if constexpr (!std::is_default_constructible_v<S> || !QTypeInfo<S>::isValueInitializationBitwiseZero)
+        if constexpr (!std::is_default_constructible_v<S> || !BOBUIypeInfo<S>::isValueInitializationBitwiseZero)
             flags |= QMetaType::NeedsConstruction;
         if constexpr (!std::is_trivially_destructible_v<S>)
             flags |= QMetaType::NeedsDestruction;
@@ -2470,7 +2470,7 @@ public:
 
     static constexpr QMetaTypeInterface::DefaultCtrFn getDefaultCtr()
     {
-        if constexpr (std::is_default_constructible_v<S> && !QTypeInfo<S>::isValueInitializationBitwiseZero) {
+        if constexpr (std::is_default_constructible_v<S> && !BOBUIypeInfo<S>::isValueInitializationBitwiseZero) {
             return [](const QMetaTypeInterface *, void *addr) { new (addr) S(); };
         } else {
             return nullptr;
@@ -2482,10 +2482,10 @@ public:
         if constexpr (std::is_copy_constructible_v<S> && !std::is_trivially_copy_constructible_v<S>) {
             return [](const QMetaTypeInterface *, void *addr, const void *other) {
                 if constexpr (qxp::is_detected_v<QMetaTypeCopyTraits::HasDeprecatedCopyConstructorTest, S>) {
-#if !defined(QT_BOOTSTRAPPED)
+#if !defined(BOBUI_BOOTSTRAPPED)
                     QMetaTypeCopyTraits::warnAboutDeprecatedCopy(getName());
 #endif
-                    QT_IGNORE_DEPRECATIONS(new (addr) S(*reinterpret_cast<const S *>(other));)
+                    BOBUI_IGNORE_DEPRECATIONS(new (addr) S(*reinterpret_cast<const S *>(other));)
                 } else {
                     new (addr) S(*reinterpret_cast<const S *>(other));
                 }
@@ -2519,7 +2519,7 @@ public:
     static constexpr QMetaTypeInterface::LegacyRegisterOp getLegacyRegister()
     {
         if constexpr (QMetaTypeId2<S>::Defined && !QMetaTypeId2<S>::IsBuiltIn) {
-            return []() { QMetaTypeId2<S>::qt_metatype_id(); };
+            return []() { QMetaTypeId2<S>::bobui_metatype_id(); };
         } else {
             return nullptr;
         }
@@ -2607,23 +2607,23 @@ public:
  QMetaTypeInterfaceWrapper with __declspec(dllimport) because taking its
  address is not a core constant expression.
  */
-#if !defined(QT_BOOTSTRAPPED) && !defined(Q_CC_MSVC) && !defined(Q_OS_INTEGRITY)
+#if !defined(BOBUI_BOOTSTRAPPED) && !defined(Q_CC_MSVC) && !defined(Q_OS_INTEGRITY)
 
-#ifdef QT_NO_DATA_RELOCATION
-#  define QT_METATYPE_DECLARE_EXTERN_TEMPLATE_ITER(TypeName, Id, Name)          \
+#ifdef BOBUI_NO_DATA_RELOCATION
+#  define BOBUI_METATYPE_DECLARE_EXTERN_TEMPLATE_ITER(TypeName, Id, Name)          \
     extern template class Q_CORE_EXPORT QMetaTypeForType<Name>;
 #else
-#  define QT_METATYPE_DECLARE_EXTERN_TEMPLATE_ITER(TypeName, Id, Name)          \
+#  define BOBUI_METATYPE_DECLARE_EXTERN_TEMPLATE_ITER(TypeName, Id, Name)          \
     extern template class Q_CORE_EXPORT QMetaTypeForType<Name>;                 \
     extern template struct Q_CORE_EXPORT QMetaTypeInterfaceWrapper<Name>;
 #endif
 
-QT_FOR_EACH_STATIC_PRIMITIVE_NON_VOID_TYPE(QT_METATYPE_DECLARE_EXTERN_TEMPLATE_ITER)
-QT_FOR_EACH_STATIC_PRIMITIVE_POINTER(QT_METATYPE_DECLARE_EXTERN_TEMPLATE_ITER)
-QT_FOR_EACH_STATIC_CORE_CLASS(QT_METATYPE_DECLARE_EXTERN_TEMPLATE_ITER)
-QT_FOR_EACH_STATIC_CORE_POINTER(QT_METATYPE_DECLARE_EXTERN_TEMPLATE_ITER)
-QT_FOR_EACH_STATIC_CORE_TEMPLATE(QT_METATYPE_DECLARE_EXTERN_TEMPLATE_ITER)
-#undef QT_METATYPE_DECLARE_EXTERN_TEMPLATE_ITER
+BOBUI_FOR_EACH_STATIC_PRIMITIVE_NON_VOID_TYPE(BOBUI_METATYPE_DECLARE_EXTERN_TEMPLATE_ITER)
+BOBUI_FOR_EACH_STATIC_PRIMITIVE_POINTER(BOBUI_METATYPE_DECLARE_EXTERN_TEMPLATE_ITER)
+BOBUI_FOR_EACH_STATIC_CORE_CLASS(BOBUI_METATYPE_DECLARE_EXTERN_TEMPLATE_ITER)
+BOBUI_FOR_EACH_STATIC_CORE_POINTER(BOBUI_METATYPE_DECLARE_EXTERN_TEMPLATE_ITER)
+BOBUI_FOR_EACH_STATIC_CORE_TEMPLATE(BOBUI_METATYPE_DECLARE_EXTERN_TEMPLATE_ITER)
+#undef BOBUI_METATYPE_DECLARE_EXTERN_TEMPLATE_ITER
 #endif
 
 template<typename T>
@@ -2639,7 +2639,7 @@ struct QRemovePointerLike<Pointer<T>> \
     using type = T; \
 };
 
-QT_FOR_EACH_AUTOMATIC_TEMPLATE_SMART_POINTER(Q_REMOVE_POINTER_LIKE_IMPL)
+BOBUI_FOR_EACH_AUTOMATIC_TEMPLATE_SMART_POINTER(Q_REMOVE_POINTER_LIKE_IMPL)
 #undef Q_REMOVE_POINTER_LIKE_IMPL
 
 template<typename T>
@@ -2677,21 +2677,21 @@ constexpr const QMetaTypeInterface *qTryMetaTypeInterfaceForType()
     }
 }
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 template<typename T>
 constexpr QMetaType QMetaType::fromType()
 {
-    QtPrivate::checkTypeIsSuitableForMetaType<T>();
-    return QMetaType(QtPrivate::qMetaTypeInterfaceForType<T>());
+    BobUIPrivate::checkTypeIsSuitableForMetaType<T>();
+    return QMetaType(BobUIPrivate::qMetaTypeInterfaceForType<T>());
 }
 
-constexpr bool QMetaType::isValid(QT6_IMPL_NEW_OVERLOAD) const noexcept
+constexpr bool QMetaType::isValid(BOBUI6_IMPL_NEW_OVERLOAD) const noexcept
 {
     return d_ptr;
 }
 
-bool QMetaType::isRegistered(QT6_IMPL_NEW_OVERLOAD) const noexcept
+bool QMetaType::isRegistered(BOBUI6_IMPL_NEW_OVERLOAD) const noexcept
 {
     return d_ptr && d_ptr->typeId.loadRelaxed();
 }
@@ -2728,9 +2728,9 @@ inline size_t qHash(QMetaType type, size_t seed = 0)
     return qHash(type.id(), seed);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN_TAGGED(QtMetaTypePrivate::QPairVariantInterfaceImpl,
+BOBUI_DECL_METATYPE_EXTERN_TAGGED(BobUIMetaTypePrivate::QPairVariantInterfaceImpl,
                                QPairVariantInterfaceImpl, Q_CORE_EXPORT)
 
 #endif // QMETATYPE_H

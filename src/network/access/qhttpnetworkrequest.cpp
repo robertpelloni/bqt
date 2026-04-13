@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qhttpnetworkrequest_p.h"
 #include "private/qnoncontiguousbytedevice_p.h"
 
-#include <QtCore/private/qtools_p.h>
+#include <BobUICore/private/bobuiools_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_IMPL_METATYPE_EXTERN(QHttpNetworkRequest)
+BOBUI_IMPL_METATYPE_EXTERN(QHttpNetworkRequest)
 
 QHttpNetworkRequestPrivate::QHttpNetworkRequestPrivate(QHttpNetworkRequest::Operation op,
         QHttpNetworkRequest::Priority pri, const QUrl &newUrl)
@@ -136,7 +136,7 @@ QByteArray QHttpNetworkRequestPrivate::header(const QHttpNetworkRequest &request
         n.reserve(size_t(name.size()));
         bool toUpperNext = true;
         for (char c : name) {
-            n += toUpperNext ? QtMiscUtils::toAsciiUpper(c) : c;
+            n += toUpperNext ? BobUIMiscUtils::toAsciiUpper(c) : c;
             toUpperNext = c == '-';
         }
         return n;
@@ -416,5 +416,5 @@ bool QHttpNetworkRequest::methodIsIdempotent() const
                        [currentOp = d->operation](auto op) { return op == currentOp; });
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 

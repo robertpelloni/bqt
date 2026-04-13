@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qcoreapplication.h>
 #include <qdebug.h>
-#include <QtPrintSupport/qtprintsupportglobal.h>
-#if QT_CONFIG(printdialog)
+#include <BobUIPrintSupport/bobuiprintsupportglobal.h>
+#if BOBUI_CONFIG(printdialog)
 #include <qprintdialog.h>
 #include <qprinter.h>
 #endif
@@ -16,7 +16,7 @@ class tst_QAbstractPrintDialog : public QObject
 {
 Q_OBJECT
 
-#if !QT_CONFIG(printdialog)
+#if !BOBUI_CONFIG(printdialog)
 public slots:
     void initTestCase();
 #else
@@ -29,7 +29,7 @@ private slots:
 #endif
 };
 
-#if !QT_CONFIG(printdialog)
+#if !BOBUI_CONFIG(printdialog)
 void tst_QAbstractPrintDialog::initTestCase()
 {
     QSKIP("This test requires printing and print dialog support");
@@ -147,28 +147,28 @@ void tst_QAbstractPrintDialog::hideNativeByDestruction()
     QWidget *child = new QWidget(&window);
     QPointer<QPrintDialog> dialog = new QPrintDialog(child);
     // Make it application modal so that we don't end up with a sheet on macOS
-    dialog->setWindowModality(Qt::ApplicationModal);
+    dialog->setWindowModality(BobUI::ApplicationModal);
     window.show();
-    QVERIFY(QTest::qWaitForWindowActive(&window));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&window));
     dialog->open();
 
     // We test that the dialog opens and closes by watching the activation of the
     // transient parent window. If it doesn't deactivate, then we have to skip.
     const auto windowActive = [&window]{ return window.isActiveWindow(); };
     const auto windowInactive = [&window]{ return !window.isActiveWindow(); };
-    if (!QTest::qWaitFor(windowInactive, 2000))
+    if (!BOBUIest::qWaitFor(windowInactive, 2000))
         QSKIP("Dialog didn't activate");
 
     // This should destroy the dialog and close the native window
     child->deleteLater();
-    QTRY_VERIFY(!dialog);
+    BOBUIRY_VERIFY(!dialog);
     // If the native window is still open, then the transient parent can't become
     // active
     window.activateWindow();
-    QVERIFY(QTest::qWaitFor(windowActive));
+    QVERIFY(BOBUIest::qWaitFor(windowActive));
 }
 
 #endif
 
-QTEST_MAIN(tst_QAbstractPrintDialog)
+BOBUIEST_MAIN(tst_QAbstractPrintDialog)
 #include "tst_qabstractprintdialog.moc"

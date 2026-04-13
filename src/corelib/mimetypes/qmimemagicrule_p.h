@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QMIMEMAGICRULE_P_H
 #define QMIMEMAGICRULE_P_H
@@ -9,22 +9,22 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/private/qglobal_p.h>
+#include <BobUICore/private/qglobal_p.h>
 
-QT_REQUIRE_CONFIG(mimetype);
+BOBUI_REQUIRE_CONFIG(mimetype);
 
-#include <QtCore/qbytearray.h>
-#include <QtCore/qscopedpointer.h>
-#include <QtCore/qlist.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qscopedpointer.h>
+#include <BobUICore/qlist.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QMimeMagicRule
 {
@@ -90,6 +90,6 @@ private:
 };
 Q_DECLARE_SHARED(QMimeMagicRule)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QMIMEMAGICRULE_H

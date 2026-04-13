@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qfocusframe.h"
 #include "qstyle.h"
@@ -10,7 +10,7 @@
 #include "qdebug.h"
 #include <private/qwidget_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QFocusFramePrivate : public QWidgetPrivate
 {
@@ -92,7 +92,7 @@ void QFocusFrame::initStyleOption(QStyleOption *option) const
     outside of a widget's normal paintable area.
 
     \ingroup basicwidgets
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     Normally an application will not need to create its own
     QFocusFrame as QStyle will handle this detail for
@@ -111,7 +111,7 @@ void QFocusFrame::initStyleOption(QStyleOption *option) const
 
     The focus frame will not monitor \a parent for updates but rather
     can be placed manually or by using QFocusFrame::setWidget. A
-    QFocusFrame sets Qt::WA_NoChildEventsForParent attribute; as a
+    QFocusFrame sets BobUI::WA_NoChildEventsForParent attribute; as a
     result the parent will not receive a QEvent::ChildAdded event,
     this will make it possible to manually set the geometry of the
     QFocusFrame inside of a QSplitter or other child event monitoring
@@ -123,10 +123,10 @@ void QFocusFrame::initStyleOption(QStyleOption *option) const
 QFocusFrame::QFocusFrame(QWidget *parent)
     : QWidget(*new QFocusFramePrivate, parent, { })
 {
-    setAttribute(Qt::WA_TransparentForMouseEvents);
-    setFocusPolicy(Qt::NoFocus);
-    setAttribute(Qt::WA_NoChildEventsForParent, true);
-    setAttribute(Qt::WA_AcceptDrops, style()->styleHint(QStyle::SH_FocusFrame_AboveWidget, nullptr, this));
+    setAttribute(BobUI::WA_TransparentForMouseEvents);
+    setFocusPolicy(BobUI::NoFocus);
+    setAttribute(BobUI::WA_NoChildEventsForParent, true);
+    setAttribute(BobUI::WA_AcceptDrops, style()->styleHint(QStyle::SH_FocusFrame_AboveWidget, nullptr, this));
 }
 
 /*!
@@ -168,7 +168,7 @@ QFocusFrame::setWidget(QWidget *widget)
             p = p->parentWidget();
         }while (p);
     }
-    if (widget && !widget->isWindow() && widget->parentWidget()->windowType() != Qt::SubWindow) {
+    if (widget && !widget->isWindow() && widget->parentWidget()->windowType() != BobUI::SubWindow) {
         d->widget = widget;
         d->widget->installEventFilter(this);
         QWidget *p = widget->parentWidget();
@@ -181,7 +181,7 @@ QFocusFrame::setWidget(QWidget *widget)
                 // as the parent for the focus frame. If we find a scroll area
                 // use its viewport as the parent.
                 bool isScrollArea = false;
-                if (p->isWindow() || p->inherits("QToolBar") || (isScrollArea = p->inherits("QAbstractScrollArea"))) {
+                if (p->isWindow() || p->inherits("BOBUIoolBar") || (isScrollArea = p->inherits("QAbstractScrollArea"))) {
                     d->frameParent = p;
                     // The previous one in the hierarchy will be the viewport.
                     if (prev && isScrollArea)
@@ -232,7 +232,7 @@ QFocusFrame::paintEvent(QPaintEvent *)
     initStyleOption(&option);
     const int vmargin = style()->pixelMetric(QStyle::PM_FocusFrameVMargin, &option, this);
     const int hmargin = style()->pixelMetric(QStyle::PM_FocusFrameHMargin, &option, this);
-    QWidgetPrivate *wd = qt_widget_private(d->widget);
+    QWidgetPrivate *wd = bobui_widget_private(d->widget);
     QRect rect = wd->clipRect().adjusted(0, 0, hmargin*2, vmargin*2);
     p.setClipRect(rect);
     p.drawControl(QStyle::CE_FocusFrame, option);
@@ -323,6 +323,6 @@ bool QFocusFrame::event(QEvent *e)
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qfocusframe.cpp"

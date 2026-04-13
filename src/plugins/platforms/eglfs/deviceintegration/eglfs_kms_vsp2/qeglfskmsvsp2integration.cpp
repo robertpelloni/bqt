@@ -1,27 +1,27 @@
 // Copyright (C) 2015 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
-// Copyright (C) 2017 The Qt Company Ltd.
+// Copyright (C) 2017 The BobUI Company Ltd.
 // Copyright (C) 2016 Pelagicore AG
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qeglfskmsvsp2integration.h"
 #include "qeglfskmsvsp2device.h"
 #include "qeglfskmsvsp2screen.h"
 #include "private/qeglfswindow_p.h"
 
-#include <QtDeviceDiscoverySupport/private/qdevicediscovery_p.h>
-#include <QtGui/private/qeglconvenience_p.h>
-#include <QtCore/QLoggingCategory>
-#include <QtCore/QJsonDocument>
-#include <QtCore/QJsonObject>
-#include <QtCore/QJsonArray>
-#include <QtGui/qpa/qplatformwindow.h>
-#include <QtGui/QScreen>
+#include <BobUIDeviceDiscoverySupport/private/qdevicediscovery_p.h>
+#include <BobUIGui/private/qeglconvenience_p.h>
+#include <BobUICore/QLoggingCategory>
+#include <BobUICore/QJsonDocument>
+#include <BobUICore/QJsonObject>
+#include <BobUICore/QJsonArray>
+#include <BobUIGui/qpa/qplatformwindow.h>
+#include <BobUIGui/QScreen>
 
 #include <xf86drm.h>
 #include <xf86drmMode.h>
 #include <gbm.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QEglFSKmsVsp2Integration::QEglFSKmsVsp2Integration()
 {
@@ -159,4 +159,4 @@ QEglFSWindow *QEglFSKmsVsp2Integration::createWindow(QWindow *window) const
     return new QEglFSKmsVsp2Window(window, this);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

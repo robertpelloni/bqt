@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtCore/qmath.h>
+#include <BOBUIest>
+#include <BobUICore/qmath.h>
 
-#include <QtGui/qmatrix4x4.h>
-#include <QtGui/qquaternion.h>
+#include <BobUIGui/qmatrix4x4.h>
+#include <BobUIGui/qquaternion.h>
 
 class tst_QMatrixNxN : public QObject
 {
@@ -122,7 +122,7 @@ private slots:
 
     void columnsAndRows();
 
-    void convertQTransform();
+    void convertBOBUIransform();
 
     void fill();
 
@@ -136,7 +136,7 @@ private slots:
     void metaTypes();
 
     // Tests for deprecated APIs
-#if QT_DEPRECATED_SINCE(6, 1)
+#if BOBUI_DEPRECATED_SINCE(6, 1)
     void deprecatedMultiplications();
 #endif
 
@@ -766,23 +766,23 @@ void tst_QMatrixNxN::transposed4x3()
 // Test matrix addition for 2x2 matrices.
 void tst_QMatrixNxN::add2x2_data()
 {
-    QTest::addColumn<void *>("m1Values");
-    QTest::addColumn<void *>("m2Values");
-    QTest::addColumn<void *>("m3Values");
+    BOBUIest::addColumn<void *>("m1Values");
+    BOBUIest::addColumn<void *>("m2Values");
+    BOBUIest::addColumn<void *>("m3Values");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << (void *)nullValues2 << (void *)nullValues2 << (void *)nullValues2;
 
-    QTest::newRow("identity/null")
+    BOBUIest::newRow("identity/null")
         << (void *)identityValues2 << (void *)nullValues2 << (void *)identityValues2;
 
-    QTest::newRow("identity/identity")
+    BOBUIest::newRow("identity/identity")
         << (void *)identityValues2 << (void *)identityValues2 << (void *)doubleIdentity2;
 
     static float const sumValues[16] =
         {2.0f, 7.0f,
          7.0f, 12.0f};
-    QTest::newRow("unique")
+    BOBUIest::newRow("unique")
         << (void *)uniqueValues2 << (void *)transposedValues2 << (void *)sumValues;
 }
 void tst_QMatrixNxN::add2x2()
@@ -806,24 +806,24 @@ void tst_QMatrixNxN::add2x2()
 // Test matrix addition for 3x3 matrices.
 void tst_QMatrixNxN::add3x3_data()
 {
-    QTest::addColumn<void *>("m1Values");
-    QTest::addColumn<void *>("m2Values");
-    QTest::addColumn<void *>("m3Values");
+    BOBUIest::addColumn<void *>("m1Values");
+    BOBUIest::addColumn<void *>("m2Values");
+    BOBUIest::addColumn<void *>("m3Values");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << (void *)nullValues3 << (void *)nullValues3 << (void *)nullValues3;
 
-    QTest::newRow("identity/null")
+    BOBUIest::newRow("identity/null")
         << (void *)identityValues3 << (void *)nullValues3 << (void *)identityValues3;
 
-    QTest::newRow("identity/identity")
+    BOBUIest::newRow("identity/identity")
         << (void *)identityValues3 << (void *)identityValues3 << (void *)doubleIdentity3;
 
     static float const sumValues[16] =
         {2.0f, 7.0f, 12.0f,
          7.0f, 12.0f, 17.0f,
          12.0f, 17.0f, 22.0f};
-    QTest::newRow("unique")
+    BOBUIest::newRow("unique")
         << (void *)uniqueValues3 << (void *)transposedValues3 << (void *)sumValues;
 }
 void tst_QMatrixNxN::add3x3()
@@ -847,17 +847,17 @@ void tst_QMatrixNxN::add3x3()
 // Test matrix addition for 4x4 matrices.
 void tst_QMatrixNxN::add4x4_data()
 {
-    QTest::addColumn<void *>("m1Values");
-    QTest::addColumn<void *>("m2Values");
-    QTest::addColumn<void *>("m3Values");
+    BOBUIest::addColumn<void *>("m1Values");
+    BOBUIest::addColumn<void *>("m2Values");
+    BOBUIest::addColumn<void *>("m3Values");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << (void *)nullValues4 << (void *)nullValues4 << (void *)nullValues4;
 
-    QTest::newRow("identity/null")
+    BOBUIest::newRow("identity/null")
         << (void *)identityValues4 << (void *)nullValues4 << (void *)identityValues4;
 
-    QTest::newRow("identity/identity")
+    BOBUIest::newRow("identity/identity")
         << (void *)identityValues4 << (void *)identityValues4 << (void *)doubleIdentity4;
 
     static float const sumValues[16] =
@@ -865,7 +865,7 @@ void tst_QMatrixNxN::add4x4_data()
          7.0f, 12.0f, 17.0f, 22.0f,
          12.0f, 17.0f, 22.0f, 27.0f,
          17.0f, 22.0f, 27.0f, 32.0f};
-    QTest::newRow("unique")
+    BOBUIest::newRow("unique")
         << (void *)uniqueValues4 << (void *)transposedValues4 << (void *)sumValues;
 }
 void tst_QMatrixNxN::add4x4()
@@ -889,24 +889,24 @@ void tst_QMatrixNxN::add4x4()
 // Test matrix addition for 4x3 matrices.
 void tst_QMatrixNxN::add4x3_data()
 {
-    QTest::addColumn<void *>("m1Values");
-    QTest::addColumn<void *>("m2Values");
-    QTest::addColumn<void *>("m3Values");
+    BOBUIest::addColumn<void *>("m1Values");
+    BOBUIest::addColumn<void *>("m2Values");
+    BOBUIest::addColumn<void *>("m3Values");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << (void *)nullValues4x3 << (void *)nullValues4x3 << (void *)nullValues4x3;
 
-    QTest::newRow("identity/null")
+    BOBUIest::newRow("identity/null")
         << (void *)identityValues4x3 << (void *)nullValues4x3 << (void *)identityValues4x3;
 
-    QTest::newRow("identity/identity")
+    BOBUIest::newRow("identity/identity")
         << (void *)identityValues4x3 << (void *)identityValues4x3 << (void *)doubleIdentity4x3;
 
     static float const sumValues[16] =
         {2.0f, 7.0f, 12.0f, 6.0f,
          11.0f, 16.0f, 10.0f, 15.0f,
          20.0f, 14.0f, 19.0f, 24.0f};
-    QTest::newRow("unique")
+    BOBUIest::newRow("unique")
         << (void *)uniqueValues4x3 << (void *)transposedValues3x4 << (void *)sumValues;
 }
 void tst_QMatrixNxN::add4x3()
@@ -1062,23 +1062,23 @@ void tst_QMatrixNxN::subtract4x3()
 // Test matrix multiplication for 2x2 matrices.
 void tst_QMatrixNxN::multiply2x2_data()
 {
-    QTest::addColumn<void *>("m1Values");
-    QTest::addColumn<void *>("m2Values");
-    QTest::addColumn<void *>("m3Values");
+    BOBUIest::addColumn<void *>("m1Values");
+    BOBUIest::addColumn<void *>("m2Values");
+    BOBUIest::addColumn<void *>("m3Values");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << (void *)nullValues2 << (void *)nullValues2 << (void *)nullValues2;
 
-    QTest::newRow("null/unique")
+    BOBUIest::newRow("null/unique")
         << (void *)nullValues2 << (void *)uniqueValues2 << (void *)nullValues2;
 
-    QTest::newRow("unique/null")
+    BOBUIest::newRow("unique/null")
         << (void *)uniqueValues2 << (void *)nullValues2 << (void *)nullValues2;
 
-    QTest::newRow("unique/identity")
+    BOBUIest::newRow("unique/identity")
         << (void *)uniqueValues2 << (void *)identityValues2 << (void *)uniqueValues2;
 
-    QTest::newRow("identity/unique")
+    BOBUIest::newRow("identity/unique")
         << (void *)identityValues2 << (void *)uniqueValues2 << (void *)uniqueValues2;
 
     static float uniqueResult[4];
@@ -1091,7 +1091,7 @@ void tst_QMatrixNxN::multiply2x2_data()
         }
     }
 
-    QTest::newRow("unique/transposed")
+    BOBUIest::newRow("unique/transposed")
         << (void *)uniqueValues2 << (void *)transposedValues2 << (void *)uniqueResult;
 }
 void tst_QMatrixNxN::multiply2x2()
@@ -1111,23 +1111,23 @@ void tst_QMatrixNxN::multiply2x2()
 // Test matrix multiplication for 3x3 matrices.
 void tst_QMatrixNxN::multiply3x3_data()
 {
-    QTest::addColumn<void *>("m1Values");
-    QTest::addColumn<void *>("m2Values");
-    QTest::addColumn<void *>("m3Values");
+    BOBUIest::addColumn<void *>("m1Values");
+    BOBUIest::addColumn<void *>("m2Values");
+    BOBUIest::addColumn<void *>("m3Values");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << (void *)nullValues3 << (void *)nullValues3 << (void *)nullValues3;
 
-    QTest::newRow("null/unique")
+    BOBUIest::newRow("null/unique")
         << (void *)nullValues3 << (void *)uniqueValues3 << (void *)nullValues3;
 
-    QTest::newRow("unique/null")
+    BOBUIest::newRow("unique/null")
         << (void *)uniqueValues3 << (void *)nullValues3 << (void *)nullValues3;
 
-    QTest::newRow("unique/identity")
+    BOBUIest::newRow("unique/identity")
         << (void *)uniqueValues3 << (void *)identityValues3 << (void *)uniqueValues3;
 
-    QTest::newRow("identity/unique")
+    BOBUIest::newRow("identity/unique")
         << (void *)identityValues3 << (void *)uniqueValues3 << (void *)uniqueValues3;
 
     static float uniqueResult[9];
@@ -1140,7 +1140,7 @@ void tst_QMatrixNxN::multiply3x3_data()
         }
     }
 
-    QTest::newRow("unique/transposed")
+    BOBUIest::newRow("unique/transposed")
         << (void *)uniqueValues3 << (void *)transposedValues3 << (void *)uniqueResult;
 }
 void tst_QMatrixNxN::multiply3x3()
@@ -1160,23 +1160,23 @@ void tst_QMatrixNxN::multiply3x3()
 // Test matrix multiplication for 4x4 matrices.
 void tst_QMatrixNxN::multiply4x4_data()
 {
-    QTest::addColumn<void *>("m1Values");
-    QTest::addColumn<void *>("m2Values");
-    QTest::addColumn<void *>("m3Values");
+    BOBUIest::addColumn<void *>("m1Values");
+    BOBUIest::addColumn<void *>("m2Values");
+    BOBUIest::addColumn<void *>("m3Values");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << (void *)nullValues4 << (void *)nullValues4 << (void *)nullValues4;
 
-    QTest::newRow("null/unique")
+    BOBUIest::newRow("null/unique")
         << (void *)nullValues4 << (void *)uniqueValues4 << (void *)nullValues4;
 
-    QTest::newRow("unique/null")
+    BOBUIest::newRow("unique/null")
         << (void *)uniqueValues4 << (void *)nullValues4 << (void *)nullValues4;
 
-    QTest::newRow("unique/identity")
+    BOBUIest::newRow("unique/identity")
         << (void *)uniqueValues4 << (void *)identityValues4 << (void *)uniqueValues4;
 
-    QTest::newRow("identity/unique")
+    BOBUIest::newRow("identity/unique")
         << (void *)identityValues4 << (void *)uniqueValues4 << (void *)uniqueValues4;
 
     static float uniqueResult[16];
@@ -1189,7 +1189,7 @@ void tst_QMatrixNxN::multiply4x4_data()
         }
     }
 
-    QTest::newRow("unique/transposed")
+    BOBUIest::newRow("unique/transposed")
         << (void *)uniqueValues4 << (void *)transposedValues4 << (void *)uniqueResult;
 }
 void tst_QMatrixNxN::multiply4x4()
@@ -1218,17 +1218,17 @@ void tst_QMatrixNxN::multiply4x4()
 // Test matrix multiplication for 4x3 matrices.
 void tst_QMatrixNxN::multiply4x3_data()
 {
-    QTest::addColumn<void *>("m1Values");
-    QTest::addColumn<void *>("m2Values");
-    QTest::addColumn<void *>("m3Values");
+    BOBUIest::addColumn<void *>("m1Values");
+    BOBUIest::addColumn<void *>("m2Values");
+    BOBUIest::addColumn<void *>("m3Values");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << (void *)nullValues4x3 << (void *)nullValues4x3 << (void *)nullValues3;
 
-    QTest::newRow("null/unique")
+    BOBUIest::newRow("null/unique")
         << (void *)nullValues4x3 << (void *)uniqueValues4x3 << (void *)nullValues3;
 
-    QTest::newRow("unique/null")
+    BOBUIest::newRow("unique/null")
         << (void *)uniqueValues4x3 << (void *)nullValues4x3 << (void *)nullValues3;
 
     static float uniqueResult[9];
@@ -1241,7 +1241,7 @@ void tst_QMatrixNxN::multiply4x3_data()
         }
     }
 
-    QTest::newRow("unique/transposed")
+    BOBUIest::newRow("unique/transposed")
         << (void *)uniqueValues4x3 << (void *)transposedValues3x4 << (void *)uniqueResult;
 }
 void tst_QMatrixNxN::multiply4x3()
@@ -1264,14 +1264,14 @@ void tst_QMatrixNxN::multiply4x3()
 // Test matrix multiplication by a factor for 2x2 matrices.
 void tst_QMatrixNxN::multiplyFactor2x2_data()
 {
-    QTest::addColumn<void *>("m1Values");
-    QTest::addColumn<float>("factor");
-    QTest::addColumn<void *>("m2Values");
+    BOBUIest::addColumn<void *>("m1Values");
+    BOBUIest::addColumn<float>("factor");
+    BOBUIest::addColumn<void *>("m2Values");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << (void *)nullValues2 << (float)1.0f << (void *)nullValues2;
 
-    QTest::newRow("double identity")
+    BOBUIest::newRow("double identity")
         << (void *)identityValues2 << (float)2.0f << (void *)doubleIdentity2;
 
     static float const values[16] =
@@ -1284,13 +1284,13 @@ void tst_QMatrixNxN::multiplyFactor2x2_data()
         {-2.0f, -4.0f,
          -10.0f, -12.0f};
 
-    QTest::newRow("unique")
+    BOBUIest::newRow("unique")
         << (void *)values << (float)2.0f << (void *)doubleValues;
 
-    QTest::newRow("neg")
+    BOBUIest::newRow("neg")
         << (void *)values << (float)-2.0f << (void *)negDoubleValues;
 
-    QTest::newRow("zero")
+    BOBUIest::newRow("zero")
         << (void *)values << (float)0.0f << (void *)nullValues4;
 }
 void tst_QMatrixNxN::multiplyFactor2x2()
@@ -1318,14 +1318,14 @@ void tst_QMatrixNxN::multiplyFactor2x2()
 // Test matrix multiplication by a factor for 3x3 matrices.
 void tst_QMatrixNxN::multiplyFactor3x3_data()
 {
-    QTest::addColumn<void *>("m1Values");
-    QTest::addColumn<float>("factor");
-    QTest::addColumn<void *>("m2Values");
+    BOBUIest::addColumn<void *>("m1Values");
+    BOBUIest::addColumn<float>("factor");
+    BOBUIest::addColumn<void *>("m2Values");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << (void *)nullValues3 << (float)1.0f << (void *)nullValues3;
 
-    QTest::newRow("double identity")
+    BOBUIest::newRow("double identity")
         << (void *)identityValues3 << (float)2.0f << (void *)doubleIdentity3;
 
     static float const values[16] =
@@ -1341,13 +1341,13 @@ void tst_QMatrixNxN::multiplyFactor3x3_data()
          -10.0f, -12.0f, -14.0f,
          -18.0f, -20.0f, -22.0f};
 
-    QTest::newRow("unique")
+    BOBUIest::newRow("unique")
         << (void *)values << (float)2.0f << (void *)doubleValues;
 
-    QTest::newRow("neg")
+    BOBUIest::newRow("neg")
         << (void *)values << (float)-2.0f << (void *)negDoubleValues;
 
-    QTest::newRow("zero")
+    BOBUIest::newRow("zero")
         << (void *)values << (float)0.0f << (void *)nullValues4;
 }
 void tst_QMatrixNxN::multiplyFactor3x3()
@@ -1375,14 +1375,14 @@ void tst_QMatrixNxN::multiplyFactor3x3()
 // Test matrix multiplication by a factor for 4x4 matrices.
 void tst_QMatrixNxN::multiplyFactor4x4_data()
 {
-    QTest::addColumn<void *>("m1Values");
-    QTest::addColumn<float>("factor");
-    QTest::addColumn<void *>("m2Values");
+    BOBUIest::addColumn<void *>("m1Values");
+    BOBUIest::addColumn<float>("factor");
+    BOBUIest::addColumn<void *>("m2Values");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << (void *)nullValues4 << (float)1.0f << (void *)nullValues4;
 
-    QTest::newRow("double identity")
+    BOBUIest::newRow("double identity")
         << (void *)identityValues4 << (float)2.0f << (void *)doubleIdentity4;
 
     static float const values[16] =
@@ -1401,13 +1401,13 @@ void tst_QMatrixNxN::multiplyFactor4x4_data()
          -18.0f, -20.0f, -22.0f, -24.0f,
          -26.0f, -28.0f, -30.0f, -32.0f};
 
-    QTest::newRow("unique")
+    BOBUIest::newRow("unique")
         << (void *)values << (float)2.0f << (void *)doubleValues;
 
-    QTest::newRow("neg")
+    BOBUIest::newRow("neg")
         << (void *)values << (float)-2.0f << (void *)negDoubleValues;
 
-    QTest::newRow("zero")
+    BOBUIest::newRow("zero")
         << (void *)values << (float)0.0f << (void *)nullValues4;
 }
 void tst_QMatrixNxN::multiplyFactor4x4()
@@ -1435,14 +1435,14 @@ void tst_QMatrixNxN::multiplyFactor4x4()
 // Test matrix multiplication by a factor for 4x3 matrices.
 void tst_QMatrixNxN::multiplyFactor4x3_data()
 {
-    QTest::addColumn<void *>("m1Values");
-    QTest::addColumn<float>("factor");
-    QTest::addColumn<void *>("m2Values");
+    BOBUIest::addColumn<void *>("m1Values");
+    BOBUIest::addColumn<float>("factor");
+    BOBUIest::addColumn<void *>("m2Values");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << (void *)nullValues4x3 << (float)1.0f << (void *)nullValues4x3;
 
-    QTest::newRow("double identity")
+    BOBUIest::newRow("double identity")
         << (void *)identityValues4x3 << (float)2.0f << (void *)doubleIdentity4x3;
 
     static float const values[12] =
@@ -1458,13 +1458,13 @@ void tst_QMatrixNxN::multiplyFactor4x3_data()
          -10.0f, -12.0f, -14.0f, -16.0f,
          -18.0f, -20.0f, -22.0f, -24.0f};
 
-    QTest::newRow("unique")
+    BOBUIest::newRow("unique")
         << (void *)values << (float)2.0f << (void *)doubleValues;
 
-    QTest::newRow("neg")
+    BOBUIest::newRow("neg")
         << (void *)values << (float)-2.0f << (void *)negDoubleValues;
 
-    QTest::newRow("zero")
+    BOBUIest::newRow("zero")
         << (void *)values << (float)0.0f << (void *)nullValues4x3;
 }
 void tst_QMatrixNxN::multiplyFactor4x3()
@@ -1775,17 +1775,17 @@ static void m4Inverse(const Matrix4& min, Matrix4& mout)
 // Test matrix inverted for 4x4 matrices.
 void tst_QMatrixNxN::inverted4x4_data()
 {
-    QTest::addColumn<void *>("m1Values");
-    QTest::addColumn<void *>("m2Values");
-    QTest::addColumn<bool>("invertible");
+    BOBUIest::addColumn<void *>("m1Values");
+    BOBUIest::addColumn<void *>("m2Values");
+    BOBUIest::addColumn<bool>("invertible");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << (void *)nullValues4 << (void *)identityValues4 << false;
 
-    QTest::newRow("identity")
+    BOBUIest::newRow("identity")
         << (void *)identityValues4 << (void *)identityValues4 << true;
 
-    QTest::newRow("unique")
+    BOBUIest::newRow("unique")
         << (void *)uniqueValues4 << (void *)identityValues4 << false;
 
     static Matrix4 const invertible = {
@@ -1797,7 +1797,7 @@ void tst_QMatrixNxN::inverted4x4_data()
     static Matrix4 inverted;
     m4Inverse(invertible, inverted);
 
-    QTest::newRow("invertible")
+    BOBUIest::newRow("invertible")
         << (void *)invertible.v << (void *)inverted.v << true;
 
     static Matrix4 const invertible2 = {
@@ -1809,7 +1809,7 @@ void tst_QMatrixNxN::inverted4x4_data()
     static Matrix4 inverted2;
     m4Inverse(invertible2, inverted2);
 
-    QTest::newRow("invertible2")
+    BOBUIest::newRow("invertible2")
         << (void *)invertible2.v << (void *)inverted2.v << true;
 
     static Matrix4 const translate = {
@@ -1825,7 +1825,7 @@ void tst_QMatrixNxN::inverted4x4_data()
          0.0f, 0.0f, 0.0f, 1.0f}
     };
 
-    QTest::newRow("translate")
+    BOBUIest::newRow("translate")
         << (void *)translate.v << (void *)inverseTranslate.v << true;
 }
 void tst_QMatrixNxN::inverted4x4()
@@ -1913,20 +1913,20 @@ void tst_QMatrixNxN::orthonormalInverse4x4()
 // Test the generation and use of 4x4 scale matrices.
 void tst_QMatrixNxN::scale4x4_data()
 {
-    QTest::addColumn<float>("x");
-    QTest::addColumn<float>("y");
-    QTest::addColumn<float>("z");
-    QTest::addColumn<void *>("resultValues");
+    BOBUIest::addColumn<float>("x");
+    BOBUIest::addColumn<float>("y");
+    BOBUIest::addColumn<float>("z");
+    BOBUIest::addColumn<void *>("resultValues");
 
     static const float nullScale[] =
         {0.0f, 0.0f, 0.0f, 0.0f,
          0.0f, 0.0f, 0.0f, 0.0f,
          0.0f, 0.0f, 0.0f, 0.0f,
          0.0f, 0.0f, 0.0f, 1.0f};
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << (float)0.0f << (float)0.0f << (float)0.0f << (void *)nullScale;
 
-    QTest::newRow("identity")
+    BOBUIest::newRow("identity")
         << (float)1.0f << (float)1.0f << (float)1.0f << (void *)identityValues4;
 
     static const float doubleScale[] =
@@ -1934,7 +1934,7 @@ void tst_QMatrixNxN::scale4x4_data()
          0.0f, 2.0f, 0.0f, 0.0f,
          0.0f, 0.0f, 2.0f, 0.0f,
          0.0f, 0.0f, 0.0f, 1.0f};
-    QTest::newRow("double")
+    BOBUIest::newRow("double")
         << (float)2.0f << (float)2.0f << (float)2.0f << (void *)doubleScale;
 
     static const float complexScale[] =
@@ -1942,7 +1942,7 @@ void tst_QMatrixNxN::scale4x4_data()
          0.0f, 11.0f, 0.0f, 0.0f,
          0.0f, 0.0f, -6.5f, 0.0f,
          0.0f, 0.0f, 0.0f, 1.0f};
-    QTest::newRow("complex")
+    BOBUIest::newRow("complex")
         << (float)2.0f << (float)11.0f << (float)-6.5f << (void *)complexScale;
 
     static const float complexScale2D[] =
@@ -1950,7 +1950,7 @@ void tst_QMatrixNxN::scale4x4_data()
          0.0f, -11.0f, 0.0f, 0.0f,
          0.0f, 0.0f, 1.0f, 0.0f,
          0.0f, 0.0f, 0.0f, 1.0f};
-    QTest::newRow("complex2D")
+    BOBUIest::newRow("complex2D")
         << (float)2.0f << (float)-11.0f << (float)1.0f << (void *)complexScale2D;
 }
 void tst_QMatrixNxN::scale4x4()
@@ -2062,12 +2062,12 @@ void tst_QMatrixNxN::scale4x4()
 // Test the generation and use of 4x4 translation matrices.
 void tst_QMatrixNxN::translate4x4_data()
 {
-    QTest::addColumn<float>("x");
-    QTest::addColumn<float>("y");
-    QTest::addColumn<float>("z");
-    QTest::addColumn<void *>("resultValues");
+    BOBUIest::addColumn<float>("x");
+    BOBUIest::addColumn<float>("y");
+    BOBUIest::addColumn<float>("z");
+    BOBUIest::addColumn<void *>("resultValues");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << (float)0.0f << (float)0.0f << (float)0.0f << (void *)identityValues4;
 
     static const float identityTranslate[] =
@@ -2075,7 +2075,7 @@ void tst_QMatrixNxN::translate4x4_data()
          0.0f, 1.0f, 0.0f, 1.0f,
          0.0f, 0.0f, 1.0f, 1.0f,
          0.0f, 0.0f, 0.0f, 1.0f};
-    QTest::newRow("identity")
+    BOBUIest::newRow("identity")
         << (float)1.0f << (float)1.0f << (float)1.0f << (void *)identityTranslate;
 
     static const float complexTranslate[] =
@@ -2083,7 +2083,7 @@ void tst_QMatrixNxN::translate4x4_data()
          0.0f, 1.0f, 0.0f, 11.0f,
          0.0f, 0.0f, 1.0f, -6.5f,
          0.0f, 0.0f, 0.0f, 1.0f};
-    QTest::newRow("complex")
+    BOBUIest::newRow("complex")
         << (float)2.0f << (float)11.0f << (float)-6.5f << (void *)complexTranslate;
 
     static const float complexTranslate2D[] =
@@ -2091,7 +2091,7 @@ void tst_QMatrixNxN::translate4x4_data()
          0.0f, 1.0f, 0.0f, -11.0f,
          0.0f, 0.0f, 1.0f, 0.0f,
          0.0f, 0.0f, 0.0f, 1.0f};
-    QTest::newRow("complex2D")
+    BOBUIest::newRow("complex2D")
         << (float)2.0f << (float)-11.0f << (float)0.0f << (void *)complexTranslate2D;
 }
 void tst_QMatrixNxN::translate4x4()
@@ -2162,18 +2162,18 @@ void tst_QMatrixNxN::translate4x4()
 // Test the generation and use of 4x4 rotation matrices.
 void tst_QMatrixNxN::rotate4x4_data()
 {
-    QTest::addColumn<float>("angle");
-    QTest::addColumn<float>("x");
-    QTest::addColumn<float>("y");
-    QTest::addColumn<float>("z");
-    QTest::addColumn<void *>("resultValues");
+    BOBUIest::addColumn<float>("angle");
+    BOBUIest::addColumn<float>("x");
+    BOBUIest::addColumn<float>("y");
+    BOBUIest::addColumn<float>("z");
+    BOBUIest::addColumn<void *>("resultValues");
 
     static const float nullRotate[] =
         {0.0f, 0.0f, 0.0f, 0.0f,
          0.0f, 0.0f, 0.0f, 0.0f,
          0.0f, 0.0f, 0.0f, 0.0f,
          0.0f, 0.0f, 0.0f, 1.0f};
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << (float)90.0f
         << (float)0.0f << (float)0.0f << (float)0.0f
         << (void *)nullRotate;
@@ -2183,7 +2183,7 @@ void tst_QMatrixNxN::rotate4x4_data()
          0.0f, 1.0f, 0.0f, 0.0f,
          0.0f, 0.0f, 1.0f, 0.0f,
          0.0f, 0.0f, 0.0f, 1.0f};
-    QTest::newRow("zerodegrees")
+    BOBUIest::newRow("zerodegrees")
         << (float)0.0f
         << (float)2.0f << (float)3.0f << (float)-4.0f
         << (void *)noRotate;
@@ -2193,7 +2193,7 @@ void tst_QMatrixNxN::rotate4x4_data()
          0.0f, 0.0f, -1.0f, 0.0f,
          0.0f, 1.0f, 0.0f, 0.0f,
          0.0f, 0.0f, 0.0f, 1.0f};
-    QTest::newRow("xrotate")
+    BOBUIest::newRow("xrotate")
         << (float)90.0f
         << (float)1.0f << (float)0.0f << (float)0.0f
         << (void *)xRotate;
@@ -2203,7 +2203,7 @@ void tst_QMatrixNxN::rotate4x4_data()
          0.0f, 0.0f, 1.0f, 0.0f,
          0.0f, -1.0f, 0.0f, 0.0f,
          0.0f, 0.0f, 0.0f, 1.0f};
-    QTest::newRow("-xrotate")
+    BOBUIest::newRow("-xrotate")
         << (float)90.0f
         << (float)-1.0f << (float)0.0f << (float)0.0f
         << (void *)xRotateNeg;
@@ -2213,7 +2213,7 @@ void tst_QMatrixNxN::rotate4x4_data()
          0.0f, 1.0f, 0.0f, 0.0f,
          -1.0f, 0.0f, 0.0f, 0.0f,
          0.0f, 0.0f, 0.0f, 1.0f};
-    QTest::newRow("yrotate")
+    BOBUIest::newRow("yrotate")
         << (float)90.0f
         << (float)0.0f << (float)1.0f << (float)0.0f
         << (void *)yRotate;
@@ -2223,7 +2223,7 @@ void tst_QMatrixNxN::rotate4x4_data()
          0.0f, 1.0f, 0.0f, 0.0f,
          1.0f, 0.0f, 0.0f, 0.0f,
          0.0f, 0.0f, 0.0f, 1.0f};
-    QTest::newRow("-yrotate")
+    BOBUIest::newRow("-yrotate")
         << (float)90.0f
         << (float)0.0f << (float)-1.0f << (float)0.0f
         << (void *)yRotateNeg;
@@ -2233,7 +2233,7 @@ void tst_QMatrixNxN::rotate4x4_data()
          1.0f, 0.0f, 0.0f, 0.0f,
          0.0f, 0.0f, 1.0f, 0.0f,
          0.0f, 0.0f, 0.0f, 1.0f};
-    QTest::newRow("zrotate")
+    BOBUIest::newRow("zrotate")
         << (float)90.0f
         << (float)0.0f << (float)0.0f << (float)1.0f
         << (void *)zRotate;
@@ -2243,7 +2243,7 @@ void tst_QMatrixNxN::rotate4x4_data()
          -1.0f, 0.0f, 0.0f, 0.0f,
          0.0f, 0.0f, 1.0f, 0.0f,
          0.0f, 0.0f, 0.0f, 1.0f};
-    QTest::newRow("-zrotate")
+    BOBUIest::newRow("-zrotate")
         << (float)90.0f
         << (float)0.0f << (float)0.0f << (float)-1.0f
         << (void *)zRotateNeg;
@@ -2278,7 +2278,7 @@ void tst_QMatrixNxN::rotate4x4_data()
     complexRotate[14] = 0;
     complexRotate[15] = 1;
 
-    QTest::newRow("complex")
+    BOBUIest::newRow("complex")
         << (float)angle
         << (float)x << (float)y << (float)z
         << (void *)complexRotate;
@@ -2416,11 +2416,11 @@ static bool isSame(const QMatrix3x3& m1, const Matrix3& m2)
 // Test the computation of normal matrices from 4x4 transformation matrices.
 void tst_QMatrixNxN::normalMatrix_data()
 {
-    QTest::addColumn<void *>("mValues");
+    BOBUIest::addColumn<void *>("mValues");
 
-    QTest::newRow("identity")
+    BOBUIest::newRow("identity")
         << (void *)identityValues4;
-    QTest::newRow("unique")
+    BOBUIest::newRow("unique")
         << (void *)uniqueValues4;   // Not invertible because determinant == 0.
 
     static float const translateValues[16] =
@@ -2459,13 +2459,13 @@ void tst_QMatrixNxN::normalMatrix_data()
          0.0f, 0.0f, 0.0f, -3.0f,
          0.0f, 0.0f, 0.0f, 1.0f};
 
-    QTest::newRow("translate") << (void *)translateValues;
-    QTest::newRow("scale") << (void *)scaleValues;
-    QTest::newRow("both") << (void *)bothValues;
-    QTest::newRow("rotate") << (void *)rotateValues;
-    QTest::newRow("null scale 1") << (void *)nullScaleValues1;
-    QTest::newRow("null scale 2") << (void *)nullScaleValues2;
-    QTest::newRow("null scale 3") << (void *)nullScaleValues3;
+    BOBUIest::newRow("translate") << (void *)translateValues;
+    BOBUIest::newRow("scale") << (void *)scaleValues;
+    BOBUIest::newRow("both") << (void *)bothValues;
+    BOBUIest::newRow("rotate") << (void *)rotateValues;
+    BOBUIest::newRow("null scale 1") << (void *)nullScaleValues1;
+    BOBUIest::newRow("null scale 2") << (void *)nullScaleValues2;
+    BOBUIest::newRow("null scale 3") << (void *)nullScaleValues3;
 }
 void tst_QMatrixNxN::normalMatrix()
 {
@@ -2868,14 +2868,14 @@ void tst_QMatrixNxN::convertGeneric()
 // Test the inferring of special matrix types.
 void tst_QMatrixNxN::optimize_data()
 {
-    QTest::addColumn<void *>("mValues");
-    QTest::addColumn<int>("flagBits");
+    BOBUIest::addColumn<void *>("mValues");
+    BOBUIest::addColumn<int>("flagBits");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << (void *)nullValues4 << int{QMatrix4x4::General};
-    QTest::newRow("identity")
+    BOBUIest::newRow("identity")
         << (void *)identityValues4 << int{QMatrix4x4::Identity};
-    QTest::newRow("unique")
+    BOBUIest::newRow("unique")
         << (void *)uniqueValues4 << int{QMatrix4x4::General};
 
     static float scaleValues[16] = {
@@ -2884,7 +2884,7 @@ void tst_QMatrixNxN::optimize_data()
         0.0f, 0.0f, 4.0f, 0.0f,
         0.0f, 0.0f, 0.0f, 1.0f
     };
-    QTest::newRow("scale")
+    BOBUIest::newRow("scale")
         << (void *)scaleValues << int{QMatrix4x4::Scale};
 
     static float translateValues[16] = {
@@ -2893,7 +2893,7 @@ void tst_QMatrixNxN::optimize_data()
         0.0f, 0.0f, 1.0f, 4.0f,
         0.0f, 0.0f, 0.0f, 1.0f
     };
-    QTest::newRow("translate")
+    BOBUIest::newRow("translate")
         << (void *)translateValues << int{QMatrix4x4::Translation};
 
     static float scaleTranslateValues[16] = {
@@ -2902,7 +2902,7 @@ void tst_QMatrixNxN::optimize_data()
         0.0f, 0.0f, 1.0f, 4.0f,
         0.0f, 0.0f, 0.0f, 1.0f
     };
-    QTest::newRow("scaleTranslate")
+    BOBUIest::newRow("scaleTranslate")
         << (void *)scaleTranslateValues << int{QMatrix4x4::Scale | QMatrix4x4::Translation};
 
     static float rotateValues[16] = {
@@ -2911,7 +2911,7 @@ void tst_QMatrixNxN::optimize_data()
         0.0f, 0.0f, 1.0f, 0.0f,
         0.0f, 0.0f, 0.0f, 1.0f
     };
-    QTest::newRow("rotate")
+    BOBUIest::newRow("rotate")
         << (void *)rotateValues << int{QMatrix4x4::Rotation2D};
 
     // Left-handed system, not a simple rotation.
@@ -2921,7 +2921,7 @@ void tst_QMatrixNxN::optimize_data()
         0.0f, 0.0f, 1.0f, 0.0f,
         0.0f, 0.0f, 0.0f, 1.0f
     };
-    QTest::newRow("scaleRotate")
+    BOBUIest::newRow("scaleRotate")
         << (void *)scaleRotateValues << int{QMatrix4x4::Scale | QMatrix4x4::Rotation2D};
 
     static float matrix2x2Values[16] = {
@@ -2930,7 +2930,7 @@ void tst_QMatrixNxN::optimize_data()
         0.0f, 0.0f, 9.0f, 0.0f,
         0.0f, 0.0f, 0.0f, 1.0f
     };
-    QTest::newRow("matrix2x2")
+    BOBUIest::newRow("matrix2x2")
         << (void *)matrix2x2Values << int{QMatrix4x4::Scale | QMatrix4x4::Rotation2D};
 
     static float matrix3x3Values[16] = {
@@ -2939,7 +2939,7 @@ void tst_QMatrixNxN::optimize_data()
         6.0f, 7.0f, 9.0f, 0.0f,
         0.0f, 0.0f, 0.0f, 1.0f
     };
-    QTest::newRow("matrix3x3")
+    BOBUIest::newRow("matrix3x3")
         << (void *)matrix3x3Values << int{QMatrix4x4::Scale | QMatrix4x4::Rotation2D | QMatrix4x4::Rotation};
 
     static float rotateTranslateValues[16] = {
@@ -2948,7 +2948,7 @@ void tst_QMatrixNxN::optimize_data()
         0.0f, 0.0f, 1.0f, 3.0f,
         0.0f, 0.0f, 0.0f, 1.0f
     };
-    QTest::newRow("rotateTranslate")
+    BOBUIest::newRow("rotateTranslate")
         << (void *)rotateTranslateValues << int{QMatrix4x4::Translation | QMatrix4x4::Rotation2D};
 
     // Left-handed system, not a simple rotation.
@@ -2958,7 +2958,7 @@ void tst_QMatrixNxN::optimize_data()
         0.0f, 0.0f, 1.0f, 3.0f,
         0.0f, 0.0f, 0.0f, 1.0f
     };
-    QTest::newRow("scaleRotateTranslate")
+    BOBUIest::newRow("scaleRotateTranslate")
         << (void *)scaleRotateTranslateValues << int{QMatrix4x4::Translation | QMatrix4x4::Scale | QMatrix4x4::Rotation2D};
 
     static float belowValues[16] = {
@@ -2967,7 +2967,7 @@ void tst_QMatrixNxN::optimize_data()
         0.0f, 0.0f, 1.0f, 0.0f,
         4.0f, 0.0f, 0.0f, 1.0f
     };
-    QTest::newRow("below")
+    BOBUIest::newRow("below")
         << (void *)belowValues << int{QMatrix4x4::General};
 }
 void tst_QMatrixNxN::optimize()
@@ -3026,12 +3026,12 @@ void tst_QMatrixNxN::columnsAndRows()
     QVERIFY(m1.row(3) == QVector4D(4, 8, 12, 16));
 }
 
-// Test converting QTransform objects into QMatrix4x4 and then
+// Test converting BOBUIransform objects into QMatrix4x4 and then
 // checking that transformations in the original perform the
 // equivalent transformations in the new matrix.
-void tst_QMatrixNxN::convertQTransform()
+void tst_QMatrixNxN::convertBOBUIransform()
 {
-    QTransform m1;
+    BOBUIransform m1;
     m1.translate(-3.5, 2.0);
     QPointF p1 = m1.map(QPointF(100.0, 150.0));
     QCOMPARE(p1.x(), 100.0 - 3.5);
@@ -3043,7 +3043,7 @@ void tst_QMatrixNxN::convertQTransform()
     QCOMPARE((double)p2.y(), 150.0 + 2.0);
     QCOMPARE(m1, m2.toTransform());
 
-    QTransform m3;
+    BOBUIransform m3;
     m3.scale(1.5, -2.0);
     QPointF p3 = m3.map(QPointF(100.0, 150.0));
     QCOMPARE(p3.x(), 1.5 * 100.0);
@@ -3055,7 +3055,7 @@ void tst_QMatrixNxN::convertQTransform()
     QCOMPARE((double)p4.y(), -2.0 * 150.0);
     QCOMPARE(m3, m4.toTransform());
 
-    QTransform m5;
+    BOBUIransform m5;
     m5.rotate(45.0);
     QPointF p5 = m5.map(QPointF(100.0, 150.0));
 
@@ -3064,7 +3064,7 @@ void tst_QMatrixNxN::convertQTransform()
     QVERIFY(qFuzzyCompare(float(p5.x()), float(p6.x())));
     QVERIFY(qFuzzyCompare(float(p5.y()), float(p6.y())));
 
-    QTransform m7 = m6.toTransform();
+    BOBUIransform m7 = m6.toTransform();
     QVERIFY(qFuzzyCompare(float(m5.m11()), float(m7.m11())));
     QVERIFY(qFuzzyCompare(float(m5.m12()), float(m7.m12())));
     QVERIFY(qFuzzyCompare(float(m5.m21()), float(m7.m21())));
@@ -3106,14 +3106,14 @@ void tst_QMatrixNxN::fill()
 // Test the mapRect() function for QRect and QRectF.
 void tst_QMatrixNxN::mapRect_data()
 {
-    QTest::addColumn<float>("x");
-    QTest::addColumn<float>("y");
-    QTest::addColumn<float>("width");
-    QTest::addColumn<float>("height");
+    BOBUIest::addColumn<float>("x");
+    BOBUIest::addColumn<float>("y");
+    BOBUIest::addColumn<float>("width");
+    BOBUIest::addColumn<float>("height");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << (float)0.0f << (float)0.0f << (float)0.0f << (float)0.0f;
-    QTest::newRow("rect")
+    BOBUIest::newRow("rect")
         << (float)1.0f << (float)-20.5f << (float)100.0f << (float)63.75f;
 }
 void tst_QMatrixNxN::mapRect()
@@ -3198,7 +3198,7 @@ void tst_QMatrixNxN::mapRect()
 
     m4.rotate(45.0f, 0.0f, 0.0f, 1.0f);
 
-    QTransform t4;
+    BOBUIransform t4;
     t4.translate(-100.5f, 64.0f);
     t4.scale(-2.5f, 4.0f);
     t4.rotate(45.0f);
@@ -3216,15 +3216,15 @@ void tst_QMatrixNxN::mapRect()
 
 void tst_QMatrixNxN::mapVector_data()
 {
-    QTest::addColumn<void *>("mValues");
+    BOBUIest::addColumn<void *>("mValues");
 
-    QTest::newRow("null")
+    BOBUIest::newRow("null")
         << (void *)nullValues4;
 
-    QTest::newRow("identity")
+    BOBUIest::newRow("identity")
         << (void *)identityValues4;
 
-    QTest::newRow("unique")
+    BOBUIest::newRow("unique")
         << (void *)uniqueValues4;
 
     static const float scale[] =
@@ -3232,7 +3232,7 @@ void tst_QMatrixNxN::mapVector_data()
          0.0f, 11.0f, 0.0f, 0.0f,
          0.0f, 0.0f, -6.5f, 0.0f,
          0.0f, 0.0f, 0.0f, 1.0f};
-    QTest::newRow("scale")
+    BOBUIest::newRow("scale")
         << (void *)scale;
 
     static const float scaleTranslate[] =
@@ -3240,7 +3240,7 @@ void tst_QMatrixNxN::mapVector_data()
          0.0f, 11.0f, 0.0f, 2.0f,
          0.0f, 0.0f, -6.5f, 3.0f,
          0.0f, 0.0f, 0.0f, 1.0f};
-    QTest::newRow("scaleTranslate")
+    BOBUIest::newRow("scaleTranslate")
         << (void *)scaleTranslate;
 
     static const float translate[] =
@@ -3248,7 +3248,7 @@ void tst_QMatrixNxN::mapVector_data()
          0.0f, 1.0f, 0.0f, 2.0f,
          0.0f, 0.0f, 1.0f, 3.0f,
          0.0f, 0.0f, 0.0f, 1.0f};
-    QTest::newRow("translate")
+    BOBUIest::newRow("translate")
         << (void *)translate;
 }
 void tst_QMatrixNxN::mapVector()
@@ -3320,7 +3320,7 @@ void tst_QMatrixNxN::metaTypes()
     QCOMPARE(qMetaTypeId<QMatrix4x4>(), int(QMetaType::QMatrix4x4));
 }
 
-#if QT_DEPRECATED_SINCE(6, 1)
+#if BOBUI_DEPRECATED_SINCE(6, 1)
 void tst_QMatrixNxN::deprecatedMultiplications()
 {
     QMatrix4x4 m;
@@ -3330,7 +3330,7 @@ void tst_QMatrixNxN::deprecatedMultiplications()
         QVector3D v(4.0f, 5.0f, 6.0f);
         {
             // QMatrix4x4 * QVector3D
-            QT_IGNORE_DEPRECATIONS(const QVector3D v1 = m * v;)
+            BOBUI_IGNORE_DEPRECATIONS(const QVector3D v1 = m * v;)
             const QVector3D v2 = m.map(v);
 
             QCOMPARE(v1.x(), v2.x());
@@ -3339,7 +3339,7 @@ void tst_QMatrixNxN::deprecatedMultiplications()
         }
         {
             // QVector3D * QMatrix4x4
-            QT_IGNORE_DEPRECATIONS(const QVector3D v1 = v * m;)
+            BOBUI_IGNORE_DEPRECATIONS(const QVector3D v1 = v * m;)
 
             QVector4D v4(v, 1.0);
             const QVector4D v2 = v4 * m;
@@ -3353,7 +3353,7 @@ void tst_QMatrixNxN::deprecatedMultiplications()
         // QMatrix4x4 * QPoint
         const QPoint p(4, 5);
 
-        QT_IGNORE_DEPRECATIONS(const QPoint p1 = m * p;)
+        BOBUI_IGNORE_DEPRECATIONS(const QPoint p1 = m * p;)
         const QPoint p2 = m.map(p);
 
         QCOMPARE(p1.x(), p2.x());
@@ -3363,15 +3363,15 @@ void tst_QMatrixNxN::deprecatedMultiplications()
         // QMatrix4x4 * QPointF
         const QPointF p(4.0f, 5.0f);
 
-        QT_IGNORE_DEPRECATIONS(const QPointF p1 = m * p;)
+        BOBUI_IGNORE_DEPRECATIONS(const QPointF p1 = m * p;)
         const QPointF p2 = m.map(p);
 
         QCOMPARE(p1.x(), p2.x());
         QCOMPARE(p1.y(), p2.y());
     }
 }
-#endif // QT_DEPRECATED_SINCE(6, 1)
+#endif // BOBUI_DEPRECATED_SINCE(6, 1)
 
-QTEST_APPLESS_MAIN(tst_QMatrixNxN)
+BOBUIEST_APPLESS_MAIN(tst_QMatrixNxN)
 
 #include "tst_qmatrixnxn.moc"

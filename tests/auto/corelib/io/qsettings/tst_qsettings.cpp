@@ -1,30 +1,30 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
-#ifndef QTEST_THROW_ON_FAIL
-# error This test requires QTEST_THROW_ON_FAIL being active.
+#ifndef BOBUIEST_THROW_ON_FAIL
+# error This test requires BOBUIEST_THROW_ON_FAIL being active.
 #endif
 
-#include <QtCore/QSettings>
+#include <BobUICore/QSettings>
 #include <private/qsettings_p.h>
 
 #include "tst_qmetatype_common.h"
 
-#include <QtCore/QByteArray>
-#include <QtCore/QCoreApplication>
-#include <QtCore/QDir>
-#include <QtCore/QEventLoop>
-#if QT_CONFIG(process)
-#include <QtCore/QProcess>
+#include <BobUICore/QByteArray>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/QDir>
+#include <BobUICore/QEventLoop>
+#if BOBUI_CONFIG(process)
+#include <BobUICore/QProcess>
 #endif
-#include <QtCore/QtGlobal>
-#include <QtCore/QThread>
-#include <QtCore/QScopeGuard>
-#include <QtCore/QSysInfo>
-#if QT_CONFIG(shortcut)
-#  include <QtGui/QKeySequence>
+#include <BobUICore/BobUIGlobal>
+#include <BobUICore/BOBUIhread>
+#include <BobUICore/QScopeGuard>
+#include <BobUICore/QSysInfo>
+#if BOBUI_CONFIG(shortcut)
+#  include <BobUIGui/QKeySequence>
 #endif
 
 #include <cctype>
@@ -35,12 +35,12 @@
 #endif
 
 #if defined(Q_OS_WIN)
-#include <QtCore/qt_windows.h>
+#include <BobUICore/bobui_windows.h>
 #include <private/qwinregistry_p.h>
-#define QT_UNLINK _unlink
+#define BOBUI_UNLINK _unlink
 #else
 #include <unistd.h>
-#define QT_UNLINK unlink
+#define BOBUI_UNLINK unlink
 #endif
 
 #if defined(Q_OS_DARWIN)
@@ -52,7 +52,7 @@
 #endif
 
 #if defined(Q_OS_WASM)
-#include <QtCore/private/qstdweb_p.h>
+#include <BobUICore/private/qstdweb_p.h>
 
 #include "emscripten/threading.h"
 #include "emscripten/val.h"
@@ -64,9 +64,9 @@ Q_DECLARE_METATYPE(QSettings::Format)
 #define QSETTINGS_P_H_VERSION 1
 #endif
 
-QT_FORWARD_DECLARE_CLASS(QSettings)
+BOBUI_FORWARD_DECLARE_CLASS(QSettings)
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static inline bool canWriteNativeSystemSettings()
 {
@@ -99,16 +99,16 @@ static const char insufficientPermissionSkipMessage[] = "Insufficient permission
 
 static void populateWithFormats()
 {
-    QTest::addColumn<QSettings::Format>("format");
+    BOBUIest::addColumn<QSettings::Format>("format");
 
-    QTest::newRow("native") << QSettings::NativeFormat;
+    BOBUIest::newRow("native") << QSettings::NativeFormat;
 #if defined(Q_OS_WASM)
     if (qstdweb::haveJspi())
-        QTest::newRow("idb") << QSettings::WebIndexedDBFormat;
+        BOBUIest::newRow("idb") << QSettings::WebIndexedDBFormat;
 #endif // defined(Q_OS_WASM)
-    QTest::newRow("ini") << QSettings::IniFormat;
-    QTest::newRow("custom1") << QSettings::CustomFormat1;
-    QTest::newRow("custom2") << QSettings::CustomFormat2;
+    BOBUIest::newRow("ini") << QSettings::IniFormat;
+    BOBUIest::newRow("custom1") << QSettings::CustomFormat1;
+    BOBUIest::newRow("custom2") << QSettings::CustomFormat2;
 }
 
 class tst_QSettings : public QObject
@@ -166,14 +166,14 @@ private slots:
     void setPath();
     void setDefaultFormat();
     void dontCreateNeedlessPaths();
-#if !defined(Q_OS_WIN) && !defined(QT_QSETTINGS_ALWAYS_CASE_SENSITIVE_AND_FORGET_ORIGINAL_KEY_ORDER)
+#if !defined(Q_OS_WIN) && !defined(BOBUI_QSETTINGS_ALWAYS_CASE_SENSITIVE_AND_FORGET_ORIGINAL_KEY_ORDER)
     void dontReorderIniKeysNeedlessly();
 #endif
 #if defined(Q_OS_WIN)
     void consistentRegistryStorage();
 #endif
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     void allKeys_data() { populateWithFormats(); }
     void allKeys();
     void childGroups_data() { populateWithFormats(); }
@@ -284,7 +284,7 @@ static bool writeCustom2File(QIODevice &device, const QSettings::SettingsMap &ma
 
 static bool readCustom3File(QIODevice &device, QSettings::SettingsMap &map)
 {
-    QTextStream in(&device);
+    BOBUIextStream in(&device);
     QString tag;
     in >> tag;
     if (tag == "OK") {
@@ -297,7 +297,7 @@ static bool readCustom3File(QIODevice &device, QSettings::SettingsMap &map)
 
 static bool writeCustom3File(QIODevice &device, const QSettings::SettingsMap &map)
 {
-    QTextStream out(&device);
+    BOBUIextStream out(&device);
     if (map.value("retval") != "OK")
         return false;
 
@@ -317,8 +317,8 @@ void tst_QSettings::initTestCase()
         qWarning("The test is not running with administrative rights. Some tests will be skipped.");
     QSettings::Format custom1 = QSettings::registerFormat("custom1", readCustom1File, writeCustom1File);
     QSettings::Format custom2 = QSettings::registerFormat("custom2", readCustom2File, writeCustom2File
-#ifndef QT_QSETTINGS_ALWAYS_CASE_SENSITIVE_AND_FORGET_ORIGINAL_KEY_ORDER
-                                                          , Qt::CaseInsensitive
+#ifndef BOBUI_QSETTINGS_ALWAYS_CASE_SENSITIVE_AND_FORGET_ORIGINAL_KEY_ORDER
+                                                          , BobUI::CaseInsensitive
 #endif
                                                           );
     QCOMPARE(custom1, QSettings::CustomFormat1);
@@ -713,10 +713,10 @@ void tst_QSettings::idb()
     }
 
     QEventLoop loop;
-    QTimer timer;
+    BOBUIimer timer;
     timer.setInterval(1);
 
-    connect(&timer, &QTimer::timeout, [&loop]() { loop.quit(); });
+    connect(&timer, &BOBUIimer::timeout, [&loop]() { loop.quit(); });
     timer.start();
 
     loop.exec();
@@ -731,13 +731,13 @@ void tst_QSettings::idb()
 
 void tst_QSettings::testByteArray_data()
 {
-    QTest::addColumn<QByteArray>("data");
+    BOBUIest::addColumn<QByteArray>("data");
 
     QByteArray bytes("Hello world!");
 
-    QTest::newRow("latin1") << bytes;
-#ifndef QT_NO_COMPRESS
-    QTest::newRow("compressed") << qCompress(bytes);
+    BOBUIest::newRow("latin1") << bytes;
+#ifndef BOBUI_NO_COMPRESS
+    BOBUIest::newRow("compressed") << qCompress(bytes);
 #endif
 }
 
@@ -747,12 +747,12 @@ void tst_QSettings::testByteArray()
 
     // write
     {
-        QSettings settings("QtProject", "tst_qsettings");
+        QSettings settings("BobUIProject", "tst_qsettings");
         settings.setValue("byteArray", data);
     }
     // read
     {
-        QSettings settings("QtProject", "tst_qsettings");
+        QSettings settings("BobUIProject", "tst_qsettings");
         QByteArray ret = settings.value("byteArray", data).toByteArray();
         QCOMPARE(ret, data);
     }
@@ -779,38 +779,38 @@ void tst_QSettings::bom()
 
 void tst_QSettings::embeddedZeroByte_data()
 {
-    QTest::addColumn<QVariant>("value");
+    BOBUIest::addColumn<QVariant>("value");
 
     QByteArray bytes("hello\0world", 11);
 
-    QTest::newRow("bytearray\\0") << QVariant(bytes);
-    QTest::newRow("string\\0") << QVariant(QString::fromLatin1(bytes.data(), bytes.size()));
+    BOBUIest::newRow("bytearray\\0") << QVariant(bytes);
+    BOBUIest::newRow("string\\0") << QVariant(QString::fromLatin1(bytes.data(), bytes.size()));
 
     bytes = QByteArray("@String(");
 
-    QTest::newRow("@bytearray") << QVariant(bytes);
-    QTest::newRow("@string") << QVariant(QString(bytes));
+    BOBUIest::newRow("@bytearray") << QVariant(bytes);
+    BOBUIest::newRow("@string") << QVariant(QString(bytes));
 
     bytes = QByteArray("@String(\0test", 13);
 
-    QTest::newRow("@bytearray\\0") << QVariant(bytes);
-    QTest::newRow("@string\\0") << QVariant(QString::fromLatin1(bytes.data(), bytes.size()));
+    BOBUIest::newRow("@bytearray\\0") << QVariant(bytes);
+    BOBUIest::newRow("@string\\0") << QVariant(QString::fromLatin1(bytes.data(), bytes.size()));
 
     bytes = QByteArray("@\xdd\x7d", 3);
-    QTest::newRow("@-prefixed data") << QVariant(bytes);
-    QTest::newRow("@-prefixed data as string") << QVariant(QString::fromLatin1(bytes.data(), bytes.size()));
+    BOBUIest::newRow("@-prefixed data") << QVariant(bytes);
+    BOBUIest::newRow("@-prefixed data as string") << QVariant(QString::fromLatin1(bytes.data(), bytes.size()));
 }
 
 void tst_QSettings::embeddedZeroByte()
 {
     QFETCH(QVariant, value);
     {
-        QSettings settings("QtProject", "tst_qsettings");
-        settings.setValue(QTest::currentDataTag(), value);
+        QSettings settings("BobUIProject", "tst_qsettings");
+        settings.setValue(BOBUIest::currentDataTag(), value);
     }
     {
-        QSettings settings("QtProject", "tst_qsettings");
-        QVariant outValue = settings.value(QTest::currentDataTag());
+        QSettings settings("BobUIProject", "tst_qsettings");
+        QVariant outValue = settings.value(BOBUIest::currentDataTag());
 
         switch (value.typeId()) {
         case QMetaType::QByteArray:
@@ -876,39 +876,39 @@ void tst_QSettings::testErrorHandling_data()
     QSKIP("Windows doesn't support most file modes, including read-only directories, so this test is moot.");
 #elif defined(Q_OS_VXWORKS)
     QSKIP("VxWorks doesn't have users/groups, so this test is moot.");
-#elif !QT_CONFIG(process)
+#elif !BOBUI_CONFIG(process)
     QSKIP("No QProcess available. Skipping the test.");
 #else
-    QTest::addColumn<int>("filePerms"); // -1 means file should not exist
-    QTest::addColumn<int>("dirPerms");
-    QTest::addColumn<int>("statusAfterCtor");
-    QTest::addColumn<bool>("shouldBeEmpty");
-    QTest::addColumn<int>("statusAfterGet");
-    QTest::addColumn<int>("statusAfterSetAndSync");
+    BOBUIest::addColumn<int>("filePerms"); // -1 means file should not exist
+    BOBUIest::addColumn<int>("dirPerms");
+    BOBUIest::addColumn<int>("statusAfterCtor");
+    BOBUIest::addColumn<bool>("shouldBeEmpty");
+    BOBUIest::addColumn<int>("statusAfterGet");
+    BOBUIest::addColumn<int>("statusAfterSetAndSync");
 
     //                            file    dir     afterCtor                      empty     afterGet                      afterSetAndSync
-    QTest::newRow("0600 0700") << 0600 << 0700 << (int)QSettings::NoError     << false << (int)QSettings::NoError     << (int)QSettings::NoError;
+    BOBUIest::newRow("0600 0700") << 0600 << 0700 << (int)QSettings::NoError     << false << (int)QSettings::NoError     << (int)QSettings::NoError;
 
-    QTest::newRow("0400 0700") << 0400 << 0700 << (int)QSettings::NoError
+    BOBUIest::newRow("0400 0700") << 0400 << 0700 << (int)QSettings::NoError
         << false << (int)QSettings::NoError     << (int)QSettings::AccessError;
-    QTest::newRow("0200 0700") << 0200 << 0700 << (int)QSettings::AccessError
+    BOBUIest::newRow("0200 0700") << 0200 << 0700 << (int)QSettings::AccessError
         << true  << (int)QSettings::AccessError << (int)QSettings::AccessError;
 
-    QTest::newRow("  -1 0700") <<   -1 << 0700 << (int)QSettings::NoError     << true  << (int)QSettings::NoError     << (int)QSettings::NoError;
+    BOBUIest::newRow("  -1 0700") <<   -1 << 0700 << (int)QSettings::NoError     << true  << (int)QSettings::NoError     << (int)QSettings::NoError;
 
-    QTest::newRow("  -1 0000") <<   -1 << 0000 << (int)QSettings::NoError     << true  << (int)QSettings::NoError     << (int)QSettings::AccessError;
-    QTest::newRow("  -1 0100") <<   -1 << 0100 << (int)QSettings::NoError     << true  << (int)QSettings::NoError     << (int)QSettings::AccessError;
-    QTest::newRow("0600 0100") << 0600 << 0100 << (int)QSettings::NoError     << false << (int)QSettings::NoError     << (int)QSettings::AccessError;
-    QTest::newRow("  -1 0300") <<   -1 << 0300 << (int)QSettings::NoError     << true  << (int)QSettings::NoError     << (int)QSettings::NoError;
-    QTest::newRow("0600 0300") << 0600 << 0300 << (int)QSettings::NoError     << false << (int)QSettings::NoError     << (int)QSettings::NoError;
-    QTest::newRow("  -1 0500") <<   -1 << 0500 << (int)QSettings::NoError     << true  << (int)QSettings::NoError     << (int)QSettings::AccessError;
-    QTest::newRow("0600 0500") << 0600 << 0500 << (int)QSettings::NoError     << false << (int)QSettings::NoError     << (int)QSettings::AccessError;
-#endif // !QT_CONFIG(process)
+    BOBUIest::newRow("  -1 0000") <<   -1 << 0000 << (int)QSettings::NoError     << true  << (int)QSettings::NoError     << (int)QSettings::AccessError;
+    BOBUIest::newRow("  -1 0100") <<   -1 << 0100 << (int)QSettings::NoError     << true  << (int)QSettings::NoError     << (int)QSettings::AccessError;
+    BOBUIest::newRow("0600 0100") << 0600 << 0100 << (int)QSettings::NoError     << false << (int)QSettings::NoError     << (int)QSettings::AccessError;
+    BOBUIest::newRow("  -1 0300") <<   -1 << 0300 << (int)QSettings::NoError     << true  << (int)QSettings::NoError     << (int)QSettings::NoError;
+    BOBUIest::newRow("0600 0300") << 0600 << 0300 << (int)QSettings::NoError     << false << (int)QSettings::NoError     << (int)QSettings::NoError;
+    BOBUIest::newRow("  -1 0500") <<   -1 << 0500 << (int)QSettings::NoError     << true  << (int)QSettings::NoError     << (int)QSettings::AccessError;
+    BOBUIest::newRow("0600 0500") << 0600 << 0500 << (int)QSettings::NoError     << false << (int)QSettings::NoError     << (int)QSettings::AccessError;
+#endif // !BOBUI_CONFIG(process)
 }
 
 void tst_QSettings::testErrorHandling()
 {
-#if !defined(Q_OS_WIN) && !defined(Q_OS_VXWORKS) && QT_CONFIG(process)
+#if !defined(Q_OS_WIN) && !defined(Q_OS_VXWORKS) && BOBUI_CONFIG(process)
     if (::getuid() == 0)
         QSKIP("Running this test as root doesn't work, since file perms do not bother him");
 
@@ -948,7 +948,7 @@ void tst_QSettings::testErrorHandling()
     QProcess::execute("chmod", QStringList{QString::number(dirPerms, 8), settingsPath("someDir")});
     // the test
     {
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
         QConfFile::clearCache();
         QSettings settings(settingsPath("someDir/someSettings.ini"), QSettings::IniFormat);
         QCOMPARE((int)settings.status(), statusAfterCtor);
@@ -965,53 +965,53 @@ void tst_QSettings::testErrorHandling()
         settings.sync();
         QCOMPARE(settings.value("alpha/beta/geometry").toInt(), 100);
         QCOMPARE((int)settings.status(), statusAfterSetAndSync);
-#endif // QT_BUILD_INTERNAL
+#endif // BOBUI_BUILD_INTERNAL
     }
-#endif // !defined(Q_OS_WIN) && !defined(Q_OS_VXWORKS) && QT_CONFIG(process)
+#endif // !defined(Q_OS_WIN) && !defined(Q_OS_VXWORKS) && BOBUI_CONFIG(process)
 }
 Q_DECLARE_METATYPE(QSettings::Status)
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 void tst_QSettings::testIniParsing_data()
 {
-    QTest::addColumn<QByteArray>("inicontent");
-    QTest::addColumn<QString>("key");
-    QTest::addColumn<QVariant>("expect");
-    QTest::addColumn<QSettings::Status>("status");
+    BOBUIest::addColumn<QByteArray>("inicontent");
+    BOBUIest::addColumn<QString>("key");
+    BOBUIest::addColumn<QVariant>("expect");
+    BOBUIest::addColumn<QSettings::Status>("status");
 
     // Test "forgiving" parsing of entries not terminated with newline or unterminated strings
-    QTest::newRow("good1")    << QByteArray("v=1\n")          << "v" << QVariant(1) << QSettings::NoError;
-    QTest::newRow("good2")    << QByteArray("v=1\\\n2")       << "v" << QVariant(12) << QSettings::NoError;
-    QTest::newRow("good3")    << QByteArray("v=1\\\r2")       << "v" << QVariant(12) << QSettings::NoError;
-    QTest::newRow("good4")    << QByteArray("v=1\\\n\r2")     << "v" << QVariant(12) << QSettings::NoError;
-    QTest::newRow("good5")    << QByteArray("v=1\\\r\n2")     << "v" << QVariant(12) << QSettings::NoError;
-    QTest::newRow("good6")    << QByteArray("v  \t = \t 1\\\r\n2")     << "v" << QVariant(12) << QSettings::NoError;
-    QTest::newRow("garbage1") << QByteArray("v")              << "v" << QVariant() << QSettings::FormatError;
-    QTest::newRow("nonterm1") << QByteArray("v=str")          << "v" << QVariant("str") << QSettings::NoError;
-    QTest::newRow("nonterm2") << QByteArray("v=\"str\"")      << "v" << QVariant("str") << QSettings::NoError;
-    QTest::newRow("nonterm3") << QByteArray("v=\"str")        << "v" << QVariant("str") << QSettings::NoError;
-    QTest::newRow("nonterm4") << QByteArray("v=\\")           << "v" << QVariant("") << QSettings::NoError;
-    QTest::newRow("nonterm5") << QByteArray("u=s\nv=\"str")   << "v" << QVariant("str") << QSettings::NoError;
-    QTest::newRow("nonterm6") << QByteArray("v=\"str\nw=ok")  << "v" << QVariant("str\nw=ok") << QSettings::NoError;
-    QTest::newRow("nonterm7") << QByteArray("v=")             << "v" << QVariant("") << QSettings::NoError;
-    QTest::newRow("nonterm8") << QByteArray("v=\"str\njnk")   << "v" << QVariant("str\njnk") << QSettings::NoError;
-    QTest::newRow("nonterm9") << QByteArray("v=1\\")          << "v" << QVariant(1) << QSettings::NoError;
-    QTest::newRow("nonterm10") << QByteArray("v=1\\\n")       << "v" << QVariant(1) << QSettings::NoError;
-    QTest::newRow("nonterm11") << QByteArray("v=1\\\r")       << "v" << QVariant(1) << QSettings::NoError;
-    QTest::newRow("nonterm12") << QByteArray("v=1\\\n\r")     << "v" << QVariant(1) << QSettings::NoError;
-    QTest::newRow("nonterm13") << QByteArray("v=1\\\r\n")     << "v" << QVariant(1) << QSettings::NoError;
-    QTest::newRow("nonterm14") << QByteArray("v=1\\\n\nx=2")  << "v" << QVariant(1) << QSettings::NoError;
-    QTest::newRow("nonterm15") << QByteArray("v=1\\\r\rx=2")  << "v" << QVariant(1) << QSettings::NoError;
-    QTest::newRow("nonterm16") << QByteArray("v=1\\\n\n\nx=2") << "v" << QVariant(1) << QSettings::NoError;
-    QTest::newRow("nonterm17") << QByteArray("; foo\nv=1") << "v" << QVariant(1) << QSettings::NoError;
-    QTest::newRow("nonterm18") << QByteArray("; foo\n\nv=1") << "v" << QVariant(1) << QSettings::NoError;
-    QTest::newRow("nonterm19") << QByteArray("\nv=1;foo") << "v" << QVariant(1) << QSettings::NoError;
-    QTest::newRow("nonterm20") << QByteArray("v=x ") << "v" << QVariant("x") << QSettings::NoError;
-    QTest::newRow("nonterm21") << QByteArray("v=x ;") << "v" << QVariant("x") << QSettings::NoError;
+    BOBUIest::newRow("good1")    << QByteArray("v=1\n")          << "v" << QVariant(1) << QSettings::NoError;
+    BOBUIest::newRow("good2")    << QByteArray("v=1\\\n2")       << "v" << QVariant(12) << QSettings::NoError;
+    BOBUIest::newRow("good3")    << QByteArray("v=1\\\r2")       << "v" << QVariant(12) << QSettings::NoError;
+    BOBUIest::newRow("good4")    << QByteArray("v=1\\\n\r2")     << "v" << QVariant(12) << QSettings::NoError;
+    BOBUIest::newRow("good5")    << QByteArray("v=1\\\r\n2")     << "v" << QVariant(12) << QSettings::NoError;
+    BOBUIest::newRow("good6")    << QByteArray("v  \t = \t 1\\\r\n2")     << "v" << QVariant(12) << QSettings::NoError;
+    BOBUIest::newRow("garbage1") << QByteArray("v")              << "v" << QVariant() << QSettings::FormatError;
+    BOBUIest::newRow("nonterm1") << QByteArray("v=str")          << "v" << QVariant("str") << QSettings::NoError;
+    BOBUIest::newRow("nonterm2") << QByteArray("v=\"str\"")      << "v" << QVariant("str") << QSettings::NoError;
+    BOBUIest::newRow("nonterm3") << QByteArray("v=\"str")        << "v" << QVariant("str") << QSettings::NoError;
+    BOBUIest::newRow("nonterm4") << QByteArray("v=\\")           << "v" << QVariant("") << QSettings::NoError;
+    BOBUIest::newRow("nonterm5") << QByteArray("u=s\nv=\"str")   << "v" << QVariant("str") << QSettings::NoError;
+    BOBUIest::newRow("nonterm6") << QByteArray("v=\"str\nw=ok")  << "v" << QVariant("str\nw=ok") << QSettings::NoError;
+    BOBUIest::newRow("nonterm7") << QByteArray("v=")             << "v" << QVariant("") << QSettings::NoError;
+    BOBUIest::newRow("nonterm8") << QByteArray("v=\"str\njnk")   << "v" << QVariant("str\njnk") << QSettings::NoError;
+    BOBUIest::newRow("nonterm9") << QByteArray("v=1\\")          << "v" << QVariant(1) << QSettings::NoError;
+    BOBUIest::newRow("nonterm10") << QByteArray("v=1\\\n")       << "v" << QVariant(1) << QSettings::NoError;
+    BOBUIest::newRow("nonterm11") << QByteArray("v=1\\\r")       << "v" << QVariant(1) << QSettings::NoError;
+    BOBUIest::newRow("nonterm12") << QByteArray("v=1\\\n\r")     << "v" << QVariant(1) << QSettings::NoError;
+    BOBUIest::newRow("nonterm13") << QByteArray("v=1\\\r\n")     << "v" << QVariant(1) << QSettings::NoError;
+    BOBUIest::newRow("nonterm14") << QByteArray("v=1\\\n\nx=2")  << "v" << QVariant(1) << QSettings::NoError;
+    BOBUIest::newRow("nonterm15") << QByteArray("v=1\\\r\rx=2")  << "v" << QVariant(1) << QSettings::NoError;
+    BOBUIest::newRow("nonterm16") << QByteArray("v=1\\\n\n\nx=2") << "v" << QVariant(1) << QSettings::NoError;
+    BOBUIest::newRow("nonterm17") << QByteArray("; foo\nv=1") << "v" << QVariant(1) << QSettings::NoError;
+    BOBUIest::newRow("nonterm18") << QByteArray("; foo\n\nv=1") << "v" << QVariant(1) << QSettings::NoError;
+    BOBUIest::newRow("nonterm19") << QByteArray("\nv=1;foo") << "v" << QVariant(1) << QSettings::NoError;
+    BOBUIest::newRow("nonterm20") << QByteArray("v=x ") << "v" << QVariant("x") << QSettings::NoError;
+    BOBUIest::newRow("nonterm21") << QByteArray("v=x ;") << "v" << QVariant("x") << QSettings::NoError;
 }
 #endif
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 void tst_QSettings::testIniParsing()
 {
     qRegisterMetaType<QSettings::Status>("QSettings::Status");
@@ -1118,7 +1118,7 @@ void tst_QSettings::beginGroup()
 
     // endGroup() should do nothing if group() is empty
     for (int i = 0; i < 10; ++i) {
-        QTest::ignoreMessage(QtWarningMsg, "QSettings::endGroup: No matching beginGroup()");
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QSettings::endGroup: No matching beginGroup()");
         settings2.endGroup();
     }
     QCOMPARE(settings2.value("geometry").toInt(), 5);
@@ -1257,7 +1257,7 @@ void tst_QSettings::setValue()
     QCOMPARE(settings.value("key 4").toMap(), map);
 }
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 
 template<int MetaTypeId>
 static void testMetaTypesHelper(QSettings::Format format)
@@ -1316,14 +1316,14 @@ FOR_EACH_NONSUPPORTED_METATYPE(EXCLUDE_NON_SUPPORTED_METATYPES)
 
 void tst_QSettings::testMetaTypes_data()
 {
-    QTest::addColumn<QSettings::Format>("format");
-    QTest::addColumn<int>("type");
+    BOBUIest::addColumn<QSettings::Format>("format");
+    BOBUIest::addColumn<int>("type");
 
 #define ADD_METATYPE_TEST_ROW(MetaTypeName, MetaTypeId, RealType) \
     { \
         const char *formatName = QMetaEnum::fromType<QSettings::Format>().valueToKey(formats[i]); \
         const char *typeName = QMetaType(QMetaType::MetaTypeName).name(); \
-        QTest::newRow(QString("%1:%2").arg(formatName).arg(typeName).toLatin1().constData()) \
+        BOBUIest::newRow(QString("%1:%2").arg(formatName).arg(typeName).toLatin1().constData()) \
             << QSettings::Format(formats[i]) << int(QMetaType::MetaTypeName); \
     }
     int formats[] = { QSettings::NativeFormat, QSettings::IniFormat };
@@ -1359,7 +1359,7 @@ FOR_EACH_CORE_METATYPE(RETURN_CREATE_FUNCTION)
 }
 #endif
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 void tst_QSettings::testVariantTypes()
 {
     QFETCH(QSettings::Format, format);
@@ -1415,7 +1415,7 @@ void tst_QSettings::testVariantTypes()
     check("strings", l2, QMetaType::QStringList);
 
     QDate date = QDate::currentDate();
-    QTime time = QTime::currentTime();
+    BOBUIime time = BOBUIime::currentTime();
     QList<QVariant> l3 { QString("ene"), 10, QVariant::fromValue(QColor(1, 2, 3)),
             QVariant(QRect(1, 2, 3, 4)), QVariant(QSize(4, 56)), QVariant(QPoint(4, 2)),
             true, false, date, time };
@@ -1427,25 +1427,25 @@ void tst_QSettings::testVariantTypes()
     check("size", QSize(4, 56), QMetaType::QSize);
     check("point", QPoint(4, 2), QMetaType::QPoint);
     check("date", date, QMetaType::QDate);
-    check("time", time, QMetaType::QTime);
+    check("time", time, QMetaType::BOBUIime);
     check("byteArray", QByteArray("foo bar"), QMetaType::QByteArray);
 
     QList<QVariant> l4 { QVariant(m2), QVariant(l2), QVariant(l3) };
     check("collectList", l4, QMetaType::QVariantList);
 
     QDateTime dt = QDateTime::currentDateTime();
-    dt.setTimeZone(QTimeZone::fromSecondsAheadOfUtc(3600));
+    dt.setTimeZone(BOBUIimeZone::fromSecondsAheadOfUtc(3600));
     check("dateTime", dt, QMetaType::QDateTime);
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     // We store key sequences as strings instead of binary variant blob, for improved
     // readability in the resulting format.
-    QKeySequence seq(Qt::ControlModifier | Qt::Key_F1);
+    QKeySequence seq(BobUI::ControlModifier | BobUI::Key_F1);
     if (format >= QSettings::InvalidFormat)
         check("keySequence", seq, QMetaType::QKeySequence);
     else
         check("keySequence", seq.toString(QKeySequence::NativeText), QMetaType::QString);
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 }
 #endif
 
@@ -1783,7 +1783,7 @@ void tst_QSettings::sync()
         instances of the same application access the same preference
         files. We want to make sure that the results are 'merged',
         rather than having the last application overwrite settings
-        set by the first application (like in Qt 3).
+        set by the first application (like in BobUI 3).
 
         This is only applicable to the INI format. The Windows
         registry and Mac's CFPreferences API should take care of this
@@ -1815,7 +1815,7 @@ void tst_QSettings::sync()
 
     // Now "some other app" will change other.software.org.ini
     QString userConfDir = settingsPath("__user__") + QDir::separator();
-    QT_UNLINK((userConfDir + "other.software.org.ini").toLatin1());
+    BOBUI_UNLINK((userConfDir + "other.software.org.ini").toLatin1());
     rename((userConfDir + "software.org.ini").toLatin1(),
            (userConfDir + "other.software.org.ini").toLatin1());
 
@@ -1863,7 +1863,7 @@ void tst_QSettings::sync()
 
 void tst_QSettings::syncNonWriteableDir()
 {
-    QTemporaryDir tempDir;
+    BOBUIemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), qUtf8Printable(tempDir.errorString()));
 
     // first, create a file
@@ -1881,7 +1881,7 @@ void tst_QSettings::syncNonWriteableDir()
         ~UndoSetPermissions()
         { QFile::setPermissions(name, QFile::ReadUser | QFile::WriteUser | QFile::ExeUser); }
     };
-    UndoSetPermissions undo(tempDir.path());    // otherwise, QTemporaryDir will fail
+    UndoSetPermissions undo(tempDir.path());    // otherwise, BOBUIemporaryDir will fail
 
     {
         QSettings settings(filename, QSettings::IniFormat);
@@ -1900,7 +1900,7 @@ void tst_QSettings::syncNonWriteableDir()
 #ifdef Q_OS_WIN
 void tst_QSettings::syncAlternateDataStream()
 {
-    QTemporaryDir tempDir;
+    BOBUIemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), qUtf8Printable(tempDir.errorString()));
 
     // first, create a file
@@ -2113,22 +2113,22 @@ void tst_QSettings::testUpdateRequestEvent()
     settings1.setValue("key1", 1);
     QCOMPARE(QFileInfo("foo").size(), qint64(0));
 
-    QTRY_VERIFY(QFileInfo("foo").size() > 0);
+    BOBUIRY_VERIFY(QFileInfo("foo").size() > 0);
 
     settings1.remove("key1");
     QVERIFY(QFileInfo("foo").size() > 0);
 
-    QTRY_COMPARE(QFileInfo("foo").size(), qint64(0));
+    BOBUIRY_COMPARE(QFileInfo("foo").size(), qint64(0));
 
     settings1.setValue("key2", 2);
     QCOMPARE(QFileInfo("foo").size(), qint64(0));
 
-    QTRY_VERIFY(QFileInfo("foo").size() > 0);
+    BOBUIRY_VERIFY(QFileInfo("foo").size() > 0);
 
     settings1.clear();
     QVERIFY(QFileInfo("foo").size() > 0);
 
-    QTRY_COMPARE(QFileInfo("foo").size(), qint64(0));
+    BOBUIRY_COMPARE(QFileInfo("foo").size(), qint64(0));
 
     QDir::setCurrent(oldCur);
 }
@@ -2137,11 +2137,11 @@ const int NumIterations = 5;
 const int NumThreads = 4;
 int numThreadSafetyFailures;
 
-class SettingsThread : public QThread
+class SettingsThread : public BOBUIhread
 {
 public:
     void run() override;
-    void start(int n) { param = n; QThread::start(); }
+    void start(int n) { param = n; BOBUIhread::start(); }
 
 private:
     int param;
@@ -2162,9 +2162,9 @@ void SettingsThread::run()
 
 void tst_QSettings::testThreadSafety()
 {
-#if !QT_CONFIG(thread)
+#if !BOBUI_CONFIG(thread)
     QSKIP("This test requires threads to be enabled.");
-#endif // !QT_CONFIG(thread)
+#endif // !BOBUI_CONFIG(thread)
 #if defined(Q_OS_WASM)
     if (!qstdweb::haveJspi())
         QSKIP("Test needs jspi on WASM. Calls are proxied to the main thread from SettingsThreads, "
@@ -2180,17 +2180,17 @@ void tst_QSettings::testThreadSafety()
     for (i = 0; i < NumThreads; ++i)
         threads[i].start(i + 1);
 
-#if defined(Q_OS_WASM) && QT_CONFIG(thread)
+#if defined(Q_OS_WASM) && BOBUI_CONFIG(thread)
     QEventLoop loop;
     int remaining = NumThreads;
     for (int i = 0; i < NumThreads; ++i) {
-        QObject::connect(&threads[i], &QThread::finished, this, [&remaining, &loop]() {
+        QObject::connect(&threads[i], &BOBUIhread::finished, this, [&remaining, &loop]() {
             if (!--remaining)
                 loop.quit();
         });
     }
     loop.exec();
-#endif // defined(Q_OS_WASM) && QT_CONFIG(thread)
+#endif // defined(Q_OS_WASM) && BOBUI_CONFIG(thread)
 
     for (i = 0; i < NumThreads; ++i)
         threads[i].wait();
@@ -2206,39 +2206,39 @@ void tst_QSettings::testThreadSafety()
     QCOMPARE(numThreadSafetyFailures, 0);
 }
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 void tst_QSettings::testNormalizedKey_data()
 {
-    QTest::addColumn<QString>("inKey");
-    QTest::addColumn<QString>("outKey");
+    BOBUIest::addColumn<QString>("inKey");
+    BOBUIest::addColumn<QString>("outKey");
 
-    QTest::newRow("empty1") << "" << "";
-    QTest::newRow("empty2") << "/" << "";
-    QTest::newRow("empty3") << "//" << "";
-    QTest::newRow("empty4") << "///" << "";
+    BOBUIest::newRow("empty1") << "" << "";
+    BOBUIest::newRow("empty2") << "/" << "";
+    BOBUIest::newRow("empty3") << "//" << "";
+    BOBUIest::newRow("empty4") << "///" << "";
 
-    QTest::newRow("a1") << "a" << "a";
-    QTest::newRow("a2") << "/a" << "a";
-    QTest::newRow("a3") << "a/" << "a";
-    QTest::newRow("a4") << "//a" << "a";
-    QTest::newRow("a5") << "a//" << "a";
-    QTest::newRow("a6") << "///a" << "a";
-    QTest::newRow("a7") << "a///" << "a";
-    QTest::newRow("a8") << "///a/" << "a";
-    QTest::newRow("a9") << "/a///" << "a";
+    BOBUIest::newRow("a1") << "a" << "a";
+    BOBUIest::newRow("a2") << "/a" << "a";
+    BOBUIest::newRow("a3") << "a/" << "a";
+    BOBUIest::newRow("a4") << "//a" << "a";
+    BOBUIest::newRow("a5") << "a//" << "a";
+    BOBUIest::newRow("a6") << "///a" << "a";
+    BOBUIest::newRow("a7") << "a///" << "a";
+    BOBUIest::newRow("a8") << "///a/" << "a";
+    BOBUIest::newRow("a9") << "/a///" << "a";
 
-    QTest::newRow("ab1") << "aaa/bbb" << "aaa/bbb";
-    QTest::newRow("ab2") << "/aaa/bbb" << "aaa/bbb";
-    QTest::newRow("ab3") << "aaa/bbb/" << "aaa/bbb";
-    QTest::newRow("ab4") << "/aaa/bbb/" << "aaa/bbb";
-    QTest::newRow("ab5") << "aaa///bbb" << "aaa/bbb";
-    QTest::newRow("ab6") << "aaa///bbb/" << "aaa/bbb";
-    QTest::newRow("ab7") << "/aaa///bbb/" << "aaa/bbb";
-    QTest::newRow("ab8") << "////aaa///bbb////" << "aaa/bbb";
+    BOBUIest::newRow("ab1") << "aaa/bbb" << "aaa/bbb";
+    BOBUIest::newRow("ab2") << "/aaa/bbb" << "aaa/bbb";
+    BOBUIest::newRow("ab3") << "aaa/bbb/" << "aaa/bbb";
+    BOBUIest::newRow("ab4") << "/aaa/bbb/" << "aaa/bbb";
+    BOBUIest::newRow("ab5") << "aaa///bbb" << "aaa/bbb";
+    BOBUIest::newRow("ab6") << "aaa///bbb/" << "aaa/bbb";
+    BOBUIest::newRow("ab7") << "/aaa///bbb/" << "aaa/bbb";
+    BOBUIest::newRow("ab8") << "////aaa///bbb////" << "aaa/bbb";
 }
 #endif
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 void tst_QSettings::testNormalizedKey()
 {
     QFETCH(QString, inKey);
@@ -2312,7 +2312,7 @@ void tst_QSettings::testEmptyData()
     }
 
     {
-        QSettings settings("QtProject", "tst_qsettings");
+        QSettings settings("BobUIProject", "tst_qsettings");
         settings.setValue("nullString", nullString);
         settings.setValue("emptyString", emptyString);
         settings.setValue("emptyList", emptyList);
@@ -2325,7 +2325,7 @@ void tst_QSettings::testEmptyData()
         QCOMPARE(settings.status(), QSettings::NoError);
     }
     {
-        QSettings settings("QtProject", "tst_qsettings");
+        QSettings settings("BobUIProject", "tst_qsettings");
         QCOMPARE(settings.value("nullString").toString(), nullString);
         QCOMPARE(settings.value("emptyString").toString(), emptyString);
         QCOMPARE(settings.value("emptyList").toStringList(), emptyList);
@@ -2342,10 +2342,10 @@ void tst_QSettings::testEmptyData()
 void tst_QSettings::testEmptyKey()
 {
     QSettings settings;
-    QTest::ignoreMessage(QtWarningMsg, "QSettings::value: Empty key passed");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QSettings::value: Empty key passed");
     const QVariant value = settings.value(QString());
     QCOMPARE(value, QVariant());
-    QTest::ignoreMessage(QtWarningMsg, "QSettings::setValue: Empty key passed");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QSettings::setValue: Empty key passed");
     settings.setValue(QString(), value);
 }
 
@@ -2371,7 +2371,7 @@ void tst_QSettings::testRegistryShortRootNames()
 #ifndef Q_OS_WIN
     QSKIP("This test is specific to the Windows registry only.");
 #elif defined(Q_PROCESSOR_ARM)
-    QSKIP("This test fails on Windows for ARM. See QTBUG-135470.");
+    QSKIP("This test fails on Windows for ARM. See BOBUIBUG-135470.");
 #else
     QVERIFY(QSettings("HKEY_CURRENT_USER", QSettings::NativeFormat).childGroups() == QSettings("HKCU", QSettings::NativeFormat).childGroups());
     QVERIFY(QSettings("HKEY_LOCAL_MACHINE", QSettings::NativeFormat).childGroups() == QSettings("HKLM", QSettings::NativeFormat).childGroups());
@@ -2663,15 +2663,15 @@ void tst_QSettings::testArrays()
         endArray() and vice versa. This is not documented, but this
         is the behavior that we have chosen.
     */
-    QTest::ignoreMessage(QtWarningMsg, "QSettings::setArrayIndex: Missing beginArray()");
-    QTest::ignoreMessage(QtWarningMsg, "QSettings::setArrayIndex: Missing beginArray()");
-    QTest::ignoreMessage(QtWarningMsg, "QSettings::setArrayIndex: Missing beginArray()");
-    QTest::ignoreMessage(QtWarningMsg, "QSettings::setArrayIndex: Missing beginArray()");
-    QTest::ignoreMessage(QtWarningMsg, "QSettings::setArrayIndex: Missing beginArray()");
-    QTest::ignoreMessage(QtWarningMsg, "QSettings::endArray: Expected endGroup() instead");
-    QTest::ignoreMessage(QtWarningMsg, "QSettings::endGroup: Expected endArray() instead");
-    QTest::ignoreMessage(QtWarningMsg, "QSettings::endArray: Expected endGroup() instead");
-    QTest::ignoreMessage(QtWarningMsg, "QSettings::endGroup: No matching beginGroup()");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QSettings::setArrayIndex: Missing beginArray()");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QSettings::setArrayIndex: Missing beginArray()");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QSettings::setArrayIndex: Missing beginArray()");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QSettings::setArrayIndex: Missing beginArray()");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QSettings::setArrayIndex: Missing beginArray()");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QSettings::endArray: Expected endGroup() instead");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QSettings::endGroup: Expected endArray() instead");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QSettings::endArray: Expected endGroup() instead");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QSettings::endGroup: No matching beginGroup()");
 
     QSettings settings1(format, QSettings::UserScope, "software.org", "KillerAPP");
     settings1.clear();
@@ -2786,7 +2786,7 @@ void tst_QSettings::testArrays()
     settings1.endArray();
 }
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 static QByteArray iniEscapedKey(const QString &str)
 {
     QByteArray result;
@@ -2839,26 +2839,26 @@ QString escapeWeirdChars(const QString &s)
     return result;
 }
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 
 void tst_QSettings::testEscapedKeys_data()
 {
-    QTest::addColumn<QString>("plainKey");
-    QTest::addColumn<QByteArray>("escKey");
+    BOBUIest::addColumn<QString>("plainKey");
+    BOBUIest::addColumn<QByteArray>("escKey");
 
-    QTest::newRow("empty-string") << u""_s << ""_ba;
-    QTest::newRow("space") << u" "_s << "%20"_ba;
-    QTest::newRow(" 0123 abcd ") << " 0123 abcd " << "%200123%20abcd%20"_ba;
+    BOBUIest::newRow("empty-string") << u""_s << ""_ba;
+    BOBUIest::newRow("space") << u" "_s << "%20"_ba;
+    BOBUIest::newRow(" 0123 abcd ") << " 0123 abcd " << "%200123%20abcd%20"_ba;
 
-    QTest::newRow("special-characters")
+    BOBUIest::newRow("special-characters")
         << "~!@#$%^&*()_+.-/\\="
         << "%7E%21%40%23%24%25%5E%26%2A%28%29_%2B.-\\%5C%3D"_ba;
 
     const std::array arr1 = {QChar(0xabcd), QChar(0x1234), QChar(0x0081)};
-    QTest::newRow("qchar-array1") << QString(arr1) << "%UABCD%U1234%81"_ba;
+    BOBUIest::newRow("qchar-array1") << QString(arr1) << "%UABCD%U1234%81"_ba;
 
     const std::array arr2 = {QChar(0xFE), QChar(0xFF), QChar(0x100), QChar(0x101)};
-    QTest::newRow("qchar-array2") << QString(arr2) << "%FE%FF%U0100%U0101"_ba;
+    BOBUIest::newRow("qchar-array2") << QString(arr2) << "%FE%FF%U0100%U0101"_ba;
 }
 
 void tst_QSettings::testEscapedKeys()
@@ -2874,19 +2874,19 @@ void tst_QSettings::testEscapedKeys()
 
 void tst_QSettings::testUnescapedKeys_data()
 {
-    QTest::addColumn<QByteArray>("escKey");
-    QTest::addColumn<QString>("plainKey");
-    QTest::addColumn<QByteArray>("reescKey");
+    BOBUIest::addColumn<QByteArray>("escKey");
+    BOBUIest::addColumn<QString>("plainKey");
+    BOBUIest::addColumn<QByteArray>("reescKey");
 
-    QTest::newRow("empty-string") << ""_ba << u""_s << ""_ba;
-    QTest::newRow("space") << "%20"_ba << u" "_s << "%20"_ba;
-    QTest::newRow("%") << "%"_ba << u"%"_s << "%25"_ba;
+    BOBUIest::newRow("empty-string") << ""_ba << u""_s << ""_ba;
+    BOBUIest::newRow("space") << "%20"_ba << u" "_s << "%20"_ba;
+    BOBUIest::newRow("%") << "%"_ba << u"%"_s << "%25"_ba;
 
-    QTest::newRow("/alpha/beta")     << "/alpha/beta"_ba     << "/alpha/beta" << "\\alpha\\beta"_ba;
-    QTest::newRow("\\alpha\\beta")   << "\\alpha\\beta"_ba   << "/alpha/beta" << "\\alpha\\beta"_ba;
-    QTest::newRow("%5Calpha%5Cbeta") << "%5Calpha%5Cbeta"_ba << "\\alpha\\beta" << "%5Calpha%5Cbeta"_ba;
+    BOBUIest::newRow("/alpha/beta")     << "/alpha/beta"_ba     << "/alpha/beta" << "\\alpha\\beta"_ba;
+    BOBUIest::newRow("\\alpha\\beta")   << "\\alpha\\beta"_ba   << "/alpha/beta" << "\\alpha\\beta"_ba;
+    BOBUIest::newRow("%5Calpha%5Cbeta") << "%5Calpha%5Cbeta"_ba << "\\alpha\\beta" << "%5Calpha%5Cbeta"_ba;
 
-    QTest::newRow("many-percent")
+    BOBUIest::newRow("many-percent")
         << "%f%!%%%%1x%x1%U%Uz%U123%U1234%1234%"_ba
         << QString("%f%!%%%%1x%x1%U%Uz%U123"_L1 + QChar(0x1234) + "\x12" + "34%")
         << "%25f%25%21%25%25%25%251x%25x1%25U%25Uz%25U123%U1234%1234%25"_ba;
@@ -2907,41 +2907,41 @@ void tst_QSettings::testUnescapedKeys()
 
 void tst_QSettings::testEscapedStringList_data()
 {
-    QTest::addColumn<QStringList>("plainStrList");
-    QTest::addColumn<QByteArray>("escapedList");
+    BOBUIest::addColumn<QStringList>("plainStrList");
+    BOBUIest::addColumn<QByteArray>("escapedList");
 
-    QTest::newRow("empty-string") << QStringList{u""_s} << ""_ba;
-    QTest::newRow("space") << QStringList{u" "_s} << "\" \""_ba;
-    QTest::newRow(";") << QStringList{u";"_s} << "\";\""_ba;
-    QTest::newRow(",") << QStringList{u","_s} << "\",\""_ba;
-    QTest::newRow("=") << QStringList{u"="_s} << "\"=\""_ba;
-    QTest::newRow("abc-def") << QStringList{u"abc-def"_s} << "abc-def"_ba;
+    BOBUIest::newRow("empty-string") << QStringList{u""_s} << ""_ba;
+    BOBUIest::newRow("space") << QStringList{u" "_s} << "\" \""_ba;
+    BOBUIest::newRow(";") << QStringList{u";"_s} << "\";\""_ba;
+    BOBUIest::newRow(",") << QStringList{u","_s} << "\",\""_ba;
+    BOBUIest::newRow("=") << QStringList{u"="_s} << "\"=\""_ba;
+    BOBUIest::newRow("abc-def") << QStringList{u"abc-def"_s} << "abc-def"_ba;
 
-    QTest::newRow("starts-with-NUL")
+    BOBUIest::newRow("starts-with-NUL")
         << QStringList{QChar(0) + u"0"_s}
         << "\\0\\x30"_ba;
 
-    QTest::newRow("special-characters1")
+    BOBUIest::newRow("special-characters1")
         << QStringList{u"~!@#$%^&*()_+.-/\\="_s}
         << "\"~!@#$%^&*()_+.-/\\\\=\""_ba;
 
-    QTest::newRow("special-characters2")
+    BOBUIest::newRow("special-characters2")
         << QStringList{u"~!@#$%^&*()_+.-/\\"_s}
         << "~!@#$%^&*()_+.-/\\\\"_ba;
 
-    QTest::newRow("DEL-character")
+    BOBUIest::newRow("DEL-character")
         << QStringList{u"\x7F"_s + u"12aFz"_s}
         << "\x7f"_ba + "12aFz"_ba;
 
-    QTest::newRow("tab-newline")
+    BOBUIest::newRow("tab-newline")
         << QStringList{u"   \t\n\\n"_s + QChar(0x123) + QChar(0x4567)}
         << "\"   \\t\\n\\\\n\xC4\xA3\xE4\x95\xA7\""_ba;
 
-    QTest::newRow("backslash-espcaped-input")
+    BOBUIest::newRow("backslash-espcaped-input")
         << QStringList{u"\a\b\f\n\r\t\v'\"?\001\002\x03\x04"_s}
         << "\\a\\b\\f\\n\\r\\t\\v'\\\"?\\x1\\x2\\x3\\x4"_ba;
 
-    QTest::newRow("stringlist-with-tab")
+    BOBUIest::newRow("stringlist-with-tab")
         << QStringList{u","_s, u";"_s, u"a"_s, u"ab,  \tc, d "_s}
         << "\",\", \";\", a, \"ab,  \\tc, d \""_ba;
 }
@@ -2959,29 +2959,29 @@ void tst_QSettings::testEscapedStringList()
 
 void tst_QSettings::testUnescapedStringList_data()
 {
-    QTest::addColumn<QByteArray>("escStrList");
-    QTest::addColumn<QStringList>("plainStrList");
-    QTest::addColumn<QByteArray>("reescStrList");
+    BOBUIest::addColumn<QByteArray>("escStrList");
+    BOBUIest::addColumn<QStringList>("plainStrList");
+    BOBUIest::addColumn<QByteArray>("reescStrList");
 
     /*
       Test .ini syntax that cannot be generated by QSettings (but can be entered by users).
     */
-    QTest::newRow("empty")
+    BOBUIest::newRow("empty")
         << ""_ba
         << QStringList{u""_s}
         << ""_ba;
 
-    QTest::newRow("empty-double-quotes")
+    BOBUIest::newRow("empty-double-quotes")
         << "\"\""_ba
         << QStringList{u""_s}
         << ""_ba;
 
-    QTest::newRow("plain-quoted-string")
+    BOBUIest::newRow("plain-quoted-string")
         << "\"abcdef\""_ba
         << QStringList{u"abcdef"_s}
         << "abcdef"_ba;
 
-    QTest::newRow("backslash-non-letter-characters")
+    BOBUIest::newRow("backslash-non-letter-characters")
         << "\"\\?\\'\\\"\""_ba
         << QStringList{u"?'\""_s}
         << "?'\\\""_ba;
@@ -2989,23 +2989,23 @@ void tst_QSettings::testUnescapedStringList_data()
     const std::array arr = {QChar(0), QChar(0), QChar(0), QChar(0), QChar(1),
                             QChar(0111), QChar(011111), QChar(0), QChar(0xCDEF),
                             QChar(u'G'), QChar(u'H'), QChar(0x3456)};
-    QTest::newRow("array-of-qchar")
+    BOBUIest::newRow("array-of-qchar")
         << "\\0\\00\\000\\0000000\\1\\111\\11111\\x\\x0\\xABCDEFGH\\x0123456\\"_ba
         << QStringList{QString{arr}}
         << "\\0\\0\\0\\0\\x1I\xE1\x89\x89\\0\xEC\xB7\xAFGH\xE3\x91\x96"_ba;
 
-    QTest::newRow("backslash-escapes")
+    BOBUIest::newRow("backslash-escapes")
         << QByteArray("\\c\\d\\e\\f\\g\\$\\*\\\0", 16)
         << QStringList{u"\f"_s}
         << "\\f"_ba;
 
-    QTest::newRow("double-quotes-tab-character")
+    BOBUIest::newRow("double-quotes-tab-character")
         << "\"a\",  \t\"bc \", \"  d\" , \"ef  \" ,,g,   hi  i,,, ,"_ba
         << QStringList{u"a"_s, u"bc "_s, u"  d"_s, u"ef  "_s, u""_s, u"g"_s,
                        u"hi  i"_s, u""_s, u""_s, u""_s, u""_s}
         << "a, \"bc \", \"  d\", \"ef  \", , g, hi  i, , , , "_ba;
 
-    QTest::newRow("abcdefg-extra-whitespaces")
+    BOBUIest::newRow("abcdefg-extra-whitespaces")
         << "a ,  b   ,   c   d   , efg   "_ba
         << QStringList{u"a"_s, u"b"_s, u"c   d"_s, u"efg"_s}
         << "a, b, c   d, efg"_ba;
@@ -3026,24 +3026,24 @@ void tst_QSettings::testUnescapedStringList()
 
 void tst_QSettings::testEscapedVariant_data()
 {
-    QTest::addColumn<QVariant>("val");
-    QTest::addColumn<QString>("escStr");
+    BOBUIest::addColumn<QVariant>("val");
+    BOBUIest::addColumn<QString>("escStr");
 
     // streaming qvariant into a string
 
-    QTest::newRow("Hello World!")   << QVariant{u"Hello World!"_s}   << u"Hello World!"_s;
-    QTest::newRow("Hello, World!")  << QVariant{u"Hello, World!"_s}  << u"Hello, World!"_s;
-    QTest::newRow("@Hello World!")  << QVariant{u"@Hello World!"_s}  << u"@@Hello World!"_s;
-    QTest::newRow("@@Hello World!") << QVariant{u"@@Hello World!"_s} << u"@@@Hello World!"_s;
-    QTest::newRow("int-100")        << QVariant{100}                 << u"100"_s;
-    QTest::newRow("qrect")          << QVariant{QRect(1, 2, 3, 4)}   << u"@Rect(1 2 3 4)"_s;
-    QTest::newRow("qsize")          << QVariant{QSize(5, 6)}         << u"@Size(5 6)"_s;
-    QTest::newRow("qpoint")         << QVariant{QPoint(7, 8)}        << u"@Point(7 8)"_s;
+    BOBUIest::newRow("Hello World!")   << QVariant{u"Hello World!"_s}   << u"Hello World!"_s;
+    BOBUIest::newRow("Hello, World!")  << QVariant{u"Hello, World!"_s}  << u"Hello, World!"_s;
+    BOBUIest::newRow("@Hello World!")  << QVariant{u"@Hello World!"_s}  << u"@@Hello World!"_s;
+    BOBUIest::newRow("@@Hello World!") << QVariant{u"@@Hello World!"_s} << u"@@@Hello World!"_s;
+    BOBUIest::newRow("int-100")        << QVariant{100}                 << u"100"_s;
+    BOBUIest::newRow("qrect")          << QVariant{QRect(1, 2, 3, 4)}   << u"@Rect(1 2 3 4)"_s;
+    BOBUIest::newRow("qsize")          << QVariant{QSize(5, 6)}         << u"@Size(5 6)"_s;
+    BOBUIest::newRow("qpoint")         << QVariant{QPoint(7, 8)}        << u"@Point(7 8)"_s;
 
     auto expected = QString::fromLatin1("@Variant(\x0\x0\x0\xb\x0\x0\x0\x3\x0\x0\x0\x6\x0\x65\x0n"
                                         "\x0\x65\x0\x0\x0\x6\x0\x64\x0u\x0\x65\x0\x0\x0\x8\x0r\x0"
                                         "i\x0k\x0\x65)", 50);
-    QTest::newRow("stringlist") << QVariant{QStringList{u"ene"_s, u"due"_s, u"rike"_s}} << expected;
+    BOBUIest::newRow("stringlist") << QVariant{QStringList{u"ene"_s, u"due"_s, u"rike"_s}} << expected;
 }
 
 void tst_QSettings::testEscapedVariant()
@@ -3062,21 +3062,21 @@ void tst_QSettings::testEscapedVariant()
 
 void tst_QSettings::testBadEscape_data()
 {
-    QTest::addColumn<QString>("escStr");
-    QTest::addColumn<QString>("variantStr");
+    BOBUIest::addColumn<QString>("escStr");
+    BOBUIest::addColumn<QString>("variantStr");
 
-    QTest::newRow("empty")   << u""_s        << u""_s;
-    QTest::newRow("space")   << u" "_s       << u" "_s;
-    QTest::newRow("@")       << u"@"_s       << u"@"_s;
-    QTest::newRow("@@")      << u"@@"_s      << u"@"_s;
-    QTest::newRow("@@@")     << u"@@@"_s     << u"@@"_s;
-    QTest::newRow("@Rect")   << u"@Rect"_s   << u"@Rect"_s;
-    QTest::newRow("@Rect(")  << u"@Rect("_s  << u"@Rect("_s;
-    QTest::newRow("@Rect()") << u"@Rect()"_s << u"@Rect()"_s;
-    QTest::newRow("@Rect)")  << u"@Rect)"_s  << u"@Rect)"_s;
+    BOBUIest::newRow("empty")   << u""_s        << u""_s;
+    BOBUIest::newRow("space")   << u" "_s       << u" "_s;
+    BOBUIest::newRow("@")       << u"@"_s       << u"@"_s;
+    BOBUIest::newRow("@@")      << u"@@"_s      << u"@"_s;
+    BOBUIest::newRow("@@@")     << u"@@@"_s     << u"@@"_s;
+    BOBUIest::newRow("@Rect")   << u"@Rect"_s   << u"@Rect"_s;
+    BOBUIest::newRow("@Rect(")  << u"@Rect("_s  << u"@Rect("_s;
+    BOBUIest::newRow("@Rect()") << u"@Rect()"_s << u"@Rect()"_s;
+    BOBUIest::newRow("@Rect)")  << u"@Rect)"_s  << u"@Rect)"_s;
 
-    QTest::newRow("@Rect(1 2 3)")  << u"@Rect(1 2 3)"_s  << u"@Rect(1 2 3)"_s;
-    QTest::newRow("@@Rect(1 2 3)") << u"@@Rect(1 2 3)"_s << u"@Rect(1 2 3)"_s;
+    BOBUIest::newRow("@Rect(1 2 3)")  << u"@Rect(1 2 3)"_s  << u"@Rect(1 2 3)"_s;
+    BOBUIest::newRow("@@Rect(1 2 3)") << u"@@Rect(1 2 3)"_s << u"@Rect(1 2 3)"_s;
 }
 
 void tst_QSettings::testBadEscape()
@@ -3100,7 +3100,7 @@ void tst_QSettings::testCaseSensitivity()
         settings.beginGroup("caseSensitivity");
 
         bool cs = true;
-#ifndef QT_QSETTINGS_ALWAYS_CASE_SENSITIVE_AND_FORGET_ORIGINAL_KEY_ORDER
+#ifndef BOBUI_QSETTINGS_ALWAYS_CASE_SENSITIVE_AND_FORGET_ORIGINAL_KEY_ORDER
         switch (format) {
         case QSettings::NativeFormat:
 #ifdef Q_OS_DARWIN
@@ -3291,7 +3291,7 @@ void tst_QSettings::isWritable()
     }
 }
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 void tst_QSettings::childGroups()
 {
     QFETCH(QSettings::Format, format);
@@ -3360,7 +3360,7 @@ void tst_QSettings::childGroups()
 }
 #endif
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 void tst_QSettings::childKeys()
 {
     QFETCH(QSettings::Format, format);
@@ -3427,7 +3427,7 @@ void tst_QSettings::childKeys()
 }
 #endif
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 void tst_QSettings::allKeys()
 {
     QFETCH(QSettings::Format, format);
@@ -3625,8 +3625,8 @@ void tst_QSettings::dontCreateNeedlessPaths()
     QVERIFY(!fileInfo.dir().exists());
 }
 
-#if !defined(Q_OS_WIN) && !defined(QT_QSETTINGS_ALWAYS_CASE_SENSITIVE_AND_FORGET_ORIGINAL_KEY_ORDER)
-// This Qt build does not preserve ordering, as a code size optimization.
+#if !defined(Q_OS_WIN) && !defined(BOBUI_QSETTINGS_ALWAYS_CASE_SENSITIVE_AND_FORGET_ORIGINAL_KEY_ORDER)
+// This BobUI build does not preserve ordering, as a code size optimization.
 void tst_QSettings::dontReorderIniKeysNeedlessly()
 {
 
@@ -3663,7 +3663,7 @@ void tst_QSettings::dontReorderIniKeysNeedlessly()
     QString outFileName;
     QString outFileName2;
 
-    QTemporaryFile outFile;
+    BOBUIemporaryFile outFile;
     QVERIFY2(outFile.open(), qPrintable(outFile.errorString()));
     outFile.write(contentsBefore);
     outFileName = outFile.fileName();
@@ -3693,7 +3693,7 @@ void tst_QSettings::rainersSyncBugOnMac()
 
 #if defined(Q_OS_DARWIN)
     if (format == QSettings::NativeFormat)
-        QSKIP("Apple OSes do not support direct reads from and writes to .plist files, due to caching and background syncing. See QTBUG-34899.");
+        QSKIP("Apple OSes do not support direct reads from and writes to .plist files, due to caching and background syncing. See BOBUIBUG-34899.");
 #endif
 #if defined(Q_OS_WASM)
     if (format == QSettings::NativeFormat)
@@ -3724,7 +3724,7 @@ void tst_QSettings::rainersSyncBugOnMac()
 void tst_QSettings::recursionBug()
 {
     QPixmap pix(10,10);
-    pix.fill(Qt::blue);
+    pix.fill(BobUI::blue);
 
     {
         QSettings settings(settingsPath("starrunner.ini"), QSettings::IniFormat);
@@ -3743,7 +3743,7 @@ static DWORD readKeyType(HKEY handle, QStringView rSubKey)
     return res == ERROR_SUCCESS ? dataType : 0;
 }
 
-// This is a regression test for QTBUG-13249, where QSettings was storing
+// This is a regression test for BOBUIBUG-13249, where QSettings was storing
 // signed integers as numeric values and unsigned integers as strings.
 void tst_QSettings::consistentRegistryStorage()
 {
@@ -3771,14 +3771,14 @@ void tst_QSettings::consistentRegistryStorage()
 }
 #endif
 
-#if defined(QT_BUILD_INTERNAL) && defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN) && !defined(Q_OS_ANDROID) && !defined(Q_OS_WASM) && !defined(QT_NO_STANDARDPATHS)
-QT_BEGIN_NAMESPACE
+#if defined(BOBUI_BUILD_INTERNAL) && defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN) && !defined(Q_OS_ANDROID) && !defined(Q_OS_WASM) && !defined(BOBUI_NO_STANDARDPATHS)
+BOBUI_BEGIN_NAMESPACE
 extern void clearDefaultPaths();
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 #endif
 void tst_QSettings::testXdg()
 {
-#if defined(QT_BUILD_INTERNAL) && defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN) && !defined(Q_OS_ANDROID) && !defined(Q_OS_WASM) && !defined(QT_NO_STANDARDPATHS)
+#if defined(BOBUI_BUILD_INTERNAL) && defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN) && !defined(Q_OS_ANDROID) && !defined(Q_OS_WASM) && !defined(BOBUI_NO_STANDARDPATHS)
     // Note: The XDG_CONFIG_DIRS test must be done before overriding the system path
     // by QSettings::setPath/setSystemIniPath (used in cleanupTestFiles()).
     clearDefaultPaths();
@@ -3839,16 +3839,16 @@ void tst_QSettings::testXdg()
     QVERIFY(app.value("from3rd_only_app").toString() == "from3rd_only_app2");
     QVERIFY(org.value("from3rd_only_app").toString() == QString{});
 #else
-    QSKIP("This test is performed in QT_BUILD_INTERNAL on Q_XDG_PLATFORM with use of standard paths only.");
+    QSKIP("This test is performed in BOBUI_BUILD_INTERNAL on Q_XDG_PLATFORM with use of standard paths only.");
 #endif
 }
 
 void tst_QSettings::testReadKeys_data()
 {
-    QTest::addColumn<QString>("filepath");
+    BOBUIest::addColumn<QString>("filepath");
 
-    QTest::newRow("escaped") << ":/qt5settings.ini";
-    QTest::newRow("utf-8") << ":/utf8settings.ini";
+    BOBUIest::newRow("escaped") << ":/bobui5settings.ini";
+    BOBUIest::newRow("utf-8") << ":/utf8settings.ini";
 }
 
 void tst_QSettings::testReadKeys()
@@ -3885,5 +3885,5 @@ void tst_QSettings::testIncorrectSection()
     QCOMPARE(s.status(), QSettings::FormatError);
 }
 
-QTEST_MAIN(tst_QSettings)
+BOBUIEST_MAIN(tst_QSettings)
 #include "tst_qsettings.moc"

@@ -1,9 +1,9 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class tst_AndroidLegacyPackaging : public QObject
 {
@@ -16,5 +16,5 @@ void tst_AndroidLegacyPackaging::initTestCase()
 { }
 
 
-QTEST_MAIN(tst_AndroidLegacyPackaging)
+BOBUIEST_MAIN(tst_AndroidLegacyPackaging)
 #include "tst_android_legacy_packaging.moc"

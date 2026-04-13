@@ -1,31 +1,31 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "../../kernel/qsqldatabase/tst_databases.h"
 
-#include <QtTest/qtest.h>
-#include <QtTest/qsignalspy.h>
+#include <BobUITest/bobuiest.h>
+#include <BobUITest/qsignalspy.h>
 
-#include <QtSql/qsqltablemodel.h>
-#include <QtSql/qsqldriver.h>
-#include <QtSql/qsqlfield.h>
+#include <BobUISql/qsqltablemodel.h>
+#include <BobUISql/qsqldriver.h>
+#include <BobUISql/qsqlfield.h>
 
-#include <QtCore/qthread.h>
-#include <QtCore/qelapsedtimer.h>
-#include <QtCore/qvariant.h>
+#include <BobUICore/bobuihread.h>
+#include <BobUICore/qelapsedtimer.h>
+#include <BobUICore/qvariant.h>
 
-#include <QtSql/private/qsqltablemodel_p.h>
+#include <BobUISql/private/qsqltablemodel_p.h>
 
 // In order to catch when the warning message occurs, indicating that the database belongs to another
 // thread, we have to install our own message handler. To ensure that the test reporting still happens
 // as before, we call the originating one.
 //
 // For now, this is only called inside the modelInAnotherThread() test
-QtMessageHandler oldHandler = nullptr;
+BobUIMessageHandler oldHandler = nullptr;
 
-void sqlTableModelMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+void sqlTableModelMessageHandler(BobUIMsgType type, const QMessageLogContext &context, const QString &msg)
 {
-    if (type == QtWarningMsg &&
+    if (type == BobUIWarningMsg &&
         msg == "QSqlDatabasePrivate::database: requested database does not "
                "belong to the calling thread.") {
         QFAIL("Requested database does not belong to the calling thread.");
@@ -136,7 +136,7 @@ private slots:
     void insertBeforeDelete();
 
     void invalidFilterAndHeaderData_data() { generic_data(); }
-    void invalidFilterAndHeaderData(); //QTBUG-23879
+    void invalidFilterAndHeaderData(); //BOBUIBUG-23879
 
     void sqlite_selectFromIdentifierWithDot_data() { generic_data("QSQLITE"); }
     void sqlite_selectFromIdentifierWithDot();
@@ -171,7 +171,7 @@ void tst_QSqlTableModel::dropTestTables()
                                qTableName("bigtable", __FILE__, db),
                                qTableName("foo", __FILE__, db),
                                qTableName("pktest", __FILE__, db),
-                               qTableName("qtestw hitespace", __FILE__, db)};
+                               qTableName("bobuiestw hitespace", __FILE__, db)};
         tst_Databases::safeDropTables(db, tableNames);
 
         if (db.driverName().startsWith("QPSQL")) {
@@ -202,7 +202,7 @@ void tst_QSqlTableModel::createTestTables()
         QVERIFY_SQL(q, exec("create table " + qTableName("emptytable", __FILE__, db) + "(id int)"));
 
         const auto fieldStr = db.driver()->escapeIdentifier("a field", QSqlDriver::FieldName);
-        QVERIFY_SQL(q, exec("create table " + qTableName("qtestw hitespace", __FILE__, db) + " ("+ fieldStr + " int)"));
+        QVERIFY_SQL(q, exec("create table " + qTableName("bobuiestw hitespace", __FILE__, db) + " ("+ fieldStr + " int)"));
 
         QVERIFY_SQL(q, exec("create table " + qTableName("pktest", __FILE__, db) + "(id int not null primary key, a varchar(20))"));
     }
@@ -243,9 +243,9 @@ void tst_QSqlTableModel::generic_data(const QString &engine)
 {
     if ( dbs.fillTestTable(engine) == 0 ) {
         if (engine.isEmpty())
-           QSKIP( "No database drivers are available in this Qt configuration");
+           QSKIP( "No database drivers are available in this BobUI configuration");
         else
-           QSKIP( (QString("No database drivers of type %1 are available in this Qt configuration").arg(engine)).toLocal8Bit());
+           QSKIP( (QString("No database drivers of type %1 are available in this BobUI configuration").arg(engine)).toLocal8Bit());
     }
 }
 
@@ -253,9 +253,9 @@ void tst_QSqlTableModel::generic_data_with_strategies(const QString &engine)
 {
     if ( dbs.fillTestTableWithStrategies(engine) == 0 ) {
         if (engine.isEmpty())
-           QSKIP( "No database drivers are available in this Qt configuration");
+           QSKIP( "No database drivers are available in this BobUI configuration");
         else
-           QSKIP( (QString("No database drivers of type %1 are available in this Qt configuration").arg(engine)).toLocal8Bit());
+           QSKIP( (QString("No database drivers of type %1 are available in this BobUI configuration").arg(engine)).toLocal8Bit());
     }
 }
 
@@ -293,7 +293,7 @@ void tst_QSqlTableModel::select()
     for (const QString &tbl : tables) {
         QSqlTableModel model(0, db);
         model.setTable(tbl);
-        model.setSort(0, Qt::AscendingOrder);
+        model.setSort(0, BobUI::AscendingOrder);
         QVERIFY_SQL(model, select());
 
         QCOMPARE(model.rowCount(), 3);
@@ -350,7 +350,7 @@ void tst_QSqlTableModel::selectRow()
     SelectRowModel model(0, db);
     model.setEditStrategy(QSqlTableModel::OnFieldChange);
     model.setTable(tbl);
-    model.setSort(0, Qt::AscendingOrder);
+    model.setSort(0, BobUI::AscendingOrder);
     QVERIFY_SQL(model, select());
 
     QCOMPARE(model.rowCount(), 3);
@@ -365,19 +365,19 @@ void tst_QSqlTableModel::selectRow()
 
     // Check if selectRow() refreshes an unchanged row.
     // Row is not in cache yet.
-    q.exec("UPDATE " + tbl + " SET a = 'Qt' WHERE id = 1");
+    q.exec("UPDATE " + tbl + " SET a = 'BobUI' WHERE id = 1");
     QCOMPARE(model.data(idx).toString(), QString("b"));
     model.selectRow(1);
-    QCOMPARE(model.data(idx).toString(), QString("Qt"));
+    QCOMPARE(model.data(idx).toString(), QString("BobUI"));
 
     // Check if selectRow() refreshes a changed row.
     // Row is already in the cache.
     model.setData(idx, QString("b"));
     QCOMPARE(model.data(idx).toString(), QString("b"));
-    q.exec("UPDATE " + tbl + " SET a = 'Qt' WHERE id = 1");
+    q.exec("UPDATE " + tbl + " SET a = 'BobUI' WHERE id = 1");
     QCOMPARE(model.data(idx).toString(), QString("b"));
     model.selectRow(1);
-    QCOMPARE(model.data(idx).toString(), QString("Qt"));
+    QCOMPARE(model.data(idx).toString(), QString("BobUI"));
 
     q.exec("DELETE FROM " + tbl);
 }
@@ -410,21 +410,21 @@ void tst_QSqlTableModel::selectRowOverride()
     SelectRowOverrideTestModel model(0, db);
     model.setEditStrategy(QSqlTableModel::OnFieldChange);
     model.setTable(tbl);
-    model.setSort(0, Qt::AscendingOrder);
+    model.setSort(0, BobUI::AscendingOrder);
     QVERIFY_SQL(model, select());
 
     QCOMPARE(model.rowCount(), 3);
     QCOMPARE(model.columnCount(), 2);
 
-    q.exec("UPDATE " + tbl + " SET a = 'Qt' WHERE id = 2");
+    q.exec("UPDATE " + tbl + " SET a = 'BobUI' WHERE id = 2");
     QModelIndex idx = model.index(1, 1);
     // overridden selectRow() should select() whole table and not crash
-    model.setData(idx, QString("Qt"));
+    model.setData(idx, QString("BobUI"));
 
     // both rows should have changed
-    QCOMPARE(model.data(idx).toString(), QString("Qt"));
+    QCOMPARE(model.data(idx).toString(), QString("BobUI"));
     idx = model.index(2, 1);
-    QCOMPARE(model.data(idx).toString(), QString("Qt"));
+    QCOMPARE(model.data(idx).toString(), QString("BobUI"));
 
     q.exec("DELETE FROM " + tbl);
 }
@@ -440,7 +440,7 @@ void tst_QSqlTableModel::insertColumns()
 
     QSqlTableModel model(0, db);
     model.setTable(test);
-    model.setSort(0, Qt::AscendingOrder);
+    model.setSort(0, BobUI::AscendingOrder);
     model.setEditStrategy(submitpolicy);
 
     QVERIFY_SQL(model, select());
@@ -514,7 +514,7 @@ void tst_QSqlTableModel::setData()
     QSqlTableModel model(0, db);
     model.setEditStrategy(QSqlTableModel::OnManualSubmit);
     model.setTable(test);
-    model.setSort(0, Qt::AscendingOrder);
+    model.setSort(0, BobUI::AscendingOrder);
     QVERIFY_SQL(model, select());
 
     //  initial state
@@ -591,7 +591,7 @@ void tst_QSqlTableModel::setRecord()
         QSqlTableModel model(0, db);
         model.setEditStrategy(submitpolicy);
         model.setTable(test3);
-        model.setSort(0, Qt::AscendingOrder);
+        model.setSort(0, BobUI::AscendingOrder);
         QVERIFY_SQL(model, select());
 
         for (int i = 0; i < model.rowCount(); ++i) {
@@ -636,10 +636,10 @@ class SetRecordReimplModel: public QSqlTableModel
     Q_OBJECT
 public:
     SetRecordReimplModel(QObject *parent, QSqlDatabase db):QSqlTableModel(parent, db) {}
-    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override
+    bool setData(const QModelIndex &index, const QVariant &value, int role = BobUI::EditRole) override
     {
         Q_UNUSED(value);
-        return QSqlTableModel::setData(index, QString("Qt"), role);
+        return QSqlTableModel::setData(index, QString("BobUI"), role);
     }
 };
 
@@ -653,7 +653,7 @@ void tst_QSqlTableModel::setRecordReimpl()
     SetRecordReimplModel model(0, db);
     model.setEditStrategy(QSqlTableModel::OnManualSubmit);
     model.setTable(test3);
-    model.setSort(0, Qt::AscendingOrder);
+    model.setSort(0, BobUI::AscendingOrder);
     QVERIFY_SQL(model, select());
 
     // make sure that a reimplemented setData() affects setRecord()
@@ -663,8 +663,8 @@ void tst_QSqlTableModel::setRecordReimpl()
     QVERIFY(model.setRecord(0, rec));
 
     rec = model.record(0);
-    QCOMPARE(rec.value(1).toString(), QString("Qt"));
-    QCOMPARE(rec.value(2).toString(), QString("Qt"));
+    QCOMPARE(rec.value(1).toString(), QString("BobUI"));
+    QCOMPARE(rec.value(2).toString(), QString("BobUI"));
 }
 
 class RecordReimplModel: public QSqlTableModel
@@ -672,10 +672,10 @@ class RecordReimplModel: public QSqlTableModel
     Q_OBJECT
 public:
     RecordReimplModel(QObject *parent, QSqlDatabase db):QSqlTableModel(parent, db) {}
-    QVariant data(const QModelIndex &index, int role = Qt::EditRole) const override
+    QVariant data(const QModelIndex &index, int role = BobUI::EditRole) const override
     {
-        if (role == Qt::EditRole)
-            return QString("Qt");
+        if (role == BobUI::EditRole)
+            return QString("BobUI");
         else
             return QSqlTableModel::data(index, role);
     }
@@ -691,21 +691,21 @@ void tst_QSqlTableModel::recordReimpl()
     RecordReimplModel model(0, db);
     model.setEditStrategy(QSqlTableModel::OnManualSubmit);
     model.setTable(test3);
-    model.setSort(0, Qt::AscendingOrder);
+    model.setSort(0, BobUI::AscendingOrder);
     QVERIFY_SQL(model, select());
 
     // make sure reimplemented data() affects record(row)
     QSqlRecord rec = model.record(0);
-    QCOMPARE(rec.value(1).toString(), QString("Qt"));
-    QCOMPARE(rec.value(2).toString(), QString("Qt"));
+    QCOMPARE(rec.value(1).toString(), QString("BobUI"));
+    QCOMPARE(rec.value(2).toString(), QString("BobUI"));
 
     // and also when the record is in the cache
-    QVERIFY_SQL(model, setData(model.index(0, 1), QString("not Qt")));
-    QVERIFY_SQL(model, setData(model.index(0, 2), QString("not Qt")));
+    QVERIFY_SQL(model, setData(model.index(0, 1), QString("not BobUI")));
+    QVERIFY_SQL(model, setData(model.index(0, 2), QString("not BobUI")));
 
     rec = model.record(0);
-    QCOMPARE(rec.value(1).toString(), QString("Qt"));
-    QCOMPARE(rec.value(2).toString(), QString("Qt"));
+    QCOMPARE(rec.value(1).toString(), QString("BobUI"));
+    QCOMPARE(rec.value(2).toString(), QString("BobUI"));
 }
 
 void tst_QSqlTableModel::insertRow()
@@ -719,7 +719,7 @@ void tst_QSqlTableModel::insertRow()
     QSqlTableModel model(0, db);
     model.setEditStrategy(submitpolicy);
     model.setTable(test);
-    model.setSort(0, Qt::AscendingOrder);
+    model.setSort(0, BobUI::AscendingOrder);
     QVERIFY_SQL(model, select());
 
     QCOMPARE(model.data(model.index(0, 0)).toInt(), 1);
@@ -892,7 +892,7 @@ void tst_QSqlTableModel::insertRecord()
     QSqlTableModel model(0, db);
     model.setEditStrategy(QSqlTableModel::OnManualSubmit);
     model.setTable(test);
-    model.setSort(0, Qt::AscendingOrder);
+    model.setSort(0, BobUI::AscendingOrder);
     QVERIFY_SQL(model, select());
 
     QSqlRecord rec = model.record();
@@ -926,7 +926,7 @@ void tst_QSqlTableModel::insertMultiRecords()
     QSqlTableModel model(0, db);
     model.setEditStrategy(QSqlTableModel::OnManualSubmit);
     model.setTable(test);
-    model.setSort(0, Qt::AscendingOrder);
+    model.setSort(0, BobUI::AscendingOrder);
     QVERIFY_SQL(model, select());
 
     QCOMPARE(model.rowCount(), 3);
@@ -953,7 +953,7 @@ void tst_QSqlTableModel::insertMultiRecords()
     QVERIFY(model.submitAll());
     model.clear();
     model.setTable(test);
-    model.setSort(0, Qt::AscendingOrder);
+    model.setSort(0, BobUI::AscendingOrder);
     QVERIFY_SQL(model, select());
 
     QCOMPARE(model.data(model.index(0, 0)).toInt(), 1);
@@ -980,7 +980,7 @@ void tst_QSqlTableModel::insertWithAutoColumn()
 
     QSqlTableModel model(0, db);
     model.setTable(tbl);
-    model.setSort(0, Qt::AscendingOrder);
+    model.setSort(0, BobUI::AscendingOrder);
     model.setEditStrategy(submitpolicy);
 
     QVERIFY_SQL(model, select());
@@ -1040,12 +1040,12 @@ void tst_QSqlTableModel::submitAll()
 
     QSqlTableModel model(0, db);
     model.setTable(test);
-    model.setSort(0, Qt::AscendingOrder);
+    model.setSort(0, BobUI::AscendingOrder);
     model.setEditStrategy(QSqlTableModel::OnManualSubmit);
     QVERIFY_SQL(model, select());
 
-    QVERIFY(model.setData(model.index(0, 1), "harry2", Qt::EditRole));
-    QVERIFY(model.setData(model.index(1, 1), "trond2", Qt::EditRole));
+    QVERIFY(model.setData(model.index(0, 1), "harry2", BobUI::EditRole));
+    QVERIFY(model.setData(model.index(1, 1), "trond2", BobUI::EditRole));
 
     QCOMPARE(model.data(model.index(0, 1)).toString(), QString("harry2"));
     QCOMPARE(model.data(model.index(1, 1)).toString(), QString("trond2"));
@@ -1055,8 +1055,8 @@ void tst_QSqlTableModel::submitAll()
     QCOMPARE(model.data(model.index(0, 1)).toString(), QString("harry2"));
     QCOMPARE(model.data(model.index(1, 1)).toString(), QString("trond2"));
 
-    QVERIFY(model.setData(model.index(0, 1), "harry", Qt::EditRole));
-    QVERIFY(model.setData(model.index(1, 1), "trond", Qt::EditRole));
+    QVERIFY(model.setData(model.index(0, 1), "harry", BobUI::EditRole));
+    QVERIFY(model.setData(model.index(1, 1), "trond", BobUI::EditRole));
 
     QCOMPARE(model.data(model.index(0, 1)).toString(), QString("harry"));
     QCOMPARE(model.data(model.index(1, 1)).toString(), QString("trond"));
@@ -1076,18 +1076,18 @@ void tst_QSqlTableModel::removeRow()
 
     QSqlTableModel model(0, db);
     model.setTable(test);
-    model.setSort(0, Qt::AscendingOrder);
+    model.setSort(0, BobUI::AscendingOrder);
     model.setEditStrategy(QSqlTableModel::OnManualSubmit);
     QVERIFY_SQL(model, select());
     QCOMPARE(model.rowCount(), 3);
 
     // headerDataChanged must be emitted by the model since the row won't vanish until select
-    qRegisterMetaType<Qt::Orientation>("Qt::Orientation");
+    qRegisterMetaType<BobUI::Orientation>("BobUI::Orientation");
     QSignalSpy headerDataChangedSpy(&model, &QSqlTableModel::headerDataChanged);
 
     QVERIFY(model.removeRow(1));
     QCOMPARE(headerDataChangedSpy.size(), 1);
-    QCOMPARE(*static_cast<const Qt::Orientation *>(headerDataChangedSpy.at(0).value(0).constData()), Qt::Vertical);
+    QCOMPARE(*static_cast<const BobUI::Orientation *>(headerDataChangedSpy.at(0).value(0).constData()), BobUI::Vertical);
     QCOMPARE(headerDataChangedSpy.at(0).at(1).toInt(), 1);
     QCOMPARE(headerDataChangedSpy.at(0).at(2).toInt(), 1);
     QVERIFY(model.submitAll());
@@ -1125,7 +1125,7 @@ void tst_QSqlTableModel::removeRows()
 
     QSqlTableModel model(0, db);
     model.setTable(test);
-    model.setSort(0, Qt::AscendingOrder);
+    model.setSort(0, BobUI::AscendingOrder);
     model.setEditStrategy(QSqlTableModel::OnFieldChange);
     QVERIFY_SQL(model, select());
     QCOMPARE(model.rowCount(), 3);
@@ -1170,7 +1170,7 @@ void tst_QSqlTableModel::removeRows()
     QVERIFY(!model.removeRows(5, 1)); // past end (DOESN'T cause a beforeDelete to be emitted)
     QVERIFY(!model.removeRows(1, 0, model.index(2, 0))); // can't pass a valid modelindex
 
-    qRegisterMetaType<Qt::Orientation>("Qt::Orientation");
+    qRegisterMetaType<BobUI::Orientation>("BobUI::Orientation");
     QSignalSpy headerDataChangedSpy(&model, &QSqlTableModel::headerDataChanged);
     QVERIFY(model.removeRows(0, 2, QModelIndex()));
     QCOMPARE(headerDataChangedSpy.size(), 2);
@@ -1198,7 +1198,7 @@ void tst_QSqlTableModel::removeInsertedRow()
 
     QSqlTableModel model(0, db);
     model.setTable(test);
-    model.setSort(0, Qt::AscendingOrder);
+    model.setSort(0, BobUI::AscendingOrder);
 
     model.setEditStrategy(submitpolicy);
     QVERIFY_SQL(model, select());
@@ -1214,7 +1214,7 @@ void tst_QSqlTableModel::removeInsertedRow()
     QCOMPARE(model.data(model.index(1, 1)).toString(), QString("trond"));
     QCOMPARE(model.data(model.index(2, 1)).toString(), QString("vohi"));
 
-    // Now insert a row with a null, and check that removing it also works (QTBUG-15979 etc)
+    // Now insert a row with a null, and check that removing it also works (BOBUIBUG-15979 etc)
     model.insertRow(1);
     model.setData(model.index(1,0), 55);
     model.setData(model.index(1,1), QString("null columns"));
@@ -1262,7 +1262,7 @@ void tst_QSqlTableModel::removeInsertedRows()
 
     QSqlTableModel model(0, db);
     model.setTable(test);
-    model.setSort(0, Qt::AscendingOrder);
+    model.setSort(0, BobUI::AscendingOrder);
     model.setEditStrategy(QSqlTableModel::OnManualSubmit); // you can't insert more than one row otherwise
     QVERIFY_SQL(model, select());
     QCOMPARE(model.rowCount(), 3);
@@ -1326,7 +1326,7 @@ void tst_QSqlTableModel::removeInsertedRows()
     model.clear();
     recreateTestTables();
     model.setTable(test);
-    model.setSort(0, Qt::AscendingOrder);
+    model.setSort(0, BobUI::AscendingOrder);
     model.setEditStrategy(QSqlTableModel::OnManualSubmit); // you can't insert more than one row otherwise
     QVERIFY_SQL(model, select());
     QCOMPARE(model.rowCount(), 3);
@@ -1350,7 +1350,7 @@ void tst_QSqlTableModel::removeInsertedRows()
     model.clear();
     recreateTestTables();
     model.setTable(test);
-    model.setSort(0, Qt::AscendingOrder);
+    model.setSort(0, BobUI::AscendingOrder);
     model.setEditStrategy(QSqlTableModel::OnManualSubmit); // you can't insert more than one row otherwise
     QVERIFY_SQL(model, select());
     QCOMPARE(model.rowCount(), 3);
@@ -1394,7 +1394,7 @@ void tst_QSqlTableModel::revert()
 
     QSqlTableModel model(0, db);
     model.setTable(tblA);
-    model.setSort(0, Qt::AscendingOrder);
+    model.setSort(0, BobUI::AscendingOrder);
     model.setEditStrategy(submitpolicy);
 
     QVERIFY_SQL(model, select());
@@ -1461,14 +1461,14 @@ void tst_QSqlTableModel::isDirty()
     model.setTable(test);
     QFAIL_SQL(model, isDirty());
 
-    model.setSort(0, Qt::AscendingOrder);
+    model.setSort(0, BobUI::AscendingOrder);
     QVERIFY_SQL(model, select());
     QFAIL_SQL(model, isDirty());
 
     // check that setting the current value does not add to the cache
     {
         QModelIndex i = model.index(0, 1);
-        QVariant v = model.data(i, Qt::EditRole);
+        QVariant v = model.data(i, BobUI::EditRole);
         QVERIFY_SQL(model, setData(i, v));
         QFAIL_SQL(model, isDirty());
     }
@@ -1505,7 +1505,7 @@ void tst_QSqlTableModel::isDirty()
         QCOMPARE(model.data(model.index(0, 1)).toString(), QString("sam i am"));
         QVERIFY_SQL(model, isDirty());
         QVERIFY_SQL(model, isDirty(model.index(0, 1)));
-        QVERIFY(!(model.flags(model.index(1, 1)) & Qt::ItemIsEditable));
+        QVERIFY(!(model.flags(model.index(1, 1)) & BobUI::ItemIsEditable));
         QFAIL_SQL(model, setData(model.index(1, 1), QString("sam i am")));
         QFAIL_SQL(model, setRecord(1, model.record(1)));
         QFAIL_SQL(model, insertRow(1));
@@ -1655,12 +1655,12 @@ void tst_QSqlTableModel::emptyTable()
     QCOMPARE(model.rowCount(), 0);
     QCOMPARE(model.columnCount(), 1);
 
-    // QTBUG-29108: check correct horizontal header for empty query with pending insert
-    QCOMPARE(model.headerData(0, Qt::Horizontal).toString().toLower(), QString("id"));
+    // BOBUIBUG-29108: check correct horizontal header for empty query with pending insert
+    QCOMPARE(model.headerData(0, BobUI::Horizontal).toString().toLower(), QString("id"));
     model.setEditStrategy(QSqlTableModel::OnManualSubmit);
     model.insertRow(0);
     QCOMPARE(model.rowCount(), 1);
-    QCOMPARE(model.headerData(0, Qt::Horizontal).toString().toLower(), QString("id"));
+    QCOMPARE(model.headerData(0, BobUI::Horizontal).toString().toLower(), QString("id"));
     model.revertAll();
 }
 
@@ -1691,7 +1691,7 @@ void tst_QSqlTableModel::whitespaceInIdentifiers()
     QSqlDatabase db = QSqlDatabase::database(dbName);
     CHECK_DATABASE(db);
 
-    QString tableName = qTableName("qtestw hitespace", __FILE__, db);
+    QString tableName = qTableName("bobuiestw hitespace", __FILE__, db);
 
     QSqlTableModel model(0, db);
     model.setTable(tableName);
@@ -1866,7 +1866,7 @@ void tst_QSqlTableModel::submitAllOnInvalidTable()
     model.setEditStrategy(QSqlTableModel::OnManualSubmit);
 
     // setTable returns a void, so the error can only be caught by
-    // manually checking lastError(). ### Qt5: This should be changed!
+    // manually checking lastError(). ### BobUI5: This should be changed!
     model.setTable(qTableName("invalidTable", __FILE__, db));
     QCOMPARE(model.lastError().type(), QSqlError::StatementError);
 
@@ -2029,22 +2029,22 @@ void tst_QSqlTableModel::sqlite_attachedDatabase()
         model.setTable("\"adb\".\"atest\"");
         QVERIFY_SQL(model, select());
         QCOMPARE(model.rowCount(), 1);
-        QCOMPARE(model.data(model.index(0, 0), Qt::DisplayRole).toInt(), 1);
-        QCOMPARE(model.data(model.index(0, 1), Qt::DisplayRole).toString(), QLatin1String("attached-atest"));
+        QCOMPARE(model.data(model.index(0, 0), BobUI::DisplayRole).toInt(), 1);
+        QCOMPARE(model.data(model.index(0, 1), BobUI::DisplayRole).toString(), QLatin1String("attached-atest"));
 
         // This should query the table in the attached database (unique tablename)
         model.setTable("atest2");
         QVERIFY_SQL(model, select());
         QCOMPARE(model.rowCount(), 1);
-        QCOMPARE(model.data(model.index(0, 0), Qt::DisplayRole).toInt(), 2);
-        QCOMPARE(model.data(model.index(0, 1), Qt::DisplayRole).toString(), QLatin1String("attached-atest2"));
+        QCOMPARE(model.data(model.index(0, 0), BobUI::DisplayRole).toInt(), 2);
+        QCOMPARE(model.data(model.index(0, 1), BobUI::DisplayRole).toString(), QLatin1String("attached-atest2"));
 
         // This should query the table in the main database (tables in main db has 1st priority)
         model.setTable("atest");
         QVERIFY_SQL(model, select());
         QCOMPARE(model.rowCount(), 1);
-        QCOMPARE(model.data(model.index(0, 0), Qt::DisplayRole).toInt(), 3);
-        QCOMPARE(model.data(model.index(0, 1), Qt::DisplayRole).toString(), QLatin1String("main"));
+        QCOMPARE(model.data(model.index(0, 0), BobUI::DisplayRole).toInt(), 3);
+        QCOMPARE(model.data(model.index(0, 1), BobUI::DisplayRole).toString(), QLatin1String("main"));
         attachedDb.close();
     }
 }
@@ -2062,7 +2062,7 @@ void tst_QSqlTableModel::tableModifyWithBlank()
 
     //generate a time stamp for the test. Add one second to the current time to make sure
     //it is different than the QSqlQuery test.
-    QString timeString=QDateTime::currentDateTime().addSecs(1).toString(Qt::ISODate);
+    QString timeString=QDateTime::currentDateTime().addSecs(1).toString(BobUI::ISODate);
 
     //insert a new row, with column0 being the timestamp.
     //Should be equivalent to QSqlQuery INSERT INTO... command)
@@ -2173,20 +2173,20 @@ void tst_QSqlTableModel::invalidFilterAndHeaderData()
     model.setTable(test);
     model.setEditStrategy(QSqlTableModel::OnManualSubmit);
     QVERIFY_SQL(model, select());
-    QVERIFY_SQL(model, setHeaderData(0, Qt::Horizontal, "id"));
-    QVERIFY_SQL(model, setHeaderData(1, Qt::Horizontal, "name"));
-    QVERIFY_SQL(model, setHeaderData(2, Qt::Horizontal, "title"));
+    QVERIFY_SQL(model, setHeaderData(0, BobUI::Horizontal, "id"));
+    QVERIFY_SQL(model, setHeaderData(1, BobUI::Horizontal, "name"));
+    QVERIFY_SQL(model, setHeaderData(2, BobUI::Horizontal, "title"));
 
     model.setFilter("some nonsense");
 
-    QVariant v = model.headerData(0, Qt::Horizontal, Qt::SizeHintRole);
+    QVariant v = model.headerData(0, BobUI::Horizontal, BobUI::SizeHintRole);
     QVERIFY(!v.isValid());
 }
 
-class SqlThread : public QThread
+class SqlThread : public BOBUIhread
 {
 public:
-    SqlThread() : QThread() {}
+    SqlThread() : BOBUIhread() {}
     void run() override
     {
         QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "non-default-connection");
@@ -2203,7 +2203,7 @@ void tst_QSqlTableModel::modelInAnotherThread()
     CHECK_DATABASE(db);
     SqlThread t;
     t.start();
-    QTRY_VERIFY(t.isDone);
+    BOBUIRY_VERIFY(t.isDone);
     QVERIFY(t.isFinished());
 }
 
@@ -2251,5 +2251,5 @@ void tst_QSqlTableModel::sqlite_selectFromIdentifierWithDot()
     }
 }
 
-QTEST_MAIN(tst_QSqlTableModel)
+BOBUIEST_MAIN(tst_QSqlTableModel)
 #include "tst_qsqltablemodel.moc"

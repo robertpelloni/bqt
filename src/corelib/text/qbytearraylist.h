@@ -1,29 +1,29 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
 // Copyright (C) 2014 by Southwest Research Institute (R)
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#include <QtCore/qlist.h>
+#include <BobUICore/qlist.h>
 
 #ifndef QBYTEARRAYLIST_H
 #define QBYTEARRAYLIST_H
 
-#include <QtCore/qbytearray.h>
+#include <BobUICore/qbytearray.h>
 
 #include <limits>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if !defined(QT_NO_JAVA_STYLE_ITERATORS)
+#if !defined(BOBUI_NO_JAVA_STYLE_ITERATORS)
 typedef QListIterator<QByteArray> QByteArrayListIterator;
 typedef QMutableListIterator<QByteArray> QMutableByteArrayListIterator;
 #endif
 
 #ifndef Q_QDOC
 
-namespace QtPrivate {
-#if QT_CORE_REMOVED_SINCE(6, 3) && QT_POINTER_SIZE != 4
+namespace BobUIPrivate {
+#if BOBUI_CORE_REMOVED_SINCE(6, 3) && BOBUI_POINTER_SIZE != 4
     QByteArray Q_CORE_EXPORT QByteArrayList_join(const QByteArrayList *that, const char *separator, int separatorLength);
 #endif
     QByteArray Q_CORE_EXPORT QByteArrayList_join(const QByteArrayList *that, const char *sep, qsizetype len);
@@ -52,7 +52,7 @@ public:
 
     QByteArray join(QByteArrayView sep = {}) const
     {
-        return QtPrivate::QByteArrayList_join(self(), sep.data(), sep.size());
+        return BobUIPrivate::QByteArrayList_join(self(), sep.data(), sep.size());
     }
     Q_WEAK_OVERLOAD
     inline QByteArray join(const QByteArray &sep) const
@@ -61,6 +61,6 @@ public:
     { return join({&sep, 1}); }
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QBYTEARRAYLIST_H

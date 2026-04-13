@@ -1,6 +1,6 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "project.h"
 #include "property.h"
@@ -26,12 +26,12 @@
 #endif
 
 #ifdef Q_OS_WIN
-#  include <qt_windows.h>
+#  include <bobui_windows.h>
 #endif
 
 using namespace QMakeInternal;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #ifdef Q_OS_WIN
 
@@ -134,7 +134,7 @@ static int doSed(int argc, char **argv)
             perror(inFile);
             return 1;
         }
-        QTextStream is(f);
+        BOBUIextStream is(f);
         while (!is.atEnd()) {
             QString line = is.readLine();
             for (int i = 0; i < substs.size(); i++)
@@ -402,8 +402,8 @@ static int dumpMacros(const wchar_t *cmdline)
 #endif // Q_OS_WIN
 
 /* This is to work around lame implementation on Darwin. It has been noted that the getpwd(3) function
-   is much too slow, and called much too often inside of Qt (every fileFixify). With this we use a locally
-   cached copy because I can control all the times it is set (because Qt never sets the pwd under me).
+   is much too slow, and called much too often inside of BobUI (every fileFixify). With this we use a locally
+   cached copy because I can control all the times it is set (because BobUI never sets the pwd under me).
 */
 static QString pwd;
 QString qmake_getpwd()
@@ -428,11 +428,11 @@ int runQMake(int argc, char **argv)
     // stderr is unbuffered by default, but stdout buffering depends on whether
     // there is a terminal attached. Buffering can make output from stderr and stdout
     // appear out of sync, so force stdout to be unbuffered as well.
-    // This is particularly important for things like QtCreator and scripted builds.
+    // This is particularly important for things like BobUICreator and scripted builds.
     setvbuf(stdout, (char *)NULL, _IONBF, 0);
 
     // Workaround for inferior/missing command line tools on Windows: make our own!
-    if (argc >= 4 && !strcmp(argv[1], "-qtconf") && !strcmp(argv[3], "-install"))
+    if (argc >= 4 && !strcmp(argv[1], "-bobuiconf") && !strcmp(argv[3], "-install"))
         return doInstall(argc - 4, argv + 4);
     if (argc >= 2 && !strcmp(argv[1], "-install"))
         return doInstall(argc - 2, argv + 2);
@@ -569,11 +569,11 @@ int runQMake(int argc, char **argv)
     return exit_val;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 int main(int argc, char **argv)
 {
     // Set name of the qmake application in QCoreApplication instance
-    QT_PREPEND_NAMESPACE(QCoreApplication) app(argc, argv);
-    return QT_PREPEND_NAMESPACE(runQMake)(argc, argv);
+    BOBUI_PREPEND_NAMESPACE(QCoreApplication) app(argc, argv);
+    return BOBUI_PREPEND_NAMESPACE(runQMake)(argc, argv);
 }

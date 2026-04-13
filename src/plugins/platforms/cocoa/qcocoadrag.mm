@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <AppKit/AppKit.h>
 #include <UniformTypeIdentifiers/UTCoreTypes.h>
@@ -9,21 +9,21 @@
 #include "qmacclipboard.h"
 #include "qcocoahelpers.h"
 
-#include <QtGui/qfont.h>
-#include <QtGui/qfontmetrics.h>
-#include <QtGui/qpainter.h>
-#include <QtGui/qutimimeconverter.h>
-#include <QtGui/private/qcoregraphics_p.h>
-#include <QtGui/private/qdnd_p.h>
+#include <BobUIGui/qfont.h>
+#include <BobUIGui/qfontmetrics.h>
+#include <BobUIGui/qpainter.h>
+#include <BobUIGui/qutimimeconverter.h>
+#include <BobUIGui/private/qcoregraphics_p.h>
+#include <BobUIGui/private/qdnd_p.h>
 
-#include <QtCore/qeventloop.h>
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/qeventloop.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
 #include <vector>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static const int dragImageMaxChars = 26;
 
@@ -55,28 +55,28 @@ QMimeData *QCocoaDrag::dragMimeData()
     return nullptr;
 }
 
-Qt::DropAction QCocoaDrag::defaultAction(Qt::DropActions possibleActions,
-                                           Qt::KeyboardModifiers modifiers) const
+BobUI::DropAction QCocoaDrag::defaultAction(BobUI::DropActions possibleActions,
+                                           BobUI::KeyboardModifiers modifiers) const
 {
-    Qt::DropAction default_action = Qt::IgnoreAction;
+    BobUI::DropAction default_action = BobUI::IgnoreAction;
 
     if (currentDrag()) {
         default_action = currentDrag()->defaultAction();
         possibleActions = currentDrag()->supportedActions();
     }
 
-    if (default_action == Qt::IgnoreAction) {
+    if (default_action == BobUI::IgnoreAction) {
         //This means that the drag was initiated by QDrag::start and we need to
         //preserve the old behavior
-        default_action = Qt::CopyAction;
+        default_action = BobUI::CopyAction;
     }
 
-    if (modifiers & Qt::ControlModifier && modifiers & Qt::AltModifier)
-        default_action = Qt::LinkAction;
-    else if (modifiers & Qt::AltModifier)
-        default_action = Qt::CopyAction;
-    else if (modifiers & Qt::ControlModifier)
-        default_action = Qt::MoveAction;
+    if (modifiers & BobUI::ControlModifier && modifiers & BobUI::AltModifier)
+        default_action = BobUI::LinkAction;
+    else if (modifiers & BobUI::AltModifier)
+        default_action = BobUI::CopyAction;
+    else if (modifiers & BobUI::ControlModifier)
+        default_action = BobUI::MoveAction;
 
 #ifdef QDND_DEBUG
     qDebug("possible actions : %s", dragActionsToString(possibleActions).latin1());
@@ -84,14 +84,14 @@ Qt::DropAction QCocoaDrag::defaultAction(Qt::DropActions possibleActions,
 
     // Check if the action determined is allowed
     if (!(possibleActions & default_action)) {
-        if (possibleActions & Qt::CopyAction)
-            default_action = Qt::CopyAction;
-        else if (possibleActions & Qt::MoveAction)
-            default_action = Qt::MoveAction;
-        else if (possibleActions & Qt::LinkAction)
-            default_action = Qt::LinkAction;
+        if (possibleActions & BobUI::CopyAction)
+            default_action = BobUI::CopyAction;
+        else if (possibleActions & BobUI::MoveAction)
+            default_action = BobUI::MoveAction;
+        else if (possibleActions & BobUI::LinkAction)
+            default_action = BobUI::LinkAction;
         else
-            default_action = Qt::IgnoreAction;
+            default_action = BobUI::IgnoreAction;
     }
 
 #ifdef QDND_DEBUG
@@ -102,9 +102,9 @@ Qt::DropAction QCocoaDrag::defaultAction(Qt::DropActions possibleActions,
 }
 
 
-Qt::DropAction QCocoaDrag::drag(QDrag *o)
+BobUI::DropAction QCocoaDrag::drag(QDrag *o)
 {
-    m_executed_drop_action = Qt::IgnoreAction;
+    m_executed_drop_action = BobUI::IgnoreAction;
     if (!m_lastView) {
         [m_lastEvent release];
         m_lastEvent = nil;
@@ -113,7 +113,7 @@ Qt::DropAction QCocoaDrag::drag(QDrag *o)
 
     m_drag = o;
     QMacPasteboard dragBoard(CFStringRef(NSPasteboardNameDrag), QUtiMimeConverter::HandlerScopeFlag::DnD);
-    m_drag->mimeData()->setData("application/x-qt-mime-type-name"_L1, QByteArray("dummy"));
+    m_drag->mimeData()->setData("application/x-bobui-mime-type-name"_L1, QByteArray("dummy"));
     dragBoard.setMimeData(m_drag->mimeData(), QMacPasteboard::LazyRequest);
 
     if (maybeDragMultipleItems())
@@ -148,7 +148,7 @@ Qt::DropAction QCocoaDrag::drag(QDrag *o)
 bool QCocoaDrag::maybeDragMultipleItems()
 {
     Q_ASSERT(m_drag && m_drag->mimeData());
-    Q_ASSERT(m_executed_drop_action == Qt::IgnoreAction);
+    Q_ASSERT(m_executed_drop_action == BobUI::IgnoreAction);
 
     const QMacAutoReleasePool pool;
 
@@ -158,10 +158,10 @@ bool QCocoaDrag::maybeDragMultipleItems()
 
     auto *sourceView = static_cast<NSView<NSDraggingSource>*>(view);
 
-    const auto &qtUrls = m_drag->mimeData()->urls();
+    const auto &bobuiUrls = m_drag->mimeData()->urls();
     NSPasteboard *dragBoard = [NSPasteboard pasteboardWithName:NSPasteboardNameDrag];
 
-    if (qtUrls.size() <= 1) {
+    if (bobuiUrls.size() <= 1) {
         // Good old -dragImage: works perfectly for this ...
         return false;
     }
@@ -193,14 +193,14 @@ bool QCocoaDrag::maybeDragMultipleItems()
     // We only set the image for the first item and nil for the rest, the image already
     // contains a combined picture for all urls we drag.
     auto imageOrNil = dragImage;
-    for (const auto &qtUrl : qtUrls) {
-        if (!qtUrl.isValid())
+    for (const auto &bobuiUrl : bobuiUrls) {
+        if (!bobuiUrl.isValid())
             continue;
 
-        if (qtUrl.isRelative()) // NSPasteboardWriting rejects such items.
+        if (bobuiUrl.isRelative()) // NSPasteboardWriting rejects such items.
             continue;
 
-        NSURL *nsUrl = qtUrl.toNSURL();
+        NSURL *nsUrl = bobuiUrl.toNSURL();
         auto *newItem = [[[NSDraggingItem alloc] initWithPasteboardWriter:nsUrl] autorelease];
         const NSRect itemFrame = NSMakeRect(itemLocation.x, itemLocation.y,
                                             dragImage.size.width,
@@ -227,7 +227,7 @@ bool QCocoaDrag::maybeDragMultipleItems()
     return true;
 }
 
-void QCocoaDrag::setAcceptedAction(Qt::DropAction act)
+void QCocoaDrag::setAcceptedAction(BobUI::DropAction act)
 {
     m_executed_drop_action = act;
 }
@@ -281,8 +281,8 @@ QPixmap QCocoaDrag::dragPixmap(QDrag *drag, QPoint &hotSpot) const
                     pm = QPixmap(width * dpr, height * dpr);
                     pm.setDevicePixelRatio(dpr);
                     QPainter p(&pm);
-                    p.fillRect(0, 0, pm.width(), pm.height(), Qt::color0);
-                    p.setPen(Qt::color1);
+                    p.fillRect(0, 0, pm.width(), pm.height(), BobUI::color0);
+                    p.setPen(BobUI::color1);
                     p.setFont(f);
                     p.drawText(0, fm.ascent(), s);
                     p.end();
@@ -348,5 +348,5 @@ bool QCocoaDropData::hasFormat_sys(const QString &mimeType) const
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 

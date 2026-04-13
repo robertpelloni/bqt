@@ -1,4 +1,4 @@
-// Definitions for building in Qt source, ref. src/jconfig.h.in
+// Definitions for building in BobUI source, ref. src/jconfig.h.in
 
 #define JPEG_LIB_VERSION 80
 

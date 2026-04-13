@@ -1,17 +1,17 @@
-Qt 4.5.1 is a bug-fix release. It maintains both forward and backward
-compatibility (source and binary) with Qt 4.5.0.  For more details,
+BobUI 4.5.1 is a bug-fix release. It maintains both forward and backward
+compatibility (source and binary) with BobUI 4.5.0.  For more details,
 refer to the online documentation included in this distribution. The
 documentation is also available online:
 
-  http://qt.nokia.com/doc/4.5
+  http://bobui.nokia.com/doc/4.5
 
-The Qt version 4.5 series is binary compatible with the 4.4.x series.
+The BobUI version 4.5 series is binary compatible with the 4.4.x series.
 Applications compiled for 4.4 will continue to run with 4.5.
 
 Some of the changes listed in this file include issue tracking numbers
 corresponding to tasks in the Task Tracker:
 
-  http://qt.nokia.com/developer/task-tracker
+  http://bobui.nokia.com/developer/task-tracker
 
 Each of these identifiers can be entered in the task tracker to obtain more
 information about a particular change.
@@ -28,7 +28,7 @@ General Improvements
    * [245675] Clarified the differences between QItemDelegate and
      QStyledItemDelegate.
    * [248752] Marked QPrintDialog::printer(), setPrinter() and addButton()
-     as Unix only functions, part of Qt3Support.
+     as Unix only functions, part of BobUI3Support.
 
 - Embedded Dialogs demo
    * [246517] Fixed warnings and bugs in hover handling on Mac OS X
@@ -89,8 +89,8 @@ Third party components
    * [246056] Fixed an assertion failure in setCompletionPrefix().
    * [250064] Fixed a regression in focus policy propagation.
 
-- QtConcurrent
-   * [244718] Reduced the number of calls to QThread::idealThreadCount().
+- BobUIConcurrent
+   * [244718] Reduced the number of calls to BOBUIhread::idealThreadCount().
 
 - QDirIterator
    * [247645] Fixed a bug that may loose all cached data inside QFileInfo.
@@ -136,7 +136,7 @@ Third party components
      because we called the virtual sizeHint() from the constructor.
 
 - QHttp
-   * Compile fixes for QT_BEGIN_NAMESPACE being in the wrong place in some
+   * Compile fixes for BOBUI_BEGIN_NAMESPACE being in the wrong place in some
      private headers.
    * [208445] Cancel request upon receiving unknown authentication method.
 
@@ -162,7 +162,7 @@ Third party components
 
 - QMutex
    * Fixed a performance regression for contended mutexes as reported on the
-     qt4-preview-feedback list.
+     bobui4-preview-feedback list.
 
 - QPainter
    * Compile fixes for OpenGL paint engine on OpenGL/ES 1.1 CommonLite and
@@ -178,7 +178,7 @@ Third party components
    * [249490] Fixed one-pixel offset between stroke and fills of ellipses in
      the X11 paint engine.
    * [249628] Fixed a crash in OpenGL paint engine when filling using
-     Qt::NoBrush.
+     BobUI::NoBrush.
 
 
 - QPixmap
@@ -215,19 +215,19 @@ Third party components
    * Fixed a crash that occured while styling the title bar of a QMdiArea.
    * [188195] Fixed the background of QAbstractScrollArea losing its color
      if styled with pseudo-class.
-   * [246542] Fixed a bug in QToolButton::hover{ color:.... }.
+   * [246542] Fixed a bug in BOBUIoolButton::hover{ color:.... }.
 
-- QThread
+- BOBUIhread
    * [249997] Added documentation indicating that the priority set by the
      programmer may be ignored, for example on Linux.
 
-- QTreeView
+- BOBUIreeView
    * Fixed a crash that may occur when events are processed immediately
      after a QSortFilterProxyModel is invalidated.
    * [246025] Fixed auto-expand that occured when quickly collapsing an item
      after clicking on a child.
    * [248163] Fixed a possible crash in the paintEvent() when spans are used.
-   * [248805] Calling QTreeView::sortByColumn() programmatically was not
+   * [248805] Calling BOBUIreeView::sortByColumn() programmatically was not
      working if manual sorting was disabled.
 
 - QWidget
@@ -250,7 +250,7 @@ Third party components
    * [248689] Fixed a bug in Q3ListView that would not update under certain
      conditions.
 
-- QtWebKit
+- BobUIWebKit
    * Fixed a bug in cookie handling (WebKit Bugzilla 24062, Benjamin Meyer).
    * Fixed a bug in calling from JavaScript into NPAPI plugins on Windows.
    * Fixed the updating state of WebActions (Erik Bunce)
@@ -293,7 +293,7 @@ Third party components
 *                      Platform Specific Changes                           *
 ****************************************************************************
 
-Qt for Linux/X11
+BobUI for Linux/X11
 ----------------
 
    * Ensured proper resetting for input contexts when switching between
@@ -348,7 +348,7 @@ Qt for Linux/X11
      rendering is disabled.
    * [248498] Fix garbled rendering of subpixel antialiased text when using
      Freetype's native subpixel rendering for vertical subpixel layouts.
-   * [248644] Fall back to Qt's subpixel rendering if Freetype's subpixel
+   * [248644] Fall back to BobUI's subpixel rendering if Freetype's subpixel
      rendering was available at compile-time but not at run-time.
 
 - QEventDispatcherGlib
@@ -357,10 +357,10 @@ Qt for Linux/X11
 
 - QWidget
    * [213512] Fixed a bug that caused wrong clipping when using the
-     Qt::WA_PaintOutsidePaintEvent attribute.
+     BobUI::WA_PaintOutsidePaintEvent attribute.
 
 
-Qt for Windows
+BobUI for Windows
 --------------
 
    * [240891] Corrected the focus behavior of native file dialogs, when an
@@ -369,13 +369,13 @@ Qt for Windows
      quickly.
    * [244875] The system menu will now be shown for a fullscreen  window.
    * [245330] Fixed a bug that caused mouse inputs to be ignored on modal
-     dialogs, when shown from an ActiveQt control.
-   * [249576] Fixed a crash when using a combobox with Qt::NoFocus.
+     dialogs, when shown from an ActiveBobUI control.
+   * [249576] Fixed a crash when using a combobox with BobUI::NoFocus.
 
 
 - QCoreApplication
    * [247401] Fixed a bug that caused a restarted timer to fire too early,
-     resulting in QtWebKit's Javascript consuming 100% CPU on Windows.
+     resulting in BobUIWebKit's Javascript consuming 100% CPU on Windows.
 - QWindowsXPStyle
    * [248036] Fixed an issue where tool buttons were hovering incorrectly
      when disabled.
@@ -385,16 +385,16 @@ Qt for Windows
      QPainter-based graphics to native graphics API and back.
 
 
-Qt for Mac OS X
+BobUI for Mac OS X
 ---------------
 
    * Fixed a crash when showing a widget that is a modal window but has no
      parent.
    * Added QSysInfo::MV_10_6 as an enum to test against.
    * Various compile fixes for the preliminary supported Snow Leopard.
-   * The uninstall-qt.py script included in the binary package no longer
+   * The uninstall-bobui.py script included in the binary package no longer
      complains about removing itself multiple times.
--  * Improved the documentation for how qt_mac_set_dock_menu() works.
+-  * Improved the documentation for how bobui_mac_set_dock_menu() works.
    * Fixed an issue with the focus frame's transparency as it was difficult
      to use the QWidget with stylesheets.
    * [223525] Fixed a crash in the MacMainWindow Demo.
@@ -407,7 +407,7 @@ Qt for Mac OS X
 - QDialog
    * [195904] Parent dialog is displayed on top of its modal child.
    * [218980] Modeless dialogs should be stacked above normal windows.
-   * [239155] QDialog(foo, Qt::Sheet) with QComboBox has non-native
+   * [239155] QDialog(foo, BobUI::Sheet) with QComboBox has non-native
      behavior.
 
 - QFileDialog
@@ -419,17 +419,17 @@ Qt for Mac OS X
 - QMenu
    * [228017] Ensured that QMenu closes when expanding a system menu.
 
-- QTestLib
+- BOBUIestLib
    * Activate the test application when launched from the command line.
 
 - Event system
    * [210912] Fixed a bug where ShowEvent not sent when reshowing a window
      after it was minimized.
 
-- macdeployqt 
+- macdeploybobui 
    * The binary packages now include this tool.
-   * macdeployqt now runs 'strip' on the deployed binaries.
-   * Fixed an issue that prevented the QtSvg module from being deployed.
+   * macdeploybobui now runs 'strip' on the deployed binaries.
+   * Fixed an issue that prevented the BobUISvg module from being deployed.
 
 - configure script
    * Now supports "-arch i386" as an alias for "-arch x86".
@@ -443,8 +443,8 @@ Qt for Mac OS X
    * Fixed a bug where dialogs were positioned in the wrong place on the
      screen.
    * The build-key for Cocoa was changed in the unlikely case that a plugin
-     may make assumptions on how Qt was built. All Cocoa plugins built
-     against Qt 4.5.0 will NOT work with Qt 4.5.1; we do not foresee
+     may make assumptions on how BobUI was built. All Cocoa plugins built
+     against BobUI 4.5.0 will NOT work with BobUI 4.5.1; we do not foresee
      changing this again.
    * Fixed a bug where some windows did not get activation when they
      normally should.
@@ -468,16 +468,16 @@ Qt for Mac OS X
    * [249296] Fixed a bug where line edits on a second page of a stack
      widget were not getting key events.
 
-Qt for Embedded Linux
+BobUI for Embedded Linux
 ---------------------
 
--  * Various improvements to the Qt DirectFB plugin.
+-  * Various improvements to the BobUI DirectFB plugin.
    * Fixed recreation of temporary EGL surfaces in the PowerVR QScreen
      driver.
 -  * Document some necessary #define's for building the PowerVR QScreen
      driver.
 
-Qt for Windows CE
+BobUI for Windows CE
 -----------------
 
    * [246619] Fixed a tap and hold bug for QCheckbox.
@@ -557,10 +557,10 @@ Qt for Windows CE
 - configure
 
 
-- qtconfig
+- bobuiconfig
 
 
-- qt3to4
+- bobui3to4
 
 
 ****************************************************************************

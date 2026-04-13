@@ -1,7 +1,7 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qexception.h>
 #include <qfuture.h>
@@ -14,7 +14,7 @@ class tst_QFuture : public QObject
 
 private slots:
     void makeReadyValueFuture();
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
     void makeExceptionalFuture();
 #endif
     void result();
@@ -23,14 +23,14 @@ private slots:
     void reportResult();
     void reportResults();
     void reportResultsManualProgress();
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
     void reportException();
 #endif
     void then();
     void thenVoid();
     void onCanceled();
     void onCanceledVoid();
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
     void onFailed();
     void onFailedVoid();
     void thenOnFailed();
@@ -46,17 +46,17 @@ private slots:
 void tst_QFuture::makeReadyValueFuture()
 {
     QBENCHMARK {
-        auto future = QtFuture::makeReadyValueFuture(42);
+        auto future = BobUIFuture::makeReadyValueFuture(42);
         Q_UNUSED(future);
     }
 }
 
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
 void tst_QFuture::makeExceptionalFuture()
 {
     QException e;
     QBENCHMARK {
-        auto future = QtFuture::makeExceptionalFuture(e);
+        auto future = BobUIFuture::makeExceptionalFuture(e);
         Q_UNUSED(future);
     }
 }
@@ -64,7 +64,7 @@ void tst_QFuture::makeExceptionalFuture()
 
 void tst_QFuture::result()
 {
-    auto future = QtFuture::makeReadyValueFuture(42);
+    auto future = BobUIFuture::makeReadyValueFuture(42);
 
     QBENCHMARK {
         auto value = future.result();
@@ -92,7 +92,7 @@ void tst_QFuture::results()
 void tst_QFuture::takeResult()
 {
     QBENCHMARK {
-        auto future = QtFuture::makeReadyValueFuture(42);
+        auto future = BobUIFuture::makeReadyValueFuture(42);
         auto value = future.takeResult();
         Q_UNUSED(value);
     }
@@ -127,7 +127,7 @@ void tst_QFuture::reportResultsManualProgress()
     }
 }
 
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
 void tst_QFuture::reportException()
 {
     QException e;
@@ -140,7 +140,7 @@ void tst_QFuture::reportException()
 
 void tst_QFuture::then()
 {
-    auto f = QtFuture::makeReadyValueFuture(42);
+    auto f = BobUIFuture::makeReadyValueFuture(42);
     QBENCHMARK {
         auto future = f.then([](int value) { return value; });
         Q_UNUSED(future);
@@ -149,7 +149,7 @@ void tst_QFuture::then()
 
 void tst_QFuture::thenVoid()
 {
-    auto f = QtFuture::makeReadyVoidFuture();
+    auto f = BobUIFuture::makeReadyVoidFuture();
     QBENCHMARK {
         auto future = f.then([] {});
         Q_UNUSED(future);
@@ -182,11 +182,11 @@ void tst_QFuture::onCanceledVoid()
     }
 }
 
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
 void tst_QFuture::onFailed()
 {
     QException e;
-    auto f = QtFuture::makeExceptionalFuture<int>(e);
+    auto f = BobUIFuture::makeExceptionalFuture<int>(e);
     QBENCHMARK {
         auto future = f.onFailed([] { return 0; });
         Q_UNUSED(future);
@@ -196,7 +196,7 @@ void tst_QFuture::onFailed()
 void tst_QFuture::onFailedVoid()
 {
     QException e;
-    auto f = QtFuture::makeExceptionalFuture(e);
+    auto f = BobUIFuture::makeExceptionalFuture(e);
     QBENCHMARK {
         auto future = f.onFailed([] {});
         Q_UNUSED(future);
@@ -205,7 +205,7 @@ void tst_QFuture::onFailedVoid()
 
 void tst_QFuture::thenOnFailed()
 {
-    auto f = QtFuture::makeReadyValueFuture(42);
+    auto f = BobUIFuture::makeReadyValueFuture(42);
     QBENCHMARK {
         auto future =
                 f.then([](int) { throw std::runtime_error("error"); }).onFailed([] { return 0; });
@@ -215,7 +215,7 @@ void tst_QFuture::thenOnFailed()
 
 void tst_QFuture::thenOnFailedVoid()
 {
-    auto f = QtFuture::makeReadyVoidFuture();
+    auto f = BobUIFuture::makeReadyVoidFuture();
     QBENCHMARK {
         auto future = f.then([] { throw std::runtime_error("error"); }).onFailed([] {});
         Q_UNUSED(future);
@@ -292,6 +292,6 @@ void tst_QFuture::progressText()
     }
 }
 
-QTEST_MAIN(tst_QFuture)
+BOBUIEST_MAIN(tst_QFuture)
 
 #include "tst_bench_qfuture.moc"

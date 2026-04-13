@@ -1,16 +1,16 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qloggingcategory.h"
 #include "qloggingcategory_p.h"
 #include "qloggingregistry_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QLoggingCategory
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 5.2
     \threadsafe
 
@@ -48,7 +48,7 @@ QT_BEGIN_NAMESPACE
        \li Use letters and numbers only.
        \li Use dots to further structure categories into common areas.
        \li Avoid the category names: \c{debug}, \c{info}, \c{warning}, and \c{critical}.
-       \li Category names with the \c{qt} prefix are solely reserved for Qt modules.
+       \li Category names with the \c{bobui} prefix are solely reserved for BobUI modules.
     \endlist
 
     QLoggingCategory objects that are implicitly defined by Q_LOGGING_CATEGORY()
@@ -69,17 +69,17 @@ QT_BEGIN_NAMESPACE
     \section1 Default Category Configuration
 
     Both the QLoggingCategory constructor and the Q_LOGGING_CATEGORY() macro
-    accept an optional QtMsgType argument, which disables all message types with
+    accept an optional BobUIMsgType argument, which disables all message types with
     a lower severity. That is, a category declared with
 
     \snippet qloggingcategory/main.cpp 5
 
-    logs messages of type \c QtWarningMsg, \c QtCriticalMsg, \c QtFatalMsg, but
-    ignores messages of type \c QtDebugMsg and \c QtInfoMsg.
+    logs messages of type \c BobUIWarningMsg, \c BobUICriticalMsg, \c BobUIFatalMsg, but
+    ignores messages of type \c BobUIDebugMsg and \c BobUIInfoMsg.
 
-    If no argument is passed, all messages are logged. Only Qt internal categories
-    which start with \c{qt} are handled differently: For these, only messages of type
-    \c QtInfoMsg, \c QtWarningMsg, \c QtCriticalMsg, and \c QFatalMsg are logged by default.
+    If no argument is passed, all messages are logged. Only BobUI internal categories
+    which start with \c{bobui} are handled differently: For these, only messages of type
+    \c BobUIInfoMsg, \c BobUIWarningMsg, \c BobUICriticalMsg, and \c QFatalMsg are logged by default.
 
     \note Logging categories are not affected by your C++ build configuration.
     That is, whether messages are printed does not change depending on whether
@@ -111,35 +111,35 @@ QT_BEGIN_NAMESPACE
     \snippet code/src_corelib_io_qloggingcategory.cpp 1
 
     Logging rules are automatically loaded from the \c [Rules] section in a logging
-    configuration file. These configuration files are looked up in the QtProject
-    configuration directory, or explicitly set in a \c QT_LOGGING_CONF environment
+    configuration file. These configuration files are looked up in the BobUIProject
+    configuration directory, or explicitly set in a \c BOBUI_LOGGING_CONF environment
     variable:
 
     \snippet code/src_corelib_io_qloggingcategory.cpp 2
 
-    Logging rules can also be specified in a \c QT_LOGGING_RULES environment variable;
+    Logging rules can also be specified in a \c BOBUI_LOGGING_RULES environment variable;
     multiple rules can also be separated by semicolons:
 
     \snippet code/src_corelib_io_qloggingcategory.cpp 3
 
     Rules set by \l setFilterRules() take precedence over rules specified in the
-    QtProject configuration directory. In turn, these rules can be overwritten by those
-    from the configuration file specified by \c QT_LOGGING_CONF, and those set by
-    \c QT_LOGGING_RULES.
+    BobUIProject configuration directory. In turn, these rules can be overwritten by those
+    from the configuration file specified by \c BOBUI_LOGGING_CONF, and those set by
+    \c BOBUI_LOGGING_RULES.
 
     The order of evaluation is as follows:
     \list 1
-        \li [QLibraryInfo::DataPath]/qtlogging.ini
-        \li QtProject/qtlogging.ini
+        \li [QLibraryInfo::DataPath]/bobuilogging.ini
+        \li BobUIProject/bobuilogging.ini
         \li \l setFilterRules()
-        \li \c QT_LOGGING_CONF
-        \li \c QT_LOGGING_RULES
+        \li \c BOBUI_LOGGING_CONF
+        \li \c BOBUI_LOGGING_RULES
     \endlist
 
-    The \c QtProject/qtlogging.ini file is looked up in all directories returned
+    The \c BobUIProject/bobuilogging.ini file is looked up in all directories returned
     by QStandardPaths::GenericConfigLocation.
 
-    Set the \c QT_LOGGING_DEBUG environment variable to find out where your logging
+    Set the \c BOBUI_LOGGING_DEBUG environment variable to find out where your logging
     rules are loaded from.
 
     \section2 Installing a Custom Filter
@@ -159,7 +159,7 @@ QT_BEGIN_NAMESPACE
 /*!
     Constructs a QLoggingCategory object with the provided \a category name,
     and enables all messages with types at least as verbose as \a enableForLevel,
-    which defaults to QtDebugMsg (which enables all categories).
+    which defaults to BobUIDebugMsg (which enables all categories).
 
     If \a category is \nullptr, the category name \c "default" is used.
 
@@ -168,7 +168,7 @@ QT_BEGIN_NAMESPACE
 
     \since 5.4
 */
-QLoggingCategory::QLoggingCategory(const char *category, QtMsgType enableForLevel)
+QLoggingCategory::QLoggingCategory(const char *category, BobUIMsgType enableForLevel)
     : QLoggingCategory(UnregisteredInitialization{},
                        category ? category : QLoggingRegistry::defaultCategoryName)
 {
@@ -246,14 +246,14 @@ QLoggingCategory::~QLoggingCategory()
     Returns \c true if a message of type \a msgtype for the category should be
     shown; \c false otherwise.
 */
-bool QLoggingCategory::isEnabled(QtMsgType msgtype) const
+bool QLoggingCategory::isEnabled(BobUIMsgType msgtype) const
 {
     switch (msgtype) {
-    case QtDebugMsg: return isDebugEnabled();
-    case QtInfoMsg: return isInfoEnabled();
-    case QtWarningMsg: return isWarningEnabled();
-    case QtCriticalMsg: return isCriticalEnabled();
-    case QtFatalMsg: return true;
+    case BobUIDebugMsg: return isDebugEnabled();
+    case BobUIInfoMsg: return isInfoEnabled();
+    case BobUIWarningMsg: return isWarningEnabled();
+    case BobUICriticalMsg: return isCriticalEnabled();
+    case BobUIFatalMsg: return true;
     }
     return false;
 }
@@ -265,16 +265,16 @@ bool QLoggingCategory::isEnabled(QtMsgType msgtype) const
     \l installFilter(). For an overview on how to configure categories globally,
     see \l {Configuring Categories}.
 
-    \note \c QtFatalMsg cannot be changed; it will always remain \c true.
+    \note \c BobUIFatalMsg cannot be changed; it will always remain \c true.
 */
-void QLoggingCategory::setEnabled(QtMsgType type, bool enable)
+void QLoggingCategory::setEnabled(BobUIMsgType type, bool enable)
 {
     switch (type) {
-    case QtDebugMsg: bools.enabledDebug.storeRelaxed(enable); break;
-    case QtInfoMsg: bools.enabledInfo.storeRelaxed(enable); break;
-    case QtWarningMsg: bools.enabledWarning.storeRelaxed(enable); break;
-    case QtCriticalMsg: bools.enabledCritical.storeRelaxed(enable); break;
-    case QtFatalMsg: break;
+    case BobUIDebugMsg: bools.enabledDebug.storeRelaxed(enable); break;
+    case BobUIInfoMsg: bools.enabledInfo.storeRelaxed(enable); break;
+    case BobUIWarningMsg: bools.enabledWarning.storeRelaxed(enable); break;
+    case BobUICriticalMsg: bools.enabledCritical.storeRelaxed(enable); break;
+    case BobUIFatalMsg: break;
     }
 }
 
@@ -367,8 +367,8 @@ QLoggingCategory::installFilter(QLoggingCategory::CategoryFilter filter)
     \snippet qloggingcategory/main.cpp 2
 
     \note The rules might be ignored if a custom category filter is installed
-    with \l installFilter(), or if the user has defined the \c QT_LOGGING_CONF
-    or the \c QT_LOGGING_RULES environment variable.
+    with \l installFilter(), or if the user has defined the \c BOBUI_LOGGING_CONF
+    or the \c BOBUI_LOGGING_RULES environment variable.
 */
 void QLoggingCategory::setFilterRules(const QString &rules)
 {
@@ -645,7 +645,7 @@ void QLoggingCategory::setFilterRules(const QString &rules)
     \since 5.4
 
     Defines a logging category \a name, and makes it configurable under the
-    \a string identifier. By default, messages of QtMsgType \a msgType
+    \a string identifier. By default, messages of BobUIMsgType \a msgType
     and more severe are enabled, types with a lower severity are disabled.
 
     Only one translation unit in a library or executable can define a category
@@ -681,7 +681,7 @@ void QLoggingCategory::setFilterRules(const QString &rules)
     \since 6.9
 
     Defines a static logging category \a name, and makes it configurable under
-    the \a string identifier. By default, messages of QtMsgType \a msgType and
+    the \a string identifier. By default, messages of BobUIMsgType \a msgType and
     more severe are enabled, types with a lower severity are disabled.
 
     The logging category is created using the \c static qualifier so that you
@@ -694,4 +694,4 @@ void QLoggingCategory::setFilterRules(const QString &rules)
     This macro must be used outside of a class or method.
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

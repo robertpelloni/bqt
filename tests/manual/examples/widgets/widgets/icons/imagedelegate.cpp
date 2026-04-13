@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "imagedelegate.h"
 #include "iconpreviewarea.h"
@@ -39,7 +39,7 @@ void ImageDelegate::setEditorData(QWidget *editor,
         return;
 
     int pos = comboBox->findText(index.model()->data(index).toString(),
-                                 Qt::MatchExactly);
+                                 BobUI::MatchExactly);
     comboBox->setCurrentIndex(pos);
 }
 //! [2]

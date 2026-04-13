@@ -1,5 +1,5 @@
-QT += widgets
-requires(qtConfig(filedialog))
+BOBUI += widgets
+requires(bobuiConfig(filedialog))
 
 SOURCES += main.cpp \
            dialog.cpp 
@@ -12,5 +12,5 @@ FORMS += dialog.ui
 EXAMPLE_FILES = *.png
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/corelib/ipc/sharedmemory
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/corelib/ipc/sharedmemory
 INSTALLS += target

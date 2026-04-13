@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "window.h"
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 //! [Set up widgets]
 Window::Window(QWidget *parent)
@@ -14,7 +14,7 @@ Window::Window(QWidget *parent)
     nameLabel = new QLabel(tr("Na&me:"));
     nameEdit = new QLineEdit();
     addressLabel = new QLabel(tr("&Address:"));
-    addressEdit = new QTextEdit();
+    addressEdit = new BOBUIextEdit();
     ageLabel = new QLabel(tr("A&ge (in years):"));
     ageSpinBox = new QSpinBox();
     nextButton = new QPushButton(tr("&Next"));
@@ -63,12 +63,12 @@ void Window::setupModel()
     names << "Alice" << "Bob" << "Carol" << "Donald" << "Emma";
 
     QStringList addresses;
-    addresses << "<qt>123 Main Street<br/>Market Town</qt>"
-              << "<qt>PO Box 32<br/>Mail Handling Service"
-                 "<br/>Service City</qt>"
-              << "<qt>The Lighthouse<br/>Remote Island</qt>"
-              << "<qt>47338 Park Avenue<br/>Big City</qt>"
-              << "<qt>Research Station<br/>Base Camp<br/>Big Mountain</qt>";
+    addresses << "<bobui>123 Main Street<br/>Market Town</bobui>"
+              << "<bobui>PO Box 32<br/>Mail Handling Service"
+                 "<br/>Service City</bobui>"
+              << "<bobui>The Lighthouse<br/>Remote Island</bobui>"
+              << "<bobui>47338 Park Avenue<br/>Big City</bobui>"
+              << "<bobui>Research Station<br/>Base Camp<br/>Big Mountain</bobui>";
 
     QStringList ages;
     ages << "20" << "31" << "32" << "19" << "26";

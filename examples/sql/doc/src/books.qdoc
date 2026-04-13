@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example books
     \title Books
     \ingroup sql_examples
     \examplecategory {Data Processing & I/O}
-    \brief Shows how to use Qt SQL classes with a model/view framework.
+    \brief Shows how to use BobUI SQL classes with a model/view framework.
 
-    The Books example shows how Qt's SQL classes can be used with the model/view
+    The Books example shows how BobUI's SQL classes can be used with the model/view
     framework to create rich user interfaces for information stored in a database.
 
     \image books-demo.png {The main window displays information related to the books stored in the database}

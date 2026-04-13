@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "shapedclock.h"
 
@@ -8,16 +8,16 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPainterStateGuard>
-#include <QTime>
-#include <QTimer>
+#include <BOBUIime>
+#include <BOBUIimer>
 
 //! [0]
 ShapedClock::ShapedClock(QWidget *parent)
-    : QWidget(parent, Qt::FramelessWindowHint | Qt::WindowSystemMenuHint)
+    : QWidget(parent, BobUI::FramelessWindowHint | BobUI::WindowSystemMenuHint)
 {
-    setAttribute(Qt::WA_TranslucentBackground);
-    QTimer *timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, this, QOverload<>::of(&ShapedClock::update));
+    setAttribute(BobUI::WA_TranslucentBackground);
+    BOBUIimer *timer = new BOBUIimer(this);
+    connect(timer, &BOBUIimer::timeout, this, QOverload<>::of(&ShapedClock::update));
     timer->start(1000);
 
     QAction *quitAction = new QAction(tr("E&xit"), this);
@@ -25,7 +25,7 @@ ShapedClock::ShapedClock(QWidget *parent)
     connect(quitAction, &QAction::triggered, qApp, &QCoreApplication::quit);
     addAction(quitAction);
 
-    setContextMenuPolicy(Qt::ActionsContextMenu);
+    setContextMenuPolicy(BobUI::ActionsContextMenu);
     setToolTip(tr("Drag the clock with the left mouse button.\n"
                   "Use the right mouse button to open a context menu."));
     setWindowTitle(tr("Shaped Analog Clock"));
@@ -35,7 +35,7 @@ ShapedClock::ShapedClock(QWidget *parent)
 //! [1]
 void ShapedClock::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton) {
+    if (event->button() == BobUI::LeftButton) {
         dragPosition = event->globalPosition().toPoint() - frameGeometry().topLeft();
         event->accept();
     }
@@ -45,7 +45,7 @@ void ShapedClock::mousePressEvent(QMouseEvent *event)
 //! [2]
 void ShapedClock::mouseMoveEvent(QMouseEvent *event)
 {
-    if (event->buttons() & Qt::LeftButton) {
+    if (event->buttons() & BobUI::LeftButton) {
         move(event->globalPosition().toPoint() - dragPosition);
         event->accept();
     }
@@ -84,14 +84,14 @@ void ShapedClock::paintEvent(QPaintEvent *)
     painter.translate(width() / 2, height() / 2);
     painter.scale(side / 200.0, side / 200.0);
 
-    painter.setPen(Qt::NoPen);
+    painter.setPen(BobUI::NoPen);
     painter.setBrush(palette().window());
     painter.setOpacity(0.9);
     painter.drawEllipse(QPoint(0, 0), 98, 98);
     painter.setOpacity(1.0);
 
-    QTime time = QTime::currentTime();
-    painter.setPen(Qt::NoPen);
+    BOBUIime time = BOBUIime::currentTime();
+    painter.setPen(BobUI::NoPen);
     painter.setBrush(hourColor);
 
     {

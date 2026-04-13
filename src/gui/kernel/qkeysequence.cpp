@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qkeysequence.h"
 #include "qkeysequence_p.h"
@@ -7,25 +7,25 @@
 #include "private/qguiapplication_p.h"
 
 #include "qdebug.h"
-#include <QtCore/qhashfunctions.h>
-#ifndef QT_NO_DATASTREAM
+#include <BobUICore/qhashfunctions.h>
+#ifndef BOBUI_NO_DATASTREAM
 # include "qdatastream.h"
 #endif
 #include "qvariant.h"
 
 #if defined(Q_OS_APPLE)
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 #endif
 
 #include <algorithm>
 #include <q20algorithm.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 #if defined(Q_OS_APPLE) || defined(Q_QDOC)
-Q_CONSTINIT static bool qt_sequence_no_mnemonics = true;
+Q_CONSTINIT static bool bobui_sequence_no_mnemonics = true;
 struct AppleSpecialKey {
     int key;
     ushort appleSymbol;
@@ -39,28 +39,28 @@ static constexpr int kOptionUnicode = 0x2325;
 static constexpr int kCommandUnicode = 0x2318;
 
 static constexpr AppleSpecialKey entries[] = {
-    { Qt::Key_Escape, 0x238B },
-    { Qt::Key_Tab, 0x21E5 },
-    { Qt::Key_Backtab, 0x21E4 },
-    { Qt::Key_Backspace, 0x232B },
-    { Qt::Key_Return, 0x21B5 },
-    { Qt::Key_Enter, 0x2324 },
-    { Qt::Key_Delete, 0x2326 },
-    { Qt::Key_Clear, 0x2327 },
-    { Qt::Key_Home, 0x2196 },
-    { Qt::Key_End, 0x2198 },
-    { Qt::Key_Left, 0x2190 },
-    { Qt::Key_Up, 0x2191 },
-    { Qt::Key_Right, 0x2192 },
-    { Qt::Key_Down, 0x2193 },
-    { Qt::Key_PageUp, 0x21DE },
-    { Qt::Key_PageDown, 0x21DF },
-    { Qt::Key_Shift, kShiftUnicode },
-    { Qt::Key_Control, kCommandUnicode },
-    { Qt::Key_Meta, kControlUnicode },
-    { Qt::Key_Alt, kOptionUnicode },
-    { Qt::Key_CapsLock, 0x21EA },
-    { Qt::Key_Eject, 0x23CF },
+    { BobUI::Key_Escape, 0x238B },
+    { BobUI::Key_Tab, 0x21E5 },
+    { BobUI::Key_Backtab, 0x21E4 },
+    { BobUI::Key_Backspace, 0x232B },
+    { BobUI::Key_Return, 0x21B5 },
+    { BobUI::Key_Enter, 0x2324 },
+    { BobUI::Key_Delete, 0x2326 },
+    { BobUI::Key_Clear, 0x2327 },
+    { BobUI::Key_Home, 0x2196 },
+    { BobUI::Key_End, 0x2198 },
+    { BobUI::Key_Left, 0x2190 },
+    { BobUI::Key_Up, 0x2191 },
+    { BobUI::Key_Right, 0x2192 },
+    { BobUI::Key_Down, 0x2193 },
+    { BobUI::Key_PageUp, 0x21DE },
+    { BobUI::Key_PageDown, 0x21DF },
+    { BobUI::Key_Shift, kShiftUnicode },
+    { BobUI::Key_Control, kCommandUnicode },
+    { BobUI::Key_Meta, kControlUnicode },
+    { BobUI::Key_Alt, kOptionUnicode },
+    { BobUI::Key_CapsLock, 0x21EA },
+    { BobUI::Key_Eject, 0x23CF },
 };
 
 static constexpr bool operator<(const AppleSpecialKey &lhs, const AppleSpecialKey &rhs)
@@ -80,13 +80,13 @@ static constexpr bool operator<(int lhs, const AppleSpecialKey &rhs)
 
 static_assert(q20::is_sorted(std::begin(entries), std::end(entries)));
 
-static QChar appleSymbolForQtKey(int key)
+static QChar appleSymbolForBobUIKey(int key)
 {
     const auto i = std::lower_bound(std::begin(entries), std::end(entries), key);
     if (i == std::end(entries) || key < *i)
         return QChar();
     ushort appleSymbol = i->appleSymbol;
-    if (qApp->testAttribute(Qt::AA_MacDontSwapCtrlAndMeta)
+    if (qApp->testAttribute(BobUI::AA_MacDontSwapCtrlAndMeta)
             && (appleSymbol == kControlUnicode || appleSymbol == kCommandUnicode)) {
         if (appleSymbol == kControlUnicode)
             appleSymbol = kCommandUnicode;
@@ -97,18 +97,18 @@ static QChar appleSymbolForQtKey(int key)
     return QChar(appleSymbol);
 }
 
-static int qtkeyForAppleSymbol(const QChar ch)
+static int bobuikeyForAppleSymbol(const QChar ch)
 {
     const ushort unicode = ch.unicode();
     for (const AppleSpecialKey &entry : entries) {
         if (entry.appleSymbol == unicode) {
             int key = entry.key;
-            if (qApp->testAttribute(Qt::AA_MacDontSwapCtrlAndMeta)
+            if (qApp->testAttribute(BobUI::AA_MacDontSwapCtrlAndMeta)
                     && (unicode == kControlUnicode || unicode == kCommandUnicode)) {
                 if (unicode == kControlUnicode)
-                    key = Qt::Key_Control;
+                    key = BobUI::Key_Control;
                 else
-                    key = Qt::Key_Meta;
+                    key = BobUI::Key_Meta;
             }
             return key;
         }
@@ -117,11 +117,11 @@ static int qtkeyForAppleSymbol(const QChar ch)
 }
 
 #else
-Q_CONSTINIT static bool qt_sequence_no_mnemonics = false;
+Q_CONSTINIT static bool bobui_sequence_no_mnemonics = false;
 #endif
 
 /*!
-    \fn void qt_set_sequence_auto_mnemonic(bool b)
+    \fn void bobui_set_sequence_auto_mnemonic(bool b)
     \relates QKeySequence
 
     Specifies whether mnemonics for menu items, labels, etc., should
@@ -130,13 +130,13 @@ Q_CONSTINIT static bool qt_sequence_no_mnemonics = false;
     (that is, when \a b is false), QKeySequence::mnemonic() always
     returns an empty string.
 
-    \note This function is not declared in any of Qt's header files.
+    \note This function is not declared in any of BobUI's header files.
     To use it in your application, declare the function prototype
     before calling it.
 
     \sa QShortcut
 */
-void Q_GUI_EXPORT qt_set_sequence_auto_mnemonic(bool b) { qt_sequence_no_mnemonics = !b; }
+void Q_GUI_EXPORT bobui_set_sequence_auto_mnemonic(bool b) { bobui_sequence_no_mnemonics = !b; }
 
 /*!
     \class QKeySequence
@@ -144,7 +144,7 @@ void Q_GUI_EXPORT qt_set_sequence_auto_mnemonic(bool b) { qt_sequence_no_mnemoni
     by shortcuts.
 
     \ingroup shared
-    \inmodule QtGui
+    \inmodule BobUIGui
 
 
     In its most common form, a key sequence describes a combination of
@@ -164,10 +164,10 @@ void Q_GUI_EXPORT qt_set_sequence_auto_mnemonic(bool b) { qt_sequence_no_mnemoni
        for users of different languages. Translations are made in the
        "QShortcut" context.
     \li For hard-coded shortcuts, integer key codes can be specified with
-       a combination of values defined by the Qt::Key and Qt::KeyboardModifier
-       enum values. Each key code consists of a single Qt::Key value and zero
-       or more modifiers, such as Qt::ShiftModifier, Qt::ControlModifier,
-       Qt::AltModifier and Qt::MetaModifier.
+       a combination of values defined by the BobUI::Key and BobUI::KeyboardModifier
+       enum values. Each key code consists of a single BobUI::Key value and zero
+       or more modifiers, such as BobUI::ShiftModifier, BobUI::ControlModifier,
+       BobUI::AltModifier and BobUI::MetaModifier.
     \endlist
 
     For example, \uicontrol{Ctrl P} might be a sequence used as a shortcut for
@@ -194,12 +194,12 @@ void Q_GUI_EXPORT qt_set_sequence_auto_mnemonic(bool b) { qt_sequence_no_mnemoni
 
     An alternative way to specify hard-coded key codes is to use the Unicode
     code point of the character; for example, 'A' gives the same key sequence
-    as Qt::Key_A.
+    as BobUI::Key_A.
 
-    \note On Apple platforms, references to "Ctrl", Qt::CTRL, Qt::Key_Control
-    and Qt::ControlModifier correspond to the \uicontrol Command keys on the
-    Macintosh keyboard, and references to "Meta", Qt::META, Qt::Key_Meta and
-    Qt::MetaModifier correspond to the \uicontrol Control keys. In effect,
+    \note On Apple platforms, references to "Ctrl", BobUI::CTRL, BobUI::Key_Control
+    and BobUI::ControlModifier correspond to the \uicontrol Command keys on the
+    Macintosh keyboard, and references to "Meta", BobUI::META, BobUI::Key_Meta and
+    BobUI::MetaModifier correspond to the \uicontrol Control keys. In effect,
     developers can use the same shortcut descriptions across all platforms,
     and their applications will automatically work as expected on Apple platforms.
 
@@ -387,294 +387,294 @@ static constexpr struct {
     //: This and all following "incomprehensible" strings in QShortcut context
     //: are key names. Please use the localized names appearing on actual
     //: keyboards or whatever is commonly used.
-    { Qt::Key_Space,        QT_TRANSLATE_NOOP("QShortcut", "Space") },
-    { Qt::Key_Escape,       QT_TRANSLATE_NOOP("QShortcut", "Esc") },
-    { Qt::Key_Tab,          QT_TRANSLATE_NOOP("QShortcut", "Tab") },
-    { Qt::Key_Backtab,      QT_TRANSLATE_NOOP("QShortcut", "Backtab") },
-    { Qt::Key_Backspace,    QT_TRANSLATE_NOOP("QShortcut", "Backspace") },
-    { Qt::Key_Return,       QT_TRANSLATE_NOOP("QShortcut", "Return") },
-    { Qt::Key_Enter,        QT_TRANSLATE_NOOP("QShortcut", "Enter") },
-    { Qt::Key_Insert,       QT_TRANSLATE_NOOP("QShortcut", "Ins") },
-    { Qt::Key_Delete,       QT_TRANSLATE_NOOP("QShortcut", "Del") },
-    { Qt::Key_Pause,        QT_TRANSLATE_NOOP("QShortcut", "Pause") },
-    { Qt::Key_Print,        QT_TRANSLATE_NOOP("QShortcut", "Print") },
-    { Qt::Key_SysReq,       QT_TRANSLATE_NOOP("QShortcut", "SysReq") },
-    { Qt::Key_Home,         QT_TRANSLATE_NOOP("QShortcut", "Home") },
-    { Qt::Key_End,          QT_TRANSLATE_NOOP("QShortcut", "End") },
-    { Qt::Key_Left,         QT_TRANSLATE_NOOP("QShortcut", "Left") },
-    { Qt::Key_Up,           QT_TRANSLATE_NOOP("QShortcut", "Up") },
-    { Qt::Key_Right,        QT_TRANSLATE_NOOP("QShortcut", "Right") },
-    { Qt::Key_Down,         QT_TRANSLATE_NOOP("QShortcut", "Down") },
-    { Qt::Key_PageUp,       QT_TRANSLATE_NOOP("QShortcut", "PgUp") },
-    { Qt::Key_PageDown,     QT_TRANSLATE_NOOP("QShortcut", "PgDown") },
-    { Qt::Key_CapsLock,     QT_TRANSLATE_NOOP("QShortcut", "CapsLock") },
-    { Qt::Key_NumLock,      QT_TRANSLATE_NOOP("QShortcut", "NumLock") },
-    { Qt::Key_ScrollLock,   QT_TRANSLATE_NOOP("QShortcut", "ScrollLock") },
-    { Qt::Key_Menu,         QT_TRANSLATE_NOOP("QShortcut", "Menu") },
-    { Qt::Key_Help,         QT_TRANSLATE_NOOP("QShortcut", "Help") },
+    { BobUI::Key_Space,        BOBUI_TRANSLATE_NOOP("QShortcut", "Space") },
+    { BobUI::Key_Escape,       BOBUI_TRANSLATE_NOOP("QShortcut", "Esc") },
+    { BobUI::Key_Tab,          BOBUI_TRANSLATE_NOOP("QShortcut", "Tab") },
+    { BobUI::Key_Backtab,      BOBUI_TRANSLATE_NOOP("QShortcut", "Backtab") },
+    { BobUI::Key_Backspace,    BOBUI_TRANSLATE_NOOP("QShortcut", "Backspace") },
+    { BobUI::Key_Return,       BOBUI_TRANSLATE_NOOP("QShortcut", "Return") },
+    { BobUI::Key_Enter,        BOBUI_TRANSLATE_NOOP("QShortcut", "Enter") },
+    { BobUI::Key_Insert,       BOBUI_TRANSLATE_NOOP("QShortcut", "Ins") },
+    { BobUI::Key_Delete,       BOBUI_TRANSLATE_NOOP("QShortcut", "Del") },
+    { BobUI::Key_Pause,        BOBUI_TRANSLATE_NOOP("QShortcut", "Pause") },
+    { BobUI::Key_Print,        BOBUI_TRANSLATE_NOOP("QShortcut", "Print") },
+    { BobUI::Key_SysReq,       BOBUI_TRANSLATE_NOOP("QShortcut", "SysReq") },
+    { BobUI::Key_Home,         BOBUI_TRANSLATE_NOOP("QShortcut", "Home") },
+    { BobUI::Key_End,          BOBUI_TRANSLATE_NOOP("QShortcut", "End") },
+    { BobUI::Key_Left,         BOBUI_TRANSLATE_NOOP("QShortcut", "Left") },
+    { BobUI::Key_Up,           BOBUI_TRANSLATE_NOOP("QShortcut", "Up") },
+    { BobUI::Key_Right,        BOBUI_TRANSLATE_NOOP("QShortcut", "Right") },
+    { BobUI::Key_Down,         BOBUI_TRANSLATE_NOOP("QShortcut", "Down") },
+    { BobUI::Key_PageUp,       BOBUI_TRANSLATE_NOOP("QShortcut", "PgUp") },
+    { BobUI::Key_PageDown,     BOBUI_TRANSLATE_NOOP("QShortcut", "PgDown") },
+    { BobUI::Key_CapsLock,     BOBUI_TRANSLATE_NOOP("QShortcut", "CapsLock") },
+    { BobUI::Key_NumLock,      BOBUI_TRANSLATE_NOOP("QShortcut", "NumLock") },
+    { BobUI::Key_ScrollLock,   BOBUI_TRANSLATE_NOOP("QShortcut", "ScrollLock") },
+    { BobUI::Key_Menu,         BOBUI_TRANSLATE_NOOP("QShortcut", "Menu") },
+    { BobUI::Key_Help,         BOBUI_TRANSLATE_NOOP("QShortcut", "Help") },
 
     // Special keys
     // Includes multimedia, launcher, lan keys ( bluetooth, wireless )
     // window navigation
-    { Qt::Key_Back,                       QT_TRANSLATE_NOOP("QShortcut", "Back") },
-    { Qt::Key_Forward,                    QT_TRANSLATE_NOOP("QShortcut", "Forward") },
-    { Qt::Key_Stop,                       QT_TRANSLATE_NOOP("QShortcut", "Stop") },
-    { Qt::Key_Refresh,                    QT_TRANSLATE_NOOP("QShortcut", "Refresh") },
-    { Qt::Key_VolumeDown,                 QT_TRANSLATE_NOOP("QShortcut", "Volume Down") },
-    { Qt::Key_VolumeMute,                 QT_TRANSLATE_NOOP("QShortcut", "Volume Mute") },
-    { Qt::Key_VolumeUp,                   QT_TRANSLATE_NOOP("QShortcut", "Volume Up") },
-    { Qt::Key_BassBoost,                  QT_TRANSLATE_NOOP("QShortcut", "Bass Boost") },
-    { Qt::Key_BassUp,                     QT_TRANSLATE_NOOP("QShortcut", "Bass Up") },
-    { Qt::Key_BassDown,                   QT_TRANSLATE_NOOP("QShortcut", "Bass Down") },
-    { Qt::Key_TrebleUp,                   QT_TRANSLATE_NOOP("QShortcut", "Treble Up") },
-    { Qt::Key_TrebleDown,                 QT_TRANSLATE_NOOP("QShortcut", "Treble Down") },
-    { Qt::Key_MediaPlay,                  QT_TRANSLATE_NOOP("QShortcut", "Media Play") },
-    { Qt::Key_MediaStop,                  QT_TRANSLATE_NOOP("QShortcut", "Media Stop") },
-    { Qt::Key_MediaPrevious,              QT_TRANSLATE_NOOP("QShortcut", "Media Previous") },
-    { Qt::Key_MediaNext,                  QT_TRANSLATE_NOOP("QShortcut", "Media Next") },
-    { Qt::Key_MediaRecord,                QT_TRANSLATE_NOOP("QShortcut", "Media Record") },
+    { BobUI::Key_Back,                       BOBUI_TRANSLATE_NOOP("QShortcut", "Back") },
+    { BobUI::Key_Forward,                    BOBUI_TRANSLATE_NOOP("QShortcut", "Forward") },
+    { BobUI::Key_Stop,                       BOBUI_TRANSLATE_NOOP("QShortcut", "Stop") },
+    { BobUI::Key_Refresh,                    BOBUI_TRANSLATE_NOOP("QShortcut", "Refresh") },
+    { BobUI::Key_VolumeDown,                 BOBUI_TRANSLATE_NOOP("QShortcut", "Volume Down") },
+    { BobUI::Key_VolumeMute,                 BOBUI_TRANSLATE_NOOP("QShortcut", "Volume Mute") },
+    { BobUI::Key_VolumeUp,                   BOBUI_TRANSLATE_NOOP("QShortcut", "Volume Up") },
+    { BobUI::Key_BassBoost,                  BOBUI_TRANSLATE_NOOP("QShortcut", "Bass Boost") },
+    { BobUI::Key_BassUp,                     BOBUI_TRANSLATE_NOOP("QShortcut", "Bass Up") },
+    { BobUI::Key_BassDown,                   BOBUI_TRANSLATE_NOOP("QShortcut", "Bass Down") },
+    { BobUI::Key_TrebleUp,                   BOBUI_TRANSLATE_NOOP("QShortcut", "Treble Up") },
+    { BobUI::Key_TrebleDown,                 BOBUI_TRANSLATE_NOOP("QShortcut", "Treble Down") },
+    { BobUI::Key_MediaPlay,                  BOBUI_TRANSLATE_NOOP("QShortcut", "Media Play") },
+    { BobUI::Key_MediaStop,                  BOBUI_TRANSLATE_NOOP("QShortcut", "Media Stop") },
+    { BobUI::Key_MediaPrevious,              BOBUI_TRANSLATE_NOOP("QShortcut", "Media Previous") },
+    { BobUI::Key_MediaNext,                  BOBUI_TRANSLATE_NOOP("QShortcut", "Media Next") },
+    { BobUI::Key_MediaRecord,                BOBUI_TRANSLATE_NOOP("QShortcut", "Media Record") },
     //: Media player pause button
-    { Qt::Key_MediaPause,                 QT_TRANSLATE_NOOP("QShortcut", "Media Pause") },
+    { BobUI::Key_MediaPause,                 BOBUI_TRANSLATE_NOOP("QShortcut", "Media Pause") },
     //: Media player button to toggle between playing and paused
-    { Qt::Key_MediaTogglePlayPause,       QT_TRANSLATE_NOOP("QShortcut", "Toggle Media Play/Pause") },
-    { Qt::Key_HomePage,                   QT_TRANSLATE_NOOP("QShortcut", "Home Page") },
-    { Qt::Key_Favorites,                  QT_TRANSLATE_NOOP("QShortcut", "Favorites") },
-    { Qt::Key_Search,                     QT_TRANSLATE_NOOP("QShortcut", "Search") },
-    { Qt::Key_Standby,                    QT_TRANSLATE_NOOP("QShortcut", "Standby") },
-    { Qt::Key_OpenUrl,                    QT_TRANSLATE_NOOP("QShortcut", "Open URL") },
-    { Qt::Key_LaunchMail,                 QT_TRANSLATE_NOOP("QShortcut", "Launch Mail") },
-    { Qt::Key_LaunchMedia,                QT_TRANSLATE_NOOP("QShortcut", "Launch Media") },
-    { Qt::Key_Launch0,                    QT_TRANSLATE_NOOP("QShortcut", "Launch (0)") },
-    { Qt::Key_Launch1,                    QT_TRANSLATE_NOOP("QShortcut", "Launch (1)") },
-    { Qt::Key_Launch2,                    QT_TRANSLATE_NOOP("QShortcut", "Launch (2)") },
-    { Qt::Key_Launch3,                    QT_TRANSLATE_NOOP("QShortcut", "Launch (3)") },
-    { Qt::Key_Launch4,                    QT_TRANSLATE_NOOP("QShortcut", "Launch (4)") },
-    { Qt::Key_Launch5,                    QT_TRANSLATE_NOOP("QShortcut", "Launch (5)") },
-    { Qt::Key_Launch6,                    QT_TRANSLATE_NOOP("QShortcut", "Launch (6)") },
-    { Qt::Key_Launch7,                    QT_TRANSLATE_NOOP("QShortcut", "Launch (7)") },
-    { Qt::Key_Launch8,                    QT_TRANSLATE_NOOP("QShortcut", "Launch (8)") },
-    { Qt::Key_Launch9,                    QT_TRANSLATE_NOOP("QShortcut", "Launch (9)") },
-    { Qt::Key_LaunchA,                    QT_TRANSLATE_NOOP("QShortcut", "Launch (A)") },
-    { Qt::Key_LaunchB,                    QT_TRANSLATE_NOOP("QShortcut", "Launch (B)") },
-    { Qt::Key_LaunchC,                    QT_TRANSLATE_NOOP("QShortcut", "Launch (C)") },
-    { Qt::Key_LaunchD,                    QT_TRANSLATE_NOOP("QShortcut", "Launch (D)") },
-    { Qt::Key_LaunchE,                    QT_TRANSLATE_NOOP("QShortcut", "Launch (E)") },
-    { Qt::Key_LaunchF,                    QT_TRANSLATE_NOOP("QShortcut", "Launch (F)") },
-    { Qt::Key_LaunchG,                    QT_TRANSLATE_NOOP("QShortcut", "Launch (G)") },
-    { Qt::Key_LaunchH,                    QT_TRANSLATE_NOOP("QShortcut", "Launch (H)") },
-    { Qt::Key_MonBrightnessUp,            QT_TRANSLATE_NOOP("QShortcut", "Monitor Brightness Up") },
-    { Qt::Key_MonBrightnessDown,          QT_TRANSLATE_NOOP("QShortcut", "Monitor Brightness Down") },
-    { Qt::Key_KeyboardLightOnOff,         QT_TRANSLATE_NOOP("QShortcut", "Keyboard Light On/Off") },
-    { Qt::Key_KeyboardBrightnessUp,       QT_TRANSLATE_NOOP("QShortcut", "Keyboard Brightness Up") },
-    { Qt::Key_KeyboardBrightnessDown,     QT_TRANSLATE_NOOP("QShortcut", "Keyboard Brightness Down") },
-    { Qt::Key_PowerOff,                   QT_TRANSLATE_NOOP("QShortcut", "Power Off") },
-    { Qt::Key_WakeUp,                     QT_TRANSLATE_NOOP("QShortcut", "Wake Up") },
-    { Qt::Key_Eject,                      QT_TRANSLATE_NOOP("QShortcut", "Eject") },
-    { Qt::Key_ScreenSaver,                QT_TRANSLATE_NOOP("QShortcut", "Screensaver") },
-    { Qt::Key_WWW,                        QT_TRANSLATE_NOOP("QShortcut", "WWW") },
-    { Qt::Key_Sleep,                      QT_TRANSLATE_NOOP("QShortcut", "Sleep") },
-    { Qt::Key_LightBulb,                  QT_TRANSLATE_NOOP("QShortcut", "LightBulb") },
-    { Qt::Key_Shop,                       QT_TRANSLATE_NOOP("QShortcut", "Shop") },
-    { Qt::Key_History,                    QT_TRANSLATE_NOOP("QShortcut", "History") },
-    { Qt::Key_AddFavorite,                QT_TRANSLATE_NOOP("QShortcut", "Add Favorite") },
-    { Qt::Key_HotLinks,                   QT_TRANSLATE_NOOP("QShortcut", "Hot Links") },
-    { Qt::Key_BrightnessAdjust,           QT_TRANSLATE_NOOP("QShortcut", "Adjust Brightness") },
-    { Qt::Key_Finance,                    QT_TRANSLATE_NOOP("QShortcut", "Finance") },
-    { Qt::Key_Community,                  QT_TRANSLATE_NOOP("QShortcut", "Community") },
-    { Qt::Key_AudioRewind,                QT_TRANSLATE_NOOP("QShortcut", "Media Rewind") },
-    { Qt::Key_BackForward,                QT_TRANSLATE_NOOP("QShortcut", "Back Forward") },
-    { Qt::Key_ApplicationLeft,            QT_TRANSLATE_NOOP("QShortcut", "Application Left") },
-    { Qt::Key_ApplicationRight,           QT_TRANSLATE_NOOP("QShortcut", "Application Right") },
-    { Qt::Key_Book,                       QT_TRANSLATE_NOOP("QShortcut", "Book") },
-    { Qt::Key_CD,                         QT_TRANSLATE_NOOP("QShortcut", "CD") },
-    { Qt::Key_Calculator,                 QT_TRANSLATE_NOOP("QShortcut", "Calculator") },
-    { Qt::Key_Calendar,                   QT_TRANSLATE_NOOP("QShortcut", "Calendar") },
-    { Qt::Key_Clear,                      QT_TRANSLATE_NOOP("QShortcut", "Clear") },
-    { Qt::Key_ClearGrab,                  QT_TRANSLATE_NOOP("QShortcut", "Clear Grab") },
-    { Qt::Key_Close,                      QT_TRANSLATE_NOOP("QShortcut", "Close") },
-    { Qt::Key_ContrastAdjust,             QT_TRANSLATE_NOOP("QShortcut", "Adjust contrast") },
-    { Qt::Key_Copy,                       QT_TRANSLATE_NOOP("QShortcut", "Copy") },
-    { Qt::Key_Cut,                        QT_TRANSLATE_NOOP("QShortcut", "Cut") },
-    { Qt::Key_Display,                    QT_TRANSLATE_NOOP("QShortcut", "Display") },
-    { Qt::Key_DOS,                        QT_TRANSLATE_NOOP("QShortcut", "DOS") },
-    { Qt::Key_Documents,                  QT_TRANSLATE_NOOP("QShortcut", "Documents") },
-    { Qt::Key_Excel,                      QT_TRANSLATE_NOOP("QShortcut", "Spreadsheet") },
-    { Qt::Key_Explorer,                   QT_TRANSLATE_NOOP("QShortcut", "Browser") },
-    { Qt::Key_Game,                       QT_TRANSLATE_NOOP("QShortcut", "Game") },
-    { Qt::Key_Go,                         QT_TRANSLATE_NOOP("QShortcut", "Go") },
-    { Qt::Key_iTouch,                     QT_TRANSLATE_NOOP("QShortcut", "iTouch") },
-    { Qt::Key_LogOff,                     QT_TRANSLATE_NOOP("QShortcut", "Logoff") },
-    { Qt::Key_Market,                     QT_TRANSLATE_NOOP("QShortcut", "Market") },
-    { Qt::Key_Meeting,                    QT_TRANSLATE_NOOP("QShortcut", "Meeting") },
-    { Qt::Key_Memo,                       QT_TRANSLATE_NOOP("QShortcut", "Memo") },
-    { Qt::Key_MenuKB,                     QT_TRANSLATE_NOOP("QShortcut", "Keyboard Menu") },
-    { Qt::Key_MenuPB,                     QT_TRANSLATE_NOOP("QShortcut", "Menu PB") },
-    { Qt::Key_MySites,                    QT_TRANSLATE_NOOP("QShortcut", "My Sites") },
-    { Qt::Key_News,                       QT_TRANSLATE_NOOP("QShortcut", "News") },
-    { Qt::Key_OfficeHome,                 QT_TRANSLATE_NOOP("QShortcut", "Home Office") },
-    { Qt::Key_Option,                     QT_TRANSLATE_NOOP("QShortcut", "Option") },
-    { Qt::Key_Paste,                      QT_TRANSLATE_NOOP("QShortcut", "Paste") },
-    { Qt::Key_Phone,                      QT_TRANSLATE_NOOP("QShortcut", "Phone") },
-    { Qt::Key_Reply,                      QT_TRANSLATE_NOOP("QShortcut", "Reply") },
-    { Qt::Key_Reload,                     QT_TRANSLATE_NOOP("QShortcut", "Reload") },
-    { Qt::Key_RotateWindows,              QT_TRANSLATE_NOOP("QShortcut", "Rotate Windows") },
-    { Qt::Key_RotationPB,                 QT_TRANSLATE_NOOP("QShortcut", "Rotation PB") },
-    { Qt::Key_RotationKB,                 QT_TRANSLATE_NOOP("QShortcut", "Rotation KB") },
-    { Qt::Key_Save,                       QT_TRANSLATE_NOOP("QShortcut", "Save") },
-    { Qt::Key_Send,                       QT_TRANSLATE_NOOP("QShortcut", "Send") },
-    { Qt::Key_Spell,                      QT_TRANSLATE_NOOP("QShortcut", "Spellchecker") },
-    { Qt::Key_SplitScreen,                QT_TRANSLATE_NOOP("QShortcut", "Split Screen") },
-    { Qt::Key_Support,                    QT_TRANSLATE_NOOP("QShortcut", "Support") },
-    { Qt::Key_TaskPane,                   QT_TRANSLATE_NOOP("QShortcut", "Task Panel") },
-    { Qt::Key_Terminal,                   QT_TRANSLATE_NOOP("QShortcut", "Terminal") },
-    { Qt::Key_ToDoList,                   QT_TRANSLATE_NOOP("QShortcut", "To-do list") },
-    { Qt::Key_Tools,                      QT_TRANSLATE_NOOP("QShortcut", "Tools") },
-    { Qt::Key_Travel,                     QT_TRANSLATE_NOOP("QShortcut", "Travel") },
-    { Qt::Key_Video,                      QT_TRANSLATE_NOOP("QShortcut", "Video") },
-    { Qt::Key_Word,                       QT_TRANSLATE_NOOP("QShortcut", "Word Processor") },
-    { Qt::Key_Xfer,                       QT_TRANSLATE_NOOP("QShortcut", "XFer") },
-    { Qt::Key_ZoomIn,                     QT_TRANSLATE_NOOP("QShortcut", "Zoom In") },
-    { Qt::Key_ZoomOut,                    QT_TRANSLATE_NOOP("QShortcut", "Zoom Out") },
-    { Qt::Key_Away,                       QT_TRANSLATE_NOOP("QShortcut", "Away") },
-    { Qt::Key_Messenger,                  QT_TRANSLATE_NOOP("QShortcut", "Messenger") },
-    { Qt::Key_WebCam,                     QT_TRANSLATE_NOOP("QShortcut", "WebCam") },
-    { Qt::Key_MailForward,                QT_TRANSLATE_NOOP("QShortcut", "Mail Forward") },
-    { Qt::Key_Pictures,                   QT_TRANSLATE_NOOP("QShortcut", "Pictures") },
-    { Qt::Key_Music,                      QT_TRANSLATE_NOOP("QShortcut", "Music") },
-    { Qt::Key_Battery,                    QT_TRANSLATE_NOOP("QShortcut", "Battery") },
-    { Qt::Key_Bluetooth,                  QT_TRANSLATE_NOOP("QShortcut", "Bluetooth") },
-    { Qt::Key_WLAN,                       QT_TRANSLATE_NOOP("QShortcut", "Wireless") },
-    { Qt::Key_UWB,                        QT_TRANSLATE_NOOP("QShortcut", "Ultra Wide Band") },
-    { Qt::Key_AudioForward,               QT_TRANSLATE_NOOP("QShortcut", "Media Fast Forward") },
-    { Qt::Key_AudioRepeat,                QT_TRANSLATE_NOOP("QShortcut", "Audio Repeat") },
-    { Qt::Key_AudioRandomPlay,            QT_TRANSLATE_NOOP("QShortcut", "Audio Random Play") },
-    { Qt::Key_Subtitle,                   QT_TRANSLATE_NOOP("QShortcut", "Subtitle") },
-    { Qt::Key_AudioCycleTrack,            QT_TRANSLATE_NOOP("QShortcut", "Audio Cycle Track") },
-    { Qt::Key_Time,                       QT_TRANSLATE_NOOP("QShortcut", "Time") },
-    { Qt::Key_Hibernate,                  QT_TRANSLATE_NOOP("QShortcut", "Hibernate") },
-    { Qt::Key_View,                       QT_TRANSLATE_NOOP("QShortcut", "View") },
-    { Qt::Key_TopMenu,                    QT_TRANSLATE_NOOP("QShortcut", "Top Menu") },
-    { Qt::Key_PowerDown,                  QT_TRANSLATE_NOOP("QShortcut", "Power Down") },
-    { Qt::Key_Suspend,                    QT_TRANSLATE_NOOP("QShortcut", "Suspend") },
+    { BobUI::Key_MediaTogglePlayPause,       BOBUI_TRANSLATE_NOOP("QShortcut", "Toggle Media Play/Pause") },
+    { BobUI::Key_HomePage,                   BOBUI_TRANSLATE_NOOP("QShortcut", "Home Page") },
+    { BobUI::Key_Favorites,                  BOBUI_TRANSLATE_NOOP("QShortcut", "Favorites") },
+    { BobUI::Key_Search,                     BOBUI_TRANSLATE_NOOP("QShortcut", "Search") },
+    { BobUI::Key_Standby,                    BOBUI_TRANSLATE_NOOP("QShortcut", "Standby") },
+    { BobUI::Key_OpenUrl,                    BOBUI_TRANSLATE_NOOP("QShortcut", "Open URL") },
+    { BobUI::Key_LaunchMail,                 BOBUI_TRANSLATE_NOOP("QShortcut", "Launch Mail") },
+    { BobUI::Key_LaunchMedia,                BOBUI_TRANSLATE_NOOP("QShortcut", "Launch Media") },
+    { BobUI::Key_Launch0,                    BOBUI_TRANSLATE_NOOP("QShortcut", "Launch (0)") },
+    { BobUI::Key_Launch1,                    BOBUI_TRANSLATE_NOOP("QShortcut", "Launch (1)") },
+    { BobUI::Key_Launch2,                    BOBUI_TRANSLATE_NOOP("QShortcut", "Launch (2)") },
+    { BobUI::Key_Launch3,                    BOBUI_TRANSLATE_NOOP("QShortcut", "Launch (3)") },
+    { BobUI::Key_Launch4,                    BOBUI_TRANSLATE_NOOP("QShortcut", "Launch (4)") },
+    { BobUI::Key_Launch5,                    BOBUI_TRANSLATE_NOOP("QShortcut", "Launch (5)") },
+    { BobUI::Key_Launch6,                    BOBUI_TRANSLATE_NOOP("QShortcut", "Launch (6)") },
+    { BobUI::Key_Launch7,                    BOBUI_TRANSLATE_NOOP("QShortcut", "Launch (7)") },
+    { BobUI::Key_Launch8,                    BOBUI_TRANSLATE_NOOP("QShortcut", "Launch (8)") },
+    { BobUI::Key_Launch9,                    BOBUI_TRANSLATE_NOOP("QShortcut", "Launch (9)") },
+    { BobUI::Key_LaunchA,                    BOBUI_TRANSLATE_NOOP("QShortcut", "Launch (A)") },
+    { BobUI::Key_LaunchB,                    BOBUI_TRANSLATE_NOOP("QShortcut", "Launch (B)") },
+    { BobUI::Key_LaunchC,                    BOBUI_TRANSLATE_NOOP("QShortcut", "Launch (C)") },
+    { BobUI::Key_LaunchD,                    BOBUI_TRANSLATE_NOOP("QShortcut", "Launch (D)") },
+    { BobUI::Key_LaunchE,                    BOBUI_TRANSLATE_NOOP("QShortcut", "Launch (E)") },
+    { BobUI::Key_LaunchF,                    BOBUI_TRANSLATE_NOOP("QShortcut", "Launch (F)") },
+    { BobUI::Key_LaunchG,                    BOBUI_TRANSLATE_NOOP("QShortcut", "Launch (G)") },
+    { BobUI::Key_LaunchH,                    BOBUI_TRANSLATE_NOOP("QShortcut", "Launch (H)") },
+    { BobUI::Key_MonBrightnessUp,            BOBUI_TRANSLATE_NOOP("QShortcut", "Monitor Brightness Up") },
+    { BobUI::Key_MonBrightnessDown,          BOBUI_TRANSLATE_NOOP("QShortcut", "Monitor Brightness Down") },
+    { BobUI::Key_KeyboardLightOnOff,         BOBUI_TRANSLATE_NOOP("QShortcut", "Keyboard Light On/Off") },
+    { BobUI::Key_KeyboardBrightnessUp,       BOBUI_TRANSLATE_NOOP("QShortcut", "Keyboard Brightness Up") },
+    { BobUI::Key_KeyboardBrightnessDown,     BOBUI_TRANSLATE_NOOP("QShortcut", "Keyboard Brightness Down") },
+    { BobUI::Key_PowerOff,                   BOBUI_TRANSLATE_NOOP("QShortcut", "Power Off") },
+    { BobUI::Key_WakeUp,                     BOBUI_TRANSLATE_NOOP("QShortcut", "Wake Up") },
+    { BobUI::Key_Eject,                      BOBUI_TRANSLATE_NOOP("QShortcut", "Eject") },
+    { BobUI::Key_ScreenSaver,                BOBUI_TRANSLATE_NOOP("QShortcut", "Screensaver") },
+    { BobUI::Key_WWW,                        BOBUI_TRANSLATE_NOOP("QShortcut", "WWW") },
+    { BobUI::Key_Sleep,                      BOBUI_TRANSLATE_NOOP("QShortcut", "Sleep") },
+    { BobUI::Key_LightBulb,                  BOBUI_TRANSLATE_NOOP("QShortcut", "LightBulb") },
+    { BobUI::Key_Shop,                       BOBUI_TRANSLATE_NOOP("QShortcut", "Shop") },
+    { BobUI::Key_History,                    BOBUI_TRANSLATE_NOOP("QShortcut", "History") },
+    { BobUI::Key_AddFavorite,                BOBUI_TRANSLATE_NOOP("QShortcut", "Add Favorite") },
+    { BobUI::Key_HotLinks,                   BOBUI_TRANSLATE_NOOP("QShortcut", "Hot Links") },
+    { BobUI::Key_BrightnessAdjust,           BOBUI_TRANSLATE_NOOP("QShortcut", "Adjust Brightness") },
+    { BobUI::Key_Finance,                    BOBUI_TRANSLATE_NOOP("QShortcut", "Finance") },
+    { BobUI::Key_Community,                  BOBUI_TRANSLATE_NOOP("QShortcut", "Community") },
+    { BobUI::Key_AudioRewind,                BOBUI_TRANSLATE_NOOP("QShortcut", "Media Rewind") },
+    { BobUI::Key_BackForward,                BOBUI_TRANSLATE_NOOP("QShortcut", "Back Forward") },
+    { BobUI::Key_ApplicationLeft,            BOBUI_TRANSLATE_NOOP("QShortcut", "Application Left") },
+    { BobUI::Key_ApplicationRight,           BOBUI_TRANSLATE_NOOP("QShortcut", "Application Right") },
+    { BobUI::Key_Book,                       BOBUI_TRANSLATE_NOOP("QShortcut", "Book") },
+    { BobUI::Key_CD,                         BOBUI_TRANSLATE_NOOP("QShortcut", "CD") },
+    { BobUI::Key_Calculator,                 BOBUI_TRANSLATE_NOOP("QShortcut", "Calculator") },
+    { BobUI::Key_Calendar,                   BOBUI_TRANSLATE_NOOP("QShortcut", "Calendar") },
+    { BobUI::Key_Clear,                      BOBUI_TRANSLATE_NOOP("QShortcut", "Clear") },
+    { BobUI::Key_ClearGrab,                  BOBUI_TRANSLATE_NOOP("QShortcut", "Clear Grab") },
+    { BobUI::Key_Close,                      BOBUI_TRANSLATE_NOOP("QShortcut", "Close") },
+    { BobUI::Key_ContrastAdjust,             BOBUI_TRANSLATE_NOOP("QShortcut", "Adjust contrast") },
+    { BobUI::Key_Copy,                       BOBUI_TRANSLATE_NOOP("QShortcut", "Copy") },
+    { BobUI::Key_Cut,                        BOBUI_TRANSLATE_NOOP("QShortcut", "Cut") },
+    { BobUI::Key_Display,                    BOBUI_TRANSLATE_NOOP("QShortcut", "Display") },
+    { BobUI::Key_DOS,                        BOBUI_TRANSLATE_NOOP("QShortcut", "DOS") },
+    { BobUI::Key_Documents,                  BOBUI_TRANSLATE_NOOP("QShortcut", "Documents") },
+    { BobUI::Key_Excel,                      BOBUI_TRANSLATE_NOOP("QShortcut", "Spreadsheet") },
+    { BobUI::Key_Explorer,                   BOBUI_TRANSLATE_NOOP("QShortcut", "Browser") },
+    { BobUI::Key_Game,                       BOBUI_TRANSLATE_NOOP("QShortcut", "Game") },
+    { BobUI::Key_Go,                         BOBUI_TRANSLATE_NOOP("QShortcut", "Go") },
+    { BobUI::Key_iTouch,                     BOBUI_TRANSLATE_NOOP("QShortcut", "iTouch") },
+    { BobUI::Key_LogOff,                     BOBUI_TRANSLATE_NOOP("QShortcut", "Logoff") },
+    { BobUI::Key_Market,                     BOBUI_TRANSLATE_NOOP("QShortcut", "Market") },
+    { BobUI::Key_Meeting,                    BOBUI_TRANSLATE_NOOP("QShortcut", "Meeting") },
+    { BobUI::Key_Memo,                       BOBUI_TRANSLATE_NOOP("QShortcut", "Memo") },
+    { BobUI::Key_MenuKB,                     BOBUI_TRANSLATE_NOOP("QShortcut", "Keyboard Menu") },
+    { BobUI::Key_MenuPB,                     BOBUI_TRANSLATE_NOOP("QShortcut", "Menu PB") },
+    { BobUI::Key_MySites,                    BOBUI_TRANSLATE_NOOP("QShortcut", "My Sites") },
+    { BobUI::Key_News,                       BOBUI_TRANSLATE_NOOP("QShortcut", "News") },
+    { BobUI::Key_OfficeHome,                 BOBUI_TRANSLATE_NOOP("QShortcut", "Home Office") },
+    { BobUI::Key_Option,                     BOBUI_TRANSLATE_NOOP("QShortcut", "Option") },
+    { BobUI::Key_Paste,                      BOBUI_TRANSLATE_NOOP("QShortcut", "Paste") },
+    { BobUI::Key_Phone,                      BOBUI_TRANSLATE_NOOP("QShortcut", "Phone") },
+    { BobUI::Key_Reply,                      BOBUI_TRANSLATE_NOOP("QShortcut", "Reply") },
+    { BobUI::Key_Reload,                     BOBUI_TRANSLATE_NOOP("QShortcut", "Reload") },
+    { BobUI::Key_RotateWindows,              BOBUI_TRANSLATE_NOOP("QShortcut", "Rotate Windows") },
+    { BobUI::Key_RotationPB,                 BOBUI_TRANSLATE_NOOP("QShortcut", "Rotation PB") },
+    { BobUI::Key_RotationKB,                 BOBUI_TRANSLATE_NOOP("QShortcut", "Rotation KB") },
+    { BobUI::Key_Save,                       BOBUI_TRANSLATE_NOOP("QShortcut", "Save") },
+    { BobUI::Key_Send,                       BOBUI_TRANSLATE_NOOP("QShortcut", "Send") },
+    { BobUI::Key_Spell,                      BOBUI_TRANSLATE_NOOP("QShortcut", "Spellchecker") },
+    { BobUI::Key_SplitScreen,                BOBUI_TRANSLATE_NOOP("QShortcut", "Split Screen") },
+    { BobUI::Key_Support,                    BOBUI_TRANSLATE_NOOP("QShortcut", "Support") },
+    { BobUI::Key_TaskPane,                   BOBUI_TRANSLATE_NOOP("QShortcut", "Task Panel") },
+    { BobUI::Key_Terminal,                   BOBUI_TRANSLATE_NOOP("QShortcut", "Terminal") },
+    { BobUI::Key_ToDoList,                   BOBUI_TRANSLATE_NOOP("QShortcut", "To-do list") },
+    { BobUI::Key_Tools,                      BOBUI_TRANSLATE_NOOP("QShortcut", "Tools") },
+    { BobUI::Key_Travel,                     BOBUI_TRANSLATE_NOOP("QShortcut", "Travel") },
+    { BobUI::Key_Video,                      BOBUI_TRANSLATE_NOOP("QShortcut", "Video") },
+    { BobUI::Key_Word,                       BOBUI_TRANSLATE_NOOP("QShortcut", "Word Processor") },
+    { BobUI::Key_Xfer,                       BOBUI_TRANSLATE_NOOP("QShortcut", "XFer") },
+    { BobUI::Key_ZoomIn,                     BOBUI_TRANSLATE_NOOP("QShortcut", "Zoom In") },
+    { BobUI::Key_ZoomOut,                    BOBUI_TRANSLATE_NOOP("QShortcut", "Zoom Out") },
+    { BobUI::Key_Away,                       BOBUI_TRANSLATE_NOOP("QShortcut", "Away") },
+    { BobUI::Key_Messenger,                  BOBUI_TRANSLATE_NOOP("QShortcut", "Messenger") },
+    { BobUI::Key_WebCam,                     BOBUI_TRANSLATE_NOOP("QShortcut", "WebCam") },
+    { BobUI::Key_MailForward,                BOBUI_TRANSLATE_NOOP("QShortcut", "Mail Forward") },
+    { BobUI::Key_Pictures,                   BOBUI_TRANSLATE_NOOP("QShortcut", "Pictures") },
+    { BobUI::Key_Music,                      BOBUI_TRANSLATE_NOOP("QShortcut", "Music") },
+    { BobUI::Key_Battery,                    BOBUI_TRANSLATE_NOOP("QShortcut", "Battery") },
+    { BobUI::Key_Bluetooth,                  BOBUI_TRANSLATE_NOOP("QShortcut", "Bluetooth") },
+    { BobUI::Key_WLAN,                       BOBUI_TRANSLATE_NOOP("QShortcut", "Wireless") },
+    { BobUI::Key_UWB,                        BOBUI_TRANSLATE_NOOP("QShortcut", "Ultra Wide Band") },
+    { BobUI::Key_AudioForward,               BOBUI_TRANSLATE_NOOP("QShortcut", "Media Fast Forward") },
+    { BobUI::Key_AudioRepeat,                BOBUI_TRANSLATE_NOOP("QShortcut", "Audio Repeat") },
+    { BobUI::Key_AudioRandomPlay,            BOBUI_TRANSLATE_NOOP("QShortcut", "Audio Random Play") },
+    { BobUI::Key_Subtitle,                   BOBUI_TRANSLATE_NOOP("QShortcut", "Subtitle") },
+    { BobUI::Key_AudioCycleTrack,            BOBUI_TRANSLATE_NOOP("QShortcut", "Audio Cycle Track") },
+    { BobUI::Key_Time,                       BOBUI_TRANSLATE_NOOP("QShortcut", "Time") },
+    { BobUI::Key_Hibernate,                  BOBUI_TRANSLATE_NOOP("QShortcut", "Hibernate") },
+    { BobUI::Key_View,                       BOBUI_TRANSLATE_NOOP("QShortcut", "View") },
+    { BobUI::Key_TopMenu,                    BOBUI_TRANSLATE_NOOP("QShortcut", "Top Menu") },
+    { BobUI::Key_PowerDown,                  BOBUI_TRANSLATE_NOOP("QShortcut", "Power Down") },
+    { BobUI::Key_Suspend,                    BOBUI_TRANSLATE_NOOP("QShortcut", "Suspend") },
 
-    { Qt::Key_MicMute,                    QT_TRANSLATE_NOOP("QShortcut", "Microphone Mute") },
+    { BobUI::Key_MicMute,                    BOBUI_TRANSLATE_NOOP("QShortcut", "Microphone Mute") },
 
-    { Qt::Key_Red,                        QT_TRANSLATE_NOOP("QShortcut", "Red") },
-    { Qt::Key_Green,                      QT_TRANSLATE_NOOP("QShortcut", "Green") },
-    { Qt::Key_Yellow,                     QT_TRANSLATE_NOOP("QShortcut", "Yellow") },
-    { Qt::Key_Blue,                       QT_TRANSLATE_NOOP("QShortcut", "Blue") },
+    { BobUI::Key_Red,                        BOBUI_TRANSLATE_NOOP("QShortcut", "Red") },
+    { BobUI::Key_Green,                      BOBUI_TRANSLATE_NOOP("QShortcut", "Green") },
+    { BobUI::Key_Yellow,                     BOBUI_TRANSLATE_NOOP("QShortcut", "Yellow") },
+    { BobUI::Key_Blue,                       BOBUI_TRANSLATE_NOOP("QShortcut", "Blue") },
 
-    { Qt::Key_ChannelUp,                  QT_TRANSLATE_NOOP("QShortcut", "Channel Up") },
-    { Qt::Key_ChannelDown,                QT_TRANSLATE_NOOP("QShortcut", "Channel Down") },
+    { BobUI::Key_ChannelUp,                  BOBUI_TRANSLATE_NOOP("QShortcut", "Channel Up") },
+    { BobUI::Key_ChannelDown,                BOBUI_TRANSLATE_NOOP("QShortcut", "Channel Down") },
 
-    { Qt::Key_Guide,                      QT_TRANSLATE_NOOP("QShortcut", "Guide") },
-    { Qt::Key_Info,                       QT_TRANSLATE_NOOP("QShortcut", "Info") },
-    { Qt::Key_Settings,                   QT_TRANSLATE_NOOP("QShortcut", "Settings") },
+    { BobUI::Key_Guide,                      BOBUI_TRANSLATE_NOOP("QShortcut", "Guide") },
+    { BobUI::Key_Info,                       BOBUI_TRANSLATE_NOOP("QShortcut", "Info") },
+    { BobUI::Key_Settings,                   BOBUI_TRANSLATE_NOOP("QShortcut", "Settings") },
 
-    { Qt::Key_MicVolumeUp,                QT_TRANSLATE_NOOP("QShortcut", "Microphone Volume Up") },
-    { Qt::Key_MicVolumeDown,              QT_TRANSLATE_NOOP("QShortcut", "Microphone Volume Down") },
+    { BobUI::Key_MicVolumeUp,                BOBUI_TRANSLATE_NOOP("QShortcut", "Microphone Volume Up") },
+    { BobUI::Key_MicVolumeDown,              BOBUI_TRANSLATE_NOOP("QShortcut", "Microphone Volume Down") },
 
-    { Qt::Key_Keyboard,                   QT_TRANSLATE_NOOP("QShortcut", "Keyboard") },
+    { BobUI::Key_Keyboard,                   BOBUI_TRANSLATE_NOOP("QShortcut", "Keyboard") },
 
-    { Qt::Key_New,                        QT_TRANSLATE_NOOP("QShortcut", "New") },
-    { Qt::Key_Open,                       QT_TRANSLATE_NOOP("QShortcut", "Open") },
-    { Qt::Key_Find,                       QT_TRANSLATE_NOOP("QShortcut", "Find") },
-    { Qt::Key_Undo,                       QT_TRANSLATE_NOOP("QShortcut", "Undo") },
-    { Qt::Key_Redo,                       QT_TRANSLATE_NOOP("QShortcut", "Redo") },
+    { BobUI::Key_New,                        BOBUI_TRANSLATE_NOOP("QShortcut", "New") },
+    { BobUI::Key_Open,                       BOBUI_TRANSLATE_NOOP("QShortcut", "Open") },
+    { BobUI::Key_Find,                       BOBUI_TRANSLATE_NOOP("QShortcut", "Find") },
+    { BobUI::Key_Undo,                       BOBUI_TRANSLATE_NOOP("QShortcut", "Undo") },
+    { BobUI::Key_Redo,                       BOBUI_TRANSLATE_NOOP("QShortcut", "Redo") },
 
     // --------------------------------------------------------------
     // More consistent namings
-    { Qt::Key_Print,        QT_TRANSLATE_NOOP("QShortcut", "Print Screen") },
-    { Qt::Key_PageUp,       QT_TRANSLATE_NOOP("QShortcut", "Page Up") },
-    { Qt::Key_PageDown,     QT_TRANSLATE_NOOP("QShortcut", "Page Down") },
-    { Qt::Key_CapsLock,     QT_TRANSLATE_NOOP("QShortcut", "Caps Lock") },
-    { Qt::Key_NumLock,      QT_TRANSLATE_NOOP("QShortcut", "Num Lock") },
-    { Qt::Key_NumLock,      QT_TRANSLATE_NOOP("QShortcut", "Number Lock") },
-    { Qt::Key_ScrollLock,   QT_TRANSLATE_NOOP("QShortcut", "Scroll Lock") },
-    { Qt::Key_Insert,       QT_TRANSLATE_NOOP("QShortcut", "Insert") },
-    { Qt::Key_Delete,       QT_TRANSLATE_NOOP("QShortcut", "Delete") },
-    { Qt::Key_Escape,       QT_TRANSLATE_NOOP("QShortcut", "Escape") },
-    { Qt::Key_SysReq,       QT_TRANSLATE_NOOP("QShortcut", "System Request") },
+    { BobUI::Key_Print,        BOBUI_TRANSLATE_NOOP("QShortcut", "Print Screen") },
+    { BobUI::Key_PageUp,       BOBUI_TRANSLATE_NOOP("QShortcut", "Page Up") },
+    { BobUI::Key_PageDown,     BOBUI_TRANSLATE_NOOP("QShortcut", "Page Down") },
+    { BobUI::Key_CapsLock,     BOBUI_TRANSLATE_NOOP("QShortcut", "Caps Lock") },
+    { BobUI::Key_NumLock,      BOBUI_TRANSLATE_NOOP("QShortcut", "Num Lock") },
+    { BobUI::Key_NumLock,      BOBUI_TRANSLATE_NOOP("QShortcut", "Number Lock") },
+    { BobUI::Key_ScrollLock,   BOBUI_TRANSLATE_NOOP("QShortcut", "Scroll Lock") },
+    { BobUI::Key_Insert,       BOBUI_TRANSLATE_NOOP("QShortcut", "Insert") },
+    { BobUI::Key_Delete,       BOBUI_TRANSLATE_NOOP("QShortcut", "Delete") },
+    { BobUI::Key_Escape,       BOBUI_TRANSLATE_NOOP("QShortcut", "Escape") },
+    { BobUI::Key_SysReq,       BOBUI_TRANSLATE_NOOP("QShortcut", "System Request") },
 
     // --------------------------------------------------------------
     // Keypad navigation keys
-    { Qt::Key_Select,       QT_TRANSLATE_NOOP("QShortcut", "Select") },
-    { Qt::Key_Yes,          QT_TRANSLATE_NOOP("QShortcut", "Yes") },
-    { Qt::Key_No,           QT_TRANSLATE_NOOP("QShortcut", "No") },
+    { BobUI::Key_Select,       BOBUI_TRANSLATE_NOOP("QShortcut", "Select") },
+    { BobUI::Key_Yes,          BOBUI_TRANSLATE_NOOP("QShortcut", "Yes") },
+    { BobUI::Key_No,           BOBUI_TRANSLATE_NOOP("QShortcut", "No") },
 
     // --------------------------------------------------------------
     // Device keys
-    { Qt::Key_Context1,         QT_TRANSLATE_NOOP("QShortcut", "Context1") },
-    { Qt::Key_Context2,         QT_TRANSLATE_NOOP("QShortcut", "Context2") },
-    { Qt::Key_Context3,         QT_TRANSLATE_NOOP("QShortcut", "Context3") },
-    { Qt::Key_Context4,         QT_TRANSLATE_NOOP("QShortcut", "Context4") },
+    { BobUI::Key_Context1,         BOBUI_TRANSLATE_NOOP("QShortcut", "Context1") },
+    { BobUI::Key_Context2,         BOBUI_TRANSLATE_NOOP("QShortcut", "Context2") },
+    { BobUI::Key_Context3,         BOBUI_TRANSLATE_NOOP("QShortcut", "Context3") },
+    { BobUI::Key_Context4,         BOBUI_TRANSLATE_NOOP("QShortcut", "Context4") },
     //: Button to start a call (note: a separate button is used to end the call)
-    { Qt::Key_Call,             QT_TRANSLATE_NOOP("QShortcut", "Call") },
+    { BobUI::Key_Call,             BOBUI_TRANSLATE_NOOP("QShortcut", "Call") },
     //: Button to end a call (note: a separate button is used to start the call)
-    { Qt::Key_Hangup,           QT_TRANSLATE_NOOP("QShortcut", "Hangup") },
+    { BobUI::Key_Hangup,           BOBUI_TRANSLATE_NOOP("QShortcut", "Hangup") },
     //: Button that will hang up if we're in call, or make a call if we're not.
-    { Qt::Key_ToggleCallHangup, QT_TRANSLATE_NOOP("QShortcut", "Toggle Call/Hangup") },
-    { Qt::Key_Flip,             QT_TRANSLATE_NOOP("QShortcut", "Flip") },
+    { BobUI::Key_ToggleCallHangup, BOBUI_TRANSLATE_NOOP("QShortcut", "Toggle Call/Hangup") },
+    { BobUI::Key_Flip,             BOBUI_TRANSLATE_NOOP("QShortcut", "Flip") },
     //: Button to trigger voice dialing
-    { Qt::Key_VoiceDial,        QT_TRANSLATE_NOOP("QShortcut", "Voice Dial") },
+    { BobUI::Key_VoiceDial,        BOBUI_TRANSLATE_NOOP("QShortcut", "Voice Dial") },
     //: Button to redial the last number called
-    { Qt::Key_LastNumberRedial, QT_TRANSLATE_NOOP("QShortcut", "Last Number Redial") },
+    { BobUI::Key_LastNumberRedial, BOBUI_TRANSLATE_NOOP("QShortcut", "Last Number Redial") },
     //: Button to trigger the camera shutter (take a picture)
-    { Qt::Key_Camera,           QT_TRANSLATE_NOOP("QShortcut", "Camera Shutter") },
+    { BobUI::Key_Camera,           BOBUI_TRANSLATE_NOOP("QShortcut", "Camera Shutter") },
     //: Button to focus the camera
-    { Qt::Key_CameraFocus,      QT_TRANSLATE_NOOP("QShortcut", "Camera Focus") },
+    { BobUI::Key_CameraFocus,      BOBUI_TRANSLATE_NOOP("QShortcut", "Camera Focus") },
 
     // --------------------------------------------------------------
     // Japanese keyboard support
-    { Qt::Key_Kanji,            QT_TRANSLATE_NOOP("QShortcut", "Kanji") },
-    { Qt::Key_Muhenkan,         QT_TRANSLATE_NOOP("QShortcut", "Muhenkan") },
-    { Qt::Key_Henkan,           QT_TRANSLATE_NOOP("QShortcut", "Henkan") },
-    { Qt::Key_Romaji,           QT_TRANSLATE_NOOP("QShortcut", "Romaji") },
-    { Qt::Key_Hiragana,         QT_TRANSLATE_NOOP("QShortcut", "Hiragana") },
-    { Qt::Key_Katakana,         QT_TRANSLATE_NOOP("QShortcut", "Katakana") },
-    { Qt::Key_Hiragana_Katakana,QT_TRANSLATE_NOOP("QShortcut", "Hiragana Katakana") },
-    { Qt::Key_Zenkaku,          QT_TRANSLATE_NOOP("QShortcut", "Zenkaku") },
-    { Qt::Key_Hankaku,          QT_TRANSLATE_NOOP("QShortcut", "Hankaku") },
-    { Qt::Key_Zenkaku_Hankaku,  QT_TRANSLATE_NOOP("QShortcut", "Zenkaku Hankaku") },
-    { Qt::Key_Touroku,          QT_TRANSLATE_NOOP("QShortcut", "Touroku") },
-    { Qt::Key_Massyo,           QT_TRANSLATE_NOOP("QShortcut", "Massyo") },
-    { Qt::Key_Kana_Lock,        QT_TRANSLATE_NOOP("QShortcut", "Kana Lock") },
-    { Qt::Key_Kana_Shift,       QT_TRANSLATE_NOOP("QShortcut", "Kana Shift") },
-    { Qt::Key_Eisu_Shift,       QT_TRANSLATE_NOOP("QShortcut", "Eisu Shift") },
-    { Qt::Key_Eisu_toggle,      QT_TRANSLATE_NOOP("QShortcut", "Eisu toggle") },
-    { Qt::Key_Codeinput,        QT_TRANSLATE_NOOP("QShortcut", "Code input") },
-    { Qt::Key_MultipleCandidate,QT_TRANSLATE_NOOP("QShortcut", "Multiple Candidate") },
-    { Qt::Key_PreviousCandidate,QT_TRANSLATE_NOOP("QShortcut", "Previous Candidate") },
+    { BobUI::Key_Kanji,            BOBUI_TRANSLATE_NOOP("QShortcut", "Kanji") },
+    { BobUI::Key_Muhenkan,         BOBUI_TRANSLATE_NOOP("QShortcut", "Muhenkan") },
+    { BobUI::Key_Henkan,           BOBUI_TRANSLATE_NOOP("QShortcut", "Henkan") },
+    { BobUI::Key_Romaji,           BOBUI_TRANSLATE_NOOP("QShortcut", "Romaji") },
+    { BobUI::Key_Hiragana,         BOBUI_TRANSLATE_NOOP("QShortcut", "Hiragana") },
+    { BobUI::Key_Katakana,         BOBUI_TRANSLATE_NOOP("QShortcut", "Katakana") },
+    { BobUI::Key_Hiragana_Katakana,BOBUI_TRANSLATE_NOOP("QShortcut", "Hiragana Katakana") },
+    { BobUI::Key_Zenkaku,          BOBUI_TRANSLATE_NOOP("QShortcut", "Zenkaku") },
+    { BobUI::Key_Hankaku,          BOBUI_TRANSLATE_NOOP("QShortcut", "Hankaku") },
+    { BobUI::Key_Zenkaku_Hankaku,  BOBUI_TRANSLATE_NOOP("QShortcut", "Zenkaku Hankaku") },
+    { BobUI::Key_Touroku,          BOBUI_TRANSLATE_NOOP("QShortcut", "Touroku") },
+    { BobUI::Key_Massyo,           BOBUI_TRANSLATE_NOOP("QShortcut", "Massyo") },
+    { BobUI::Key_Kana_Lock,        BOBUI_TRANSLATE_NOOP("QShortcut", "Kana Lock") },
+    { BobUI::Key_Kana_Shift,       BOBUI_TRANSLATE_NOOP("QShortcut", "Kana Shift") },
+    { BobUI::Key_Eisu_Shift,       BOBUI_TRANSLATE_NOOP("QShortcut", "Eisu Shift") },
+    { BobUI::Key_Eisu_toggle,      BOBUI_TRANSLATE_NOOP("QShortcut", "Eisu toggle") },
+    { BobUI::Key_Codeinput,        BOBUI_TRANSLATE_NOOP("QShortcut", "Code input") },
+    { BobUI::Key_MultipleCandidate,BOBUI_TRANSLATE_NOOP("QShortcut", "Multiple Candidate") },
+    { BobUI::Key_PreviousCandidate,BOBUI_TRANSLATE_NOOP("QShortcut", "Previous Candidate") },
 
     // --------------------------------------------------------------
     // Korean keyboard support
-    { Qt::Key_Hangul,          QT_TRANSLATE_NOOP("QShortcut", "Hangul") },
-    { Qt::Key_Hangul_Start,    QT_TRANSLATE_NOOP("QShortcut", "Hangul Start") },
-    { Qt::Key_Hangul_End,      QT_TRANSLATE_NOOP("QShortcut", "Hangul End") },
-    { Qt::Key_Hangul_Hanja,    QT_TRANSLATE_NOOP("QShortcut", "Hangul Hanja") },
-    { Qt::Key_Hangul_Jamo,     QT_TRANSLATE_NOOP("QShortcut", "Hangul Jamo") },
-    { Qt::Key_Hangul_Romaja,   QT_TRANSLATE_NOOP("QShortcut", "Hangul Romaja") },
-    { Qt::Key_Hangul_Jeonja,   QT_TRANSLATE_NOOP("QShortcut", "Hangul Jeonja") },
-    { Qt::Key_Hangul_Banja,    QT_TRANSLATE_NOOP("QShortcut", "Hangul Banja") },
-    { Qt::Key_Hangul_PreHanja, QT_TRANSLATE_NOOP("QShortcut", "Hangul PreHanja") },
-    { Qt::Key_Hangul_PostHanja,QT_TRANSLATE_NOOP("QShortcut", "Hangul PostHanja") },
-    { Qt::Key_Hangul_Special,  QT_TRANSLATE_NOOP("QShortcut", "Hangul Special") },
+    { BobUI::Key_Hangul,          BOBUI_TRANSLATE_NOOP("QShortcut", "Hangul") },
+    { BobUI::Key_Hangul_Start,    BOBUI_TRANSLATE_NOOP("QShortcut", "Hangul Start") },
+    { BobUI::Key_Hangul_End,      BOBUI_TRANSLATE_NOOP("QShortcut", "Hangul End") },
+    { BobUI::Key_Hangul_Hanja,    BOBUI_TRANSLATE_NOOP("QShortcut", "Hangul Hanja") },
+    { BobUI::Key_Hangul_Jamo,     BOBUI_TRANSLATE_NOOP("QShortcut", "Hangul Jamo") },
+    { BobUI::Key_Hangul_Romaja,   BOBUI_TRANSLATE_NOOP("QShortcut", "Hangul Romaja") },
+    { BobUI::Key_Hangul_Jeonja,   BOBUI_TRANSLATE_NOOP("QShortcut", "Hangul Jeonja") },
+    { BobUI::Key_Hangul_Banja,    BOBUI_TRANSLATE_NOOP("QShortcut", "Hangul Banja") },
+    { BobUI::Key_Hangul_PreHanja, BOBUI_TRANSLATE_NOOP("QShortcut", "Hangul PreHanja") },
+    { BobUI::Key_Hangul_PostHanja,BOBUI_TRANSLATE_NOOP("QShortcut", "Hangul PostHanja") },
+    { BobUI::Key_Hangul_Special,  BOBUI_TRANSLATE_NOOP("QShortcut", "Hangul Special") },
 
     // --------------------------------------------------------------
     // Miscellaneous keys
-    { Qt::Key_Cancel,  QT_TRANSLATE_NOOP("QShortcut", "Cancel") },
-    { Qt::Key_Printer,  QT_TRANSLATE_NOOP("QShortcut", "Printer") },
-    { Qt::Key_Execute,  QT_TRANSLATE_NOOP("QShortcut", "Execute") },
-    { Qt::Key_Play,  QT_TRANSLATE_NOOP("QShortcut", "Play") },
-    { Qt::Key_Zoom,  QT_TRANSLATE_NOOP("QShortcut", "Zoom") },
-    { Qt::Key_Exit,  QT_TRANSLATE_NOOP("QShortcut", "Exit") },
-    { Qt::Key_TouchpadToggle,  QT_TRANSLATE_NOOP("QShortcut", "Touchpad Toggle") },
-    { Qt::Key_TouchpadOn,  QT_TRANSLATE_NOOP("QShortcut", "Touchpad On") },
-    { Qt::Key_TouchpadOff,  QT_TRANSLATE_NOOP("QShortcut", "Touchpad Off") },
-    { Qt::Key_Shift,  QT_TRANSLATE_NOOP("QShortcut", "Shift") },
-    { Qt::Key_Control,  QT_TRANSLATE_NOOP("QShortcut", "Control") },
-    { Qt::Key_Alt,  QT_TRANSLATE_NOOP("QShortcut", "Alt") },
-    { Qt::Key_Meta,  QT_TRANSLATE_NOOP("QShortcut", "Meta") },
+    { BobUI::Key_Cancel,  BOBUI_TRANSLATE_NOOP("QShortcut", "Cancel") },
+    { BobUI::Key_Printer,  BOBUI_TRANSLATE_NOOP("QShortcut", "Printer") },
+    { BobUI::Key_Execute,  BOBUI_TRANSLATE_NOOP("QShortcut", "Execute") },
+    { BobUI::Key_Play,  BOBUI_TRANSLATE_NOOP("QShortcut", "Play") },
+    { BobUI::Key_Zoom,  BOBUI_TRANSLATE_NOOP("QShortcut", "Zoom") },
+    { BobUI::Key_Exit,  BOBUI_TRANSLATE_NOOP("QShortcut", "Exit") },
+    { BobUI::Key_TouchpadToggle,  BOBUI_TRANSLATE_NOOP("QShortcut", "Touchpad Toggle") },
+    { BobUI::Key_TouchpadOn,  BOBUI_TRANSLATE_NOOP("QShortcut", "Touchpad On") },
+    { BobUI::Key_TouchpadOff,  BOBUI_TRANSLATE_NOOP("QShortcut", "Touchpad Off") },
+    { BobUI::Key_Shift,  BOBUI_TRANSLATE_NOOP("QShortcut", "Shift") },
+    { BobUI::Key_Control,  BOBUI_TRANSLATE_NOOP("QShortcut", "Control") },
+    { BobUI::Key_Alt,  BOBUI_TRANSLATE_NOOP("QShortcut", "Alt") },
+    { BobUI::Key_Meta,  BOBUI_TRANSLATE_NOOP("QShortcut", "Meta") },
 
 };
 static constexpr int numKeyNames = sizeof keyname / sizeof *keyname;
@@ -832,9 +832,9 @@ static_assert(QKeySequencePrivate::MaxKeyCount == 4, "Change docs and ctor impl 
     Constructs a key sequence with up to 4 keys \a k1, \a k2,
     \a k3 and \a k4.
 
-    The key codes are listed in Qt::Key and can be combined with
-    modifiers (see Qt::KeyboardModifier) such as Qt::ShiftModifier,
-    Qt::ControlModifier, Qt::AltModifier, or Qt::MetaModifier.
+    The key codes are listed in BobUI::Key and can be combined with
+    modifiers (see BobUI::KeyboardModifier) such as BobUI::ShiftModifier,
+    BobUI::ControlModifier, BobUI::AltModifier, or BobUI::MetaModifier.
 */
 QKeySequence::QKeySequence(int k1, int k2, int k3, int k4)
 {
@@ -927,7 +927,7 @@ bool QKeySequence::isEmpty() const
     Returns the shortcut key sequence for the mnemonic in \a text,
     or an empty key sequence if no mnemonics are found.
 
-    For example, mnemonic("E&xit") returns \c{Qt::ALT+Qt::Key_X},
+    For example, mnemonic("E&xit") returns \c{BobUI::ALT+BobUI::Key_X},
     mnemonic("&Quit") returns \c{ALT+Key_Q}, and mnemonic("Quit")
     returns an empty QKeySequence.
 */
@@ -935,7 +935,7 @@ QKeySequence QKeySequence::mnemonic(const QString &text)
 {
     QKeySequence ret;
 
-    if (qt_sequence_no_mnemonics)
+    if (bobui_sequence_no_mnemonics)
         return ret;
 
     bool found = false;
@@ -949,8 +949,8 @@ QKeySequence QKeySequence::mnemonic(const QString &text)
             if (c.isPrint()) {
                 if (!found) {
                     c = c.toUpper();
-                    ret = QKeySequence(QKeyCombination(Qt::ALT, Qt::Key(c.unicode())));
-#ifdef QT_NO_DEBUG
+                    ret = QKeySequence(QKeyCombination(BobUI::ALT, BobUI::Key(c.unicode())));
+#ifdef BOBUI_NO_DEBUG
                     return ret;
 #else
                     found = true;
@@ -1025,9 +1025,9 @@ int QKeySequence::assign(const QString &ks, QKeySequence::SequenceFormat format)
 
 struct QModifKeyName {
     QModifKeyName() { }
-    QModifKeyName(int q, QChar n) : qt_key(q), name(n) { }
-    QModifKeyName(int q, const QString &n) : qt_key(q), name(n) { }
-    int qt_key;
+    QModifKeyName(int q, QChar n) : bobui_key(q), name(n) { }
+    QModifKeyName(int q, const QString &n) : bobui_key(q), name(n) { }
+    int bobui_key;
     QString name;
 };
 Q_DECLARE_TYPEINFO(QModifKeyName, Q_RELOCATABLE_TYPE);
@@ -1048,43 +1048,43 @@ QKeyCombination QKeySequencePrivate::decodeString(QString accel, QKeySequence::S
         gmodifs = globalModifs();
         if (gmodifs->isEmpty()) {
 #if defined(Q_OS_APPLE)
-            const bool dontSwap = qApp->testAttribute(Qt::AA_MacDontSwapCtrlAndMeta);
+            const bool dontSwap = qApp->testAttribute(BobUI::AA_MacDontSwapCtrlAndMeta);
             if (dontSwap)
-                *gmodifs << QModifKeyName(Qt::META, QChar(kCommandUnicode));
+                *gmodifs << QModifKeyName(BobUI::META, QChar(kCommandUnicode));
             else
-                *gmodifs << QModifKeyName(Qt::CTRL, QChar(kCommandUnicode));
-            *gmodifs << QModifKeyName(Qt::ALT, QChar(kOptionUnicode));
+                *gmodifs << QModifKeyName(BobUI::CTRL, QChar(kCommandUnicode));
+            *gmodifs << QModifKeyName(BobUI::ALT, QChar(kOptionUnicode));
             if (dontSwap)
-                *gmodifs << QModifKeyName(Qt::CTRL, QChar(kControlUnicode));
+                *gmodifs << QModifKeyName(BobUI::CTRL, QChar(kControlUnicode));
             else
-                *gmodifs << QModifKeyName(Qt::META, QChar(kControlUnicode));
-            *gmodifs << QModifKeyName(Qt::SHIFT, QChar(kShiftUnicode));
+                *gmodifs << QModifKeyName(BobUI::META, QChar(kControlUnicode));
+            *gmodifs << QModifKeyName(BobUI::SHIFT, QChar(kShiftUnicode));
 #endif
-            *gmodifs << QModifKeyName(Qt::CTRL, u"ctrl+"_s)
-                     << QModifKeyName(Qt::SHIFT, u"shift+"_s)
-                     << QModifKeyName(Qt::ALT, u"alt+"_s)
-                     << QModifKeyName(Qt::META, u"meta+"_s)
-                     << QModifKeyName(Qt::KeypadModifier, u"num+"_s);
+            *gmodifs << QModifKeyName(BobUI::CTRL, u"ctrl+"_s)
+                     << QModifKeyName(BobUI::SHIFT, u"shift+"_s)
+                     << QModifKeyName(BobUI::ALT, u"alt+"_s)
+                     << QModifKeyName(BobUI::META, u"meta+"_s)
+                     << QModifKeyName(BobUI::KeypadModifier, u"num+"_s);
         }
     } else {
         gmodifs = globalPortableModifs();
         if (gmodifs->isEmpty()) {
-            *gmodifs << QModifKeyName(Qt::CTRL, u"ctrl+"_s)
-                     << QModifKeyName(Qt::SHIFT, u"shift+"_s)
-                     << QModifKeyName(Qt::ALT, u"alt+"_s)
-                     << QModifKeyName(Qt::META, u"meta+"_s)
-                     << QModifKeyName(Qt::KeypadModifier, u"num+"_s);
+            *gmodifs << QModifKeyName(BobUI::CTRL, u"ctrl+"_s)
+                     << QModifKeyName(BobUI::SHIFT, u"shift+"_s)
+                     << QModifKeyName(BobUI::ALT, u"alt+"_s)
+                     << QModifKeyName(BobUI::META, u"meta+"_s)
+                     << QModifKeyName(BobUI::KeypadModifier, u"num+"_s);
         }
     }
 
 
     QList<QModifKeyName> modifs;
     if (nativeText) {
-        modifs << QModifKeyName(Qt::CTRL, QCoreApplication::translate("QShortcut", "Ctrl").toLower().append(u'+'))
-               << QModifKeyName(Qt::SHIFT, QCoreApplication::translate("QShortcut", "Shift").toLower().append(u'+'))
-               << QModifKeyName(Qt::ALT, QCoreApplication::translate("QShortcut", "Alt").toLower().append(u'+'))
-               << QModifKeyName(Qt::META, QCoreApplication::translate("QShortcut", "Meta").toLower().append(u'+'))
-               << QModifKeyName(Qt::KeypadModifier, QCoreApplication::translate("QShortcut", "Num").toLower().append(u'+'));
+        modifs << QModifKeyName(BobUI::CTRL, QCoreApplication::translate("QShortcut", "Ctrl").toLower().append(u'+'))
+               << QModifKeyName(BobUI::SHIFT, QCoreApplication::translate("QShortcut", "Shift").toLower().append(u'+'))
+               << QModifKeyName(BobUI::ALT, QCoreApplication::translate("QShortcut", "Alt").toLower().append(u'+'))
+               << QModifKeyName(BobUI::META, QCoreApplication::translate("QShortcut", "Meta").toLower().append(u'+'))
+               << QModifKeyName(BobUI::KeypadModifier, QCoreApplication::translate("QShortcut", "Num").toLower().append(u'+'));
     }
     modifs += *gmodifs; // Test non-translated ones last
 
@@ -1093,13 +1093,13 @@ QKeyCombination QKeySequencePrivate::decodeString(QString accel, QKeySequence::S
     for (int i = 0; i < modifs.size(); ++i) {
         const QModifKeyName &mkf = modifs.at(i);
         if (sl.contains(mkf.name)) {
-            ret |= mkf.qt_key;
+            ret |= mkf.bobui_key;
             accel.remove(mkf.name);
             sl = accel;
         }
     }
     if (accel.isEmpty()) // Incomplete, like for "Meta+Shift+"
-        return Qt::Key_unknown;
+        return BobUI::Key_unknown;
 #endif
 
     int singlePlus = -1;
@@ -1124,7 +1124,7 @@ QKeyCombination QKeySequencePrivate::decodeString(QString accel, QKeySequence::S
         if (sub.size() == 1) {
             // Make sure we only encounter a single '+' at the end of the accel
             if (singlePlus >= 0)
-                return Qt::Key_unknown;
+                return BobUI::Key_unknown;
             singlePlus = lastI;
         } else {
 
@@ -1132,7 +1132,7 @@ QKeyCombination QKeySequencePrivate::decodeString(QString accel, QKeySequence::S
                 for (int j = 0; j < modifs.size(); ++j) {
                     const QModifKeyName &mkf = modifs.at(j);
                     if (sub == mkf.name) {
-                        ret |= mkf.qt_key;
+                        ret |= mkf.bobui_key;
                         return true; // Shortcut, since if we find another it would/should just be a dup
                     }
                 }
@@ -1147,7 +1147,7 @@ QKeyCombination QKeySequencePrivate::decodeString(QString accel, QKeySequence::S
                 validModifier = identifyModifier(cleanedSub);
             }
             if (!validModifier)
-                return Qt::Key_unknown;
+                return BobUI::Key_unknown;
         }
         lastI = i + 1;
     }
@@ -1164,19 +1164,19 @@ QKeyCombination QKeySequencePrivate::decodeString(QString accel, QKeySequence::S
 
     int fnum = 0;
     if (accelRef.isEmpty())
-        return Qt::Key_unknown;
+        return BobUI::Key_unknown;
     else if (accelRef.size() == 1) {
 #if defined(Q_OS_APPLE)
-        int qtKey = qtkeyForAppleSymbol(accelRef.at(0));
-        if (qtKey != -1) {
-            ret |= qtKey;
+        int bobuiKey = bobuikeyForAppleSymbol(accelRef.at(0));
+        if (bobuiKey != -1) {
+            ret |= bobuiKey;
         } else
 #endif
         {
             ret |= accelRef.at(0).toUpper().unicode();
         }
     } else if (accelRef.at(0) == u'f' && (fnum = accelRef.mid(1).toInt()) >= 1 && fnum <= 35) {
-        ret |= Qt::Key_F1 + fnum - 1;
+        ret |= BobUI::Key_F1 + fnum - 1;
     } else {
         // For NativeText, check the translation table first,
         // if we don't find anything then try it out with just the untranlated stuff.
@@ -1200,7 +1200,7 @@ QKeyCombination QKeySequencePrivate::decodeString(QString accel, QKeySequence::S
         }
         // We couldn't translate the key.
         if (!found)
-            return Qt::Key_unknown;
+            return BobUI::Key_unknown;
     }
     return QKeyCombination::fromCombined(ret);
 }
@@ -1226,8 +1226,8 @@ QString QKeySequencePrivate::encodeString(QKeyCombination keyCombination, QKeySe
 
     const auto key = keyCombination.key();
 
-    // Handle -1 (Invalid Key) and Qt::Key_unknown gracefully
-    if (keyCombination.toCombined() == -1 || key == Qt::Key_unknown)
+    // Handle -1 (Invalid Key) and BobUI::Key_unknown gracefully
+    if (keyCombination.toCombined() == -1 || key == BobUI::Key_unknown)
         return s;
 
     const auto modifiers = keyCombination.keyboardModifiers();
@@ -1236,42 +1236,42 @@ QString QKeySequencePrivate::encodeString(QKeyCombination keyCombination, QKeySe
     if (nativeText) {
         // On Apple platforms the order (by default) is Meta, Alt, Shift, Control.
         // If the AA_MacDontSwapCtrlAndMeta is enabled, then the order
-        // is Ctrl, Alt, Shift, Meta. The appleSymbolForQtKey helper does this swap
+        // is Ctrl, Alt, Shift, Meta. The appleSymbolForBobUIKey helper does this swap
         // for us, which means that we have to adjust our order here.
         // The upshot is a lot more infrastructure to keep the number of
         // if tests down and the code relatively clean.
-        static constexpr int ModifierOrder[] = { Qt::META, Qt::ALT, Qt::SHIFT, Qt::CTRL, 0 };
-        static constexpr int QtKeyOrder[] = { Qt::Key_Meta, Qt::Key_Alt, Qt::Key_Shift, Qt::Key_Control, 0 };
-        static constexpr int DontSwapModifierOrder[] = { Qt::CTRL, Qt::ALT, Qt::SHIFT, Qt::META, 0 };
-        static constexpr int DontSwapQtKeyOrder[] = { Qt::Key_Control, Qt::Key_Alt, Qt::Key_Shift, Qt::Key_Meta, 0 };
+        static constexpr int ModifierOrder[] = { BobUI::META, BobUI::ALT, BobUI::SHIFT, BobUI::CTRL, 0 };
+        static constexpr int BobUIKeyOrder[] = { BobUI::Key_Meta, BobUI::Key_Alt, BobUI::Key_Shift, BobUI::Key_Control, 0 };
+        static constexpr int DontSwapModifierOrder[] = { BobUI::CTRL, BobUI::ALT, BobUI::SHIFT, BobUI::META, 0 };
+        static constexpr int DontSwapBobUIKeyOrder[] = { BobUI::Key_Control, BobUI::Key_Alt, BobUI::Key_Shift, BobUI::Key_Meta, 0 };
         const int *modifierOrder;
-        const int *qtkeyOrder;
-        if (qApp->testAttribute(Qt::AA_MacDontSwapCtrlAndMeta)) {
+        const int *bobuikeyOrder;
+        if (qApp->testAttribute(BobUI::AA_MacDontSwapCtrlAndMeta)) {
             modifierOrder = DontSwapModifierOrder;
-            qtkeyOrder = DontSwapQtKeyOrder;
+            bobuikeyOrder = DontSwapBobUIKeyOrder;
         } else {
             modifierOrder = ModifierOrder;
-            qtkeyOrder = QtKeyOrder;
+            bobuikeyOrder = BobUIKeyOrder;
         }
 
         for (int i = 0; modifierOrder[i] != 0; ++i) {
             if (modifiers & modifierOrder[i])
-                s += appleSymbolForQtKey(qtkeyOrder[i]);
+                s += appleSymbolForBobUIKey(bobuikeyOrder[i]);
         }
     } else
 #endif
     {
         // On other systems the order is Meta, Control, Alt, Shift
-        if (modifiers & Qt::MetaModifier)
+        if (modifiers & BobUI::MetaModifier)
             s = nativeText ? QCoreApplication::translate("QShortcut", "Meta") : QString::fromLatin1("Meta");
-        if (modifiers & Qt::ControlModifier)
+        if (modifiers & BobUI::ControlModifier)
             addKey(s, nativeText ? QCoreApplication::translate("QShortcut", "Ctrl") : QString::fromLatin1("Ctrl"), format);
-        if (modifiers & Qt::AltModifier)
+        if (modifiers & BobUI::AltModifier)
             addKey(s, nativeText ? QCoreApplication::translate("QShortcut", "Alt") : QString::fromLatin1("Alt"), format);
-        if (modifiers & Qt::ShiftModifier)
+        if (modifiers & BobUI::ShiftModifier)
             addKey(s, nativeText ? QCoreApplication::translate("QShortcut", "Shift") : QString::fromLatin1("Shift"), format);
     }
-    if (modifiers & Qt::KeypadModifier)
+    if (modifiers & BobUI::KeypadModifier)
         addKey(s, nativeText ? QCoreApplication::translate("QShortcut", "Num") : QString::fromLatin1("Num"), format);
 
     QString keyName = QKeySequencePrivate::keyName(key, format);
@@ -1293,7 +1293,7 @@ QString QKeySequencePrivate::encodeString(QKeyCombination keyCombination, QKeySe
 
     This static method is used by encodeString() and by the D-Bus menu exporter.
 */
-QString QKeySequencePrivate::keyName(Qt::Key key, QKeySequence::SequenceFormat format)
+QString QKeySequencePrivate::keyName(BobUI::Key key, QKeySequence::SequenceFormat format)
 {
     bool nativeText = (format == QKeySequence::NativeText);
     QString p;
@@ -1301,21 +1301,21 @@ QString QKeySequencePrivate::keyName(Qt::Key key, QKeySequence::SequenceFormat f
     if (nativeText && (key > 0x00 && key <= 0x1f)) {
         // Map C0 control codes to the corresponding Control Pictures
         p = QChar::fromUcs2(0x2400 + key);
-    } else if (key && key < Qt::Key_Escape && key != Qt::Key_Space) {
+    } else if (key && key < BobUI::Key_Escape && key != BobUI::Key_Space) {
         if (!QChar::requiresSurrogates(key)) {
             p = QChar::fromUcs2(key).toUpper();
         } else {
             p += QChar(QChar::highSurrogate(key));
             p += QChar(QChar::lowSurrogate(key));
         }
-    } else if (key >= Qt::Key_F1 && key <= Qt::Key_F35) {
-            p = nativeText ? QCoreApplication::translate("QShortcut", "F%1").arg(key - Qt::Key_F1 + 1)
-                           : QString::fromLatin1("F%1").arg(key - Qt::Key_F1 + 1);
+    } else if (key >= BobUI::Key_F1 && key <= BobUI::Key_F35) {
+            p = nativeText ? QCoreApplication::translate("QShortcut", "F%1").arg(key - BobUI::Key_F1 + 1)
+                           : QString::fromLatin1("F%1").arg(key - BobUI::Key_F1 + 1);
     } else if (key) {
         int i=0;
 #if defined(Q_OS_APPLE)
         if (nativeText) {
-            QChar ch = appleSymbolForQtKey(key);
+            QChar ch = appleSymbolForBobUIKey(key);
             if (!ch.isNull())
                 p = ch;
             else
@@ -1336,7 +1336,7 @@ NonSymbol:
             }
             // If we can't find the actual translatable keyname,
             // fall back on the unicode representation of it...
-            // Or else characters like Qt::Key_aring may not get displayed
+            // Or else characters like BobUI::Key_aring may not get displayed
             // (Really depends on you locale)
             if (i >= numKeyNames) {
                 if (!QChar::requiresSurrogates(key)) {
@@ -1500,7 +1500,7 @@ bool QKeySequence::isDetached() const
     Return a string representation of the key sequence,
     based on \a format.
 
-    For example, the value Qt::CTRL+Qt::Key_O results in "Ctrl+O".
+    For example, the value BobUI::CTRL+BobUI::Key_O results in "Ctrl+O".
     If the key sequence has multiple key codes, each is separated
     by commas in the string returned, such as "Alt+X, Ctrl+Y, Z".
     The strings, "Ctrl", "Shift", etc. are translated using
@@ -1586,14 +1586,14 @@ QString QKeySequence::listToString(const QList<QKeySequence> &list, SequenceForm
 /*****************************************************************************
   QKeySequence stream functions
  *****************************************************************************/
-#if !defined(QT_NO_DATASTREAM)
+#if !defined(BOBUI_NO_DATASTREAM)
 /*!
     \fn QDataStream &operator<<(QDataStream &stream, const QKeySequence &sequence)
     \relates QKeySequence
 
     Writes the key \a sequence to the \a stream.
 
-    \sa{Serializing Qt Data Types}{Format of the QDataStream operators}
+    \sa{Serializing BobUI Data Types}{Format of the QDataStream operators}
 */
 QDataStream &operator<<(QDataStream &s, const QKeySequence &keysequence)
 {
@@ -1615,7 +1615,7 @@ QDataStream &operator<<(QDataStream &s, const QKeySequence &keysequence)
 
     Reads a key sequence from the \a stream into the key \a sequence.
 
-    \sa{Serializing Qt Data Types}{Format of the QDataStream operators}
+    \sa{Serializing BobUI Data Types}{Format of the QDataStream operators}
 */
 QDataStream &operator>>(QDataStream &s, QKeySequence &keysequence)
 {
@@ -1631,13 +1631,13 @@ QDataStream &operator>>(QDataStream &s, QKeySequence &keysequence)
         s >> keys[i];
     }
     qAtomicDetach(keysequence.d);
-    std::copy(keys, keys + MaxKeys, QT_MAKE_CHECKED_ARRAY_ITERATOR(keysequence.d->key, MaxKeys));
+    std::copy(keys, keys + MaxKeys, BOBUI_MAKE_CHECKED_ARRAY_ITERATOR(keysequence.d->key, MaxKeys));
     return s;
 }
 
-#endif //QT_NO_DATASTREAM
+#endif //BOBUI_NO_DATASTREAM
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QKeySequence &p)
 {
     QDebugStateSaver saver(dbg);
@@ -1656,6 +1656,6 @@ QDebug operator<<(QDebug dbg, const QKeySequence &p)
     \internal
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qkeysequence.cpp"

@@ -1,5 +1,5 @@
 // Copyright (C) 2022 Laszlo Papp <lpapp@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "actionmanager.h"
 
@@ -10,7 +10,7 @@
 
 static const char *kDefaultShortcutPropertyName = "defaultShortcuts";
 static const char *kIdPropertyName = "id";
-static const char *kAuthorName = "qt";
+static const char *kAuthorName = "bobui";
 
 struct ActionIdentifier {
     QString author;

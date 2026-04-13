@@ -1,15 +1,15 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandsurface_p.h"
 #include "qwaylanddisplay_p.h"
 #include "qwaylandscreen_p.h"
 
-#include <QtGui/QGuiApplication>
+#include <BobUIGui/QGuiApplication>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 QWaylandSurface::QWaylandSurface(QWaylandDisplay *display)
     : wl_surface(display->createSurface(this))
@@ -37,7 +37,7 @@ QWaylandScreen *QWaylandSurface::oldestEnteredScreen()
 
 QWaylandSurface *QWaylandSurface::fromWlSurface(::wl_surface *surface)
 {
-    if (auto *s = QtWayland::wl_surface::fromObject(surface))
+    if (auto *s = BobUIWayland::wl_surface::fromObject(surface))
         return static_cast<QWaylandSurface *>(s);
     return nullptr;
 }
@@ -109,8 +109,8 @@ void QWaylandSurface::surface_preferred_buffer_transform(uint32_t transform)
     Q_EMIT preferredBufferTransformChanged();
 }
 
-} // namespace QtWaylandClient
+} // namespace BobUIWaylandClient
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qwaylandsurface_p.cpp"

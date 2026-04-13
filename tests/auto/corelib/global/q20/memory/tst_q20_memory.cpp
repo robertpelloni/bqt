@@ -1,12 +1,12 @@
 // Copyright (C) 2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Marc Mutz <marc.mutz@kdab.com>
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
 #include <q20memory.h>
-#include <QtCore/q20memory.h>
+#include <BobUICore/q20memory.h>
 
-#include <QTest>
+#include <BOBUIest>
 #include <QObject>
 #include <QExplicitlySharedDataPointer>
 #include <QSharedDataPointer>
@@ -156,6 +156,6 @@ void tst_q20_memory::to_address_broken_const_propagation()
                                  decltype(std::as_const(p).operator->())>);
 }
 
-QTEST_GUILESS_MAIN(tst_q20_memory)
+BOBUIEST_GUILESS_MAIN(tst_q20_memory)
 #include "tst_q20_memory.moc"
 

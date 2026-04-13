@@ -1,13 +1,13 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef QWASMDOM_H
 #define QWASMDOM_H
 
-#include <QtCore/qtconfigmacros.h>
-#include <QtCore/QPointF>
+#include <BobUICore/bobuiconfigmacros.h>
+#include <BobUICore/QPointF>
 #include <private/qstdweb_p.h>
-#include <QtCore/qnamespace.h>
+#include <BobUICore/qnamespace.h>
 
 #include <emscripten/val.h>
 
@@ -16,7 +16,7 @@
 #include <string>
 
 #include <QMimeData>
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace qstdweb {
     struct CancellationFlag;
@@ -40,7 +40,7 @@ struct DataTransfer
     QMimeData *toMimeDataPreview();
     void setDragImage(emscripten::val element, const QPoint &hotspot);
     void setData(std::string format, std::string data);
-    void setDropAction(Qt::DropAction dropAction);
+    void setDropAction(BobUI::DropAction dropAction);
     void setDataFromMimeData(const QMimeData &mimeData);
 
     emscripten::val webDataTransfer;
@@ -59,5 +59,5 @@ void drawImageToWebImageDataArray(const QImage &source, emscripten::val destinat
                                   const QRect &sourceRect);
 } // namespace dom
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 #endif // QWASMDOM_H

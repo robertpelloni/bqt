@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2014 Martin Graesslin <mgraesslin@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qplatformmenu.h"
 
 #include <qpa/qplatformtheme.h>
 #include <private/qguiapplication_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QPlatformMenuItem::QPlatformMenuItem()
 {
@@ -55,6 +55,6 @@ QPlatformMenu *QPlatformMenuBar::createMenu() const
     return QGuiApplicationPrivate::platformTheme()->createPlatformMenu();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qplatformmenu.cpp"

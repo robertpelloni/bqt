@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,29 +9,29 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QtCore/QVariant>
-#include <QtGui/QAction>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QFontComboBox>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QListWidget>
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QMenuBar>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QRadioButton>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QSpinBox>
-#include <QtWidgets/QStatusBar>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIGui/QAction>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QCheckBox>
+#include <BobUIWidgets/QComboBox>
+#include <BobUIWidgets/QFontComboBox>
+#include <BobUIWidgets/QGroupBox>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QLineEdit>
+#include <BobUIWidgets/QListWidget>
+#include <BobUIWidgets/QMainWindow>
+#include <BobUIWidgets/QMenu>
+#include <BobUIWidgets/QMenuBar>
+#include <BobUIWidgets/QPushButton>
+#include <BobUIWidgets/QRadioButton>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/QSpinBox>
+#include <BobUIWidgets/QStatusBar>
+#include <BobUIWidgets/QVBoxLayout>
+#include <BobUIWidgets/QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_MainWindow
 {
@@ -393,6 +393,6 @@ namespace Ui {
     class MainWindow: public Ui_MainWindow {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // MAINWINDOW_H

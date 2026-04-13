@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \page widgets-tutorial.html
@@ -11,7 +11,7 @@
     \section1 Introduction
 
     Widgets are the basic building blocks for graphical user interface
-    (GUI) applications built with Qt. Each GUI component (e.g.
+    (GUI) applications built with BobUI. Each GUI component (e.g.
     buttons, labels, text editors) is a \l{QWidget}{widget} that is
     placed somewhere within a user interface window, or is displayed
     as an independent window. Each type of widget is provided by a
@@ -32,7 +32,7 @@
 
     \section1 Writing a Main Function
 
-    Many of the GUI examples provided with Qt follow the pattern of
+    Many of the GUI examples provided with BobUI follow the pattern of
     having a \c{main.cpp} file, which contains the standard code to
     initialize the application, plus any number of other source/header
     files that contain the application logic and custom GUI components.
@@ -44,7 +44,7 @@
     First, a QApplication object is constructed, which can be
     configured with arguments passed in from the command line. After
     the widgets have been created and shown, QApplication::exec() is
-    called to start Qt's event loop.  Control passes to Qt until this
+    called to start BobUI's event loop.  Control passes to BobUI until this
     function returns. Finally, \c{main()} returns the value returned
     by QApplication::exec().
 
@@ -65,14 +65,14 @@
 
     \section1 Real World Widget Examples
 
-    In these \l{Qt Widgets Examples} {more advanced examples}, the code
+    In these \l{BobUI Widgets Examples} {more advanced examples}, the code
     that creates the widgets and layouts is stored in other files. For
     example, the GUI for a main window may be created in the
     constructor of a QMainWindow subclass.
 
     \section1 Building The Examples
 
-    If you installed a binary package to get Qt, or if you compiled Qt
+    If you installed a binary package to get BobUI, or if you compiled BobUI
     yourself, the examples described in this tutorial should already
     be built and ready to run. If you wish to modify and recompile
     them, follow these steps:
@@ -111,7 +111,7 @@
     In the following example, we use QWidget to create and show a window with
     a default size:
 
-    \div {class="qt-code"}
+    \div {class="bobui-code"}
     \table
     \row
     \li \snippet tutorials/widgets/toplevel/main.cpp main program
@@ -135,7 +135,7 @@
     passing \c window as the parent to its constructor. In this case, we add a
     button to the window and place it in a specific location:
 
-    \div {class="qt-code"}
+    \div {class="bobui-code"}
     \table
     \row
     \li \snippet tutorials/widgets/childwidget/main.cpp main program
@@ -160,7 +160,7 @@
     construct a label and line edit widget that we would like to arrange
     side-by-side.
 
-    \div {class="qt-code"}
+    \div {class="bobui-code"}
     \table
     \row
     \li \snippet tutorials/widgets/windowlayout/main.cpp main program
@@ -199,9 +199,9 @@
     We achieve this by creating two layouts: \c{queryLayout} is a QHBoxLayout
     that contains QLabel and QLineEdit widgets placed side-by-side;
     \c{mainLayout} is a QVBoxLayout that contains \c{queryLayout} and a
-    QTableView arranged vertically.
+    BOBUIableView arranged vertically.
 
-    \div {class="qt-code"}
+    \div {class="bobui-code"}
     \table
     \row
     \li \snippet tutorials/widgets/nestedlayouts/main.cpp first part
@@ -215,9 +215,9 @@
     function to insert the \c{queryLayout} above the \c{resultView} table.
 
     We have omitted the code that sets up the model containing the data shown
-    by the QTableView widget, \c resultView. For completeness, we show this below.
+    by the BOBUIableView widget, \c resultView. For completeness, we show this below.
 
-    As well as QHBoxLayout and QVBoxLayout, Qt also provides QGridLayout
+    As well as QHBoxLayout and QVBoxLayout, BobUI also provides QGridLayout
     and QFormLayout classes to help with more complex user interfaces.
     These can be seen if you run \QD.
 

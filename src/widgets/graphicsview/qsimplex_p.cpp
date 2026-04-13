@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qsimplex_p.h"
 
-#include <QtCore/qset.h>
-#include <QtCore/qdebug.h>
+#include <BobUICore/qset.h>
+#include <BobUICore/qdebug.h>
 
 #include <stdlib.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*!
   \internal
@@ -503,7 +503,7 @@ qreal QSimplex::solver(SolverFactor factor)
     solveMaxHelper();
     collectResults();
 
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
     for (int i = 0; i < constraints.size(); ++i) {
         Q_ASSERT(constraints[i]->isSatisfied());
     }
@@ -627,4 +627,4 @@ void QSimplexConstraint::invert()
         iter.value() = -iter.value();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

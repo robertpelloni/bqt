@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QOFFSCREENCOMMON_H
 #define QOFFSCREENCOMMON_H
 
 #include <qpa/qplatformbackingstore.h>
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 #include <qpa/qplatformdrag.h>
 #endif
 #include <qpa/qplatformintegration.h>
@@ -18,7 +18,7 @@
 #include <qjsonobject.h>
 #include <qhash.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QOffscreenIntegration;
 class QOffscreenScreen : public QPlatformScreen
@@ -50,11 +50,11 @@ public:
     const QOffscreenIntegration *m_integration;
 };
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 class QOffscreenDrag : public QPlatformDrag
 {
 public:
-    Qt::DropAction drag(QDrag *) override { return Qt::IgnoreAction; }
+    BobUI::DropAction drag(QDrag *) override { return BobUI::IgnoreAction; }
 };
 #endif
 
@@ -98,6 +98,6 @@ private:
     QOffscreenIntegration *m_integration;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

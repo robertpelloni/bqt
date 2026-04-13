@@ -1,5 +1,5 @@
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef FORWARD_DECLARED_PARAM_H
 #define FORWARD_DECLARED_PARAM_H

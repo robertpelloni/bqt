@@ -1,70 +1,70 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#if QT_CONFIG(colordialog)
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#if BOBUI_CONFIG(colordialog)
 #include "qcolordialog.h"
 #endif
-#if QT_CONFIG(fontdialog)
+#if BOBUI_CONFIG(fontdialog)
 #include "qfontdialog.h"
 #endif
-#if QT_CONFIG(filedialog)
+#if BOBUI_CONFIG(filedialog)
 #include "qfiledialog.h"
 #endif
 
 #include "qevent.h"
 #include "qapplication.h"
 #include "qlayout.h"
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
 #include "qsizegrip.h"
 #endif
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
 #include "qwhatsthis.h"
 #endif
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
 #include "qmenu.h"
 #endif
 #include "qcursor.h"
-#if QT_CONFIG(messagebox)
+#if BOBUI_CONFIG(messagebox)
 #include "qmessagebox.h"
 #endif
-#if QT_CONFIG(errormessage)
+#if BOBUI_CONFIG(errormessage)
 #include "qerrormessage.h"
 #endif
 #include <qpa/qplatformtheme.h>
 #include "private/qdialog_p.h"
 #include "private/qguiapplication_p.h"
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 #include "qaccessible.h"
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static inline int themeDialogType(const QDialog *dialog)
 {
-#if QT_CONFIG(filedialog)
+#if BOBUI_CONFIG(filedialog)
     if (qobject_cast<const QFileDialog *>(dialog))
         return QPlatformTheme::FileDialog;
 #endif
-#if QT_CONFIG(colordialog)
+#if BOBUI_CONFIG(colordialog)
     if (qobject_cast<const QColorDialog *>(dialog))
         return QPlatformTheme::ColorDialog;
 #endif
-#if QT_CONFIG(fontdialog)
+#if BOBUI_CONFIG(fontdialog)
     if (qobject_cast<const QFontDialog *>(dialog))
         return QPlatformTheme::FontDialog;
 #endif
-#if QT_CONFIG(messagebox)
+#if BOBUI_CONFIG(messagebox)
     if (qobject_cast<const QMessageBox *>(dialog))
         return QPlatformTheme::MessageDialog;
 #endif
-#if QT_CONFIG(errormessage)
+#if BOBUI_CONFIG(errormessage)
     if (qobject_cast<const QErrorMessage *>(dialog))
         return QPlatformTheme::MessageDialog;
 #endif
-#if !QT_CONFIG(filedialog) && !QT_CONFIG(colordialog) && !QT_CONFIG(fontdialog) && \
-    !QT_CONFIG(messagebox) && !QT_CONFIG(errormessage)
+#if !BOBUI_CONFIG(filedialog) && !BOBUI_CONFIG(colordialog) && !BOBUI_CONFIG(fontdialog) && \
+    !BOBUI_CONFIG(messagebox) && !BOBUI_CONFIG(errormessage)
     Q_UNUSED(dialog);
 #endif
     return -1;
@@ -99,7 +99,7 @@ QPlatformDialogHelper *QDialogPrivate::platformHelper() const
 
 bool QDialogPrivate::canBeNativeDialog() const
 {
-    if (QCoreApplication::testAttribute(Qt::AA_DontUseNativeDialogs))
+    if (QCoreApplication::testAttribute(BobUI::AA_DontUseNativeDialogs))
         return false;
 
     QDialogPrivate *ncThis = const_cast<QDialogPrivate *>(this);
@@ -123,7 +123,7 @@ void QDialogPrivate::close(int resultCode)
     q->setResult(resultCode);
 
     if (!data.is_closing) {
-        // Until Qt 6.3 we didn't close dialogs, so they didn't receive a QCloseEvent.
+        // Until BobUI 6.3 we didn't close dialogs, so they didn't receive a QCloseEvent.
         // It is likely that subclasses implement closeEvent and handle them as rejection
         // (like QMessageBox and QProgressDialog do), so eat those events.
         struct CloseEventEater : QObject
@@ -187,7 +187,7 @@ QVariant QDialogPrivate::styleHint(QPlatformDialogHelper::StyleHint hint) const
 
     \ingroup dialog-classes
     \ingroup abstractwidgets
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     A dialog window is a top-level window mostly used for short-term
     tasks and brief communications with the user. QDialogs may be
@@ -195,8 +195,8 @@ QVariant QDialogPrivate::styleHint(QPlatformDialogHelper::StyleHint hint) const
     provide a \l{#return}{return value}, and they can have \l{#default}{default buttons}. QDialogs can also have a QSizeGrip in their
     lower-right corner, using setSizeGripEnabled().
 
-    Note that QDialog (and any other widget that has type \c Qt::Dialog) uses
-    the parent widget slightly differently from other classes in Qt. A dialog is
+    Note that QDialog (and any other widget that has type \c BobUI::Dialog) uses
+    the parent widget slightly differently from other classes in BobUI. A dialog is
     always a top-level widget, but if it has a parent, its default location is
     centered on top of the parent's top-level widget (if it is not top-level
     itself). It will also share the parent's taskbar entry.
@@ -206,7 +206,7 @@ QVariant QDialogPrivate::styleHint(QPlatformDialogHelper::StyleHint hint) const
     explicitly set the window flags of the reparented widget; using
     the overloaded function will clear the window flags specifying the
     window-system properties for the widget (in particular it will
-    reset the Qt::Dialog flag).
+    reset the BobUI::Dialog flag).
 
     \note The parent relationship of the dialog does \e{not} imply
     that the dialog will always be stacked on top of the parent
@@ -221,8 +221,8 @@ QVariant QDialogPrivate::styleHint(QPlatformDialogHelper::StyleHint hint) const
     visible windows in the same application. Dialogs that are used to
     request a file name from the user or that are used to set
     application preferences are usually modal. Dialogs can be
-    \l{Qt::ApplicationModal}{application modal} (the default) or
-    \l{Qt::WindowModal}{window modal}.
+    \l{BobUI::ApplicationModal}{application modal} (the default) or
+    \l{BobUI::WindowModal}{window modal}.
 
     When an application modal dialog is opened, the user must finish
     interacting with the dialog and close it before they can access
@@ -337,7 +337,7 @@ QVariant QDialogPrivate::styleHint(QPlatformDialogHelper::StyleHint hint) const
     layout to \l{QLayout::}{SetFixedSize}, the dialog will not be resizable
     by the user, and will automatically shrink when the extension gets hidden.
 
-    \sa QDialogButtonBox, QTabWidget, QWidget, QProgressDialog,
+    \sa QDialogButtonBox, BOBUIabWidget, QWidget, QProgressDialog,
         {Standard Dialogs Example}
 */
 
@@ -367,14 +367,14 @@ QVariant QDialogPrivate::styleHint(QPlatformDialogHelper::StyleHint hint) const
 
   The widget flags \a f are passed on to the QWidget constructor.
   If, for example, you don't want a What's This button in the title bar
-  of the dialog, pass Qt::WindowTitleHint | Qt::WindowSystemMenuHint in \a f.
+  of the dialog, pass BobUI::WindowTitleHint | BobUI::WindowSystemMenuHint in \a f.
 
   \sa QWidget::setWindowFlags()
 */
 
-QDialog::QDialog(QWidget *parent, Qt::WindowFlags f)
+QDialog::QDialog(QWidget *parent, BobUI::WindowFlags f)
     : QWidget(*new QDialogPrivate, parent,
-              f | ((f & Qt::WindowType_Mask) == 0 ? Qt::Dialog : Qt::WindowType(0)))
+              f | ((f & BobUI::WindowType_Mask) == 0 ? BobUI::Dialog : BobUI::WindowType(0)))
 {
 }
 
@@ -382,8 +382,8 @@ QDialog::QDialog(QWidget *parent, Qt::WindowFlags f)
   \overload
   \internal
 */
-QDialog::QDialog(QDialogPrivate &dd, QWidget *parent, Qt::WindowFlags f)
-    : QWidget(dd, parent, f | ((f & Qt::WindowType_Mask) == 0 ? Qt::Dialog : Qt::WindowType(0)))
+QDialog::QDialog(QDialogPrivate &dd, QWidget *parent, BobUI::WindowFlags f)
+    : QWidget(dd, parent, f | ((f & BobUI::WindowType_Mask) == 0 ? BobUI::Dialog : BobUI::WindowType(0)))
 {
 }
 
@@ -393,11 +393,11 @@ QDialog::QDialog(QDialogPrivate &dd, QWidget *parent, Qt::WindowFlags f)
 
 QDialog::~QDialog()
 {
-    QT_TRY {
+    BOBUI_TRY {
         // Need to hide() here, as our (to-be) overridden hide()
         // will not be called in ~QWidget.
         hide();
-    } QT_CATCH(...) {
+    } BOBUI_CATCH(...) {
         // we're in the destructor - just swallow the exception
     }
 }
@@ -409,7 +409,7 @@ QDialog::~QDialog()
   default default button becomes the default button. This is what a
   push button calls when it loses focus.
 */
-#if QT_CONFIG(pushbutton)
+#if BOBUI_CONFIG(pushbutton)
 void QDialogPrivate::setDefault(QPushButton *pushButton)
 {
     Q_Q(QDialog);
@@ -459,13 +459,13 @@ void QDialogPrivate::hideDefault()
 void QDialogPrivate::resetModalitySetByOpen()
 {
     Q_Q(QDialog);
-    if (resetModalityTo != -1 && !q->testAttribute(Qt::WA_SetWindowModality)) {
+    if (resetModalityTo != -1 && !q->testAttribute(BobUI::WA_SetWindowModality)) {
         // open() changed the window modality and the user didn't touch it afterwards; restore it
-        q->setWindowModality(Qt::WindowModality(resetModalityTo));
-        q->setAttribute(Qt::WA_SetWindowModality, wasModalitySet);
+        q->setWindowModality(BobUI::WindowModality(resetModalityTo));
+        q->setAttribute(BobUI::WA_SetWindowModality, wasModalitySet);
 #ifdef Q_OS_MAC
-        Q_ASSERT(resetModalityTo != Qt::WindowModal);
-        q->setParent(q->parentWidget(), Qt::Dialog);
+        Q_ASSERT(resetModalityTo != BobUI::WindowModal);
+        q->setParent(q->parentWidget(), BobUI::Dialog);
 #endif
     }
     resetModalityTo = -1;
@@ -479,7 +479,7 @@ void QDialogPrivate::resetModalitySetByOpen()
   value of the \l QMessageBox::StandardButton enum.
 
   Do not call this function if the dialog was constructed with the
-  Qt::WA_DeleteOnClose attribute.
+  BobUI::WA_DeleteOnClose attribute.
 */
 int QDialog::result() const
 {
@@ -511,14 +511,14 @@ void QDialog::open()
 {
     Q_D(QDialog);
 
-    Qt::WindowModality modality = windowModality();
-    if (modality != Qt::WindowModal) {
+    BobUI::WindowModality modality = windowModality();
+    if (modality != BobUI::WindowModal) {
         d->resetModalityTo = modality;
-        d->wasModalitySet = testAttribute(Qt::WA_SetWindowModality);
-        setWindowModality(Qt::WindowModal);
-        setAttribute(Qt::WA_SetWindowModality, false);
+        d->wasModalitySet = testAttribute(BobUI::WA_SetWindowModality);
+        setWindowModality(BobUI::WindowModal);
+        setAttribute(BobUI::WA_SetWindowModality, false);
 #ifdef Q_OS_MAC
-        setParent(parentWidget(), Qt::Sheet);
+        setParent(parentWidget(), BobUI::Sheet);
 #endif
     }
 
@@ -531,9 +531,9 @@ void QDialog::open()
     blocking until the user closes it. The function returns a \l
     DialogCode result.
 
-    If the dialog is \l{Qt::ApplicationModal}{application modal}, users cannot
+    If the dialog is \l{BobUI::ApplicationModal}{application modal}, users cannot
     interact with any other window in the same application until they close
-    the dialog. If the dialog is \l{Qt::ApplicationModal}{window modal}, only
+    the dialog. If the dialog is \l{BobUI::ApplicationModal}{window modal}, only
     interaction with the parent window is blocked while the dialog is open.
     By default, the dialog is application modal.
 
@@ -556,13 +556,13 @@ int QDialog::exec()
         return -1;
     }
 
-    bool deleteOnClose = testAttribute(Qt::WA_DeleteOnClose);
-    setAttribute(Qt::WA_DeleteOnClose, false);
+    bool deleteOnClose = testAttribute(BobUI::WA_DeleteOnClose);
+    setAttribute(BobUI::WA_DeleteOnClose, false);
 
     d->resetModalitySetByOpen();
 
-    bool wasShowModal = testAttribute(Qt::WA_ShowModal);
-    setAttribute(Qt::WA_ShowModal, true);
+    bool wasShowModal = testAttribute(BobUI::WA_ShowModal);
+    setAttribute(BobUI::WA_ShowModal, true);
     setResult(0);
 
     show();
@@ -579,7 +579,7 @@ int QDialog::exec()
         return QDialog::Rejected;
     d->eventLoop = nullptr;
 
-    setAttribute(Qt::WA_ShowModal, wasShowModal);
+    setAttribute(BobUI::WA_ShowModal, wasShowModal);
 
     int res = result();
     if (d->nativeDialogInUse)
@@ -598,7 +598,7 @@ int QDialog::exec()
   to finish, and exec() to return \a r.
 
   As with QWidget::close(), done() deletes the dialog if the
-  Qt::WA_DeleteOnClose flag is set. If the dialog is the application's
+  BobUI::WA_DeleteOnClose flag is set. If the dialog is the application's
   main widget, the application terminates. If the dialog is the
   last window closed, the QGuiApplication::lastWindowClosed() signal is
   emitted.
@@ -658,11 +658,11 @@ bool QDialog::eventFilter(QObject *o, QEvent *e)
   Event handlers
  *****************************************************************************/
 
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
 /*! \reimp */
 void QDialog::contextMenuEvent(QContextMenuEvent *e)
 {
-#if !QT_CONFIG(whatsthis) || !QT_CONFIG(menu)
+#if !BOBUI_CONFIG(whatsthis) || !BOBUI_CONFIG(menu)
     Q_UNUSED(e);
 #else
     QWidget *w = childAt(e->pos());
@@ -671,7 +671,7 @@ void QDialog::contextMenuEvent(QContextMenuEvent *e)
         if (!w)
             return;
     }
-    while (w && w->whatsThis().size() == 0 && !w->testAttribute(Qt::WA_CustomWhatsThis))
+    while (w && w->whatsThis().size() == 0 && !w->testAttribute(BobUI::WA_CustomWhatsThis))
         w = w->isWindow() ? nullptr : w->parentWidget();
     if (w) {
         QPointer<QMenu> p = new QMenu(this);
@@ -685,12 +685,12 @@ void QDialog::contextMenuEvent(QContextMenuEvent *e)
     }
 #endif
 }
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
 
 /*! \reimp */
 void QDialog::keyPressEvent(QKeyEvent *e)
 {
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     //   Calls reject() if Escape is pressed. Simulates a button
     //   click for the default button if Enter is pressed. Move focus
     //   for the arrow keys. Ignore the rest.
@@ -698,11 +698,11 @@ void QDialog::keyPressEvent(QKeyEvent *e)
         reject();
     } else
 #endif
-    if (!e->modifiers() || (e->modifiers() & Qt::KeypadModifier && e->key() == Qt::Key_Enter)) {
+    if (!e->modifiers() || (e->modifiers() & BobUI::KeypadModifier && e->key() == BobUI::Key_Enter)) {
         switch (e->key()) {
-#if QT_CONFIG(pushbutton)
-        case Qt::Key_Enter:
-        case Qt::Key_Return: {
+#if BOBUI_CONFIG(pushbutton)
+        case BobUI::Key_Enter:
+        case BobUI::Key_Return: {
             QList<QPushButton*> list = findChildren<QPushButton*>();
             for (int i=0; i<list.size(); ++i) {
                 QPushButton *pb = list.at(i);
@@ -727,7 +727,7 @@ void QDialog::keyPressEvent(QKeyEvent *e)
 /*! \reimp */
 void QDialog::closeEvent(QCloseEvent *e)
 {
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
     if (isModal() && QWhatsThis::inWhatsThisMode())
         QWhatsThis::leaveWhatsThisMode();
 #endif
@@ -756,21 +756,21 @@ void QDialog::setVisible(bool visible)
 void QDialogPrivate::setVisible(bool visible)
 {
     Q_Q(QDialog);
-    if (!q->testAttribute(Qt::WA_DontShowOnScreen) && canBeNativeDialog() && setNativeDialogVisible(visible))
+    if (!q->testAttribute(BobUI::WA_DontShowOnScreen) && canBeNativeDialog() && setNativeDialogVisible(visible))
         return;
 
     // We should not block windows by the invisible modal dialog
     // if a platform-specific dialog is implemented as an in-process
-    // Qt window, because in this case it will also be blocked.
-    const bool dontBlockWindows = q->testAttribute(Qt::WA_DontShowOnScreen)
-            && styleHint(QPlatformDialogHelper::DialogIsQtWindow).toBool();
-    Qt::WindowModality oldModality;
+    // BobUI window, because in this case it will also be blocked.
+    const bool dontBlockWindows = q->testAttribute(BobUI::WA_DontShowOnScreen)
+            && styleHint(QPlatformDialogHelper::DialogIsBobUIWindow).toBool();
+    BobUI::WindowModality oldModality;
     bool wasModalitySet;
 
     if (dontBlockWindows) {
         oldModality = q->windowModality();
-        wasModalitySet = q->testAttribute(Qt::WA_SetWindowModality);
-        q->setWindowModality(Qt::NonModal);
+        wasModalitySet = q->testAttribute(BobUI::WA_SetWindowModality);
+        q->setWindowModality(BobUI::NonModal);
     }
 
     if (visible) {
@@ -778,7 +778,7 @@ void QDialogPrivate::setVisible(bool visible)
 
         // Window activation might be prevented. We can't test isActiveWindow here,
         // as the window will be activated asynchronously by the window manager.
-        if (!q->testAttribute(Qt::WA_ShowWithoutActivating)) {
+        if (!q->testAttribute(BobUI::WA_ShowWithoutActivating)) {
             QWidget *fw = q->window()->focusWidget();
             if (!fw)
                 fw = q;
@@ -793,10 +793,10 @@ void QDialogPrivate::setVisible(bool visible)
             and actually catches most cases... If not, then they simply
             have to use [widget*]->setFocus() themselves...
             */
-#if QT_CONFIG(pushbutton)
-            if (mainDef && fw->focusPolicy() == Qt::NoFocus) {
+#if BOBUI_CONFIG(pushbutton)
+            if (mainDef && fw->focusPolicy() == BobUI::NoFocus) {
                 QWidget *first = fw;
-                while ((first = first->nextInFocusChain()) != fw && first->focusPolicy() == Qt::NoFocus)
+                while ((first = first->nextInFocusChain()) != fw && first->focusPolicy() == BobUI::NoFocus)
                     ;
                 if (first != mainDef && qobject_cast<QPushButton*>(first))
                     mainDef->setFocus();
@@ -805,7 +805,7 @@ void QDialogPrivate::setVisible(bool visible)
                 QWidget *w = fw;
                 while ((w = w->nextInFocusChain()) != fw) {
                     QPushButton *pb = qobject_cast<QPushButton *>(w);
-                    if (pb && pb->autoDefault() && pb->focusPolicy() != Qt::NoFocus) {
+                    if (pb && pb->autoDefault() && pb->focusPolicy() != BobUI::NoFocus) {
                         pb->setDefault(true);
                         break;
                     }
@@ -813,19 +813,19 @@ void QDialogPrivate::setVisible(bool visible)
             }
 #endif
             if (fw && !fw->hasFocus()) {
-                QFocusEvent e(QEvent::FocusIn, Qt::TabFocusReason);
+                QFocusEvent e(QEvent::FocusIn, BobUI::TabFocusReason);
                 QCoreApplication::sendEvent(fw, &e);
             }
         }
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
         QAccessibleEvent event(q, QAccessible::DialogStart);
         QAccessible::updateAccessibility(&event);
 #endif
 
     } else {
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
         if (q->isVisible()) {
             QAccessibleEvent event(q, QAccessible::DialogEnd);
             QAccessible::updateAccessibility(&event);
@@ -840,10 +840,10 @@ void QDialogPrivate::setVisible(bool visible)
 
     if (dontBlockWindows) {
         q->setWindowModality(oldModality);
-        q->setAttribute(Qt::WA_SetWindowModality, wasModalitySet);
+        q->setAttribute(BobUI::WA_SetWindowModality, wasModalitySet);
     }
 
-#if QT_CONFIG(pushbutton)
+#if BOBUI_CONFIG(pushbutton)
     const QPlatformTheme *theme = QGuiApplicationPrivate::platformTheme();
     if (mainDef && q->isActiveWindow()
         && theme->themeHint(QPlatformTheme::DialogSnapToDefaultButton).toBool())
@@ -854,10 +854,10 @@ void QDialogPrivate::setVisible(bool visible)
 /*!\reimp */
 void QDialog::showEvent(QShowEvent *event)
 {
-    if (!event->spontaneous() && !testAttribute(Qt::WA_Moved)) {
-        Qt::WindowStates  state = windowState();
+    if (!event->spontaneous() && !testAttribute(BobUI::WA_Moved)) {
+        BobUI::WindowStates  state = windowState();
         adjustPosition(parentWidget());
-        setAttribute(Qt::WA_Moved, false); // not really an explicit position
+        setAttribute(BobUI::WA_Moved, false); // not really an explicit position
         if (state != windowState())
             setWindowState(state);
     }
@@ -922,7 +922,7 @@ void QDialog::adjustPosition(QWidget* w)
         p = QPoint(pp.x() + w->width()/2,
                     pp.y() + w->height()/ 2);
     } else if (parentWindow) {
-        // QTBUG-63406: Widget-based dialog in QML, which has no Widget parent
+        // BOBUIBUG-63406: Widget-based dialog in QML, which has no Widget parent
         // but a transient parent window.
         QPoint pp = parentWindow->mapToGlobal(QPoint(0, 0));
         p = QPoint(pp.x() + parentWindow->width() / 2, pp.y() + parentWindow->height() / 2);
@@ -946,7 +946,7 @@ void QDialog::adjustPosition(QWidget* w)
     if (p.y() < desk.y())
         p.setY(desk.y());
 
-    // QTBUG-52735: Manually set the correct target screen since scaling in a
+    // BOBUIBUG-52735: Manually set the correct target screen since scaling in a
     // subsequent call to QWindow::resize() may otherwise use the wrong factor
     // if the screen changed notification is still in an event queue.
     if (scrn) {
@@ -962,7 +962,7 @@ QSize QDialog::sizeHint() const
 {
     Q_D(const QDialog);
     if (d->extension) {
-        if (d->orientation == Qt::Horizontal)
+        if (d->orientation == BobUI::Horizontal)
             return QSize(QWidget::sizeHint().width(),
                         qMax(QWidget::sizeHint().height(),d->extension->sizeHint().height()));
         else
@@ -978,7 +978,7 @@ QSize QDialog::minimumSizeHint() const
 {
     Q_D(const QDialog);
     if (d->extension) {
-        if (d->orientation == Qt::Horizontal)
+        if (d->orientation == BobUI::Horizontal)
             return QSize(QWidget::minimumSizeHint().width(),
                         qMax(QWidget::minimumSizeHint().height(), d->extension->minimumSizeHint().height()));
         else
@@ -995,7 +995,7 @@ QSize QDialog::minimumSizeHint() const
 
     By default, this property is \c false and show() pops up the dialog
     as modeless. Setting this property to true is equivalent to setting
-    QWidget::windowModality to Qt::ApplicationModal.
+    QWidget::windowModality to BobUI::ApplicationModal.
 
     exec() ignores the value of this property and always pops up the
     dialog as modal.
@@ -1005,13 +1005,13 @@ QSize QDialog::minimumSizeHint() const
 
 void QDialog::setModal(bool modal)
 {
-    setAttribute(Qt::WA_ShowModal, modal);
+    setAttribute(BobUI::WA_ShowModal, modal);
 }
 
 
 bool QDialog::isSizeGripEnabled() const
 {
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
     Q_D(const QDialog);
     return !!d->resizer;
 #else
@@ -1022,11 +1022,11 @@ bool QDialog::isSizeGripEnabled() const
 
 void QDialog::setSizeGripEnabled(bool enabled)
 {
-#if !QT_CONFIG(sizegrip)
+#if !BOBUI_CONFIG(sizegrip)
     Q_UNUSED(enabled);
 #else
     Q_D(QDialog);
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
     d->sizeGripEnabled = enabled;
     if (enabled && d->doShowExtension)
         return;
@@ -1047,7 +1047,7 @@ void QDialog::setSizeGripEnabled(bool enabled)
             d->resizer = nullptr;
         }
     }
-#endif // QT_CONFIG(sizegrip)
+#endif // BOBUI_CONFIG(sizegrip)
 }
 
 
@@ -1055,7 +1055,7 @@ void QDialog::setSizeGripEnabled(bool enabled)
 /*! \reimp */
 void QDialog::resizeEvent(QResizeEvent *)
 {
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
     Q_D(QDialog);
     if (d->resizer) {
         if (isRightToLeft())
@@ -1106,5 +1106,5 @@ void QDialog::resizeEvent(QResizeEvent *)
     \sa finished(), accepted()
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 #include "moc_qdialog.cpp"

@@ -1,32 +1,32 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QJNIARRAY_H
 #define QJNIARRAY_H
 
-#include <QtCore/qlist.h>
+#include <BobUICore/qlist.h>
 
 #if defined(Q_QDOC) || defined(Q_OS_ANDROID)
-#include <QtCore/qbytearray.h>
-#include <QtCore/qjniobject.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qjniobject.h>
 
 #include <iterator>
-#include <QtCore/q26numeric.h>
-#include <QtCore/q20type_traits.h>
-#include <QtCore/q20utility.h>
+#include <BobUICore/q26numeric.h>
+#include <BobUICore/q20type_traits.h>
+#include <BobUICore/q20utility.h>
 
 #if defined(Q_QDOC)
 using jsize = qint32;
 using jarray = jobject;
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 template <typename T> class QJniArray;
 template <typename T> struct QJniArrayMutableIterator;
 
 // forward declare here so that we don't have to include the private header
-namespace QtAndroidPrivate
+namespace BobUIAndroidPrivate
 {
     Q_CORE_EXPORT jclass findClass(const char *className, JNIEnv *env);
 }
@@ -138,7 +138,7 @@ public:
     void swap(QJniArrayIterator &other) noexcept
     {
         std::swap(m_index, other.m_index);
-        qt_ptr_swap(m_array, other.m_array);
+        bobui_ptr_swap(m_array, other.m_array);
     }
 
 private:
@@ -148,11 +148,11 @@ private:
         Q_ASSERT(lhs.m_array == rhs.m_array);
         return lhs.m_index == rhs.m_index;
     }
-    friend constexpr Qt::strong_ordering compareThreeWay(const QJniArrayIterator &lhs,
+    friend constexpr BobUI::strong_ordering compareThreeWay(const QJniArrayIterator &lhs,
                                                          const QJniArrayIterator &rhs) noexcept
     {
         Q_ASSERT(lhs.m_array == rhs.m_array);
-        return Qt::compareThreeWay(lhs.m_index, rhs.m_index);
+        return BobUI::compareThreeWay(lhs.m_index, rhs.m_index);
     }
     Q_DECLARE_STRONGLY_ORDERED(QJniArrayIterator)
 
@@ -281,7 +281,7 @@ public:
     void swap(QJniArrayMutableIterator &other) noexcept
     {
         std::swap(m_index, other.m_index);
-        qt_ptr_swap(m_array, other.m_array);
+        bobui_ptr_swap(m_array, other.m_array);
     }
 
 private:
@@ -297,17 +297,17 @@ private:
         Q_ASSERT(lhs.m_array == rhs.m_array);
         return lhs.m_index == rhs.m_index;
     }
-    friend constexpr Qt::strong_ordering compareThreeWay(const QJniArrayMutableIterator &lhs,
+    friend constexpr BobUI::strong_ordering compareThreeWay(const QJniArrayMutableIterator &lhs,
                                                          const QJniArrayMutableIterator &rhs)
     {
         Q_ASSERT(lhs.m_array == rhs.m_array);
-        return Qt::compareThreeWay(lhs.m_index, rhs.m_index);
+        return BobUI::compareThreeWay(lhs.m_index, rhs.m_index);
     }
-    friend constexpr Qt::strong_ordering compareThreeWay(const QJniArrayMutableIterator &lhs,
+    friend constexpr BobUI::strong_ordering compareThreeWay(const QJniArrayMutableIterator &lhs,
                                                          const QJniArrayIterator<const T> &rhs)
     {
         Q_ASSERT(lhs.m_array == rhs.m_array);
-        return Qt::compareThreeWay(lhs.m_index, rhs.m_index);
+        return BobUI::compareThreeWay(lhs.m_index, rhs.m_index);
     }
     Q_DECLARE_STRONGLY_ORDERED_NON_NOEXCEPT(QJniArrayMutableIterator)
     Q_DECLARE_STRONGLY_ORDERED_NON_NOEXCEPT(QJniArrayMutableIterator, QJniArrayIterator<const T>)
@@ -412,17 +412,17 @@ protected:
     struct ElementTypeHelper<C, std::void_t<typename C::value_type>>
     {
         using E = typename C::value_type;
-        static constexpr bool isObject = QtJniTypes::isObjectType<E>();
-        static constexpr bool isPrimitive = QtJniTypes::isPrimitiveType<E>();
+        static constexpr bool isObject = BobUIJniTypes::isObjectType<E>();
+        static constexpr bool isPrimitive = BobUIJniTypes::isPrimitiveType<E>();
     };
 
     template <typename CRef, typename C = q20::remove_cvref_t<CRef>>
     static constexpr bool isContiguousContainer = IsContiguousContainerHelper<C>::value;
 
     template <typename From, typename To>
-    using if_convertible = std::enable_if_t<QtPrivate::AreArgumentsConvertibleWithoutNarrowingBase<From, To>::value, bool>;
+    using if_convertible = std::enable_if_t<BobUIPrivate::AreArgumentsConvertibleWithoutNarrowingBase<From, To>::value, bool>;
     template <typename From, typename To>
-    using unless_convertible = std::enable_if_t<!QtPrivate::AreArgumentsConvertibleWithoutNarrowingBase<From, To>::value, bool>;
+    using unless_convertible = std::enable_if_t<!BobUIPrivate::AreArgumentsConvertibleWithoutNarrowingBase<From, To>::value, bool>;
 
     // helpers for toContainer
     template <typename E> struct ToContainerHelper { using type = QList<E>; };
@@ -435,10 +435,10 @@ protected:
 
     template <typename E, typename CRef, typename C = q20::remove_cvref_t<CRef>>
     static constexpr bool isCompatibleTargetContainer =
-        (QtPrivate::AreArgumentsConvertibleWithoutNarrowingBase<E, typename C::value_type>::value
-         || QtPrivate::AreArgumentsConvertibleWithoutNarrowingBase<typename ToContainerType<E>::value_type,
+        (BobUIPrivate::AreArgumentsConvertibleWithoutNarrowingBase<E, typename C::value_type>::value
+         || BobUIPrivate::AreArgumentsConvertibleWithoutNarrowingBase<typename ToContainerType<E>::value_type,
                                                                    typename C::value_type>::value
-         || (std::is_base_of_v<QtJniTypes::JObjectBase, E> && std::is_same_v<typename C::value_type, QString>))
+         || (std::is_base_of_v<BobUIJniTypes::JObjectBase, E> && std::is_same_v<typename C::value_type, QString>))
         && (qxp::is_detected_v<HasEmplaceBackTest, C>
             || (isContiguousContainer<C> && ElementTypeHelper<C>::isPrimitive));
 
@@ -492,19 +492,19 @@ public:
             return makeObjectArray(std::forward<Container>(container));
         } else if constexpr (std::disjunction_v<std::is_same<ElementType, QJniObject>,
                                                 std::is_same<ElementType, QString>,
-                                                std::is_base_of<QtJniTypes::JObjectBase, ElementType>
+                                                std::is_base_of<BobUIJniTypes::JObjectBase, ElementType>
                              >) {
             return QJniArray<ElementType>(makeObjectArray(std::forward<Container>(container)).arrayObject());
-        } else if constexpr (QtJniTypes::sameTypeForJni<ElementType, jfloat>) {
+        } else if constexpr (BobUIJniTypes::sameTypeForJni<ElementType, jfloat>) {
             return makeArray<jfloat>(std::forward<Container>(container), &JNIEnv::NewFloatArray,
                                                              &JNIEnv::SetFloatArrayRegion);
-        } else if constexpr (QtJniTypes::sameTypeForJni<ElementType, jdouble>) {
+        } else if constexpr (BobUIJniTypes::sameTypeForJni<ElementType, jdouble>) {
             return makeArray<jdouble>(std::forward<Container>(container), &JNIEnv::NewDoubleArray,
                                                               &JNIEnv::SetDoubleArrayRegion);
-        } else if constexpr (QtJniTypes::sameTypeForJni<ElementType, jboolean>) {
+        } else if constexpr (BobUIJniTypes::sameTypeForJni<ElementType, jboolean>) {
             return makeArray<jboolean>(std::forward<Container>(container), &JNIEnv::NewBooleanArray,
                                                                &JNIEnv::SetBooleanArrayRegion);
-        } else if constexpr (QtJniTypes::sameTypeForJni<ElementType, jbyte>
+        } else if constexpr (BobUIJniTypes::sameTypeForJni<ElementType, jbyte>
                              || std::is_same_v<ElementType, char>) {
             return makeArray<jbyte>(std::forward<Container>(container), &JNIEnv::NewByteArray,
                                                             &JNIEnv::SetByteArrayRegion);
@@ -512,17 +512,17 @@ public:
                                                 std::is_same<ElementType, QChar>>) {
             return makeArray<jchar>(std::forward<Container>(container), &JNIEnv::NewCharArray,
                                                             &JNIEnv::SetCharArrayRegion);
-        } else if constexpr (QtJniTypes::sameTypeForJni<ElementType, jshort>) {
+        } else if constexpr (BobUIJniTypes::sameTypeForJni<ElementType, jshort>) {
             return makeArray<jshort>(std::forward<Container>(container), &JNIEnv::NewShortArray,
                                                              &JNIEnv::SetShortArrayRegion);
-        } else if constexpr (QtJniTypes::sameTypeForJni<ElementType, jint>) {
+        } else if constexpr (BobUIJniTypes::sameTypeForJni<ElementType, jint>) {
             return makeArray<jint>(std::forward<Container>(container), &JNIEnv::NewIntArray,
                                                            &JNIEnv::SetIntArrayRegion);
-        } else if constexpr (QtJniTypes::sameTypeForJni<ElementType, jlong>) {
+        } else if constexpr (BobUIJniTypes::sameTypeForJni<ElementType, jlong>) {
             return makeArray<jlong>(std::forward<Container>(container), &JNIEnv::NewLongArray,
                                                             &JNIEnv::SetLongArrayRegion);
         } else {
-            static_assert(QtPrivate::type_dependent_false<ElementType>(),
+            static_assert(BobUIPrivate::type_dependent_false<ElementType>(),
                             "Don't know how to make QJniArray for this element type");
         }
     }
@@ -571,21 +571,21 @@ protected:
                                                          std::remove_pointer_t<ElementType>>,
                                         std::is_same<ElementType, QJniObject>,
                                         std::is_same<ElementType, QString>,
-                                        std::is_base_of<QtJniTypes::JObjectBase, ElementType>
+                                        std::is_base_of<BobUIJniTypes::JObjectBase, ElementType>
                              >) {
-            using ResultType = decltype(QtJniTypes::Traits<ElementType>::convertToJni(nullptr, {}));
-            const auto className = QtJniTypes::Traits<ResultType>::className();
+            using ResultType = decltype(BobUIJniTypes::Traits<ElementType>::convertToJni(nullptr, {}));
+            const auto className = BobUIJniTypes::Traits<ResultType>::className();
             jclass elementClass = env.findClass(className);
             if (!elementClass) {
                 env.checkAndClearExceptions();
                 return jobjectArray(nullptr);
             }
             return env->NewObjectArray(size, elementClass, nullptr);
-        } else if constexpr (QtJniTypes::sameTypeForJni<ElementType, jfloat>) {
+        } else if constexpr (BobUIJniTypes::sameTypeForJni<ElementType, jfloat>) {
             return env->NewFloatArray(size);
-        } else if constexpr (QtJniTypes::sameTypeForJni<ElementType, jdouble>) {
+        } else if constexpr (BobUIJniTypes::sameTypeForJni<ElementType, jdouble>) {
             return env->NewDoubleArray(size);
-        } else if constexpr (QtJniTypes::sameTypeForJni<ElementType, jboolean>) {
+        } else if constexpr (BobUIJniTypes::sameTypeForJni<ElementType, jboolean>) {
             return env->NewBooleanArray(size);
         } else if constexpr (std::disjunction_v<std::is_same<ElementType, jbyte>,
                                                 std::is_same<ElementType, char>>) {
@@ -593,14 +593,14 @@ protected:
         } else if constexpr (std::disjunction_v<std::is_same<ElementType, jchar>,
                                                 std::is_same<ElementType, QChar>>) {
             return env->NewCharArray(size);
-        } else if constexpr (QtJniTypes::sameTypeForJni<ElementType, jshort>) {
+        } else if constexpr (BobUIJniTypes::sameTypeForJni<ElementType, jshort>) {
             return env->NewShortArray(size);
-        } else if constexpr (QtJniTypes::sameTypeForJni<ElementType, jint>) {
+        } else if constexpr (BobUIJniTypes::sameTypeForJni<ElementType, jint>) {
             return env->NewIntArray(size);
-        } else if constexpr (QtJniTypes::sameTypeForJni<ElementType, jlong>) {
+        } else if constexpr (BobUIJniTypes::sameTypeForJni<ElementType, jlong>) {
             return env->NewLongArray(size);
         } else {
-            static_assert(QtPrivate::type_dependent_false<ElementType>(),
+            static_assert(BobUIPrivate::type_dependent_false<ElementType>(),
                           "Don't know how to make QJniArray for this element type");
         }
     }
@@ -693,23 +693,23 @@ public:
 
     auto arrayObject() const
     {
-        if constexpr (QtJniTypes::isObjectType<T>())
+        if constexpr (BobUIJniTypes::isObjectType<T>())
             return object<jobjectArray>();
-        else if constexpr (QtJniTypes::sameTypeForJni<T, jbyte>)
+        else if constexpr (BobUIJniTypes::sameTypeForJni<T, jbyte>)
             return object<jbyteArray>();
-        else if constexpr (QtJniTypes::sameTypeForJni<T, jchar>)
+        else if constexpr (BobUIJniTypes::sameTypeForJni<T, jchar>)
             return object<jcharArray>();
-        else if constexpr (QtJniTypes::sameTypeForJni<T, jboolean>)
+        else if constexpr (BobUIJniTypes::sameTypeForJni<T, jboolean>)
             return object<jbooleanArray>();
-        else if constexpr (QtJniTypes::sameTypeForJni<T, jshort>)
+        else if constexpr (BobUIJniTypes::sameTypeForJni<T, jshort>)
             return object<jshortArray>();
-        else if constexpr (QtJniTypes::sameTypeForJni<T, jint>)
+        else if constexpr (BobUIJniTypes::sameTypeForJni<T, jint>)
             return object<jintArray>();
-        else if constexpr (QtJniTypes::sameTypeForJni<T, jlong>)
+        else if constexpr (BobUIJniTypes::sameTypeForJni<T, jlong>)
             return object<jlongArray>();
-        else if constexpr (QtJniTypes::sameTypeForJni<T, jfloat>)
+        else if constexpr (BobUIJniTypes::sameTypeForJni<T, jfloat>)
             return object<jfloatArray>();
-        else if constexpr (QtJniTypes::sameTypeForJni<T, jdouble>)
+        else if constexpr (BobUIJniTypes::sameTypeForJni<T, jdouble>)
             return object<jdoubleArray>();
         else
             return object<jarray>();
@@ -738,29 +738,29 @@ public:
     const_reference at(size_type i) const
     {
         JNIEnv *env = jniEnv();
-        if constexpr (QtJniTypes::isObjectType<T>()) {
+        if constexpr (BobUIJniTypes::isObjectType<T>()) {
             jobject element = env->GetObjectArrayElement(object<jobjectArray>(), i);
             if constexpr (std::is_base_of_v<std::remove_pointer_t<jobject>, std::remove_pointer_t<T>>)
                 return static_cast<T>(element);
             else
-                return QtJniTypes::Traits<T>::convertFromJni(QJniObject::fromLocalRef(element));
+                return BobUIJniTypes::Traits<T>::convertFromJni(QJniObject::fromLocalRef(element));
         } else {
             T res = {};
-            if constexpr (QtJniTypes::sameTypeForJni<T, jbyte>)
+            if constexpr (BobUIJniTypes::sameTypeForJni<T, jbyte>)
                 env->GetByteArrayRegion(object<jbyteArray>(), i, 1, &res);
-            else if constexpr (QtJniTypes::sameTypeForJni<T, jchar>)
+            else if constexpr (BobUIJniTypes::sameTypeForJni<T, jchar>)
                 env->GetCharArrayRegion(object<jcharArray>(), i, 1, &res);
-            else if constexpr (QtJniTypes::sameTypeForJni<T, jboolean>)
+            else if constexpr (BobUIJniTypes::sameTypeForJni<T, jboolean>)
                 env->GetBooleanArrayRegion(object<jbooleanArray>(), i, 1, &res);
-            else if constexpr (QtJniTypes::sameTypeForJni<T, jshort>)
+            else if constexpr (BobUIJniTypes::sameTypeForJni<T, jshort>)
                 env->GetShortArrayRegion(object<jshortArray>(), i, 1, &res);
-            else if constexpr (QtJniTypes::sameTypeForJni<T, jint>)
+            else if constexpr (BobUIJniTypes::sameTypeForJni<T, jint>)
                 env->GetIntArrayRegion(object<jintArray>(), i, 1, &res);
-            else if constexpr (QtJniTypes::sameTypeForJni<T, jlong>)
+            else if constexpr (BobUIJniTypes::sameTypeForJni<T, jlong>)
                 env->GetLongArrayRegion(object<jlongArray>(), i, 1, &res);
-            else if constexpr (QtJniTypes::sameTypeForJni<T, jfloat>)
+            else if constexpr (BobUIJniTypes::sameTypeForJni<T, jfloat>)
                 env->GetFloatArrayRegion(object<jfloatArray>(), i, 1, &res);
-            else if constexpr (QtJniTypes::sameTypeForJni<T, jdouble>)
+            else if constexpr (BobUIJniTypes::sameTypeForJni<T, jdouble>)
                 env->GetDoubleArrayRegion(object<jdoubleArray>(), i, 1, &res);
             return res;
         }
@@ -770,26 +770,26 @@ public:
     {
         JNIEnv *env = jniEnv();
 
-        if constexpr (QtJniTypes::isObjectType<T>()) {
-            QtJniTypes::Detail::LocalFrame<T> frame(env);
+        if constexpr (BobUIJniTypes::isObjectType<T>()) {
+            BobUIJniTypes::Detail::LocalFrame<T> frame(env);
             jobject element = frame.convertToJni(val);
             env->SetObjectArrayElement(object<jobjectArray>(), i, element);
         } else { // primitive types
-            if constexpr (QtJniTypes::sameTypeForJni<T, jbyte>)
+            if constexpr (BobUIJniTypes::sameTypeForJni<T, jbyte>)
                 env->SetByteArrayRegion(object<jbyteArray>(), i, 1, &val);
-            else if constexpr (QtJniTypes::sameTypeForJni<T, jchar>)
+            else if constexpr (BobUIJniTypes::sameTypeForJni<T, jchar>)
                 env->SetCharArrayRegion(object<jcharArray>(), i, 1, &val);
-            else if constexpr (QtJniTypes::sameTypeForJni<T, jboolean>)
+            else if constexpr (BobUIJniTypes::sameTypeForJni<T, jboolean>)
                 env->SetBooleanArrayRegion(object<jbooleanArray>(), i, 1, &val);
-            else if constexpr (QtJniTypes::sameTypeForJni<T, jshort>)
+            else if constexpr (BobUIJniTypes::sameTypeForJni<T, jshort>)
                 env->SetShortArrayRegion(object<jshortArray>(), i, 1, &val);
-            else if constexpr (QtJniTypes::sameTypeForJni<T, jint>)
+            else if constexpr (BobUIJniTypes::sameTypeForJni<T, jint>)
                 env->SetIntArrayRegion(object<jintArray>(), i, 1, &val);
-            else if constexpr (QtJniTypes::sameTypeForJni<T, jlong>)
+            else if constexpr (BobUIJniTypes::sameTypeForJni<T, jlong>)
                 env->SetLongArrayRegion(object<jlongArray>(), i, 1, &val);
-            else if constexpr (QtJniTypes::sameTypeForJni<T, jfloat>)
+            else if constexpr (BobUIJniTypes::sameTypeForJni<T, jfloat>)
                 env->SetFloatArrayRegion(object<jfloatArray>(), i, 1, &val);
-            else if constexpr (QtJniTypes::sameTypeForJni<T, jdouble>)
+            else if constexpr (BobUIJniTypes::sameTypeForJni<T, jdouble>)
                 env->SetDoubleArrayRegion(object<jdoubleArray>(), i, 1, &val);
         }
     }
@@ -811,7 +811,7 @@ public:
                 if constexpr (std::is_same_v<decltype(element), QString>) {
                     container.emplace_back(element);
                 } else if constexpr (std::is_same_v<decltype(element), jstring>) {
-                    container.emplace_back(element ? QtJniTypes::Detail::toQString(element, env)
+                    container.emplace_back(element ? BobUIJniTypes::Detail::toQString(element, env)
                                                    : QString{});
                 } else {
                     container.emplace_back(QJniObject(element).toString());
@@ -822,33 +822,33 @@ public:
                 container.emplace_back(element);
         } else if constexpr (isContiguousContainer<ContainerType>) {
             container.resize(sz);
-            if constexpr (QtJniTypes::sameTypeForJni<T, jbyte>) {
+            if constexpr (BobUIJniTypes::sameTypeForJni<T, jbyte>) {
                 env->GetByteArrayRegion(object<jbyteArray>(),
                                         0, sz,
                                         reinterpret_cast<jbyte *>(container.data()));
-            } else if constexpr (QtJniTypes::sameTypeForJni<T, jchar>) {
+            } else if constexpr (BobUIJniTypes::sameTypeForJni<T, jchar>) {
                 env->GetCharArrayRegion(object<jcharArray>(),
                                         0, sz, container.data());
-            } else if constexpr (QtJniTypes::sameTypeForJni<T, jboolean>) {
+            } else if constexpr (BobUIJniTypes::sameTypeForJni<T, jboolean>) {
                 env->GetBooleanArrayRegion(object<jbooleanArray>(),
                                         0, sz, container.data());
-            } else if constexpr (QtJniTypes::sameTypeForJni<T, jshort>) {
+            } else if constexpr (BobUIJniTypes::sameTypeForJni<T, jshort>) {
                 env->GetShortArrayRegion(object<jshortArray>(),
                                         0, sz, container.data());
-            } else if constexpr (QtJniTypes::sameTypeForJni<T, jint>) {
+            } else if constexpr (BobUIJniTypes::sameTypeForJni<T, jint>) {
                 env->GetIntArrayRegion(object<jintArray>(),
                                         0, sz, container.data());
-            } else if constexpr (QtJniTypes::sameTypeForJni<T, jlong>) {
+            } else if constexpr (BobUIJniTypes::sameTypeForJni<T, jlong>) {
                 env->GetLongArrayRegion(object<jlongArray>(),
                                         0, sz, container.data());
-            } else if constexpr (QtJniTypes::sameTypeForJni<T, jfloat>) {
+            } else if constexpr (BobUIJniTypes::sameTypeForJni<T, jfloat>) {
                 env->GetFloatArrayRegion(object<jfloatArray>(),
                                         0, sz, container.data());
-            } else if constexpr (QtJniTypes::sameTypeForJni<T, jdouble>) {
+            } else if constexpr (BobUIJniTypes::sameTypeForJni<T, jdouble>) {
                 env->GetDoubleArrayRegion(object<jdoubleArray>(),
                                         0, sz, container.data());
             } else {
-                static_assert(QtPrivate::type_dependent_false<T>(),
+                static_assert(BobUIPrivate::type_dependent_false<T>(),
                               "Don't know how to copy data from a QJniArray of this type");
             }
         } else {
@@ -896,7 +896,7 @@ template <typename List>
 auto QJniArrayBase::makeObjectArray(List &&list)
 {
     using ElementType = typename q20::remove_cvref_t<List>::value_type;
-    using ResultType = QJniArray<decltype(QtJniTypes::Traits<ElementType>::convertToJni(nullptr,
+    using ResultType = QJniArray<decltype(BobUIJniTypes::Traits<ElementType>::convertToJni(nullptr,
                                                                                         {}))>;
 
     if (std::size(list) == 0)
@@ -908,10 +908,10 @@ auto QJniArrayBase::makeObjectArray(List &&list)
     // this assumes that all objects in the list have the same class
     jclass elementClass = nullptr;
     if constexpr (std::disjunction_v<std::is_same<ElementType, QJniObject>,
-                                     std::is_base_of<QtJniTypes::JObjectBase, ElementType>>) {
+                                     std::is_base_of<BobUIJniTypes::JObjectBase, ElementType>>) {
         elementClass = std::begin(list)->objectClass();
     } else if constexpr (std::is_same_v<ElementType, QString>) {
-        elementClass = QtAndroidPrivate::findClass("java/lang/String", env);
+        elementClass = BobUIAndroidPrivate::findClass("java/lang/String", env);
     } else {
         elementClass = env->GetObjectClass(*std::begin(list));
     }
@@ -932,7 +932,7 @@ auto QJniArrayBase::makeObjectArray(List &&list)
             if (env->PushLocalFrame(frameCapacity) != 0)
                 return ResultType{};
         }
-        jobject object = QtJniTypes::Traits<ElementType>::convertToJni(env, element);
+        jobject object = BobUIJniTypes::Traits<ElementType>::convertToJni(env, element);
         env->SetObjectArrayElement(localArray, i, object);
         ++i;
     }
@@ -941,7 +941,7 @@ auto QJniArrayBase::makeObjectArray(List &&list)
     return ResultType(QJniObject::fromLocalRef(localArray));
 }
 
-namespace QtJniTypes
+namespace BobUIJniTypes
 {
 template <typename T> struct Traits<QJniArray<T>>
 {
@@ -1011,7 +1011,7 @@ template<typename T> struct Traits<T, std::enable_if_t<std::is_array_v<T>>>
 };
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif
 

@@ -1,0 +1,15 @@
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
+
+/*!
+    \module BobUIWidgets
+    \title BobUI Widgets C++ Classes
+    \ingroup modules
+    \bobuicmakepackage Widgets
+    \bobuivariable widgets
+
+    \brief The BobUI Widgets module extends BobUI GUI with C++ widget functionality.
+
+    The \l{BobUI Widgets} page contains information about how to use the module.
+*/
+

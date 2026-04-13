@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qplatformdefs.h"
 
 #include "qcoreapplication.h"
 #include "qhash.h"
 #include "qsocketnotifier.h"
-#include "qthread.h"
+#include "bobuihread.h"
 
 #include "qeventdispatcher_unix_p.h"
-#include <private/qthread_p.h>
+#include <private/bobuihread_p.h>
 #include <private/qcoreapplication_p.h>
 #include <private/qcore_unix_p.h>
 
@@ -29,7 +29,7 @@ static constexpr bool UsingEventfd = false;
 
 #if defined(Q_OS_VXWORKS)
 #  include <taskLib.h>
-#if QT_CONFIG(vxpipedrv)
+#if BOBUI_CONFIG(vxpipedrv)
 #  include "qbytearray.h"
 #  include "qdatetime.h"
 #  include "qdir.h" // to get application name
@@ -44,7 +44,7 @@ static constexpr bool UsingEventfd = false;
 using namespace std::chrono;
 using namespace std::chrono_literals;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static const char *socketType(QSocketNotifier::Type type)
 {
@@ -60,11 +60,11 @@ static const char *socketType(QSocketNotifier::Type type)
     Q_UNREACHABLE();
 }
 
-QThreadPipe::QThreadPipe()
+BOBUIhreadPipe::BOBUIhreadPipe()
 {
 }
 
-QThreadPipe::~QThreadPipe()
+BOBUIhreadPipe::~BOBUIhreadPipe()
 {
     if (fds[0] >= 0)
         close(fds[0]);
@@ -72,12 +72,12 @@ QThreadPipe::~QThreadPipe()
     if (!UsingEventfd && fds[1] >= 0)
         close(fds[1]);
 
-#if defined(Q_OS_VXWORKS) && QT_CONFIG(vxpipedrv)
+#if defined(Q_OS_VXWORKS) && BOBUI_CONFIG(vxpipedrv)
     pipeDevDelete(name, true);
 #endif
 }
 
-#if defined(Q_OS_VXWORKS) && QT_CONFIG(vxpipedrv)
+#if defined(Q_OS_VXWORKS) && BOBUI_CONFIG(vxpipedrv)
 static void initThreadPipeFD(int fd)
 {
     int ret = fcntl(fd, F_SETFD, FD_CLOEXEC);
@@ -94,11 +94,11 @@ static void initThreadPipeFD(int fd)
 }
 #endif
 
-bool QThreadPipe::init()
+bool BOBUIhreadPipe::init()
 {
 #if defined(Q_OS_WASM)
     // do nothing.
-#elif defined(Q_OS_VXWORKS) && QT_CONFIG(vxpipedrv)
+#elif defined(Q_OS_VXWORKS) && BOBUI_CONFIG(vxpipedrv)
     RTP_DESC rtpStruct;
     rtpInfoGet((RTP_ID)NULL, &rtpStruct);
 
@@ -108,9 +108,9 @@ bool QThreadPipe::init()
     pipeName.append("_");
     pipeName.append(QByteArray::number((uint)rtpStruct.entrAddr, 16));
     pipeName.append("_");
-    pipeName.append(QByteArray::number((uint)QThread::currentThreadId(), 16));
+    pipeName.append(QByteArray::number((uint)BOBUIhread::currentThreadId(), 16));
     pipeName.append("_");
-    QRandomGenerator rg(QTime::currentTime().msecsSinceStartOfDay());
+    QRandomGenerator rg(BOBUIime::currentTime().msecsSinceStartOfDay());
     pipeName.append(QByteArray::number(rg.generate()));
 
     // make sure there is no pipe with this name
@@ -118,12 +118,12 @@ bool QThreadPipe::init()
 
     // create the pipe
     if (pipeDevCreate(pipeName, 128 /*maxMsg*/, 1 /*maxLength*/) != OK) {
-        qCritical("QThreadPipe: Unable to create thread pipe device %s : %s", name, std::strerror(errno));
+        qCritical("BOBUIhreadPipe: Unable to create thread pipe device %s : %s", name, std::strerror(errno));
         return false;
     }
 
     if ((fds[0] = open(pipeName, O_RDWR, 0)) < 0) {
-        qCritical("QThreadPipe: Unable to open pipe device %s : %s", name, std::strerror(errno));
+        qCritical("BOBUIhreadPipe: Unable to open pipe device %s : %s", name, std::strerror(errno));
         return false;
     }
 
@@ -135,9 +135,9 @@ bool QThreadPipe::init()
     ret = fds[0] = eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC);
 #  endif
     if (!UsingEventfd)
-        ret = qt_safe_pipe(fds, O_NONBLOCK);
+        ret = bobui_safe_pipe(fds, O_NONBLOCK);
     if (ret == -1) {
-        perror("QThreadPipe: Unable to create pipe");
+        perror("BOBUIhreadPipe: Unable to create pipe");
         return false;
     }
 #endif
@@ -145,12 +145,12 @@ bool QThreadPipe::init()
     return true;
 }
 
-pollfd QThreadPipe::prepare() const
+pollfd BOBUIhreadPipe::prepare() const
 {
-    return qt_make_pollfd(fds[0], POLLIN);
+    return bobui_make_pollfd(fds[0], POLLIN);
 }
 
-void QThreadPipe::wakeUp()
+void BOBUIhreadPipe::wakeUp()
 {
     if ((wakeUps.fetchAndOrAcquire(1) & 1) == 0) {
 #  ifdef EFD_CLOEXEC
@@ -158,11 +158,11 @@ void QThreadPipe::wakeUp()
         return;
 #endif
         char c = 0;
-        qt_safe_write(fds[1], &c, 1);
+        bobui_safe_write(fds[1], &c, 1);
     }
 }
 
-int QThreadPipe::check(const pollfd &pfd)
+int BOBUIhreadPipe::check(const pollfd &pfd)
 {
     Q_ASSERT(pfd.fd == fds[0]);
 
@@ -172,7 +172,7 @@ int QThreadPipe::check(const pollfd &pfd)
     if (readyread) {
         // consume the data on the thread pipe so that
         // poll doesn't immediately return next time
-#if defined(Q_OS_VXWORKS) && QT_CONFIG(vxpipedrv)
+#if defined(Q_OS_VXWORKS) && BOBUI_CONFIG(vxpipedrv)
         ::read(fds[0], c, sizeof(c));
         ::ioctl(fds[0], FIOFLUSH, 0);
 #else
@@ -187,7 +187,7 @@ int QThreadPipe::check(const pollfd &pfd)
 
         if (!wakeUps.testAndSetRelease(1, 0)) {
             // hopefully, this is dead code
-            qWarning("QThreadPipe: internal error, wakeUps.testAndSetRelease(1, 0) failed!");
+            qWarning("BOBUIhreadPipe: internal error, wakeUps.testAndSetRelease(1, 0) failed!");
         }
     }
 
@@ -294,13 +294,13 @@ QEventDispatcherUNIX::~QEventDispatcherUNIX()
 /*!
     \internal
 */
-void QEventDispatcherUNIX::registerTimer(Qt::TimerId timerId, Duration interval, Qt::TimerType timerType, QObject *obj)
+void QEventDispatcherUNIX::registerTimer(BobUI::TimerId timerId, Duration interval, BobUI::TimerType timerType, QObject *obj)
 {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (qToUnderlying(timerId) < 1 || interval.count() < 0 || !obj) {
         qWarning("QEventDispatcherUNIX::registerTimer: invalid arguments");
         return;
-    } else if (obj->thread() != thread() || thread() != QThread::currentThread()) {
+    } else if (obj->thread() != thread() || thread() != BOBUIhread::currentThread()) {
         qWarning("QEventDispatcherUNIX::registerTimer: timers cannot be started from another thread");
         return;
     }
@@ -313,13 +313,13 @@ void QEventDispatcherUNIX::registerTimer(Qt::TimerId timerId, Duration interval,
 /*!
     \internal
 */
-bool QEventDispatcherUNIX::unregisterTimer(Qt::TimerId timerId)
+bool QEventDispatcherUNIX::unregisterTimer(BobUI::TimerId timerId)
 {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (qToUnderlying(timerId) < 1) {
         qWarning("QEventDispatcherUNIX::unregisterTimer: invalid argument");
         return false;
-    } else if (thread() != QThread::currentThread()) {
+    } else if (thread() != BOBUIhread::currentThread()) {
         qWarning("QEventDispatcherUNIX::unregisterTimer: timers cannot be stopped from another thread");
         return false;
     }
@@ -334,11 +334,11 @@ bool QEventDispatcherUNIX::unregisterTimer(Qt::TimerId timerId)
 */
 bool QEventDispatcherUNIX::unregisterTimers(QObject *object)
 {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (!object) {
         qWarning("QEventDispatcherUNIX::unregisterTimers: invalid argument");
         return false;
-    } else if (object->thread() != thread() || thread() != QThread::currentThread()) {
+    } else if (object->thread() != thread() || thread() != BOBUIhread::currentThread()) {
         qWarning("QEventDispatcherUNIX::unregisterTimers: timers cannot be stopped from another thread");
         return false;
     }
@@ -369,8 +369,8 @@ void QEventDispatcherUNIX::registerSocketNotifier(QSocketNotifier *notifier)
     Q_ASSERT(notifier);
     int sockfd = notifier->socket();
     QSocketNotifier::Type type = notifier->type();
-#ifndef QT_NO_DEBUG
-    if (notifier->thread() != thread() || thread() != QThread::currentThread()) {
+#ifndef BOBUI_NO_DEBUG
+    if (notifier->thread() != thread() || thread() != BOBUIhread::currentThread()) {
         qWarning("QSocketNotifier: socket notifiers cannot be enabled from another thread");
         return;
     }
@@ -391,14 +391,14 @@ void QEventDispatcherUNIX::unregisterSocketNotifier(QSocketNotifier *notifier)
     Q_ASSERT(notifier);
     int sockfd = notifier->socket();
     QSocketNotifier::Type type = notifier->type();
-#ifndef QT_NO_DEBUG
-    if (notifier->thread() != thread() || thread() != QThread::currentThread()) {
+#ifndef BOBUI_NO_DEBUG
+    if (notifier->thread() != thread() || thread() != BOBUIhread::currentThread()) {
         qWarning("QSocketNotifier: socket notifier (fd %d) cannot be disabled from another thread.\n"
                 "(Notifier's thread is %s(%p), event dispatcher's thread is %s(%p), current thread is %s(%p))",
                 sockfd,
-                notifier->thread() ? notifier->thread()->metaObject()->className() : "QThread", notifier->thread(),
-                thread() ? thread()->metaObject()->className() : "QThread", thread(),
-                QThread::currentThread() ? QThread::currentThread()->metaObject()->className() : "QThread", QThread::currentThread());
+                notifier->thread() ? notifier->thread()->metaObject()->className() : "BOBUIhread", notifier->thread(),
+                thread() ? thread()->metaObject()->className() : "BOBUIhread", thread(),
+                BOBUIhread::currentThread() ? BOBUIhread::currentThread()->metaObject()->className() : "BOBUIhread", BOBUIhread::currentThread());
         return;
     }
 #endif
@@ -464,7 +464,7 @@ bool QEventDispatcherUNIX::processEvents(QEventLoop::ProcessEventsFlags flags)
         }
     } else {
         // Using the default-constructed `deadline`, which is already expired,
-        // ensures the code in the do-while loop in qt_safe_poll runs at least once.
+        // ensures the code in the do-while loop in bobui_safe_poll runs at least once.
     }
 
     d->pollfds.clear();
@@ -472,22 +472,22 @@ bool QEventDispatcherUNIX::processEvents(QEventLoop::ProcessEventsFlags flags)
 
     if (include_notifiers)
         for (auto it = d->socketNotifiers.cbegin(); it != d->socketNotifiers.cend(); ++it)
-            d->pollfds.append(qt_make_pollfd(it.key(), it.value().events()));
+            d->pollfds.append(bobui_make_pollfd(it.key(), it.value().events()));
 
     // This must be last, as it's popped off the end below
     d->pollfds.append(d->threadPipe.prepare());
 
     int nevents = 0;
-    switch (qt_safe_poll(d->pollfds.data(), d->pollfds.size(), deadline)) {
+    switch (bobui_safe_poll(d->pollfds.data(), d->pollfds.size(), deadline)) {
     case -1:
-        qErrnoWarning("qt_safe_poll");
+        qErrnoWarning("bobui_safe_poll");
 #if defined(Q_OS_VXWORKS) && defined(EDOOM)
         if (errno == EDOOM) {
             // being deleted, stop here and wait for the thread to go away
             taskSuspend(0);
         }
 #endif
-        if (QT_CONFIG(poll_exit_on_error))
+        if (BOBUI_CONFIG(poll_exit_on_error))
             abort();
         break;
     case 0:
@@ -506,9 +506,9 @@ bool QEventDispatcherUNIX::processEvents(QEventLoop::ProcessEventsFlags flags)
     return (nevents > 0);
 }
 
-auto QEventDispatcherUNIX::remainingTime(Qt::TimerId timerId) const -> Duration
+auto QEventDispatcherUNIX::remainingTime(BobUI::TimerId timerId) const -> Duration
 {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (int(timerId) < 1) {
         qWarning("QEventDispatcherUNIX::remainingTime: invalid argument");
         return Duration::min();
@@ -532,6 +532,6 @@ void QEventDispatcherUNIX::interrupt()
     wakeUp();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qeventdispatcher_unix_p.cpp"

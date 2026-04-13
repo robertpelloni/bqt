@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example painting/imagecomposition
@@ -24,7 +24,7 @@
 
     \quotefile painting/imagecomposition/imagecomposition.qrc
 
-    For more information on resource files, see \l{The Qt Resource System}.
+    For more information on resource files, see \l{The BobUI Resource System}.
 
     \section1 ImageComposer Class Definition
 
@@ -36,7 +36,7 @@
 
     In addition, \c ImageComposer consists of five private functions,
     \c addOp(), \c chooseImage(), \c loadImage(), \c currentMode(), and
-    \c imagePos(), as well as private instances of QToolButton, QComboBox,
+    \c imagePos(), as well as private instances of BOBUIoolButton, QComboBox,
     QLabel, and QImage.
 
     \snippet painting/imagecomposition/imagecomposer.h 1
@@ -48,7 +48,7 @@
 
     \snippet painting/imagecomposition/imagecomposer.cpp 0
 
-    Within the constructor, we instantiate a QToolButton object,
+    Within the constructor, we instantiate a BOBUIoolButton object,
     \c sourceButton and set its \l{QAbstractButton::setIconSize()}{iconSize}
     property to \c resultSize. The \c operatorComboBox is instantiated and
     then populated using the \c addOp() function. This function accepts a
@@ -71,7 +71,7 @@
             connected to \c chooseSource(),
         \li \c{operatorComboBox}'s \l{QComboBox::activated()}{activated()}
             signal is connected to \c recalculateResult(), and
-        \li \c{destinationButton}'s \l{QToolButton::clicked()}{clicked()} signal
+        \li \c{destinationButton}'s \l{BOBUIoolButton::clicked()}{clicked()} signal
             is connected to \c chooseDestination().
     \endlist
 
@@ -113,7 +113,7 @@
     The \c addOp() function adds an item to the \c operatorComboBox using
     \l{QComboBox}'s \l{QComboBox::addItem()}{addItem} function. This function
     accepts a QPainter::CompositionMode, \a mode, and a QString, \a name. The
-    rectangle is filled with Qt::Transparent and both the \c sourceImage and
+    rectangle is filled with BobUI::Transparent and both the \c sourceImage and
     \c destinationImage are painted, before displaying it on \c resultLabel.
 
     \snippet painting/imagecomposition/imagecomposer.cpp 9
@@ -131,7 +131,7 @@
     \snippet painting/imagecomposition/imagecomposer.cpp 12
 
     We use the \c imagePos() function to ensure that images loaded onto the
-    QToolButton objects, \c sourceButton and \c destinationButton, are
+    BOBUIoolButton objects, \c sourceButton and \c destinationButton, are
     centralized.
 
     \snippet painting/imagecomposition/imagecomposer.cpp 13

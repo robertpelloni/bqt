@@ -261,9 +261,9 @@ per_scan_setup(j_decompress_ptr cinfo)
 LOCAL(void)
 latch_quant_tables(j_decompress_ptr cinfo)
 {
-  int ci, qtblno;
+  int ci, bobuiblno;
   jpeg_component_info *compptr;
-  JQUANT_TBL *qtbl;
+  JQUANT_TBL *bobuibl;
 
   for (ci = 0; ci < cinfo->comps_in_scan; ci++) {
     compptr = cinfo->cur_comp_info[ci];
@@ -271,16 +271,16 @@ latch_quant_tables(j_decompress_ptr cinfo)
     if (compptr->quant_table != NULL)
       continue;
     /* Make sure specified quantization table is present */
-    qtblno = compptr->quant_tbl_no;
-    if (qtblno < 0 || qtblno >= NUM_QUANT_TBLS ||
-        cinfo->quant_tbl_ptrs[qtblno] == NULL)
-      ERREXIT1(cinfo, JERR_NO_QUANT_TABLE, qtblno);
+    bobuiblno = compptr->quant_tbl_no;
+    if (bobuiblno < 0 || bobuiblno >= NUM_QUANT_TBLS ||
+        cinfo->quant_tbl_ptrs[bobuiblno] == NULL)
+      ERREXIT1(cinfo, JERR_NO_QUANT_TABLE, bobuiblno);
     /* OK, save away the quantization table */
-    qtbl = (JQUANT_TBL *)
+    bobuibl = (JQUANT_TBL *)
       (*cinfo->mem->alloc_small) ((j_common_ptr)cinfo, JPOOL_IMAGE,
                                   sizeof(JQUANT_TBL));
-    memcpy(qtbl, cinfo->quant_tbl_ptrs[qtblno], sizeof(JQUANT_TBL));
-    compptr->quant_table = qtbl;
+    memcpy(bobuibl, cinfo->quant_tbl_ptrs[bobuiblno], sizeof(JQUANT_TBL));
+    compptr->quant_table = bobuibl;
   }
 }
 

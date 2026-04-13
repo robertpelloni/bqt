@@ -1,22 +1,22 @@
 // Copyright (C) 2011 Thiago Macieira <thiago@kde.org>
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QATOMIC_CXX11_H
 #define QATOMIC_CXX11_H
 
-#include <QtCore/qgenericatomic.h>
-#include <QtCore/qyieldcpu.h>
+#include <BobUICore/qgenericatomic.h>
+#include <BobUICore/qyieldcpu.h>
 #include <atomic>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #if 0
-// silence syncqt warnings
-QT_END_NAMESPACE
-#pragma qt_sync_skip_header_check
-#pragma qt_sync_stop_processing
+// silence syncbobui warnings
+BOBUI_END_NAMESPACE
+#pragma bobui_sync_skip_header_check
+#pragma bobui_sync_stop_processing
 #endif
 
 /* Attempt to detect whether the atomic operations exist in hardware
@@ -33,7 +33,7 @@ QT_END_NAMESPACE
  *  lock-free.
  *
  * We have a problem when the value is 1: we'd need to check at runtime, but
- * QAtomicInteger requires a constexpr answer (defect introduced in Qt 5.0). So
+ * QAtomicInteger requires a constexpr answer (defect introduced in BobUI 5.0). So
  * we'll err in the side of caution and say it isn't.
  */
 template <int N> struct QAtomicTraits
@@ -151,7 +151,7 @@ template <> inline bool QAtomicTraits<2>::isLockFree()
 { return false; }
 #endif
 
-#if !defined(QT_BOOTSTRAPPED) && QT_CONFIG(std_atomic64)
+#if !defined(BOBUI_BOOTSTRAPPED) && BOBUI_CONFIG(std_atomic64)
 template<> struct QAtomicOpsSupport<8> { enum { IsSupported = 1 }; };
 #  define Q_ATOMIC_INT64_IS_SUPPORTED
 #  if ATOMIC_LLONG_LOCK_FREE == 2
@@ -460,6 +460,6 @@ template <typename X> struct QAtomicOps
 
 #  define Q_BASIC_ATOMIC_INITIALIZER(a)     { a }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QATOMIC_CXX0X_H

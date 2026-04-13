@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "qbaselinetest.h"
 #include "baselineprotocol.h"
-#include <QtCore/QDir>
+#include <BobUICore/QDir>
 #include <QFile>
 
 #define MAXCMDLINEARGS 128
@@ -114,11 +114,11 @@ void handleCmdLineArgs(int *argcp, char ***argvp)
     *argvp = fargv;
 
     if (showHelp) {
-        // TBD: arrange for this to be printed *after* QTest's help
-        QTextStream out(stdout);
+        // TBD: arrange for this to be printed *after* BOBUIest's help
+        BOBUIextStream out(stdout);
         out << "\n Baseline testing (lancelot) options:\n";
         out << " -server <host>      : Set the network baseline server to connect to.\n";
-        out << "                       The default is taken from the environment variable QT_LANCELOT_SERVER.\n";
+        out << "                       The default is taken from the environment variable BOBUI_LANCELOT_SERVER.\n";
         out << " -simfail            : Force an image comparison mismatch. For development purposes.\n";
         out << " -fuzzlevel <int>    : Specify the percentage of fuzziness in comparison. Overrides server default. 0 means exact match.\n";
         out << " -auto               : Inform server that this run is done by a daemon, CI system or similar.\n";
@@ -127,7 +127,7 @@ void handleCmdLineArgs(int *argcp, char ***argvp)
         out << " -setbaselines       : Store ALL rendered images as new baselines. Forces replacement of previous baselines.\n";
         out << " -nosetbaselines     : Do not store rendered images as new baselines when previous baselines are missing.\n";
         out << " -compareto KEY=VAL  : Force comparison to baselines from a different client,\n";
-        out << "                       for example: -compareto QtVersion=4.8.0\n";
+        out << "                       for example: -compareto BobUIVersion=4.8.0\n";
         out << "                       Multiple -compareto client specifications may be given.\n";
         out << " -pause-compare <ms> : Pauses for the given number of ms before each compare\n";
         out << "\n";
@@ -157,7 +157,7 @@ void fetchCustomClientProperties()
     QFile file("hostinfo.txt");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         return;
-    QTextStream in(&file);
+    BOBUIextStream in(&file);
 
     while (!in.atEnd()) {
         QString line = in.readLine().trimmed();   // ###local8bit? utf8?
@@ -203,9 +203,9 @@ bool connect(QByteArray *msg, bool *error)
         clientInfo.setAdHocRun(defaultInfo.isAdHocRun());
 
     QString testCase = clientInfo.value(PI_TestCase);
-    if (testCase.isEmpty() && QTest::testObject() && QTest::testObject()->metaObject()) {
+    if (testCase.isEmpty() && BOBUIest::testObject() && BOBUIest::testObject()->metaObject()) {
         //qDebug() << "Trying to Read TestCaseName from Testlib!";
-        testCase = QTest::testObject()->metaObject()->className();
+        testCase = BOBUIest::testObject()->metaObject()->className();
     }
     if (testCase.isEmpty()) {
         qWarning("QBaselineTest::connect: No test case name specified, cannot connect.");
@@ -298,7 +298,7 @@ bool compareItem(const ImageItem &baseline, const QImage &img, QByteArray *msg, 
 {
     if (pauseOnCompare) {
         qDebug() << "Pausing for" << pauseOnCompare << "ms...";
-        QTest::qWait(pauseOnCompare);
+        BOBUIest::qWait(pauseOnCompare);
     }
 
     *error = false;
@@ -381,7 +381,7 @@ bool checkImage(const QImage &img, const char *name, quint16 checksum, QByteArra
     QByteArray itemName;
     bool hasName = qstrlen(name);
 
-    const char *tag = QTest::currentDataTag();
+    const char *tag = BOBUIest::currentDataTag();
     if (qstrlen(tag)) {
         itemName = tag;
         if (hasName)
@@ -402,14 +402,14 @@ bool checkImage(const QImage &img, const char *name, quint16 checksum, QByteArra
     ImageItem item;
     item.itemName = QString::fromLatin1(itemName);
     item.itemChecksum = checksum;
-    item.testFunction = QString::fromLatin1(QTest::currentTestFunction());
+    item.testFunction = QString::fromLatin1(BOBUIest::currentTestFunction());
 
     for (auto key: img.textKeys())
         item.metaData[key] = img.text(key);
 
     ImageItemList list;
     list.append(item);
-    if (!proto.requestBaselineChecksums(QLatin1String(QTest::currentTestFunction()), &list) || list.isEmpty()) {
+    if (!proto.requestBaselineChecksums(QLatin1String(BOBUIest::currentTestFunction()), &list) || list.isEmpty()) {
         *msg = "Communication with baseline server failed: " + proto.errorMessage().toLatin1();
         *error = true;
         return true;
@@ -419,20 +419,20 @@ bool checkImage(const QImage &img, const char *name, quint16 checksum, QByteArra
 }
 
 
-QTestData &newRow(const char *dataTag, quint16 checksum)
+BOBUIestData &newRow(const char *dataTag, quint16 checksum)
 {
-    if (QTest::currentTestFunction() != curFunction) {
-        curFunction = QTest::currentTestFunction();
+    if (BOBUIest::currentTestFunction() != curFunction) {
+        curFunction = BOBUIest::currentTestFunction();
         itemList.clear();
         gotBaselines = false;
     }
     ImageItem item;
     item.itemName = QString::fromLatin1(dataTag);
     item.itemChecksum = checksum;
-    item.testFunction = QString::fromLatin1(QTest::currentTestFunction());
+    item.testFunction = QString::fromLatin1(BOBUIest::currentTestFunction());
     itemList.append(item);
 
-    return QTest::newRow(dataTag);
+    return BOBUIest::newRow(dataTag);
 }
 
 const ImageItem *findCurrentItem(QByteArray *msg, bool *error)
@@ -440,13 +440,13 @@ const ImageItem *findCurrentItem(QByteArray *msg, bool *error)
     if (!connected && !connect(msg, error))
         return nullptr;
 
-    if (QTest::currentTestFunction() != curFunction || itemList.isEmpty()) {
+    if (BOBUIest::currentTestFunction() != curFunction || itemList.isEmpty()) {
         qWarning() << "Usage error: QBASELINE_ macro used without corresponding QBaselineTest::newRow()";
         return nullptr;
     }
 
     if (!gotBaselines) {
-        if (!proto.requestBaselineChecksums(QString::fromLatin1(QTest::currentTestFunction()), &itemList) || itemList.isEmpty()) {
+        if (!proto.requestBaselineChecksums(QString::fromLatin1(BOBUIest::currentTestFunction()), &itemList) || itemList.isEmpty()) {
             *msg = "Communication with baseline server failed: " + proto.errorMessage().toLatin1();
             *error = true;
             return nullptr;
@@ -454,7 +454,7 @@ const ImageItem *findCurrentItem(QByteArray *msg, bool *error)
         gotBaselines = true;
     }
 
-    QString curTag = QString::fromLatin1(QTest::currentDataTag());
+    QString curTag = QString::fromLatin1(BOBUIest::currentDataTag());
     ImageItemList::const_iterator it = itemList.constBegin();
     while (it != itemList.constEnd() && it->itemName != curTag)
         ++it;

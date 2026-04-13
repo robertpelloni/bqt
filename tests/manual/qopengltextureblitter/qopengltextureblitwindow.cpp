@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "qopengltextureblitwindow.h"
 
-#include <QtGui/QPainter>
-#include <QtOpenGL/QOpenGLTexture>
-#include <QtGui/QOpenGLFunctions>
-#include <QtGui/QMatrix4x4>
+#include <BobUIGui/QPainter>
+#include <BobUIOpenGL/QOpenGLTexture>
+#include <BobUIGui/QOpenGLFunctions>
+#include <BobUIGui/QMatrix4x4>
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/QDebug>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/QDebug>
 
 QOpenGLTextureBlitWindow::QOpenGLTextureBlitWindow()
     : QWindow()
@@ -124,11 +124,11 @@ void QOpenGLTextureBlitWindow::resizeEvent(QResizeEvent *event)
     Q_UNUSED(event);
     m_image = QImage(size() * devicePixelRatio(), QImage::Format_ARGB32_Premultiplied);
 
-    m_image.fill(Qt::gray);
+    m_image.fill(BobUI::gray);
 
     QPainter p(&m_image);
 
-    QPen pen(Qt::red);
+    QPen pen(BobUI::red);
     pen.setWidth(5);
     p.setPen(pen);
 

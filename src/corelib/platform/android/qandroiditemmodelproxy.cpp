@@ -1,15 +1,15 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtCore/private/qandroiditemmodelproxy_p.h>
-#include <QtCore/private/qandroidmodelindexproxy_p.h>
-#include <QtCore/private/qandroidtypeconverter_p.h>
+#include <BobUICore/private/qandroiditemmodelproxy_p.h>
+#include <BobUICore/private/qandroidmodelindexproxy_p.h>
+#include <BobUICore/private/qandroidtypeconverter_p.h>
 
-#include <QtCore/qcoreapplication.h>
+#include <BobUICore/qcoreapplication.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace QtJniTypes;
+using namespace BobUIJniTypes;
 
 std::map<const QAbstractItemModel *, QRecursiveMutex> QAndroidItemModelProxy::s_mutexes =
         std::map<const QAbstractItemModel *, QRecursiveMutex>{};
@@ -48,7 +48,7 @@ QModelIndex QAndroidItemModelProxy::index(int row, int column, const QModelIndex
 {
     Q_ASSERT(jInstance.isValid());
     const QMutexLocker<QRecursiveMutex> lock = getMutexLocker(this);
-    JQtModelIndex jIndex = jInstance.callMethod<JQtModelIndex>(
+    JBobUIModelIndex jIndex = jInstance.callMethod<JBobUIModelIndex>(
             "index", row, column, QAndroidModelIndexProxy::jInstance(parent));
     return QAndroidModelIndexProxy::qInstance(jIndex);
 }
@@ -60,7 +60,7 @@ QModelIndex QAndroidItemModelProxy::parent(const QModelIndex &index) const
 
     auto jIndex = QAndroidModelIndexProxy::jInstance(index);
     return QAndroidModelIndexProxy::qInstance(
-            jInstance.callMethod<JQtModelIndex>("parent", jIndex));
+            jInstance.callMethod<JBobUIModelIndex>("parent", jIndex));
 }
 int QAndroidItemModelProxy::rowCount(const QModelIndex &parent) const
 {
@@ -125,7 +125,7 @@ QModelIndex QAndroidItemModelProxy::sibling(int row, int column, const QModelInd
 {
     Q_ASSERT(jInstance.isValid());
     const QMutexLocker<QRecursiveMutex> lock = getMutexLocker(this);
-    return QAndroidModelIndexProxy::qInstance(jInstance.callMethod<JQtModelIndex>(
+    return QAndroidModelIndexProxy::qInstance(jInstance.callMethod<JBobUIModelIndex>(
             "sibling", row, column, QAndroidModelIndexProxy::jInstance(parent)));
 }
 
@@ -150,7 +150,7 @@ bool QAndroidItemModelProxy::setDataDefault(const QModelIndex &index, const QVar
 }
 
 Q_REQUIRED_RESULT QAbstractItemModel *
-QAndroidItemModelProxy::nativeInstance(JQtAbstractItemModel itemModel)
+QAndroidItemModelProxy::nativeInstance(JBobUIAbstractItemModel itemModel)
 {
     jlong nativeReference = itemModel.callMethod<jlong>("nativeReference");
     return reinterpret_cast<QAbstractItemModel *>(nativeReference);
@@ -164,9 +164,9 @@ QAndroidItemModelProxy::createNativeProxy(QJniObject itemModel)
         Q_ASSERT(QCoreApplication::instance());
 
         nativeProxy = new QAndroidItemModelProxy(itemModel);
-        QThread *qtMainThread = QCoreApplication::instance()->thread();
-        if (nativeProxy->thread() != qtMainThread)
-            nativeProxy->moveToThread(qtMainThread);
+        BOBUIhread *bobuiMainThread = QCoreApplication::instance()->thread();
+        if (nativeProxy->thread() != bobuiMainThread)
+            nativeProxy->moveToThread(bobuiMainThread);
 
         itemModel.callMethod<void>("setNativeReference", reinterpret_cast<jlong>(nativeProxy));
         connect(nativeProxy, &QAndroidItemModelProxy::destroyed, nativeProxy, [](QObject *obj) {
@@ -196,16 +196,16 @@ QAndroidItemModelProxy::createNativeProxy(QJniObject itemModel)
 
 QJniObject QAndroidItemModelProxy::createProxy(QAbstractItemModel *itemModel)
 {
-    return JQtAndroidItemModelProxy(reinterpret_cast<jlong>(itemModel));
+    return JBobUIAndroidItemModelProxy(reinterpret_cast<jlong>(itemModel));
 }
 
-int QAndroidItemModelProxy::jni_columnCount(JNIEnv *env, jobject object, JQtModelIndex parent)
+int QAndroidItemModelProxy::jni_columnCount(JNIEnv *env, jobject object, JBobUIModelIndex parent)
 {
     const QModelIndex nativeParent = QAndroidModelIndexProxy::qInstance(parent);
     return invokeNativeMethod(env, object, &QAbstractItemModel::columnCount, nativeParent);
 }
 
-jobject QAndroidItemModelProxy::jni_data(JNIEnv *env, jobject object, JQtModelIndex index,
+jobject QAndroidItemModelProxy::jni_data(JNIEnv *env, jobject object, JBobUIModelIndex index,
                                          jint role)
 {
     const QModelIndex nativeIndex = QAndroidModelIndexProxy::qInstance(index);
@@ -215,7 +215,7 @@ jobject QAndroidItemModelProxy::jni_data(JNIEnv *env, jobject object, JQtModelIn
 }
 
 jobject QAndroidItemModelProxy::jni_index(JNIEnv *env, jobject object, jint row, jint column,
-                                          JQtModelIndex parent)
+                                          JBobUIModelIndex parent)
 {
     auto nativeParent = QAndroidModelIndexProxy::qInstance(parent);
     const QModelIndex modelIndex =
@@ -223,7 +223,7 @@ jobject QAndroidItemModelProxy::jni_index(JNIEnv *env, jobject object, jint row,
     return env->NewLocalRef(QAndroidModelIndexProxy::jInstance(modelIndex).object());
 }
 
-jobject QAndroidItemModelProxy::jni_parent(JNIEnv *env, jobject object, JQtModelIndex index)
+jobject QAndroidItemModelProxy::jni_parent(JNIEnv *env, jobject object, JBobUIModelIndex index)
 {
     const QModelIndex nativeIndex = QAndroidModelIndexProxy::qInstance(index);
     QModelIndex (QAbstractItemModel::*parentOverloadPtr)(const QModelIndex &) const =
@@ -232,7 +232,7 @@ jobject QAndroidItemModelProxy::jni_parent(JNIEnv *env, jobject object, JQtModel
     return env->NewLocalRef(QAndroidModelIndexProxy::jInstance(parent).object());
 }
 
-jint QAndroidItemModelProxy::jni_rowCount(JNIEnv *env, jobject object, JQtModelIndex parent)
+jint QAndroidItemModelProxy::jni_rowCount(JNIEnv *env, jobject object, JBobUIModelIndex parent)
 {
     return invokeNativeMethod(env, object, &QAbstractItemModel::rowCount,
                               QAndroidModelIndexProxy::qInstance(parent));
@@ -260,21 +260,21 @@ jobject QAndroidItemModelProxy::jni_createIndex(JNIEnv *env, jobject object, jin
     return env->NewLocalRef(QAndroidModelIndexProxy::jInstance(index).object());
 }
 
-jboolean QAndroidItemModelProxy::jni_canFetchMore(JNIEnv *env, jobject object, JQtModelIndex parent)
+jboolean QAndroidItemModelProxy::jni_canFetchMore(JNIEnv *env, jobject object, JBobUIModelIndex parent)
 {
     return invokeNativeImpl(env, object, &QAndroidItemModelProxy::canFetchMoreDefault,
                             &QAbstractItemModel::canFetchMore,
                             QAndroidModelIndexProxy::qInstance(parent));
 }
 
-void QAndroidItemModelProxy::jni_fetchMore(JNIEnv *env, jobject object, JQtModelIndex parent)
+void QAndroidItemModelProxy::jni_fetchMore(JNIEnv *env, jobject object, JBobUIModelIndex parent)
 {
     return invokeNativeImpl(env, object, &QAndroidItemModelProxy::fetchMoreDefault,
                             &QAbstractItemModel::fetchMore,
                             QAndroidModelIndexProxy::qInstance(parent));
 }
 
-jboolean QAndroidItemModelProxy::jni_hasChildren(JNIEnv *env, jobject object, JQtModelIndex parent)
+jboolean QAndroidItemModelProxy::jni_hasChildren(JNIEnv *env, jobject object, JBobUIModelIndex parent)
 {
     return invokeNativeImpl(env, object, &QAndroidItemModelProxy::hasChildrenDefault,
                             &QAbstractItemModel::hasChildren,
@@ -282,21 +282,21 @@ jboolean QAndroidItemModelProxy::jni_hasChildren(JNIEnv *env, jobject object, JQ
 }
 
 jboolean QAndroidItemModelProxy::jni_hasIndex(JNIEnv *env, jobject object, jint row, jint column,
-                                              JQtModelIndex parent)
+                                              JBobUIModelIndex parent)
 {
     return invokeNativeMethod(env, object, &QAbstractItemModel::hasIndex, row, column,
                               QAndroidModelIndexProxy::qInstance(parent));
 }
 
 void QAndroidItemModelProxy::jni_beginInsertColumns(JNIEnv *env, jobject object,
-                                                    JQtModelIndex parent, jint first, jint last)
+                                                    JBobUIModelIndex parent, jint first, jint last)
 {
 
     invokeNativeProxyMethod(env, object, &QAndroidItemModelProxy::beginInsertColumns,
                             QAndroidModelIndexProxy::qInstance(parent), first, last);
 }
 
-void QAndroidItemModelProxy::jni_beginInsertRows(JNIEnv *env, jobject object, JQtModelIndex parent,
+void QAndroidItemModelProxy::jni_beginInsertRows(JNIEnv *env, jobject object, JBobUIModelIndex parent,
                                                  jint first, jint last)
 {
     invokeNativeProxyMethod(env, object, &QAndroidItemModelProxy::beginInsertRows,
@@ -304,9 +304,9 @@ void QAndroidItemModelProxy::jni_beginInsertRows(JNIEnv *env, jobject object, JQ
 }
 
 jboolean QAndroidItemModelProxy::jni_beginMoveColumns(JNIEnv *env, jobject object,
-                                                      JQtModelIndex sourceParent, jint sourceFirst,
+                                                      JBobUIModelIndex sourceParent, jint sourceFirst,
                                                       jint sourceLast,
-                                                      JQtModelIndex destinationParent,
+                                                      JBobUIModelIndex destinationParent,
                                                       jint destinationChild)
 {
     return invokeNativeProxyMethod(
@@ -316,8 +316,8 @@ jboolean QAndroidItemModelProxy::jni_beginMoveColumns(JNIEnv *env, jobject objec
 }
 
 jboolean QAndroidItemModelProxy::jni_beginMoveRows(JNIEnv *env, jobject object,
-                                                   JQtModelIndex sourceParent, jint sourceFirst,
-                                                   jint sourceLast, JQtModelIndex destinationParent,
+                                                   JBobUIModelIndex sourceParent, jint sourceFirst,
+                                                   jint sourceLast, JBobUIModelIndex destinationParent,
                                                    jint destinationChild)
 {
     return invokeNativeProxyMethod(
@@ -327,13 +327,13 @@ jboolean QAndroidItemModelProxy::jni_beginMoveRows(JNIEnv *env, jobject object,
 }
 
 void QAndroidItemModelProxy::jni_beginRemoveColumns(JNIEnv *env, jobject object,
-                                                    JQtModelIndex parent, jint first, jint last)
+                                                    JBobUIModelIndex parent, jint first, jint last)
 {
     invokeNativeProxyMethod(env, object, &QAndroidItemModelProxy::beginRemoveColumns,
                             QAndroidModelIndexProxy::qInstance(parent), first, last);
 }
 
-void QAndroidItemModelProxy::jni_beginRemoveRows(JNIEnv *env, jobject object, JQtModelIndex parent,
+void QAndroidItemModelProxy::jni_beginRemoveRows(JNIEnv *env, jobject object, JBobUIModelIndex parent,
                                                  jint first, jint last)
 {
     invokeNativeProxyMethod(env, object, &QAndroidItemModelProxy::beginRemoveRows,
@@ -381,7 +381,7 @@ void QAndroidItemModelProxy::jni_endResetModel(JNIEnv *env, jobject object)
 }
 
 jobject QAndroidItemModelProxy::jni_sibling(JNIEnv *env, jobject object, jint row, jint column,
-                                            JQtModelIndex parent)
+                                            JBobUIModelIndex parent)
 {
     const QModelIndex index = invokeNativeImpl(env, object, &QAndroidItemModelProxy::siblingDefault,
                                                &QAbstractItemModel::sibling, row, column,
@@ -389,7 +389,7 @@ jobject QAndroidItemModelProxy::jni_sibling(JNIEnv *env, jobject object, jint ro
     return env->NewLocalRef(QAndroidModelIndexProxy::jInstance(index).object());
 }
 
-jboolean QAndroidItemModelProxy::jni_setData(JNIEnv *env, jobject object, JQtModelIndex index,
+jboolean QAndroidItemModelProxy::jni_setData(JNIEnv *env, jobject object, JBobUIModelIndex index,
                                              jobject value, jint role)
 {
     const QModelIndex nativeIndex = QAndroidModelIndexProxy::qInstance(index);
@@ -398,8 +398,8 @@ jboolean QAndroidItemModelProxy::jni_setData(JNIEnv *env, jobject object, JQtMod
                             &QAbstractItemModel::setData, nativeIndex, qValue, role);
 }
 
-void QAndroidItemModelProxy::jni_dataChanged(JNIEnv *env, jobject object, JQtModelIndex topLeft,
-                                             JQtModelIndex bottomRight, QJniArray<jint> roles)
+void QAndroidItemModelProxy::jni_dataChanged(JNIEnv *env, jobject object, JBobUIModelIndex topLeft,
+                                             JBobUIModelIndex bottomRight, QJniArray<jint> roles)
 {
     const QModelIndex nativeTopLeft = QAndroidModelIndexProxy::qInstance(topLeft);
     const QModelIndex nativeBottomRight = QAndroidModelIndexProxy::qInstance(bottomRight);
@@ -412,7 +412,7 @@ void QAndroidItemModelProxy::jni_dataChanged(JNIEnv *env, jobject object, JQtMod
 bool QAndroidItemModelProxy::registerAbstractNatives(QJniEnvironment &env)
 {
     return env.registerNativeMethods(
-            Traits<JQtAbstractItemModel>::className(),
+            Traits<JBobUIAbstractItemModel>::className(),
             { Q_JNI_NATIVE_SCOPED_METHOD(jni_roleNames, QAndroidItemModelProxy),
               Q_JNI_NATIVE_SCOPED_METHOD(jni_canFetchMore, QAndroidItemModelProxy),
               Q_JNI_NATIVE_SCOPED_METHOD(jni_createIndex, QAndroidItemModelProxy),
@@ -441,7 +441,7 @@ bool QAndroidItemModelProxy::registerAbstractNatives(QJniEnvironment &env)
 bool QAndroidItemModelProxy::registerProxyNatives(QJniEnvironment &env)
 {
     return env.registerNativeMethods(
-            Traits<JQtAndroidItemModelProxy>::className(),
+            Traits<JBobUIAndroidItemModelProxy>::className(),
             { Q_JNI_NATIVE_SCOPED_METHOD(jni_columnCount, QAndroidItemModelProxy),
               Q_JNI_NATIVE_SCOPED_METHOD(jni_data, QAndroidItemModelProxy),
               Q_JNI_NATIVE_SCOPED_METHOD(jni_index, QAndroidItemModelProxy),
@@ -449,4 +449,4 @@ bool QAndroidItemModelProxy::registerProxyNatives(QJniEnvironment &env)
               Q_JNI_NATIVE_SCOPED_METHOD(jni_rowCount, QAndroidItemModelProxy) });
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

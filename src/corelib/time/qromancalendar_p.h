@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QROMAN_CALENDAR_P_H
 #define QROMAN_CALENDAR_P_H
@@ -8,7 +8,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of calendar implementations.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -17,7 +17,7 @@
 
 #include "qcalendarbackend_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Q_CORE_EXPORT QRomanCalendar : public QCalendarBackend
 {
@@ -41,6 +41,6 @@ protected:
     const char16_t *localeMonthData() const override;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QROMAN_CALENDAR_P_H

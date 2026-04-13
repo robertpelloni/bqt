@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef CAR_H
 #define CAR_H
@@ -23,10 +23,10 @@ public slots:
 protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                QWidget *widget = nullptr) override;
-    void timerEvent(QTimerEvent *event) override;
+    void timerEvent(BOBUIimerEvent *event) override;
 
 private:
-    QBrush color = Qt::green;
+    QBrush color = BobUI::green;
     qreal wheelsAngle = 0; // used when applying rotation
     qreal speed = 0; // delta movement along the body axis
 };

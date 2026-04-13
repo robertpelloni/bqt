@@ -1,13 +1,13 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QXDGDESKTOPPORTALTHEME_H
 #define QXDGDESKTOPPORTALTHEME_H
 
 #include <qpa/qplatformtheme.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QXdgDesktopPortalThemePrivate;
 
@@ -25,7 +25,7 @@ public:
     bool usePlatformNativeDialog(DialogType type) const override;
     QPlatformDialogHelper *createPlatformDialogHelper(DialogType type) const override;
 
-#ifndef QT_NO_SYSTEMTRAYICON
+#ifndef BOBUI_NO_SYSTEMTRAYICON
     QPlatformSystemTrayIcon *createPlatformSystemTrayIcon() const override;
 #endif
 
@@ -35,8 +35,8 @@ public:
 
     QVariant themeHint(ThemeHint hint) const override;
 
-    Qt::ColorScheme colorScheme() const override;
-    Qt::ContrastPreference contrastPreference() const override;
+    BobUI::ColorScheme colorScheme() const override;
+    BobUI::ContrastPreference contrastPreference() const override;
 
     QPixmap standardPixmap(StandardPixmap sp, const QSizeF &size) const override;
     QIcon fileIcon(const QFileInfo &fileInfo,
@@ -44,7 +44,7 @@ public:
 
     QIconEngine *createIconEngine(const QString &iconName) const override;
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     QList<QKeySequence> keyBindings(QKeySequence::StandardKey key) const override;
 #endif
 
@@ -57,6 +57,6 @@ private:
     Q_DISABLE_COPY_MOVE(QXdgDesktopPortalTheme)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QXDGDESKTOPPORTALTHEME_H

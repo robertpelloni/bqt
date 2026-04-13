@@ -1,15 +1,15 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## unc Binary:
 #####################################################################
 
-qt_internal_add_manual_test(unc
+bobui_internal_add_manual_test(unc
     GUI
     SOURCES
         main.cpp
     LIBRARIES
-        Qt::Gui
-        Qt::Widgets
+        BobUI::Gui
+        BobUI::Widgets
 )

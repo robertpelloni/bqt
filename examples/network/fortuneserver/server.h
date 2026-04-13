@@ -1,5 +1,5 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef SERVER_H
 #define SERVER_H
@@ -8,10 +8,10 @@
 #include <QString>
 #include <QList>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QLabel;
-class QTcpServer;
-QT_END_NAMESPACE
+class BOBUIcpServer;
+BOBUI_END_NAMESPACE
 
 //! [0]
 class Server : public QDialog
@@ -28,7 +28,7 @@ private:
     void initServer();
 
     QLabel *statusLabel = nullptr;
-    QTcpServer *tcpServer = nullptr;
+    BOBUIcpServer *tcpServer = nullptr;
     QList<QString> fortunes;
 };
 //! [0]

@@ -1,6 +1,6 @@
 TEMPLATE = app
 
-QT += gui-private
+BOBUI += gui-private
 
 SOURCES = \
     cubemap_scissor.cpp

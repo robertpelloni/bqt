@@ -1,23 +1,23 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "androidwindowembedding.h"
 
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qjnienvironment.h>
-#include <QtCore/qjniobject.h>
-#include <QtCore/qjnitypes.h>
-#include <QtGui/qwindow.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/qjnienvironment.h>
+#include <BobUICore/qjniobject.h>
+#include <BobUICore/qjnitypes.h>
+#include <BobUIGui/qwindow.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_DECLARE_JNI_CLASS(QtView, "org/qtproject/qt/android/QtView");
+Q_DECLARE_JNI_CLASS(BobUIView, "org/bobuiproject/bobui/android/BobUIView");
 
-namespace QtAndroidWindowEmbedding {
-    void createRootWindow(JNIEnv *, jclass, QtJniTypes::View rootView,
+namespace BobUIAndroidWindowEmbedding {
+    void createRootWindow(JNIEnv *, jclass, BobUIJniTypes::View rootView,
                           jint x, jint y, jint width, jint height)
     {
-        // QWindow should be constructed on the Qt thread rather than directly in the caller thread
+        // QWindow should be constructed on the BobUI thread rather than directly in the caller thread
         // To avoid hitting checkReceiverThread assert in QCoreApplication::doNotify
         QMetaObject::invokeMethod(qApp, [rootView, x, y, width, height] {
             QWindow *parentWindow = QWindow::fromWinId(reinterpret_cast<WId>(rootView.object()));
@@ -59,12 +59,12 @@ namespace QtAndroidWindowEmbedding {
 
     bool registerNatives(QJniEnvironment& env) {
         return env.registerNativeMethods(
-                QtJniTypes::Traits<QtJniTypes::QtView>::className(),
-                { Q_JNI_NATIVE_SCOPED_METHOD(createRootWindow, QtAndroidWindowEmbedding),
-                  Q_JNI_NATIVE_SCOPED_METHOD(deleteWindow, QtAndroidWindowEmbedding),
-                  Q_JNI_NATIVE_SCOPED_METHOD(setWindowVisible, QtAndroidWindowEmbedding),
-                  Q_JNI_NATIVE_SCOPED_METHOD(resizeWindow, QtAndroidWindowEmbedding) });
+                BobUIJniTypes::Traits<BobUIJniTypes::BobUIView>::className(),
+                { Q_JNI_NATIVE_SCOPED_METHOD(createRootWindow, BobUIAndroidWindowEmbedding),
+                  Q_JNI_NATIVE_SCOPED_METHOD(deleteWindow, BobUIAndroidWindowEmbedding),
+                  Q_JNI_NATIVE_SCOPED_METHOD(setWindowVisible, BobUIAndroidWindowEmbedding),
+                  Q_JNI_NATIVE_SCOPED_METHOD(resizeWindow, BobUIAndroidWindowEmbedding) });
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

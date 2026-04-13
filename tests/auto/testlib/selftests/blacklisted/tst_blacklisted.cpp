@@ -1,12 +1,12 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#undef QTEST_THROW_ON_FAIL    // fails ### investigate
-#undef QTEST_THROW_ON_SKIP    // fails ### investigate
+#undef BOBUIEST_THROW_ON_FAIL    // fails ### investigate
+#undef BOBUIEST_THROW_ON_SKIP    // fails ### investigate
 
-#include <QtCore/QCoreApplication>
-#include <QTest>
-#include <private/qtestlog_p.h>
+#include <BobUICore/QCoreApplication>
+#include <BOBUIest>
+#include <private/bobuiestlog_p.h>
 
 class tst_Blacklisted : public QObject
 {
@@ -68,7 +68,7 @@ void tst_Blacklisted::fail()
 
 void tst_Blacklisted::multiFail() // cf. ../subtest/'s similar tests
 {
-    const QTest::ThrowOnFailDisabler nothrow; // tests repeated QFAILs
+    const BOBUIest::ThrowOnFailDisabler nothrow; // tests repeated QFAILs
     ++blacklisted;
     for (int i = 0; i < 10; ++i)
         []() { QFAIL("This failure message should be repeated ten times"); }();
@@ -77,7 +77,7 @@ void tst_Blacklisted::multiFail() // cf. ../subtest/'s similar tests
 
 void tst_Blacklisted::multiSkip()
 {
-    const QTest::ThrowOnSkipDisabler nothrow; // tests repeated QSKIPs
+    const BOBUIest::ThrowOnSkipDisabler nothrow; // tests repeated QSKIPs
     // Similar to multiFail()
     ++skipped;
     for (int i = 0; i < 10; ++i)
@@ -131,5 +131,5 @@ void tst_Blacklisted::xpassContinueFail()
     QFAIL("This fail should be seen and not counted (due to prior XPASS)");
 }
 
-QTEST_MAIN(tst_Blacklisted)
+BOBUIEST_MAIN(tst_Blacklisted)
 #include "tst_blacklisted.moc"

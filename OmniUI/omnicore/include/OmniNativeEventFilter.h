@@ -14,7 +14,7 @@ public:
     // Initializes the OS-specific raw input registration
     void registerRawInput();
 
-    // The core interception hook for OS messages before Qt processes them
+    // The core interception hook for OS messages before BobUI processes them
     bool nativeEventFilter(const QByteArray &eventType, void *message, qintptr *result) override;
 
 private:

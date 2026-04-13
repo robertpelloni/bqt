@@ -1,28 +1,28 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 /* possible connection parameters */
 
 #ifndef TST_DATABASES_H
 #define TST_DATABASES_H
 
-#include <QtTest/qtest.h>
+#include <BobUITest/bobuiest.h>
 
-#include <QtSql/qsqldatabase.h>
-#include <QtSql/qsqldriver.h>
-#include <QtSql/qsqlerror.h>
-#include <QtSql/qsqlquery.h>
-#include <QtSql/qsqlrecord.h>
-#include <QtSql/qsqltablemodel.h>
+#include <BobUISql/qsqldatabase.h>
+#include <BobUISql/qsqldriver.h>
+#include <BobUISql/qsqlerror.h>
+#include <BobUISql/qsqlquery.h>
+#include <BobUISql/qsqlrecord.h>
+#include <BobUISql/qsqltablemodel.h>
 
-#include <QtCore/qjsonarray.h>
-#include <QtCore/qjsondocument.h>
-#include <QtCore/qjsonobject.h>
-#include <QtCore/qregularexpression.h>
-#include <QtCore/qscopedpointer.h>
-#include <QtCore/qtemporarydir.h>
-#include <QtCore/qversionnumber.h>
+#include <BobUICore/qjsonarray.h>
+#include <BobUICore/qjsondocument.h>
+#include <BobUICore/qjsonobject.h>
+#include <BobUICore/qregularexpression.h>
+#include <BobUICore/qscopedpointer.h>
+#include <BobUICore/bobuiemporarydir.h>
+#include <BobUICore/qversionnumber.h>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 #define CHECK_DATABASE( db ) \
     if ( !db.isValid() ) { qFatal( "db is Invalid" ); }
@@ -62,7 +62,7 @@ public:
     // driverPrefix is empty, otherwise only those that start with driverPrefix.
     int fillTestTable(const QString &driverPrefix = QString()) const
     {
-        QTest::addColumn<QString>("dbName");
+        BOBUIest::addColumn<QString>("dbName");
         int count = 0;
 
         for (const auto &dbName : std::as_const(dbNames)) {
@@ -70,7 +70,7 @@ public:
             if (!db.isValid())
                 continue;
             if (driverPrefix.isEmpty() || db.driverName().startsWith(driverPrefix)) {
-                QTest::newRow(dbName.toLatin1()) << dbName;
+                BOBUIest::newRow(dbName.toLatin1()) << dbName;
                 ++count;
             }
         }
@@ -79,8 +79,8 @@ public:
 
     int fillTestTableWithStrategies(const QString &driverPrefix = QString()) const
     {
-        QTest::addColumn<QString>("dbName");
-        QTest::addColumn<QSqlTableModel::EditStrategy>("submitpolicy");
+        BOBUIest::addColumn<QString>("dbName");
+        BOBUIest::addColumn<QSqlTableModel::EditStrategy>("submitpolicy");
         int count = 0;
 
         for (const auto &dbName : std::as_const(dbNames)) {
@@ -89,9 +89,9 @@ public:
                 continue;
 
             if ( driverPrefix.isEmpty() || db.driverName().startsWith( driverPrefix ) ) {
-                QTest::newRow(QString("%1 [field]").arg(dbName).toLatin1() ) << dbName << QSqlTableModel::OnFieldChange;
-                QTest::newRow(QString("%1 [row]").arg(dbName).toLatin1() ) << dbName << QSqlTableModel::OnRowChange;
-                QTest::newRow(QString("%1 [manual]").arg(dbName).toLatin1() ) << dbName << QSqlTableModel::OnManualSubmit;
+                BOBUIest::newRow(QString("%1 [field]").arg(dbName).toLatin1() ) << dbName << QSqlTableModel::OnFieldChange;
+                BOBUIest::newRow(QString("%1 [row]").arg(dbName).toLatin1() ) << dbName << QSqlTableModel::OnRowChange;
+                BOBUIest::newRow(QString("%1 [manual]").arg(dbName).toLatin1() ) << dbName << QSqlTableModel::OnManualSubmit;
                 ++count;
             }
         }
@@ -118,7 +118,7 @@ public:
         QString opts = params;
         if (driver == "QSQLITE") {
             // Since the database for sqlite is generated at runtime it's always
-            // available, but we use QTempDir so it's always in a different
+            // available, but we use BOBUIempDir so it's always in a different
             // location. Thus, let's ignore the path completely.
             cName = "SQLite";
             qInfo("SQLite will use the database located at %ls", qUtf16Printable(dbName));
@@ -162,7 +162,7 @@ public:
         // }
 
         bool added = false;
-        const QString databasesFile(qgetenv("QT_TEST_DATABASES_FILE"));
+        const QString databasesFile(qgetenv("BOBUI_TEST_DATABASES_FILE"));
         QFile f(databasesFile.isEmpty() ? "testdbs.json" : databasesFile);
         if (f.exists() && f.open(QIODevice::ReadOnly)) {
             const QJsonDocument doc = QJsonDocument::fromJson(f.readAll());
@@ -187,7 +187,7 @@ public:
                 }
             }
         }
-        QTemporaryDir *sqLiteDir = dbDir();
+        BOBUIemporaryDir *sqLiteDir = dbDir();
         if (sqLiteDir) {
             addDb(QStringLiteral("QSQLITE"), QDir::toNativeSeparators(sqLiteDir->path() + QStringLiteral("/sqlite.db")));
             added = true;
@@ -263,9 +263,9 @@ public:
             if (db.driver()->isIdentifierEscaped(table, QSqlDriver::TableName))
                 table = db.driver()->stripDelimiters(table, QSqlDriver::TableName);
 
-            if (dbtables.contains(table, Qt::CaseInsensitive)) {
-                for (const QString &table2 : dbtables.filter(table, Qt::CaseInsensitive)) {
-                    if (table2.compare(table.section('.', -1, -1), Qt::CaseInsensitive) == 0) {
+            if (dbtables.contains(table, BobUI::CaseInsensitive)) {
+                for (const QString &table2 : dbtables.filter(table, BobUI::CaseInsensitive)) {
+                    if (table2.compare(table.section('.', -1, -1), BobUI::CaseInsensitive) == 0) {
                         table = db.driver()->escapeIdentifier(table2, QSqlDriver::TableName);
                         if (dbType == QSqlDriver::PostgreSQL || dbType == QSqlDriver::MimerSQL)
                             wasDropped = q.exec( "drop table " + table + " cascade");
@@ -298,9 +298,9 @@ public:
             if (db.driver()->isIdentifierEscaped(view, QSqlDriver::TableName))
                 view = db.driver()->stripDelimiters(view, QSqlDriver::TableName);
 
-            if (dbtables.contains(view, Qt::CaseInsensitive))  {
-                for (const QString &view2 : dbtables.filter(view, Qt::CaseInsensitive)) {
-                    if (view2.compare(view.section('.', -1, -1), Qt::CaseInsensitive) == 0) {
+            if (dbtables.contains(view, BobUI::CaseInsensitive))  {
+                for (const QString &view2 : dbtables.filter(view, BobUI::CaseInsensitive)) {
+                    if (view2.compare(view.section('.', -1, -1), BobUI::CaseInsensitive) == 0) {
                         view = db.driver()->escapeIdentifier(view2, QSqlDriver::TableName);
                         wasDropped = q.exec("drop view " + view);
                         dbtables.removeAll(view);
@@ -416,7 +416,7 @@ public:
 
     static bool isMSAccess(const QSqlDatabase &db)
     {
-        return db.databaseName().contains( "Access Driver", Qt::CaseInsensitive );
+        return db.databaseName().contains( "Access Driver", BobUI::CaseInsensitive );
     }
 
     // -1 on fail, else Oracle version
@@ -453,10 +453,10 @@ public:
     int      counter = 0;
 
 private:
-    QTemporaryDir *dbDir()
+    BOBUIemporaryDir *dbDir()
     {
         if (m_dbDir.isNull()) {
-            m_dbDir.reset(new QTemporaryDir);
+            m_dbDir.reset(new BOBUIemporaryDir);
             if (!m_dbDir->isValid()) {
                 qWarning() << Q_FUNC_INFO << "Unable to create a temporary directory: " << QDir::toNativeSeparators(m_dbDir->path());
                 m_dbDir.reset();
@@ -465,7 +465,7 @@ private:
         return m_dbDir.data();
     }
 
-    QScopedPointer<QTemporaryDir> m_dbDir;
+    QScopedPointer<BOBUIemporaryDir> m_dbDir;
 };
 
 class TableScope

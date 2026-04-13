@@ -1,7 +1,7 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
-#include <QtCore/qglobal.h>
+#include <BobUICore/qglobal.h>
 
 #include <cstdio>
 #include <cstdlib>
@@ -24,9 +24,9 @@
 #include <qstack.h>
 #include <qdatastream.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 using AutoGenHeaderMap = QMap<QString, QString>;
 using AutoGenSourcesList = QList<QString>;
@@ -130,7 +130,7 @@ static bool readParseCache(ParseCacheMap &entries, const QString &parseCacheFile
     // header/source path N + 1
     // ....
 
-    QTextStream textStream(&file);
+    BOBUIextStream textStream(&file);
     const QString mmcKey = QString(" mmc:"_L1);
     const QString miuKey = QString(" miu:"_L1);
     const QString uicKey = QString(" uic:"_L1);
@@ -192,7 +192,7 @@ static bool writeJsonFiles(const QList<QString> &fileList, const QString &fileLi
     // processed by cmake_automoc parser
     for (const auto &jsonFile : fileList) {
         const qint64 jsonFileLastModified =
-                QFileInfo(jsonFile).lastModified(QTimeZone::UTC).toMSecsSinceEpoch();
+                QFileInfo(jsonFile).lastModified(BOBUIimeZone::UTC).toMSecsSinceEpoch();
         if (jsonFileLastModified > timestamp) {
             timestamp = jsonFileLastModified;
         }
@@ -205,9 +205,9 @@ static bool writeJsonFiles(const QList<QString> &fileList, const QString &fileLi
             return false;
         }
 
-        QTextStream textStream(&file);
+        BOBUIextStream textStream(&file);
         for (const auto &jsonFile : fileList) {
-            textStream << jsonFile << Qt::endl;
+            textStream << jsonFile << BobUI::endl;
         }
         textStream.flush();
 
@@ -223,7 +223,7 @@ int main(int argc, char **argv)
 
     QCoreApplication app(argc, argv);
     QCommandLineParser parser;
-    parser.setApplicationDescription(QStringLiteral("Qt CMake Autogen parser tool"));
+    parser.setApplicationDescription(QStringLiteral("BobUI CMake Autogen parser tool"));
 
     parser.addHelpOption();
     parser.setSingleDashWordOptionMode(QCommandLineParser::ParseAsLongOptions);
@@ -380,4 +380,4 @@ int main(int argc, char **argv)
     return EXIT_SUCCESS;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

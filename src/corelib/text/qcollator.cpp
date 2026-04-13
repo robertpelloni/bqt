@@ -1,7 +1,7 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2013 Aleix Pol Gonzalez <aleixpol@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qcollator_p.h"
 #include "qstringlist.h"
@@ -9,10 +9,10 @@
 
 #include "qdebug.h"
 #include "qlocale_p.h"
-#include "qthreadstorage.h"
+#include "bobuihreadstorage.h"
 
-QT_BEGIN_NAMESPACE
-QT_DEFINE_QESDP_SPECIALIZATION_DTOR(QCollatorSortKeyPrivate)
+BOBUI_BEGIN_NAMESPACE
+BOBUI_DEFINE_QESDP_SPECIALIZATION_DTOR(QCollatorSortKeyPrivate)
 
 namespace {
 struct GenerationalCollator
@@ -34,11 +34,11 @@ public:
     }
 };
 }
-Q_GLOBAL_STATIC(QThreadStorage<GenerationalCollator>, defaultCollator)
+Q_GLOBAL_STATIC(BOBUIhreadStorage<GenerationalCollator>, defaultCollator)
 
 /*!
     \class QCollator
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QCollator class compares strings according to a localized collation algorithm.
 
     \since 5.2
@@ -61,9 +61,9 @@ Q_GLOBAL_STATIC(QThreadStorage<GenerationalCollator>, defaultCollator)
 
     \section1 POSIX fallback implementation
 
-    On Unix systems, Qt is normally compiled to use ICU (except for \macos,
-    where Qt defaults to using an equivalent Apple API). However, if ICU was
-    not available at compile time or explicitly disabled, Qt will use a
+    On Unix systems, BobUI is normally compiled to use ICU (except for \macos,
+    where BobUI defaults to using an equivalent Apple API). However, if ICU was
+    not available at compile time or explicitly disabled, BobUI will use a
     fallback backend that uses the POSIX API only. This backend has several
     limitations:
 
@@ -219,7 +219,7 @@ QLocale QCollator::locale() const
 
     \sa caseSensitivity()
 */
-void QCollator::setCaseSensitivity(Qt::CaseSensitivity cs)
+void QCollator::setCaseSensitivity(BobUI::CaseSensitivity cs)
 {
     if (d->caseSensitivity == cs)
         return;
@@ -240,7 +240,7 @@ void QCollator::setCaseSensitivity(Qt::CaseSensitivity cs)
 
     \sa setCaseSensitivity()
 */
-Qt::CaseSensitivity QCollator::caseSensitivity() const
+BobUI::CaseSensitivity QCollator::caseSensitivity() const
 {
     return d->caseSensitivity;
 }
@@ -345,7 +345,7 @@ bool QCollator::ignorePunctuation() const
     if it is greater than \a s2, and zero if they are equal.
 
 
-    \note In Qt versions prior to 6.4, the length arguments were of type
+    \note In BobUI versions prior to 6.4, the length arguments were of type
     \c{int}, not \c{qsizetype}.
 */
 
@@ -391,7 +391,7 @@ QCollatorSortKey QCollator::defaultSortKey(QStringView key)
 
 /*!
     \class QCollatorSortKey
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QCollatorSortKey class can be used to speed up string collation.
 
     \since 5.2
@@ -485,4 +485,4 @@ QCollatorSortKey& QCollatorSortKey::operator=(const QCollatorSortKey &other)
     \sa operator<()
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
@@ -6,12 +6,12 @@
 #####################################################################
 cmake_minimum_required(VERSION 3.16)
 
-qt_internal_add_manual_test(anchorlayout
+bobui_internal_add_manual_test(anchorlayout
     GUI
     SOURCES
         main.cpp
     LIBRARIES
-        Qt::Gui
-        Qt::Widgets
+        BobUI::Gui
+        BobUI::Widgets
 )
 

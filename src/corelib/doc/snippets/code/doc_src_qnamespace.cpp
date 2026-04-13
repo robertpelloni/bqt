@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QEvent>
 
@@ -7,7 +7,7 @@
 enum CustomEventPriority
 {
     // An important event
-    ImportantEventPriority = Qt::HighEventPriority,
+    ImportantEventPriority = BobUI::HighEventPriority,
 
     // A more important event
     MoreImportantEventPriority = ImportantEventPriority + 1,
@@ -16,7 +16,7 @@ enum CustomEventPriority
     CriticalEventPriority = 100 * MoreImportantEventPriority,
 
     // Not that important
-    StatusEventPriority = Qt::LowEventPriority,
+    StatusEventPriority = BobUI::LowEventPriority,
 
     // These are less important than Status events
     IdleProcessingDoneEventPriority = StatusEventPriority - 1

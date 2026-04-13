@@ -1,5 +1,5 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qjnihelpers_p.h"
 
@@ -9,27 +9,27 @@
 #include "qmutex.h"
 #include "qsemaphore.h"
 #include "qreadwritelock.h"
-#include <QtCore/private/qcoreapplication_p.h>
-#include <QtCore/private/qlocking_p.h>
+#include <BobUICore/private/qcoreapplication_p.h>
+#include <BobUICore/private/qlocking_p.h>
 
-#if QT_CONFIG(regularexpression)
-#include <QtCore/qregularexpression.h>
+#if BOBUI_CONFIG(regularexpression)
+#include <BobUICore/qregularexpression.h>
 #endif
 
 #include <android/log.h>
 #include <deque>
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_DECLARE_JNI_CLASS(QtLoader, "org/qtproject/qt/android/QtLoader")
-Q_DECLARE_JNI_CLASS(QtInputDelegate, "org/qtproject/qt/android/QtInputDelegate");
+Q_DECLARE_JNI_CLASS(BobUILoader, "org/bobuiproject/bobui/android/BobUILoader")
+Q_DECLARE_JNI_CLASS(BobUIInputDelegate, "org/bobuiproject/bobui/android/BobUIInputDelegate");
 Q_DECLARE_JNI_CLASS(MotionEvent, "android/view/MotionEvent");
 Q_DECLARE_JNI_CLASS(KeyEvent, "android/view/KeyEvent");
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-namespace QtAndroidPrivate {
+namespace BobUIAndroidPrivate {
     // *Listener virtual function implementations.
     // Defined out-of-line to pin the vtable/type_info.
     ActivityResultListener::~ActivityResultListener() {}
@@ -44,7 +44,7 @@ static jobject g_jActivity = nullptr;
 static jobject g_jService = nullptr;
 static jobject g_jClassLoader = nullptr;
 
-Q_CONSTINIT static QtAndroidPrivate::OnBindListener *g_onBindListener;
+Q_CONSTINIT static BobUIAndroidPrivate::OnBindListener *g_onBindListener;
 Q_CONSTINIT static QBasicMutex g_onBindListenerMutex;
 Q_GLOBAL_STATIC(QSemaphore, g_waitForServiceSetupSemaphore);
 Q_CONSTINIT static QBasicAtomicInt g_serviceSetupLockers = Q_BASIC_ATOMIC_INITIALIZER(0);
@@ -54,16 +54,16 @@ Q_GLOBAL_STATIC(QReadWriteLock, g_updateMutex);
 static jboolean updateNativeActivity(JNIEnv *env, jclass = nullptr)
 {
 
-    jclass jQtNative = env->FindClass("org/qtproject/qt/android/QtNative");
+    jclass jBobUINative = env->FindClass("org/bobuiproject/bobui/android/BobUINative");
     if (QJniEnvironment::checkAndClearExceptions(env))
         return JNI_FALSE;
 
     jmethodID activityMethodID =
-            env->GetStaticMethodID(jQtNative, "activity", "()Landroid/app/Activity;");
+            env->GetStaticMethodID(jBobUINative, "activity", "()Landroid/app/Activity;");
     if (QJniEnvironment::checkAndClearExceptions(env))
         return JNI_FALSE;
 
-    jobject activity = env->CallStaticObjectMethod(jQtNative, activityMethodID);
+    jobject activity = env->CallStaticObjectMethod(jBobUINative, activityMethodID);
     if (QJniEnvironment::checkAndClearExceptions(env))
         return JNI_FALSE;
 
@@ -79,7 +79,7 @@ static jboolean updateNativeActivity(JNIEnv *env, jclass = nullptr)
         env->DeleteLocalRef(activity);
     }
 
-    env->DeleteLocalRef(jQtNative);
+    env->DeleteLocalRef(jBobUINative);
     if (QJniEnvironment::checkAndClearExceptions(env))
         return JNI_FALSE;
 
@@ -91,28 +91,28 @@ namespace {
     {
     public:
         QMutex mutex;
-        QList<QtAndroidPrivate::ActivityResultListener *> listeners;
+        QList<BobUIAndroidPrivate::ActivityResultListener *> listeners;
     };
 }
 
 Q_GLOBAL_STATIC(ActivityResultListeners, g_activityResultListeners)
 
-void QtAndroidPrivate::registerActivityResultListener(ActivityResultListener *listener)
+void BobUIAndroidPrivate::registerActivityResultListener(ActivityResultListener *listener)
 {
     QMutexLocker locker(&g_activityResultListeners()->mutex);
     g_activityResultListeners()->listeners.append(listener);
 }
 
-void QtAndroidPrivate::unregisterActivityResultListener(ActivityResultListener *listener)
+void BobUIAndroidPrivate::unregisterActivityResultListener(ActivityResultListener *listener)
 {
     QMutexLocker locker(&g_activityResultListeners()->mutex);
     g_activityResultListeners()->listeners.removeAll(listener);
 }
 
-void QtAndroidPrivate::handleActivityResult(jint requestCode, jint resultCode, jobject data)
+void BobUIAndroidPrivate::handleActivityResult(jint requestCode, jint resultCode, jobject data)
 {
     QMutexLocker locker(&g_activityResultListeners()->mutex);
-    const QList<QtAndroidPrivate::ActivityResultListener *> &listeners = g_activityResultListeners()->listeners;
+    const QList<BobUIAndroidPrivate::ActivityResultListener *> &listeners = g_activityResultListeners()->listeners;
     for (int i=0; i<listeners.size(); ++i) {
         if (listeners.at(i)->handleActivityResult(requestCode, resultCode, data))
             break;
@@ -124,44 +124,44 @@ namespace {
     {
     public:
         QMutex mutex;
-        QList<QtAndroidPrivate::NewIntentListener *> listeners;
+        QList<BobUIAndroidPrivate::NewIntentListener *> listeners;
     };
 }
 
 Q_GLOBAL_STATIC(NewIntentListeners, g_newIntentListeners)
 
-void QtAndroidPrivate::registerNewIntentListener(NewIntentListener *listener)
+void BobUIAndroidPrivate::registerNewIntentListener(NewIntentListener *listener)
 {
     QMutexLocker locker(&g_newIntentListeners()->mutex);
     g_newIntentListeners()->listeners.append(listener);
 }
 
-void QtAndroidPrivate::unregisterNewIntentListener(NewIntentListener *listener)
+void BobUIAndroidPrivate::unregisterNewIntentListener(NewIntentListener *listener)
 {
     QMutexLocker locker(&g_newIntentListeners()->mutex);
     g_newIntentListeners()->listeners.removeAll(listener);
 }
 
-void QtAndroidPrivate::handleNewIntent(JNIEnv *env, jobject intent)
+void BobUIAndroidPrivate::handleNewIntent(JNIEnv *env, jobject intent)
 {
     QMutexLocker locker(&g_newIntentListeners()->mutex);
-    const QList<QtAndroidPrivate::NewIntentListener *> &listeners = g_newIntentListeners()->listeners;
+    const QList<BobUIAndroidPrivate::NewIntentListener *> &listeners = g_newIntentListeners()->listeners;
     for (int i=0; i<listeners.size(); ++i) {
         if (listeners.at(i)->handleNewIntent(env, intent))
             break;
     }
 }
 
-QtAndroidPrivate::GenericMotionEventListener::~GenericMotionEventListener() {}
+BobUIAndroidPrivate::GenericMotionEventListener::~GenericMotionEventListener() {}
 namespace {
 struct GenericMotionEventListeners {
     QMutex mutex;
-    QList<QtAndroidPrivate::GenericMotionEventListener *> listeners;
+    QList<BobUIAndroidPrivate::GenericMotionEventListener *> listeners;
 };
 }
 Q_GLOBAL_STATIC(GenericMotionEventListeners, g_genericMotionEventListeners)
 
-static jboolean dispatchGenericMotionEvent(JNIEnv *, jclass, QtJniTypes::MotionEvent event)
+static jboolean dispatchGenericMotionEvent(JNIEnv *, jclass, BobUIJniTypes::MotionEvent event)
 {
     jboolean ret = JNI_FALSE;
     QMutexLocker locker(&g_genericMotionEventListeners()->mutex);
@@ -171,16 +171,16 @@ static jboolean dispatchGenericMotionEvent(JNIEnv *, jclass, QtJniTypes::MotionE
 }
 Q_DECLARE_JNI_NATIVE_METHOD(dispatchGenericMotionEvent);
 
-QtAndroidPrivate::KeyEventListener::~KeyEventListener() {}
+BobUIAndroidPrivate::KeyEventListener::~KeyEventListener() {}
 namespace {
 struct KeyEventListeners {
     QMutex mutex;
-    QList<QtAndroidPrivate::KeyEventListener *> listeners;
+    QList<BobUIAndroidPrivate::KeyEventListener *> listeners;
 };
 }
 Q_GLOBAL_STATIC(KeyEventListeners, g_keyEventListeners)
 
-static jboolean dispatchKeyEvent(JNIEnv *, jclass, QtJniTypes::KeyEvent event)
+static jboolean dispatchKeyEvent(JNIEnv *, jclass, BobUIJniTypes::KeyEvent event)
 {
     jboolean ret = JNI_FALSE;
     QMutexLocker locker(&g_keyEventListeners()->mutex);
@@ -190,25 +190,25 @@ static jboolean dispatchKeyEvent(JNIEnv *, jclass, QtJniTypes::KeyEvent event)
 }
 Q_DECLARE_JNI_NATIVE_METHOD(dispatchKeyEvent);
 
-void QtAndroidPrivate::registerGenericMotionEventListener(QtAndroidPrivate::GenericMotionEventListener *listener)
+void BobUIAndroidPrivate::registerGenericMotionEventListener(BobUIAndroidPrivate::GenericMotionEventListener *listener)
 {
     QMutexLocker locker(&g_genericMotionEventListeners()->mutex);
     g_genericMotionEventListeners()->listeners.push_back(listener);
 }
 
-void QtAndroidPrivate::unregisterGenericMotionEventListener(QtAndroidPrivate::GenericMotionEventListener *listener)
+void BobUIAndroidPrivate::unregisterGenericMotionEventListener(BobUIAndroidPrivate::GenericMotionEventListener *listener)
 {
     QMutexLocker locker(&g_genericMotionEventListeners()->mutex);
     g_genericMotionEventListeners()->listeners.removeOne(listener);
 }
 
-void QtAndroidPrivate::registerKeyEventListener(QtAndroidPrivate::KeyEventListener *listener)
+void BobUIAndroidPrivate::registerKeyEventListener(BobUIAndroidPrivate::KeyEventListener *listener)
 {
     QMutexLocker locker(&g_keyEventListeners()->mutex);
     g_keyEventListeners()->listeners.push_back(listener);
 }
 
-void QtAndroidPrivate::unregisterKeyEventListener(QtAndroidPrivate::KeyEventListener *listener)
+void BobUIAndroidPrivate::unregisterKeyEventListener(BobUIAndroidPrivate::KeyEventListener *listener)
 {
     QMutexLocker locker(&g_keyEventListeners()->mutex);
     g_keyEventListeners()->listeners.removeOne(listener);
@@ -219,50 +219,50 @@ namespace {
     {
     public:
         QMutex mutex;
-        QList<QtAndroidPrivate::ResumePauseListener *> listeners;
+        QList<BobUIAndroidPrivate::ResumePauseListener *> listeners;
     };
 }
 
 Q_GLOBAL_STATIC(ResumePauseListeners, g_resumePauseListeners)
 
-void QtAndroidPrivate::registerResumePauseListener(ResumePauseListener *listener)
+void BobUIAndroidPrivate::registerResumePauseListener(ResumePauseListener *listener)
 {
     QMutexLocker locker(&g_resumePauseListeners()->mutex);
     g_resumePauseListeners()->listeners.append(listener);
 }
 
-void QtAndroidPrivate::unregisterResumePauseListener(ResumePauseListener *listener)
+void BobUIAndroidPrivate::unregisterResumePauseListener(ResumePauseListener *listener)
 {
     QMutexLocker locker(&g_resumePauseListeners()->mutex);
     g_resumePauseListeners()->listeners.removeAll(listener);
 }
 
-void QtAndroidPrivate::handlePause()
+void BobUIAndroidPrivate::handlePause()
 {
     QMutexLocker locker(&g_resumePauseListeners()->mutex);
-    const QList<QtAndroidPrivate::ResumePauseListener *> &listeners = g_resumePauseListeners()->listeners;
+    const QList<BobUIAndroidPrivate::ResumePauseListener *> &listeners = g_resumePauseListeners()->listeners;
     for (int i=0; i<listeners.size(); ++i)
         listeners.at(i)->handlePause();
 }
 
-void QtAndroidPrivate::handleResume()
+void BobUIAndroidPrivate::handleResume()
 {
     QMutexLocker locker(&g_resumePauseListeners()->mutex);
-    const QList<QtAndroidPrivate::ResumePauseListener *> &listeners = g_resumePauseListeners()->listeners;
+    const QList<BobUIAndroidPrivate::ResumePauseListener *> &listeners = g_resumePauseListeners()->listeners;
     for (int i=0; i<listeners.size(); ++i)
         listeners.at(i)->handleResume();
 }
 
-bool QtAndroidPrivate::isUncompressedNativeLibs()
+bool BobUIAndroidPrivate::isUncompressedNativeLibs()
 {
-    const static bool isUncompressed = QtJniTypes::QtLoader::callStaticMethod<bool>(
+    const static bool isUncompressed = BobUIJniTypes::BobUILoader::callStaticMethod<bool>(
                 "isUncompressedNativeLibs");
     return isUncompressed;
 }
 
-QString QtAndroidPrivate::resolveApkPath(const QString &fileName)
+QString BobUIAndroidPrivate::resolveApkPath(const QString &fileName)
 {
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     const static QRegularExpression inApkRegex("(.+\\.apk)!\\/.+"_L1);
     auto match = inApkRegex.matchView(fileName);
     if (match.hasMatch())
@@ -275,47 +275,47 @@ QString QtAndroidPrivate::resolveApkPath(const QString &fileName)
     return {};
 }
 
-jint QtAndroidPrivate::initJNI(JavaVM *vm, JNIEnv *env)
+jint BobUIAndroidPrivate::initJNI(JavaVM *vm, JNIEnv *env)
 {
     g_javaVM = vm;
 
-    jclass jQtNative = env->FindClass("org/qtproject/qt/android/QtNative");
+    jclass jBobUINative = env->FindClass("org/bobuiproject/bobui/android/BobUINative");
 
     if (QJniEnvironment::checkAndClearExceptions(env))
         return JNI_ERR;
 
-    jmethodID activityMethodID = env->GetStaticMethodID(jQtNative,
+    jmethodID activityMethodID = env->GetStaticMethodID(jBobUINative,
                                                         "activity",
                                                         "()Landroid/app/Activity;");
 
     if (QJniEnvironment::checkAndClearExceptions(env))
         return JNI_ERR;
 
-    jobject activity = env->CallStaticObjectMethod(jQtNative, activityMethodID);
+    jobject activity = env->CallStaticObjectMethod(jBobUINative, activityMethodID);
 
     if (QJniEnvironment::checkAndClearExceptions(env))
         return JNI_ERR;
 
-    jmethodID serviceMethodID = env->GetStaticMethodID(jQtNative,
+    jmethodID serviceMethodID = env->GetStaticMethodID(jBobUINative,
                                                        "service",
                                                        "()Landroid/app/Service;");
 
     if (QJniEnvironment::checkAndClearExceptions(env))
         return JNI_ERR;
 
-    jobject service = env->CallStaticObjectMethod(jQtNative, serviceMethodID);
+    jobject service = env->CallStaticObjectMethod(jBobUINative, serviceMethodID);
 
     if (QJniEnvironment::checkAndClearExceptions(env))
         return JNI_ERR;
 
-    jmethodID classLoaderMethodID = env->GetStaticMethodID(jQtNative,
+    jmethodID classLoaderMethodID = env->GetStaticMethodID(jBobUINative,
                                                            "classLoader",
                                                            "()Ljava/lang/ClassLoader;");
 
     if (QJniEnvironment::checkAndClearExceptions(env))
         return JNI_ERR;
 
-    jobject classLoader = env->CallStaticObjectMethod(jQtNative, classLoaderMethodID);
+    jobject classLoader = env->CallStaticObjectMethod(jBobUINative, classLoaderMethodID);
     if (QJniEnvironment::checkAndClearExceptions(env))
         return JNI_ERR;
 
@@ -334,22 +334,22 @@ jint QtAndroidPrivate::initJNI(JavaVM *vm, JNIEnv *env)
         {"updateNativeActivity", "()Z", reinterpret_cast<void *>(updateNativeActivity) },
     };
 
-    const bool regOk = (env->RegisterNatives(jQtNative, methods, sizeof(methods) / sizeof(methods[0])) == JNI_OK);
-    env->DeleteLocalRef(jQtNative);
+    const bool regOk = (env->RegisterNatives(jBobUINative, methods, sizeof(methods) / sizeof(methods[0])) == JNI_OK);
+    env->DeleteLocalRef(jBobUINative);
     if (!regOk && QJniEnvironment::checkAndClearExceptions(env))
         return JNI_ERR;
 
     QJniEnvironment qJniEnv;
-    using namespace QtJniTypes;
-    if (!QtInputDelegate::registerNativeMethods(
+    using namespace BobUIJniTypes;
+    if (!BobUIInputDelegate::registerNativeMethods(
                 { Q_JNI_NATIVE_METHOD(dispatchGenericMotionEvent),
                   Q_JNI_NATIVE_METHOD(dispatchKeyEvent) })) {
         qCritical() << "Failed to register natives methods for"
-                    << Traits<QtInputDelegate>::className();
+                    << Traits<BobUIInputDelegate>::className();
         return JNI_ERR;
     }
 
-#if QT_CONFIG(permissions)
+#if BOBUI_CONFIG(permissions)
     if (!registerPermissionNatives(qJniEnv))
         return JNI_ERR;
 #endif
@@ -363,30 +363,30 @@ jint QtAndroidPrivate::initJNI(JavaVM *vm, JNIEnv *env)
     return JNI_OK;
 }
 
-Q_CORE_EXPORT jobject qt_androidActivity()
+Q_CORE_EXPORT jobject bobui_androidActivity()
 {
     QReadLocker locker(g_updateMutex());
     return g_jActivity;
 }
 
 
-QtJniTypes::Activity QtAndroidPrivate::activity()
+BobUIJniTypes::Activity BobUIAndroidPrivate::activity()
 {
     QReadLocker locker(g_updateMutex());
     return g_jActivity;
 }
 
-Q_CORE_EXPORT jobject qt_androidService()
+Q_CORE_EXPORT jobject bobui_androidService()
 {
     return g_jService;
 }
 
-QtJniTypes::Service QtAndroidPrivate::service()
+BobUIJniTypes::Service BobUIAndroidPrivate::service()
 {
     return g_jService;
 }
 
-QtJniTypes::Context QtAndroidPrivate::context()
+BobUIJniTypes::Context BobUIAndroidPrivate::context()
 {
     QReadLocker locker(g_updateMutex());
     if (g_jActivity)
@@ -397,17 +397,17 @@ QtJniTypes::Context QtAndroidPrivate::context()
     return nullptr;
 }
 
-JavaVM *QtAndroidPrivate::javaVM()
+JavaVM *BobUIAndroidPrivate::javaVM()
 {
     return g_javaVM;
 }
 
-jobject QtAndroidPrivate::classLoader()
+jobject BobUIAndroidPrivate::classLoader()
 {
     return g_jClassLoader;
 }
 
-jint QtAndroidPrivate::androidSdkVersion()
+jint BobUIAndroidPrivate::androidSdkVersion()
 {
     static jint sdkVersion = 0;
     if (!sdkVersion)
@@ -415,28 +415,28 @@ jint QtAndroidPrivate::androidSdkVersion()
     return sdkVersion;
 }
 
-void QtAndroidPrivate::waitForServiceSetup()
+void BobUIAndroidPrivate::waitForServiceSetup()
 {
     g_waitForServiceSetupSemaphore->acquire();
 }
 
-int QtAndroidPrivate::acuqireServiceSetup(int flags)
+int BobUIAndroidPrivate::acuqireServiceSetup(int flags)
 {
     g_serviceSetupLockers.ref();
     return flags;
 }
 
-void QtAndroidPrivate::setOnBindListener(QtAndroidPrivate::OnBindListener *listener)
+void BobUIAndroidPrivate::setOnBindListener(BobUIAndroidPrivate::OnBindListener *listener)
 {
-    const auto lock = qt_scoped_lock(g_onBindListenerMutex);
+    const auto lock = bobui_scoped_lock(g_onBindListenerMutex);
     g_onBindListener = listener;
     if (!g_serviceSetupLockers.deref())
         g_waitForServiceSetupSemaphore->release();
 }
 
-jobject QtAndroidPrivate::callOnBindListener(jobject intent)
+jobject BobUIAndroidPrivate::callOnBindListener(jobject intent)
 {
-    const auto lock = qt_scoped_lock(g_onBindListenerMutex);
+    const auto lock = bobui_scoped_lock(g_onBindListenerMutex);
     if (g_onBindListener)
         return g_onBindListener->onBind(intent);
     return nullptr;
@@ -444,29 +444,29 @@ jobject QtAndroidPrivate::callOnBindListener(jobject intent)
 
 Q_CONSTINIT static QBasicAtomicInt g_androidDeadlockProtector = Q_BASIC_ATOMIC_INITIALIZER(0);
 
-bool QtAndroidPrivate::acquireAndroidDeadlockProtector()
+bool BobUIAndroidPrivate::acquireAndroidDeadlockProtector()
 {
     return g_androidDeadlockProtector.testAndSetAcquire(0, 1);
 }
 
-void QtAndroidPrivate::releaseAndroidDeadlockProtector()
+void BobUIAndroidPrivate::releaseAndroidDeadlockProtector()
 {
     g_androidDeadlockProtector.storeRelease(0);
 }
 
-QtAndroidPrivate::AndroidDeadlockProtector::AndroidDeadlockProtector(const QString &lockedBy)
+BobUIAndroidPrivate::AndroidDeadlockProtector::AndroidDeadlockProtector(const QString &lockedBy)
     : m_lockedBy(lockedBy)
 { }
 
-QtAndroidPrivate::AndroidDeadlockProtector::~AndroidDeadlockProtector() {
+BobUIAndroidPrivate::AndroidDeadlockProtector::~AndroidDeadlockProtector() {
     if (m_acquired) {
-        QtAndroidPrivate::releaseAndroidDeadlockProtector();
+        BobUIAndroidPrivate::releaseAndroidDeadlockProtector();
         s_lockers.removeOne(m_lockedBy);
     }
 }
 
-bool QtAndroidPrivate::AndroidDeadlockProtector::acquire() {
-    m_acquired = QtAndroidPrivate::acquireAndroidDeadlockProtector();
+bool BobUIAndroidPrivate::AndroidDeadlockProtector::acquire() {
+    m_acquired = BobUIAndroidPrivate::acquireAndroidDeadlockProtector();
     if (m_acquired) {
         s_lockers.append(m_lockedBy);
     } else {
@@ -476,13 +476,13 @@ bool QtAndroidPrivate::AndroidDeadlockProtector::acquire() {
     return m_acquired;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved)
 {
     Q_UNUSED(reserved);
 
-    static const char logTag[] = "QtCore";
+    static const char logTag[] = "BobUICore";
     static bool initialized = false;
     if (initialized)
         return JNI_VERSION_1_6;
@@ -504,7 +504,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved)
     }
 
     JNIEnv *env = uenv.nenv;
-    const jint ret = QT_PREPEND_NAMESPACE(QtAndroidPrivate::initJNI(vm, env));
+    const jint ret = BOBUI_PREPEND_NAMESPACE(BobUIAndroidPrivate::initJNI(vm, env));
     if (ret != 0) {
         __android_log_print(ANDROID_LOG_FATAL, logTag, "initJNI failed");
         return ret;

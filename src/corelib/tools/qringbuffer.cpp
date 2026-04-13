@@ -1,7 +1,7 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2015 Alex Trotsenko <alex1973tr@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "private/qringbuffer_p.h"
 
@@ -9,7 +9,7 @@
 
 #include <string.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static_assert(std::is_nothrow_default_constructible_v<QRingChunk>);
 static_assert(std::is_nothrow_move_constructible_v<QRingChunk>);
@@ -20,7 +20,7 @@ void QRingChunk::allocate(qsizetype alloc)
     Q_ASSERT(alloc > 0 && size() == 0);
 
     if (chunk.size() < alloc || isShared())
-        chunk = QByteArray(alloc, Qt::Uninitialized);
+        chunk = QByteArray(alloc, BobUI::Uninitialized);
 }
 
 void QRingChunk::detach()
@@ -362,4 +362,4 @@ qint64 QRingBuffer::readLine(char *data, qint64 maxLength)
     return i;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

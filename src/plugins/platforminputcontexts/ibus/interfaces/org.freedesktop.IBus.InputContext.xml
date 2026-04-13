@@ -3,10 +3,10 @@
 <node>
   <interface name="org.freedesktop.IBus.InputContext">
     <property name="ClientCommitPreedit" type="(b)" access="readwrite">
-        <annotation name="org.qtproject.QtDBus.QtTypeName" value="QIBusPropTypeClientCommitPreedit"/>
+        <annotation name="org.bobuiproject.BobUIDBus.BobUITypeName" value="QIBusPropTypeClientCommitPreedit"/>
     </property>
     <property name='ContentType' type='(uu)' access='readwrite'>
-        <annotation name="org.qtproject.QtDBus.QtTypeName" value="QIBusPropTypeContentType"/>
+        <annotation name="org.bobuiproject.BobUIDBus.BobUITypeName" value="QIBusPropTypeContentType"/>
     </property>
     <method name="ProcessKeyEvent">
       <arg name="keyval" direction="in" type="u"/>

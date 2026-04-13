@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/QDeadlineTimer>
-#include <QtCore/QProcess>
-#include <QtCore/QTemporaryFile>
-#include <QtCore/QThread>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/QDeadlineTimer>
+#include <BobUICore/QProcess>
+#include <BobUICore/BOBUIemporaryFile>
+#include <BobUICore/BOBUIhread>
 
 #include <stdlib.h>
 
@@ -13,7 +13,7 @@ static bool waitForDoneFileWritten(const QString &filePath, int msecs = 30000)
 {
     QDeadlineTimer t(msecs);
     do {
-        QThread::sleep(std::chrono::milliseconds{250});
+        BOBUIhread::sleep(std::chrono::milliseconds{250});
         QFile file(filePath);
         if (!file.open(QIODevice::ReadOnly))
             continue;
@@ -43,7 +43,7 @@ int main(int argc, char **argv)
         return 11;
 
     if (atoi(argv[3])) {
-        QTemporaryFile doneFile("testForwarding_XXXXXX.txt");
+        BOBUIemporaryFile doneFile("testForwarding_XXXXXX.txt");
         if (!doneFile.open())
             return 12;
         doneFile.close();

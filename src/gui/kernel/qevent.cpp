@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qevent.h"
 
@@ -20,12 +20,12 @@
 #include "qloggingcategory.h"
 #include "qpointer.h"
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 #include <qpa/qplatformdrag.h>
 #include <private/qdnd_p.h>
 #endif
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 #include <private/qshortcut_p.h>
 #endif
 
@@ -47,9 +47,9 @@
 
 
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-static_assert(sizeof(QMutableTouchEvent) == sizeof(QTouchEvent));
+static_assert(sizeof(QMutableTouchEvent) == sizeof(BOBUIouchEvent));
 static_assert(sizeof(QMutableSinglePointEvent) == sizeof(QSinglePointEvent));
 static_assert(sizeof(QMouseEvent) == sizeof(QSinglePointEvent));
 static_assert(sizeof(QVector2D) == sizeof(quint64));
@@ -57,7 +57,7 @@ static_assert(sizeof(QVector2D) == sizeof(quint64));
 /*!
     \class QEnterEvent
     \ingroup events
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QEnterEvent class contains parameters that describe an enter event.
 
@@ -74,7 +74,7 @@ static_assert(sizeof(QVector2D) == sizeof(quint64));
     window, and screen or desktop, respectively.
 */
 QEnterEvent::QEnterEvent(const QPointF &localPos, const QPointF &scenePos, const QPointF &globalPos, const QPointingDevice *device)
-    : QSinglePointEvent(QEvent::Enter, device, localPos, scenePos, globalPos, Qt::NoButton, Qt::NoButton, Qt::NoModifier)
+    : QSinglePointEvent(QEvent::Enter, device, localPos, scenePos, globalPos, BobUI::NoButton, BobUI::NoButton, BobUI::NoModifier)
 {
 }
 
@@ -138,7 +138,7 @@ Q_IMPL_POINTER_EVENT(QEnterEvent)
 /*!
     \class QInputEvent
     \ingroup events
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QInputEvent class is the base class for events that
     describe user input.
@@ -147,21 +147,21 @@ Q_IMPL_POINTER_EVENT(QEnterEvent)
 /*!
   \internal
 */
-QInputEvent::QInputEvent(Type type, const QInputDevice *dev, Qt::KeyboardModifiers modifiers)
+QInputEvent::QInputEvent(Type type, const QInputDevice *dev, BobUI::KeyboardModifiers modifiers)
     : QEvent(type, QEvent::InputEventTag{}), m_dev(dev), m_modState(modifiers), m_reserved(0)
 {}
 
 /*!
   \internal
 */
-QInputEvent::QInputEvent(QEvent::Type type, QEvent::PointerEventTag, const QInputDevice *dev, Qt::KeyboardModifiers modifiers)
+QInputEvent::QInputEvent(QEvent::Type type, QEvent::PointerEventTag, const QInputDevice *dev, BobUI::KeyboardModifiers modifiers)
     : QEvent(type, QEvent::PointerEventTag{}), m_dev(dev), m_modState(modifiers), m_reserved(0)
 {}
 
 /*!
   \internal
 */
-QInputEvent::QInputEvent(QEvent::Type type, QEvent::SinglePointEventTag, const QInputDevice *dev, Qt::KeyboardModifiers modifiers)
+QInputEvent::QInputEvent(QEvent::Type type, QEvent::SinglePointEventTag, const QInputDevice *dev, BobUI::KeyboardModifiers modifiers)
     : QEvent(type, QEvent::SinglePointEventTag{}), m_dev(dev), m_modState(modifiers), m_reserved(0)
 {}
 
@@ -177,8 +177,8 @@ Q_IMPL_EVENT_COMMON(QInputEvent)
     generated from a touch event, \c device() continues to return the touchscreen
     device, so that you can tell that it did not come from an actual mouse.
     Thus \c {mouseEvent.source()->type() != QInputDevice::DeviceType::Mouse}
-    is one possible replacement for the Qt 5 expression
-    \c {mouseEvent.source() == Qt::MouseEventSynthesizedByQt}.
+    is one possible replacement for the BobUI 5 expression
+    \c {mouseEvent.source() == BobUI::MouseEventSynthesizedByBobUI}.
 
     \sa QPointerEvent::pointingDevice()
 */
@@ -190,7 +190,7 @@ Q_IMPL_EVENT_COMMON(QInputEvent)
 */
 
 /*!
-    \fn Qt::KeyboardModifiers QInputEvent::modifiers() const
+    \fn BobUI::KeyboardModifiers QInputEvent::modifiers() const
 
     Returns the keyboard modifier flags that existed immediately
     before the event occurred.
@@ -198,7 +198,7 @@ Q_IMPL_EVENT_COMMON(QInputEvent)
     \sa QGuiApplication::keyboardModifiers()
 */
 
-/*! \fn void QInputEvent::setModifiers(Qt::KeyboardModifiers modifiers)
+/*! \fn void QInputEvent::setModifiers(BobUI::KeyboardModifiers modifiers)
 
     \internal
 
@@ -223,7 +223,7 @@ Q_IMPL_EVENT_COMMON(QInputEvent)
 /*!
     \class QPointerEvent
     \since 6.0
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief A base class for pointer events.
 */
@@ -258,7 +258,7 @@ QEventPoint &QPointerEvent::point(qsizetype i)
     \internal
 */
 QPointerEvent::QPointerEvent(QEvent::Type type, const QPointingDevice *dev,
-                             Qt::KeyboardModifiers modifiers, const QList<QEventPoint> &points)
+                             BobUI::KeyboardModifiers modifiers, const QList<QEventPoint> &points)
     : QInputEvent(type, QEvent::PointerEventTag{}, dev, modifiers), m_points(points)
 {
 }
@@ -266,7 +266,7 @@ QPointerEvent::QPointerEvent(QEvent::Type type, const QPointingDevice *dev,
 /*!
   \internal
 */
-QPointerEvent::QPointerEvent(QEvent::Type type, QEvent::SinglePointEventTag, const QInputDevice *dev, Qt::KeyboardModifiers modifiers)
+QPointerEvent::QPointerEvent(QEvent::Type type, QEvent::SinglePointEventTag, const QInputDevice *dev, BobUI::KeyboardModifiers modifiers)
     : QInputEvent(type, QEvent::SinglePointEventTag{}, dev, modifiers)
 {
 }
@@ -346,7 +346,7 @@ void QPointerEvent::setTimestamp(quint64 timestamp)
     Returns the object which has been set to receive all future update events
     and the release event containing the given \a point.
 
-    It's mainly for use in Qt Quick at this time.
+    It's mainly for use in BobUI Quick at this time.
 */
 QObject *QPointerEvent::exclusiveGrabber(const QEventPoint &point) const
 {
@@ -364,7 +364,7 @@ QObject *QPointerEvent::exclusiveGrabber(const QEventPoint &point) const
     receive all future update events and the release event containing
     the given \a point, and that delivery to other items can be skipped.
 
-    It's mainly for use in Qt Quick at this time.
+    It's mainly for use in BobUI Quick at this time.
 */
 void QPointerEvent::setExclusiveGrabber(const QEventPoint &point, QObject *exclusiveGrabber)
 {
@@ -377,7 +377,7 @@ void QPointerEvent::setExclusiveGrabber(const QEventPoint &point, QObject *exclu
     Returns the list of objects that have been requested to receive all
     future update events and the release event containing the given \a point.
 
-    It's only for use by \l {Qt Quick Input Handlers}.
+    It's only for use by \l {BobUI Quick Input Handlers}.
 
     \sa QPointerEvent::addPassiveGrabber()
 */
@@ -397,7 +397,7 @@ QList<QPointer<QObject> > QPointerEvent::passiveGrabbers(const QEventPoint &poin
     future update events and the release event containing the given \a point,
     regardless where else those events may be delivered.
 
-    It's only for use by \l {Qt Quick Input Handlers}.
+    It's only for use by \l {BobUI Quick Input Handlers}.
 
     Returns \c false if \a grabber was already added, \c true otherwise.
 */
@@ -412,7 +412,7 @@ bool QPointerEvent::addPassiveGrabber(const QEventPoint &point, QObject *grabber
     Removes the passive \a grabber from the given \a point if it was previously added.
     Returns \c true if it had been a passive grabber before, \c false if not.
 
-    It's only for use by \l {Qt Quick Input Handlers}.
+    It's only for use by \l {BobUI Quick Input Handlers}.
 
     \sa QPointerEvent::addPassiveGrabber()
 */
@@ -426,7 +426,7 @@ bool QPointerEvent::removePassiveGrabber(const QEventPoint &point, QObject *grab
 /*!
     Removes all passive grabbers from the given \a point.
 
-    It's only for use by \l {Qt Quick Input Handlers}.
+    It's only for use by \l {BobUI Quick Input Handlers}.
 
     \sa QPointerEvent::addPassiveGrabber()
 */
@@ -440,29 +440,29 @@ void QPointerEvent::clearPassiveGrabbers(const QEventPoint &point)
 /*!
     \class QSinglePointEvent
     \since 6.0
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief A base class for pointer events containing a single point, such as
            mouse events.
 */
 
-/*! \fn Qt::MouseButton QSinglePointEvent::button() const
+/*! \fn BobUI::MouseButton QSinglePointEvent::button() const
 
     Returns the button that caused the event.
 
-    The returned value is always Qt::NoButton for mouse move events, as
+    The returned value is always BobUI::NoButton for mouse move events, as
     well as \l TabletMove, \l TabletEnterProximity, and
     \l TabletLeaveProximity events.
 
     \sa buttons()
 */
 
-/*! \fn Qt::MouseButtons QSinglePointEvent::buttons() const
+/*! \fn BobUI::MouseButtons QSinglePointEvent::buttons() const
 
     Returns the button state when the event was generated.
 
-    The button state is a combination of Qt::LeftButton, Qt::RightButton,
-    and Qt::MiddleButton using the OR operator.
+    The button state is a combination of BobUI::LeftButton, BobUI::RightButton,
+    and BobUI::MiddleButton using the OR operator.
 
     For mouse move or \l TabletMove events, this is all buttons that are
     pressed down.
@@ -514,8 +514,8 @@ void QPointerEvent::clearPassiveGrabbers(const QEventPoint &point)
 */
 QSinglePointEvent::QSinglePointEvent(QEvent::Type type, const QPointingDevice *dev,
                                      const QPointF &localPos, const QPointF &scenePos, const QPointF &globalPos,
-                                     Qt::MouseButton button, Qt::MouseButtons buttons,
-                                     Qt::KeyboardModifiers modifiers, Qt::MouseEventSource source)
+                                     BobUI::MouseButton button, BobUI::MouseButtons buttons,
+                                     BobUI::KeyboardModifiers modifiers, BobUI::MouseEventSource source)
     : QPointerEvent(type, QEvent::SinglePointEventTag{}, dev, modifiers),
       m_button(button),
       m_mouseState(buttons),
@@ -523,7 +523,7 @@ QSinglePointEvent::QSinglePointEvent(QEvent::Type type, const QPointingDevice *d
       m_reserved(0), m_reserved2(0),
       m_doubleClick(false), m_phase(0), m_invertedScrolling(0)
 {
-    bool isPress = (button != Qt::NoButton && (button | buttons) == buttons);
+    bool isPress = (button != BobUI::NoButton && (button | buttons) == buttons);
     bool isWheel = (type == QEvent::Type::Wheel);
     auto devPriv = QPointingDevicePrivate::get(const_cast<QPointingDevice *>(pointingDevice()));
     auto epd = devPriv->pointById(0);
@@ -540,7 +540,7 @@ QSinglePointEvent::QSinglePointEvent(QEvent::Type type, const QPointingDevice *d
         QMutableEventPoint::setGlobalPressPosition(p, globalPos);
     if (type == MouseButtonDblClick)
         QMutableEventPoint::setState(p, QEventPoint::State::Stationary);
-    else if (button == Qt::NoButton || isWheel)
+    else if (button == BobUI::NoButton || isWheel)
         QMutableEventPoint::setState(p, QEventPoint::State::Updated);
     else if (isPress)
         QMutableEventPoint::setState(p, QEventPoint::State::Pressed);
@@ -557,13 +557,13 @@ QSinglePointEvent::QSinglePointEvent(QEvent::Type type, const QPointingDevice *d
     Constructs a single-point event with the given \a point, which must be an instance
     (or copy of one) that already exists in QPointingDevicePrivate::activePoints.
     Unlike the other constructor, it does not modify the given \a point in any way.
-    This is useful when synthesizing a QMouseEvent from one point taken from a QTouchEvent, for example.
+    This is useful when synthesizing a QMouseEvent from one point taken from a BOBUIouchEvent, for example.
 
     \sa QMutableSinglePointEvent()
 */
 QSinglePointEvent::QSinglePointEvent(QEvent::Type type, const QPointingDevice *dev, const QEventPoint &point,
-                                     Qt::MouseButton button, Qt::MouseButtons buttons,
-                                     Qt::KeyboardModifiers modifiers, Qt::MouseEventSource source)
+                                     BobUI::MouseButton button, BobUI::MouseButtons buttons,
+                                     BobUI::KeyboardModifiers modifiers, BobUI::MouseEventSource source)
     : QPointerEvent(type, QEvent::SinglePointEventTag{}, dev, modifiers),
       m_button(button),
       m_mouseState(buttons),
@@ -584,7 +584,7 @@ bool QSinglePointEvent::isBeginEvent() const
     // A double-click event does not begin a sequence: it comes after a press event,
     // and while it tells which button caused the double-click, it doesn't represent
     // a change of button state. So it's an update event.
-    return m_button != Qt::NoButton && m_mouseState.testFlag(m_button)
+    return m_button != BobUI::NoButton && m_mouseState.testFlag(m_button)
             && type() != QEvent::MouseButtonDblClick;
 }
 
@@ -595,7 +595,7 @@ bool QSinglePointEvent::isUpdateEvent() const
 {
     // A double-click event is an update event even though it tells which button
     // caused the double-click, because a MouseButtonPress event was sent right before it.
-    return m_button == Qt::NoButton || type() == QEvent::MouseButtonDblClick;
+    return m_button == BobUI::NoButton || type() == QEvent::MouseButtonDblClick;
 }
 
 /*!
@@ -603,7 +603,7 @@ bool QSinglePointEvent::isUpdateEvent() const
 */
 bool QSinglePointEvent::isEndEvent() const
 {
-    return m_button != Qt::NoButton && !m_mouseState.testFlag(m_button);
+    return m_button != BobUI::NoButton && !m_mouseState.testFlag(m_button);
 }
 
 /*!
@@ -623,7 +623,7 @@ bool QSinglePointEvent::isEndEvent() const
 /*!
     \class QMouseEvent
     \ingroup events
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QMouseEvent class contains parameters that describe a mouse event.
 
@@ -634,7 +634,7 @@ bool QSinglePointEvent::isEndEvent() const
     down, unless mouse tracking has been enabled with
     QWidget::setMouseTracking().
 
-    Qt automatically grabs the mouse when a mouse button is pressed
+    BobUI automatically grabs the mouse when a mouse button is pressed
     inside a widget; the widget will continue to receive mouse events
     until the last mouse button is released.
 
@@ -645,7 +645,7 @@ bool QSinglePointEvent::isEndEvent() const
     with accept(), or an event filter consumes it.
 
     \note If a mouse event is propagated to a \l{QWidget}{widget} for
-    which Qt::WA_NoMousePropagation has been set, that mouse event
+    which BobUI::WA_NoMousePropagation has been set, that mouse event
     will not be propagated further up the parent widget chain.
 
     The state of the keyboard modifier keys can be found by calling the
@@ -669,7 +669,7 @@ bool QSinglePointEvent::isEndEvent() const
     QCursor::pos()
 */
 
-#if QT_DEPRECATED_SINCE(6, 4)
+#if BOBUI_DEPRECATED_SINCE(6, 4)
 /*!
     \deprecated [6.4] Use another constructor instead (global position is required).
 
@@ -683,8 +683,8 @@ bool QSinglePointEvent::isEndEvent() const
     receiving widget or item. The window position is set to the same value
     as \a localPos.
     The \a button that caused the event is given as a value from
-    the Qt::MouseButton enum. If the event \a type is
-    \l MouseMove, the appropriate button for this event is Qt::NoButton.
+    the BobUI::MouseButton enum. If the event \a type is
+    \l MouseMove, the appropriate button for this event is BobUI::NoButton.
     The mouse and keyboard states at the time of the event are specified by
     \a buttons and \a modifiers.
 
@@ -692,10 +692,10 @@ bool QSinglePointEvent::isEndEvent() const
     be appropriate. Use the other constructor to specify the global
     position explicitly.
 */
-QMouseEvent::QMouseEvent(Type type, const QPointF &localPos, Qt::MouseButton button,
-                         Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers, const QPointingDevice *device)
+QMouseEvent::QMouseEvent(Type type, const QPointF &localPos, BobUI::MouseButton button,
+                         BobUI::MouseButtons buttons, BobUI::KeyboardModifiers modifiers, const QPointingDevice *device)
     : QSinglePointEvent(type, device, localPos, localPos,
-#ifdef QT_NO_CURSOR
+#ifdef BOBUI_NO_CURSOR
                         localPos,
 #else
                         QCursor::pos(),
@@ -716,16 +716,16 @@ QMouseEvent::QMouseEvent(Type type, const QPointF &localPos, Qt::MouseButton but
     receiving widget or item. The cursor's position in screen coordinates is
     specified by \a globalPos. The window position is set to the same value
     as \a localPos. The \a button that caused the event is
-    given as a value from the \l Qt::MouseButton enum. If the event \a
+    given as a value from the \l BobUI::MouseButton enum. If the event \a
     type is \l MouseMove, the appropriate button for this event is
-    Qt::NoButton. \a buttons is the state of all buttons at the
+    BobUI::NoButton. \a buttons is the state of all buttons at the
     time of the event, \a modifiers the state of all keyboard
     modifiers.
 
 */
 QMouseEvent::QMouseEvent(Type type, const QPointF &localPos, const QPointF &globalPos,
-                         Qt::MouseButton button, Qt::MouseButtons buttons,
-                         Qt::KeyboardModifiers modifiers, const QPointingDevice *device)
+                         BobUI::MouseButton button, BobUI::MouseButtons buttons,
+                         BobUI::KeyboardModifiers modifiers, const QPointingDevice *device)
     : QMouseEvent(type, localPos, localPos, globalPos, button, buttons, modifiers, device)
 {
 }
@@ -742,22 +742,22 @@ QMouseEvent::QMouseEvent(Type type, const QPointF &localPos, const QPointF &glob
     window, and screen or desktop, respectively.
 
     The \a button that caused the event is given as a value from the
-    \l Qt::MouseButton enum. If the event \a type is \l MouseMove,
-    the appropriate button for this event is Qt::NoButton. \a buttons
+    \l BobUI::MouseButton enum. If the event \a type is \l MouseMove,
+    the appropriate button for this event is BobUI::NoButton. \a buttons
     is the state of all buttons at the time of the event, \a modifiers
     is the state of all keyboard modifiers.
 */
 QMouseEvent::QMouseEvent(QEvent::Type type, const QPointF &localPos,
                          const QPointF &scenePos, const QPointF &globalPos,
-                         Qt::MouseButton button, Qt::MouseButtons buttons,
-                         Qt::KeyboardModifiers modifiers, const QPointingDevice *device)
+                         BobUI::MouseButton button, BobUI::MouseButtons buttons,
+                         BobUI::KeyboardModifiers modifiers, const QPointingDevice *device)
     : QSinglePointEvent(type, device, localPos, scenePos, globalPos, button, buttons, modifiers)
 {
 }
 
 QMouseEvent::QMouseEvent(QEvent::Type type, const QPointF &localPos, const QPointF &windowPos,
-                         const QPointF &globalPos, Qt::MouseButton button, Qt::MouseButtons buttons,
-                         Qt::KeyboardModifiers modifiers, Qt::MouseEventSource source,
+                         const QPointF &globalPos, BobUI::MouseButton button, BobUI::MouseButtons buttons,
+                         BobUI::KeyboardModifiers modifiers, BobUI::MouseEventSource source,
                          const QPointingDevice *device)
     : QSinglePointEvent(type, device, localPos, windowPos, globalPos, button, buttons, modifiers, source)
 {
@@ -766,7 +766,7 @@ QMouseEvent::QMouseEvent(QEvent::Type type, const QPointF &localPos, const QPoin
 Q_IMPL_POINTER_EVENT(QMouseEvent)
 
 /*!
-    \fn Qt::MouseEventSource QMouseEvent::source() const
+    \fn BobUI::MouseEventSource QMouseEvent::source() const
     \since 5.3
     \deprecated [6.0] Use pointingDevice() instead.
 
@@ -774,22 +774,22 @@ Q_IMPL_POINTER_EVENT(QMouseEvent)
 
     The mouse event source can be used to distinguish between genuine
     and artificial mouse events. The latter are events that are
-    synthesized from touch events by the operating system or Qt itself.
+    synthesized from touch events by the operating system or BobUI itself.
     This enum tells you from where it was synthesized; but often
     it's more useful to know from which device it was synthesized,
     so try to use pointingDevice() instead.
 
     \note Many platforms provide no such information. On such platforms
-    \l Qt::MouseEventNotSynthesized is returned always.
+    \l BobUI::MouseEventNotSynthesized is returned always.
 
-    \sa Qt::MouseEventSource
+    \sa BobUI::MouseEventSource
     \sa QGraphicsSceneMouseEvent::source()
 
-    \note In Qt 5-based code, source() was often used to attempt to distinguish
+    \note In BobUI 5-based code, source() was often used to attempt to distinguish
     mouse events from an actual mouse vs. those that were synthesized because
-    some legacy QQuickItem or QWidget subclass did not react to a QTouchEvent.
-    However, you could not tell whether it was synthesized from a QTouchEvent
-    or a QTabletEvent, and other information was lost. pointingDevice()
+    some legacy QQuickItem or QWidget subclass did not react to a BOBUIouchEvent.
+    However, you could not tell whether it was synthesized from a BOBUIouchEvent
+    or a BOBUIabletEvent, and other information was lost. pointingDevice()
     tells you the specific device that it came from, so you might check
     \c {pointingDevice()->type()} or \c {pointingDevice()->capabilities()} to
     decide how to react to this event. But it's even better to react to the
@@ -798,9 +798,9 @@ Q_IMPL_POINTER_EVENT(QMouseEvent)
 // Note: the docs mention 6.0 as a deprecation version. That is correct and
 // intended, because we want our users to stop using it! Internally we will
 // deprecate it when we port our code away from using it.
-Qt::MouseEventSource QMouseEvent::source() const
+BobUI::MouseEventSource QMouseEvent::source() const
 {
-    return Qt::MouseEventSource(m_source);
+    return BobUI::MouseEventSource(m_source);
 }
 
 /*!
@@ -810,12 +810,12 @@ Qt::MouseEventSource QMouseEvent::source() const
 
     The mouse event flags provide additional information about a mouse event.
 
-    \sa Qt::MouseEventFlag
+    \sa BobUI::MouseEventFlag
     \sa QGraphicsSceneMouseEvent::flags()
 */
-Qt::MouseEventFlags QMouseEvent::flags() const
+BobUI::MouseEventFlags QMouseEvent::flags() const
 {
-    return (m_doubleClick ? Qt::MouseEventCreatedDoubleClick : Qt::NoMouseEventFlag);
+    return (m_doubleClick ? BobUI::MouseEventCreatedDoubleClick : BobUI::NoMouseEventFlag);
 }
 
 /*!
@@ -945,12 +945,12 @@ Qt::MouseEventFlags QMouseEvent::flags() const
 /*!
     \class QHoverEvent
     \ingroup events
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QHoverEvent class contains parameters that describe a mouse event.
 
     Mouse events occur when a mouse cursor is moved into, out of, or within a
-    widget, and if the widget has the Qt::WA_Hover attribute.
+    widget, and if the widget has the BobUI::WA_Hover attribute.
 
     The function position() gives the current cursor position, while oldPos() gives
     the old mouse position.
@@ -978,7 +978,7 @@ Qt::MouseEventFlags QMouseEvent::flags() const
 
     You will get the same events for QEvent::HoverMove, except that the event
     always propagates to the top-level regardless whether the event is accepted
-    or not. It will only stop propagating with the Qt::WA_NoMousePropagation
+    or not. It will only stop propagating with the BobUI::WA_NoMousePropagation
     attribute.
 
     In this case the events will occur in the following way:
@@ -1056,12 +1056,12 @@ Qt::MouseEventFlags QMouseEvent::flags() const
     of the event.
 */
 QHoverEvent::QHoverEvent(Type type, const QPointF &scenePos, const QPointF &globalPos, const QPointF &oldPos,
-                         Qt::KeyboardModifiers modifiers, const QPointingDevice *device)
-    : QSinglePointEvent(type, device, scenePos, scenePos, globalPos, Qt::NoButton, Qt::NoButton, modifiers), m_oldPos(oldPos)
+                         BobUI::KeyboardModifiers modifiers, const QPointingDevice *device)
+    : QSinglePointEvent(type, device, scenePos, scenePos, globalPos, BobUI::NoButton, BobUI::NoButton, modifiers), m_oldPos(oldPos)
 {
 }
 
-#if QT_DEPRECATED_SINCE(6, 3)
+#if BOBUI_DEPRECATED_SINCE(6, 3)
 /*!
     \deprecated [6.3] Use the other constructor instead (global position is required).
 
@@ -1076,19 +1076,19 @@ QHoverEvent::QHoverEvent(Type type, const QPointF &scenePos, const QPointF &glob
     of the event.
 */
 QHoverEvent::QHoverEvent(Type type, const QPointF &pos, const QPointF &oldPos,
-                         Qt::KeyboardModifiers modifiers, const QPointingDevice *device)
-    : QSinglePointEvent(type, device, pos, pos, pos, Qt::NoButton, Qt::NoButton, modifiers), m_oldPos(oldPos)
+                         BobUI::KeyboardModifiers modifiers, const QPointingDevice *device)
+    : QSinglePointEvent(type, device, pos, pos, pos, BobUI::NoButton, BobUI::NoButton, modifiers), m_oldPos(oldPos)
 {
 }
 #endif
 
 Q_IMPL_POINTER_EVENT(QHoverEvent)
 
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
 /*!
     \class QWheelEvent
     \brief The QWheelEvent class contains parameters that describe a wheel event.
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \ingroup events
 
@@ -1126,7 +1126,7 @@ Q_IMPL_POINTER_EVENT(QHoverEvent)
 */
 
 /*!
-    \fn Qt::MouseEventSource QWheelEvent::source() const
+    \fn BobUI::MouseEventSource QWheelEvent::source() const
     \since 5.5
     \deprecated [6.0] Use pointingDevice() instead.
 
@@ -1140,9 +1140,9 @@ Q_IMPL_POINTER_EVENT(QHoverEvent)
     so try to use pointingDevice() instead.
 
     \note Many platforms provide no such information. On such platforms
-    \l Qt::MouseEventNotSynthesized is returned always.
+    \l BobUI::MouseEventNotSynthesized is returned always.
 
-    \sa Qt::MouseEventSource
+    \sa BobUI::MouseEventSource
 */
 
 /*!
@@ -1225,9 +1225,9 @@ Q_IMPL_POINTER_EVENT(QHoverEvent)
     \sa position(), globalPosition(), angleDelta(), pixelDelta(), phase(), inverted(), device()
 */
 QWheelEvent::QWheelEvent(const QPointF &pos, const QPointF &globalPos, QPoint pixelDelta, QPoint angleDelta,
-                         Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers, Qt::ScrollPhase phase,
-                         bool inverted, Qt::MouseEventSource source, const QPointingDevice *device)
-    : QSinglePointEvent(Wheel, device, pos, pos, globalPos, Qt::NoButton, buttons, modifiers, source),
+                         BobUI::MouseButtons buttons, BobUI::KeyboardModifiers modifiers, BobUI::ScrollPhase phase,
+                         bool inverted, BobUI::MouseEventSource source, const QPointingDevice *device)
+    : QSinglePointEvent(Wheel, device, pos, pos, globalPos, BobUI::NoButton, buttons, modifiers, source),
       m_pixelDelta(pixelDelta), m_angleDelta(angleDelta)
 {
     m_phase = phase;
@@ -1237,30 +1237,30 @@ QWheelEvent::QWheelEvent(const QPointF &pos, const QPointF &globalPos, QPoint pi
 Q_IMPL_POINTER_EVENT(QWheelEvent)
 
 /*!
-    Returns \c true if this event's phase() is Qt::ScrollBegin.
+    Returns \c true if this event's phase() is BobUI::ScrollBegin.
 */
 bool QWheelEvent::isBeginEvent() const
 {
-    return m_phase == Qt::ScrollBegin;
+    return m_phase == BobUI::ScrollBegin;
 }
 
 /*!
-    Returns \c true if this event's phase() is Qt::ScrollUpdate or Qt::ScrollMomentum.
+    Returns \c true if this event's phase() is BobUI::ScrollUpdate or BobUI::ScrollMomentum.
 */
 bool QWheelEvent::isUpdateEvent() const
 {
-    return m_phase == Qt::ScrollUpdate || m_phase == Qt::ScrollMomentum;
+    return m_phase == BobUI::ScrollUpdate || m_phase == BobUI::ScrollMomentum;
 }
 
 /*!
-    Returns \c true if this event's phase() is Qt::ScrollEnd.
+    Returns \c true if this event's phase() is BobUI::ScrollEnd.
 */
 bool QWheelEvent::isEndEvent() const
 {
-    return m_phase == Qt::ScrollEnd;
+    return m_phase == BobUI::ScrollEnd;
 }
 
-#endif // QT_CONFIG(wheelevent)
+#endif // BOBUI_CONFIG(wheelevent)
 
 /*!
     \property QWheelEvent::pixelDelta
@@ -1271,8 +1271,8 @@ bool QWheelEvent::isEndEvent() const
     directly to scroll content on screen.
 
     \note On platforms that support scrolling \l{phase()}{phases}, the delta
-    may be null when scrolling is about to begin (Qt::ScrollBegin) or has
-    ended (Qt::ScrollEnd).
+    may be null when scrolling is about to begin (BobUI::ScrollBegin) or has
+    ended (BobUI::ScrollEnd).
 
     \note On X11 this value is driver-specific and unreliable, use
     angleDelta() instead.
@@ -1294,8 +1294,8 @@ bool QWheelEvent::isEndEvent() const
 
     \note On platforms that support scrolling \l{phase()}{phases}, the delta may be null when:
     \list
-    \li scrolling is about to begin, but the distance did not yet change (Qt::ScrollBegin),
-    \li or scrolling has ended and the distance did not change anymore (Qt::ScrollEnd).
+    \li scrolling is about to begin, but the distance did not yet change (BobUI::ScrollBegin),
+    \li or scrolling has ended and the distance did not change anymore (BobUI::ScrollEnd).
     \endlist
     \note On X11 this value is driver-specific and unreliable, use angleDelta() instead.
 */
@@ -1315,8 +1315,8 @@ bool QWheelEvent::isEndEvent() const
     is a multiple of 120; i.e., 120 units * 1/8 = 15 degrees.
 
     \note On platforms that support scrolling \l{phase()}{phases}, the delta
-    may be null when scrolling is about to begin (Qt::ScrollBegin) or has
-    ended (Qt::ScrollEnd).
+    may be null when scrolling is about to begin (BobUI::ScrollBegin) or has
+    ended (BobUI::ScrollEnd).
 
     \sa pixelDelta()
 */
@@ -1352,8 +1352,8 @@ bool QWheelEvent::isEndEvent() const
 
     \note On platforms that support scrolling \l{phase()}{phases}, the delta may be null when:
     \list
-    \li scrolling is about to begin, but the distance did not yet change (Qt::ScrollBegin),
-    \li or scrolling has ended and the distance did not change anymore (Qt::ScrollEnd).
+    \li scrolling is about to begin, but the distance did not yet change (BobUI::ScrollBegin),
+    \li or scrolling has ended and the distance did not change anymore (BobUI::ScrollEnd).
     \endlist
 
     \sa pixelDelta()
@@ -1364,17 +1364,17 @@ bool QWheelEvent::isEndEvent() const
     \since 5.2
     \brief the scrolling phase of this wheel event
 
-    \note The Qt::ScrollBegin and Qt::ScrollEnd phases are currently
+    \note The BobUI::ScrollBegin and BobUI::ScrollEnd phases are currently
     supported only on \macos.
 */
 
 /*!
-    \fn Qt::ScrollPhase QWheelEvent::phase() const
+    \fn BobUI::ScrollPhase QWheelEvent::phase() const
     \since 5.2
 
     Returns the scrolling phase of this wheel event.
 
-    \note The Qt::ScrollBegin and Qt::ScrollEnd phases are currently
+    \note The BobUI::ScrollBegin and BobUI::ScrollEnd phases are currently
     supported only on \macos.
 */
 
@@ -1384,7 +1384,7 @@ bool QWheelEvent::isEndEvent() const
     \brief The QKeyEvent class describes a key event.
 
     \ingroup events
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     Key events are sent to the widget with keyboard input focus
     when keys are pressed or released.
@@ -1414,7 +1414,7 @@ bool QWheelEvent::isEndEvent() const
     The \a type parameter must be QEvent::KeyPress, QEvent::KeyRelease,
     or QEvent::ShortcutOverride.
 
-    Int \a key is the code for the Qt::Key that the event loop should listen
+    Int \a key is the code for the BobUI::Key that the event loop should listen
     for. If \a key is 0, the event is not a result of a known key; for
     example, it may be the result of a compose sequence or keyboard macro.
     The \a modifiers holds the keyboard modifiers, and the given \a text
@@ -1422,7 +1422,7 @@ bool QWheelEvent::isEndEvent() const
     isAutoRepeat() will be true. \a count is the number of keys involved
     in the event.
 */
-QKeyEvent::QKeyEvent(Type type, int key, Qt::KeyboardModifiers modifiers, const QString& text,
+QKeyEvent::QKeyEvent(Type type, int key, BobUI::KeyboardModifiers modifiers, const QString& text,
                      bool autorep, quint16 count)
     : QInputEvent(type, QInputDevice::primaryKeyboard(), modifiers), m_text(text), m_key(key),
       m_scanCode(0), m_virtualKey(0), m_nativeModifiers(0),
@@ -1438,7 +1438,7 @@ QKeyEvent::QKeyEvent(Type type, int key, Qt::KeyboardModifiers modifiers, const 
     The \a type parameter must be QEvent::KeyPress, QEvent::KeyRelease,
     or QEvent::ShortcutOverride.
 
-    Int \a key is the code for the Qt::Key that the event loop should listen
+    Int \a key is the code for the BobUI::Key that the event loop should listen
     for. If \a key is 0, the event is not a result of a known key; for
     example, it may be the result of a compose sequence or keyboard macro.
     The \a modifiers holds the keyboard modifiers, and the given \a text
@@ -1450,7 +1450,7 @@ QKeyEvent::QKeyEvent(Type type, int key, Qt::KeyboardModifiers modifiers, const 
     \a nativeVirtualKey and \a nativeModifiers. This extra data is used by the
     shortcut system, to determine which shortcuts to trigger.
 */
-QKeyEvent::QKeyEvent(Type type, int key, Qt::KeyboardModifiers modifiers,
+QKeyEvent::QKeyEvent(Type type, int key, BobUI::KeyboardModifiers modifiers,
                      quint32 nativeScanCode, quint32 nativeVirtualKey, quint32 nativeModifiers,
                      const QString &text, bool autorep, quint16 count, const QInputDevice *device)
     : QInputEvent(type, device, modifiers), m_text(text), m_key(key),
@@ -1500,18 +1500,18 @@ Q_IMPL_EVENT_COMMON(QKeyEvent)
 
     Returns the code of the key that was pressed or released.
 
-    See \l Qt::Key for the list of keyboard codes. These codes are
+    See \l BobUI::Key for the list of keyboard codes. These codes are
     independent of the underlying window system. Note that this
     function does not distinguish between capital and non-capital
     letters, use the text() function (returning the Unicode text the
     key generated) for this purpose.
 
-    A value of either 0 or Qt::Key_unknown means that the event is not
+    A value of either 0 or BobUI::Key_unknown means that the event is not
     the result of a known key; for example, it may be the result of
     a compose sequence, a keyboard macro, or due to key event
     compression.
 
-    \sa Qt::WA_KeyCompression
+    \sa BobUI::WA_KeyCompression
 */
 
 /*!
@@ -1527,7 +1527,7 @@ Q_IMPL_EVENT_COMMON(QKeyEvent)
     Shift, Control, Alt, and Meta are pressed (depending on the platform).
     The key() function will always return a valid value.
 
-    \sa Qt::WA_KeyCompression
+    \sa BobUI::WA_KeyCompression
 */
 
 /*!
@@ -1541,18 +1541,18 @@ Q_IMPL_EVENT_COMMON(QKeyEvent)
     \sa QGuiApplication::keyboardModifiers()
 */
 
-Qt::KeyboardModifiers QKeyEvent::modifiers() const
+BobUI::KeyboardModifiers QKeyEvent::modifiers() const
 {
-    if (key() == Qt::Key_Shift)
-        return Qt::KeyboardModifiers(QInputEvent::modifiers()^Qt::ShiftModifier);
-    if (key() == Qt::Key_Control)
-        return Qt::KeyboardModifiers(QInputEvent::modifiers()^Qt::ControlModifier);
-    if (key() == Qt::Key_Alt)
-        return Qt::KeyboardModifiers(QInputEvent::modifiers()^Qt::AltModifier);
-    if (key() == Qt::Key_Meta)
-        return Qt::KeyboardModifiers(QInputEvent::modifiers()^Qt::MetaModifier);
-    if (key() == Qt::Key_AltGr)
-        return Qt::KeyboardModifiers(QInputEvent::modifiers()^Qt::GroupSwitchModifier);
+    if (key() == BobUI::Key_Shift)
+        return BobUI::KeyboardModifiers(QInputEvent::modifiers()^BobUI::ShiftModifier);
+    if (key() == BobUI::Key_Control)
+        return BobUI::KeyboardModifiers(QInputEvent::modifiers()^BobUI::ControlModifier);
+    if (key() == BobUI::Key_Alt)
+        return BobUI::KeyboardModifiers(QInputEvent::modifiers()^BobUI::AltModifier);
+    if (key() == BobUI::Key_Meta)
+        return BobUI::KeyboardModifiers(QInputEvent::modifiers()^BobUI::MetaModifier);
+    if (key() == BobUI::Key_AltGr)
+        return BobUI::KeyboardModifiers(QInputEvent::modifiers()^BobUI::GroupSwitchModifier);
     return QInputEvent::modifiers();
 }
 
@@ -1565,7 +1565,7 @@ Qt::KeyboardModifiers QKeyEvent::modifiers() const
     \since 6.0
 */
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 /*!
     \fn bool QKeyEvent::matches(QKeySequence::StandardKey key) const
     \since 4.2
@@ -1576,12 +1576,12 @@ Qt::KeyboardModifiers QKeyEvent::modifiers() const
 bool QKeyEvent::matches(QKeySequence::StandardKey matchKey) const
 {
     //The keypad and group switch modifier should not make a difference
-    uint searchkey = (modifiers() | key()) & ~(Qt::KeypadModifier | Qt::GroupSwitchModifier);
+    uint searchkey = (modifiers() | key()) & ~(BobUI::KeypadModifier | BobUI::GroupSwitchModifier);
 
     const QList<QKeySequence> bindings = QKeySequence::keyBindings(matchKey);
     return bindings.contains(QKeySequence(searchkey));
 }
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
 
 /*!
@@ -1601,14 +1601,14 @@ bool QKeyEvent::matches(QKeySequence::StandardKey matchKey) const
     Returns the number of keys involved in this event. If text()
     is not empty, this is simply the length of the string.
 
-    \sa Qt::WA_KeyCompression
+    \sa BobUI::WA_KeyCompression
 */
 
 /*!
     \class QFocusEvent
     \brief The QFocusEvent class contains event parameters for widget focus
     events.
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \ingroup events
 
@@ -1633,7 +1633,7 @@ bool QKeyEvent::matches(QKeySequence::StandardKey matchKey) const
     QEvent::FocusOut. The \a reason describes the cause of the change
     in focus.
 */
-QFocusEvent::QFocusEvent(Type type, Qt::FocusReason reason)
+QFocusEvent::QFocusEvent(Type type, BobUI::FocusReason reason)
     : QEvent(type), m_reason(reason)
 {}
 
@@ -1642,7 +1642,7 @@ Q_IMPL_EVENT_COMMON(QFocusEvent)
 /*!
     Returns the reason for this focus event.
  */
-Qt::FocusReason QFocusEvent::reason() const
+BobUI::FocusReason QFocusEvent::reason() const
 {
     return m_reason;
 }
@@ -1665,7 +1665,7 @@ Qt::FocusReason QFocusEvent::reason() const
 /*!
     \class QPaintEvent
     \brief The QPaintEvent class contains event parameters for paint events.
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \ingroup events
 
@@ -1681,7 +1681,7 @@ Qt::FocusReason QFocusEvent::reason() const
     \section1 Automatic Clipping
 
     Painting is clipped to region() during the processing of a paint
-    event. This clipping is performed by Qt's paint system and is
+    event. This clipping is performed by BobUI's paint system and is
     independent of any clipping that may be applied to a QPainter used to
     draw on the paint device.
 
@@ -1732,7 +1732,7 @@ Q_IMPL_EVENT_COMMON(QPaintEvent)
 /*!
     \class QMoveEvent
     \brief The QMoveEvent class contains event parameters for move events.
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \ingroup events
 
@@ -1771,7 +1771,7 @@ Q_IMPL_EVENT_COMMON(QMoveEvent)
     \class QExposeEvent
     \since 5.0
     \brief The QExposeEvent class contains event parameters for expose events.
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \ingroup events
 
@@ -1805,7 +1805,7 @@ Q_IMPL_EVENT_COMMON(QExposeEvent)
     \class QPlatformSurfaceEvent
     \since 5.5
     \brief The QPlatformSurfaceEvent class is used to notify about native platform surface events.
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \ingroup events
 
@@ -1855,7 +1855,7 @@ Q_IMPL_EVENT_COMMON(QPlatformSurfaceEvent)
 /*!
     \class QResizeEvent
     \brief The QResizeEvent class contains event parameters for resize events.
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \ingroup events
 
@@ -1895,7 +1895,7 @@ Q_IMPL_EVENT_COMMON(QResizeEvent)
     \brief The QCloseEvent class contains parameters that describe a close event.
 
     \ingroup events
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     Close events are sent to widgets that the user wants to close,
     usually by choosing "Close" from the window menu, or by clicking
@@ -1905,7 +1905,7 @@ Q_IMPL_EVENT_COMMON(QResizeEvent)
     Close events contain a flag that indicates whether the receiver
     wants the widget to be closed or not. When a widget accepts the
     close event, it is hidden (and destroyed if it was created with
-    the Qt::WA_DeleteOnClose flag). If it refuses to accept the close
+    the BobUI::WA_DeleteOnClose flag). If it refuses to accept the close
     event nothing happens. (Under X11 it is possible that the window
     manager will forcibly close the window; but at the time of writing
     we are not aware of any window manager that does this.)
@@ -1917,7 +1917,7 @@ Q_IMPL_EVENT_COMMON(QResizeEvent)
     ignore() the event.
 
     If you want the widget to be deleted when it is closed, create it
-    with the Qt::WA_DeleteOnClose flag. This is very useful for
+    with the BobUI::WA_DeleteOnClose flag. This is very useful for
     independent top-level windows in a multi-window application.
 
     \l{QObject}s emits the \l{QObject::destroyed()}{destroyed()}
@@ -1950,7 +1950,7 @@ Q_IMPL_EVENT_COMMON(QCloseEvent)
 /*!
    \class QIconDragEvent
    \brief The QIconDragEvent class indicates that a main icon drag has begun.
-    \inmodule QtGui
+    \inmodule BobUIGui
 
    \ingroup events
 
@@ -1979,7 +1979,7 @@ Q_IMPL_EVENT_COMMON(QIconDragEvent)
 /*!
     \class QContextMenuEvent
     \brief The QContextMenuEvent class contains parameters that describe a context menu event.
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \ingroup events
 
@@ -1994,8 +1994,8 @@ Q_IMPL_EVENT_COMMON(QIconDragEvent)
     \endlist
 
     The expected context menu should contain \l {QAction}{actions} that are
-    relevant to some content within the application (the "context"). In Qt, the
-    context is at least the particular \l {QWidget}{widget} or Qt Quick \l Item
+    relevant to some content within the application (the "context"). In BobUI, the
+    context is at least the particular \l {QWidget}{widget} or BobUI Quick \l Item
     that receives the QContextMenuEvent. If there is a selection, that should
     probably be treated as the context. The context can be further refined
     using \l QContextMenuEvent::pos() to pinpoint the content within the
@@ -2008,12 +2008,12 @@ Q_IMPL_EVENT_COMMON(QIconDragEvent)
     to populate the default set of actions into a \l QMenu, which can be
     customized further in your subclass and then shown.
 
-    In Qt Quick, the event can be handled via the
-    \l {QtQuick.Controls::}{ContextMenu} attached property. Some
-    \l {QtQuick.Controls} Controls already provide context menus by default.
+    In BobUI Quick, the event can be handled via the
+    \l {BobUIQuick.Controls::}{ContextMenu} attached property. Some
+    \l {BobUIQuick.Controls} Controls already provide context menus by default.
 
     Unlike most synthetic events (such as a QMouseEvent that is sent only after
-    a QTouchEvent or QTabletEvent was not accepted), QContextMenuEvent is sent
+    a BOBUIouchEvent or BOBUIabletEvent was not accepted), QContextMenuEvent is sent
     regardless of whether the original mouse or key event was already handled
     and \l {QEvent::isAccepted()}{accepted}. This is to accommodate the Windows
     UI pattern of selecting some kind of items (icons, drawing elements, or
@@ -2021,10 +2021,10 @@ Q_IMPL_EVENT_COMMON(QIconDragEvent)
     and then getting a context menu as soon as you release the right mouse
     button. (The actions on the menu are meant to apply to the selection.)
     Therefore, on Windows the QContextMenuEvent is sent on mouse release; while
-    on other platforms, it's sent on press. Qt follows the
+    on other platforms, it's sent on press. BobUI follows the
     \l {QStyleHints::contextMenuTrigger()}{platform convention} by default.
 
-    There are also some Qt Quick Controls such as \l {QtQuick.Controls::}{Pane}
+    There are also some BobUI Quick Controls such as \l {BobUIQuick.Controls::}{Pane}
     that accept mouse events, and nevertheless receive a QContextMenuEvent
     after a mouse press or click.
 
@@ -2032,19 +2032,19 @@ Q_IMPL_EVENT_COMMON(QIconDragEvent)
     context menu on press, and drag over a menu item to select it on release,
     you will need to do that by handling \l {QMouseEvent}{QMouseEvents} directly
     (by overriding \l {QWidget::mousePressEvent()}{virtual functions} in
-    QWidget subclasses, or using \l TapHandler to open a \l Menu in Qt Quick);
+    QWidget subclasses, or using \l TapHandler to open a \l Menu in BobUI Quick);
     and then the QContextMenuEvent will be redundant when the \l reason() is
     \c Mouse. You should \l ignore() the event in that case; but you should
     still ensure that the widget, custom control or application can respond to
     a QContextMenuEvent that \l {reason()}{comes from} the platform-specific
     keyboard shortcut.
 
-    When a QContextMenuEvent is \l {ignore()}{ignored}, Qt attempts to deliver
+    When a QContextMenuEvent is \l {ignore()}{ignored}, BobUI attempts to deliver
     it to other widgets and/or Items under the \l {pos()}{position} (which
     is usually translated from the cursor position).
 */
 
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
 /*!
     Constructs a context menu event object with the accept parameter
     flag set to false.
@@ -2057,13 +2057,13 @@ Q_IMPL_EVENT_COMMON(QIconDragEvent)
     coordinates. The \a modifiers holds the keyboard modifiers.
 */
 QContextMenuEvent::QContextMenuEvent(Reason reason, const QPoint &pos, const QPoint &globalPos,
-                                     Qt::KeyboardModifiers modifiers)
+                                     BobUI::KeyboardModifiers modifiers)
     : QInputEvent(ContextMenu, QPointingDevice::primaryPointingDevice(), modifiers), m_pos(pos), m_globalPos(globalPos), m_reason(reason)
 {}
 
 Q_IMPL_EVENT_COMMON(QContextMenuEvent)
 
-#if QT_DEPRECATED_SINCE(6, 4)
+#if BOBUI_DEPRECATED_SINCE(6, 4)
 /*!
     \deprecated [6.4] Use the other constructor instead (global position is required).
 
@@ -2083,7 +2083,7 @@ Q_IMPL_EVENT_COMMON(QContextMenuEvent)
 QContextMenuEvent::QContextMenuEvent(Reason reason, const QPoint &pos)
     : QInputEvent(ContextMenu, QInputDevice::primaryKeyboard()), m_pos(pos), m_reason(reason)
 {
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     m_globalPos = QCursor::pos();
 #endif
 }
@@ -2145,7 +2145,7 @@ QContextMenuEvent::QContextMenuEvent(Reason reason, const QPoint &pos)
 
     \sa globalX(), globalPos()
 */
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
 
 /*!
     \enum QContextMenuEvent::Reason
@@ -2174,7 +2174,7 @@ QContextMenuEvent::QContextMenuEvent(Reason reason, const QPoint &pos)
 /*!
     \class QInputMethodEvent
     \brief The QInputMethodEvent class provides parameters for input method events.
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \ingroup events
 
@@ -2183,7 +2183,7 @@ QContextMenuEvent::QContextMenuEvent(Reason reason, const QPoint &pos)
     to enter text for languages with non-Latin alphabets.
 
     Note that when creating custom text editing widgets, the
-    Qt::WA_InputMethodEnabled window attribute must be set explicitly
+    BobUI::WA_InputMethodEnabled window attribute must be set explicitly
     (using the QWidget::setAttribute() function) in order to receive
     input method events.
 
@@ -2285,8 +2285,8 @@ QContextMenuEvent::QContextMenuEvent(Reason reason, const QPoint &pos)
     \enum QInputMethodEvent::AttributeType
 
     \value TextFormat
-    A QTextCharFormat for the part of the preedit string specified by
-    start and length. value contains a QVariant of type QTextFormat
+    A BOBUIextCharFormat for the part of the preedit string specified by
+    start and length. value contains a QVariant of type BOBUIextFormat
     specifying rendering of this part of the preedit string. There
     should be at most one format for every part of the preedit
     string. If several are specified for any character in the string the
@@ -2336,7 +2336,7 @@ QContextMenuEvent::QContextMenuEvent(Reason reason, const QPoint &pos)
 
 /*!
     \class QInputMethodEvent::Attribute
-    \inmodule QtGui
+    \inmodule BobUIGui
     \brief The QInputMethodEvent::Attribute class stores an input method attribute.
 */
 
@@ -2463,7 +2463,7 @@ void QInputMethodEvent::setCommitString(const QString &commitString, int replace
 /*!
     \class QInputMethodQueryEvent
     \since 5.0
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QInputMethodQueryEvent class provides an event sent by the input context to input objects.
 
@@ -2479,7 +2479,7 @@ void QInputMethodEvent::setCommitString(const QString &commitString, int replace
 */
 
 /*!
-    \fn Qt::InputMethodQueries QInputMethodQueryEvent::queries() const
+    \fn BobUI::InputMethodQueries QInputMethodQueryEvent::queries() const
 
     Returns the properties queried by the event.
  */
@@ -2487,7 +2487,7 @@ void QInputMethodEvent::setCommitString(const QString &commitString, int replace
 /*!
     Constructs a query event for properties given by \a queries.
  */
-QInputMethodQueryEvent::QInputMethodQueryEvent(Qt::InputMethodQueries queries)
+QInputMethodQueryEvent::QInputMethodQueryEvent(BobUI::InputMethodQueries queries)
     : QEvent(InputMethodQuery),
       m_queries(queries)
 {
@@ -2498,7 +2498,7 @@ Q_IMPL_EVENT_COMMON(QInputMethodQueryEvent)
 /*!
     Sets property \a query to \a value.
  */
-void QInputMethodQueryEvent::setValue(Qt::InputMethodQuery query, const QVariant &value)
+void QInputMethodQueryEvent::setValue(BobUI::InputMethodQuery query, const QVariant &value)
 {
     for (int i = 0; i < m_values.size(); ++i) {
         if (m_values.at(i).query == query) {
@@ -2513,7 +2513,7 @@ void QInputMethodQueryEvent::setValue(Qt::InputMethodQuery query, const QVariant
 /*!
     Returns value of the property \a query.
  */
-QVariant QInputMethodQueryEvent::value(Qt::InputMethodQuery query) const
+QVariant QInputMethodQueryEvent::value(BobUI::InputMethodQuery query) const
 {
     for (int i = 0; i < m_values.size(); ++i)
         if (m_values.at(i).query == query)
@@ -2521,19 +2521,19 @@ QVariant QInputMethodQueryEvent::value(Qt::InputMethodQuery query) const
     return QVariant();
 }
 
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
 
 /*!
-    \class QTabletEvent
-    \brief The QTabletEvent class contains parameters that describe a Tablet event.
-    \inmodule QtGui
+    \class BOBUIabletEvent
+    \brief The BOBUIabletEvent class contains parameters that describe a Tablet event.
+    \inmodule BobUIGui
 
     \ingroup events
 
     \e{Tablet events} are generated from tablet peripherals such as Wacom
     tablets and various other brands, and electromagnetic stylus devices
     included with some types of tablet computers. (It is not the same as
-    \l QTouchEvent which a touchscreen generates, even when a passive stylus is
+    \l BOBUIouchEvent which a touchscreen generates, even when a passive stylus is
     used on a touchscreen.)
 
     Tablet events are similar to mouse events; for example, the \l x(), \l y(),
@@ -2552,7 +2552,7 @@ QVariant QInputMethodQueryEvent::value(Qt::InputMethodQuery query) const
     (\l pointerType()).
 
     Every event contains an accept flag that indicates whether the receiver
-    wants the event. You should call QTabletEvent::accept() if you handle the
+    wants the event. You should call BOBUIabletEvent::accept() if you handle the
     tablet event; otherwise it will be sent to the parent widget. The exception
     are TabletEnterProximity and TabletLeaveProximity events: these are only
     sent to QApplication and do not check whether or not they are accepted.
@@ -2561,7 +2561,7 @@ QVariant QInputMethodQueryEvent::value(Qt::InputMethodQuery query) const
     mouse, tablet and keyboard events for a widget.
 
     The event handler QWidget::tabletEvent() receives TabletPress,
-    TabletRelease and TabletMove events. Qt will first send a
+    TabletRelease and TabletMove events. BobUI will first send a
     tablet event, then if it is not accepted by any widget, it will send a
     mouse event. This allows users of applications that are not designed for
     tablets to use a tablet like a mouse. However high-resolution drawing
@@ -2579,7 +2579,7 @@ QVariant QInputMethodQueryEvent::value(Qt::InputMethodQuery query) const
 
     If the tablet is configured in xorg.conf to use the Wacom driver, there
     will be separate XInput "devices" for the stylus, eraser, and (optionally)
-    cursor and touchpad. Qt recognizes these by their names. Otherwise, if the
+    cursor and touchpad. BobUI recognizes these by their names. Otherwise, if the
     tablet is configured to use the evdev driver, there will be only one device
     and applications may not be able to distinguish the stylus from the eraser.
 
@@ -2621,19 +2621,19 @@ QVariant QInputMethodQueryEvent::value(Qt::InputMethodQuery query) const
     does not include \c Rotation), pass \c 0 here.
 
     The \a button that caused the event is given as a value from the
-    \l Qt::MouseButton enum. If the event \a type is not \l TabletPress or
-    \l TabletRelease, the appropriate button for this event is \l Qt::NoButton.
+    \l BobUI::MouseButton enum. If the event \a type is not \l TabletPress or
+    \l TabletRelease, the appropriate button for this event is \l BobUI::NoButton.
 
     \a buttons is the state of all buttons at the time of the event.
 
     \sa pos(), globalPos(), device(), pressure(), xTilt(), yTilt(), uniqueId(), rotation(),
       tangentialPressure(), z()
 */
-QTabletEvent::QTabletEvent(Type type, const QPointingDevice *dev, const QPointF &pos, const QPointF &globalPos,
+BOBUIabletEvent::BOBUIabletEvent(Type type, const QPointingDevice *dev, const QPointF &pos, const QPointF &globalPos,
                  qreal pressure, float xTilt, float yTilt,
                  float tangentialPressure, qreal rotation, float z,
-                 Qt::KeyboardModifiers keyState,
-                 Qt::MouseButton button, Qt::MouseButtons buttons)
+                 BobUI::KeyboardModifiers keyState,
+                 BobUI::MouseButton button, BobUI::MouseButtons buttons)
     : QSinglePointEvent(type, dev, pos, pos, globalPos, button, buttons, keyState),
       m_tangential(tangentialPressure),
       m_xTilt(xTilt),
@@ -2645,10 +2645,10 @@ QTabletEvent::QTabletEvent(Type type, const QPointingDevice *dev, const QPointF 
     QMutableEventPoint::setRotation(p, rotation);
 }
 
-Q_IMPL_POINTER_EVENT(QTabletEvent)
+Q_IMPL_POINTER_EVENT(BOBUIabletEvent)
 
 /*!
-    \fn qreal QTabletEvent::tangentialPressure() const
+    \fn qreal BOBUIabletEvent::tangentialPressure() const
 
     Returns the tangential pressure for the device.  This is typically given by a finger
     wheel on an airbrush tool.  The range is from -1.0 to 1.0. 0.0 indicates a
@@ -2662,7 +2662,7 @@ Q_IMPL_POINTER_EVENT(QTabletEvent)
 */
 
 /*!
-    \fn qreal QTabletEvent::rotation() const
+    \fn qreal BOBUIabletEvent::rotation() const
 
     Returns the rotation of the current tool in degrees, where zero means the
     tip of the stylus is pointing towards the top of the tablet, a positive
@@ -2673,7 +2673,7 @@ Q_IMPL_POINTER_EVENT(QTabletEvent)
 */
 
 /*!
-    \fn qreal QTabletEvent::pressure() const
+    \fn qreal BOBUIabletEvent::pressure() const
 
     Returns the pressure for the device. 0.0 indicates that the stylus is not
     on the tablet, 1.0 indicates the maximum amount of pressure for the stylus.
@@ -2682,14 +2682,14 @@ Q_IMPL_POINTER_EVENT(QTabletEvent)
 */
 
 /*!
-    \fn qreal QTabletEvent::xTilt() const
+    \fn qreal BOBUIabletEvent::xTilt() const
 
     Returns the angle between the device (a pen, for example) and the
     perpendicular in the direction of the x axis.
     Positive values are towards the tablet's physical right. The angle
     is in the range -60 to +60 degrees.
 
-    \image qtabletevent-tilt.png {Illustration of a device that is tilted
+    \image bobuiabletevent-tilt.png {Illustration of a device that is tilted
            in a 3 Dimensional coordinate system}
 
     \note The value is stored as a single-precision float.
@@ -2698,7 +2698,7 @@ Q_IMPL_POINTER_EVENT(QTabletEvent)
 */
 
 /*!
-    \fn qreal QTabletEvent::yTilt() const
+    \fn qreal BOBUIabletEvent::yTilt() const
 
     Returns the angle between the device (a pen, for example) and the
     perpendicular in the direction of the y axis.
@@ -2711,7 +2711,7 @@ Q_IMPL_POINTER_EVENT(QTabletEvent)
 */
 
 /*!
-    \fn QPoint QTabletEvent::pos() const
+    \fn QPoint BOBUIabletEvent::pos() const
     \deprecated [6.0] Use position().toPoint() instead.
 
     Returns the position of the device, relative to the widget that
@@ -2724,7 +2724,7 @@ Q_IMPL_POINTER_EVENT(QTabletEvent)
 */
 
 /*!
-    \fn int QTabletEvent::x() const
+    \fn int BOBUIabletEvent::x() const
     \deprecated [6.0] Use position().x() instead.
 
     Returns the x position of the device, relative to the widget that
@@ -2734,7 +2734,7 @@ Q_IMPL_POINTER_EVENT(QTabletEvent)
 */
 
 /*!
-    \fn int QTabletEvent::y() const
+    \fn int BOBUIabletEvent::y() const
     \deprecated [6.0] Use position().y() instead.
 
     Returns the y position of the device, relative to the widget that
@@ -2744,7 +2744,7 @@ Q_IMPL_POINTER_EVENT(QTabletEvent)
 */
 
 /*!
-    \fn qreal QTabletEvent::z() const
+    \fn qreal BOBUIabletEvent::z() const
 
     Returns the z position of the device. Typically this is represented by a
     wheel on a 4D Mouse. If the device does not support a Z-axis, this value is
@@ -2756,7 +2756,7 @@ Q_IMPL_POINTER_EVENT(QTabletEvent)
 */
 
 /*!
-    \fn QPoint QTabletEvent::globalPos() const
+    \fn QPoint BOBUIabletEvent::globalPos() const
     \deprecated [6.0] Use globalPosition().toPoint() instead.
 
     Returns the global position of the device \e{at the time of the
@@ -2769,7 +2769,7 @@ Q_IMPL_POINTER_EVENT(QTabletEvent)
 */
 
 /*!
-    \fn int QTabletEvent::globalX() const
+    \fn int BOBUIabletEvent::globalX() const
     \deprecated [6.0] Use globalPosition().x() instead.
 
     Returns the global x position of the mouse pointer at the time of
@@ -2779,7 +2779,7 @@ Q_IMPL_POINTER_EVENT(QTabletEvent)
 */
 
 /*!
-    \fn int QTabletEvent::globalY() const
+    \fn int BOBUIabletEvent::globalY() const
     \deprecated [6.0] Use globalPosition().y() instead.
 
     Returns the global y position of the tablet device at the time of
@@ -2789,7 +2789,7 @@ Q_IMPL_POINTER_EVENT(QTabletEvent)
 */
 
 /*!
-    \fn qint64 QTabletEvent::uniqueId() const
+    \fn qint64 BOBUIabletEvent::uniqueId() const
     \deprecated [6.0] Use pointingDevice().uniqueId() instead.
 
     Returns a unique ID for the current device, making it possible
@@ -2805,7 +2805,7 @@ Q_IMPL_POINTER_EVENT(QTabletEvent)
     and are not getting the information on Linux, consider upgrading
     your driver.
 
-    As of Qt 4.2, the unique ID is the same regardless of the orientation
+    As of BobUI 4.2, the unique ID is the same regardless of the orientation
     of the pen. Earlier versions would report a different value when using
     the eraser-end versus the pen-end of the stylus on some OS's.
 
@@ -2813,7 +2813,7 @@ Q_IMPL_POINTER_EVENT(QTabletEvent)
 */
 
 /*!
-    \fn const QPointF &QTabletEvent::posF() const
+    \fn const QPointF &BOBUIabletEvent::posF() const
     \deprecated [6.0] Use position() instead.
 
     Returns the position of the device, relative to the widget that
@@ -2826,7 +2826,7 @@ Q_IMPL_POINTER_EVENT(QTabletEvent)
 */
 
 /*!
-    \fn const QPointF &QTabletEvent::globalPosF() const
+    \fn const QPointF &BOBUIabletEvent::globalPosF() const
     \deprecated [6.0] Use globalPosition() instead.
     Returns the global position of the device \e{at the time of the
     event}. This is important on asynchronous windows systems like X11;
@@ -2837,14 +2837,14 @@ Q_IMPL_POINTER_EVENT(QTabletEvent)
     \sa posF()
 */
 
-#endif // QT_CONFIG(tabletevent)
+#endif // BOBUI_CONFIG(tabletevent)
 
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
 /*!
     \class QNativeGestureEvent
     \since 5.2
     \brief The QNativeGestureEvent class contains parameters that describe a gesture event.
-    \inmodule QtGui
+    \inmodule BobUIGui
     \ingroup events
 
     Native gesture events are generated by the operating system, typically by
@@ -2859,23 +2859,23 @@ Q_IMPL_POINTER_EVENT(QTabletEvent)
         \li Description
         \li Touch sequence
     \row
-        \li Qt::ZoomNativeGesture
+        \li BobUI::ZoomNativeGesture
         \li Magnification delta in percent.
         \li \macos and Wayland: Two-finger pinch.
     \row
-        \li Qt::SmartZoomNativeGesture
+        \li BobUI::SmartZoomNativeGesture
         \li Boolean magnification state.
         \li \macos: Two-finger douple tap (trackpad) / One-finger douple tap (magic mouse).
     \row
-        \li Qt::RotateNativeGesture
+        \li BobUI::RotateNativeGesture
         \li Rotation delta in degrees.
         \li \macos and Wayland: Two-finger rotate.
     \row
-        \li Qt::SwipeNativeGesture
+        \li BobUI::SwipeNativeGesture
         \li Swipe angle in degrees.
         \li \macos: Configurable in trackpad settings.
     \row
-        \li Qt::PanNativeGesture
+        \li BobUI::PanNativeGesture
         \li Displacement delta in pixels.
         \li Wayland: Three or more fingers moving as a group, in any direction.
     \endtable
@@ -2898,14 +2898,14 @@ Q_IMPL_POINTER_EVENT(QTabletEvent)
     SwipeNativeGesture occur only once each time the gesture is detected.
 
     \note On a touchpad, moving two fingers as a group (the two-finger flick gesture)
-    is usually reserved for scrolling; in that case, Qt generates QWheelEvents.
+    is usually reserved for scrolling; in that case, BobUI generates QWheelEvents.
     This is the reason that three or more fingers are needed to generate a
     PanNativeGesture.
 
-    \sa Qt::NativeGestureType, QGestureEvent, QWheelEvent
+    \sa BobUI::NativeGestureType, QGestureEvent, QWheelEvent
 */
 
-#if QT_DEPRECATED_SINCE(6, 2)
+#if BOBUI_DEPRECATED_SINCE(6, 2)
 /*!
     \deprecated [6.2] Use the other constructor, because \a intValue is no longer stored separately.
 
@@ -2923,12 +2923,12 @@ Q_IMPL_POINTER_EVENT(QTabletEvent)
     it is stored in the same variable, such that value() returns the value
     given as \a intValue.
 */
-QNativeGestureEvent::QNativeGestureEvent(Qt::NativeGestureType type, const QPointingDevice *device,
+QNativeGestureEvent::QNativeGestureEvent(BobUI::NativeGestureType type, const QPointingDevice *device,
                                         const QPointF &localPos, const QPointF &scenePos,
                                         const QPointF &globalPos, qreal realValue, quint64 sequenceId,
                                         quint64 intValue)
-    : QSinglePointEvent(QEvent::NativeGesture, device, localPos, scenePos, globalPos, Qt::NoButton,
-                        Qt::NoButton, Qt::NoModifier),
+    : QSinglePointEvent(QEvent::NativeGesture, device, localPos, scenePos, globalPos, BobUI::NoButton,
+                        BobUI::NoButton, BobUI::NoModifier),
       m_sequenceId(sequenceId), m_realValue(realValue), m_gestureType(type)
 {
     if (qIsNull(realValue) && intValue != 0)
@@ -2955,16 +2955,16 @@ QNativeGestureEvent::QNativeGestureEvent(Qt::NativeGestureType type, const QPoin
 
     \note The \a delta is stored in single precision (QVector2D), so \l delta()
     may return slightly different values in some cases. This is subject to change
-    in future versions of Qt.
+    in future versions of BobUI.
 
     \since 6.2
 */
-QNativeGestureEvent::QNativeGestureEvent(Qt::NativeGestureType type, const QPointingDevice *device, int fingerCount,
+QNativeGestureEvent::QNativeGestureEvent(BobUI::NativeGestureType type, const QPointingDevice *device, int fingerCount,
                                          const QPointF &localPos, const QPointF &scenePos,
                                          const QPointF &globalPos, qreal value, const QPointF &delta,
                                          quint64 sequenceId)
-    : QSinglePointEvent(QEvent::NativeGesture, device, localPos, scenePos, globalPos, Qt::NoButton,
-                        Qt::NoButton, Qt::NoModifier),
+    : QSinglePointEvent(QEvent::NativeGesture, device, localPos, scenePos, globalPos, BobUI::NoButton,
+                        BobUI::NoButton, BobUI::NoModifier),
       m_sequenceId(sequenceId), m_delta(delta), m_realValue(value), m_gestureType(type), m_fingerCount(fingerCount)
 {
     Q_ASSERT(fingerCount < 16); // we store it in 4 bits unsigned
@@ -2984,7 +2984,7 @@ Q_IMPL_POINTER_EVENT(QNativeGestureEvent)
     \since 6.2
 
     Returns the number of fingers participating in the gesture, if known.
-    When gestureType() is Qt::BeginNativeGesture or Qt::EndNativeGesture, often
+    When gestureType() is BobUI::BeginNativeGesture or BobUI::EndNativeGesture, often
     this information is unknown, and fingerCount() returns \c 0.
 */
 
@@ -3052,9 +3052,9 @@ Q_IMPL_POINTER_EVENT(QNativeGestureEvent)
     Returns the position of the gesture as a QPointF, relative to the
     window that received the event.
 */
-#endif // QT_NO_GESTURES
+#endif // BOBUI_NO_GESTURES
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 /*!
     Creates a QDragMoveEvent of the required \a type indicating
     that the mouse is at position \a pos given within a widget.
@@ -3065,10 +3065,10 @@ Q_IMPL_POINTER_EVENT(QNativeGestureEvent)
     The drag data is passed as MIME-encoded information in \a data.
 
     \warning Do not attempt to create a QDragMoveEvent yourself.
-    These objects rely on Qt's internal state.
+    These objects rely on BobUI's internal state.
 */
-QDragMoveEvent::QDragMoveEvent(const QPoint& pos, Qt::DropActions actions, const QMimeData *data,
-                               Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers, Type type)
+QDragMoveEvent::QDragMoveEvent(const QPoint& pos, BobUI::DropActions actions, const QMimeData *data,
+                               BobUI::MouseButtons buttons, BobUI::KeyboardModifiers modifiers, Type type)
     : QDropEvent(pos, actions, data, buttons, modifiers, type)
     , m_rect(pos, QSize(1, 1))
 {}
@@ -3125,7 +3125,7 @@ Q_IMPL_EVENT_COMMON(QDragMoveEvent)
     \class QDropEvent
     \ingroup events
     \ingroup draganddrop
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QDropEvent class provides an event which is sent when a
     drag and drop action is completed.
@@ -3137,7 +3137,7 @@ Q_IMPL_EVENT_COMMON(QDragMoveEvent)
     The drop event contains a proposed action, available from proposedAction(), for
     the widget to either accept or ignore. If the action can be handled by the
     widget, you should call the acceptProposedAction() function. Since the
-    proposed action can be a combination of \l Qt::DropAction values, it may be
+    proposed action can be a combination of \l BobUI::DropAction values, it may be
     useful to either select one of these values as a default action or ask
     the user to select their preferred action.
 
@@ -3175,8 +3175,8 @@ Q_IMPL_EVENT_COMMON(QDragMoveEvent)
     The states of the mouse buttons and keyboard modifiers at the time of
     the drop are specified by \a buttons and \a modifiers.
 */
-QDropEvent::QDropEvent(const QPointF& pos, Qt::DropActions actions, const QMimeData *data,
-                       Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers, Type type)
+QDropEvent::QDropEvent(const QPointF& pos, BobUI::DropActions actions, const QMimeData *data,
+                       BobUI::MouseButtons buttons, BobUI::KeyboardModifiers modifiers, Type type)
     : QEvent(type), m_pos(pos), m_mouseState(buttons),
       m_modState(modifiers), m_actions(actions),
       m_data(data)
@@ -3208,9 +3208,9 @@ QObject* QDropEvent::source() const
 }
 
 
-void QDropEvent::setDropAction(Qt::DropAction action)
+void QDropEvent::setDropAction(BobUI::DropAction action)
 {
-    if (!(action & m_actions) && action != Qt::IgnoreAction)
+    if (!(action & m_actions) && action != BobUI::IgnoreAction)
         action = m_defaultAction;
     m_dropAction = action;
 }
@@ -3237,35 +3237,35 @@ void QDropEvent::setDropAction(Qt::DropAction action)
 */
 
 /*!
-    \fn Qt::MouseButtons QDropEvent::mouseButtons() const
+    \fn BobUI::MouseButtons QDropEvent::mouseButtons() const
     \deprecated [6.0] Use buttons() instead.
 
     Returns the mouse buttons that are pressed.
 */
 
 /*!
-    \fn Qt::MouseButtons QDropEvent::buttons() const
+    \fn BobUI::MouseButtons QDropEvent::buttons() const
     \since 6.0
 
     Returns the mouse buttons that are pressed.
 */
 
 /*!
-    \fn Qt::KeyboardModifiers QDropEvent::keyboardModifiers() const
+    \fn BobUI::KeyboardModifiers QDropEvent::keyboardModifiers() const
     \deprecated [6.0] Use modifiers() instead.
 
     Returns the modifier keys that are pressed.
 */
 
 /*!
-    \fn Qt::KeyboardModifiers QDropEvent::modifiers() const
+    \fn BobUI::KeyboardModifiers QDropEvent::modifiers() const
     \since 6.0
 
     Returns the modifier keys that are pressed.
 */
 
 /*!
-    \fn void QDropEvent::setDropAction(Qt::DropAction action)
+    \fn void QDropEvent::setDropAction(BobUI::DropAction action)
 
     Sets the \a action to be performed on the data by the target.
     Use this to override the \l{proposedAction()}{proposed action}
@@ -3281,7 +3281,7 @@ void QDropEvent::setDropAction(Qt::DropAction action)
 */
 
 /*!
-    \fn Qt::DropAction QDropEvent::dropAction() const
+    \fn BobUI::DropAction QDropEvent::dropAction() const
 
     Returns the action to be performed on the data by the target. This may be
     different from the action supplied in proposedAction() if you have called
@@ -3291,7 +3291,7 @@ void QDropEvent::setDropAction(Qt::DropAction action)
 */
 
 /*!
-    \fn Qt::DropActions QDropEvent::possibleActions() const
+    \fn BobUI::DropActions QDropEvent::possibleActions() const
 
     Returns an OR-combination of possible drop actions.
 
@@ -3299,7 +3299,7 @@ void QDropEvent::setDropAction(Qt::DropAction action)
 */
 
 /*!
-    \fn Qt::DropAction QDropEvent::proposedAction() const
+    \fn BobUI::DropAction QDropEvent::proposedAction() const
 
     Returns the proposed drop action.
 
@@ -3321,7 +3321,7 @@ void QDropEvent::setDropAction(Qt::DropAction action)
 
     \ingroup events
     \ingroup draganddrop
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     A widget must accept this event in order to receive the \l
     {QDragMoveEvent}{drag move events} that are sent while the drag
@@ -3345,10 +3345,10 @@ void QDropEvent::setDropAction(Qt::DropAction action)
     operation that can be performed.
 
     \warning Do not create a QDragEnterEvent yourself since these
-    objects rely on Qt's internal state.
+    objects rely on BobUI's internal state.
 */
-QDragEnterEvent::QDragEnterEvent(const QPoint& point, Qt::DropActions actions, const QMimeData *data,
-                                 Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers)
+QDragEnterEvent::QDragEnterEvent(const QPoint& point, BobUI::DropActions actions, const QMimeData *data,
+                                 BobUI::MouseButtons buttons, BobUI::KeyboardModifiers modifiers)
     : QDragMoveEvent(point, actions, data, buttons, modifiers, DragEnter)
 {}
 
@@ -3360,7 +3360,7 @@ Q_IMPL_EVENT_COMMON(QDragEnterEvent)
 
     \ingroup events
     \ingroup draganddrop
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     A widget will receive drag move events repeatedly while the drag
     is within its boundaries, if it accepts
@@ -3387,7 +3387,7 @@ Q_IMPL_EVENT_COMMON(QDragEnterEvent)
 
     \ingroup events
     \ingroup draganddrop
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     This event is always preceded by a QDragEnterEvent and a series
     of \l{QDragMoveEvent}s. It is not sent if a QDropEvent is sent
@@ -3400,7 +3400,7 @@ Q_IMPL_EVENT_COMMON(QDragEnterEvent)
     Constructs a QDragLeaveEvent.
 
     \warning Do not create a QDragLeaveEvent yourself since these
-    objects rely on Qt's internal state.
+    objects rely on BobUI's internal state.
 */
 QDragLeaveEvent::QDragLeaveEvent()
     : QEvent(DragLeave)
@@ -3408,7 +3408,7 @@ QDragLeaveEvent::QDragLeaveEvent()
 
 Q_IMPL_EVENT_COMMON(QDragLeaveEvent)
 
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
 
 /*!
     \class QHelpEvent
@@ -3417,13 +3417,13 @@ Q_IMPL_EVENT_COMMON(QDragLeaveEvent)
 
     \ingroup events
     \ingroup helpsystem
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     This event can be intercepted in applications to provide tooltips
     or "What's This?" help for custom widgets. The type() can be
     either QEvent::ToolTip or QEvent::WhatsThis.
 
-    \sa QToolTip, QWhatsThis, QStatusTipEvent, QWhatsThisClickedEvent
+    \sa BOBUIoolTip, QWhatsThis, QStatusTipEvent, QWhatsThisClickedEvent
 */
 
 /*!
@@ -3491,7 +3491,7 @@ QHelpEvent::QHelpEvent(Type type, const QPoint &pos, const QPoint &globalPos)
 
 Q_IMPL_EVENT_COMMON(QHelpEvent)
 
-#ifndef QT_NO_STATUSTIP
+#ifndef BOBUI_NO_STATUSTIP
 
 /*!
     \class QStatusTipEvent
@@ -3499,7 +3499,7 @@ Q_IMPL_EVENT_COMMON(QHelpEvent)
 
     \ingroup events
     \ingroup helpsystem
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     Status tips can be set on a widget using the
     QWidget::setStatusTip() function.  They are shown in the status
@@ -3530,7 +3530,7 @@ Q_IMPL_EVENT_COMMON(QHelpEvent)
     \endtable
 
     Finally, status tips are supported for the item view classes
-    through the Qt::StatusTipRole enum value.
+    through the BobUI::StatusTipRole enum value.
 
     \sa QStatusBar, QHelpEvent, QWhatsThisClickedEvent
 */
@@ -3554,9 +3554,9 @@ Q_IMPL_EVENT_COMMON(QStatusTipEvent)
     \sa QStatusBar::showMessage()
 */
 
-#endif // QT_NO_STATUSTIP
+#endif // BOBUI_NO_STATUSTIP
 
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
 
 /*!
     \class QWhatsThisClickedEvent
@@ -3565,7 +3565,7 @@ Q_IMPL_EVENT_COMMON(QStatusTipEvent)
 
     \ingroup events
     \ingroup helpsystem
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \sa QWhatsThis, QHelpEvent, QStatusTipEvent
 */
@@ -3589,9 +3589,9 @@ Q_IMPL_EVENT_COMMON(QWhatsThisClickedEvent)
     This?" text.
 */
 
-#endif // QT_CONFIG(whatsthis)
+#endif // BOBUI_CONFIG(whatsthis)
 
-#ifndef QT_NO_ACTION
+#ifndef BOBUI_NO_ACTION
 
 /*!
     \class QActionEvent
@@ -3599,12 +3599,12 @@ Q_IMPL_EVENT_COMMON(QWhatsThisClickedEvent)
     when a QAction is added, removed, or changed.
 
     \ingroup events
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     Actions can be added to controls, for example by using QWidget::addAction().
     This generates an \l ActionAdded event, which you can handle to provide
-    custom behavior. For example, QToolBar reimplements
-    QWidget::actionEvent() to create \l{QToolButton}s for the
+    custom behavior. For example, BOBUIoolBar reimplements
+    QWidget::actionEvent() to create \l{BOBUIoolButton}s for the
     actions.
 
     \sa QAction, QWidget::addAction(), QWidget::removeAction(), QWidget::actions()
@@ -3643,14 +3643,14 @@ Q_IMPL_EVENT_COMMON(QActionEvent)
     \sa action(), QWidget::actions()
 */
 
-#endif // QT_NO_ACTION
+#endif // BOBUI_NO_ACTION
 
 /*!
     \class QHideEvent
     \brief The QHideEvent class provides an event which is sent after a widget is hidden.
 
     \ingroup events
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     This event is sent just before QWidget::hide() returns, and also
     when a top-level window has been hidden (iconified) by the user.
@@ -3679,7 +3679,7 @@ Q_IMPL_EVENT_COMMON(QHideEvent)
     \brief The QShowEvent class provides an event that is sent when a widget is shown.
 
     \ingroup events
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     There are two kinds of show events: show events caused by the
     window system (spontaneous), and internal show events. Spontaneous (QEvent::spontaneous())
@@ -3706,7 +3706,7 @@ Q_IMPL_EVENT_COMMON(QShowEvent)
     sent when there is a request to open a file or a URL.
 
     \ingroup events
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     File open events will be sent to the QApplication::instance()
     when the operating system requests that a file or URL should be opened.
@@ -3782,7 +3782,7 @@ Q_IMPL_EVENT_COMMON(QFileOpenEvent)
     \since 4.6
 */
 
-#if QT_DEPRECATED_SINCE(6, 6)
+#if BOBUI_DEPRECATED_SINCE(6, 6)
 /*!
     \fn bool QFileOpenEvent::openFile(QFile &file, QIODevice::OpenMode flags) const
     \deprecated [6.6] interpret the string returned by file()
@@ -3802,17 +3802,17 @@ bool QFileOpenEvent::openFile(QFile &file, QIODevice::OpenMode flags) const
 }
 #endif
 
-#ifndef QT_NO_TOOLBAR
+#ifndef BOBUI_NO_TOOLBAR
 /*!
     \internal
-    \class QToolBarChangeEvent
-    \brief The QToolBarChangeEvent class provides an event that is
+    \class BOBUIoolBarChangeEvent
+    \brief The BOBUIoolBarChangeEvent class provides an event that is
     sent whenever a the toolbar button is clicked on \macos.
 
     \ingroup events
-    \inmodule QtGui
+    \inmodule BobUIGui
 
-    The QToolBarChangeEvent is sent when the toolbar button is clicked. On
+    The BOBUIoolBarChangeEvent is sent when the toolbar button is clicked. On
     \macos, this is the long oblong button on the right side of the window
     title bar. The default implementation is to toggle the appearance (hidden or
     shown) of the associated toolbars for the window.
@@ -3821,32 +3821,32 @@ bool QFileOpenEvent::openFile(QFile &file, QIODevice::OpenMode flags) const
 /*!
     \internal
 
-    Construct a QToolBarChangeEvent given the current button state in \a state.
+    Construct a BOBUIoolBarChangeEvent given the current button state in \a state.
 */
-QToolBarChangeEvent::QToolBarChangeEvent(bool t)
+BOBUIoolBarChangeEvent::BOBUIoolBarChangeEvent(bool t)
     : QEvent(ToolBarChange), m_toggle(t)
 {}
 
-Q_IMPL_EVENT_COMMON(QToolBarChangeEvent)
+Q_IMPL_EVENT_COMMON(BOBUIoolBarChangeEvent)
 
 /*!
-    \fn bool QToolBarChangeEvent::toggle() const
+    \fn bool BOBUIoolBarChangeEvent::toggle() const
     \internal
 */
 
 /*
-    \fn Qt::ButtonState QToolBarChangeEvent::state() const
+    \fn BobUI::ButtonState BOBUIoolBarChangeEvent::state() const
 
     Returns the keyboard modifier flags at the time of the event.
 
     The returned value is a selection of the following values,
     combined using the OR operator:
-    Qt::ShiftButton, Qt::ControlButton, Qt::MetaButton, and Qt::AltButton.
+    BobUI::ShiftButton, BobUI::ControlButton, BobUI::MetaButton, and BobUI::AltButton.
 */
 
-#endif // QT_NO_TOOLBAR
+#endif // BOBUI_NO_TOOLBAR
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 
 /*!
     Constructs a shortcut event for the given \a key press,
@@ -3886,29 +3886,29 @@ QShortcutEvent::QShortcutEvent(const QKeySequence &key, const QShortcut *shortcu
 
 Q_IMPL_EVENT_COMMON(QShortcutEvent)
 
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 
-static inline void formatTouchEvent(QDebug d, const QTouchEvent &t)
+static inline void formatTouchEvent(QDebug d, const BOBUIouchEvent &t)
 {
-    d << "QTouchEvent(";
-    QtDebugUtils::formatQEnum(d, t.type());
+    d << "BOBUIouchEvent(";
+    BobUIDebugUtils::formatQEnum(d, t.type());
     d << " device: " << t.device()->name();
     d << " states: ";
-    QtDebugUtils::formatQFlags(d, t.touchPointStates());
+    BobUIDebugUtils::formatQFlags(d, t.touchPointStates());
     d << ", " << t.points().size() << " points: " << t.points() << ')';
 }
 
 static void formatUnicodeString(QDebug d, const QString &s)
 {
-    d << '"' << Qt::hex;
+    d << '"' << BobUI::hex;
     for (int i = 0; i < s.size(); ++i) {
         if (i)
             d << ',';
         d << "U+" << s.at(i).unicode();
     }
-    d << Qt::dec << '"';
+    d << BobUI::dec << '"';
 }
 
 static QDebug operator<<(QDebug dbg, const QInputMethodEvent::Attribute &attr)
@@ -3951,19 +3951,19 @@ static inline void formatInputMethodQueryEvent(QDebug d, const QInputMethodQuery
 {
     QDebugStateSaver saver(d);
     d.noquote();
-    const Qt::InputMethodQueries queries = e->queries();
-    d << "QInputMethodQueryEvent(queries=" << Qt::showbase << Qt::hex << int(queries)
-      << Qt::noshowbase << Qt::dec << ", {";
-    for (unsigned mask = 1; mask <= Qt::ImInputItemClipRectangle; mask<<=1) {
+    const BobUI::InputMethodQueries queries = e->queries();
+    d << "QInputMethodQueryEvent(queries=" << BobUI::showbase << BobUI::hex << int(queries)
+      << BobUI::noshowbase << BobUI::dec << ", {";
+    for (unsigned mask = 1; mask <= BobUI::ImInputItemClipRectangle; mask<<=1) {
         if (queries & mask) {
-            const Qt::InputMethodQuery query = static_cast<Qt::InputMethodQuery>(mask);
+            const BobUI::InputMethodQuery query = static_cast<BobUI::InputMethodQuery>(mask);
             const QVariant value = e->value(query);
             if (value.isValid()) {
                 d << '[';
-                QtDebugUtils::formatQEnum(d, query);
+                BobUIDebugUtils::formatQEnum(d, query);
                 d << '=';
-                if (query == Qt::ImHints)
-                    QtDebugUtils::formatQFlags(d, Qt::InputMethodHints(value.toInt()));
+                if (query == BobUI::ImHints)
+                    BobUIDebugUtils::formatQFlags(d, BobUI::InputMethodHints(value.toInt()));
                 else
                     d << value.toString();
                 d << "],";
@@ -4023,7 +4023,7 @@ static const char *eventClassName(QEvent::Type t)
         return "QCloseEvent";
     case QEvent::FileOpen:
         return "QFileOpenEvent";
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     case QEvent::NativeGesture:
         return "QNativeGestureEvent";
     case QEvent::Gesture:
@@ -4039,7 +4039,7 @@ static const char *eventClassName(QEvent::Type t)
     case QEvent::TabletPress:
     case QEvent::TabletMove:
     case QEvent::TabletRelease:
-        return "QTabletEvent";
+        return "BOBUIabletEvent";
     case QEvent::StatusTip:
         return "QStatusTipEvent";
     case QEvent::ToolTip:
@@ -4051,7 +4051,7 @@ static const char *eventClassName(QEvent::Type t)
     case QEvent::TouchBegin:
     case QEvent::TouchUpdate:
     case QEvent::TouchEnd:
-        return "QTouchEvent";
+        return "BOBUIouchEvent";
     case QEvent::Shortcut:
         return "QShortcutEvent";
     case QEvent::InputMethod:
@@ -4081,7 +4081,7 @@ static const char *eventClassName(QEvent::Type t)
     case QEvent::GraphicsSceneWheel:
         return "QGraphicsSceneEvent";
     case QEvent::Timer:
-        return "QTimerEvent";
+        return "BOBUIimerEvent";
     case QEvent::PlatformSurface:
         return "QPlatformSurfaceEvent";
     default:
@@ -4090,41 +4090,41 @@ static const char *eventClassName(QEvent::Type t)
     return "QEvent";
 }
 
-#  if QT_CONFIG(draganddrop)
+#  if BOBUI_CONFIG(draganddrop)
 
 static void formatDropEvent(QDebug d, const QDropEvent *e)
 {
     const QEvent::Type type = e->type();
     d << eventClassName(type) << "(dropAction=";
-    QtDebugUtils::formatQEnum(d, e->dropAction());
+    BobUIDebugUtils::formatQEnum(d, e->dropAction());
     d << ", proposedAction=";
-    QtDebugUtils::formatQEnum(d, e->proposedAction());
+    BobUIDebugUtils::formatQEnum(d, e->proposedAction());
     d << ", possibleActions=";
-    QtDebugUtils::formatQFlags(d, e->possibleActions());
+    BobUIDebugUtils::formatQFlags(d, e->possibleActions());
     d << ", posF=";
-    QtDebugUtils::formatQPoint(d,  e->position());
+    BobUIDebugUtils::formatQPoint(d,  e->position());
     if (type == QEvent::DragMove || type == QEvent::DragEnter)
         d << ", answerRect=" << static_cast<const QDragMoveEvent *>(e)->answerRect();
     d << ", formats=" << e->mimeData()->formats();
-    QtDebugUtils::formatNonNullQFlags(d, ", keyboardModifiers=", e->modifiers());
+    BobUIDebugUtils::formatNonNullQFlags(d, ", keyboardModifiers=", e->modifiers());
     d << ", ";
-    QtDebugUtils::formatQFlags(d, e->buttons());
+    BobUIDebugUtils::formatQFlags(d, e->buttons());
 }
 
-#  endif // QT_CONFIG(draganddrop)
+#  endif // BOBUI_CONFIG(draganddrop)
 
-#  if QT_CONFIG(tabletevent)
+#  if BOBUI_CONFIG(tabletevent)
 
-static void formatTabletEvent(QDebug d, const QTabletEvent *e)
+static void formatTabletEvent(QDebug d, const BOBUIabletEvent *e)
 {
     const QEvent::Type type = e->type();
 
     d << eventClassName(type)  << '(';
-    QtDebugUtils::formatQEnum(d, type);
+    BobUIDebugUtils::formatQEnum(d, type);
     d << ' ';
-    QtDebugUtils::formatQFlags(d, e->buttons());
+    BobUIDebugUtils::formatQFlags(d, e->buttons());
     d << " pos=";
-    QtDebugUtils::formatQPoint(d,  e->position());
+    BobUIDebugUtils::formatQPoint(d,  e->position());
     d << " z=" << e->z()
       << " xTilt=" << e->xTilt()
       << " yTilt=" << e->yTilt();
@@ -4137,7 +4137,7 @@ static void formatTabletEvent(QDebug d, const QTabletEvent *e)
     d << " dev=" << e->device() << ')';
 }
 
-#  endif // QT_CONFIG(tabletevent)
+#  endif // BOBUI_CONFIG(tabletevent)
 
 QDebug operator<<(QDebug dbg, const QEventPoint *tp)
 {
@@ -4153,13 +4153,13 @@ QDebug operator<<(QDebug dbg, const QEventPoint &tp)
     dbg.nospace();
     dbg << "QEventPoint(id=" << tp.id() << " ts=" << tp.timestamp();
     dbg << " pos=";
-    QtDebugUtils::formatQPoint(dbg, tp.position());
+    BobUIDebugUtils::formatQPoint(dbg, tp.position());
     dbg << " scn=";
-    QtDebugUtils::formatQPoint(dbg, tp.scenePosition());
+    BobUIDebugUtils::formatQPoint(dbg, tp.scenePosition());
     dbg << " gbl=";
-    QtDebugUtils::formatQPoint(dbg, tp.globalPosition());
+    BobUIDebugUtils::formatQPoint(dbg, tp.globalPosition());
     dbg << ' ';
-    QtDebugUtils::formatQEnum(dbg, tp.state());
+    BobUIDebugUtils::formatQEnum(dbg, tp.state());
     if (!qFuzzyIsNull(tp.pressure()) && !qFuzzyCompare(tp.pressure(), 1))
         dbg << " pressure=" << tp.pressure();
     if (!tp.ellipseDiameters().isEmpty() || !qFuzzyIsNull(tp.rotation())) {
@@ -4168,13 +4168,13 @@ QDebug operator<<(QDebug dbg, const QEventPoint &tp)
             << " \u2221 " << tp.rotation() << ')';
     }
     dbg << " vel=";
-    QtDebugUtils::formatQPoint(dbg, tp.velocity().toPointF());
+    BobUIDebugUtils::formatQPoint(dbg, tp.velocity().toPointF());
     dbg << " press=";
-    QtDebugUtils::formatQPoint(dbg, tp.pressPosition());
+    BobUIDebugUtils::formatQPoint(dbg, tp.pressPosition());
     dbg << " last=";
-    QtDebugUtils::formatQPoint(dbg, tp.lastPosition());
+    BobUIDebugUtils::formatQPoint(dbg, tp.lastPosition());
     dbg << " \u0394 ";
-    QtDebugUtils::formatQPoint(dbg, tp.position() - tp.lastPosition());
+    BobUIDebugUtils::formatQPoint(dbg, tp.position() - tp.lastPosition());
     dbg << ')';
     return dbg;
 }
@@ -4211,40 +4211,40 @@ QDebug operator<<(QDebug dbg, const QEvent *e)
     case QEvent::HoverLeave:
     {
         const QSinglePointEvent *spe = static_cast<const QSinglePointEvent*>(e);
-        const Qt::MouseButton button = spe->button();
-        const Qt::MouseButtons buttons = spe->buttons();
+        const BobUI::MouseButton button = spe->button();
+        const BobUI::MouseButtons buttons = spe->buttons();
         dbg << eventClassName(type) << '(';
-        QtDebugUtils::formatQEnum(dbg, type);
+        BobUIDebugUtils::formatQEnum(dbg, type);
         if (dbg.verbosity() > QDebug::DefaultVerbosity)
             dbg << " ts=" << spe->timestamp();
         if (isMouse) {
             if (type != QEvent::MouseMove && type != QEvent::NonClientAreaMouseMove) {
                 dbg << ' ';
-                QtDebugUtils::formatQEnum(dbg, button);
+                BobUIDebugUtils::formatQEnum(dbg, button);
             }
             if (buttons && button != buttons) {
                 dbg << " btns=";
-                QtDebugUtils::formatQFlags(dbg, buttons);
+                BobUIDebugUtils::formatQFlags(dbg, buttons);
             }
         }
-        QtDebugUtils::formatNonNullQFlags(dbg, ", ", spe->modifiers());
+        BobUIDebugUtils::formatNonNullQFlags(dbg, ", ", spe->modifiers());
         dbg << " pos=";
-        QtDebugUtils::formatQPoint(dbg, spe->position());
+        BobUIDebugUtils::formatQPoint(dbg, spe->position());
         dbg << " scn=";
-        QtDebugUtils::formatQPoint(dbg, spe->scenePosition());
+        BobUIDebugUtils::formatQPoint(dbg, spe->scenePosition());
         dbg << " gbl=";
-        QtDebugUtils::formatQPoint(dbg, spe->globalPosition());
+        BobUIDebugUtils::formatQPoint(dbg, spe->globalPosition());
         dbg << " dev=" << spe->device() << ')';
         if (isMouse) {
             auto src = static_cast<const QMouseEvent*>(e)->source();
-            if (src != Qt::MouseEventNotSynthesized) {
+            if (src != BobUI::MouseEventNotSynthesized) {
                 dbg << " source=";
-                QtDebugUtils::formatQEnum(dbg, src);
+                BobUIDebugUtils::formatQEnum(dbg, src);
             }
         }
     }
         break;
-#  if QT_CONFIG(wheelevent)
+#  if BOBUI_CONFIG(wheelevent)
     case QEvent::Wheel: {
         const QWheelEvent *we = static_cast<const QWheelEvent *>(e);
         dbg << "QWheelEvent(" << we->phase();
@@ -4254,17 +4254,17 @@ QDebug operator<<(QDebug dbg, const QEvent *e)
         dbg << ')';
     }
         break;
-#  endif // QT_CONFIG(wheelevent)
+#  endif // BOBUI_CONFIG(wheelevent)
     case QEvent::KeyPress:
     case QEvent::KeyRelease:
     case QEvent::ShortcutOverride:
     {
         const QKeyEvent *ke = static_cast<const QKeyEvent *>(e);
         dbg << "QKeyEvent(";
-        QtDebugUtils::formatQEnum(dbg, type);
+        BobUIDebugUtils::formatQEnum(dbg, type);
         dbg << ", ";
-        QtDebugUtils::formatQEnum(dbg, static_cast<Qt::Key>(ke->key()));
-        QtDebugUtils::formatNonNullQFlags(dbg, ", ", ke->modifiers());
+        BobUIDebugUtils::formatQEnum(dbg, static_cast<BobUI::Key>(ke->key()));
+        BobUIDebugUtils::formatNonNullQFlags(dbg, ", ", ke->modifiers());
         if (!ke->text().isEmpty())
             dbg << ", text=" << ke->text();
         if (ke->isAutoRepeat())
@@ -4276,7 +4276,7 @@ QDebug operator<<(QDebug dbg, const QEvent *e)
         dbg << ')';
     }
         break;
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     case QEvent::Shortcut: {
         const QShortcutEvent *se = static_cast<const QShortcutEvent *>(e);
         dbg << "QShortcutEvent(" << se->key().toString() << ", id=" << se->shortcutId();
@@ -4290,15 +4290,15 @@ QDebug operator<<(QDebug dbg, const QEvent *e)
     case QEvent::FocusIn:
     case QEvent::FocusOut:
         dbg << "QFocusEvent(";
-        QtDebugUtils::formatQEnum(dbg, type);
+        BobUIDebugUtils::formatQEnum(dbg, type);
         dbg << ", ";
-        QtDebugUtils::formatQEnum(dbg, static_cast<const QFocusEvent *>(e)->reason());
+        BobUIDebugUtils::formatQEnum(dbg, static_cast<const QFocusEvent *>(e)->reason());
         dbg << ')';
         break;
     case QEvent::Move: {
         const QMoveEvent *me = static_cast<const QMoveEvent *>(e);
         dbg << "QMoveEvent(";
-        QtDebugUtils::formatQPoint(dbg, me->pos());
+        BobUIDebugUtils::formatQPoint(dbg, me->pos());
         if (!me->spontaneous())
             dbg << ", non-spontaneous";
         dbg << ')';
@@ -4307,19 +4307,19 @@ QDebug operator<<(QDebug dbg, const QEvent *e)
     case QEvent::Resize: {
         const QResizeEvent *re = static_cast<const QResizeEvent *>(e);
         dbg << "QResizeEvent(";
-        QtDebugUtils::formatQSize(dbg, re->size());
+        BobUIDebugUtils::formatQSize(dbg, re->size());
         if (!re->spontaneous())
             dbg << ", non-spontaneous";
         dbg << ')';
     }
         break;
-#  if QT_CONFIG(draganddrop)
+#  if BOBUI_CONFIG(draganddrop)
     case QEvent::DragEnter:
     case QEvent::DragMove:
     case QEvent::Drop:
         formatDropEvent(dbg, static_cast<const QDropEvent *>(e));
         break;
-#  endif // QT_CONFIG(draganddrop)
+#  endif // BOBUI_CONFIG(draganddrop)
     case QEvent::InputMethod:
         formatInputMethodEvent(dbg, static_cast<const QInputMethodEvent *>(e));
         break;
@@ -4329,58 +4329,58 @@ QDebug operator<<(QDebug dbg, const QEvent *e)
     case QEvent::TouchBegin:
     case QEvent::TouchUpdate:
     case QEvent::TouchEnd:
-        formatTouchEvent(dbg, *static_cast<const QTouchEvent*>(e));
+        formatTouchEvent(dbg, *static_cast<const BOBUIouchEvent*>(e));
         break;
     case QEvent::ChildAdded:
     case QEvent::ChildPolished:
     case QEvent::ChildRemoved:
         dbg << "QChildEvent(";
-        QtDebugUtils::formatQEnum(dbg, type);
+        BobUIDebugUtils::formatQEnum(dbg, type);
         dbg << ", " << (static_cast<const QChildEvent*>(e))->child() << ')';
         break;
-#  ifndef QT_NO_GESTURES
+#  ifndef BOBUI_NO_GESTURES
     case QEvent::NativeGesture: {
         const QNativeGestureEvent *ne = static_cast<const QNativeGestureEvent *>(e);
         dbg << "QNativeGestureEvent(";
-        QtDebugUtils::formatQEnum(dbg, ne->gestureType());
+        BobUIDebugUtils::formatQEnum(dbg, ne->gestureType());
         if (dbg.verbosity() > QDebug::DefaultVerbosity)
             dbg << ", ts=" << ne->timestamp();
         dbg << ", fingerCount=" << ne->fingerCount() << ", localPos=";
-        QtDebugUtils::formatQPoint(dbg, ne->position());
+        BobUIDebugUtils::formatQPoint(dbg, ne->position());
         if (!qIsNull(ne->value()))
             dbg << ", value=" << ne->value();
         if (!ne->delta().isNull()) {
             dbg << ", delta=";
-            QtDebugUtils::formatQPoint(dbg, ne->delta());
+            BobUIDebugUtils::formatQPoint(dbg, ne->delta());
         }
         dbg << ')';
     }
          break;
-#  endif // !QT_NO_GESTURES
+#  endif // !BOBUI_NO_GESTURES
     case QEvent::ApplicationStateChange:
         dbg << "QApplicationStateChangeEvent(";
-        QtDebugUtils::formatQEnum(dbg, static_cast<const QApplicationStateChangeEvent *>(e)->applicationState());
+        BobUIDebugUtils::formatQEnum(dbg, static_cast<const QApplicationStateChangeEvent *>(e)->applicationState());
         dbg << ')';
         break;
-#  ifndef QT_NO_CONTEXTMENU
+#  ifndef BOBUI_NO_CONTEXTMENU
     case QEvent::ContextMenu:
         dbg << "QContextMenuEvent(" << static_cast<const QContextMenuEvent *>(e)->pos() << ')';
         break;
-#  endif // !QT_NO_CONTEXTMENU
-#  if QT_CONFIG(tabletevent)
+#  endif // !BOBUI_NO_CONTEXTMENU
+#  if BOBUI_CONFIG(tabletevent)
     case QEvent::TabletEnterProximity:
     case QEvent::TabletLeaveProximity:
     case QEvent::TabletPress:
     case QEvent::TabletMove:
     case QEvent::TabletRelease:
-        formatTabletEvent(dbg, static_cast<const QTabletEvent *>(e));
+        formatTabletEvent(dbg, static_cast<const BOBUIabletEvent *>(e));
         break;
-#  endif // QT_CONFIG(tabletevent)
+#  endif // BOBUI_CONFIG(tabletevent)
     case QEvent::Enter:
         dbg << "QEnterEvent(" << static_cast<const QEnterEvent *>(e)->position() << ')';
         break;
     case QEvent::Timer:
-        dbg << "QTimerEvent(id=" << static_cast<const QTimerEvent *>(e)->timerId() << ')';
+        dbg << "BOBUIimerEvent(id=" << static_cast<const BOBUIimerEvent *>(e)->timerId() << ')';
         break;
     case QEvent::PlatformSurface:
         dbg << "QPlatformSurfaceEvent(surfaceEventType=";
@@ -4410,13 +4410,13 @@ QDebug operator<<(QDebug dbg, const QEvent *e)
         break;
     default:
         dbg << eventClassName(type) << '(';
-        QtDebugUtils::formatQEnum(dbg, type);
+        BobUIDebugUtils::formatQEnum(dbg, type);
         dbg << ", " << (const void *)e << ')';
         break;
     }
     return dbg;
 }
-#endif // !QT_NO_DEBUG_STREAM
+#endif // !BOBUI_NO_DEBUG_STREAM
 
 /*!
     \class QShortcutEvent
@@ -4424,7 +4424,7 @@ QDebug operator<<(QDebug dbg, const QEvent *e)
     the user presses a key combination.
 
     \ingroup events
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     Normally you do not need to use this class directly; QShortcut
     provides a higher-level interface to handle shortcut keys.
@@ -4461,20 +4461,20 @@ QDebug operator<<(QDebug dbg, const QEvent *e)
 /*!
     \class QWindowStateChangeEvent
     \ingroup events
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QWindowStateChangeEvent class provides the window state before a
     window state change.
 */
 
-/*! \fn Qt::WindowStates QWindowStateChangeEvent::oldState() const
+/*! \fn BobUI::WindowStates QWindowStateChangeEvent::oldState() const
 
     Returns the state of the window before the change.
 */
 
 /*! \internal
  */
-QWindowStateChangeEvent::QWindowStateChangeEvent(Qt::WindowStates oldState, bool isOverride)
+QWindowStateChangeEvent::QWindowStateChangeEvent(BobUI::WindowStates oldState, bool isOverride)
     : QEvent(WindowStateChange), m_oldStates(oldState), m_override(isOverride)
 {
 }
@@ -4490,24 +4490,24 @@ Q_IMPL_EVENT_COMMON(QWindowStateChangeEvent)
 
 
 /*!
-    \class QTouchEvent
-    \brief The QTouchEvent class contains parameters that describe a touch event.
+    \class BOBUIouchEvent
+    \brief The BOBUIouchEvent class contains parameters that describe a touch event.
     \since 4.6
     \ingroup events
     \ingroup touch
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \section1 Enabling Touch Events
 
     Touch events occur when pressing, releasing, or moving one or more touch points on a touch
     device (such as a touch-screen or track-pad). To receive touch events, widgets have to have the
-    Qt::WA_AcceptTouchEvents attribute set and graphics items need to have the
+    BobUI::WA_AcceptTouchEvents attribute set and graphics items need to have the
     \l{QGraphicsItem::setAcceptTouchEvents()}{acceptTouchEvents} attribute set to true.
 
-    When using QAbstractScrollArea based widgets, you should enable the Qt::WA_AcceptTouchEvents
+    When using QAbstractScrollArea based widgets, you should enable the BobUI::WA_AcceptTouchEvents
     attribute on the scroll area's \l{QAbstractScrollArea::viewport()}{viewport}.
 
-    Similarly to QMouseEvent, Qt automatically grabs each touch point on the first press inside a
+    Similarly to QMouseEvent, BobUI automatically grabs each touch point on the first press inside a
     widget, and the widget will receive all updates for the touch point until it is released.
     Note that it is possible for a widget to receive events for numerous touch points, and that
     multiple widgets may be receiving touch events at the same time.
@@ -4548,9 +4548,9 @@ Q_IMPL_EVENT_COMMON(QWindowStateChangeEvent)
 
     \section1 Event Delivery and Propagation
 
-    By default, QGuiApplication translates the first touch point in a QTouchEvent into
+    By default, QGuiApplication translates the first touch point in a BOBUIouchEvent into
     a QMouseEvent. This makes it possible to enable touch events on existing widgets that do not
-    normally handle QTouchEvent. See below for information on some special considerations needed
+    normally handle BOBUIouchEvent. See below for information on some special considerations needed
     when doing this.
 
     QEvent::TouchBegin is the first touch event sent to a widget. The QEvent::TouchBegin event
@@ -4563,33 +4563,33 @@ Q_IMPL_EVENT_COMMON(QWindowStateChangeEvent)
 
     \section1 Touch Point Grouping
 
-    As mentioned above, it is possible that several widgets can be receiving QTouchEvents at the
-    same time. However, Qt makes sure to never send duplicate QEvent::TouchBegin events to the same
+    As mentioned above, it is possible that several widgets can be receiving BOBUIouchEvents at the
+    same time. However, BobUI makes sure to never send duplicate QEvent::TouchBegin events to the same
     widget, which could theoretically happen during propagation if, for example, the user touched 2
     separate widgets in a QGroupBox and both widgets ignored the QEvent::TouchBegin event.
 
-    To avoid this, Qt will group new touch points together using the following rules:
+    To avoid this, BobUI will group new touch points together using the following rules:
 
     \list
 
     \li When the first touch point is detected, the destination widget is determined firstly by the
     location on screen and secondly by the propagation rules.
 
-    \li When additional touch points are detected, Qt first looks to see if there are any active
+    \li When additional touch points are detected, BobUI first looks to see if there are any active
     touch points on any ancestor or descendent of the widget under the new touch point. If there
     are, the new touch point is grouped with the first, and the new touch point will be sent in a
-    single QTouchEvent to the widget that handled the first touch point. (The widget under the new
+    single BOBUIouchEvent to the widget that handled the first touch point. (The widget under the new
     touch point will not receive an event).
 
     \endlist
 
     This makes it possible for sibling widgets to handle touch events independently while making
-    sure that the sequence of QTouchEvents is always correct.
+    sure that the sequence of BOBUIouchEvents is always correct.
 
     \section1 Mouse Events and Touch Event Synthesizing
 
-    QTouchEvent delivery is independent from that of QMouseEvent. The application flags
-    Qt::AA_SynthesizeTouchForUnhandledMouseEvents and Qt::AA_SynthesizeMouseForUnhandledTouchEvents
+    BOBUIouchEvent delivery is independent from that of QMouseEvent. The application flags
+    BobUI::AA_SynthesizeTouchForUnhandledMouseEvents and BobUI::AA_SynthesizeMouseForUnhandledTouchEvents
     can be used to enable or disable automatic synthesizing of touch events to mouse events and
     mouse events to touch events.
 
@@ -4598,36 +4598,36 @@ Q_IMPL_EVENT_COMMON(QWindowStateChangeEvent)
     \list
 
     \li As mentioned above, enabling touch events means multiple widgets can be receiving touch
-    events simultaneously. Combined with the default QWidget::event() handling for QTouchEvents,
+    events simultaneously. Combined with the default QWidget::event() handling for BOBUIouchEvents,
     this gives you great flexibility in designing touch user interfaces. Be aware of the
     implications. For example, it is possible that the user is moving a QSlider with one finger and
     pressing a QPushButton with another. The signals emitted by these widgets will be
     interleaved.
 
     \li Recursion into the event loop using one of the exec() methods (e.g., QDialog::exec() or
-    QMenu::exec()) in a QTouchEvent event handler is not supported. Since there are multiple event
+    QMenu::exec()) in a BOBUIouchEvent event handler is not supported. Since there are multiple event
     recipients, recursion may cause problems, including but not limited to lost events
     and unexpected infinite recursion.
 
-    \li QTouchEvents are not affected by a \l{QWidget::grabMouse()}{mouse grab} or an
-    \l{QApplication::activePopupWidget()}{active pop-up widget}. The behavior of QTouchEvents is
+    \li BOBUIouchEvents are not affected by a \l{QWidget::grabMouse()}{mouse grab} or an
+    \l{QApplication::activePopupWidget()}{active pop-up widget}. The behavior of BOBUIouchEvents is
     undefined when opening a pop-up or grabbing the mouse while there are more than one active touch
     points.
 
     \endlist
 
-    \sa QEventPoint, QEventPoint::State, Qt::WA_AcceptTouchEvents,
+    \sa QEventPoint, QEventPoint::State, BobUI::WA_AcceptTouchEvents,
     QGraphicsItem::acceptTouchEvents()
 */
 
 /*!
-    Constructs a QTouchEvent with the given \a eventType, \a device,
+    Constructs a BOBUIouchEvent with the given \a eventType, \a device,
     \a touchPoints, and current keyboard \a modifiers at the time of the event.
 */
 
-QTouchEvent::QTouchEvent(QEvent::Type eventType,
+BOBUIouchEvent::BOBUIouchEvent(QEvent::Type eventType,
                          const QPointingDevice *device,
-                         Qt::KeyboardModifiers modifiers,
+                         BobUI::KeyboardModifiers modifiers,
                          const QList<QEventPoint> &touchPoints)
     : QPointerEvent(eventType, device, modifiers, touchPoints),
       m_target(nullptr)
@@ -4638,17 +4638,17 @@ QTouchEvent::QTouchEvent(QEvent::Type eventType,
     }
 }
 
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
 /*!
     \deprecated [6.0] Use another constructor.
 
-    Constructs a QTouchEvent with the given \a eventType, \a device, and
+    Constructs a BOBUIouchEvent with the given \a eventType, \a device, and
     \a touchPoints. The \a touchPointStates and \a modifiers are the current
     touch point states and keyboard modifiers at the time of the event.
 */
-QTouchEvent::QTouchEvent(QEvent::Type eventType,
+BOBUIouchEvent::BOBUIouchEvent(QEvent::Type eventType,
                          const QPointingDevice *device,
-                         Qt::KeyboardModifiers modifiers,
+                         BobUI::KeyboardModifiers modifiers,
                          QEventPoint::States touchPointStates,
                          const QList<QEventPoint> &touchPoints)
     : QPointerEvent(eventType, device, modifiers, touchPoints),
@@ -4658,14 +4658,14 @@ QTouchEvent::QTouchEvent(QEvent::Type eventType,
     for (QEventPoint &point : m_points)
         QMutableEventPoint::setDevice(point, device);
 }
-#endif // QT_DEPRECATED_SINCE(6, 0)
+#endif // BOBUI_DEPRECATED_SINCE(6, 0)
 
-Q_IMPL_POINTER_EVENT(QTouchEvent)
+Q_IMPL_POINTER_EVENT(BOBUIouchEvent)
 
 /*!
     Returns true if this event includes at least one newly-pressed touchpoint.
 */
-bool QTouchEvent::isBeginEvent() const
+bool BOBUIouchEvent::isBeginEvent() const
 {
     return m_touchPointStates.testFlag(QEventPoint::State::Pressed);
 }
@@ -4674,7 +4674,7 @@ bool QTouchEvent::isBeginEvent() const
     Returns true if this event does not include newly-pressed or newly-released
     touchpoints.
 */
-bool QTouchEvent::isUpdateEvent() const
+bool BOBUIouchEvent::isUpdateEvent() const
 {
     return !m_touchPointStates.testFlag(QEventPoint::State::Pressed) &&
            !m_touchPointStates.testFlag(QEventPoint::State::Released);
@@ -4683,23 +4683,23 @@ bool QTouchEvent::isUpdateEvent() const
 /*!
     Returns true if this event includes at least one newly-released touchpoint.
 */
-bool QTouchEvent::isEndEvent() const
+bool BOBUIouchEvent::isEndEvent() const
 {
     return m_touchPointStates.testFlag(QEventPoint::State::Released);
 }
 
-/*! \fn QObject *QTouchEvent::target() const
+/*! \fn QObject *BOBUIouchEvent::target() const
 
     Returns the target object within the window on which the event occurred.
     This is typically a QWidget or a QQuickItem. May be 0 when no specific target is available.
 */
 
-/*! \fn QEventPoint::States QTouchEvent::touchPointStates() const
+/*! \fn QEventPoint::States BOBUIouchEvent::touchPointStates() const
 
     Returns a bitwise OR of all the touch point states for this event.
 */
 
-/*! \fn const QList<QEventPoint> &QTouchEvent::touchPoints() const
+/*! \fn const QList<QEventPoint> &BOBUIouchEvent::touchPoints() const
     \deprecated [6.0] Use points() instead.
 
     Returns a reference to the list of touch points contained in the touch event.
@@ -4711,7 +4711,7 @@ bool QTouchEvent::isEndEvent() const
     \class QScrollPrepareEvent
     \since 4.8
     \ingroup events
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QScrollPrepareEvent class is sent in preparation of scrolling.
 
@@ -4794,7 +4794,7 @@ void QScrollPrepareEvent::setContentPos(const QPointF &pos)
     \class QScrollEvent
     \since 4.8
     \ingroup events
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QScrollEvent class is sent when scrolling.
 
@@ -4864,7 +4864,7 @@ Q_IMPL_EVENT_COMMON(QScrollEvent)
     Creates a new QScreenOrientationChangeEvent
     \a screenOrientation is the new orientation of the \a screen.
 */
-QScreenOrientationChangeEvent::QScreenOrientationChangeEvent(QScreen *screen, Qt::ScreenOrientation screenOrientation)
+QScreenOrientationChangeEvent::QScreenOrientationChangeEvent(QScreen *screen, BobUI::ScreenOrientation screenOrientation)
     : QEvent(QEvent::OrientationChange), m_screen(screen), m_orientation(screenOrientation)
 {
 }
@@ -4878,7 +4878,7 @@ Q_IMPL_EVENT_COMMON(QScreenOrientationChangeEvent)
 */
 
 /*!
-    \fn Qt::ScreenOrientation QScreenOrientationChangeEvent::orientation() const
+    \fn BobUI::ScreenOrientation QScreenOrientationChangeEvent::orientation() const
 
     Returns the orientation of the screen.
 */
@@ -4887,7 +4887,7 @@ Q_IMPL_EVENT_COMMON(QScreenOrientationChangeEvent)
     Creates a new QApplicationStateChangeEvent.
     \a applicationState is the new state.
 */
-QApplicationStateChangeEvent::QApplicationStateChangeEvent(Qt::ApplicationState applicationState)
+QApplicationStateChangeEvent::QApplicationStateChangeEvent(BobUI::ApplicationState applicationState)
     : QEvent(QEvent::ApplicationStateChange), m_applicationState(applicationState)
 {
 }
@@ -4895,14 +4895,14 @@ QApplicationStateChangeEvent::QApplicationStateChangeEvent(Qt::ApplicationState 
 Q_IMPL_EVENT_COMMON(QApplicationStateChangeEvent)
 
 /*!
-    \fn Qt::ApplicationState QApplicationStateChangeEvent::applicationState() const
+    \fn BobUI::ApplicationState QApplicationStateChangeEvent::applicationState() const
 
     Returns the state of the application.
 */
 
 /*!
     \class QChildWindowEvent
-    \inmodule QtGui
+    \inmodule BobUIGui
     \since 6.7
     \brief The QChildWindowEvent class contains event parameters for
     child window changes.
@@ -4946,7 +4946,7 @@ QMutableTouchEvent::~QMutableTouchEvent()
 /*! \internal
     Add the given \a point.
 */
-void QMutableTouchEvent::addPoint(QTouchEvent *e, const QEventPoint &point)
+void QMutableTouchEvent::addPoint(BOBUIouchEvent *e, const QEventPoint &point)
 {
     e->m_points.append(point);
     auto &added = e->m_points.last();
@@ -4967,6 +4967,6 @@ void QMutableTouchEvent::addPoint(const QEventPoint &point)
     addPoint(this, point);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qevent.cpp"

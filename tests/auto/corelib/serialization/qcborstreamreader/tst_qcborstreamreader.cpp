@@ -1,12 +1,12 @@
 // Copyright (C) 2020 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/qcborstream.h>
-#include <QTest>
+#include <BobUICore/qcborstream.h>
+#include <BOBUIest>
 #include <QBuffer>
 
-#ifndef QTEST_THROW_ON_FAIL
-# error This test requires QTEST_THROW_ON_FAIL being active.
+#ifndef BOBUIEST_THROW_ON_FAIL
+# error This test requires BOBUIEST_THROW_ON_FAIL being active.
 #endif
 
 class tst_QCborStreamReader : public QObject
@@ -72,31 +72,31 @@ private Q_SLOTS:
     F(QCborStreamReader::Double) \
     F(QCborStreamReader::Invalid)
 
-QT_BEGIN_NAMESPACE
-namespace QTest {
+BOBUI_BEGIN_NAMESPACE
+namespace BOBUIest {
 template<> char *toString<QCborStreamReader::Type>(const QCborStreamReader::Type &t)
 {
     return qstrdup([=]() {
         switch (t) {
 #define TYPE(t) \
-        case t: return QT_STRINGIFY(t);
+        case t: return BOBUI_STRINGIFY(t);
         FOR_CBOR_TYPE(TYPE)
 #undef TYPE
         }
         return "<huh?>";
     }());
 }
-} // namespace QTest
-QT_END_NAMESPACE
+} // namespace BOBUIest
+BOBUI_END_NAMESPACE
 
 // Get the data from TinyCBOR (see src/3rdparty/tinycbor/tests/parser/data.cpp)
 #include "parser/data.cpp"
 
 void tst_QCborStreamReader::initTestCase_data()
 {
-    QTest::addColumn<bool>("useDevice");
-    QTest::newRow("QByteArray") << false;
-    QTest::newRow("QBuffer") << true;
+    BOBUIest::addColumn<bool>("useDevice");
+    BOBUIest::newRow("QByteArray") << false;
+    BOBUIest::newRow("QBuffer") << true;
 }
 
 void tst_QCborStreamReader::basics()
@@ -191,12 +191,12 @@ void tst_QCborStreamReader::basics()
 
 void tst_QCborStreamReader::clear_data()
 {
-    QTest::addColumn<QByteArray>("data");
-    QTest::addColumn<QCborError>("firstError");
-    QTest::addColumn<int>("offsetAfterSkip");
-    QTest::newRow("invalid") << QByteArray(512, '\xff') << QCborError{QCborError::UnexpectedBreak} << 0;
-    QTest::newRow("valid")   << QByteArray(512, '\0')   << QCborError{QCborError::NoError} << 0;
-    QTest::newRow("skipped") << QByteArray(512, '\0')   << QCborError{QCborError::NoError} << 1;
+    BOBUIest::addColumn<QByteArray>("data");
+    BOBUIest::addColumn<QCborError>("firstError");
+    BOBUIest::addColumn<int>("offsetAfterSkip");
+    BOBUIest::newRow("invalid") << QByteArray(512, '\xff') << QCborError{QCborError::UnexpectedBreak} << 0;
+    BOBUIest::newRow("valid")   << QByteArray(512, '\0')   << QCborError{QCborError::NoError} << 0;
+    BOBUIest::newRow("skipped") << QByteArray(512, '\0')   << QCborError{QCborError::NoError} << 1;
 }
 
 void tst_QCborStreamReader::clear()
@@ -275,7 +275,7 @@ void escapedAppendTo(QString &result, const QString &data)
     result += '"';
     for (int i = 0; i <= data.size(); i += 245) {
         // hopefully we won't have a surrogate pair split here
-        QScopedArrayPointer<char> escaped(QTest::toPrettyUnicode(data.mid(i, 245)));
+        QScopedArrayPointer<char> escaped(BOBUIest::toPrettyUnicode(data.mid(i, 245)));
         QLatin1String s(escaped.data() + 1);    // skip opening "
         s.chop(1);                              // drop the closing "
         result += s;
@@ -675,7 +675,7 @@ void tst_QCborStreamReader::strings()
             QCOMPARE(reader.currentStringChunkSize(), controlData.data.size());
         }
 
-        QByteArray chunk(controlData.data.size(), Qt::Uninitialized);
+        QByteArray chunk(controlData.data.size(), BobUI::Uninitialized);
         auto r = reader.readStringChunk(chunk.data(), chunk.size());
         QCOMPARE(r.status, controlData.status);
         if (r.status == QCborStreamReader::Ok)
@@ -985,8 +985,8 @@ void tst_QCborStreamReader::hugeDeviceValidation()
         return;
 
 #if (defined(__SANITIZE_ADDRESS__) || __has_feature(address_sanitizer))
-    if (   qstrcmp(QTest::currentDataTag(), "bytearray-just-too-big") == 0
-        || qstrcmp(QTest::currentDataTag(),    "string-just-too-big") == 0)
+    if (   qstrcmp(BOBUIest::currentDataTag(), "bytearray-just-too-big") == 0
+        || qstrcmp(BOBUIest::currentDataTag(),    "string-just-too-big") == 0)
         QSKIP("This test tries to allocate a huge memory buffer,"
               " which Address Sanitizer flags as a problem");
 #endif
@@ -1021,16 +1021,16 @@ static const int Recursions = 3;
 void tst_QCborStreamReader::recursionLimit_data()
 {
     static const int recursions = Recursions + 2;
-    QTest::addColumn<QByteArray>("data");
+    BOBUIest::addColumn<QByteArray>("data");
 
-    QTest::newRow("array") << QByteArray(recursions, '\x81') + '\x20';
-    QTest::newRow("_array") << QByteArray(recursions, '\x9f') + '\x20' + QByteArray(recursions, '\xff');
+    BOBUIest::newRow("array") << QByteArray(recursions, '\x81') + '\x20';
+    BOBUIest::newRow("_array") << QByteArray(recursions, '\x9f') + '\x20' + QByteArray(recursions, '\xff');
 
     QByteArray data;
     for (int i = 0; i < recursions; ++i)
         data += "\xa1\x65Hello";
     data += '\2';
-    QTest::newRow("map-recursive-values") << data;
+    BOBUIest::newRow("map-recursive-values") << data;
 
     data.clear();
     for (int i = 0; i < recursions; ++i)
@@ -1038,25 +1038,25 @@ void tst_QCborStreamReader::recursionLimit_data()
     data += '\2';
     for (int i = 0; i < recursions; ++i)
         data += "\xff";
-    QTest::newRow("_map-recursive-values") << data;
+    BOBUIest::newRow("_map-recursive-values") << data;
 
     data = QByteArray(recursions, '\xa1');
     data += '\2';
     for (int i = 0; i < recursions; ++i)
         data += "\x7f\x64quux\xff";
-    QTest::newRow("map-recursive-keys") << data;
+    BOBUIest::newRow("map-recursive-keys") << data;
 
     data = QByteArray(recursions, '\xbf');
     data += '\2';
     for (int i = 0; i < recursions; ++i)
         data += "\1\xff";
-    QTest::newRow("_map-recursive-keys") << data;
+    BOBUIest::newRow("_map-recursive-keys") << data;
 
     data.clear();
     for (int i = 0; i < recursions / 2; ++i)
         data += "\x81\xa1\1";
     data += '\2';
-    QTest::newRow("mixed") << data;
+    BOBUIest::newRow("mixed") << data;
 }
 
 void tst_QCborStreamReader::recursionLimit()
@@ -1265,6 +1265,6 @@ void tst_QCborStreamReader::extraData()
 }
 
 
-QTEST_MAIN(tst_QCborStreamReader)
+BOBUIEST_MAIN(tst_QCborStreamReader)
 
 #include "tst_qcborstreamreader.moc"

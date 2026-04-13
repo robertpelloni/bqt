@@ -1,4 +1,4 @@
-QT += widgets network
+BOBUI += widgets network
 
 TARGET = secureudpserver
 TEMPLATE = app
@@ -17,5 +17,5 @@ HEADERS += \
 FORMS = mainwindow.ui \
     nicselector.ui
 
-target.path = $$[QT_INSTALL_EXAMPLES]/network/secureudpserver
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/network/secureudpserver
 INSTALLS += target

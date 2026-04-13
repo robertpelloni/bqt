@@ -31,7 +31,7 @@
   <property name="windowTitle">
    <string>Calculator</string>
   </property>
-  <widget class="QToolButton" name="backspaceButton">
+  <widget class="BOBUIoolButton" name="backspaceButton">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -44,7 +44,7 @@
     <string>Backspace</string>
    </property>
   </widget>
-  <widget class="QToolButton" name="clearButton">
+  <widget class="BOBUIoolButton" name="clearButton">
    <property name="geometry">
     <rect>
      <x>110</x>
@@ -57,7 +57,7 @@
     <string>Clear</string>
    </property>
   </widget>
-  <widget class="QToolButton" name="clearAllButton">
+  <widget class="BOBUIoolButton" name="clearAllButton">
    <property name="geometry">
     <rect>
      <x>210</x>
@@ -70,7 +70,7 @@
     <string>Clear All</string>
    </property>
   </widget>
-  <widget class="QToolButton" name="clearMemoryButton">
+  <widget class="BOBUIoolButton" name="clearMemoryButton">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -83,7 +83,7 @@
     <string>MC</string>
    </property>
   </widget>
-  <widget class="QToolButton" name="readMemoryButton">
+  <widget class="BOBUIoolButton" name="readMemoryButton">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -96,7 +96,7 @@
     <string>MR</string>
    </property>
   </widget>
-  <widget class="QToolButton" name="setMemoryButton">
+  <widget class="BOBUIoolButton" name="setMemoryButton">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -109,7 +109,7 @@
     <string>MS</string>
    </property>
   </widget>
-  <widget class="QToolButton" name="addToMemoryButton">
+  <widget class="BOBUIoolButton" name="addToMemoryButton">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -122,7 +122,7 @@
     <string>M+</string>
    </property>
   </widget>
-  <widget class="QToolButton" name="sevenButton">
+  <widget class="BOBUIoolButton" name="sevenButton">
    <property name="geometry">
     <rect>
      <x>60</x>
@@ -135,7 +135,7 @@
     <string>7</string>
    </property>
   </widget>
-  <widget class="QToolButton" name="eightButton">
+  <widget class="BOBUIoolButton" name="eightButton">
    <property name="geometry">
     <rect>
      <x>110</x>
@@ -148,7 +148,7 @@
     <string>8</string>
    </property>
   </widget>
-  <widget class="QToolButton" name="nineButton">
+  <widget class="BOBUIoolButton" name="nineButton">
    <property name="geometry">
     <rect>
      <x>160</x>
@@ -161,7 +161,7 @@
     <string>9</string>
    </property>
   </widget>
-  <widget class="QToolButton" name="fourButton">
+  <widget class="BOBUIoolButton" name="fourButton">
    <property name="geometry">
     <rect>
      <x>60</x>
@@ -174,7 +174,7 @@
     <string>4</string>
    </property>
   </widget>
-  <widget class="QToolButton" name="fiveButton">
+  <widget class="BOBUIoolButton" name="fiveButton">
    <property name="geometry">
     <rect>
      <x>110</x>
@@ -187,7 +187,7 @@
     <string>5</string>
    </property>
   </widget>
-  <widget class="QToolButton" name="sixButton">
+  <widget class="BOBUIoolButton" name="sixButton">
    <property name="geometry">
     <rect>
      <x>160</x>
@@ -200,7 +200,7 @@
     <string>6</string>
    </property>
   </widget>
-  <widget class="QToolButton" name="oneButton">
+  <widget class="BOBUIoolButton" name="oneButton">
    <property name="geometry">
     <rect>
      <x>60</x>
@@ -213,7 +213,7 @@
     <string>1</string>
    </property>
   </widget>
-  <widget class="QToolButton" name="twoButton">
+  <widget class="BOBUIoolButton" name="twoButton">
    <property name="geometry">
     <rect>
      <x>110</x>
@@ -226,7 +226,7 @@
     <string>2</string>
    </property>
   </widget>
-  <widget class="QToolButton" name="threeButton">
+  <widget class="BOBUIoolButton" name="threeButton">
    <property name="geometry">
     <rect>
      <x>160</x>
@@ -239,7 +239,7 @@
     <string>3</string>
    </property>
   </widget>
-  <widget class="QToolButton" name="zeroButton">
+  <widget class="BOBUIoolButton" name="zeroButton">
    <property name="geometry">
     <rect>
      <x>60</x>
@@ -252,7 +252,7 @@
     <string>0</string>
    </property>
   </widget>
-  <widget class="QToolButton" name="pointButton">
+  <widget class="BOBUIoolButton" name="pointButton">
    <property name="geometry">
     <rect>
      <x>110</x>
@@ -265,7 +265,7 @@
     <string>.</string>
    </property>
   </widget>
-  <widget class="QToolButton" name="changeSignButton">
+  <widget class="BOBUIoolButton" name="changeSignButton">
    <property name="geometry">
     <rect>
      <x>160</x>
@@ -278,7 +278,7 @@
     <string>+-</string>
    </property>
   </widget>
-  <widget class="QToolButton" name="plusButton">
+  <widget class="BOBUIoolButton" name="plusButton">
    <property name="geometry">
     <rect>
      <x>210</x>
@@ -291,7 +291,7 @@
     <string>+</string>
    </property>
   </widget>
-  <widget class="QToolButton" name="divisionButton">
+  <widget class="BOBUIoolButton" name="divisionButton">
    <property name="geometry">
     <rect>
      <x>210</x>
@@ -304,7 +304,7 @@
     <string>/</string>
    </property>
   </widget>
-  <widget class="QToolButton" name="timesButton">
+  <widget class="BOBUIoolButton" name="timesButton">
    <property name="geometry">
     <rect>
      <x>210</x>
@@ -317,7 +317,7 @@
     <string>*</string>
    </property>
   </widget>
-  <widget class="QToolButton" name="minusButton">
+  <widget class="BOBUIoolButton" name="minusButton">
    <property name="geometry">
     <rect>
      <x>210</x>
@@ -330,7 +330,7 @@
     <string>-</string>
    </property>
   </widget>
-  <widget class="QToolButton" name="squareRootButton">
+  <widget class="BOBUIoolButton" name="squareRootButton">
    <property name="geometry">
     <rect>
      <x>260</x>
@@ -343,7 +343,7 @@
     <string>Sqrt</string>
    </property>
   </widget>
-  <widget class="QToolButton" name="powerButton">
+  <widget class="BOBUIoolButton" name="powerButton">
    <property name="geometry">
     <rect>
      <x>260</x>
@@ -356,7 +356,7 @@
     <string>x^2</string>
    </property>
   </widget>
-  <widget class="QToolButton" name="reciprocalButton">
+  <widget class="BOBUIoolButton" name="reciprocalButton">
    <property name="geometry">
     <rect>
      <x>260</x>
@@ -369,7 +369,7 @@
     <string>1/x</string>
    </property>
   </widget>
-  <widget class="QToolButton" name="equalButton">
+  <widget class="BOBUIoolButton" name="equalButton">
    <property name="geometry">
     <rect>
      <x>260</x>
@@ -395,7 +395,7 @@
     <number>15</number>
    </property>
    <property name="alignment">
-    <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+    <set>BobUI::AlignmentFlag::AlignRight|BobUI::AlignmentFlag::AlignTrailing|BobUI::AlignmentFlag::AlignVCenter</set>
    </property>
    <property name="readOnly">
     <bool>true</bool>

@@ -16,7 +16,7 @@ http://creativecommons.org/publicdomain/zero/1.0/
 
 #include <private/qglobal_p.h>
 
-#if QT_CONFIG(sha3_fast)
+#if BOBUI_CONFIG(sha3_fast)
 #include "KeccakF-1600-int-set.h"
 #endif
 

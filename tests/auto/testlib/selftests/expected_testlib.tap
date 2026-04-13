@@ -6,11 +6,11 @@ not ok 2 - basics()
   type: QCOMPARE
   message: Compared QObject pointers are not the same
   wanted: "nullptr" (nullptr)
-  found: tst_TestLib/"TestObject" (QTest::testObject())
+  found: tst_TestLib/"TestObject" (BOBUIest::testObject())
   expected: "nullptr" (nullptr)
-  actual: tst_TestLib/"TestObject" (QTest::testObject())
-  at: tst_TestLib::basics() (qtbase/tests/auto/testlib/selftests/testlib/tst_testlib.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/testlib/tst_testlib.cpp
+  actual: tst_TestLib/"TestObject" (BOBUIest::testObject())
+  at: tst_TestLib::basics() (bobuibase/tests/auto/testlib/selftests/testlib/tst_testlib.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/testlib/tst_testlib.cpp
   line: 0
   ...
 ok 3 - delays()

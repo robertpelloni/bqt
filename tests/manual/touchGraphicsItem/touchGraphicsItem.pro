@@ -1,4 +1,4 @@
-QT+=widgets
+BOBUI+=widgets
 TEMPLATE = app
 TARGET = touchGraphicsItem
 INCLUDEPATH += .

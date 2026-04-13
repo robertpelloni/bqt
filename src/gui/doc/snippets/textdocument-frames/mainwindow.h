@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef WINDOW_H
 #define WINDOW_H
 
 #include <QMainWindow>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-class QTextEdit;
-class QTextFrame;
-class QTextBlock;
+class BOBUIextEdit;
+class BOBUIextFrame;
+class BOBUIextBlock;
 
 class MainWindow : public QMainWindow
 {
@@ -24,12 +24,12 @@ public slots:
 
 private:
     bool writeXml(const QString &fileName);
-    void processBlock(QTextBlock);
-    void processFrame(QTextFrame *frame);
+    void processBlock(BOBUIextBlock);
+    void processFrame(BOBUIextFrame *frame);
 
-    QTextEdit *editor = nullptr;
+    BOBUIextEdit *editor = nullptr;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

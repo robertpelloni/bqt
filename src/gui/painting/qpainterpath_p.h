@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPAINTERPATH_P_H
 #define QPAINTERPATH_P_H
@@ -8,18 +8,18 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
+// This file is not part of the BobUI API.  It exists for the convenience
+// of other BobUI classes.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
-#include "QtGui/qpainterpath.h"
-#include "QtGui/qregion.h"
-#include "QtCore/qlist.h"
-#include "QtCore/qvarlengtharray.h"
+#include <BobUIGui/private/bobuiguiglobal_p.h>
+#include "BobUIGui/qpainterpath.h"
+#include "BobUIGui/qregion.h"
+#include "BobUICore/qlist.h"
+#include "BobUICore/qvarlengtharray.h"
 
 #include <private/qvectorpath_p.h>
 #include <private/qstroker_p.h>
@@ -27,7 +27,7 @@
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QPolygonF;
 class QVectorPathConverter;
@@ -97,9 +97,9 @@ public:
     friend class QPainterPath;
     friend class QPainterPathStroker;
     friend class QPainterPathStrokerPrivate;
-    friend class QTransform;
+    friend class BOBUIransform;
     friend class QVectorPath;
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
     friend Q_GUI_EXPORT QDataStream &operator<<(QDataStream &, const QPainterPath &);
     friend Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, QPainterPath &);
 #endif
@@ -243,7 +243,7 @@ inline const QPainterPath QVectorPath::convertToPainterPath() const
         return path;
 }
 
-void Q_GUI_EXPORT qt_find_ellipse_coords(const QRectF &r, qreal angle, qreal length,
+void Q_GUI_EXPORT bobui_find_ellipse_coords(const QRectF &r, qreal angle, qreal length,
                                          QPointF* startPoint, QPointF *endPoint);
 
 inline bool QPainterPathPrivate::isClosed() const
@@ -325,6 +325,6 @@ inline int QPainterPathPrivate::elementAtT(qreal t)
 
 #define KAPPA qreal(0.5522847498)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPAINTERPATH_P_H

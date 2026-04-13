@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qplatformdefs.h"
 #include "private/qabstractfileengine_p.h"
@@ -11,7 +11,7 @@
 #include "qfilesystemengine_p.h"
 #include "qcoreapplication.h"
 
-#ifndef QT_NO_FSFILEENGINE
+#ifndef BOBUI_NO_FSFILEENGINE
 
 #include "qfile.h"
 #include "qdir.h"
@@ -26,7 +26,7 @@
 # include <private/qcore_mac_p.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \internal
@@ -35,35 +35,35 @@ QT_BEGIN_NAMESPACE
 */
 static inline int openModeToOpenFlags(QIODevice::OpenMode mode)
 {
-    int oflags = QT_OPEN_RDONLY;
-#ifdef QT_LARGEFILE_SUPPORT
-    oflags |= QT_OPEN_LARGEFILE;
+    int oflags = BOBUI_OPEN_RDONLY;
+#ifdef BOBUI_LARGEFILE_SUPPORT
+    oflags |= BOBUI_OPEN_LARGEFILE;
 #endif
 
     if ((mode & QFile::ReadWrite) == QFile::ReadWrite)
-        oflags = QT_OPEN_RDWR;
+        oflags = BOBUI_OPEN_RDWR;
     else if (mode & QFile::WriteOnly)
-        oflags = QT_OPEN_WRONLY;
+        oflags = BOBUI_OPEN_WRONLY;
 
     if (QFSFileEnginePrivate::openModeCanCreate(mode))
-        oflags |= QT_OPEN_CREAT;
+        oflags |= BOBUI_OPEN_CREAT;
 
     if (mode & QFile::Truncate)
-        oflags |= QT_OPEN_TRUNC;
+        oflags |= BOBUI_OPEN_TRUNC;
 
     if (mode & QFile::Append)
-        oflags |= QT_OPEN_APPEND;
+        oflags |= BOBUI_OPEN_APPEND;
 
     if (mode & QFile::NewOnly)
-        oflags |= QT_OPEN_EXCL;
+        oflags |= BOBUI_OPEN_EXCL;
 
     return oflags;
 }
 
 static inline QString msgOpenDirectory()
 {
-    const char message[] = QT_TRANSLATE_NOOP("QIODevice", "file to open is a directory");
-#if QT_CONFIG(translation)
+    const char message[] = BOBUI_TRANSLATE_NOOP("QIODevice", "file to open is a directory");
+#if BOBUI_CONFIG(translation)
     return QIODevice::tr(message);
 #else
     return QLatin1StringView(message);
@@ -76,7 +76,7 @@ static inline QString msgOpenDirectory()
 bool QFSFileEnginePrivate::nativeOpen(QIODevice::OpenMode openMode,
                                       std::optional<QFile::Permissions> permissions)
 {
-    return nativeOpenImpl(openMode, permissions ? QtPrivate::toMode_t(*permissions) : 0666);
+    return nativeOpenImpl(openMode, permissions ? BobUIPrivate::toMode_t(*permissions) : 0666);
 }
 
 /*!
@@ -93,13 +93,13 @@ bool QFSFileEnginePrivate::nativeOpenImpl(QIODevice::OpenMode openMode, mode_t m
 
         // Try to open the file in unbuffered mode.
         do {
-            fd = QT_OPEN(fileEntry.nativeFilePath().constData(), flags, mode);
+            fd = BOBUI_OPEN(fileEntry.nativeFilePath().constData(), flags, mode);
         } while (fd == -1 && errno == EINTR);
 
         // On failure, return and report the error.
         if (fd == -1) {
             q->setError(errno == EMFILE ? QFile::ResourceError : QFile::OpenError,
-                        qt_error_string(errno));
+                        bobui_error_string(errno));
             return false;
         }
 
@@ -109,21 +109,21 @@ bool QFSFileEnginePrivate::nativeOpenImpl(QIODevice::OpenMode openMode, mode_t m
             if (QFileSystemEngine::fillMetaData(fd, metaData)
                     && metaData.isDirectory()) {
                 q->setError(QFile::OpenError, msgOpenDirectory());
-                QT_CLOSE(fd);
+                BOBUI_CLOSE(fd);
                 return false;
             }
         }
 
         // Seek to the end when in Append mode.
         if (flags & QFile::Append) {
-            QT_OFF_T ret;
+            BOBUI_OFF_T ret;
             do {
-                ret = QT_LSEEK(fd, 0, SEEK_END);
+                ret = BOBUI_LSEEK(fd, 0, SEEK_END);
             } while (ret == -1 && errno == EINTR);
 
             if (ret == -1) {
                 q->setError(errno == EMFILE ? QFile::ResourceError : QFile::OpenError,
-                            qt_error_string(errno));
+                            bobui_error_string(errno));
                 return false;
             }
         }
@@ -161,12 +161,12 @@ bool QFSFileEnginePrivate::nativeSyncToDisk()
     Q_Q(QFSFileEngine);
     int ret;
 #if defined(_POSIX_SYNCHRONIZED_IO) && _POSIX_SYNCHRONIZED_IO > 0
-    QT_EINTR_LOOP(ret, fdatasync(nativeHandle()));
+    BOBUI_EINTR_LOOP(ret, fdatasync(nativeHandle()));
 #else
-    QT_EINTR_LOOP(ret, fsync(nativeHandle()));
+    BOBUI_EINTR_LOOP(ret, fsync(nativeHandle()));
 #endif
     if (ret != 0)
-        q->setError(QFile::WriteError, qt_error_string(errno));
+        q->setError(QFile::WriteError, bobui_error_string(errno));
     return ret == 0;
 }
 
@@ -179,11 +179,11 @@ qint64 QFSFileEnginePrivate::nativeRead(char *data, qint64 len)
 
     if (fh && nativeIsSequential()) {
         size_t readBytes = 0;
-        int oldFlags = fcntl(QT_FILENO(fh), F_GETFL);
+        int oldFlags = fcntl(BOBUI_FILENO(fh), F_GETFL);
         for (int i = 0; i < 2; ++i) {
             // Unix: Make the underlying file descriptor non-blocking
             if ((oldFlags & O_NONBLOCK) == 0)
-                fcntl(QT_FILENO(fh), F_SETFL, oldFlags | O_NONBLOCK);
+                fcntl(BOBUI_FILENO(fh), F_SETFL, oldFlags | O_NONBLOCK);
 
             // Cross platform stdlib read
             size_t read = 0;
@@ -201,7 +201,7 @@ qint64 QFSFileEnginePrivate::nativeRead(char *data, qint64 len)
 
             // Unix: Restore the blocking state of the underlying socket
             if ((oldFlags & O_NONBLOCK) == 0) {
-                fcntl(QT_FILENO(fh), F_SETFL, oldFlags);
+                fcntl(BOBUI_FILENO(fh), F_SETFL, oldFlags);
                 if (readBytes == 0) {
                     int readByte = 0;
                     do {
@@ -218,11 +218,11 @@ qint64 QFSFileEnginePrivate::nativeRead(char *data, qint64 len)
         }
         // Unix: Restore the blocking state of the underlying socket
         if ((oldFlags & O_NONBLOCK) == 0) {
-            fcntl(QT_FILENO(fh), F_SETFL, oldFlags);
+            fcntl(BOBUI_FILENO(fh), F_SETFL, oldFlags);
         }
         if (readBytes == 0 && !feof(fh)) {
             // if we didn't read anything and we're not at EOF, it must be an error
-            q->setError(QFile::ReadError, qt_error_string(errno));
+            q->setError(QFile::ReadError, bobui_error_string(errno));
             return -1;
         }
         return readBytes;
@@ -315,7 +315,7 @@ bool QFSFileEnginePrivate::doStat(QFileSystemMetaData::MetaDataFlags flags) cons
 
         int localFd = fd;
         if (fh && fileEntry.isEmpty())
-            localFd = QT_FILENO(fh);
+            localFd = BOBUI_FILENO(fh);
         if (localFd != -1)
             QFileSystemEngine::fillMetaData(localFd, metaData);
 
@@ -511,13 +511,13 @@ bool QFSFileEngine::setSize(qint64 size)
     Q_D(QFSFileEngine);
     bool ret = false;
     if (d->fd != -1)
-        ret = QT_FTRUNCATE(d->fd, size) == 0;
+        ret = BOBUI_FTRUNCATE(d->fd, size) == 0;
     else if (d->fh)
-        ret = QT_FTRUNCATE(QT_FILENO(d->fh), size) == 0;
+        ret = BOBUI_FTRUNCATE(BOBUI_FILENO(d->fh), size) == 0;
     else
-        ret = QT_TRUNCATE(d->fileEntry.nativeFilePath().constData(), size) == 0;
+        ret = BOBUI_TRUNCATE(d->fileEntry.nativeFilePath().constData(), size) == 0;
     if (!ret)
-        setError(QFile::ResizeError, qt_error_string(errno));
+        setError(QFile::ResizeError, bobui_error_string(errno));
     return ret;
 }
 
@@ -526,7 +526,7 @@ bool QFSFileEngine::setFileTime(const QDateTime &newDate, QFile::FileTime time)
     Q_D(QFSFileEngine);
 
     if (d->openMode == QIODevice::NotOpen) {
-        setError(QFile::PermissionsError, qt_error_string(EACCES));
+        setError(QFile::PermissionsError, bobui_error_string(EACCES));
         return false;
     }
 
@@ -542,7 +542,7 @@ bool QFSFileEngine::setFileTime(const QDateTime &newDate, QFile::FileTime time)
 
 uchar *QFSFileEnginePrivate::map(qint64 offset, qint64 size, QFile::MemoryMapFlags flags)
 {
-    qint64 maxFileOffset = std::numeric_limits<QT_OFF_T>::max();
+    qint64 maxFileOffset = std::numeric_limits<BOBUI_OFF_T>::max();
 #if (defined(Q_OS_LINUX) || defined(Q_OS_ANDROID)) && Q_PROCESSOR_WORDSIZE == 4
     // The Linux mmap2 system call on 32-bit takes a page-shifted 32-bit
     // integer so the maximum offset is 1 << (32+12) (the shift is always 12,
@@ -556,20 +556,20 @@ uchar *QFSFileEnginePrivate::map(qint64 offset, qint64 size, QFile::MemoryMapFla
 
     Q_Q(QFSFileEngine);
     if (openMode == QIODevice::NotOpen) {
-        q->setError(QFile::PermissionsError, qt_error_string(EACCES));
+        q->setError(QFile::PermissionsError, bobui_error_string(EACCES));
         return nullptr;
     }
 
     if (offset < 0 || offset > maxFileOffset
         || size <= 0
         || quint64(size) > quint64(size_t(-1))) {
-        q->setError(QFile::UnspecifiedError, qt_error_string(EINVAL));
+        q->setError(QFile::UnspecifiedError, bobui_error_string(EINVAL));
         return nullptr;
     }
     // If we know the mapping will extend beyond EOF, fail early to avoid
     // undefined behavior. Otherwise, let mmap have its say.
     if (doStat(QFileSystemMetaData::SizeAttribute)
-            && (QT_OFF_T(size) > metaData.size() - QT_OFF_T(offset)))
+            && (BOBUI_OFF_T(size) > metaData.size() - BOBUI_OFF_T(offset)))
         qWarning("QFSFileEngine::map: Mapping a file beyond its size is not portable");
 
     int access = 0;
@@ -590,15 +590,15 @@ uchar *QFSFileEnginePrivate::map(qint64 offset, qint64 size, QFile::MemoryMapFla
     int extra = offset % pageSize;
 
     if (quint64(size + extra) > quint64((size_t)-1)) {
-        q->setError(QFile::UnspecifiedError, qt_error_string(EINVAL));
+        q->setError(QFile::UnspecifiedError, bobui_error_string(EINVAL));
         return nullptr;
     }
 
     size_t realSize = (size_t)size + extra;
-    QT_OFF_T realOffset = QT_OFF_T(offset);
-    realOffset &= ~(QT_OFF_T(pageSize - 1));
+    BOBUI_OFF_T realOffset = BOBUI_OFF_T(offset);
+    realOffset &= ~(BOBUI_OFF_T(pageSize - 1));
 
-    void *mapAddress = QT_MMAP((void*)nullptr, realSize,
+    void *mapAddress = BOBUI_MMAP((void*)nullptr, realSize,
                    access, sharemode, nativeHandle(), realOffset);
     if (MAP_FAILED != mapAddress) {
         uchar *address = extra + static_cast<uchar*>(mapAddress);
@@ -608,16 +608,16 @@ uchar *QFSFileEnginePrivate::map(qint64 offset, qint64 size, QFile::MemoryMapFla
 
     switch(errno) {
     case EBADF:
-        q->setError(QFile::PermissionsError, qt_error_string(EACCES));
+        q->setError(QFile::PermissionsError, bobui_error_string(EACCES));
         break;
     case ENFILE:
     case ENOMEM:
-        q->setError(QFile::ResourceError, qt_error_string(errno));
+        q->setError(QFile::ResourceError, bobui_error_string(errno));
         break;
     case EINVAL:
         // size are out of bounds
     default:
-        q->setError(QFile::UnspecifiedError, qt_error_string(errno));
+        q->setError(QFile::UnspecifiedError, bobui_error_string(errno));
         break;
     }
     return nullptr;
@@ -629,14 +629,14 @@ bool QFSFileEnginePrivate::unmap(uchar *ptr)
     Q_Q(QFSFileEngine);
     const auto it = std::as_const(maps).find(ptr);
     if (it == maps.cend()) {
-        q->setError(QFile::PermissionsError, qt_error_string(EACCES));
+        q->setError(QFile::PermissionsError, bobui_error_string(EACCES));
         return false;
     }
 
     uchar *start = ptr - it->start;
     size_t len = it->length;
     if (-1 == munmap(start, len)) {
-        q->setError(QFile::UnspecifiedError, qt_error_string(errno));
+        q->setError(QFile::UnspecifiedError, bobui_error_string(errno));
         return false;
     }
     maps.erase(it);
@@ -659,10 +659,10 @@ QAbstractFileEngine::TriStateResult QFSFileEngine::cloneTo(QAbstractFileEngine *
     int dstfd = target->handle();
     TriStateResult r = QFileSystemEngine::cloneFile(srcfd, dstfd, d->metaData);
     if (r == TriStateResult::Failed)
-        setError(QFile::CopyError, qt_error_string(errno));
+        setError(QFile::CopyError, bobui_error_string(errno));
     return r;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_FSFILEENGINE
+#endif // BOBUI_NO_FSFILEENGINE

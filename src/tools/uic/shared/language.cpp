@@ -1,16 +1,16 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "language.h"
 
-#include <QtCore/qtextstream.h>
-#include <QtCore/QList>
+#include <BobUICore/bobuiextstream.h>
+#include <BobUICore/QList>
 
 #include <algorithm>
 
 namespace language {
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static Encoding encoding = Encoding::Utf8;
 static Language _language = Language::Cpp;
@@ -27,7 +27,7 @@ void setLanguage(Language l)
         listEnd = '}';
         nullPtr = u"nullptr"_s;
         operatorNew = u"new "_s;
-        qtQualifier = u"Qt::"_s;
+        bobuiQualifier = u"BobUI::"_s;
         qualifier = u"::"_s;
         self = u""_s;  // for testing: change to "this->";
         eol = u";\n"_s;
@@ -40,7 +40,7 @@ void setLanguage(Language l)
         listEnd = ']';
         nullPtr = u"None"_s;
         operatorNew = u""_s;
-        qtQualifier = u"Qt."_s;
+        bobuiQualifier = u"BobUI."_s;
         qualifier = u"."_s;
         self = u"self."_s;
         eol = u"\n"_s;
@@ -55,7 +55,7 @@ char listStart;
 char listEnd;
 QString nullPtr;
 QString operatorNew;
-QString qtQualifier;
+QString bobuiQualifier;
 QString qualifier;
 QString self;
 QString eol;
@@ -65,21 +65,21 @@ QString cppQualifier = u"::"_s;
 QString cppTrue = u"true"_s;
 QString cppFalse = u"false"_s;
 
-QTextStream &operator<<(QTextStream &str, const qtConfig &c)
+BOBUIextStream &operator<<(BOBUIextStream &str, const bobuiConfig &c)
 {
-    str << "QT_CONFIG(" << c.parameter() << ')';
+    str << "BOBUI_CONFIG(" << c.parameter() << ')';
     return str;
 }
 
-QTextStream &operator<<(QTextStream &str, const openQtConfig &c)
+BOBUIextStream &operator<<(BOBUIextStream &str, const openBobUIConfig &c)
 {
-    str << "#if " << qtConfig(c.parameter())  << '\n';
+    str << "#if " << bobuiConfig(c.parameter())  << '\n';
     return str;
 }
 
-QTextStream &operator<<(QTextStream &str, const closeQtConfig &c)
+BOBUIextStream &operator<<(BOBUIextStream &str, const closeBobUIConfig &c)
 {
-    str << "#endif // " << qtConfig(c.parameter()) << '\n';
+    str << "#endif // " << bobuiConfig(c.parameter()) << '\n';
     return str;
 }
 
@@ -184,7 +184,7 @@ QLatin1StringView paletteColorRole(int v)
 // Helpers for formatting a character sequences
 
 // Format a special character like '\x0a'
-static int formatEscapedNumber(QTextStream &str, uint value, int base, int width,
+static int formatEscapedNumber(BOBUIextStream &str, uint value, int base, int width,
                                char prefix = 0)
 {
     int length = 1 + width;
@@ -199,7 +199,7 @@ static int formatEscapedNumber(QTextStream &str, uint value, int base, int width
     const auto oldIntegerBase = str.integerBase();
     str.setPadChar(u'0');
     str.setFieldWidth(width);
-    str.setFieldAlignment(QTextStream::AlignRight);
+    str.setFieldAlignment(BOBUIextStream::AlignRight);
     str.setIntegerBase(base);
     str << value;
     str.setIntegerBase(oldIntegerBase);
@@ -209,7 +209,7 @@ static int formatEscapedNumber(QTextStream &str, uint value, int base, int width
     return length;
 }
 
-static int formatSpecialCharacter(QTextStream &str, ushort value)
+static int formatSpecialCharacter(BOBUIextStream &str, ushort value)
 {
     int length = 0;
     switch (value) {
@@ -255,7 +255,7 @@ static uint characterCode(uint c)
 }
 
 template <class Iterator>
-static void formatStringSequence(QTextStream &str, Iterator it, Iterator end,
+static void formatStringSequence(BOBUIextStream &str, Iterator it, Iterator end,
                                  const QString &indent,
                                  int escapeIntegerBase, int escapeWidth,
                                  char escapePrefix = 0)
@@ -286,7 +286,7 @@ static bool isSurrogate(QChar c)
     return c.isSurrogate();
 }
 
-void _formatString(QTextStream &str, const QString &value, const QString &indent,
+void _formatString(BOBUIextStream &str, const QString &value, const QString &indent,
                    bool qString)
 {
     switch (encoding) {
@@ -313,7 +313,7 @@ void _formatString(QTextStream &str, const QString &value, const QString &indent
     }
 }
 
-QTextStream &operator<<(QTextStream &str, const repeat &r)
+BOBUIextStream &operator<<(BOBUIextStream &str, const repeat &r)
 {
     for (int i = 0; i < r.m_count; ++i)
         str << r.m_char;
@@ -329,7 +329,7 @@ startFunctionDefinition1::startFunctionDefinition1(const char *name, const QStri
 {
 }
 
-QTextStream &operator<<(QTextStream &str, const startFunctionDefinition1 &f)
+BOBUIextStream &operator<<(BOBUIextStream &str, const startFunctionDefinition1 &f)
 {
     switch (language()) {
     case Language::Cpp:
@@ -350,7 +350,7 @@ endFunctionDefinition::endFunctionDefinition(const char *name) : m_name(name)
 {
 }
 
-QTextStream &operator<<(QTextStream &str, const endFunctionDefinition &f)
+BOBUIextStream &operator<<(BOBUIextStream &str, const endFunctionDefinition &f)
 {
     switch (language()) {
     case Language::Cpp:
@@ -363,7 +363,7 @@ QTextStream &operator<<(QTextStream &str, const endFunctionDefinition &f)
     return str;
 }
 
-void _formatStackVariable(QTextStream &str, const char *className, QStringView varName,
+void _formatStackVariable(BOBUIextStream &str, const char *className, QStringView varName,
                           bool withInitParameters)
 {
     switch (language()) {
@@ -413,7 +413,7 @@ static QString formatOverload(const QStringView &parameters)
     return result;
 }
 
-static void formatMemberFnPtr(QTextStream &str, const SignalSlot &s, OverloadUse useQOverload)
+static void formatMemberFnPtr(BOBUIextStream &str, const SignalSlot &s, OverloadUse useQOverload)
 {
     const qsizetype parenPos = s.signature.indexOf(u'(');
     Q_ASSERT(parenPos >= 0);
@@ -446,7 +446,7 @@ static void formatMemberFnPtr(QTextStream &str, const SignalSlot &s, OverloadUse
         str << ')';
 }
 
-static void formatMemberFnPtrConnection(QTextStream &str,
+static void formatMemberFnPtrConnection(BOBUIextStream &str,
                                         const SignalSlot &sender,
                                         const SignalSlot &receiver)
 {
@@ -457,7 +457,7 @@ static void formatMemberFnPtrConnection(QTextStream &str,
     str << ')';
 }
 
-static void formatStringBasedConnection(QTextStream &str,
+static void formatStringBasedConnection(BOBUIextStream &str,
                                         const SignalSlot &sender,
                                         const SignalSlot &receiver)
 {
@@ -465,7 +465,7 @@ static void formatStringBasedConnection(QTextStream &str,
         << "), " << receiver.name << ", SLOT(" << receiver.signature << "))";
 }
 
-void formatConnection(QTextStream &str, const SignalSlot &sender, const SignalSlot &receiver,
+void formatConnection(BOBUIextStream &str, const SignalSlot &sender, const SignalSlot &receiver,
                       ConnectionSyntax connectionSyntax)
 {
     switch (language()) {

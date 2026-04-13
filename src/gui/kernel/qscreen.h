@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QSCREEN_H
 #define QSCREEN_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/QList>
-#include <QtCore/QObject>
-#include <QtCore/QRect>
-#include <QtCore/QSize>
-#include <QtCore/QSizeF>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/QList>
+#include <BobUICore/QObject>
+#include <BobUICore/QRect>
+#include <BobUICore/QSize>
+#include <BobUICore/QSizeF>
 
-#include <QtGui/QTransform>
+#include <BobUIGui/BOBUIransform>
 
-#include <QtCore/qnamespace.h>
-#include <QtCore/qnativeinterface.h>
+#include <BobUICore/qnamespace.h>
+#include <BobUICore/qnativeinterface.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QPlatformScreen;
@@ -24,7 +24,7 @@ class QScreenPrivate;
 class QWindow;
 class QRect;
 class QPixmap;
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 class QDebug;
 #endif
 
@@ -57,10 +57,10 @@ class Q_GUI_EXPORT QScreen : public QObject
     Q_PROPERTY(qreal logicalDotsPerInchY READ logicalDotsPerInchY NOTIFY logicalDotsPerInchChanged)
     Q_PROPERTY(qreal logicalDotsPerInch READ logicalDotsPerInch NOTIFY logicalDotsPerInchChanged)
     Q_PROPERTY(qreal devicePixelRatio READ devicePixelRatio NOTIFY physicalDotsPerInchChanged)
-    Q_PROPERTY(Qt::ScreenOrientation primaryOrientation READ primaryOrientation
+    Q_PROPERTY(BobUI::ScreenOrientation primaryOrientation READ primaryOrientation
                NOTIFY primaryOrientationChanged)
-    Q_PROPERTY(Qt::ScreenOrientation orientation READ orientation NOTIFY orientationChanged)
-    Q_PROPERTY(Qt::ScreenOrientation nativeOrientation READ nativeOrientation)
+    Q_PROPERTY(BobUI::ScreenOrientation orientation READ orientation NOTIFY orientationChanged)
+    Q_PROPERTY(BobUI::ScreenOrientation nativeOrientation READ nativeOrientation)
     Q_PROPERTY(qreal refreshRate READ refreshRate NOTIFY refreshRateChanged)
 
 public:
@@ -102,22 +102,22 @@ public:
     QSize availableVirtualSize() const;
     QRect availableVirtualGeometry() const;
 
-    Qt::ScreenOrientation primaryOrientation() const;
-    Qt::ScreenOrientation orientation() const;
-    Qt::ScreenOrientation nativeOrientation() const;
+    BobUI::ScreenOrientation primaryOrientation() const;
+    BobUI::ScreenOrientation orientation() const;
+    BobUI::ScreenOrientation nativeOrientation() const;
 
-    int angleBetween(Qt::ScreenOrientation a, Qt::ScreenOrientation b) const;
-    QTransform transformBetween(Qt::ScreenOrientation a, Qt::ScreenOrientation b, const QRect &target) const;
-    QRect mapBetween(Qt::ScreenOrientation a, Qt::ScreenOrientation b, const QRect &rect) const;
+    int angleBetween(BobUI::ScreenOrientation a, BobUI::ScreenOrientation b) const;
+    BOBUIransform transformBetween(BobUI::ScreenOrientation a, BobUI::ScreenOrientation b, const QRect &target) const;
+    QRect mapBetween(BobUI::ScreenOrientation a, BobUI::ScreenOrientation b, const QRect &rect) const;
 
-    bool isPortrait(Qt::ScreenOrientation orientation) const;
-    bool isLandscape(Qt::ScreenOrientation orientation) const;
+    bool isPortrait(BobUI::ScreenOrientation orientation) const;
+    bool isLandscape(BobUI::ScreenOrientation orientation) const;
 
     QPixmap grabWindow(WId window = 0, int x = 0, int y = 0, int w = -1, int h = -1);
 
     qreal refreshRate() const;
 
-    QT_DECLARE_NATIVE_INTERFACE_ACCESSOR(QScreen)
+    BOBUI_DECLARE_NATIVE_INTERFACE_ACCESSOR(QScreen)
 
 Q_SIGNALS:
     void geometryChanged(const QRect &geometry);
@@ -126,8 +126,8 @@ Q_SIGNALS:
     void physicalDotsPerInchChanged(qreal dpi);
     void logicalDotsPerInchChanged(qreal dpi);
     void virtualGeometryChanged(const QRect &rect);
-    void primaryOrientationChanged(Qt::ScreenOrientation orientation);
-    void orientationChanged(Qt::ScreenOrientation orientation);
+    void primaryOrientationChanged(BobUI::ScreenOrientation orientation);
+    void orientationChanged(BobUI::ScreenOrientation orientation);
     void refreshRateChanged(qreal refreshRate);
 
 private:
@@ -141,13 +141,13 @@ private:
     friend class QWindowSystemInterface;
 };
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QScreen *);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#include <QtGui/qscreen_platform.h>
+#include <BobUIGui/qscreen_platform.h>
 
 #endif // QSCREEN_H
 

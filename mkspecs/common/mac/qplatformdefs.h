@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPLATFORMDEFS_H
 #define QPLATFORMDEFS_H
 
-// Get Qt defines/settings
+// Get BobUI defines/settings
 
 #include "qglobal.h"
 
@@ -22,7 +22,7 @@
 #include <grp.h>
 #include <pwd.h>
 #include <signal.h>
-#define QT_NO_LIBRARY_UNLOAD
+#define BOBUI_NO_LIBRARY_UNLOAD
 
 #include <sys/types.h>
 #include <sys/ioctl.h>
@@ -37,17 +37,17 @@
 
 #include "../posix/qplatformdefs.h"
 
-#undef QT_OPEN_LARGEFILE
-#undef QT_SOCKLEN_T
-#undef QT_SIGNAL_IGNORE
+#undef BOBUI_OPEN_LARGEFILE
+#undef BOBUI_SOCKLEN_T
+#undef BOBUI_SIGNAL_IGNORE
 
-#define QT_OPEN_LARGEFILE       0
+#define BOBUI_OPEN_LARGEFILE       0
 
-#define QT_SOCKLEN_T            socklen_t
+#define BOBUI_SOCKLEN_T            socklen_t
 
-#define QT_SIGNAL_IGNORE        (void (*)(int))1
+#define BOBUI_SIGNAL_IGNORE        (void (*)(int))1
 
-#define QT_SNPRINTF             ::snprintf
-#define QT_VSNPRINTF            ::vsnprintf
+#define BOBUI_SNPRINTF             ::snprintf
+#define BOBUI_VSNPRINTF            ::vsnprintf
 
 #endif // QPLATFORMDEFS_H

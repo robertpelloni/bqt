@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \class QCache
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QCache class is a template class that provides a cache.
 
     \ingroup tools
@@ -88,7 +88,7 @@
     Returns the total cost of the objects in the cache.
 
     This value is normally below maxCost(), but QCache makes an
-    exception for Qt's \l{implicitly shared} classes. If a cached
+    exception for BobUI's \l{implicitly shared} classes. If a cached
     object shares its internal data with another instance, QCache may
     keep the object lying around, possibly contributing to making
     totalCost() larger than maxCost().

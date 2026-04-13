@@ -1,3 +1,0 @@
-QTreeWidget::item {
-    border: 1px solid #32ff44;
-}

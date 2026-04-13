@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwasmlocalfileaccess_p.h"
 #include "qlocalfileapi_p.h"
@@ -9,9 +9,9 @@
 #include <emscripten/html5.h>
 #include <emscripten/val.h>
 
-#include <QtCore/qregularexpression.h>
+#include <BobUICore/qregularexpression.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace QWasmLocalFileAccess {
 namespace FileDialog {
@@ -135,10 +135,10 @@ void readFiles(const qstdweb::FileList &fileList,
     (*readFile)(0);
 }
 
-QStringList makeFilterList(const std::string &qtAcceptList)
+QStringList makeFilterList(const std::string &bobuiAcceptList)
 {
-    // copy of qt_make_filter_list() from qfiledialog.cpp
-    auto filter = QString::fromStdString(qtAcceptList); 
+    // copy of bobui_make_filter_list() from qfiledialog.cpp
+    auto filter = QString::fromStdString(bobuiAcceptList); 
     if (filter.isEmpty())
         return QStringList();
     QString sep(";;");
@@ -325,4 +325,4 @@ void showSaveFileDialog(const std::string &fileNameHint, const std::function<voi
 
 } // namespace QWasmLocalFileAccess
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

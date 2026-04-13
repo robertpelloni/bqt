@@ -1,6 +1,6 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qsettings.h"
 #include "qsettings_p.h"
@@ -19,10 +19,10 @@
 #include "qsize.h"
 #include "qstandardpaths.h"
 #include "private/qstringconverter_p.h"
-#include "qtemporaryfile.h"
-#include "private/qtools_p.h"
+#include "bobuiemporaryfile.h"
+#include "private/bobuiools_p.h"
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 #include "qsavefile.h"
 #include "qlockfile.h"
 #endif
@@ -35,7 +35,7 @@
 #include <stdlib.h>
 
 #ifdef Q_OS_WIN // for homedirpath reading from registry
-#  include <qt_windows.h>
+#  include <bobui_windows.h>
 #  include <shlobj.h>
 #endif
 
@@ -43,8 +43,8 @@
 #define Q_XDG_PLATFORM
 #endif
 
-#if !defined(QT_NO_STANDARDPATHS)                                                                  \
-        && (defined(Q_XDG_PLATFORM) || defined(QT_PLATFORM_UIKIT) || defined(Q_OS_ANDROID))
+#if !defined(BOBUI_NO_STANDARDPATHS)                                                                  \
+        && (defined(Q_XDG_PLATFORM) || defined(BOBUI_PLATFORM_UIKIT) || defined(Q_OS_ANDROID))
 #    define QSETTINGS_USE_QSTANDARDPATHS
 #endif
 
@@ -58,17 +58,17 @@
     objects of the same application.
 */
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
-using namespace QtMiscUtils;
+using namespace BobUI::StringLiterals;
+using namespace BobUIMiscUtils;
 
 struct QConfFileCustomFormat
 {
     QString extension;
     QSettings::ReadFunc readFunc;
     QSettings::WriteFunc writeFunc;
-    Qt::CaseSensitivity caseSensitivity;
+    BobUI::CaseSensitivity caseSensitivity;
 };
 Q_DECLARE_TYPEINFO(QConfFileCustomFormat, Q_RELOCATABLE_TYPE);
 
@@ -124,12 +124,12 @@ bool QConfFile::isWritable() const
 {
     QFileInfo fileInfo(name);
 
-#if QT_CONFIG(temporaryfile)
+#if BOBUI_CONFIG(temporaryfile)
     if (fileInfo.exists()) {
 #endif
         QFile file(name);
         return file.open(QFile::ReadWrite);
-#if QT_CONFIG(temporaryfile)
+#if BOBUI_CONFIG(temporaryfile)
     } else {
         // Create the directories to the file.
         QDir dir(fileInfo.absolutePath());
@@ -139,7 +139,7 @@ bool QConfFile::isWritable() const
         }
 
         // we use a temporary file to avoid race conditions
-        QTemporaryFile file(name);
+        BOBUIemporaryFile file(name);
         return file.open();
     }
 #endif
@@ -153,7 +153,7 @@ QConfFile *QConfFile::fromName(const QString &fileName, bool _userPerms)
     ConfFileCache *unusedCache = unusedCacheFunc();
 
     QConfFile *confFile = nullptr;
-    const auto locker = qt_scoped_lock(settingsGlobalMutex);
+    const auto locker = bobui_scoped_lock(settingsGlobalMutex);
 
     if (!(confFile = usedHash->value(absPath))) {
         if ((confFile = unusedCache->take(absPath)))
@@ -168,7 +168,7 @@ QConfFile *QConfFile::fromName(const QString &fileName, bool _userPerms)
 
 void QConfFile::clearCache()
 {
-    const auto locker = qt_scoped_lock(settingsGlobalMutex);
+    const auto locker = bobui_scoped_lock(settingsGlobalMutex);
     unusedCacheFunc()->clear();
 }
 
@@ -226,7 +226,7 @@ namespace {
 */
 QString QSettingsPrivate::normalizedKey(QAnyStringView key)
 {
-    QString result(key.size(), Qt::Uninitialized);
+    QString result(key.size(), BobUI::Uninitialized);
     auto out = const_cast<QChar*>(result.constData()); // don't detach
 
     const bool maybeEndsInSlash = key.visit([&out](auto key) {
@@ -325,7 +325,7 @@ void QSettingsPrivate::requestUpdate()
 {
     if (!pendingChanges) {
         pendingChanges = true;
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
         Q_Q(QSettings);
         QCoreApplication::postEvent(q, new QEvent(QEvent::UpdateRequest));
 #else
@@ -378,7 +378,7 @@ QString QSettingsPrivate::variantToString(const QVariant &v)
             break;
         }
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
         case QMetaType::QKeySequence:
 #endif
         case QMetaType::QString:
@@ -413,14 +413,14 @@ QString QSettingsPrivate::variantToString(const QVariant &v)
         }
 
         default: {
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
             QDataStream::Version version;
             const char *typeSpec;
             if (v.userType() == QMetaType::QDateTime) {
-                version = QDataStream::Qt_5_6;
+                version = QDataStream::BobUI_5_6;
                 typeSpec = "@DateTime(";
             } else {
-                version = QDataStream::Qt_4_0;
+                version = QDataStream::BobUI_4_0;
                 typeSpec = "@Variant(";
             }
             QByteArray a;
@@ -454,14 +454,14 @@ QVariant QSettingsPrivate::stringToVariant(const QString &s)
                 return QVariant(QStringView{s}.sliced(8).chopped(1).toString());
             } else if (s.startsWith("@Variant("_L1)
                        || s.startsWith("@DateTime("_L1)) {
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
                 QDataStream::Version version;
                 int offset;
                 if (s.at(1) == u'D') {
-                    version = QDataStream::Qt_5_6;
+                    version = QDataStream::BobUI_5_6;
                     offset = 10;
                 } else {
-                    version = QDataStream::Qt_4_0;
+                    version = QDataStream::BobUI_4_0;
                     offset = 9;
                 }
                 QByteArray a = QStringView{s}.sliced(offset).toLatin1();
@@ -509,13 +509,13 @@ void QSettingsPrivate::iniEscapedKey(const QString &key, QByteArray &result)
             result += (char)ch;
         } else if (ch <= 0xFF) {
             result += '%';
-            result += QtMiscUtils::toHexUpper(ch / 16);
-            result += QtMiscUtils::toHexUpper(ch % 16);
+            result += BobUIMiscUtils::toHexUpper(ch / 16);
+            result += BobUIMiscUtils::toHexUpper(ch % 16);
         } else {
             result += "%U";
             QByteArray hexCode;
             for (int j = 0; j < 4; ++j) {
-                hexCode.prepend(QtMiscUtils::toHexUpper(ch % 16));
+                hexCode.prepend(BobUIMiscUtils::toHexUpper(ch % 16));
                 ch >>= 4;
             }
             result += hexCode;
@@ -671,7 +671,7 @@ void QSettingsPrivate::iniEscapedStringList(const QStringList &strs, QByteArray 
             We need to distinguish between empty lists and one-item
             lists that contain an empty string. Ideally, we'd have a
             @EmptyList() symbol but that would break compatibility
-            with Qt 4.0. @Invalid() stands for QVariant(), and
+            with BobUI 4.0. @Invalid() stands for QVariant(), and
             QVariant().toStringList() returns an empty QStringList,
             so we're in good shape.
         */
@@ -879,7 +879,7 @@ void QConfFileSettingsPrivate::initFormat()
     readFunc = nullptr;
     writeFunc = nullptr;
 #if defined(Q_OS_DARWIN)
-    caseSensitivity = (format == QSettings::NativeFormat) ? Qt::CaseSensitive : IniCaseSensitivity;
+    caseSensitivity = (format == QSettings::NativeFormat) ? BobUI::CaseSensitive : IniCaseSensitivity;
 #else
     caseSensitivity = IniCaseSensitivity;
 #endif
@@ -889,7 +889,7 @@ void QConfFileSettingsPrivate::initFormat()
 #else
     if (format > QSettings::IniFormat) {
 #endif
-        const auto locker = qt_scoped_lock(settingsGlobalMutex);
+        const auto locker = bobui_scoped_lock(settingsGlobalMutex);
         const CustomFormatVector *customFormatVector = customFormatVectorFunc();
 
         qsizetype i = qsizetype(format) - qsizetype(QSettings::CustomFormat1);
@@ -932,9 +932,9 @@ static QString windowsConfigPath(const KNOWNFOLDERID &type)
 
     if (result.isEmpty()) {
         if (type == FOLDERID_ProgramData) {
-            result = "C:\\temp\\qt-common"_L1;
+            result = "C:\\temp\\bobui-common"_L1;
         } else if (type == FOLDERID_RoamingAppData) {
-            result = "C:\\temp\\qt-user"_L1;
+            result = "C:\\temp\\bobui-user"_L1;
         }
     }
 
@@ -1035,7 +1035,7 @@ static Path getPath(QSettings::Format format, QSettings::Scope scope)
     Q_ASSERT(int(QSettings::NativeFormat) == 0);
     Q_ASSERT(int(QSettings::IniFormat) == 1);
 
-    auto locker = qt_unique_lock(settingsGlobalMutex);
+    auto locker = bobui_unique_lock(settingsGlobalMutex);
     PathHash *pathHash = pathHashFunc();
     if (pathHash->isEmpty())
         locker = initDefaultPaths(std::move(locker));
@@ -1048,14 +1048,14 @@ static Path getPath(QSettings::Format format, QSettings::Scope scope)
     return pathHash->value(pathHashKey(QSettings::IniFormat, scope));
 }
 
-#if defined(QT_BUILD_INTERNAL) && defined(Q_XDG_PLATFORM) && !defined(QT_NO_STANDARDPATHS)
+#if defined(BOBUI_BUILD_INTERNAL) && defined(Q_XDG_PLATFORM) && !defined(BOBUI_NO_STANDARDPATHS)
 // Note: Suitable only for autotests.
 void Q_AUTOTEST_EXPORT clearDefaultPaths()
 {
-    const auto locker = qt_scoped_lock(settingsGlobalMutex);
+    const auto locker = bobui_scoped_lock(settingsGlobalMutex);
     pathHashFunc()->clear();
 }
-#endif // QT_BUILD_INTERNAL && Q_XDG_PLATFORM && !QT_NO_STANDARDPATHS
+#endif // BOBUI_BUILD_INTERNAL && Q_XDG_PLATFORM && !BOBUI_NO_STANDARDPATHS
 
 QConfFileSettingsPrivate::QConfFileSettingsPrivate(QSettings::Format format,
                                                    QSettings::Scope scope,
@@ -1083,7 +1083,7 @@ QConfFileSettingsPrivate::QConfFileSettingsPrivate(QSettings::Format format,
     }
 
     Path systemPath = getPath(format, QSettings::SystemScope);
-#if defined(Q_XDG_PLATFORM) && !defined(QT_NO_STANDARDPATHS)
+#if defined(Q_XDG_PLATFORM) && !defined(BOBUI_NO_STANDARDPATHS)
     // check if the systemPath wasn't overridden by QSettings::setPath()
     if (!systemPath.userDefined) {
         // Note: We can't use QStandardPaths::locateAll() as we need all the
@@ -1108,7 +1108,7 @@ QConfFileSettingsPrivate::QConfFileSettingsPrivate(QSettings::Format format,
         for (const auto &path : std::as_const(paths))
             confFiles.append(QConfFile::fromName(path, false));
     } else
-#endif // Q_XDG_PLATFORM && !QT_NO_STANDARDPATHS
+#endif // Q_XDG_PLATFORM && !BOBUI_NO_STANDARDPATHS
     {
         if (!application.isEmpty())
             confFiles.append(QConfFile::fromName(systemPath.path + appFile, false));
@@ -1132,7 +1132,7 @@ QConfFileSettingsPrivate::QConfFileSettingsPrivate(const QString &fileName,
 
 QConfFileSettingsPrivate::~QConfFileSettingsPrivate()
 {
-    const auto locker = qt_scoped_lock(settingsGlobalMutex);
+    const auto locker = bobui_scoped_lock(settingsGlobalMutex);
     ConfFileHash *usedHash = usedHashFunc();
     ConfFileCache *unusedCache = unusedCacheFunc();
 
@@ -1144,11 +1144,11 @@ QConfFileSettingsPrivate::~QConfFileSettingsPrivate()
                 if (usedHash)
                     usedHash->remove(conf_file->name);
                 if (unusedCache) {
-                    QT_TRY {
+                    BOBUI_TRY {
                         // compute a better size?
                         unusedCache->insert(conf_file->name, conf_file,
                                             10 + (conf_file->originalKeys.size() / 4));
-                    } QT_CATCH(...) {
+                    } BOBUI_CATCH(...) {
                         // out of memory. Do not cache the file.
                         delete conf_file;
                     }
@@ -1171,7 +1171,7 @@ void QConfFileSettingsPrivate::remove(const QString &key)
 
     QSettingsKey theKey(key, caseSensitivity);
     QSettingsKey prefix(key + u'/', caseSensitivity);
-    const auto locker = qt_scoped_lock(confFile->mutex);
+    const auto locker = bobui_scoped_lock(confFile->mutex);
 
     ensureSectionParsed(confFile, theKey);
     ensureSectionParsed(confFile, prefix);
@@ -1199,7 +1199,7 @@ void QConfFileSettingsPrivate::set(const QString &key, const QVariant &value)
     QConfFile *confFile = confFiles.at(0);
 
     QSettingsKey theKey(key, caseSensitivity, nextPosition++);
-    const auto locker = qt_scoped_lock(confFile->mutex);
+    const auto locker = bobui_scoped_lock(confFile->mutex);
     confFile->removedKeys.remove(theKey);
     confFile->addedKeys.insert(theKey, value);
 }
@@ -1211,7 +1211,7 @@ std::optional<QVariant> QConfFileSettingsPrivate::get(const QString &key) const
     bool found = false;
 
     for (auto confFile : std::as_const(confFiles)) {
-        const auto locker = qt_scoped_lock(confFile->mutex);
+        const auto locker = bobui_scoped_lock(confFile->mutex);
 
         if (!confFile->addedKeys.isEmpty()) {
             j = confFile->addedKeys.constFind(theKey);
@@ -1240,7 +1240,7 @@ QStringList QConfFileSettingsPrivate::children(const QString &prefix, ChildSpec 
     qsizetype startPos = prefix.size();
 
     for (auto confFile : std::as_const(confFiles)) {
-        const auto locker = qt_scoped_lock(confFile->mutex);
+        const auto locker = bobui_scoped_lock(confFile->mutex);
 
         if (thePrefix.isEmpty())
             ensureAllSectionsParsed(confFile);
@@ -1279,7 +1279,7 @@ void QConfFileSettingsPrivate::clear()
     // Note: First config file is always the most specific.
     QConfFile *confFile = confFiles.at(0);
 
-    const auto locker = qt_scoped_lock(confFile->mutex);
+    const auto locker = bobui_scoped_lock(confFile->mutex);
     ensureAllSectionsParsed(confFile);
     confFile->addedKeys.clear();
     confFile->removedKeys = confFile->originalKeys;
@@ -1291,7 +1291,7 @@ void QConfFileSettingsPrivate::sync()
     // error we just try to go on and make the best of it
 
     for (auto confFile : std::as_const(confFiles)) {
-        const auto locker = qt_scoped_lock(confFile->mutex);
+        const auto locker = bobui_scoped_lock(confFile->mutex);
         syncConfFile(confFile);
     }
 }
@@ -1335,7 +1335,7 @@ void QConfFileSettingsPrivate::syncConfFile(QConfFile *confFile)
         hasn't changed.
     */
     if (readOnly && confFile->size > 0) {
-        if (confFile->size == fileInfo.size() && confFile->timeStamp == fileInfo.lastModified(QTimeZone::UTC))
+        if (confFile->size == fileInfo.size() && confFile->timeStamp == fileInfo.lastModified(BOBUIimeZone::UTC))
             return;
     }
 
@@ -1344,7 +1344,7 @@ void QConfFileSettingsPrivate::syncConfFile(QConfFile *confFile)
         return;
     }
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
     QString lockFileName = confFile->name + ".lock"_L1;
 
 #    if defined(Q_OS_ANDROID) && defined(QSETTINGS_USE_QSTANDARDPATHS)
@@ -1377,7 +1377,7 @@ void QConfFileSettingsPrivate::syncConfFile(QConfFile *confFile)
 
     if (!readOnly)
         mustReadFile = (confFile->size != fileInfo.size()
-                        || (confFile->size != 0 && confFile->timeStamp != fileInfo.lastModified(QTimeZone::UTC)));
+                        || (confFile->size != 0 && confFile->timeStamp != fileInfo.lastModified(BOBUIimeZone::UTC)));
 
     if (mustReadFile) {
         confFile->unparsedIniSections.clear();
@@ -1437,7 +1437,7 @@ void QConfFileSettingsPrivate::syncConfFile(QConfFile *confFile)
         }
 
         confFile->size = fileInfo.size();
-        confFile->timeStamp = fileInfo.lastModified(QTimeZone::UTC);
+        confFile->timeStamp = fileInfo.lastModified(BOBUIimeZone::UTC);
     }
 
     /*
@@ -1449,7 +1449,7 @@ void QConfFileSettingsPrivate::syncConfFile(QConfFile *confFile)
         ensureAllSectionsParsed(confFile);
         ParsedSettingsMap mergedKeys = confFile->mergedKeyMap();
 
-#if !defined(QT_BOOTSTRAPPED) && QT_CONFIG(temporaryfile)
+#if !defined(BOBUI_BOOTSTRAPPED) && BOBUI_CONFIG(temporaryfile)
         QSaveFile sf(confFile->name);
         sf.setDirectWriteFallback(!atomicSyncOnly);
 #    ifdef Q_OS_ANDROID
@@ -1488,7 +1488,7 @@ void QConfFileSettingsPrivate::syncConfFile(QConfFile *confFile)
             ok = writeFunc(sf, tempOriginalKeys);
         }
 
-#if !defined(QT_BOOTSTRAPPED) && QT_CONFIG(temporaryfile)
+#if !defined(BOBUI_BOOTSTRAPPED) && BOBUI_CONFIG(temporaryfile)
         if (ok)
             ok = sf.commit();
 #endif
@@ -1501,7 +1501,7 @@ void QConfFileSettingsPrivate::syncConfFile(QConfFile *confFile)
 
             fileInfo.refresh();
             confFile->size = fileInfo.size();
-            confFile->timeStamp = fileInfo.lastModified(QTimeZone::UTC);
+            confFile->timeStamp = fileInfo.lastModified(BOBUIimeZone::UTC);
 
             // If we have created the file, apply the file perms
             if (createFile) {
@@ -1665,10 +1665,10 @@ bool QConfFileSettingsPrivate::readIniFile(QByteArrayView data,
             }
             QByteArrayView iniSection = line.first(idx).sliced(1).trimmed();
 
-            if (iniSection.compare("general", Qt::CaseInsensitive) == 0) {
+            if (iniSection.compare("general", BobUI::CaseInsensitive) == 0) {
                 currentSection.clear();
             } else {
-                if (iniSection.compare("%general", Qt::CaseInsensitive) == 0) {
+                if (iniSection.compare("%general", BobUI::CaseInsensitive) == 0) {
                     currentSection = QLatin1StringView(iniSection.constData() + 1, iniSection.size() - 1);
                 } else {
                     currentSection.clear();
@@ -1720,8 +1720,8 @@ bool QConfFileSettingsPrivate::readIniSection(const QSettingsKey &section, QByte
         QByteArrayView value = line.sliced(equalsPos + 1);
 
         QString strKey = section.originalCaseKey();
-        const Qt::CaseSensitivity casing = iniUnescapedKey(key, strKey) && sectionIsLowercase
-                                           ? Qt::CaseSensitive
+        const BobUI::CaseSensitivity casing = iniUnescapedKey(key, strKey) && sectionIsLowercase
+                                           ? BobUI::CaseSensitive
                                            : IniCaseSensitivity;
 
         QString strValue;
@@ -1732,7 +1732,7 @@ bool QConfFileSettingsPrivate::readIniSection(const QSettingsKey &section, QByte
 
         /*
             We try to avoid the expensive toLower() call in
-            QSettingsKey by passing Qt::CaseSensitive when the
+            QSettingsKey by passing BobUI::CaseSensitive when the
             key is already in lowercase.
         */
         settingsMap->insert(QSettingsKey(strKey, casing, position), std::move(variant));
@@ -1823,7 +1823,7 @@ bool QConfFileSettingsPrivate::writeIniFile(QIODevice &device, const ParsedSetti
 
         if (realSection.isEmpty()) {
             realSection = "[General]";
-        } else if (realSection.compare("general", Qt::CaseInsensitive) == 0) {
+        } else if (realSection.compare("general", BobUI::CaseInsensitive) == 0) {
             realSection = "[%General]";
         } else {
             realSection.prepend('[');
@@ -1906,7 +1906,7 @@ void QConfFileSettingsPrivate::ensureSectionParsed(QConfFile *confFile,
 
 /*!
     \class QSettings
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QSettings class provides persistent platform-independent application settings.
 
     \ingroup io
@@ -1995,9 +1995,9 @@ void QConfFileSettingsPrivate::ensureSectionParsed(QConfFile *confFile,
 
     \section1 QVariant and GUI Types
 
-    Because QVariant is part of the Qt Core module, it cannot provide
+    Because QVariant is part of the BobUI Core module, it cannot provide
     conversion functions to data types such as QColor, QImage, and
-    QPixmap, which are part of Qt GUI. In other words, there is no
+    QPixmap, which are part of BobUI GUI. In other words, there is no
     \c toColor(), \c toImage(), or \c toPixmap() functions in QVariant.
 
     Instead, you can use the QVariant::value() template function.
@@ -2077,7 +2077,7 @@ void QConfFileSettingsPrivate::ensureSectionParsed(QConfFile *confFile,
     \endlist
 
     (See \l{Platform-Specific Notes} below for information on what
-    these locations are on the different platforms supported by Qt.)
+    these locations are on the different platforms supported by BobUI.)
 
     If a key cannot be found in the first location, the search goes
     on in the second location, and so on. This enables you to store
@@ -2112,7 +2112,7 @@ void QConfFileSettingsPrivate::ensureSectionParsed(QConfFile *confFile,
     \endtable
 
     The beauty of this mechanism is that it works on all platforms
-    supported by Qt and that it still gives you a lot of flexibility,
+    supported by BobUI and that it still gives you a lot of flexibility,
     without requiring you to specify any file names or registry
     paths.
 
@@ -2396,12 +2396,12 @@ void QConfFileSettingsPrivate::ensureSectionParsed(QConfFile *confFile,
                             from a 64-bit application running on 64-bit Windows.
                             On 32-bit Windows or from a 32-bit application on 64-bit Windows,
                             this works the same as specifying NativeFormat.
-                            This enum value was added in Qt 5.7.
+                            This enum value was added in BobUI 5.7.
     \value Registry64Format Windows only: Explicitly access the 64-bit system registry
                             from a 32-bit application running on 64-bit Windows.
                             On 32-bit Windows or from a 64-bit application on 64-bit Windows,
                             this works the same as specifying NativeFormat.
-                            This enum value was added in Qt 5.7.
+                            This enum value was added in BobUI 5.7.
     \value IniFormat        Store the settings in INI files. Note that INI files
                             lose the distinction between numeric data and the
                             strings used to encode them, so values written as
@@ -2439,20 +2439,20 @@ void QConfFileSettingsPrivate::ensureSectionParsed(QConfFile *confFile,
     that the file extension is different (\c .conf for NativeFormat,
     \c .ini for IniFormat).
 
-    The INI file format is a Windows file format that Qt supports on
+    The INI file format is a Windows file format that BobUI supports on
     all platforms. In the absence of an INI standard, we try to
     follow what Microsoft does, with the following exceptions:
 
     \list
     \li  If you store types that QVariant can't convert to QString
-        (e.g., QPoint, QRect, and QSize), Qt uses an \c{@}-based
+        (e.g., QPoint, QRect, and QSize), BobUI uses an \c{@}-based
         syntax to encode the type. For example:
 
         \snippet code/src_corelib_io_qsettings.cpp 8
 
         To minimize compatibility issues, any \c @ that doesn't
         appear at the first position in the value or that isn't
-        followed by a Qt type (\c Point, \c Rect, \c Size, etc.) is
+        followed by a BobUI type (\c Point, \c Rect, \c Size, etc.) is
         treated as a normal character.
 
     \li  Although backslash is a special character in INI files, most
@@ -2465,7 +2465,7 @@ void QConfFileSettingsPrivate::ensureSectionParsed(QConfFile *confFile,
         provides no API for reading or writing such entries.
 
     \li  The INI file format has severe restrictions on the syntax of
-        a key. Qt works around this by using \c % as an escape
+        a key. BobUI works around this by using \c % as an escape
         character in keys. In addition, if you save a top-level
         setting (a key with no slashes in it, e.g., "someKey"), it
         will appear in the INI file's "General" section. To avoid
@@ -2476,19 +2476,19 @@ void QConfFileSettingsPrivate::ensureSectionParsed(QConfFile *confFile,
     \li In line with most implementations today, QSettings will assume that
         \e values in the INI file are UTF-8 encoded. This means that \e values
         will be decoded as UTF-8 encoded entries and written back as UTF-8.
-        To retain backward compatibility with older Qt versions, \e keys in the
+        To retain backward compatibility with older BobUI versions, \e keys in the
         INI file are written in %-encoded format, but can be read in both
         %-encoded and UTF-8 formats.
 
     \endlist
 
-    \section2 Compatibility with older Qt versions
+    \section2 Compatibility with older BobUI versions
 
     Please note that this behavior is different to how QSettings behaved
-    in versions of Qt prior to Qt 6. INI files written with Qt 5 or earlier are
-    however fully readable by a Qt 6 based application (unless a ini codec
-    different from utf8 had been set). But INI files written with Qt 6
-    will only be readable by older Qt versions if you set the "iniCodec" to
+    in versions of BobUI prior to BobUI 6. INI files written with BobUI 5 or earlier are
+    however fully readable by a BobUI 6 based application (unless a ini codec
+    different from utf8 had been set). But INI files written with BobUI 6
+    will only be readable by older BobUI versions if you set the "iniCodec" to
     a UTF-8 textcodec.
 
     \sa registerFormat(), setPath()
@@ -2509,7 +2509,7 @@ void QConfFileSettingsPrivate::ensureSectionParsed(QConfFile *confFile,
     \sa setPath()
 */
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 /*!
     Constructs a QSettings object for accessing settings of the
     application called \a application from the organization called \a
@@ -2594,7 +2594,7 @@ QSettings::QSettings(Format format, Scope scope, const QString &organization,
     file.
 
     \warning This function is provided for convenience. It works well for
-    accessing INI or \c .plist files generated by Qt, but might fail on some
+    accessing INI or \c .plist files generated by BobUI, but might fail on some
     syntaxes found in such files originated by other programs. In particular,
     be aware of the following limitations:
 
@@ -2603,7 +2603,7 @@ QSettings::QSettings(Format format, Scope scope, const QString &organization,
        with unescaped slash characters. (This is because these entries are
        ambiguous and cannot be resolved automatically.)
     \li In INI files, QSettings uses the \c @ character as a metacharacter in some
-       contexts, to encode Qt-specific data types (e.g., \c @Rect), and might
+       contexts, to encode BobUI-specific data types (e.g., \c @Rect), and might
        therefore misinterpret it when it occurs in pure INI files.
     \endlist
 
@@ -2736,9 +2736,9 @@ QSettings::~QSettings()
     if (d->pendingChanges) {
         // Don't cause a failing flush() to std::terminate() the whole
         // application - dtors are implicitly noexcept!
-        QT_TRY {
+        BOBUI_TRY {
             d->flush();
-        } QT_CATCH(...) {
+        } BOBUI_CATCH(...) {
         }
     }
 }
@@ -2930,7 +2930,7 @@ void QSettings::setAtomicSyncRequired(bool enable)
     Call endGroup() to reset the current group to what it was before
     the corresponding beginGroup() call. Groups can be nested.
 
-    \note In Qt versions prior to 6.4, this function took QString, not
+    \note In BobUI versions prior to 6.4, this function took QString, not
     QAnyStringView.
 
     \sa endGroup(), group()
@@ -2989,7 +2989,7 @@ QString QSettings::group() const
 
     Use beginWriteArray() to write the array in the first place.
 
-    \note In Qt versions prior to 6.4, this function took QString, not
+    \note In BobUI versions prior to 6.4, this function took QString, not
     QAnyStringView.
 
     \sa beginWriteArray(), endArray(), setArrayIndex()
@@ -3028,7 +3028,7 @@ int QSettings::beginReadArray(QAnyStringView prefix)
 
     To read back an array, use beginReadArray().
 
-    \note In Qt versions prior to 6.4, this function took QString, not
+    \note In BobUI versions prior to 6.4, this function took QString, not
     QAnyStringView.
 
     \sa beginReadArray(), endArray(), setArrayIndex()
@@ -3195,7 +3195,7 @@ bool QSettings::isWritable() const
 
   \snippet code/src_corelib_io_qsettings.cpp 23
 
-  \note In Qt versions prior to 6.4, this function took QString, not
+  \note In BobUI versions prior to 6.4, this function took QString, not
   QAnyStringView.
 
   \sa value(), remove(), contains()
@@ -3229,7 +3229,7 @@ void QSettings::setValue(QAnyStringView key, const QVariant &value)
 
     \include qsettings.cpp key-case-sensitivity
 
-    \note In Qt versions prior to 6.4, this function took QString, not
+    \note In BobUI versions prior to 6.4, this function took QString, not
     QAnyStringView.
 
     \sa setValue(), value(), contains()
@@ -3264,7 +3264,7 @@ void QSettings::remove(QAnyStringView key)
 
     \include qsettings.cpp key-case-sensitivity
 
-    \note In Qt versions prior to 6.4, this function took QString, not
+    \note In BobUI versions prior to 6.4, this function took QString, not
     QAnyStringView.
 
     \sa value(), setValue()
@@ -3301,7 +3301,7 @@ bool QSettings::fallbacksEnabled() const
     return d->fallbacks;
 }
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 /*!
     \reimp
 */
@@ -3332,7 +3332,7 @@ bool QSettings::event(QEvent *event)
 
     \snippet code/src_corelib_io_qsettings.cpp 26
 
-    \note In Qt versions prior to 6.4, this function took QString, not
+    \note In BobUI versions prior to 6.4, this function took QString, not
     QAnyStringView.
 
     \sa setValue(), contains(), remove()
@@ -3414,7 +3414,7 @@ QSettings::Format QSettings::defaultFormat()
     $HOME/.config or $HOME/Settings) can be overridden by the user by setting the
     \c XDG_CONFIG_HOME environment variable. The default SystemScope
     paths on Unix, \macos, and iOS (\c /etc/xdg) can be overridden when
-    building the Qt library using the \c configure script's \c
+    building the BobUI library using the \c configure script's \c
     -sysconfdir flag (see QLibraryInfo for details).
 
     Setting the NativeFormat paths on Windows, \macos, and iOS has no
@@ -3426,7 +3426,7 @@ QSettings::Format QSettings::defaultFormat()
 */
 void QSettings::setPath(Format format, Scope scope, const QString &path)
 {
-    auto locker = qt_unique_lock(settingsGlobalMutex);
+    auto locker = bobui_unique_lock(settingsGlobalMutex);
     PathHash *pathHash = pathHashFunc();
     if (pathHash->isEmpty())
         locker = initDefaultPaths(std::move(locker));
@@ -3488,7 +3488,7 @@ void QSettings::setPath(Format format, Scope scope, const QString &path)
 
     The \a caseSensitivity parameter specifies whether keys are case-sensitive
     or not. This makes a difference when looking up values using QSettings. The
-    default is case-sensitive. The parameter must be \c{Qt::CaseSensitive} on
+    default is case-sensitive. The parameter must be \c{BobUI::CaseSensitive} on
     Unix systems.
 
     By default, if you use one of the constructors that work in terms
@@ -3504,13 +3504,13 @@ void QSettings::setPath(Format format, Scope scope, const QString &path)
 */
 QSettings::Format QSettings::registerFormat(const QString &extension, ReadFunc readFunc,
                                             WriteFunc writeFunc,
-                                            Qt::CaseSensitivity caseSensitivity)
+                                            BobUI::CaseSensitivity caseSensitivity)
 {
-#ifdef QT_QSETTINGS_ALWAYS_CASE_SENSITIVE_AND_FORGET_ORIGINAL_KEY_ORDER
-    Q_ASSERT(caseSensitivity == Qt::CaseSensitive);
+#ifdef BOBUI_QSETTINGS_ALWAYS_CASE_SENSITIVE_AND_FORGET_ORIGINAL_KEY_ORDER
+    Q_ASSERT(caseSensitivity == BobUI::CaseSensitive);
 #endif
 
-    const auto locker = qt_scoped_lock(settingsGlobalMutex);
+    const auto locker = bobui_scoped_lock(settingsGlobalMutex);
     CustomFormatVector *customFormatVector = customFormatVectorFunc();
     qsizetype index = customFormatVector->size();
     if (index == 16) // the QSettings::Format enum has room for 16 custom formats
@@ -3526,8 +3526,8 @@ QSettings::Format QSettings::registerFormat(const QString &extension, ReadFunc r
     return QSettings::Format(int(QSettings::CustomFormat1) + index);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 #include "moc_qsettings.cpp"
 #endif

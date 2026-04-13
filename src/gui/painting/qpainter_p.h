@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPAINTER_P_H
 #define QPAINTER_P_H
@@ -8,62 +8,62 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/qspan.h>
-#include <QtCore/qvarlengtharray.h>
-#include <QtGui/private/qtguiglobal_p.h>
-#include "QtGui/qbrush.h"
-#include "QtGui/qcolorspace.h"
-#include "QtGui/qcolortransform.h"
-#include "QtGui/qfont.h"
-#include "QtGui/qpen.h"
-#include "QtGui/qregion.h"
-#include "QtGui/qpainter.h"
-#include "QtGui/qpainterpath.h"
-#include "QtGui/qpaintengine.h"
+#include <BobUICore/qspan.h>
+#include <BobUICore/qvarlengtharray.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
+#include "BobUIGui/qbrush.h"
+#include "BobUIGui/qcolorspace.h"
+#include "BobUIGui/qcolortransform.h"
+#include "BobUIGui/qfont.h"
+#include "BobUIGui/qpen.h"
+#include "BobUIGui/qregion.h"
+#include "BobUIGui/qpainter.h"
+#include "BobUIGui/qpainterpath.h"
+#include "BobUIGui/qpaintengine.h"
 
 #include <private/qpen_p.h>
 
 #include <memory>
 #include <stack>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QPaintEngine;
 class QEmulationPaintEngine;
 class QPaintEngineEx;
 struct QFixedPoint;
 
-struct QTLWExtra;
+struct BOBUILWExtra;
 
 struct DataPtrContainer {
     void *ptr;
 };
 
-inline const void *data_ptr(const QTransform &t) { return (const DataPtrContainer *) &t; }
-inline bool qtransform_fast_equals(const QTransform &a, const QTransform &b) { return data_ptr(a) == data_ptr(b); }
+inline const void *data_ptr(const BOBUIransform &t) { return (const DataPtrContainer *) &t; }
+inline bool bobuiransform_fast_equals(const BOBUIransform &a, const BOBUIransform &b) { return data_ptr(a) == data_ptr(b); }
 
 // QPen inline functions...
 inline QPen::DataPtr &data_ptr(const QPen &p) { return const_cast<QPen &>(p).data_ptr(); }
 inline bool qpen_fast_equals(const QPen &a, const QPen &b) { return data_ptr(a) == data_ptr(b); }
 inline QBrush qpen_brush(const QPen &p) { return data_ptr(p)->brush; }
 inline qreal qpen_widthf(const QPen &p) { return data_ptr(p)->width; }
-inline Qt::PenStyle qpen_style(const QPen &p) { return data_ptr(p)->style; }
-inline Qt::PenCapStyle qpen_capStyle(const QPen &p) { return data_ptr(p)->capStyle; }
-inline Qt::PenJoinStyle qpen_joinStyle(const QPen &p) { return data_ptr(p)->joinStyle; }
+inline BobUI::PenStyle qpen_style(const QPen &p) { return data_ptr(p)->style; }
+inline BobUI::PenCapStyle qpen_capStyle(const QPen &p) { return data_ptr(p)->capStyle; }
+inline BobUI::PenJoinStyle qpen_joinStyle(const QPen &p) { return data_ptr(p)->joinStyle; }
 
 // QBrush inline functions...
 inline QBrush::DataPtr &data_ptr(const QBrush &p) { return const_cast<QBrush &>(p).data_ptr(); }
 inline bool qbrush_fast_equals(const QBrush &a, const QBrush &b) { return data_ptr(a) == data_ptr(b); }
-inline Qt::BrushStyle qbrush_style(const QBrush &b) { return data_ptr(b)->style; }
+inline BobUI::BrushStyle qbrush_style(const QBrush &b) { return data_ptr(b)->style; }
 inline const QColor &qbrush_color(const QBrush &b) { return data_ptr(b)->color; }
-inline bool qbrush_has_transform(const QBrush &b) { return data_ptr(b)->transform.type() > QTransform::TxNone; }
+inline bool qbrush_has_transform(const QBrush &b) { return data_ptr(b)->transform.type() > BOBUIransform::TxNone; }
 
 class QPainterClipInfo
 {
@@ -71,21 +71,21 @@ public:
     QPainterClipInfo() { } // for QList, don't use
     enum ClipType { RegionClip, PathClip, RectClip, RectFClip };
 
-    QPainterClipInfo(const QPainterPath &p, Qt::ClipOperation op, const QTransform &m) :
+    QPainterClipInfo(const QPainterPath &p, BobUI::ClipOperation op, const BOBUIransform &m) :
         clipType(PathClip), matrix(m), operation(op), path(p) { }
 
-    QPainterClipInfo(const QRegion &r, Qt::ClipOperation op, const QTransform &m) :
+    QPainterClipInfo(const QRegion &r, BobUI::ClipOperation op, const BOBUIransform &m) :
         clipType(RegionClip), matrix(m), operation(op), region(r) { }
 
-    QPainterClipInfo(const QRect &r, Qt::ClipOperation op, const QTransform &m) :
+    QPainterClipInfo(const QRect &r, BobUI::ClipOperation op, const BOBUIransform &m) :
         clipType(RectClip), matrix(m), operation(op), rect(r) { }
 
-    QPainterClipInfo(const QRectF &r, Qt::ClipOperation op, const QTransform &m) :
+    QPainterClipInfo(const QRectF &r, BobUI::ClipOperation op, const BOBUIransform &m) :
         clipType(RectFClip), matrix(m), operation(op), rectf(r) { }
 
     ClipType clipType;
-    QTransform matrix;
-    Qt::ClipOperation operation;
+    BOBUIransform matrix;
+    BobUI::ClipOperation operation;
     QPainterPath path;
     QRegion region;
     QRect rect;
@@ -121,15 +121,15 @@ public:
     QFont deviceFont;
     QPen pen;
     QBrush brush;
-    QBrush bgBrush = Qt::white; // background brush
+    QBrush bgBrush = BobUI::white; // background brush
     QRegion clipRegion;
     QPainterPath clipPath;
-    Qt::ClipOperation clipOperation = Qt::NoClip;
+    BobUI::ClipOperation clipOperation = BobUI::NoClip;
     QPainter::RenderHints renderHints;
     QList<QPainterClipInfo> clipInfo; // ### Make me smaller and faster to copy around...
-    QTransform worldMatrix;       // World transformation matrix, not window and viewport
-    QTransform matrix;            // Complete transformation matrix,
-    QTransform redirectionMatrix;
+    BOBUIransform worldMatrix;       // World transformation matrix, not window and viewport
+    BOBUIransform matrix;            // Complete transformation matrix,
+    BOBUIransform redirectionMatrix;
     int wx = 0, wy = 0, ww = 0, wh = 0; // window rectangle
     int vx = 0, vy = 0, vw = 0, vh = 0; // viewport rectangle
     qreal opacity = 1;
@@ -138,9 +138,9 @@ public:
     uint VxF:1;                 // View transformation
     uint clipEnabled:1;
 
-    Qt::BGMode bgMode = Qt::TransparentMode;
+    BobUI::BGMode bgMode = BobUI::TransparentMode;
     QPainter *painter = nullptr;
-    Qt::LayoutDirection layoutDirection;
+    BobUI::LayoutDirection layoutDirection;
     QPainter::CompositionMode composition_mode = QPainter::CompositionMode_SourceOver;
     uint emulationSpecifier = 0;
     uint changeFlags = 0;
@@ -151,7 +151,7 @@ struct QPainterDummyState
     QFont font;
     QPen pen;
     QBrush brush;
-    QTransform transform;
+    BOBUIransform transform;
 };
 
 class QRawFont;
@@ -178,7 +178,7 @@ public:
 
     mutable std::unique_ptr<QPainterDummyState> dummyState;
 
-    QTransform invMatrix;
+    BOBUIransform invMatrix;
     uint txinv:1;
     uint inDestructor : 1;
     uint refcount = 1;
@@ -202,9 +202,9 @@ public:
     void draw_helper(const QPainterPath &path, DrawOperation operation = StrokeAndFillDraw);
     void drawStretchedGradient(const QPainterPath &path, DrawOperation operation);
     void drawOpaqueBackground(const QPainterPath &path, DrawOperation operation);
-    void drawTextItem(const QPointF &p, const QTextItem &_ti, QTextEngine *textEngine);
+    void drawTextItem(const QPointF &p, const BOBUIextItem &_ti, BOBUIextEngine *textEngine);
 
-#if !defined(QT_NO_RAWFONT)
+#if !defined(BOBUI_NO_RAWFONT)
     void drawGlyphs(const QPointF &decorationPosition, const quint32 *glyphArray, QFixedPoint *positionArray, int glyphCount,
                     QFontEngine *fontEngine, bool overline = false, bool underline = false,
                     bool strikeOut = false);
@@ -220,9 +220,9 @@ public:
         return painter->d_ptr.get();
     }
 
-    QTransform viewTransform() const;
+    BOBUIransform viewTransform() const;
     qreal effectiveDevicePixelRatio() const;
-    QTransform hidpiScaleTransform() const;
+    BOBUIransform hidpiScaleTransform() const;
     static bool attachPainterPrivate(QPainter *q, QPaintDevice *pdev);
     void detachPainterPrivate(QPainter *q);
     void initFrom(const QPaintDevice *device);
@@ -247,11 +247,11 @@ public:
     Q_GUI_EXPORT void setEngineDirtyFlags(QSpan<const QPaintEngine::DirtyFlags>);
 };
 
-Q_GUI_EXPORT void qt_draw_helper(QPainterPrivate *p, const QPainterPath &path, QPainterPrivate::DrawOperation operation);
+Q_GUI_EXPORT void bobui_draw_helper(QPainterPrivate *p, const QPainterPath &path, QPainterPrivate::DrawOperation operation);
 
-QString qt_generate_brush_key(const QBrush &brush);
+QString bobui_generate_brush_key(const QBrush &brush);
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPAINTER_P_H

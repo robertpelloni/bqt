@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
-#include "QtCore/qxmlstream.h"
+#include "BobUICore/qxmlstream.h"
 
-#if QT_CONFIG(xmlstream)
+#if BOBUI_CONFIG(xmlstream)
 
 #include "qxmlutils_p.h"
 #include <qdebug.h>
@@ -17,7 +17,7 @@
 #include <qcoreapplication.h>
 
 #include <private/qoffsetstringarray_p.h>
-#include <private/qtools_p.h>
+#include <private/bobuiools_p.h>
 
 #include <iterator>
 #include "qxmlstream_p.h"
@@ -25,11 +25,11 @@
 #include <private/qstringconverter_p.h>
 #include <private/qstringiterator_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace QtPrivate;
-using namespace Qt::StringLiterals;
-using namespace QtMiscUtils;
+using namespace BobUIPrivate;
+using namespace BobUI::StringLiterals;
+using namespace BobUIMiscUtils;
 
 constexpr uint StreamEOF = ~0U;
 
@@ -193,7 +193,7 @@ WRAP(indexOf, QLatin1StringView)
 
 /*!
   \class QXmlStreamEntityResolver
-  \inmodule QtCore
+  \inmodule BobUICore
   \reentrant
   \since 4.4
 
@@ -234,7 +234,7 @@ QString QXmlStreamEntityResolver::resolveUndeclaredEntity(const QString &/*name*
     return QString();
 }
 
-#if QT_CONFIG(xmlstreamreader)
+#if BOBUI_CONFIG(xmlstreamreader)
 
 QString QXmlStreamReaderPrivate::resolveUndeclaredEntity(const QString &name)
 {
@@ -280,7 +280,7 @@ QXmlStreamEntityResolver *QXmlStreamReader::entityResolver() const
 
 /*!
   \class QXmlStreamReader
-  \inmodule QtCore
+  \inmodule BobUICore
   \reentrant
   \since 4.3
 
@@ -290,7 +290,7 @@ QXmlStreamEntityResolver *QXmlStreamReader::entityResolver() const
 
   \ingroup xml-tools
 
-  \ingroup qtserialization
+  \ingroup bobuiserialization
 
   QXmlStreamReader provides a simple streaming API to parse well-formed
   XML 1.0 documents. It is an alternative to first loading the complete
@@ -301,7 +301,7 @@ QXmlStreamEntityResolver *QXmlStreamReader::entityResolver() const
   \note QXmlStreamReader supports only XML version 1.0. Documents declaring
   any other version, such as "1.1", will result in a parsing error.
 
-  Qt provides QXmlStreamWriter for writing XML.
+  BobUI provides QXmlStreamWriter for writing XML.
 
   The basic concept of a stream reader is to report an XML document as
   a stream of tokens, similar to SAX. The main difference between
@@ -418,7 +418,7 @@ QXmlStreamEntityResolver *QXmlStreamReader::entityResolver() const
   store the entire XML document tree in memory, but only the current
   token at the time it is reported. In addition, QXmlStreamReader
   avoids the many small string allocations that it normally takes to
-  map an XML document to a convenient and Qt-ish API. It does this by
+  map an XML document to a convenient and BobUI-ish API. It does this by
   reporting all string data as QStringView rather than real QString
   objects. Calling \l{QStringView::toString()}{toString()} on any of
   those objects returns an equivalent real QString object.
@@ -494,7 +494,7 @@ void QXmlStreamReaderPrivate::addData(const QByteArray &data, QStringDecoder::En
 /*!
     Creates a new stream reader that reads from \a data.
 
-    \note In Qt versions prior to 6.5, this constructor was overloaded
+    \note In BobUI versions prior to 6.5, this constructor was overloaded
     for QString and \c {const char*}.
 
     \sa addData(), clear(), setDevice()
@@ -601,7 +601,7 @@ static bool isDecoderForEncoding(const QStringDecoder &dec, QStringDecoder::Enco
     Adds more \a data for the reader to read. This function does
     nothing if the reader has a device().
 
-    \note In Qt versions prior to 6.5, this function was overloaded
+    \note In BobUI versions prior to 6.5, this function was overloaded
     for QString and \c {const char*}.
 
     \sa readNext(), clear()
@@ -974,7 +974,7 @@ QXmlStreamPrivateTagStack::QXmlStreamPrivateTagStack()
     tagsDone = false;
 }
 
-#if QT_CONFIG(xmlstreamreader)
+#if BOBUI_CONFIG(xmlstreamreader)
 
 QXmlStreamReaderPrivate::QXmlStreamReaderPrivate(QXmlStreamReader *q)
     :q_ptr(q)
@@ -2523,7 +2523,7 @@ QXmlStreamAttributes QXmlStreamReader::attributes() const
 
 /*!
     \class QXmlStreamAttribute
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 4.3
     \reentrant
     \brief The QXmlStreamAttribute class represents a single XML attribute.
@@ -2619,7 +2619,7 @@ QXmlStreamAttribute::QXmlStreamAttribute(const QString &qualifiedName, const QSt
 
 /*!
     \class QXmlStreamAttributes
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 4.3
     \reentrant
     \brief The QXmlStreamAttributes class represents a vector of QXmlStreamAttribute.
@@ -2655,7 +2655,7 @@ QXmlStreamAttribute::QXmlStreamAttribute(const QString &qualifiedName, const QSt
 
 /*!
     \class QXmlStreamNotationDeclaration
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 4.3
     \reentrant
     \brief The QXmlStreamNotationDeclaration class represents a DTD notation declaration.
@@ -2707,7 +2707,7 @@ Returns the public identifier.
 
 /*!
     \class QXmlStreamNamespaceDeclaration
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 4.3
     \reentrant
     \brief The QXmlStreamNamespaceDeclaration class represents a namespace declaration.
@@ -2768,14 +2768,14 @@ Returns the namespaceUri.
 
 /*!
     \class QXmlString
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 6.0
     \internal
 */
 
 /*!
     \class QXmlStreamEntityDeclaration
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 4.3
     \reentrant
     \brief The QXmlStreamEntityDeclaration class represents a DTD entity declaration.
@@ -2830,7 +2830,7 @@ Returns the entity's value.
   described with \a namespaceUri, or an empty string reference if the
   attribute is not defined. The \a namespaceUri can be empty.
 
-  \note In Qt versions prior to 6.6, this function was implemented as an
+  \note In BobUI versions prior to 6.6, this function was implemented as an
   overload set accepting combinations of QString and QLatin1StringView only.
  */
 QStringView QXmlStreamAttributes::value(QAnyStringView namespaceUri, QAnyStringView name) const noexcept
@@ -2854,7 +2854,7 @@ QStringView QXmlStreamAttributes::value(QAnyStringView namespaceUri, QAnyStringV
   use qualified names, but a resolved namespaceUri and the attribute's
   local name.
 
-  \note In Qt versions prior to 6.6, this function was implemented as an
+  \note In BobUI versions prior to 6.6, this function was implemented as an
   overload set accepting QString and QLatin1StringView only.
 
  */
@@ -2885,7 +2885,7 @@ void QXmlStreamAttributes::append(const QString &qualifiedName, const QString &v
     append(QXmlStreamAttribute(qualifiedName, value));
 }
 
-#if QT_CONFIG(xmlstreamreader)
+#if BOBUI_CONFIG(xmlstreamreader)
 
 /*! \fn bool QXmlStreamReader::isStartDocument() const
   Returns \c true if tokenType() equals \l StartDocument; otherwise returns \c false.
@@ -3005,7 +3005,7 @@ QStringView QXmlStreamReader::documentEncoding() const
 
 /*!
   \class QXmlStreamWriter
-  \inmodule QtCore
+  \inmodule BobUICore
   \since 4.3
   \reentrant
 
@@ -3013,7 +3013,7 @@ QStringView QXmlStreamReader::documentEncoding() const
   simple streaming API.
 
   \ingroup xml-tools
-  \ingroup qtserialization
+  \ingroup bobuiserialization
 
   QXmlStreamWriter is the counterpart to QXmlStreamReader for writing
   XML.
@@ -3119,7 +3119,7 @@ QStringView QXmlStreamReader::documentEncoding() const
     \since 6.10
 */
 
-#if QT_CONFIG(xmlstreamwriter)
+#if BOBUI_CONFIG(xmlstreamwriter)
 
 class QXmlStreamWriterPrivate : public QXmlStreamPrivateTagStack
 {
@@ -3739,7 +3739,7 @@ void QXmlStreamWriter::raiseError(QAnyStringView message)
   This function can only be called after writeStartElement() before
   any content is written, or after writeEmptyElement().
 
-  \note In Qt versions prior to 6.5, this function took QString, not
+  \note In BobUI versions prior to 6.5, this function took QString, not
   QAnyStringView.
  */
 void QXmlStreamWriter::writeAttribute(QAnyStringView qualifiedName, QAnyStringView value)
@@ -3763,7 +3763,7 @@ void QXmlStreamWriter::writeAttribute(QAnyStringView qualifiedName, QAnyStringVi
   This function can only be called after writeStartElement() before
   any content is written, or after writeEmptyElement().
 
-  \note In Qt versions prior to 6.5, this function took QString, not
+  \note In BobUI versions prior to 6.5, this function took QString, not
   QAnyStringView.
  */
 void QXmlStreamWriter::writeAttribute(QAnyStringView namespaceUri, QAnyStringView name, QAnyStringView value)
@@ -3828,7 +3828,7 @@ void QXmlStreamWriter::writeAttributes(const QXmlStreamAttributes& attributes)
   not need use it, because writeCharacters() automatically escapes all
   non-content characters.
 
-  \note In Qt versions prior to 6.5, this function took QString, not
+  \note In BobUI versions prior to 6.5, this function took QString, not
   QAnyStringView.
  */
 void QXmlStreamWriter::writeCDATA(QAnyStringView text)
@@ -3857,7 +3857,7 @@ void QXmlStreamWriter::writeCDATA(QAnyStringView text)
 
   \sa writeEntityReference()
 
-  \note In Qt versions prior to 6.5, this function took QString, not
+  \note In BobUI versions prior to 6.5, this function took QString, not
   QAnyStringView.
  */
 void QXmlStreamWriter::writeCharacters(QAnyStringView text)
@@ -3872,7 +3872,7 @@ void QXmlStreamWriter::writeCharacters(QAnyStringView text)
      forbidden sequence \c{--} or end with \c{-}. Note that XML does not
      provide any way to escape \c{-} in a comment.
 
-     \note In Qt versions prior to 6.5, this function took QString, not
+     \note In BobUI versions prior to 6.5, this function took QString, not
      QAnyStringView.
  */
 void QXmlStreamWriter::writeComment(QAnyStringView text)
@@ -3891,7 +3891,7 @@ void QXmlStreamWriter::writeComment(QAnyStringView text)
 /*!  Writes a DTD section. The \a dtd represents the entire
   doctypedecl production from the XML 1.0 specification.
 
-  \note In Qt versions prior to 6.5, this function took QString, not
+  \note In BobUI versions prior to 6.5, this function took QString, not
   QAnyStringView.
  */
 void QXmlStreamWriter::writeDTD(QAnyStringView dtd)
@@ -3911,7 +3911,7 @@ void QXmlStreamWriter::writeDTD(QAnyStringView dtd)
   Writes an empty element with qualified name \a qualifiedName.
   Subsequent calls to writeAttribute() will add attributes to this element.
 
-  \note In Qt versions prior to 6.5, this function took QString, not
+  \note In BobUI versions prior to 6.5, this function took QString, not
   QAnyStringView.
 */
 void QXmlStreamWriter::writeEmptyElement(QAnyStringView qualifiedName)
@@ -3930,7 +3930,7 @@ void QXmlStreamWriter::writeEmptyElement(QAnyStringView qualifiedName)
 
   \sa writeNamespace()
 
-  \note In Qt versions prior to 6.5, this function took QString, not
+  \note In BobUI versions prior to 6.5, this function took QString, not
   QAnyStringView.
  */
 void QXmlStreamWriter::writeEmptyElement(QAnyStringView namespaceUri, QAnyStringView name)
@@ -3949,7 +3949,7 @@ void QXmlStreamWriter::writeEmptyElement(QAnyStringView namespaceUri, QAnyString
   This is a convenience function equivalent to:
   \snippet code/src_corelib_xml_qxmlstream.cpp 1
 
-  \note In Qt versions prior to 6.5, this function took QString, not
+  \note In BobUI versions prior to 6.5, this function took QString, not
   QAnyStringView.
 */
 void QXmlStreamWriter::writeTextElement(QAnyStringView qualifiedName, QAnyStringView text)
@@ -3968,7 +3968,7 @@ void QXmlStreamWriter::writeTextElement(QAnyStringView qualifiedName, QAnyString
   This is a convenience function equivalent to:
   \snippet code/src_corelib_xml_qxmlstream.cpp 2
 
-  \note In Qt versions prior to 6.5, this function took QString, not
+  \note In BobUI versions prior to 6.5, this function took QString, not
   QAnyStringView.
 */
 void QXmlStreamWriter::writeTextElement(QAnyStringView namespaceUri, QAnyStringView name, QAnyStringView text)
@@ -4035,7 +4035,7 @@ void QXmlStreamWriter::writeEndElement()
 /*!
   Writes the entity reference \a name to the stream, as "&\a{name};".
 
-  \note In Qt versions prior to 6.5, this function took QString, not
+  \note In BobUI versions prior to 6.5, this function took QString, not
   QAnyStringView.
  */
 void QXmlStreamWriter::writeEntityReference(QAnyStringView name)
@@ -4062,7 +4062,7 @@ void QXmlStreamWriter::writeEntityReference(QAnyStringView name)
   \e http://www.w3.org/2000/xmlns/ are used for the namespace mechanism
   itself and thus completely forbidden in declarations.
 
-  \note In Qt versions prior to 6.5, this function took QString, not
+  \note In BobUI versions prior to 6.5, this function took QString, not
   QAnyStringView.
  */
 void QXmlStreamWriter::writeNamespace(QAnyStringView namespaceUri, QAnyStringView prefix)
@@ -4089,7 +4089,7 @@ void QXmlStreamWriter::writeNamespace(QAnyStringView namespaceUri, QAnyStringVie
   (bound to \e xmlns) and \e http://www.w3.org/2000/xmlns/ (bound to
   \e xml) by definition cannot be declared as default.
 
-  \note In Qt versions prior to 6.5, this function took QString, not
+  \note In BobUI versions prior to 6.5, this function took QString, not
   QAnyStringView.
  */
 void QXmlStreamWriter::writeDefaultNamespace(QAnyStringView namespaceUri)
@@ -4109,7 +4109,7 @@ void QXmlStreamWriter::writeDefaultNamespace(QAnyStringView namespaceUri)
   Writes an XML processing instruction with \a target and \a data,
   where \a data must not contain the sequence "?>".
 
-  \note In Qt versions prior to 6.5, this function took QString, not
+  \note In BobUI versions prior to 6.5, this function took QString, not
   QAnyStringView.
  */
 void QXmlStreamWriter::writeProcessingInstruction(QAnyStringView target, QAnyStringView data)
@@ -4154,7 +4154,7 @@ void QXmlStreamWriter::writeStartDocument()
   consistency between the declared version and the actual content.
 
 
-  \note In Qt versions prior to 6.5, this function took QString, not
+  \note In BobUI versions prior to 6.5, this function took QString, not
   QAnyStringView.
 
   \sa writeEndDocument()
@@ -4184,7 +4184,7 @@ void QXmlStreamWriter::writeStartDocument(QAnyStringView version)
   consistency between the declared version and the actual content.
 
 
-  \note In Qt versions prior to 6.5, this function took QString, not
+  \note In BobUI versions prior to 6.5, this function took QString, not
   QAnyStringView.
 
   \sa writeEndDocument()
@@ -4212,7 +4212,7 @@ void QXmlStreamWriter::writeStartDocument(QAnyStringView version, bool standalon
 
    \sa writeEndElement(), writeEmptyElement()
 
-   \note In Qt versions prior to 6.5, this function took QString, not
+   \note In BobUI versions prior to 6.5, this function took QString, not
    QAnyStringView.
  */
 void QXmlStreamWriter::writeStartElement(QAnyStringView qualifiedName)
@@ -4231,7 +4231,7 @@ void QXmlStreamWriter::writeStartElement(QAnyStringView qualifiedName)
 
   \sa writeNamespace(), writeEndElement(), writeEmptyElement()
 
-  \note In Qt versions prior to 6.5, this function took QString, not
+  \note In BobUI versions prior to 6.5, this function took QString, not
   QAnyStringView.
  */
 void QXmlStreamWriter::writeStartElement(QAnyStringView namespaceUri, QAnyStringView name)
@@ -4266,7 +4266,7 @@ void QXmlStreamWriterPrivate::writeStartElement(QAnyStringView namespaceUri, QAn
     didWriteAnyToken = true;
 }
 
-#if QT_CONFIG(xmlstreamreader)
+#if BOBUI_CONFIG(xmlstreamreader)
 /*!  Writes the current state of the \a reader. All possible valid
   states are supported.
 
@@ -4333,7 +4333,7 @@ void QXmlStreamWriter::writeCurrentToken(const QXmlStreamReader &reader)
 #endif // feature xmlstreamreader
 #endif // feature xmlstreamwriter
 
-#if QT_CONFIG(xmlstreamreader)
+#if BOBUI_CONFIG(xmlstreamreader)
 static constexpr bool isTokenAllowedInContext(QXmlStreamReader::TokenType type,
                                                QXmlStreamReaderPrivate::XmlContext ctxt)
 {
@@ -4451,6 +4451,6 @@ void QXmlStreamReaderPrivate::checkToken()
 
 #endif // feature xmlstreamreader
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // feature xmlstream

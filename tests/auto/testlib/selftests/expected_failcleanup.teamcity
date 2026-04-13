@@ -2,7 +2,7 @@
 ##teamcity[testStarted name='initTestCase()' flowId='tst_FailCleanup']
 ##teamcity[testFinished name='initTestCase()' flowId='tst_FailCleanup']
 ##teamcity[testStarted name='aTestFunction()' flowId='tst_FailCleanup']
-##teamcity[testFailed name='aTestFunction()' message='Failure! |[Loc: qtbase/tests/auto/testlib/selftests/failcleanup/tst_failcleanup.cpp(0)|]' details='|'false|' returned FALSE. (Fail inside cleanup)' flowId='tst_FailCleanup']
+##teamcity[testFailed name='aTestFunction()' message='Failure! |[Loc: bobuibase/tests/auto/testlib/selftests/failcleanup/tst_failcleanup.cpp(0)|]' details='|'false|' returned FALSE. (Fail inside cleanup)' flowId='tst_FailCleanup']
 ##teamcity[testFinished name='aTestFunction()' flowId='tst_FailCleanup']
 ##teamcity[testStarted name='cleanupTestCase()' flowId='tst_FailCleanup']
 ##teamcity[testFinished name='cleanupTestCase()' flowId='tst_FailCleanup']

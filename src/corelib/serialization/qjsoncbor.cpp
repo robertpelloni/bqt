@@ -1,6 +1,6 @@
 // Copyright (C) 2020 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qcborvalue.h"
 #include "qcborvalue_p.h"
@@ -19,15 +19,15 @@
 #include <private/qnumeric_p.h>
 #include <quuid.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace QtCbor;
+using namespace BobUICbor;
 
 enum class ConversionMode { FromRaw, FromVariantToJson };
 
 static QJsonValue fpToJson(double v)
 {
-    return qt_is_finite(v) ? QJsonValue(v) : QJsonValue();
+    return bobui_is_finite(v) ? QJsonValue(v) : QJsonValue();
 }
 
 static QString simpleTypeString(QCborValue::Type t)
@@ -82,7 +82,7 @@ static QString maybeEncodeTag(const QCborContainerPrivate *d)
         break;
 
     case qint64(QCborKnownTags::Uuid):
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
         if (const ByteData *b = d->byteData(e); e.type == QCborValue::ByteArray && b
                 && b->len == sizeof(QUuid))
             return QUuid::fromRfc4122(b->asByteArrayView()).toString(QUuid::WithoutBraces);
@@ -130,7 +130,7 @@ Q_NEVER_INLINE static QString makeString(const QCborContainerPrivate *d, qsizety
 
     case QCborValue::Array:
     case QCborValue::Map:
-#if defined(QT_BOOTSTRAPPED)
+#if defined(BOBUI_BOOTSTRAPPED)
         Q_UNREACHABLE_RETURN(QString());
 #else
         return d->valueAt(idx).toDiagnosticNotation(QCborValue::Compact);
@@ -166,7 +166,7 @@ Q_NEVER_INLINE static QString makeString(const QCborContainerPrivate *d, qsizety
     return simpleTypeString(e.type);
 }
 
-QJsonValue qt_convertToJson(QCborContainerPrivate *d, qsizetype idx,
+QJsonValue bobui_convertToJson(QCborContainerPrivate *d, qsizetype idx,
                             ConversionMode mode = ConversionMode::FromRaw);
 
 static QJsonValue convertExtendedTypeToJson(QCborContainerPrivate *d)
@@ -175,7 +175,7 @@ static QJsonValue convertExtendedTypeToJson(QCborContainerPrivate *d)
 
     switch (tag) {
     case qint64(QCborKnownTags::Url):
-#ifdef QT_BOOTSTRAPPED
+#ifdef BOBUI_BOOTSTRAPPED
         break;
 #else
         // use the fully-encoded URL form
@@ -197,7 +197,7 @@ static QJsonValue convertExtendedTypeToJson(QCborContainerPrivate *d)
     }
 
     // for all other tags, ignore it and return the converted tagged item
-    return qt_convertToJson(d, 1);
+    return bobui_convertToJson(d, 1);
 }
 
 // We need to do this because sub-objects may need conversion.
@@ -207,7 +207,7 @@ static QJsonArray convertToJsonArray(QCborContainerPrivate *d,
     QJsonArray a;
     if (d) {
         for (qsizetype idx = 0; idx < d->elements.size(); ++idx)
-            a.append(qt_convertToJson(d, idx, mode));
+            a.append(bobui_convertToJson(d, idx, mode));
     }
     return a;
 }
@@ -220,12 +220,12 @@ static QJsonObject convertToJsonObject(QCborContainerPrivate *d,
     QJsonObject o;
     if (d) {
         for (qsizetype idx = 0; idx < d->elements.size(); idx += 2)
-            o.insert(makeString(d, idx), qt_convertToJson(d, idx + 1, mode));
+            o.insert(makeString(d, idx), bobui_convertToJson(d, idx + 1, mode));
     }
     return o;
 }
 
-QJsonValue qt_convertToJson(QCborContainerPrivate *d, qsizetype idx, ConversionMode mode)
+QJsonValue bobui_convertToJson(QCborContainerPrivate *d, qsizetype idx, ConversionMode mode)
 {
     // encoding the container itself
     if (idx == -QCborValue::Array)
@@ -266,7 +266,7 @@ QJsonValue qt_convertToJson(QCborContainerPrivate *d, qsizetype idx, ConversionM
     case QCborValue::Url:
     case QCborValue::Uuid:
         // recurse
-        return qt_convertToJson(e.flags & Element::IsContainer ? e.container : nullptr, -e.type,
+        return bobui_convertToJson(e.flags & Element::IsContainer ? e.container : nullptr, -e.type,
                                 mode);
 
     case QCborValue::Null:
@@ -349,7 +349,7 @@ QJsonValue qt_convertToJson(QCborContainerPrivate *d, qsizetype idx, ConversionM
 QJsonValue QCborValue::toJsonValue() const
 {
     if (container)
-        return qt_convertToJson(container, n < 0 ? -type() : n);
+        return bobui_convertToJson(container, n < 0 ? -type() : n);
 
     // simple values
     switch (type()) {
@@ -398,10 +398,10 @@ QJsonValue QCborValue::toJsonValue() const
     return QJsonPrivate::Value::fromTrustedCbor(simpleTypeString(type()));
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0) && !defined(QT_BOOTSTRAPPED)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0) && !defined(BOBUI_BOOTSTRAPPED)
 QJsonValue QCborValueRef::toJsonValue() const
 {
-    return qt_convertToJson(d, i);
+    return bobui_convertToJson(d, i);
 }
 #endif
 
@@ -421,13 +421,13 @@ QJsonArray QCborArray::toJsonArray() const
     return convertToJsonArray(d.data());
 }
 
-#ifndef QT_NO_VARIANT
+#ifndef BOBUI_NO_VARIANT
 QJsonArray QJsonPrivate::Variant::toJsonArray(const QVariantList &list)
 {
     const auto cborArray = QCborArray::fromVariantList(list);
     return convertToJsonArray(cborArray.d.data(), ConversionMode::FromVariantToJson);
 }
-#endif // !QT_NO_VARIANT
+#endif // !BOBUI_NO_VARIANT
 
 /*!
     Recursively converts every \l QCborValue value in this map to JSON using
@@ -471,7 +471,7 @@ QJsonObject QCborMap::toJsonObject() const
     return convertToJsonObject(d.data());
 }
 
-#ifndef QT_NO_VARIANT
+#ifndef BOBUI_NO_VARIANT
 QJsonObject QJsonPrivate::Variant::toJsonObject(const QVariantMap &map)
 {
     const auto cborMap = QCborMap::fromVariantMap(map);
@@ -479,13 +479,13 @@ QJsonObject QJsonPrivate::Variant::toJsonObject(const QVariantMap &map)
 }
 
 /*!
-    Converts this value to a native Qt type and returns the corresponding QVariant.
+    Converts this value to a native BobUI type and returns the corresponding QVariant.
 
     The following table lists the mapping performed between \l{Type}{QCborValue
-    types} and \l{QMetaType::Type}{Qt meta types}.
+    types} and \l{QMetaType::Type}{BobUI meta types}.
 
     \table
-      \header \li CBOR Type         \li Qt or C++ type          \li Notes
+      \header \li CBOR Type         \li BobUI or C++ type          \li Notes
       \row  \li Integer             \li \l qint64               \li
       \row  \li Double              \li \c double               \li
       \row  \li Bool                \li \c bool                 \li
@@ -553,16 +553,16 @@ QVariant QCborValue::toVariant() const
         // ignore tags
         return taggedValue().toVariant();
 
-#if QT_CONFIG(datestring)
+#if BOBUI_CONFIG(datestring)
     case DateTime:
         return toDateTime();
 #endif
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
     case Url:
         return toUrl();
 
-#  if QT_CONFIG(regularexpression)
+#  if BOBUI_CONFIG(regularexpression)
     case RegularExpression:
         return toRegularExpression();
 #  endif
@@ -583,7 +583,7 @@ QVariant QCborValue::toVariant() const
 
     Q_UNREACHABLE_RETURN(QVariant());
 }
-#endif // !QT_NO_VARIANT
+#endif // !BOBUI_NO_VARIANT
 
 /*!
     Converts the JSON value contained in \a v into its corresponding CBOR value
@@ -637,7 +637,7 @@ QCborValue QCborValue::fromJsonValue(const QJsonValue &v)
     return QCborValue();
 }
 
-#ifndef QT_NO_VARIANT
+#ifndef BOBUI_NO_VARIANT
 static void appendVariant(QCborContainerPrivate *d, const QVariant &variant)
 {
     // Handle strings and byte arrays directly, to avoid creating a temporary
@@ -665,7 +665,7 @@ static void appendVariant(QCborContainerPrivate *d, const QVariant &variant)
     The following table lists the conversion this function will apply:
 
     \table
-      \header \li Qt (C++) type             \li CBOR type
+      \header \li BobUI (C++) type             \li CBOR type
       \row  \li invalid (QVariant())        \li Undefined
       \row  \li \c bool                     \li Bool
       \row  \li \c std::nullptr_t           \li Null
@@ -691,7 +691,7 @@ static void appendVariant(QCborContainerPrivate *d, const QVariant &variant)
 
     If QVariant::isNull() returns true, a null QCborValue is returned or
     inserted into the list or object, regardless of the type carried by
-    QVariant. Note the behavior change in Qt 6.0 affecting QVariant::isNull()
+    QVariant. Note the behavior change in BobUI 6.0 affecting QVariant::isNull()
     also affects this function.
 
     For other types not listed above, a conversion to string will be attempted,
@@ -737,11 +737,11 @@ QCborValue QCborValue::fromVariant(const QVariant &variant)
         return QCborArray::fromStringList(variant.toStringList());
     case QMetaType::QByteArray:
         return variant.toByteArray();
-#if QT_CONFIG(datestring)
+#if BOBUI_CONFIG(datestring)
     case QMetaType::QDateTime:
         return QCborValue(variant.toDateTime());
 #endif
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
     case QMetaType::QUrl:
         return QCborValue(variant.toUrl());
     case QMetaType::QUuid:
@@ -753,8 +753,8 @@ QCborValue QCborValue::fromVariant(const QVariant &variant)
         return QCborMap::fromVariantMap(variant.toMap());
     case QMetaType::QVariantHash:
         return QCborMap::fromVariantHash(variant.toHash());
-#ifndef QT_BOOTSTRAPPED
-#if QT_CONFIG(regularexpression)
+#ifndef BOBUI_BOOTSTRAPPED
+#if BOBUI_CONFIG(regularexpression)
     case QMetaType::QRegularExpression:
         return QCborValue(variant.toRegularExpression());
 #endif
@@ -843,7 +843,7 @@ QCborArray QCborArray::fromVariantList(const QVariantList &list)
         appendVariant(a.d.data(), v);
     return a;
 }
-#endif // !QT_NO_VARIANT
+#endif // !BOBUI_NO_VARIANT
 
 /*!
     Converts all JSON items found in the \a array array to CBOR using
@@ -875,7 +875,7 @@ QCborArray QCborArray::fromJsonArray(QJsonArray &&array) noexcept
 
 }
 
-#ifndef QT_NO_VARIANT
+#ifndef BOBUI_NO_VARIANT
 /*!
     Converts the CBOR values to QVariant using QCborValue::toVariant() and
     "stringifies" all the CBOR keys in this map, returning the QVariantMap that
@@ -972,7 +972,7 @@ QCborMap QCborMap::fromVariantHash(const QVariantHash &hash)
     }
     return m;
 }
-#endif // !QT_NO_VARIANT
+#endif // !BOBUI_NO_VARIANT
 
 /*!
     Converts all JSON items found in the \a obj object to CBOR using
@@ -1002,4 +1002,4 @@ QCborMap QCborMap::fromJsonObject(QJsonObject &&obj) noexcept
     return result;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

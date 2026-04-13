@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QFILESYSTEMMODEL_H
 #define QFILESYSTEMMODEL_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qabstractitemmodel.h>
-#include <QtCore/qdir.h>
-#include <QtGui/qicon.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qabstractitemmodel.h>
+#include <BobUICore/qdir.h>
+#include <BobUIGui/qicon.h>
 
-QT_REQUIRE_CONFIG(filesystemmodel);
+BOBUI_REQUIRE_CONFIG(filesystemmodel);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class ExtendedInformation;
 class QFileSystemModelPrivate;
@@ -33,19 +33,19 @@ Q_SIGNALS:
 
 public:
     enum Roles {
-        FileIconRole = Qt::DecorationRole,
+        FileIconRole = BobUI::DecorationRole,
 
-        FileInfoRole = Qt::FileInfoRole, // New values go before, -5, -6 ..etc
-        QT7_ONLY(
-        FilePathRole = Qt::UserRole - 3,
-        FileNameRole = Qt::UserRole - 2,
-        FilePermissions = Qt::UserRole - 1,
+        FileInfoRole = BobUI::FileInfoRole, // New values go before, -5, -6 ..etc
+        BOBUI7_ONLY(
+        FilePathRole = BobUI::UserRole - 3,
+        FileNameRole = BobUI::UserRole - 2,
+        FilePermissions = BobUI::UserRole - 1,
         )
 
-        QT6_ONLY(
-        FilePathRole = Qt::UserRole + 1,
-        FileNameRole = Qt::UserRole + 2,
-        FilePermissions = Qt::UserRole + 3,
+        BOBUI6_ONLY(
+        FilePathRole = BobUI::UserRole + 1,
+        FileNameRole = BobUI::UserRole + 2,
+        FilePermissions = BobUI::UserRole + 3,
         )
     };
 
@@ -73,21 +73,21 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
-    QVariant myComputer(int role = Qt::DisplayRole) const;
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
+    QVariant myComputer(int role = BobUI::DisplayRole) const;
+    QVariant data(const QModelIndex &index, int role = BobUI::DisplayRole) const override;
+    bool setData(const QModelIndex &index, const QVariant &value, int role = BobUI::EditRole) override;
 
-    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
+    QVariant headerData(int section, BobUI::Orientation orientation, int role = BobUI::DisplayRole) const override;
 
-    Qt::ItemFlags flags(const QModelIndex &index) const override;
+    BobUI::ItemFlags flags(const QModelIndex &index) const override;
 
-    void sort(int column, Qt::SortOrder order = Qt::AscendingOrder) override;
+    void sort(int column, BobUI::SortOrder order = BobUI::AscendingOrder) override;
 
     QStringList mimeTypes() const override;
     QMimeData *mimeData(const QModelIndexList &indexes) const override;
-    bool dropMimeData(const QMimeData *data, Qt::DropAction action,
+    bool dropMimeData(const QMimeData *data, BobUI::DropAction action,
                       int row, int column, const QModelIndex &parent) override;
-    Qt::DropActions supportedDropActions() const override;
+    BobUI::DropActions supportedDropActions() const override;
     QHash<int, QByteArray> roleNames() const override;
 
     // QFileSystemModel specific API
@@ -124,7 +124,7 @@ public:
     QString type(const QModelIndex &index) const;
 
     QDateTime lastModified(const QModelIndex &index) const;
-    QDateTime lastModified(const QModelIndex &index, const QTimeZone &tz) const;
+    QDateTime lastModified(const QModelIndex &index, const BOBUIimeZone &tz) const;
 
     QModelIndex mkdir(const QModelIndex &parent, const QString &name);
     bool rmdir(const QModelIndex &index);
@@ -136,7 +136,7 @@ public:
 
 protected:
     QFileSystemModel(QFileSystemModelPrivate &, QObject *parent = nullptr);
-    void timerEvent(QTimerEvent *event) override;
+    void timerEvent(BOBUIimerEvent *event) override;
     bool event(QEvent *event) override;
 
 private:
@@ -151,10 +151,10 @@ inline QString QFileSystemModel::fileName(const QModelIndex &aindex) const
     return aindex.data(FileNameRole).toString();
 }
 inline QIcon QFileSystemModel::fileIcon(const QModelIndex &aindex) const
-{ return qvariant_cast<QIcon>(aindex.data(Qt::DecorationRole)); }
+{ return qvariant_cast<QIcon>(aindex.data(BobUI::DecorationRole)); }
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QFileSystemModel::Options)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QFILESYSTEMMODEL_H

@@ -1,22 +1,22 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 cmake_minimum_required(VERSION 3.16)
 
 include(.cmake.conf)
-project(QtMockPlugins
-    VERSION "${QT_REPO_MODULE_VERSION}"
-    DESCRIPTION "Qt MockPlugins Libraries"
-    HOMEPAGE_URL "https://qt.io/"
+project(BobUIMockPlugins
+    VERSION "${BOBUI_REPO_MODULE_VERSION}"
+    DESCRIPTION "BobUI MockPlugins Libraries"
+    HOMEPAGE_URL "https://bobui.io/"
     LANGUAGES CXX C
 )
 
-find_package(Qt6 ${PROJECT_VERSION} CONFIG REQUIRED COMPONENTS BuildInternals CorePrivate)
-qt_internal_project_setup()
+find_package(BobUI6 ${PROJECT_VERSION} CONFIG REQUIRED COMPONENTS BuildInternals CorePrivate)
+bobui_internal_project_setup()
 
-find_package(Qt6 ${PROJECT_VERSION} QUIET CONFIG OPTIONAL_COMPONENTS Gui Widgets Xml)
+find_package(BobUI6 ${PROJECT_VERSION} QUIET CONFIG OPTIONAL_COMPONENTS Gui Widgets Xml)
 
-qt_build_repo_begin()
+bobui_build_repo_begin()
 
 add_subdirectory(mockplugins1)
 add_subdirectory(mockplugins2)
@@ -29,5 +29,5 @@ add_subdirectory(mock4plugin)
 add_subdirectory(mock5plugin)
 add_subdirectory(mock6plugin)
 
-qt_build_repo_post_process()
-qt_build_repo_end()
+bobui_build_repo_post_process()
+bobui_build_repo_end()

@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QPAINTENGINE_MAC_P_H
 #define QPAINTENGINE_MAC_P_H
@@ -9,24 +9,24 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtPrintSupport/qtprintsupportglobal.h>
+#include <BobUIPrintSupport/bobuiprintsupportglobal.h>
 
-#include <QtGui/qpaintengine.h>
-#include <QtGui/private/qpaintengine_p.h>
-#include <QtGui/private/qfont_p.h>
-#include <QtCore/qhash.h>
+#include <BobUIGui/qpaintengine.h>
+#include <BobUIGui/private/qpaintengine_p.h>
+#include <BobUIGui/private/qfont_p.h>
+#include <BobUICore/qhash.h>
 
 typedef struct CGColorSpace *CGColorSpaceRef;
 typedef struct CGContext *CGContextRef;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QCoreGraphicsPaintEnginePrivate;
 class QCoreGraphicsPaintEngine : public QPaintEngine
@@ -46,10 +46,10 @@ public:
     void updateBrush(const QBrush &brush, const QPointF &pt);
     void updateFont(const QFont &font);
     void updateOpacity(qreal opacity);
-    void updateMatrix(const QTransform &matrix);
-    void updateTransform(const QTransform &matrix);
-    void updateClipRegion(const QRegion &region, Qt::ClipOperation op);
-    void updateClipPath(const QPainterPath &path, Qt::ClipOperation op);
+    void updateMatrix(const BOBUIransform &matrix);
+    void updateTransform(const BOBUIransform &matrix);
+    void updateClipRegion(const QRegion &region, BobUI::ClipOperation op);
+    void updateClipPath(const QPainterPath &path, BobUI::ClipOperation op);
     void updateCompositionMode(QPainter::CompositionMode mode);
     void updateRenderHints(QPainter::RenderHints hints);
 
@@ -63,9 +63,9 @@ public:
     void drawPixmap(const QRectF &r, const QPixmap &pm, const QRectF &sr);
     void drawTiledPixmap(const QRectF &r, const QPixmap &pixmap, const QPointF &s);
 
-    void drawTextItem(const QPointF &pos, const QTextItem &item);
+    void drawTextItem(const QPointF &pos, const BOBUIextItem &item);
     void drawImage(const QRectF &r, const QImage &pm, const QRectF &sr,
-                   Qt::ImageConversionFlags flags = Qt::AutoColor);
+                   BobUI::ImageConversionFlags flags = BobUI::AutoColor);
 
     Type type() const { return QPaintEngine::CoreGraphics; }
 
@@ -110,7 +110,7 @@ public:
         QBrush brush;
         uint clipEnabled : 1;
         QRegion clip;
-        QTransform transform;
+        BOBUIransform transform;
    } current;
 
     //state info (shared with QD)
@@ -140,13 +140,13 @@ public:
     float penOffset();
     QPointF devicePixelSize(CGContextRef context);
     float adjustPenWidth(float penWidth);
-    inline void setTransform(const QTransform *matrix = nullptr)
+    inline void setTransform(const BOBUIransform *matrix = nullptr)
     {
         CGContextConcatCTM(hd, CGAffineTransformInvert(CGContextGetCTM(hd)));
         CGAffineTransform xform = orig_xform;
         if (matrix) {
-            extern CGAffineTransform qt_mac_convert_transform_to_cg(const QTransform &);
-            xform = CGAffineTransformConcat(qt_mac_convert_transform_to_cg(*matrix), xform);
+            extern CGAffineTransform bobui_mac_convert_transform_to_cg(const BOBUIransform &);
+            xform = CGAffineTransformConcat(bobui_mac_convert_transform_to_cg(*matrix), xform);
         }
         CGContextConcatCTM(hd, xform);
         CGContextSetTextMatrix(hd, xform);
@@ -166,6 +166,6 @@ inline void QCoreGraphicsPaintEnginePrivate::restoreGraphicsState()
     CGContextRestoreGState(hd);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPAINTENGINE_MAC_P_H

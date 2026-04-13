@@ -1,5 +1,5 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "singleglyphrun.h"
 #include "ui_singleglyphrun.h"
@@ -29,39 +29,39 @@ void SingleGlyphRun::updateGlyphRun(const QGlyphRun &glyphRun)
 
     for (int i = 0; i < glyphIndexes.size(); ++i) {
         {
-            QTableWidgetItem *glyphIndex = new QTableWidgetItem(QString::number(glyphIndexes.at(i)));
+            BOBUIableWidgetItem *glyphIndex = new BOBUIableWidgetItem(QString::number(glyphIndexes.at(i)));
             ui->twGlyphRun->setItem(i, 0, glyphIndex);
         }
 
         {
             QPointF position = glyphPositions.at(i);
-            QTableWidgetItem *glyphPosition = new QTableWidgetItem(QStringLiteral("(%1, %2)")
+            BOBUIableWidgetItem *glyphPosition = new BOBUIableWidgetItem(QStringLiteral("(%1, %2)")
                                                                    .arg(position.x())
                                                                    .arg(position.y()));
             ui->twGlyphRun->setItem(i, 1, glyphPosition);
         }
 
         {
-            QTableWidgetItem *stringIndex = new QTableWidgetItem(QString::number(stringIndexes.at(i)));
+            BOBUIableWidgetItem *stringIndex = new BOBUIableWidgetItem(QString::number(stringIndexes.at(i)));
             ui->twGlyphRun->setItem(i, 2, stringIndex);
         }
 
         QChar c = glyphRun.sourceString().at(stringIndexes.at(i));
 
         {
-            QTableWidgetItem *unicode = new QTableWidgetItem(QString::number(c.unicode(), 16));
+            BOBUIableWidgetItem *unicode = new BOBUIableWidgetItem(QString::number(c.unicode(), 16));
             ui->twGlyphRun->setItem(i, 3, unicode);
         }
 
         {
-            QTableWidgetItem *character = new QTableWidgetItem(c);
+            BOBUIableWidgetItem *character = new BOBUIableWidgetItem(c);
             ui->twGlyphRun->setItem(i, 4, character);
         }
 
         {
             QImage image = glyphRun.rawFont().alphaMapForGlyph(glyphIndexes.at(i));
 
-            QTableWidgetItem *glyphImage = new QTableWidgetItem(QIcon(QPixmap::fromImage(image)), QString{});
+            BOBUIableWidgetItem *glyphImage = new BOBUIableWidgetItem(QIcon(QPixmap::fromImage(image)), QString{});
             ui->twGlyphRun->setItem(i, 5, glyphImage);
         }
 

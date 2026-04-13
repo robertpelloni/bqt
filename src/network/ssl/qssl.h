@@ -1,20 +1,20 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 
 #ifndef QSSL_H
 #define QSSL_H
 
 #if 0
-#pragma qt_class(QSsl)
+#pragma bobui_class(QSsl)
 #endif
 
-#include <QtNetwork/qtnetworkglobal.h>
-#include <QtCore/qobjectdefs.h>
-#include <QtCore/QFlags>
+#include <BobUINetwork/bobuinetworkglobal.h>
+#include <BobUICore/qobjectdefs.h>
+#include <BobUICore/QFlags>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 namespace QSsl {
@@ -50,18 +50,18 @@ namespace QSsl {
     Q_ENUM_NS(AlternativeNameEntryType)
 
     enum SslProtocol {
-        TlsV1_0 QT_DEPRECATED_VERSION_X_6_3("Use TlsV1_2OrLater instead."),
-        TlsV1_1 QT_DEPRECATED_VERSION_X_6_3("Use TlsV1_2OrLater instead."),
+        TlsV1_0 BOBUI_DEPRECATED_VERSION_X_6_3("Use TlsV1_2OrLater instead."),
+        TlsV1_1 BOBUI_DEPRECATED_VERSION_X_6_3("Use TlsV1_2OrLater instead."),
         TlsV1_2,
         AnyProtocol,
         SecureProtocols,
 
-        TlsV1_0OrLater QT_DEPRECATED_VERSION_X_6_3("Use TlsV1_2OrLater instead."),
-        TlsV1_1OrLater QT_DEPRECATED_VERSION_X_6_3("Use TlsV1_2OrLater instead."),
+        TlsV1_0OrLater BOBUI_DEPRECATED_VERSION_X_6_3("Use TlsV1_2OrLater instead."),
+        TlsV1_1OrLater BOBUI_DEPRECATED_VERSION_X_6_3("Use TlsV1_2OrLater instead."),
         TlsV1_2OrLater,
 
-        DtlsV1_0 QT_DEPRECATED_VERSION_X_6_3("Use DtlsV1_2OrLater instead."),
-        DtlsV1_0OrLater QT_DEPRECATED_VERSION_X_6_3("Use DtlsV1_2OrLater instead."),
+        DtlsV1_0 BOBUI_DEPRECATED_VERSION_X_6_3("Use DtlsV1_2OrLater instead."),
+        DtlsV1_0OrLater BOBUI_DEPRECATED_VERSION_X_6_3("Use DtlsV1_2OrLater instead."),
         DtlsV1_2,
         DtlsV1_2OrLater,
 
@@ -157,6 +157,6 @@ namespace QSsl {
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QSsl::SslOptions)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSSL_H

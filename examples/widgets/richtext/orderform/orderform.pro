@@ -1,6 +1,6 @@
-QT += widgets
-requires(qtConfig(tablewidget))
-qtHaveModule(printsupport): QT += printsupport
+BOBUI += widgets
+requires(bobuiConfig(tablewidget))
+bobuiHaveModule(printsupport): BOBUI += printsupport
 
 HEADERS     = detailsdialog.h \
               mainwindow.h
@@ -9,5 +9,5 @@ SOURCES     = detailsdialog.cpp \
               mainwindow.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/richtext/orderform
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/richtext/orderform
 INSTALLS += target

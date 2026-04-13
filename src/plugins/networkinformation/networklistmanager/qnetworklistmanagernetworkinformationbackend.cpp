@@ -1,21 +1,21 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#include <QtNetwork/private/qnetworkinformation_p.h>
+#include <BobUINetwork/private/qnetworkinformation_p.h>
 
 #include "qnetworklistmanagerevents.h"
 
-#include <QtCore/qglobal.h>
-#include <QtCore/private/qobject_p.h>
-#include <QtCore/qscopeguard.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/private/qobject_p.h>
+#include <BobUICore/qscopeguard.h>
 
-#include <QtCore/private/qfunctions_win_p.h>
+#include <BobUICore/private/qfunctions_win_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // Declared in qnetworklistmanagerevents.h
-Q_LOGGING_CATEGORY(lcNetInfoNLM, "qt.network.info.netlistmanager");
+Q_LOGGING_CATEGORY(lcNetInfoNLM, "bobui.network.info.netlistmanager");
 
 static QString backendName()
 {
@@ -71,7 +71,7 @@ public:
     {
         return QNetworkInformation::Features(QNetworkInformation::Feature::Reachability
                                              | QNetworkInformation::Feature::CaptivePortal
-#if QT_CONFIG(cpp_winrt)
+#if BOBUI_CONFIG(cpp_winrt)
                                              | QNetworkInformation::Feature::TransportMedium
                                              | QNetworkInformation::Feature::Metered
 #endif
@@ -195,6 +195,6 @@ void QNetworkListManagerNetworkInformationBackend::stop()
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "qnetworklistmanagernetworkinformationbackend.moc"

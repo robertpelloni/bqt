@@ -1,7 +1,7 @@
-Qt 4.1.1 is a bug-fix release. It maintains both forward and backward
-compatibility (source and binary) with Qt 4.1.0.
+BobUI 4.1.1 is a bug-fix release. It maintains both forward and backward
+compatibility (source and binary) with BobUI 4.1.0.
 
-The Qt version 4.1 series is binary compatible with the 4.0.x series.
+The BobUI version 4.1 series is binary compatible with the 4.0.x series.
 Applications compiled for 4.0 will continue to run with 4.1.
 
 ****************************************************************************
@@ -18,23 +18,23 @@ Configure / Compilation
         Fix build of dumpcpp-dependent projects in Visual Studio 6.
         Fixed compilation for solaris-cc-64.
         Respect the -no-sql-mysql flag.
-	Fixed compilation with -no-qt3support on Mac OS 10.3
+	Fixed compilation with -no-bobui3support on Mac OS 10.3
 	qmake now places PkgInfo in the "Contents" directory of the
 	.app bundle.
 
-Porting (qt3to4)
+Porting (bobui3to4)
 	Fixed the issue where 'int red' would be translated to
-	'Qt::red'.
+	'BobUI::red'.
 	Improved handling of macros created by moc.
 
-Qt Designer
+BobUI Designer
 	uic3: Prevent generation of invalid font tags
         uic: Fixed bug that caused retranslateUI() to add existing
         items in combo box once again
-	Fixed dependency problem where qtDesigner modules would depend
+	Fixed dependency problem where bobuiDesigner modules would depend
 	on a private class.
 	Added missing generation of setColumnCount() and setRowCount()
-	for QTableWidget.
+	for BOBUIableWidget.
 	Fixed a platform incompatibility when saving icon properties on
 	Windows.
 	Fixed a crash when breaking the layout in a dock widget.
@@ -51,15 +51,15 @@ Qt Designer
 	if previous resource file was deleted.
 	Fixed use of F1 as help shortcut.
 
-Qt Assistant 
+BobUI Assistant 
 	Fixed problem with restoring window geometry on multi screen
 	configurations.
 
-Qt Linguist / Internationalization
+BobUI Linguist / Internationalization
         Fixed tr() idioms, so that translation actually works.
 	Fixed encoding of translated text.
 
-Qt Translation
+BobUI Translation
 	Added translation files for Simplified Chinese.
 	Fixed a problem with lupdate parsing output from uic.
 
@@ -268,7 +268,7 @@ General improvements
         now auto-default.
 
 - QRadioButton
-	Fixed a potential crash in QRadioButton Qt 3 support
+	Fixed a potential crash in QRadioButton BobUI 3 support
 	constructors.
 
 - QSortFilterProxyModel
@@ -300,28 +300,28 @@ General improvements
 - QString
 	Fixed regression in fromLocal8Bit().
 
-- QTextDocument
+- BOBUIextDocument
         Support span style background-color.
         Fix nested tables in html documents regression.
 
-- QTextLayout
+- BOBUIextLayout
 	Added support for soft-hyphens.
         
-- QToolButton
+- BOBUIoolButton
         Make popup menus appear on the correct screen.
-	Fixed ToolButtonPopupMode when QToolButton has a
+	Fixed ToolButtonPopupMode when BOBUIoolButton has a
 	QAction.
 
-- QToolBar
+- BOBUIoolBar
         Combo boxes now appears as submenus in a toolbar extension.
         setIconSize() now works correctly.
 	Relative position within toolbars are now kept when saving and
 	restoring state.
 
-- QTextBrowser
+- BOBUIextBrowser
 	Fix missing line break after paragraph.
         
-- QTextEdit
+- BOBUIextEdit
         Improve handling of the TITLE tag.
         Fixed navigating links via tab.
         Improved handling of malformed html.
@@ -335,19 +335,19 @@ General improvements
 	Improved performance when selecting all text.
 	Emit copyAvailable() on mouse selection.
 
-- QTableView
+- BOBUIableView
         Fixed drawing of selections after moving columns.
         Do not wrap to the top if Page Down is pressed.
         Improve scrolling behavior.
-        QTableView now takes ownership of QHeaders set using
+        BOBUIableView now takes ownership of QHeaders set using
         setHorizontalHeader()
 	Fixed issue where calling setModel(0) could result in a
 	crash.
 	
-- QTreeView
+- BOBUIreeView
         Fixed scrolling-related item expand bug.
         Improve scrolling behavior.
-        QTreeView now takes ownership of QHeaders set using
+        BOBUIreeView now takes ownership of QHeaders set using
         setHorizontalHeader()
         Avoid crash when calling setRowHidden with no model.
 	Avoid crash when calling sizeHintForColumn() in some cases.
@@ -358,31 +358,31 @@ General improvements
 	Removed extra emit of the expanded() signal on already
 	expanded branches.
 
-- QTreeWidget
+- BOBUIreeWidget
 	Fixed tristate check item behavior.
 
-- QTabWidget
+- BOBUIabWidget
         Fixed bug that caused missing resize when dynamically adding
         widgets.
 	Fixed text positioning in a tab with an icon.
 
         
-- QTemporaryFile
+- BOBUIemporaryFile
 	Fixed issue where calling open() could potentially change the
 	file name.
 
-- QTextDocument
+- BOBUIextDocument
         Improved stability when importing incorrectly formed html
         tables.
 	Improved stability when importing closing tags without
 	corresponding opening tags.
         
-- QTextStream
+- BOBUIextStream
 	Ensure valid codec converter state after calling seek(0).
 	Fixed issue where readAll() would not work with sequential
 	devices.
 
-- QTabBar
+- BOBUIabBar
         Improve handling of tab removal.
 
 - QUrl
@@ -395,7 +395,7 @@ General improvements
 - QVariant
         Improve operator==() behavior when comparing different types.
         The QVariant(const char *) constructor is now unavailable when
-        QT_NO_CAST_TO_ASCII is set. Otherwise, it uses
+        BOBUI_NO_CAST_TO_ASCII is set. Otherwise, it uses
         QString::fromAscii to convert the const char * to a Unicode
         QString to prevent loss of information.
 
@@ -481,7 +481,7 @@ Windows:
 - QFileDialog
         Improve handling of path names with special characters.
         Maintain modality chain when showing a native modal inside a
-        qt modal.
+        bobui modal.
         Speedup when browsing dirs containing broken shortcuts.
 
 - QHeaderView
@@ -520,7 +520,7 @@ Windows:
 	Ensure correct pageRect() and paperRect() when printer
 	resolution is set manually.
 
-- QTableView
+- BOBUIableView
 	Improved checkbox coloring within selections.
 
 - QUdpSocket
@@ -544,7 +544,7 @@ Windows:
 
 X11:
 
-	Reintroduced qt_x11_set_global_double_buffer() for binary
+	Reintroduced bobui_x11_set_global_double_buffer() for binary
 	compatibility.
 	Improved tablet event handling.
 
@@ -573,7 +573,7 @@ X11:
         Fixed issue where rotating pixmaps could add a pixel row in
         some cases.
 	Fixed drawing of arcs of less than 1 degree.
-	Made drawText() honor the Qt::TextWrapAnywhere flag.
+	Made drawText() honor the BobUI::TextWrapAnywhere flag.
 
 - QPrinter
 	Fixed cleanup of child processes.
@@ -591,7 +591,7 @@ X11:
 	Catch double click also when size exceeds window system size
 	limits.
 
-- QTextEdit
+- BOBUIextEdit
 	Fixed an issue where the horizontal scrollbar did not show up.
 
 - QWorkspace
@@ -642,15 +642,15 @@ Mac OS X:
 - QSplashScreen
         Fix painting errors when using showMessage().
 
-- QTextEdit
+- BOBUIextEdit
 	Fixed focus issues with Japanese input.
 	Fixed issue with pasting Unicode text between
 	applications.
 
-- QToolBar 
+- BOBUIoolBar 
         Improve tool bar appearance.
 
-- QTextFormat
+- BOBUIextFormat
 	Fixed a crash when setting a font's pixel size to -1.
 
 - QWorkSpace 
@@ -663,7 +663,7 @@ Mac OS X:
 - Q3ListViewItem
 	Fixed a infinite loop when editing an item.
 
-Qtopia Core:
+BobUIopia Core:
 
 	Removed flickering when mouse cursor is above an animation.
 	Optimized use of shared memory.

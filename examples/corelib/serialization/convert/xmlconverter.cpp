@@ -1,11 +1,11 @@
 // Copyright (C) 2018 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "xmlconverter.h"
 #include "variantorderedmap.h"
 
 #include <QBitArray>
-#include <QtCborCommon>
+#include <BobUICborCommon>
 #include <QFile>
 #include <QFloat16>
 #include <QMetaType>
@@ -14,7 +14,7 @@
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static const char xmlOptionHelp[] = "compact=no|yes              Use compact XML form.\n";
 
@@ -328,7 +328,7 @@ static void variantToXml(QXmlStreamWriter &xml, const QVariant &v)
             break;
 
         case QMetaType::QDate:
-        case QMetaType::QTime:
+        case QMetaType::BOBUIime:
         case QMetaType::QDateTime:
             xml.writeAttribute(typeString, "dateime");
             xml.writeCharacters(v.toString());

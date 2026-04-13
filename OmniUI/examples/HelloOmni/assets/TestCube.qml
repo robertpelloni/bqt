@@ -1,10 +1,10 @@
-import QtQuick 2.15
+import BobUIQuick 2.15
 import Omni.Gfx 1.0
 
 OmniMesh {
     id: root
     source: "Cube"
-    scale: Qt.vector3d(2, 2, 2)
+    scale: BobUI.vector3d(2, 2, 2)
 
     // Rotate constantly
     NumberAnimation on rotation.x {

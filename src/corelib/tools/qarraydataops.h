@@ -1,37 +1,37 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QARRAYDATAOPS_H
 #define QARRAYDATAOPS_H
 
-#include <QtCore/qarraydata.h>
-#include <QtCore/qcontainertools_impl.h>
-#include <QtCore/qnamespace.h>
+#include <BobUICore/qarraydata.h>
+#include <BobUICore/qcontainertools_impl.h>
+#include <BobUICore/qnamespace.h>
 
-#include <QtCore/q20functional.h>
-#include <QtCore/q20memory.h>
+#include <BobUICore/q20functional.h>
+#include <BobUICore/q20memory.h>
 #include <new>
 #include <string.h>
 #include <utility>
 #include <iterator>
 #include <type_traits>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 template <class T> struct QArrayDataPointer;
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 template <class T>
 struct QPodArrayOps
         : public QArrayDataPointer<T>
 {
-    static_assert (std::is_nothrow_destructible_v<T>, "Types with throwing destructors are not supported in Qt containers.");
+    static_assert (std::is_nothrow_destructible_v<T>, "Types with throwing destructors are not supported in BobUI containers.");
 
 protected:
-    typedef QTypedArrayData<T> Data;
+    typedef BOBUIypedArrayData<T> Data;
     using DataPointer = QArrayDataPointer<T>;
 
 public:
@@ -271,10 +271,10 @@ template <class T>
 struct QGenericArrayOps
         : public QArrayDataPointer<T>
 {
-    static_assert (std::is_nothrow_destructible_v<T>, "Types with throwing destructors are not supported in Qt containers.");
+    static_assert (std::is_nothrow_destructible_v<T>, "Types with throwing destructors are not supported in BobUI containers.");
 
 protected:
-    typedef QTypedArrayData<T> Data;
+    typedef BOBUIypedArrayData<T> Data;
     using DataPointer = QArrayDataPointer<T>;
 
 public:
@@ -620,10 +620,10 @@ template <class T>
 struct QMovableArrayOps
     : QGenericArrayOps<T>
 {
-    static_assert (std::is_nothrow_destructible_v<T>, "Types with throwing destructors are not supported in Qt containers.");
+    static_assert (std::is_nothrow_destructible_v<T>, "Types with throwing destructors are not supported in BobUI containers.");
 
 protected:
-    typedef QTypedArrayData<T> Data;
+    typedef BOBUIypedArrayData<T> Data;
     using DataPointer = QArrayDataPointer<T>;
 
 public:
@@ -816,7 +816,7 @@ struct QArrayOpsSelector
 template <class T>
 struct QArrayOpsSelector<T,
     typename std::enable_if<
-        !QTypeInfo<T>::isComplex && QTypeInfo<T>::isRelocatable
+        !BOBUIypeInfo<T>::isComplex && BOBUIypeInfo<T>::isRelocatable
     >::type>
 {
     typedef QPodArrayOps<T> Type;
@@ -825,7 +825,7 @@ struct QArrayOpsSelector<T,
 template <class T>
 struct QArrayOpsSelector<T,
     typename std::enable_if<
-        QTypeInfo<T>::isComplex && QTypeInfo<T>::isRelocatable
+        BOBUIypeInfo<T>::isComplex && BOBUIypeInfo<T>::isRelocatable
     >::type>
 {
     typedef QMovableArrayOps<T> Type;
@@ -835,7 +835,7 @@ template <class T>
 struct QCommonArrayOps : QArrayOpsSelector<T>::Type
 {
     using Base = typename QArrayOpsSelector<T>::Type;
-    using Data = QTypedArrayData<T>;
+    using Data = BOBUIypedArrayData<T>;
     using DataPointer = QArrayDataPointer<T>;
     using parameter_type = typename Base::parameter_type;
 
@@ -847,7 +847,7 @@ public:
     // using Base::destroyAll;
 
     template<typename It>
-    void appendIteratorRange(It b, It e, QtPrivate::IfIsForwardIterator<It> = true)
+    void appendIteratorRange(It b, It e, BobUIPrivate::IfIsForwardIterator<It> = true)
     {
         Q_ASSERT(this->isMutable() || b == e);
         Q_ASSERT(!this->isShared() || b == e);
@@ -885,7 +885,7 @@ public:
         DataPointer old;
 
         // points into range:
-        if (QtPrivate::q_points_into_range(b, *this))
+        if (BobUIPrivate::q_points_into_range(b, *this))
             this->detachAndGrow(QArrayData::GrowsAtEnd, n, &b, &old);
         else
             this->detachAndGrow(QArrayData::GrowsAtEnd, n, nullptr, nullptr);
@@ -904,8 +904,8 @@ public:
 
         T *const b = this->begin() + this->size;
         T *const e = this->begin() + newSize;
-        if constexpr (std::is_constructible_v<T, Qt::Initialization>)
-            std::uninitialized_fill(b, e, Qt::Uninitialized);
+        if constexpr (std::is_constructible_v<T, BobUI::Initialization>)
+            std::uninitialized_fill(b, e, BobUI::Uninitialized);
         else
             std::uninitialized_default_construct(b, e);
         this->size = newSize;
@@ -1020,7 +1020,7 @@ public:
     {
         constexpr bool IsIdentity = std::is_same_v<Projection, q20::identity>;
         const qsizetype n = std::distance(first, last);
-        if constexpr (IsIdentity && !QTypeInfo<T>::isComplex) {
+        if constexpr (IsIdentity && !BOBUIypeInfo<T>::isComplex) {
             // For non-complex types, we prefer a single std::copy() -> memcpy()
             // call. We can do that because either the default constructor is
             // trivial (so the lifetime has started) or the copy constructor is
@@ -1063,14 +1063,14 @@ public:
     }
 };
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 template <class T>
 struct QArrayDataOps
-    : QtPrivate::QCommonArrayOps<T>
+    : BobUIPrivate::QCommonArrayOps<T>
 {
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // include guard

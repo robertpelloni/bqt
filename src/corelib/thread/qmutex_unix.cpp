@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2015 Olivier Goffart <ogoffart@woboq.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qplatformdefs.h"
 #include "qmutex.h"
@@ -17,9 +17,9 @@
 #undef wakeup
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-static void qt_report_error(int code, const char *where, const char *what)
+static void bobui_report_error(int code, const char *where, const char *what)
 {
     if (code != 0)
         qErrnoWarning(code, "%s: %s failure", where, what);
@@ -27,13 +27,13 @@ static void qt_report_error(int code, const char *where, const char *what)
 
 QMutexPrivate::QMutexPrivate()
 {
-    qt_report_error(sem_init(&semaphore, 0, 0), "QMutex", "sem_init");
+    bobui_report_error(sem_init(&semaphore, 0, 0), "QMutex", "sem_init");
 }
 
 QMutexPrivate::~QMutexPrivate()
 {
 
-    qt_report_error(sem_destroy(&semaphore), "QMutex", "sem_destroy");
+    bobui_report_error(sem_destroy(&semaphore), "QMutex", "sem_destroy");
 }
 
 bool QMutexPrivate::wait(QDeadlineTimer timeout)
@@ -43,7 +43,7 @@ bool QMutexPrivate::wait(QDeadlineTimer timeout)
         do {
             errorCode = sem_wait(&semaphore);
         } while (errorCode && errno == EINTR);
-        qt_report_error(errorCode, "QMutex::lock()", "sem_wait");
+        bobui_report_error(errorCode, "QMutex::lock()", "sem_wait");
     } else {
         do {
             auto tp = timeout.deadline<std::chrono::system_clock>();
@@ -53,14 +53,14 @@ bool QMutexPrivate::wait(QDeadlineTimer timeout)
 
         if (errorCode && errno == ETIMEDOUT)
             return false;
-        qt_report_error(errorCode, "QMutex::lock()", "sem_timedwait");
+        bobui_report_error(errorCode, "QMutex::lock()", "sem_timedwait");
     }
     return true;
 }
 
 void QMutexPrivate::wakeUp() noexcept
 {
-    qt_report_error(sem_post(&semaphore), "QMutex::unlock", "sem_post");
+    bobui_report_error(sem_post(&semaphore), "QMutex::unlock", "sem_post");
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

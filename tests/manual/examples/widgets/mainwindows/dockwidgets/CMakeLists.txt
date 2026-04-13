@@ -1,5 +1,5 @@
-# Copyright (C) 2022 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+# Copyright (C) 2022 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 cmake_minimum_required(VERSION 3.16)
 project(dockwidgets LANGUAGES CXX)
@@ -10,14 +10,14 @@ endif()
 
 set(INSTALL_EXAMPLEDIR "${INSTALL_EXAMPLESDIR}/widgets/mainwindows/dockwidgets")
 
-find_package(Qt6
+find_package(BobUI6
     REQUIRED COMPONENTS Core Gui Widgets
     OPTIONAL_COMPONENTS PrintSupport
 )
 
-qt_standard_project_setup()
+bobui_standard_project_setup()
 
-qt_add_executable(dockwidgets
+bobui_add_executable(dockwidgets
     main.cpp
     mainwindow.cpp mainwindow.h
 )
@@ -28,13 +28,13 @@ set_target_properties(dockwidgets PROPERTIES
 )
 
 target_link_libraries(dockwidgets PRIVATE
-    Qt6::Core
-    Qt6::Gui
-    Qt6::Widgets
+    BobUI6::Core
+    BobUI6::Gui
+    BobUI6::Widgets
 )
 
-if (TARGET Qt6::PrintSupport)
-    target_link_libraries(dockwidgets PRIVATE Qt6::PrintSupport)
+if (TARGET BobUI6::PrintSupport)
+    target_link_libraries(dockwidgets PRIVATE BobUI6::PrintSupport)
 endif()
 
 # Resources:
@@ -45,7 +45,7 @@ set(dockwidgets_resource_files
     "images/undo.png"
 )
 
-qt_add_resources(dockwidgets "dockwidgets"
+bobui_add_resources(dockwidgets "dockwidgets"
     PREFIX
         "/"
     FILES

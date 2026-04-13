@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qlibinputhandler_p.h"
 #include "qlibinputpointer_p.h"
@@ -8,26 +8,26 @@
 
 #include <libudev.h>
 #include <libinput.h>
-#include <QtCore/QLoggingCategory>
-#include <QtCore/QSocketNotifier>
-#include <QtCore/private/qcore_unix_p.h>
+#include <BobUICore/QLoggingCategory>
+#include <BobUICore/QSocketNotifier>
+#include <BobUICore/private/qcore_unix_p.h>
 #include <private/qguiapplication_p.h>
 #include <private/qinputdevicemanager_p_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(qLcLibInput, "qt.qpa.input")
+Q_LOGGING_CATEGORY(qLcLibInput, "bobui.qpa.input")
 
 static int liOpen(const char *path, int flags, void *user_data)
 {
     Q_UNUSED(user_data);
-    return qt_safe_open(path, flags);
+    return bobui_safe_open(path, flags);
 }
 
 static void liClose(int fd, void *user_data)
 {
     Q_UNUSED(user_data);
-    qt_safe_close(fd);
+    bobui_safe_close(fd);
 }
 
 static const struct libinput_interface liInterface = {
@@ -172,7 +172,7 @@ void QLibInputHandler::processEvent(libinput_event *ev)
     case LIBINPUT_EVENT_POINTER_MOTION_ABSOLUTE:
         m_pointer->processAbsMotion(libinput_event_get_pointer_event(ev));
         break;
-#if QT_CONFIG(libinput_hires_wheel_support)
+#if BOBUI_CONFIG(libinput_hires_wheel_support)
     case LIBINPUT_EVENT_POINTER_SCROLL_WHEEL:
 #else
     case LIBINPUT_EVENT_POINTER_AXIS:
@@ -202,4 +202,4 @@ void QLibInputHandler::processEvent(libinput_event *ev)
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

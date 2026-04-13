@@ -1,24 +1,24 @@
 // Copyright (C) 2014 John Layt <jlayt@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qppdprintdevice.h"
 
 #include "qcupsprintersupport_p.h"
 #include "private/qcups_p.h" // Only needed for PDPK_*
 
-#if QT_CONFIG(mimetype)
-#include <QtCore/QMimeDatabase>
+#if BOBUI_CONFIG(mimetype)
+#include <BobUICore/QMimeDatabase>
 #endif
 
-#ifndef QT_LINUXBASE // LSB merges everything into cups.h
+#ifndef BOBUI_LINUXBASE // LSB merges everything into cups.h
 #include <cups/language.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // avoid all the warnings about using deprecated API from CUPS (as there is no real replacement)
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
 
 QPpdPrintDevice::QPpdPrintDevice(const QString &id)
     : QPlatformPrintDevice(id),
@@ -448,7 +448,7 @@ bool QPpdPrintDevice::isFeatureAvailable(QPrintDevice::PrintDevicePropertyKey ke
     return QPlatformPrintDevice::isFeatureAvailable(key, params);
 }
 
-#if QT_CONFIG(mimetype)
+#if BOBUI_CONFIG(mimetype)
 void QPpdPrintDevice::loadMimeTypes() const
 {
     // TODO No CUPS api? Need to manually load CUPS mime.types file?
@@ -476,6 +476,6 @@ cups_ptype_e QPpdPrintDevice::printerTypeFlags() const
     return static_cast<cups_ptype_e>(printerOption("printer-type").toUInt());
 }
 
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

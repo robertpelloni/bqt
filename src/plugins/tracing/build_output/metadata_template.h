@@ -32,7 +32,7 @@ trace {
 
 env {
     domain = "ust";
-    tracer_name = "qtctf";
+    tracer_name = "bobuictf";
     tracer_major = 1;
     tracer_minor = 0;
     architecture_bit_width = $ARC_BIT_WIDTH;

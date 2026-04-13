@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 #include "../include/mainwindow.h"
 
@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
     setupContents();
     setupMenus();
 
-    textBrowser = new QTextBrowser(this);
+    textBrowser = new BOBUIextBrowser(this);
 
     connect(headingList, &QListWidget::itemClicked,
             this, &MainWindow::updateText);
@@ -32,7 +32,7 @@ void MainWindow::setupContents()
 
     do {
         QString line = titlesFile.readLine().trimmed();
-        QStringList parts = line.split(u'\t', Qt::SkipEmptyParts);
+        QStringList parts = line.split(u'\t', BobUI::SkipEmptyParts);
         if (parts.size() != 2)
             break;
 
@@ -44,9 +44,9 @@ void MainWindow::setupContents()
 
         chapterFile.open(QFile::ReadOnly);
         QListWidgetItem *item = new QListWidgetItem(chapterTitle, headingList);
-        item->setData(Qt::DisplayRole, chapterTitle);
-        item->setData(Qt::UserRole, chapterFile.readAll());
-        item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+        item->setData(BobUI::DisplayRole, chapterTitle);
+        item->setData(BobUI::UserRole, chapterFile.readAll());
+        item->setFlags(BobUI::ItemIsEnabled | BobUI::ItemIsSelectable);
         chapterFile.close();
 
         chapter++;
@@ -59,9 +59,9 @@ void MainWindow::setupDockWindow()
 {
     //! [0]
     contentsWindow = new QDockWidget(tr("Table of Contents"), this);
-    contentsWindow->setAllowedAreas(Qt::LeftDockWidgetArea
-                                  | Qt::RightDockWidgetArea);
-    addDockWidget(Qt::LeftDockWidgetArea, contentsWindow);
+    contentsWindow->setAllowedAreas(BobUI::LeftDockWidgetArea
+                                  | BobUI::RightDockWidgetArea);
+    addDockWidget(BobUI::LeftDockWidgetArea, contentsWindow);
 
     headingList = new QListWidget(contentsWindow);
     contentsWindow->setWidget(headingList);
@@ -81,6 +81,6 @@ void MainWindow::setupMenus()
 
 void MainWindow::updateText(QListWidgetItem *item)
 {
-    QString text = item->data(Qt::UserRole).toString();
+    QString text = item->data(BobUI::UserRole).toString();
     textBrowser->setHtml(text);
 }

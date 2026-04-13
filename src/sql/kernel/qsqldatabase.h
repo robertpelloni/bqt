@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSQLDATABASE_H
 #define QSQLDATABASE_H
 
-#include <QtSql/qtsqlglobal.h>
-#include <QtCore/qmetaobject.h>
-#include <QtCore/qstring.h>
+#include <BobUISql/bobuisqlglobal.h>
+#include <BobUICore/qmetaobject.h>
+#include <BobUICore/qstring.h>
 
 // clazy:excludeall=qproperty-without-notify
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QSqlError;
@@ -19,7 +19,7 @@ class QSqlIndex;
 class QSqlRecord;
 class QSqlQuery;
 class QSqlDatabasePrivate;
-class QThread;
+class BOBUIhread;
 
 class Q_SQL_EXPORT QSqlDriverCreatorBase
 {
@@ -38,11 +38,11 @@ public:
 struct QSqlDatabaseDefaultConnectionName
 {
     // separate class because of the static inline constexpr variable
-    static constexpr const char defaultConnection[] = "qt_sql_default_connection";
+    static constexpr const char defaultConnection[] = "bobui_sql_default_connection";
     static QString defaultConnectionName() noexcept
     {
-        using namespace Qt::StringLiterals;
-        return u"qt_sql_default_connection"_s;
+        using namespace BobUI::StringLiterals;
+        return u"bobui_sql_default_connection"_s;
     }
 };
 
@@ -67,8 +67,8 @@ public:
     QStringList tables(QSql::TableType type = QSql::Tables) const;
     QSqlIndex primaryIndex(const QString& tablename) const;
     QSqlRecord record(const QString& tablename) const;
-#if QT_DEPRECATED_SINCE(6, 6)
-    QT_DEPRECATED_VERSION_X_6_6("Use QSqlQuery::exec() instead.")
+#if BOBUI_DEPRECATED_SINCE(6, 6)
+    BOBUI_DEPRECATED_VERSION_X_6_6("Use QSqlQuery::exec() instead.")
     QSqlQuery exec(const QString& query = QString()) const;
 #endif
     QSqlError lastError() const;
@@ -94,12 +94,12 @@ public:
     QString connectionName() const;
     void setNumericalPrecisionPolicy(QSql::NumericalPrecisionPolicy precisionPolicy);
     QSql::NumericalPrecisionPolicy numericalPrecisionPolicy() const;
-    bool moveToThread(QThread *targetThread);
-    QThread *thread() const;
+    bool moveToThread(BOBUIhread *targetThread);
+    BOBUIhread *thread() const;
 
     QSqlDriver* driver() const;
 
-#if QT_SQL_REMOVED_SINCE(6, 10)
+#if BOBUI_SQL_REMOVED_SINCE(6, 10)
     static const char *defaultConnection;
 #endif
 
@@ -127,10 +127,10 @@ private:
     QSqlDatabasePrivate *d;
 };
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_SQL_EXPORT QDebug operator<<(QDebug, const QSqlDatabase &);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSQLDATABASE_H

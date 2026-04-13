@@ -1,7 +1,7 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/QTest>
+#include <BobUITest/BOBUIest>
 
 #include <QStringTokenizer>
 
@@ -40,18 +40,18 @@ QLatin1String fromByteArray<QLatin1String>(QByteArrayView v)
 
 void tst_QStringTokenizer::tokenize_data() const
 {
-    QTest::addColumn<QByteArray>("input");
-    QTest::addColumn<QByteArray>("separator");
-    QTest::addColumn<bool>("caseSensitive");
-    QTest::addColumn<int>("expectedCount");
+    BOBUIest::addColumn<QByteArray>("input");
+    BOBUIest::addColumn<QByteArray>("separator");
+    BOBUIest::addColumn<bool>("caseSensitive");
+    BOBUIest::addColumn<int>("expectedCount");
 
     QByteArray shortSentence = "A seriously short sentence.";
-    QTest::addRow("short-sentence-spaces") << shortSentence << QByteArray(" ") << true << 4;
-    QTest::addRow("short-sentence-spaces-case-insensitive")
+    BOBUIest::addRow("short-sentence-spaces") << shortSentence << QByteArray(" ") << true << 4;
+    BOBUIest::addRow("short-sentence-spaces-case-insensitive")
             << shortSentence << QByteArray(" ") << false << 4;
 
-    QTest::addRow("short-sentence-se") << shortSentence << QByteArray("se") << true << 3;
-    QTest::addRow("short-sentence-se-case-insensitive")
+    BOBUIest::addRow("short-sentence-se") << shortSentence << QByteArray("se") << true << 3;
+    BOBUIest::addRow("short-sentence-se-case-insensitive")
             << shortSentence << QByteArray("Se") << false << 3;
 
     QFile file(":/data/lorem.txt");
@@ -59,36 +59,36 @@ void tst_QStringTokenizer::tokenize_data() const
         qFatal("Can't open lorem.txt");
 
     const QByteArray content = file.readAll();
-    QTest::addRow("lorem-ipsum-spaces") << content << QByteArray(" ") << true << 3250;
-    QTest::addRow("lorem-ipsum-spaces-case-insensitive")
+    BOBUIest::addRow("lorem-ipsum-spaces") << content << QByteArray(" ") << true << 3250;
+    BOBUIest::addRow("lorem-ipsum-spaces-case-insensitive")
             << content << QByteArray(" ") << false << 3250;
 
-    QTest::addRow("lorem-ipsum-l") << content << QByteArray("l") << true << 771;
-    QTest::addRow("lorem-ipsum-l-case-insensitive")
+    BOBUIest::addRow("lorem-ipsum-l") << content << QByteArray("l") << true << 771;
+    BOBUIest::addRow("lorem-ipsum-l-case-insensitive")
             << content << QByteArray("l") << false << 772;
 
-    QTest::addRow("lorem-ipsum-lo") << content << QByteArray("lo") << true << 130;
-    QTest::addRow("lorem-ipsum-lo-case-insensitive")
+    BOBUIest::addRow("lorem-ipsum-lo") << content << QByteArray("lo") << true << 130;
+    BOBUIest::addRow("lorem-ipsum-lo-case-insensitive")
             << content << QByteArray("lo") << false << 131;
 
-    QTest::addRow("lorem-ipsum-lor") << content << QByteArray("lor") << true << 122;
-    QTest::addRow("lorem-ipsum-lor-case-insensitive")
+    BOBUIest::addRow("lorem-ipsum-lor") << content << QByteArray("lor") << true << 122;
+    BOBUIest::addRow("lorem-ipsum-lor-case-insensitive")
             << content << QByteArray("lor") << false << 123;
 
-    QTest::addRow("lorem-ipsum-lore") << content << QByteArray("lore") << true << 73;
-    QTest::addRow("lorem-ipsum-lore-case-insensitive")
+    BOBUIest::addRow("lorem-ipsum-lore") << content << QByteArray("lore") << true << 73;
+    BOBUIest::addRow("lorem-ipsum-lore-case-insensitive")
             << content << QByteArray("lore") << false << 74;
 
-    QTest::addRow("lorem-ipsum-lorem") << content << QByteArray("lorem") << true << 34;
-    QTest::addRow("lorem-ipsum-lorem-case-insensitive")
+    BOBUIest::addRow("lorem-ipsum-lorem") << content << QByteArray("lorem") << true << 34;
+    BOBUIest::addRow("lorem-ipsum-lorem-case-insensitive")
             << content << QByteArray("lorem") << false << 35;
 
-    QTest::addRow("lorem-ipsum-lorem i") << content << QByteArray("lorem i") << true << 5;
-    QTest::addRow("lorem-ipsum-lorem i-case-insensitive")
+    BOBUIest::addRow("lorem-ipsum-lorem i") << content << QByteArray("lorem i") << true << 5;
+    BOBUIest::addRow("lorem-ipsum-lorem i-case-insensitive")
             << content << QByteArray("lorem i") << false << 6;
 
-    QTest::addRow("lorem-ipsum-et explicabo s") << content << QByteArray("et explicabo s") << true << 3;
-    QTest::addRow("lorem-ipsum-et explicabo s-case-insensitive")
+    BOBUIest::addRow("lorem-ipsum-et explicabo s") << content << QByteArray("et explicabo s") << true << 3;
+    BOBUIest::addRow("lorem-ipsum-et explicabo s-case-insensitive")
             << content << QByteArray("et explicabo s") << false << 3;
 }
 
@@ -103,7 +103,7 @@ void tst_QStringTokenizer::tokenize() const
     T haystack = fromByteArray<T>(input);
     U needle = fromByteArray<U>(separator);
 
-    const Qt::CaseSensitivity sensitivity = caseSensitive ? Qt::CaseSensitive : Qt::CaseInsensitive;
+    const BobUI::CaseSensitivity sensitivity = caseSensitive ? BobUI::CaseSensitive : BobUI::CaseInsensitive;
     QBENCHMARK {
         QStringTokenizer tok(haystack, needle, sensitivity);
         qsizetype count = 0;
@@ -115,6 +115,6 @@ void tst_QStringTokenizer::tokenize() const
     }
 }
 
-QTEST_MAIN(tst_QStringTokenizer)
+BOBUIEST_MAIN(tst_QStringTokenizer)
 
 #include "tst_bench_qstringtokenizer.moc"

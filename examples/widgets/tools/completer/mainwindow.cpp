@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "mainwindow.h"
 #include "fsmodel.h"
@@ -18,7 +18,7 @@
 #include <QSpinBox>
 #include <QStandardItemModel>
 #include <QStringListModel>
-#include <QTreeView>
+#include <BOBUIreeView>
 
 //! [0]
 MainWindow::MainWindow(QWidget *parent)
@@ -106,18 +106,18 @@ void MainWindow::createMenu()
 {
     QAction *exitAction = new QAction(tr("Exit"), this);
     QAction *aboutAct = new QAction(tr("About"), this);
-    QAction *aboutQtAct = new QAction(tr("About Qt"), this);
+    QAction *aboutBobUIAct = new QAction(tr("About BobUI"), this);
 
     connect(exitAction, &QAction::triggered, qApp, &QApplication::quit);
     connect(aboutAct, &QAction::triggered, this, &MainWindow::about);
-    connect(aboutQtAct, &QAction::triggered, qApp, &QApplication::aboutQt);
+    connect(aboutBobUIAct, &QAction::triggered, qApp, &QApplication::aboutBobUI);
 
     QMenu *fileMenu = menuBar()->addMenu(tr("File"));
     fileMenu->addAction(exitAction);
 
     QMenu *helpMenu = menuBar()->addMenu(tr("About"));
     helpMenu->addAction(aboutAct);
-    helpMenu->addAction(aboutQtAct);
+    helpMenu->addAction(aboutBobUIAct);
 }
 //! [4]
 
@@ -130,8 +130,8 @@ QAbstractItemModel *MainWindow::modelFromFile(const QString &fileName)
 //! [5]
 
 //! [6]
-#ifndef QT_NO_CURSOR
-    QGuiApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+#ifndef BOBUI_NO_CURSOR
+    QGuiApplication::setOverrideCursor(QCursor(BobUI::WaitCursor));
 #endif
     QStringList words;
 
@@ -141,7 +141,7 @@ QAbstractItemModel *MainWindow::modelFromFile(const QString &fileName)
             words << QString::fromUtf8(line.trimmed());
     }
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     QGuiApplication::restoreOverrideCursor();
 #endif
 //! [6]
@@ -186,7 +186,7 @@ void MainWindow::changeMode(int index)
 
 void MainWindow::changeCase(int cs)
 {
-    completer->setCaseSensitivity(cs ? Qt::CaseSensitive : Qt::CaseInsensitive);
+    completer->setCaseSensitivity(cs ? BobUI::CaseSensitive : BobUI::CaseInsensitive);
 }
 
 //! [11]
@@ -219,7 +219,7 @@ void MainWindow::changeModel()
     case 2:
         { // Country List
             completer->setModel(modelFromFile(":/resources/countries.txt"));
-            QTreeView *treeView = new QTreeView;
+            BOBUIreeView *treeView = new BOBUIreeView;
             completer->setPopup(treeView);
             treeView->setRootIsDecorated(false);
             treeView->header()->hide();

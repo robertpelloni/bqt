@@ -1,6 +1,6 @@
-import QtQuick 2.15
-import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.15
+import BobUIQuick 2.15
+import BobUIQuick.Controls 2.15
+import BobUIQuick.Layouts 1.15
 import Omni.Physics 1.0
 
 ApplicationWindow {
@@ -13,7 +13,7 @@ ApplicationWindow {
     OmniPhysicsWorld {
         id: physicsWorld
         running: true
-        gravity: Qt.vector2d(0, 9.81) // Down
+        gravity: BobUI.vector2d(0, 9.81) // Down
         timeScale: 1.0
     }
 
@@ -74,7 +74,7 @@ ApplicationWindow {
                             from: -20.0
                             to: 20.0
                             value: physicsWorld.gravity.y
-                            onValueChanged: physicsWorld.gravity = Qt.vector2d(physicsWorld.gravity.x, value)
+                            onValueChanged: physicsWorld.gravity = BobUI.vector2d(physicsWorld.gravity.x, value)
                         }
                         Label {
                             text: physicsWorld.gravity.y.toFixed(1) + " m/s²"
@@ -97,7 +97,7 @@ ApplicationWindow {
                             from: -20.0
                             to: 20.0
                             value: physicsWorld.gravity.x
-                            onValueChanged: physicsWorld.gravity = Qt.vector2d(value, physicsWorld.gravity.y)
+                            onValueChanged: physicsWorld.gravity = BobUI.vector2d(value, physicsWorld.gravity.y)
                         }
                         Label {
                             text: physicsWorld.gravity.x.toFixed(1) + " m/s²"
@@ -139,7 +139,7 @@ ApplicationWindow {
                     text: "Spawn Bouncy Box"
                     Layout.fillWidth: true
                     onClicked: {
-                        var comp = Qt.createComponent("BouncyBox.qml");
+                        var comp = BobUI.createComponent("BouncyBox.qml");
                         var obj = comp.createObject(sandbox, {
                             "x": Math.random() * (sandbox.width - 50),
                             "y": 50,
@@ -152,7 +152,7 @@ ApplicationWindow {
                     text: "Spawn Heavy Crate"
                     Layout.fillWidth: true
                     onClicked: {
-                        var comp = Qt.createComponent("HeavyCrate.qml");
+                        var comp = BobUI.createComponent("HeavyCrate.qml");
                         var obj = comp.createObject(sandbox, {
                             "x": Math.random() * (sandbox.width - 50),
                             "y": 50,

@@ -1,7 +1,7 @@
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QAtomicInt>
 
 #include <limits>
@@ -17,7 +17,7 @@
 #if !defined(Q_ATOMIC_INT32_IS_SUPPORTED)
 #  error "QAtomicInteger for 32-bit types must be supported!"
 #endif
-#if QT_POINTER_SIZE == 8 && !defined(Q_ATOMIC_INT64_IS_SUPPORTED)
+#if BOBUI_POINTER_SIZE == 8 && !defined(Q_ATOMIC_INT64_IS_SUPPORTED)
 #  error "QAtomicInteger for 64-bit types must be supported on 64-bit builds!"
 #endif
 
@@ -56,9 +56,9 @@
 #  define QATOMIC_TEST_NOT_SUPPORTED
 #endif
 
-QT_WARNING_DISABLE_GCC("-Wtype-limits")
-QT_WARNING_DISABLE_GCC("-Wsign-compare")
-QT_WARNING_DISABLE_CLANG("-Wtautological-constant-out-of-range-compare")
+BOBUI_WARNING_DISABLE_GCC("-Wtype-limits")
+BOBUI_WARNING_DISABLE_GCC("-Wsign-compare")
+BOBUI_WARNING_DISABLE_CLANG("-Wtautological-constant-out-of-range-compare")
 
 typedef signed char schar;
 
@@ -156,52 +156,52 @@ void tst_QAtomicIntegerXX::static_checks()
 void tst_QAtomicIntegerXX::addData()
 {
     typedef std::numeric_limits<T> Limits;
-    QTest::addColumn<LargeInt>("value");
-    QTest::newRow("0") << LargeInt(0);
-    QTest::newRow("+1") << LargeInt(1);
-    QTest::newRow("42") << LargeInt(42);
+    BOBUIest::addColumn<LargeInt>("value");
+    BOBUIest::newRow("0") << LargeInt(0);
+    BOBUIest::newRow("+1") << LargeInt(1);
+    BOBUIest::newRow("42") << LargeInt(42);
     if (TypeIsSigned) {
-        QTest::newRow("-1") << qint64(-1);
-        QTest::newRow("-47") << qint64(-47);
+        BOBUIest::newRow("-1") << qint64(-1);
+        BOBUIest::newRow("-47") << qint64(-47);
     }
 
     // exercise bits
     if (TypeIsSigned && Limits::min() < qint64(SCHAR_MIN))
-        QTest::newRow("int8_min") << qint64(SCHAR_MIN);
+        BOBUIest::newRow("int8_min") << qint64(SCHAR_MIN);
     if (Limits::max() > LargeInt(SCHAR_MAX))
-        QTest::newRow("int8_max") << LargeInt(SCHAR_MAX);
+        BOBUIest::newRow("int8_max") << LargeInt(SCHAR_MAX);
     if (Limits::max() > LargeInt(UCHAR_MAX))
-        QTest::newRow("uint8_max") << LargeInt(UCHAR_MAX);
+        BOBUIest::newRow("uint8_max") << LargeInt(UCHAR_MAX);
     if (TypeIsSigned && Limits::min() < -qint64(UCHAR_MAX))
-        QTest::newRow("-uint8_max") << -qint64(UCHAR_MAX);
+        BOBUIest::newRow("-uint8_max") << -qint64(UCHAR_MAX);
     if (Limits::max() > LargeInt(SHRT_MAX))
-        QTest::newRow("int16_max") << LargeInt(SHRT_MAX);
+        BOBUIest::newRow("int16_max") << LargeInt(SHRT_MAX);
     if (TypeIsSigned && Limits::min() < qint64(SHRT_MIN))
-        QTest::newRow("int16_min") << qint64(SHRT_MIN);
+        BOBUIest::newRow("int16_min") << qint64(SHRT_MIN);
     if (Limits::max() > LargeInt(USHRT_MAX))
-        QTest::newRow("uint16_max") << LargeInt(USHRT_MAX);
+        BOBUIest::newRow("uint16_max") << LargeInt(USHRT_MAX);
     if (TypeIsSigned && Limits::min() < -qint64(USHRT_MAX))
-        QTest::newRow("-uint16_max") << -qint64(USHRT_MAX);
+        BOBUIest::newRow("-uint16_max") << -qint64(USHRT_MAX);
     if (Limits::max() > LargeInt(INT_MAX))
-        QTest::newRow("int32_max") << LargeInt(INT_MAX);
+        BOBUIest::newRow("int32_max") << LargeInt(INT_MAX);
     if (TypeIsSigned && Limits::min() < qint64(INT_MIN))
-        QTest::newRow("int32_min") << qint64(INT_MIN);
+        BOBUIest::newRow("int32_min") << qint64(INT_MIN);
     if (Limits::max() > LargeInt(UINT_MAX))
-        QTest::newRow("uint32_max") << LargeInt(UINT_MAX);
+        BOBUIest::newRow("uint32_max") << LargeInt(UINT_MAX);
     if (Limits::max() > LargeInt(std::numeric_limits<qint64>::max()))
-        QTest::newRow("int64_max") << LargeInt(std::numeric_limits<qint64>::max());
+        BOBUIest::newRow("int64_max") << LargeInt(std::numeric_limits<qint64>::max());
     if (TypeIsSigned && Limits::min() < -qint64(UINT_MAX))
-        QTest::newRow("-uint32_max") << -qint64(UINT_MAX);
+        BOBUIest::newRow("-uint32_max") << -qint64(UINT_MAX);
 
     if (TypeIsSigned)
-        QTest::newRow(QT_STRINGIFY(QATOMIC_TEST_TYPE) "_min") << qint64(Limits::min());
-    QTest::newRow(QT_STRINGIFY(QATOMIC_TEST_TYPE) "_max") << LargeInt(Limits::max());
+        BOBUIest::newRow(BOBUI_STRINGIFY(QATOMIC_TEST_TYPE) "_min") << qint64(Limits::min());
+    BOBUIest::newRow(BOBUI_STRINGIFY(QATOMIC_TEST_TYPE) "_max") << LargeInt(Limits::max());
 }
 
 void tst_QAtomicIntegerXX::initTestCase()
 {
 #ifdef QATOMIC_TEST_NOT_SUPPORTED
-    QSKIP("QAtomicInteger<" QT_STRINGIFY(QATOMIC_TEST_TYPE) "> is not supported on this platform");
+    QSKIP("QAtomicInteger<" BOBUI_STRINGIFY(QATOMIC_TEST_TYPE) "> is not supported on this platform");
 #endif
 }
 
@@ -676,7 +676,7 @@ void tst_QAtomicIntegerXX::fetchAndXor()
 }
 }
 
-QTEST_APPLESS_MAIN(tst_QAtomicIntegerXX)
+BOBUIEST_APPLESS_MAIN(tst_QAtomicIntegerXX)
 
 #include "tst_qatomicinteger.moc"
 

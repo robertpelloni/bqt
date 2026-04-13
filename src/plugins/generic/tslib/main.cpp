@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtGui/qgenericplugin.h>
-#include <QtInputSupport/private/qtslib_p.h>
+#include <BobUIGui/qgenericplugin.h>
+#include <BobUIInputSupport/private/bobuislib_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-class QTsLibPlugin : public QGenericPlugin
+class BOBUIsLibPlugin : public QGenericPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID QGenericPluginFactoryInterface_iid FILE "tslib.json")
@@ -15,16 +15,16 @@ public:
     QObject* create(const QString &key, const QString &specification) override;
 };
 
-QObject* QTsLibPlugin::create(const QString &key,
+QObject* BOBUIsLibPlugin::create(const QString &key,
                               const QString &specification)
 {
-    if (!key.compare(QLatin1String("Tslib"), Qt::CaseInsensitive)
-        || !key.compare(QLatin1String("TslibRaw"), Qt::CaseInsensitive))
-        return new QTsLibMouseHandler(key, specification);
+    if (!key.compare(QLatin1String("Tslib"), BobUI::CaseInsensitive)
+        || !key.compare(QLatin1String("TslibRaw"), BobUI::CaseInsensitive))
+        return new BOBUIsLibMouseHandler(key, specification);
 
     return nullptr;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "main.moc"

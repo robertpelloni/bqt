@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWAYLANDSCREEN_H
 #define QWAYLANDSCREEN_H
@@ -8,7 +8,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -16,29 +16,29 @@
 //
 
 #include <qpa/qplatformscreen.h>
-#include <QtGui/qscreen_platform.h>
-#include <QtWaylandClient/qtwaylandclientglobal.h>
+#include <BobUIGui/qscreen_platform.h>
+#include <BobUIWaylandClient/bobuiwaylandclientglobal.h>
 
-#include <QtWaylandClient/private/qwayland-wayland.h>
-#include <QtWaylandClient/private/qwayland-xdg-output-unstable-v1.h>
-#include <QtCore/private/qglobal_p.h>
+#include <BobUIWaylandClient/private/qwayland-wayland.h>
+#include <BobUIWaylandClient/private/qwayland-xdg-output-unstable-v1.h>
+#include <BobUICore/private/qglobal_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 class QWaylandDisplay;
 class QWaylandCursor;
 
-class Q_WAYLANDCLIENT_EXPORT QWaylandXdgOutputManagerV1 : public QtWayland::zxdg_output_manager_v1 {
+class Q_WAYLANDCLIENT_EXPORT QWaylandXdgOutputManagerV1 : public BobUIWayland::zxdg_output_manager_v1 {
 public:
     QWaylandXdgOutputManagerV1(QWaylandDisplay *display, uint id, uint version);
     ~QWaylandXdgOutputManagerV1();
 };
 
 class Q_WAYLANDCLIENT_EXPORT QWaylandScreen : public QPlatformScreen,
-                                              QtWayland::wl_output,
-                                              QtWayland::zxdg_output_v1,
+                                              BobUIWayland::wl_output,
+                                              BobUIWayland::zxdg_output_v1,
                                               public QNativeInterface::QWaylandScreen
 {
 public:
@@ -63,14 +63,14 @@ public:
     QDpi logicalDpi() const override;
     QList<QPlatformScreen *> virtualSiblings() const override;
 
-    Qt::ScreenOrientation orientation() const override;
+    BobUI::ScreenOrientation orientation() const override;
     int scale() const;
     qreal devicePixelRatio() const override;
     qreal refreshRate() const override;
 
     QString name() const override { return mOutputName; }
 
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
     QPlatformCursor *cursor() const override;
 #endif
 
@@ -79,14 +79,14 @@ public:
     uint32_t outputId() const { return m_outputId; }
     ::wl_output *output() const override
     {
-        return const_cast<::wl_output *>(QtWayland::wl_output::object());
+        return const_cast<::wl_output *>(BobUIWayland::wl_output::object());
     }
 
     static QWaylandScreen *waylandScreenFromWindow(QWindow *window);
     static QWaylandScreen *fromWlOutput(::wl_output *output);
 
-    Qt::ScreenOrientation toScreenOrientation(int wlTransform,
-                                              Qt::ScreenOrientation fallback) const;
+    BobUI::ScreenOrientation toScreenOrientation(int wlTransform,
+                                              BobUI::ScreenOrientation fallback) const;
 
 protected:
     enum Event : uint {
@@ -130,13 +130,13 @@ protected:
     QImage::Format mFormat = QImage::Format_ARGB32_Premultiplied;
     QSize mPhysicalSize;
     QString mOutputName;
-    Qt::ScreenOrientation m_orientation = Qt::PrimaryOrientation;
+    BobUI::ScreenOrientation m_orientation = BobUI::PrimaryOrientation;
     uint mProcessedEvents = 0;
     bool mInitialized = false;
 };
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWAYLANDSCREEN_H

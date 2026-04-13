@@ -1,7 +1,7 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-qt_internal_add_plugin(QMock5Plugin
+bobui_internal_add_plugin(QMock5Plugin
     NO_UNITY_BUILD
     CLASS_NAME QMock5Plugin
     PLUGIN_TYPE mockplugin
@@ -9,6 +9,6 @@ qt_internal_add_plugin(QMock5Plugin
     SOURCES
         qmock5plugin.cpp qmock5plugin.h
     LIBRARIES
-        Qt::Core
-        Qt::MockPlugins3
+        BobUI::Core
+        BobUI::MockPlugins3
 )

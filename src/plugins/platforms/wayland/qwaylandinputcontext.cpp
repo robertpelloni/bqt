@@ -1,27 +1,27 @@
 // Copyright (C) 2016 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 
 #include "qwaylandinputcontext_p.h"
 
-#include <QtGui/QGuiApplication>
-#include <QtGui/QTextCharFormat>
-#include <QtGui/QWindow>
-#include <QtCore/QVarLengthArray>
+#include <BobUIGui/QGuiApplication>
+#include <BobUIGui/BOBUIextCharFormat>
+#include <BobUIGui/QWindow>
+#include <BobUICore/QVarLengthArray>
 
 #include "qwaylanddisplay_p.h"
 #include "qwaylandinputdevice_p.h"
 #include "qwaylandwindow_p.h"
 
-#if QT_CONFIG(xkbcommon)
+#if BOBUI_CONFIG(xkbcommon)
 #include <locale.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(qLcQpaInputMethods, "qt.qpa.input.methods")
+Q_LOGGING_CATEGORY(qLcQpaInputMethods, "bobui.qpa.input.methods")
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 QWaylandInputContext::QWaylandInputContext(QWaylandDisplay *display)
     : mDisplay(display)
@@ -40,7 +40,7 @@ bool QWaylandInputContext::isValid() const
 void QWaylandInputContext::reset()
 {
     qCDebug(qLcQpaInputMethods) << Q_FUNC_INFO;
-#if QT_CONFIG(xkbcommon)
+#if BOBUI_CONFIG(xkbcommon)
     if (m_composeState)
         xkb_compose_state_reset(m_composeState);
 #endif
@@ -74,7 +74,7 @@ static ::wl_surface *surfaceForWindow(QWindow *window)
     return waylandWindow->wlSurface();
 }
 
-void QWaylandInputContext::update(Qt::InputMethodQueries queries)
+void QWaylandInputContext::update(BobUI::InputMethodQueries queries)
 {
     qCDebug(qLcQpaInputMethods) << Q_FUNC_INFO << queries;
 
@@ -163,7 +163,7 @@ QLocale QWaylandInputContext::locale() const
     return inputInterface->locale();
 }
 
-Qt::LayoutDirection QWaylandInputContext::inputDirection() const
+BobUI::LayoutDirection QWaylandInputContext::inputDirection() const
 {
     qCDebug(qLcQpaInputMethods) << Q_FUNC_INFO;
 
@@ -177,7 +177,7 @@ Qt::LayoutDirection QWaylandInputContext::inputDirection() const
 void QWaylandInputContext::setFocusObject(QObject *object)
 {
     qCDebug(qLcQpaInputMethods) << Q_FUNC_INFO;
-#if QT_CONFIG(xkbcommon)
+#if BOBUI_CONFIG(xkbcommon)
     m_focusObject = object;
 #else
     Q_UNUSED(object);
@@ -207,7 +207,7 @@ void QWaylandInputContext::setFocusObject(QObject *object)
             }
         }
         if (mCurrentWindow)
-            inputInterface->updateState(Qt::ImQueryAll, QWaylandTextInputInterface::update_state_enter);
+            inputInterface->updateState(BobUI::ImQueryAll, QWaylandTextInputInterface::update_state_enter);
         return;
     }
 
@@ -220,7 +220,7 @@ QWaylandTextInputInterface *QWaylandInputContext::textInput() const
     return mDisplay->defaultInputDevice() ? mDisplay->defaultInputDevice()->textInput() : nullptr;
 }
 
-#if QT_CONFIG(xkbcommon)
+#if BOBUI_CONFIG(xkbcommon)
 
 void QWaylandInputContext::ensureInitialized()
 {
@@ -305,6 +305,6 @@ bool QWaylandInputContext::filterEvent(const QEvent *event)
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qwaylandinputcontext_p.cpp"

@@ -1,0 +1,685 @@
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
+
+// Up-to-date with QDS 2.2.1
+
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/index.html
+    \title BobUI Design Studio Manual
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobuidesignstudio-toc.html
+    \title BobUI Design Studio: All Topics
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-getting-started.html
+    \title BobUI Design Studio: Getting Started
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-installation.html
+    \title BobUI Design Studio: Installation
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/gstutorials.html
+    \title BobUI Design Studio: Your First UI
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobuidesignstudio-loginui1-example.html
+    \title BobUI Design Studio: Log In UI - Components
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobuidesignstudio-loginui2-example.html
+    \title BobUI Design Studio: Log In UI - Positioning
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobuidesignstudio-loginui3-example.html
+    \title BobUI Design Studio: Log In UI - States
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobuidesignstudio-loginui4-example.html
+    \title BobUI Design Studio: Log In UI - Timeline
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-quick-tour.html
+    \title BobUI Design Studio: User Interface
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-modes.html
+    \title BobUI Design Studio: Selecting Modes
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-using-bobui-quick-designer.html
+    \title BobUI Design Studio: Design Views
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobuiquick-form-editor.html
+    \title BobUI Design Studio: Form Editor
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-3d-editor.html
+    \title BobUI Design Studio: 3D Editor
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/quick-library.html
+    \title BobUI Design Studio: Library
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobuiquick-navigator.html
+    \title BobUI Design Studio: Navigator
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobuiquick-properties-view.html
+    \title BobUI Design Studio: Properties
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobuiquick-connection-view.html
+    \title BobUI Design Studio: Connection View
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobuiquick-states-view.html
+    \title BobUI Design Studio: States
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobuiquick-transition-editor.html
+    \title BobUI Design Studio: Transition Editor
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobuiquick-timeline-view.html
+    \title BobUI Design Studio: Timeline
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobuiquick-curve-editor.html
+    \title BobUI Design Studio: Curve Editor
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobuiquick-text-editor.html
+    \title BobUI Design Studio: Text Editor
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-projects-view.html
+    \title BobUI Design Studio: Projects
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-file-system-view.html
+    \title BobUI Design Studio: File System
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-open-documents-view.html
+    \title BobUI Design Studio: Open Documents
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-project-managing-workspaces.html
+    \title BobUI Design Studio: Managing Workspaces
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-project-managing-sessions.html
+    \title BobUI Design Studio: Managing Sessions
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-keyboard-shortcuts.html
+    \title BobUI Design Studio: Keyboard Shortcuts
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-projects.html
+    \title BobUI Design Studio: Creating Projects
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-use-cases.html
+    \title BobUI Design Studio: Use Cases
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-terms.html
+    \title BobUI Design Studio: Concepts and Terms
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studioexamples.html
+    \title BobUI Design Studio: Examples and Tutorials
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/quick-uis.html
+    \title BobUI Design Studio: Wireframing
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-app-flows.html
+    \title BobUI Design Studio: Designing Application Flows
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-flow-view.html
+    \title BobUI Design Studio: Adding Flow Views
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-flow-item.html
+    \title BobUI Design Studio: Adding Flow Items
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-flow-action-area.html
+    \title BobUI Design Studio: Adding Action Areas and Transitions
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-flow-effects.html
+    \title BobUI Design Studio: Applying Effects to Transitions
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-flow-events.html
+    \title BobUI Design Studio: Simulating Events
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-flow-conditions.html
+    \title BobUI Design Studio: Simulating Conditions
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-flow-states.html
+    \title BobUI Design Studio: Applying States in Flows
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-flow-external-events.html
+    \title BobUI Design Studio: Reacting to External Events
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/quick-components.html
+    \title BobUI Design Studio: Components
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/quick-preset-components.html
+    \title BobUI Design Studio: Preset Components
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/quick-shapes.html
+    \title BobUI Design Studio: Shapes
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/quick-text.html
+    \title BobUI Design Studio: Text
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/quick-images.html
+    \title BobUI Design Studio: Images
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/quick-user-interaction-methods.html
+    \title BobUI Design Studio: User Interaction Methods
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/quick-controls.html
+    \title BobUI Design Studio: UI Controls
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/quick-data-models.html
+    \title BobUI Design Studio: Lists and Other Data Models
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/quick-2d-effects.html
+    \title BobUI Design Studio: 2D Effects
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/quick-logic-helpers.html
+    \title BobUI Design Studio: Logic Helpers
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/quick-animations.html
+    \title BobUI Design Studio: Animations
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-3d-view.html
+    \title BobUI Design Studio: 3D Views
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-3d-node.html
+    \title BobUI Design Studio: Node
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-3d-group.html
+    \title BobUI Design Studio: Group
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-3d-instancing.html
+    \title BobUI Design Studio: Instanced Rendering
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-skeletal-components.html
+    \title BobUI Design Studio: Skeletal Animation
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-3d-model.html
+    \title BobUI Design Studio: 3D Models
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-3d-materials.html
+    \title BobUI Design Studio: Materials and Shaders
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-3d-texture.html
+    \title BobUI Design Studio: Textures
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-3d-materials-types.html
+    \title BobUI Design Studio: 3D Materials
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-3d-effects.html
+    \title BobUI Design Studio: 3D Effects
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-3d-custom-shaders.html
+    \title BobUI Design Studio: Custom Shaders
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-3d-custom-effects-materials.html
+    \title BobUI Design Studio: Custom Effects and Materials
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-3d-lights.html
+    \title BobUI Design Studio: Lights
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-3d-camera.html
+    \title BobUI Design Studio: Cameras
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-3d-scene-environment.html
+    \title BobUI Design Studio: Scene Environment
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-3d-morph-target.html
+    \title BobUI Design Studio: Morph Target
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-3d-repeater-3d.html
+    \title BobUI Design Studio: Repeater3D
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-3d-loader-3d.html
+    \title BobUI Design Studio: Loader3D
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-editor-settings.html
+    \title BobUI Design Studio: Specifying Editor Settings
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/quick-component-instances.html
+    \title BobUI Design Studio: Creating Component Instances
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/quick-components-creating.html
+    \title BobUI Design Studio: Creating Custom Components
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/quick-buttons.html
+    \title BobUI Design Studio: Creating Buttons
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/quick-scalable-image.html
+    \title BobUI Design Studio: Creating Scalable Buttons and Borders
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobuiquick-properties.html
+    \title BobUI Design Studio: Specifying Component Properties
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobuiquick-positioning.html
+    \title BobUI Design Studio: Scalable Layouts
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobuiquick-annotations.html
+    \title BobUI Design Studio: Annotating Designs
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobuiquick-prototyping.html
+    \title BobUI Design Studio: Prototyping
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobuiquick-creating-ui-logic.html
+    \title BobUI Design Studio: Creating UI Logic
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-simulation-overview.html
+    \title BobUI Design Studio: Simulating Complex Experiences
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobuiquick-placeholder-data.html
+    \title BobUI Design Studio: Loading Placeholder Data
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-javascript.html
+    \title BobUI Design Studio: Simulating Application Logic
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-simulink.html
+    \title BobUI Design Studio: Simulating Dynamic Systems
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-qml-modules-with-plugins.html
+    \title BobUI Design Studio: Using QML Modules with Plugins
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobuiquick-adding-dynamics.html
+    \title BobUI Design Studio: Dynamic Behaviors
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/qmldesigner-connections.html
+    \title BobUI Design Studio: Adding Connections
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/quick-signals.html
+    \title BobUI Design Studio: Connecting Components to Signals
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/quick-property-bindings.html
+    \title BobUI Design Studio: Adding Bindings Between Properties
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/quick-dynamic-properties.html
+    \title BobUI Design Studio: Specifying Dynamic Properties
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/quick-states.html
+    \title BobUI Design Studio: Adding States
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-live-preview.html
+    \title BobUI Design Studio: Validating with Target Hardware
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-live-preview-desktop.html
+    \title BobUI Design Studio: Previewing on Desktop
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-live-preview-devices.html
+    \title BobUI Design Studio: Previewing on Devices
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobui-design-viewer.html
+    \title BobUI Design Studio: Previewing in Browsers
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-exporting-and-importing.html
+    \title BobUI Design Studio: Asset Creation with Other Tools
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobuibridge-overview.html
+    \title BobUI Design Studio: Exporting from Design Tools
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobuibridge-ai.html
+    \title BobUI Design Studio: Exporting Designs from Adobe Illustrator
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/psbobuibridge.html
+    \title BobUI Design Studio: Exporting Designs from Adobe Photoshop
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobuibridge-ps-setup.html
+    \title BobUI Design Studio: Setting Up BobUI Bridge for Adobe Photoshop
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobuibridge-ps-using.html
+    \title BobUI Design Studio: Using BobUI Bridge for Adobe Photoshop
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/xdbobuibridge.html
+    \title BobUI Design Studio: Exporting Designs from Adobe XD
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobuibridge-xd-setup.html
+    \title BobUI Design Studio: Setting Up BobUI Bridge for Adobe XD
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobuibridge-xd-using.html
+    \title BobUI Design Studio: Using BobUI Bridge for Adobe XD
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/sketchbobuibridge.html
+    \title BobUI Design Studio: Exporting Designs from Sketch
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobuibridge-sketch-setup.html
+    \title BobUI Design Studio: Setting Up BobUI Bridge for Sketch
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobuibridge-sketch-using.html
+    \title BobUI Design Studio: Using BobUI Bridge for Sketch
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/figmabobuibridge.html
+    \title BobUI Design Studio: Exporting Designs from Figma
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobuibridge-figma-setup.html
+    \title BobUI Design Studio: Setting Up BobUI Bridge for Figma
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobuibridge-figma-using.html
+    \title BobUI Design Studio: Using BobUI Bridge for Figma
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/exporting-3d-assets.html
+    \title BobUI Design Studio: Exporting 3D Assets
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/exporting-from-blender.html
+    \title BobUI Design Studio: Exporting from Blender
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/exporting-from-maya.html
+    \title BobUI Design Studio: Exporting from Maya
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/exporting-from-bobui3ds.html
+    \title BobUI Design Studio: Exporting from BobUI 3D Studio
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-importing-designs.html
+    \title BobUI Design Studio: Importing Designs
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-importing-2d.html
+    \title BobUI Design Studio: Importing 2D Assets
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobuiquick-fonts.html
+    \title BobUI Design Studio: Using Custom Fonts
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-importing-3d.html
+    \title BobUI Design Studio: Importing 3D Assets
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-exporting-qml.html
+    \title BobUI Design Studio: Exporting Components
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobuiquick-motion-design.html
+    \title BobUI Design Studio: Motion Design
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/quick-animation-overview.html
+    \title BobUI Design Studio: Introduction to Animation Techniques
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-timeline.html
+    \title BobUI Design Studio: Creating Timeline Animations
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobuiquick-editing-easing-curves.html
+    \title BobUI Design Studio: Editing Easing Curves
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobuiquick-production-quality-animation.html
+    \title BobUI Design Studio: Production Quality
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobuiquick-optimizing-designs.html
+    \title BobUI Design Studio: Optimizing Designs
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-optimized-3d-scenes.html
+    \title BobUI Design Studio: Creating Optimized 3D Scenes
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-implementing-applications.html
+    \title BobUI Design Studio: Implementing Applications
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-coding.html
+    \title BobUI Design Studio: Coding
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-editor-functions.html
+    \title BobUI Design Studio: Writing Code
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-coding-navigating.html
+    \title BobUI Design Studio: Working in Edit Mode
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-sidebars.html
+    \title BobUI Design Studio: Working with Sidebars
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-views.html
+    \title BobUI Design Studio: Browsing Project Contents
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-output-panes.html
+    \title BobUI Design Studio: Viewing Output
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-highlighting.html
+    \title BobUI Design Studio: Semantic Highlighting
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-checking-code-syntax.html
+    \title BobUI Design Studio: Checking Code Syntax
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-completing-code.html
+    \title BobUI Design Studio: Completing Code
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-indenting-code.html
+    \title BobUI Design Studio: Indenting Text or Code
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/bobui-quick-toolbars.html
+    \title BobUI Design Studio: Using BobUI Quick Toolbars
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-diff-editor.html
+    \title BobUI Design Studio: Comparing Files
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-finding-overview.html
+    \title BobUI Design Studio: Finding
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-editor-finding.html
+    \title BobUI Design Studio: Finding and Replacing
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-editor-locator.html
+    \title BobUI Design Studio: Searching with the Locator
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-editor-refactoring.html
+    \title BobUI Design Studio: Refactoring
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-editor-quick-fixes.html
+    \title BobUI Design Studio: Applying Refactoring Actions
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-editor-options.html
+    \title BobUI Design Studio: Configuring the Editor
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-editor-options-text.html
+    \title BobUI Design Studio: Specifying Text Editor Settings
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-debugging.html
+    \title BobUI Design Studio: Debugging and Profiling
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-debugging-qml.html
+    \title BobUI Design Studio: Debugging BobUI Quick Projects
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-qml-debugging-example.html
+    \title BobUI Design Studio: Debugging a BobUI Quick Example Application
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-qml-performance-monitor.html
+    \title BobUI Design Studio: Profiling QML Applications
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-advanced.html
+    \title BobUI Design Studio: Advanced Designer Topics
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-quick-ui-forms.html
+    \title BobUI Design Studio: UI Files
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-telemetry.html
+    \title BobUI Design Studio: Managing Data Collection
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/collecting-usage-statistics.html
+    \title BobUI Design Studio: Collecting Usage Statistics
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/collecting-user-feedback.html
+    \title BobUI Design Studio: Collecting User Feedback
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-crashpad.html
+    \title BobUI Design Studio: Reporting Crashes
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-packaging.html
+    \title BobUI Design Studio: Packaging Applications
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-developer-topics.html
+    \title BobUI Design Studio: Developer Topics
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-vcs-git.html
+    \title BobUI Design Studio: Using Git
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-porting-projects.html
+    \title BobUI Design Studio: Converting BobUI 5 Projects into BobUI 6 Projects
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/quick-converting-ui-projects.html
+    \title BobUI Design Studio: Converting UI Projects to Applications
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-editor-external.html
+    \title BobUI Design Studio: Using External Tools
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-help.html
+    \title BobUI Design Studio: Help
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-help.html
+    \title BobUI Design Studio: Using the Help Mode
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-faq.html
+    \title BobUI Design Studio: Frequently Asked Questions
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/studio-platforms.html
+    \title BobUI Design Studio: Supported Platforms
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/technical-support.html
+    \title BobUI Design Studio: Technical Support
+*/
+/*!
+    \externalpage https://doc.bobui.io/bobuidesignstudio/creator-acknowledgements.html
+    \title BobUI Design Studio: Acknowledgements
+*/

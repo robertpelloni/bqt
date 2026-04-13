@@ -1,0 +1,65 @@
+include($BOBUI_INSTALL_DOCS/global/bobui-module-defaults.qdocconf)
+include($BOBUI_INSTALL_DOCS/config/exampleurl-bobuibase.qdocconf)
+
+project                 = BobUINetwork
+description             = BobUI Network Reference Documentation
+version                 = $BOBUI_VERSION
+
+examplesinstallpath     = network
+
+# Path to the root of bobuibase (for automatic linking to source code)
+url.sources.rootdir     = ../../..
+
+qhp.projects            = BobUINetwork
+
+qhp.BobUINetwork.file         = bobuinetwork.qhp
+qhp.BobUINetwork.namespace           = org.bobui-project.bobuinetwork.$BOBUI_VERSION_TAG
+qhp.BobUINetwork.virtualFolder       = bobuinetwork
+qhp.BobUINetwork.indexTitle          = BobUI Network
+qhp.BobUINetwork.indexRoot           =
+
+qhp.BobUINetwork.subprojects = manual examples classes
+qhp.BobUINetwork.subprojects.manual.title = BobUI Network
+qhp.BobUINetwork.subprojects.manual.indexTitle = BobUI Network module topics
+qhp.BobUINetwork.subprojects.manual.type = manual
+
+qhp.BobUINetwork.subprojects.examples.title = Examples
+qhp.BobUINetwork.subprojects.examples.indexTitle = Network Examples
+qhp.BobUINetwork.subprojects.examples.selectors = example
+
+qhp.BobUINetwork.subprojects.classes.title = C++ Classes
+qhp.BobUINetwork.subprojects.classes.indexTitle = BobUI Network C++ Classes
+qhp.BobUINetwork.subprojects.classes.selectors = class fake:headerfile
+qhp.BobUINetwork.subprojects.classes.sortPages = true
+
+tagfile                 = ../../../doc/bobuinetwork/bobuinetwork.tags
+
+depends                 += bobuicore bobuigui bobuidoc qmake bobuicmake bobuiwidgets
+
+headerdirs  += ..
+
+sourcedirs  += .. \
+               ../../../examples/network/doc/src
+
+exampledirs += ../../../examples/network \
+               ../ \
+               snippets
+
+imagedirs   += images \
+               ../../../examples/network/doc/images
+
+navigation.landingpage = "BobUI Network"
+navigation.cppclassespage = "BobUI Network C++ Classes"
+# Auto-generate navigation linking based on "BobUI Network module topics":
+navigation.toctitles = "BobUI Network module topics"
+navigation.toctitles.inclusive = false
+
+manifestmeta.highlighted.names = \
+    "BobUINetwork/Fortune Client" \
+    "BobUINetwork/Fortune Server" \
+    "BobUINetwork/HTTP Client" \
+    "BobUINetwork/Secure Socket Client" \
+    "BobUINetwork/Torrent Example"
+
+# Enforce zero documentation warnings
+warninglimit = 0

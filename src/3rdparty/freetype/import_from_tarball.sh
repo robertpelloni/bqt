@@ -1,13 +1,13 @@
 #! /bin/sh
 
-# Copyright (C) 2016 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+# Copyright (C) 2016 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 #
 # This is a small script to copy the required files from a freetype tarball
 # into 3rdparty/freetype/ . Documentation, tests, demos etc. are not imported.
 
 if [ $# -ne 2 ]; then
-    echo "Usage: $0 freetype_tarball_dir/ \$QTDIR/src/3rdparty/freetype/"
+    echo "Usage: $0 freetype_tarball_dir/ \$BOBUIDIR/src/3rdparty/freetype/"
     exit 1
 fi
 

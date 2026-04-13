@@ -2,7 +2,7 @@
 #  W A R N I N G
 #  -------------
 #
-# This file is not part of the Qt API.  It exists purely as an
+# This file is not part of the BobUI API.  It exists purely as an
 # implementation detail.  It may change from version to version
 # without notice, or even be removed.
 #
@@ -10,10 +10,10 @@
 #
 
 # Get the SIMD flags
-load(qt_build_config)
+load(bobui_build_config)
 
-# Set QT_CPU_FEATURES for convenience
-QT_CPU_FEATURES = $$eval(QT_CPU_FEATURES.$$QT_ARCH)
+# Set BOBUI_CPU_FEATURES for convenience
+BOBUI_CPU_FEATURES = $$eval(BOBUI_CPU_FEATURES.$$BOBUI_ARCH)
 
 #
 # Set up compilers for SIMD (SSE/AVX, NEON etc)
@@ -29,7 +29,7 @@ defineTest(addSimdCompiler) {
     CONFIG($$1) {
         cflags = $$eval(QMAKE_CFLAGS_$${upname})
         ltcg: cflags += $$QMAKE_CFLAGS_DISABLE_LTCG
-        contains(QT_CPU_FEATURES, $$name) {
+        contains(BOBUI_CPU_FEATURES, $$name) {
             # Default compiler settings include this feature, so just add to SOURCES
             SOURCES += $$eval($$sources_var)
             export(SOURCES)
@@ -93,7 +93,7 @@ defineTest(addSimdCompiler) {
             export(SOURCES)
         } else {
             $${name}_assembler.commands = $$QMAKE_CC -c $(CFLAGS)
-            !contains(QT_CPU_FEATURES, $${name}): $${name}_assembler.commands += $$cflags
+            !contains(BOBUI_CPU_FEATURES, $${name}): $${name}_assembler.commands += $$cflags
             clang:no_clang_integrated_as: $${name}_assembler.commands += -fno-integrated-as
             $${name}_assembler.commands += $(INCPATH) ${QMAKE_FILE_IN} -o ${QMAKE_FILE_OUT}
             $${name}_assembler.dependency_type = TYPE_C
@@ -157,13 +157,13 @@ defineTest(addSimdArch) {
 
     cpu_features_missing =
     for(part, dependencies) {
-        !contains(QT_CPU_FEATURES, $$part): cpu_features_missing = 1
+        !contains(BOBUI_CPU_FEATURES, $$part): cpu_features_missing = 1
     }
 
     CONFIG += $$name
-    isEmpty(cpu_features_missing): QT_CPU_FEATURES += $$name
+    isEmpty(cpu_features_missing): BOBUI_CPU_FEATURES += $$name
 
-    export(QT_CPU_FEATURES)
+    export(BOBUI_CPU_FEATURES)
     export(CONFIG)
     addSimdCompiler($$name)
 }
@@ -185,14 +185,14 @@ defineTest(addAvx512Profile) {
 
         uppart = $$upper($$part)
         cflags *= $$eval(QMAKE_CFLAGS_$${uppart})
-        !contains(QT_CPU_FEATURES, $$uppart): cpu_features_missing += $$uppart
+        !contains(BOBUI_CPU_FEATURES, $$uppart): cpu_features_missing += $$uppart
     }
 
     CONFIG += $$name
-    isEmpty(cpu_features_missing): QT_CPU_FEATURES += $$name
+    isEmpty(cpu_features_missing): BOBUI_CPU_FEATURES += $$name
     $$varname = $$cflags
 
-    export(QT_CPU_FEATURES)
+    export(BOBUI_CPU_FEATURES)
     export(CONFIG)
     export($$varname)
     addSimdCompiler($$name)

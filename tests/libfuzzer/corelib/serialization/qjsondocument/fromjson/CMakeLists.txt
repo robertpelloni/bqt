@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 cmake_minimum_required(VERSION 3.16)
@@ -10,14 +10,14 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Core)
+find_package(BobUI6 REQUIRED COMPONENTS Core)
 
-qt_add_executable(fromjson
+bobui_add_executable(fromjson
     main.cpp
 )
 
 target_link_libraries(fromjson PUBLIC
-    Qt::Core
+    BobUI::Core
 )
 if(DEFINED ENV{LIB_FUZZING_ENGINE})
     target_link_libraries(fromjson PRIVATE

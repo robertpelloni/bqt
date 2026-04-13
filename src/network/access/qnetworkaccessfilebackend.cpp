@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qnetworkaccessfilebackend_p.h"
 #include "qfileinfo.h"
 #include "qdir.h"
 #include "private/qnoncontiguousbytedevice_p.h"
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/QDateTime>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/QDateTime>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QStringList QNetworkAccessFileBackendFactory::supportedSchemes() const
 {
@@ -41,9 +41,9 @@ QNetworkAccessFileBackendFactory::create(QNetworkAccessManager::Operation op,
     }
 
     QUrl url = request.url();
-    if (url.scheme().compare("qrc"_L1, Qt::CaseInsensitive) == 0
+    if (url.scheme().compare("qrc"_L1, BobUI::CaseInsensitive) == 0
 #if defined(Q_OS_ANDROID)
-            || url.scheme().compare("assets"_L1, Qt::CaseInsensitive) == 0
+            || url.scheme().compare("assets"_L1, BobUI::CaseInsensitive) == 0
 #endif
             || url.isLocalFile()) {
         return new QNetworkAccessFileBackend;
@@ -124,7 +124,7 @@ void QNetworkAccessFileBackend::open()
         mode = QIODevice::WriteOnly | QIODevice::Truncate;
         createUploadByteDevice();
         QObject::connect(uploadByteDevice(), SIGNAL(readyRead()), this, SLOT(uploadReadyReadSlot()));
-        QMetaObject::invokeMethod(this, "uploadReadyReadSlot", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this, "uploadReadyReadSlot", BobUI::QueuedConnection);
         break;
     default:
         Q_ASSERT_X(false, "QNetworkAccessFileBackend::open",
@@ -159,7 +159,7 @@ void QNetworkAccessFileBackend::uploadReadyReadSlot()
         return;
 
     forever {
-        QByteArray data(16 * 1024, Qt::Uninitialized);
+        QByteArray data(16 * 1024, BobUI::Uninitialized);
         qint64 haveRead = uploadByteDevice()->peek(data.data(), data.size());
         if (haveRead == -1) {
             // EOF
@@ -252,6 +252,6 @@ qint64 QNetworkAccessFileBackend::read(char *data, qint64 maxlen)
     return actuallyRead;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qnetworkaccessfilebackend_p.cpp"

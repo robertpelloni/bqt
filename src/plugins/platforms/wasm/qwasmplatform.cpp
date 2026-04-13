@@ -1,13 +1,13 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "qwasmplatform.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Platform platform()
 {
-    static const Platform qtDetectedPlatform = ([]() {
+    static const Platform bobuiDetectedPlatform = ([]() {
         // The Platform Detect: expand coverage as needed
         emscripten::val rawPlatform = emscripten::val::global("navigator")["platform"];
 
@@ -26,7 +26,7 @@ Platform platform()
         }
         return Platform::Generic;
     })();
-    return qtDetectedPlatform;
+    return bobuiDetectedPlatform;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,10 +1,10 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 # How to run the test:
 # 1. Create the build directory, e.g. /home/user/build_test_copy_file_if_different
 # 2. cd /home/user/build_test_copy_file_if_different
-# 3. /path/to/Qt/bin/qt-cmake /path/to/Qt/Sources/qtbase/tests/manual/cmake/test_copy_file_if_different_command
+# 3. /path/to/BobUI/bin/bobui-cmake /path/to/BobUI/Sources/bobuibase/tests/manual/cmake/test_copy_file_if_different_command
 # 4. cmake --build . --parallel
 # 5. ctest
 cmake_minimum_required(VERSION 3.16)
@@ -29,7 +29,7 @@ if(NOT fsutil)
     return()
 endif()
 
-find_package(Qt6 REQUIRED COMPONENTS Core)
+find_package(BobUI6 REQUIRED COMPONENTS Core)
 
 function(test_copy_file_command output_file test_data_base_name size)
     set(testdatasrc1 "${CMAKE_CURRENT_BINARY_DIR}/${test_data_base_name}1.bin")
@@ -57,7 +57,7 @@ function(test_copy_file_command output_file test_data_base_name size)
     foreach(src_file_num RANGE 1 2)
         set(src_file "${testdatasrc${src_file_num}}")
         file(APPEND "${src_file}" "${src_file_num}")
-        _qt_internal_copy_file_if_different_command(copy_command "${src_file}" "${testdatadst}")
+        _bobui_internal_copy_file_if_different_command(copy_command "${src_file}" "${testdatadst}")
         execute_process(COMMAND ${copy_command} RESULT_VARIABLE result)
         if(NOT result EQUAL 0)
             message(FATAL_ERROR "Unable to execute the copy command ${copy_command}")

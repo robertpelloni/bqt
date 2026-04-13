@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qnetworkaccessauthenticationmanager_p.h"
 #include "qnetworkaccessmanager.h"
 #include "qnetworkaccessmanager_p.h"
 
-#include "QtCore/qbuffer.h"
-#include "QtCore/qlist.h"
-#include "QtCore/qurl.h"
-#include "QtCore/QMutexLocker"
-#include "QtNetwork/qauthenticator.h"
+#include "BobUICore/qbuffer.h"
+#include "BobUICore/qlist.h"
+#include "BobUICore/qurl.h"
+#include "BobUICore/QMutexLocker"
+#include "BobUINetwork/qauthenticator.h"
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class QNetworkAuthenticationCache : private QList<QNetworkAuthenticationCredential>,
                                     public QNetworkAccessCache::CacheableObject
@@ -64,7 +64,7 @@ public:
     virtual void dispose() override { delete this; }
 };
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
 static QByteArray proxyAuthenticationKey(const QNetworkProxy &proxy, const QString &realm)
 {
     QUrl key;
@@ -112,7 +112,7 @@ static inline QByteArray authenticationKey(const QUrl &url, const QString &realm
 }
 
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
 void QNetworkAccessAuthenticationManager::cacheProxyCredentials(const QNetworkProxy &p,
                                                   const QAuthenticator *authenticator)
 {
@@ -274,5 +274,5 @@ void QNetworkAccessAuthenticationManager::clearCache()
     authenticationCache.clear();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 

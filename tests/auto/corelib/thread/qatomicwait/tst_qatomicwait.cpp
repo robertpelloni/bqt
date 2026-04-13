@@ -1,20 +1,20 @@
 // Copyright (C) 2025 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <private/qatomicwait_p.h>
 
 #include <QRandomGenerator>
 #include <QSemaphore>
-#include <QThread>
+#include <BOBUIhread>
 
-#include <QtTest>
+#include <BobUITest>
 
 #include <condition_variable>
 #include <mutex>
 #include <thread>
 
 using namespace std::chrono_literals;
-using namespace QtFallbackAtomicWait;
+using namespace BobUIFallbackAtomicWait;
 
 constexpr int Repeats = 9;
 constexpr int MaxThreads = 8;
@@ -152,7 +152,7 @@ template <typename T, void (*wakeFn)(std::atomic<T> *a)> static void singleWaite
 
         JThread thr([&] {
             latch.countDown();
-            QTest::qSleep(Delay);
+            BOBUIest::qSleep(Delay);
             a.store(otherValue<T>());
             wakeFn(&a);
         });
@@ -203,7 +203,7 @@ template <typename T, typename Wake> void multiWaiterWake(Wake &&wakeFn)
             // wait for the threads to start
             latch.wait();
 
-            QTest::qSleep(Delay);
+            BOBUIest::qSleep(Delay);
             a.store(otherValue<T>());
             wakeFn(a);
 
@@ -231,7 +231,7 @@ template <typename T> void tst_QAtomicWait::multiWaiterWakeSequentially()
             q20::atomic_notify_one(&a);
             delay /= 4;
             if (delay > 0ms)
-                QTest::qSleep(delay);
+                BOBUIest::qSleep(delay);
         }
     });
 }
@@ -277,7 +277,7 @@ template <typename T> void tst_QAtomicWait::aliasingTest()
         // wait for the threads to start
         latch.wait();
 
-        QTest::qSleep(Delay);
+        BOBUIest::qSleep(Delay);
 
         std::array<T, MaxThreads> expected, actual;
         actual.fill({});
@@ -297,7 +297,7 @@ template <typename T> void tst_QAtomicWait::aliasingTest()
     }
 }
 
-QTEST_MAIN(tst_QAtomicWait)
+BOBUIEST_MAIN(tst_QAtomicWait)
 
 #include "tst_qatomicwait.moc"
 

@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #pragma once
 
@@ -9,13 +9,13 @@
 
 #include <qpa/qplatformopenglcontext.h>
 #include <qpa/qplatformoffscreensurface.h>
-#include <QtGui/QSurfaceFormat>
+#include <BobUIGui/QSurfaceFormat>
 
-#include <QtCore/QMutex>
+#include <BobUICore/QMutex>
 
 #include <GL/glx.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QGLXContext : public QPlatformOpenGLContext,
                     public QNativeInterface::QGLXContext
@@ -75,4 +75,4 @@ private:
     GLXPbuffer m_pbuffer;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

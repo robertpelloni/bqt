@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtGui/qgenericplugin.h>
-#include <QtInputSupport/private/qevdevmousemanager_p.h>
+#include <BobUIGui/qgenericplugin.h>
+#include <BobUIInputSupport/private/qevdevmousemanager_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QEvdevMousePlugin : public QGenericPlugin
 {
@@ -25,12 +25,12 @@ QEvdevMousePlugin::QEvdevMousePlugin()
 QObject* QEvdevMousePlugin::create(const QString &key,
                                    const QString &specification)
 {
-    if (!key.compare(QLatin1String("EvdevMouse"), Qt::CaseInsensitive))
+    if (!key.compare(QLatin1String("EvdevMouse"), BobUI::CaseInsensitive))
         return new QEvdevMouseManager(key, specification);
 
     return nullptr;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "main.moc"

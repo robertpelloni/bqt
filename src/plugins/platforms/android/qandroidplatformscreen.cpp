@@ -1,9 +1,9 @@
 // Copyright (C) 2014 BogDan Vatra <bogdan@kde.org>
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include <QDebug>
-#include <QTime>
+#include <BOBUIime>
 
 #include <qpa/qwindowsysteminterface.h>
 
@@ -17,14 +17,14 @@
 #include <android/native_window_jni.h>
 #include <qguiapplication.h>
 
-#include <QtCore/QJniObject>
-#include <QtCore/QJniEnvironment>
-#include <QtGui/QGuiApplication>
-#include <QtGui/QWindow>
-#include <QtGui/private/qwindow_p.h>
+#include <BobUICore/QJniObject>
+#include <BobUICore/QJniEnvironment>
+#include <BobUIGui/QGuiApplication>
+#include <BobUIGui/QWindow>
+#include <BobUIGui/private/qwindow_p.h>
 #include <vector>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #ifdef QANDROIDPLATFORMSCREEN_DEBUG
 class ScopedProfiler
@@ -41,7 +41,7 @@ public:
     }
 
 private:
-    QTime m_timer;
+    BOBUIime m_timer;
     QString m_msg;
 };
 
@@ -54,17 +54,17 @@ Q_DECLARE_JNI_CLASS(Display, "android/view/Display")
 Q_DECLARE_JNI_CLASS(DisplayMetrics, "android/util/DisplayMetrics")
 Q_DECLARE_JNI_CLASS(Resources, "android/content/res/Resources")
 Q_DECLARE_JNI_CLASS(Size, "android/util/Size")
-Q_DECLARE_JNI_CLASS(QtDisplayManager, "org/qtproject/qt/android/QtDisplayManager")
-Q_DECLARE_JNI_CLASS(QtWindowInterface, "org/qtproject/qt/android/QtWindowInterface")
+Q_DECLARE_JNI_CLASS(BobUIDisplayManager, "org/bobuiproject/bobui/android/BobUIDisplayManager")
+Q_DECLARE_JNI_CLASS(BobUIWindowInterface, "org/bobuiproject/bobui/android/BobUIWindowInterface")
 
 Q_DECLARE_JNI_CLASS(DisplayMode, "android/view/Display$Mode")
 
 QAndroidPlatformScreen::QAndroidPlatformScreen(const QJniObject &displayObject)
     : QObject(), QPlatformScreen()
 {
-    // Raster only apps should set QT_ANDROID_RASTER_IMAGE_DEPTH to 16
+    // Raster only apps should set BOBUI_ANDROID_RASTER_IMAGE_DEPTH to 16
     // is way much faster than 32
-    if (qEnvironmentVariableIntValue("QT_ANDROID_RASTER_IMAGE_DEPTH") == 16) {
+    if (qEnvironmentVariableIntValue("BOBUI_ANDROID_RASTER_IMAGE_DEPTH") == 16) {
         m_format = QImage::Format_RGB16;
         m_depth = 16;
     } else {
@@ -85,10 +85,10 @@ QAndroidPlatformScreen::QAndroidPlatformScreen(const QJniObject &displayObject)
     m_availableGeometry = defaultAvailableGeometry();
 
     const auto context = QNativeInterface::QAndroidApplication::context();
-    const auto resources = context.callMethod<QtJniTypes::Resources>("getResources");
-    const auto metrics = resources.callMethod<QtJniTypes::DisplayMetrics>("getDisplayMetrics");
-    m_xdpi = QtJniTypes::QtDisplayManager::callStaticMethod<jfloat>("getXDpi", metrics);
-    m_ydpi = QtJniTypes::QtDisplayManager::callStaticMethod<jfloat>("getYDpi", metrics);
+    const auto resources = context.callMethod<BobUIJniTypes::Resources>("getResources");
+    const auto metrics = resources.callMethod<BobUIJniTypes::DisplayMetrics>("getDisplayMetrics");
+    m_xdpi = BobUIJniTypes::BobUIDisplayManager::callStaticMethod<jfloat>("getXDpi", metrics);
+    m_ydpi = BobUIJniTypes::BobUIDisplayManager::callStaticMethod<jfloat>("getYDpi", metrics);
 
     // Potentially densityDpi could be used instead of xpdi/ydpi to do the calculation,
     // but the results are not consistent with devices specs.
@@ -96,10 +96,10 @@ QAndroidPlatformScreen::QAndroidPlatformScreen(const QJniObject &displayObject)
     setPhysicalSizeFromPixels(m_size);
 
     if (QNativeInterface::QAndroidApplication::sdkVersion() >= 23) {
-        const QJniObject currentMode = displayObject.callObjectMethod<QtJniTypes::DisplayMode>("getMode");
+        const QJniObject currentMode = displayObject.callObjectMethod<BobUIJniTypes::DisplayMode>("getMode");
         m_currentMode = currentMode.callMethod<jint>("getModeId");
 
-        const QJniObject supportedModes = displayObject.callObjectMethod<QtJniTypes::DisplayMode[]>(
+        const QJniObject supportedModes = displayObject.callObjectMethod<BobUIJniTypes::DisplayMode[]>(
             "getSupportedModes");
         const auto modeArray = jobjectArray(supportedModes.object());
 
@@ -122,11 +122,11 @@ QAndroidPlatformScreen::~QAndroidPlatformScreen()
 
 QSize QAndroidPlatformScreen::sizeForDisplayId(int displayId)
 {
-    using namespace QtJniTypes;
+    using namespace BobUIJniTypes;
     const auto context = QNativeInterface::QAndroidApplication::context();
-    const auto display = QtDisplayManager::callStaticMethod<Display>(
+    const auto display = BobUIDisplayManager::callStaticMethod<Display>(
             "getDisplay", context, displayId);
-    const auto sizeObj = QtDisplayManager::callStaticMethod<Size>(
+    const auto sizeObj = BobUIDisplayManager::callStaticMethod<Size>(
                             "getDisplaySize", context, display);
 
     return QSize(sizeObj.callMethod<int>("getWidth"), sizeObj.callMethod<int>("getHeight"));
@@ -136,9 +136,9 @@ QSize QAndroidPlatformScreen::sizeForDisplayId(int displayId)
 QWindow *QAndroidPlatformScreen::topVisibleWindow() const
 {
     for (QAndroidPlatformWindow *w : m_windowStack) {
-        Qt::WindowType type = w->window()->type();
+        BobUI::WindowType type = w->window()->type();
         if (w->window()->isVisible() &&
-                (type == Qt::Window || type == Qt::Popup || type == Qt::Dialog)) {
+                (type == BobUI::Window || type == BobUI::Popup || type == BobUI::Dialog)) {
             return w->window();
         }
     }
@@ -164,8 +164,8 @@ void QAndroidPlatformScreen::addWindow(QAndroidPlatformWindow *window)
 
     m_windowStack.prepend(window);
 
-    AndroidBackendRegister *reg = QtAndroid::backendRegister();
-    reg->callInterface<QtJniTypes::QtWindowInterface, void>("addTopLevelWindow",
+    AndroidBackendRegister *reg = BobUIAndroid::backendRegister();
+    reg->callInterface<BobUIJniTypes::BobUIWindowInterface, void>("addTopLevelWindow",
                                                             window->nativeWindow());
 
     if (window->window()->isVisible())
@@ -179,8 +179,8 @@ void QAndroidPlatformScreen::removeWindow(QAndroidPlatformWindow *window)
     if (m_windowStack.contains(window))
         qWarning() << "Failed to remove window";
 
-    AndroidBackendRegister *reg = QtAndroid::backendRegister();
-    reg->callInterface<QtJniTypes::QtWindowInterface, void>("removeTopLevelWindow",
+    AndroidBackendRegister *reg = BobUIAndroid::backendRegister();
+    reg->callInterface<BobUIJniTypes::BobUIWindowInterface, void>("removeTopLevelWindow",
                                                             window->nativeViewId());
 
     topVisibleWindowChanged();
@@ -194,8 +194,8 @@ void QAndroidPlatformScreen::raise(QAndroidPlatformWindow *window)
     if (index > 0) {
         m_windowStack.move(index, 0);
 
-        AndroidBackendRegister *reg = QtAndroid::backendRegister();
-        reg->callInterface<QtJniTypes::QtWindowInterface, void>("bringChildToFront",
+        AndroidBackendRegister *reg = BobUIAndroid::backendRegister();
+        reg->callInterface<BobUIJniTypes::BobUIWindowInterface, void>("bringChildToFront",
                                                                 window->nativeViewId());
     }
     topVisibleWindowChanged();
@@ -208,8 +208,8 @@ void QAndroidPlatformScreen::lower(QAndroidPlatformWindow *window)
         return;
     m_windowStack.move(index, m_windowStack.size() - 1);
 
-    AndroidBackendRegister *reg = QtAndroid::backendRegister();
-    reg->callInterface<QtJniTypes::QtWindowInterface, void>("bringChildToBack",
+    AndroidBackendRegister *reg = BobUIAndroid::backendRegister();
+    reg->callInterface<BobUIJniTypes::BobUIWindowInterface, void>("bringChildToBack",
                                                             window->nativeViewId());
 
     topVisibleWindowChanged();
@@ -247,7 +247,7 @@ void QAndroidPlatformScreen::setRefreshRate(qreal refreshRate)
     QWindowSystemInterface::handleScreenRefreshRateChange(QPlatformScreen::screen(), refreshRate);
 }
 
-void QAndroidPlatformScreen::setOrientation(Qt::ScreenOrientation orientation)
+void QAndroidPlatformScreen::setOrientation(BobUI::ScreenOrientation orientation)
 {
     QWindowSystemInterface::handleScreenOrientationChange(QPlatformScreen::screen(), orientation);
 }
@@ -277,7 +277,7 @@ void QAndroidPlatformScreen::setAvailableGeometry(const QRect &rect)
     }
 }
 
-void QAndroidPlatformScreen::applicationStateChanged(Qt::ApplicationState state)
+void QAndroidPlatformScreen::applicationStateChanged(BobUI::ApplicationState state)
 {
     for (QAndroidPlatformWindow *w : std::as_const(m_windowStack))
         w->applicationStateChanged(state);
@@ -286,8 +286,8 @@ void QAndroidPlatformScreen::applicationStateChanged(Qt::ApplicationState state)
 void QAndroidPlatformScreen::topVisibleWindowChanged()
 {
     QWindow *w = topVisibleWindow();
-    QWindowSystemInterface::handleFocusWindowChanged(w, Qt::ActiveWindowFocusReason);
-    QtAndroidMenu::setActiveTopLevelWindow(w);
+    QWindowSystemInterface::handleFocusWindowChanged(w, BobUI::ActiveWindowFocusReason);
+    BobUIAndroidMenu::setActiveTopLevelWindow(w);
     if (w && w->handle()) {
         QAndroidPlatformWindow *platformWindow = static_cast<QAndroidPlatformWindow *>(w->handle());
         if (platformWindow) {
@@ -301,7 +301,7 @@ static const int androidLogicalDpi = 72;
 
 QDpi QAndroidPlatformScreen::logicalDpi() const
 {
-    qreal lDpi = QtAndroid::pixelDensity() * androidLogicalDpi;
+    qreal lDpi = BobUIAndroid::pixelDensity() * androidLogicalDpi;
     return QDpi(lDpi, lDpi);
 }
 
@@ -310,12 +310,12 @@ QDpi QAndroidPlatformScreen::logicalBaseDpi() const
     return QDpi(androidLogicalDpi, androidLogicalDpi);
 }
 
-Qt::ScreenOrientation QAndroidPlatformScreen::orientation() const
+BobUI::ScreenOrientation QAndroidPlatformScreen::orientation() const
 {
     return QAndroidPlatformIntegration::m_orientation;
 }
 
-Qt::ScreenOrientation QAndroidPlatformScreen::nativeOrientation() const
+BobUI::ScreenOrientation QAndroidPlatformScreen::nativeOrientation() const
 {
     return QAndroidPlatformIntegration::m_nativeOrientation;
 }
@@ -325,4 +325,4 @@ QRect &QAndroidPlatformScreen::defaultAvailableGeometry()
     static QRect defaultAvailableGeometry;
     return defaultAvailableGeometry;
 }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

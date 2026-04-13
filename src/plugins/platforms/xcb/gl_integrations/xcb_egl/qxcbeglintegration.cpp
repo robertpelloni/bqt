@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qxcbeglintegration.h"
 
 #include "qxcbeglcontext.h"
 
-#include <QtGui/QOffscreenSurface>
-#include <QtGui/private/qeglconvenience_p.h>
-#include <QtGui/private/qeglstreamconvenience_p.h>
+#include <BobUIGui/QOffscreenSurface>
+#include <BobUIGui/private/qeglconvenience_p.h>
+#include <BobUIGui/private/qeglstreamconvenience_p.h>
 #include <optional>
 
 #include "qxcbeglnativeinterfacehandler.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace {
 
@@ -76,7 +76,7 @@ bool QXcbEglIntegration::initialize(QXcbConnection *connection)
 
     const char *extensions = eglQueryString(EGL_NO_DISPLAY, EGL_EXTENSIONS);
 
-#if QT_CONFIG(xcb_xlib)
+#if BOBUI_CONFIG(xcb_xlib)
     if (extensions && strstr(extensions, "EGL_EXT_platform_x11")) {
         QEGLStreamConvenience streamFuncs;
         m_egl_display = streamFuncs.get_platform_display(EGL_PLATFORM_X11_KHR,
@@ -85,7 +85,7 @@ bool QXcbEglIntegration::initialize(QXcbConnection *connection)
         m_using_platform_display = true;
     }
 
-#if QT_CONFIG(egl_x11)
+#if BOBUI_CONFIG(egl_x11)
     if (!m_egl_display)
         m_egl_display = eglGetDisplay(reinterpret_cast<EGLNativeDisplayType>(m_connection->xlib_display()));
 #endif
@@ -101,7 +101,7 @@ bool QXcbEglIntegration::initialize(QXcbConnection *connection)
 
     EGLint major, minor;
     bool success = eglInitialize(m_egl_display, &major, &minor);
-#if QT_CONFIG(egl_x11)
+#if BOBUI_CONFIG(egl_x11)
     if (!success) {
         m_egl_display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
         qCDebug(lcQpaGl) << "Xcb EGL gl-integration retrying with display" << m_egl_display;
@@ -177,7 +177,7 @@ xcb_visualid_t QXcbEglIntegration::getCompatibleVisualId(xcb_screen_t *screen, E
         std::optional<VisualInfo> chosenVisualInfo = getVisualInfo(screen, visualId);
         if (chosenVisualInfo) {
             // Skip size checks if implementation supports non-matching visual
-            // and config (QTBUG-9444).
+            // and config (BOBUIBUG-9444).
             if (q_hasEglExtension(eglDisplay(), "EGL_NV_post_convert_rounding"))
                 return visualId;
             // Skip also for i.MX6 where 565 visuals are suggested for the default 444 configs and it works just fine.
@@ -244,4 +244,4 @@ xcb_visualid_t QXcbEglIntegration::getCompatibleVisualId(xcb_screen_t *screen, E
     return 0;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

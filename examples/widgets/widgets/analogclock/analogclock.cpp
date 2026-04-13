@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "analogclock.h"
 
 #include <QPainter>
 #include <QPainterStateGuard>
-#include <QTime>
-#include <QTimer>
+#include <BOBUIime>
+#include <BOBUIimer>
 
 //! [0] //! [1]
 AnalogClock::AnalogClock(QWidget *parent)
@@ -15,9 +15,9 @@ AnalogClock::AnalogClock(QWidget *parent)
 //! [2] //! [3]
 {
 //! [3] //! [4]
-    QTimer *timer = new QTimer(this);
+    BOBUIimer *timer = new BOBUIimer(this);
 //! [4] //! [5]
-    connect(timer, &QTimer::timeout, this, QOverload<>::of(&AnalogClock::update));
+    connect(timer, &BOBUIimer::timeout, this, QOverload<>::of(&AnalogClock::update));
 //! [5] //! [6]
     timer->start(1000);
 //! [6]
@@ -69,11 +69,11 @@ void AnalogClock::paintEvent(QPaintEvent *)
 //! [9] //! [13]
 
 //! [14]
-    QTime time = QTime::currentTime();
+    BOBUIime time = BOBUIime::currentTime();
 //! [14]
 
 //! [15]
-    painter.setPen(Qt::NoPen);
+    painter.setPen(BobUI::NoPen);
 //! [15] //! [16]
     painter.setBrush(hourColor);
 //! [16]

@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QLabel>
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QLabel>
 #include <stdio.h>
 
 int main(int argc, char **argv)

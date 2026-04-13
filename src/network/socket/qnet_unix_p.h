@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QNET_UNIX_P_H
 #define QNET_UNIX_P_H
@@ -9,14 +9,14 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of Qt code on Unix. This header file may change from version to
+// This file is not part of the BobUI API.  It exists for the convenience
+// of BobUI code on Unix. This header file may change from version to
 // version to version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtNetwork/private/qtnetworkglobal_p.h>
+#include <BobUINetwork/private/bobuinetworkglobal_p.h>
 #include "private/qcore_unix_p.h"
 
 #include <sys/types.h>
@@ -36,19 +36,19 @@
 #  include <resolv.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // Almost always the same. If not, specify in qplatformdefs.h.
-#if !defined(QT_SOCKOPTLEN_T)
-# define QT_SOCKOPTLEN_T QT_SOCKLEN_T
+#if !defined(BOBUI_SOCKOPTLEN_T)
+# define BOBUI_SOCKOPTLEN_T BOBUI_SOCKLEN_T
 #endif
 
-static inline int qt_safe_socket(int domain, int type, int protocol, int flags = 0)
+static inline int bobui_safe_socket(int domain, int type, int protocol, int flags = 0)
 {
     Q_ASSERT((flags & ~O_NONBLOCK) == 0);
 
     int fd;
-#ifdef QT_THREADSAFE_CLOEXEC
+#ifdef BOBUI_THREADSAFE_CLOEXEC
     int newtype = type | SOCK_CLOEXEC;
     if (flags & O_NONBLOCK)
         newtype |= SOCK_NONBLOCK;
@@ -69,24 +69,24 @@ static inline int qt_safe_socket(int domain, int type, int protocol, int flags =
 #endif
 }
 
-static inline int qt_safe_accept(int s, struct sockaddr *addr, QT_SOCKLEN_T *addrlen, int flags = 0)
+static inline int bobui_safe_accept(int s, struct sockaddr *addr, BOBUI_SOCKLEN_T *addrlen, int flags = 0)
 {
     Q_ASSERT((flags & ~O_NONBLOCK) == 0);
 
     int fd;
-#if QT_CONFIG(accept4)
+#if BOBUI_CONFIG(accept4)
     // use accept4
     int sockflags = SOCK_CLOEXEC;
     if (flags & O_NONBLOCK)
         sockflags |= SOCK_NONBLOCK;
 # if defined(Q_OS_NETBSD)
-    fd = ::paccept(s, addr, static_cast<QT_SOCKLEN_T *>(addrlen), NULL, sockflags);
+    fd = ::paccept(s, addr, static_cast<BOBUI_SOCKLEN_T *>(addrlen), NULL, sockflags);
 # else
-    fd = ::accept4(s, addr, static_cast<QT_SOCKLEN_T *>(addrlen), sockflags);
+    fd = ::accept4(s, addr, static_cast<BOBUI_SOCKLEN_T *>(addrlen), sockflags);
 # endif
     return fd;
 #else
-    fd = ::accept(s, addr, static_cast<QT_SOCKLEN_T *>(addrlen));
+    fd = ::accept(s, addr, static_cast<BOBUI_SOCKLEN_T *>(addrlen));
     if (fd == -1)
         return -1;
 
@@ -100,16 +100,16 @@ static inline int qt_safe_accept(int s, struct sockaddr *addr, QT_SOCKLEN_T *add
 #endif
 }
 
-static inline int qt_safe_listen(int s, int backlog)
+static inline int bobui_safe_listen(int s, int backlog)
 {
     return ::listen(s, backlog);
 }
 
-static inline int qt_safe_connect(int sockfd, const struct sockaddr *addr, QT_SOCKLEN_T addrlen)
+static inline int bobui_safe_connect(int sockfd, const struct sockaddr *addr, BOBUI_SOCKLEN_T addrlen)
 {
     int ret;
     // Solaris e.g. expects a non-const 2nd parameter
-    QT_EINTR_LOOP(ret, QT_SOCKET_CONNECT(sockfd, const_cast<struct sockaddr *>(addr), addrlen));
+    BOBUI_EINTR_LOOP(ret, BOBUI_SOCKET_CONNECT(sockfd, const_cast<struct sockaddr *>(addr), addrlen));
 #ifdef Q_OS_WASM
 // ::connect on wasm returns 0 when it shouldn't so use errno instead
    if (errno != 0)
@@ -117,8 +117,8 @@ static inline int qt_safe_connect(int sockfd, const struct sockaddr *addr, QT_SO
 #endif
     return ret;
 }
-#undef QT_SOCKET_CONNECT
-#define QT_SOCKET_CONNECT qt_safe_connect
+#undef BOBUI_SOCKET_CONNECT
+#define BOBUI_SOCKET_CONNECT bobui_safe_connect
 
 #if defined(socket)
 # undef socket
@@ -131,32 +131,32 @@ static inline int qt_safe_connect(int sockfd, const struct sockaddr *addr, QT_SO
 #endif
 
 template <typename T>
-static inline int qt_safe_ioctl(int sockfd, unsigned long request, T arg)
+static inline int bobui_safe_ioctl(int sockfd, unsigned long request, T arg)
 {
     return ::ioctl(sockfd, request, arg);
 }
 
-static inline int qt_safe_sendmsg(int sockfd, const struct msghdr *msg, int flags)
+static inline int bobui_safe_sendmsg(int sockfd, const struct msghdr *msg, int flags)
 {
 #ifdef MSG_NOSIGNAL
     flags |= MSG_NOSIGNAL;
 #else
-    qt_ignore_sigpipe();
+    bobui_ignore_sigpipe();
 #endif
 
     int ret;
-    QT_EINTR_LOOP(ret, ::sendmsg(sockfd, msg, flags));
+    BOBUI_EINTR_LOOP(ret, ::sendmsg(sockfd, msg, flags));
     return ret;
 }
 
-static inline int qt_safe_recvmsg(int sockfd, struct msghdr *msg, int flags)
+static inline int bobui_safe_recvmsg(int sockfd, struct msghdr *msg, int flags)
 {
     int ret;
 
-    QT_EINTR_LOOP(ret, ::recvmsg(sockfd, msg, flags));
+    BOBUI_EINTR_LOOP(ret, ::recvmsg(sockfd, msg, flags));
     return ret;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QNET_UNIX_P_H

@@ -1,5 +1,5 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <qimageiohandler.h>
 #include <qcoreapplication.h>
@@ -8,7 +8,7 @@
 class TestImagePlugin : public QImageIOPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QImageIOHandlerFactoryInterface" FILE "plugin.json")
+    Q_PLUGIN_METADATA(IID "org.bobui-project.BobUI.QImageIOHandlerFactoryInterface" FILE "plugin.json")
 
 public:
     QImageIOPlugin::Capabilities capabilities(QIODevice *device, const QByteArray &format) const override;

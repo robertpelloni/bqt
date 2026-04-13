@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qminimalbackingstore.h"
 #include "qminimalintegration.h"
 #include "qscreen.h"
-#include <QtCore/qdebug.h>
+#include <BobUICore/qdebug.h>
 #include <qpa/qplatformscreen.h>
 #include <private/qguiapplication_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QMinimalBackingStore::QMinimalBackingStore(QWindow *window)
     : QPlatformBackingStore(window)
@@ -54,4 +54,4 @@ void QMinimalBackingStore::resize(const QSize &size, const QRegion &)
         mImage = QImage(size, format);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

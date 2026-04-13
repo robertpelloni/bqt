@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/QTest>
-#include <QtTest/QSignalSpy>
-#include <QtTest/QTestEventLoop>
+#include <BobUITest/BOBUIest>
+#include <BobUITest/QSignalSpy>
+#include <BobUITest/BOBUIestEventLoop>
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/QTimer>
-#include <QtCore/QSocketNotifier>
-#include <QtNetwork/QTcpServer>
-#include <QtNetwork/QTcpSocket>
-#include <QtNetwork/QUdpSocket>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/BOBUIimer>
+#include <BobUICore/QSocketNotifier>
+#include <BobUINetwork/BOBUIcpServer>
+#include <BobUINetwork/BOBUIcpSocket>
+#include <BobUINetwork/QUdpSocket>
 #include <private/qnativesocketengine_p.h>
 #define NATIVESOCKETENGINE QNativeSocketEngine
 #ifdef Q_OS_UNIX
@@ -161,7 +161,7 @@ void tst_QSocketNotifier::unexpectedDisconnection()
       stdin and stderr while waiting for fex bytes to be written.
     */
 
-    QTcpServer server;
+    BOBUIcpServer server;
     QVERIFY(server.listen(QHostAddress::LocalHost, 0));
 
     NATIVESOCKETENGINE readEnd1;
@@ -170,7 +170,7 @@ void tst_QSocketNotifier::unexpectedDisconnection()
     QVERIFY(readEnd1.waitForWrite());
     QCOMPARE(readEnd1.state(), QAbstractSocket::ConnectedState);
     QVERIFY(server.waitForNewConnection(5000));
-    QTcpSocket *writeEnd1 = server.nextPendingConnection();
+    BOBUIcpSocket *writeEnd1 = server.nextPendingConnection();
     QVERIFY(writeEnd1 != 0);
 
     NATIVESOCKETENGINE readEnd2;
@@ -179,7 +179,7 @@ void tst_QSocketNotifier::unexpectedDisconnection()
     QVERIFY(readEnd2.waitForWrite());
     QCOMPARE(readEnd2.state(), QAbstractSocket::ConnectedState);
     QVERIFY(server.waitForNewConnection(5000));
-    QTcpSocket *writeEnd2 = server.nextPendingConnection();
+    BOBUIcpSocket *writeEnd2 = server.nextPendingConnection();
     QVERIFY(writeEnd2 != 0);
 
     writeEnd1->write("1", 1);
@@ -194,7 +194,7 @@ void tst_QSocketNotifier::unexpectedDisconnection()
 
     UnexpectedDisconnectTester tester(&readEnd1, &readEnd2);
 
-    QTimer timer;
+    BOBUIimer timer;
     timer.setSingleShot(true);
     timer.start(30000);
     do {
@@ -221,7 +221,7 @@ class MixingWithTimersHelper : public QObject
     Q_OBJECT
 
 public:
-    MixingWithTimersHelper(QTimer *timer, QTcpServer *server);
+    MixingWithTimersHelper(BOBUIimer *timer, BOBUIcpServer *server);
 
     bool timerActivated;
     bool socketActivated;
@@ -231,7 +231,7 @@ private slots:
     void socketFired();
 };
 
-MixingWithTimersHelper::MixingWithTimersHelper(QTimer *timer, QTcpServer *server)
+MixingWithTimersHelper::MixingWithTimersHelper(BOBUIimer *timer, BOBUIcpServer *server)
 {
     timerActivated = false;
     socketActivated = false;
@@ -252,11 +252,11 @@ void MixingWithTimersHelper::socketFired()
 
 void tst_QSocketNotifier::mixingWithTimers()
 {
-    QTimer timer;
+    BOBUIimer timer;
     timer.setInterval(0);
     timer.start();
 
-    QTcpServer server;
+    BOBUIcpServer server;
     QVERIFY(server.listen(QHostAddress::LocalHost, 0));
 
     MixingWithTimersHelper helper(&timer, &server);
@@ -269,73 +269,73 @@ void tst_QSocketNotifier::mixingWithTimers()
     helper.timerActivated = false;
     helper.socketActivated = false;
 
-    QTcpSocket socket;
+    BOBUIcpSocket socket;
     socket.connectToHost(server.serverAddress(), server.serverPort());
 
     QCoreApplication::processEvents();
 
     QCOMPARE(helper.timerActivated, true);
-    QTRY_COMPARE(helper.socketActivated, true);
+    BOBUIRY_COMPARE(helper.socketActivated, true);
 }
 
 #ifdef Q_OS_UNIX
 // test only for posix
 void tst_QSocketNotifier::posixSockets()
 {
-    QTcpServer server;
+    BOBUIcpServer server;
     QVERIFY(server.listen(QHostAddress::LocalHost, 0));
 
-    int posixSocket = qt_safe_socket(AF_INET, SOCK_STREAM, 0);
+    int posixSocket = bobui_safe_socket(AF_INET, SOCK_STREAM, 0);
     sockaddr_in addr;
     addr.sin_addr.s_addr = htonl(0x7f000001);
     addr.sin_family = AF_INET;
     addr.sin_port = htons(server.serverPort());
-    qt_safe_connect(posixSocket, (const struct sockaddr*)&addr, sizeof(sockaddr_in));
+    bobui_safe_connect(posixSocket, (const struct sockaddr*)&addr, sizeof(sockaddr_in));
     QVERIFY(server.waitForNewConnection(5000));
-    QScopedPointer<QTcpSocket> passive(server.nextPendingConnection());
+    QScopedPointer<BOBUIcpSocket> passive(server.nextPendingConnection());
 
     ::fcntl(posixSocket, F_SETFL, ::fcntl(posixSocket, F_GETFL) | O_NONBLOCK);
 
     {
         QSocketNotifier rn(posixSocket, QSocketNotifier::Read);
-        connect(&rn, SIGNAL(activated(QSocketDescriptor)), &QTestEventLoop::instance(), SLOT(exitLoop()));
+        connect(&rn, SIGNAL(activated(QSocketDescriptor)), &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
         QSignalSpy readSpy(&rn, &QSocketNotifier::activated);
         QVERIFY(readSpy.isValid());
         // No write notifier, some systems trigger write notification on socket creation, but not all
         QSocketNotifier en(posixSocket, QSocketNotifier::Exception);
-        connect(&en, SIGNAL(activated(QSocketDescriptor)), &QTestEventLoop::instance(), SLOT(exitLoop()));
+        connect(&en, SIGNAL(activated(QSocketDescriptor)), &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
         QSignalSpy errorSpy(&en, &QSocketNotifier::activated);
         QVERIFY(errorSpy.isValid());
 
         passive->write("hello",6);
         passive->waitForBytesWritten(5000);
 
-        QTestEventLoop::instance().enterLoop(3);
+        BOBUIestEventLoop::instance().enterLoop(3);
         QCOMPARE(readSpy.size(), 1);
         QCOMPARE(errorSpy.size(), 0);
 
         char buffer[100];
-        int r = qt_safe_read(posixSocket, buffer, 100);
+        int r = bobui_safe_read(posixSocket, buffer, 100);
         QCOMPARE(r, 6);
         QCOMPARE(buffer, "hello");
 
         QSocketNotifier wn(posixSocket, QSocketNotifier::Write);
-        connect(&wn, SIGNAL(activated(QSocketDescriptor)), &QTestEventLoop::instance(), SLOT(exitLoop()));
+        connect(&wn, SIGNAL(activated(QSocketDescriptor)), &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
         QSignalSpy writeSpy(&wn, &QSocketNotifier::activated);
         QVERIFY(writeSpy.isValid());
-        qt_safe_write(posixSocket, "goodbye", 8);
+        bobui_safe_write(posixSocket, "goodbye", 8);
 
-        QTestEventLoop::instance().enterLoop(3);
+        BOBUIestEventLoop::instance().enterLoop(3);
         QCOMPARE(readSpy.size(), 1);
         QCOMPARE(writeSpy.size(), 1);
         QCOMPARE(errorSpy.size(), 0);
 
         // Write notifier may have fired before the read notifier inside
-        // QTcpSocket, give QTcpSocket a chance to see the incoming data
+        // BOBUIcpSocket, give BOBUIcpSocket a chance to see the incoming data
         passive->waitForReadyRead(100);
         QCOMPARE(passive->readAll(), QByteArray("goodbye",8));
     }
-    qt_safe_close(posixSocket);
+    bobui_safe_close(posixSocket);
 }
 #endif
 
@@ -348,12 +348,12 @@ void tst_QSocketNotifier::async_readDatagramSlot()
         QCOMPARE(m_asyncReceiver->readDatagram(buf, sizeof(buf)), qint64(1));
         if (buf[0] == '1') {
             // wait for the second datagram message.
-            QTest::qSleep(100);
+            BOBUIest::qSleep(100);
         }
     } while (m_asyncReceiver->hasPendingDatagrams());
 
     if (buf[0] == '3')
-        QTestEventLoop::instance().exitLoop();
+        BOBUIestEventLoop::instance().exitLoop();
 }
 
 void tst_QSocketNotifier::async_writeDatagramSlot()
@@ -376,19 +376,19 @@ void tst_QSocketNotifier::asyncMultipleDatagram()
             &tst_QSocketNotifier::async_readDatagramSlot);
 
     // activate socket notifiers
-    QTestEventLoop::instance().enterLoop(100ms);
+    BOBUIestEventLoop::instance().enterLoop(100ms);
 
     m_asyncSender->writeDatagram("1", makeNonAny(m_asyncReceiver->localAddress()), port);
     m_asyncSender->writeDatagram("2", makeNonAny(m_asyncReceiver->localAddress()), port);
     // wait a little to ensure that the datagrams we've just sent
     // will be delivered on receiver side.
-    QTest::qSleep(100);
+    BOBUIest::qSleep(100);
     QVERIFY(m_asyncReceiver->hasPendingDatagrams());
 
-    QTimer::singleShot(500, this, &tst_QSocketNotifier::async_writeDatagramSlot);
+    BOBUIimer::singleShot(500, this, &tst_QSocketNotifier::async_writeDatagramSlot);
 
-    QTestEventLoop::instance().enterLoop(1);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(1);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
     QCOMPARE(spy.size(), 2);
 
     delete m_asyncSender;
@@ -397,10 +397,10 @@ void tst_QSocketNotifier::asyncMultipleDatagram()
 
 void tst_QSocketNotifier::activationReason_data()
 {
-    QTest::addColumn<QSocketNotifier::Type>("type");
-    QTest::addRow("read") << QSocketNotifier::Read;
-    QTest::addRow("write") << QSocketNotifier::Write;
-    QTest::addRow("exception") << QSocketNotifier::Exception;
+    BOBUIest::addColumn<QSocketNotifier::Type>("type");
+    BOBUIest::addRow("read") << QSocketNotifier::Read;
+    BOBUIest::addRow("write") << QSocketNotifier::Write;
+    BOBUIest::addRow("exception") << QSocketNotifier::Exception;
 }
 void tst_QSocketNotifier::activationReason()
 {
@@ -451,5 +451,5 @@ void tst_QSocketNotifier::legacyConnect()
 }
 
 
-QTEST_MAIN(tst_QSocketNotifier)
+BOBUIEST_MAIN(tst_QSocketNotifier)
 #include <tst_qsocketnotifier.moc>

@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#undef QT_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
+#undef BOBUI_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
 
-#include <QTest>
+#include <BOBUIest>
 #include <QAbstractItemModelTester>
-#include <QtGui/QtGui>
-#include <QtWidgets/QtWidgets>
+#include <BobUIGui/BobUIGui>
+#include <BobUIWidgets/BobUIWidgets>
 
 #include "dynamictreemodel.h"
 
@@ -47,21 +47,21 @@ void tst_QAbstractItemModelTester::stringListModel()
 
 void tst_QAbstractItemModelTester::treeWidgetModel()
 {
-    QTreeWidget widget;
+    BOBUIreeWidget widget;
 
     QAbstractItemModelTester t1(widget.model());
 
-    QTreeWidgetItem *root = new QTreeWidgetItem(&widget, QStringList("root"));
+    BOBUIreeWidgetItem *root = new BOBUIreeWidgetItem(&widget, QStringList("root"));
     for (int i = 0; i < 20; ++i)
-        new QTreeWidgetItem(root, QStringList(QString::number(i)));
-    QTreeWidgetItem *remove = root->child(2);
+        new BOBUIreeWidgetItem(root, QStringList(QString::number(i)));
+    BOBUIreeWidgetItem *remove = root->child(2);
     root->removeChild(remove);
     delete remove;
-    QTreeWidgetItem *parent = new QTreeWidgetItem(&widget, QStringList("parent"));
-    new QTreeWidgetItem(parent, QStringList("child"));
+    BOBUIreeWidgetItem *parent = new BOBUIreeWidgetItem(&widget, QStringList("parent"));
+    new BOBUIreeWidgetItem(parent, QStringList("child"));
     parent->setHidden(true);
 
-    widget.sortByColumn(0, Qt::AscendingOrder);
+    widget.sortByColumn(0, BobUI::AscendingOrder);
 }
 
 void tst_QAbstractItemModelTester::standardItemModel()
@@ -88,10 +88,10 @@ void tst_QAbstractItemModelTester::standardItemModelZeroColumns()
 {
     QStandardItemModel model;
     QAbstractItemModelTester t1(&model);
-    // QTBUG-92220
+    // BOBUIBUG-92220
     model.insertRows(0, 5);
     model.removeRows(0, 5);
-    // QTBUG-92886
+    // BOBUIBUG-92886
     model.insertRows(0, 5);
     model.removeRows(1, 2);
 
@@ -292,5 +292,5 @@ void tst_QAbstractItemModelTester::testResetThroughProxy()
     QCOMPARE(observer.checkPersistentFailureCount, 0);
 }
 
-QTEST_MAIN(tst_QAbstractItemModelTester)
+BOBUIEST_MAIN(tst_QAbstractItemModelTester)
 #include "tst_qabstractitemmodeltester.moc"

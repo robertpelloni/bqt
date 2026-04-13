@@ -1,7 +1,7 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2022 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include <qjsonobject.h>
 #include <qjsonvalue.h>
@@ -26,7 +26,7 @@
 
 #include "qjson_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static QJsonValue::Type convertFromCborType(QCborValue::Type type) noexcept
 {
@@ -53,10 +53,10 @@ static QJsonValue::Type convertFromCborType(QCborValue::Type type) noexcept
 
 /*!
     \class QJsonValue
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup json
     \ingroup shared
-    \ingroup qtserialization
+    \ingroup bobuiserialization
     \reentrant
     \since 5.0
 
@@ -103,7 +103,7 @@ static QJsonValue::Type convertFromCborType(QCborValue::Type type) noexcept
     \li \l {QJsonObject}::operator[](const QString & key) const
     \endlist
 
-    \sa {JSON Support in Qt}, {Saving and Loading a Game}
+    \sa {JSON Support in BobUI}, {Saving and Loading a Game}
 */
 
 /*!
@@ -204,7 +204,7 @@ QJsonValue::QJsonValue(const QString &s)
     UTF-8 encoding of the input.
 
     You can disable this constructor by defining \c
-    QT_NO_CAST_FROM_ASCII when you compile your applications.
+    BOBUI_NO_CAST_FROM_ASCII when you compile your applications.
 
     \since 5.3
  */
@@ -356,7 +356,7 @@ void QJsonValue::swap(QJsonValue &other) noexcept
     error cases as e.g. accessing a non existing key in a QJsonObject.
  */
 
-#ifndef QT_NO_VARIANT
+#ifndef BOBUI_NO_VARIANT
 /*!
     Converts \a variant to a QJsonValue and returns it.
 
@@ -422,7 +422,7 @@ void QJsonValue::swap(QJsonValue &other) noexcept
             \list
                 \li QMetaType::QUuid
             \endlist
-        \li QJsonValue::String. Since Qt 5.11, the resulting string will not include braces
+        \li QJsonValue::String. Since BobUI 5.11, the resulting string will not include braces
     \row
         \li
             \list
@@ -448,16 +448,16 @@ void QJsonValue::swap(QJsonValue &other) noexcept
 
     QVariant can carry more information than is representable in JSON. If the
     QVariant is not one of the types above, the conversion is not guaranteed
-    and is subject to change in future versions of Qt, as the UUID one did.
+    and is subject to change in future versions of BobUI, as the UUID one did.
     Code should strive not to use any other types than those listed above.
 
     If QVariant::isNull() returns true, a null QJsonValue is returned or
     inserted into the list or object, regardless of the type carried by
-    QVariant. Note the behavior change in Qt 6.0 affecting QVariant::isNull()
+    QVariant. Note the behavior change in BobUI 6.0 affecting QVariant::isNull()
     also affects this function.
 
     A floating point value that is either an infinity or NaN will be converted
-    to a null JSON value. Since Qt 6.0, QJsonValue can store the full precision
+    to a null JSON value. Since BobUI 6.0, QJsonValue can store the full precision
     of any 64-bit signed integer without loss, but in previous versions values
     outside the range of ±2^53 may lose precision. Unsigned 64-bit values
     greater than or equal to 2^63 will either lose precision or alias to
@@ -502,7 +502,7 @@ QJsonValue QJsonValue::fromVariant(const QVariant &variant)
     case QMetaType::Float:
     case QMetaType::Double: {
         double v = variant.toDouble();
-        return qt_is_finite(v) ? QJsonValue(v) : QJsonValue();
+        return bobui_is_finite(v) ? QJsonValue(v) : QJsonValue();
     }
     case QMetaType::QString:
         return QJsonValue(variant.toString());
@@ -514,7 +514,7 @@ QJsonValue QJsonValue::fromVariant(const QVariant &variant)
         return QJsonValue(QJsonObject::fromVariantMap(variant.toMap()));
     case QMetaType::QVariantHash:
         return QJsonValue(QJsonObject::fromVariantHash(variant.toHash()));
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
     case QMetaType::QUrl:
         return QJsonValue(variant.toUrl().toString(QUrl::FullyEncoded));
     case QMetaType::QUuid:
@@ -602,7 +602,7 @@ QVariant QJsonValue::toVariant() const
                     error condition, when trying to read an out of bounds value
                     in an array or a non existent key in an object.
 */
-#endif // !QT_NO_VARIANT
+#endif // !BOBUI_NO_VARIANT
 
 /*!
     \since 6.9
@@ -625,7 +625,7 @@ QJsonValue QJsonValue::fromJson(QByteArrayView json, QJsonParseError *error)
 }
 
 /*!
-\if defined(qt7)
+\if defined(bobui7)
     \enum QJsonValue::JsonFormat
     \since 6.9
 
@@ -960,7 +960,7 @@ bool comparesEqual(const QJsonValue &lhs, const QJsonValue &rhs)
 
 /*!
     \class QJsonValueRef
-    \inmodule QtCore
+    \inmodule BobUICore
     \reentrant
     \brief The QJsonValueRef class is a helper class for QJsonValue.
 
@@ -983,7 +983,7 @@ bool comparesEqual(const QJsonValue &lhs, const QJsonValue &rhs)
 
 void QJsonValueRef::detach()
 {
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0) && !defined(QT_BOOTSTRAPPED)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0) && !defined(BOBUI_BOOTSTRAPPED)
     QCborContainerPrivate *d = QJsonPrivate::Value::container(*this);
     d = QCborContainerPrivate::detach(d, d->elements.size());
 
@@ -1030,12 +1030,12 @@ QJsonValueRef &QJsonValueRef::operator =(const QJsonValueRef &ref)
     return assignToRef(*this, d->valueAt(index), is_object);
 }
 
-#ifndef QT_NO_VARIANT
+#ifndef BOBUI_NO_VARIANT
 QVariant QJsonValueConstRef::toVariant() const
 {
     return concrete(*this).toVariant();
 }
-#endif // !QT_NO_VARIANT
+#endif // !BOBUI_NO_VARIANT
 
 QJsonArray QJsonValueConstRef::toArray() const
 {
@@ -1135,7 +1135,7 @@ QString QJsonValueConstRef::objectKey(QJsonValueConstRef self)
     return d->stringAt(index - 1);
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0) && !defined(QT_BOOTSTRAPPED)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0) && !defined(BOBUI_BOOTSTRAPPED)
 QVariant QJsonValueRef::toVariant() const
 {
     return QJsonValueConstRef::toVariant();
@@ -1163,7 +1163,7 @@ QJsonValueRef QJsonValueRef::operator[](qsizetype key)
 
     auto &e = d->elements[index];
     e.container = QCborContainerPrivate::grow(e.container, key);    // detaches
-    e.flags |= QtCbor::Element::IsContainer;
+    e.flags |= BobUICbor::Element::IsContainer;
 
     return QJsonValueRef(e.container, key, false);
 }
@@ -1185,10 +1185,10 @@ QJsonValueRef QJsonValueRef::operator[](QAnyStringView key)
     Q_ASSERT(x->ref.loadRelaxed() == 1);
 
     auto &e = d->elements[index];
-    if (e.flags & QtCbor::Element::IsContainer && e.container != x)
+    if (e.flags & BobUICbor::Element::IsContainer && e.container != x)
         o.o.reset(e.container);     // might not an object!
 
-    e.flags |= QtCbor::Element::IsContainer;
+    e.flags |= BobUICbor::Element::IsContainer;
     e.container = x;
 
     return ret;
@@ -1216,7 +1216,7 @@ size_t qHash(const QJsonValue &value, size_t seed)
     Q_UNREACHABLE_RETURN(0);
 }
 
-#if !defined(QT_NO_DEBUG_STREAM)
+#if !defined(BOBUI_NO_DEBUG_STREAM)
 QDebug operator<<(QDebug dbg, const QJsonValue &o)
 {
     QDebugStateSaver saver(dbg);
@@ -1257,7 +1257,7 @@ QDebug operator<<(QDebug dbg, const QJsonValue &o)
 }
 #endif
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 QDataStream &operator<<(QDataStream &stream, const QJsonValue &v)
 {
     quint8 type = v.type();
@@ -1331,4 +1331,4 @@ QDataStream &operator>>(QDataStream &stream, QJsonValue &v)
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

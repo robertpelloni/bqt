@@ -1,16 +1,16 @@
 The Address Book Tutorial shows how to put together a simple yet
 fully-functioning GUI application. The tutorial chapters can be found in the
-Qt documentation, which can be viewed using Qt Assistant or a Web browser.
+BobUI documentation, which can be viewed using BobUI Assistant or a Web browser.
 
 The tutorial is also available online at
 
-http://qt-project.org/doc/qt-5.0/qtwidgets/tutorials-addressbook.html
+http://bobui-project.org/doc/bobui-5.0/bobuiwidgets/tutorials-addressbook.html
 
 All programs corresponding to the chapters in the tutorial should
-automatically be built when Qt is compiled, or will be provided as
-pre-built executables if you have obtained a binary package of Qt.
+automatically be built when BobUI is compiled, or will be provided as
+pre-built executables if you have obtained a binary package of BobUI.
 
-If you have only compiled the Qt libraries, use the following instructions
+If you have only compiled the BobUI libraries, use the following instructions
 to build the tutorial.
 
 On Linux/Unix:

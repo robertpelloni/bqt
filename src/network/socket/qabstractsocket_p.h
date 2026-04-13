@@ -1,6 +1,6 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QABSTRACTSOCKET_P_H
 #define QABSTRACTSOCKET_P_H
@@ -9,23 +9,23 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of the QAbstractSocket class.  This header file may change from
 // version to version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtNetwork/private/qtnetworkglobal_p.h>
-#include "QtNetwork/qabstractsocket.h"
-#include "QtCore/qbytearray.h"
-#include "QtCore/qlist.h"
-#include "QtCore/qtimer.h"
+#include <BobUINetwork/private/bobuinetworkglobal_p.h>
+#include "BobUINetwork/qabstractsocket.h"
+#include "BobUICore/qbytearray.h"
+#include "BobUICore/qlist.h"
+#include "BobUICore/bobuiimer.h"
 #include "private/qiodevice_p.h"
 #include "private/qabstractsocketenginereceiver_p.h"
 #include "qnetworkproxy.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QAbstractSocketEngine;
 class QHostInfo;
@@ -45,7 +45,7 @@ public:
     inline void exceptionNotification() override {}
     inline void closeNotification() override { canCloseNotification(); }
     void connectionNotification() override;
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     inline void proxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *authenticator) override {
         Q_Q(QAbstractSocket);
         emit q->proxyAuthenticationRequired(proxy, authenticator);
@@ -87,7 +87,7 @@ public:
     QAbstractSocketEngine *socketEngine = nullptr;
     qintptr cachedSocketDescriptor = -1;
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     QNetworkProxy proxy;
     QNetworkProxy proxyInUse;
     QString protocolTag;
@@ -119,7 +119,7 @@ public:
 
     quint32 bytesWrittenEmissionCount = 0;
 
-    QTimer *connectTimer = nullptr;
+    BOBUIimer *connectTimer = nullptr;
 
     int hostLookupId = -1;
 
@@ -140,6 +140,6 @@ public:
     static QAbstractSocketEngine* getSocketEngine(QAbstractSocket*);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QABSTRACTSOCKET_P_H

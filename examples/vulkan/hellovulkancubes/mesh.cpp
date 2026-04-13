@@ -1,15 +1,15 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "mesh.h"
-#include <QtConcurrentRun>
+#include <BobUIConcurrentRun>
 #include <QFile>
 
 void Mesh::load(const QString &fn)
 {
     reset();
     m_maybeRunning = true;
-    m_future = QtConcurrent::run([fn]() {
+    m_future = BobUIConcurrent::run([fn]() {
         MeshData md;
         QFile f(fn);
         if (!f.open(QIODevice::ReadOnly)) {

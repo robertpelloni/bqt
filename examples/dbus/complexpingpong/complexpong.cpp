@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "ping-common.h"
 #include "complexpong.h"
@@ -22,7 +22,7 @@ void Pong::setValue(const QString &newValue)
 void Pong::quit()
 {
     QMetaObject::invokeMethod(QCoreApplication::instance(), &QCoreApplication::quit,
-                              Qt::QueuedConnection);
+                              BobUI::QueuedConnection);
 }
 
 QDBusVariant Pong::query(const QString &query)

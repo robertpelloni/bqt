@@ -1,15 +1,15 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include <qpa/qplatformoffscreensurface.h>
 #include <qpa/qplatformintegration.h>
 
-#include <QtGui/qoffscreensurface_platform.h>
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/qoffscreensurface_platform.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 
-#include <QtGui/qpa/qplatformscreen_p.h>
+#include <BobUIGui/qpa/qplatformscreen_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace QNativeInterface::Private;
 
@@ -20,14 +20,14 @@ using namespace QNativeInterface::Private;
 
     Accessed through QOffscreenSurface::nativeInterface().
 
-    \inmodule QtGui
+    \inmodule BobUIGui
     \inheaderfile QOffscreenSurface
     \ingroup native-interfaces
     \ingroup native-interfaces-qoffscreensurface
 */
 
-QT_DEFINE_NATIVE_INTERFACE(QAndroidOffscreenSurface);
-QT_DEFINE_PRIVATE_NATIVE_INTERFACE(QAndroidOffScreenIntegration);
+BOBUI_DEFINE_NATIVE_INTERFACE(QAndroidOffscreenSurface);
+BOBUI_DEFINE_PRIVATE_NATIVE_INTERFACE(QAndroidOffScreenIntegration);
 
 QOffscreenSurface  *QNativeInterface::QAndroidOffscreenSurface::fromNative(ANativeWindow *nativeSurface)
 {
@@ -41,7 +41,7 @@ QOffscreenSurface  *QNativeInterface::QAndroidOffscreenSurface::fromNative(ANati
     \brief Native interface to a screen.
 
     Accessed through QScreen::nativeInterface().
-    \inmodule QtGui
+    \inmodule BobUIGui
     \ingroup native-interfaces
     \ingroup native-interfaces-qscreen
 */
@@ -49,6 +49,6 @@ QOffscreenSurface  *QNativeInterface::QAndroidOffscreenSurface::fromNative(ANati
     \fn int QNativeInterface::QAndroidScreen::displayId() const;
     \return the id of the underlying Android display.
 */
-QT_DEFINE_NATIVE_INTERFACE(QAndroidScreen);
+BOBUI_DEFINE_NATIVE_INTERFACE(QAndroidScreen);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

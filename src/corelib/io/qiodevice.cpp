@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:network-protocol
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:network-protocol
 
 //#define QIODEVICE_DEBUG
 
@@ -10,14 +10,14 @@
 #include "qfile.h"
 #include "qstringlist.h"
 #include "qdir.h"
-#include "private/qtools_p.h"
+#include "private/bobuiools_p.h"
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
-using namespace QtMiscUtils;
+using namespace BobUI::StringLiterals;
+using namespace BobUIMiscUtils;
 
 [[maybe_unused]]
 static void debugBinaryString(const char *input, qint64 maxlen)
@@ -48,12 +48,12 @@ static void debugBinaryString(const char *input, qint64 maxlen)
 Q_DECL_COLD_FUNCTION
 static void checkWarnMessage(const QIODevice *device, const char *function, const char *what)
 {
-#if !defined(QT_NO_WARNING_OUTPUT) && !defined(QT_NO_DEBUG_STREAM)
+#if !defined(BOBUI_NO_WARNING_OUTPUT) && !defined(BOBUI_NO_DEBUG_STREAM)
     QDebug d = qWarning();
     d.noquote();
     d.nospace();
     d << "QIODevice::" << function;
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     d << " (" << device->metaObject()->className();
     if (!device->objectName().isEmpty())
         d << ", \"" << device->objectName() << '"';
@@ -62,13 +62,13 @@ static void checkWarnMessage(const QIODevice *device, const char *function, cons
     d << ')';
 #else
     Q_UNUSED(device);
-#endif // !QT_NO_QOBJECT
+#endif // !BOBUI_NO_QOBJECT
     d << ": " << what;
 #else
     Q_UNUSED(device);
     Q_UNUSED(function);
     Q_UNUSED(what);
-#endif // QT_NO_WARNING_OUTPUT
+#endif // BOBUI_NO_WARNING_OUTPUT
 }
 
 #define CHECK_MAXLEN(function, returnType) \
@@ -131,7 +131,7 @@ static void checkWarnMessage(const QIODevice *device, const char *function, cons
     \internal
  */
 QIODevicePrivate::QIODevicePrivate(decltype(QObjectPrivateVersion) version)
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     : QObjectPrivate(version)
 #endif
 {
@@ -147,20 +147,20 @@ QIODevicePrivate::~QIODevicePrivate()
 
 /*!
     \class QIODevice
-    \inmodule QtCore
+    \inmodule BobUICore
     \reentrant
 
     \brief The QIODevice class is the base interface class of all I/O
-    devices in Qt.
+    devices in BobUI.
 
     \ingroup io
 
     QIODevice provides both a common implementation and an abstract
     interface for devices that support reading and writing of blocks
-    of data, such as QFile, QBuffer and QTcpSocket. QIODevice is
+    of data, such as QFile, QBuffer and BOBUIcpSocket. QIODevice is
     abstract and cannot be instantiated, but it is common to use the
     interface it defines to provide device-independent I/O features.
-    For example, Qt's XML classes operate on a QIODevice pointer,
+    For example, BobUI's XML classes operate on a QIODevice pointer,
     allowing them to be used with various devices (such as files and
     buffers).
 
@@ -182,7 +182,7 @@ QIODevicePrivate::~QIODevicePrivate()
     \li Sequential devices don't support seeking to arbitrary
     positions. The data must be read in one pass. The functions
     pos() and size() don't work for sequential devices.
-    QTcpSocket and QProcess are examples of sequential devices.
+    BOBUIcpSocket and QProcess are examples of sequential devices.
     \endlist
 
     You can use isSequential() to determine the type of device.
@@ -193,13 +193,13 @@ QIODevicePrivate::~QIODevicePrivate()
     from. You can call bytesAvailable() to determine the number of
     bytes that are currently available for reading. It's common to use
     bytesAvailable() together with the readyRead() signal when
-    programming with asynchronous devices such as QTcpSocket, where
+    programming with asynchronous devices such as BOBUIcpSocket, where
     fragments of data can arrive at arbitrary points in
     time. QIODevice emits the bytesWritten() signal every time a
     payload of data has been written to the device. Use bytesToWrite()
     to determine the current amount of data waiting to be written.
 
-    Certain subclasses of QIODevice, such as QTcpSocket and QProcess,
+    Certain subclasses of QIODevice, such as BOBUIcpSocket and QProcess,
     are asynchronous. This means that I/O functions such as write()
     or read() always return immediately, while communication with the
     device itself may happen when control goes back to the event loop.
@@ -236,7 +236,7 @@ QIODevicePrivate::~QIODevicePrivate()
     also handles access control for you, so you can safely assume that
     the device is opened in write mode if writeData() is called.
 
-    Some subclasses, such as QFile and QTcpSocket, are implemented
+    Some subclasses, such as QFile and BOBUIcpSocket, are implemented
     using a memory buffer for intermediate storing of data. This
     reduces the number of required device accessing calls, which are
     often very slow. Buffering makes functions like getChar() and
@@ -265,13 +265,13 @@ QIODevicePrivate::~QIODevicePrivate()
     QIODevice also provides additional signals to handle asynchronous
     communication on a per-channel basis.
 
-    \sa QBuffer, QFile, QTcpSocket
+    \sa QBuffer, QFile, BOBUIcpSocket
 */
 
 /*!
     \class QIODeviceBase
     \inheaderfile QIODevice
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief Base class for QIODevice that provides flags describing the mode in
            which a device is opened.
 */
@@ -305,7 +305,7 @@ QIODevicePrivate::~QIODevicePrivate()
                      allowed. This flag currently only affects QFile. Other
                      classes might use this flag in the future, but until then
                      using this flag with any classes other than QFile may
-                     result in undefined behavior. (since Qt 5.11)
+                     result in undefined behavior. (since BobUI 5.11)
     \value ExistingOnly Fail if the file to be opened does not exist. This flag
                      must be specified alongside ReadOnly, WriteOnly, or
                      ReadWrite. Note that using this flag with ReadOnly alone
@@ -313,14 +313,14 @@ QIODevicePrivate::~QIODevicePrivate()
                      not exist. This flag currently only affects QFile. Other
                      classes might use this flag in the future, but until then
                      using this flag with any classes other than QFile may
-                     result in undefined behavior. (since Qt 5.11)
+                     result in undefined behavior. (since BobUI 5.11)
 
     Certain flags, such as \c Unbuffered and \c Truncate, are
     meaningless when used with some subclasses. Some of these
     restrictions are implied by the type of device that is represented
     by a subclass. In other cases, the restriction may be due to the
     implementation, or may be imposed by the underlying platform; for
-    example, QTcpSocket does not support \c Unbuffered mode, and
+    example, BOBUIcpSocket does not support \c Unbuffered mode, and
     limitations in the native API prevent QFile from supporting \c
     Unbuffered on Windows.
 */
@@ -411,7 +411,7 @@ QIODevicePrivate::~QIODevicePrivate()
     \sa atEnd(), read()
 */
 
-#ifdef QT_NO_QOBJECT
+#ifdef BOBUI_NO_QOBJECT
 QIODevice::QIODevice()
     : d_ptr(new QIODevicePrivate)
 {
@@ -799,7 +799,7 @@ void QIODevice::close()
     printf("%p QIODevice::close()\n", this);
 #endif
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     emit aboutToClose();
 #endif
     d->openMode = NotOpen;
@@ -937,9 +937,9 @@ bool QIODevice::atEnd() const
     true on success; otherwise returns \c false (for example, if the
     device is not open).
 
-    Note that when using a QTextStream on a QFile, calling reset() on
-    the QFile will not have the expected result because QTextStream
-    buffers the file. Use the QTextStream::seek() function instead.
+    Note that when using a BOBUIextStream on a QFile, calling reset() on
+    the QFile will not have the expected result because BOBUIextStream
+    buffers the file. Use the BOBUIextStream::seek() function instead.
 
     \sa seek()
 */
@@ -1494,7 +1494,7 @@ QByteArray QIODevice::readLine(qint64 maxSize)
     Note that the contents of \a line before the call are discarded in any case
     but its \l{QByteArray::}{capacity()} is never reduced.
 
-    \sa readAll(), readLine(), QTextStream::readLineInto()
+    \sa readAll(), readLine(), BOBUIextStream::readLineInto()
 */
 bool QIODevice::readLineInto(QByteArray *line, qint64 maxSize)
 {
@@ -1963,7 +1963,7 @@ qint64 QIODevicePrivate::peek(char *data, qint64 maxSize)
 */
 QByteArray QIODevicePrivate::peek(qint64 maxSize)
 {
-    QByteArray result(maxSize, Qt::Uninitialized);
+    QByteArray result(maxSize, BobUI::Uninitialized);
 
     const qint64 readBytes = read(result.data(), maxSize, true);
 
@@ -2300,8 +2300,8 @@ QString QIODevice::errorString() const
 {
     Q_D(const QIODevice);
     if (d->errorString.isEmpty()) {
-#ifdef QT_NO_QOBJECT
-        return QLatin1StringView(QT_TRANSLATE_NOOP(QIODevice, "Unknown error"));
+#ifdef BOBUI_NO_QOBJECT
+        return QLatin1StringView(BOBUI_TRANSLATE_NOOP(QIODevice, "Unknown error"));
 #else
         return tr("Unknown error");
 #endif
@@ -2354,13 +2354,13 @@ QString QIODevice::errorString() const
 
 /*!
   \internal
-  \fn int qt_subtract_from_timeout(int timeout, int elapsed)
+  \fn int bobui_subtract_from_timeout(int timeout, int elapsed)
 
   Reduces the \a timeout by \a elapsed, taking into account that -1 is a
   special value for timeouts.
 */
 
-int qt_subtract_from_timeout(int timeout, int elapsed)
+int bobui_subtract_from_timeout(int timeout, int elapsed)
 {
     if (timeout == -1)
         return -1;
@@ -2370,7 +2370,7 @@ int qt_subtract_from_timeout(int timeout, int elapsed)
 }
 
 
-#if !defined(QT_NO_DEBUG_STREAM)
+#if !defined(BOBUI_NO_DEBUG_STREAM)
 QDebug operator<<(QDebug debug, QIODevice::OpenMode modes)
 {
     debug << "OpenMode(";
@@ -2398,8 +2398,8 @@ QDebug operator<<(QDebug debug, QIODevice::OpenMode modes)
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 #include "moc_qiodevice.cpp"
 #endif

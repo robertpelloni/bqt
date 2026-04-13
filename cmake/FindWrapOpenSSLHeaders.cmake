@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 # We can't create the same interface imported target multiple times, CMake will complain if we do
@@ -33,7 +33,7 @@ if(OPENSSL_INCLUDE_DIR)
         ${OPENSSL_INCLUDE_DIR})
 
     set_target_properties(WrapOpenSSLHeaders::WrapOpenSSLHeaders PROPERTIES
-        _qt_is_nolink_target TRUE)
+        _bobui_is_nolink_target TRUE)
 endif()
 
 include(FindPackageHandleStandardArgs)

@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
-#include <QTest>
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
+#include <BOBUIest>
 #include <QSignalSpy>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QStyle>
-#include <QtWidgets/QLayout>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QLineEdit>
-#include <QtGui/QAction>
-#include <QtGui/QStyleHints>
+#include <BobUIWidgets/QPushButton>
+#include <BobUIWidgets/QStyle>
+#include <BobUIWidgets/QLayout>
+#include <BobUIWidgets/QDialog>
+#include <BobUIWidgets/QLineEdit>
+#include <BobUIGui/QAction>
+#include <BobUIGui/QStyleHints>
 #include <qdialogbuttonbox.h>
-#include <QtWidgets/private/qdialogbuttonbox_p.h>
-#include <QtWidgets/private/qabstractbutton_p.h>
+#include <BobUIWidgets/private/qdialogbuttonbox_p.h>
+#include <BobUIWidgets/private/qabstractbutton_p.h>
 #include <limits.h>
 
 Q_DECLARE_METATYPE(QDialogButtonBox::ButtonRole)
@@ -53,7 +53,7 @@ private slots:
     void clear();
     void removeButton_data();
     void removeButton();
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     void hideAndShowButton();
 #endif
     void hideAndShowStandardButton();
@@ -69,7 +69,7 @@ private slots:
 //    void buttons();
 
     void testDelete();
-    void testSignalEmissionAfterDelete_QTBUG_45835();
+    void testSignalEmissionAfterDelete_BOBUIBUG_45835();
     void testRemove();
     void testMultipleAdd();
     void testStandardButtonMapping_data();
@@ -106,7 +106,7 @@ tst_QDialogButtonBox::~tst_QDialogButtonBox()
 void tst_QDialogButtonBox::testConstructor1()
 {
     QDialogButtonBox buttonbox;
-    QCOMPARE(buttonbox.orientation(), Qt::Horizontal);
+    QCOMPARE(buttonbox.orientation(), BobUI::Horizontal);
 
     QCOMPARE(buttonbox.buttons().size(), 0);
 }
@@ -120,7 +120,7 @@ void tst_QDialogButtonBox::layoutReuse()
     QEvent event(QEvent::StyleChange);
     QApplication::sendEvent(box, &event);
     QCOMPARE(layout.data(), box->layout());
-    box->setOrientation(box->orientation() == Qt::Horizontal ? Qt::Vertical : Qt::Horizontal);
+    box->setOrientation(box->orientation() == BobUI::Horizontal ? BobUI::Vertical : BobUI::Horizontal);
     QVERIFY(layout.isNull());
     QVERIFY(layout != box->layout());
     delete box;
@@ -128,16 +128,16 @@ void tst_QDialogButtonBox::layoutReuse()
 
 void tst_QDialogButtonBox::testConstructor2_data()
 {
-    QTest::addColumn<int>("orientation");
+    BOBUIest::addColumn<int>("orientation");
 
-    QTest::newRow("horizontal") << int(Qt::Horizontal);
-    QTest::newRow("vertical") << int(Qt::Vertical);
+    BOBUIest::newRow("horizontal") << int(BobUI::Horizontal);
+    BOBUIest::newRow("vertical") << int(BobUI::Vertical);
 }
 
 void tst_QDialogButtonBox::testConstructor2()
 {
     QFETCH(int, orientation);
-    Qt::Orientation orient = Qt::Orientation(orientation);
+    BobUI::Orientation orient = BobUI::Orientation(orientation);
     QDialogButtonBox buttonBox(orient);
 
     QCOMPARE(buttonBox.orientation(), orient);
@@ -146,27 +146,27 @@ void tst_QDialogButtonBox::testConstructor2()
 
 void tst_QDialogButtonBox::testConstructor3_data()
 {
-    QTest::addColumn<int>("orientation");
-    QTest::addColumn<QDialogButtonBox::StandardButtons>("buttons");
-    QTest::addColumn<int>("buttonCount");
+    BOBUIest::addColumn<int>("orientation");
+    BOBUIest::addColumn<QDialogButtonBox::StandardButtons>("buttons");
+    BOBUIest::addColumn<int>("buttonCount");
 
-    QTest::newRow("nothing") << int(Qt::Horizontal) << QDialogButtonBox::StandardButtons{} << 0;
-    QTest::newRow("only 1") << int(Qt::Horizontal) << QDialogButtonBox::StandardButtons(QDialogButtonBox::Ok) << 1;
-    QTest::newRow("only 1.. twice") << int(Qt::Horizontal)
+    BOBUIest::newRow("nothing") << int(BobUI::Horizontal) << QDialogButtonBox::StandardButtons{} << 0;
+    BOBUIest::newRow("only 1") << int(BobUI::Horizontal) << QDialogButtonBox::StandardButtons(QDialogButtonBox::Ok) << 1;
+    BOBUIest::newRow("only 1.. twice") << int(BobUI::Horizontal)
                         << (QDialogButtonBox::Ok | QDialogButtonBox::Ok)
                         << 1;
-    QTest::newRow("only 2") << int(Qt::Horizontal)
+    BOBUIest::newRow("only 2") << int(BobUI::Horizontal)
             << (QDialogButtonBox::Ok | QDialogButtonBox::Cancel)
             << 2;
-    QTest::newRow("two different things") << int(Qt::Horizontal)
+    BOBUIest::newRow("two different things") << int(BobUI::Horizontal)
             << (QDialogButtonBox::Save | QDialogButtonBox::Close)
             << 2;
-    QTest::newRow("three") << int(Qt::Horizontal)
+    BOBUIest::newRow("three") << int(BobUI::Horizontal)
             << (QDialogButtonBox::Ok
                     | QDialogButtonBox::Cancel
                     | QDialogButtonBox::Help)
             << 3;
-    QTest::newRow("everything") << int(Qt::Vertical)
+    BOBUIest::newRow("everything") << int(BobUI::Vertical)
             << (QDialogButtonBox::StandardButtons)UINT_MAX
             << 18;
 }
@@ -176,33 +176,33 @@ void tst_QDialogButtonBox::testConstructor3()
     QFETCH(int, orientation);
     QFETCH(QDialogButtonBox::StandardButtons, buttons);
 
-    QDialogButtonBox buttonBox(buttons, (Qt::Orientation)orientation);
+    QDialogButtonBox buttonBox(buttons, (BobUI::Orientation)orientation);
     QCOMPARE(int(buttonBox.orientation()), orientation);
-    QTEST(int(buttonBox.buttons().size()), "buttonCount");
+    BOBUIEST(int(buttonBox.buttons().size()), "buttonCount");
 }
 
 void tst_QDialogButtonBox::testConstructor4_data()
 {
-    QTest::addColumn<QDialogButtonBox::StandardButtons>("buttons");
-    QTest::addColumn<int>("buttonCount");
+    BOBUIest::addColumn<QDialogButtonBox::StandardButtons>("buttons");
+    BOBUIest::addColumn<int>("buttonCount");
 
-    QTest::newRow("nothing") << QDialogButtonBox::StandardButtons{} << 0;
-    QTest::newRow("only 1") << QDialogButtonBox::StandardButtons(QDialogButtonBox::Ok) << 1;
-    QTest::newRow("only 1.. twice")
+    BOBUIest::newRow("nothing") << QDialogButtonBox::StandardButtons{} << 0;
+    BOBUIest::newRow("only 1") << QDialogButtonBox::StandardButtons(QDialogButtonBox::Ok) << 1;
+    BOBUIest::newRow("only 1.. twice")
                         << (QDialogButtonBox::Ok | QDialogButtonBox::Ok)
                         << 1;
-    QTest::newRow("only 2")
+    BOBUIest::newRow("only 2")
             << (QDialogButtonBox::Ok | QDialogButtonBox::Cancel)
             << 2;
-    QTest::newRow("two different things")
+    BOBUIest::newRow("two different things")
             << (QDialogButtonBox::Save | QDialogButtonBox::Close)
             << 2;
-    QTest::newRow("three")
+    BOBUIest::newRow("three")
             << (QDialogButtonBox::Ok
                     | QDialogButtonBox::Cancel
                     | QDialogButtonBox::Help)
             << 3;
-    QTest::newRow("everything")
+    BOBUIest::newRow("everything")
             << (QDialogButtonBox::StandardButtons)UINT_MAX
             << 18;
 }
@@ -212,37 +212,37 @@ void tst_QDialogButtonBox::testConstructor4()
     QFETCH(QDialogButtonBox::StandardButtons, buttons);
 
     QDialogButtonBox buttonBox(buttons);
-    QCOMPARE(buttonBox.orientation(), Qt::Horizontal);
-    QTEST(int(buttonBox.buttons().size()), "buttonCount");
+    QCOMPARE(buttonBox.orientation(), BobUI::Horizontal);
+    BOBUIEST(int(buttonBox.buttons().size()), "buttonCount");
 }
 
 void tst_QDialogButtonBox::setOrientation_data()
 {
-    QTest::addColumn<int>("orientation");
+    BOBUIest::addColumn<int>("orientation");
 
-    QTest::newRow("Horizontal") << int(Qt::Horizontal);
-    QTest::newRow("Vertical") << int(Qt::Vertical);
+    BOBUIest::newRow("Horizontal") << int(BobUI::Horizontal);
+    BOBUIest::newRow("Vertical") << int(BobUI::Vertical);
 }
 
 void tst_QDialogButtonBox::setOrientation()
 {
     QFETCH(int, orientation);
     QDialogButtonBox buttonBox;
-    QCOMPARE(int(buttonBox.orientation()), int(Qt::Horizontal));
+    QCOMPARE(int(buttonBox.orientation()), int(BobUI::Horizontal));
 
-    buttonBox.setOrientation(Qt::Orientation(orientation));
+    buttonBox.setOrientation(BobUI::Orientation(orientation));
     QCOMPARE(int(buttonBox.orientation()), orientation);
 }
 
 /*
 void tst_QDialogButtonBox::setLayoutPolicy_data()
 {
-    QTest::addColumn<int>("layoutPolicy");
+    BOBUIest::addColumn<int>("layoutPolicy");
 
-    QTest::newRow("win") << int(QDialogButtonBox::WinLayout);
-    QTest::newRow("mac") << int(QDialogButtonBox::MacLayout);
-    QTest::newRow("kde") << int(QDialogButtonBox::KdeLayout);
-    QTest::newRow("gnome") << int(QDialogButtonBox::GnomeLayout);
+    BOBUIest::newRow("win") << int(QDialogButtonBox::WinLayout);
+    BOBUIest::newRow("mac") << int(QDialogButtonBox::MacLayout);
+    BOBUIest::newRow("kde") << int(QDialogButtonBox::KdeLayout);
+    BOBUIest::newRow("gnome") << int(QDialogButtonBox::GnomeLayout);
 
 }
 
@@ -260,16 +260,16 @@ void tst_QDialogButtonBox::setLayoutPolicy()
 
 void tst_QDialogButtonBox::addButton1_data()
 {
-    QTest::addColumn<QDialogButtonBox::ButtonRole>("role");
-    QTest::addColumn<int>("totalCount");
+    BOBUIest::addColumn<QDialogButtonBox::ButtonRole>("role");
+    BOBUIest::addColumn<int>("totalCount");
 
-    QTest::newRow("InvalidRole") << QDialogButtonBox::InvalidRole << 0;
-    QTest::newRow("AcceptRole") << QDialogButtonBox::AcceptRole << 1;
-    QTest::newRow("RejectRole") << QDialogButtonBox::RejectRole << 1;
-    QTest::newRow("DestructiveRole") << QDialogButtonBox::DestructiveRole << 1;
-    QTest::newRow("ActionRole") << QDialogButtonBox::ActionRole << 1;
-    QTest::newRow("HelpRole") << QDialogButtonBox::HelpRole << 1;
-    QTest::newRow("WackyValue") << (QDialogButtonBox::ButtonRole)-1 << 0;
+    BOBUIest::newRow("InvalidRole") << QDialogButtonBox::InvalidRole << 0;
+    BOBUIest::newRow("AcceptRole") << QDialogButtonBox::AcceptRole << 1;
+    BOBUIest::newRow("RejectRole") << QDialogButtonBox::RejectRole << 1;
+    BOBUIest::newRow("DestructiveRole") << QDialogButtonBox::DestructiveRole << 1;
+    BOBUIest::newRow("ActionRole") << QDialogButtonBox::ActionRole << 1;
+    BOBUIest::newRow("HelpRole") << QDialogButtonBox::HelpRole << 1;
+    BOBUIest::newRow("WackyValue") << (QDialogButtonBox::ButtonRole)-1 << 0;
 }
 
 void tst_QDialogButtonBox::addButton1()
@@ -279,24 +279,24 @@ void tst_QDialogButtonBox::addButton1()
     QCOMPARE(buttonBox.buttons().size(), 0);
     QPushButton *button = new QPushButton();
     buttonBox.addButton(button, role);
-    QTEST(int(buttonBox.buttons().size()), "totalCount");
+    BOBUIEST(int(buttonBox.buttons().size()), "totalCount");
     QList<QAbstractButton *> children = buttonBox.findChildren<QAbstractButton *>();
-    QTEST(int(children.size()), "totalCount");
+    BOBUIEST(int(children.size()), "totalCount");
     delete button;
 }
 
 void tst_QDialogButtonBox::addButton2_data()
 {
-    QTest::addColumn<QString>("text");
-    QTest::addColumn<QDialogButtonBox::ButtonRole>("role");
-    QTest::addColumn<int>("totalCount");
-    QTest::newRow("InvalidRole") << QString("foo") << QDialogButtonBox::InvalidRole << 0;
-    QTest::newRow("AcceptRole") << QString("foo") << QDialogButtonBox::AcceptRole << 1;
-    QTest::newRow("RejectRole") << QString("foo") << QDialogButtonBox::RejectRole << 1;
-    QTest::newRow("DestructiveRole") << QString("foo") << QDialogButtonBox::DestructiveRole << 1;
-    QTest::newRow("ActionRole") << QString("foo") << QDialogButtonBox::ActionRole << 1;
-    QTest::newRow("HelpRole") << QString("foo") << QDialogButtonBox::HelpRole << 1;
-    QTest::newRow("WackyValue") << QString("foo") << (QDialogButtonBox::ButtonRole)-1 << 0;
+    BOBUIest::addColumn<QString>("text");
+    BOBUIest::addColumn<QDialogButtonBox::ButtonRole>("role");
+    BOBUIest::addColumn<int>("totalCount");
+    BOBUIest::newRow("InvalidRole") << QString("foo") << QDialogButtonBox::InvalidRole << 0;
+    BOBUIest::newRow("AcceptRole") << QString("foo") << QDialogButtonBox::AcceptRole << 1;
+    BOBUIest::newRow("RejectRole") << QString("foo") << QDialogButtonBox::RejectRole << 1;
+    BOBUIest::newRow("DestructiveRole") << QString("foo") << QDialogButtonBox::DestructiveRole << 1;
+    BOBUIest::newRow("ActionRole") << QString("foo") << QDialogButtonBox::ActionRole << 1;
+    BOBUIest::newRow("HelpRole") << QString("foo") << QDialogButtonBox::HelpRole << 1;
+    BOBUIest::newRow("WackyValue") << QString("foo") << (QDialogButtonBox::ButtonRole)-1 << 0;
 }
 
 void tst_QDialogButtonBox::addButton2()
@@ -306,25 +306,25 @@ void tst_QDialogButtonBox::addButton2()
     QDialogButtonBox buttonBox;
     QCOMPARE(buttonBox.buttons().size(), 0);
     buttonBox.addButton(text, role);
-    QTEST(int(buttonBox.buttons().size()), "totalCount");
+    BOBUIEST(int(buttonBox.buttons().size()), "totalCount");
     QList<QAbstractButton *> children = buttonBox.findChildren<QAbstractButton *>();
-    QTEST(int(children.size()), "totalCount");
+    BOBUIEST(int(children.size()), "totalCount");
 }
 
 void tst_QDialogButtonBox::addButton3_data()
 {
-    QTest::addColumn<QDialogButtonBox::StandardButton>("button");
-    QTest::addColumn<int>("totalCount");
-    QTest::newRow("Ok") << QDialogButtonBox::Ok << 1;
-    QTest::newRow("Open") << QDialogButtonBox::Open << 1;
-    QTest::newRow("Save") << QDialogButtonBox::Save << 1;
-    QTest::newRow("Cancel") << QDialogButtonBox::Cancel << 1;
-    QTest::newRow("Close") << QDialogButtonBox::Close << 1;
-    QTest::newRow("Discard") << QDialogButtonBox::Discard << 1;
-    QTest::newRow("Apply") << QDialogButtonBox::Apply << 1;
-    QTest::newRow("Reset") << QDialogButtonBox::Reset << 1;
-    QTest::newRow("Help") << QDialogButtonBox::Help << 1;
-    QTest::newRow("noButton") << (QDialogButtonBox::StandardButton)0 << 0;
+    BOBUIest::addColumn<QDialogButtonBox::StandardButton>("button");
+    BOBUIest::addColumn<int>("totalCount");
+    BOBUIest::newRow("Ok") << QDialogButtonBox::Ok << 1;
+    BOBUIest::newRow("Open") << QDialogButtonBox::Open << 1;
+    BOBUIest::newRow("Save") << QDialogButtonBox::Save << 1;
+    BOBUIest::newRow("Cancel") << QDialogButtonBox::Cancel << 1;
+    BOBUIest::newRow("Close") << QDialogButtonBox::Close << 1;
+    BOBUIest::newRow("Discard") << QDialogButtonBox::Discard << 1;
+    BOBUIest::newRow("Apply") << QDialogButtonBox::Apply << 1;
+    BOBUIest::newRow("Reset") << QDialogButtonBox::Reset << 1;
+    BOBUIest::newRow("Help") << QDialogButtonBox::Help << 1;
+    BOBUIest::newRow("noButton") << (QDialogButtonBox::StandardButton)0 << 0;
 }
 
 void tst_QDialogButtonBox::addButton3()
@@ -333,18 +333,18 @@ void tst_QDialogButtonBox::addButton3()
     QDialogButtonBox buttonBox;
     QCOMPARE(buttonBox.buttons().size(), 0);
     buttonBox.addButton(button);
-    QTEST(int(buttonBox.buttons().size()), "totalCount");
+    BOBUIEST(int(buttonBox.buttons().size()), "totalCount");
     QList<QAbstractButton *> children = buttonBox.findChildren<QAbstractButton *>();
-    QTEST(int(children.size()), "totalCount");
+    BOBUIEST(int(children.size()), "totalCount");
 }
 
 void tst_QDialogButtonBox::clear_data()
 {
-    QTest::addColumn<int>("rolesToAdd");
+    BOBUIest::addColumn<int>("rolesToAdd");
 
-    QTest::newRow("nothing") << 0;
-    QTest::newRow("one") << 1;
-    QTest::newRow("all") << int(QDialogButtonBox::NRoles);
+    BOBUIest::newRow("nothing") << 0;
+    BOBUIest::newRow("one") << 1;
+    BOBUIest::newRow("all") << int(QDialogButtonBox::NRoles);
 }
 
 void tst_QDialogButtonBox::clear()
@@ -362,10 +362,10 @@ void tst_QDialogButtonBox::clear()
 
 void tst_QDialogButtonBox::removeButton_data()
 {
-    QTest::addColumn<QDialogButtonBox::ButtonRole>("roleToAdd");
-    QTest::addColumn<int>("expectedCount");
-    QTest::newRow("no button added") << QDialogButtonBox::InvalidRole << 0;
-    QTest::newRow("a button") << QDialogButtonBox::AcceptRole << 1;
+    BOBUIest::addColumn<QDialogButtonBox::ButtonRole>("roleToAdd");
+    BOBUIest::addColumn<int>("expectedCount");
+    BOBUIest::newRow("no button added") << QDialogButtonBox::InvalidRole << 0;
+    BOBUIest::newRow("a button") << QDialogButtonBox::AcceptRole << 1;
 }
 
 void tst_QDialogButtonBox::removeButton()
@@ -376,18 +376,18 @@ void tst_QDialogButtonBox::removeButton()
     QCOMPARE(buttonBox.buttons().size(), 0);
     QPushButton *button = new QPushButton("RemoveButton test");
     buttonBox.addButton(button, roleToAdd);
-    QTEST(int(buttonBox.buttons().size()), "expectedCount");
+    BOBUIEST(int(buttonBox.buttons().size()), "expectedCount");
 
     buttonBox.removeButton(button);
     QCOMPARE(buttonBox.buttons().size(), 0);
     delete button;
 }
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 void tst_QDialogButtonBox::hideAndShowButton()
 {
-    if (QGuiApplication::styleHints()->tabFocusBehavior() != Qt::TabFocusAllControls)
-        QSKIP("Test requires Qt::TabFocusAllControls tab focus behavior");
+    if (QGuiApplication::styleHints()->tabFocusBehavior() != BobUI::TabFocusAllControls)
+        QSKIP("Test requires BobUI::TabFocusAllControls tab focus behavior");
 
     QWidget widget;
     QDialogButtonBox buttonBox;
@@ -410,23 +410,23 @@ void tst_QDialogButtonBox::hideAndShowButton()
 
     hideButton->hide();
     widget.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&widget));
-    QTRY_VERIFY(buttonBox.focusWidget()); // QTBUG-114377: Without fixing, focusWidget() == nullptr
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&widget));
+    BOBUIRY_VERIFY(buttonBox.focusWidget()); // BOBUIBUG-114377: Without fixing, focusWidget() == nullptr
     QCOMPARE(d->visibleButtons().count(), 2);
     QCOMPARE(d->hiddenButtons.count(), 1);
     QVERIFY(d->hiddenButtons.contains(hideButton));
     QCOMPARE(buttonBox.buttons().count(), 3);
     QSignalSpy spy(qApp, &QApplication::focusChanged);
-    QTest::sendKeyEvent(QTest::KeyAction::Click, &buttonBox, Qt::Key_Tab, QString(), Qt::KeyboardModifiers());
-    QCOMPARE(spy.count(), 1); // QTBUG-114377: Without fixing, tabbing wouldn't work.
+    BOBUIest::sendKeyEvent(BOBUIest::KeyAction::Click, &buttonBox, BobUI::Key_Tab, QString(), BobUI::KeyboardModifiers());
+    QCOMPARE(spy.count(), 1); // BOBUIBUG-114377: Without fixing, tabbing wouldn't work.
     hideButton->show();
     QCOMPARE_GE(spy.count(), 1);
-    QTRY_COMPARE(QApplication::focusWidget(), hideButton);
+    BOBUIRY_COMPARE(QApplication::focusWidget(), hideButton);
     QCOMPARE(d->visibleButtons().count(), 3);
     QCOMPARE(d->hiddenButtons.count(), 0);
     QCOMPARE(buttonBox.buttons().count(), 3);
     spy.clear();
-    QTest::sendKeyEvent(QTest::KeyAction::Click, &buttonBox, Qt::Key_Backtab, QString(), Qt::KeyboardModifiers());
+    BOBUIest::sendKeyEvent(BOBUIest::KeyAction::Click, &buttonBox, BobUI::Key_Backtab, QString(), BobUI::KeyboardModifiers());
     QCOMPARE(spy.count(), 1);
 }
 #endif
@@ -436,14 +436,14 @@ void tst_QDialogButtonBox::hideAndShowStandardButton()
     QDialogButtonBox buttonBox;
     buttonBox.setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     buttonBox.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&buttonBox));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&buttonBox));
     auto *button = buttonBox.button(QDialogButtonBox::Cancel);
     QVERIFY(button);
     button->hide();
-    QVERIFY(QTest::qWaitFor([button](){ return !button->isVisible(); }));
+    QVERIFY(BOBUIest::qWaitFor([button](){ return !button->isVisible(); }));
     QCOMPARE(button, buttonBox.button(QDialogButtonBox::Cancel));
     button->show();
-    QVERIFY(QTest::qWaitForWindowExposed(button));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(button));
     QCOMPARE(button, buttonBox.button(QDialogButtonBox::Cancel));
 }
 
@@ -479,7 +479,7 @@ public slots:
     }
 };
 
-void tst_QDialogButtonBox::testSignalEmissionAfterDelete_QTBUG_45835()
+void tst_QDialogButtonBox::testSignalEmissionAfterDelete_BOBUIBUG_45835()
 {
     {
         QDialogButtonBox buttonBox;
@@ -555,13 +555,13 @@ void tst_QDialogButtonBox::testMultipleAdd()
 
 void tst_QDialogButtonBox::buttonRole_data()
 {
-    QTest::addColumn<QDialogButtonBox::ButtonRole>("roleToAdd");
-    QTest::addColumn<QDialogButtonBox::ButtonRole>("expectedRole");
+    BOBUIest::addColumn<QDialogButtonBox::ButtonRole>("roleToAdd");
+    BOBUIest::addColumn<QDialogButtonBox::ButtonRole>("expectedRole");
 
-    QTest::newRow("AcceptRole stuff") << QDialogButtonBox::AcceptRole
+    BOBUIest::newRow("AcceptRole stuff") << QDialogButtonBox::AcceptRole
                                       << QDialogButtonBox::AcceptRole;
-    QTest::newRow("Nothing") << QDialogButtonBox::InvalidRole << QDialogButtonBox::InvalidRole;
-    QTest::newRow("bad stuff") << (QDialogButtonBox::ButtonRole)-1 << QDialogButtonBox::InvalidRole;
+    BOBUIest::newRow("Nothing") << QDialogButtonBox::InvalidRole << QDialogButtonBox::InvalidRole;
+    BOBUIest::newRow("bad stuff") << (QDialogButtonBox::ButtonRole)-1 << QDialogButtonBox::InvalidRole;
 }
 
 void tst_QDialogButtonBox::buttonRole()
@@ -569,53 +569,53 @@ void tst_QDialogButtonBox::buttonRole()
     QFETCH(QDialogButtonBox::ButtonRole, roleToAdd);
     QDialogButtonBox buttonBox;
     QAbstractButton *button = buttonBox.addButton("Here's a button", roleToAdd);
-    QTEST(buttonBox.buttonRole(button), "expectedRole");
+    BOBUIEST(buttonBox.buttonRole(button), "expectedRole");
 }
 
 void tst_QDialogButtonBox::testStandardButtonMapping_data()
 {
-    QTest::addColumn<QDialogButtonBox::StandardButton>("button");
-    QTest::addColumn<QDialogButtonBox::ButtonRole>("expectedRole");
-    QTest::addColumn<QString>("expectedText");
+    BOBUIest::addColumn<QDialogButtonBox::StandardButton>("button");
+    BOBUIest::addColumn<QDialogButtonBox::ButtonRole>("expectedRole");
+    BOBUIest::addColumn<QString>("expectedText");
 
     int layoutPolicy = qApp->style()->styleHint(QStyle::SH_DialogButtonLayout);
 
-    QTest::newRow("QDialogButtonBox::Ok") << QDialogButtonBox::Ok
+    BOBUIest::newRow("QDialogButtonBox::Ok") << QDialogButtonBox::Ok
                                           << QDialogButtonBox::AcceptRole
                                           << QDialogButtonBox::tr("OK");
-    QTest::newRow("QDialogButtonBox::Open") << QDialogButtonBox::Open
+    BOBUIest::newRow("QDialogButtonBox::Open") << QDialogButtonBox::Open
                                             << QDialogButtonBox::AcceptRole
                                             << QDialogButtonBox::tr("Open");
-    QTest::newRow("QDialogButtonBox::Save") << QDialogButtonBox::Save
+    BOBUIest::newRow("QDialogButtonBox::Save") << QDialogButtonBox::Save
                                             << QDialogButtonBox::AcceptRole
                                             << QDialogButtonBox::tr("Save");
-    QTest::newRow("QDialogButtonBox::Cancel") << QDialogButtonBox::Cancel
+    BOBUIest::newRow("QDialogButtonBox::Cancel") << QDialogButtonBox::Cancel
                                               << QDialogButtonBox::RejectRole
                                               << QDialogButtonBox::tr("Cancel");
-    QTest::newRow("QDialogButtonBox::Close") << QDialogButtonBox::Close
+    BOBUIest::newRow("QDialogButtonBox::Close") << QDialogButtonBox::Close
                                              << QDialogButtonBox::RejectRole
                                              << QDialogButtonBox::tr("Close");
     if (layoutPolicy == QDialogButtonBox::MacLayout) {
-        QTest::newRow("QDialogButtonBox::Discard") << QDialogButtonBox::Discard
+        BOBUIest::newRow("QDialogButtonBox::Discard") << QDialogButtonBox::Discard
                                                     << QDialogButtonBox::DestructiveRole
                                                     << QDialogButtonBox::tr("Don't Save");
     } else if (layoutPolicy == QDialogButtonBox::GnomeLayout) {
-        QTest::newRow("QDialogButtonBox::Discard")
+        BOBUIest::newRow("QDialogButtonBox::Discard")
             << QDialogButtonBox::Discard
             << QDialogButtonBox::DestructiveRole
             << QDialogButtonBox::tr("Close without Saving");
     } else {
-        QTest::newRow("QDialogButtonBox::Discard") << QDialogButtonBox::Discard
+        BOBUIest::newRow("QDialogButtonBox::Discard") << QDialogButtonBox::Discard
                                                     << QDialogButtonBox::DestructiveRole
                                                     << QDialogButtonBox::tr("Discard");
     }
-    QTest::newRow("QDialogButtonBox::Apply") << QDialogButtonBox::Apply
+    BOBUIest::newRow("QDialogButtonBox::Apply") << QDialogButtonBox::Apply
                                              << QDialogButtonBox::ApplyRole
                                              << QDialogButtonBox::tr("Apply");
-    QTest::newRow("QDialogButtonBox::Reset") << QDialogButtonBox::Reset
+    BOBUIest::newRow("QDialogButtonBox::Reset") << QDialogButtonBox::Reset
                                              << QDialogButtonBox::ResetRole
                                              << QDialogButtonBox::tr("Reset");
-    QTest::newRow("QDialogButtonBox::Help") << QDialogButtonBox::Help
+    BOBUIest::newRow("QDialogButtonBox::Help") << QDialogButtonBox::Help
                                             << QDialogButtonBox::HelpRole
                                             << QDialogButtonBox::tr("Help");
 }
@@ -626,25 +626,25 @@ void tst_QDialogButtonBox::testStandardButtonMapping()
     QDialogButtonBox buttonBox;
 
     QAbstractButton *theButton = buttonBox.addButton(button);
-    QTEST(buttonBox.buttonRole(theButton), "expectedRole");
+    BOBUIEST(buttonBox.buttonRole(theButton), "expectedRole");
     QString textWithoutMnemonic = theButton->text().remove("&");
-    QTEST(textWithoutMnemonic, "expectedText");
+    BOBUIEST(textWithoutMnemonic, "expectedText");
 }
 
 void tst_QDialogButtonBox::testSignals_data()
 {
-    QTest::addColumn<QDialogButtonBox::ButtonRole>("buttonToClick");
-    QTest::addColumn<int>("clicked2Count");
-    QTest::addColumn<int>("acceptCount");
-    QTest::addColumn<int>("rejectCount");
-    QTest::addColumn<int>("helpRequestedCount");
+    BOBUIest::addColumn<QDialogButtonBox::ButtonRole>("buttonToClick");
+    BOBUIest::addColumn<int>("clicked2Count");
+    BOBUIest::addColumn<int>("acceptCount");
+    BOBUIest::addColumn<int>("rejectCount");
+    BOBUIest::addColumn<int>("helpRequestedCount");
 
-    QTest::newRow("nothing") << QDialogButtonBox::InvalidRole << 0 << 0 << 0 << 0;
-    QTest::newRow("accept") << QDialogButtonBox::AcceptRole << 1 << 1 << 0 << 0;
-    QTest::newRow("reject") << QDialogButtonBox::RejectRole << 1 << 0 << 1 << 0;
-    QTest::newRow("destructive") << QDialogButtonBox::DestructiveRole << 1 << 0 << 0 << 0;
-    QTest::newRow("Action") << QDialogButtonBox::ActionRole << 1 << 0 << 0 << 0;
-    QTest::newRow("Help") << QDialogButtonBox::HelpRole << 1 << 0 << 0 << 1;
+    BOBUIest::newRow("nothing") << QDialogButtonBox::InvalidRole << 0 << 0 << 0 << 0;
+    BOBUIest::newRow("accept") << QDialogButtonBox::AcceptRole << 1 << 1 << 0 << 0;
+    BOBUIest::newRow("reject") << QDialogButtonBox::RejectRole << 1 << 0 << 1 << 0;
+    BOBUIest::newRow("destructive") << QDialogButtonBox::DestructiveRole << 1 << 0 << 0 << 0;
+    BOBUIest::newRow("Action") << QDialogButtonBox::ActionRole << 1 << 0 << 0 << 0;
+    BOBUIest::newRow("Help") << QDialogButtonBox::HelpRole << 1 << 0 << 0 << 1;
 }
 
 void tst_QDialogButtonBox::testSignals()
@@ -669,13 +669,13 @@ void tst_QDialogButtonBox::testSignals()
     if (clickMe)
         clickMe->click();
 
-    QTRY_COMPARE(clicked2.size(), clicked2Count);
+    BOBUIRY_COMPARE(clicked2.size(), clicked2Count);
     if (clicked2.size() > 0)
         QCOMPARE(qvariant_cast<QAbstractButton *>(clicked2.at(0).at(0)), clickMe);
 
-    QTEST(int(accept.size()), "acceptCount");
-    QTEST(int(reject.size()), "rejectCount");
-    QTEST(int(helpRequested.size()), "helpRequestedCount");
+    BOBUIEST(int(accept.size()), "acceptCount");
+    BOBUIEST(int(reject.size()), "rejectCount");
+    BOBUIEST(int(helpRequested.size()), "helpRequestedCount");
 }
 
 void tst_QDialogButtonBox::testSignalOrder()
@@ -696,7 +696,7 @@ void tst_QDialogButtonBox::testSignalOrder()
 
     // Try accept
     acceptButton->click();
-    QTRY_VERIFY(acceptTimeStamp > 0LL);
+    BOBUIRY_VERIFY(acceptTimeStamp > 0LL);
     QCOMPARE(rejectTimeStamp, 0LL);
     QCOMPARE(helpRequestedTimeStamp, 0LL);
 
@@ -704,20 +704,20 @@ void tst_QDialogButtonBox::testSignalOrder()
     acceptTimeStamp = 0;
 
     rejectButton->click();
-    QTRY_VERIFY(rejectTimeStamp > 0LL);
+    BOBUIRY_VERIFY(rejectTimeStamp > 0LL);
     QCOMPARE(acceptTimeStamp, 0LL);
     QCOMPARE(helpRequestedTimeStamp, 0LL);
     QVERIFY(buttonClicked1TimeStamp < rejectTimeStamp);
 
     rejectTimeStamp = 0;
     actionButton->click();
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
     QCOMPARE(acceptTimeStamp, 0LL);
     QCOMPARE(rejectTimeStamp, 0LL);
     QCOMPARE(helpRequestedTimeStamp, 0LL);
 
     helpButton->click();
-    QTRY_VERIFY(helpRequestedTimeStamp > 0LL);
+    BOBUIRY_VERIFY(helpRequestedTimeStamp > 0LL);
     QCOMPARE(acceptTimeStamp, 0LL);
     QCOMPARE(rejectTimeStamp, 0LL);
     QVERIFY(buttonClicked1TimeStamp < helpRequestedTimeStamp);
@@ -745,12 +745,12 @@ void tst_QDialogButtonBox::helpRequestedClicked()
 
 void tst_QDialogButtonBox::setStandardButtons_data()
 {
-    QTest::addColumn<QDialogButtonBox::StandardButtons>("buttonsToAdd");
-    QTest::addColumn<QDialogButtonBox::StandardButtons>("expectedResult");
+    BOBUIest::addColumn<QDialogButtonBox::StandardButtons>("buttonsToAdd");
+    BOBUIest::addColumn<QDialogButtonBox::StandardButtons>("expectedResult");
 
-    QTest::newRow("Nothing") << QDialogButtonBox::StandardButtons(QDialogButtonBox::NoButton)
+    BOBUIest::newRow("Nothing") << QDialogButtonBox::StandardButtons(QDialogButtonBox::NoButton)
                              << QDialogButtonBox::StandardButtons(QDialogButtonBox::NoButton);
-    QTest::newRow("Everything") << (QDialogButtonBox::StandardButtons)0xffffffff
+    BOBUIest::newRow("Everything") << (QDialogButtonBox::StandardButtons)0xffffffff
                                 << (QDialogButtonBox::Ok
                                    | QDialogButtonBox::Open
                                    | QDialogButtonBox::Save
@@ -770,9 +770,9 @@ void tst_QDialogButtonBox::setStandardButtons_data()
                                    | QDialogButtonBox::Ignore
                                    | QDialogButtonBox::RestoreDefaults
                                    );
-    QTest::newRow("Simple thing") << QDialogButtonBox::StandardButtons(QDialogButtonBox::Help)
+    BOBUIest::newRow("Simple thing") << QDialogButtonBox::StandardButtons(QDialogButtonBox::Help)
                                   << QDialogButtonBox::StandardButtons(QDialogButtonBox::Help);
-    QTest::newRow("Standard thing") << (QDialogButtonBox::Ok | QDialogButtonBox::Cancel)
+    BOBUIest::newRow("Standard thing") << (QDialogButtonBox::Ok | QDialogButtonBox::Cancel)
                                     << (QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 }
 
@@ -781,7 +781,7 @@ void tst_QDialogButtonBox::setStandardButtons()
     QFETCH(QDialogButtonBox::StandardButtons, buttonsToAdd);
     QDialogButtonBox buttonBox;
     buttonBox.setStandardButtons(buttonsToAdd);
-    QTEST(buttonBox.standardButtons(), "expectedResult");
+    BOBUIEST(buttonBox.standardButtons(), "expectedResult");
 }
 
 void tst_QDialogButtonBox::standardButtons()
@@ -830,24 +830,24 @@ void tst_QDialogButtonBox::testRemove()
     buttonBox.removeButton(button);
 
     button->click();
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
     QCOMPARE(clicked.size(), 0);
     delete button;
 }
 
 void tst_QDialogButtonBox::testDefaultButton_data()
 {
-    QTest::addColumn<int>("whenToSetDefault");  // -1 Do nothing, 0 after accept, 1 before accept
-    QTest::addColumn<int>("buttonToBeDefault");
-    QTest::addColumn<int>("indexThatIsDefault");
+    BOBUIest::addColumn<int>("whenToSetDefault");  // -1 Do nothing, 0 after accept, 1 before accept
+    BOBUIest::addColumn<int>("buttonToBeDefault");
+    BOBUIest::addColumn<int>("indexThatIsDefault");
 
-    QTest::newRow("do nothing First Accept implicit") << -1 << -1 << 0;
-    QTest::newRow("First accept explicit before add") << 1 << 0 << 0;
-    QTest::newRow("First accept explicit after add") << 0 << 0 << 0;
-    QTest::newRow("second accept explicit before add") << 1 << 1 << 1;
-    QTest::newRow("second accept explicit after add") << 0 << 1 << 1;
-    QTest::newRow("third accept explicit befare add") << 1 << 2 << 2;
-    QTest::newRow("third accept explicit after add") << 0 << 2 << 2;
+    BOBUIest::newRow("do nothing First Accept implicit") << -1 << -1 << 0;
+    BOBUIest::newRow("First accept explicit before add") << 1 << 0 << 0;
+    BOBUIest::newRow("First accept explicit after add") << 0 << 0 << 0;
+    BOBUIest::newRow("second accept explicit before add") << 1 << 1 << 1;
+    BOBUIest::newRow("second accept explicit after add") << 0 << 1 << 1;
+    BOBUIest::newRow("third accept explicit befare add") << 1 << 2 << 2;
+    BOBUIest::newRow("third accept explicit after add") << 0 << 2 << 2;
 }
 
 void tst_QDialogButtonBox::testDefaultButton()
@@ -877,7 +877,7 @@ void tst_QDialogButtonBox::testDefaultButton()
 
 void tst_QDialogButtonBox::task191642_default()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QDialog dlg;
@@ -890,9 +890,9 @@ void tst_QDialogButtonBox::task191642_default()
     bb->addButton(QDialogButtonBox::Help);
 
     dlg.show();
-    QVERIFY(QTest::qWaitForWindowActive(&dlg));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&dlg));
     QVERIFY(def->isDefault());
-    QTest::keyPress( &dlg, Qt::Key_Enter );
+    BOBUIest::keyPress( &dlg, BobUI::Key_Enter );
     QCOMPARE(clicked.size(), 1);
 }
 
@@ -915,7 +915,7 @@ void tst_QDialogButtonBox::testDeletedStandardButton()
 
 void tst_QDialogButtonBox::automaticDefaultButton()
 {
-    // Having a QDialogButtonBox inside a QDialog triggers Qt to
+    // Having a QDialogButtonBox inside a QDialog triggers BobUI to
     // enable autoDefault for QPushButtons inside the button box.
     // Check that the logic for resolving a default button based
     // on the Accept role is not overridden by the first button
@@ -927,18 +927,18 @@ void tst_QDialogButtonBox::automaticDefaultButton()
         QDialogButtonBox *bb = new QDialogButtonBox(&dialog);
         // Force horizontal orientation, where we know the order between
         // Reset and Accept roles are always the same for all layouts.
-        bb->setOrientation(Qt::Horizontal);
+        bb->setOrientation(BobUI::Horizontal);
         auto *okButton = bb->addButton(QDialogButtonBox::Ok);
         auto *resetButton = bb->addButton(QDialogButtonBox::Reset);
         // Double check our assumption about Reset being first
         QCOMPARE(bb->layout()->itemAt(0)->widget(), resetButton);
 
         dialog.show();
-        QVERIFY(QTest::qWaitForWindowActive(&dialog));
+        QVERIFY(BOBUIest::qWaitForWindowActive(&dialog));
 
         QVERIFY(okButton->isDefault());
         QSignalSpy buttonClicked(okButton, &QPushButton::clicked);
-        QTest::keyPress(&dialog, Qt::Key_Enter);
+        BOBUIest::keyPress(&dialog, BobUI::Key_Enter);
         QCOMPARE(buttonClicked.count(), 1);
     }
 
@@ -947,35 +947,35 @@ void tst_QDialogButtonBox::automaticDefaultButton()
     {
         QDialog dialog;
         QDialogButtonBox *bb = new QDialogButtonBox(&dialog);
-        bb->setOrientation(Qt::Horizontal);
+        bb->setOrientation(BobUI::Horizontal);
         bb->addButton(QDialogButtonBox::Ok);
         auto *resetButton = bb->addButton(QDialogButtonBox::Reset);
         resetButton->setFocus();
         dialog.show();
-        QVERIFY(QTest::qWaitForWindowActive(&dialog));
+        QVERIFY(BOBUIest::qWaitForWindowActive(&dialog));
 
         QVERIFY(resetButton->isDefault());
         QSignalSpy buttonClicked(resetButton, &QPushButton::clicked);
-        QTest::keyPress(&dialog, Qt::Key_Enter);
+        BOBUIest::keyPress(&dialog, BobUI::Key_Enter);
         QCOMPARE(buttonClicked.count(), 1);
     }
 }
 
 void tst_QDialogButtonBox::initialFocus_data()
 {
-    QTest::addColumn<Qt::FocusPolicy>("focusPolicy");
-    QTest::addColumn<bool>("lineEditHasFocus");
+    BOBUIest::addColumn<BobUI::FocusPolicy>("focusPolicy");
+    BOBUIest::addColumn<bool>("lineEditHasFocus");
 
-    QTest::addRow("TabFocus") << Qt::FocusPolicy::TabFocus << false;
-    QTest::addRow("StrongFocus") << Qt::FocusPolicy::StrongFocus << true;
-    QTest::addRow("NoFocus") << Qt::FocusPolicy::NoFocus << false;
-    QTest::addRow("ClickFocus") << Qt::FocusPolicy::ClickFocus << false;
-    QTest::addRow("WheelFocus") << Qt::FocusPolicy::WheelFocus << false;
+    BOBUIest::addRow("TabFocus") << BobUI::FocusPolicy::TabFocus << false;
+    BOBUIest::addRow("StrongFocus") << BobUI::FocusPolicy::StrongFocus << true;
+    BOBUIest::addRow("NoFocus") << BobUI::FocusPolicy::NoFocus << false;
+    BOBUIest::addRow("ClickFocus") << BobUI::FocusPolicy::ClickFocus << false;
+    BOBUIest::addRow("WheelFocus") << BobUI::FocusPolicy::WheelFocus << false;
 }
 
 void tst_QDialogButtonBox::initialFocus()
 {
-    QFETCH(const Qt::FocusPolicy, focusPolicy);
+    QFETCH(const BobUI::FocusPolicy, focusPolicy);
     QFETCH(const bool, lineEditHasFocus);
     QDialog dialog;
     QVBoxLayout *layout = new QVBoxLayout(&dialog);
@@ -990,10 +990,10 @@ void tst_QDialogButtonBox::initialFocus()
     dialog.show();
     dialog.activateWindow();
     if (lineEditHasFocus)
-        QTRY_VERIFY(lineEdit->hasFocus());
+        BOBUIRY_VERIFY(lineEdit->hasFocus());
     else
-        QTRY_VERIFY(firstAcceptButton->hasFocus());
+        BOBUIRY_VERIFY(firstAcceptButton->hasFocus());
 }
 
-QTEST_MAIN(tst_QDialogButtonBox)
+BOBUIEST_MAIN(tst_QDialogButtonBox)
 #include "tst_qdialogbuttonbox.moc"

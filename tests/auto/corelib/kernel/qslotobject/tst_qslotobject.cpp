@@ -1,11 +1,11 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/qobject.h>
+#include <BobUICore/qobject.h>
 
-#include <QtCore/qscopedvaluerollback.h>
+#include <BobUICore/qscopedvaluerollback.h>
 
-#include <QtTest/qtest.h>
+#include <BobUITest/bobuiest.h>
 
 class tst_QSlotObject : public QObject
 {
@@ -19,10 +19,10 @@ void tst_QSlotObject::uniquePtr()
 {
     using Prototype = void(*)();
     bool exists = false;
-    QtPrivate::SlotObjUniquePtr p;
+    BobUIPrivate::SlotObjUniquePtr p;
     QVERIFY(!p);
     auto rb = std::make_unique<QScopedValueRollback<bool>>(exists, true); // make movable
-    p.reset(QtPrivate::makeCallableObject<Prototype>([rb = std::move(rb)] {}));
+    p.reset(BobUIPrivate::makeCallableObject<Prototype>([rb = std::move(rb)] {}));
     QVERIFY(p);
     QVERIFY(exists);
     p.reset();
@@ -34,13 +34,13 @@ void tst_QSlotObject::sharedPtr()
 {
     using Prototype = void(*)();
     bool exists = false;
-    QtPrivate::SlotObjUniquePtr p;
+    BobUIPrivate::SlotObjUniquePtr p;
     auto rb = std::make_unique<QScopedValueRollback<bool>>(exists, true); // make movable
-    p.reset(QtPrivate::makeCallableObject<Prototype>([rb = std::move(rb)] {}));
+    p.reset(BobUIPrivate::makeCallableObject<Prototype>([rb = std::move(rb)] {}));
     QVERIFY(p);
     QVERIFY(exists);
 
-    QtPrivate::SlotObjSharedPtr sp{std::move(p)};
+    BobUIPrivate::SlotObjSharedPtr sp{std::move(p)};
     QVERIFY(!p);
     QVERIFY(exists);
 
@@ -59,5 +59,5 @@ void tst_QSlotObject::sharedPtr()
     QVERIFY(!exists);
 }
 
-QTEST_APPLESS_MAIN(tst_QSlotObject)
+BOBUIEST_APPLESS_MAIN(tst_QSlotObject)
 #include "tst_qslotobject.moc"

@@ -1,11 +1,11 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## FbSupportPrivate Module:
 #####################################################################
 
-qt_internal_add_module(FbSupportPrivate
+bobui_internal_add_module(FbSupportPrivate
     CONFIG_MODULE_NAME fb_support
     STATIC
     INTERNAL_MODULE
@@ -16,11 +16,11 @@ qt_internal_add_module(FbSupportPrivate
         qfbvthandler.cpp qfbvthandler_p.h
         qfbwindow.cpp qfbwindow_p.h
     DEFINES
-        QT_NO_CAST_FROM_ASCII
+        BOBUI_NO_CAST_FROM_ASCII
     PUBLIC_LIBRARIES
-        Qt::CorePrivate
-        Qt::GuiPrivate
+        BobUI::CorePrivate
+        BobUI::GuiPrivate
     PRECOMPILED_HEADER
-        "../../corelib/global/qt_pch.h"
+        "../../corelib/global/bobui_pch.h"
     NO_GENERATE_CPP_EXPORTS
 )

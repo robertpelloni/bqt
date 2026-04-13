@@ -1,15 +1,15 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/qtest.h>
-#include <QtNetwork/qnetworkrequestfactory.h>
-#ifndef QT_NO_SSL
-#include <QtNetwork/qsslconfiguration.h>
+#include <BobUITest/bobuiest.h>
+#include <BobUINetwork/qnetworkrequestfactory.h>
+#ifndef BOBUI_NO_SSL
+#include <BobUINetwork/qsslconfiguration.h>
 #endif
-#include <QtCore/qurlquery.h>
-#include <QtCore/qurl.h>
+#include <BobUICore/qurlquery.h>
+#include <BobUICore/qurl.h>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 using namespace std::chrono_literals;
 
 class tst_QNetworkRequestFactory : public QObject
@@ -38,49 +38,49 @@ private:
 
 void tst_QNetworkRequestFactory::urlAndPath_data()
 {
-    QTest::addColumn<QUrl>("baseUrl");
-    QTest::addColumn<QString>("requestPath");
-    QTest::addColumn<QUrl>("expectedRequestUrl");
+    BOBUIest::addColumn<QUrl>("baseUrl");
+    BOBUIest::addColumn<QString>("requestPath");
+    BOBUIest::addColumn<QUrl>("expectedRequestUrl");
 
     QUrl base{"http://xyz.io"};
     QUrl result{"http://xyz.io/path/to"};
-    QTest::newRow("baseUrl_nopath_noslash_1") << base << u""_s << base;
-    QTest::newRow("baseUrl_nopath_noslash_2") << base << u"/path/to"_s << result;
-    QTest::newRow("baseUrl_nopath_noslash_3") << base << u"path/to"_s << result;
+    BOBUIest::newRow("baseUrl_nopath_noslash_1") << base << u""_s << base;
+    BOBUIest::newRow("baseUrl_nopath_noslash_2") << base << u"/path/to"_s << result;
+    BOBUIest::newRow("baseUrl_nopath_noslash_3") << base << u"path/to"_s << result;
 
     base.setUrl("http://xyz.io/");
     result.setUrl("http://xyz.io/path/to");
-    QTest::newRow("baseUrl_nopath_withslash_1") << base << u""_s << base;
-    QTest::newRow("baseUrl_nopath_withslash_2") << base << u"/path/to"_s << result;
-    QTest::newRow("baseUrl_nopath_withslash_3") << base << u"path/to"_s << result;
+    BOBUIest::newRow("baseUrl_nopath_withslash_1") << base << u""_s << base;
+    BOBUIest::newRow("baseUrl_nopath_withslash_2") << base << u"/path/to"_s << result;
+    BOBUIest::newRow("baseUrl_nopath_withslash_3") << base << u"path/to"_s << result;
 
     base.setUrl("http://xyz.io/v1");
     result.setUrl("http://xyz.io/v1/path/to");
-    QTest::newRow("baseUrl_withpath_noslash_1") << base << u""_s << base;
-    QTest::newRow("baseUrl_withpath_noslash_2") << base << u"/path/to"_s << result;
-    QTest::newRow("baseUrl_withpath_noslash_3") << base << u"path/to"_s  << result;
+    BOBUIest::newRow("baseUrl_withpath_noslash_1") << base << u""_s << base;
+    BOBUIest::newRow("baseUrl_withpath_noslash_2") << base << u"/path/to"_s << result;
+    BOBUIest::newRow("baseUrl_withpath_noslash_3") << base << u"path/to"_s  << result;
 
     base.setUrl("http://xyz.io/v1/");
-    QTest::newRow("baseUrl_withpath_withslash_1") << base << u""_s << base;
-    QTest::newRow("baseUrl_withpath_withslash_2") << base << u"/path/to"_s << result;
-    QTest::newRow("baseUrl_withpath_withslash_3") << base << u"path/to"_s << result;
+    BOBUIest::newRow("baseUrl_withpath_withslash_1") << base << u""_s << base;
+    BOBUIest::newRow("baseUrl_withpath_withslash_2") << base << u"/path/to"_s << result;
+    BOBUIest::newRow("baseUrl_withpath_withslash_3") << base << u"path/to"_s << result;
 
     base.setUrl("http://xyz.io/v1/");
     // if '!' isn't encoded, it stays not encoded.
     result.setUrl("http://xyz.io/v1/path/to/Hello%20World!.xml");
-    QTest::newRow("baseUrl_withpath_not_encoded_1") << base << u"/path/to/Hello%20World!.xml"_s << result;
+    BOBUIest::newRow("baseUrl_withpath_not_encoded_1") << base << u"/path/to/Hello%20World!.xml"_s << result;
 
-    // if '!' is encoded, then createRequest() should NOT decode it, see QTBUG-138878
+    // if '!' is encoded, then createRequest() should NOT decode it, see BOBUIBUG-138878
     result.setUrl("http://xyz.io/v1/path/to/Hello%20World%21.xml");
-    QTest::newRow("baseUrl_withpath_encoded_2") << base << u"/path/to/Hello%20World%21.xml"_s << result;
+    BOBUIest::newRow("baseUrl_withpath_encoded_2") << base << u"/path/to/Hello%20World%21.xml"_s << result;
 
     // Currently we keep any double '//', but not sure if there is a use case for it, or could
     // it be corrected to a single '/'
     base.setUrl("http://xyz.io/v1//");
     result.setUrl("http://xyz.io/v1//path/to");
-    QTest::newRow("baseUrl_withpath_doubleslash_1") << base << u""_s << base;
-    QTest::newRow("baseUrl_withpath_doubleslash_2") << base << u"/path/to"_s << result;
-    QTest::newRow("baseUrl_withpath_doubleslash_3") << base << u"path/to"_s << result;
+    BOBUIest::newRow("baseUrl_withpath_doubleslash_1") << base << u""_s << base;
+    BOBUIest::newRow("baseUrl_withpath_doubleslash_2") << base << u"/path/to"_s << result;
+    BOBUIest::newRow("baseUrl_withpath_doubleslash_3") << base << u"path/to"_s << result;
 }
 
 void tst_QNetworkRequestFactory::urlAndPath()
@@ -156,16 +156,16 @@ void tst_QNetworkRequestFactory::queryParameters()
     // Test that other than path and query items as part of path are ignored
     factory.setQueryParameters(query1);
     QRegularExpression re("The provided path*");
-    QTest::ignoreMessage(QtMsgType::QtWarningMsg, re);
+    BOBUIest::ignoreMessage(BobUIMsgType::BobUIWarningMsg, re);
     QCOMPARE(factory.createRequest("https://example2.com").url(), QUrl{"http://example.com?q1k=q1v"});
-    QTest::ignoreMessage(QtMsgType::QtWarningMsg, re);
+    BOBUIest::ignoreMessage(BobUIMsgType::BobUIWarningMsg, re);
     QCOMPARE(factory.createRequest("https://example2.com?q3k=q3v").url(),
              QUrl{"http://example.com?q3k=q3v&q1k=q1v"});
 }
 
 void tst_QNetworkRequestFactory::sslConfiguration()
 {
-#ifdef QT_NO_SSL
+#ifdef BOBUI_NO_SSL
     QSKIP("Skipping SSL tests, not supported by build");
 #else
     // Two initially equal factories
@@ -431,5 +431,5 @@ void tst_QNetworkRequestFactory::attributes()
     QVERIFY(!request.attribute(attribute2).isValid());
 }
 
-QTEST_MAIN(tst_QNetworkRequestFactory)
+BOBUIEST_MAIN(tst_QNetworkRequestFactory)
 #include "tst_qnetworkrequestfactory.moc"

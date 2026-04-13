@@ -1,8 +1,8 @@
 // Copyright (C) 2014 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtCore/QString>
+#include <BOBUIest>
+#include <BobUICore/QString>
 #include <private/qstringiterator_p.h>
 
 class tst_QStringIterator : public QObject
@@ -19,25 +19,25 @@ private slots:
 
 void tst_QStringIterator::sweep_data()
 {
-    QTest::addColumn<QString>("string");
-    QTest::addColumn<bool>("valid");
-    QTest::addColumn<int>("count");
+    BOBUIest::addColumn<QString>("string");
+    BOBUIest::addColumn<bool>("valid");
+    BOBUIest::addColumn<int>("count");
 
-    QTest::newRow("sweep_00") << QString::fromUtf8("", 0) << true << 0;
-    QTest::newRow("sweep_01") << QString::fromUtf8("a", 1) << true << 1;
-    QTest::newRow("sweep_02") << QString::fromUtf8("a string", 8) << true << 8;
-    QTest::newRow("sweep_03") << QString::fromUtf8("\xc3\xa0\xc3\xa8\xc3\xac\xc3\xb2\xc3\xb9", 10) << true << 5;
-    QTest::newRow("sweep_04") << QString::fromUtf8("\xc3\x9f\xe2\x80\x94\xc2\xa1", 7) << true << 3;
-    QTest::newRow("sweep_05") << QString::fromUtf8("\xe6\xb0\xb4\xe6\xb0\xb5\xe6\xb0\xb6\xe6\xb0\xb7\xe6\xb0\xb8\xe6\xb0\xb9", 18) << true << 6;
-    QTest::newRow("sweep_06") << QString::fromUtf8("\xf0\x9f\x98\x81\xf0\x9f\x98\x82\x61\x62\x63\xf0\x9f\x98\x83\xc4\x91\xc3\xa8\xef\xac\x80\xf0\x9f\x98\x84\xf0\x9f\x98\x85", 30) << true << 11;
-    QTest::newRow("sweep_07") << QString::fromUtf8("\xf0\x9f\x82\xaa\xf0\x9f\x82\xab\xf0\x9f\x82\xad\xf0\x9f\x82\xae\xf0\x9f\x82\xa1\x20\x52\x4f\x59\x41\x4c\x20\x46\x4c\x55\x53\x48\x20\x4f\x46\x20\x53\x50\x41\x44\x45\x53", 42) << true << 27;
-    QTest::newRow("sweep_08") << QString::fromUtf8("abc\0def", 7) << true << 7;
-    QTest::newRow("sweep_09") << QString::fromUtf8("\xc3\xa0\xce\xb2\xc3\xa7\xf0\x9f\x80\xb9\xf0\x9f\x80\xb8\x00\xf0\x9f\x80\xb1\x00\xf0\x9f\x80\xb3\xf0\x9f\x81\x85\xe1\xb8\x8a\xc4\x99\xc6\x92", 35) << true << 13;
+    BOBUIest::newRow("sweep_00") << QString::fromUtf8("", 0) << true << 0;
+    BOBUIest::newRow("sweep_01") << QString::fromUtf8("a", 1) << true << 1;
+    BOBUIest::newRow("sweep_02") << QString::fromUtf8("a string", 8) << true << 8;
+    BOBUIest::newRow("sweep_03") << QString::fromUtf8("\xc3\xa0\xc3\xa8\xc3\xac\xc3\xb2\xc3\xb9", 10) << true << 5;
+    BOBUIest::newRow("sweep_04") << QString::fromUtf8("\xc3\x9f\xe2\x80\x94\xc2\xa1", 7) << true << 3;
+    BOBUIest::newRow("sweep_05") << QString::fromUtf8("\xe6\xb0\xb4\xe6\xb0\xb5\xe6\xb0\xb6\xe6\xb0\xb7\xe6\xb0\xb8\xe6\xb0\xb9", 18) << true << 6;
+    BOBUIest::newRow("sweep_06") << QString::fromUtf8("\xf0\x9f\x98\x81\xf0\x9f\x98\x82\x61\x62\x63\xf0\x9f\x98\x83\xc4\x91\xc3\xa8\xef\xac\x80\xf0\x9f\x98\x84\xf0\x9f\x98\x85", 30) << true << 11;
+    BOBUIest::newRow("sweep_07") << QString::fromUtf8("\xf0\x9f\x82\xaa\xf0\x9f\x82\xab\xf0\x9f\x82\xad\xf0\x9f\x82\xae\xf0\x9f\x82\xa1\x20\x52\x4f\x59\x41\x4c\x20\x46\x4c\x55\x53\x48\x20\x4f\x46\x20\x53\x50\x41\x44\x45\x53", 42) << true << 27;
+    BOBUIest::newRow("sweep_08") << QString::fromUtf8("abc\0def", 7) << true << 7;
+    BOBUIest::newRow("sweep_09") << QString::fromUtf8("\xc3\xa0\xce\xb2\xc3\xa7\xf0\x9f\x80\xb9\xf0\x9f\x80\xb8\x00\xf0\x9f\x80\xb1\x00\xf0\x9f\x80\xb3\xf0\x9f\x81\x85\xe1\xb8\x8a\xc4\x99\xc6\x92", 35) << true << 13;
 
-    QTest::newRow("sweep_invalid_00") << QString(QChar(0xd800)) << false << 1;
-    QTest::newRow("sweep_invalid_01") << QString(QChar(0xdc00)) << false << 1;
-    QTest::newRow("sweep_invalid_02") << QString(QChar(0xdbff)) << false << 1;
-    QTest::newRow("sweep_invalid_03") << QString(QChar(0xdfff)) << false << 1;
+    BOBUIest::newRow("sweep_invalid_00") << QString(QChar(0xd800)) << false << 1;
+    BOBUIest::newRow("sweep_invalid_01") << QString(QChar(0xdc00)) << false << 1;
+    BOBUIest::newRow("sweep_invalid_02") << QString(QChar(0xdbff)) << false << 1;
+    BOBUIest::newRow("sweep_invalid_03") << QString(QChar(0xdfff)) << false << 1;
 
 #define QSTRING_FROM_QCHARARRAY(x) (QString((x), sizeof(x)/sizeof((x)[0])))
 
@@ -46,28 +46,28 @@ void tst_QStringIterator::sweep_data()
         QLatin1Char('a'), QLatin1Char('l'), QLatin1Char('i'),
         QLatin1Char('d'), QChar(0xd800)
     };
-    QTest::newRow("sweep_invalid_04") << QSTRING_FROM_QCHARARRAY(invalid_04) << false << 8;
+    BOBUIest::newRow("sweep_invalid_04") << QSTRING_FROM_QCHARARRAY(invalid_04) << false << 8;
 
     static const QChar invalid_05[] = {
         QLatin1Char('i'), QLatin1Char('n'), QLatin1Char('v'),
         QLatin1Char('a'), QLatin1Char('l'), QLatin1Char('i'),
         QLatin1Char('d'), QChar(0xd800), QLatin1Char('x')
     };
-    QTest::newRow("sweep_invalid_05") << QSTRING_FROM_QCHARARRAY(invalid_05) << false << 9;
+    BOBUIest::newRow("sweep_invalid_05") << QSTRING_FROM_QCHARARRAY(invalid_05) << false << 9;
 
     static const QChar invalid_06[] = {
         QLatin1Char('i'), QLatin1Char('n'), QLatin1Char('v'),
         QLatin1Char('a'), QLatin1Char('l'), QLatin1Char('i'),
         QLatin1Char('d'), QChar(0xdc00)
     };
-    QTest::newRow("sweep_invalid_06") << QSTRING_FROM_QCHARARRAY(invalid_06) << false << 8;
+    BOBUIest::newRow("sweep_invalid_06") << QSTRING_FROM_QCHARARRAY(invalid_06) << false << 8;
 
     static const QChar invalid_07[] = {
         QLatin1Char('i'), QLatin1Char('n'), QLatin1Char('v'),
         QLatin1Char('a'), QLatin1Char('l'), QLatin1Char('i'),
         QLatin1Char('d'), QChar(0xdc00), QLatin1Char('x')
     };
-    QTest::newRow("sweep_invalid_07") << QSTRING_FROM_QCHARARRAY(invalid_07) << false << 9;
+    BOBUIest::newRow("sweep_invalid_07") << QSTRING_FROM_QCHARARRAY(invalid_07) << false << 9;
 
     static const QChar invalid_08[] = {
         QChar(0xd800),
@@ -75,7 +75,7 @@ void tst_QStringIterator::sweep_data()
         QLatin1Char('a'), QLatin1Char('l'), QLatin1Char('i'),
         QLatin1Char('d')
     };
-    QTest::newRow("sweep_invalid_08") << QSTRING_FROM_QCHARARRAY(invalid_08) << false << 8;
+    BOBUIest::newRow("sweep_invalid_08") << QSTRING_FROM_QCHARARRAY(invalid_08) << false << 8;
 
     static const QChar invalid_09[] = {
         QChar(0xdc00),
@@ -83,7 +83,7 @@ void tst_QStringIterator::sweep_data()
         QLatin1Char('a'), QLatin1Char('l'), QLatin1Char('i'),
         QLatin1Char('d')
     };
-    QTest::newRow("sweep_invalid_09") << QSTRING_FROM_QCHARARRAY(invalid_09) << false << 8;
+    BOBUIest::newRow("sweep_invalid_09") << QSTRING_FROM_QCHARARRAY(invalid_09) << false << 8;
 
     static const QChar invalid_10[] = {
         QChar(0xd800), QChar(0xd800),
@@ -91,7 +91,7 @@ void tst_QStringIterator::sweep_data()
         QLatin1Char('a'), QLatin1Char('l'), QLatin1Char('i'),
         QLatin1Char('d')
     };
-    QTest::newRow("sweep_invalid_10") << QSTRING_FROM_QCHARARRAY(invalid_10) << false << 9;
+    BOBUIest::newRow("sweep_invalid_10") << QSTRING_FROM_QCHARARRAY(invalid_10) << false << 9;
 
     static const QChar invalid_11[] = {
         QChar(0xdc00), QChar(0xd800),
@@ -99,7 +99,7 @@ void tst_QStringIterator::sweep_data()
         QLatin1Char('a'), QLatin1Char('l'), QLatin1Char('i'),
         QLatin1Char('d')
     };
-    QTest::newRow("sweep_invalid_11") << QSTRING_FROM_QCHARARRAY(invalid_11) << false << 9;
+    BOBUIest::newRow("sweep_invalid_11") << QSTRING_FROM_QCHARARRAY(invalid_11) << false << 9;
 
     static const QChar invalid_12[] = {
         QChar(0xdc00), QChar(0xdc00),
@@ -107,7 +107,7 @@ void tst_QStringIterator::sweep_data()
         QLatin1Char('a'), QLatin1Char('l'), QLatin1Char('i'),
         QLatin1Char('d')
     };
-    QTest::newRow("sweep_invalid_12") << QSTRING_FROM_QCHARARRAY(invalid_12) << false << 9;
+    BOBUIest::newRow("sweep_invalid_12") << QSTRING_FROM_QCHARARRAY(invalid_12) << false << 9;
 
     static const QChar invalid_13[] = {
         QLatin1Char('i'), QLatin1Char('n'), QLatin1Char('v'),
@@ -115,7 +115,7 @@ void tst_QStringIterator::sweep_data()
         QLatin1Char('a'), QLatin1Char('l'), QLatin1Char('i'),
         QLatin1Char('d'), QChar(0xd800)
     };
-    QTest::newRow("sweep_invalid_13") << QSTRING_FROM_QCHARARRAY(invalid_13) << false << 9;
+    BOBUIest::newRow("sweep_invalid_13") << QSTRING_FROM_QCHARARRAY(invalid_13) << false << 9;
 
     static const QChar invalid_14[] = {
         QLatin1Char('i'), QLatin1Char('n'), QLatin1Char('v'),
@@ -123,7 +123,7 @@ void tst_QStringIterator::sweep_data()
         QLatin1Char('a'), QLatin1Char('l'), QLatin1Char('i'),
         QLatin1Char('d'), QChar(0xd800), QLatin1Char('x')
     };
-    QTest::newRow("sweep_invalid_14") << QSTRING_FROM_QCHARARRAY(invalid_14) << false << 10;
+    BOBUIest::newRow("sweep_invalid_14") << QSTRING_FROM_QCHARARRAY(invalid_14) << false << 10;
 
     static const QChar invalid_15[] = {
         QLatin1Char('i'), QLatin1Char('n'), QLatin1Char('v'),
@@ -131,7 +131,7 @@ void tst_QStringIterator::sweep_data()
         QLatin1Char('a'), QLatin1Char('l'), QLatin1Char('i'),
         QLatin1Char('d'), QChar(0xdc00)
     };
-    QTest::newRow("sweep_invalid_15") << QSTRING_FROM_QCHARARRAY(invalid_15) << false << 9;
+    BOBUIest::newRow("sweep_invalid_15") << QSTRING_FROM_QCHARARRAY(invalid_15) << false << 9;
 
     static const QChar invalid_16[] = {
         QLatin1Char('i'), QLatin1Char('n'), QLatin1Char('v'),
@@ -139,7 +139,7 @@ void tst_QStringIterator::sweep_data()
         QLatin1Char('a'), QLatin1Char('l'), QLatin1Char('i'),
         QLatin1Char('d'), QChar(0xdc00), QLatin1Char('x')
     };
-    QTest::newRow("sweep_invalid_16") << QSTRING_FROM_QCHARARRAY(invalid_16) << false << 10;
+    BOBUIest::newRow("sweep_invalid_16") << QSTRING_FROM_QCHARARRAY(invalid_16) << false << 10;
 
     static const QChar invalid_17[] = {
         QChar(0xd800),
@@ -148,7 +148,7 @@ void tst_QStringIterator::sweep_data()
         QLatin1Char('a'), QLatin1Char('l'), QLatin1Char('i'),
         QLatin1Char('d')
     };
-    QTest::newRow("sweep_invalid_17") << QSTRING_FROM_QCHARARRAY(invalid_17) << false << 9;
+    BOBUIest::newRow("sweep_invalid_17") << QSTRING_FROM_QCHARARRAY(invalid_17) << false << 9;
 
     static const QChar invalid_18[] = {
         QChar(0xdc00),
@@ -157,7 +157,7 @@ void tst_QStringIterator::sweep_data()
         QLatin1Char('a'), QLatin1Char('l'), QLatin1Char('i'),
         QLatin1Char('d')
     };
-    QTest::newRow("sweep_invalid_18") << QSTRING_FROM_QCHARARRAY(invalid_18) << false << 9;
+    BOBUIest::newRow("sweep_invalid_18") << QSTRING_FROM_QCHARARRAY(invalid_18) << false << 9;
 
 #undef QSTRING_FROM_QCHARARRAY
 }
@@ -185,8 +185,8 @@ void tst_QStringIterator::sweep()
         ++count;
     }
 
-    QTEST(count, "count");
-    QTEST(rebuiltString, "string");
+    BOBUIEST(count, "count");
+    BOBUIEST(rebuiltString, "string");
     rebuiltString.clear();
 
     while (i.hasPrevious()) {
@@ -205,7 +205,7 @@ void tst_QStringIterator::sweep()
         ++count;
     }
 
-    QTEST(count, "count");
+    BOBUIEST(count, "count");
 
     while (i.hasPrevious()) {
         i.recede();
@@ -225,8 +225,8 @@ void tst_QStringIterator::sweep()
             ++count;
         }
 
-        QTEST(count, "count");
-        QTEST(rebuiltString, "string");
+        BOBUIEST(count, "count");
+        BOBUIEST(rebuiltString, "string");
 
         while (i.hasPrevious()) {
             const char32_t peekedCodePoint = i.peekPreviousUnchecked();
@@ -244,7 +244,7 @@ void tst_QStringIterator::sweep()
             ++count;
         }
 
-        QTEST(count, "count");
+        BOBUIEST(count, "count");
 
         while (i.hasPrevious()) {
             i.recedeUnchecked();
@@ -269,15 +269,15 @@ void tst_QStringIterator::nextOrRawCodeUnitEquivalenceWithOldCode()
 
         const auto len = string.size();
         for (qsizetype i = 0; i < len; ++i) {
-            QT_WARNING_PUSH
-            QT_WARNING_DISABLE_CLANG("-Wcharacter-conversion")
+            BOBUI_WARNING_PUSH
+            BOBUI_WARNING_DISABLE_CLANG("-Wcharacter-conversion")
             char32_t ucs4;
             const char16_t c = s[i];
             if (QChar::isHighSurrogate(c) && i + 1 < len && QChar::isLowSurrogate(s[i + 1]))
                 ucs4 = QChar::surrogateToUcs4(c, s[++i]);
             else
                 ucs4 = c;
-            QT_WARNING_POP
+            BOBUI_WARNING_POP
             result.push_back(ucs4);
         }
         return result;
@@ -693,6 +693,6 @@ void tst_QStringIterator::position()
 #undef QCHAR_UNICODE_VALUE
 }
 
-QTEST_APPLESS_MAIN(tst_QStringIterator)
+BOBUIEST_APPLESS_MAIN(tst_QStringIterator)
 
 #include "tst_qstringiterator.moc"

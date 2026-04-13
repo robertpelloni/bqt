@@ -1,17 +1,17 @@
 // Copyright (C) 2013 David Faure <faure+bluesystems@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QLOCKFILE_H
 #define QLOCKFILE_H
 
-#include <QtCore/qstring.h>
-#include <QtCore/qscopedpointer.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qscopedpointer.h>
 
 #include <chrono>
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QLockFilePrivate;
 
@@ -24,13 +24,13 @@ public:
     QString fileName() const;
 
     bool lock();
-    QT_CORE_INLINE_SINCE(6, 10)
+    BOBUI_CORE_INLINE_SINCE(6, 10)
     bool tryLock(int timeout);
     void unlock();
 
-    QT_CORE_INLINE_SINCE(6, 10)
+    BOBUI_CORE_INLINE_SINCE(6, 10)
     void setStaleLockTime(int);
-    QT_CORE_INLINE_SINCE(6, 10)
+    BOBUI_CORE_INLINE_SINCE(6, 10)
     int staleLockTime() const;
 
     bool tryLock(std::chrono::milliseconds timeout = std::chrono::milliseconds::zero());
@@ -57,7 +57,7 @@ private:
     Q_DISABLE_COPY(QLockFile)
 };
 
-#if QT_CORE_INLINE_IMPL_SINCE(6, 10)
+#if BOBUI_CORE_INLINE_IMPL_SINCE(6, 10)
 bool QLockFile::tryLock(int timeout)
 {
     return tryLock(std::chrono::milliseconds{timeout});
@@ -72,8 +72,8 @@ int QLockFile::staleLockTime() const
 {
     return int(staleLockTimeAsDuration().count());
 }
-#endif // QT_CORE_INLINE_IMPL_SINCE(6, 10)
+#endif // BOBUI_CORE_INLINE_IMPL_SINCE(6, 10)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QLOCKFILE_H

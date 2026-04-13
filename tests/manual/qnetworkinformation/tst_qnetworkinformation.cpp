@@ -1,15 +1,15 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifdef MOBILE
 #    include "mainwindow.h"
-#    include <QtWidgets/qapplication.h>
+#    include <BobUIWidgets/qapplication.h>
 #else
-#    include <QtCore/qcoreapplication.h>
+#    include <BobUICore/qcoreapplication.h>
 #endif
 
-#include <QtCore/qdebug.h>
-#include <QtNetwork/qnetworkinformation.h>
+#include <BobUICore/qdebug.h>
+#include <BobUINetwork/qnetworkinformation.h>
 
 int main(int argc, char **argv)
 {
@@ -30,7 +30,7 @@ int main(int argc, char **argv)
     QNetworkInformation *info = QNetworkInformation::instance();
     qDebug() << "Backend loaded:" << info->backendName();
     qDebug() << "Supports:" << info->supportedFeatures();
-    qDebug() << "Now you can make changes to the current network connection. Qt should see the "
+    qDebug() << "Now you can make changes to the current network connection. BobUI should see the "
                 "changes and notify about it.";
     QObject::connect(info, &QNetworkInformation::reachabilityChanged,
                      [](QNetworkInformation::Reachability newStatus) {

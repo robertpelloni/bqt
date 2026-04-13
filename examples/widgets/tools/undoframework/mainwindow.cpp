@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "mainwindow.h"
 #include "diagramscene.h"
@@ -12,7 +12,7 @@
 #include <QMenu>
 #include <QMenuBar>
 #include <QMessageBox>
-#include <QToolBar>
+#include <BOBUIoolBar>
 #include <QUndoView>
 
 //! [0]
@@ -49,7 +49,7 @@ void MainWindow::createUndoView()
     QDockWidget *undoDockWidget = new QDockWidget;
     undoDockWidget->setWindowTitle(tr("Command List"));
     undoDockWidget->setWidget(new QUndoView(undoStack));
-    addDockWidget(Qt::RightDockWidgetArea, undoDockWidget);
+    addDockWidget(BobUI::RightDockWidgetArea, undoDockWidget);
 }
 //! [1]
 
@@ -123,14 +123,14 @@ void MainWindow::createMenus()
 
 void MainWindow::createToolBars()
 {
-    QToolBar *editToolBar = new QToolBar;
+    BOBUIoolBar *editToolBar = new BOBUIoolBar;
     editToolBar->addAction(undoAction);
     editToolBar->addAction(redoAction);
     editToolBar->addSeparator();
     editToolBar->addAction(deleteAction);
 //! [8]
 
-    QToolBar *itemToolBar = new QToolBar;
+    BOBUIoolBar *itemToolBar = new BOBUIoolBar;
     itemToolBar->addAction(addBoxAction);
     itemToolBar->addAction(addTriangleAction);
 //! [9]
@@ -180,6 +180,6 @@ void MainWindow::about()
 {
     QMessageBox::about(this, tr("About Undo"),
                        tr("The <b>Undo</b> example demonstrates how to "
-                          "use Qt's undo framework."));
+                          "use BobUI's undo framework."));
 }
 //! [15]

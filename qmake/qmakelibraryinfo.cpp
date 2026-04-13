@@ -1,6 +1,6 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "qmakelibraryinfo.h"
 
@@ -14,7 +14,7 @@
 
 #include <utility>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct QMakeLibrarySettings
 {
@@ -135,7 +135,7 @@ static QLibraryInfoPrivate::LocationInfo defaultLocationInfo(int loc)
 
 static QString libraryInfoPath(QLibraryInfo::LibraryPath location)
 {
-    return QLibraryInfoPrivate::path(location, QLibraryInfoPrivate::UsedFromQtBinDir);
+    return QLibraryInfoPrivate::path(location, QLibraryInfoPrivate::UsedFromBobUIBinDir);
 }
 
 static QString storedPath(int loc)
@@ -145,8 +145,8 @@ static QString storedPath(int loc)
         result = libraryInfoPath(static_cast<QLibraryInfo::LibraryPath>(loc));
     } else if (loc <= QMakeLibraryInfo::LastHostPath) {
         if (loc == QMakeLibraryInfo::HostDataPath) {
-            // Handle QT_HOST_DATADIR specially. It is not necessarily equal to QT_INSTALL_DATA.
-            result = QT_HOST_DATADIR;
+            // Handle BOBUI_HOST_DATADIR specially. It is not necessarily equal to BOBUI_INSTALL_DATA.
+            result = BOBUI_HOST_DATADIR;
         } else {
             result = libraryInfoPath(hostToTargetPathEnum(loc));
         }
@@ -155,9 +155,9 @@ static QString storedPath(int loc)
     } else if (loc == QMakeLibraryInfo::SysrootifyPrefixPath) {
         result = QStringLiteral("false");
     } else if (loc == QMakeLibraryInfo::TargetSpecPath) {
-        result = QT_TARGET_MKSPEC;
+        result = BOBUI_TARGET_MKSPEC;
     } else if (loc == QMakeLibraryInfo::HostSpecPath) {
-        result = QT_HOST_MKSPEC;
+        result = BOBUI_HOST_MKSPEC;
     }
     return result;
 }
@@ -167,8 +167,8 @@ QString QMakeLibraryInfo::rawLocation(int loc, QMakeLibraryInfo::PathGroup group
     QString ret;
     bool fromConf = false;
     // Logic for choosing the right data source: if EffectivePaths are requested
-    // and qt.conf with that section is present, use it, otherwise fall back to
-    // FinalPaths. For FinalPaths, use qt.conf if present and contains not only
+    // and bobui.conf with that section is present, use it, otherwise fall back to
+    // FinalPaths. For FinalPaths, use bobui.conf if present and contains not only
     // [EffectivePaths], otherwise fall back to builtins.
     // EffectiveSourcePaths falls back to EffectivePaths.
     // DevicePaths falls back to FinalPaths.
@@ -211,7 +211,7 @@ QString QMakeLibraryInfo::rawLocation(int loc, QMakeLibraryInfo::PathGroup group
                 // All other keys have non-empty fallbacks to start with.
             }
 
-            // TODO: Might be replaced by common for qmake and qtcore function
+            // TODO: Might be replaced by common for qmake and bobuicore function
             int startIndex = 0;
             forever {
                 startIndex = ret.indexOf(QLatin1Char('$'), startIndex);
@@ -270,4 +270,4 @@ QString QMakeLibraryInfo::rawLocation(int loc, QMakeLibraryInfo::PathGroup group
     return ret;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

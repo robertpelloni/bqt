@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <qkeysequence.h>
 #include <qpa/qplatformtheme.h>
 #include <qpa/qplatformtheme_p.h>
 #include <private/qguiapplication_p.h>
-#include <QTranslator>
+#include <BOBUIranslator>
 #include <QLibraryInfo>
 
 #ifdef Q_OS_MAC
@@ -25,26 +25,26 @@ static const int kCommandUnicode = 0x2318;
 
 static const int NumEntries = 21;
 static const MacSpecialKey entries[NumEntries] = {
-    { Qt::Key_Escape, 0x238B },
-    { Qt::Key_Tab, 0x21E5 },
-    { Qt::Key_Backtab, 0x21E4 },
-    { Qt::Key_Backspace, 0x232B },
-    { Qt::Key_Return, 0x21B5 },
-    { Qt::Key_Enter, 0x21B5 },
-    { Qt::Key_Delete, 0x2326 },
-    { Qt::Key_Home, 0x2196 },
-    { Qt::Key_End, 0x2198 },
-    { Qt::Key_Left, 0x2190 },
-    { Qt::Key_Up, 0x2191 },
-    { Qt::Key_Right, 0x2192 },
-    { Qt::Key_Down, 0x2193 },
-    { Qt::Key_PageUp, 0x21DE },
-    { Qt::Key_PageDown, 0x21DF },
-    { Qt::Key_Shift, kShiftUnicode },
-    { Qt::Key_Control, kCommandUnicode },
-    { Qt::Key_Meta, kControlUnicode },
-    { Qt::Key_Alt, kOptionUnicode },
-    { Qt::Key_CapsLock, 0x21EA },
+    { BobUI::Key_Escape, 0x238B },
+    { BobUI::Key_Tab, 0x21E5 },
+    { BobUI::Key_Backtab, 0x21E4 },
+    { BobUI::Key_Backspace, 0x232B },
+    { BobUI::Key_Return, 0x21B5 },
+    { BobUI::Key_Enter, 0x21B5 },
+    { BobUI::Key_Delete, 0x2326 },
+    { BobUI::Key_Home, 0x2196 },
+    { BobUI::Key_End, 0x2198 },
+    { BobUI::Key_Left, 0x2190 },
+    { BobUI::Key_Up, 0x2191 },
+    { BobUI::Key_Right, 0x2192 },
+    { BobUI::Key_Down, 0x2193 },
+    { BobUI::Key_PageUp, 0x21DE },
+    { BobUI::Key_PageDown, 0x21DF },
+    { BobUI::Key_Shift, kShiftUnicode },
+    { BobUI::Key_Control, kCommandUnicode },
+    { BobUI::Key_Meta, kControlUnicode },
+    { BobUI::Key_Alt, kOptionUnicode },
+    { BobUI::Key_CapsLock, 0x21EA },
 };
 
 static bool operator<(const MacSpecialKey &entry, int key)
@@ -54,7 +54,7 @@ static bool operator<(const MacSpecialKey &entry, int key)
 
 static const MacSpecialKey * const MacSpecialKeyEntriesEnd = entries + NumEntries;
 
-static QChar macSymbolForQtKey(int key)
+static QChar macSymbolForBobUIKey(int key)
 {
     const MacSpecialKey *i = std::lower_bound(entries, MacSpecialKeyEntriesEnd, key);
     if (i == MacSpecialKeyEntriesEnd)
@@ -64,9 +64,9 @@ static QChar macSymbolForQtKey(int key)
 
 #endif
 
-QT_BEGIN_NAMESPACE
-extern void qt_set_sequence_auto_mnemonic(bool);
-QT_END_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
+extern void bobui_set_sequence_auto_mnemonic(bool);
+BOBUI_END_NAMESPACE
 
 class tst_QKeySequence : public QObject
 {
@@ -102,7 +102,7 @@ private slots:
     void listToString();
     void listFromString_data();
     void listFromString();
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     void ensureSorted();
 #endif
     void standardKeys_data();
@@ -117,8 +117,8 @@ private slots:
     void initTestCase();
 private:
     int m_keyboardScheme;
-    QTranslator *ourTranslator;
-    QTranslator *qtTranslator;
+    BOBUIranslator *ourTranslator;
+    BOBUIranslator *bobuiTranslator;
 #ifdef Q_OS_MAC
     static const QString MacCtrl;
     static const QString MacMeta;
@@ -149,61 +149,61 @@ tst_QKeySequence::~tst_QKeySequence()
 
 void tst_QKeySequence::initTestCase()
 {
-    ourTranslator = new QTranslator(this);
+    ourTranslator = new BOBUIranslator(this);
     (void)ourTranslator->load(":/keys_de");
-    qtTranslator = new QTranslator(this);
-    (void)qtTranslator->load(":/qt_de");
+    bobuiTranslator = new BOBUIranslator(this);
+    (void)bobuiTranslator->load(":/bobui_de");
 }
 
 void tst_QKeySequence::swap()
 {
-    QKeySequence ks1(Qt::CTRL | Qt::Key_O);
-    QKeySequence ks2(Qt::CTRL | Qt::Key_L);
+    QKeySequence ks1(BobUI::CTRL | BobUI::Key_O);
+    QKeySequence ks2(BobUI::CTRL | BobUI::Key_L);
     ks1.swap(ks2);
 
-    QCOMPARE(ks1[0], Qt::CTRL | Qt::Key_L);
-    QCOMPARE(ks2[0], Qt::CTRL | Qt::Key_O);
+    QCOMPARE(ks1[0], BobUI::CTRL | BobUI::Key_L);
+    QCOMPARE(ks2[0], BobUI::CTRL | BobUI::Key_O);
 }
 
 void tst_QKeySequence::operatorQString_data()
 {
-    QTest::addColumn<int>("modifiers");
-    QTest::addColumn<int>("keycode");
-    QTest::addColumn<QString>("keystring");
+    BOBUIest::addColumn<int>("modifiers");
+    BOBUIest::addColumn<int>("keycode");
+    BOBUIest::addColumn<QString>("keystring");
 
-    QTest::newRow( "No modifier" ) << 0 << int(Qt::Key_Aring) << QString::fromLatin1( "\x0c5" );
+    BOBUIest::newRow( "No modifier" ) << 0 << int(BobUI::Key_Aring) << QString::fromLatin1( "\x0c5" );
 
 #ifndef Q_OS_MAC
-    QTest::newRow( "Ctrl+Left" ) << int(Qt::CTRL) << int(Qt::Key_Left) << QString( "Ctrl+Left" );
-    QTest::newRow( "Ctrl+," ) << int(Qt::CTRL) << int(Qt::Key_Comma) << QString( "Ctrl+," );
-    QTest::newRow( "Alt+Left" ) << int(Qt::ALT) << int(Qt::Key_Left) << QString( "Alt+Left" );
-    QTest::newRow( "Alt+Shift+Left" ) << int(Qt::ALT | Qt::SHIFT) << int(Qt::Key_Left) << QString( "Alt+Shift+Left" );
-    QTest::newRow( "Ctrl" ) << int(Qt::CTRL) << int(Qt::Key_Aring) << QString::fromLatin1( "Ctrl+\x0c5" );
-    QTest::newRow( "Alt" ) << int(Qt::ALT) << int(Qt::Key_Aring) << QString::fromLatin1( "Alt+\x0c5" );
-    QTest::newRow( "Shift" ) << int(Qt::SHIFT) << int(Qt::Key_Aring) << QString::fromLatin1( "Shift+\x0c5" );
-    QTest::newRow( "Meta" ) << int(Qt::META) << int(Qt::Key_Aring) << QString::fromLatin1( "Meta+\x0c5" );
+    BOBUIest::newRow( "Ctrl+Left" ) << int(BobUI::CTRL) << int(BobUI::Key_Left) << QString( "Ctrl+Left" );
+    BOBUIest::newRow( "Ctrl+," ) << int(BobUI::CTRL) << int(BobUI::Key_Comma) << QString( "Ctrl+," );
+    BOBUIest::newRow( "Alt+Left" ) << int(BobUI::ALT) << int(BobUI::Key_Left) << QString( "Alt+Left" );
+    BOBUIest::newRow( "Alt+Shift+Left" ) << int(BobUI::ALT | BobUI::SHIFT) << int(BobUI::Key_Left) << QString( "Alt+Shift+Left" );
+    BOBUIest::newRow( "Ctrl" ) << int(BobUI::CTRL) << int(BobUI::Key_Aring) << QString::fromLatin1( "Ctrl+\x0c5" );
+    BOBUIest::newRow( "Alt" ) << int(BobUI::ALT) << int(BobUI::Key_Aring) << QString::fromLatin1( "Alt+\x0c5" );
+    BOBUIest::newRow( "Shift" ) << int(BobUI::SHIFT) << int(BobUI::Key_Aring) << QString::fromLatin1( "Shift+\x0c5" );
+    BOBUIest::newRow( "Meta" ) << int(BobUI::META) << int(BobUI::Key_Aring) << QString::fromLatin1( "Meta+\x0c5" );
 #else
-    QTest::newRow( "Ctrl+Left" ) << int(Qt::CTRL) << int(Qt::Key_Left) << MacCtrl + macSymbolForQtKey(Qt::Key_Left);
-    QTest::newRow( "Ctrl+," ) << int(Qt::CTRL) << int(Qt::Key_Comma) << MacCtrl + ",";
-    QTest::newRow( "Alt+Left" ) << int(Qt::ALT) << int(Qt::Key_Left) << MacAlt + macSymbolForQtKey(Qt::Key_Left);
-    QTest::newRow( "Alt+Shift+Left" ) << int(Qt::ALT | Qt::SHIFT) << int(Qt::Key_Left) << MacAlt + MacShift + macSymbolForQtKey(Qt::Key_Left);
-    QTest::newRow( "Ctrl" ) << int(Qt::CTRL) << int(Qt::Key_Aring) << MacCtrl + QLatin1String("\x0c5");
-    QTest::newRow( "Alt" ) << int(Qt::ALT) << int(Qt::Key_Aring) << MacAlt + QLatin1String("\x0c5");
-    QTest::newRow( "Shift" ) << int(Qt::SHIFT) << int(Qt::Key_Aring) << MacShift + QLatin1String("\x0c5");
-    QTest::newRow( "Meta" ) << int(Qt::META) << int(Qt::Key_Aring) << MacMeta + QLatin1String("\x0c5");
+    BOBUIest::newRow( "Ctrl+Left" ) << int(BobUI::CTRL) << int(BobUI::Key_Left) << MacCtrl + macSymbolForBobUIKey(BobUI::Key_Left);
+    BOBUIest::newRow( "Ctrl+," ) << int(BobUI::CTRL) << int(BobUI::Key_Comma) << MacCtrl + ",";
+    BOBUIest::newRow( "Alt+Left" ) << int(BobUI::ALT) << int(BobUI::Key_Left) << MacAlt + macSymbolForBobUIKey(BobUI::Key_Left);
+    BOBUIest::newRow( "Alt+Shift+Left" ) << int(BobUI::ALT | BobUI::SHIFT) << int(BobUI::Key_Left) << MacAlt + MacShift + macSymbolForBobUIKey(BobUI::Key_Left);
+    BOBUIest::newRow( "Ctrl" ) << int(BobUI::CTRL) << int(BobUI::Key_Aring) << MacCtrl + QLatin1String("\x0c5");
+    BOBUIest::newRow( "Alt" ) << int(BobUI::ALT) << int(BobUI::Key_Aring) << MacAlt + QLatin1String("\x0c5");
+    BOBUIest::newRow( "Shift" ) << int(BobUI::SHIFT) << int(BobUI::Key_Aring) << MacShift + QLatin1String("\x0c5");
+    BOBUIest::newRow( "Meta" ) << int(BobUI::META) << int(BobUI::Key_Aring) << MacMeta + QLatin1String("\x0c5");
 #endif
 }
 
 void tst_QKeySequence::symetricConstructors_data()
 {
-    QTest::addColumn<int>("modifiers");
-    QTest::addColumn<int>("keycode");
+    BOBUIest::addColumn<int>("modifiers");
+    BOBUIest::addColumn<int>("keycode");
 
-    QTest::newRow( "No modifier" ) << 0 << int(Qt::Key_Aring);
-    QTest::newRow( "Ctrl" ) << int(Qt::CTRL) << int(Qt::Key_Aring);
-    QTest::newRow( "Alt" ) << int(Qt::ALT) << int(Qt::Key_Aring);
-    QTest::newRow( "Shift" ) << int(Qt::SHIFT) << int(Qt::Key_Aring);
-    QTest::newRow( "Meta" ) << int(Qt::META) << int(Qt::Key_Aring);
+    BOBUIest::newRow( "No modifier" ) << 0 << int(BobUI::Key_Aring);
+    BOBUIest::newRow( "Ctrl" ) << int(BobUI::CTRL) << int(BobUI::Key_Aring);
+    BOBUIest::newRow( "Alt" ) << int(BobUI::ALT) << int(BobUI::Key_Aring);
+    BOBUIest::newRow( "Shift" ) << int(BobUI::SHIFT) << int(BobUI::Key_Aring);
+    BOBUIest::newRow( "Meta" ) << int(BobUI::META) << int(BobUI::Key_Aring);
 }
 
 void tst_QKeySequence::compareConstructors_data()
@@ -273,7 +273,7 @@ void tst_QKeySequence::checkMultipleCodes()
 * We must ensure that the keyBindings data are always sorted by standardKey
 * so that we can safely perform binary searches.
 */
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 void tst_QKeySequence::ensureSorted()
 {
     uint N = QPlatformThemePrivate::numberOfKeyBindings;
@@ -290,48 +290,48 @@ void tst_QKeySequence::ensureSorted()
 
 void tst_QKeySequence::standardKeys_data()
 {
-    QTest::addColumn<int>("standardKey");
-    QTest::addColumn<QString>("expected");
-    QTest::newRow("unknownkey") << (int)QKeySequence::UnknownKey<< QString("");
-    QTest::newRow("copy") << (int)QKeySequence::Copy << QString("CTRL+C");
-    QTest::newRow("cut") << (int)QKeySequence::Cut << QString("CTRL+X");
-    QTest::newRow("paste") << (int)QKeySequence::Paste << QString("CTRL+V");
-    QTest::newRow("delete") << (int)QKeySequence::Delete<< QString("DEL");
-    QTest::newRow("open") << (int)QKeySequence::Open << QString("CTRL+O");
-    QTest::newRow("find") << (int)QKeySequence::Find<< QString("CTRL+F");
+    BOBUIest::addColumn<int>("standardKey");
+    BOBUIest::addColumn<QString>("expected");
+    BOBUIest::newRow("unknownkey") << (int)QKeySequence::UnknownKey<< QString("");
+    BOBUIest::newRow("copy") << (int)QKeySequence::Copy << QString("CTRL+C");
+    BOBUIest::newRow("cut") << (int)QKeySequence::Cut << QString("CTRL+X");
+    BOBUIest::newRow("paste") << (int)QKeySequence::Paste << QString("CTRL+V");
+    BOBUIest::newRow("delete") << (int)QKeySequence::Delete<< QString("DEL");
+    BOBUIest::newRow("open") << (int)QKeySequence::Open << QString("CTRL+O");
+    BOBUIest::newRow("find") << (int)QKeySequence::Find<< QString("CTRL+F");
     if (m_keyboardScheme == QPlatformTheme::WindowsKeyboardScheme) {
-        QTest::newRow("addTab") << (int)QKeySequence::AddTab<< QString("CTRL+T");
-        QTest::newRow("findNext") << (int)QKeySequence::FindNext<< QString("F3");
-        QTest::newRow("findPrevious") << (int)QKeySequence::FindPrevious << QString("SHIFT+F3");
-        QTest::newRow("close") << (int)QKeySequence::Close<< QString("CTRL+F4");
-        QTest::newRow("replace") << (int)QKeySequence::Replace<< QString("CTRL+H");
+        BOBUIest::newRow("addTab") << (int)QKeySequence::AddTab<< QString("CTRL+T");
+        BOBUIest::newRow("findNext") << (int)QKeySequence::FindNext<< QString("F3");
+        BOBUIest::newRow("findPrevious") << (int)QKeySequence::FindPrevious << QString("SHIFT+F3");
+        BOBUIest::newRow("close") << (int)QKeySequence::Close<< QString("CTRL+F4");
+        BOBUIest::newRow("replace") << (int)QKeySequence::Replace<< QString("CTRL+H");
     }
-    QTest::newRow("bold") << (int)QKeySequence::Bold << QString("CTRL+B");
-    QTest::newRow("italic") << (int)QKeySequence::Italic << QString("CTRL+I");
-    QTest::newRow("underline") << (int)QKeySequence::Underline << QString("CTRL+U");
-    QTest::newRow("selectall") << (int)QKeySequence::SelectAll << QString("CTRL+A");
-    QTest::newRow("print") << (int)QKeySequence::Print << QString("CTRL+P");
-    QTest::newRow("movenextchar") << (int)QKeySequence::MoveToNextChar<< QString("RIGHT");
-    QTest::newRow("zoomIn") << (int)QKeySequence::ZoomIn<< QString("CTRL++");
-    QTest::newRow("zoomOut") << (int)QKeySequence::ZoomOut<< QString("CTRL+-");
-    QTest::newRow("whatsthis") << (int)QKeySequence::WhatsThis<< QString("SHIFT+F1");
+    BOBUIest::newRow("bold") << (int)QKeySequence::Bold << QString("CTRL+B");
+    BOBUIest::newRow("italic") << (int)QKeySequence::Italic << QString("CTRL+I");
+    BOBUIest::newRow("underline") << (int)QKeySequence::Underline << QString("CTRL+U");
+    BOBUIest::newRow("selectall") << (int)QKeySequence::SelectAll << QString("CTRL+A");
+    BOBUIest::newRow("print") << (int)QKeySequence::Print << QString("CTRL+P");
+    BOBUIest::newRow("movenextchar") << (int)QKeySequence::MoveToNextChar<< QString("RIGHT");
+    BOBUIest::newRow("zoomIn") << (int)QKeySequence::ZoomIn<< QString("CTRL++");
+    BOBUIest::newRow("zoomOut") << (int)QKeySequence::ZoomOut<< QString("CTRL+-");
+    BOBUIest::newRow("whatsthis") << (int)QKeySequence::WhatsThis<< QString("SHIFT+F1");
 
 #if defined(Q_OS_MAC)
-    QTest::newRow("help") << (int)QKeySequence::HelpContents<< QString("Ctrl+?");
-    QTest::newRow("nextChild") << (int)QKeySequence::NextChild << QString("CTRL+}");
-    QTest::newRow("previousChild") << (int)QKeySequence::PreviousChild << QString("CTRL+{");
-    QTest::newRow("MoveToEndOfBlock") << (int)QKeySequence::MoveToEndOfBlock << QString("ALT+DOWN");
-    QTest::newRow("forward") << (int)QKeySequence::Forward << QString("CTRL+]");
-    QTest::newRow("backward") << (int)QKeySequence::Back << QString("CTRL+[");
-    QTest::newRow("SelectEndOfDocument") << (int)QKeySequence::SelectEndOfDocument<< QString("CTRL+SHIFT+DOWN"); //mac only
+    BOBUIest::newRow("help") << (int)QKeySequence::HelpContents<< QString("Ctrl+?");
+    BOBUIest::newRow("nextChild") << (int)QKeySequence::NextChild << QString("CTRL+}");
+    BOBUIest::newRow("previousChild") << (int)QKeySequence::PreviousChild << QString("CTRL+{");
+    BOBUIest::newRow("MoveToEndOfBlock") << (int)QKeySequence::MoveToEndOfBlock << QString("ALT+DOWN");
+    BOBUIest::newRow("forward") << (int)QKeySequence::Forward << QString("CTRL+]");
+    BOBUIest::newRow("backward") << (int)QKeySequence::Back << QString("CTRL+[");
+    BOBUIest::newRow("SelectEndOfDocument") << (int)QKeySequence::SelectEndOfDocument<< QString("CTRL+SHIFT+DOWN"); //mac only
 #else
-    QTest::newRow("help") << (int)QKeySequence::HelpContents<< QString("F1");
-    QTest::newRow("nextChild") << (int)QKeySequence::NextChild<< QString("CTRL+Tab");
-    QTest::newRow("previousChild") << (int)QKeySequence::PreviousChild<< QString("CTRL+SHIFT+BACKTAB");
-    QTest::newRow("forward") << (int)QKeySequence::Forward << QString("ALT+RIGHT");
-    QTest::newRow("backward") << (int)QKeySequence::Back << QString("ALT+LEFT");
-    QTest::newRow("MoveToEndOfBlock") << (int)QKeySequence::MoveToEndOfBlock<< QString(""); //mac only
-    QTest::newRow("SelectEndOfDocument") << (int)QKeySequence::SelectEndOfDocument<< QString("CTRL+SHIFT+END"); //mac only
+    BOBUIest::newRow("help") << (int)QKeySequence::HelpContents<< QString("F1");
+    BOBUIest::newRow("nextChild") << (int)QKeySequence::NextChild<< QString("CTRL+Tab");
+    BOBUIest::newRow("previousChild") << (int)QKeySequence::PreviousChild<< QString("CTRL+SHIFT+BACKTAB");
+    BOBUIest::newRow("forward") << (int)QKeySequence::Forward << QString("ALT+RIGHT");
+    BOBUIest::newRow("backward") << (int)QKeySequence::Back << QString("ALT+LEFT");
+    BOBUIest::newRow("MoveToEndOfBlock") << (int)QKeySequence::MoveToEndOfBlock<< QString(""); //mac only
+    BOBUIest::newRow("SelectEndOfDocument") << (int)QKeySequence::SelectEndOfDocument<< QString("CTRL+SHIFT+END"); //mac only
 #endif
 }
 
@@ -371,30 +371,30 @@ void tst_QKeySequence::keyBindings()
 
 void tst_QKeySequence::mnemonic_data()
 {
-    QTest::addColumn<QString>("string");
-    QTest::addColumn<QString>("key");
-    QTest::addColumn<bool>("warning");
+    BOBUIest::addColumn<QString>("string");
+    BOBUIest::addColumn<QString>("key");
+    BOBUIest::addColumn<bool>("warning");
 
-    QTest::newRow("1") << QString::fromLatin1("&bonjour") << QString::fromLatin1("ALT+B") << false;
-    QTest::newRow("2") << QString::fromLatin1("&&bonjour") << QString() << false;
-    QTest::newRow("3") << QString::fromLatin1("&&bon&jour") << QString::fromLatin1("ALT+J") << false;
-    QTest::newRow("4") << QString::fromLatin1("&&bon&jo&ur") << QString::fromLatin1("ALT+J") << true;
-    QTest::newRow("5") << QString::fromLatin1("b&on&&jour") << QString::fromLatin1("ALT+O") << false;
-    QTest::newRow("6") << QString::fromLatin1("bonjour") << QString() << false;
-    QTest::newRow("7") << QString::fromLatin1("&&&bonjour") << QString::fromLatin1("ALT+B") << false;
-    QTest::newRow("8") << QString::fromLatin1("bonjour&&&") << QString() << false;
-    QTest::newRow("9") << QString::fromLatin1("bo&&nj&o&&u&r") << QString::fromLatin1("ALT+O") << true;
-    QTest::newRow("10") << QString::fromLatin1("BON&JOUR") << QString::fromLatin1("ALT+J") << false;
-    QTest::newRow("11") << QString::fromUtf8("bonjour") << QString() << false;
+    BOBUIest::newRow("1") << QString::fromLatin1("&bonjour") << QString::fromLatin1("ALT+B") << false;
+    BOBUIest::newRow("2") << QString::fromLatin1("&&bonjour") << QString() << false;
+    BOBUIest::newRow("3") << QString::fromLatin1("&&bon&jour") << QString::fromLatin1("ALT+J") << false;
+    BOBUIest::newRow("4") << QString::fromLatin1("&&bon&jo&ur") << QString::fromLatin1("ALT+J") << true;
+    BOBUIest::newRow("5") << QString::fromLatin1("b&on&&jour") << QString::fromLatin1("ALT+O") << false;
+    BOBUIest::newRow("6") << QString::fromLatin1("bonjour") << QString() << false;
+    BOBUIest::newRow("7") << QString::fromLatin1("&&&bonjour") << QString::fromLatin1("ALT+B") << false;
+    BOBUIest::newRow("8") << QString::fromLatin1("bonjour&&&") << QString() << false;
+    BOBUIest::newRow("9") << QString::fromLatin1("bo&&nj&o&&u&r") << QString::fromLatin1("ALT+O") << true;
+    BOBUIest::newRow("10") << QString::fromLatin1("BON&JOUR") << QString::fromLatin1("ALT+J") << false;
+    BOBUIest::newRow("11") << QString::fromUtf8("bonjour") << QString() << false;
 }
 
 void tst_QKeySequence::mnemonic()
 {
     const auto resetAutoMnemonic = qScopeGuard([] {
 #ifndef Q_OS_MAC
-        qt_set_sequence_auto_mnemonic(true);
+        bobui_set_sequence_auto_mnemonic(true);
 #else
-        qt_set_sequence_auto_mnemonic(false);
+        bobui_set_sequence_auto_mnemonic(false);
 #endif
     });
 
@@ -402,63 +402,63 @@ void tst_QKeySequence::mnemonic()
     QFETCH(QString, key);
     QFETCH(bool, warning);
 
-    qt_set_sequence_auto_mnemonic(false);
+    bobui_set_sequence_auto_mnemonic(false);
     QCOMPARE(QKeySequence::mnemonic(string), QKeySequence());
 
-#ifdef QT_NO_DEBUG
+#ifdef BOBUI_NO_DEBUG
     Q_UNUSED(warning);
 #else
     if (warning) {
         QString str = QString::fromLatin1("QKeySequence::mnemonic: \"%1\" contains multiple occurrences of '&'").arg(string);
-        QTest::ignoreMessage(QtWarningMsg, qPrintable(str));
+        BOBUIest::ignoreMessage(BobUIWarningMsg, qPrintable(str));
     //    qWarning(qPrintable(str));
     }
 #endif
 
-    qt_set_sequence_auto_mnemonic(true);
+    bobui_set_sequence_auto_mnemonic(true);
     QCOMPARE(QKeySequence::mnemonic(string), QKeySequence(key));
 }
 
 void tst_QKeySequence::toString_data()
 {
-    QTest::addColumn<QString>("strSequence");
-    QTest::addColumn<QString>("neutralString");
-    QTest::addColumn<QString>("platformString");
+    BOBUIest::addColumn<QString>("strSequence");
+    BOBUIest::addColumn<QString>("neutralString");
+    BOBUIest::addColumn<QString>("platformString");
 
 
 #ifndef Q_OS_MAC
-    QTest::newRow("Ctrl+Left") << QString("Ctrl+Left") << QString("Ctrl+Left") << QString("Ctrl+Left");
-    QTest::newRow("Alt+Left") << QString("Alt+Left") << QString("Alt+Left") << QString("Alt+Left");
-    QTest::newRow("Alt+Shift+Left") << QString("Alt+Shift+Left") << QString("Alt+Shift+Left") << QString("Alt+Shift+Left");
-    QTest::newRow("Ctrl") << QString::fromLatin1("Ctrl+\x0c5") << QString::fromLatin1("Ctrl+\x0c5") << QString::fromLatin1("Ctrl+\x0c5");
-    QTest::newRow("Alt") << QString::fromLatin1("Alt+\x0c5") << QString::fromLatin1("Alt+\x0c5") << QString::fromLatin1("Alt+\x0c5");
-    QTest::newRow("Shift") << QString::fromLatin1("Shift+\x0c5") << QString::fromLatin1("Shift+\x0c5") << QString::fromLatin1("Shift+\x0c5");
-    QTest::newRow("Meta") << QString::fromLatin1("Meta+\x0c5") << QString::fromLatin1("Meta+\x0c5") << QString::fromLatin1("Meta+\x0c5");
-    QTest::newRow("Ctrl+Plus") << QString("Ctrl++") << QString("Ctrl++") << QString("Ctrl++");
-    QTest::newRow("Ctrl+,") << QString("Ctrl+,") << QString("Ctrl+,") << QString("Ctrl+,");
-    QTest::newRow("Ctrl+,,Ctrl+,") << QString("Ctrl+,,Ctrl+,") << QString("Ctrl+,, Ctrl+,") << QString("Ctrl+,, Ctrl+,");
-    QTest::newRow("MultiKey") << QString("Alt+X, Ctrl+Y, Z") << QString("Alt+X, Ctrl+Y, Z")
+    BOBUIest::newRow("Ctrl+Left") << QString("Ctrl+Left") << QString("Ctrl+Left") << QString("Ctrl+Left");
+    BOBUIest::newRow("Alt+Left") << QString("Alt+Left") << QString("Alt+Left") << QString("Alt+Left");
+    BOBUIest::newRow("Alt+Shift+Left") << QString("Alt+Shift+Left") << QString("Alt+Shift+Left") << QString("Alt+Shift+Left");
+    BOBUIest::newRow("Ctrl") << QString::fromLatin1("Ctrl+\x0c5") << QString::fromLatin1("Ctrl+\x0c5") << QString::fromLatin1("Ctrl+\x0c5");
+    BOBUIest::newRow("Alt") << QString::fromLatin1("Alt+\x0c5") << QString::fromLatin1("Alt+\x0c5") << QString::fromLatin1("Alt+\x0c5");
+    BOBUIest::newRow("Shift") << QString::fromLatin1("Shift+\x0c5") << QString::fromLatin1("Shift+\x0c5") << QString::fromLatin1("Shift+\x0c5");
+    BOBUIest::newRow("Meta") << QString::fromLatin1("Meta+\x0c5") << QString::fromLatin1("Meta+\x0c5") << QString::fromLatin1("Meta+\x0c5");
+    BOBUIest::newRow("Ctrl+Plus") << QString("Ctrl++") << QString("Ctrl++") << QString("Ctrl++");
+    BOBUIest::newRow("Ctrl+,") << QString("Ctrl+,") << QString("Ctrl+,") << QString("Ctrl+,");
+    BOBUIest::newRow("Ctrl+,,Ctrl+,") << QString("Ctrl+,,Ctrl+,") << QString("Ctrl+,, Ctrl+,") << QString("Ctrl+,, Ctrl+,");
+    BOBUIest::newRow("MultiKey") << QString("Alt+X, Ctrl+Y, Z") << QString("Alt+X, Ctrl+Y, Z")
                            << QString("Alt+X, Ctrl+Y, Z");
 
-    QTest::newRow("Invalid") << QString("Ctrly") << QString("") << QString("");
+    BOBUIest::newRow("Invalid") << QString("Ctrly") << QString("") << QString("");
 #else
     /*
-    QTest::newRow("Ctrl+Left") << MacCtrl + "Left" << QString("Ctrl+Left") << MacCtrl + macSymbolForQtKey(Qt::Key_Left);
-    QTest::newRow("Alt+Left") << MacAlt + "Left" << QString("Alt+Left") << MacAlt + macSymbolForQtKey(Qt::Key_Left);
-    QTest::newRow("Alt+Shift+Left") << MacAlt + MacShift + "Left" << QString("Alt+Shift+Left")
-                                 << MacAlt + MacShift + macSymbolForQtKey(Qt::Key_Left);
+    BOBUIest::newRow("Ctrl+Left") << MacCtrl + "Left" << QString("Ctrl+Left") << MacCtrl + macSymbolForBobUIKey(BobUI::Key_Left);
+    BOBUIest::newRow("Alt+Left") << MacAlt + "Left" << QString("Alt+Left") << MacAlt + macSymbolForBobUIKey(BobUI::Key_Left);
+    BOBUIest::newRow("Alt+Shift+Left") << MacAlt + MacShift + "Left" << QString("Alt+Shift+Left")
+                                 << MacAlt + MacShift + macSymbolForBobUIKey(BobUI::Key_Left);
                                  */
-    QTest::newRow("Ctrl+Right,Left") << MacCtrl + "Right, Left" << QString("Ctrl+Right, Left") << MacCtrl + macSymbolForQtKey(Qt::Key_Right) + QString(", ") + macSymbolForQtKey(Qt::Key_Left);
-    QTest::newRow("Ctrl") << MacCtrl + QLatin1String("\x0c5") << QString::fromLatin1("Ctrl+\x0c5") << MacCtrl + QLatin1String("\x0c5");
-    QTest::newRow("Alt") << MacAlt + QLatin1String("\x0c5") << QString::fromLatin1("Alt+\x0c5") << MacAlt + QLatin1String("\x0c5");
-    QTest::newRow("Shift") << MacShift + QLatin1String("\x0c5") << QString::fromLatin1("Shift+\x0c5") << MacShift + QLatin1String("\x0c5");
-    QTest::newRow("Meta") << MacMeta + QLatin1String("\x0c5") << QString::fromLatin1("Meta+\x0c5") << MacMeta + QLatin1String("\x0c5");
-    QTest::newRow("Ctrl+Plus") << MacCtrl + "+" << QString("Ctrl++") << MacCtrl + "+";
-    QTest::newRow("Ctrl+,") << MacCtrl + "," << QString("Ctrl+,") << MacCtrl + ",";
-    QTest::newRow("Ctrl+,,Ctrl+,") << MacCtrl + ",, " + MacCtrl + "," << QString("Ctrl+,, Ctrl+,") << MacCtrl + ",, " + MacCtrl + ",";
-    QTest::newRow("MultiKey") << MacAlt + "X, " + MacCtrl + "Y, Z" << QString("Alt+X, Ctrl+Y, Z")
+    BOBUIest::newRow("Ctrl+Right,Left") << MacCtrl + "Right, Left" << QString("Ctrl+Right, Left") << MacCtrl + macSymbolForBobUIKey(BobUI::Key_Right) + QString(", ") + macSymbolForBobUIKey(BobUI::Key_Left);
+    BOBUIest::newRow("Ctrl") << MacCtrl + QLatin1String("\x0c5") << QString::fromLatin1("Ctrl+\x0c5") << MacCtrl + QLatin1String("\x0c5");
+    BOBUIest::newRow("Alt") << MacAlt + QLatin1String("\x0c5") << QString::fromLatin1("Alt+\x0c5") << MacAlt + QLatin1String("\x0c5");
+    BOBUIest::newRow("Shift") << MacShift + QLatin1String("\x0c5") << QString::fromLatin1("Shift+\x0c5") << MacShift + QLatin1String("\x0c5");
+    BOBUIest::newRow("Meta") << MacMeta + QLatin1String("\x0c5") << QString::fromLatin1("Meta+\x0c5") << MacMeta + QLatin1String("\x0c5");
+    BOBUIest::newRow("Ctrl+Plus") << MacCtrl + "+" << QString("Ctrl++") << MacCtrl + "+";
+    BOBUIest::newRow("Ctrl+,") << MacCtrl + "," << QString("Ctrl+,") << MacCtrl + ",";
+    BOBUIest::newRow("Ctrl+,,Ctrl+,") << MacCtrl + ",, " + MacCtrl + "," << QString("Ctrl+,, Ctrl+,") << MacCtrl + ",, " + MacCtrl + ",";
+    BOBUIest::newRow("MultiKey") << MacAlt + "X, " + MacCtrl + "Y, Z" << QString("Alt+X, Ctrl+Y, Z")
                            << MacAlt + "X, " + MacCtrl + "Y, Z";
-    QTest::newRow("Invalid") << QString("Ctrly") << QString("") << QString("");
+    BOBUIest::newRow("Invalid") << QString("Ctrly") << QString("") << QString("");
 #endif
 }
 
@@ -477,21 +477,21 @@ void tst_QKeySequence::toString()
 
 void tst_QKeySequence::toStringFromKeycode_data()
 {
-    QTest::addColumn<QKeySequence>("keycode");
-    QTest::addColumn<QString>("expectedString");
+    BOBUIest::addColumn<QKeySequence>("keycode");
+    BOBUIest::addColumn<QString>("expectedString");
 
-    QTest::newRow("A") << QKeySequence(Qt::Key_A) << "A";
-    QTest::newRow("-1") << QKeySequence(-1) << "";
-    QTest::newRow("Unknown") << QKeySequence(Qt::Key_unknown) << "";
-    QTest::newRow("Ctrl+Unknown") << QKeySequence(Qt::ControlModifier | Qt::Key_unknown) << "";
-    QTest::newRow("Ctrl+Num+Ins") << QKeySequence(Qt::ControlModifier | Qt::KeypadModifier | Qt::Key_Insert) << "Ctrl+Num+Ins";
-    QTest::newRow("Ctrl+Num+Del") << QKeySequence(Qt::ControlModifier | Qt::KeypadModifier | Qt::Key_Delete) << "Ctrl+Num+Del";
-    QTest::newRow("Ctrl+Alt+Num+Del") << QKeySequence(Qt::ControlModifier | Qt::AltModifier | Qt::KeypadModifier | Qt::Key_Delete) << "Ctrl+Alt+Num+Del";
-    QTest::newRow("Ctrl+Ins") << QKeySequence(Qt::ControlModifier | Qt::Key_Insert) << "Ctrl+Ins";
-    QTest::newRow("Ctrl") << QKeySequence(Qt::Key_Control) << "Control";
-    QTest::newRow("Alt") << QKeySequence(Qt::Key_Alt) << "Alt";
-    QTest::newRow("Shift") << QKeySequence(Qt::Key_Shift) << "Shift";
-    QTest::newRow("Meta") << QKeySequence(Qt::Key_Meta) << "Meta";
+    BOBUIest::newRow("A") << QKeySequence(BobUI::Key_A) << "A";
+    BOBUIest::newRow("-1") << QKeySequence(-1) << "";
+    BOBUIest::newRow("Unknown") << QKeySequence(BobUI::Key_unknown) << "";
+    BOBUIest::newRow("Ctrl+Unknown") << QKeySequence(BobUI::ControlModifier | BobUI::Key_unknown) << "";
+    BOBUIest::newRow("Ctrl+Num+Ins") << QKeySequence(BobUI::ControlModifier | BobUI::KeypadModifier | BobUI::Key_Insert) << "Ctrl+Num+Ins";
+    BOBUIest::newRow("Ctrl+Num+Del") << QKeySequence(BobUI::ControlModifier | BobUI::KeypadModifier | BobUI::Key_Delete) << "Ctrl+Num+Del";
+    BOBUIest::newRow("Ctrl+Alt+Num+Del") << QKeySequence(BobUI::ControlModifier | BobUI::AltModifier | BobUI::KeypadModifier | BobUI::Key_Delete) << "Ctrl+Alt+Num+Del";
+    BOBUIest::newRow("Ctrl+Ins") << QKeySequence(BobUI::ControlModifier | BobUI::Key_Insert) << "Ctrl+Ins";
+    BOBUIest::newRow("Ctrl") << QKeySequence(BobUI::Key_Control) << "Control";
+    BOBUIest::newRow("Alt") << QKeySequence(BobUI::Key_Alt) << "Alt";
+    BOBUIest::newRow("Shift") << QKeySequence(BobUI::Key_Shift) << "Shift";
+    BOBUIest::newRow("Meta") << QKeySequence(BobUI::Key_Meta) << "Meta";
 }
 
 void tst_QKeySequence::toStringFromKeycode()
@@ -532,62 +532,62 @@ void tst_QKeySequence::streamOperators()
 
 void tst_QKeySequence::parseString_data()
 {
-    QTest::addColumn<QString>("strSequence");
-    QTest::addColumn<QKeySequence>("keycode");
+    BOBUIest::addColumn<QString>("strSequence");
+    BOBUIest::addColumn<QKeySequence>("keycode");
 
     // Valid
-    QTest::newRow("A") << "A" << QKeySequence(Qt::Key_A);
-    QTest::newRow("a") << "a" << QKeySequence(Qt::Key_A);
-    QTest::newRow("Ctrl+Left") << "Ctrl+Left" << QKeySequence(Qt::CTRL | Qt::Key_Left);
-    QTest::newRow("CTRL+LEFT") << "CTRL+LEFT" << QKeySequence(Qt::CTRL | Qt::Key_Left);
-    QTest::newRow("Meta+A") << "Meta+a" <<  QKeySequence(Qt::META | Qt::Key_A);
-    QTest::newRow("mEtA+A") << "mEtA+a" <<  QKeySequence(Qt::META | Qt::Key_A);
-    QTest::newRow("Ctrl++") << "Ctrl++" << QKeySequence(Qt::CTRL | Qt::Key_Plus);
-    QTest::newRow("+") << "+" << QKeySequence(Qt::Key_Plus);
+    BOBUIest::newRow("A") << "A" << QKeySequence(BobUI::Key_A);
+    BOBUIest::newRow("a") << "a" << QKeySequence(BobUI::Key_A);
+    BOBUIest::newRow("Ctrl+Left") << "Ctrl+Left" << QKeySequence(BobUI::CTRL | BobUI::Key_Left);
+    BOBUIest::newRow("CTRL+LEFT") << "CTRL+LEFT" << QKeySequence(BobUI::CTRL | BobUI::Key_Left);
+    BOBUIest::newRow("Meta+A") << "Meta+a" <<  QKeySequence(BobUI::META | BobUI::Key_A);
+    BOBUIest::newRow("mEtA+A") << "mEtA+a" <<  QKeySequence(BobUI::META | BobUI::Key_A);
+    BOBUIest::newRow("Ctrl++") << "Ctrl++" << QKeySequence(BobUI::CTRL | BobUI::Key_Plus);
+    BOBUIest::newRow("+") << "+" << QKeySequence(BobUI::Key_Plus);
 
     // Tolerance for spaces
-    QTest::newRow("Ctrl_+_Del") << "Ctrl + Del" << QKeySequence(Qt::CTRL | Qt::Key_Delete);
-    QTest::newRow("Ctrl+Del_") << "Ctrl+Del " << QKeySequence(Qt::CTRL | Qt::Key_Delete);
-    QTest::newRow("Ctrl_+_Del_") << "Ctrl + Del " << QKeySequence(Qt::CTRL | Qt::Key_Delete);
-    QTest::newRow("space") << " " << QKeySequence(Qt::Key_Space);
-    QTest::newRow("Ctrl+space") << "Ctrl+ " << QKeySequence(Qt::CTRL | Qt::Key_Space);
-    QTest::newRow("Ctrl_++") << "Ctrl ++" << QKeySequence(Qt::CTRL | Qt::Key_Plus);
-    QTest::newRow("Ctrl_+_+") << "Ctrl + +" << QKeySequence(Qt::CTRL | Qt::Key_Plus);
-    QTest::newRow("Ctrl_+_+_") << "Ctrl + + " << QKeySequence(Qt::CTRL | Qt::Key_Plus);
-    QTest::newRow("+_") << "+ " << QKeySequence(Qt::Key_Plus);
-    QTest::newRow("_+") << " +" << QKeySequence(Qt::Key_Plus);
-    QTest::newRow("_+_") << " + " << QKeySequence(Qt::Key_Plus);
+    BOBUIest::newRow("Ctrl_+_Del") << "Ctrl + Del" << QKeySequence(BobUI::CTRL | BobUI::Key_Delete);
+    BOBUIest::newRow("Ctrl+Del_") << "Ctrl+Del " << QKeySequence(BobUI::CTRL | BobUI::Key_Delete);
+    BOBUIest::newRow("Ctrl_+_Del_") << "Ctrl + Del " << QKeySequence(BobUI::CTRL | BobUI::Key_Delete);
+    BOBUIest::newRow("space") << " " << QKeySequence(BobUI::Key_Space);
+    BOBUIest::newRow("Ctrl+space") << "Ctrl+ " << QKeySequence(BobUI::CTRL | BobUI::Key_Space);
+    BOBUIest::newRow("Ctrl_++") << "Ctrl ++" << QKeySequence(BobUI::CTRL | BobUI::Key_Plus);
+    BOBUIest::newRow("Ctrl_+_+") << "Ctrl + +" << QKeySequence(BobUI::CTRL | BobUI::Key_Plus);
+    BOBUIest::newRow("Ctrl_+_+_") << "Ctrl + + " << QKeySequence(BobUI::CTRL | BobUI::Key_Plus);
+    BOBUIest::newRow("+_") << "+ " << QKeySequence(BobUI::Key_Plus);
+    BOBUIest::newRow("_+") << " +" << QKeySequence(BobUI::Key_Plus);
+    BOBUIest::newRow("_+_") << " + " << QKeySequence(BobUI::Key_Plus);
 
     // Invalid modifiers
-    QTest::newRow("Win+A") << "Win+a" <<  QKeySequence(Qt::Key_unknown);
-    QTest::newRow("Super+Meta+A") << "Super+Meta+A" << QKeySequence(Qt::Key_unknown);
+    BOBUIest::newRow("Win+A") << "Win+a" <<  QKeySequence(BobUI::Key_unknown);
+    BOBUIest::newRow("Super+Meta+A") << "Super+Meta+A" << QKeySequence(BobUI::Key_unknown);
 
     // Invalid Keys
-    QTest::newRow("Meta+Trolls") << "Meta+Trolls" << QKeySequence(Qt::Key_unknown);
-    QTest::newRow("Meta+Period") << "Meta+Period" << QKeySequence(Qt::Key_unknown);
-    QTest::newRow("Meta+Ypsilon") << "Meta+Ypsilon" << QKeySequence(Qt::Key_unknown);
+    BOBUIest::newRow("Meta+Trolls") << "Meta+Trolls" << QKeySequence(BobUI::Key_unknown);
+    BOBUIest::newRow("Meta+Period") << "Meta+Period" << QKeySequence(BobUI::Key_unknown);
+    BOBUIest::newRow("Meta+Ypsilon") << "Meta+Ypsilon" << QKeySequence(BobUI::Key_unknown);
 
     // Garbage
-    QTest::newRow("4+3=2") << "4+3=2" <<  QKeySequence(Qt::Key_unknown);
-    QTest::newRow("Alabama") << "Alabama" << QKeySequence(Qt::Key_unknown);
-    QTest::newRow("Simon+G") << "Simon+G" << QKeySequence(Qt::Key_unknown);
-    QTest::newRow("Shift+++2") << "Shift+++2" << QKeySequence(Qt::Key_unknown);
-    QTest::newRow("Ctrl+D_el") << "Ctrl+D el" << QKeySequence(Qt::Key_unknown);
-    QTest::newRow("Ct_rl+D_el") << "Ct rl+D el" << QKeySequence(Qt::Key_unknown);
+    BOBUIest::newRow("4+3=2") << "4+3=2" <<  QKeySequence(BobUI::Key_unknown);
+    BOBUIest::newRow("Alabama") << "Alabama" << QKeySequence(BobUI::Key_unknown);
+    BOBUIest::newRow("Simon+G") << "Simon+G" << QKeySequence(BobUI::Key_unknown);
+    BOBUIest::newRow("Shift+++2") << "Shift+++2" << QKeySequence(BobUI::Key_unknown);
+    BOBUIest::newRow("Ctrl+D_el") << "Ctrl+D el" << QKeySequence(BobUI::Key_unknown);
+    BOBUIest::newRow("Ct_rl+D_el") << "Ct rl+D el" << QKeySequence(BobUI::Key_unknown);
 
     // Wrong order
-    QTest::newRow("A+Meta") << "a+Meta" <<  QKeySequence(Qt::Key_unknown);
-    QTest::newRow("Meta+++Shift") << "Meta+++Shift" <<  QKeySequence(Qt::Key_unknown);
-    QTest::newRow("Meta+a+Shift") << "Meta+a+Shift" <<  QKeySequence(Qt::Key_unknown);
+    BOBUIest::newRow("A+Meta") << "a+Meta" <<  QKeySequence(BobUI::Key_unknown);
+    BOBUIest::newRow("Meta+++Shift") << "Meta+++Shift" <<  QKeySequence(BobUI::Key_unknown);
+    BOBUIest::newRow("Meta+a+Shift") << "Meta+a+Shift" <<  QKeySequence(BobUI::Key_unknown);
 
     // Only Modifiers - currently not supported
-    //QTest::newRow("Meta+Shift") << "Meta+Shift" << QKeySequence(Qt::META + Qt::SHIFT);
-    //QTest::newRow("Ctrl") << "Ctrl" << QKeySequence(Qt::CTRL);
-    //QTest::newRow("Shift") << "Shift" << QKeySequence(Qt::SHIFT);
+    //BOBUIest::newRow("Meta+Shift") << "Meta+Shift" << QKeySequence(BobUI::META + BobUI::SHIFT);
+    //BOBUIest::newRow("Ctrl") << "Ctrl" << QKeySequence(BobUI::CTRL);
+    //BOBUIest::newRow("Shift") << "Shift" << QKeySequence(BobUI::SHIFT);
 
     // Incomplete
-    QTest::newRow("Ctrl+") << "Ctrl+" << QKeySequence(Qt::Key_unknown);
-    QTest::newRow("Meta+Shift+") << "Meta+Shift+" << QKeySequence(Qt::Key_unknown);
+    BOBUIest::newRow("Ctrl+") << "Ctrl+" << QKeySequence(BobUI::Key_unknown);
+    BOBUIest::newRow("Meta+Shift+") << "Meta+Shift+" << QKeySequence(BobUI::Key_unknown);
 }
 
 void tst_QKeySequence::parseString()
@@ -627,40 +627,40 @@ void tst_QKeySequence::fromString()
 
 void tst_QKeySequence::listToString_data()
 {
-    QTest::addColumn<QString>("strSequences");
-    QTest::addColumn<QList<QKeySequence> >("sequences");
+    BOBUIest::addColumn<QString>("strSequences");
+    BOBUIest::addColumn<QList<QKeySequence> >("sequences");
 
     QList<QKeySequence> sequences;
 
-    sequences << QKeySequence(Qt::CTRL | Qt::Key_Left)
-              << QKeySequence(Qt::META | Qt::Key_A);
-    QTest::newRow("Ctrl+Left; Meta+A") << "Ctrl+Left; Meta+A" << sequences;
+    sequences << QKeySequence(BobUI::CTRL | BobUI::Key_Left)
+              << QKeySequence(BobUI::META | BobUI::Key_A);
+    BOBUIest::newRow("Ctrl+Left; Meta+A") << "Ctrl+Left; Meta+A" << sequences;
 
     sequences.clear();
-    sequences << QKeySequence(Qt::CTRL | Qt::Key_Semicolon)
-              << QKeySequence(Qt::META | Qt::Key_A);
-    QTest::newRow("Ctrl+;; Meta+A") << "Ctrl+;; Meta+A" << sequences;
+    sequences << QKeySequence(BobUI::CTRL | BobUI::Key_Semicolon)
+              << QKeySequence(BobUI::META | BobUI::Key_A);
+    BOBUIest::newRow("Ctrl+;; Meta+A") << "Ctrl+;; Meta+A" << sequences;
 
     sequences.clear();
-    sequences << QKeySequence(Qt::Key_Semicolon)
-              << QKeySequence(Qt::META | Qt::Key_A);
-    QTest::newRow(";; Meta+A") << ";; Meta+A" << sequences;
+    sequences << QKeySequence(BobUI::Key_Semicolon)
+              << QKeySequence(BobUI::META | BobUI::Key_A);
+    BOBUIest::newRow(";; Meta+A") << ";; Meta+A" << sequences;
 
     sequences.clear();
-    sequences << QKeySequence(Qt::CTRL | Qt::Key_Left)
-              << QKeySequence(Qt::META | Qt::Key_Semicolon);
-    QTest::newRow("Ctrl+Left; Meta+;") << "Ctrl+Left; Meta+;" << sequences;
+    sequences << QKeySequence(BobUI::CTRL | BobUI::Key_Left)
+              << QKeySequence(BobUI::META | BobUI::Key_Semicolon);
+    BOBUIest::newRow("Ctrl+Left; Meta+;") << "Ctrl+Left; Meta+;" << sequences;
 
     sequences.clear();
-    sequences << QKeySequence(Qt::CTRL | Qt::Key_Left)
+    sequences << QKeySequence(BobUI::CTRL | BobUI::Key_Left)
               << QKeySequence();
-    QTest::newRow("Ctrl+Left; ") << "Ctrl+Left; " << sequences;
+    BOBUIest::newRow("Ctrl+Left; ") << "Ctrl+Left; " << sequences;
 
     sequences.clear();
-    sequences << QKeySequence(Qt::CTRL | Qt::Key_Left)
+    sequences << QKeySequence(BobUI::CTRL | BobUI::Key_Left)
               << QKeySequence()
-              << QKeySequence(Qt::META | Qt::Key_A);
-    QTest::newRow("Ctrl+Left; ; Meta+A") << "Ctrl+Left; ; Meta+A" << sequences;
+              << QKeySequence(BobUI::META | BobUI::Key_A);
+    BOBUIest::newRow("Ctrl+Left; ; Meta+A") << "Ctrl+Left; ; Meta+A" << sequences;
 }
 
 void tst_QKeySequence::listToString()
@@ -673,46 +673,46 @@ void tst_QKeySequence::listToString()
 
 void tst_QKeySequence::listFromString_data()
 {
-    QTest::addColumn<QString>("strSequences");
-    QTest::addColumn<QList<QKeySequence> >("sequences");
+    BOBUIest::addColumn<QString>("strSequences");
+    BOBUIest::addColumn<QList<QKeySequence> >("sequences");
 
     QList<QKeySequence> sequences;
 
-    sequences << QKeySequence(Qt::CTRL | Qt::Key_Left)
-              << QKeySequence(Qt::META | Qt::Key_A);
-    QTest::newRow("Ctrl+Left; Meta+A") << "Ctrl+Left; Meta+A" << sequences;
+    sequences << QKeySequence(BobUI::CTRL | BobUI::Key_Left)
+              << QKeySequence(BobUI::META | BobUI::Key_A);
+    BOBUIest::newRow("Ctrl+Left; Meta+A") << "Ctrl+Left; Meta+A" << sequences;
 
     sequences.clear();
-    sequences << QKeySequence(Qt::CTRL | Qt::Key_Semicolon)
-              << QKeySequence(Qt::META | Qt::Key_A);
-    QTest::newRow("Ctrl+;; Meta+A") << "Ctrl+;; Meta+A" << sequences;
+    sequences << QKeySequence(BobUI::CTRL | BobUI::Key_Semicolon)
+              << QKeySequence(BobUI::META | BobUI::Key_A);
+    BOBUIest::newRow("Ctrl+;; Meta+A") << "Ctrl+;; Meta+A" << sequences;
 
     sequences.clear();
-    sequences << QKeySequence(Qt::Key_Semicolon)
-              << QKeySequence(Qt::META | Qt::Key_A);
-    QTest::newRow(";; Meta+A") << ";; Meta+A" << sequences;
+    sequences << QKeySequence(BobUI::Key_Semicolon)
+              << QKeySequence(BobUI::META | BobUI::Key_A);
+    BOBUIest::newRow(";; Meta+A") << ";; Meta+A" << sequences;
 
     sequences.clear();
-    sequences << QKeySequence(Qt::CTRL | Qt::Key_Left)
-              << QKeySequence(Qt::META | Qt::Key_Semicolon);
-    QTest::newRow("Ctrl+Left; Meta+;") << "Ctrl+Left; Meta+;" << sequences;
+    sequences << QKeySequence(BobUI::CTRL | BobUI::Key_Left)
+              << QKeySequence(BobUI::META | BobUI::Key_Semicolon);
+    BOBUIest::newRow("Ctrl+Left; Meta+;") << "Ctrl+Left; Meta+;" << sequences;
 
     sequences.clear();
-    sequences << QKeySequence(Qt::CTRL | Qt::Key_Left)
+    sequences << QKeySequence(BobUI::CTRL | BobUI::Key_Left)
               << QKeySequence();
-    QTest::newRow("Ctrl+Left; ") << "Ctrl+Left; " << sequences;
+    BOBUIest::newRow("Ctrl+Left; ") << "Ctrl+Left; " << sequences;
 
     sequences.clear();
-    sequences << QKeySequence(Qt::CTRL | Qt::Key_Left)
+    sequences << QKeySequence(BobUI::CTRL | BobUI::Key_Left)
               << QKeySequence()
-              << QKeySequence(Qt::META | Qt::Key_A);
-    QTest::newRow("Ctrl+Left; ; Meta+A") << "Ctrl+Left; ; Meta+A" << sequences;
+              << QKeySequence(BobUI::META | BobUI::Key_A);
+    BOBUIest::newRow("Ctrl+Left; ; Meta+A") << "Ctrl+Left; ; Meta+A" << sequences;
 
     sequences.clear();
-    sequences << QKeySequence(Qt::CTRL | Qt::Key_Left)
-              << QKeySequence(Qt::Key_unknown)
-              << QKeySequence(Qt::META | Qt::Key_A);
-    QTest::newRow("Ctrl+Left; 4+3=2; Meta+A") << "Ctrl+Left; 4+3=2; Meta+A" << sequences;
+    sequences << QKeySequence(BobUI::CTRL | BobUI::Key_Left)
+              << QKeySequence(BobUI::Key_unknown)
+              << QKeySequence(BobUI::META | BobUI::Key_A);
+    BOBUIest::newRow("Ctrl+Left; 4+3=2; Meta+A") << "Ctrl+Left; 4+3=2; Meta+A" << sequences;
 }
 
 void tst_QKeySequence::listFromString()
@@ -730,28 +730,28 @@ void tst_QKeySequence::translated_data()
 #endif
 
     qApp->installTranslator(ourTranslator);
-    qApp->installTranslator(qtTranslator);
+    qApp->installTranslator(bobuiTranslator);
 
-    QTest::addColumn<QString>("transKey");
-    QTest::addColumn<QString>("compKey");
+    BOBUIest::addColumn<QString>("transKey");
+    BOBUIest::addColumn<QString>("compKey");
 
-    QTest::newRow("Shift++") << tr("Shift++") << QString("Umschalt++");
-    QTest::newRow("Ctrl++")  << tr("Ctrl++") << QString("Strg++");
-    QTest::newRow("Alt++")   << tr("Alt++") << QString("Alt++");
-    QTest::newRow("Meta++")  << tr("Meta++") << QString("Meta++");
+    BOBUIest::newRow("Shift++") << tr("Shift++") << QString("Umschalt++");
+    BOBUIest::newRow("Ctrl++")  << tr("Ctrl++") << QString("Strg++");
+    BOBUIest::newRow("Alt++")   << tr("Alt++") << QString("Alt++");
+    BOBUIest::newRow("Meta++")  << tr("Meta++") << QString("Meta++");
 
-    QTest::newRow("Shift+,, Shift++") << tr("Shift+,, Shift++") << QString("Umschalt+,, Umschalt++");
-    QTest::newRow("Shift+,, Ctrl++")  << tr("Shift+,, Ctrl++") << QString("Umschalt+,, Strg++");
-    QTest::newRow("Shift+,, Alt++")   << tr("Shift+,, Alt++") << QString("Umschalt+,, Alt++");
-    QTest::newRow("Shift+,, Meta++")  << tr("Shift+,, Meta++") << QString("Umschalt+,, Meta++");
+    BOBUIest::newRow("Shift+,, Shift++") << tr("Shift+,, Shift++") << QString("Umschalt+,, Umschalt++");
+    BOBUIest::newRow("Shift+,, Ctrl++")  << tr("Shift+,, Ctrl++") << QString("Umschalt+,, Strg++");
+    BOBUIest::newRow("Shift+,, Alt++")   << tr("Shift+,, Alt++") << QString("Umschalt+,, Alt++");
+    BOBUIest::newRow("Shift+,, Meta++")  << tr("Shift+,, Meta++") << QString("Umschalt+,, Meta++");
 
-    QTest::newRow("Ctrl+,, Shift++") << tr("Ctrl+,, Shift++") << QString("Strg+,, Umschalt++");
-    QTest::newRow("Ctrl+,, Ctrl++")  << tr("Ctrl+,, Ctrl++") << QString("Strg+,, Strg++");
-    QTest::newRow("Ctrl+,, Alt++")   << tr("Ctrl+,, Alt++") << QString("Strg+,, Alt++");
-    QTest::newRow("Ctrl+,, Meta++")  << tr("Ctrl+,, Meta++") << QString("Strg+,, Meta++");
+    BOBUIest::newRow("Ctrl+,, Shift++") << tr("Ctrl+,, Shift++") << QString("Strg+,, Umschalt++");
+    BOBUIest::newRow("Ctrl+,, Ctrl++")  << tr("Ctrl+,, Ctrl++") << QString("Strg+,, Strg++");
+    BOBUIest::newRow("Ctrl+,, Alt++")   << tr("Ctrl+,, Alt++") << QString("Strg+,, Alt++");
+    BOBUIest::newRow("Ctrl+,, Meta++")  << tr("Ctrl+,, Meta++") << QString("Strg+,, Meta++");
 
     qApp->removeTranslator(ourTranslator);
-    qApp->removeTranslator(qtTranslator);
+    qApp->removeTranslator(bobuiTranslator);
 }
 
 void tst_QKeySequence::translated()
@@ -761,54 +761,54 @@ void tst_QKeySequence::translated()
     QFETCH(QString, compKey);
 
     qApp->installTranslator(ourTranslator);
-    qApp->installTranslator(qtTranslator);
+    qApp->installTranslator(bobuiTranslator);
 
     QKeySequence ks1(transKey);
     QCOMPARE(ks1.toString(QKeySequence::NativeText), compKey);
 
     qApp->removeTranslator(ourTranslator);
-    qApp->removeTranslator(qtTranslator);
+    qApp->removeTranslator(bobuiTranslator);
 #endif
 }
 
 void tst_QKeySequence::i18nKeys_data()
 {
-    QTest::addColumn<int>("keycode");
-    QTest::addColumn<QString>("keystring");
+    BOBUIest::addColumn<int>("keycode");
+    BOBUIest::addColumn<QString>("keystring");
 
     // Japanese keyboard support
-    QTest::newRow("Kanji") << (int)Qt::Key_Kanji << QString("Kanji");
-    QTest::newRow("Muhenkan") << (int)Qt::Key_Muhenkan << QString("Muhenkan");
-    QTest::newRow("Henkan") << (int)Qt::Key_Henkan << QString("Henkan");
-    QTest::newRow("Romaji") << (int)Qt::Key_Romaji << QString("Romaji");
-    QTest::newRow("Hiragana") << (int)Qt::Key_Hiragana << QString("Hiragana");
-    QTest::newRow("Katakana") << (int)Qt::Key_Katakana << QString("Katakana");
-    QTest::newRow("Hiragana Katakana") << (int)Qt::Key_Hiragana_Katakana << QString("Hiragana Katakana");
-    QTest::newRow("Zenkaku") << (int)Qt::Key_Zenkaku << QString("Zenkaku");
-    QTest::newRow("Hankaku") << (int)Qt::Key_Hankaku << QString("Hankaku");
-    QTest::newRow("Zenkaku Hankaku") << (int)Qt::Key_Zenkaku_Hankaku << QString("Zenkaku Hankaku");
-    QTest::newRow("Touroku") << (int)Qt::Key_Touroku << QString("Touroku");
-    QTest::newRow("Massyo") << (int)Qt::Key_Massyo << QString("Massyo");
-    QTest::newRow("Kana Lock") << (int)Qt::Key_Kana_Lock << QString("Kana Lock");
-    QTest::newRow("Kana Shift") << (int)Qt::Key_Kana_Shift << QString("Kana Shift");
-    QTest::newRow("Eisu Shift") << (int)Qt::Key_Eisu_Shift << QString("Eisu Shift");
-    QTest::newRow("Eisu_toggle") << (int)Qt::Key_Eisu_toggle << QString("Eisu toggle");
-    QTest::newRow("Code input") << (int)Qt::Key_Codeinput << QString("Code input");
-    QTest::newRow("Multiple Candidate") << (int)Qt::Key_MultipleCandidate << QString("Multiple Candidate");
-    QTest::newRow("Previous Candidate") << (int)Qt::Key_PreviousCandidate << QString("Previous Candidate");
+    BOBUIest::newRow("Kanji") << (int)BobUI::Key_Kanji << QString("Kanji");
+    BOBUIest::newRow("Muhenkan") << (int)BobUI::Key_Muhenkan << QString("Muhenkan");
+    BOBUIest::newRow("Henkan") << (int)BobUI::Key_Henkan << QString("Henkan");
+    BOBUIest::newRow("Romaji") << (int)BobUI::Key_Romaji << QString("Romaji");
+    BOBUIest::newRow("Hiragana") << (int)BobUI::Key_Hiragana << QString("Hiragana");
+    BOBUIest::newRow("Katakana") << (int)BobUI::Key_Katakana << QString("Katakana");
+    BOBUIest::newRow("Hiragana Katakana") << (int)BobUI::Key_Hiragana_Katakana << QString("Hiragana Katakana");
+    BOBUIest::newRow("Zenkaku") << (int)BobUI::Key_Zenkaku << QString("Zenkaku");
+    BOBUIest::newRow("Hankaku") << (int)BobUI::Key_Hankaku << QString("Hankaku");
+    BOBUIest::newRow("Zenkaku Hankaku") << (int)BobUI::Key_Zenkaku_Hankaku << QString("Zenkaku Hankaku");
+    BOBUIest::newRow("Touroku") << (int)BobUI::Key_Touroku << QString("Touroku");
+    BOBUIest::newRow("Massyo") << (int)BobUI::Key_Massyo << QString("Massyo");
+    BOBUIest::newRow("Kana Lock") << (int)BobUI::Key_Kana_Lock << QString("Kana Lock");
+    BOBUIest::newRow("Kana Shift") << (int)BobUI::Key_Kana_Shift << QString("Kana Shift");
+    BOBUIest::newRow("Eisu Shift") << (int)BobUI::Key_Eisu_Shift << QString("Eisu Shift");
+    BOBUIest::newRow("Eisu_toggle") << (int)BobUI::Key_Eisu_toggle << QString("Eisu toggle");
+    BOBUIest::newRow("Code input") << (int)BobUI::Key_Codeinput << QString("Code input");
+    BOBUIest::newRow("Multiple Candidate") << (int)BobUI::Key_MultipleCandidate << QString("Multiple Candidate");
+    BOBUIest::newRow("Previous Candidate") << (int)BobUI::Key_PreviousCandidate << QString("Previous Candidate");
 
     // Korean keyboard support
-    QTest::newRow("Hangul") << (int)Qt::Key_Hangul << QString("Hangul");
-    QTest::newRow("Hangul Start") << (int)Qt::Key_Hangul_Start << QString("Hangul Start");
-    QTest::newRow("Hangul End") << (int)Qt::Key_Hangul_End << QString("Hangul End");
-    QTest::newRow("Hangul Hanja") << (int)Qt::Key_Hangul_Hanja << QString("Hangul Hanja");
-    QTest::newRow("Hangul Jamo") << (int)Qt::Key_Hangul_Jamo << QString("Hangul Jamo");
-    QTest::newRow("Hangul Romaja") << (int)Qt::Key_Hangul_Romaja << QString("Hangul Romaja");
-    QTest::newRow("Hangul Jeonja") << (int)Qt::Key_Hangul_Jeonja << QString("Hangul Jeonja");
-    QTest::newRow("Hangul Banja") << (int)Qt::Key_Hangul_Banja << QString("Hangul Banja");
-    QTest::newRow("Hangul PreHanja") << (int)Qt::Key_Hangul_PreHanja << QString("Hangul PreHanja");
-    QTest::newRow("Hangul PostHanja") << (int)Qt::Key_Hangul_PostHanja << QString("Hangul PostHanja");
-    QTest::newRow("Hangul Special") << (int)Qt::Key_Hangul_Special << QString("Hangul Special");
+    BOBUIest::newRow("Hangul") << (int)BobUI::Key_Hangul << QString("Hangul");
+    BOBUIest::newRow("Hangul Start") << (int)BobUI::Key_Hangul_Start << QString("Hangul Start");
+    BOBUIest::newRow("Hangul End") << (int)BobUI::Key_Hangul_End << QString("Hangul End");
+    BOBUIest::newRow("Hangul Hanja") << (int)BobUI::Key_Hangul_Hanja << QString("Hangul Hanja");
+    BOBUIest::newRow("Hangul Jamo") << (int)BobUI::Key_Hangul_Jamo << QString("Hangul Jamo");
+    BOBUIest::newRow("Hangul Romaja") << (int)BobUI::Key_Hangul_Romaja << QString("Hangul Romaja");
+    BOBUIest::newRow("Hangul Jeonja") << (int)BobUI::Key_Hangul_Jeonja << QString("Hangul Jeonja");
+    BOBUIest::newRow("Hangul Banja") << (int)BobUI::Key_Hangul_Banja << QString("Hangul Banja");
+    BOBUIest::newRow("Hangul PreHanja") << (int)BobUI::Key_Hangul_PreHanja << QString("Hangul PreHanja");
+    BOBUIest::newRow("Hangul PostHanja") << (int)BobUI::Key_Hangul_PostHanja << QString("Hangul PostHanja");
+    BOBUIest::newRow("Hangul Special") << (int)BobUI::Key_Hangul_Special << QString("Hangul Special");
 }
 
 void tst_QKeySequence::i18nKeys()
@@ -821,5 +821,5 @@ void tst_QKeySequence::i18nKeys()
     QCOMPARE(seq.toString(), keystring);
 }
 
-QTEST_MAIN(tst_QKeySequence)
+BOBUIEST_MAIN(tst_QKeySequence)
 #include "tst_qkeysequence.moc"

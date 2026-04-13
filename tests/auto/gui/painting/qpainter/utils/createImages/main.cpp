@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
 #include <qapplication.h>
@@ -52,9 +52,9 @@ static QBitmap createDestBitmap()
     QBitmap bm( 8, 8 );
     QPainter painter;
     painter.begin( &bm );
-    painter.setPen( QPen( Qt::color0, 4 ) );
+    painter.setPen( QPen( BobUI::color0, 4 ) );
     painter.drawLine( 2, 0, 2, 8 );
-    painter.setPen( QPen( Qt::color1, 4 ) );
+    painter.setPen( QPen( BobUI::color1, 4 ) );
     painter.drawLine( 6, 0, 6, 8 );
     painter.end();
     return bm;
@@ -81,19 +81,19 @@ static QBitmap createSrcBitmap( int size, int border )
     QBitmap bm( totalSize, totalSize );
     QPainter painter;
     painter.begin( &bm );
-    painter.setPen( QPen( Qt::color0, 1 ) );
-    painter.setBrush( Qt::color0 );
+    painter.setPen( QPen( BobUI::color0, 1 ) );
+    painter.setBrush( BobUI::color0 );
     painter.drawRect( border, size2+border, size, size2 );
-    painter.setPen( QPen( Qt::color1, 1 ) );
-    painter.setBrush( Qt::color1 );
+    painter.setPen( QPen( BobUI::color1, 1 ) );
+    painter.setBrush( BobUI::color1 );
     painter.drawRect( border, border, size, size2 );
     painter.end();
     if ( border > 0 ) {
         QBitmap mask(totalSize, totalSize, true);
         QPainter painter;
         painter.begin(&mask);
-        painter.setPen(QPen(Qt::color1, 1));
-        painter.setBrush(Qt::color1);
+        painter.setPen(QPen(BobUI::color1, 1));
+        painter.setBrush(BobUI::color1);
         painter.drawRect(border, border, size, size);
         painter.end();
         bm.setMask(mask);
@@ -137,8 +137,8 @@ int main( int argc, char **argv )
         {
             QPainter painter;
             painter.begin(&mask);
-            painter.setPen(QPen(Qt::color1, 1));
-            painter.setBrush(Qt::color1);
+            painter.setPen(QPen(BobUI::color1, 1));
+            painter.setBrush(BobUI::color1);
             painter.drawRect(0, 16, 32, 32);
             painter.end();
         }

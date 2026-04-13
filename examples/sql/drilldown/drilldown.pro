@@ -7,9 +7,9 @@ SOURCES = imageitem.cpp \
           informationwindow.cpp \
           main.cpp \
           view.cpp
-QT += sql widgets
-requires(qtConfig(combobox))
+BOBUI += sql widgets
+requires(bobuiConfig(combobox))
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/sql/drilldown
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/sql/drilldown
 INSTALLS += target

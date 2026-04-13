@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QUrl>
 #include <QDebug>
@@ -28,7 +28,7 @@ void example()
 
     {
         //! [1]
-        QUrl url = QUrl::fromEncoded("http://qt-project.org/List%20of%20holidays.xml");
+        QUrl url = QUrl::fromEncoded("http://bobui-project.org/List%20of%20holidays.xml");
         //! [1]
     }
 }
@@ -44,14 +44,14 @@ bool checkUrl(const QUrl &url) {
 }
 //! [2]
 
-#if __has_include(<QTcpSocket>)
-#include <QTcpSocket>
+#if __has_include(<BOBUIcpSocket>)
+#include <BOBUIcpSocket>
 
 void connectToHostExample()
 {
     QUrl url;
     //! [3]
-    QTcpSocket sock;
+    BOBUIcpSocket sock;
     sock.connectToHost(url.host(), url.port(80));
     //! [3]
 }
@@ -68,10 +68,10 @@ void examples_1()
 
     {
         //! [5]
-        QUrl baseUrl("http://qt.digia.com/Support/");
+        QUrl baseUrl("http://bobui.digia.com/Support/");
         QUrl relativeUrl("../Product/Library/");
         qDebug(qUtf8Printable(baseUrl.resolved(relativeUrl).toString()));
-        // prints "http://qt.digia.com/Product/Library/"
+        // prints "http://bobui.digia.com/Product/Library/"
         //! [5]
 
 
@@ -82,8 +82,8 @@ void examples_1()
         //! [6]
 
         //! [7]
-        QUrl url("http://qt-project.org/support/file.html");
-        // url.adjusted(RemoveFilename) == "http://qt-project.org/support/"
+        QUrl url("http://bobui-project.org/support/file.html");
+        // url.adjusted(RemoveFilename) == "http://bobui-project.org/support/"
         // url.fileName() == "file.html"
         //! [7]
 

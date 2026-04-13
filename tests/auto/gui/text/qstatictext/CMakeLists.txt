@@ -1,28 +1,28 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## tst_qstatictext Test:
 #####################################################################
 
-if(NOT QT_BUILD_STANDALONE_TESTS AND NOT QT_BUILDING_QT)
+if(NOT BOBUI_BUILD_STANDALONE_TESTS AND NOT BOBUI_BUILDING_BOBUI)
     cmake_minimum_required(VERSION 3.16)
     project(tst_qstatictext LANGUAGES CXX)
-    find_package(Qt6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
+    find_package(BobUI6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
 endif()
 
-qt_internal_add_test(tst_qstatictext
+bobui_internal_add_test(tst_qstatictext
     SOURCES
         tst_qstatictext.cpp
     LIBRARIES
-        Qt::Gui
+        BobUI::Gui
 )
 
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(tst_qstatictext CONDITION QT_FEATURE_developer_build
+bobui_internal_extend_target(tst_qstatictext CONDITION BOBUI_FEATURE_developer_build
     LIBRARIES
-        Qt::CorePrivate
-        Qt::GuiPrivate
+        BobUI::CorePrivate
+        BobUI::GuiPrivate
 )

@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qopenglgradientcache_p.h"
 #include <private/qdrawhelper_p.h>
 #include <private/qopenglcontext_p.h>
 #include <private/qrgba64_p.h>
-#include <QtCore/qmutex.h>
-#include <QtCore/qrandom.h>
+#include <BobUICore/qmutex.h>
+#include <BobUICore/qrandom.h>
 #include "qopenglfunctions.h"
 #include <private/qopenglextensions_p.h>
 
@@ -14,7 +14,7 @@
 #define GL_RGBA16   0x805B
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QOpenGL2GradientCacheWrapper
 {
@@ -29,7 +29,7 @@ private:
     QMutex m_mutex;
 };
 
-Q_GLOBAL_STATIC(QOpenGL2GradientCacheWrapper, qt_gradient_caches)
+Q_GLOBAL_STATIC(QOpenGL2GradientCacheWrapper, bobui_gradient_caches)
 
 QOpenGL2GradientCache::QOpenGL2GradientCache(QOpenGLContext *ctx)
     : QOpenGLSharedResource(ctx->shareGroup())
@@ -43,7 +43,7 @@ QOpenGL2GradientCache::~QOpenGL2GradientCache()
 
 QOpenGL2GradientCache *QOpenGL2GradientCache::cacheForContext(QOpenGLContext *context)
 {
-    return qt_gradient_caches()->cacheForContext(context);
+    return bobui_gradient_caches()->cacheForContext(context);
 }
 
 void QOpenGL2GradientCache::invalidateResource()
@@ -192,7 +192,7 @@ void QOpenGL2GradientCache::generateGradientColorTable(const QGradient& gradient
     bool colorInterpolation = (gradient.interpolationMode() == QGradient::ColorInterpolation);
 
     uint alpha = qRound(opacity * 256);
-    // Qt LIES! It returns ARGB (on little-endian AND on big-endian)
+    // BobUI LIES! It returns ARGB (on little-endian AND on big-endian)
     uint current_color = ARGB_COMBINE_ALPHA(s[0].second.rgba(), alpha);
     qreal incr = 1.0 / qreal(size);
     qreal fpos = 1.5 * incr;
@@ -237,4 +237,4 @@ void QOpenGL2GradientCache::generateGradientColorTable(const QGradient& gradient
     colorTable[size-1] = last_color;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,4 +1,4 @@
-QT += widgets opengl openglwidgets
+BOBUI += widgets opengl openglwidgets
 
 SOURCES += main.cpp \
            glwidget.cpp \
@@ -11,5 +11,5 @@ HEADERS += glwidget.h \
 
 RESOURCES += texture.qrc
 
-target.path = $$[QT_INSTALL_EXAMPLES]/opengl/qopenglwidget
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/opengl/qopenglwidget
 INSTALLS += target

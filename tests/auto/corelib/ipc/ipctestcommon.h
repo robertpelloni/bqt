@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include <QtTest/QTest>
-#include <QtCore/QNativeIpcKey>
+#include <BobUITest/BOBUIest>
+#include <BobUICore/QNativeIpcKey>
 
 #include <cstdio>
 #include <memory>
@@ -26,11 +26,11 @@ template <typename IpcClass> void addGlobalTestRows()
     auto addRowIfSupported = [](const char *name, QNativeIpcKey::Type type) {
         if (IpcClass::isKeyTypeSupported(type)) {
             supportedKeyTypes << type;
-            QTest::newRow(name) << type;
+            BOBUIest::newRow(name) << type;
         }
     };
 
-    QTest::addColumn<QNativeIpcKey::Type>("keyType");
+    BOBUIest::addColumn<QNativeIpcKey::Type>("keyType");
 
     addRowIfSupported("Windows", QNativeIpcKey::Type::Windows);
     addRowIfSupported("POSIX", QNativeIpcKey::Type::PosixRealtime);
@@ -54,8 +54,8 @@ inline QNativeIpcKey::Type nextKeyType(QNativeIpcKey::Type type)
 }
 } // namespace IpcTestCommon
 
-QT_BEGIN_NAMESPACE
-namespace QTest {
+BOBUI_BEGIN_NAMESPACE
+namespace BOBUIest {
 template<> inline char *toString(const QNativeIpcKey::Type &type)
 {
     switch (type) {
@@ -83,5 +83,5 @@ template<> inline char *toString(const QNativeIpcKey &key)
     std::snprintf(buf, sizeof(buf), "QNativeIpcKey(%s, %s)", text.get(), type.get());
     return qstrdup(buf);
 }
-} // namespace QTest
-QT_END_NAMESPACE
+} // namespace BOBUIest
+BOBUI_END_NAMESPACE

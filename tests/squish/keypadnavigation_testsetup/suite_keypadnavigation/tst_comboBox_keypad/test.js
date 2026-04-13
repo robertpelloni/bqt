@@ -1,11 +1,11 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 import * as names from 'names.js';
 
 function main() {
     startApplication("keypadnavigation");
-    mouseClick(waitForObject(names.scrollAreaLabel7QLabel), 97, 13, Qt.NoModifier, Qt.LeftButton);
+    mouseClick(waitForObject(names.scrollAreaLabel7QLabel), 97, 13, BobUI.NoModifier, BobUI.LeftButton);
     type(waitForObject(names.scrollAreaLineEditQLineEdit), "<Tab>");
     type(waitForObject(names.scrollAreaHorizontalSliderQSlider), "<Tab>");
     type(waitForObject(names.scrollAreaDateEditQDateEdit), "<Tab>");

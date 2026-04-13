@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QABSTRACTNETWORKCACHE_H
 #define QABSTRACTNETWORKCACHE_H
 
-#include <QtNetwork/qtnetworkglobal.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qshareddata.h>
-#include <QtNetwork/qnetworkrequest.h>
+#include <BobUINetwork/bobuinetworkglobal.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qshareddata.h>
+#include <BobUINetwork/qnetworkrequest.h>
 
 #include <utility>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QIODevice;
@@ -105,6 +105,6 @@ private:
     Q_DISABLE_COPY(QAbstractNetworkCache)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

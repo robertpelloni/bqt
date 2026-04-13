@@ -1,5 +1,5 @@
-// Copyright (C) 2024 Qt Group
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2024 BobUI Group
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 #ifndef QWASMLOCALFILEENGINE_P_H
 #define QWASMLOCALFILEENGINE_P_H
 
@@ -7,17 +7,17 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
+// This file is not part of the BobUI API.  It exists for the convenience
+// of other BobUI classes.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/private/qabstractfileengine_p.h>
-#include <QtCore/private/qstdweb_p.h>
+#include <BobUICore/private/qabstractfileengine_p.h>
+#include <BobUICore/private/qstdweb_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QWasmFileEngine;
 
@@ -98,5 +98,5 @@ private:
     std::unique_ptr<qstdweb::FileSystemFileIODevice> m_fileDevice;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 #endif // QWASMFILEENGINEHANDLER_H

@@ -1,37 +1,37 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-qt_find_package(EGL MODULE)
+bobui_find_package(EGL MODULE)
 
 #####################################################################
 ## QMinimalEglIntegrationPlugin Plugin:
 #####################################################################
 
-qt_internal_add_plugin(QMinimalEglIntegrationPlugin
+bobui_internal_add_plugin(QMinimalEglIntegrationPlugin
     OUTPUT_NAME qminimalegl
     PLUGIN_TYPE platforms
-    DEFAULT_IF "minimalegl" IN_LIST QT_QPA_PLATFORMS
+    DEFAULT_IF "minimalegl" IN_LIST BOBUI_QPA_PLATFORMS
     SOURCES
         main.cpp
         qminimaleglintegration.cpp qminimaleglintegration.h
         qminimaleglscreen.cpp qminimaleglscreen.h
         qminimaleglwindow.cpp qminimaleglwindow.h
     DEFINES
-        QT_EGL_NO_X11
+        BOBUI_EGL_NO_X11
     LIBRARIES
-        Qt::Core
-        Qt::CorePrivate
-        Qt::Gui
-        Qt::GuiPrivate
+        BobUI::Core
+        BobUI::CorePrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
         EGL::EGL
 )
 
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(QMinimalEglIntegrationPlugin CONDITION QT_FEATURE_opengl
+bobui_internal_extend_target(QMinimalEglIntegrationPlugin CONDITION BOBUI_FEATURE_opengl
     SOURCES
         qminimaleglbackingstore.cpp qminimaleglbackingstore.h
     LIBRARIES
-        Qt::OpenGL
+        BobUI::OpenGL
 )

@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
 // When using WinSock2 on Windows, it's the first thing that can be included
@@ -18,17 +18,17 @@
 
 #include <QCoreApplication>
 #include <QDebug>
-#include <QTcpServer>
-#include <QTcpSocket>
-#include <QTest>
-#include <QTestEventLoop>
+#include <BOBUIcpServer>
+#include <BOBUIcpSocket>
+#include <BOBUIest>
+#include <BOBUIestEventLoop>
 
-#include <private/qthread_p.h>
+#include <private/bobuihread_p.h>
 
 #include <sys/types.h>
 
 #if defined(Q_OS_WIN)
-#  include <qt_windows.h>
+#  include <bobui_windows.h>
 #  ifdef gai_strerror
 #    undef gai_strerror
 #    define gai_strerror gai_strerrorA
@@ -44,7 +44,7 @@
 
 #include "../../../network-settings.h"
 
-#define TEST_DOMAIN ".test.qt-project.org"
+#define TEST_DOMAIN ".test.bobui-project.org"
 
 using namespace std::chrono_literals;
 
@@ -129,8 +129,8 @@ public:
 
     bool waitForResults(std::chrono::milliseconds timeout = 15s)
     {
-        QTestEventLoop::instance().enterLoop(timeout);
-        return !QTestEventLoop::instance().timeout() && lookupDone;
+        BOBUIestEventLoop::instance().enterLoop(timeout);
+        return !BOBUIestEventLoop::instance().timeout() && lookupDone;
     }
 
     void checkResults(QHostInfo::HostInfoError err, const QString &addresses);
@@ -191,7 +191,7 @@ void tst_QHostInfo::initTestCase()
     ipv6Available = false;
     ipv6LookupsAvailable = false;
 
-    QTcpServer server;
+    BOBUIcpServer server;
     if (server.listen(QHostAddress("::1"))) {
         // We have IPv6 support
         ipv6Available = true;
@@ -217,36 +217,36 @@ void tst_QHostInfo::initTestCase()
     }
 
     // run each testcase with and without test enabled
-    QTest::addColumn<bool>("cache");
-    QTest::newRow("WithCache") << true;
-    QTest::newRow("WithoutCache") << false;
+    BOBUIest::addColumn<bool>("cache");
+    BOBUIest::newRow("WithCache") << true;
+    BOBUIest::newRow("WithoutCache") << false;
 }
 
 void tst_QHostInfo::init()
 {
     // delete the cache so inidividual testcase results are independent from each other
-    qt_qhostinfo_clear_cache();
+    bobui_qhostinfo_clear_cache();
 
     QFETCH_GLOBAL(bool, cache);
-    qt_qhostinfo_enable_cache(cache);
+    bobui_qhostinfo_enable_cache(cache);
 }
 
 void tst_QHostInfo::lookupIPv4_data()
 {
-    QTest::addColumn<QString>("hostname");
-    QTest::addColumn<QString>("addresses");
-    QTest::addColumn<int>("err");
+    BOBUIest::addColumn<QString>("hostname");
+    BOBUIest::addColumn<QString>("addresses");
+    BOBUIest::addColumn<int>("err");
 
-    QTest::newRow("empty") << "" << "" << int(QHostInfo::HostNotFound);
+    BOBUIest::newRow("empty") << "" << "" << int(QHostInfo::HostNotFound);
 
-    QTest::newRow("single_ip4") << "a-single" TEST_DOMAIN << "192.0.2.1" << int(QHostInfo::NoError);
-    QTest::newRow("multiple_ip4") << "a-multi" TEST_DOMAIN << "192.0.2.1 192.0.2.2 192.0.2.3" << int(QHostInfo::NoError);
-    QTest::newRow("literal_ip4") << "192.0.2.1" << "192.0.2.1" << int(QHostInfo::NoError);
+    BOBUIest::newRow("single_ip4") << "a-single" TEST_DOMAIN << "192.0.2.1" << int(QHostInfo::NoError);
+    BOBUIest::newRow("multiple_ip4") << "a-multi" TEST_DOMAIN << "192.0.2.1 192.0.2.2 192.0.2.3" << int(QHostInfo::NoError);
+    BOBUIest::newRow("literal_ip4") << "192.0.2.1" << "192.0.2.1" << int(QHostInfo::NoError);
 
-    QTest::newRow("notfound") << "invalid" TEST_DOMAIN << "" << int(QHostInfo::HostNotFound);
+    BOBUIest::newRow("notfound") << "invalid" TEST_DOMAIN << "" << int(QHostInfo::HostNotFound);
 
-    QTest::newRow("idn-ace") << "a-single.xn--alqualond-34a" TEST_DOMAIN << "192.0.2.1" << int(QHostInfo::NoError);
-    QTest::newRow("idn-unicode") << QString::fromLatin1("a-single.alqualond\353" TEST_DOMAIN) << "192.0.2.1" << int(QHostInfo::NoError);
+    BOBUIest::newRow("idn-ace") << "a-single.xn--alqualond-34a" TEST_DOMAIN << "192.0.2.1" << int(QHostInfo::NoError);
+    BOBUIest::newRow("idn-unicode") << QString::fromLatin1("a-single.alqualond\353" TEST_DOMAIN) << "192.0.2.1" << int(QHostInfo::NoError);
 }
 
 void tst_QHostInfo_Helper::checkResults(QHostInfo::HostInfoError err, const QString &addresses)
@@ -281,18 +281,18 @@ void tst_QHostInfo::lookupIPv4()
 
 void tst_QHostInfo::lookupIPv6_data()
 {
-    QTest::addColumn<QString>("hostname");
-    QTest::addColumn<QString>("addresses");
-    QTest::addColumn<int>("err");
+    BOBUIest::addColumn<QString>("hostname");
+    BOBUIest::addColumn<QString>("addresses");
+    BOBUIest::addColumn<int>("err");
 
-    QTest::newRow("aaaa-single") << "aaaa-single" TEST_DOMAIN << "2001:db8::1" << int(QHostInfo::NoError);
-    QTest::newRow("aaaa-multi") << "aaaa-multi" TEST_DOMAIN << "2001:db8::1 2001:db8::2 2001:db8::3" << int(QHostInfo::NoError);
-    QTest::newRow("a-plus-aaaa") << "a-plus-aaaa" TEST_DOMAIN << "198.51.100.1 2001:db8::1:1" << int(QHostInfo::NoError);
+    BOBUIest::newRow("aaaa-single") << "aaaa-single" TEST_DOMAIN << "2001:db8::1" << int(QHostInfo::NoError);
+    BOBUIest::newRow("aaaa-multi") << "aaaa-multi" TEST_DOMAIN << "2001:db8::1 2001:db8::2 2001:db8::3" << int(QHostInfo::NoError);
+    BOBUIest::newRow("a-plus-aaaa") << "a-plus-aaaa" TEST_DOMAIN << "198.51.100.1 2001:db8::1:1" << int(QHostInfo::NoError);
 
     // avoid using real IPv6 addresses here because this will do a DNS query
     // real addresses are between 2000:: and 3fff:ffff:ffff:ffff:ffff:ffff:ffff
-    QTest::newRow("literal_ip6") << "f001:6b0:1:ea:202:a5ff:fecd:13a6" << "f001:6b0:1:ea:202:a5ff:fecd:13a6" << int(QHostInfo::NoError);
-    QTest::newRow("literal_shortip6") << "f001:618:1401::4" << "f001:618:1401::4" << int(QHostInfo::NoError);
+    BOBUIest::newRow("literal_ip6") << "f001:6b0:1:ea:202:a5ff:fecd:13a6" << "f001:6b0:1:ea:202:a5ff:fecd:13a6" << int(QHostInfo::NoError);
+    BOBUIest::newRow("literal_shortip6") << "f001:618:1401::4" << "f001:618:1401::4" << int(QHostInfo::NoError);
 }
 
 void tst_QHostInfo::lookupIPv6()
@@ -335,7 +335,7 @@ void tst_QHostInfo::lookupConnectToFunctionPointerDeleted()
             QFAIL("This should never be called!");
         });
     }
-    QTestEventLoop::instance().enterLoop(3);
+    BOBUIestEventLoop::instance().enterLoop(3);
 }
 
 void tst_QHostInfo::lookupConnectToLambda_data()
@@ -358,7 +358,7 @@ void tst_QHostInfo::lookupConnectToLambda()
 static QStringList reverseLookupHelper(const QString &ip)
 {
     QStringList results;
-    union qt_sockaddr {
+    union bobui_sockaddr {
         sockaddr a;
         sockaddr_in a4;
         sockaddr_in6 a6;
@@ -371,9 +371,9 @@ static QStringList reverseLookupHelper(const QString &ip)
     }
 
     // from qnativesocketengine_p.h:
-    QT_SOCKLEN_T len = setSockaddr(&sa.a, addr, /*port = */ 0);
+    BOBUI_SOCKLEN_T len = setSockaddr(&sa.a, addr, /*port = */ 0);
 
-    QByteArray name(NI_MAXHOST, Qt::Uninitialized);
+    QByteArray name(NI_MAXHOST, BobUI::Uninitialized);
     int ni_flags = NI_NAMEREQD | NI_NUMERICSERV;
     if (int r = getnameinfo(&sa.a, len, name.data(), name.size(), nullptr, 0, ni_flags)) {
         qWarning("Failed to reverse look up '%ls': %s", qUtf16Printable(ip), gai_strerror(r));
@@ -386,18 +386,18 @@ static QStringList reverseLookupHelper(const QString &ip)
 
 void tst_QHostInfo::reverseLookup_data()
 {
-    QTest::addColumn<QString>("address");
-    QTest::addColumn<QStringList>("hostNames");
-    QTest::addColumn<int>("err");
-    QTest::addColumn<bool>("ipv6");
+    BOBUIest::addColumn<QString>("address");
+    BOBUIest::addColumn<QStringList>("hostNames");
+    BOBUIest::addColumn<int>("err");
+    BOBUIest::addColumn<bool>("ipv6");
 
-    QTest::newRow("dns.google") << QString("8.8.8.8") << reverseLookupHelper("8.8.8.8") << 0 << false;
-    QTest::newRow("one.one.one.one") << QString("1.1.1.1") << reverseLookupHelper("1.1.1.1") << 0 << false;
+    BOBUIest::newRow("dns.google") << QString("8.8.8.8") << reverseLookupHelper("8.8.8.8") << 0 << false;
+    BOBUIest::newRow("one.one.one.one") << QString("1.1.1.1") << reverseLookupHelper("1.1.1.1") << 0 << false;
     if (QStringList hostNames = reverseLookupHelper("2001:4860:4860::8888"); !hostNames.isEmpty())
-        QTest::newRow("dns.google IPv6") << QString("2001:4860:4860::8888") << std::move(hostNames) << 0 << true;
+        BOBUIest::newRow("dns.google IPv6") << QString("2001:4860:4860::8888") << std::move(hostNames) << 0 << true;
     if (QStringList hostNames = reverseLookupHelper("2606:4700:4700::1111"); !hostNames.isEmpty())
-        QTest::newRow("cloudflare IPv6") << QString("2606:4700:4700::1111") << std::move(hostNames) << 0 << true;
-    QTest::newRow("bogus-name IPv6") << QString("1::2::3::4") << QStringList() << 1 << true;
+        BOBUIest::newRow("cloudflare IPv6") << QString("2606:4700:4700::1111") << std::move(hostNames) << 0 << true;
+    BOBUIest::newRow("bogus-name IPv6") << QString("1::2::3::4") << QStringList() << 1 << true;
 }
 
 void tst_QHostInfo::reverseLookup()
@@ -441,12 +441,12 @@ void tst_QHostInfo::blockingLookup()
 void tst_QHostInfo::raceCondition()
 {
     for (int i = 0; i < 1000; ++i) {
-        QTcpSocket socket;
+        BOBUIcpSocket socket;
         socket.connectToHost("invalid" TEST_DOMAIN, 80);
     }
 }
 
-class LookupThread : public QThread
+class LookupThread : public BOBUIhread
 {
 protected:
     inline void run() override
@@ -494,17 +494,17 @@ void LookupReceiver::resultsReady(const QHostInfo &info)
     result = info;
     numrequests--;
     if (numrequests == 0 || info.error() != QHostInfo::NoError)
-        QThread::currentThread()->quit();
+        BOBUIhread::currentThread()->quit();
 }
 
 void tst_QHostInfo::threadSafetyAsynchronousAPI()
 {
     const int nattempts = 10;
     const int lookupsperthread = 10;
-    QThread threads[nattempts];
+    BOBUIhread threads[nattempts];
     LookupReceiver receivers[nattempts];
     for (int i = 0; i < nattempts; ++i) {
-        QThread *thread = &threads[i];
+        BOBUIhread *thread = &threads[i];
         LookupReceiver *receiver = &receivers[i];
         receiver->numrequests = lookupsperthread;
         receiver->moveToThread(thread);
@@ -529,18 +529,18 @@ void tst_QHostInfo::multipleSameLookups()
     for (int i = 0; i < COUNT; i++)
         helper.lookupHostOldStyle();
 
-    QTRY_COMPARE_WITH_TIMEOUT(helper.lookupsDoneCounter, COUNT, 10s);
+    BOBUIRY_COMPARE_WITH_TIMEOUT(helper.lookupsDoneCounter, COUNT, 10s);
 }
 
 // this test is for the multi-threaded QHostInfo rewrite. It is about getting results at all,
 // not about getting correct IPs
 void tst_QHostInfo::multipleDifferentLookups_data()
 {
-    QTest::addColumn<int>("repeats");
-    QTest::newRow("1") << 1;
-    QTest::newRow("2") << 2;
-    QTest::newRow("5") << 5;
-    QTest::newRow("10") << 10;
+    BOBUIest::addColumn<int>("repeats");
+    BOBUIest::newRow("1") << 1;
+    BOBUIest::newRow("2") << 2;
+    BOBUIest::newRow("5") << 5;
+    BOBUIest::newRow("10") << 10;
 }
 
 void tst_QHostInfo::multipleDifferentLookups()
@@ -566,7 +566,7 @@ void tst_QHostInfo::multipleDifferentLookups()
             helper.lookupHostOldStyle();
         }
 
-    QTRY_COMPARE_WITH_TIMEOUT(helper.lookupsDoneCounter, repeats*COUNT, 60s);
+    BOBUIRY_COMPARE_WITH_TIMEOUT(helper.lookupsDoneCounter, repeats*COUNT, 60s);
 }
 
 void tst_QHostInfo::cache()
@@ -580,26 +580,26 @@ void tst_QHostInfo::cache()
     // lookup once, wait in event loop, result should not come directly.
     bool valid = true;
     int id = -1;
-    QHostInfo result = qt_qhostinfo_lookup(helper.hostname, &helper, SLOT(resultsReady(QHostInfo)), &valid, &id);
-    QTestEventLoop::instance().enterLoop(5);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    QHostInfo result = bobui_qhostinfo_lookup(helper.hostname, &helper, SLOT(resultsReady(QHostInfo)), &valid, &id);
+    BOBUIestEventLoop::instance().enterLoop(5);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
     QVERIFY(!valid);
     QVERIFY(result.addresses().isEmpty());
 
     // loopkup second time, result should come directly
     valid = false;
-    result = qt_qhostinfo_lookup(helper.hostname, &helper, SLOT(resultsReady(QHostInfo)), &valid, &id);
+    result = bobui_qhostinfo_lookup(helper.hostname, &helper, SLOT(resultsReady(QHostInfo)), &valid, &id);
     QVERIFY(valid);
     QVERIFY(!result.addresses().isEmpty());
 
     // clear the cache
-    qt_qhostinfo_clear_cache();
+    bobui_qhostinfo_clear_cache();
 
     // lookup third time, result should not come directly.
     valid = true;
-    result = qt_qhostinfo_lookup(helper.hostname, &helper, SLOT(resultsReady(QHostInfo)), &valid, &id);
-    QTestEventLoop::instance().enterLoop(5);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    result = bobui_qhostinfo_lookup(helper.hostname, &helper, SLOT(resultsReady(QHostInfo)), &valid, &id);
+    BOBUIestEventLoop::instance().enterLoop(5);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
     QVERIFY(!valid);
     QVERIFY(result.addresses().isEmpty());
 
@@ -609,11 +609,11 @@ void tst_QHostInfo::cache()
 
 void tst_QHostInfo_Helper::resultsReady(const QHostInfo &hi)
 {
-    QVERIFY(QThread::currentThread() == thread());
+    QVERIFY(BOBUIhread::currentThread() == thread());
     lookupDone = true;
     lookupResults = hi;
     lookupsDoneCounter++;
-    QTestEventLoop::instance().exitLoop();
+    BOBUIestEventLoop::instance().exitLoop();
 }
 
 void tst_QHostInfo::abortHostLookup()
@@ -621,11 +621,11 @@ void tst_QHostInfo::abortHostLookup()
     tst_QHostInfo_Helper helper("a-single" TEST_DOMAIN);
     bool valid = false;
     int id = -1;
-    QHostInfo result = qt_qhostinfo_lookup(helper.hostname, &helper, SLOT(resultsReady(QHostInfo)), &valid, &id);
+    QHostInfo result = bobui_qhostinfo_lookup(helper.hostname, &helper, SLOT(resultsReady(QHostInfo)), &valid, &id);
     QVERIFY(!valid);
     //it is assumed that the DNS request/response in the backend is slower than it takes to call abort
     QHostInfo::abortHostLookup(id);
-    QTestEventLoop::instance().enterLoop(5);
+    BOBUIestEventLoop::instance().enterLoop(5);
     QCOMPARE(helper.lookupsDoneCounter, 0);
 }
 
@@ -636,11 +636,11 @@ public slots:
     void abort()
     {
         QHostInfo::abortHostLookup(id);
-        QThread::currentThread()->quit();
+        BOBUIhread::currentThread()->quit();
     }
 public:
     int id;
 };
 
-QTEST_MAIN(tst_QHostInfo)
+BOBUIEST_MAIN(tst_QHostInfo)
 #include "tst_qhostinfo.moc"

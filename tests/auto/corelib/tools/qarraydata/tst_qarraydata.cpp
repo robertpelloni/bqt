@@ -1,9 +1,9 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtCore/QString>
-#include <QtCore/qarraydata.h>
+#include <BOBUIest>
+#include <BobUICore/QString>
+#include <BobUICore/qarraydata.h>
 
 #include "simplevector.h"
 
@@ -20,7 +20,7 @@
 #define RUN_TEST_FUNC(test, ...) \
 do { \
     test(__VA_ARGS__); \
-    if (QTest::currentTestFailed()) \
+    if (BOBUIest::currentTestFailed()) \
         QFAIL("Test case " #test "(" #__VA_ARGS__ ") failed"); \
 } while (false)
 
@@ -59,10 +59,10 @@ private slots:
     void dataPointerAllocate();
     void selfEmplaceBackwards();
     void selfEmplaceForward();
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
     void relocateWithExceptions_data();
     void relocateWithExceptions();
-#endif // QT_NO_EXCEPTIONS
+#endif // BOBUI_NO_EXCEPTIONS
 };
 
 template <class T> const T &const_(const T &t) { return t; }
@@ -355,18 +355,18 @@ Q_DECLARE_METATYPE(SimpleVector<int>)
 
 void tst_QArrayData::simpleVectorReserve_data()
 {
-    QTest::addColumn<SimpleVector<int> >("vector");
-    QTest::addColumn<size_t>("capacity");
-    QTest::addColumn<size_t>("size");
+    BOBUIest::addColumn<SimpleVector<int> >("vector");
+    BOBUIest::addColumn<size_t>("capacity");
+    BOBUIest::addColumn<size_t>("size");
 
-    QTest::newRow("null") << SimpleVector<int>() << size_t(0) << size_t(0);
-    QTest::newRow("empty") << SimpleVector<int>(0, 42) << size_t(0) << size_t(0);
-    QTest::newRow("non-empty") << SimpleVector<int>(5, 42) << size_t(5) << size_t(5);
+    BOBUIest::newRow("null") << SimpleVector<int>() << size_t(0) << size_t(0);
+    BOBUIest::newRow("empty") << SimpleVector<int>(0, 42) << size_t(0) << size_t(0);
+    BOBUIest::newRow("non-empty") << SimpleVector<int>(5, 42) << size_t(5) << size_t(5);
 
     static const int array[] =
         { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
 
-    QTest::newRow("raw-data") << SimpleVector<int>::fromRawData(array, 15) << size_t(0) << size_t(15);
+    BOBUIest::newRow("raw-data") << SimpleVector<int>::fromRawData(array, 15) << size_t(0) << size_t(15);
 }
 
 void tst_QArrayData::simpleVectorReserve()
@@ -430,9 +430,9 @@ Q_DECLARE_METATYPE(QArrayData::ArrayOptions)
 
 void tst_QArrayData::allocate_data()
 {
-    QTest::addColumn<size_t>("objectSize");
-    QTest::addColumn<size_t>("alignment");
-    QTest::addColumn<bool>("grow");
+    BOBUIest::addColumn<size_t>("objectSize");
+    BOBUIest::addColumn<size_t>("alignment");
+    BOBUIest::addColumn<bool>("grow");
 
     struct {
         char const *typeName;
@@ -454,7 +454,7 @@ void tst_QArrayData::allocate_data()
 
     for (size_t i = 0; i < sizeof(types)/sizeof(types[0]); ++i)
         for (size_t j = 0; j < sizeof(options)/sizeof(options[0]); ++j)
-            QTest::newRow(qPrintable(
+            BOBUIest::newRow(qPrintable(
                         QLatin1String(types[i].typeName)
                         + QLatin1String(": ")
                         + QLatin1String(options[j].description)))
@@ -535,11 +535,11 @@ class Unaligned
 
 void tst_QArrayData::alignment_data()
 {
-    QTest::addColumn<size_t>("alignment");
+    BOBUIest::addColumn<size_t>("alignment");
 
     for (size_t i = 1; i < 10; ++i) {
         size_t alignment = size_t(1u) << i;
-        QTest::newRow(qPrintable(QString::number(alignment))) << alignment;
+        BOBUIest::newRow(qPrintable(QString::number(alignment))) << alignment;
     }
 }
 
@@ -583,8 +583,8 @@ void tst_QArrayData::typedData()
 {
     {
         Deallocator keeper(sizeof(char),
-                alignof(QTypedArrayData<char>::AlignmentDummy));
-        std::pair<QTypedArrayData<char> *, char *> pair = QTypedArrayData<char>::allocate(10);
+                alignof(BOBUIypedArrayData<char>::AlignmentDummy));
+        std::pair<BOBUIypedArrayData<char> *, char *> pair = BOBUIypedArrayData<char>::allocate(10);
         QArrayData *array = pair.first;
         keeper.headers.append(array);
 
@@ -596,15 +596,15 @@ void tst_QArrayData::typedData()
         ::memset(pair.second, 0, 10 * sizeof(char));
 
         keeper.headers.clear();
-        QTypedArrayData<short>::deallocate(array);
+        BOBUIypedArrayData<short>::deallocate(array);
 
         QVERIFY(true);
     }
 
     {
         Deallocator keeper(sizeof(short),
-                alignof(QTypedArrayData<short>::AlignmentDummy));
-        std::pair<QTypedArrayData<short> *, short *> pair = QTypedArrayData<short>::allocate(10);
+                alignof(BOBUIypedArrayData<short>::AlignmentDummy));
+        std::pair<BOBUIypedArrayData<short> *, short *> pair = BOBUIypedArrayData<short>::allocate(10);
         QArrayData *array = pair.first;
         keeper.headers.append(array);
 
@@ -616,15 +616,15 @@ void tst_QArrayData::typedData()
         ::memset(pair.second, 0, 10 * sizeof(short));
 
         keeper.headers.clear();
-        QTypedArrayData<short>::deallocate(array);
+        BOBUIypedArrayData<short>::deallocate(array);
 
         QVERIFY(true);
     }
 
     {
         Deallocator keeper(sizeof(double),
-                alignof(QTypedArrayData<double>::AlignmentDummy));
-        std::pair<QTypedArrayData<double> *, double *> pair = QTypedArrayData<double>::allocate(10);
+                alignof(BOBUIypedArrayData<double>::AlignmentDummy));
+        std::pair<BOBUIypedArrayData<double> *, double *> pair = BOBUIypedArrayData<double>::allocate(10);
         QArrayData *array = pair.first;
         keeper.headers.append(array);
 
@@ -636,7 +636,7 @@ void tst_QArrayData::typedData()
         ::memset(pair.second, 0, 10 * sizeof(double));
 
         keeper.headers.clear();
-        QTypedArrayData<double>::deallocate(array);
+        BOBUIypedArrayData<double>::deallocate(array);
 
         QVERIFY(true);
     }
@@ -648,11 +648,11 @@ void tst_QArrayData::gccBug43247()
     // bug #43247.
     // Reported on GCC 4.4.3, Linux, affects QList
 
-    QTest::ignoreMessage(QtDebugMsg, "GCC Optimization bug #43247 not triggered (3)");
-    QTest::ignoreMessage(QtDebugMsg, "GCC Optimization bug #43247 not triggered (4)");
-    QTest::ignoreMessage(QtDebugMsg, "GCC Optimization bug #43247 not triggered (5)");
-    QTest::ignoreMessage(QtDebugMsg, "GCC Optimization bug #43247 not triggered (6)");
-    QTest::ignoreMessage(QtDebugMsg, "GCC Optimization bug #43247 not triggered (7)");
+    BOBUIest::ignoreMessage(BobUIDebugMsg, "GCC Optimization bug #43247 not triggered (3)");
+    BOBUIest::ignoreMessage(BobUIDebugMsg, "GCC Optimization bug #43247 not triggered (4)");
+    BOBUIest::ignoreMessage(BobUIDebugMsg, "GCC Optimization bug #43247 not triggered (5)");
+    BOBUIest::ignoreMessage(BobUIDebugMsg, "GCC Optimization bug #43247 not triggered (6)");
+    BOBUIest::ignoreMessage(BobUIDebugMsg, "GCC Optimization bug #43247 not triggered (7)");
 
     SimpleVector<int> array(10, 0);
     // QList<int> list(10, 0);
@@ -735,10 +735,10 @@ size_t CountedObject::liveCount = 0;
 
 void tst_QArrayData::arrayOps_data()
 {
-    QTest::addColumn<bool>("capacityReserved");
+    BOBUIest::addColumn<bool>("capacityReserved");
 
-    QTest::newRow("default") << false;
-    QTest::newRow("capacity-reserved") << true;
+    BOBUIest::newRow("default") << false;
+    BOBUIest::newRow("capacity-reserved") << true;
 }
 
 void tst_QArrayData::arrayOps()
@@ -756,12 +756,12 @@ void tst_QArrayData::arrayOps()
     };
     const CountedObject objArray[5];
 
-    static_assert(!QTypeInfo<int>::isComplex);
-    static_assert(QTypeInfo<int>::isRelocatable);
-    static_assert(QTypeInfo<QString>::isComplex);
-    static_assert(QTypeInfo<QString>::isRelocatable);
-    static_assert(QTypeInfo<CountedObject>::isComplex);
-    static_assert(!QTypeInfo<CountedObject>::isRelocatable);
+    static_assert(!BOBUIypeInfo<int>::isComplex);
+    static_assert(BOBUIypeInfo<int>::isRelocatable);
+    static_assert(BOBUIypeInfo<QString>::isComplex);
+    static_assert(BOBUIypeInfo<QString>::isRelocatable);
+    static_assert(BOBUIypeInfo<CountedObject>::isComplex);
+    static_assert(!BOBUIypeInfo<CountedObject>::isRelocatable);
 
     QCOMPARE(CountedObject::liveCount, size_t(5));
     for (size_t i = 0; i < 5; ++i)
@@ -1085,9 +1085,9 @@ void tst_QArrayData::arrayOpsExtra()
     };
     const std::array<CountedObject, inputSize> objArray;
 
-    QVERIFY(!QTypeInfo<int>::isComplex && QTypeInfo<int>::isRelocatable);
-    QVERIFY(QTypeInfo<QString>::isComplex && QTypeInfo<QString>::isRelocatable);
-    QVERIFY(QTypeInfo<CountedObject>::isComplex && !QTypeInfo<CountedObject>::isRelocatable);
+    QVERIFY(!BOBUIypeInfo<int>::isComplex && BOBUIypeInfo<int>::isRelocatable);
+    QVERIFY(BOBUIypeInfo<QString>::isComplex && BOBUIypeInfo<QString>::isRelocatable);
+    QVERIFY(BOBUIypeInfo<CountedObject>::isComplex && !BOBUIypeInfo<CountedObject>::isRelocatable);
 
     QCOMPARE(CountedObject::liveCount, inputSize);
     for (size_t i = 0; i < 5; ++i)
@@ -1778,10 +1778,10 @@ void fromRawData_impl()
 
 void tst_QArrayData::fromRawData_data()
 {
-    QTest::addColumn<int>("type");
+    BOBUIest::addColumn<int>("type");
 
-    QTest::newRow("int") << 0;
-    QTest::newRow("ResetOnDtor") << 1;
+    BOBUIest::newRow("int") << 0;
+    BOBUIest::newRow("ResetOnDtor") << 1;
 }
 void tst_QArrayData::fromRawData()
 {
@@ -2026,11 +2026,11 @@ void tst_QArrayData::grow()
 
 void tst_QArrayData::freeSpace_data()
 {
-    QTest::addColumn<size_t>("n");
+    BOBUIest::addColumn<size_t>("n");
 
     for (const size_t n : {1, 3, 5, 7, 16, 25}) {
         QString suffix = QString::number(n) + QLatin1String("-elements");
-        QTest::newRow(qPrintable(QLatin1String("alloc-") + suffix))
+        BOBUIest::newRow(qPrintable(QLatin1String("alloc-") + suffix))
             << n;
     }
 }
@@ -2057,10 +2057,10 @@ void tst_QArrayData::freeSpace()
 
 void tst_QArrayData::dataPointerAllocate_data()
 {
-    QTest::addColumn<QArrayData::GrowthPosition>("GrowthPosition");
+    BOBUIest::addColumn<QArrayData::GrowthPosition>("GrowthPosition");
 
-    QTest::newRow("at-end") << QArrayData::GrowsAtEnd;
-    QTest::newRow("at-begin") << QArrayData::GrowsAtBeginning;
+    BOBUIest::newRow("at-end") << QArrayData::GrowsAtEnd;
+    BOBUIest::newRow("at-begin") << QArrayData::GrowsAtBeginning;
 }
 
 void tst_QArrayData::dataPointerAllocate()
@@ -2179,11 +2179,11 @@ private:
     }
 };
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 Q_DECLARE_TYPEINFO(MyMovableQString, Q_RELOCATABLE_TYPE);
-QT_END_NAMESPACE
-static_assert(QTypeInfo<MyMovableQString>::isComplex);
-static_assert(QTypeInfo<MyMovableQString>::isRelocatable);
+BOBUI_END_NAMESPACE
+static_assert(BOBUIypeInfo<MyMovableQString>::isComplex);
+static_assert(BOBUIypeInfo<MyMovableQString>::isRelocatable);
 
 struct MyComplexQString : public MyQStringWrapper
 {
@@ -2201,15 +2201,15 @@ private:
         return static_cast<QString>(a) == static_cast<QString>(b);
     }
 };
-static_assert(QTypeInfo<MyComplexQString>::isComplex);
-static_assert(!QTypeInfo<MyComplexQString>::isRelocatable);
+static_assert(BOBUIypeInfo<MyComplexQString>::isComplex);
+static_assert(!BOBUIypeInfo<MyComplexQString>::isRelocatable);
 
 void tst_QArrayData::selfEmplaceBackwards()
 {
     const auto createDataPointer = [](qsizetype capacity, int spaceAtEnd, auto dummy) {
         using Type = std::decay_t<decltype(dummy)>;
         Q_UNUSED(dummy);
-        auto [header, ptr] = QTypedArrayData<Type>::allocate(capacity, QArrayData::Grow);
+        auto [header, ptr] = BOBUIypedArrayData<Type>::allocate(capacity, QArrayData::Grow);
         // do custom adjustments to make sure there's free space at end
         ptr += header->alloc - spaceAtEnd;
         return QArrayDataPointer(header, ptr);
@@ -2250,7 +2250,7 @@ void tst_QArrayData::selfEmplaceForward()
     const auto createDataPointer = [](qsizetype capacity, int spaceAtBegin, auto dummy) {
         using Type = std::decay_t<decltype(dummy)>;
         Q_UNUSED(dummy);
-        auto [header, ptr] = QTypedArrayData<Type>::allocate(capacity, QArrayData::Grow);
+        auto [header, ptr] = BOBUIypedArrayData<Type>::allocate(capacity, QArrayData::Grow);
         // do custom adjustments to make sure there's free space at end
         ptr += spaceAtBegin;
         return QArrayDataPointer(header, ptr);
@@ -2289,7 +2289,7 @@ void tst_QArrayData::selfEmplaceForward()
     RUN_TEST_FUNC(testSelfEmplace, MyComplexQString(), 4, complexObjs);
 }
 
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
 struct ThrowingTypeWatcher
 {
     std::vector<void *> destroyedAddrs;
@@ -2373,34 +2373,34 @@ struct ThrowingType
 };
 
 unsigned int ThrowingType::throwOnce = 0;
-static_assert(!QTypeInfo<ThrowingType>::isRelocatable);
+static_assert(!BOBUIypeInfo<ThrowingType>::isRelocatable);
 
 void tst_QArrayData::relocateWithExceptions_data()
 {
-    QTest::addColumn<ThrowingType::MoveCase>("moveCase");
-    QTest::addColumn<ThrowingType::ThrowCase>("throwCase");
+    BOBUIest::addColumn<ThrowingType::MoveCase>("moveCase");
+    BOBUIest::addColumn<ThrowingType::ThrowCase>("throwCase");
     // Not throwing
-    QTest::newRow("no-throw-move-right-no-overlap")
+    BOBUIest::newRow("no-throw-move-right-no-overlap")
             << ThrowingType::MoveRightNoOverlap << ThrowingType::NoThrow;
-    QTest::newRow("no-throw-move-right-overlap")
+    BOBUIest::newRow("no-throw-move-right-overlap")
             << ThrowingType::MoveRightOverlap << ThrowingType::NoThrow;
-    QTest::newRow("no-throw-move-left-no-overlap")
+    BOBUIest::newRow("no-throw-move-left-no-overlap")
             << ThrowingType::MoveLeftNoOverlap << ThrowingType::NoThrow;
-    QTest::newRow("no-throw-move-left-overlap")
+    BOBUIest::newRow("no-throw-move-left-overlap")
             << ThrowingType::MoveLeftOverlap << ThrowingType::NoThrow;
     // Throwing in uninitialized region
-    QTest::newRow("throw-in-uninit-region-move-right-no-overlap")
+    BOBUIest::newRow("throw-in-uninit-region-move-right-no-overlap")
             << ThrowingType::MoveRightNoOverlap << ThrowingType::ThrowInUninitializedRegion;
-    QTest::newRow("throw-in-uninit-region-move-right-overlap")
+    BOBUIest::newRow("throw-in-uninit-region-move-right-overlap")
             << ThrowingType::MoveRightOverlap << ThrowingType::ThrowInUninitializedRegion;
-    QTest::newRow("throw-in-uninit-region-move-left-no-overlap")
+    BOBUIest::newRow("throw-in-uninit-region-move-left-no-overlap")
             << ThrowingType::MoveLeftNoOverlap << ThrowingType::ThrowInUninitializedRegion;
-    QTest::newRow("throw-in-uninit-region-move-left-overlap")
+    BOBUIest::newRow("throw-in-uninit-region-move-left-overlap")
             << ThrowingType::MoveLeftOverlap << ThrowingType::ThrowInUninitializedRegion;
     // Throwing in overlap region
-    QTest::newRow("throw-in-overlap-region-move-right-overlap")
+    BOBUIest::newRow("throw-in-overlap-region-move-right-overlap")
             << ThrowingType::MoveRightOverlap << ThrowingType::ThrowInOverlapRegion;
-    QTest::newRow("throw-in-overlap-region-move-left-overlap")
+    BOBUIest::newRow("throw-in-overlap-region-move-left-overlap")
             << ThrowingType::MoveLeftOverlap << ThrowingType::ThrowInOverlapRegion;
 }
 
@@ -2563,7 +2563,7 @@ void tst_QArrayData::relocateWithExceptions()
         QFAIL("Unknown ThrowingType::MoveCase");
     };
 }
-#endif // QT_NO_EXCEPTIONS
+#endif // BOBUI_NO_EXCEPTIONS
 
-QTEST_APPLESS_MAIN(tst_QArrayData)
+BOBUIEST_APPLESS_MAIN(tst_QArrayData)
 #include "tst_qarraydata.moc"

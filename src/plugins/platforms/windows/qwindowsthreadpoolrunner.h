@@ -1,21 +1,21 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWINDOWSTHREADPOOLRUNNER_H
 #define QWINDOWSTHREADPOOLRUNNER_H
 
-#include <QtCore/qmutex.h>
-#include <QtCore/qrunnable.h>
-#include <QtCore/qthreadpool.h>
-#include <QtCore/qwaitcondition.h>
+#include <BobUICore/qmutex.h>
+#include <BobUICore/qrunnable.h>
+#include <BobUICore/bobuihreadpool.h>
+#include <BobUICore/qwaitcondition.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QWindowsThreadPoolRunner
-    \brief Runs a task in the global instance of QThreadPool
+    \brief Runs a task in the global instance of BOBUIhreadPool
 
-    QThreadPool does not provide a method to wait on a single task, so this needs
+    BOBUIhreadPool does not provide a method to wait on a single task, so this needs
     to be done by using QWaitCondition/QMutex.
 
     \internal
@@ -24,7 +24,7 @@ class QWindowsThreadPoolRunner
 {
     Q_DISABLE_COPY_MOVE(QWindowsThreadPoolRunner)
 
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
     template <class RunnableFunction> // nested class implementing QRunnable to execute a function.
     class Runnable : public QRunnable
     {
@@ -52,7 +52,7 @@ public:
     template <class Function>
     bool run(Function f, unsigned long timeOutMSecs = 5000)
     {
-        QThreadPool *pool = QThreadPool::globalInstance();
+        BOBUIhreadPool *pool = BOBUIhreadPool::globalInstance();
         Q_ASSERT(pool);
         Runnable<Function> *runnable = new Runnable<Function>(&m_mutex, &m_condition, f);
         m_mutex.lock();
@@ -67,7 +67,7 @@ public:
 private:
     QMutex m_mutex;
     QWaitCondition m_condition;
-#else // QT_CONFIG(thread)
+#else // BOBUI_CONFIG(thread)
 public:
     QWindowsThreadPoolRunner() {}
 
@@ -77,9 +77,9 @@ public:
         f();
         return true;
     }
-#endif // QT_CONFIG(thread)
+#endif // BOBUI_CONFIG(thread)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWINDOWSTHREADPOOLRUNNER_H

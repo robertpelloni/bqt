@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QCoreApplication>
 #include <QMetaType>
 #include <QDBusArgument>
@@ -51,7 +51,7 @@ Q_DECLARE_METATYPE(StringPair)
 
 Q_DECLARE_METATYPE(const QMetaObject*)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 QDBusArgument &operator<<(QDBusArgument &arg, const Struct1 &)
 {
     arg.beginStructure();
@@ -82,7 +82,7 @@ const QDBusArgument &operator>>(const QDBusArgument &arg, Struct4 &)
 { return arg; }
 const QDBusArgument &operator>>(const QDBusArgument &arg, StringPair &)
 { return arg; }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 void tst_QDBusMetaObject::initTestCase()
 {
@@ -260,7 +260,7 @@ signals:
 };
 const char TypesTest16_xml[] =
     "<signal name=\"signal\"><arg type=\"(ss)\"/>"
-    "<annotation name=\"org.qtproject.QtDBus.QtTypeName.Out0\" value=\"StringPair\"></signal>";
+    "<annotation name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\" value=\"StringPair\"></signal>";
 
 class TypesTest17: public QObject
 {
@@ -271,7 +271,7 @@ signals:
 };
 const char TypesTest17_xml[] =
     "<signal name=\"signal\"><arg type=\"(s)\"/>"
-    "<annotation name=\"org.qtproject.QtDBus.QtTypeName.Out0\" value=\"Struct1\"></signal>";
+    "<annotation name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\" value=\"Struct1\"></signal>";
 
 class TypesTest18: public QObject
 {
@@ -282,7 +282,7 @@ signals:
 };
 const char TypesTest18_xml[] =
     "<signal name=\"signal\"><arg type=\"(ssa(ss)sayasx)\"/>"
-    "<annotation name=\"org.qtproject.QtDBus.QtTypeName.Out0\" value=\"Struct4\"></signal>";
+    "<annotation name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\" value=\"Struct4\"></signal>";
 
 class TypesTest19: public QObject
 {
@@ -293,7 +293,7 @@ signals:
 };
 const char TypesTest19_xml[] =
     "<signal name=\"signal\"><arg type=\"av\"/>"
-    "<annotation name=\"org.qtproject.QtDBus.QtTypeName.Out0\" value=\"QVariantList\"></signal>";
+    "<annotation name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\" value=\"QVariantList\"></signal>";
 
 class TypesTest20: public QObject
 {
@@ -304,38 +304,38 @@ signals:
 };
 const char TypesTest20_xml[] =
     "<signal name=\"signal\"><arg type=\"a{sv}\"/>"
-    "<annotation name=\"org.qtproject.QtDBus.QtTypeName.Out0\" value=\"QVariantMap\"></signal>";
+    "<annotation name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\" value=\"QVariantMap\"></signal>";
 const char TypesTest20_oldxml[] =
     "<signal name=\"signal\"><arg type=\"a{sv}\"/>"
-    "<annotation name=\"com.trolltech.QtDBus.QtTypeName.Out0\" value=\"QVariantMap\"></signal>";
+    "<annotation name=\"com.trolltech.BobUIDBus.BobUITypeName.Out0\" value=\"QVariantMap\"></signal>";
 
 
 void tst_QDBusMetaObject::types_data()
 {
-    QTest::addColumn<const QMetaObject *>("metaobject");
-    QTest::addColumn<QString>("xml");
+    BOBUIest::addColumn<const QMetaObject *>("metaobject");
+    BOBUIest::addColumn<QString>("xml");
 
-    QTest::newRow("byte") << &TypesTest1::staticMetaObject << QString(TypesTest1_xml);
-    QTest::newRow("bool") << &TypesTest2::staticMetaObject << QString(TypesTest2_xml);
-    QTest::newRow("short") << &TypesTest3::staticMetaObject << QString(TypesTest3_xml);
-    QTest::newRow("ushort") << &TypesTest4::staticMetaObject << QString(TypesTest4_xml);
-    QTest::newRow("int") << &TypesTest5::staticMetaObject << QString(TypesTest5_xml);
-    QTest::newRow("uint") << &TypesTest6::staticMetaObject << QString(TypesTest6_xml);
-    QTest::newRow("qlonglong") << &TypesTest7::staticMetaObject << QString(TypesTest7_xml);
-    QTest::newRow("qulonglong") << &TypesTest8::staticMetaObject << QString(TypesTest8_xml);
-    QTest::newRow("double") << &TypesTest9::staticMetaObject << QString(TypesTest9_xml);
-    QTest::newRow("QString") << &TypesTest10::staticMetaObject << QString(TypesTest10_xml);
-    QTest::newRow("QDBusObjectPath") << &TypesTest11::staticMetaObject << QString(TypesTest11_xml);
-    QTest::newRow("QDBusSignature") << &TypesTest12::staticMetaObject << QString(TypesTest12_xml);
-    QTest::newRow("QDBusVariant") << &TypesTest13::staticMetaObject << QString(TypesTest13_xml);
-    QTest::newRow("QStringList") << &TypesTest14::staticMetaObject << QString(TypesTest14_xml);
-    QTest::newRow("QByteArray") << &TypesTest15::staticMetaObject << QString(TypesTest15_xml);
-    QTest::newRow("StringPair") << &TypesTest16::staticMetaObject << QString(TypesTest16_xml);
-    QTest::newRow("Struct1") << &TypesTest17::staticMetaObject << QString(TypesTest17_xml);
-    QTest::newRow("Struct4") << &TypesTest18::staticMetaObject << QString(TypesTest18_xml);
-    QTest::newRow("QVariantList") << &TypesTest19::staticMetaObject << QString(TypesTest19_xml);
-    QTest::newRow("QVariantMap") << &TypesTest20::staticMetaObject << QString(TypesTest20_xml);
-    QTest::newRow("QVariantMap-oldannotation") << &TypesTest20::staticMetaObject << QString(TypesTest20_oldxml);
+    BOBUIest::newRow("byte") << &TypesTest1::staticMetaObject << QString(TypesTest1_xml);
+    BOBUIest::newRow("bool") << &TypesTest2::staticMetaObject << QString(TypesTest2_xml);
+    BOBUIest::newRow("short") << &TypesTest3::staticMetaObject << QString(TypesTest3_xml);
+    BOBUIest::newRow("ushort") << &TypesTest4::staticMetaObject << QString(TypesTest4_xml);
+    BOBUIest::newRow("int") << &TypesTest5::staticMetaObject << QString(TypesTest5_xml);
+    BOBUIest::newRow("uint") << &TypesTest6::staticMetaObject << QString(TypesTest6_xml);
+    BOBUIest::newRow("qlonglong") << &TypesTest7::staticMetaObject << QString(TypesTest7_xml);
+    BOBUIest::newRow("qulonglong") << &TypesTest8::staticMetaObject << QString(TypesTest8_xml);
+    BOBUIest::newRow("double") << &TypesTest9::staticMetaObject << QString(TypesTest9_xml);
+    BOBUIest::newRow("QString") << &TypesTest10::staticMetaObject << QString(TypesTest10_xml);
+    BOBUIest::newRow("QDBusObjectPath") << &TypesTest11::staticMetaObject << QString(TypesTest11_xml);
+    BOBUIest::newRow("QDBusSignature") << &TypesTest12::staticMetaObject << QString(TypesTest12_xml);
+    BOBUIest::newRow("QDBusVariant") << &TypesTest13::staticMetaObject << QString(TypesTest13_xml);
+    BOBUIest::newRow("QStringList") << &TypesTest14::staticMetaObject << QString(TypesTest14_xml);
+    BOBUIest::newRow("QByteArray") << &TypesTest15::staticMetaObject << QString(TypesTest15_xml);
+    BOBUIest::newRow("StringPair") << &TypesTest16::staticMetaObject << QString(TypesTest16_xml);
+    BOBUIest::newRow("Struct1") << &TypesTest17::staticMetaObject << QString(TypesTest17_xml);
+    BOBUIest::newRow("Struct4") << &TypesTest18::staticMetaObject << QString(TypesTest18_xml);
+    BOBUIest::newRow("QVariantList") << &TypesTest19::staticMetaObject << QString(TypesTest19_xml);
+    BOBUIest::newRow("QVariantMap") << &TypesTest20::staticMetaObject << QString(TypesTest20_xml);
+    BOBUIest::newRow("QVariantMap-oldannotation") << &TypesTest20::staticMetaObject << QString(TypesTest20_oldxml);
 }
 
 void tst_QDBusMetaObject::types()
@@ -517,19 +517,19 @@ const char MethodTest9_xml[] =
 
 void tst_QDBusMetaObject::methods_data()
 {
-    QTest::addColumn<const QMetaObject *>("metaobject");
-    QTest::addColumn<QString>("xml");
+    BOBUIest::addColumn<const QMetaObject *>("metaobject");
+    BOBUIest::addColumn<QString>("xml");
 
-    QTest::newRow("void-void") << &MethodTest1::staticMetaObject << QString(MethodTest1_xml);
-    QTest::newRow("void-int") << &MethodTest2::staticMetaObject << QString(MethodTest2_xml);
-    QTest::newRow("void-int-with-name") << &MethodTest3::staticMetaObject << QString(MethodTest3_xml);
-    QTest::newRow("int-void") << &MethodTest4::staticMetaObject << QString(MethodTest4_xml);
-    QTest::newRow("int-void2") << &MethodTest4::staticMetaObject << QString(MethodTest4_xml2);
-    QTest::newRow("int-int") << &MethodTest5::staticMetaObject << QString(MethodTest5_xml);
-    QTest::newRow("int-int,int") << &MethodTest6::staticMetaObject << QString(MethodTest6_xml);
-    QTest::newRow("int,int-int,int") << &MethodTest7::staticMetaObject << QString(MethodTest7_xml);
-    QTest::newRow("int,int,int-int,int") << &MethodTest8::staticMetaObject << QString(MethodTest8_xml);
-    QTest::newRow("Q_ASYNC") << &MethodTest9::staticMetaObject << QString(MethodTest9_xml);
+    BOBUIest::newRow("void-void") << &MethodTest1::staticMetaObject << QString(MethodTest1_xml);
+    BOBUIest::newRow("void-int") << &MethodTest2::staticMetaObject << QString(MethodTest2_xml);
+    BOBUIest::newRow("void-int-with-name") << &MethodTest3::staticMetaObject << QString(MethodTest3_xml);
+    BOBUIest::newRow("int-void") << &MethodTest4::staticMetaObject << QString(MethodTest4_xml);
+    BOBUIest::newRow("int-void2") << &MethodTest4::staticMetaObject << QString(MethodTest4_xml2);
+    BOBUIest::newRow("int-int") << &MethodTest5::staticMetaObject << QString(MethodTest5_xml);
+    BOBUIest::newRow("int-int,int") << &MethodTest6::staticMetaObject << QString(MethodTest6_xml);
+    BOBUIest::newRow("int,int-int,int") << &MethodTest7::staticMetaObject << QString(MethodTest7_xml);
+    BOBUIest::newRow("int,int,int-int,int") << &MethodTest8::staticMetaObject << QString(MethodTest8_xml);
+    BOBUIest::newRow("Q_ASYNC") << &MethodTest9::staticMetaObject << QString(MethodTest9_xml);
 }
 
 void tst_QDBusMetaObject::methods()
@@ -579,13 +579,13 @@ const char SignalTest4_xml[] =
 
 void tst_QDBusMetaObject::_signals_data()
 {
-    QTest::addColumn<const QMetaObject *>("metaobject");
-    QTest::addColumn<QString>("xml");
+    BOBUIest::addColumn<const QMetaObject *>("metaobject");
+    BOBUIest::addColumn<QString>("xml");
 
-    QTest::newRow("empty") << &SignalTest1::staticMetaObject << QString(SignalTest1_xml);
-    QTest::newRow("int") << &SignalTest2::staticMetaObject << QString(SignalTest2_xml);
-    QTest::newRow("int output0") << &SignalTest3::staticMetaObject << QString(SignalTest3_xml);
-    QTest::newRow("int output0,int") << &SignalTest4::staticMetaObject << QString(SignalTest4_xml);
+    BOBUIest::newRow("empty") << &SignalTest1::staticMetaObject << QString(SignalTest1_xml);
+    BOBUIest::newRow("int") << &SignalTest2::staticMetaObject << QString(SignalTest2_xml);
+    BOBUIest::newRow("int output0") << &SignalTest3::staticMetaObject << QString(SignalTest3_xml);
+    BOBUIest::newRow("int output0,int") << &SignalTest4::staticMetaObject << QString(SignalTest4_xml);
 }
 
 void tst_QDBusMetaObject::_signals()
@@ -636,7 +636,7 @@ public:
 };
 const char PropertyTest4_xml[] =
     "<property name=\"property\" type=\"(s)\" access=\"write\">"
-    "<annotation name=\"org.qtproject.QtDBus.QtTypeName\" value=\"Struct1\"/>"
+    "<annotation name=\"org.bobuiproject.BobUIDBus.BobUITypeName\" value=\"Struct1\"/>"
     "</property>";
 
 class PropertyTest_b: public QObject
@@ -839,32 +839,32 @@ const char PropertyTest_ag_xml[] =
 
 void tst_QDBusMetaObject::properties_data()
 {
-    QTest::addColumn<const QMetaObject *>("metaobject");
-    QTest::addColumn<QString>("xml");
+    BOBUIest::addColumn<const QMetaObject *>("metaobject");
+    BOBUIest::addColumn<QString>("xml");
 
-    QTest::newRow("read") << &PropertyTest1::staticMetaObject << QString(PropertyTest1_xml);
-    QTest::newRow("readwrite") << &PropertyTest2::staticMetaObject << QString(PropertyTest2_xml);
-    QTest::newRow("write") << &PropertyTest3::staticMetaObject << QString(PropertyTest3_xml);
-    QTest::newRow("customtype") << &PropertyTest4::staticMetaObject << QString(PropertyTest4_xml);
+    BOBUIest::newRow("read") << &PropertyTest1::staticMetaObject << QString(PropertyTest1_xml);
+    BOBUIest::newRow("readwrite") << &PropertyTest2::staticMetaObject << QString(PropertyTest2_xml);
+    BOBUIest::newRow("write") << &PropertyTest3::staticMetaObject << QString(PropertyTest3_xml);
+    BOBUIest::newRow("customtype") << &PropertyTest4::staticMetaObject << QString(PropertyTest4_xml);
 
-    QTest::newRow("bool") << &PropertyTest_b::staticMetaObject << QString(PropertyTest_b_xml);
-    QTest::newRow("byte") << &PropertyTest_y::staticMetaObject << QString(PropertyTest_y_xml);
-    QTest::newRow("short") << &PropertyTest_n::staticMetaObject << QString(PropertyTest_n_xml);
-    QTest::newRow("ushort") << &PropertyTest_q::staticMetaObject << QString(PropertyTest_q_xml);
-    QTest::newRow("uint") << &PropertyTest_u::staticMetaObject << QString(PropertyTest_u_xml);
-    QTest::newRow("qlonglong") << &PropertyTest_x::staticMetaObject << QString(PropertyTest_x_xml);
-    QTest::newRow("qulonglong") << &PropertyTest_t::staticMetaObject << QString(PropertyTest_t_xml);
-    QTest::newRow("double") << &PropertyTest_d::staticMetaObject << QString(PropertyTest_d_xml);
-    QTest::newRow("QString") << &PropertyTest_s::staticMetaObject << QString(PropertyTest_s_xml);
-    QTest::newRow("QDBusVariant") << &PropertyTest_v::staticMetaObject << QString(PropertyTest_v_xml);
-    QTest::newRow("QDBusObjectPath") << &PropertyTest_o::staticMetaObject << QString(PropertyTest_o_xml);
-    QTest::newRow("QDBusSignature") << &PropertyTest_g::staticMetaObject << QString(PropertyTest_g_xml);
-    QTest::newRow("QDBusUnixFileDescriptor") << &PropertyTest_h::staticMetaObject << QString(PropertyTest_h_xml);
-    QTest::newRow("QByteArray") << &PropertyTest_ay::staticMetaObject << QString(PropertyTest_ay_xml);
-    QTest::newRow("QStringList") << &PropertyTest_as::staticMetaObject << QString(PropertyTest_as_xml);
-    QTest::newRow("QVariantList") << &PropertyTest_av::staticMetaObject << QString(PropertyTest_av_xml);
-    QTest::newRow("QList<QDBusObjectPath>") << &PropertyTest_ao::staticMetaObject << QString(PropertyTest_ao_xml);
-    QTest::newRow("QList<QDBusSignature>") << &PropertyTest_ag::staticMetaObject << QString(PropertyTest_ag_xml);
+    BOBUIest::newRow("bool") << &PropertyTest_b::staticMetaObject << QString(PropertyTest_b_xml);
+    BOBUIest::newRow("byte") << &PropertyTest_y::staticMetaObject << QString(PropertyTest_y_xml);
+    BOBUIest::newRow("short") << &PropertyTest_n::staticMetaObject << QString(PropertyTest_n_xml);
+    BOBUIest::newRow("ushort") << &PropertyTest_q::staticMetaObject << QString(PropertyTest_q_xml);
+    BOBUIest::newRow("uint") << &PropertyTest_u::staticMetaObject << QString(PropertyTest_u_xml);
+    BOBUIest::newRow("qlonglong") << &PropertyTest_x::staticMetaObject << QString(PropertyTest_x_xml);
+    BOBUIest::newRow("qulonglong") << &PropertyTest_t::staticMetaObject << QString(PropertyTest_t_xml);
+    BOBUIest::newRow("double") << &PropertyTest_d::staticMetaObject << QString(PropertyTest_d_xml);
+    BOBUIest::newRow("QString") << &PropertyTest_s::staticMetaObject << QString(PropertyTest_s_xml);
+    BOBUIest::newRow("QDBusVariant") << &PropertyTest_v::staticMetaObject << QString(PropertyTest_v_xml);
+    BOBUIest::newRow("QDBusObjectPath") << &PropertyTest_o::staticMetaObject << QString(PropertyTest_o_xml);
+    BOBUIest::newRow("QDBusSignature") << &PropertyTest_g::staticMetaObject << QString(PropertyTest_g_xml);
+    BOBUIest::newRow("QDBusUnixFileDescriptor") << &PropertyTest_h::staticMetaObject << QString(PropertyTest_h_xml);
+    BOBUIest::newRow("QByteArray") << &PropertyTest_ay::staticMetaObject << QString(PropertyTest_ay_xml);
+    BOBUIest::newRow("QStringList") << &PropertyTest_as::staticMetaObject << QString(PropertyTest_as_xml);
+    BOBUIest::newRow("QVariantList") << &PropertyTest_av::staticMetaObject << QString(PropertyTest_av_xml);
+    BOBUIest::newRow("QList<QDBusObjectPath>") << &PropertyTest_ao::staticMetaObject << QString(PropertyTest_ao_xml);
+    BOBUIest::newRow("QList<QDBusSignature>") << &PropertyTest_ag::staticMetaObject << QString(PropertyTest_ag_xml);
 }
 
 void tst_QDBusMetaObject::properties()
@@ -873,5 +873,5 @@ void tst_QDBusMetaObject::properties()
 }
 
 
-QTEST_MAIN(tst_QDBusMetaObject)
+BOBUIEST_MAIN(tst_QDBusMetaObject)
 #include "tst_qdbusmetaobject.moc"

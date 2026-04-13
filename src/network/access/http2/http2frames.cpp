@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:network-protocol
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:network-protocol
 
 #include "http2frames_p.h"
 
-#include <QtNetwork/qabstractsocket.h>
+#include <BobUINetwork/qabstractsocket.h>
 
 #include <algorithm>
 #include <utility>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace Http2
 {
@@ -499,4 +499,4 @@ bool FrameWriter::writeDATA(QIODevice &socket, quint32 sizeLimit,
 
 } // Namespace Http2
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

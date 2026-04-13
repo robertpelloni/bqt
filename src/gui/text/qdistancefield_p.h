@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QDISTANCEFIELD_H
 #define QDISTANCEFIELD_H
@@ -8,30 +8,30 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
 #include <qrawfont.h>
 #include <private/qfontengine_p.h>
-#include <QtCore/qshareddata.h>
-#include <QtCore/qglobal.h>
+#include <BobUICore/qshareddata.h>
+#include <BobUICore/qglobal.h>
 #include <QLoggingCategory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-bool Q_GUI_EXPORT qt_fontHasNarrowOutlines(const QRawFont &f);
-bool Q_GUI_EXPORT qt_fontHasNarrowOutlines(QFontEngine *fontEngine);
+bool Q_GUI_EXPORT bobui_fontHasNarrowOutlines(const QRawFont &f);
+bool Q_GUI_EXPORT bobui_fontHasNarrowOutlines(QFontEngine *fontEngine);
 
-int Q_GUI_EXPORT QT_DISTANCEFIELD_BASEFONTSIZE(bool narrowOutlineFont);
-int Q_GUI_EXPORT QT_DISTANCEFIELD_TILESIZE(bool narrowOutlineFont);
-int Q_GUI_EXPORT QT_DISTANCEFIELD_SCALE(bool narrowOutlineFont);
-int Q_GUI_EXPORT QT_DISTANCEFIELD_RADIUS(bool narrowOutlineFont);
-int Q_GUI_EXPORT QT_DISTANCEFIELD_HIGHGLYPHCOUNT();
+int Q_GUI_EXPORT BOBUI_DISTANCEFIELD_BASEFONTSIZE(bool narrowOutlineFont);
+int Q_GUI_EXPORT BOBUI_DISTANCEFIELD_TILESIZE(bool narrowOutlineFont);
+int Q_GUI_EXPORT BOBUI_DISTANCEFIELD_SCALE(bool narrowOutlineFont);
+int Q_GUI_EXPORT BOBUI_DISTANCEFIELD_RADIUS(bool narrowOutlineFont);
+int Q_GUI_EXPORT BOBUI_DISTANCEFIELD_HIGHGLYPHCOUNT();
 
 class Q_GUI_EXPORT QDistanceFieldData : public QSharedData
 {
@@ -91,6 +91,6 @@ private:
     friend class QDistanceFieldData;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QDISTANCEFIELD_H

@@ -1,13 +1,13 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qcolorspace.h>
 #include <qcolortransform.h>
 #include <qrgbafloat.h>
-#include <QtGui/private/qcolortransform_p.h>
+#include <BobUIGui/private/qcolortransform_p.h>
 
 class tst_QColorTransform : public QObject
 {
@@ -39,8 +39,8 @@ tst_QColorTransform::tst_QColorTransform()
 
 void tst_QColorTransform::mapRGB32_data()
 {
-    QTest::addColumn<QColorTransform>("transform");
-    QTest::addColumn<bool>("sharesRed");
+    BOBUIest::addColumn<QColorTransform>("transform");
+    BOBUIest::addColumn<bool>("sharesRed");
 
     QColorSpace srgb(QColorSpace::SRgb);
     QColorSpace srgbLinear(QColorSpace::SRgbLinear);
@@ -49,15 +49,15 @@ void tst_QColorTransform::mapRGB32_data()
     QColorSpace dp3(QColorSpace::DisplayP3);
     QColorSpace dp3Linear = dp3.withTransferFunction(QColorSpace::TransferFunction::Linear);
 
-    QTest::newRow("default")                        << QColorTransform()                                        << true;
-    QTest::newRow("sRGB to Linear sRGB")            << srgb.transformationToColorSpace(srgbLinear)              << true;
-    QTest::newRow("AdobeRGB to sRGB")               << adobeRgb.transformationToColorSpace(srgb)                << true;
-    QTest::newRow("Linear AdobeRGB to AdobeRGB")    << adobeRgbLinear.transformationToColorSpace(adobeRgb)      << true;
-    QTest::newRow("Linear AdobeRGB to Linear sRGB") << adobeRgbLinear.transformationToColorSpace(srgbLinear)    << true;
-    QTest::newRow("sRgb to AdobeRGB")               << srgb.transformationToColorSpace(adobeRgb)                << true;
-    QTest::newRow("DP3 to sRGB")                    << dp3.transformationToColorSpace(srgb)                     << false;
-    QTest::newRow("DP3 to Linear DP3")              << dp3.transformationToColorSpace(dp3Linear)                << false;
-    QTest::newRow("Linear DP3 to Linear sRGB")      << dp3Linear.transformationToColorSpace(srgbLinear)         << false;
+    BOBUIest::newRow("default")                        << QColorTransform()                                        << true;
+    BOBUIest::newRow("sRGB to Linear sRGB")            << srgb.transformationToColorSpace(srgbLinear)              << true;
+    BOBUIest::newRow("AdobeRGB to sRGB")               << adobeRgb.transformationToColorSpace(srgb)                << true;
+    BOBUIest::newRow("Linear AdobeRGB to AdobeRGB")    << adobeRgbLinear.transformationToColorSpace(adobeRgb)      << true;
+    BOBUIest::newRow("Linear AdobeRGB to Linear sRGB") << adobeRgbLinear.transformationToColorSpace(srgbLinear)    << true;
+    BOBUIest::newRow("sRgb to AdobeRGB")               << srgb.transformationToColorSpace(adobeRgb)                << true;
+    BOBUIest::newRow("DP3 to sRGB")                    << dp3.transformationToColorSpace(srgb)                     << false;
+    BOBUIest::newRow("DP3 to Linear DP3")              << dp3.transformationToColorSpace(dp3Linear)                << false;
+    BOBUIest::newRow("Linear DP3 to Linear sRGB")      << dp3Linear.transformationToColorSpace(srgbLinear)         << false;
 }
 
 void tst_QColorTransform::mapRGB32()
@@ -270,11 +270,11 @@ void tst_QColorTransform::mapQColor()
     else
         QVERIFY(result != testColor);
 
-    testColor = Qt::black;
+    testColor = BobUI::black;
     result = transform.map(testColor);
     QCOMPARE(result, testColor);
 
-    testColor = Qt::white;
+    testColor = BobUI::white;
     result = transform.map(testColor);
     QCOMPARE(result, testColor);
 
@@ -376,5 +376,5 @@ void tst_QColorTransform::transformIsIdentity()
     QVERIFY(ct.isIdentity());
 }
 
-QTEST_MAIN(tst_QColorTransform)
+BOBUIEST_MAIN(tst_QColorTransform)
 #include "tst_qcolortransform.moc"

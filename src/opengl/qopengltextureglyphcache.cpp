@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qopengltextureglyphcache_p.h"
 #include <private/qopenglpaintengine_p.h>
@@ -8,7 +8,7 @@
 #include <qrgb.h>
 #include <private/qdrawhelper_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 static int next_qopengltextureglyphcache_serial_number()
@@ -17,7 +17,7 @@ static int next_qopengltextureglyphcache_serial_number()
     return 1 + serial.fetchAndAddRelaxed(1);
 }
 
-QOpenGLTextureGlyphCache::QOpenGLTextureGlyphCache(QFontEngine::GlyphFormat format, const QTransform &matrix, const QColor &color)
+QOpenGLTextureGlyphCache::QOpenGLTextureGlyphCache(QFontEngine::GlyphFormat format, const BOBUIransform &matrix, const QColor &color)
     : QImageTextureGlyphCache(format, matrix, color)
     , m_textureResource(nullptr)
     , pex(nullptr)
@@ -26,7 +26,7 @@ QOpenGLTextureGlyphCache::QOpenGLTextureGlyphCache(QFontEngine::GlyphFormat form
     , m_serialNumber(next_qopengltextureglyphcache_serial_number())
     , m_buffer(QOpenGLBuffer::VertexBuffer)
 {
-#ifdef QT_GL_TEXTURE_GLYPH_CACHE_DEBUG
+#ifdef BOBUI_GL_TEXTURE_GLYPH_CACHE_DEBUG
     qDebug(" -> QOpenGLTextureGlyphCache() %p for context %p.", this, QOpenGLContext::currentContext());
 #endif
     m_vertexCoordinateArray[0] = -1.0f;
@@ -50,13 +50,13 @@ QOpenGLTextureGlyphCache::QOpenGLTextureGlyphCache(QFontEngine::GlyphFormat form
 
 QOpenGLTextureGlyphCache::~QOpenGLTextureGlyphCache()
 {
-#ifdef QT_GL_TEXTURE_GLYPH_CACHE_DEBUG
+#ifdef BOBUI_GL_TEXTURE_GLYPH_CACHE_DEBUG
     qDebug(" -> ~QOpenGLTextureGlyphCache() %p.", this);
 #endif
     clear();
 }
 
-#if !QT_CONFIG(opengles2)
+#if !BOBUI_CONFIG(opengles2)
 static inline bool isCoreProfile()
 {
     return QOpenGLContext::currentContext()->format().profile() == QSurfaceFormat::CoreProfile;
@@ -107,7 +107,7 @@ void QOpenGLTextureGlyphCache::createTextureData(int width, int height)
         QVarLengthArray<uchar> data(width * height);
         for (int i = 0; i < data.size(); ++i)
             data[i] = 0;
-#if !QT_CONFIG(opengles2)
+#if !BOBUI_CONFIG(opengles2)
         const GLint internalFormat = isCoreProfile() ? GL_R8 : GL_ALPHA;
         const GLenum format = isCoreProfile() ? GL_RED : GL_ALPHA;
 #else
@@ -142,10 +142,10 @@ void QOpenGLTextureGlyphCache::createTextureData(int width, int height)
 void QOpenGLTextureGlyphCache::setupVertexAttribs()
 {
     m_buffer.bind();
-    m_blitProgram->setAttributeBuffer(int(QT_VERTEX_COORDS_ATTR), GL_FLOAT, 0, 2);
-    m_blitProgram->setAttributeBuffer(int(QT_TEXTURE_COORDS_ATTR), GL_FLOAT, sizeof(m_vertexCoordinateArray), 2);
-    m_blitProgram->enableAttributeArray(int(QT_VERTEX_COORDS_ATTR));
-    m_blitProgram->enableAttributeArray(int(QT_TEXTURE_COORDS_ATTR));
+    m_blitProgram->setAttributeBuffer(int(BOBUI_VERTEX_COORDS_ATTR), GL_FLOAT, 0, 2);
+    m_blitProgram->setAttributeBuffer(int(BOBUI_TEXTURE_COORDS_ATTR), GL_FLOAT, sizeof(m_vertexCoordinateArray), 2);
+    m_blitProgram->enableAttributeArray(int(BOBUI_VERTEX_COORDS_ATTR));
+    m_blitProgram->enableAttributeArray(int(BOBUI_TEXTURE_COORDS_ATTR));
     m_buffer.release();
 }
 
@@ -197,11 +197,11 @@ static void load_glyph_image_to_texture(QOpenGLContext *ctx,
 
     funcs->glBindTexture(GL_TEXTURE_2D, texture);
     if (img.depth() == 32) {
-#if QT_CONFIG(opengles2)
+#if BOBUI_CONFIG(opengles2)
         GLenum fmt = GL_RGBA;
 #else
         GLenum fmt = ctx->isOpenGLES() ? GL_RGBA : GL_BGRA;
-#endif // QT_CONFIG(opengles2)
+#endif // BOBUI_CONFIG(opengles2)
 
 #if Q_BYTE_ORDER == Q_BIG_ENDIAN
         fmt = GL_RGBA;
@@ -210,7 +210,7 @@ static void load_glyph_image_to_texture(QOpenGLContext *ctx,
     } else {
         // The scanlines in image are 32-bit aligned, even for mono or 8-bit formats. This
         // is good because it matches the default of 4 bytes for GL_UNPACK_ALIGNMENT.
-#if !QT_CONFIG(opengles2)
+#if !BOBUI_CONFIG(opengles2)
         const GLenum format = isCoreProfile() ? GL_RED : GL_ALPHA;
 #else
         const GLenum format = GL_ALPHA;
@@ -268,7 +268,7 @@ void QOpenGLTextureGlyphCache::resizeTextureData(int width, int height)
         return;
     }
 
-    // ### the QTextureGlyphCache API needs to be reworked to allow
+    // ### the BOBUIextureGlyphCache API needs to be reworked to allow
     // ### resizeTextureData to fail
 
     funcs->glBindFramebuffer(GL_FRAMEBUFFER, m_textureResource->m_fbo);
@@ -287,7 +287,7 @@ void QOpenGLTextureGlyphCache::resizeTextureData(int width, int height)
     funcs->glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                                   GL_TEXTURE_2D, tmp_texture, 0);
 
-    funcs->glActiveTexture(GL_TEXTURE0 + QT_IMAGE_TEXTURE_UNIT);
+    funcs->glActiveTexture(GL_TEXTURE0 + BOBUI_IMAGE_TEXTURE_UNIT);
     funcs->glBindTexture(GL_TEXTURE_2D, oldTexture);
 
     if (pex != nullptr)
@@ -330,8 +330,8 @@ void QOpenGLTextureGlyphCache::resizeTextureData(int width, int height)
                 m_blitProgram->addCacheableShaderFromSourceCode(QOpenGLShader::Fragment, source);
             }
 
-            m_blitProgram->bindAttributeLocation("vertexCoordsArray", QT_VERTEX_COORDS_ATTR);
-            m_blitProgram->bindAttributeLocation("textureCoordArray", QT_TEXTURE_COORDS_ATTR);
+            m_blitProgram->bindAttributeLocation("vertexCoordsArray", BOBUI_VERTEX_COORDS_ATTR);
+            m_blitProgram->bindAttributeLocation("textureCoordArray", BOBUI_TEXTURE_COORDS_ATTR);
 
             m_blitProgram->link();
 
@@ -350,14 +350,14 @@ void QOpenGLTextureGlyphCache::resizeTextureData(int width, int height)
         blitProgram = m_blitProgram;
 
     } else {
-        pex->uploadData(QT_VERTEX_COORDS_ATTR, m_vertexCoordinateArray, 8);
-        pex->uploadData(QT_TEXTURE_COORDS_ATTR, m_textureCoordinateArray, 8);
+        pex->uploadData(BOBUI_VERTEX_COORDS_ATTR, m_vertexCoordinateArray, 8);
+        pex->uploadData(BOBUI_TEXTURE_COORDS_ATTR, m_textureCoordinateArray, 8);
 
         pex->shaderManager->useBlitProgram();
         blitProgram = pex->shaderManager->blitProgram();
     }
 
-    blitProgram->setUniformValue("imageTexture", QT_IMAGE_TEXTURE_UNIT);
+    blitProgram->setUniformValue("imageTexture", BOBUI_IMAGE_TEXTURE_UNIT);
 
     funcs->glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
@@ -379,8 +379,8 @@ void QOpenGLTextureGlyphCache::resizeTextureData(int width, int height)
         if (m_vao.isCreated()) {
             m_vao.release();
         } else {
-            m_blitProgram->disableAttributeArray(int(QT_VERTEX_COORDS_ATTR));
-            m_blitProgram->disableAttributeArray(int(QT_TEXTURE_COORDS_ATTR));
+            m_blitProgram->disableAttributeArray(int(BOBUI_VERTEX_COORDS_ATTR));
+            m_blitProgram->disableAttributeArray(int(BOBUI_TEXTURE_COORDS_ATTR));
         }
     }
 }
@@ -451,4 +451,4 @@ void QOpenGLTextureGlyphCache::clear()
     coords.clear();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

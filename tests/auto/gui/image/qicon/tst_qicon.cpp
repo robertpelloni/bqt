@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QImageReader>
 #include <QBuffer>
 #include <QStandardPaths>
 #include <QPainter>
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
 #include <QProcess>
 #endif
 #include <qicon.h>
@@ -45,7 +45,7 @@ private slots:
     void fromThemeCache();
     void fromThemeConstant();
 
-#ifndef QT_NO_WIDGETS
+#ifndef BOBUI_NO_WIDGETS
     void task184901_badCache();
 #endif
     void task223279_inconsistentAddFile();
@@ -82,36 +82,36 @@ void tst_QIcon::initTestCase()
 
 void tst_QIcon::actualSize_data()
 {
-    QTest::addColumn<QString>("source");
-    QTest::addColumn<QSize>("argument");
-    QTest::addColumn<QSize>("result");
+    BOBUIest::addColumn<QString>("source");
+    BOBUIest::addColumn<QSize>("argument");
+    BOBUIest::addColumn<QSize>("result");
 
     // square image
-    QTest::newRow("resource0") << ":/image.png" << QSize(128, 128) << QSize(128, 128);
-    QTest::newRow("resource1") << ":/image.png" << QSize( 64,  64) << QSize( 64,  64);
-    QTest::newRow("resource2") << ":/image.png" << QSize( 32,  64) << QSize( 32,  32);
-    QTest::newRow("resource3") << ":/image.png" << QSize( 16,  64) << QSize( 16,  16);
-    QTest::newRow("resource4") << ":/image.png" << QSize( 16,  128) << QSize( 16,  16);
-    QTest::newRow("resource5") << ":/image.png" << QSize( 128,  16) << QSize( 16,  16);
-    QTest::newRow("resource6") << ":/image.png" << QSize( 150,  150) << QSize( 128,  128);
+    BOBUIest::newRow("resource0") << ":/image.png" << QSize(128, 128) << QSize(128, 128);
+    BOBUIest::newRow("resource1") << ":/image.png" << QSize( 64,  64) << QSize( 64,  64);
+    BOBUIest::newRow("resource2") << ":/image.png" << QSize( 32,  64) << QSize( 32,  32);
+    BOBUIest::newRow("resource3") << ":/image.png" << QSize( 16,  64) << QSize( 16,  16);
+    BOBUIest::newRow("resource4") << ":/image.png" << QSize( 16,  128) << QSize( 16,  16);
+    BOBUIest::newRow("resource5") << ":/image.png" << QSize( 128,  16) << QSize( 16,  16);
+    BOBUIest::newRow("resource6") << ":/image.png" << QSize( 150,  150) << QSize( 128,  128);
     // rect image
-    QTest::newRow("resource7") << ":/rect.png" << QSize( 20,  40) << QSize( 20,  40);
-    QTest::newRow("resource8") << ":/rect.png" << QSize( 10,  20) << QSize( 10,  20);
-    QTest::newRow("resource9") << ":/rect.png" << QSize( 15,  50) << QSize( 15,  30);
-    QTest::newRow("resource10") << ":/rect.png" << QSize( 25,  50) << QSize( 20,  40);
+    BOBUIest::newRow("resource7") << ":/rect.png" << QSize( 20,  40) << QSize( 20,  40);
+    BOBUIest::newRow("resource8") << ":/rect.png" << QSize( 10,  20) << QSize( 10,  20);
+    BOBUIest::newRow("resource9") << ":/rect.png" << QSize( 15,  50) << QSize( 15,  30);
+    BOBUIest::newRow("resource10") << ":/rect.png" << QSize( 25,  50) << QSize( 20,  40);
 
-    QTest::newRow("external0") << m_pngImageFileName << QSize(128, 128) << QSize(128, 128);
-    QTest::newRow("external1") << m_pngImageFileName << QSize( 64,  64) << QSize( 64,  64);
-    QTest::newRow("external2") << m_pngImageFileName << QSize( 32,  64) << QSize( 32,  32);
-    QTest::newRow("external3") << m_pngImageFileName << QSize( 16,  64) << QSize( 16,  16);
-    QTest::newRow("external4") << m_pngImageFileName << QSize( 16, 128) << QSize( 16,  16);
-    QTest::newRow("external5") << m_pngImageFileName << QSize(128,  16) << QSize( 16,  16);
-    QTest::newRow("external6") << m_pngImageFileName << QSize(150, 150) << QSize(128,  128);
+    BOBUIest::newRow("external0") << m_pngImageFileName << QSize(128, 128) << QSize(128, 128);
+    BOBUIest::newRow("external1") << m_pngImageFileName << QSize( 64,  64) << QSize( 64,  64);
+    BOBUIest::newRow("external2") << m_pngImageFileName << QSize( 32,  64) << QSize( 32,  32);
+    BOBUIest::newRow("external3") << m_pngImageFileName << QSize( 16,  64) << QSize( 16,  16);
+    BOBUIest::newRow("external4") << m_pngImageFileName << QSize( 16, 128) << QSize( 16,  16);
+    BOBUIest::newRow("external5") << m_pngImageFileName << QSize(128,  16) << QSize( 16,  16);
+    BOBUIest::newRow("external6") << m_pngImageFileName << QSize(150, 150) << QSize(128,  128);
     // rect image
-    QTest::newRow("external7") << ":/rect.png" << QSize( 20,  40) << QSize( 20,  40);
-    QTest::newRow("external8") << ":/rect.png" << QSize( 10,  20) << QSize( 10,  20);
-    QTest::newRow("external9") << ":/rect.png" << QSize( 15,  50) << QSize( 15,  30);
-    QTest::newRow("external10") << ":/rect.png" << QSize( 25,  50) << QSize( 20,  40);
+    BOBUIest::newRow("external7") << ":/rect.png" << QSize( 20,  40) << QSize( 20,  40);
+    BOBUIest::newRow("external8") << ":/rect.png" << QSize( 10,  20) << QSize( 10,  20);
+    BOBUIest::newRow("external9") << ":/rect.png" << QSize( 15,  50) << QSize( 15,  30);
+    BOBUIest::newRow("external10") << ":/rect.png" << QSize( 25,  50) << QSize( 20,  40);
 }
 
 void tst_QIcon::actualSize()
@@ -121,8 +121,8 @@ void tst_QIcon::actualSize()
     QFETCH(QSize, result);
 
     // Skip two corner cases
-    if (qApp->devicePixelRatio() > 1 && (qstrcmp(QTest::currentDataTag(), "resource9") == 0
-                                      || qstrcmp(QTest::currentDataTag(), "external9") == 0))
+    if (qApp->devicePixelRatio() > 1 && (qstrcmp(BOBUIest::currentDataTag(), "resource9") == 0
+                                      || qstrcmp(BOBUIest::currentDataTag(), "external9") == 0))
         QSKIP("Behavior is unspecified for devicePixelRatio > 1");
 
     auto expectedDeviceSize = [](QSize deviceIndependentExpectedSize, QSize maxSourceImageSize) -> QSize {
@@ -151,19 +151,19 @@ void tst_QIcon::actualSize()
 
 void tst_QIcon::actualSize2_data()
 {
-    QTest::addColumn<QSize>("argument");
-    QTest::addColumn<QSize>("result");
+    BOBUIest::addColumn<QSize>("argument");
+    BOBUIest::addColumn<QSize>("result");
 
     // two images - 128x128 and 20x40. Let the games begin
-    QTest::newRow("trivial1") << QSize( 128,  128) << QSize( 128,  128);
-    QTest::newRow("trivial2") << QSize( 20,  40) << QSize( 20,  40);
+    BOBUIest::newRow("trivial1") << QSize( 128,  128) << QSize( 128,  128);
+    BOBUIest::newRow("trivial2") << QSize( 20,  40) << QSize( 20,  40);
 
     // QIcon chooses the one with the smallest area to choose the pixmap
-    QTest::newRow("best1") << QSize( 100,  100) << QSize( 100,  100);
-    QTest::newRow("best2") << QSize( 20,  20) << QSize( 10,  20);
-    QTest::newRow("best3") << QSize( 15,  30) << QSize( 15,  30);
-    QTest::newRow("best4") << QSize( 5,  5) << QSize( 2,  5);
-    QTest::newRow("best5") << QSize( 10,  15) << QSize( 7,  15);
+    BOBUIest::newRow("best1") << QSize( 100,  100) << QSize( 100,  100);
+    BOBUIest::newRow("best2") << QSize( 20,  20) << QSize( 10,  20);
+    BOBUIest::newRow("best3") << QSize( 15,  30) << QSize( 15,  30);
+    BOBUIest::newRow("best4") << QSize( 5,  5) << QSize( 2,  5);
+    BOBUIest::newRow("best5") << QSize( 10,  15) << QSize( 7,  15);
 }
 
 void tst_QIcon::actualSize2()
@@ -237,8 +237,8 @@ void tst_QIcon::isMask()
 void tst_QIcon::swap()
 {
     QPixmap p1(1, 1), p2(2, 2);
-    p1.fill(Qt::black);
-    p2.fill(Qt::black);
+    p1.fill(BobUI::black);
+    p2.fill(BobUI::black);
 
     QIcon i1(p1), i2(p2);
     const qint64 i1k = i1.cacheKey();
@@ -260,14 +260,14 @@ void tst_QIcon::bestMatch()
     QPixmap p7(7, 7);
     QPixmap p8(8, 8);
 
-    p1.fill(Qt::black);
-    p2.fill(Qt::black);
-    p3.fill(Qt::black);
-    p4.fill(Qt::black);
-    p5.fill(Qt::black);
-    p6.fill(Qt::black);
-    p7.fill(Qt::black);
-    p8.fill(Qt::black);
+    p1.fill(BobUI::black);
+    p2.fill(BobUI::black);
+    p3.fill(BobUI::black);
+    p4.fill(BobUI::black);
+    p5.fill(BobUI::black);
+    p6.fill(BobUI::black);
+    p7.fill(BobUI::black);
+    p8.fill(BobUI::black);
 
     for (int i = 0; i < 4; ++i) {
         for (int j = 0; j < 2; ++j) {
@@ -451,27 +451,27 @@ void tst_QIcon::pixmap()
 
 void tst_QIcon::pixmapByDprFromEngine_data()
 {
-    QTest::addColumn<int>("engineSize");
-    QTest::addColumn<int>("requestedSize");
-    QTest::addColumn<qreal>("requestedDpr");
-    QTest::addColumn<int>("expectedSize");
-    QTest::addColumn<qreal>("expectedDpr");
+    BOBUIest::addColumn<int>("engineSize");
+    BOBUIest::addColumn<int>("requestedSize");
+    BOBUIest::addColumn<qreal>("requestedDpr");
+    BOBUIest::addColumn<int>("expectedSize");
+    BOBUIest::addColumn<qreal>("expectedDpr");
 
-    QTest::newRow("engine 16x16, request 32x32, dpr = 1")
+    BOBUIest::newRow("engine 16x16, request 32x32, dpr = 1")
         << 16 << 32 << 1.0 << 16 << 1.0;    // no upscaling is done
-    QTest::newRow("engine 16x16, request 32x32, dpr = 2")
+    BOBUIest::newRow("engine 16x16, request 32x32, dpr = 2")
         << 16 << 32 << 2.0 << 16 << 1.0;    // no upscaling is done
-    QTest::newRow("engine 32x32, request 32x32, dpr = 1")
+    BOBUIest::newRow("engine 32x32, request 32x32, dpr = 1")
         << 32 << 32 << 1.0 << 32 << 1.0;
-    QTest::newRow("engine 32x32, request 32x32, dpr = 2")
+    BOBUIest::newRow("engine 32x32, request 32x32, dpr = 2")
         << 32 << 32 << 2.0 << 32 << 1.0;    // no upscaling is done
-    QTest::newRow("engine 32x32, request 16x16, dpr = 1")
+    BOBUIest::newRow("engine 32x32, request 16x16, dpr = 1")
         << 32 << 16 << 1.0 << 32 << 2.0;    // downscaling done by increasing dpr
-    QTest::newRow("engine 32x32, request 16x16, dpr = 2")
+    BOBUIest::newRow("engine 32x32, request 16x16, dpr = 2")
         << 32 << 16 << 2.0 << 32 << 2.0;
-    QTest::newRow("engine 32x32, request 8x8, dpr = 1")
+    BOBUIest::newRow("engine 32x32, request 8x8, dpr = 1")
         << 32 << 8 << 1.0 << 32 << 4.0;     // downscaling done by increasing dpr
-    QTest::newRow("engine 32x32, request 8x8, dpr = 2")
+    BOBUIest::newRow("engine 32x32, request 8x8, dpr = 2")
         << 32 << 8 << 2.0 << 32 << 4.0;     // downscaling done by increasing dpr
 }
 
@@ -497,7 +497,7 @@ void tst_QIcon::pixmapByDprFromEngine()
         {
             // simulate an icon engine which does no scaling (= only has fixed size icons)
             QPixmap pm(size);
-            pm.fill(Qt::red);
+            pm.fill(BobUI::red);
             return pm;
         }
     };
@@ -645,17 +645,17 @@ void tst_QIcon::name()
 
 void tst_QIcon::streamAvailableSizes_data()
 {
-    QTest::addColumn<QIcon>("icon");
+    BOBUIest::addColumn<QIcon>("icon");
 
     QIcon icon;
     icon.addFile(":/image.png", QSize(32,32));
-    QTest::newRow( "32x32" ) << icon;
+    BOBUIest::newRow( "32x32" ) << icon;
     icon.addFile(":/image.png", QSize(64,64));
-    QTest::newRow( "64x64" ) << icon;
+    BOBUIest::newRow( "64x64" ) << icon;
     icon.addFile(":/image.png", QSize(128,128));
-    QTest::newRow( "128x128" ) << icon;
+    BOBUIest::newRow( "128x128" ) << icon;
     icon.addFile(":/image.png", QSize(256,256));
-    QTest::newRow( "256x256" ) << icon;
+    BOBUIest::newRow( "256x256" ) << icon;
 }
 
 void tst_QIcon::streamAvailableSizes()
@@ -683,7 +683,7 @@ void tst_QIcon::streamAvailableSizes()
     }
 }
 
-#ifndef QT_NO_WIDGETS
+#ifndef BOBUI_NO_WIDGETS
 void tst_QIcon::task184901_badCache()
 {
     QPixmap pm(m_pngImageFileName);
@@ -759,7 +759,7 @@ void tst_QIcon::fromTheme()
     noIcon = QIcon::fromTheme("svg-icon", abIcon);
     QVERIFY(!noIcon.availableSizes().isEmpty());
 
-    // Pixmaps should be no larger than the requested size (for devicePixelRatio 1) (QTBUG-17953)
+    // Pixmaps should be no larger than the requested size (for devicePixelRatio 1) (BOBUIBUG-17953)
     if (qApp->devicePixelRatio() == 1) {
         QCOMPARE(appointmentIcon.pixmap(22).size(), QSize(22, 22)); // exact
         QCOMPARE(appointmentIcon.pixmap(32).size(), QSize(32, 32)); // exact
@@ -840,7 +840,7 @@ static inline QString findGtkUpdateIconCache()
 
 void tst_QIcon::fromThemeCache()
 {
-    QTemporaryDir dir;
+    BOBUIemporaryDir dir;
     QVERIFY2(dir.isValid(), qPrintable(dir.errorString()));
 
     QVERIFY(QDir().mkpath(dir.path() + QLatin1String("/testcache/16x16/actions")));
@@ -884,10 +884,10 @@ void tst_QIcon::fromThemeCache()
     QVERIFY(QIcon::fromTheme("button-open").isNull()); // The icon was not in the cache, it should not be found
 
     // Adding an icon should be changing the modification date of one sub directory which should make the cache ignored
-    QTest::qWait(1000); // wait enough to have a different modification time in seconds
+    BOBUIest::qWait(1000); // wait enough to have a different modification time in seconds
     QVERIFY(QFile(QStringLiteral(":/styles/commonstyle/images/standardbutton-save-16.png"))
         .copy(dir.path() + QLatin1String("/testcache/16x16/actions/button-save.png")));
-    QVERIFY(QFileInfo(cacheName).lastModified(QTimeZone::UTC) < QFileInfo(dir.path() + QLatin1String("/testcache/16x16/actions")).lastModified(QTimeZone::UTC));
+    QVERIFY(QFileInfo(cacheName).lastModified(BOBUIimeZone::UTC) < QFileInfo(dir.path() + QLatin1String("/testcache/16x16/actions")).lastModified(BOBUIimeZone::UTC));
     QIcon::setThemeSearchPaths(QStringList() << dir.path()); // reload themes
     QVERIFY(!QIcon::fromTheme("button-open").isNull());
 
@@ -897,7 +897,7 @@ void tst_QIcon::fromThemeCache()
         QIcon::setThemeSearchPaths(QStringList());
         QSKIP("gtk-update-icon-cache not run (binary not found)");
     }
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
     QProcess process;
     process.start(gtkUpdateIconCache,
                   QStringList() << QStringLiteral("-f") << QStringLiteral("-t") << (dir.path() + QLatin1String("/testcache")));
@@ -907,8 +907,8 @@ void tst_QIcon::fromThemeCache()
     QVERIFY(process.waitForFinished());
     QCOMPARE(process.exitStatus(), QProcess::NormalExit);
     QCOMPARE(process.exitCode(), 0);
-#endif // QT_CONFIG(process)
-    QVERIFY(QFileInfo(cacheName).lastModified(QTimeZone::UTC) >= QFileInfo(dir.path() + QLatin1String("/testcache/16x16/actions")).lastModified(QTimeZone::UTC));
+#endif // BOBUI_CONFIG(process)
+    QVERIFY(QFileInfo(cacheName).lastModified(BOBUIimeZone::UTC) >= QFileInfo(dir.path() + QLatin1String("/testcache/16x16/actions")).lastModified(BOBUIimeZone::UTC));
     QIcon::setThemeSearchPaths(QStringList() << dir.path()); // reload themes
     QVERIFY(!QIcon::fromTheme("button-open").isNull());
     QVERIFY(!QIcon::fromTheme("button-open-fallback").isNull());
@@ -942,10 +942,10 @@ Q_IMPORT_PLUGIN(TestIconPlugin)
 
 void tst_QIcon::themeFromPlugin_data()
 {
-    QTest::addColumn<QString>("themeName");
+    BOBUIest::addColumn<QString>("themeName");
 
-    QTest::addRow("plugintheme") << "plugintheme";
-    QTest::addRow("specialtheme") << "specialTheme"; // deliberately not matching case
+    BOBUIest::addRow("plugintheme") << "plugintheme";
+    BOBUIest::addRow("specialtheme") << "specialTheme"; // deliberately not matching case
 }
 
 void tst_QIcon::themeFromPlugin()
@@ -965,5 +965,5 @@ void tst_QIcon::themeFromPlugin()
     QCOMPARE(icon.name(), themeName + "/icon1");
 }
 
-QTEST_MAIN(tst_QIcon)
+BOBUIEST_MAIN(tst_QIcon)
 #include "tst_qicon.moc"

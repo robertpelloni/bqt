@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qcfsocketnotifier_p.h"
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qsocketnotifier.h>
-#include <QtCore/qthread.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/qsocketnotifier.h>
+#include <BobUICore/bobuihread.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /**************************************************************************
     Socket Notifiers
  *************************************************************************/
-void qt_mac_socket_callback(CFSocketRef s, CFSocketCallBackType callbackType, CFDataRef,
+void bobui_mac_socket_callback(CFSocketRef s, CFSocketCallBackType callbackType, CFDataRef,
                             const void *data, void *info)
 {
 
@@ -22,7 +22,7 @@ void qt_mac_socket_callback(CFSocketRef s, CFSocketCallBackType callbackType, CF
 
     // There is a race condition that happen where we disable the notifier and
     // the kernel still has a notification to pass on. We then get this
-    // notification after we've successfully disabled the CFSocket, but our Qt
+    // notification after we've successfully disabled the CFSocket, but our BobUI
     // notifier is now gone. The upshot is we have to check the notifier
     // every time.
     if (callbackType == kCFSocketConnectCallBack) {
@@ -52,7 +52,7 @@ void qt_mac_socket_callback(CFSocketRef s, CFSocketCallBackType callbackType, CF
 /*
     Adds a loop source for the given socket to the current run loop.
 */
-CFRunLoopSourceRef qt_mac_add_socket_to_runloop(const CFSocketRef socket)
+CFRunLoopSourceRef bobui_mac_add_socket_to_runloop(const CFSocketRef socket)
 {
     CFRunLoopSourceRef loopSource = CFSocketCreateRunLoopSource(kCFAllocatorDefault, socket, 0);
     if (!loopSource)
@@ -65,7 +65,7 @@ CFRunLoopSourceRef qt_mac_add_socket_to_runloop(const CFSocketRef socket)
 /*
     Removes the loop source for the given socket from the current run loop.
 */
-void qt_mac_remove_socket_from_runloop(const CFSocketRef socket, CFRunLoopSourceRef runloop)
+void bobui_mac_remove_socket_from_runloop(const CFSocketRef socket, CFRunLoopSourceRef runloop)
 {
     Q_ASSERT(runloop);
     CFRunLoopRemoveSource(CFRunLoopGetCurrent(), runloop, kCFRunLoopCommonModes);
@@ -101,12 +101,12 @@ void QCFSocketNotifier::registerSocketNotifier(QSocketNotifier *notifier)
     Q_ASSERT(notifier);
     int nativeSocket = notifier->socket();
     int type = notifier->type();
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (nativeSocket < 0 || nativeSocket > FD_SETSIZE) {
         qWarning("QSocketNotifier: Internal error");
         return;
     } else if (notifier->thread() != eventDispatcher->thread()
-               || eventDispatcher->thread() != QThread::currentThread()) {
+               || eventDispatcher->thread() != BOBUIhread::currentThread()) {
         qWarning("QSocketNotifier: socket notifiers cannot be enabled from another thread");
         return;
     }
@@ -126,7 +126,7 @@ void QCFSocketNotifier::registerSocketNotifier(QSocketNotifier *notifier)
         // are enabled/disabled later on).
         const int callbackTypes = kCFSocketConnectCallBack | kCFSocketReadCallBack | kCFSocketWriteCallBack;
         CFSocketContext context = {0, this, 0, 0, 0};
-        socketInfo->socket = CFSocketCreateWithNative(kCFAllocatorDefault, nativeSocket, callbackTypes, qt_mac_socket_callback, &context);
+        socketInfo->socket = CFSocketCreateWithNative(kCFAllocatorDefault, nativeSocket, callbackTypes, bobui_mac_socket_callback, &context);
         if (CFSocketIsValid(socketInfo->socket) == false) {
             qWarning("QEventDispatcherMac::registerSocketNotifier: Failed to create CFSocket");
             return;
@@ -169,11 +169,11 @@ void QCFSocketNotifier::unregisterSocketNotifier(QSocketNotifier *notifier)
     Q_ASSERT(notifier);
     int nativeSocket = notifier->socket();
     int type = notifier->type();
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (nativeSocket < 0 || nativeSocket > FD_SETSIZE) {
         qWarning("QSocketNotifier: Internal error");
         return;
-    } else if (notifier->thread() != eventDispatcher->thread() || eventDispatcher->thread() != QThread::currentThread()) {
+    } else if (notifier->thread() != eventDispatcher->thread() || eventDispatcher->thread() != BOBUIhread::currentThread()) {
         qWarning("QSocketNotifier: socket notifiers cannot be disabled from another thread");
         return;
     }
@@ -237,7 +237,7 @@ void QCFSocketNotifier::unregisterSocketInfo(MacSocketInfo *socketInfo)
 {
     if (socketInfo->runloop) {
         if (CFSocketIsValid(socketInfo->socket))
-            qt_mac_remove_socket_from_runloop(socketInfo->socket, socketInfo->runloop);
+            bobui_mac_remove_socket_from_runloop(socketInfo->socket, socketInfo->runloop);
         CFRunLoopSourceInvalidate(socketInfo->runloop);
         CFRelease(socketInfo->runloop);
     }
@@ -258,7 +258,7 @@ void QCFSocketNotifier::enableSocketNotifiers(CFRunLoopObserverRef ref, CFRunLoo
 
         if (!socketInfo->runloop) {
             // Add CFSocket to runloop.
-            if (!(socketInfo->runloop = qt_mac_add_socket_to_runloop(socketInfo->socket))) {
+            if (!(socketInfo->runloop = bobui_mac_add_socket_to_runloop(socketInfo->socket))) {
                 qWarning("QEventDispatcherMac::registerSocketNotifier: Failed to add CFSocket to runloop");
                 CFSocketInvalidate(socketInfo->socket);
                 continue;
@@ -290,5 +290,5 @@ void QCFSocketNotifier::enableSocketNotifiers(CFRunLoopObserverRef ref, CFRunLoo
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 

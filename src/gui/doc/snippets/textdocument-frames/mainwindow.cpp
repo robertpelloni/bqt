@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 #include "mainwindow.h"
 
@@ -16,31 +16,31 @@ MainWindow::MainWindow()
     quitAction->setShortcut(tr("Ctrl+Q"));
 
     menuBar()->addMenu(fileMenu);
-    editor = new QTextEdit;
+    editor = new BOBUIextEdit;
 
 //! [rootframe]
-    QTextDocument *editorDocument = editor->document();
-    QTextFrame *root = editorDocument->rootFrame();
+    BOBUIextDocument *editorDocument = editor->document();
+    BOBUIextFrame *root = editorDocument->rootFrame();
 //! [rootframe]
     processFrame(root);
 
-    QTextCursor cursor(editor->textCursor());
-    cursor.movePosition(QTextCursor::Start);
+    BOBUIextCursor cursor(editor->textCursor());
+    cursor.movePosition(BOBUIextCursor::Start);
 
-    QTextFrame *mainFrame = cursor.currentFrame();
+    BOBUIextFrame *mainFrame = cursor.currentFrame();
 
-    QTextCharFormat plainCharFormat;
-    QTextCharFormat boldCharFormat;
+    BOBUIextCharFormat plainCharFormat;
+    BOBUIextCharFormat boldCharFormat;
     boldCharFormat.setFontWeight(QFont::Bold);
 /*  main frame
 //! [0]
-    QTextFrame *mainFrame = cursor.currentFrame();
+    BOBUIextFrame *mainFrame = cursor.currentFrame();
     cursor.insertText(...);
 //! [0]
 */
     cursor.insertText("Text documents are represented by the "
-                      "QTextDocument class, rather than by QString objects. "
-                      "Each QTextDocument object contains information about "
+                      "BOBUIextDocument class, rather than by QString objects. "
+                      "Each BOBUIextDocument object contains information about "
                       "the document's internal representation, its structure, "
                       "and keeps track of modifications to provide undo/redo "
                       "facilities. This approach allows features such as the "
@@ -49,7 +49,7 @@ MainWindow::MainWindow()
                       plainCharFormat);
 
 //! [1]
-    QTextFrameFormat frameFormat;
+    BOBUIextFrameFormat frameFormat;
     frameFormat.setMargin(32);
     frameFormat.setPadding(8);
     frameFormat.setBorder(4);
@@ -63,8 +63,8 @@ MainWindow::MainWindow()
 //! [2]
 */
     cursor.insertText("Documents are either converted from external sources "
-                      "or created from scratch using Qt. The creation process "
-                      "can done by an editor widget, such as QTextEdit, or by "
+                      "or created from scratch using BobUI. The creation process "
+                      "can done by an editor widget, such as BOBUIextEdit, or by "
                       "explicit calls to the Scribe API.", boldCharFormat);
 
     cursor = mainFrame->lastCursorPosition();
@@ -110,18 +110,18 @@ void MainWindow::saveFile()
     }
 }
 
-void MainWindow::processBlock(QTextBlock)
+void MainWindow::processBlock(BOBUIextBlock)
 {
 }
 
-void MainWindow::processFrame(QTextFrame *frame)
+void MainWindow::processFrame(BOBUIextFrame *frame)
 {
 //! [4]
-    QTextFrame::iterator it;
+    BOBUIextFrame::iterator it;
     for (it = frame->begin(); !(it.atEnd()); ++it) {
 
-        QTextFrame *childFrame = it.currentFrame();
-        QTextBlock childBlock = it.currentBlock();
+        BOBUIextFrame *childFrame = it.currentFrame();
+        BOBUIextBlock childBlock = it.currentBlock();
 
         if (childFrame)
             processFrame(childFrame);

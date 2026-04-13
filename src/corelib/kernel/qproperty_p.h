@@ -1,5 +1,5 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPROPERTY_P_H
 #define QPROPERTY_P_H
@@ -8,8 +8,8 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of a number of Qt sources files.  This header file may change from
+// This file is not part of the BobUI API.  It exists for the convenience
+// of a number of BobUI sources files.  This header file may change from
 // version to version without notice, or even be removed.
 //
 // We mean it.
@@ -22,13 +22,13 @@
 #include <qscopedvaluerollback.h>
 #include <qvariant.h>
 #include <vector>
-#include <QtCore/QVarLengthArray>
+#include <BobUICore/QVarLengthArray>
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtPrivate {
+namespace BobUIPrivate {
     Q_CORE_EXPORT bool isAnyBindingEvaluating();
     struct QBindingStatusAccessToken {};
 }
@@ -48,9 +48,9 @@ public:
     QBindingObserverPtr() = default;
     Q_DISABLE_COPY(QBindingObserverPtr)
     void swap(QBindingObserverPtr &other) noexcept
-    { qt_ptr_swap(d, other.d); }
+    { bobui_ptr_swap(d, other.d); }
     QBindingObserverPtr(QBindingObserverPtr &&other) noexcept : d(std::exchange(other.d, nullptr)) {}
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QBindingObserverPtr)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QBindingObserverPtr)
 
 
     inline QBindingObserverPtr(QPropertyObserver *observer) noexcept;
@@ -67,7 +67,7 @@ using PendingBindingObserverList = QVarLengthArray<QPropertyBindingPrivatePtr>;
 // This is a helper "namespace"
 struct QPropertyBindingDataPointer
 {
-    const QtPrivate::QPropertyBindingData *ptr = nullptr;
+    const BobUIPrivate::QPropertyBindingData *ptr = nullptr;
 
     QPropertyBindingPrivate *binding() const
     {
@@ -80,11 +80,11 @@ struct QPropertyBindingDataPointer
         observer->prev = reinterpret_cast<QPropertyObserver**>(&d);
         d = reinterpret_cast<quintptr>(observer);
     }
-    static void fixupAfterMove(QtPrivate::QPropertyBindingData *ptr);
+    static void fixupAfterMove(BobUIPrivate::QPropertyBindingData *ptr);
     Q_ALWAYS_INLINE void addObserver(QPropertyObserver *observer);
     inline void setFirstObserver(QPropertyObserver *observer);
     inline QPropertyObserverPointer firstObserver() const;
-    static QPropertyProxyBindingData *proxyData(QtPrivate::QPropertyBindingData *ptr);
+    static QPropertyProxyBindingData *proxyData(BobUIPrivate::QPropertyBindingData *ptr);
 
     inline int observerCount() const;
 
@@ -126,20 +126,20 @@ struct QPropertyObserverPointer
     void unlink()
     {
         unlink_common();
-#if QT_DEPRECATED_SINCE(6, 6)
-        QT_WARNING_PUSH QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 6)
+        BOBUI_WARNING_PUSH BOBUI_WARNING_DISABLE_DEPRECATED
         if (ptr->next.tag() == QPropertyObserver::ObserverIsAlias)
             ptr->aliasData = nullptr;
-        QT_WARNING_POP
+        BOBUI_WARNING_POP
 #endif
     }
 
     void unlink_fast()
     {
-#if QT_DEPRECATED_SINCE(6, 6)
-        QT_WARNING_PUSH QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 6)
+        BOBUI_WARNING_PUSH BOBUI_WARNING_DISABLE_DEPRECATED
         Q_ASSERT(ptr->next.tag() != QPropertyObserver::ObserverIsAlias);
-        QT_WARNING_POP
+        BOBUI_WARNING_POP
 #endif
         unlink_common();
     }
@@ -157,7 +157,7 @@ struct QPropertyObserverPointer
     enum class Notify {Everything, OnlyChangeHandlers};
 
     void notify(QUntypedPropertyData *propertyDataPtr);
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     void noSelfDependencies(QPropertyBindingPrivate *binding);
 #else
     void noSelfDependencies(QPropertyBindingPrivate *) {}
@@ -194,7 +194,7 @@ public:
     QString description;
 };
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 struct BindingEvaluationState
 {
@@ -228,8 +228,8 @@ struct CompatPropertySafePoint
     QUntypedPropertyData *property;
     CompatPropertySafePoint *previousState = nullptr;
     CompatPropertySafePoint **currentState = nullptr;
-    QtPrivate::BindingEvaluationState **currentlyEvaluatingBindingList = nullptr;
-    QtPrivate::BindingEvaluationState *bindingState = nullptr;
+    BobUIPrivate::BindingEvaluationState **currentlyEvaluatingBindingList = nullptr;
+    BobUIPrivate::BindingEvaluationState *bindingState = nullptr;
 };
 
 /*!
@@ -253,7 +253,7 @@ public:
 
 }
 
-class Q_CORE_EXPORT QPropertyBindingPrivate : public QtPrivate::RefCounted
+class Q_CORE_EXPORT QPropertyBindingPrivate : public BobUIPrivate::RefCounted
 {
 private:
     friend struct QPropertyBindingDataPointer;
@@ -272,15 +272,15 @@ private:
     bool isQQmlPropertyBinding:1;
     /* a sticky binding does not get removed in removeBinding
        this is used to support QQmlPropertyData::DontRemoveBinding
-       in qtdeclarative
+       in bobuideclarative
     */
     bool m_sticky:1;
 
-    const QtPrivate::BindingFunctionVTable *vtable;
+    const BobUIPrivate::BindingFunctionVTable *vtable;
 
     union {
-        QtPrivate::QPropertyObserverCallback staticObserverCallback = nullptr;
-        QtPrivate::QPropertyBindingWrapper staticBindingWrapper;
+        BobUIPrivate::QPropertyObserverCallback staticObserverCallback = nullptr;
+        BobUIPrivate::QPropertyBindingWrapper staticBindingWrapper;
     };
     ObserverArray inlineDependencyObservers; // for things we are observing
 
@@ -328,7 +328,7 @@ public:
     bool isSticky() {return m_sticky;}
     void scheduleNotify() {pendingNotify = true;}
 
-    QPropertyBindingPrivate(QMetaType metaType, const QtPrivate::BindingFunctionVTable *vtable,
+    QPropertyBindingPrivate(QMetaType metaType, const BobUIPrivate::BindingFunctionVTable *vtable,
                             const QPropertyBindingSourceLocation &location, bool isQQmlPropertyBinding=false)
         : hasBindingWrapper(false)
         , isQQmlPropertyBinding(isQQmlPropertyBinding)
@@ -341,7 +341,7 @@ public:
 
 
     void setProperty(QUntypedPropertyData *propertyPtr) { propertyDataPtr = propertyPtr; }
-    void setStaticObserver(QtPrivate::QPropertyObserverCallback callback, QtPrivate::QPropertyBindingWrapper bindingWrapper)
+    void setStaticObserver(BobUIPrivate::QPropertyObserverCallback callback, BobUIPrivate::QPropertyBindingWrapper bindingWrapper)
     {
         Q_ASSERT(!(callback && bindingWrapper));
         if (callback) {
@@ -450,7 +450,7 @@ inline void QPropertyBindingDataPointer::setFirstObserver(QPropertyObserver *obs
     d = reinterpret_cast<quintptr>(observer);
 }
 
-inline void QPropertyBindingDataPointer::fixupAfterMove(QtPrivate::QPropertyBindingData *ptr)
+inline void QPropertyBindingDataPointer::fixupAfterMove(BobUIPrivate::QPropertyBindingData *ptr)
 {
     auto &d = ptr->d_ref();
     if (ptr->isNotificationDelayed()) {
@@ -461,7 +461,7 @@ inline void QPropertyBindingDataPointer::fixupAfterMove(QtPrivate::QPropertyBind
     // If QPropertyBindingData has been moved, and it has an observer
     // we have to adjust the firstObserver's prev pointer to point to
     // the moved to QPropertyBindingData's d_ptr
-    if (d & QtPrivate::QPropertyBindingData::BindingBit)
+    if (d & BobUIPrivate::QPropertyBindingData::BindingBit)
         return; // nothing to do if the observer is stored in the binding
     if (auto observer = reinterpret_cast<QPropertyObserver *>(d))
         observer->prev = reinterpret_cast<QPropertyObserver **>(&d);
@@ -478,7 +478,7 @@ inline QPropertyObserverPointer QPropertyBindingDataPointer::firstObserver() con
     \internal
     Returns the proxy data of \a ptr, or \c nullptr if \a ptr has no delayed notification
  */
-inline QPropertyProxyBindingData *QPropertyBindingDataPointer::proxyData(QtPrivate::QPropertyBindingData *ptr)
+inline QPropertyProxyBindingData *QPropertyBindingDataPointer::proxyData(BobUIPrivate::QPropertyBindingData *ptr)
 {
     if (!ptr->isNotificationDelayed())
         return nullptr;
@@ -493,7 +493,7 @@ inline int QPropertyBindingDataPointer::observerCount() const
     return count;
 }
 
-namespace QtPrivate {
+namespace BobUIPrivate {
     Q_CORE_EXPORT bool isPropertyInBindingWrapper(const QUntypedPropertyData *property);
     void Q_CORE_EXPORT initBindingStatusThreadId();
 }
@@ -503,40 +503,40 @@ template<typename Class, typename T, auto Offset, auto Setter, auto Signal = nul
 class QObjectCompatProperty : public QPropertyData<T>
 {
     template<typename Property, typename>
-    friend class QtPrivate::QBindableInterfaceForProperty;
+    friend class BobUIPrivate::QBindableInterfaceForProperty;
 
     using ThisType = QObjectCompatProperty<Class, T, Offset, Setter, Signal, Getter>;
     using SignalTakesValue = std::is_invocable<decltype(Signal), Class, T>;
     Class *owner()
     {
         char *that = reinterpret_cast<char *>(this);
-        return reinterpret_cast<Class *>(that - QtPrivate::detail::getOffset(Offset));
+        return reinterpret_cast<Class *>(that - BobUIPrivate::detail::getOffset(Offset));
     }
     const Class *owner() const
     {
         char *that = const_cast<char *>(reinterpret_cast<const char *>(this));
-        return reinterpret_cast<Class *>(that - QtPrivate::detail::getOffset(Offset));
+        return reinterpret_cast<Class *>(that - BobUIPrivate::detail::getOffset(Offset));
     }
 
-    static bool bindingWrapper(QMetaType type, QUntypedPropertyData *dataPtr, QtPrivate::QPropertyBindingFunction binding)
+    static bool bindingWrapper(QMetaType type, QUntypedPropertyData *dataPtr, BobUIPrivate::QPropertyBindingFunction binding)
     {
         auto *thisData = static_cast<ThisType *>(dataPtr);
         QBindingStorage *storage = qGetBindingStorage(thisData->owner());
         QPropertyData<T> copy(thisData->valueBypassingBindings());
         {
-            QtPrivate::CurrentCompatPropertyThief thief(storage->bindingStatus);
+            BobUIPrivate::CurrentCompatPropertyThief thief(storage->bindingStatus);
             if (!binding.vtable->call(type, &copy, binding.functor))
                 return false;
         }
         // ensure value and setValue know we're currently evaluating our binding
-        QtPrivate::CompatPropertySafePoint guardThis(storage->bindingStatus, thisData);
+        BobUIPrivate::CompatPropertySafePoint guardThis(storage->bindingStatus, thisData);
         (thisData->owner()->*Setter)(copy.valueBypassingBindings());
         return true;
     }
     bool inBindingWrapper(const QBindingStorage *storage) const
     {
         return storage->bindingStatus && storage->bindingStatus->currentCompatProperty
-            && QtPrivate::isPropertyInBindingWrapper(this);
+            && BobUIPrivate::isPropertyInBindingWrapper(this);
     }
 
     inline static T getPropertyValue(const QUntypedPropertyData *d) {
@@ -567,7 +567,7 @@ public:
 
     arrow_operator_result operator->() const
     {
-        if constexpr (QTypeTraits::is_dereferenceable_v<T>) {
+        if constexpr (BOBUIypeTraits::is_dereferenceable_v<T>) {
             return value();
         } else if constexpr (std::is_pointer_v<T>) {
             value();
@@ -606,7 +606,7 @@ public:
 
     QPropertyBinding<T> setBinding(const QPropertyBinding<T> &newBinding)
     {
-        QtPrivate::QPropertyBindingData *bd = qGetBindingStorage(owner())->bindingData(this, true);
+        BobUIPrivate::QPropertyBindingData *bd = qGetBindingStorage(owner())->bindingData(this, true);
         QUntypedPropertyBinding oldBinding(bd->setBinding(newBinding, this, nullptr, bindingWrapper));
         // notification is already handled in QPropertyBindingData::setBinding
         return static_cast<QPropertyBinding<T> &>(oldBinding);
@@ -623,10 +623,10 @@ public:
 #ifndef Q_QDOC
     template <typename Functor>
     QPropertyBinding<T> setBinding(Functor &&f,
-                                   const QPropertyBindingSourceLocation &location = QT_PROPERTY_DEFAULT_BINDING_LOCATION,
+                                   const QPropertyBindingSourceLocation &location = BOBUI_PROPERTY_DEFAULT_BINDING_LOCATION,
                                    std::enable_if_t<std::is_invocable_v<Functor>> * = nullptr)
     {
-        return setBinding(Qt::makePropertyBinding(std::forward<Functor>(f), location));
+        return setBinding(BobUI::makePropertyBinding(std::forward<Functor>(f), location));
     }
 #else
     template <typename Functor>
@@ -661,7 +661,7 @@ public:
                     if (!inBindingWrapper(storage)) {
                         PendingBindingObserverList bindingObservers;
                         if (bd->notifyObserver_helper(this, storage, observer, bindingObservers)
-                                == QtPrivate::QPropertyBindingData::Evaluated) {
+                                == BobUIPrivate::QPropertyBindingData::Evaluated) {
                             // evaluateBindings() can trash the observers.
                             // It can also reallocate binding data pointer.
                             // So, we need to re-fetch here.
@@ -719,14 +719,14 @@ public:
         return QPropertyNotifier(*this, f);
     }
 
-    QtPrivate::QPropertyBindingData &bindingData() const
+    BobUIPrivate::QPropertyBindingData &bindingData() const
     {
         auto *storage = const_cast<QBindingStorage *>(qGetBindingStorage(owner()));
         return *storage->bindingData(const_cast<QObjectCompatProperty *>(this), true);
     }
 };
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 template<typename Class, typename Ty, auto Offset, auto Setter, auto Signal, auto Getter>
 class QBindableInterfaceForProperty<
         QObjectCompatProperty<Class, Ty, Offset, Setter, Signal, Getter>, std::void_t<Class>>
@@ -746,7 +746,7 @@ public:
         [](QUntypedPropertyData *d, const QUntypedPropertyBinding &binding) -> QUntypedPropertyBinding
         { return static_cast<Property *>(d)->setBinding(static_cast<const QPropertyBinding<T> &>(binding)); },
         [](const QUntypedPropertyData *d, const QPropertyBindingSourceLocation &location) -> QUntypedPropertyBinding
-        { return Qt::makePropertyBinding([d]() -> T { return Property::getPropertyValue(d); }, location); },
+        { return BobUI::makePropertyBinding([d]() -> T { return Property::getPropertyValue(d); }, location); },
         [](const QUntypedPropertyData *d, QPropertyObserver *observer) -> void
         { observer->setSource(static_cast<const Property *>(d)->bindingData()); },
         []() { return QMetaType::fromType<T>(); }
@@ -754,71 +754,71 @@ public:
 };
 }
 
-#define QT_OBJECT_COMPAT_PROPERTY_4(Class, Type, name,  setter) \
-    static constexpr size_t _qt_property_##name##_offset() { \
-        QT_WARNING_PUSH QT_WARNING_DISABLE_INVALID_OFFSETOF \
+#define BOBUI_OBJECT_COMPAT_PROPERTY_4(Class, Type, name,  setter) \
+    static constexpr size_t _bobui_property_##name##_offset() { \
+        BOBUI_WARNING_PUSH BOBUI_WARNING_DISABLE_INVALID_OFFSETOF \
         return offsetof(Class, name); \
-        QT_WARNING_POP \
+        BOBUI_WARNING_POP \
     } \
-    QObjectCompatProperty<Class, Type, Class::_qt_property_##name##_offset, setter> name;
+    QObjectCompatProperty<Class, Type, Class::_bobui_property_##name##_offset, setter> name;
 
-#define QT_OBJECT_COMPAT_PROPERTY_5(Class, Type, name,  setter, signal) \
-    static constexpr size_t _qt_property_##name##_offset() { \
-        QT_WARNING_PUSH QT_WARNING_DISABLE_INVALID_OFFSETOF \
+#define BOBUI_OBJECT_COMPAT_PROPERTY_5(Class, Type, name,  setter, signal) \
+    static constexpr size_t _bobui_property_##name##_offset() { \
+        BOBUI_WARNING_PUSH BOBUI_WARNING_DISABLE_INVALID_OFFSETOF \
         return offsetof(Class, name); \
-        QT_WARNING_POP \
+        BOBUI_WARNING_POP \
     } \
-    QObjectCompatProperty<Class, Type, Class::_qt_property_##name##_offset, setter, signal> name;
+    QObjectCompatProperty<Class, Type, Class::_bobui_property_##name##_offset, setter, signal> name;
 
 #define Q_OBJECT_COMPAT_PROPERTY(...) \
-    QT_WARNING_PUSH QT_WARNING_DISABLE_INVALID_OFFSETOF \
-    QT_OVERLOADED_MACRO(QT_OBJECT_COMPAT_PROPERTY, __VA_ARGS__) \
-    QT_WARNING_POP
+    BOBUI_WARNING_PUSH BOBUI_WARNING_DISABLE_INVALID_OFFSETOF \
+    BOBUI_OVERLOADED_MACRO(BOBUI_OBJECT_COMPAT_PROPERTY, __VA_ARGS__) \
+    BOBUI_WARNING_POP
 
-#define QT_OBJECT_COMPAT_PROPERTY_WITH_ARGS_5(Class, Type, name,  setter, value) \
-    static constexpr size_t _qt_property_##name##_offset() { \
-        QT_WARNING_PUSH QT_WARNING_DISABLE_INVALID_OFFSETOF \
+#define BOBUI_OBJECT_COMPAT_PROPERTY_WITH_ARGS_5(Class, Type, name,  setter, value) \
+    static constexpr size_t _bobui_property_##name##_offset() { \
+        BOBUI_WARNING_PUSH BOBUI_WARNING_DISABLE_INVALID_OFFSETOF \
         return offsetof(Class, name); \
-        QT_WARNING_POP \
+        BOBUI_WARNING_POP \
     } \
-    QObjectCompatProperty<Class, Type, Class::_qt_property_##name##_offset, setter> name =         \
-            QObjectCompatProperty<Class, Type, Class::_qt_property_##name##_offset, setter>(       \
+    QObjectCompatProperty<Class, Type, Class::_bobui_property_##name##_offset, setter> name =         \
+            QObjectCompatProperty<Class, Type, Class::_bobui_property_##name##_offset, setter>(       \
                     value);
 
-#define QT_OBJECT_COMPAT_PROPERTY_WITH_ARGS_6(Class, Type, name, setter, signal, value) \
-    static constexpr size_t _qt_property_##name##_offset() { \
-        QT_WARNING_PUSH QT_WARNING_DISABLE_INVALID_OFFSETOF \
+#define BOBUI_OBJECT_COMPAT_PROPERTY_WITH_ARGS_6(Class, Type, name, setter, signal, value) \
+    static constexpr size_t _bobui_property_##name##_offset() { \
+        BOBUI_WARNING_PUSH BOBUI_WARNING_DISABLE_INVALID_OFFSETOF \
         return offsetof(Class, name); \
-        QT_WARNING_POP \
+        BOBUI_WARNING_POP \
     } \
-    QObjectCompatProperty<Class, Type, Class::_qt_property_##name##_offset, setter, signal> name = \
-            QObjectCompatProperty<Class, Type, Class::_qt_property_##name##_offset, setter,        \
+    QObjectCompatProperty<Class, Type, Class::_bobui_property_##name##_offset, setter, signal> name = \
+            QObjectCompatProperty<Class, Type, Class::_bobui_property_##name##_offset, setter,        \
                                   signal>(value);
 
-#define QT_OBJECT_COMPAT_PROPERTY_WITH_ARGS_7(Class, Type, name, setter, signal, getter, value) \
-    static constexpr size_t _qt_property_##name##_offset() { \
-        QT_WARNING_PUSH QT_WARNING_DISABLE_INVALID_OFFSETOF \
+#define BOBUI_OBJECT_COMPAT_PROPERTY_WITH_ARGS_7(Class, Type, name, setter, signal, getter, value) \
+    static constexpr size_t _bobui_property_##name##_offset() { \
+        BOBUI_WARNING_PUSH BOBUI_WARNING_DISABLE_INVALID_OFFSETOF \
         return offsetof(Class, name); \
-        QT_WARNING_POP \
+        BOBUI_WARNING_POP \
     } \
-    QObjectCompatProperty<Class, Type, Class::_qt_property_##name##_offset, setter, signal, getter>\
-        name = QObjectCompatProperty<Class, Type, Class::_qt_property_##name##_offset, setter,     \
+    QObjectCompatProperty<Class, Type, Class::_bobui_property_##name##_offset, setter, signal, getter>\
+        name = QObjectCompatProperty<Class, Type, Class::_bobui_property_##name##_offset, setter,     \
                                      signal, getter>(value);
 
 #define Q_OBJECT_COMPAT_PROPERTY_WITH_ARGS(...) \
-    QT_WARNING_PUSH QT_WARNING_DISABLE_INVALID_OFFSETOF \
-    QT_OVERLOADED_MACRO(QT_OBJECT_COMPAT_PROPERTY_WITH_ARGS, __VA_ARGS__) \
-    QT_WARNING_POP
+    BOBUI_WARNING_PUSH BOBUI_WARNING_DISABLE_INVALID_OFFSETOF \
+    BOBUI_OVERLOADED_MACRO(BOBUI_OBJECT_COMPAT_PROPERTY_WITH_ARGS, __VA_ARGS__) \
+    BOBUI_WARNING_POP
 
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 Q_CORE_EXPORT BindingEvaluationState *suspendCurrentBindingStatus();
 Q_CORE_EXPORT void restoreBindingStatus(BindingEvaluationState *status);
 }
 
 struct QUntypedBindablePrivate
 {
-    static QtPrivate::QBindableInterface const *getInterface(const QUntypedBindable &bindable)
+    static BobUIPrivate::QBindableInterface const *getInterface(const QUntypedBindable &bindable)
     {
         return bindable.iface;
     }
@@ -850,7 +850,7 @@ inline bool QPropertyBindingPrivate::evaluateRecursive_inline(PendingBindingObse
 
     QScopedValueRollback<bool> updateGuard(updating, true);
 
-    QtPrivate::BindingEvaluationState evaluationFrame(this, status);
+    BobUIPrivate::BindingEvaluationState evaluationFrame(this, status);
 
     auto bindingFunctor =  reinterpret_cast<std::byte *>(this) +
             QPropertyBindingPrivate::getSizeEnsuringAlignment();
@@ -922,11 +922,11 @@ inline void QPropertyObserverPointer::notify(QUntypedPropertyData *propertyDataP
         case QPropertyObserver::ObserverIsPlaceholder:
             // recursion is already properly handled somewhere else
             break;
-#if QT_DEPRECATED_SINCE(6, 6)
-        QT_WARNING_PUSH QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 6)
+        BOBUI_WARNING_PUSH BOBUI_WARNING_DISABLE_DEPRECATED
         case QPropertyObserver::ObserverIsAlias:
             break;
-        QT_WARNING_POP
+        BOBUI_WARNING_POP
 #endif
         default: Q_UNREACHABLE();
         }
@@ -960,14 +960,14 @@ QPropertyBindingPrivate *QBindingObserverPtr::binding() const noexcept { return 
 
 QPropertyObserver *QBindingObserverPtr::operator->() { return d; }
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 class QPropertyAdaptorSlotObject : public QUntypedPropertyData, public QSlotObjectBase
 {
     QPropertyBindingData bindingData_;
     QObject *obj;
     QMetaProperty metaProperty_;
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
     static void impl(int which, QSlotObjectBase *this_, QObject *r, void **a, bool *ret);
 #else
     static void impl(QSlotObjectBase *this_, QObject *r, void **a, int which, bool *ret);
@@ -991,10 +991,10 @@ public:
     inline QObject *object() const { return obj; }
     inline const QMetaProperty &metaProperty() const { return metaProperty_; }
 
-    friend class QT_PREPEND_NAMESPACE(QUntypedBindable);
+    friend class BOBUI_PREPEND_NAMESPACE(QUntypedBindable);
 };
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPROPERTY_P_H

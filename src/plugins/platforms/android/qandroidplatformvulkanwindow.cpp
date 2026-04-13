@@ -1,5 +1,5 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "androidjnimain.h"
 #include "qandroideventdispatcher.h"
@@ -13,9 +13,9 @@
 #include <android/native_window.h>
 #include <android/native_window_jni.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QAndroidPlatformVulkanWindow::QAndroidPlatformVulkanWindow(QWindow *window)
     : QAndroidPlatformWindow(window),
@@ -45,10 +45,10 @@ void QAndroidPlatformVulkanWindow::setGeometry(const QRect &rect)
     }
 }
 
-void QAndroidPlatformVulkanWindow::applicationStateChanged(Qt::ApplicationState state)
+void QAndroidPlatformVulkanWindow::applicationStateChanged(BobUI::ApplicationState state)
 {
     QAndroidPlatformWindow::applicationStateChanged(state);
-    if (state <= Qt::ApplicationHidden) {
+    if (state <= BobUI::ApplicationHidden) {
         destroyAndClearSurface();
     }
 }
@@ -84,7 +84,7 @@ void QAndroidPlatformVulkanWindow::destroyAndClearSurface()
 VkSurfaceKHR *QAndroidPlatformVulkanWindow::vkSurface()
 {
     if (QAndroidEventDispatcherStopper::stopped() ||
-        QGuiApplication::applicationState() == Qt::ApplicationSuspended) {
+        QGuiApplication::applicationState() == BobUI::ApplicationSuspended) {
         qDebug(lcQpaWindow) << "Application not active, return existing surface.";
         return &m_vkSurface;
     }
@@ -95,7 +95,7 @@ VkSurfaceKHR *QAndroidPlatformVulkanWindow::vkSurface()
 
         QMutexLocker lock(&m_surfaceMutex);
         if (!m_androidSurfaceCreated) {
-            QtAndroidPrivate::AndroidDeadlockProtector protector(
+            BobUIAndroidPrivate::AndroidDeadlockProtector protector(
                 u"QAndroidPlatformVulkanWindow::vkSurface()"_s);
             if (!protector.acquire())
                 return &m_vkSurface;
@@ -141,4 +141,4 @@ VkSurfaceKHR *QAndroidPlatformVulkanWindow::vkSurface()
     return &m_vkSurface;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

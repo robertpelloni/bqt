@@ -1,10 +1,10 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QDBusMessage>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 // incomplete, but enough for the test
 #define COMPARE_MESSAGES(lhs, rhs) \
@@ -77,6 +77,6 @@ void tst_QDBusMessage::moveConstruct()
 
 #undef COMPARE_MESSAGES
 
-QTEST_MAIN(tst_QDBusMessage)
+BOBUIEST_MAIN(tst_QDBusMessage)
 
 #include "tst_qdbusmessage.moc"

@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qlistwidget.h"
 
@@ -10,7 +10,7 @@
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QListWidgetMimeData : public QMimeData
 {
@@ -19,9 +19,9 @@ public:
     QList<QListWidgetItem*> items;
 };
 
-QT_BEGIN_INCLUDE_NAMESPACE
+BOBUI_BEGIN_INCLUDE_NAMESPACE
 #include "qlistwidget.moc"
-QT_END_INCLUDE_NAMESPACE
+BOBUI_END_INCLUDE_NAMESPACE
 
 QListModel::QListModel(QListWidget *parent)
     : QAbstractListModel(parent)
@@ -257,7 +257,7 @@ bool QListModel::removeRows(int row, int count, const QModelIndex &parent)
 
 /*!
     \class QListModel
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
     \internal
 */
 
@@ -292,14 +292,14 @@ bool QListModel::moveRows(const QModelIndex &sourceParent, int sourceRow, int co
     return true;
 }
 
-Qt::ItemFlags QListModel::flags(const QModelIndex &index) const
+BobUI::ItemFlags QListModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid() || index.row() >= items.size() || index.model() != this)
-        return Qt::ItemIsDropEnabled; // we allow drops outside the items
+        return BobUI::ItemIsDropEnabled; // we allow drops outside the items
     return items.at(index.row())->flags();
 }
 
-void QListModel::sort(int column, Qt::SortOrder order)
+void QListModel::sort(int column, BobUI::SortOrder order)
 {
     if (column != 0)
         return;
@@ -313,7 +313,7 @@ void QListModel::sort(int column, Qt::SortOrder order)
         sorting[i].second = i;
     }
 
-    const auto compare = (order == Qt::AscendingOrder ? &itemLessThan : &itemGreaterThan);
+    const auto compare = (order == BobUI::AscendingOrder ? &itemLessThan : &itemGreaterThan);
     std::stable_sort(sorting.begin(), sorting.end(), compare);
     QModelIndexList fromIndexes;
     QModelIndexList toIndexes;
@@ -335,7 +335,7 @@ void QListModel::sort(int column, Qt::SortOrder order)
  * This function assumes that all items in the model except the items that are between
  * (inclusive) start and end are sorted.
  */
-void QListModel::ensureSorted(int column, Qt::SortOrder order, int start, int end)
+void QListModel::ensureSorted(int column, BobUI::SortOrder order, int start, int end)
 {
     if (column != 0)
         return;
@@ -358,7 +358,7 @@ void QListModel::ensureSorted(int column, Qt::SortOrder order, int start, int en
     const auto beginChangedIterator = items.constBegin() + qMax(start - 1, 0);
     const auto endChangedIterator = items.constBegin() + qMin(end + 2, items.size());
     const bool needsSorting = !std::is_sorted(beginChangedIterator, endChangedIterator,
-                                              order == Qt::AscendingOrder ? compareLt : compareGt);
+                                              order == BobUI::AscendingOrder ? compareLt : compareGt);
 
     if (needsSorting)
         sort(column, order);
@@ -379,9 +379,9 @@ bool QListModel::itemGreaterThan(const std::pair<QListWidgetItem*,int> &left,
 QList<QListWidgetItem*>::iterator QListModel::sortedInsertionIterator(
     const QList<QListWidgetItem*>::iterator &begin,
     const QList<QListWidgetItem*>::iterator &end,
-    Qt::SortOrder order, QListWidgetItem *item)
+    BobUI::SortOrder order, QListWidgetItem *item)
 {
-    if (order == Qt::AscendingOrder)
+    if (order == BobUI::AscendingOrder)
         return std::lower_bound(begin, end, item, QListModelLessThan());
     return std::lower_bound(begin, end, item, QListModelGreaterThan());
 }
@@ -419,8 +419,8 @@ QMimeData *QListModel::mimeData(const QModelIndexList &indexes) const
     return mimeData;
 }
 
-#if QT_CONFIG(draganddrop)
-bool QListModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
+#if BOBUI_CONFIG(draganddrop)
+bool QListModel::dropMimeData(const QMimeData *data, BobUI::DropAction action,
                               int row, int column, const QModelIndex &index)
 {
     Q_UNUSED(column);
@@ -432,17 +432,17 @@ bool QListModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
     return view()->dropMimeData(row, data, action);
 }
 
-Qt::DropActions QListModel::supportedDropActions() const
+BobUI::DropActions QListModel::supportedDropActions() const
 {
     return view()->supportedDropActions();
 }
 
-Qt::DropActions QListModel::supportedDragActions() const
+BobUI::DropActions QListModel::supportedDragActions() const
 {
     return view()->supportedDragActions();
 }
 
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
 
 /*!
     \class QListWidgetItem
@@ -450,7 +450,7 @@ Qt::DropActions QListModel::supportedDragActions() const
     QListWidget item view class.
 
     \ingroup model-view
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     A QListWidgetItem represents a single item in a QListWidget. Each item can
     hold several pieces of information, and will display them appropriately.
@@ -478,7 +478,7 @@ Qt::DropActions QListModel::supportedDragActions() const
     of drag and drop operations.
 
     Each item's flags can be changed by calling setFlags() with the appropriate
-    value (see Qt::ItemFlags). Checkable items can be checked, unchecked and
+    value (see BobUI::ItemFlags). Checkable items can be checked, unchecked and
     partially checked with the setCheckState() function. The corresponding
     checkState() function indicates the item's current check state.
 
@@ -494,7 +494,7 @@ Qt::DropActions QListModel::supportedDragActions() const
     base class constructor with a new type value equal to or greater than
     \l UserType, within \e your constructor.
 
-    \sa QListWidget, {Model/View Programming}, QTreeWidgetItem, QTableWidgetItem
+    \sa QListWidget, {Model/View Programming}, BOBUIreeWidgetItem, BOBUIableWidgetItem
 */
 
 /*!
@@ -504,7 +504,7 @@ Qt::DropActions QListModel::supportedDragActions() const
 
     \value Type     The default type for list widget items.
     \value UserType The minimum value for custom types. Values below UserType are
-                    reserved by Qt.
+                    reserved by BobUI.
 
     You can define new user types in QListWidgetItem subclasses to ensure that
     custom items are treated specially.
@@ -558,10 +558,10 @@ Qt::DropActions QListModel::supportedDragActions() const
 */
 QListWidgetItem::QListWidgetItem(QListWidget *listview, int type)
     : rtti(type), view(listview), d(new QListWidgetItemPrivate(this)),
-      itemFlags(Qt::ItemIsSelectable
-                |Qt::ItemIsUserCheckable
-                |Qt::ItemIsEnabled
-                |Qt::ItemIsDragEnabled)
+      itemFlags(BobUI::ItemIsSelectable
+                |BobUI::ItemIsUserCheckable
+                |BobUI::ItemIsEnabled
+                |BobUI::ItemIsDragEnabled)
 {
     if (QListModel *model = listModel())
         model->insert(model->rowCount(), this);
@@ -585,16 +585,16 @@ QListWidgetItem::QListWidgetItem(QListWidget *listview, int type)
 */
 QListWidgetItem::QListWidgetItem(const QString &text, QListWidget *listview, int type)
     : rtti(type), view(listview), d(new QListWidgetItemPrivate(this)),
-      itemFlags(Qt::ItemIsSelectable
-                |Qt::ItemIsUserCheckable
-                |Qt::ItemIsEnabled
-                |Qt::ItemIsDragEnabled)
+      itemFlags(BobUI::ItemIsSelectable
+                |BobUI::ItemIsUserCheckable
+                |BobUI::ItemIsEnabled
+                |BobUI::ItemIsDragEnabled)
 {
     QListModel *model = listModel();
     {
         QSignalBlocker b(view);
         QSignalBlocker bm(model);
-        setData(Qt::DisplayRole, text);
+        setData(BobUI::DisplayRole, text);
     }
     if (model)
         model->insert(model->rowCount(), this);
@@ -620,17 +620,17 @@ QListWidgetItem::QListWidgetItem(const QString &text, QListWidget *listview, int
 QListWidgetItem::QListWidgetItem(const QIcon &icon,const QString &text,
                                  QListWidget *listview, int type)
     : rtti(type), view(listview), d(new QListWidgetItemPrivate(this)),
-      itemFlags(Qt::ItemIsSelectable
-                |Qt::ItemIsUserCheckable
-                |Qt::ItemIsEnabled
-                |Qt::ItemIsDragEnabled)
+      itemFlags(BobUI::ItemIsSelectable
+                |BobUI::ItemIsUserCheckable
+                |BobUI::ItemIsEnabled
+                |BobUI::ItemIsDragEnabled)
 {
     QListModel *model = listModel();
     {
         QSignalBlocker b(view);
         QSignalBlocker bm(model);
-        setData(Qt::DisplayRole, text);
-        setData(Qt::DecorationRole, icon);
+        setData(BobUI::DisplayRole, text);
+        setData(BobUI::DecorationRole, icon);
     }
     if (model)
         model->insert(model->rowCount(), this);
@@ -658,15 +658,15 @@ QListWidgetItem *QListWidgetItem::clone() const
     Sets the data for a given \a role to the given \a value. Reimplement this
     function if you need extra roles or special behavior for certain roles.
 
-    \note The default implementation treats Qt::EditRole and Qt::DisplayRole as
+    \note The default implementation treats BobUI::EditRole and BobUI::DisplayRole as
     referring to the same data.
 
-    \sa Qt::ItemDataRole, data()
+    \sa BobUI::ItemDataRole, data()
 */
 void QListWidgetItem::setData(int role, const QVariant &value)
 {
     bool found = false;
-    role = (role == Qt::EditRole ? Qt::DisplayRole : role);
+    role = (role == BobUI::EditRole ? BobUI::DisplayRole : role);
     for (int i = 0; i < d->values.size(); ++i) {
         if (d->values.at(i).role == role) {
             if (d->values.at(i).value == value)
@@ -679,8 +679,8 @@ void QListWidgetItem::setData(int role, const QVariant &value)
     if (!found)
         d->values.append(QWidgetItemData(role, value));
     if (QListModel *model = listModel()) {
-        const QList<int> roles((role == Qt::DisplayRole)
-                                       ? QList<int>({ Qt::DisplayRole, Qt::EditRole })
+        const QList<int> roles((role == BobUI::DisplayRole)
+                                       ? QList<int>({ BobUI::DisplayRole, BobUI::EditRole })
                                        : QList<int>({ role }));
         model->itemChanged(this, roles);
     }
@@ -690,11 +690,11 @@ void QListWidgetItem::setData(int role, const QVariant &value)
     Returns the item's data for a given \a role. Reimplement this function if
     you need extra roles or special behavior for certain roles.
 
-    \sa Qt::ItemDataRole, setData()
+    \sa BobUI::ItemDataRole, setData()
 */
 QVariant QListWidgetItem::data(int role) const
 {
-    role = (role == Qt::EditRole ? Qt::DisplayRole : role);
+    role = (role == BobUI::EditRole ? BobUI::DisplayRole : role);
     for (int i = 0; i < d->values.size(); ++i)
         if (d->values.at(i).role == role)
             return d->values.at(i).value;
@@ -707,11 +707,11 @@ QVariant QListWidgetItem::data(int role) const
 */
 bool QListWidgetItem::operator<(const QListWidgetItem &other) const
 {
-    const QVariant v1 = data(Qt::DisplayRole), v2 = other.data(Qt::DisplayRole);
+    const QVariant v1 = data(BobUI::DisplayRole), v2 = other.data(BobUI::DisplayRole);
     return QAbstractItemModelPrivate::variantLessThan(v1, v2);
 }
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 
 /*!
     Reads the item from stream \a in.
@@ -732,7 +732,7 @@ void QListWidgetItem::write(QDataStream &out) const
 {
     out << d->values;
 }
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
 /*!
     Constructs a copy of \a other. Note that type() and listWidget() are not
@@ -774,7 +774,7 @@ QListModel *QListWidgetItem::listModel() const
     return (view ? qobject_cast<QListModel*>(view->model()) : nullptr);
 }
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 
 /*!
     \relates QListWidgetItem
@@ -783,7 +783,7 @@ QListModel *QListWidgetItem::listModel() const
 
     This operator uses QListWidgetItem::write().
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 QDataStream &operator<<(QDataStream &out, const QListWidgetItem &item)
 {
@@ -798,7 +798,7 @@ QDataStream &operator<<(QDataStream &out, const QListWidgetItem &item)
 
     This operator uses QListWidgetItem::read().
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 QDataStream &operator>>(QDataStream &in, QListWidgetItem &item)
 {
@@ -806,12 +806,12 @@ QDataStream &operator>>(QDataStream &in, QListWidgetItem &item)
     return in;
 }
 
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
 /*!
-    \fn Qt::ItemFlags QListWidgetItem::flags() const
+    \fn BobUI::ItemFlags QListWidgetItem::flags() const
 
-    Returns the item flags for this item (see \l{Qt::ItemFlags}).
+    Returns the item flags for this item (see \l{BobUI::ItemFlags}).
 */
 
 /*!
@@ -861,9 +861,9 @@ QDataStream &operator>>(QDataStream &in, QListWidgetItem &item)
 */
 
 /*!
-    \if defined(qt7)
+    \if defined(bobui7)
 
-    \fn Qt::Alignment QListWidgetItem::textAlignment() const
+    \fn BobUI::Alignment QListWidgetItem::textAlignment() const
 
     Returns the text alignment for the list item.
 
@@ -874,9 +874,9 @@ QDataStream &operator>>(QDataStream &in, QListWidgetItem &item)
     Returns the text alignment for the list item.
 
     \note This function returns an int for historical reasons. It will
-    be corrected to return Qt::Alignment in Qt 7.
+    be corrected to return BobUI::Alignment in BobUI 7.
 
-    \sa Qt::Alignment
+    \sa BobUI::Alignment
 
     \endif
 */
@@ -898,9 +898,9 @@ QDataStream &operator>>(QDataStream &in, QListWidgetItem &item)
 */
 
 /*!
-    \fn Qt::CheckState QListWidgetItem::checkState() const
+    \fn BobUI::CheckState QListWidgetItem::checkState() const
 
-    Returns the checked state of the list item (see \l{Qt::CheckState}).
+    Returns the checked state of the list item (see \l{BobUI::CheckState}).
 
     \sa flags()
 */
@@ -962,13 +962,13 @@ bool QListWidgetItem::isSelected() const
 }
 
 /*!
-    \fn void QListWidgetItem::setFlags(Qt::ItemFlags flags)
+    \fn void QListWidgetItem::setFlags(BobUI::ItemFlags flags)
 
     Sets the item flags for the list item to \a flags.
 
-    \sa Qt::ItemFlags
+    \sa BobUI::ItemFlags
 */
-void QListWidgetItem::setFlags(Qt::ItemFlags aflags)
+void QListWidgetItem::setFlags(BobUI::ItemFlags aflags)
 {
     itemFlags = aflags;
     if (QListModel *model = listModel())
@@ -1026,25 +1026,25 @@ void QListWidgetItem::setFlags(Qt::ItemFlags aflags)
 */
 
 /*!
-    \obsolete [6.4] Use the overload that takes a Qt::Alignment argument.
+    \obsolete [6.4] Use the overload that takes a BobUI::Alignment argument.
 
     \fn void QListWidgetItem::setTextAlignment(int alignment)
 
     Sets the list item's text alignment to \a alignment.
 
-    \sa Qt::Alignment
+    \sa BobUI::Alignment
 */
 
 /*!
     \since 6.4
 
-    \fn void QListWidgetItem::setTextAlignment(Qt::Alignment alignment)
+    \fn void QListWidgetItem::setTextAlignment(BobUI::Alignment alignment)
 
     Sets the list item's text alignment to \a alignment.
 */
 
 /*!
-    \fn void QListWidgetItem::setTextAlignment(Qt::AlignmentFlag alignment)
+    \fn void QListWidgetItem::setTextAlignment(BobUI::AlignmentFlag alignment)
     \internal
 */
 
@@ -1069,7 +1069,7 @@ void QListWidgetItem::setFlags(Qt::ItemFlags aflags)
 */
 
 /*!
-    \fn void QListWidgetItem::setCheckState(Qt::CheckState state)
+    \fn void QListWidgetItem::setCheckState(BobUI::CheckState state)
 
     Sets the check state of the list item to \a state.
 
@@ -1182,7 +1182,7 @@ void QListWidgetPrivate::dataChanged(const QModelIndex &topLeft,
     \brief The QListWidget class provides an item-based list widget.
 
     \ingroup model-view
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     \image fusion-listview.png {List of weather icons}
 
@@ -1228,7 +1228,7 @@ void QListWidgetPrivate::dataChanged(const QModelIndex &topLeft,
     current item changes, the currentItemChanged() signal is emitted with the
     new current item and the item that was previously current.
 
-    \sa QListWidgetItem, QListView, QTreeView, {Model/View Programming},
+    \sa QListWidgetItem, QListView, BOBUIreeView, {Model/View Programming},
         {Tab Dialog Example}
 */
 
@@ -1472,7 +1472,7 @@ void QListWidget::insertItems(int row, const QStringList &labels)
     Removes and returns the item from the given \a row in the list widget;
     otherwise returns \nullptr.
 
-    Items removed from a list widget will not be managed by Qt, and will need
+    Items removed from a list widget will not be managed by BobUI, and will need
     to be deleted manually.
 
     \sa insertItem(), addItem()
@@ -1595,7 +1595,7 @@ QRect QListWidget::visualItemRect(const QListWidgetItem *item) const
 /*!
     Sorts all the items in the list widget according to the specified \a order.
 */
-void QListWidget::sortItems(Qt::SortOrder order)
+void QListWidget::sortItems(BobUI::SortOrder order)
 {
     Q_D(QListWidget);
     d->sortOrder = order;
@@ -1626,7 +1626,7 @@ bool QListWidget::isSortingEnabled() const
 /*!
     \internal
 */
-Qt::SortOrder QListWidget::sortOrder() const
+BobUI::SortOrder QListWidget::sortOrder() const
 {
     Q_D(const QListWidget);
     return d->sortOrder;
@@ -1733,11 +1733,11 @@ QList<QListWidgetItem*> QListWidget::selectedItems() const
     \a flags.
 */
 
-QList<QListWidgetItem*> QListWidget::findItems(const QString &text, Qt::MatchFlags flags) const
+QList<QListWidgetItem*> QListWidget::findItems(const QString &text, BobUI::MatchFlags flags) const
 {
     Q_D(const QListWidget);
     QModelIndexList indexes = d->listModel()->match(model()->index(0, 0, QModelIndex()),
-                                                Qt::DisplayRole, text, -1, flags);
+                                                BobUI::DisplayRole, text, -1, flags);
     QList<QListWidgetItem*> items;
     const int indexesSize = indexes.size();
     items.reserve(indexesSize);
@@ -1811,7 +1811,7 @@ QMimeData *QListWidget::mimeData(const QList<QListWidgetItem *> &items) const
     return d->listModel()->internalMimeData();
 }
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 
 /*!
     Handles \a data supplied by an external drag and drop operation that ended
@@ -1820,7 +1820,7 @@ QMimeData *QListWidget::mimeData(const QList<QListWidgetItem *> &items) const
 
     \sa supportedDropActions(), supportedDragActions
 */
-bool QListWidget::dropMimeData(int index, const QMimeData *data, Qt::DropAction action)
+bool QListWidget::dropMimeData(int index, const QMimeData *data, BobUI::DropAction action)
 {
     QModelIndex idx;
     int row = index;
@@ -1843,12 +1843,12 @@ void QListWidget::dropEvent(QDropEvent *event)
 /*!
     Returns the drop actions supported by this view.
 
-    \sa Qt::DropActions, supportedDragActions, dropMimeData()
+    \sa BobUI::DropActions, supportedDragActions, dropMimeData()
 */
-Qt::DropActions QListWidget::supportedDropActions() const
+BobUI::DropActions QListWidget::supportedDropActions() const
 {
     Q_D(const QListWidget);
-    return d->listModel()->QAbstractListModel::supportedDropActions() | Qt::MoveAction;
+    return d->listModel()->QAbstractListModel::supportedDropActions() | BobUI::MoveAction;
 }
 
 /*!
@@ -1856,21 +1856,21 @@ Qt::DropActions QListWidget::supportedDropActions() const
     \brief the drag actions supported by this view
 
     \since 6.10
-    \sa Qt::DropActions, supportedDropActions()
+    \sa BobUI::DropActions, supportedDropActions()
 */
-Qt::DropActions QListWidget::supportedDragActions() const
+BobUI::DropActions QListWidget::supportedDragActions() const
 {
     Q_D(const QListWidget);
     return d->supportedDragActions.value_or(supportedDropActions());
 }
 
-void QListWidget::setSupportedDragActions(Qt::DropActions actions)
+void QListWidget::setSupportedDragActions(BobUI::DropActions actions)
 {
     Q_D(QListWidget);
     d->supportedDragActions = actions;
 }
 
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
 
 /*!
     Returns a list of pointers to the items contained in the \a data object. If
@@ -1888,7 +1888,7 @@ QList<QListWidgetItem*> QListWidget::items(const QMimeData *data) const
 /*!
     Returns the QModelIndex associated with the given \a item.
 
-    \note In Qt versions prior to 5.10, this function took a non-\c{const} \a item.
+    \note In BobUI versions prior to 5.10, this function took a non-\c{const} \a item.
 */
 
 QModelIndex QListWidget::indexFromItem(const QListWidgetItem *item) const
@@ -1925,7 +1925,7 @@ bool QListWidget::event(QEvent *e)
     return QListView::event(e);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qlistwidget.cpp"
 #include "moc_qlistwidget_p.cpp"

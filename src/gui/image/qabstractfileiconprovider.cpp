@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qabstractfileiconprovider.h"
 
@@ -7,7 +7,7 @@
 #include <private/qguiapplication_p.h>
 #include <qpa/qplatformtheme.h>
 #include <qicon.h>
-#if QT_CONFIG(mimetype)
+#if BOBUI_CONFIG(mimetype)
 #include <qmimedatabase.h>
 #endif
 
@@ -15,9 +15,9 @@
 #include <private/qabstractfileiconprovider_p.h>
 #include <private/qfilesystementry_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QAbstractFileIconProviderPrivate::QAbstractFileIconProviderPrivate(QAbstractFileIconProvider *q)
     : q_ptr(q)
@@ -131,7 +131,7 @@ QIcon QAbstractFileIconProviderPrivate::getIconThemeIcon(const QFileInfo &info) 
         return getIconThemeIcon(QAbstractFileIconProvider::Drive);
     if (info.isDir())
         return getIconThemeIcon(QAbstractFileIconProvider::Folder);
-#if QT_CONFIG(mimetype)
+#if BOBUI_CONFIG(mimetype)
     return QIcon::fromTheme(mimeDatabase.mimeTypeForFile(info).iconName());
 #else
     return QIcon::fromTheme("text-x-generic"_L1);
@@ -141,7 +141,7 @@ QIcon QAbstractFileIconProviderPrivate::getIconThemeIcon(const QFileInfo &info) 
 /*!
   \class QAbstractFileIconProvider
 
-  \inmodule QtGui
+  \inmodule BobUIGui
   \since 6.0
 
   \brief The QAbstractFileIconProvider class provides file icons for the QFileSystemModel class.
@@ -245,7 +245,7 @@ QString QAbstractFileIconProviderPrivate::getFileType(const QFileInfo &info)
     if (QFileSystemEntry::isRootPath(info.absoluteFilePath()))
         return QGuiApplication::translate("QAbstractFileIconProvider", "Drive");
     if (info.isFile()) {
-#if QT_CONFIG(mimetype)
+#if BOBUI_CONFIG(mimetype)
         const QMimeType mimeType = QMimeDatabase().mimeTypeForFile(info);
         return mimeType.comment().isEmpty() ? mimeType.name() : mimeType.comment();
 #else
@@ -287,6 +287,6 @@ QString QAbstractFileIconProvider::type(const QFileInfo &info) const
     return QAbstractFileIconProviderPrivate::getFileType(info);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qabstractfileiconprovider.cpp"

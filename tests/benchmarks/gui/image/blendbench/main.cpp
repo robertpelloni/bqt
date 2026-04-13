@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
-#include <QtGui>
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
+#include <BobUIGui>
 #include <QString>
 
-#include <qtest.h>
+#include <bobuiest.h>
 
 void paint(QPaintDevice *device)
 {
     QPainter p(device);
     p.setCompositionMode(QPainter::CompositionMode_Source);
-    p.fillRect(0, 0, device->width(), device->height(), Qt::transparent);
+    p.fillRect(0, 0, device->width(), device->height(), BobUI::transparent);
 
     QLinearGradient g(QPoint(0, 0), QPoint(1, 1));
 //    g.setCoordinateMode(QGradient::ObjectBoundingMode);
-    g.setColorAt(0, Qt::magenta);
-    g.setColorAt(0, Qt::white);
+    g.setColorAt(0, BobUI::magenta);
+    g.setColorAt(0, BobUI::white);
 
 //    p.setOpacity(0.8);
-    p.setPen(Qt::NoPen);
+    p.setPen(BobUI::NoPen);
     p.setBrush(g);
     p.setRenderHint(QPainter::Antialiasing);
     p.setOpacity(0.9);
@@ -82,12 +82,12 @@ void BlendBench::blendBench_data()
         limit = 24;
     }
 
-    QTest::addColumn<int>("brushType");
-    QTest::addColumn<int>("compositionMode");
+    BOBUIest::addColumn<int>("brushType");
+    BOBUIest::addColumn<int>("compositionMode");
 
     for (int brush = ImageBrush; brush <= SolidBrush; ++brush)
         for (int mode = first; mode < limit; ++mode)
-            QTest::newRow(QString("brush=%1; mode=%2")
+            BOBUIest::newRow(QString("brush=%1; mode=%2")
                           .arg(brushTypes[brush]).arg(compositionModes[mode]).toLatin1().data())
                 << brush << mode;
 }
@@ -101,7 +101,7 @@ void BlendBench::blendBench()
     QImage src(512, 512, QImage::Format_ARGB32_Premultiplied);
     paint(&src);
     QPainter p(&img);
-    p.setPen(Qt::NoPen);
+    p.setPen(BobUI::NoPen);
 
     p.setCompositionMode(QPainter::CompositionMode(compositionMode));
     if (brushType == ImageBrush) {
@@ -129,7 +129,7 @@ void BlendBench::blendBenchAlpha()
     QImage src(512, 512, QImage::Format_ARGB32_Premultiplied);
     paint(&src);
     QPainter p(&img);
-    p.setPen(Qt::NoPen);
+    p.setPen(BobUI::NoPen);
 
     p.setCompositionMode(QPainter::CompositionMode(compositionMode));
     if (brushType == ImageBrush) {
@@ -151,11 +151,11 @@ void BlendBench::unalignedBlendArgb32_data()
     // memory access when the memory is aligned on 16 bytes boundary.
 
     // offset in 32 bits words
-    QTest::addColumn<int>("offset");
-    QTest::newRow("aligned on 16 bytes") << 0;
-    QTest::newRow("unaligned by 4 bytes") << 1;
-    QTest::newRow("unaligned by 8 bytes") << 2;
-    QTest::newRow("unaligned by 12 bytes") << 3;
+    BOBUIest::addColumn<int>("offset");
+    BOBUIest::newRow("aligned on 16 bytes") << 0;
+    BOBUIest::newRow("unaligned by 4 bytes") << 1;
+    BOBUIest::newRow("unaligned by 8 bytes") << 2;
+    BOBUIest::newRow("unaligned by 12 bytes") << 3;
 }
 
 void BlendBench::unalignedBlendArgb32()
@@ -184,6 +184,6 @@ void BlendBench::unalignedBlendArgb32()
     qFreeAligned(dstMemory);
 }
 
-QTEST_MAIN(BlendBench)
+BOBUIEST_MAIN(BlendBench)
 
 #include "main.moc"

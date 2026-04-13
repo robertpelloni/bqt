@@ -1,7 +1,7 @@
 [project]
-name = "qt-cyclonedx-generator"
+name = "bobui-cyclonedx-generator"
 version = "0.1.0"
-description = "Tool to generate a CycloneDX v1.6 SBOM for a Qt project."
+description = "Tool to generate a CycloneDX v1.6 SBOM for a BobUI project."
 readme = "README.md"
 
 requires-python = ">=3.9"
@@ -21,7 +21,7 @@ dev = [
 ]
 
 [project.scripts]
-qt_cyclonedx_generator = "qt_cyclonedx_generator.qt_cyclonedx_generator:main"
+bobui_cyclonedx_generator = "bobui_cyclonedx_generator.bobui_cyclonedx_generator:main"
 
 [build-system]
 requires = ["setuptools"]

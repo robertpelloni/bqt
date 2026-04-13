@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QApplication>
 #include <QGraphicsScene>
@@ -40,7 +40,7 @@ int main(int argc, char **argv)
     }
 
     Robot *robot = new Robot;
-    robot->setTransform(QTransform::fromScale(1.2, 1.2), true);
+    robot->setTransform(BOBUIransform::fromScale(1.2, 1.2), true);
     robot->setPos(0, -20);
     scene.addItem(robot);
 //! [1]

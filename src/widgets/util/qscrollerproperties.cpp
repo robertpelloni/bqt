@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <QPointer>
 #include <QObject>
-#include <QtCore/qmath.h>
+#include <BobUICore/qmath.h>
 
 #include "qscrollerproperties.h"
 #include "private/qscrollerproperties_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_IMPL_METATYPE_EXTERN_TAGGED(QScrollerProperties::OvershootPolicy,
+BOBUI_IMPL_METATYPE_EXTERN_TAGGED(QScrollerProperties::OvershootPolicy,
                                QScrollerProperties__OvershootPolicy)
-QT_IMPL_METATYPE_EXTERN_TAGGED(QScrollerProperties::FrameRates,
+BOBUI_IMPL_METATYPE_EXTERN_TAGGED(QScrollerProperties::FrameRates,
                                QScrollerProperties__FrameRates)
 
 static QScrollerPropertiesPrivate *userDefaults = nullptr;
@@ -54,11 +54,11 @@ QScrollerPropertiesPrivate *QScrollerPropertiesPrivate::defaults()
     \brief The QScrollerProperties class stores the settings for a QScroller.
     \since 4.8
 
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     The QScrollerProperties class stores the parameters used by QScroller.
 
-    The default settings are platform dependent so that Qt emulates the
+    The default settings are platform dependent so that BobUI emulates the
     platform behaviour for kinetic scrolling.
 
     As a convention the QScrollerProperties are in physical units (meter,
@@ -353,4 +353,4 @@ void QScrollerProperties::setScrollMetric(ScrollMetric metric, const QVariant &v
     \value ScrollMetricCount This is always the last entry.
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

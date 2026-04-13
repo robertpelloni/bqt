@@ -1,12 +1,12 @@
 // Copyright (C) 2017 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:trusted-data
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:trusted-data
 
 #include "qnetworkinterface.h"
 #include "qnetworkinterface_p.h"
 #include "qnetworkinterface_unix_p.h"
 
-#ifndef QT_NO_NETWORKINTERFACE
+#ifndef BOBUI_NO_NETWORKINTERFACE
 
 #include <qendian.h>
 #include <qobjectdefs.h>
@@ -28,7 +28,7 @@
 #define ARPHRD_IEEE802154   804     /* v2.6.31 */
 #define ARPHRD_6LOWPAN      825     /* v3.14: IPv6 over LoWPAN */
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 enum {
     BufferSize = 8192
@@ -42,7 +42,7 @@ static QNetworkInterface::InterfaceType probeIfType(int socket, struct ifreq *re
 
     case ARPHRD_ETHER:
         // check if it's a WiFi interface
-        if (qt_safe_ioctl(socket, SIOCGIWMODE, req) >= 0)
+        if (bobui_safe_ioctl(socket, SIOCGIWMODE, req) >= 0)
             return QNetworkInterface::Wifi;
         return QNetworkInterface::Ethernet;
 
@@ -90,7 +90,7 @@ namespace {
 
 template <typename Lambda> struct ProcessNetlinkRequest
 {
-    using FunctionTraits = QtPrivate::FunctionPointer<decltype(&Lambda::operator())>;
+    using FunctionTraits = BobUIPrivate::FunctionPointer<decltype(&Lambda::operator())>;
     using FirstArgumentPointer = typename FunctionTraits::Arguments::Car;
     using FirstArgument = std::remove_pointer_t<FirstArgumentPointer>;
     static_assert(std::is_pointer_v<FirstArgumentPointer>);
@@ -147,7 +147,7 @@ template <typename Lambda> struct ProcessNetlinkRequest
                     continue;       // get new datagram
             }
 
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
             if (NLMSG_OK(hdr, quint32(len)))
                 qWarning("QNetworkInterface/AF_NETLINK: received unknown packet type (%d) or too short (%u)",
                          hdr->nlmsg_type, hdr->nlmsg_len);
@@ -172,31 +172,31 @@ uint QNetworkInterfaceManager::interfaceIndexFromName(const QString &name)
     if (name.size() >= IFNAMSIZ)
         return index;
 
-    int socket = qt_safe_socket(AF_INET, SOCK_DGRAM, 0);
+    int socket = bobui_safe_socket(AF_INET, SOCK_DGRAM, 0);
     if (socket >= 0) {
         struct ifreq req;
         req.ifr_ifindex = 0;
         strcpy(req.ifr_name, name.toLatin1().constData());
 
-        if (qt_safe_ioctl(socket, SIOCGIFINDEX, &req) >= 0)
+        if (bobui_safe_ioctl(socket, SIOCGIFINDEX, &req) >= 0)
             index = req.ifr_ifindex;
-        qt_safe_close(socket);
+        bobui_safe_close(socket);
     }
     return index;
 }
 
 QString QNetworkInterfaceManager::interfaceNameFromIndex(uint index)
 {
-    int socket = qt_safe_socket(AF_INET, SOCK_DGRAM, 0);
+    int socket = bobui_safe_socket(AF_INET, SOCK_DGRAM, 0);
     if (socket >= 0) {
         struct ifreq req;
         req.ifr_ifindex = index;
 
-        if (qt_safe_ioctl(socket, SIOCGIFNAME, &req) >= 0) {
-            qt_safe_close(socket);
+        if (bobui_safe_ioctl(socket, SIOCGIFNAME, &req) >= 0) {
+            bobui_safe_close(socket);
             return QString::fromLatin1(req.ifr_name);
         }
-        qt_safe_close(socket);
+        bobui_safe_close(socket);
     }
     return QString();
 }
@@ -386,19 +386,19 @@ QList<QNetworkInterfacePrivate *> QNetworkInterfaceManager::scan()
 {
     // open netlink socket
     QList<QNetworkInterfacePrivate *> result;
-    int sock = qt_safe_socket(AF_NETLINK, SOCK_DGRAM, NETLINK_ROUTE);
+    int sock = bobui_safe_socket(AF_NETLINK, SOCK_DGRAM, NETLINK_ROUTE);
     if (sock == -1) {
         qErrnoWarning("Could not create AF_NETLINK socket");
         return result;
     }
 
-    const auto sg = qScopeGuard([&] { qt_safe_close(sock); });
+    const auto sg = qScopeGuard([&] { bobui_safe_close(sock); });
 
     // set buffer length
     const int bufferSize = BufferSize;
     setsockopt(sock, SOL_SOCKET, SO_SNDBUF, &bufferSize, sizeof(bufferSize));
 
-    QByteArray buffer(BufferSize, Qt::Uninitialized);
+    QByteArray buffer(BufferSize, BobUI::Uninitialized);
     char *buf = buffer.data();
 
     result = getInterfaces(sock, buf);
@@ -407,6 +407,6 @@ QList<QNetworkInterfacePrivate *> QNetworkInterfaceManager::scan()
     return result;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_NETWORKINTERFACE
+#endif // BOBUI_NO_NETWORKINTERFACE

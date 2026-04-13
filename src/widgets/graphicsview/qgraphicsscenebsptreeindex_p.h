@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
+// This file is not part of the BobUI API.  It exists for the convenience
+// of other BobUI classes.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
@@ -16,19 +16,19 @@
 #ifndef QGRAPHICSBSPTREEINDEX_H
 #define QGRAPHICSBSPTREEINDEX_H
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 
 #include "qgraphicssceneindex_p.h"
 #include "qgraphicsitem_p.h"
 #include "qgraphicsscene_bsp_p.h"
 
-#include <QtCore/qbasictimer.h>
-#include <QtCore/qrect.h>
-#include <QtCore/qlist.h>
+#include <BobUICore/qbasictimer.h>
+#include <BobUICore/qrect.h>
+#include <BobUICore/qlist.h>
 
-QT_REQUIRE_CONFIG(graphicsview);
+BOBUI_REQUIRE_CONFIG(graphicsview);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static const int QGRAPHICSSCENE_INDEXTIMER_TIMEOUT = 2000;
 
@@ -43,9 +43,9 @@ public:
     QGraphicsSceneBspTreeIndex(QGraphicsScene *scene = nullptr);
     ~QGraphicsSceneBspTreeIndex();
 
-    QList<QGraphicsItem *> estimateItems(const QRectF &rect, Qt::SortOrder order) const override;
-    QList<QGraphicsItem *> estimateTopLevelItems(const QRectF &rect, Qt::SortOrder order) const override;
-    QList<QGraphicsItem *> items(Qt::SortOrder order = Qt::DescendingOrder) const override;
+    QList<QGraphicsItem *> estimateItems(const QRectF &rect, BobUI::SortOrder order) const override;
+    QList<QGraphicsItem *> estimateTopLevelItems(const QRectF &rect, BobUI::SortOrder order) const override;
+    QList<QGraphicsItem *> items(BobUI::SortOrder order = BobUI::DescendingOrder) const override;
 
     int bspTreeDepth() const;
     void setBspTreeDepth(int depth);
@@ -106,7 +106,7 @@ public:
     void invalidateSortCache();
     void addItem(QGraphicsItem *item, bool recursive = false);
     void removeItem(QGraphicsItem *item, bool recursive = false, bool moveToUnindexedItems = false);
-    QList<QGraphicsItem *> estimateItems(const QRectF &, Qt::SortOrder, bool b = false);
+    QList<QGraphicsItem *> estimateItems(const QRectF &, BobUI::SortOrder, bool b = false);
 
     static void climbTree(QGraphicsItem *item, int *stackingOrder);
 
@@ -119,7 +119,7 @@ public:
         return item1->d_ptr->globalStackingOrder >= item2->d_ptr->globalStackingOrder;
     }
 
-    static void sortItems(QList<QGraphicsItem *> *itemList, Qt::SortOrder order,
+    static void sortItems(QList<QGraphicsItem *> *itemList, BobUI::SortOrder order,
                           bool cached, bool onlyTopLevelItems = false);
 };
 
@@ -163,6 +163,6 @@ static inline bool QRectF_intersects(const QRectF &s, const QRectF &r)
     return !(t1 >= b2 || t2 >= b1);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QGRAPHICSBSPTREEINDEX_H

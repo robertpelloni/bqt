@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
@@ -7,7 +7,7 @@
 
 set(CMAKE_AUTOUIC ON)
 
-qt_internal_add_manual_test(stereographicsview
+bobui_internal_add_manual_test(stereographicsview
     GUI
     SOURCES
         main.cpp
@@ -17,11 +17,11 @@ qt_internal_add_manual_test(stereographicsview
         mygraphicsview.h
         mygraphicsview.cpp
     LIBRARIES
-        Qt::CorePrivate
-        Qt::Gui
-        Qt::GuiPrivate
-        Qt::OpenGL
-        Qt::OpenGLWidgets
-        Qt::Widgets
-        Qt::WidgetsPrivate
+        BobUI::CorePrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
+        BobUI::OpenGL
+        BobUI::OpenGLWidgets
+        BobUI::Widgets
+        BobUI::WidgetsPrivate
 )

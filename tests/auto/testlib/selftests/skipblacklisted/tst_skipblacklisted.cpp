@@ -1,7 +1,7 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
 class tst_SkipBlacklisted : public QObject
 {
@@ -34,18 +34,18 @@ void tst_SkipBlacklisted::blacklistedData()
 
 void tst_SkipBlacklisted::blacklistedData_data()
 {
-    QTest::addColumn<int>("testdata");
+    BOBUIest::addColumn<int>("testdata");
 
-    QTest::newRow("blacklisted 1") << 1;
-    QTest::newRow("should pass") << 2;
-    QTest::newRow("blacklisted 2") << 3;
+    BOBUIest::newRow("blacklisted 1") << 1;
+    BOBUIest::newRow("should pass") << 2;
+    BOBUIest::newRow("blacklisted 2") << 3;
 }
 
-QTEST_MAIN_WRAPPER(tst_SkipBlacklisted,
+BOBUIEST_MAIN_WRAPPER(tst_SkipBlacklisted,
     std::vector<const char*> args(argv, argv + argc);
     args.push_back("-skipblacklisted");
     argc = int(args.size());
     argv = const_cast<char**>(&args[0]);
-    QTEST_MAIN_SETUP())
+    BOBUIEST_MAIN_SETUP())
 
 #include "tst_skipblacklisted.moc"

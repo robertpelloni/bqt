@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qzipreader_p.h"
 #include "qzipwriter_p.h"
@@ -24,7 +24,7 @@
 #define ZDEBUG if (0) qDebug
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static inline uint readUInt(const uchar *data)
 {
@@ -243,7 +243,7 @@ static QDateTime readMSDosDate(const uchar *src)
     uint tm_min =  ((dosDate & 0x7E0) >> 5);
     uint tm_sec =  ((dosDate & 0x1f) << 1);
 
-    return QDateTime(QDate(tm_year, tm_mon, tm_mday), QTime(tm_hour, tm_min, tm_sec));
+    return QDateTime(QDate(tm_year, tm_mon, tm_mday), BOBUIime(tm_hour, tm_min, tm_sec));
 }
 
 // for details, see http://www.pkware.com/documents/casestudies/APPNOTE.TXT
@@ -1344,4 +1344,4 @@ void QZipWriter::close()
     d->device->close();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

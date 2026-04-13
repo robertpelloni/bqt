@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "xmloutput.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-XmlOutput::XmlOutput(QTextStream &file, ConverstionType type)
+XmlOutput::XmlOutput(BOBUIextStream &file, ConverstionType type)
     : xmlFile(file), indent("\t"), currentLevel(0), currentState(Bare), format(NewLine),
       conversion(type)
 {
@@ -216,7 +216,7 @@ void XmlOutput::newTagOpen(const QString &tag)
     closeOpen();
 
     if (format == NewLine)
-        xmlFile << Qt::endl << currentIndent;
+        xmlFile << BobUI::endl << currentIndent;
     xmlFile << '<' << doConversion(tag);
     currentState = Attribute;
     tagStack.append(tag);
@@ -250,7 +250,7 @@ void XmlOutput::closeTag()
         case Tag:
             decreaseIndent(); // <--- Pre-decrease indent
             if (format == NewLine)
-                xmlFile << Qt::endl << currentIndent;
+                xmlFile << BobUI::endl << currentIndent;
             xmlFile << "</" << doConversion(tagStack.last()) << '>';
             tagStack.pop_back();
             break;
@@ -322,7 +322,7 @@ void XmlOutput::addAttribute(const QString &attribute, const QString &value)
             break;
     }
     if (format == NewLine)
-        xmlFile << Qt::endl;
+        xmlFile << BobUI::endl;
     xmlFile << currentIndent << doConversion(attribute) << "=\"" << doConversion(value) << "\"";
 }
 
@@ -342,4 +342,4 @@ void XmlOutput::addAttributeTag(const QString &attribute, const QString &value)
     xmlFile << " " << doConversion(attribute) << "=\"" << doConversion(value) << "\"";
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

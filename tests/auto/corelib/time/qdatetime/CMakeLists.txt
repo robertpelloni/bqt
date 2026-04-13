@@ -1,33 +1,33 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## tst_qdatetime Test:
 #####################################################################
 
-if(NOT QT_BUILD_STANDALONE_TESTS AND NOT QT_BUILDING_QT)
+if(NOT BOBUI_BUILD_STANDALONE_TESTS AND NOT BOBUI_BUILDING_BOBUI)
     cmake_minimum_required(VERSION 3.16)
     project(tst_qdatetime LANGUAGES CXX)
-    find_package(Qt6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
+    find_package(BobUI6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
 endif()
 
-qt_internal_add_test(tst_qdatetime
+bobui_internal_add_test(tst_qdatetime
     SOURCES
         tst_qdatetime.cpp
     DEFINES
-        QT_NO_CAST_FROM_ASCII
-        QT_NO_CAST_TO_ASCII
-        QT_NO_FOREACH
-        QT_NO_KEYWORDS
+        BOBUI_NO_CAST_FROM_ASCII
+        BOBUI_NO_CAST_TO_ASCII
+        BOBUI_NO_FOREACH
+        BOBUI_NO_KEYWORDS
     LIBRARIES
-        Qt::CorePrivate
-        Qt::TestPrivate
+        BobUI::CorePrivate
+        BobUI::TestPrivate
 )
 
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(tst_qdatetime CONDITION APPLE
+bobui_internal_extend_target(tst_qdatetime CONDITION APPLE
     SOURCES
         tst_qdatetime_mac.mm
     LIBRARIES

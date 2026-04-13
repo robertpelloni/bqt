@@ -1,7 +1,7 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 //! [0]
 // A client initiates a handshake:
 QUdpSocket clientSocket;
@@ -11,7 +11,7 @@ clientDtls.doHandshake(&clientSocket);
 
 // A server accepting an incoming connection; address, port, clientHello are
 // read by QUdpSocket::readDatagram():
-QByteArray clientHello(serverSocket.pendingDatagramSize(), Qt::Uninitialized);
+QByteArray clientHello(serverSocket.pendingDatagramSize(), BobUI::Uninitialized);
 QHostAddress address;
 quin16 port = {};
 serverSocket.readDatagram(clientHello.data(), clientHello.size(), &address, &port);

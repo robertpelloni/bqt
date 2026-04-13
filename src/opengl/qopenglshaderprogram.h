@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QOPENGLSHADERPROGRAM_H
 #define QOPENGLSHADERPROGRAM_H
 
-#include <QtCore/qobject.h>
-#include <QtOpenGL/qtopenglglobal.h>
+#include <BobUICore/qobject.h>
+#include <BobUIOpenGL/bobuiopenglglobal.h>
 
-#include <QtGui/qopengl.h>
-#include <QtGui/qvector2d.h>
-#include <QtGui/qvector3d.h>
-#include <QtGui/qvector4d.h>
-#include <QtGui/qmatrix4x4.h>
+#include <BobUIGui/qopengl.h>
+#include <BobUIGui/qvector2d.h>
+#include <BobUIGui/qvector3d.h>
+#include <BobUIGui/qvector4d.h>
+#include <BobUIGui/qmatrix4x4.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QOpenGLContext;
@@ -200,7 +200,7 @@ public:
     void setUniformValue(int location, const GLfloat value[2][2]);
     void setUniformValue(int location, const GLfloat value[3][3]);
     void setUniformValue(int location, const GLfloat value[4][4]);
-    void setUniformValue(int location, const QTransform& value);
+    void setUniformValue(int location, const BOBUIransform& value);
 
     void setUniformValue(const char *name, GLfloat value);
     void setUniformValue(const char *name, GLint value);
@@ -228,7 +228,7 @@ public:
     void setUniformValue(const char *name, const GLfloat value[2][2]);
     void setUniformValue(const char *name, const GLfloat value[3][3]);
     void setUniformValue(const char *name, const GLfloat value[4][4]);
-    void setUniformValue(const char *name, const QTransform& value);
+    void setUniformValue(const char *name, const BOBUIransform& value);
 
     void setUniformValueArray(int location, const GLfloat *values, int count, int tupleSize);
     void setUniformValueArray(int location, const GLint *values, int count);
@@ -274,6 +274,6 @@ private:
     bool init();
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

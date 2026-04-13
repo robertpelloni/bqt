@@ -1,12 +1,12 @@
-# Copyright (C) 2022 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+# Copyright (C) 2022 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-qt_internal_add_example(addressbook)
-qt_internal_add_example(basicsortfiltermodel)
-qt_internal_add_example(combowidgetmapper)
-qt_internal_add_example(customsortfiltermodel)
-qt_internal_add_example(editabletreemodel)
-qt_internal_add_example(fetchmore)
-qt_internal_add_example(frozencolumn)
-qt_internal_add_example(spreadsheet)
-qt_internal_add_example(stardelegate)
+bobui_internal_add_example(addressbook)
+bobui_internal_add_example(basicsortfiltermodel)
+bobui_internal_add_example(combowidgetmapper)
+bobui_internal_add_example(customsortfiltermodel)
+bobui_internal_add_example(editabletreemodel)
+bobui_internal_add_example(fetchmore)
+bobui_internal_add_example(frozencolumn)
+bobui_internal_add_example(spreadsheet)
+bobui_internal_add_example(stardelegate)

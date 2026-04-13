@@ -1,27 +1,27 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-qt_find_package(EGL MODULE)
+bobui_find_package(EGL MODULE)
 
-if(QT_FEATURE_eglfs_gbm)
+if(BOBUI_FEATURE_eglfs_gbm)
     set(_device_integration "eglfs_kms")
-elseif(QT_FEATURE_eglfs_egldevice)
+elseif(BOBUI_FEATURE_eglfs_egldevice)
     set(_device_integration "eglfs_kms_egldevice")
-elseif(QT_FEATURE_eglfs_viv)
+elseif(BOBUI_FEATURE_eglfs_viv)
     set(_device_integration "eglfs_viv")
-elseif(QT_FEATURE_eglfs_brcm)
+elseif(BOBUI_FEATURE_eglfs_brcm)
     set(_device_integration "eglfs_brcm")
-elseif(QT_FEATURE_eglfs_openwfd)
+elseif(BOBUI_FEATURE_eglfs_openwfd)
     set(_device_integration "eglfs_openwfd")
 endif()
 
-set(QT_QPA_DEFAULT_EGLFS_INTEGRATION "${_device_integration}" CACHE STRING "Default EGLFS device integration plugin")
+set(BOBUI_QPA_DEFAULT_EGLFS_INTEGRATION "${_device_integration}" CACHE STRING "Default EGLFS device integration plugin")
 
 #####################################################################
 ## EglFSDeviceIntegrationPrivate Module:
 #####################################################################
 
-qt_internal_add_module(EglFSDeviceIntegrationPrivate
+bobui_internal_add_module(EglFSDeviceIntegrationPrivate
     INTERNAL_MODULE
     SOURCES
         api/qeglfsdeviceintegration.cpp api/qeglfsdeviceintegration_p.h
@@ -32,17 +32,17 @@ qt_internal_add_module(EglFSDeviceIntegrationPrivate
         api/qeglfsscreen.cpp api/qeglfsscreen_p.h
         api/qeglfswindow.cpp api/qeglfswindow_p.h
     DEFINES
-        QT_BUILD_EGL_DEVICE_LIB
-        QT_EGL_NO_X11
-        QT_NO_FOREACH
-        EGLFS_PREFERRED_PLUGIN=${QT_QPA_DEFAULT_EGLFS_INTEGRATION}
+        BOBUI_BUILD_EGL_DEVICE_LIB
+        BOBUI_EGL_NO_X11
+        BOBUI_NO_FOREACH
+        EGLFS_PREFERRED_PLUGIN=${BOBUI_QPA_DEFAULT_EGLFS_INTEGRATION}
     INCLUDE_DIRECTORIES
         api
     PUBLIC_LIBRARIES
-        Qt::CorePrivate
-        Qt::DeviceDiscoverySupportPrivate
-        Qt::FbSupportPrivate
-        Qt::GuiPrivate
+        BobUI::CorePrivate
+        BobUI::DeviceDiscoverySupportPrivate
+        BobUI::FbSupportPrivate
+        BobUI::GuiPrivate
         EGL::EGL
     HEADER_SYNC_SOURCE_DIRECTORY
         "${CMAKE_CURRENT_SOURCE_DIR}/api"
@@ -52,33 +52,33 @@ qt_internal_add_module(EglFSDeviceIntegrationPrivate
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(EglFSDeviceIntegrationPrivate CONDITION TARGET Qt::InputSupportPrivate
+bobui_internal_extend_target(EglFSDeviceIntegrationPrivate CONDITION TARGET BobUI::InputSupportPrivate
     PUBLIC_LIBRARIES
-        Qt::InputSupportPrivate
+        BobUI::InputSupportPrivate
 )
 
-qt_internal_extend_target(EglFSDeviceIntegrationPrivate
+bobui_internal_extend_target(EglFSDeviceIntegrationPrivate
     CONDITION TARGET PlatformGraphics::PlatformGraphics
     PUBLIC_LIBRARIES
         PlatformGraphics::PlatformGraphics
 )
 
-qt_internal_extend_target(EglFSDeviceIntegrationPrivate CONDITION QT_FEATURE_opengl
+bobui_internal_extend_target(EglFSDeviceIntegrationPrivate CONDITION BOBUI_FEATURE_opengl
     SOURCES
         api/qeglfscontext.cpp api/qeglfscontext_p.h
         api/qeglfscursor.cpp api/qeglfscursor_p.h
     PUBLIC_LIBRARIES
-        Qt::OpenGLPrivate
+        BobUI::OpenGLPrivate
 )
 
-if(QT_FEATURE_cursor)
+if(BOBUI_FEATURE_cursor)
     # Resources:
     set(cursor_resource_files
         "cursor-atlas.png"
         "cursor.json"
     )
 
-    qt_internal_add_resource(EglFSDeviceIntegrationPrivate "cursor"
+    bobui_internal_add_resource(EglFSDeviceIntegrationPrivate "cursor"
         PREFIX
             "/"
         FILES
@@ -90,17 +90,17 @@ endif()
 ## QEglFSIntegrationPlugin Plugin:
 #####################################################################
 
-qt_internal_add_plugin(QEglFSIntegrationPlugin
+bobui_internal_add_plugin(QEglFSIntegrationPlugin
     OUTPUT_NAME qeglfs
     PLUGIN_TYPE platforms
-    DEFAULT_IF "eglfs" IN_LIST QT_QPA_PLATFORMS
+    DEFAULT_IF "eglfs" IN_LIST BOBUI_QPA_PLATFORMS
     SOURCES
         qeglfsmain.cpp
     DEFINES
-        QT_EGL_NO_X11
+        BOBUI_EGL_NO_X11
     LIBRARIES
-        Qt::CorePrivate
-        Qt::EglFSDeviceIntegrationPrivate
+        BobUI::CorePrivate
+        BobUI::EglFSDeviceIntegrationPrivate
         EGL::EGL
 )
 

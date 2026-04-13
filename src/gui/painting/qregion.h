@@ -1,20 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QREGION_H
 #define QREGION_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qatomic.h>
-#include <QtCore/qrect.h>
-#include <QtGui/qwindowdefs.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qatomic.h>
+#include <BobUICore/qrect.h>
+#include <BobUIGui/qwindowdefs.h>
 
-#ifndef QT_NO_DATASTREAM
-#include <QtCore/qdatastream.h>
+#ifndef BOBUI_NO_DATASTREAM
+#include <BobUICore/qdatastream.h>
 #endif
-#include <QtCore/qspan.h>
+#include <BobUICore/qspan.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QVariant;
@@ -31,15 +31,15 @@ public:
     QRegion();
     QRegion(int x, int y, int w, int h, RegionType t = Rectangle);
     QRegion(const QRect &r, RegionType t = Rectangle);
-    QRegion(const QPolygon &pa, Qt::FillRule fillRule = Qt::OddEvenFill);
+    QRegion(const QPolygon &pa, BobUI::FillRule fillRule = BobUI::OddEvenFill);
     QRegion(const QRegion &region);
     QRegion(QRegion &&other) noexcept
         : d(std::exchange(other.d, const_cast<QRegionData*>(&shared_empty))) {}
     QRegion(const QBitmap &bitmap);
     ~QRegion();
     QRegion &operator=(const QRegion &);
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QRegion)
-    void swap(QRegion &other) noexcept { qt_ptr_swap(d, other.d); }
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QRegion)
+    void swap(QRegion &other) noexcept { bobui_ptr_swap(d, other.d); }
     bool isEmpty() const;
     bool isNull() const;
 
@@ -105,7 +105,7 @@ public:
     static QRegion fromHRGN(HRGN hrgn);
 #endif
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
     friend Q_GUI_EXPORT QDataStream &operator<<(QDataStream &, const QRegion &);
     friend Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, QRegion &);
 #endif
@@ -113,16 +113,16 @@ private:
     QRegion copy() const;   // helper of detach.
     void detach();
 Q_GUI_EXPORT
-    friend bool qt_region_strictContains(const QRegion &region,
+    friend bool bobui_region_strictContains(const QRegion &region,
                                          const QRect &rect);
     friend struct QRegionPrivate;
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
     void exec(const QByteArray &ba, int ver = 0, QDataStream::ByteOrder byteOrder = QDataStream::BigEndian);
 #endif
     struct QRegionData {
-        QtPrivate::RefCount ref = Q_REFCOUNT_INITIALIZE_OWNED;
-        QRegionPrivate *qt_rgn;
+        BobUIPrivate::RefCount ref = Q_REFCOUNT_INITIALIZE_OWNED;
+        QRegionPrivate *bobui_rgn;
     };
     struct QRegionData *d;
     static const struct QRegionData shared_empty;
@@ -134,15 +134,15 @@ Q_DECLARE_SHARED(QRegion)
   QRegion stream functions
  *****************************************************************************/
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_GUI_EXPORT QDataStream &operator<<(QDataStream &, const QRegion &);
 Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, QRegion &);
 #endif
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QRegion &);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QREGION_H

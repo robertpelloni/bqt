@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPLATFORMGRAPHICSBUFFER_H
 #define QPLATFORMGRAPHICSBUFFER_H
@@ -10,18 +10,18 @@
 //
 // This file is part of the QPA API and is not meant to be used
 // in applications. Usage of this API may make your code
-// source and binary incompatible with future versions of Qt.
+// source and binary incompatible with future versions of BobUI.
 //
 
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/QSize>
-#include <QtCore/QRect>
-#include <QtGui/QPixelFormat>
-#include <QtCore/qflags.h>
-#include <QtCore/QObject>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/QSize>
+#include <BobUICore/QRect>
+#include <BobUIGui/QPixelFormat>
+#include <BobUICore/qflags.h>
+#include <BobUICore/QObject>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Q_GUI_EXPORT QPlatformGraphicsBuffer : public QObject
 {
@@ -77,6 +77,6 @@ private:
     AccessTypes m_lock_access;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif //QPLATFORMGRAPHICSBUFFER_H

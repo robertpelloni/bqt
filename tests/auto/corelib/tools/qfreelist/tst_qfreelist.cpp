@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/QElapsedTimer>
-#include <QtCore/QList>
-#include <QtCore/QThread>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/QElapsedTimer>
+#include <BobUICore/QList>
+#include <BobUICore/BOBUIhread>
 #include <private/qfreelist_p.h>
-#include <QTest>
+#include <BOBUIest>
 
 class tst_QFreeList : public QObject
 {
@@ -92,12 +92,12 @@ void tst_QFreeList::customized()
 
 enum { TimeLimit = 3000 };
 
-class FreeListThread : public QThread
+class FreeListThread : public BOBUIhread
 {
     static QFreeList<void> freelist;
 
 public:
-    inline FreeListThread() : QThread() { }
+    inline FreeListThread() : BOBUIhread() { }
     inline void run() override
     {
         QElapsedTimer t;
@@ -128,7 +128,7 @@ QFreeList<void> FreeListThread::freelist;
 
 void tst_QFreeList::threadedTest()
 {
-    const int ThreadCount = QThread::idealThreadCount();
+    const int ThreadCount = BOBUIhread::idealThreadCount();
     FreeListThread *threads = new FreeListThread[ThreadCount];
     for (int i = 0; i < ThreadCount; ++i)
         threads[i].start();
@@ -137,5 +137,5 @@ void tst_QFreeList::threadedTest()
     delete [] threads;
 }
 
-QTEST_MAIN(tst_QFreeList)
+BOBUIEST_MAIN(tst_QFreeList)
 #include "tst_qfreelist.moc"

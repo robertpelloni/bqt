@@ -1,11 +1,11 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "renderer.h"
 #include "qrandom.h"
 #include <QVulkanFunctions>
-#include <QtConcurrentRun>
-#include <QTime>
+#include <BobUIConcurrentRun>
+#include <BOBUIime>
 
 static float quadVert[] = { // Y up, front = CW
     -1, -1, 0,
@@ -36,7 +36,7 @@ Renderer::Renderer(VulkanWindow *w, int initialCount)
     m_floorModel.scale(20, 100, 1);
 
     m_blockMesh.load(QStringLiteral(":/block.buf"));
-    m_logoMesh.load(QStringLiteral(":/qt_logo.buf"));
+    m_logoMesh.load(QStringLiteral(":/bobui_logo.buf"));
 
     QObject::connect(&m_frameWatcher, &QFutureWatcherBase::finished, m_window, [this] {
         if (m_framePending) {
@@ -89,7 +89,7 @@ void Renderer::initResources()
     if (!m_floorMaterial.fs.isValid())
         m_floorMaterial.fs.load(inst, dev, QStringLiteral(":/color_frag.spv"));
 
-    m_pipelinesFuture = QtConcurrent::run(&Renderer::createPipelines, this);
+    m_pipelinesFuture = BobUIConcurrent::run(&Renderer::createPipelines, this);
 }
 
 void Renderer::createPipelines()
@@ -832,7 +832,7 @@ void Renderer::startNextFrame()
     // finished.
     Q_ASSERT(!m_framePending);
     m_framePending = true;
-    QFuture<void> future = QtConcurrent::run(&Renderer::buildFrame, this);
+    QFuture<void> future = BobUIConcurrent::run(&Renderer::buildFrame, this);
     m_frameWatcher.setFuture(future);
 }
 

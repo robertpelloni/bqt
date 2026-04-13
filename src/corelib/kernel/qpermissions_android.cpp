@@ -1,23 +1,23 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qpermissions.h"
 #include "qpermissions_p.h"
 
-#include <QtCore/qstringlist.h>
-#include <QtCore/qfuture.h>
-#include <QtCore/qhash.h>
+#include <BobUICore/qstringlist.h>
+#include <BobUICore/qfuture.h>
+#include <BobUICore/qhash.h>
 
 #include "private/qandroidextras_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static QStringList nativeLocationPermission(const QLocationPermission &permission)
 {
     QStringList nativeLocationPermissionList;
-    const int sdkVersion = QtAndroidPrivate::androidSdkVersion();
+    const int sdkVersion = BobUIAndroidPrivate::androidSdkVersion();
     static QString backgroundLocation = u"android.permission.ACCESS_BACKGROUND_LOCATION"_s;
     static QString fineLocation = u"android.permission.ACCESS_FINE_LOCATION"_s;
     static QString coarseLocation = u"android.permission.ACCESS_COARSE_LOCATION"_s;
@@ -62,7 +62,7 @@ static QStringList nativeBluetoothPermission(const QBluetoothPermission &permiss
     static QString bluetoothAdvertise = u"android.permission.BLUETOOTH_ADVERTISE"_s;
     static QString bluetoothConnect = u"android.permission.BLUETOOTH_CONNECT"_s;
 
-    if (QtAndroidPrivate::androidSdkVersion() < 31) {
+    if (BobUIAndroidPrivate::androidSdkVersion() < 31) {
         return {bluetoothGeneral, fineLocation};
     } else {
         const auto modes = permission.communicationModes();
@@ -109,57 +109,57 @@ static QStringList nativeStringsFromPermission(const QPermission &permission)
     return {};
 }
 
-static Qt::PermissionStatus
-permissionStatusForAndroidResult(QtAndroidPrivate::PermissionResult result)
+static BobUI::PermissionStatus
+permissionStatusForAndroidResult(BobUIAndroidPrivate::PermissionResult result)
 {
     switch (result) {
-    case QtAndroidPrivate::PermissionResult::Authorized: return Qt::PermissionStatus::Granted;
-    case QtAndroidPrivate::PermissionResult::Denied: return Qt::PermissionStatus::Denied;
-    default: return Qt::PermissionStatus::Undetermined;
+    case BobUIAndroidPrivate::PermissionResult::Authorized: return BobUI::PermissionStatus::Granted;
+    case BobUIAndroidPrivate::PermissionResult::Denied: return BobUI::PermissionStatus::Denied;
+    default: return BobUI::PermissionStatus::Undetermined;
     }
 }
 
-using PermissionStatusHash = QHash<int, Qt::PermissionStatus>;
+using PermissionStatusHash = QHash<int, BobUI::PermissionStatus>;
 Q_GLOBAL_STATIC_WITH_ARGS(PermissionStatusHash, g_permissionStatusHash, ({
-        { qMetaTypeId<QCameraPermission>(), Qt::PermissionStatus::Undetermined },
-        { qMetaTypeId<QMicrophonePermission>(), Qt::PermissionStatus::Undetermined },
-        { qMetaTypeId<QBluetoothPermission>(), Qt::PermissionStatus::Undetermined },
-        { qMetaTypeId<QContactsPermission>(), Qt::PermissionStatus::Undetermined },
-        { qMetaTypeId<QCalendarPermission>(), Qt::PermissionStatus::Undetermined },
-        { qMetaTypeId<QLocationPermission>(), Qt::PermissionStatus::Undetermined }
+        { qMetaTypeId<QCameraPermission>(), BobUI::PermissionStatus::Undetermined },
+        { qMetaTypeId<QMicrophonePermission>(), BobUI::PermissionStatus::Undetermined },
+        { qMetaTypeId<QBluetoothPermission>(), BobUI::PermissionStatus::Undetermined },
+        { qMetaTypeId<QContactsPermission>(), BobUI::PermissionStatus::Undetermined },
+        { qMetaTypeId<QCalendarPermission>(), BobUI::PermissionStatus::Undetermined },
+        { qMetaTypeId<QLocationPermission>(), BobUI::PermissionStatus::Undetermined }
 }));
 
-static Qt::PermissionStatus
-getCombinedStatus(const QList<QtAndroidPrivate::PermissionResult> &androidResults)
+static BobUI::PermissionStatus
+getCombinedStatus(const QList<BobUIAndroidPrivate::PermissionResult> &androidResults)
 {
     // Android returns only Denied or Granted
     for (const auto &result : androidResults) {
         const auto status = permissionStatusForAndroidResult(result);
-        if (status == Qt::PermissionStatus::Denied)
+        if (status == BobUI::PermissionStatus::Denied)
             return status;
     }
-    return Qt::PermissionStatus::Granted;
+    return BobUI::PermissionStatus::Granted;
 }
 
 namespace QPermissions::Private
 {
-    Qt::PermissionStatus checkPermission(const QPermission &permission)
+    BobUI::PermissionStatus checkPermission(const QPermission &permission)
     {
         const auto nativePermissionList = nativeStringsFromPermission(permission);
         if (nativePermissionList.isEmpty())
-            return Qt::PermissionStatus::Granted;
+            return BobUI::PermissionStatus::Granted;
 
-        QList<QtAndroidPrivate::PermissionResult> androidResults;
+        QList<BobUIAndroidPrivate::PermissionResult> androidResults;
         androidResults.reserve(nativePermissionList.size());
         for (const auto &nativePermission : nativePermissionList)
-            androidResults.push_back(QtAndroidPrivate::checkPermission(nativePermission).result());
+            androidResults.push_back(BobUIAndroidPrivate::checkPermission(nativePermission).result());
 
         const auto status = getCombinedStatus(androidResults);
         const auto it = g_permissionStatusHash->constFind(permission.type().id());
         const bool foundStatus = (it != g_permissionStatusHash->constEnd());
-        const bool itUndetermined = foundStatus && (*it) == Qt::PermissionStatus::Undetermined;
-        if (status == Qt::PermissionStatus::Denied && itUndetermined)
-            return Qt::PermissionStatus::Undetermined;
+        const bool itUndetermined = foundStatus && (*it) == BobUI::PermissionStatus::Undetermined;
+        if (status == BobUI::PermissionStatus::Denied && itUndetermined)
+            return BobUI::PermissionStatus::Undetermined;
         return status;
     }
 
@@ -168,14 +168,14 @@ namespace QPermissions::Private
     {
         const auto nativePermissionList = nativeStringsFromPermission(permission);
         if (nativePermissionList.isEmpty()) {
-            callback(Qt::PermissionStatus::Granted);
+            callback(BobUI::PermissionStatus::Granted);
             return;
         }
 
-        QtAndroidPrivate::requestPermissions(nativePermissionList).then(qApp,
-            [callback, permission](QFuture<QtAndroidPrivate::PermissionResult> future) {
+        BobUIAndroidPrivate::requestPermissions(nativePermissionList).then(qApp,
+            [callback, permission](QFuture<BobUIAndroidPrivate::PermissionResult> future) {
                 const auto androidResults = future.isValid() ? future.results()
-                                                             : QList{QtAndroidPrivate::Denied};
+                                                             : QList{BobUIAndroidPrivate::Denied};
                 const auto status = getCombinedStatus(androidResults);
                 g_permissionStatusHash->insert(permission.type().id(), status);
                 callback(status);
@@ -184,4 +184,4 @@ namespace QPermissions::Private
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

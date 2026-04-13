@@ -1,48 +1,48 @@
 // Copyright (C) 2012 Jeremy Lainé <jeremy.laine@m4x.org>
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QSignalSpy>
-#include <QtTest/private/qpropertytesthelper_p.h>
+#include <BobUITest/private/qpropertytesthelper_p.h>
 #include <QOperatingSystemVersion>
 
-#include <QtNetwork/QDnsLookup>
+#include <BobUINetwork/QDnsLookup>
 
-#include <QtCore/QElapsedTimer>
-#include <QtCore/QRandomGenerator>
-#include <QtNetwork/QHostAddress>
-#if QT_CONFIG(udpsocket)
-#include <QtNetwork/QNetworkDatagram>
-#include <QtNetwork/QUdpSocket>
+#include <BobUICore/QElapsedTimer>
+#include <BobUICore/QRandomGenerator>
+#include <BobUINetwork/QHostAddress>
+#if BOBUI_CONFIG(udpsocket)
+#include <BobUINetwork/QNetworkDatagram>
+#include <BobUINetwork/QUdpSocket>
 #endif
 
-#if QT_CONFIG(networkproxy)
-#  include <QtNetwork/QNetworkProxyFactory>
+#if BOBUI_CONFIG(networkproxy)
+#  include <BobUINetwork/QNetworkProxyFactory>
 #endif
-#if QT_CONFIG(process)
-#  include <QtCore/QProcess>
+#if BOBUI_CONFIG(process)
+#  include <BobUICore/QProcess>
 #endif
-#if QT_CONFIG(ssl)
-#  include <QtNetwork/QSslSocket>
+#if BOBUI_CONFIG(ssl)
+#  include <BobUINetwork/QSslSocket>
 #endif
 
 #ifdef Q_OS_UNIX
-#  include <QtCore/QFile>
+#  include <BobUICore/QFile>
 #else
 #  include <winsock2.h>
 #  include <iphlpapi.h>
 #endif
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 static const int Timeout = 15000; // 15s
 
 class tst_QDnsLookup: public QObject
 {
     Q_OBJECT
 public:
-    const QString normalDomain = u".test.qt-project.org"_s;
-    const QString idnDomain = u".alqualondë.test.qt-project.org"_s;
+    const QString normalDomain = u".test.bobui-project.org"_s;
+    const QString idnDomain = u".alqualondë.test.bobui-project.org"_s;
     QHostAddress alternateDnsServer;
     quint16 alternateDnsServerPort = 53;
     bool usingIdnDomain = false;
@@ -101,7 +101,7 @@ static QList<QHostAddress> systemNameservers(QDnsLookup::Protocol protocol)
     QList<QHostAddress> result;
     if (protocol != QDnsLookup::Standard)
         return result;
-    if (auto tst = static_cast<tst_QDnsLookup *>(QTest::testObject()); !tst->alternateDnsServer.isNull()) {
+    if (auto tst = static_cast<tst_QDnsLookup *>(BOBUIest::testObject()); !tst->alternateDnsServer.isNull()) {
         // if the user provided an alternate server, that's our "system"
         if (tst->alternateDnsServerPort == 53)
             result.emplaceBack(tst->alternateDnsServer);
@@ -160,7 +160,7 @@ static QList<QHostAddress> globalPublicNameservers(QDnsLookup::Protocol proto)
     };
 
     auto udpSendAndReceive = [](const QHostAddress &addr, QByteArray &data) {
-#if QT_CONFIG(udpsocket)
+#if BOBUI_CONFIG(udpsocket)
         QUdpSocket socket;
         socket.connectToHost(addr, 53);
         if (socket.waitForConnected(1))
@@ -177,11 +177,11 @@ static QList<QHostAddress> globalPublicNameservers(QDnsLookup::Protocol proto)
         return QString();
 #else
         return u"UDP socket support not compiled in"_s;
-#endif // QT_CONFIG(udpsocket)
+#endif // BOBUI_CONFIG(udpsocket)
     };
 
     auto tlsSendAndReceive = [](const QHostAddress &addr, QByteArray &data) {
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
         QSslSocket socket;
         QDeadlineTimer timeout(2000);
         socket.connectToHostEncrypted(addr.toString(), 853);
@@ -259,22 +259,22 @@ static QList<QHostAddress> globalPublicNameservers(QDnsLookup::Protocol proto)
 
 void tst_QDnsLookup::initTestCase()
 {
-    if (qgetenv("QTEST_ENVIRONMENT") == "ci")
+    if (qgetenv("BOBUIEST_ENVIRONMENT") == "ci")
         dnsServersMustWork = true;
 
-#if QT_CONFIG(networkproxy)
+#if BOBUI_CONFIG(networkproxy)
     // for DNS-over-TLS
     QNetworkProxyFactory::setUseSystemConfiguration(true);
 #endif
 
-    if (QString alternateDns = qEnvironmentVariable("QTEST_DNS_SERVER"); !alternateDns.isEmpty()) {
+    if (QString alternateDns = qEnvironmentVariable("BOBUIEST_DNS_SERVER"); !alternateDns.isEmpty()) {
         // use QUrl to parse host:port, so we get IPv6 too
         QUrl u("dns://" + alternateDns);
         alternateDnsServer = QHostAddress(u.host());
         alternateDnsServerPort = u.port(alternateDnsServerPort);
     }
 
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
     // make sure these match something in lookup_data()
     QString checkedDomain = domainName(u"a-multi"_s);
     static constexpr QByteArrayView expectedAddresses[] = {
@@ -327,7 +327,7 @@ void tst_QDnsLookup::initTestCase()
     if (!dnsServersMustWork && alternateDnsServer.isNull() && !dnsServerDoesWork()) {
         qWarning() << "Default DNS server in this system cannot correctly resolve" << checkedDomain;
         qWarning() << "Please check if you are connected to the Internet or set the "
-                      "QTEST_DNS_SERVER environment variable to a working server.";
+                      "BOBUIEST_DNS_SERVER environment variable to a working server.";
         qDebug("Output was:\n%s", output.constData());
         QSKIP("DNS server does not appear to work");
     }
@@ -381,12 +381,12 @@ tst_QDnsLookup::lookupCommon(QDnsLookup::Type type, const QString &domain,
     }
     auto lookup = std::make_unique<QDnsLookup>(type, domainName(domain), protocol, server, port);
     QObject::connect(lookup.get(), &QDnsLookup::finished,
-                     &QTestEventLoop::instance(), &QTestEventLoop::exitLoop);
+                     &BOBUIestEventLoop::instance(), &BOBUIestEventLoop::exitLoop);
     lookup->lookup();
-    QTestEventLoop::instance().enterLoopMSecs(Timeout);
+    BOBUIestEventLoop::instance().enterLoopMSecs(Timeout);
 
     QDnsLookup::Error error = lookup->error();
-    if (QTestEventLoop::instance().timeout())
+    if (BOBUIestEventLoop::instance().timeout())
         error = QDnsLookup::TimeoutError;
 
     if (!dnsServersMustWork && (error == QDnsLookup::ServerFailureError
@@ -516,17 +516,17 @@ void tst_QDnsLookup::lookupRoot()
 
 void tst_QDnsLookup::lookupNxDomain_data()
 {
-    QTest::addColumn<QDnsLookup::Type>("type");
-    QTest::addColumn<QString>("domain");
+    BOBUIest::addColumn<QDnsLookup::Type>("type");
+    BOBUIest::addColumn<QString>("domain");
 
-    QTest::newRow("a") << QDnsLookup::A << "invalid.invalid";
-    QTest::newRow("aaaa") << QDnsLookup::AAAA << "invalid.invalid";
-    QTest::newRow("any") << QDnsLookup::ANY << "invalid.invalid";
-    QTest::newRow("mx") << QDnsLookup::MX << "invalid.invalid";
-    QTest::newRow("ns") << QDnsLookup::NS << "invalid.invalid";
-    QTest::newRow("ptr") << QDnsLookup::PTR << "invalid.invalid";
-    QTest::newRow("srv") << QDnsLookup::SRV << "invalid.invalid";
-    QTest::newRow("txt") << QDnsLookup::TXT << "invalid.invalid";
+    BOBUIest::newRow("a") << QDnsLookup::A << "invalid.invalid";
+    BOBUIest::newRow("aaaa") << QDnsLookup::AAAA << "invalid.invalid";
+    BOBUIest::newRow("any") << QDnsLookup::ANY << "invalid.invalid";
+    BOBUIest::newRow("mx") << QDnsLookup::MX << "invalid.invalid";
+    BOBUIest::newRow("ns") << QDnsLookup::NS << "invalid.invalid";
+    BOBUIest::newRow("ptr") << QDnsLookup::PTR << "invalid.invalid";
+    BOBUIest::newRow("srv") << QDnsLookup::SRV << "invalid.invalid";
+    BOBUIest::newRow("txt") << QDnsLookup::TXT << "invalid.invalid";
 }
 
 void tst_QDnsLookup::lookupNxDomain()
@@ -546,7 +546,7 @@ void tst_QDnsLookup::lookupNxDomain()
                 >= QOperatingSystemVersion(QOperatingSystemVersion::Windows11_24H2)) {
         // It fails only after the first run, something is incorrectly cached by
         // Windows!
-        QEXPECT_FAIL("", "This test fails on Windows 11 24H2. QTBUG-135599", Abort);
+        QEXPECT_FAIL("", "This test fails on Windows 11 24H2. BOBUIBUG-135599", Abort);
     }
     firstRun = false;
 
@@ -555,79 +555,79 @@ void tst_QDnsLookup::lookupNxDomain()
 
 void tst_QDnsLookup::lookup_data()
 {
-    QTest::addColumn<QDnsLookup::Type>("type");
-    QTest::addColumn<QString>("domain");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<QDnsLookup::Type>("type");
+    BOBUIest::addColumn<QString>("domain");
+    BOBUIest::addColumn<QString>("expected");
 
-    QTest::newRow("a-single") << QDnsLookup::A << "a-single"
+    BOBUIest::newRow("a-single") << QDnsLookup::A << "a-single"
                               << "A 192.0.2.1";
-    QTest::newRow("a-multi") << QDnsLookup::A << "a-multi"
+    BOBUIest::newRow("a-multi") << QDnsLookup::A << "a-multi"
                              << "A 192.0.2.1;A 192.0.2.2;A 192.0.2.3";
-    QTest::newRow("aaaa-single") << QDnsLookup::AAAA << "aaaa-single"
+    BOBUIest::newRow("aaaa-single") << QDnsLookup::AAAA << "aaaa-single"
                                  << "AAAA 2001:db8::1";
-    QTest::newRow("aaaa-multi") << QDnsLookup::AAAA << "aaaa-multi"
+    BOBUIest::newRow("aaaa-multi") << QDnsLookup::AAAA << "aaaa-multi"
                                 << "AAAA 2001:db8::1;AAAA 2001:db8::2;AAAA 2001:db8::3";
 
-    QTest::newRow("any-a-single") << QDnsLookup::ANY << "a-single"
+    BOBUIest::newRow("any-a-single") << QDnsLookup::ANY << "a-single"
                                   << "A 192.0.2.1";
-    QTest::newRow("any-a-plus-aaaa") << QDnsLookup::ANY << "a-plus-aaaa"
+    BOBUIest::newRow("any-a-plus-aaaa") << QDnsLookup::ANY << "a-plus-aaaa"
                                      << "A 198.51.100.1;AAAA 2001:db8::1:1";
-    QTest::newRow("any-multi") << QDnsLookup::ANY << "multi"
+    BOBUIest::newRow("any-multi") << QDnsLookup::ANY << "multi"
                                << "A 198.51.100.1;A 198.51.100.2;A 198.51.100.3;"
                                   "AAAA 2001:db8::1:1;AAAA 2001:db8::1:2" ;
 
-    QTest::newRow("mx-single") << QDnsLookup::MX << "mx-single"
+    BOBUIest::newRow("mx-single") << QDnsLookup::MX << "mx-single"
                                << "MX    10 multi";
-    QTest::newRow("mx-single-cname") << QDnsLookup::MX << "mx-single-cname"
+    BOBUIest::newRow("mx-single-cname") << QDnsLookup::MX << "mx-single-cname"
                                      << "MX    10 cname";
-    QTest::newRow("mx-multi") << QDnsLookup::MX << "mx-multi"
+    BOBUIest::newRow("mx-multi") << QDnsLookup::MX << "mx-multi"
                               << "MX    10 multi;MX    20 a-single";
-    QTest::newRow("mx-multi-sameprio") << QDnsLookup::MX << "mx-multi-sameprio"
+    BOBUIest::newRow("mx-multi-sameprio") << QDnsLookup::MX << "mx-multi-sameprio"
                                        << "MX    10 a-single;MX    10 multi";
 
-    QTest::newRow("ns-single") << QDnsLookup::NS << "ns-single"
+    BOBUIest::newRow("ns-single") << QDnsLookup::NS << "ns-single"
                                << "NS ns11.cloudns.net.";
-    QTest::newRow("ns-multi") << QDnsLookup::NS << "ns-multi"
+    BOBUIest::newRow("ns-multi") << QDnsLookup::NS << "ns-multi"
                               << "NS ns11.cloudns.net.;NS ns12.cloudns.net.";
 
 #if 0
     // temporarily disabled since the new hosting provider can't insert
     // PTR records outside of the in-addr.arpa zone
-    QTest::newRow("ptr-single") << QDnsLookup::PTR << "ptr-single"
+    BOBUIest::newRow("ptr-single") << QDnsLookup::PTR << "ptr-single"
                                 << "PTR a-single";
 #endif
-    QTest::newRow("ptr-1.1.1.1") << QDnsLookup::PTR << "1.1.1.1.in-addr.arpa."
+    BOBUIest::newRow("ptr-1.1.1.1") << QDnsLookup::PTR << "1.1.1.1.in-addr.arpa."
                                  << "PTR one.one.one.one.";
-    QTest::newRow("ptr-8.8.8.8") << QDnsLookup::PTR << "8.8.8.8.in-addr.arpa."
+    BOBUIest::newRow("ptr-8.8.8.8") << QDnsLookup::PTR << "8.8.8.8.in-addr.arpa."
                                  << "PTR dns.google.";
-    QTest::newRow("ptr-2001:4860:4860::8888")
+    BOBUIest::newRow("ptr-2001:4860:4860::8888")
             << QDnsLookup::PTR << "8.8.8.8.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.6.8.4.0.6.8.4.1.0.0.2.ip6.arpa."
             << "PTR dns.google.";
-    QTest::newRow("ptr-2606:4700:4700::1111")
+    BOBUIest::newRow("ptr-2606:4700:4700::1111")
             << QDnsLookup::PTR << "1.1.1.1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.7.4.0.0.7.4.6.0.6.2.ip6.arpa."
             << "PTR one.one.one.one.";
 
-    QTest::newRow("srv-single") << QDnsLookup::SRV << "_echo._tcp.srv-single"
+    BOBUIest::newRow("srv-single") << QDnsLookup::SRV << "_echo._tcp.srv-single"
                                 << "SRV     5 0 7 multi";
-    QTest::newRow("srv-prio") << QDnsLookup::SRV << "_echo._tcp.srv-prio"
+    BOBUIest::newRow("srv-prio") << QDnsLookup::SRV << "_echo._tcp.srv-prio"
                               << "SRV     1 0 7 multi;SRV     2 0 7 a-plus-aaaa";
-    QTest::newRow("srv-weighted") << QDnsLookup::SRV << "_echo._tcp.srv-weighted"
+    BOBUIest::newRow("srv-weighted") << QDnsLookup::SRV << "_echo._tcp.srv-weighted"
                                   << "SRV     5 25 7 a-plus-aaaa;SRV     5 75 7 multi";
-    QTest::newRow("srv-multi") << QDnsLookup::SRV << "_echo._tcp.srv-multi"
+    BOBUIest::newRow("srv-multi") << QDnsLookup::SRV << "_echo._tcp.srv-multi"
                                << "SRV     1 50 7 multi;"
                                   "SRV     2 50 7 a-single;"
                                   "SRV     2 50 7 aaaa-single;"
                                   "SRV     3 50 7 a-multi";
 
-    QTest::newRow("tlsa") << QDnsLookup::Type::TLSA << "_25._tcp.multi"
+    BOBUIest::newRow("tlsa") << QDnsLookup::Type::TLSA << "_25._tcp.multi"
                           << "TLSA 3 1 1 0123456789ABCDEFFEDCBA9876543210"
                              "0123456789ABCDEFFEDCBA9876543210";
 
-    QTest::newRow("txt-single") << QDnsLookup::TXT << "txt-single"
+    BOBUIest::newRow("txt-single") << QDnsLookup::TXT << "txt-single"
                                 << "TXT \"Hello\"";
-    QTest::newRow("txt-multi-onerr") << QDnsLookup::TXT << "txt-multi-onerr"
+    BOBUIest::newRow("txt-multi-onerr") << QDnsLookup::TXT << "txt-multi-onerr"
                                      << "TXT \"Hello\" \"World\"";
-    QTest::newRow("txt-multi-multirr") << QDnsLookup::TXT << "txt-multi-multirr"
+    BOBUIest::newRow("txt-multi-multirr") << QDnsLookup::TXT << "txt-multi-multirr"
                                        << "TXT \"Hello\";TXT \"World\"";
 }
 
@@ -642,7 +642,7 @@ void tst_QDnsLookup::lookup()
         return;
 
 #ifdef Q_OS_WIN
-    if (QTest::currentDataTag() == "tlsa"_L1)
+    if (BOBUIest::currentDataTag() == "tlsa"_L1)
         QSKIP("WinDNS doesn't work properly with TLSA records and we don't know why");
 #endif
     QCOMPARE(lookup->errorString(), QString());
@@ -684,7 +684,7 @@ void tst_QDnsLookup::lookupReuse()
     lookup->setType(QDnsLookup::AAAA);
     lookup->setName(domainName("aaaa-single"));
     lookup->lookup();
-    QTRY_VERIFY_WITH_TIMEOUT(lookup->isFinished(), Timeout);
+    BOBUIRY_VERIFY_WITH_TIMEOUT(lookup->isFinished(), Timeout);
     QCOMPARE(lookup->error(), QDnsLookup::NoError);
     QVERIFY(!lookup->hostAddressRecords().isEmpty());
     QCOMPARE(lookup->hostAddressRecords().first().name(), domainName("aaaa-single"));
@@ -701,7 +701,7 @@ void tst_QDnsLookup::lookupAbortRetry()
     lookup.setName(domainName("a-single"));
     lookup.lookup();
     lookup.abort();
-    QTRY_VERIFY_WITH_TIMEOUT(lookup.isFinished(), Timeout);
+    BOBUIRY_VERIFY_WITH_TIMEOUT(lookup.isFinished(), Timeout);
     QCOMPARE(int(lookup.error()), int(QDnsLookup::OperationCancelledError));
     QVERIFY(lookup.hostAddressRecords().isEmpty());
 
@@ -709,7 +709,7 @@ void tst_QDnsLookup::lookupAbortRetry()
     lookup.setType(QDnsLookup::AAAA);
     lookup.setName(domainName("aaaa-single"));
     lookup.lookup();
-    QTRY_VERIFY_WITH_TIMEOUT(lookup.isFinished(), Timeout);
+    BOBUIRY_VERIFY_WITH_TIMEOUT(lookup.isFinished(), Timeout);
 
     QCOMPARE(int(lookup.error()), int(QDnsLookup::NoError));
     QVERIFY(!lookup.hostAddressRecords().isEmpty());
@@ -719,7 +719,7 @@ void tst_QDnsLookup::lookupAbortRetry()
 
 void tst_QDnsLookup::setNameserverLoopback()
 {
-#if !QT_CONFIG(udpsocket)
+#if !BOBUI_CONFIG(udpsocket)
     QSKIP("UDP socket not enabled");
 #else
 #ifdef Q_OS_WIN
@@ -747,12 +747,12 @@ void tst_QDnsLookup::setNameserverLoopback()
 
     // QDnsLookup is threaded, so we can answer on the main thread
     QObject::connect(&server, &QUdpSocket::readyRead,
-                     &QTestEventLoop::instance(), &QTestEventLoop::exitLoop);
+                     &BOBUIestEventLoop::instance(), &BOBUIestEventLoop::exitLoop);
     QObject::connect(&lookup, &QDnsLookup::finished,
-                     &QTestEventLoop::instance(), &QTestEventLoop::exitLoop);
+                     &BOBUIestEventLoop::instance(), &BOBUIestEventLoop::exitLoop);
     lookup.lookup();
-    QTestEventLoop::instance().enterLoop(5);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(5);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
     QVERIFY2(spy.isEmpty(), qPrintable(lookup.errorString()));
 
     QNetworkDatagram dgram = server.receiveDatagram();
@@ -771,11 +771,11 @@ void tst_QDnsLookup::setNameserverLoopback()
     server.close();
 
     // now check that the QDnsLookup finished
-    QTestEventLoop::instance().enterLoop(5);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(5);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
     QCOMPARE(spy.size(), 1);
     QCOMPARE(lookup.error(), QDnsLookup::NotFoundError);
-#endif // QT_CONFIG(udpsocket)
+#endif // BOBUI_CONFIG(udpsocket)
 }
 
 template <QDnsLookup::Protocol Protocol>
@@ -786,13 +786,13 @@ static void setNameserver_data_helper(const QByteArray &protoName)
 
     static QList<QHostAddress> servers = systemNameservers(Protocol)
             + globalPublicNameservers(Protocol);
-    QTest::addColumn<QHostAddress>("server");
+    BOBUIest::addColumn<QHostAddress>("server");
 
     if (servers.isEmpty()) {
         QSKIP("No reachable " + protoName + " servers were found");
     } else {
         for (const QHostAddress &h : std::as_const(servers))
-            QTest::addRow("%s", qUtf8Printable(h.toString())) << h;
+            BOBUIest::addRow("%s", qUtf8Printable(h.toString())) << h;
     }
 }
 
@@ -837,7 +837,7 @@ void tst_QDnsLookup::bindingsAndProperties()
 
     lookup.setType(QDnsLookup::A);
     QProperty<QDnsLookup::Type> dnsTypeProp;
-    lookup.bindableType().setBinding(Qt::makePropertyBinding(dnsTypeProp));
+    lookup.bindableType().setBinding(BobUI::makePropertyBinding(dnsTypeProp));
     const QSignalSpy typeChangeSpy(&lookup, &QDnsLookup::typeChanged);
 
     dnsTypeProp = QDnsLookup::AAAA;
@@ -849,7 +849,7 @@ void tst_QDnsLookup::bindingsAndProperties()
     QCOMPARE(dnsTypeProp.value(), QDnsLookup::A);
 
     QProperty<QString> nameProp;
-    lookup.bindableName().setBinding(Qt::makePropertyBinding(nameProp));
+    lookup.bindableName().setBinding(BobUI::makePropertyBinding(nameProp));
     const QSignalSpy nameChangeSpy(&lookup, &QDnsLookup::nameChanged);
 
     nameProp = QStringLiteral("a-plus-aaaa");
@@ -861,7 +861,7 @@ void tst_QDnsLookup::bindingsAndProperties()
     QCOMPARE(nameProp.value(), QStringLiteral("a-single"));
 
     QProperty<QHostAddress> nameserverProp;
-    lookup.bindableNameserver().setBinding(Qt::makePropertyBinding(nameserverProp));
+    lookup.bindableNameserver().setBinding(BobUI::makePropertyBinding(nameserverProp));
     const QSignalSpy nameserverChangeSpy(&lookup, &QDnsLookup::nameserverChanged);
     const QSignalSpy nameserverPortChangeSpy(&lookup, &QDnsLookup::nameserverPortChanged);
 
@@ -886,33 +886,33 @@ void tst_QDnsLookup::automatedBindings()
 {
     QDnsLookup lookup;
 
-    QTestPrivate::testReadWritePropertyBasics(lookup, u"aaaa"_s, u"txt"_s, "name");
-    if (QTest::currentTestFailed()) {
+    BOBUIestPrivate::testReadWritePropertyBasics(lookup, u"aaaa"_s, u"txt"_s, "name");
+    if (BOBUIest::currentTestFailed()) {
         qDebug("Failed property test for QDnsLookup::name");
         return;
     }
 
-    QTestPrivate::testReadWritePropertyBasics(lookup, QDnsLookup::AAAA, QDnsLookup::TXT, "type");
-    if (QTest::currentTestFailed()) {
+    BOBUIestPrivate::testReadWritePropertyBasics(lookup, QDnsLookup::AAAA, QDnsLookup::TXT, "type");
+    if (BOBUIest::currentTestFailed()) {
         qDebug("Failed property test for QDnsLookup::type");
         return;
     }
 
-    QTestPrivate::testReadWritePropertyBasics(lookup, QHostAddress{QHostAddress::Any},
+    BOBUIestPrivate::testReadWritePropertyBasics(lookup, QHostAddress{QHostAddress::Any},
                                               QHostAddress{QHostAddress::LocalHost},
                                               "nameserver");
-    if (QTest::currentTestFailed()) {
+    if (BOBUIest::currentTestFailed()) {
         qDebug("Failed property test for QDnsLookup::nameserver");
         return;
     }
 
-    QTestPrivate::testReadWritePropertyBasics(lookup, quint16(123), quint16(456),
+    BOBUIestPrivate::testReadWritePropertyBasics(lookup, quint16(123), quint16(456),
                                               "nameserverPort");
-    if (QTest::currentTestFailed()) {
+    if (BOBUIest::currentTestFailed()) {
         qDebug("Failed property test for QDnsLookup::nameserverPort");
         return;
     }
 }
 
-QTEST_MAIN(tst_QDnsLookup)
+BOBUIEST_MAIN(tst_QDnsLookup)
 #include "tst_qdnslookup.moc"

@@ -1,13 +1,13 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <QSignalSpy>
 
-#include <QtWidgets/private/qsidebar_p.h>
-#include <QtGui/private/qfilesystemmodel_p.h>
-#include <QtWidgets/qfileiconprovider.h>
+#include <BobUIWidgets/private/qsidebar_p.h>
+#include <BobUIGui/private/qfilesystemmodel_p.h>
+#include <BobUIWidgets/qfileiconprovider.h>
 
 class tst_QSidebar : public QObject {
   Q_OBJECT
@@ -110,7 +110,7 @@ void tst_QSidebar::addUrls()
     // check that every item has text and an icon including the above invalid one
     for (int i = 0; i < model->rowCount(); ++i) {
         QVERIFY(!model->index(i, 0).data().toString().isEmpty());
-        QIcon icon = qvariant_cast<QIcon>(model->index(i, 0).data(Qt::DecorationRole));
+        QIcon icon = qvariant_cast<QIcon>(model->index(i, 0).data(BobUI::DecorationRole));
         QVERIFY(!icon.isNull());
     }
 
@@ -173,12 +173,12 @@ void tst_QSidebar::goToUrl()
     qsidebar.selectUrl(tempUrl);
 
     QSignalSpy spy(&qsidebar, &QSidebar::goToUrl);
-    QTest::mousePress(qsidebar.viewport(), Qt::LeftButton, {},
+    BOBUIest::mousePress(qsidebar.viewport(), BobUI::LeftButton, {},
                       qsidebar.visualRect(qsidebar.model()->index(0, 0)).center());
     QCOMPARE(spy.size(), 1);
     QCOMPARE((spy.value(0)).at(0).toUrl(), urls.first());
 }
 
-QTEST_MAIN(tst_QSidebar)
+BOBUIEST_MAIN(tst_QSidebar)
 #include "tst_qsidebar.moc"
 

@@ -1,5 +1,5 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qbasicvulkanplatforminstance_p.h"
 #include <QCoreApplication>
@@ -7,9 +7,9 @@
 #include <QLoggingCategory>
 #include <QVarLengthArray>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_STATIC_LOGGING_CATEGORY(lcPlatVk, "qt.vulkan")
+Q_STATIC_LOGGING_CATEGORY(lcPlatVk, "bobui.vulkan")
 
 /*!
     \class QBasicPlatformVulkanInstance
@@ -50,8 +50,8 @@ void QBasicPlatformVulkanInstance::loadVulkanLibrary(const QString &defaultLibra
     // First in the list of libraries to try is the manual override, relevant on
     // embedded systems without a Vulkan loader and possibly with custom vendor
     // library names.
-    if (qEnvironmentVariableIsSet("QT_VULKAN_LIB"))
-        loadList.append({ qEnvironmentVariable("QT_VULKAN_LIB"), -1 });
+    if (qEnvironmentVariableIsSet("BOBUI_VULKAN_LIB"))
+        loadList.append({ qEnvironmentVariable("BOBUI_VULKAN_LIB"), -1 });
 
     // Then what the platform specified. On Linux the version is likely 1, thus
     // preferring libvulkan.so.1 over libvulkan.so.
@@ -225,7 +225,7 @@ void QBasicPlatformVulkanInstance::initInstance(QVulkanInstance *instance, const
         for (const QByteArray &ext : extraExts)
             m_enabledExtensions.append(ext);
 
-        QByteArray envExts = qgetenv("QT_VULKAN_INSTANCE_EXTENSIONS");
+        QByteArray envExts = qgetenv("BOBUI_VULKAN_INSTANCE_EXTENSIONS");
         if (!envExts.isEmpty()) {
             QByteArrayList envExtList =  envExts.split(';');
             for (auto ext : m_enabledExtensions)
@@ -233,7 +233,7 @@ void QBasicPlatformVulkanInstance::initInstance(QVulkanInstance *instance, const
             m_enabledExtensions.append(envExtList);
         }
 
-        QByteArray envLayers = qgetenv("QT_VULKAN_INSTANCE_LAYERS");
+        QByteArray envLayers = qgetenv("BOBUI_VULKAN_INSTANCE_LAYERS");
         if (!envLayers.isEmpty()) {
             QByteArrayList envLayerList = envLayers.split(';');
             for (auto ext : m_enabledLayers)
@@ -457,4 +457,4 @@ void QBasicPlatformVulkanInstance::setupDebugOutput()
 #endif
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

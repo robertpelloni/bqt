@@ -1,8 +1,8 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtSql/QtSql>
+#include <BOBUIest>
+#include <BobUISql/BobUISql>
 
 #include "../../../../auto/sql/kernel/qsqldatabase/tst_databases.h"
 
@@ -29,7 +29,7 @@ private:
     tst_Databases dbs;
 };
 
-QTEST_MAIN(tst_QSqlRecord)
+BOBUIEST_MAIN(tst_QSqlRecord)
 
 void tst_QSqlRecord::initTestCase()
 {
@@ -49,9 +49,9 @@ void tst_QSqlRecord::generic_data(const QString &engine)
 {
     if (dbs.fillTestTable(engine) == 0) {
         if (engine.isEmpty())
-            QSKIP("No database drivers are available in this Qt configuration");
+            QSKIP("No database drivers are available in this BobUI configuration");
         else
-            QSKIP(QString("No database drivers of type %1 are available in this Qt configuration").arg(engine).toLocal8Bit());
+            QSKIP(QString("No database drivers of type %1 are available in this BobUI configuration").arg(engine).toLocal8Bit());
     }
 }
 

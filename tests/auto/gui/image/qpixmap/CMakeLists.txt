@@ -1,14 +1,14 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## tst_qpixmap Test:
 #####################################################################
 
-if(NOT QT_BUILD_STANDALONE_TESTS AND NOT QT_BUILDING_QT)
+if(NOT BOBUI_BUILD_STANDALONE_TESTS AND NOT BOBUI_BUILDING_BOBUI)
     cmake_minimum_required(VERSION 3.16)
     project(tst_qpixmap LANGUAGES CXX)
-    find_package(Qt6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
+    find_package(BobUI6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
 endif()
 
 # Collect test data
@@ -29,13 +29,13 @@ file(GLOB_RECURSE test_data_glob
     images/*)
 list(APPEND test_data ${test_data_glob})
 
-qt_internal_add_test(tst_qpixmap
+bobui_internal_add_test(tst_qpixmap
     SOURCES
         tst_qpixmap.cpp
     LIBRARIES
-        Qt::CorePrivate
-        Qt::Gui
-        Qt::GuiPrivate
+        BobUI::CorePrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
     TESTDATA ${test_data}
 )
 
@@ -90,7 +90,7 @@ set(qpixmap_resource_files
     "loadFromData/designer_rgb32.png"
 )
 
-qt_internal_add_resource(tst_qpixmap "qpixmap"
+bobui_internal_add_resource(tst_qpixmap "qpixmap"
     PREFIX
         "/"
     FILES
@@ -101,13 +101,13 @@ qt_internal_add_resource(tst_qpixmap "qpixmap"
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(tst_qpixmap CONDITION TARGET Qt::Widgets
+bobui_internal_extend_target(tst_qpixmap CONDITION TARGET BobUI::Widgets
     LIBRARIES
-        Qt::Widgets
-        Qt::WidgetsPrivate
+        BobUI::Widgets
+        BobUI::WidgetsPrivate
 )
 
-qt_internal_extend_target(tst_qpixmap CONDITION WIN32
+bobui_internal_extend_target(tst_qpixmap CONDITION WIN32
     LIBRARIES
         gdi32
         user32

@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtNetwork/qsslconfiguration.h>
-#include <QtCore/QCoreApplication>
-#include <QtCore/QTextStream>
+#include <BobUINetwork/qsslconfiguration.h>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/BOBUIextStream>
 #include <stdio.h>
 
 int main(int argc, char **argv)
@@ -11,14 +11,14 @@ int main(int argc, char **argv)
     QCoreApplication app(argc, argv);
 
     if (argc < 3) {
-        QTextStream out(stdout);
-        out << "Usage: " << argv[0] << " host port [options]" << Qt::endl;
-        out << "The options can be one or more of the following:" << Qt::endl;
-        out << "enable_empty_fragments" << Qt::endl;
-        out << "disable_session_tickets" << Qt::endl;
-        out << "disable_compression" << Qt::endl;
-        out << "disable_sni" << Qt::endl;
-        out << "enable_unsafe_reneg" << Qt::endl;
+        BOBUIextStream out(stdout);
+        out << "Usage: " << argv[0] << " host port [options]" << BobUI::endl;
+        out << "The options can be one or more of the following:" << BobUI::endl;
+        out << "enable_empty_fragments" << BobUI::endl;
+        out << "disable_session_tickets" << BobUI::endl;
+        out << "disable_compression" << BobUI::endl;
+        out << "disable_sni" << BobUI::endl;
+        out << "enable_unsafe_reneg" << BobUI::endl;
         return 1;
     }
 

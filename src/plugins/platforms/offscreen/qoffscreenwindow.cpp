@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qoffscreenwindow.h"
 #include "qoffscreencommon.h"
@@ -10,7 +10,7 @@
 #include <private/qwindow_p.h>
 #include <private/qguiapplication_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QOffscreenWindow::QOffscreenWindow(QWindow *window, bool frameMarginsEnabled)
     : QPlatformWindow(window)
@@ -19,7 +19,7 @@ QOffscreenWindow::QOffscreenWindow(QWindow *window, bool frameMarginsEnabled)
     , m_pendingGeometryChangeOnShow(true)
     , m_frameMarginsRequested(frameMarginsEnabled)
 {
-    if (window->windowState() == Qt::WindowNoState) {
+    if (window->windowState() == BobUI::WindowNoState) {
         setGeometry(windowGeometry());
     } else {
         setWindowState(window->windowStates());
@@ -40,10 +40,10 @@ QOffscreenWindow::~QOffscreenWindow()
 
 void QOffscreenWindow::setGeometry(const QRect &rect)
 {
-    if (window()->windowState() != Qt::WindowNoState)
+    if (window()->windowState() != BobUI::WindowNoState)
         return;
 
-    m_positionIncludesFrame = qt_window_private(window())->positionPolicy == QWindowPrivate::WindowFrameInclusive;
+    m_positionIncludesFrame = bobui_window_private(window())->positionPolicy == QWindowPrivate::WindowFrameInclusive;
 
     setFrameMarginsEnabled(m_frameMarginsRequested);
     setGeometryImpl(rect);
@@ -85,8 +85,8 @@ void QOffscreenWindow::setVisible(bool visible)
         return;
 
     if (visible) {
-        if (window()->type() != Qt::ToolTip)
-            QWindowSystemInterface::handleFocusWindowChanged(window(), Qt::ActiveWindowFocusReason);
+        if (window()->type() != BobUI::ToolTip)
+            QWindowSystemInterface::handleFocusWindowChanged(window(), BobUI::ActiveWindowFocusReason);
 
         if (m_pendingGeometryChangeOnShow) {
             m_pendingGeometryChangeOnShow = false;
@@ -107,7 +107,7 @@ void QOffscreenWindow::setVisible(bool visible)
                                                      window()->mapFromGlobal(cursorPos), cursorPos);
     } else {
         QWindowSystemInterface::handleExposeEvent(window(), QRegion());
-        if (window()->type() & Qt::Window) {
+        if (window()->type() & BobUI::Window) {
             if (QWindow *windowUnderMouse = QGuiApplication::topLevelAt(cursorPos)) {
                 QWindowSystemInterface::handleEnterEvent(windowUnderMouse,
                                                         windowUnderMouse->mapFromGlobal(cursorPos),
@@ -122,7 +122,7 @@ void QOffscreenWindow::setVisible(bool visible)
 void QOffscreenWindow::requestActivateWindow()
 {
     if (m_visible)
-        QWindowSystemInterface::handleFocusWindowChanged(window(), Qt::ActiveWindowFocusReason);
+        QWindowSystemInterface::handleFocusWindowChanged(window(), BobUI::ActiveWindowFocusReason);
 }
 
 WId QOffscreenWindow::winId() const
@@ -143,7 +143,7 @@ QMargins QOffscreenWindow::frameMargins() const
 void QOffscreenWindow::setFrameMarginsEnabled(bool enabled)
 {
     if (enabled
-        && !(window()->flags() & Qt::FramelessWindowHint)
+        && !(window()->flags() & BobUI::FramelessWindowHint)
         && (parent() == nullptr)) {
         m_margins = QMargins(2, 2, 2, 2);
     } else {
@@ -151,16 +151,16 @@ void QOffscreenWindow::setFrameMarginsEnabled(bool enabled)
     }
 }
 
-void QOffscreenWindow::setWindowState(Qt::WindowStates state)
+void QOffscreenWindow::setWindowState(BobUI::WindowStates state)
 {
-    setFrameMarginsEnabled(m_frameMarginsRequested && !(state & Qt::WindowFullScreen));
+    setFrameMarginsEnabled(m_frameMarginsRequested && !(state & BobUI::WindowFullScreen));
     m_positionIncludesFrame = false;
 
-    if (state & Qt::WindowMinimized)
+    if (state & BobUI::WindowMinimized)
         ; // nothing to do
-    else if (state & Qt::WindowFullScreen)
+    else if (state & BobUI::WindowFullScreen)
         setGeometryImpl(screen()->geometry());
-    else if (state & Qt::WindowMaximized)
+    else if (state & BobUI::WindowMaximized)
         setGeometryImpl(screen()->availableGeometry().adjusted(m_margins.left(), m_margins.top(), -m_margins.right(), -m_margins.bottom()));
     else
         setGeometryImpl(m_normalGeometry);
@@ -175,4 +175,4 @@ QOffscreenWindow *QOffscreenWindow::windowForWinId(WId id)
 
 Q_CONSTINIT QHash<WId, QOffscreenWindow *> QOffscreenWindow::m_windowForWinIdHash;
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

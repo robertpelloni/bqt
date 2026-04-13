@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 
 #include "qandroidplatformaccessibility.h"
 #include "androidjniaccessibility.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 QAndroidPlatformAccessibility::QAndroidPlatformAccessibility()
 { }
 
@@ -18,28 +18,28 @@ void QAndroidPlatformAccessibility::notifyAccessibilityUpdate(QAccessibleEvent *
         return;
 
     // We do not need implementation of all events, as current statues are polled
-    // by QtAccessibilityDelegate.java on every accessibility interaction.
+    // by BobUIAccessibilityDelegate.java on every accessibility interaction.
     // Currently we only send notification about the element's position change,
     // so that the element can be moved on the screen if it's focused.
 
     if (event->type() == QAccessible::LocationChanged) {
-        QtAndroidAccessibility::notifyLocationChange(event->uniqueId());
+        BobUIAndroidAccessibility::notifyLocationChange(event->uniqueId());
     } else if (event->type() == QAccessible::ObjectHide) {
-        QtAndroidAccessibility::notifyObjectHide(event->uniqueId());
+        BobUIAndroidAccessibility::notifyObjectHide(event->uniqueId());
     } else if (event->type() == QAccessible::ObjectShow) {
-        QtAndroidAccessibility::notifyObjectShow(event->uniqueId());
+        BobUIAndroidAccessibility::notifyObjectShow(event->uniqueId());
     } else if (event->type() == QAccessible::Focus) {
-        QtAndroidAccessibility::notifyObjectFocus(event->uniqueId());
+        BobUIAndroidAccessibility::notifyObjectFocus(event->uniqueId());
     } else if (event->type() == QAccessible::ValueChanged) {
-        QtAndroidAccessibility::notifyValueChanged(event->uniqueId());
+        BobUIAndroidAccessibility::notifyValueChanged(event->uniqueId());
     } else if (event->type() == QAccessible::ScrollingEnd) {
-        QtAndroidAccessibility::notifyScrolledEvent(event->uniqueId());
+        BobUIAndroidAccessibility::notifyScrolledEvent(event->uniqueId());
     } else if (event->type() == QAccessible::NameChanged
                || event->type() == QAccessible::DescriptionChanged) {
-        QtAndroidAccessibility::notifyDescriptionOrNameChanged(event->uniqueId());
+        BobUIAndroidAccessibility::notifyDescriptionOrNameChanged(event->uniqueId());
     } else if (event->type() == QAccessible::Announcement) {
         auto *announcementEvent = static_cast<QAccessibleAnnouncementEvent *>(event);
-        QtAndroidAccessibility::notifyAnnouncementEvent(announcementEvent->uniqueId(),
+        BobUIAndroidAccessibility::notifyAnnouncementEvent(announcementEvent->uniqueId(),
                                                         announcementEvent->message());
     }
 }
@@ -47,7 +47,7 @@ void QAndroidPlatformAccessibility::notifyAccessibilityUpdate(QAccessibleEvent *
 void QAndroidPlatformAccessibility::setRootObject(QObject *obj)
 {
     QPlatformAccessibility::setRootObject(obj);
-    QtAndroidAccessibility::createAccessibilityContextObject(obj);
+    BobUIAndroidAccessibility::createAccessibilityContextObject(obj);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

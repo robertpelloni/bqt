@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#define QT_NO_CAST_FROM_ASCII
+#define BOBUI_NO_CAST_FROM_ASCII
 
 #include "qmimemagicrulematcher_p.h"
 
 #include "qmimetype_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \internal
     \class QMimeMagicRuleMatcher
-    \inmodule QtCore
+    \inmodule BobUICore
 
     \brief The QMimeMagicRuleMatcher class checks a number of rules based on operator "or".
 
@@ -68,4 +68,4 @@ unsigned QMimeMagicRuleMatcher::priority() const
     return m_priority;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

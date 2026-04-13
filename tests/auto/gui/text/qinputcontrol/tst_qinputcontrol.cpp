@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <private/qinputcontrol_p.h>
-#include <QtGui/QKeyEvent>
+#include <BobUIGui/QKeyEvent>
 
 class tst_QInputControl: public QObject
 {
@@ -17,100 +17,100 @@ private slots:
 
 void tst_QInputControl::isAcceptableInput_data()
 {
-    QTest::addColumn<QString>("text");
-    QTest::addColumn<Qt::KeyboardModifiers>("modifiers");
-    QTest::addColumn<bool>("acceptable");
+    BOBUIest::addColumn<QString>("text");
+    BOBUIest::addColumn<BobUI::KeyboardModifiers>("modifiers");
+    BOBUIest::addColumn<bool>("acceptable");
 
-    QTest::newRow("empty-string") << QString() << Qt::KeyboardModifiers() << false;
-    QTest::newRow("zwnj") << QString(QChar(0x200C)) << Qt::KeyboardModifiers() << true;
-    QTest::newRow("zwnj-with-ctrl") << QString(QChar(0x200C)) << Qt::KeyboardModifiers(Qt::ControlModifier) << true;
-    QTest::newRow("zwnj-with-ctrl-shift") << QString(QChar(0x200C)) << Qt::KeyboardModifiers(Qt::ControlModifier | Qt::ShiftModifier) << true;
-    QTest::newRow("zwj") << QString(QChar(0x200D)) << Qt::KeyboardModifiers() << true;
-    QTest::newRow("zwj-with-ctrl") << QString(QChar(0x200D)) << Qt::KeyboardModifiers(Qt::ControlModifier) << true;
-    QTest::newRow("zwj-with-ctrl-shift") << QString(QChar(0x200D)) << Qt::KeyboardModifiers(Qt::ControlModifier | Qt::ShiftModifier) << true;
-    QTest::newRow("printable-latin") << QString(QLatin1Char('a')) << Qt::KeyboardModifiers() << true;
-    QTest::newRow("printable-latin-with-ctrl") << QString(QLatin1Char('a')) << Qt::KeyboardModifiers(Qt::ControlModifier) << false;
-    QTest::newRow("printable-latin-with-ctrl-shift") << QString(QLatin1Char('a')) << Qt::KeyboardModifiers(Qt::ControlModifier | Qt::ShiftModifier) << false;
-    QTest::newRow("printable-hebrew") << QString(QChar(0x2135)) << Qt::KeyboardModifiers() << true;
-    QTest::newRow("private-use-area") << QString(QChar(0xE832)) << Qt::KeyboardModifiers() << true;
-    QTest::newRow("good-surrogate-0") << QString::fromUtf16(u"\U0001F44D") << Qt::KeyboardModifiers() << true;
+    BOBUIest::newRow("empty-string") << QString() << BobUI::KeyboardModifiers() << false;
+    BOBUIest::newRow("zwnj") << QString(QChar(0x200C)) << BobUI::KeyboardModifiers() << true;
+    BOBUIest::newRow("zwnj-with-ctrl") << QString(QChar(0x200C)) << BobUI::KeyboardModifiers(BobUI::ControlModifier) << true;
+    BOBUIest::newRow("zwnj-with-ctrl-shift") << QString(QChar(0x200C)) << BobUI::KeyboardModifiers(BobUI::ControlModifier | BobUI::ShiftModifier) << true;
+    BOBUIest::newRow("zwj") << QString(QChar(0x200D)) << BobUI::KeyboardModifiers() << true;
+    BOBUIest::newRow("zwj-with-ctrl") << QString(QChar(0x200D)) << BobUI::KeyboardModifiers(BobUI::ControlModifier) << true;
+    BOBUIest::newRow("zwj-with-ctrl-shift") << QString(QChar(0x200D)) << BobUI::KeyboardModifiers(BobUI::ControlModifier | BobUI::ShiftModifier) << true;
+    BOBUIest::newRow("printable-latin") << QString(QLatin1Char('a')) << BobUI::KeyboardModifiers() << true;
+    BOBUIest::newRow("printable-latin-with-ctrl") << QString(QLatin1Char('a')) << BobUI::KeyboardModifiers(BobUI::ControlModifier) << false;
+    BOBUIest::newRow("printable-latin-with-ctrl-shift") << QString(QLatin1Char('a')) << BobUI::KeyboardModifiers(BobUI::ControlModifier | BobUI::ShiftModifier) << false;
+    BOBUIest::newRow("printable-hebrew") << QString(QChar(0x2135)) << BobUI::KeyboardModifiers() << true;
+    BOBUIest::newRow("private-use-area") << QString(QChar(0xE832)) << BobUI::KeyboardModifiers() << true;
+    BOBUIest::newRow("good-surrogate-0") << QString::fromUtf16(u"\U0001F44D") << BobUI::KeyboardModifiers() << true;
     {
         const QChar data[] = { QChar(0xD800), QChar(0xDC00) };
         const QString str = QString(data, 2);
-        QTest::newRow("good-surrogate-1") << str << Qt::KeyboardModifiers() << true;
+        BOBUIest::newRow("good-surrogate-1") << str << BobUI::KeyboardModifiers() << true;
     }
     {
         const QChar data[] = { QChar(0xD800), QChar(0xDFFF) };
         const QString str = QString(data, 2);
-        QTest::newRow("good-surrogate-2") << str << Qt::KeyboardModifiers() << true;
+        BOBUIest::newRow("good-surrogate-2") << str << BobUI::KeyboardModifiers() << true;
     }
     {
         const QChar data[] = { QChar(0xDBFF), QChar(0xDC00) };
         const QString str = QString(data, 2);
-        QTest::newRow("good-surrogate-3") << str << Qt::KeyboardModifiers() << true;
+        BOBUIest::newRow("good-surrogate-3") << str << BobUI::KeyboardModifiers() << true;
     }
     {
         const QChar data[] = { QChar(0xDBFF), QChar(0xDFFF) };
         const QString str = QString(data, 2);
-        QTest::newRow("good-surrogate-4") << str << Qt::KeyboardModifiers() << true;
+        BOBUIest::newRow("good-surrogate-4") << str << BobUI::KeyboardModifiers() << true;
     }
     {
         const QChar data[] = { QChar(0xD7FF), QChar(0xDC00) };
         const QString str = QString(data, 2);
-        QTest::newRow("bad-surrogate-1") << str << Qt::KeyboardModifiers() << false;
+        BOBUIest::newRow("bad-surrogate-1") << str << BobUI::KeyboardModifiers() << false;
     }
     {
         const QChar data[] = { QChar(0xD7FF), QChar(0xDFFF) };
         const QString str = QString(data, 2);
-        QTest::newRow("bad-surrogate-2") << str << Qt::KeyboardModifiers() << false;
+        BOBUIest::newRow("bad-surrogate-2") << str << BobUI::KeyboardModifiers() << false;
     }
     {
         const QChar data[] = { QChar(0xDC00), QChar(0xDC00) };
         const QString str = QString(data, 2);
-        QTest::newRow("bad-surrogate-3") << str << Qt::KeyboardModifiers() << false;
+        BOBUIest::newRow("bad-surrogate-3") << str << BobUI::KeyboardModifiers() << false;
     }
     {
         const QChar data[] = { QChar(0xD800), QChar(0xE000) };
         const QString str = QString(data, 2);
-        QTest::newRow("bad-surrogate-4") << str << Qt::KeyboardModifiers() << false;
+        BOBUIest::newRow("bad-surrogate-4") << str << BobUI::KeyboardModifiers() << false;
     }
     {
         const QChar data[] = { QChar(0xD800) };
         const QString str = QString(data, 1);
-        QTest::newRow("bad-surrogate-5") << str << Qt::KeyboardModifiers() << false;
+        BOBUIest::newRow("bad-surrogate-5") << str << BobUI::KeyboardModifiers() << false;
     }
-    QTest::newRow("multiple-printable") << QStringLiteral("foobar") << Qt::KeyboardModifiers() << true;
-    QTest::newRow("rlm") << QString(QChar(0x200F)) << Qt::KeyboardModifiers() << true;
-    QTest::newRow("rlm-with-ctrl") << QString(QChar(0x200F)) << Qt::KeyboardModifiers(Qt::ControlModifier) << true;
-    QTest::newRow("rlm-with-ctrl-shift") << QString(QChar(0x200F)) << Qt::KeyboardModifiers(Qt::ControlModifier | Qt::ShiftModifier) << true;
-    QTest::newRow("lrm") << QString(QChar(0x200E)) << Qt::KeyboardModifiers() << true;
-    QTest::newRow("lrm-with-ctrl") << QString(QChar(0x200E)) << Qt::KeyboardModifiers(Qt::ControlModifier) << true;
-    QTest::newRow("lrm-with-ctrl-shift") << QString(QChar(0x200E)) << Qt::KeyboardModifiers(Qt::ControlModifier | Qt::ShiftModifier) << true;
-    QTest::newRow("rlo") << QString(QChar(0x202E)) << Qt::KeyboardModifiers() << true;
-    QTest::newRow("rlo-with-ctrl") << QString(QChar(0x202E)) << Qt::KeyboardModifiers(Qt::ControlModifier) << true;
-    QTest::newRow("rlo-with-ctrl-shift") << QString(QChar(0x202E)) << Qt::KeyboardModifiers(Qt::ControlModifier | Qt::ShiftModifier) << true;
-    QTest::newRow("lro") << QString(QChar(0x202D)) << Qt::KeyboardModifiers() << true;
-    QTest::newRow("lro-with-ctrl") << QString(QChar(0x202D)) << Qt::KeyboardModifiers(Qt::ControlModifier) << true;
-    QTest::newRow("lro-with-ctrl-shift") << QString(QChar(0x202D)) << Qt::KeyboardModifiers(Qt::ControlModifier | Qt::ShiftModifier) << true;
-    QTest::newRow("lre") << QString(QChar(0x202B)) << Qt::KeyboardModifiers() << true;
-    QTest::newRow("lre-with-ctrl") << QString(QChar(0x202B)) << Qt::KeyboardModifiers(Qt::ControlModifier) << true;
-    QTest::newRow("lre-with-ctrl-shift") << QString(QChar(0x202B)) << Qt::KeyboardModifiers(Qt::ControlModifier | Qt::ShiftModifier) << true;
-    QTest::newRow("rle") << QString(QChar(0x202A)) << Qt::KeyboardModifiers() << true;
-    QTest::newRow("rle-with-ctrl") << QString(QChar(0x202A)) << Qt::KeyboardModifiers(Qt::ControlModifier) << true;
-    QTest::newRow("rle-with-ctrl-shift") << QString(QChar(0x202A)) << Qt::KeyboardModifiers(Qt::ControlModifier | Qt::ShiftModifier) << true;
-    QTest::newRow("pdf") << QString(QChar(0x202C)) << Qt::KeyboardModifiers() << true;
-    QTest::newRow("pdf-with-ctrl") << QString(QChar(0x202C)) << Qt::KeyboardModifiers(Qt::ControlModifier) << true;
-    QTest::newRow("pdf-with-ctrl-shift") << QString(QChar(0x202C)) << Qt::KeyboardModifiers(Qt::ControlModifier | Qt::ShiftModifier) << true;
+    BOBUIest::newRow("multiple-printable") << QStringLiteral("foobar") << BobUI::KeyboardModifiers() << true;
+    BOBUIest::newRow("rlm") << QString(QChar(0x200F)) << BobUI::KeyboardModifiers() << true;
+    BOBUIest::newRow("rlm-with-ctrl") << QString(QChar(0x200F)) << BobUI::KeyboardModifiers(BobUI::ControlModifier) << true;
+    BOBUIest::newRow("rlm-with-ctrl-shift") << QString(QChar(0x200F)) << BobUI::KeyboardModifiers(BobUI::ControlModifier | BobUI::ShiftModifier) << true;
+    BOBUIest::newRow("lrm") << QString(QChar(0x200E)) << BobUI::KeyboardModifiers() << true;
+    BOBUIest::newRow("lrm-with-ctrl") << QString(QChar(0x200E)) << BobUI::KeyboardModifiers(BobUI::ControlModifier) << true;
+    BOBUIest::newRow("lrm-with-ctrl-shift") << QString(QChar(0x200E)) << BobUI::KeyboardModifiers(BobUI::ControlModifier | BobUI::ShiftModifier) << true;
+    BOBUIest::newRow("rlo") << QString(QChar(0x202E)) << BobUI::KeyboardModifiers() << true;
+    BOBUIest::newRow("rlo-with-ctrl") << QString(QChar(0x202E)) << BobUI::KeyboardModifiers(BobUI::ControlModifier) << true;
+    BOBUIest::newRow("rlo-with-ctrl-shift") << QString(QChar(0x202E)) << BobUI::KeyboardModifiers(BobUI::ControlModifier | BobUI::ShiftModifier) << true;
+    BOBUIest::newRow("lro") << QString(QChar(0x202D)) << BobUI::KeyboardModifiers() << true;
+    BOBUIest::newRow("lro-with-ctrl") << QString(QChar(0x202D)) << BobUI::KeyboardModifiers(BobUI::ControlModifier) << true;
+    BOBUIest::newRow("lro-with-ctrl-shift") << QString(QChar(0x202D)) << BobUI::KeyboardModifiers(BobUI::ControlModifier | BobUI::ShiftModifier) << true;
+    BOBUIest::newRow("lre") << QString(QChar(0x202B)) << BobUI::KeyboardModifiers() << true;
+    BOBUIest::newRow("lre-with-ctrl") << QString(QChar(0x202B)) << BobUI::KeyboardModifiers(BobUI::ControlModifier) << true;
+    BOBUIest::newRow("lre-with-ctrl-shift") << QString(QChar(0x202B)) << BobUI::KeyboardModifiers(BobUI::ControlModifier | BobUI::ShiftModifier) << true;
+    BOBUIest::newRow("rle") << QString(QChar(0x202A)) << BobUI::KeyboardModifiers() << true;
+    BOBUIest::newRow("rle-with-ctrl") << QString(QChar(0x202A)) << BobUI::KeyboardModifiers(BobUI::ControlModifier) << true;
+    BOBUIest::newRow("rle-with-ctrl-shift") << QString(QChar(0x202A)) << BobUI::KeyboardModifiers(BobUI::ControlModifier | BobUI::ShiftModifier) << true;
+    BOBUIest::newRow("pdf") << QString(QChar(0x202C)) << BobUI::KeyboardModifiers() << true;
+    BOBUIest::newRow("pdf-with-ctrl") << QString(QChar(0x202C)) << BobUI::KeyboardModifiers(BobUI::ControlModifier) << true;
+    BOBUIest::newRow("pdf-with-ctrl-shift") << QString(QChar(0x202C)) << BobUI::KeyboardModifiers(BobUI::ControlModifier | BobUI::ShiftModifier) << true;
 
 }
 
 void tst_QInputControl::isAcceptableInput()
 {
     QFETCH(QString, text);
-    QFETCH(Qt::KeyboardModifiers, modifiers);
+    QFETCH(BobUI::KeyboardModifiers, modifiers);
     QFETCH(bool, acceptable);
 
-    QKeyEvent keyEvent(QKeyEvent::KeyPress, Qt::Key_unknown, modifiers, text);
+    QKeyEvent keyEvent(QKeyEvent::KeyPress, BobUI::Key_unknown, modifiers, text);
 
     {
         QInputControl inputControl(QInputControl::TextEdit);
@@ -125,7 +125,7 @@ void tst_QInputControl::isAcceptableInput()
 
 void tst_QInputControl::tabOnlyAcceptableInputForTextEdit()
 {
-    QKeyEvent keyEvent(QKeyEvent::KeyPress, Qt::Key_unknown, Qt::KeyboardModifiers(), QLatin1String("\t"));
+    QKeyEvent keyEvent(QKeyEvent::KeyPress, BobUI::Key_unknown, BobUI::KeyboardModifiers(), QLatin1String("\t"));
 
     {
         QInputControl inputControl(QInputControl::TextEdit);
@@ -138,6 +138,6 @@ void tst_QInputControl::tabOnlyAcceptableInputForTextEdit()
     }
 }
 
-QTEST_MAIN(tst_QInputControl)
+BOBUIEST_MAIN(tst_QInputControl)
 #include "tst_qinputcontrol.moc"
 

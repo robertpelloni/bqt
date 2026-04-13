@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:trivial-parsing-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:trivial-parsing-only
 
 #include "qlayoutpolicy_p.h"
-#include <QtCore/qdebug.h>
-#include <QtCore/qdatastream.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qdatastream.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QLayoutPolicy
-    \inmodule QtGui
+    \inmodule BobUIGui
     \internal
 */
 void QLayoutPolicy::setControlType(ControlType type)
@@ -36,18 +36,18 @@ QLayoutPolicy::ControlType QLayoutPolicy::controlType() const
     return QLayoutPolicy::ControlType(1 << bits.ctype);
 }
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 
 /*!
     \relates QLayoutPolicy
 
     Writes the size \a policy to the data stream \a stream.
 
-    \sa{Serializing Qt Data Types}{Format of the QDataStream operators}
+    \sa{Serializing BobUI Data Types}{Format of the QDataStream operators}
 */
 QDataStream &operator<<(QDataStream &stream, const QLayoutPolicy &policy)
 {
-    // The order here is for historical reasons. (compatibility with Qt4)
+    // The order here is for historical reasons. (compatibility with BobUI4)
     quint32 data = (policy.bits.horPolicy |         // [0, 3]
                     policy.bits.verPolicy << 4 |    // [4, 7]
                     policy.bits.hfw << 8 |          // [8]
@@ -66,7 +66,7 @@ QDataStream &operator<<(QDataStream &stream, const QLayoutPolicy &policy)
 
     Reads the size \a policy from the data stream \a stream.
 
-    \sa{Serializing Qt Data Types}{Format of the QDataStream operators}
+    \sa{Serializing BobUI Data Types}{Format of the QDataStream operators}
 */
 QDataStream &operator>>(QDataStream &stream, QLayoutPolicy &policy)
 {
@@ -82,9 +82,9 @@ QDataStream &operator>>(QDataStream &stream, QLayoutPolicy &policy)
     policy.bits.horStretch = VALUE_OF_BITS(data, 24, 8);
     return stream;
 }
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QLayoutPolicy &p)
 {
     QDebugStateSaver saver(dbg);
@@ -94,6 +94,6 @@ QDebug operator<<(QDebug dbg, const QLayoutPolicy &p)
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qlayoutpolicy_p.cpp"

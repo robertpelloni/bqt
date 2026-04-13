@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef NO_KEYWORDS_H
 #define NO_KEYWORDS_H
 
-#define QT_NO_KEYWORDS
+#define BOBUI_NO_KEYWORDS
 #undef signals
 #undef slots
 #undef emit
@@ -12,19 +12,19 @@
 #define slots Baz
 #define emit Yoyodyne
 
-#include <QtCore/QtCore>
+#include <BobUICore/BobUICore>
 
-#ifdef QT_CONCURRENT_LIB
-#include <QtConcurrent/QtConcurrent>
+#ifdef BOBUI_CONCURRENT_LIB
+#include <BobUIConcurrent/BobUIConcurrent>
 #endif
-#ifdef QT_NETWORK_LIB
-#include <QtNetwork/QtNetwork>
+#ifdef BOBUI_NETWORK_LIB
+#include <BobUINetwork/BobUINetwork>
 #endif
-#ifdef QT_SQL_LIB
-#include <QtSql/QtSql>
+#ifdef BOBUI_SQL_LIB
+#include <BobUISql/BobUISql>
 #endif
-#ifdef QT_DBUS_LIB
-#include <QtDBus/QtDBus>
+#ifdef BOBUI_DBUS_LIB
+#include <BobUIDBus/BobUIDBus>
 #endif
 
 #undef signals
@@ -51,6 +51,6 @@ private:
 #define signals Q_SIGNALS
 #define slots Q_SLOTS
 #define emit Q_EMIT
-#undef QT_NO_KEYWORDS
+#undef BOBUI_NO_KEYWORDS
 
 #endif // NO_KEYWORDS_H

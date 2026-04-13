@@ -1,52 +1,52 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:execute-external-code
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:execute-external-code
 
 #include "qdesktopunixservices_p.h"
-#include <QtGui/private/qtguiglobal_p.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
 #include "qguiapplication.h"
 #include "qwindow.h"
-#include <QtGui/qpa/qplatformwindow_p.h>
-#include <QtGui/qpa/qplatformwindow.h>
-#include <QtGui/qpa/qplatformnativeinterface.h>
+#include <BobUIGui/qpa/qplatformwindow_p.h>
+#include <BobUIGui/qpa/qplatformwindow.h>
+#include <BobUIGui/qpa/qplatformnativeinterface.h>
 
-#include <QtCore/QDebug>
-#include <QtCore/QFile>
-#if QT_CONFIG(process)
-# include <QtCore/QProcess>
+#include <BobUICore/QDebug>
+#include <BobUICore/QFile>
+#if BOBUI_CONFIG(process)
+# include <BobUICore/QProcess>
 #endif
-#if QT_CONFIG(settings)
-#include <QtCore/QSettings>
+#if BOBUI_CONFIG(settings)
+#include <BobUICore/QSettings>
 #endif
-#include <QtCore/QStandardPaths>
-#include <QtCore/QUrl>
+#include <BobUICore/QStandardPaths>
+#include <BobUICore/QUrl>
 
-#if QT_CONFIG(dbus)
-// These QtCore includes are needed for xdg-desktop-portal support
-#include <QtCore/private/qcore_unix_p.h>
+#if BOBUI_CONFIG(dbus)
+// These BobUICore includes are needed for xdg-desktop-portal support
+#include <BobUICore/private/qcore_unix_p.h>
 
-#include <QtCore/QFileInfo>
-#include <QtCore/QUrlQuery>
+#include <BobUICore/QFileInfo>
+#include <BobUICore/QUrlQuery>
 
-#include <QtDBus/QDBusConnection>
-#include <QtDBus/QDBusServiceWatcher>
-#include <QtDBus/QDBusMessage>
-#include <QtDBus/QDBusPendingCall>
-#include <QtDBus/QDBusPendingCallWatcher>
-#include <QtDBus/QDBusPendingReply>
-#include <QtDBus/QDBusUnixFileDescriptor>
+#include <BobUIDBus/QDBusConnection>
+#include <BobUIDBus/QDBusServiceWatcher>
+#include <BobUIDBus/QDBusMessage>
+#include <BobUIDBus/QDBusPendingCall>
+#include <BobUIDBus/QDBusPendingCallWatcher>
+#include <BobUIDBus/QDBusPendingReply>
+#include <BobUIDBus/QDBusUnixFileDescriptor>
 
 #include <fcntl.h>
 
-#endif // QT_CONFIG(dbus)
+#endif // BOBUI_CONFIG(dbus)
 
 #include <stdlib.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-#if QT_CONFIG(multiprocess)
+#if BOBUI_CONFIG(multiprocess)
 
 static inline QByteArray detectDesktopEnvironment()
 {
@@ -66,7 +66,7 @@ static inline QByteArray detectDesktopEnvironment()
     // This can be a path in /usr/share/xsessions
     int slash = desktopSession.lastIndexOf('/');
     if (slash != -1) {
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
         QSettings desktopFile(QFile::decodeName(desktopSession + ".desktop"), QSettings::IniFormat);
         desktopFile.beginGroup(QStringLiteral("Desktop Entry"));
         QByteArray desktopName = desktopFile.value(QStringLiteral("DesktopNames")).toByteArray();
@@ -137,7 +137,7 @@ static inline bool launch(const QString &launcher, const QUrl &url,
 
     const QString command = launcher + u' ' + QLatin1StringView(url.toEncoded());
     qCDebug(lcQpaServices, "Launching %s", qPrintable(command));
-#if !QT_CONFIG(process)
+#if !BOBUI_CONFIG(process)
     if (!xdgActivationToken.isEmpty())
         qputenv("XDG_ACTIVATION_TOKEN", xdgActivationToken.toUtf8());
     const bool ok = ::system(qPrintable(command + " &"_L1));
@@ -166,7 +166,7 @@ static inline bool launch(const QString &launcher, const QUrl &url,
     return ok;
 }
 
-#if QT_CONFIG(dbus)
+#if BOBUI_CONFIG(dbus)
 static inline bool checkNeedPortalSupport()
 {
     return QFileInfo::exists("/.flatpak-info"_L1) || qEnvironmentVariableIsSet("SNAP");
@@ -184,7 +184,7 @@ static inline QDBusMessage xdgDesktopPortalOpenFile(const QUrl &url, const QStri
     // handle_token (s) -  A string that will be used as the last element of the @handle.
     // writable (b) - Whether to allow the chosen application to write to the file.
 
-    const int fd = qt_safe_open(QFile::encodeName(url.toLocalFile()), O_RDONLY);
+    const int fd = bobui_safe_open(QFile::encodeName(url.toLocalFile()), O_RDONLY);
     if (fd != -1) {
         QDBusMessage message = QDBusMessage::createMethodCall("org.freedesktop.portal.Desktop"_L1,
                                                               "/org/freedesktop/portal/desktop"_L1,
@@ -205,7 +205,7 @@ static inline QDBusMessage xdgDesktopPortalOpenFile(const QUrl &url, const QStri
         return QDBusConnection::sessionBus().call(message);
     }
 
-    return QDBusMessage::createError(QDBusError::InternalError, qt_error_string());
+    return QDBusMessage::createError(QDBusError::InternalError, bobui_error_string());
 }
 
 static inline QDBusMessage xdgDesktopPortalOpenUrl(const QUrl &url, const QString &parentWindow,
@@ -263,11 +263,11 @@ static inline QDBusMessage xdgDesktopPortalSendEmail(const QUrl &url, const QStr
     const QStringList attachmentUris = urlQuery.allQueryItemValues("attachment"_L1);
 
     for (const QString &attachmentUri : attachmentUris) {
-        const int fd = qt_safe_open(QFile::encodeName(attachmentUri), O_PATH);
+        const int fd = bobui_safe_open(QFile::encodeName(attachmentUri), O_PATH);
         if (fd != -1) {
             QDBusUnixFileDescriptor descriptor(fd);
             attachments << descriptor;
-            qt_safe_close(fd);
+            bobui_safe_close(fd);
         }
     }
 
@@ -404,15 +404,15 @@ void registerWithHostPortal()
 }
 } // namespace
 
-#endif // QT_CONFIG(dbus)
+#endif // BOBUI_CONFIG(dbus)
 
 QDesktopUnixServices::QDesktopUnixServices()
 {
     if (detectDesktopEnvironment() == QByteArrayLiteral("UNKNOWN"))
         return;
 
-#if QT_CONFIG(dbus)
-    if (qEnvironmentVariableIntValue("QT_NO_XDG_DESKTOP_PORTAL") > 0) {
+#if BOBUI_CONFIG(dbus)
+    if (qEnvironmentVariableIntValue("BOBUI_NO_XDG_DESKTOP_PORTAL") > 0) {
         return;
     }
     QDBusMessage message = QDBusMessage::createMethodCall(
@@ -450,7 +450,7 @@ QDesktopUnixServices::QDesktopUnixServices()
                     }
                     registerWithHostPortal();
                 },
-                Qt::QueuedConnection);
+                BobUI::QueuedConnection);
     }
     m_portalWatcher = std::make_unique<QDBusServiceWatcher>(
             "org.freedesktop.portal.Desktop"_L1, QDBusConnection::sessionBus(),
@@ -462,14 +462,14 @@ QDesktopUnixServices::QDesktopUnixServices()
 
 QDesktopUnixServices::~QDesktopUnixServices()
 {
-#if QT_CONFIG(dbus)
+#if BOBUI_CONFIG(dbus)
     delete m_watcher;
 #endif
 }
 
 QPlatformServiceColorPicker *QDesktopUnixServices::colorPicker(QWindow *parent)
 {
-#if QT_CONFIG(dbus)
+#if BOBUI_CONFIG(dbus)
     // Make double sure that we are in a wayland environment. In particular check
     // WAYLAND_DISPLAY so also XWayland apps benefit from portal-based color picking.
     // Outside wayland we'll rather rely on other means than the XDG desktop portal.
@@ -493,7 +493,7 @@ QByteArray QDesktopUnixServices::desktopEnvironment() const
 template<typename F>
 void runWithXdgActivationToken(F &&functionToCall)
 {
-#if QT_CONFIG(wayland)
+#if BOBUI_CONFIG(wayland)
     QWindow *window = qGuiApp->focusWindow();
 
     if (!window) {
@@ -513,7 +513,7 @@ void runWithXdgActivationToken(F &&functionToCall)
 
     QObject::connect(waylandWindow,
                      &QNativeInterface::Private::QWaylandWindow::xdgActivationTokenCreated,
-                     waylandWindow, functionToCall, Qt::SingleShotConnection);
+                     waylandWindow, functionToCall, BobUI::SingleShotConnection);
     waylandWindow->requestXdgActivationToken(waylandApp->lastInputSerial());
 #else
     functionToCall({});
@@ -524,7 +524,7 @@ bool QDesktopUnixServices::openUrl(const QUrl &url)
 {
     auto openUrlInternal = [this](const QUrl &url, const QString &xdgActivationToken) {
         if (url.scheme() == "mailto"_L1) {
-#  if QT_CONFIG(dbus)
+#  if BOBUI_CONFIG(dbus)
             if (checkNeedPortalSupport()) {
                 const QString parentWindow = QGuiApplication::focusWindow()
                         ? portalWindowIdentifier(QGuiApplication::focusWindow())
@@ -539,7 +539,7 @@ bool QDesktopUnixServices::openUrl(const QUrl &url)
             return openDocument(url);
         }
 
-#  if QT_CONFIG(dbus)
+#  if BOBUI_CONFIG(dbus)
         if (checkNeedPortalSupport()) {
             const QString parentWindow = QGuiApplication::focusWindow()
                     ? portalWindowIdentifier(QGuiApplication::focusWindow())
@@ -573,7 +573,7 @@ bool QDesktopUnixServices::openDocument(const QUrl &url)
 {
     auto openDocumentInternal = [this](const QUrl &url, const QString &xdgActivationToken) {
 
-#  if QT_CONFIG(dbus)
+#  if BOBUI_CONFIG(dbus)
         if (checkNeedPortalSupport()) {
             const QString parentWindow = QGuiApplication::focusWindow()
                     ? portalWindowIdentifier(QGuiApplication::focusWindow())
@@ -632,7 +632,7 @@ QPlatformServiceColorPicker *QDesktopUnixServices::colorPicker(QWindow *parent)
     return nullptr;
 }
 
-#endif // QT_CONFIG(multiprocess)
+#endif // BOBUI_CONFIG(multiprocess)
 
 QString QDesktopUnixServices::portalWindowIdentifier(QWindow *window)
 {
@@ -665,7 +665,7 @@ bool QDesktopUnixServices::hasCapability(Capability capability) const
 
 void QDesktopUnixServices::setApplicationBadge(qint64 number)
 {
-#if QT_CONFIG(dbus)
+#if BOBUI_CONFIG(dbus)
     if (qGuiApp->desktopFileName().isEmpty()) {
         qCWarning(lcQpaServices, "Cannot set badge number - QGuiApplication::desktopFileName() is empty");
         return;
@@ -694,6 +694,6 @@ void QDesktopUnixServices::setApplicationBadge(qint64 number)
 #endif
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "qdesktopunixservices.moc"

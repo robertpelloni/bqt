@@ -1,33 +1,33 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSPAN_H
 #define QSPAN_H
 
-#include <QtCore/qcompilerdetection.h>
-#include <QtCore/qtypes.h>
-#include <QtCore/qcontainerfwd.h>
+#include <BobUICore/qcompilerdetection.h>
+#include <BobUICore/bobuiypes.h>
+#include <BobUICore/qcontainerfwd.h>
 
 #include <array>
 #include <cstddef>
 #include <cassert>
 #include <initializer_list>
-#include <QtCore/q20iterator.h>
-#include <QtCore/q20memory.h>
+#include <BobUICore/q20iterator.h>
+#include <BobUICore/q20memory.h>
 #ifdef __cpp_lib_span
 #include <span>
 #endif
-#include <QtCore/q20type_traits.h>
+#include <BobUICore/q20type_traits.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // like std::dynamic_extent
 namespace q20 {
     inline constexpr auto dynamic_extent = std::size_t(-1);
 } // namespace q20
 
-QT_BEGIN_INCLUDE_NAMESPACE
+BOBUI_BEGIN_INCLUDE_NAMESPACE
 #ifdef __cpp_lib_span
 #ifdef __cpp_lib_concepts
 namespace std::ranges {
@@ -35,13 +35,13 @@ namespace std::ranges {
 // OTOH, <span> must specialize these variable templates, too, so we assume that
 // <span> includes some meaningful subset of <ranges> and just go ahead and use them:
 template <typename T, std::size_t E>
-constexpr inline bool enable_borrowed_range<QT_PREPEND_NAMESPACE(QSpan)<T, E>> = true;
+constexpr inline bool enable_borrowed_range<BOBUI_PREPEND_NAMESPACE(QSpan)<T, E>> = true;
 template <typename T, std::size_t E>
-constexpr inline bool enable_view<QT_PREPEND_NAMESPACE(QSpan)<T, E>> = true;
+constexpr inline bool enable_view<BOBUI_PREPEND_NAMESPACE(QSpan)<T, E>> = true;
 } // namespace std::ranges
 #endif // __cpp_lib_concepts
 #endif // __cpp_lib_span
-QT_END_INCLUDE_NAMESPACE
+BOBUI_END_INCLUDE_NAMESPACE
 
 namespace QSpanPrivate {
 
@@ -330,7 +330,7 @@ class QSpan
 public:
     // constants and types
     using value_type = std::remove_cv_t<T>;
-#ifdef QT_COMPILER_HAS_LWG3346
+#ifdef BOBUI_COMPILER_HAS_LWG3346
     using iterator_concept = std::contiguous_iterator_tag;
     using element_type = T;
 #endif
@@ -429,7 +429,7 @@ public:
     [[nodiscard]] constexpr QSpan<T> subspan(size_type pos) const { verify(pos, 0); return {data() + pos, size() - pos}; }
     [[nodiscard]] constexpr QSpan<T> subspan(size_type pos, size_type n) const { return subspan(pos).first(n); }
 
-    // Qt-compatibility API:
+    // BobUI-compatibility API:
     [[nodiscard]] constexpr bool isEmpty() const noexcept { return empty(); }
     // nullary first()/last() clash with first<>() and last<>(), so they're not provided for QSpan
     [[nodiscard]] constexpr QSpan<T> sliced(size_type pos) const { return subspan(pos); }
@@ -437,25 +437,25 @@ public:
     [[nodiscard]] constexpr QSpan<T> chopped(size_type n) const { verify(0, n); return first(size() - n); }
 
 #ifdef __cpp_concepts
-#  define QT_ONLY_IF_DYNAMIC_SPAN(DECL) \
+#  define BOBUI_ONLY_IF_DYNAMIC_SPAN(DECL) \
     DECL requires(E == q20::dynamic_extent)
 #else
-#  define QT_ONLY_IF_DYNAMIC_SPAN(DECL) \
+#  define BOBUI_ONLY_IF_DYNAMIC_SPAN(DECL) \
     template <size_t M = E, typename = std::enable_if_t<M == q20::dynamic_extent>> DECL
 #endif
-    QT_ONLY_IF_DYNAMIC_SPAN(
+    BOBUI_ONLY_IF_DYNAMIC_SPAN(
     constexpr void slice(size_type pos)
     )
     { *this = sliced(pos); }
-    QT_ONLY_IF_DYNAMIC_SPAN(
+    BOBUI_ONLY_IF_DYNAMIC_SPAN(
     constexpr void slice(size_type pos, size_type n)
     )
     { *this = sliced(pos, n); }
-    QT_ONLY_IF_DYNAMIC_SPAN(
+    BOBUI_ONLY_IF_DYNAMIC_SPAN(
     constexpr void chop(size_type n)
     )
     { *this = chopped(n); }
-#undef QT_ONLY_IF_DYNAMIC_SPAN
+#undef BOBUI_ONLY_IF_DYNAMIC_SPAN
 
 private:
     // [span.objectrep]
@@ -494,6 +494,6 @@ QSpan(const std::array<T, N> &) -> QSpan<const T, N>;
 template <class R>
 QSpan(R&&) -> QSpan<std::remove_reference_t<QSpanPrivate::range_reference_t<R>>>;
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSPAN_H

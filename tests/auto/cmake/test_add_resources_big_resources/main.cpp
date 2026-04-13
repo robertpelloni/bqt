@@ -1,10 +1,10 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "intermediate_lib.h"
 
-#include <QtCore/qfile.h>
-#include <QtTest/QTest>
+#include <BobUICore/qfile.h>
+#include <BobUITest/BOBUIest>
 
 class TestAddResourcesBigResources : public QObject
 {
@@ -30,6 +30,6 @@ void TestAddResourcesBigResources::resourceInLeafLibExists()
     QVERIFY(intermediate_lib::isLeafLibResourceAvailable());
 }
 
-QTEST_MAIN(TestAddResourcesBigResources)
+BOBUIEST_MAIN(TestAddResourcesBigResources)
 #include "main.moc"
 

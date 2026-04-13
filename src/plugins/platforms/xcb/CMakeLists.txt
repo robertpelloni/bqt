@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
@@ -10,7 +10,7 @@ if(GCC)
     add_compile_options(-Wno-psabi)
 endif()
 
-qt_internal_add_module(XcbQpaPrivate
+bobui_internal_add_module(XcbQpaPrivate
     CONFIG_MODULE_NAME xcb_qpa_lib
     INTERNAL_MODULE
     NO_MODULE_HEADERS
@@ -42,14 +42,14 @@ qt_internal_add_module(XcbQpaPrivate
         qxcbwmsupport.cpp qxcbwmsupport.h
         qxcbxsettings.cpp qxcbxsettings.h
     DEFINES
-        QT_BUILD_XCB_PLUGIN
-        QT_NO_FOREACH
+        BOBUI_BUILD_XCB_PLUGIN
+        BOBUI_NO_FOREACH
     INCLUDE_DIRECTORIES
         gl_integrations
     PUBLIC_LIBRARIES
         PkgConfig::XKB_COMMON_X11
-        Qt::CorePrivate
-        Qt::GuiPrivate
+        BobUI::CorePrivate
+        BobUI::GuiPrivate
         XCB::CURSOR
         XCB::ICCCM
         XCB::UTIL
@@ -68,35 +68,35 @@ qt_internal_add_module(XcbQpaPrivate
     NO_UNITY_BUILD # X11 define clashes
 )
 
-qt_disable_apple_app_extension_api_only(XcbQpaPrivate)
+bobui_disable_apple_app_extension_api_only(XcbQpaPrivate)
 
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(XcbQpaPrivate CONDITION QT_FEATURE_glib
+bobui_internal_extend_target(XcbQpaPrivate CONDITION BOBUI_FEATURE_glib
     LIBRARIES
         GLIB2::GLIB2
 )
 
-qt_internal_extend_target(XcbQpaPrivate CONDITION QT_FEATURE_draganddrop
+bobui_internal_extend_target(XcbQpaPrivate CONDITION BOBUI_FEATURE_draganddrop
     SOURCES
         qxcbdrag.cpp qxcbdrag.h
 )
 
-qt_internal_extend_target(XcbQpaPrivate CONDITION QT_FEATURE_xcb_xlib
+bobui_internal_extend_target(XcbQpaPrivate CONDITION BOBUI_FEATURE_xcb_xlib
     SOURCES
-        qt_xlib_wrapper.c qt_xlib_wrapper.h
+        bobui_xlib_wrapper.c bobui_xlib_wrapper.h
     PUBLIC_LIBRARIES
         X11::XCB
         X11::X11
 )
 
-qt_internal_extend_target(XcbQpaPrivate CONDITION NOT QT_FEATURE_xcb_xlib
+bobui_internal_extend_target(XcbQpaPrivate CONDITION NOT BOBUI_FEATURE_xcb_xlib
     SOURCES
         qxcbcursorfont.h
 )
 
-qt_internal_extend_target(XcbQpaPrivate CONDITION QT_FEATURE_xcb_sm
+bobui_internal_extend_target(XcbQpaPrivate CONDITION BOBUI_FEATURE_xcb_sm
     SOURCES
         qxcbsessionmanager.cpp qxcbsessionmanager.h
     PUBLIC_LIBRARIES
@@ -104,26 +104,26 @@ qt_internal_extend_target(XcbQpaPrivate CONDITION QT_FEATURE_xcb_sm
         X11::ICE
 )
 
-qt_internal_extend_target(XcbQpaPrivate CONDITION QT_FEATURE_vulkan
+bobui_internal_extend_target(XcbQpaPrivate CONDITION BOBUI_FEATURE_vulkan
     SOURCES
         qxcbvulkaninstance.cpp qxcbvulkaninstance.h
         qxcbvulkanwindow.cpp qxcbvulkanwindow.h
 )
 
-qt_internal_extend_target(XcbQpaPrivate CONDITION QT_FEATURE_dlopen
+bobui_internal_extend_target(XcbQpaPrivate CONDITION BOBUI_FEATURE_dlopen
     PUBLIC_LIBRARIES
         ${CMAKE_DL_LIBS}
 )
 
-qt_internal_extend_target(XcbQpaPrivate CONDITION CLANG
+bobui_internal_extend_target(XcbQpaPrivate CONDITION CLANG
     COMPILE_OPTIONS
         -ftemplate-depth=1024
 )
 
-if(QT_FEATURE_system_xcb_xinput)
-    qt_internal_extend_target(XcbQpaPrivate LIBRARIES XCB::XINPUT)
+if(BOBUI_FEATURE_system_xcb_xinput)
+    bobui_internal_extend_target(XcbQpaPrivate LIBRARIES XCB::XINPUT)
 else()
-    qt_internal_extend_target(XcbQpaPrivate
+    bobui_internal_extend_target(XcbQpaPrivate
         ATTRIBUTION_FILE_DIR_PATHS
             ../../../3rdparty/xcb
     )
@@ -142,18 +142,18 @@ endif()
 ## QXcbIntegrationPlugin Plugin:
 #####################################################################
 
-qt_internal_add_plugin(QXcbIntegrationPlugin
+bobui_internal_add_plugin(QXcbIntegrationPlugin
     OUTPUT_NAME qxcb
     PLUGIN_TYPE platforms
-    DEFAULT_IF "xcb" IN_LIST QT_QPA_PLATFORMS
+    DEFAULT_IF "xcb" IN_LIST BOBUI_QPA_PLATFORMS
     SOURCES
         qxcbmain.cpp
     DEFINES
-        QT_NO_FOREACH
+        BOBUI_NO_FOREACH
     LIBRARIES
-        Qt::CorePrivate
-        Qt::GuiPrivate
-        Qt::XcbQpaPrivate
+        BobUI::CorePrivate
+        BobUI::GuiPrivate
+        BobUI::XcbQpaPrivate
 )
 
 add_subdirectory(gl_integrations)

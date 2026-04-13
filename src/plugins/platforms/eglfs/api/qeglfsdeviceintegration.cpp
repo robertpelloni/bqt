@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qeglfsdeviceintegration_p.h"
 #include "qeglfsintegration_p.h"
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 # include "qeglfscursor_p.h"
 #endif
 #include "qeglfswindow_p.h"
 #include "qeglfsscreen_p.h"
 #include "qeglfshooks_p.h"
 
-#include <QtGui/private/qeglconvenience_p.h>
+#include <BobUIGui/private/qeglconvenience_p.h>
 #include <QGuiApplication>
 #include <private/qguiapplication_p.h>
 #include <QScreen>
 #include <QDir>
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 #  include <QFileInfo>
 #  include <QRegularExpression>
 #endif
@@ -35,14 +35,14 @@
 #include <private/qfactoryloader_p.h>
 #include <private/qcore_unix_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_LOGGING_CATEGORY(qLcEglDevDebug, "qt.qpa.egldeviceintegration")
+Q_LOGGING_CATEGORY(qLcEglDevDebug, "bobui.qpa.egldeviceintegration")
 
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader,
-                          (QEglFSDeviceIntegrationFactoryInterface_iid, "/egldeviceintegrations"_L1, Qt::CaseInsensitive))
+                          (QEglFSDeviceIntegrationFactoryInterface_iid, "/egldeviceintegrations"_L1, BobUI::CaseInsensitive))
 
 QStringList QEglFSDeviceIntegrationFactory::keys()
 {
@@ -70,7 +70,7 @@ static int framebuffer = -1;
 QByteArray QEglFSDeviceIntegration::fbDeviceName() const
 {
 #if defined(Q_OS_LINUX) || defined(Q_OS_VXWORKS)
-    QByteArray fbDev = qgetenv("QT_QPA_EGLFS_FB");
+    QByteArray fbDev = qgetenv("BOBUI_QPA_EGLFS_FB");
     if (fbDev.isEmpty())
         fbDev = QByteArrayLiteral("/dev/fb0");
 
@@ -83,7 +83,7 @@ QByteArray QEglFSDeviceIntegration::fbDeviceName() const
 int QEglFSDeviceIntegration::framebufferIndex() const
 {
     int fbIndex = 0;
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     QRegularExpression fbIndexRx("fb(\\d+)"_L1);
     QFileInfo fbinfo(QString::fromLocal8Bit(fbDeviceName()));
     QRegularExpressionMatch match;
@@ -102,7 +102,7 @@ void QEglFSDeviceIntegration::platformInit()
 #if defined(Q_OS_LINUX) || defined(Q_OS_VXWORKS)
     QByteArray fbDev = fbDeviceName();
 
-    framebuffer = qt_safe_open(fbDev, O_RDONLY);
+    framebuffer = bobui_safe_open(fbDev, O_RDONLY);
 
     if (Q_UNLIKELY(framebuffer == -1)) {
         qWarning("EGLFS: Failed to open %s", fbDev.constData());
@@ -126,7 +126,7 @@ void QEglFSDeviceIntegration::platformDestroy()
 EGLNativeDisplayType QEglFSDeviceIntegration::platformDisplay() const
 {
     bool displayOk;
-    const int defaultDisplay = qEnvironmentVariableIntValue("QT_QPA_EGLFS_DEFAULT_DISPLAY", &displayOk);
+    const int defaultDisplay = qEnvironmentVariableIntValue("BOBUI_QPA_EGLFS_DEFAULT_DISPLAY", &displayOk);
     return displayOk ? EGLNativeDisplayType(quintptr(defaultDisplay)) : EGL_DEFAULT_DISPLAY;
 }
 
@@ -172,14 +172,14 @@ QDpi QEglFSDeviceIntegration::logicalBaseDpi() const
     return QDpi(100, 100);
 }
 
-Qt::ScreenOrientation QEglFSDeviceIntegration::nativeOrientation() const
+BobUI::ScreenOrientation QEglFSDeviceIntegration::nativeOrientation() const
 {
-    return Qt::PrimaryOrientation;
+    return BobUI::PrimaryOrientation;
 }
 
-Qt::ScreenOrientation QEglFSDeviceIntegration::orientation() const
+BobUI::ScreenOrientation QEglFSDeviceIntegration::orientation() const
 {
-    return Qt::PrimaryOrientation;
+    return BobUI::PrimaryOrientation;
 }
 
 int QEglFSDeviceIntegration::screenDepth() const
@@ -206,7 +206,7 @@ QSurfaceFormat QEglFSDeviceIntegration::surfaceFormatFor(const QSurfaceFormat &i
 {
     QSurfaceFormat format = inputFormat;
 
-    static const bool force888 = qEnvironmentVariableIntValue("QT_QPA_EGLFS_FORCE888");
+    static const bool force888 = qEnvironmentVariableIntValue("BOBUI_QPA_EGLFS_FORCE888");
     if (force888) {
         format.setRedBufferSize(8);
         format.setGreenBufferSize(8);
@@ -255,7 +255,7 @@ bool QEglFSDeviceIntegration::hasCapability(QPlatformIntegration::Capability cap
 
 QPlatformCursor *QEglFSDeviceIntegration::createCursor(QPlatformScreen *screen) const
 {
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     return new QEglFSCursor(static_cast<QEglFSScreen *>(screen));
 #else
     Q_UNUSED(screen);
@@ -268,14 +268,14 @@ void QEglFSDeviceIntegration::waitForVSync(QPlatformSurface *surface) const
     Q_UNUSED(surface);
 
 #if defined(Q_OS_LINUX) && defined(FBIO_WAITFORVSYNC)
-    static const bool forceSync = qEnvironmentVariableIntValue("QT_QPA_EGLFS_FORCEVSYNC");
+    static const bool forceSync = qEnvironmentVariableIntValue("BOBUI_QPA_EGLFS_FORCEVSYNC");
     if (forceSync && framebuffer != -1) {
         int arg = 0;
         if (ioctl(framebuffer, FBIO_WAITFORVSYNC, &arg) == -1)
             qWarning("Could not wait for vsync.");
     }
 #elif defined(Q_OS_VXWORKS) && defined(FB_IOCTL_VSYNC)
-    static const bool forceSync = qEnvironmentVariableIntValue("QT_QPA_EGLFS_FORCEVSYNC");
+    static const bool forceSync = qEnvironmentVariableIntValue("BOBUI_QPA_EGLFS_FORCEVSYNC");
     if (forceSync && framebuffer != -1) {
         int arg = 0;
         if (ioctl(framebuffer, FB_IOCTL_VSYNC, &arg) == -1)
@@ -330,17 +330,17 @@ EGLConfig QEglFSDeviceIntegration::chooseConfig(EGLDisplay display, const QSurfa
         Chooser(EGLDisplay display)
             : QEglConfigChooser(display) { }
         bool filterConfig(EGLConfig config) const override {
-            return qt_egl_device_integration()->filterConfig(display(), config)
+            return bobui_egl_device_integration()->filterConfig(display(), config)
                     && QEglConfigChooser::filterConfig(config);
         }
     };
 
     Chooser chooser(display);
-    chooser.setSurfaceType(qt_egl_device_integration()->surfaceType());
+    chooser.setSurfaceType(bobui_egl_device_integration()->surfaceType());
     chooser.setSurfaceFormat(format);
     return chooser.chooseConfig();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qeglfsdeviceintegration_p.cpp"

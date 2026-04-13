@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QtTest/qtest.h>
+#include <BobUITest/bobuiest.h>
 
-#include <QtWidgets/qgraphicslinearlayout.h>
-#include <QtWidgets/qgraphicsview.h>
-#include <QtWidgets/qgraphicswidget.h>
-#include <QtWidgets/qstyleoption.h>
+#include <BobUIWidgets/qgraphicslinearlayout.h>
+#include <BobUIWidgets/qgraphicsview.h>
+#include <BobUIWidgets/qgraphicswidget.h>
+#include <BobUIWidgets/qstyleoption.h>
 
-#include <QtCore/qmap.h>
-#include <QtCore/qrect.h>
-#include <QtCore/qset.h>
-#include <QtCore/qtimeline.h>
+#include <BobUICore/qmap.h>
+#include <BobUICore/qrect.h>
+#include <BobUICore/qset.h>
+#include <BobUICore/bobuiimeline.h>
 
 #include <math.h>
 
@@ -58,9 +58,9 @@ void tst_QGraphicsLayout::sizeHints()
     gw->setPreferredSize(QSizeF(100,100));
     gw->setMaximumSize(QSizeF(500,500));
     lout->addItem(gw);
-    QCOMPARE(lout->effectiveSizeHint(Qt::MinimumSize), gw->effectiveSizeHint(Qt::MinimumSize));
-    QCOMPARE(lout->effectiveSizeHint(Qt::PreferredSize), gw->effectiveSizeHint(Qt::PreferredSize));
-    QCOMPARE(lout->effectiveSizeHint(Qt::MaximumSize), gw->effectiveSizeHint(Qt::MaximumSize));
+    QCOMPARE(lout->effectiveSizeHint(BobUI::MinimumSize), gw->effectiveSizeHint(BobUI::MinimumSize));
+    QCOMPARE(lout->effectiveSizeHint(BobUI::PreferredSize), gw->effectiveSizeHint(BobUI::PreferredSize));
+    QCOMPARE(lout->effectiveSizeHint(BobUI::MaximumSize), gw->effectiveSizeHint(BobUI::MaximumSize));
 
 }
 
@@ -120,7 +120,7 @@ void tst_QGraphicsLayout::compressLayoutRequest()
     scene.addItem(tw);
     view.show();
 
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     QGraphicsLinearLayout *lout = new QGraphicsLinearLayout(tw);
     for (int i = 0; i < 4; ++i) {
         QGraphicsWidget *gw = new QGraphicsWidget(tw);
@@ -154,8 +154,8 @@ void tst_QGraphicsLayout::automaticReparenting()
 
         QGraphicsWidget *ww = new QGraphicsWidget();
         QGraphicsLinearLayout *l1 = new QGraphicsLinearLayout(ww);
-#if !defined(Q_OS_MAC) && defined(QT_DEBUG)
-        QTest::ignoreMessage(QtWarningMsg, "QGraphicsLayout::addChildLayoutItem: QGraphicsWidget \"\""
+#if !defined(Q_OS_MAC) && defined(BOBUI_DEBUG)
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QGraphicsLayout::addChildLayoutItem: QGraphicsWidget \"\""
                              " in wrong parent; moved to correct parent");
 #endif
         l1->addItem(w1);
@@ -266,7 +266,7 @@ void tst_QGraphicsLayout::sizeHintOfHiddenLayout()
     QGraphicsScene scene;
     QGraphicsView view(&scene);
 
-    QGraphicsWidget *window = new QGraphicsWidget(0, Qt::Window);
+    QGraphicsWidget *window = new QGraphicsWidget(0, BobUI::Window);
     scene.addItem(window);
     TestLayout *lout = new TestLayout(window);
     lout->setContentsMargins(1,2,2,1);
@@ -277,9 +277,9 @@ void tst_QGraphicsLayout::sizeHintOfHiddenLayout()
     window->setLayout(lout);
 
     for (int pass = 0; pass < 3; ++pass) {
-        QCOMPARE(lout->sizeHint(Qt::MinimumSize), QSizeF(3,3));
-        QCOMPARE(lout->sizeHint(Qt::PreferredSize), QSizeF(23,23));
-        QCOMPARE(lout->sizeHint(Qt::MaximumSize), QSizeF(53,53));
+        QCOMPARE(lout->sizeHint(BobUI::MinimumSize), QSizeF(3,3));
+        QCOMPARE(lout->sizeHint(BobUI::PreferredSize), QSizeF(23,23));
+        QCOMPARE(lout->sizeHint(BobUI::MaximumSize), QSizeF(53,53));
         window->setVisible(pass % 2);
     }
 }
@@ -576,7 +576,7 @@ public:
     }
 
 protected:
-    QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const override
+    QSizeF sizeHint(BobUI::SizeHint which, const QSizeF &constraint = QSizeF()) const override
     {
         Q_UNUSED(constraint);
         Q_UNUSED(which);
@@ -623,7 +623,7 @@ public:
 
     void setGeometry(const QRectF &geom) override;
 
-    QSizeF sizeHint(Qt::SizeHint which, const QSizeF & constraint = QSizeF() ) const override;
+    QSizeF sizeHint(BobUI::SizeHint which, const QSizeF & constraint = QSizeF() ) const override;
 
     inline QGraphicsRectItem *rectItem() {
         return static_cast<QGraphicsRectItem *>(graphicsItem());
@@ -639,14 +639,14 @@ void AnimatedLayoutItem::setGeometry(const QRectF &geom)
     QGraphicsLayoutItem::setGeometry(geom);
 }
 
-QSizeF AnimatedLayoutItem::sizeHint(Qt::SizeHint which, const QSizeF & /* constraint */) const
+QSizeF AnimatedLayoutItem::sizeHint(BobUI::SizeHint which, const QSizeF & /* constraint */) const
 {
     switch (which) {
-    case Qt::MinimumSize:
+    case BobUI::MinimumSize:
         return QSizeF(32,32);
-    case Qt::PreferredSize:
+    case BobUI::PreferredSize:
         return QSizeF(160,90);
-    case Qt::MaximumSize:
+    case BobUI::MaximumSize:
         return QSizeF(1000,1000);
     default:
         return QSizeF(300, 300);
@@ -690,7 +690,7 @@ private slots:
         }
     }
 private:
-    QTimeLine m_timeline;
+    BOBUIimeLine m_timeline;
     QList<QRectF> fromGeoms;
     QList<QRectF> toGeoms;
 };
@@ -726,15 +726,15 @@ void tst_QGraphicsLayout::alternativeLayoutItems()
     view.resize(150, 150);
     view.show();
 
-    QTRY_COMPARE(static_cast<QGraphicsRectItem*>(li1->graphicsItem())->rect(), QRectF( 0, 0, 33, 99));
-    QTRY_COMPARE(static_cast<QGraphicsRectItem*>(li2->graphicsItem())->rect(), QRectF(33, 0, 33, 99));
-    QTRY_COMPARE(static_cast<QGraphicsRectItem*>(li3->graphicsItem())->rect(), QRectF(66, 0, 33, 99));
+    BOBUIRY_COMPARE(static_cast<QGraphicsRectItem*>(li1->graphicsItem())->rect(), QRectF( 0, 0, 33, 99));
+    BOBUIRY_COMPARE(static_cast<QGraphicsRectItem*>(li2->graphicsItem())->rect(), QRectF(33, 0, 33, 99));
+    BOBUIRY_COMPARE(static_cast<QGraphicsRectItem*>(li3->graphicsItem())->rect(), QRectF(66, 0, 33, 99));
 
-    lout->setOrientation(Qt::Vertical);
+    lout->setOrientation(BobUI::Vertical);
 
-    QTRY_COMPARE(static_cast<QGraphicsRectItem*>(li1->graphicsItem())->rect(), QRectF(0, 0,  99, 33));
-    QTRY_COMPARE(static_cast<QGraphicsRectItem*>(li2->graphicsItem())->rect(), QRectF(0, 33, 99, 33));
-    QTRY_COMPARE(static_cast<QGraphicsRectItem*>(li3->graphicsItem())->rect(), QRectF(0, 66, 99, 33));
+    BOBUIRY_COMPARE(static_cast<QGraphicsRectItem*>(li1->graphicsItem())->rect(), QRectF(0, 0,  99, 33));
+    BOBUIRY_COMPARE(static_cast<QGraphicsRectItem*>(li2->graphicsItem())->rect(), QRectF(0, 33, 99, 33));
+    BOBUIRY_COMPARE(static_cast<QGraphicsRectItem*>(li3->graphicsItem())->rect(), QRectF(0, 66, 99, 33));
 
 }
 
@@ -747,7 +747,7 @@ public:
         setOwnedByLayout(true);
     }
 
-    QSizeF sizeHint(Qt::SizeHint which, const QSizeF & constraint = QSizeF() ) const override;
+    QSizeF sizeHint(BobUI::SizeHint which, const QSizeF & constraint = QSizeF() ) const override;
 
     ~CustomLayoutItem() {
         m_destructedSet->insert(this);
@@ -756,14 +756,14 @@ private:
     QSet<QGraphicsLayoutItem*> *m_destructedSet;
 };
 
-QSizeF CustomLayoutItem::sizeHint(Qt::SizeHint which, const QSizeF & /* constraint */) const
+QSizeF CustomLayoutItem::sizeHint(BobUI::SizeHint which, const QSizeF & /* constraint */) const
 {
     switch (which) {
-    case Qt::MinimumSize:
+    case BobUI::MinimumSize:
         return QSizeF(32,32);
-    case Qt::PreferredSize:
+    case BobUI::PreferredSize:
         return QSizeF(160,90);
-    case Qt::MaximumSize:
+    case BobUI::MaximumSize:
         return QSizeF(1000,1000);
     default:
         return QSizeF(300, 300);
@@ -778,7 +778,7 @@ public:
         m_destructedSet = destructedSet;
     }
 
-    QSizeF sizeHint(Qt::SizeHint which, const QSizeF & constraint = QSizeF() ) const override;
+    QSizeF sizeHint(BobUI::SizeHint which, const QSizeF & constraint = QSizeF() ) const override;
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget * = 0) override
     {
@@ -796,14 +796,14 @@ private:
     QSet<QGraphicsLayoutItem*> *m_destructedSet;
 };
 
-QSizeF CustomGraphicsWidget::sizeHint(Qt::SizeHint which, const QSizeF & /* constraint */) const
+QSizeF CustomGraphicsWidget::sizeHint(BobUI::SizeHint which, const QSizeF & /* constraint */) const
 {
     switch (which) {
-    case Qt::MinimumSize:
+    case BobUI::MinimumSize:
         return QSizeF(32,32);
-    case Qt::PreferredSize:
+    case BobUI::PreferredSize:
         return QSizeF(160,90);
-    case Qt::MaximumSize:
+    case BobUI::MaximumSize:
         return QSizeF(1000,1000);
     default:
         return QSizeF(300, 300);
@@ -885,7 +885,7 @@ void updateParentWidget(QGraphicsWidget *item)
     }
 }
 
-QSizeF sizeHint(Qt::SizeHint /* which */, const QSizeF & /* constraint */) const override
+QSizeF sizeHint(BobUI::SizeHint /* which */, const QSizeF & /* constraint */) const override
 {
     return QSizeF(50,50);
 }
@@ -936,7 +936,7 @@ void tst_QGraphicsLayout::ownership()
     }
 
     {
-        QGraphicsWidget *window = new QGraphicsWidget(0, Qt::Window);
+        QGraphicsWidget *window = new QGraphicsWidget(0, BobUI::Window);
         QGraphicsLinearLayout *lay = new QGraphicsLinearLayout;
 
         CustomGraphicsWidget *li1 = new CustomGraphicsWidget;
@@ -985,5 +985,5 @@ void tst_QGraphicsLayout::ownership()
     }
 }
 
-QTEST_MAIN(tst_QGraphicsLayout)
+BOBUIEST_MAIN(tst_QGraphicsLayout)
 #include "tst_qgraphicslayout.moc"

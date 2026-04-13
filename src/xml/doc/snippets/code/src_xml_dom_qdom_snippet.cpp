@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 //! [4]
 <body>
 <h1>Heading</h1>
@@ -20,7 +20,7 @@
 //! [6]
 
 //! [7]
-<link href="http://qt-project.org" color="red" />
+<link href="http://bobui-project.org" color="red" />
 //! [7]
 
 //! [9]
@@ -43,11 +43,11 @@ for (; !elt.isNull(); elt = elt.nextSiblingElement("entry")) {
 //! [12]
 
 //! [13]
-<h1>Hello <b>Qt</b> <![CDATA[<xml is cool>]]></h1>
+<h1>Hello <b>BobUI</b> <![CDATA[<xml is cool>]]></h1>
 //! [13]
 
 //! [14]
-Hello Qt <xml is cool>
+Hello BobUI <xml is cool>
 //! [14]
 
 //! [15]

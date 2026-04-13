@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #ifndef PBUILDER_PBX_H
 #define PBUILDER_PBX_H
 
 #include "unixmake.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class ProjectBuilderMakefileGenerator : public UnixMakefileGenerator
 {
     bool writingUnixMakefileGenerator;
     mutable QString pbx_dir;
     int pbuilderVersion() const;
-    bool writeSubDirs(QTextStream &);
-    bool writeMakeParts(QTextStream &);
-    bool writeMakefile(QTextStream &) override;
+    bool writeSubDirs(BOBUIextStream &);
+    bool writeMakeParts(BOBUIextStream &);
+    bool writeMakefile(BOBUIextStream &) override;
     bool replaceLibrarySuffix(const QString &lib_file, const ProString &opt, QString &name,
                               QString &library);
 
@@ -43,6 +43,6 @@ protected:
     bool doDepends() const override { return writingUnixMakefileGenerator && UnixMakefileGenerator::doDepends(); }
     bool inhibitMakeDirOutPath(const ProKey &path) const override;
 };
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // PBUILDER_PBX_H

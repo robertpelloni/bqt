@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qplatformpixmap.h"
 #include <qpa/qplatformintegration.h>
-#include <QtCore/qbuffer.h>
-#include <QtGui/qbitmap.h>
-#include <QtGui/qimagereader.h>
+#include <BobUICore/qbuffer.h>
+#include <BobUIGui/qbitmap.h>
+#include <BobUIGui/qimagereader.h>
 #include <private/qguiapplication_p.h>
 #include <private/qimagepixmapcleanuphooks_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QPlatformPixmap
@@ -47,7 +47,7 @@ QPlatformPixmap::QPlatformPixmap(PixelType pixelType, int objectId)
 QPlatformPixmap::~QPlatformPixmap()
 {
     // Sometimes the pixmap cleanup hooks will be called from derived classes, which will
-    // then set is_cached to false. For example, on X11 Qt GUI needs to delete the GLXPixmap
+    // then set is_cached to false. For example, on X11 BobUI GUI needs to delete the GLXPixmap
     // or EGL Pixmap Surface for a given pixmap _before_ the native X11 pixmap is deleted,
     // otherwise some drivers will leak the GL surface. In this case, QX11PlatformPixmap will
     // call the cleanup hooks itself before deleting the native pixmap and set is_cached to
@@ -64,15 +64,15 @@ QPlatformPixmap *QPlatformPixmap::createCompatiblePlatformPixmap() const
     return d;
 }
 
-static QImage makeBitmapCompliantIfNeeded(QPlatformPixmap *d, QImage image, Qt::ImageConversionFlags flags)
+static QImage makeBitmapCompliantIfNeeded(QPlatformPixmap *d, QImage image, BobUI::ImageConversionFlags flags)
 {
     if (d->pixelType() == QPlatformPixmap::BitmapType) {
         QImage img = std::move(image).convertToFormat(QImage::Format_MonoLSB, flags);
 
-        // make sure image.color(0) == Qt::color0 (white)
-        // and image.color(1) == Qt::color1 (black)
-        const QRgb c0 = QColor(Qt::black).rgb();
-        const QRgb c1 = QColor(Qt::white).rgb();
+        // make sure image.color(0) == BobUI::color0 (white)
+        // and image.color(1) == BobUI::color1 (black)
+        const QRgb c0 = QColor(BobUI::black).rgb();
+        const QRgb c1 = QColor(BobUI::white).rgb();
         if (img.color(0) == c0 && img.color(1) == c1) {
             img.invertPixels();
             img.setColor(0, c1);
@@ -85,14 +85,14 @@ static QImage makeBitmapCompliantIfNeeded(QPlatformPixmap *d, QImage image, Qt::
 }
 
 void QPlatformPixmap::fromImageReader(QImageReader *imageReader,
-                                  Qt::ImageConversionFlags flags)
+                                  BobUI::ImageConversionFlags flags)
 {
     const QImage image = imageReader->read();
     fromImage(image, flags);
 }
 
 bool QPlatformPixmap::fromFile(const QString &fileName, const char *format,
-                           Qt::ImageConversionFlags flags)
+                           BobUI::ImageConversionFlags flags)
 {
     QImage image = QImageReader(fileName, format).read();
     if (image.isNull())
@@ -101,7 +101,7 @@ bool QPlatformPixmap::fromFile(const QString &fileName, const char *format,
     return !isNull();
 }
 
-bool QPlatformPixmap::fromData(const uchar *buf, uint len, const char *format, Qt::ImageConversionFlags flags)
+bool QPlatformPixmap::fromData(const uchar *buf, uint len, const char *format, BobUI::ImageConversionFlags flags)
 {
     QByteArray a = QByteArray::fromRawData(reinterpret_cast<const char *>(buf), len);
     QBuffer b(&a);
@@ -115,7 +115,7 @@ bool QPlatformPixmap::fromData(const uchar *buf, uint len, const char *format, Q
 
 void QPlatformPixmap::copy(const QPlatformPixmap *data, const QRect &rect)
 {
-    fromImage(data->toImage(rect), Qt::NoOpaqueDetection);
+    fromImage(data->toImage(rect), BobUI::NoOpaqueDetection);
 }
 
 bool QPlatformPixmap::scroll(int dx, int dy, const QRect &rect)
@@ -143,8 +143,8 @@ QBitmap QPlatformPixmap::mask() const
 
     mask.setDevicePixelRatio(devicePixelRatio());
     mask.setColorCount(2);
-    mask.setColor(0, QColor(Qt::color0).rgba());
-    mask.setColor(1, QColor(Qt::color1).rgba());
+    mask.setColor(0, QColor(BobUI::color0).rgba());
+    mask.setColor(1, QColor(BobUI::color1).rgba());
 
     const qsizetype bpl = mask.bytesPerLine();
 
@@ -200,11 +200,11 @@ void QPlatformPixmap::setMask(const QBitmap &mask)
         }
         }
     }
-    fromImage(image, Qt::AutoColor);
+    fromImage(image, BobUI::AutoColor);
 }
 
-QPixmap QPlatformPixmap::transformed(const QTransform &matrix,
-                                     Qt::TransformationMode mode) const
+QPixmap QPlatformPixmap::transformed(const BOBUIransform &matrix,
+                                     BobUI::TransformationMode mode) const
 {
     return QPixmap::fromImage(toImage().transformed(matrix, mode));
 }
@@ -233,4 +233,4 @@ QImage* QPlatformPixmap::buffer()
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

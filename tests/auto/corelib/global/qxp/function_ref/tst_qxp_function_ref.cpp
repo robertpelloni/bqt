@@ -1,9 +1,9 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/qxpfunctional.h>
+#include <BobUICore/qxpfunctional.h>
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <type_traits>
 
@@ -280,6 +280,6 @@ void tst_qxp_function_ref::ctad()
 }
 
 
-QTEST_APPLESS_MAIN(tst_qxp_function_ref);
+BOBUIEST_APPLESS_MAIN(tst_qxp_function_ref);
 
 #include "tst_qxp_function_ref.moc"

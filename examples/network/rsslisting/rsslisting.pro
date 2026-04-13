@@ -1,8 +1,8 @@
 HEADERS += rsslisting.h
 SOURCES += main.cpp rsslisting.cpp
-QT += network widgets
-requires(qtConfig(treewidget))
+BOBUI += network widgets
+requires(bobuiConfig(treewidget))
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/network/rsslisting
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/network/rsslisting
 INSTALLS += target

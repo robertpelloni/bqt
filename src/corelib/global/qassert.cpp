@@ -1,14 +1,14 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qassert.h"
 
-#include <QtCore/qlogging.h>
+#include <BobUICore/qlogging.h>
 
 #include <cstdlib>
 #include <cstdio>
 #include <exception>
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
 #include <new>
 #endif
 
@@ -16,10 +16,10 @@
 #  include <crtdbg.h>
 #endif
 #ifdef Q_OS_WIN
-#  include <qt_windows.h>
+#  include <bobui_windows.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_NORETURN void qAbort()
 {
@@ -51,21 +51,21 @@ Q_NORETURN void qAbort()
 }
 
 /*!
-    \headerfile <QtAssert>
-    \inmodule QtCore
+    \headerfile <BobUIAssert>
+    \inmodule BobUICore
     \ingroup funclists
     \brief Macros for condition checks during development and debugging.
 */
 
 /*!
     \macro void Q_ASSERT(bool test)
-    \relates <QtAssert>
+    \relates <BobUIAssert>
 
     Prints a warning message containing the source code file name and
     line number if \a test is \c false.
 
     Q_ASSERT() is useful for testing pre- and post-conditions
-    during development. It does nothing if \c QT_NO_DEBUG was defined
+    during development. It does nothing if \c BOBUI_NO_DEBUG was defined
     during compilation.
 
     Example:
@@ -84,13 +84,13 @@ Q_NORETURN void qAbort()
 
 /*!
     \macro void Q_ASSERT_X(bool test, const char *where, const char *what)
-    \relates <QtAssert>
+    \relates <BobUIAssert>
 
     Prints the message \a what together with the location \a where,
     the source file name and line number if \a test is \c false.
 
     Q_ASSERT_X is useful for testing pre- and post-conditions during
-    development. It does nothing if \c QT_NO_DEBUG was defined during
+    development. It does nothing if \c BOBUI_NO_DEBUG was defined during
     compilation.
 
     Example:
@@ -107,11 +107,11 @@ Q_NORETURN void qAbort()
     \sa Q_ASSERT(), qFatal(), {Debugging Techniques}
 */
 
-#if !defined(QT_BOOTSTRAPPED) || defined(QT_FORCE_ASSERTS) || !defined(QT_NO_DEBUG)
+#if !defined(BOBUI_BOOTSTRAPPED) || defined(BOBUI_FORCE_ASSERTS) || !defined(BOBUI_NO_DEBUG)
 /*
     The Q_ASSERT macro calls this function when the test fails.
 */
-void qt_assert(const char *assertion, const char *file, int line) noexcept
+void bobui_assert(const char *assertion, const char *file, int line) noexcept
 {
     QMessageLogger(file, line, nullptr)
             .fatal("ASSERT: \"%s\" in file %s, line %d", assertion, file, line);
@@ -120,7 +120,7 @@ void qt_assert(const char *assertion, const char *file, int line) noexcept
 /*
     The Q_ASSERT_X macro calls this function when the test fails.
 */
-void qt_assert_x(const char *where, const char *what, const char *file, int line) noexcept
+void bobui_assert_x(const char *where, const char *what, const char *file, int line) noexcept
 {
     QMessageLogger(file, line, nullptr)
             .fatal("ASSERT failure in %s: \"%s\", file %s, line %d", where, what, file, line);
@@ -129,14 +129,14 @@ void qt_assert_x(const char *where, const char *what, const char *file, int line
 
 /*!
     \macro void Q_CHECK_PTR(void *pointer)
-    \relates <QtAssert>
+    \relates <BobUIAssert>
 
     If \a pointer is \nullptr, prints a message containing the source
     code's file name and line number, saying that the program ran out
     of memory and aborts program execution. It throws \c std::bad_alloc instead
     if exceptions are enabled.
 
-    Q_CHECK_PTR does nothing if \c QT_NO_DEBUG and \c QT_NO_EXCEPTIONS were
+    Q_CHECK_PTR does nothing if \c BOBUI_NO_DEBUG and \c BOBUI_NO_EXCEPTIONS were
     defined during compilation. Therefore you must not use Q_CHECK_PTR to check
     for successful memory allocations because the check will be disabled in
     some cases.
@@ -150,7 +150,7 @@ void qt_assert_x(const char *where, const char *what, const char *file, int line
 
 /*!
     \fn template <typename T> T *q_check_ptr(T *p)
-    \relates <QtAssert>
+    \relates <BobUIAssert>
 
     Uses Q_CHECK_PTR on \a p, then returns \a p.
 
@@ -162,7 +162,7 @@ void qt_assert_x(const char *where, const char *what, const char *file, int line
     The Q_CHECK_PTR macro calls this function if an allocation check
     fails.
 */
-void qt_check_pointer(const char *n, int l) noexcept
+void bobui_check_pointer(const char *n, int l) noexcept
 {
     // make separate printing calls so that the first one may flush;
     // the second one could want to allocate memory (fputs prints a
@@ -180,7 +180,7 @@ void qt_check_pointer(const char *n, int l) noexcept
 */
 void qBadAlloc()
 {
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
     throw std::bad_alloc();
 #else
     std::terminate();
@@ -190,7 +190,7 @@ void qBadAlloc()
 /*!
     \macro void Q_ASSUME(bool expr)
     \deprecated
-    \relates <QtAssert>
+    \relates <BobUIAssert>
     \since 5.0
 
     Causes the compiler to assume that \a expr is \c true.
@@ -202,14 +202,14 @@ void qBadAlloc()
     in behavior.
 
     Do not use it in new code. It is retained as-is for compatibility with old
-    code and will likely be removed in the next major version Qt.
+    code and will likely be removed in the next major version BobUI.
 
     \sa Q_ASSERT(), Q_UNREACHABLE(), Q_LIKELY(), Q_PRESUME()
 */
 
 /*!
     \macro void Q_PRESUME(bool expr)
-    \relates <QtAssert>
+    \relates <BobUIAssert>
     \since 6.11
 
     Causes the compiler to assume that \a expr is \c true.
@@ -222,7 +222,7 @@ void qBadAlloc()
 
 /*!
     \macro void Q_UNREACHABLE()
-    \relates <QtAssert>
+    \relates <BobUIAssert>
     \since 5.0
 
     Tells the compiler that the current point cannot be reached by any
@@ -258,7 +258,7 @@ void qBadAlloc()
 
 /*!
     \macro void Q_UNREACHABLE_RETURN(...)
-    \relates <QtAssert>
+    \relates <BobUIAssert>
     \since 6.5
 
     This is equivalent to
@@ -270,4 +270,4 @@ void qBadAlloc()
 
     \sa Q_UNREACHABLE(), Q_PRESUME()
 */
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,16 +1,16 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 #include "qcalendar.h"
 #include "qcalendarbackend_p.h"
 #include "qgregoriancalendar_p.h"
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 #include "qjuliancalendar_p.h"
 #include "qmilankoviccalendar_p.h"
 #endif
-#if QT_CONFIG(jalalicalendar)
+#if BOBUI_CONFIG(jalalicalendar)
 #include "qjalalicalendar_p.h"
 #endif
-#if QT_CONFIG(islamiccivilcalendar)
+#if BOBUI_CONFIG(islamiccivilcalendar)
 #include "qislamiccivilcalendar_p.h"
 #endif
 
@@ -23,18 +23,18 @@
 
 #include <vector>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct QCalendarRegistryCaseInsensitiveAnyStringViewLessThan
 {
     struct is_transparent {};
     bool operator()(QAnyStringView lhs, QAnyStringView rhs) const
     {
-        return QAnyStringView::compare(lhs, rhs, Qt::CaseInsensitive) < 0;
+        return QAnyStringView::compare(lhs, rhs, BobUI::CaseInsensitive) < 0;
     }
 };
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 /*
     \internal
@@ -205,7 +205,7 @@ void QCalendarRegistry::ensurePopulated()
             registerSystemBackendLockHeld(QCalendar::System(i));
     }
 
-#if defined(QT_FORCE_ASSERTS) || !defined(QT_NO_DEBUG)
+#if defined(BOBUI_FORCE_ASSERTS) || !defined(BOBUI_NO_DEBUG)
     auto oldValue = status.fetchAndStoreRelease(Populated);
     Q_ASSERT(oldValue == Unpopulated);
 #else
@@ -232,7 +232,7 @@ QCalendarBackend *QCalendarRegistry::registerSystemBackendLockHeld(QCalendar::Sy
         backend = new QGregorianCalendar;
         names = QGregorianCalendar::nameList();
         break;
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
     case QCalendar::System::Julian:
         backend = new QJulianCalendar;
         names = QJulianCalendar::nameList();
@@ -242,13 +242,13 @@ QCalendarBackend *QCalendarRegistry::registerSystemBackendLockHeld(QCalendar::Sy
         names = QMilankovicCalendar::nameList();
         break;
 #endif
-#if QT_CONFIG(jalalicalendar)
+#if BOBUI_CONFIG(jalalicalendar)
     case QCalendar::System::Jalali:
         backend = new QJalaliCalendar;
         names = QJalaliCalendar::nameList();
         break;
 #endif
-#if QT_CONFIG(islamiccivilcalendar)
+#if BOBUI_CONFIG(islamiccivilcalendar)
     case QCalendar::System::IslamicCivil:
         backend = new QIslamicCivilCalendar;
         names = QIslamicCivilCalendar::nameList();
@@ -290,7 +290,7 @@ void QCalendarRegistry::registerBackendLockHeld(QCalendarBackend *backend, const
     } else if (byId[index] == nullptr) {
         backend->setIndex(index);
         if (system == QCalendar::System::Gregorian) {
-#if defined(QT_FORCE_ASSERTS) || !defined(QT_NO_DEBUG)
+#if defined(BOBUI_FORCE_ASSERTS) || !defined(BOBUI_NO_DEBUG)
             auto oldValue = gregorianCalendar.fetchAndStoreRelease(backend);
             Q_ASSERT(oldValue == nullptr);
 #else
@@ -377,7 +377,7 @@ const QCalendarBackend *QCalendarRegistry::fromIndex(size_t index)
     Returns a pointer to a calendar backend, specified by \a system.
 
     This will instantiate the indicated calendar (which will enable fromName()
-    to return it subsequently), but only for the Qt-supported calendars for
+    to return it subsequently), but only for the BobUI-supported calendars for
     which (where relevant) the appropriate feature has been enabled.
 
     \a system should be a member of \a QCalendar::System other than
@@ -414,29 +414,29 @@ QStringList QCalendarRegistry::backendNames(const QCalendarBackend *backend)
     QStringList l;
     l.reserve(byName.size()); // too large, but never really large, so ok
 
-    QT_WARNING_PUSH
+    BOBUI_WARNING_PUSH
     // Clang complains about the reference still causing a copy. The reference is idiomatic, but
     // runs afoul of QFlatMap's iterators which return a pair of references instead of a reference
     // to pair. Suppress the warning, because `const auto [key, value]` would look wrong.
-    QT_WARNING_DISABLE_CLANG("-Wrange-loop-analysis")
+    BOBUI_WARNING_DISABLE_CLANG("-Wrange-loop-analysis")
     for (const auto &[key, value] : byName) {
         if (value == backend)
             l.push_back(key);
     }
-    QT_WARNING_POP
+    BOBUI_WARNING_POP
 
     return l;
 }
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
-Q_GLOBAL_STATIC(QtPrivate::QCalendarRegistry, calendarRegistry);
+Q_GLOBAL_STATIC(BobUIPrivate::QCalendarRegistry, calendarRegistry);
 
 /*!
     \since 5.14
 
     \class QCalendarBackend
-    \inmodule QtCore
+    \inmodule BobUICore
     \internal
     \reentrant
     \brief The QCalendarBackend class provides basic calendaring functions.
@@ -499,7 +499,7 @@ Q_GLOBAL_STATIC(QtPrivate::QCalendarRegistry, calendarRegistry);
     themselves.
 
     \sa calendarId(), QDate, QDateTime, QDateEdit, QDateTimeEdit,
-        QCalendarWidget, {The Low-Level API: Extending Qt Applications}
+        QCalendarWidget, {The Low-Level API: Extending BobUI Applications}
 */
 
 /*!
@@ -865,7 +865,7 @@ int QCalendarBackend::maximumMonthsInYear() const
    This base implementation uses the day-numbering that various calendars have
    borrowed off the Hebrew calendar.
 
-   \sa weekDayName(), standaloneWeekDayName(), QDate::dayOfWeek(), Qt::DayOfWeek
+   \sa weekDayName(), standaloneWeekDayName(), QDate::dayOfWeek(), BobUI::DayOfWeek
 */
 int QCalendarBackend::dayOfWeek(qint64 jd) const
 {
@@ -1002,7 +1002,7 @@ qint64 QCalendarBackend::matchCenturyToWeekday(const QCalendar::YearMonthDay &pa
 
 /*!
     \fn QString QCalendarBackend::dateTimeToString(QStringView format, const QDateTime &datetime,
-                                                   QDate dateOnly, QTime timeOnly,
+                                                   QDate dateOnly, BOBUIime timeOnly,
                                                    const QLocale &locale) const
 
     Returns a string representing a given date, time or date-time.
@@ -1016,12 +1016,12 @@ qint64 QCalendarBackend::matchCenturyToWeekday(const QCalendar::YearMonthDay &pa
     The specified \a locale influences how some format tokens are converted; for
     example, when substituting day and month names and their short-forms. For
     the supported formatting tokens, see QDate::toString() and
-    QTime::toString(). As described above, the provided date, time and date-time
+    BOBUIime::toString(). As described above, the provided date, time and date-time
     determine which of these tokens are recognized: where these appear in \a
     format they are replaced by data. Any text in \a format not recognized as a
     format token is copied verbatim into the result string.
 
-    \sa QDate::toString(), QTime::toString(), QDateTime::toString()
+    \sa QDate::toString(), BOBUIime::toString(), QDateTime::toString()
 */
 // End of methods implemented in qlocale.cpp
 
@@ -1080,7 +1080,7 @@ const QCalendarBackend *QCalendarBackend::fromId(QCalendar::SystemId id)
     Returns a pointer to a calendar backend, specified by \c enum.
 
     This will instantiate the indicated calendar (which will enable fromName()
-    to return it subsequently), but only for the Qt-supported calendars for
+    to return it subsequently), but only for the BobUI-supported calendars for
     which (where relevant) the appropriate feature has been enabled.
 
     \sa fromName(), fromId()
@@ -1111,7 +1111,7 @@ const QCalendarBackend *QCalendarBackend::gregorian()
     \since 5.14
 
     \class QCalendar
-    \inmodule QtCore
+    \inmodule BobUICore
     \reentrant
     \brief The QCalendar class describes calendar systems.
 
@@ -1152,7 +1152,7 @@ const QCalendarBackend *QCalendarBackend::gregorian()
 
 /*!
     \class QCalendar::SystemId
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 6.2
 
     This is an opaque type used to identify custom calendar implementations. The
@@ -1201,7 +1201,7 @@ const QCalendarBackend *QCalendarBackend::gregorian()
     calendar being constructed by other means first. With no argument, the
     default constructor returns the Gregorian calendar.
 
-    \note In Qt versions before 6.4, the constructor by \a name accepted only
+    \note In BobUI versions before 6.4, the constructor by \a name accepted only
     QStringView and QLatin1String, not QAnyStringView.
 
     \sa QCalendar, System, isValid()
@@ -1312,7 +1312,7 @@ bool QCalendar::isDateValid(int year, int month, int day) const
 
 /*!
     Returns \c true if this calendar object is the Gregorian calendar object
-    used as default calendar by other Qt APIs, e.g. in QDate.
+    used as default calendar by other BobUI APIs, e.g. in QDate.
 */
 bool QCalendar::isGregorian() const
 {
@@ -1527,7 +1527,7 @@ QCalendar::YearMonthDay QCalendar::partsFromDate(QDate date) const
     Returns 1 for Monday through 7 for Sunday. Calendars with intercallary days
     may use other numbers to represent these.
 
-    \sa partsFromDate(), Qt::DayOfWeek
+    \sa partsFromDate(), BobUI::DayOfWeek
 */
 int QCalendar::dayOfWeek(QDate date) const
 {
@@ -1651,17 +1651,17 @@ QString QCalendar::standaloneWeekDayName(const QLocale &locale, int day,
     specifiers for time fields are recognized. If none of these is valid, an
     empty string is returned.
 
-    See QDate::toString and QTime::toString() for the supported field
+    See QDate::toString and BOBUIime::toString() for the supported field
     specifiers.  Characters in \a format that are recognized as field specifiers
     are replaced by text representing appropriate data from the date and/or time
     being represented. The texts to represent them may depend on the \a locale
     specified. Other charagers in \a format are copied verbatim into the
     returned string.
 
-    \sa monthName(), weekDayName(), QDate::toString(), QTime::toString()
+    \sa monthName(), weekDayName(), QDate::toString(), BOBUIime::toString()
 */
 QString QCalendar::dateTimeToString(QStringView format, const QDateTime &datetime,
-                                    QDate dateOnly, QTime timeOnly,
+                                    QDate dateOnly, BOBUIime timeOnly,
                                     const QLocale &locale) const
 {
     SAFE_D();
@@ -1672,7 +1672,7 @@ QString QCalendar::dateTimeToString(QStringView format, const QDateTime &datetim
     Returns a list of names of the available calendar systems.
 
     These may be supplied by plugins or other code linked into an application,
-    in addition to the ones provided by Qt, some of which are controlled by
+    in addition to the ones provided by BobUI, some of which are controlled by
     features.
 */
 QStringList QCalendar::availableCalendars()
@@ -1680,8 +1680,8 @@ QStringList QCalendar::availableCalendars()
     return QCalendarBackend::availableCalendars();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 #include "moc_qcalendar.cpp"
 #endif

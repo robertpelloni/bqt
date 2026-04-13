@@ -1,20 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QNETWORKINTERFACE_H
 #define QNETWORKINTERFACE_H
 
-#include <QtNetwork/qtnetworkglobal.h>
-#include <QtCore/qshareddata.h>
-#include <QtCore/qscopedpointer.h>
-#include <QtNetwork/qhostaddress.h>
+#include <BobUINetwork/bobuinetworkglobal.h>
+#include <BobUICore/qshareddata.h>
+#include <BobUICore/qscopedpointer.h>
+#include <BobUINetwork/qhostaddress.h>
 
 #include <memory>
 
-#ifndef QT_NO_NETWORKINTERFACE
+#ifndef BOBUI_NO_NETWORKINTERFACE
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDeadlineTimer;
 
@@ -63,7 +63,7 @@ public:
     bool isTemporary() const { return !isPermanent(); }
 
 private:
-    // ### Qt 7: make implicitly shared
+    // ### BobUI 7: make implicitly shared
     std::unique_ptr<QNetworkAddressEntryPrivate> d;
 };
 
@@ -140,16 +140,16 @@ Q_DECLARE_SHARED(QNetworkInterface)
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QNetworkInterface::InterfaceFlags)
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_NETWORK_EXPORT QDebug operator<<(QDebug debug, const QNetworkAddressEntry &entry);
 Q_NETWORK_EXPORT QDebug operator<<(QDebug debug, const QNetworkInterface &networkInterface);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN(QNetworkAddressEntry, Q_NETWORK_EXPORT)
-QT_DECL_METATYPE_EXTERN(QNetworkInterface, Q_NETWORK_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QNetworkAddressEntry, Q_NETWORK_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QNetworkInterface, Q_NETWORK_EXPORT)
 
-#endif // QT_NO_NETWORKINTERFACE
+#endif // BOBUI_NO_NETWORKINTERFACE
 
 #endif

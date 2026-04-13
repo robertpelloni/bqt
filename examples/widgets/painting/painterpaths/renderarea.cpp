@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "renderarea.h"
 
@@ -30,7 +30,7 @@ QSize RenderArea::sizeHint() const
 //! [2]
 
 //! [3]
-void RenderArea::setFillRule(Qt::FillRule rule)
+void RenderArea::setFillRule(BobUI::FillRule rule)
 {
     path.setFillRule(rule);
     update();
@@ -82,7 +82,7 @@ void RenderArea::paintEvent(QPaintEvent *)
     painter.translate(-50.0, -50.0);
 
 //! [9] //! [10]
-    painter.setPen(QPen(penColor, penWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    painter.setPen(QPen(penColor, penWidth, BobUI::SolidLine, BobUI::RoundCap, BobUI::RoundJoin));
     QLinearGradient gradient(0, 0, 0, 100);
     gradient.setColorAt(0.0, fillColor1);
     gradient.setColorAt(1.0, fillColor2);

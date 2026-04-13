@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QHIJRI_CALENDAR_P_H
 #define QHIJRI_CALENDAR_P_H
@@ -8,19 +8,19 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of calendar implementations.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/private/qglobal_p.h>
+#include <BobUICore/private/qglobal_p.h>
 #include "qcalendarbackend_p.h"
 
-QT_REQUIRE_CONFIG(hijricalendar);
+BOBUI_REQUIRE_CONFIG(hijricalendar);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // Base for sharing with other variants on the Islamic calendar, as needed:
 class Q_CORE_EXPORT QHijriCalendar : public QCalendarBackend
@@ -39,6 +39,6 @@ protected:
     const char16_t *localeMonthData() const override;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QHIJRI_CALENDAR_P_H

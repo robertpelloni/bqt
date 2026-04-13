@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qrunnable.h"
 
-#include <QtCore/qlogging.h>
+#include <BobUICore/qlogging.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QRunnable::~QRunnable()
 {
@@ -35,7 +35,7 @@ void QRunnable::QGenericRunnable::run()
 
 /*!
     \class QRunnable
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 4.4
     \brief The QRunnable class is the base class for all runnable objects.
 
@@ -45,19 +45,19 @@ void QRunnable::QGenericRunnable::run()
     piece of code that needs to be executed, represented by your
     reimplementation of the run() function.
 
-    You can use QThreadPool to execute your code in a separate
-    thread. QThreadPool deletes the QRunnable automatically if
+    You can use BOBUIhreadPool to execute your code in a separate
+    thread. BOBUIhreadPool deletes the QRunnable automatically if
     autoDelete() returns \c true (the default). Use setAutoDelete() to
     change the auto-deletion flag.
 
-    QThreadPool supports executing the same QRunnable more than once
-    by calling QThreadPool::tryStart(this) from within the run() function.
+    BOBUIhreadPool supports executing the same QRunnable more than once
+    by calling BOBUIhreadPool::tryStart(this) from within the run() function.
     If autoDelete is enabled the QRunnable will be deleted when
-    the last thread exits the run function. Calling QThreadPool::start()
+    the last thread exits the run function. Calling BOBUIhreadPool::start()
     multiple times with the same QRunnable when autoDelete is enabled
     creates a race condition and is not recommended.
 
-    \sa QThreadPool
+    \sa BOBUIhreadPool
 */
 
 /*! \fn QRunnable::run()
@@ -78,11 +78,11 @@ void QRunnable::QGenericRunnable::run()
 
     Returns \c true is auto-deletion is enabled; false otherwise.
 
-    If auto-deletion is enabled, QThreadPool will automatically delete
+    If auto-deletion is enabled, BOBUIhreadPool will automatically delete
     this runnable after calling run(); otherwise, ownership remains
     with the application programmer.
 
-    \sa setAutoDelete(), QThreadPool
+    \sa setAutoDelete(), BOBUIhreadPool
 */
 
 /*! \fn bool QRunnable::setAutoDelete(bool autoDelete)
@@ -90,15 +90,15 @@ void QRunnable::QGenericRunnable::run()
     Enables auto-deletion if \a autoDelete is true; otherwise
     auto-deletion is disabled.
 
-    If auto-deletion is enabled, QThreadPool will automatically delete
+    If auto-deletion is enabled, BOBUIhreadPool will automatically delete
     this runnable after calling run(); otherwise, ownership remains
     with the application programmer.
 
     Note that this flag must be set before calling
-    QThreadPool::start(). Calling this function after
-    QThreadPool::start() results in undefined behavior.
+    BOBUIhreadPool::start(). Calling this function after
+    BOBUIhreadPool::start() results in undefined behavior.
 
-    \sa autoDelete(), QThreadPool
+    \sa autoDelete(), BOBUIhreadPool
 */
 
 /*!
@@ -109,7 +109,7 @@ void QRunnable::QGenericRunnable::run()
 
     Auto-deletion is enabled by default.
 
-    \note In Qt versions prior to 6.6, this method took copyable functions only.
+    \note In BobUI versions prior to 6.6, this method took copyable functions only.
 
     \constraints \c Callable
     is a function or function object which can be called with zero arguments.
@@ -117,4 +117,4 @@ void QRunnable::QGenericRunnable::run()
     \sa run(), autoDelete()
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

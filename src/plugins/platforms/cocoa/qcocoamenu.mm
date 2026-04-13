@@ -1,7 +1,7 @@
-// Copyright (C) 2018 The Qt Company Ltd.
+// Copyright (C) 2018 The BobUI Company Ltd.
 // Copyright (C) 2012 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author James Turner <james.turner@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <AppKit/AppKit.h>
 
@@ -10,7 +10,7 @@
 
 #include "qcocoahelpers.h"
 
-#include <QtCore/QtDebug>
+#include <BobUICore/BobUIDebug>
 #include "qcocoaapplication.h"
 #include "qcocoaintegration.h"
 #include "qcocoamenuloader.h"
@@ -19,10 +19,10 @@
 #include "qcocoascreen.h"
 #include "qcocoaapplicationdelegate.h"
 
-#include <QtCore/private/qcore_mac_p.h>
-#include <QtCore/qpointer.h>
+#include <BobUICore/private/qcore_mac_p.h>
+#include <BobUICore/qpointer.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QCocoaMenu::QCocoaMenu() :
     m_attachedItem(nil),
@@ -61,7 +61,7 @@ QCocoaMenu::~QCocoaMenu()
 void QCocoaMenu::setText(const QString &text)
 {
     QMacAutoReleasePool pool;
-    QString stripped = qt_mac_removeAmpersandEscapes(text);
+    QString stripped = bobui_mac_removeAmpersandEscapes(text);
     m_nativeMenu.title = stripped.toNSString();
 }
 
@@ -217,7 +217,7 @@ void QCocoaMenu::scheduleUpdate()
         m_updateTimer.start(0ms, this);
 }
 
-void QCocoaMenu::timerEvent(QTimerEvent *e)
+void QCocoaMenu::timerEvent(BOBUIimerEvent *e)
 {
     if (e->id() == m_updateTimer.id()) {
         m_updateTimer.stop();
@@ -285,7 +285,7 @@ void QCocoaMenu::syncSeparatorsCollapsible(bool enable)
             if (item.separatorItem) {
                 // hide item if previous was a separator, or if it's explicitly hidden
                 bool hideItem = previousIsSeparator;
-                if (auto *cocoaItem = qt_objc_cast<QCocoaNSMenuItem *>(item).platformMenuItem)
+                if (auto *cocoaItem = bobui_objc_cast<QCocoaNSMenuItem *>(item).platformMenuItem)
                     hideItem = previousIsSeparator || !cocoaItem->isVisible();
                 item.hidden = hideItem;
             }
@@ -517,4 +517,4 @@ NSMenuItem *QCocoaMenu::attachedItem() const
     return m_attachedItem;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

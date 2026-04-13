@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 // Select one of the scenarios below
 #define SCENARIO 1
@@ -7,10 +7,10 @@
 #if SCENARIO == 1
 // this is the "no harm done" version. Only operator% is active,
 // with NO_CAST * defined
-#undef QT_USE_FAST_OPERATOR_PLUS
-#undef QT_USE_FAST_CONCATENATION
-#define QT_NO_CAST_FROM_ASCII
-#define QT_NO_CAST_TO_ASCII
+#undef BOBUI_USE_FAST_OPERATOR_PLUS
+#undef BOBUI_USE_FAST_CONCATENATION
+#define BOBUI_NO_CAST_FROM_ASCII
+#define BOBUI_NO_CAST_TO_ASCII
 #endif
 
 
@@ -18,29 +18,29 @@
 // this is the "full" version. Operator+ is replaced by a QStringBuilder
 // based version
 // with NO_CAST * defined
-#define QT_USE_FAST_OPERATOR_PLUS
-#define QT_USE_FAST_CONCATENATION
-#define QT_NO_CAST_FROM_ASCII
-#define QT_NO_CAST_TO_ASCII
+#define BOBUI_USE_FAST_OPERATOR_PLUS
+#define BOBUI_USE_FAST_CONCATENATION
+#define BOBUI_NO_CAST_FROM_ASCII
+#define BOBUI_NO_CAST_TO_ASCII
 #endif
 
 #if SCENARIO == 3
 // this is the "no harm done" version. Only operator% is active,
 // with NO_CAST * _not_ defined
-#undef QT_USE_FAST_OPERATOR_PLUS
-#undef QT_USE_FAST_CONCATENATION
-#undef QT_NO_CAST_FROM_ASCII
-#undef QT_NO_CAST_TO_ASCII
+#undef BOBUI_USE_FAST_OPERATOR_PLUS
+#undef BOBUI_USE_FAST_CONCATENATION
+#undef BOBUI_NO_CAST_FROM_ASCII
+#undef BOBUI_NO_CAST_TO_ASCII
 #endif
 
 #if SCENARIO == 4
 // this is the "full" version. Operator+ is replaced by a QStringBuilder
 // based version
 // with NO_CAST * _not_ defined
-#define QT_USE_FAST_OPERATOR_PLUS
-#define QT_USE_FAST_CONCATENATION
-#undef QT_NO_CAST_FROM_ASCII
-#undef QT_NO_CAST_TO_ASCII
+#define BOBUI_USE_FAST_OPERATOR_PLUS
+#define BOBUI_USE_FAST_CONCATENATION
+#undef BOBUI_NO_CAST_FROM_ASCII
+#undef BOBUI_NO_CAST_TO_ASCII
 #endif
 
 
@@ -49,7 +49,7 @@
 #include <qstring.h>
 #include <qstringbuilder.h>
 
-#include <qtest.h>
+#include <bobuiest.h>
 
 #include <string>
 
@@ -137,7 +137,7 @@ private slots:
         QBENCHMARK { r = l1literal P l1literal; }
         COMPARE(r, r2);
     }
-    #ifndef QT_NO_CAST_FROM_ASCII
+    #ifndef BOBUI_NO_CAST_FROM_ASCII
     void b_l1literal_LITERAL() {
         QBENCHMARK { r = l1literal P LITERAL; }
         COMPARE(r, r2);
@@ -203,7 +203,7 @@ private slots:
         QBENCHMARK { r = string % l1literal; }
         COMPARE(r, r2);
     }
-    #ifndef QT_NO_CAST_FROM_ASCII
+    #ifndef BOBUI_NO_CAST_FROM_ASCII
     void b_string_LITERAL() {
         QBENCHMARK { r = string P LITERAL; }
         COMPARE(r, r2);
@@ -385,6 +385,6 @@ private:
 
 #undef P
 
-QTEST_MAIN(tst_QStringBuilder)
+BOBUIEST_MAIN(tst_QStringBuilder)
 
 #include "tst_bench_qstringbuilder.moc"

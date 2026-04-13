@@ -1,3 +1,3 @@
 #! [qmake_use]
-QT += widgets
+BOBUI += widgets
 #! [qmake_use]

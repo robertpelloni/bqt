@@ -1,24 +1,24 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2025 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QNUMERIC_H
 #define QNUMERIC_H
 
 #if 0
-#pragma qt_class(QtNumeric)
+#pragma bobui_class(BobUINumeric)
 #endif
 
-#include <QtCore/qassert.h>
-#include <QtCore/qminmax.h>
-#include <QtCore/qtconfigmacros.h>
-#include <QtCore/qtcoreexports.h>
-#include <QtCore/qtypes.h>
+#include <BobUICore/qassert.h>
+#include <BobUICore/qminmax.h>
+#include <BobUICore/bobuiconfigmacros.h>
+#include <BobUICore/bobuicoreexports.h>
+#include <BobUICore/bobuiypes.h>
 
 #include <cmath>
 #include <limits>
-#include <QtCore/q20type_traits.h>
+#include <BobUICore/q20type_traits.h>
 
 // min() and max() may be #defined by windows.h if that is included before, but we need them
 // for std::numeric_limits below. You should not use the min() and max() macros, so we just #undef.
@@ -29,7 +29,7 @@
 
 //
 // SIMDe (SIMD Everywhere) can't be used if intrin.h has been included as many definitions
-// conflict.   Defining Q_NUMERIC_NO_INTRINSICS allows SIMDe users to use Qt, at the cost of
+// conflict.   Defining Q_NUMERIC_NO_INTRINSICS allows SIMDe users to use BobUI, at the cost of
 // falling back to the prior implementations of qMulOverflow and qAddOverflow.
 //
 #if defined(Q_CC_MSVC) && !defined(Q_NUMERIC_NO_INTRINSICS)
@@ -47,7 +47,7 @@
 #  endif
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // To match std::is{inf,nan,finite} functions:
 template <typename T>
@@ -70,7 +70,7 @@ Q_CORE_EXPORT Q_DECL_CONST_FUNCTION bool qIsNaN(float f);
 Q_CORE_EXPORT Q_DECL_CONST_FUNCTION bool qIsFinite(float f);
 Q_CORE_EXPORT Q_DECL_CONST_FUNCTION int qFpClassify(float val);
 
-#if QT_CONFIG(signaling_nan)
+#if BOBUI_CONFIG(signaling_nan)
 Q_CORE_EXPORT Q_DECL_CONST_FUNCTION double qSNaN();
 #endif
 Q_CORE_EXPORT Q_DECL_CONST_FUNCTION double qQNaN();
@@ -79,11 +79,11 @@ Q_CORE_EXPORT Q_DECL_CONST_FUNCTION double qInf();
 Q_CORE_EXPORT quint32 qFloatDistance(float a, float b);
 Q_CORE_EXPORT quint64 qFloatDistance(double a, double b);
 
-#define Q_INFINITY (QT_PREPEND_NAMESPACE(qInf)())
-#if QT_CONFIG(signaling_nan)
-#  define Q_SNAN (QT_PREPEND_NAMESPACE(qSNaN)())
+#define Q_INFINITY (BOBUI_PREPEND_NAMESPACE(qInf)())
+#if BOBUI_CONFIG(signaling_nan)
+#  define Q_SNAN (BOBUI_PREPEND_NAMESPACE(qSNaN)())
 #endif
-#define Q_QNAN (QT_PREPEND_NAMESPACE(qQNaN)())
+#define Q_QNAN (BOBUI_PREPEND_NAMESPACE(qQNaN)())
 
 // Overflow math.
 // This provides efficient implementations for int, unsigned, qsizetype and
@@ -99,12 +99,12 @@ Q_CORE_EXPORT quint64 qFloatDistance(double a, double b);
 // On 32-bit, Clang < 14 will fail to link if multiplying 64-bit
 // quantities (emits an unresolved call to __mulodi4), so we can't use
 // the builtin in that case.
-# if !(QT_POINTER_SIZE == 4 && defined(Q_CC_CLANG_ONLY) && Q_CC_CLANG_ONLY < 1400)
+# if !(BOBUI_POINTER_SIZE == 4 && defined(Q_CC_CLANG_ONLY) && Q_CC_CLANG_ONLY < 1400)
 #  define Q_INTRINSIC_MUL_OVERFLOW64
 # endif
 #endif
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 // Generic versions of (some) overflowing math functions, private API.
 template <typename T>
 constexpr inline
@@ -256,7 +256,7 @@ qMulOverflowGeneric(T v1, T v2, T *r)
         return qMulOverflowWideMultiplication(v1, v2, r);
     }
 }
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 template <typename T>
 constexpr inline
@@ -268,7 +268,7 @@ qAddOverflow(T v1, T v2, T *r)
     return __builtin_add_overflow(v1, v2, r);
 #else
     if (q20::is_constant_evaluated())
-        return QtPrivate::qAddOverflowGeneric(v1, v2, r);
+        return BobUIPrivate::qAddOverflowGeneric(v1, v2, r);
 # if defined(Q_HAVE_ADDCARRY)
     // We can use intrinsics for the unsigned operations with MSVC
     if constexpr (std::is_same_v<T, unsigned>) {
@@ -285,7 +285,7 @@ qAddOverflow(T v1, T v2, T *r)
 #    endif // defined(Q_PROCESSOR_X86_64)
     }
 # endif // defined(Q_HAVE_ADDCARRY)
-    return QtPrivate::qAddOverflowGeneric(v1, v2, r);
+    return BobUIPrivate::qAddOverflowGeneric(v1, v2, r);
 #endif // defined(Q_NUMERIC_USE_GCC_OVERFLOW_BUILTINS)
 }
 
@@ -367,11 +367,11 @@ qMulOverflow(T v1, T v2, T *r)
     if constexpr (sizeof(T) <= 4)
         return __builtin_mul_overflow(v1, v2, r);
     else
-        return QtPrivate::qMulOverflowGeneric(v1, v2, r);
+        return BobUIPrivate::qMulOverflowGeneric(v1, v2, r);
 # endif
 #else
     if (q20::is_constant_evaluated())
-        return QtPrivate::qMulOverflowGeneric(v1, v2, r);
+        return BobUIPrivate::qMulOverflowGeneric(v1, v2, r);
 
 # if defined(Q_INTRINSIC_MUL_OVERFLOW64)
     if constexpr (std::is_unsigned_v<T> && (sizeof(T) == sizeof(quint64))) {
@@ -392,7 +392,7 @@ qMulOverflow(T v1, T v2, T *r)
     }
 # endif // defined(Q_INTRINSIC_MUL_OVERFLOW64)
 
-    return QtPrivate::qMulOverflowGeneric(v1, v2, r);
+    return BobUIPrivate::qMulOverflowGeneric(v1, v2, r);
 #endif // defined(Q_NUMERIC_USE_GCC_OVERFLOW_BUILTINS)
 }
 
@@ -488,7 +488,7 @@ constexpr inline T qAbs(const T &t)
     return t >= 0 ? t : -t;
 }
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 template <typename T,
           typename std::enable_if_t<std::is_integral_v<T>, bool> = true>
 constexpr inline auto qUnsignedAbs(T t)
@@ -503,7 +503,7 @@ template <typename Result,
           typename std::enable_if_t<std::is_floating_point_v<FP>, bool> = true>
 constexpr inline Result qCheckedFPConversionToInteger(FP value)
 {
-#ifdef QT_SUPPORTS_IS_CONSTANT_EVALUATED
+#ifdef BOBUI_SUPPORTS_IS_CONSTANT_EVALUATED
     if (!q20::is_constant_evaluated())
         Q_ASSERT(!std::isnan(value));
 #endif
@@ -556,7 +556,7 @@ template <typename FP,
           typename std::enable_if_t<std::is_floating_point_v<FP>, bool> = true>
 constexpr inline int qSaturateRound(FP value)
 {
-#ifdef QT_SUPPORTS_IS_CONSTANT_EVALUATED
+#ifdef BOBUI_SUPPORTS_IS_CONSTANT_EVALUATED
     if (!q20::is_constant_evaluated())
         Q_ASSERT(!qIsNaN(value));
 #endif
@@ -565,41 +565,41 @@ constexpr inline int qSaturateRound(FP value)
     const FP beforeTruncation = QRoundImpl::qRound(value);
     return int(qBound(MinBound, beforeTruncation, MaxBound));
 }
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 constexpr inline int qRound(double d)
 {
-    return QtPrivate::qCheckedFPConversionToInteger<int>(QtPrivate::QRoundImpl::qRound(d));
+    return BobUIPrivate::qCheckedFPConversionToInteger<int>(BobUIPrivate::QRoundImpl::qRound(d));
 }
 
 constexpr inline int qRound(float f)
 {
-    return QtPrivate::qCheckedFPConversionToInteger<int>(QtPrivate::QRoundImpl::qRound(f));
+    return BobUIPrivate::qCheckedFPConversionToInteger<int>(BobUIPrivate::QRoundImpl::qRound(f));
 }
 
 constexpr inline qint64 qRound64(double d)
 {
-    return QtPrivate::qCheckedFPConversionToInteger<qint64>(QtPrivate::QRoundImpl::qRound(d));
+    return BobUIPrivate::qCheckedFPConversionToInteger<qint64>(BobUIPrivate::QRoundImpl::qRound(d));
 }
 
 constexpr inline qint64 qRound64(float f)
 {
-    return QtPrivate::qCheckedFPConversionToInteger<qint64>(QtPrivate::QRoundImpl::qRound(f));
+    return BobUIPrivate::qCheckedFPConversionToInteger<qint64>(BobUIPrivate::QRoundImpl::qRound(f));
 }
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 template <typename T>
 constexpr inline const T &min(const T &a, const T &b) { return (a < b) ? a : b; }
 }
 
 [[nodiscard]] constexpr bool qFuzzyCompare(double p1, double p2) noexcept
 {
-    return (qAbs(p1 - p2) * 1000000000000. <= QtPrivate::min(qAbs(p1), qAbs(p2)));
+    return (qAbs(p1 - p2) * 1000000000000. <= BobUIPrivate::min(qAbs(p1), qAbs(p2)));
 }
 
 [[nodiscard]] constexpr bool qFuzzyCompare(float p1, float p2) noexcept
 {
-    return (qAbs(p1 - p2) * 100000.f <= QtPrivate::min(qAbs(p1), qAbs(p2)));
+    return (qAbs(p1 - p2) * 100000.f <= BobUIPrivate::min(qAbs(p1), qAbs(p2)));
 }
 
 [[nodiscard]] constexpr bool qFuzzyIsNull(double d) noexcept
@@ -612,8 +612,8 @@ constexpr inline const T &min(const T &a, const T &b) { return (a < b) ? a : b; 
     return qAbs(f) <= 0.00001f;
 }
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_FLOAT_COMPARE
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_FLOAT_COMPARE
 
 [[nodiscard]] constexpr bool qIsNull(double d) noexcept
 {
@@ -625,9 +625,9 @@ QT_WARNING_DISABLE_FLOAT_COMPARE
     return f == 0.0f;
 }
 
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 /*
     A version of qFuzzyCompare that works for all values (qFuzzyCompare()
     requires that neither argument is numerically 0).
@@ -635,7 +635,7 @@ namespace QtPrivate {
     It's private because we need a fix for the many qFuzzyCompare() uses that
     ignore the precondition, even for older branches.
 
-    See QTBUG-142020 for discussion of a longer-term solution.
+    See BOBUIBUG-142020 for discussion of a longer-term solution.
 */
 template <typename T, typename S>
 [[nodiscard]] constexpr bool fuzzyCompare(const T &lhs, const S &rhs) noexcept
@@ -645,12 +645,12 @@ template <typename T, typename S>
                   "for both argument types!");
     return qIsNull(lhs) || qIsNull(rhs) ? qFuzzyIsNull(lhs - rhs) : qFuzzyCompare(lhs, rhs);
 }
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 
 inline int qIntCast(double f) { return int(f); }
 inline int qIntCast(float f) { return int(f); }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QNUMERIC_H

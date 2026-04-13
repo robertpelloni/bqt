@@ -1,51 +1,51 @@
 // Copyright (C) 2012 BogDan Vatra <bogdan@kde.org>
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qandroidplatformservices.h"
 
-#if QT_CONFIG(desktopservices)
+#if BOBUI_CONFIG(desktopservices)
 #include <QDebug>
 #include <QDesktopServices>
 #include <QFile>
 #include <QMimeDatabase>
-#include <QtCore/QJniObject>
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qscopedvaluerollback.h>
+#include <BobUICore/QJniObject>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/qscopedvaluerollback.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace QtJniTypes;
-using namespace Qt::StringLiterals;
+using namespace BobUIJniTypes;
+using namespace BobUI::StringLiterals;
 
-#if QT_CONFIG(desktopservices)
+#if BOBUI_CONFIG(desktopservices)
 static constexpr auto s_defaultScheme = "file"_L1;
-static constexpr auto s_defaultProvider = "qtprovider"_L1;
+static constexpr auto s_defaultProvider = "bobuiprovider"_L1;
 #endif
 
 QAndroidPlatformServices::QAndroidPlatformServices()
 {
-#if QT_CONFIG(desktopservices)
+#if BOBUI_CONFIG(desktopservices)
     m_actionView = QJniObject::getStaticObjectField("android/content/Intent", "ACTION_VIEW",
                                                     "Ljava/lang/String;")
                            .toString();
 
-    QtAndroidPrivate::registerNewIntentListener(this);
+    BobUIAndroidPrivate::registerNewIntentListener(this);
 
-    // Qt applications without Activity contexts cannot retrieve intents from the Activity.
+    // BobUI applications without Activity contexts cannot retrieve intents from the Activity.
     if (QNativeInterface::QAndroidApplication::isActivityContext()) {
         QMetaObject::invokeMethod(
                 this,
                 [this] {
-                    QJniObject context = QJniObject(QtAndroidPrivate::context());
+                    QJniObject context = QJniObject(BobUIAndroidPrivate::context());
                     QJniObject intent =
                             context.callObjectMethod("getIntent", "()Landroid/content/Intent;");
                     handleNewIntent(nullptr, intent.object());
                 },
-                Qt::QueuedConnection);
+                BobUI::QueuedConnection);
     }
-#endif // QT_CONFIG(desktopservices)
+#endif // BOBUI_CONFIG(desktopservices)
 }
 
 QByteArray QAndroidPlatformServices::desktopEnvironment() const
@@ -58,7 +58,7 @@ Q_DECLARE_JNI_CLASS(PackageManager, "android/content/pm/PackageManager");
 Q_DECLARE_JNI_CLASS(PackageInfo, "android/content/pm/PackageInfo");
 Q_DECLARE_JNI_CLASS(ProviderInfo, "android/content/pm/ProviderInfo");
 
-#if QT_CONFIG(desktopservices)
+#if BOBUI_CONFIG(desktopservices)
 bool QAndroidPlatformServices::openUrl(const QUrl &theUrl)
 {
     QUrl url(theUrl);
@@ -93,7 +93,7 @@ bool QAndroidPlatformServices::openURL(const QUrl &url) const
 bool QAndroidPlatformServices::openURL(const QString &url) const
 {
     return  QJniObject::callStaticMethod<jboolean>(
-            QtAndroid::applicationClass(), "openURL",
+            BobUIAndroid::applicationClass(), "openURL",
             QNativeInterface::QAndroidApplication::context(),
             url,
             getMimeOfUrl(url));
@@ -114,14 +114,14 @@ QString QAndroidPlatformServices::getAdequateFileproviderAuthority(const QString
     if (authorities.size() == 1)
         return authorities[0];
 
-    QString nonQtAuthority;
+    QString nonBobUIAuthority;
     for (const auto &authority : authorities) {
-        if (!authority.endsWith(s_defaultProvider, Qt::CaseSensitive)) {
-            nonQtAuthority = authority;
+        if (!authority.endsWith(s_defaultProvider, BobUI::CaseSensitive)) {
+            nonBobUIAuthority = authority;
             break;
         }
     }
-    return nonQtAuthority;
+    return nonBobUIAuthority;
 }
 
 bool QAndroidPlatformServices::openUrlWithAuthority(const QUrl &url, const QString &authority)
@@ -185,6 +185,6 @@ bool QAndroidPlatformServices::handleNewIntent(JNIEnv *env, jobject intent)
     QScopedValueRollback<QUrl> rollback(m_handlingUrl, url);
     return QDesktopServices::openUrl(url);
 }
-#endif // QT_CONFIG(desktopservices)
+#endif // BOBUI_CONFIG(desktopservices)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

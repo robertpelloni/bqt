@@ -1,13 +1,13 @@
-// Copyright (C) 2023 The Qt Company Ltd.
+// Copyright (C) 2023 The BobUI Company Ltd.
 // Copyright (C) 2013 Ruslan Nigmatullin <euroelessar@yandex.ru>
 // Copyright (C) 2013 Richard J. Moore <rich@kde.org>.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:cryptography
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:cryptography
 
 #include <qcryptographichash.h>
 #include <qmessageauthenticationcode.h>
 
-#include <QtCore/private/qsmallbytearray_p.h>
+#include <BobUICore/private/qsmallbytearray_p.h>
 #include <qiodevice.h>
 #include <qmutex.h>
 #include <private/qlocking_p.h>
@@ -21,12 +21,12 @@
 // Header from rfc6234
 #include "../../3rdparty/rfc6234/sha.h"
 
-#if !QT_CONFIG(openssl_hash)
+#if !BOBUI_CONFIG(openssl_hash)
 #include "../../3rdparty/md5/md5.h"
 #include "../../3rdparty/md5/md5.cpp"
 #include "../../3rdparty/md4/md4.h"
 #include "../../3rdparty/md4/md4.cpp"
-#endif // !QT_CONFIG(openssl_hash)
+#endif // !BOBUI_CONFIG(openssl_hash)
 
 typedef unsigned char BitSequence;
 typedef unsigned long long DataLength;
@@ -67,7 +67,7 @@ Q_CONSTINIT static SHA3Final * const sha3Final = Final;
 
 #endif
 
-#if !QT_CONFIG(openssl_hash)
+#if !BOBUI_CONFIG(openssl_hash)
 /*
     These 2 functions replace macros of the same name in sha224-256.c and
     sha384-512.c. Originally, these macros relied on a global static 'addTemp'
@@ -99,27 +99,27 @@ static inline int SHA384_512AddLength(SHA512Context *context, unsigned int lengt
   uint64_t addTemp;
   return SHA384_512AddLengthM(context, length);
 }
-#endif // !QT_CONFIG(opensslv30)
+#endif // !BOBUI_CONFIG(opensslv30)
 
-#if QT_CONFIG(system_libb2)
+#if BOBUI_CONFIG(system_libb2)
 #include <blake2.h>
 #else
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_CLANG("-Wunused-function")
-QT_WARNING_DISABLE_GCC("-Wunused-function")
-QT_WARNING_DISABLE_MSVC(4505)
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_CLANG("-Wunused-function")
+BOBUI_WARNING_DISABLE_GCC("-Wunused-function")
+BOBUI_WARNING_DISABLE_MSVC(4505)
 #include "../../3rdparty/blake2/src/blake2b-ref.c"
 #include "../../3rdparty/blake2/src/blake2s-ref.c"
-QT_WARNING_POP
+BOBUI_WARNING_POP
 #endif
 
-#if !defined(QT_BOOTSTRAPPED) && QT_CONFIG(openssl_hash)
+#if !defined(BOBUI_BOOTSTRAPPED) && BOBUI_CONFIG(openssl_hash)
 #define USING_OPENSSL30
 #include <openssl/evp.h>
 #include <openssl/provider.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static constexpr int hashLengthInternal(QCryptographicHash::Algorithm method) noexcept
 {
@@ -346,7 +346,7 @@ void QCryptographicHashPrivate::State::sha3Finish(SHA3Context &ctx, QSpan<uchar>
 
 /*!
   \class QCryptographicHash
-  \inmodule QtCore
+  \inmodule BobUICore
 
   \brief The QCryptographicHash class provides a way to generate cryptographic hashes.
 
@@ -364,35 +364,35 @@ void QCryptographicHashPrivate::State::sha3Finish(SHA3Context &ctx, QSpan<uchar>
 /*!
   \enum QCryptographicHash::Algorithm
 
-  \note In Qt versions before 5.9, when asked to generate a SHA3 hash sum,
+  \note In BobUI versions before 5.9, when asked to generate a SHA3 hash sum,
   QCryptographicHash actually calculated Keccak. If you need compatibility with
-  SHA-3 hashes produced by those versions of Qt, use the \c{Keccak_}
+  SHA-3 hashes produced by those versions of BobUI, use the \c{Keccak_}
   enumerators. Alternatively, if source compatibility is required, define the
-  macro \c QT_SHA3_KECCAK_COMPAT.
+  macro \c BOBUI_SHA3_KECCAK_COMPAT.
 
   \value Md4 Generate an MD4 hash sum
   \value Md5 Generate an MD5 hash sum
   \value Sha1 Generate an SHA-1 hash sum
-  \value Sha224 Generate an SHA-224 hash sum (SHA-2). Introduced in Qt 5.0
-  \value Sha256 Generate an SHA-256 hash sum (SHA-2). Introduced in Qt 5.0
-  \value Sha384 Generate an SHA-384 hash sum (SHA-2). Introduced in Qt 5.0
-  \value Sha512 Generate an SHA-512 hash sum (SHA-2). Introduced in Qt 5.0
-  \value Sha3_224 Generate an SHA3-224 hash sum. Introduced in Qt 5.1
-  \value Sha3_256 Generate an SHA3-256 hash sum. Introduced in Qt 5.1
-  \value Sha3_384 Generate an SHA3-384 hash sum. Introduced in Qt 5.1
-  \value Sha3_512 Generate an SHA3-512 hash sum. Introduced in Qt 5.1
-  \value Keccak_224 Generate a Keccak-224 hash sum. Introduced in Qt 5.9.2
-  \value Keccak_256 Generate a Keccak-256 hash sum. Introduced in Qt 5.9.2
-  \value Keccak_384 Generate a Keccak-384 hash sum. Introduced in Qt 5.9.2
-  \value Keccak_512 Generate a Keccak-512 hash sum. Introduced in Qt 5.9.2
-  \value Blake2b_160 Generate a BLAKE2b-160 hash sum. Introduced in Qt 6.0
-  \value Blake2b_256 Generate a BLAKE2b-256 hash sum. Introduced in Qt 6.0
-  \value Blake2b_384 Generate a BLAKE2b-384 hash sum. Introduced in Qt 6.0
-  \value Blake2b_512 Generate a BLAKE2b-512 hash sum. Introduced in Qt 6.0
-  \value Blake2s_128 Generate a BLAKE2s-128 hash sum. Introduced in Qt 6.0
-  \value Blake2s_160 Generate a BLAKE2s-160 hash sum. Introduced in Qt 6.0
-  \value Blake2s_224 Generate a BLAKE2s-224 hash sum. Introduced in Qt 6.0
-  \value Blake2s_256 Generate a BLAKE2s-256 hash sum. Introduced in Qt 6.0
+  \value Sha224 Generate an SHA-224 hash sum (SHA-2). Introduced in BobUI 5.0
+  \value Sha256 Generate an SHA-256 hash sum (SHA-2). Introduced in BobUI 5.0
+  \value Sha384 Generate an SHA-384 hash sum (SHA-2). Introduced in BobUI 5.0
+  \value Sha512 Generate an SHA-512 hash sum (SHA-2). Introduced in BobUI 5.0
+  \value Sha3_224 Generate an SHA3-224 hash sum. Introduced in BobUI 5.1
+  \value Sha3_256 Generate an SHA3-256 hash sum. Introduced in BobUI 5.1
+  \value Sha3_384 Generate an SHA3-384 hash sum. Introduced in BobUI 5.1
+  \value Sha3_512 Generate an SHA3-512 hash sum. Introduced in BobUI 5.1
+  \value Keccak_224 Generate a Keccak-224 hash sum. Introduced in BobUI 5.9.2
+  \value Keccak_256 Generate a Keccak-256 hash sum. Introduced in BobUI 5.9.2
+  \value Keccak_384 Generate a Keccak-384 hash sum. Introduced in BobUI 5.9.2
+  \value Keccak_512 Generate a Keccak-512 hash sum. Introduced in BobUI 5.9.2
+  \value Blake2b_160 Generate a BLAKE2b-160 hash sum. Introduced in BobUI 6.0
+  \value Blake2b_256 Generate a BLAKE2b-256 hash sum. Introduced in BobUI 6.0
+  \value Blake2b_384 Generate a BLAKE2b-384 hash sum. Introduced in BobUI 6.0
+  \value Blake2b_512 Generate a BLAKE2b-512 hash sum. Introduced in BobUI 6.0
+  \value Blake2s_128 Generate a BLAKE2s-128 hash sum. Introduced in BobUI 6.0
+  \value Blake2s_160 Generate a BLAKE2s-160 hash sum. Introduced in BobUI 6.0
+  \value Blake2s_224 Generate a BLAKE2s-224 hash sum. Introduced in BobUI 6.0
+  \value Blake2s_256 Generate a BLAKE2s-256 hash sum. Introduced in BobUI 6.0
   \omitvalue RealSha3_224
   \omitvalue RealSha3_256
   \omitvalue RealSha3_384
@@ -753,7 +753,7 @@ void QCryptographicHashPrivate::State::reset(QCryptographicHash::Algorithm metho
 
 #endif // USING_OPENSSL30
 
-#if QT_DEPRECATED_SINCE(6, 4)
+#if BOBUI_DEPRECATED_SINCE(6, 4)
 /*!
     Adds the first \a length chars of \a data to the cryptographic
     hash.
@@ -771,7 +771,7 @@ void QCryptographicHash::addData(const char *data, qsizetype length)
 /*!
     Adds the characters in \a bytes to the cryptographic hash.
 
-    \note In Qt versions prior to 6.3, this function took QByteArray,
+    \note In BobUI versions prior to 6.3, this function took QByteArray,
     not QByteArrayView.
 */
 void QCryptographicHash::addData(QByteArrayView bytes) noexcept
@@ -839,7 +839,7 @@ void QCryptographicHashPrivate::State::addData(QCryptographicHash::Algorithm met
     const char *data = bytes.data();
     auto length = bytes.size();
 
-#if QT_POINTER_SIZE == 8
+#if BOBUI_POINTER_SIZE == 8
     // feed the data UINT_MAX bytes at a time, as some of the methods below
     // take a uint (of course, feeding more than 4G of data into the hashing
     // functions will be pretty slow anyway)
@@ -962,7 +962,7 @@ QByteArrayView QCryptographicHash::resultView() const noexcept
 */
 void QCryptographicHashPrivate::finalize() noexcept
 {
-    const auto lock = qt_scoped_lock(finalizeMutex);
+    const auto lock = bobui_scoped_lock(finalizeMutex);
     // check that no other thread already finalizeUnchecked()'ed before us:
     if (!result.isEmpty())
         return;
@@ -1139,14 +1139,14 @@ void QCryptographicHashPrivate::State::finalizeUnchecked(QCryptographicHash::Alg
 /*!
   Returns the hash of \a data using \a method.
 
-  \note In Qt versions prior to 6.3, this function took QByteArray,
+  \note In BobUI versions prior to 6.3, this function took QByteArray,
   not QByteArrayView.
 
   \sa hashInto()
 */
 QByteArray QCryptographicHash::hash(QByteArrayView data, Algorithm method)
 {
-    QByteArray ba(hashLengthInternal(method), Qt::Uninitialized);
+    QByteArray ba(hashLengthInternal(method), BobUI::Uninitialized);
     [[maybe_unused]] const auto r = hashInto(ba, data, method);
     Q_ASSERT(r.size() == ba.size());
     return ba;
@@ -1292,7 +1292,7 @@ bool QCryptographicHashPrivate::supportsAlgorithm(QCryptographicHash::Algorithm 
 }
 #endif // !USING_OPENSSL3
 
-static constexpr int qt_hash_block_size(QCryptographicHash::Algorithm method)
+static constexpr int bobui_hash_block_size(QCryptographicHash::Algorithm method)
 {
     switch (method) {
     case QCryptographicHash::Sha1:
@@ -1346,7 +1346,7 @@ constexpr int maxHashBlockSize()
     int result = 0;
     using A = QCryptographicHash::Algorithm;
     for (int i = 0; i < A::NumAlgorithms ; ++i)
-        result = std::max(result, qt_hash_block_size(A(i)));
+        result = std::max(result, bobui_hash_block_size(A(i)));
     return result;
 }
 
@@ -1356,7 +1356,7 @@ constexpr int minHashBlockSize()
     int result = INT_MAX;
     using A = QCryptographicHash::Algorithm;
     for (int i = 0; i < A::NumAlgorithms ; ++i)
-        result = std::min(result, qt_hash_block_size(A(i)));
+        result = std::min(result, bobui_hash_block_size(A(i)));
     return result;
 }
 
@@ -1366,7 +1366,7 @@ constexpr int gcdHashBlockSize()
     int result = 0;
     using A = QCryptographicHash::Algorithm;
     for (int i = 0; i < A::NumAlgorithms ; ++i)
-        result = std::gcd(result, qt_hash_block_size(A(i)));
+        result = std::gcd(result, bobui_hash_block_size(A(i)));
     return result;
 }
 
@@ -1417,7 +1417,7 @@ public:
 */
 void QMessageAuthenticationCodePrivate::setKey(QByteArrayView newKey) noexcept
 {
-    const int blockSize = qt_hash_block_size(messageHash.method);
+    const int blockSize = bobui_hash_block_size(messageHash.method);
 
     if (newKey.size() > blockSize) {
         messageHash.addData(newKey);
@@ -1425,7 +1425,7 @@ void QMessageAuthenticationCodePrivate::setKey(QByteArrayView newKey) noexcept
         static_assert([] {
                 using A = QCryptographicHash::Algorithm;
                 for (int i = 0; i < A::NumAlgorithms; ++i) {
-                    if (hashLengthInternal(A(i)) > qt_hash_block_size(A(i)))
+                    if (hashLengthInternal(A(i)) > bobui_hash_block_size(A(i)))
                         return false;
                 }
                 return true;
@@ -1457,7 +1457,7 @@ void QMessageAuthenticationCodePrivate::initMessageHash() noexcept
 
 /*!
     \class QMessageAuthenticationCode
-    \inmodule QtCore
+    \inmodule BobUICore
 
     \brief The QMessageAuthenticationCode class provides a way to generate
     hash-based message authentication codes.
@@ -1500,12 +1500,12 @@ void QMessageAuthenticationCodePrivate::initMessageHash() noexcept
     using method \a method and key \a key.
 
 //! [qba-to-qbav-6.6]
-    \note In Qt versions prior to 6.6, this function took its arguments as
+    \note In BobUI versions prior to 6.6, this function took its arguments as
     QByteArray, not QByteArrayView. If you experience compile errors, it's
     because your code is passing objects that are implicitly convertible to
     QByteArray, but not QByteArrayView. Wrap the corresponding argument in
     \c{QByteArray{~~~}} to make the cast explicit. This is backwards-compatible
-    with old Qt versions.
+    with old BobUI versions.
 //! [qba-to-qbav-6.6]
 */
 QMessageAuthenticationCode::QMessageAuthenticationCode(QCryptographicHash::Algorithm method,
@@ -1660,7 +1660,7 @@ QByteArray QMessageAuthenticationCode::result() const
 
 void QMessageAuthenticationCodePrivate::finalize()
 {
-    const auto lock = qt_scoped_lock(messageHash.finalizeMutex);
+    const auto lock = bobui_scoped_lock(messageHash.finalizeMutex);
     if (!messageHash.result.isEmpty())
         return;
     finalizeUnchecked();
@@ -1688,7 +1688,7 @@ void QMessageAuthenticationCodePrivate::finalizeUnchecked() noexcept
 QByteArray QMessageAuthenticationCode::hash(QByteArrayView message, QByteArrayView key,
                                             QCryptographicHash::Algorithm method)
 {
-    QByteArray ba(hashLengthInternal(method), Qt::Uninitialized);
+    QByteArray ba(hashLengthInternal(method), BobUI::Uninitialized);
     [[maybe_unused]] const auto r = hashInto(ba, message, key, method);
     Q_ASSERT(r.size() == ba.size());
     return ba;
@@ -1730,8 +1730,8 @@ QByteArrayView QMessageAuthenticationCode::hashInto(QSpan<std::byte> buffer,
     return buffer.first(result.size());
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 #include "moc_qcryptographichash.cpp"
 #endif

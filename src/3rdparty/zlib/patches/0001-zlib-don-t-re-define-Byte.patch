@@ -1,5 +1,5 @@
 From a89dbb57cec3dd81b3425ae3f3079b9d1962996c Mon Sep 17 00:00:00 2001
-From: Tim Blechmann <tim.blechmann@qt.io>
+From: Tim Blechmann <tim.blechmann@bobui.io>
 Date: Fri, 12 Sep 2025 10:37:44 +0800
 Subject: [PATCH] zlib: don't re-define Byte
 

@@ -1,12 +1,12 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #pragma once
 
-#include <QtGui/private/qpointingdevice_p.h>
+#include <BobUIGui/private/qpointingdevice_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QXcbScrollingDevicePrivate : public QPointingDevicePrivate
 {
@@ -20,8 +20,8 @@ public:
     int horizontalIndex = 0;
     double verticalIncrement = 0;
     double horizontalIncrement = 0;
-    Qt::Orientations orientations;
-    Qt::Orientations legacyOrientations;
+    BobUI::Orientations orientations;
+    BobUI::Orientations legacyOrientations;
     mutable QPointF lastScrollPosition;
     // end of scrolling-related data
 };
@@ -51,4 +51,4 @@ public:
 
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qlayout.h"
 
@@ -11,7 +11,7 @@
 #include "qvariant.h"
 #include "qwidget_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 inline static QRect fromLayoutItemRect(QWidgetPrivate *priv, const QRect &rect)
 {
@@ -41,7 +41,7 @@ inline static QSize toLayoutItemSize(QWidgetPrivate *priv, const QSize &size)
     QLayout manipulates.
 
     \ingroup geomanagement
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     This is used by custom layouts.
 
@@ -59,9 +59,9 @@ inline static QSize toLayoutItemSize(QWidgetPrivate *priv, const QSize &size)
 
     Some layouts have width and height interdependencies. These can
     be expressed using hasHeightForWidth(), heightForWidth(), and
-    minimumHeightForWidth(). For more explanation see the \e{Qt
+    minimumHeightForWidth(). For more explanation see the \e{BobUI
     Quarterly} article
-    \l{http://doc.qt.io/archives/qq/qq04-height-for-width.html}{Trading
+    \l{http://doc.bobui.io/archives/qq/qq04-height-for-width.html}{Trading
     Height for Width}.
 
     \sa QLayout
@@ -72,9 +72,9 @@ inline static QSize toLayoutItemSize(QWidgetPrivate *priv, const QSize &size)
     \ingroup geomanagement
     \brief The QSpacerItem class provides blank space in a layout.
 
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
-    Normally, you don't need to use this class directly. Qt's
+    Normally, you don't need to use this class directly. BobUI's
     built-in layout managers provide the following functions for
     manipulating empty space in layouts:
 
@@ -101,9 +101,9 @@ inline static QSize toLayoutItemSize(QWidgetPrivate *priv, const QSize &size)
     \ingroup geomanagement
     \brief The QWidgetItem class is a layout item that represents a widget.
 
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
-    Normally, you don't need to use this class directly. Qt's
+    Normally, you don't need to use this class directly. BobUI's
     built-in layout managers provide the following functions for
     manipulating widgets in layouts:
 
@@ -128,14 +128,14 @@ inline static QSize toLayoutItemSize(QWidgetPrivate *priv, const QSize &size)
 */
 
 /*!
-    \fn QLayoutItem::QLayoutItem(Qt::Alignment alignment)
+    \fn QLayoutItem::QLayoutItem(BobUI::Alignment alignment)
 
     Constructs a layout item with an \a alignment.
     Not all subclasses support alignment.
 */
 
 /*!
-    \fn Qt::Alignment QLayoutItem::alignment() const
+    \fn BobUI::Alignment QLayoutItem::alignment() const
 
     Returns the alignment of this item.
 */
@@ -145,10 +145,10 @@ inline static QSize toLayoutItemSize(QWidgetPrivate *priv, const QSize &size)
 
     \b{Note:} Item alignment is only supported by QLayoutItem subclasses
     where it would have a visual effect. Except for QSpacerItem, which provides
-    blank space for layouts, all public Qt classes that inherit QLayoutItem
+    blank space for layouts, all public BobUI classes that inherit QLayoutItem
     support item alignment.
 */
-void QLayoutItem::setAlignment(Qt::Alignment alignment)
+void QLayoutItem::setAlignment(BobUI::Alignment alignment)
 {
     align = alignment;
 }
@@ -172,12 +172,12 @@ void QLayoutItem::setAlignment(Qt::Alignment alignment)
 */
 
 /*!
-    \fn Qt::Orientations QLayoutItem::expandingDirections() const
+    \fn BobUI::Orientations QLayoutItem::expandingDirections() const
 
     Returns whether this layout item can make use of more space than
-    sizeHint(). A value of Qt::Vertical or Qt::Horizontal means that
-    it wants to grow in only one dimension, whereas Qt::Vertical |
-    Qt::Horizontal means that it wants to grow in both dimensions.
+    sizeHint(). A value of BobUI::Vertical or BobUI::Horizontal means that
+    it wants to grow in only one dimension, whereas BobUI::Vertical |
+    BobUI::Horizontal means that it wants to grow in both dimensions.
 */
 
 /*!
@@ -410,7 +410,7 @@ void QWidgetItem::setGeometry(const QRect &rect)
     if (isEmpty())
         return;
 
-    QRect r = !wid->testAttribute(Qt::WA_LayoutUsesWidgetRect)
+    QRect r = !wid->testAttribute(BobUI::WA_LayoutUsesWidgetRect)
             ? fromLayoutItemRect(wid->d_func(), rect)
             : rect;
     const QSize widgetRectSurplus = r.size() - rect.size();
@@ -429,7 +429,7 @@ void QWidgetItem::setGeometry(const QRect &rect)
     QSize s = r.size().boundedTo(maximumSize() + widgetRectSurplus);
     int x = r.x();
     int y = r.y();
-    if (align & (Qt::AlignHorizontal_Mask | Qt::AlignVertical_Mask)) {
+    if (align & (BobUI::AlignHorizontal_Mask | BobUI::AlignVertical_Mask)) {
         QSize pref(sizeHint());
         QSizePolicy sp = wid->sizePolicy();
         if (sp.horizontalPolicy() == QSizePolicy::Ignored)
@@ -437,9 +437,9 @@ void QWidgetItem::setGeometry(const QRect &rect)
         if (sp.verticalPolicy() == QSizePolicy::Ignored)
             pref.setHeight(wid->sizeHint().expandedTo(wid->minimumSize()).height());
         pref += widgetRectSurplus;
-        if (align & Qt::AlignHorizontal_Mask)
+        if (align & BobUI::AlignHorizontal_Mask)
             s.setWidth(qMin(s.width(), pref.width()));
-        if (align & Qt::AlignVertical_Mask) {
+        if (align & BobUI::AlignVertical_Mask) {
             if (hasHeightForWidth())
                 s.setHeight(qMin(s.height(),
                                  heightForWidth(s.width() - widgetRectSurplus.width())
@@ -448,15 +448,15 @@ void QWidgetItem::setGeometry(const QRect &rect)
                 s.setHeight(qMin(s.height(), pref.height()));
         }
     }
-    Qt::Alignment alignHoriz = QStyle::visualAlignment(wid->layoutDirection(), align);
-    if (alignHoriz & Qt::AlignRight)
+    BobUI::Alignment alignHoriz = QStyle::visualAlignment(wid->layoutDirection(), align);
+    if (alignHoriz & BobUI::AlignRight)
         x = x + (r.width() - s.width());
-    else if (!(alignHoriz & Qt::AlignLeft))
+    else if (!(alignHoriz & BobUI::AlignLeft))
         x = x + (r.width() - s.width()) / 2;
 
-    if (align & Qt::AlignBottom)
+    if (align & BobUI::AlignBottom)
         y = y + (r.height() - s.height());
-    else if (!(align & Qt::AlignTop))
+    else if (!(align & BobUI::AlignTop))
         y = y + (r.height() - s.height()) / 2;
 
     // Make sure we don't move outside of the parent, e.g when styles demand
@@ -486,7 +486,7 @@ QRect QSpacerItem::geometry() const
 */
 QRect QWidgetItem::geometry() const
 {
-    return !wid->testAttribute(Qt::WA_LayoutUsesWidgetRect)
+    return !wid->testAttribute(BobUI::WA_LayoutUsesWidgetRect)
            ? toLayoutItemRect(wid->d_func(), wid->geometry())
            : wid->geometry();
 }
@@ -510,7 +510,7 @@ int QWidgetItem::heightForWidth(int w) const
     if (isEmpty())
         return -1;
 
-    w = !wid->testAttribute(Qt::WA_LayoutUsesWidgetRect)
+    w = !wid->testAttribute(BobUI::WA_LayoutUsesWidgetRect)
       ? fromLayoutItemSize(wid->d_func(), QSize(w, 0)).width()
       : w;
 
@@ -525,7 +525,7 @@ int QWidgetItem::heightForWidth(int w) const
     if (hfw < wid->minimumHeight())
         hfw = wid->minimumHeight();
 
-    hfw = !wid->testAttribute(Qt::WA_LayoutUsesWidgetRect)
+    hfw = !wid->testAttribute(BobUI::WA_LayoutUsesWidgetRect)
         ? toLayoutItemSize(wid->d_func(), QSize(0, hfw)).height()
         : hfw;
 
@@ -539,7 +539,7 @@ int QWidgetItem::minimumHeightForWidth(int w) const
     if (isEmpty())
         return -1;
 
-    w = !wid->testAttribute(Qt::WA_LayoutUsesWidgetRect)
+    w = !wid->testAttribute(BobUI::WA_LayoutUsesWidgetRect)
       ? fromLayoutItemSize(wid->d_func(), QSize(w, 0)).width()
       : w;
 
@@ -554,7 +554,7 @@ int QWidgetItem::minimumHeightForWidth(int w) const
     if (hfw < wid->minimumHeight())
         hfw = wid->minimumHeight();
 
-    hfw = !wid->testAttribute(Qt::WA_LayoutUsesWidgetRect)
+    hfw = !wid->testAttribute(BobUI::WA_LayoutUsesWidgetRect)
         ? toLayoutItemSize(wid->d_func(), QSize(0, hfw)).height()
         : hfw;
 
@@ -567,7 +567,7 @@ int QWidgetItem::minimumHeightForWidth(int w) const
 /*!
     \reimp
 */
-Qt::Orientations QSpacerItem::expandingDirections() const
+BobUI::Orientations QSpacerItem::expandingDirections() const
 {
     return sizeP.expandingDirections();
 }
@@ -575,29 +575,29 @@ Qt::Orientations QSpacerItem::expandingDirections() const
 /*!
     \reimp
 */
-Qt::Orientations QWidgetItem::expandingDirections() const
+BobUI::Orientations QWidgetItem::expandingDirections() const
 {
     if (isEmpty())
         return {};
 
-    Qt::Orientations e = wid->sizePolicy().expandingDirections();
+    BobUI::Orientations e = wid->sizePolicy().expandingDirections();
     /*
       If the layout is expanding, we make the widget expanding, even if
       its own size policy isn't expanding.
     */
     if (wid->layout()) {
         if (wid->sizePolicy().horizontalPolicy() & QSizePolicy::GrowFlag
-                && (wid->layout()->expandingDirections() & Qt::Horizontal))
-            e |= Qt::Horizontal;
+                && (wid->layout()->expandingDirections() & BobUI::Horizontal))
+            e |= BobUI::Horizontal;
         if (wid->sizePolicy().verticalPolicy() & QSizePolicy::GrowFlag
-                && (wid->layout()->expandingDirections() & Qt::Vertical))
-            e |= Qt::Vertical;
+                && (wid->layout()->expandingDirections() & BobUI::Vertical))
+            e |= BobUI::Vertical;
     }
 
-    if (align & Qt::AlignHorizontal_Mask)
-        e &= ~Qt::Horizontal;
-    if (align & Qt::AlignVertical_Mask)
-        e &= ~Qt::Vertical;
+    if (align & BobUI::AlignHorizontal_Mask)
+        e &= ~BobUI::Horizontal;
+    if (align & BobUI::AlignVertical_Mask)
+        e &= ~BobUI::Vertical;
     return e;
 }
 
@@ -617,7 +617,7 @@ QSize QWidgetItem::minimumSize() const
 {
     if (isEmpty())
         return QSize(0, 0);
-    return !wid->testAttribute(Qt::WA_LayoutUsesWidgetRect)
+    return !wid->testAttribute(BobUI::WA_LayoutUsesWidgetRect)
            ? toLayoutItemSize(wid->d_func(), qSmartMinSize(this))
            : qSmartMinSize(this);
 }
@@ -639,7 +639,7 @@ QSize QWidgetItem::maximumSize() const
     if (isEmpty()) {
         return QSize(0, 0);
     } else {
-        return !wid->testAttribute(Qt::WA_LayoutUsesWidgetRect)
+        return !wid->testAttribute(BobUI::WA_LayoutUsesWidgetRect)
                ? toLayoutItemSize(wid->d_func(), qSmartMaxSize(this, align))
                : qSmartMaxSize(this, align);
     }
@@ -663,7 +663,7 @@ QSize QWidgetItem::sizeHint() const
         s = wid->sizeHint().expandedTo(wid->minimumSizeHint());
         s = s.boundedTo(wid->maximumSize())
              .expandedTo(wid->minimumSize());
-        s = !wid->testAttribute(Qt::WA_LayoutUsesWidgetRect)
+        s = !wid->testAttribute(BobUI::WA_LayoutUsesWidgetRect)
            ? toLayoutItemSize(wid->d_func(), s)
            : s;
 
@@ -729,7 +729,7 @@ void QWidgetItemV2::updateCacheIfNecessary() const
     const QSize smartMinSize(qSmartMinSize(sizeHint, minimumSizeHint, minimumSize, maximumSize, sizePolicy));
     const QSize smartMaxSize(qSmartMaxSize(expandedSizeHint, minimumSize, maximumSize, sizePolicy, align));
 
-    const bool useLayoutItemRect = !wid->testAttribute(Qt::WA_LayoutUsesWidgetRect);
+    const bool useLayoutItemRect = !wid->testAttribute(BobUI::WA_LayoutUsesWidgetRect);
 
     q_cachedMinimumSize = useLayoutItemRect
            ? toLayoutItemSize(wid->d_func(), smartMinSize)
@@ -853,4 +853,4 @@ int QWidgetItemV2::heightForWidth(int width) const
     return height;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

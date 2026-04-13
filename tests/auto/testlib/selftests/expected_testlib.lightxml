@@ -1,16 +1,16 @@
   <Environment>
-    <QtVersion>@INSERT_QT_VERSION_HERE@</QtVersion>
-    <QtBuild/>
-    <QTestVersion>@INSERT_QT_VERSION_HERE@</QTestVersion>
+    <BobUIVersion>@INSERT_BOBUI_VERSION_HERE@</BobUIVersion>
+    <BobUIBuild/>
+    <BOBUIestVersion>@INSERT_BOBUI_VERSION_HERE@</BOBUIestVersion>
   </Environment>
   <TestFunction name="initTestCase">
     <Incident type="pass" file="" line="0" />
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="basics">
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/testlib/tst_testlib.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/testlib/tst_testlib.cpp" line="0">
       <Description><![CDATA[Compared QObject pointers are not the same
-   Actual   (QTest::testObject()): tst_TestLib/"TestObject"
+   Actual   (BOBUIest::testObject()): tst_TestLib/"TestObject"
    Expected (nullptr)            : "nullptr"]]></Description>
     </Incident>
     <Duration msecs="0"/>

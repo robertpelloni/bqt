@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "composition.h"
 #include <QBoxLayout>
 #include <QRadioButton>
-#include <QTimer>
+#include <BOBUIimer>
 #include <QDateTime>
 #include <QSlider>
 #include <QMouseEvent>
@@ -77,14 +77,14 @@ CompositionWidget::CompositionWidget(QWidget *parent)
 
     QGroupBox *circleColorGroup = new QGroupBox(mainGroup);
     circleColorGroup->setTitle(tr("Circle color"));
-    QSlider *circleColorSlider = new QSlider(Qt::Horizontal, circleColorGroup);
+    QSlider *circleColorSlider = new QSlider(BobUI::Horizontal, circleColorGroup);
     circleColorSlider->setRange(0, 359);
     circleColorSlider->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     connect(circleColorSlider, &QAbstractSlider::valueChanged, view, &CompositionRenderer::setCircleColor);
 
     QGroupBox *circleAlphaGroup = new QGroupBox(mainGroup);
     circleAlphaGroup->setTitle(tr("Circle alpha"));
-    QSlider *circleAlphaSlider = new QSlider(Qt::Horizontal, circleAlphaGroup);
+    QSlider *circleAlphaSlider = new QSlider(BobUI::Horizontal, circleAlphaGroup);
     circleAlphaSlider->setRange(0, 255);
     circleAlphaSlider->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     connect(circleAlphaSlider, &QAbstractSlider::valueChanged, view, &CompositionRenderer::setCircleAlpha);
@@ -243,25 +243,25 @@ void CompositionRenderer::updateCirclePos()
 
 void CompositionRenderer::drawBase(QPainter &p)
 {
-    p.setPen(Qt::NoPen);
+    p.setPen(BobUI::NoPen);
 
     QLinearGradient rect_gradient(0, 0, 0, height());
-    rect_gradient.setColorAt(0, Qt::red);
-    rect_gradient.setColorAt(.17, Qt::yellow);
-    rect_gradient.setColorAt(.33, Qt::green);
-    rect_gradient.setColorAt(.50, Qt::cyan);
-    rect_gradient.setColorAt(.66, Qt::blue);
-    rect_gradient.setColorAt(.81, Qt::magenta);
-    rect_gradient.setColorAt(1, Qt::red);
+    rect_gradient.setColorAt(0, BobUI::red);
+    rect_gradient.setColorAt(.17, BobUI::yellow);
+    rect_gradient.setColorAt(.33, BobUI::green);
+    rect_gradient.setColorAt(.50, BobUI::cyan);
+    rect_gradient.setColorAt(.66, BobUI::blue);
+    rect_gradient.setColorAt(.81, BobUI::magenta);
+    rect_gradient.setColorAt(1, BobUI::red);
     p.setBrush(rect_gradient);
     p.drawRect(width() / 2, 0, width() / 2, height());
 
     QLinearGradient alpha_gradient(0, 0, width(), 0);
-    alpha_gradient.setColorAt(0, Qt::white);
-    alpha_gradient.setColorAt(0.2, Qt::white);
-    alpha_gradient.setColorAt(0.5, Qt::transparent);
-    alpha_gradient.setColorAt(0.8, Qt::white);
-    alpha_gradient.setColorAt(1, Qt::white);
+    alpha_gradient.setColorAt(0, BobUI::white);
+    alpha_gradient.setColorAt(0.2, BobUI::white);
+    alpha_gradient.setColorAt(0.5, BobUI::transparent);
+    alpha_gradient.setColorAt(0.8, BobUI::white);
+    alpha_gradient.setColorAt(1, BobUI::white);
 
     p.setCompositionMode(QPainter::CompositionMode_DestinationIn);
     p.setBrush(alpha_gradient);
@@ -269,14 +269,14 @@ void CompositionRenderer::drawBase(QPainter &p)
 
     p.setCompositionMode(QPainter::CompositionMode_DestinationOver);
 
-    p.setPen(Qt::NoPen);
+    p.setPen(BobUI::NoPen);
     p.setRenderHint(QPainter::SmoothPixmapTransform);
     p.drawImage(rect(), m_image);
 }
 
 void CompositionRenderer::drawSource(QPainter &p)
 {
-    p.setPen(Qt::NoPen);
+    p.setPen(BobUI::NoPen);
     p.setRenderHint(QPainter::Antialiasing);
     p.setCompositionMode(m_composition_mode);
 
@@ -347,7 +347,7 @@ void CompositionRenderer::mouseReleaseEvent(QMouseEvent *)
     }
 }
 
-void CompositionRenderer::timerEvent(QTimerEvent *event)
+void CompositionRenderer::timerEvent(BOBUIimerEvent *event)
 {
     if (event->matches(m_animationTimer))
         updateCirclePos();

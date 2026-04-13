@@ -1,24 +1,24 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
-#include <QtTest/private/qcomparisontesthelper_p.h>
+#include <BOBUIest>
+#include <BobUITest/private/qcomparisontesthelper_p.h>
 
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
 #include <QProcess>
 #endif
 
 #include <qcoreapplication.h>
 #include <quuid.h>
-#include <QtCore/private/quuid_p.h>
+#include <BobUICore/private/quuid_p.h>
 
 #ifdef Q_OS_ANDROID
 #include <QStandardPaths>
 #endif
 
 using namespace std::chrono_literals;
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class tst_QUuid : public QObject
 {
@@ -50,7 +50,7 @@ private slots:
     void ordering_data();
     void ordering();
 
-    // Only in Qt > 3.2.x
+    // Only in BobUI > 3.2.x
     void generate();
     void less();
     void more();
@@ -90,7 +90,7 @@ void tst_QUuid::initTestCase()
     //"{1ab6e93a-b1cb-4a87-ba47-ec7e99039a7b}";
     uuidB = QUuid(0x1ab6e93a, 0xb1cb, 0x4a87, 0xba, 0x47, 0xec, 0x7e, 0x99, 0x03, 0x9a, 0x7b);
 
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
     // chdir to the directory containing our testdata, then refer to it with relative paths
 #ifdef Q_OS_ANDROID
     QString testdata_dir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
@@ -109,26 +109,26 @@ void tst_QUuid::initTestCase()
 
 void tst_QUuid::compareCompiles()
 {
-    QTestPrivate::testAllComparisonOperatorsCompile<QUuid>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QUuid>();
 #if defined(Q_OS_WIN)
-    QTestPrivate::testEqualityOperatorsCompile<QUuid, GUID>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QUuid, GUID>();
 #endif
 }
 
 void tst_QUuid::fromChar()
 {
-    QT_TEST_EQUALITY_OPS(uuidA, QUuid("{fc69b59e-cc34-4436-a43c-ee95d128b8c5}"), true);
-    QT_TEST_EQUALITY_OPS(uuidA, QUuid("fc69b59e-cc34-4436-a43c-ee95d128b8c5}"), true);
-    QT_TEST_EQUALITY_OPS(uuidA, QUuid("{fc69b59e-cc34-4436-a43c-ee95d128b8c5"), true);
-    QT_TEST_EQUALITY_OPS(uuidA, QUuid("fc69b59e-cc34-4436-a43c-ee95d128b8c5"), true);
-    QT_TEST_EQUALITY_OPS(QUuid(), QUuid("{fc69b59e-cc34-4436-a43c-ee95d128b8c"), true);
-    QT_TEST_EQUALITY_OPS(QUuid(), QUuid("{fc69b59e-cc34"), true);
-    QT_TEST_EQUALITY_OPS(QUuid(), QUuid("fc69b59e-cc34-"), true);
-    QT_TEST_EQUALITY_OPS(QUuid(), QUuid("fc69b59e-cc34"), true);
-    QT_TEST_EQUALITY_OPS(QUuid(), QUuid("cc34"), true);
-    QT_TEST_EQUALITY_OPS(QUuid(), QUuid(nullptr), true);
+    BOBUI_TEST_EQUALITY_OPS(uuidA, QUuid("{fc69b59e-cc34-4436-a43c-ee95d128b8c5}"), true);
+    BOBUI_TEST_EQUALITY_OPS(uuidA, QUuid("fc69b59e-cc34-4436-a43c-ee95d128b8c5}"), true);
+    BOBUI_TEST_EQUALITY_OPS(uuidA, QUuid("{fc69b59e-cc34-4436-a43c-ee95d128b8c5"), true);
+    BOBUI_TEST_EQUALITY_OPS(uuidA, QUuid("fc69b59e-cc34-4436-a43c-ee95d128b8c5"), true);
+    BOBUI_TEST_EQUALITY_OPS(QUuid(), QUuid("{fc69b59e-cc34-4436-a43c-ee95d128b8c"), true);
+    BOBUI_TEST_EQUALITY_OPS(QUuid(), QUuid("{fc69b59e-cc34"), true);
+    BOBUI_TEST_EQUALITY_OPS(QUuid(), QUuid("fc69b59e-cc34-"), true);
+    BOBUI_TEST_EQUALITY_OPS(QUuid(), QUuid("fc69b59e-cc34"), true);
+    BOBUI_TEST_EQUALITY_OPS(QUuid(), QUuid("cc34"), true);
+    BOBUI_TEST_EQUALITY_OPS(QUuid(), QUuid(nullptr), true);
 
-    QT_TEST_EQUALITY_OPS(uuidB, QUuid(QString("{1ab6e93a-b1cb-4a87-ba47-ec7e99039a7b}")), true);
+    BOBUI_TEST_EQUALITY_OPS(uuidB, QUuid(QString("{1ab6e93a-b1cb-4a87-ba47-ec7e99039a7b}")), true);
 }
 
 void tst_QUuid::toString()
@@ -148,13 +148,13 @@ void tst_QUuid::toString()
 
 void tst_QUuid::fromString_data()
 {
-    QTest::addColumn<QUuid>("expected");
-    QTest::addColumn<QString>("input");
+    BOBUIest::addColumn<QUuid>("expected");
+    BOBUIest::addColumn<QString>("input");
 
     QUuid invalid = {};
 
 #define ROW(which, string) \
-    QTest::addRow("%-38s -> %s", string, #which) << which << string
+    BOBUIest::addRow("%-38s -> %s", string, #which) << which << string
     ROW(uuidA,   "{fc69b59e-cc34-4436-a43c-ee95d128b8c5}");
     ROW(uuidA,    "fc69b59e-cc34-4436-a43c-ee95d128b8c5}");
     ROW(uuidA,   "{fc69b59e-cc34-4436-a43c-ee95d128b8c5" );
@@ -188,21 +188,21 @@ void tst_QUuid::fromString()
     const auto inputL1 = input.toLatin1();
     const auto inputU8 = input.toUtf8();
 
-    QT_TEST_EQUALITY_OPS(expected, QUuid(input), true);
-    QT_TEST_EQUALITY_OPS(expected, QUuid(inputU8), true);
-    QT_TEST_EQUALITY_OPS(expected, QUuid(inputL1), true);
+    BOBUI_TEST_EQUALITY_OPS(expected, QUuid(input), true);
+    BOBUI_TEST_EQUALITY_OPS(expected, QUuid(inputU8), true);
+    BOBUI_TEST_EQUALITY_OPS(expected, QUuid(inputL1), true);
 
-    QT_TEST_EQUALITY_OPS(expected, QUuid::fromString(input), true);
+    BOBUI_TEST_EQUALITY_OPS(expected, QUuid::fromString(input), true);
 
     // for QLatin1String, construct one whose data() is not NUL-terminated:
     const auto longerInputL1 = inputL1 + '5'; // the '5' makes the premature end check incorrectly succeed
     const auto inputL1S = QLatin1String(longerInputL1.data(), inputL1.size());
-    QT_TEST_EQUALITY_OPS(expected, QUuid::fromString(inputL1S), true);
+    BOBUI_TEST_EQUALITY_OPS(expected, QUuid::fromString(inputL1S), true);
 
     // for QUtf8StringView, too:
     const auto longerInputU8 = inputU8 + '5'; // the '5' makes the premature end check incorrectly succeed
     const auto inputU8S = QUtf8StringView(longerInputU8.data(), inputU8.size());
-    QT_TEST_EQUALITY_OPS(expected, QUuid::fromString(inputU8S), true);
+    BOBUI_TEST_EQUALITY_OPS(expected, QUuid::fromString(inputU8S), true);
 }
 
 void tst_QUuid::toByteArray()
@@ -222,13 +222,13 @@ void tst_QUuid::toByteArray()
 
 void tst_QUuid::fromByteArray()
 {
-    QT_TEST_EQUALITY_OPS(uuidA, QUuid(QByteArray("{fc69b59e-cc34-4436-a43c-ee95d128b8c5}")), true);
-    QT_TEST_EQUALITY_OPS(uuidA, QUuid(QByteArray("fc69b59e-cc34-4436-a43c-ee95d128b8c5}")), true);
-    QT_TEST_EQUALITY_OPS(uuidA, QUuid(QByteArray("{fc69b59e-cc34-4436-a43c-ee95d128b8c5")), true);
-    QT_TEST_EQUALITY_OPS(uuidA, QUuid(QByteArray("fc69b59e-cc34-4436-a43c-ee95d128b8c5")), true);
-    QT_TEST_EQUALITY_OPS(QUuid(), QUuid(QByteArray("{fc69b59e-cc34-4436-a43c-ee95d128b8c")), true);
+    BOBUI_TEST_EQUALITY_OPS(uuidA, QUuid(QByteArray("{fc69b59e-cc34-4436-a43c-ee95d128b8c5}")), true);
+    BOBUI_TEST_EQUALITY_OPS(uuidA, QUuid(QByteArray("fc69b59e-cc34-4436-a43c-ee95d128b8c5}")), true);
+    BOBUI_TEST_EQUALITY_OPS(uuidA, QUuid(QByteArray("{fc69b59e-cc34-4436-a43c-ee95d128b8c5")), true);
+    BOBUI_TEST_EQUALITY_OPS(uuidA, QUuid(QByteArray("fc69b59e-cc34-4436-a43c-ee95d128b8c5")), true);
+    BOBUI_TEST_EQUALITY_OPS(QUuid(), QUuid(QByteArray("{fc69b59e-cc34-4436-a43c-ee95d128b8c")), true);
 
-    QT_TEST_EQUALITY_OPS(uuidB, QUuid(QByteArray("{1ab6e93a-b1cb-4a87-ba47-ec7e99039a7b}")), true);
+    BOBUI_TEST_EQUALITY_OPS(uuidB, QUuid(QByteArray("{1ab6e93a-b1cb-4a87-ba47-ec7e99039a7b}")), true);
 }
 
 void tst_QUuid::toRfc4122()
@@ -239,11 +239,11 @@ void tst_QUuid::toRfc4122()
 
 void tst_QUuid::fromRfc4122()
 {
-    QT_TEST_EQUALITY_OPS(
+    BOBUI_TEST_EQUALITY_OPS(
             uuidA,
             QUuid::fromRfc4122(QByteArray::fromHex("fc69b59ecc344436a43cee95d128b8c5")), true);
 
-    QT_TEST_EQUALITY_OPS(
+    BOBUI_TEST_EQUALITY_OPS(
             uuidB, QUuid::fromRfc4122(QByteArray::fromHex("1ab6e93ab1cb4a87ba47ec7e99039a7b")),
             true);
 }
@@ -263,15 +263,15 @@ void tst_QUuid::id128()
         0xba, 0x47, 0xec, 0x7e, 0x99, 0x03, 0x9a, 0x7b,
     } };
 
-    QT_TEST_EQUALITY_OPS(QUuid(bytesA), uuidA, true);
-    QT_TEST_EQUALITY_OPS(QUuid(bytesB), uuidB, true);
+    BOBUI_TEST_EQUALITY_OPS(QUuid(bytesA), uuidA, true);
+    BOBUI_TEST_EQUALITY_OPS(QUuid(bytesB), uuidB, true);
     QVERIFY(memcmp(uuidA.toBytes().data, bytesA.data, sizeof(QUuid::Id128Bytes)) == 0);
     QVERIFY(memcmp(uuidB.toBytes().data, bytesB.data, sizeof(QUuid::Id128Bytes)) == 0);
 
     QUuid::Id128Bytes leBytesA = {};
     for (int i = 0; i < 16; i++)
         leBytesA.data[15 - i] = bytesA.data[i];
-    QT_TEST_EQUALITY_OPS(QUuid(leBytesA, QSysInfo::LittleEndian), uuidA, true);
+    BOBUI_TEST_EQUALITY_OPS(QUuid(leBytesA, QSysInfo::LittleEndian), uuidA, true);
     QVERIFY(memcmp(uuidA.toBytes(QSysInfo::LittleEndian).data, leBytesA.data, sizeof(leBytesA)) == 0);
 
     // check the new q{To,From}{Big,Little}Endian() overloads
@@ -294,7 +294,7 @@ void tst_QUuid::id128()
 
 void tst_QUuid::uint128()
 {
-#ifdef QT_SUPPORTS_INT128
+#ifdef BOBUI_SUPPORTS_INT128
     if (QSysInfo::ByteOrder == QSysInfo::BigEndian)
         QSKIP("Not implemented for big endian. Feel free to submit fixes.");
 
@@ -304,16 +304,16 @@ void tst_QUuid::uint128()
     constexpr QUuid uuid = QUuid::fromUInt128(be);
     static_assert(uuid.toUInt128() == be, "Round-trip through QUuid failed");
 
-    QT_TEST_EQUALITY_OPS(uuid, uuidA, true);
+    BOBUI_TEST_EQUALITY_OPS(uuid, uuidA, true);
     QCOMPARE(uuid.toUInt128(), be);
 
     quint128 le = qFromBigEndian(be);
     QCOMPARE(uuid.toUInt128(QSysInfo::LittleEndian), le);
-    QT_TEST_EQUALITY_OPS(QUuid::fromUInt128(le, QSysInfo::LittleEndian), uuidA, true);
+    BOBUI_TEST_EQUALITY_OPS(QUuid::fromUInt128(le, QSysInfo::LittleEndian), uuidA, true);
 
     QUuid::Id128Bytes bytes = { .data128 = { qToBigEndian(u) } };
     QUuid uuid2(bytes);
-    QT_TEST_EQUALITY_OPS(uuid2, uuid, true);
+    BOBUI_TEST_EQUALITY_OPS(uuid2, uuid, true);
 
     // verify that toBytes() and toUInt128() provide bytewise similar result
     constexpr quint128 val = uuid.toUInt128();
@@ -327,11 +327,11 @@ void tst_QUuid::uint128()
 void tst_QUuid::createUuidV3OrV5()
 {
     //"www.widgets.com" is also from RFC4122
-    QT_TEST_EQUALITY_OPS(uuidC, QUuid::createUuidV3(uuidNS, QByteArray("www.widgets.com")), true);
-    QT_TEST_EQUALITY_OPS(uuidC, QUuid::createUuidV3(uuidNS, QString("www.widgets.com")), true);
+    BOBUI_TEST_EQUALITY_OPS(uuidC, QUuid::createUuidV3(uuidNS, QByteArray("www.widgets.com")), true);
+    BOBUI_TEST_EQUALITY_OPS(uuidC, QUuid::createUuidV3(uuidNS, QString("www.widgets.com")), true);
 
-    QT_TEST_EQUALITY_OPS(uuidD, QUuid::createUuidV5(uuidNS, QByteArray("www.widgets.com")), true);
-    QT_TEST_EQUALITY_OPS(uuidD, QUuid::createUuidV5(uuidNS, QString("www.widgets.com")), true);
+    BOBUI_TEST_EQUALITY_OPS(uuidD, QUuid::createUuidV5(uuidNS, QByteArray("www.widgets.com")), true);
+    BOBUI_TEST_EQUALITY_OPS(uuidD, QUuid::createUuidV5(uuidNS, QString("www.widgets.com")), true);
 }
 
 void tst_QUuid::createUuidV7_unique()
@@ -351,17 +351,17 @@ void tst_QUuid::createUuidV7_unique()
 
 void tst_QUuid::createUuidV7_data()
 {
-    QTest::addColumn<QDateTime>("dt");
-    QTest::addColumn<QUuid>("expected");
+    BOBUIest::addColumn<QDateTime>("dt");
+    BOBUIest::addColumn<QUuid>("expected");
 
     // February 22, 2022 2:22:22.00 PM GMT-05:00, example from:
     // https://datatracker.ietf.org/doc/html/rfc9562#name-example-of-a-uuidv7-value
-    QTest::newRow("feb2022")
-        << QDateTime::fromString("2022-02-22T14:22:22.00-05:00"_L1, Qt::ISODateWithMs)
+    BOBUIest::newRow("feb2022")
+        << QDateTime::fromString("2022-02-22T14:22:22.00-05:00"_L1, BobUI::ISODateWithMs)
         << QUuid::fromString("017F22E2-79B0-7CC3-98C4-DC0C0C07398F"_L1);
 
-    QTest::newRow("jan2000")
-        << QDateTime::fromString("2000-01-02T14:22:22.00-05:00"_L1, Qt::ISODateWithMs)
+    BOBUIest::newRow("jan2000")
+        << QDateTime::fromString("2000-01-02T14:22:22.00-05:00"_L1, BobUI::ISODateWithMs)
         << QUuid("00dc741e-35b0-7643-947d-0380e108ce80"_L1);
 }
 
@@ -392,7 +392,7 @@ void tst_QUuid::check_QDataStream()
         QDataStream in(&ar,QIODevice::ReadOnly);
         in.setByteOrder(QDataStream::BigEndian);
         in >> tmp;
-        QT_TEST_EQUALITY_OPS(uuidA, tmp, true);
+        BOBUI_TEST_EQUALITY_OPS(uuidA, tmp, true);
     }
     {
         QDataStream out(&ar,QIODevice::WriteOnly);
@@ -403,7 +403,7 @@ void tst_QUuid::check_QDataStream()
         QDataStream in(&ar,QIODevice::ReadOnly);
         in.setByteOrder(QDataStream::LittleEndian);
         in >> tmp;
-        QT_TEST_EQUALITY_OPS(uuidA, tmp, true);
+        BOBUI_TEST_EQUALITY_OPS(uuidA, tmp, true);
     }
 }
 
@@ -424,14 +424,14 @@ void tst_QUuid::isNull()
 
 void tst_QUuid::equal()
 {
-    QT_TEST_EQUALITY_OPS(uuidA, uuidB, false);
+    BOBUI_TEST_EQUALITY_OPS(uuidA, uuidB, false);
 
     QUuid copy(uuidA);
-    QT_TEST_EQUALITY_OPS(uuidA, copy, true);
+    BOBUI_TEST_EQUALITY_OPS(uuidA, copy, true);
 
     QUuid assigned;
     assigned = uuidA;
-    QT_TEST_EQUALITY_OPS(uuidA, assigned, true);
+    BOBUI_TEST_EQUALITY_OPS(uuidA, assigned, true);
 }
 
 
@@ -468,7 +468,7 @@ constexpr QUuid make_minimal(QUuid::Variant variant)
     }
     // GCC 8.x does not treat __builtin_unreachable() as constexpr
 #if !defined(Q_CC_GNU_ONLY) || (Q_CC_GNU >= 900)
-    // NOLINTNEXTLINE(qt-use-unreachable-return): Triggers on Clang, breaking GCC 8
+    // NOLINTNEXTLINE(bobui-use-unreachable-return): Triggers on Clang, breaking GCC 8
     Q_UNREACHABLE();
 #endif
     return {};
@@ -476,9 +476,9 @@ constexpr QUuid make_minimal(QUuid::Variant variant)
 
 void tst_QUuid::ordering_data()
 {
-    QTest::addColumn<QUuid>("lhs");
-    QTest::addColumn<QUuid>("rhs");
-    QTest::addColumn<Qt::strong_ordering>("expected");
+    BOBUIest::addColumn<QUuid>("lhs");
+    BOBUIest::addColumn<QUuid>("rhs");
+    BOBUIest::addColumn<BobUI::strong_ordering>("expected");
 
     // QUuid is sorted by variant() first, then the dataN fields, in order
     // Exhaustive testing is pointless, so pick some strategic values
@@ -517,7 +517,7 @@ void tst_QUuid::ordering_data()
     QCOMPARE(ones.variant(), QUuid::Variant::Reserved);
 
 #define ROW(l, r, c) \
-    QTest::addRow("%s<>%s", #l, #r) << l << r << Qt::strong_ordering:: c \
+    BOBUIest::addRow("%s<>%s", #l, #r) << l << r << BobUI::strong_ordering:: c \
     /* end */
 #define EQUAL(x) ROW(x, x, equal)
     EQUAL(null);
@@ -567,21 +567,21 @@ void tst_QUuid::ordering_data()
 #undef ROW
 
     // due to the way we store data1,2,3 in memory, the ordering will flip
-    QTest::newRow("qt7-integer-portions")
+    BOBUIest::newRow("bobui7-integer-portions")
             << QUuid{0x01000002, 0x0000, 0x0000, 0, 0, 0, 0, 0, 0, 0, 0}
             << QUuid{0x02000001, 0x0000, 0x0000, 0, 0, 0, 0, 0, 0, 0, 0}
-            << (QSysInfo::ByteOrder == QSysInfo::BigEndian || QT_VERSION_MAJOR < 7 ?
-                    Qt::strong_ordering::less : Qt::strong_ordering::greater);
+            << (QSysInfo::ByteOrder == QSysInfo::BigEndian || BOBUI_VERSION_MAJOR < 7 ?
+                    BobUI::strong_ordering::less : BobUI::strong_ordering::greater);
 }
 
 void tst_QUuid::ordering()
 {
     QFETCH(const QUuid, lhs);
     QFETCH(const QUuid, rhs);
-    QFETCH(const Qt::strong_ordering, expected);
+    QFETCH(const BobUI::strong_ordering, expected);
 
     QCOMPARE(qCompareThreeWay(lhs, rhs), expected);
-    QT_TEST_ALL_COMPARISON_OPS(lhs, rhs, expected);
+    BOBUI_TEST_ALL_COMPARISON_OPS(lhs, rhs, expected);
 }
 
 void tst_QUuid::generate()
@@ -600,12 +600,12 @@ void tst_QUuid::less()
     QVERIFY(  uuidB <= uuidA);
     QVERIFY(!(uuidA <  uuidB) );
     QVERIFY(!(uuidA <= uuidB));
-    QT_TEST_ALL_COMPARISON_OPS(uuidB, uuidA, Qt::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(uuidB, uuidA, BobUI::strong_ordering::less);
 
     QUuid null_uuid;
     QVERIFY(null_uuid < uuidA); // Null uuid is always less than a valid one
     QVERIFY(null_uuid <= uuidA);
-    QT_TEST_ALL_COMPARISON_OPS(null_uuid, uuidA, Qt::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(null_uuid, uuidA, BobUI::strong_ordering::less);
 
     QVERIFY(null_uuid <= null_uuid);
     QVERIFY(uuidA <= uuidA);
@@ -618,7 +618,7 @@ void tst_QUuid::more()
     QVERIFY(  uuidA >= uuidB);
     QVERIFY(!(uuidB >  uuidA));
     QVERIFY(!(uuidB >= uuidA));
-    QT_TEST_ALL_COMPARISON_OPS(uuidA, uuidB, Qt::strong_ordering::greater);
+    BOBUI_TEST_ALL_COMPARISON_OPS(uuidA, uuidB, BobUI::strong_ordering::greater);
 
     QUuid null_uuid;
     QVERIFY(!(null_uuid >  uuidA)); // Null uuid is always less than a valid one
@@ -626,22 +626,22 @@ void tst_QUuid::more()
 
     QVERIFY(null_uuid >= null_uuid);
     QVERIFY(uuidA >= uuidA);
-    QT_TEST_ALL_COMPARISON_OPS(uuidA, uuidA, Qt::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(uuidA, uuidA, BobUI::strong_ordering::equal);
 }
 
 void tst_QUuid::variants_data()
 {
-    QTest::addColumn<QUuid>("uuid");
-    QTest::addColumn<QUuid::Variant>("variant");
+    BOBUIest::addColumn<QUuid>("uuid");
+    BOBUIest::addColumn<QUuid::Variant>("variant");
 
-    QTest::newRow("default-constructed") << QUuid() << QUuid::VarUnknown;
-    QTest::newRow("minimal-NCS") << make_minimal(QUuid::NCS) << QUuid::NCS;
-    QTest::newRow("minimal-DCE") << make_minimal(QUuid::DCE) << QUuid::DCE;
-    QTest::newRow("minimal-Microsoft") << make_minimal(QUuid::Microsoft) << QUuid::Microsoft;
-    QTest::newRow("minimal-Reserved") << make_minimal(QUuid::Reserved) << QUuid::Reserved;
-    QTest::newRow("uuidA") << uuidA << QUuid::DCE;
-    QTest::newRow("uuidB") << uuidB << QUuid::DCE;
-    QTest::newRow("NCS") << QUuid("{3a2f883c-4000-000d-0000-00fb40000000}") << QUuid::NCS;
+    BOBUIest::newRow("default-constructed") << QUuid() << QUuid::VarUnknown;
+    BOBUIest::newRow("minimal-NCS") << make_minimal(QUuid::NCS) << QUuid::NCS;
+    BOBUIest::newRow("minimal-DCE") << make_minimal(QUuid::DCE) << QUuid::DCE;
+    BOBUIest::newRow("minimal-Microsoft") << make_minimal(QUuid::Microsoft) << QUuid::Microsoft;
+    BOBUIest::newRow("minimal-Reserved") << make_minimal(QUuid::Reserved) << QUuid::Reserved;
+    BOBUIest::newRow("uuidA") << uuidA << QUuid::DCE;
+    BOBUIest::newRow("uuidB") << uuidB << QUuid::DCE;
+    BOBUIest::newRow("NCS") << QUuid("{3a2f883c-4000-000d-0000-00fb40000000}") << QUuid::NCS;
 
     // compile-time checks
     constexpr QUuid defaultConstructed;
@@ -660,40 +660,40 @@ void tst_QUuid::variants()
 
 void tst_QUuid::versions_data()
 {
-    QTest::addColumn<QUuid>("uuid");
-    QTest::addColumn<QUuid::Version>("version");
+    BOBUIest::addColumn<QUuid>("uuid");
+    BOBUIest::addColumn<QUuid::Version>("version");
 
-    QTest::newRow("default-constructed") << QUuid() << QUuid::VerUnknown;
-    QTest::newRow("DCE-time") << QUuid("{406c45a0-3b7e-11d0-80a3-0000c08810a7}") << QUuid::Time;
-    QTest::newRow("DCE-EmbPosix")
+    BOBUIest::newRow("default-constructed") << QUuid() << QUuid::VerUnknown;
+    BOBUIest::newRow("DCE-time") << QUuid("{406c45a0-3b7e-11d0-80a3-0000c08810a7}") << QUuid::Time;
+    BOBUIest::newRow("DCE-EmbPosix")
             << QUuid(0, 0, 0b0010'0010'1000'0010, 0b1010'0000, 0, 0, 0, 0, 0, 0, 0)
             << QUuid::EmbeddedPOSIX;
-    QTest::newRow("DCE-Md5")
+    BOBUIest::newRow("DCE-Md5")
             << QUuid(0, 0, 0b0011'0001'0100'1001, 0b1011'0000, 0, 0, 0, 0, 0, 0, 0)
             << QUuid::Md5;
-    QTest::newRow("DCE-Random")
+    BOBUIest::newRow("DCE-Random")
             << QUuid(0, 0, 0b0100'0101'0001'1101, 0b1000'0000, 0, 0, 0, 0, 0, 0, 0)
             << QUuid::Random;
-    QTest::newRow("DCE-Sha1")
+    BOBUIest::newRow("DCE-Sha1")
             << QUuid(0, 0, 0b0101'1101'0101'1011, 0b1001'0000, 0, 0, 0, 0, 0, 0, 0)
             << QUuid::Sha1;
-    QTest::newRow("DCE-inv-less-than-Time->unknown")
+    BOBUIest::newRow("DCE-inv-less-than-Time->unknown")
             << QUuid(0, 0, 0b0000'1101'0101'1011, 0b1000'0000, 0, 0, 0, 0, 0, 0, 0)
             << QUuid::VerUnknown;
-    QTest::newRow("DCE-inv-greater-than-UnixEpoch->unknown")
+    BOBUIest::newRow("DCE-inv-greater-than-UnixEpoch->unknown")
             << QUuid(0, 0, 0b1000'1101'0101'1011, 0b1000'0000, 0, 0, 0, 0, 0, 0, 0)
             << QUuid::VerUnknown;
-    QTest::newRow("NCS-Time->unknown")
+    BOBUIest::newRow("NCS-Time->unknown")
             << QUuid(0, 0, 0b0001'0000'0000'0000, 0b0100'0000, 0, 0, 0, 0, 0, 0, 0)
             << QUuid::VerUnknown;
-    QTest::newRow("MS-Sha1->unknown")
+    BOBUIest::newRow("MS-Sha1->unknown")
             << QUuid(0, 0, 0b0101'0000'0000'0000, 0b1100'0000, 0, 0, 0, 0, 0, 0, 0)
             << QUuid::VerUnknown;
-    QTest::newRow("Reserved-Random->unknown")
+    BOBUIest::newRow("Reserved-Random->unknown")
             << QUuid(0, 0, 0b0100'0000'0000'0000, 0b1110'0000, 0, 0, 0, 0, 0, 0, 0)
             << QUuid::VerUnknown;
-    QTest::newRow("uuidA") << uuidA << QUuid::Random;
-    QTest::newRow("uuidB") << uuidB << QUuid::Random;
+    BOBUIest::newRow("uuidA") << uuidA << QUuid::Random;
+    BOBUIest::newRow("uuidB") << uuidB << QUuid::Random;
 
     // compile-time checks
     constexpr QUuid defaultConstructed;
@@ -710,7 +710,7 @@ void tst_QUuid::versions()
     QCOMPARE_EQ(uuid.version(), version);
 }
 
-class UuidThread : public QThread
+class UuidThread : public BOBUIhread
 {
 public:
     QUuid uuid;
@@ -723,7 +723,7 @@ public:
 
 void tst_QUuid::threadUniqueness()
 {
-    QList<UuidThread *> threads(qMax(2, QThread::idealThreadCount()));
+    QList<UuidThread *> threads(qMax(2, BOBUIhread::idealThreadCount()));
     for (int i = 0; i < threads.size(); ++i)
         threads[i] = new UuidThread;
     for (int i = 0; i < threads.size(); ++i)
@@ -737,7 +737,7 @@ void tst_QUuid::threadUniqueness()
 
 void tst_QUuid::processUniqueness()
 {
-#if !QT_CONFIG(process)
+#if !BOBUI_CONFIG(process)
     QSKIP("No qprocess support");
 #else
 #ifdef Q_OS_ANDROID
@@ -790,7 +790,7 @@ void tst_QUuid::qvariant()
 
     QUuid uuid2 = v.value<QUuid>();
     QVERIFY(!uuid2.isNull());
-    QT_TEST_EQUALITY_OPS(uuid, uuid2, true);
+    BOBUI_TEST_EQUALITY_OPS(uuid, uuid2, true);
 }
 
 void tst_QUuid::qvariant_conversion()
@@ -822,7 +822,7 @@ void tst_QUuid::qvariant_conversion()
         QVariant sv = QVariant::fromValue(uuid.toByteArray());
         QCOMPARE(sv.metaType(), QMetaType(QMetaType::QByteArray));
         QVERIFY(sv.canConvert<QUuid>());
-        QT_TEST_EQUALITY_OPS(sv.value<QUuid>(), uuid, true);
+        BOBUI_TEST_EQUALITY_OPS(sv.value<QUuid>(), uuid, true);
     }
 }
 
@@ -836,5 +836,5 @@ void tst_QUuid::darwinTypes()
 #endif
 }
 
-QTEST_MAIN(tst_QUuid)
+BOBUIEST_MAIN(tst_QUuid)
 #include "tst_quuid.moc"

@@ -1,10 +1,10 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qxcbatom.h"
 
-#include <QtCore/qglobal.h>
+#include <BobUICore/qglobal.h>
 
 #include <string.h>
 
@@ -43,21 +43,21 @@ static const char *xcb_atomnames = {
     "TIMESTAMP\0"
     "SAVE_TARGETS\0"
     "CLIP_TEMPORARY\0"
-    "_QT_SELECTION\0"
-    "_QT_CLIPBOARD_SENTINEL\0"
-    "_QT_SELECTION_SENTINEL\0"
+    "_BOBUI_SELECTION\0"
+    "_BOBUI_CLIPBOARD_SENTINEL\0"
+    "_BOBUI_SELECTION_SENTINEL\0"
     "CLIPBOARD_MANAGER\0"
 
     "RESOURCE_MANAGER\0"
 
     "_XSETROOT_ID\0"
 
-    "_QT_SCROLL_DONE\0"
-    "_QT_INPUT_ENCODING\0"
+    "_BOBUI_SCROLL_DONE\0"
+    "_BOBUI_INPUT_ENCODING\0"
 
-    "_QT_CLOSE_CONNECTION\0"
+    "_BOBUI_CLOSE_CONNECTION\0"
 
-    "_QT_GET_TIMESTAMP\0"
+    "_BOBUI_GET_TIMESTAMP\0"
 
     "_MOTIF_WM_HINTS\0"
 

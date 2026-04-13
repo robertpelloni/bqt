@@ -1,17 +1,17 @@
-# QTextEdit
+# BOBUIextEdit
 
-The QTextEdit widget is an advanced editor that supports formatted rich text.
+The BOBUIextEdit widget is an advanced editor that supports formatted rich text.
 It can be used to display HTML and other rich document formats. Internally,
-QTextEdit uses the QTextDocument class to describe both the high-level
+BOBUIextEdit uses the BOBUIextDocument class to describe both the high-level
 structure of each document and the low-level formatting of paragraphs.
 
 If you are viewing this document in the textedit example, you can edit this
-document to explore Qt's rich text editing features. We have included some
+document to explore BobUI's rich text editing features. We have included some
 comments in each of the following sections to encourage you to experiment.
 
 ## Font and Paragraph Styles
 
-QTextEdit supports **bold**, *italic*, _underline_ &amp; ~~strikethrough~~ font
+BOBUIextEdit supports **bold**, *italic*, _underline_ &amp; ~~strikethrough~~ font
 styles, and can display
 <span style="font-size:10pt; font-weight:600; color:#00007f;"> multicolored</span>
 text. Font families such as
@@ -41,12 +41,12 @@ characters can be used to enumerate items, and we can use both Roman and Arabic
 numerals in the same list structure:
 
 1. Introduction
-2. Qt Tools
-    1) Qt Assistant
-    2) Qt Widgets Designer
+2. BobUI Tools
+    1) BobUI Assistant
+    2) BobUI Widgets Designer
         1. Form Editor
         2. Component Architecture
-    3) Qt Linguist
+    3) BobUI Linguist
 
 The list will automatically be renumbered if you add or remove items. *Try
 adding new sections to the above list or removing existing item to see the
@@ -71,31 +71,31 @@ into different parts of this document.*
 
 ## Tables
 
-QTextEdit can arrange and format tables, supporting features such as row and
+BOBUIextEdit can arrange and format tables, supporting features such as row and
 column spans, text formatting within cells, and size constraints for columns.
 
 |               | Development Tools | Programming Techniques | Graphical User Interfaces |
 | ------------: | ----------------- | ---------------------- | ------------------------- |
-| 9:00 - 11:00  |                     Introduction to Qt                               |||
-| 11:00 - 13:00 | Using qmake       | Object-oriented Programming | Layouts in Qt        |
-| 13:00 - 15:00 | Qt Widgets Designer Tutorial | Extreme Programming | Writing Custom Styles |
-| 15:00 - 17:00 | Qt Linguist and Internationalization | &nbsp; | &nbsp; |
+| 9:00 - 11:00  |                     Introduction to BobUI                               |||
+| 11:00 - 13:00 | Using qmake       | Object-oriented Programming | Layouts in BobUI        |
+| 13:00 - 15:00 | BobUI Widgets Designer Tutorial | Extreme Programming | Writing Custom Styles |
+| 15:00 - 17:00 | BobUI Linguist and Internationalization | &nbsp; | &nbsp; |
 
 *Try adding text to the cells in the table and experiment with the alignment of
 the paragraphs.*
 
 ## Hyperlinks
 
-QTextEdit is designed to support hyperlinks between documents, and this feature
+BOBUIextEdit is designed to support hyperlinks between documents, and this feature
 is used extensively in 
-[Qt Assistant](http://doc.qt.io/qt-5/qtassistant-index.html). Hyperlinks are
+[BobUI Assistant](http://doc.bobui.io/bobui-5/bobuiassistant-index.html). Hyperlinks are
 automatically created when an HTML file is imported into an editor. Since the
 rich text framework supports hyperlinks natively, they can also be created
 programmatically.
 
 ## Undo and Redo
 
-Full support for undo and redo operations is built into QTextEdit and the
+Full support for undo and redo operations is built into BOBUIextEdit and the
 underlying rich text framework. Operations on a document can be packaged
 together to make editing a more comfortable experience for the user.
 

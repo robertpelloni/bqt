@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-// QtCore
+// BobUICore
 #include <memory>
 #include <qdebug.h>
 #include <qmath.h>
 #include <qmutex.h>
 
-// QtGui
+// BobUIGui
 #include "qbitmap.h"
 #include "qimage.h"
 #include "qpaintdevice.h"
@@ -18,8 +18,8 @@
 #include "qpicture.h"
 #include "qpixmapcache.h"
 #include "qpolygon.h"
-#include "qtextlayout.h"
-#include "qthread.h"
+#include "bobuiextlayout.h"
+#include "bobuihread.h"
 #include "qvarlengtharray.h"
 #include "qstatictext.h"
 #include "qglyphrun.h"
@@ -31,7 +31,7 @@
 #include <private/qpaintengine_p.h>
 #include <private/qemulationpaintengine_p.h>
 #include <private/qpainterpath_p.h>
-#include <private/qtextengine_p.h>
+#include <private/bobuiextengine_p.h>
 #include <private/qpaintengine_raster_p.h>
 #include <private/qmath_p.h>
 #include <private/qstatictext_p.h>
@@ -41,11 +41,11 @@
 #include <private/qrawfont_p.h>
 #include <private/qfont_p.h>
 
-#include <QtCore/private/qtclasshelper_p.h>
+#include <BobUICore/private/bobuiclasshelper_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 // We changed the type from QScopedPointer to unique_ptr, make sure it's binary compatible:
 static_assert(sizeof(QScopedPointer<QPainterPrivate>) == sizeof(std::unique_ptr<QPainterPrivate>));
@@ -53,23 +53,23 @@ static_assert(sizeof(QScopedPointer<QPainterPrivate>) == sizeof(std::unique_ptr<
 #define QGradient_StretchToDevice 0x10000000
 #define QPaintEngine_OpaqueBackground 0x40000000
 
-// #define QT_DEBUG_DRAW
-#ifdef QT_DEBUG_DRAW
-constexpr bool qt_show_painter_debug_output = true;
+// #define BOBUI_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
+constexpr bool bobui_show_painter_debug_output = true;
 #endif
 
-extern QPixmap qt_pixmapForBrush(int style, bool invert);
+extern QPixmap bobui_pixmapForBrush(int style, bool invert);
 
-void qt_format_text(const QFont &font,
-                    const QRectF &_r, int tf, const QTextOption *option, const QString& str, QRectF *brect,
+void bobui_format_text(const QFont &font,
+                    const QRectF &_r, int tf, const BOBUIextOption *option, const QString& str, QRectF *brect,
                     int tabstops, int* tabarray, int tabarraylen,
                     QPainter *painter);
-static void drawTextItemDecoration(QPainter *painter, const QPointF &pos, const QFontEngine *fe, QTextEngine *textEngine,
-                                   QTextCharFormat::UnderlineStyle underlineStyle,
-                                   QTextItem::RenderFlags flags, qreal width,
-                                   const QTextCharFormat &charFormat);
+static void drawTextItemDecoration(QPainter *painter, const QPointF &pos, const QFontEngine *fe, BOBUIextEngine *textEngine,
+                                   BOBUIextCharFormat::UnderlineStyle underlineStyle,
+                                   BOBUIextItem::RenderFlags flags, qreal width,
+                                   const BOBUIextCharFormat &charFormat);
 // Helper function to calculate left most position, width and flags for decoration drawing
-static void qt_draw_decoration_for_glyphs(QPainter *painter,
+static void bobui_draw_decoration_for_glyphs(QPainter *painter,
                                           const QPointF &decorationPosition,
                                           const glyph_t *glyphArray,
                                           const QFixedPoint *positions,
@@ -82,9 +82,9 @@ static void qt_draw_decoration_for_glyphs(QPainter *painter,
 static inline QGradient::CoordinateMode coordinateMode(const QBrush &brush)
 {
     switch (brush.style()) {
-    case Qt::LinearGradientPattern:
-    case Qt::RadialGradientPattern:
-    case Qt::ConicalGradientPattern:
+    case BobUI::LinearGradientPattern:
+    case BobUI::RadialGradientPattern:
+    case BobUI::ConicalGradientPattern:
         return brush.gradient()->coordinateMode();
     default:
         ;
@@ -95,9 +95,9 @@ static inline QGradient::CoordinateMode coordinateMode(const QBrush &brush)
 extern bool qHasPixmapTexture(const QBrush &);
 
 static inline bool is_brush_transparent(const QBrush &brush) {
-    Qt::BrushStyle s = brush.style();
-    if (s != Qt::TexturePattern)
-        return s >= Qt::Dense1Pattern && s <= Qt::DiagCrossPattern;
+    BobUI::BrushStyle s = brush.style();
+    if (s != BobUI::TexturePattern)
+        return s >= BobUI::Dense1Pattern && s <= BobUI::DiagCrossPattern;
     if (qHasPixmapTexture(brush))
         return brush.texture().isQBitmap() || brush.texture().hasAlphaChannel();
     else {
@@ -107,7 +107,7 @@ static inline bool is_brush_transparent(const QBrush &brush) {
 }
 
 static inline bool is_pen_transparent(const QPen &pen) {
-    return pen.style() > Qt::SolidLine || is_brush_transparent(pen.brush());
+    return pen.style() > BobUI::SolidLine || is_brush_transparent(pen.brush());
 }
 
 /* Discards the emulation flags that are not relevant for line drawing
@@ -125,8 +125,8 @@ static inline uint line_emulation(uint emulation)
                         | QPaintEngine_OpaqueBackground);
 }
 
-#ifndef QT_NO_DEBUG
-static bool qt_painter_thread_test(int devType, int engineType, const char *what)
+#ifndef BOBUI_NO_DEBUG
+static bool bobui_painter_thread_test(int devType, int engineType, const char *what)
 {
     const QPlatformIntegration *platformIntegration = QGuiApplicationPrivate::platformIntegration();
     switch (devType) {
@@ -136,7 +136,7 @@ static bool qt_painter_thread_test(int devType, int engineType, const char *what
         // can be drawn onto these devices safely from any thread
         break;
     default:
-        if (QThread::currentThread() != qApp->thread()
+        if (BOBUIhread::currentThread() != qApp->thread()
                 // pixmaps cannot be targets unless threaded pixmaps are supported
                 && (devType != QInternal::Pixmap || !platformIntegration->hasCapability(QPlatformIntegration::ThreadedPixmaps))
                 // framebuffer objects and such cannot be targets unless threaded GL is supported
@@ -160,7 +160,7 @@ static bool needsEmulation(const QBrush &brush)
     const QGradient *bg = brush.gradient();
     if (bg) {
         res = (bg->coordinateMode() > QGradient::LogicalMode);
-    } else if (brush.style() == Qt::TexturePattern) {
+    } else if (brush.style() == BobUI::TexturePattern) {
         if (qHasPixmapTexture(brush))
             res = !qFuzzyCompare(brush.texture().devicePixelRatio(), qreal(1.0));
         else
@@ -174,7 +174,7 @@ void QPainterPrivate::checkEmulation()
 {
     Q_ASSERT(extended);
     bool doEmulation = false;
-    if (state->bgMode == Qt::OpaqueMode)
+    if (state->bgMode == BobUI::OpaqueMode)
         doEmulation = true;
 
     if (needsEmulation(state->brush))
@@ -206,15 +206,15 @@ QPainterPrivate::QPainterPrivate(QPainter *painter)
 QPainterPrivate::~QPainterPrivate()
     = default;
 
-QTransform QPainterPrivate::viewTransform() const
+BOBUIransform QPainterPrivate::viewTransform() const
 {
     if (state->VxF) {
         qreal scaleW = qreal(state->vw)/qreal(state->ww);
         qreal scaleH = qreal(state->vh)/qreal(state->wh);
-        return QTransform(scaleW, 0, 0, scaleH,
+        return BOBUIransform(scaleW, 0, 0, scaleH,
                           state->vx - state->wx*scaleW, state->vy - state->wy*scaleH);
     }
-    return QTransform();
+    return BOBUIransform();
 }
 
 qreal QPainterPrivate::effectiveDevicePixelRatio() const
@@ -226,10 +226,10 @@ qreal QPainterPrivate::effectiveDevicePixelRatio() const
     return device->devicePixelRatio();
 }
 
-QTransform QPainterPrivate::hidpiScaleTransform() const
+BOBUIransform QPainterPrivate::hidpiScaleTransform() const
 {
     const qreal devicePixelRatio = effectiveDevicePixelRatio();
-    return QTransform::fromScale(devicePixelRatio, devicePixelRatio);
+    return BOBUIransform::fromScale(devicePixelRatio, devicePixelRatio);
 }
 
 /*
@@ -269,10 +269,10 @@ bool QPainterPrivate::attachPainterPrivate(QPainter *q, QPaintDevice *pdev)
         q->d_ptr->state->redirectionMatrix = q->d_ptr->state->matrix;
         q->d_ptr->state->redirectionMatrix *= q->d_ptr->hidpiScaleTransform().inverted();
         q->d_ptr->state->redirectionMatrix.translate(-offset.x(), -offset.y());
-        q->d_ptr->state->worldMatrix = QTransform();
+        q->d_ptr->state->worldMatrix = BOBUIransform();
         q->d_ptr->state->WxF = false;
     } else {
-        q->d_ptr->state->redirectionMatrix = QTransform::fromTranslate(-offset.x(), -offset.y());
+        q->d_ptr->state->redirectionMatrix = BOBUIransform::fromTranslate(-offset.x(), -offset.y());
     }
     q->d_ptr->updateMatrix();
 
@@ -317,8 +317,8 @@ void QPainterPrivate::detachPainterPrivate(QPainter *q)
 
 void QPainterPrivate::draw_helper(const QPainterPath &originalPath, DrawOperation op)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output) {
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output) {
         printf("QPainter::drawHelper\n");
     }
 #endif
@@ -350,7 +350,7 @@ void QPainterPrivate::draw_helper(const QPainterPath &originalPath, DrawOperatio
     QPainterPath path = originalPath * state->matrix;
     QRectF pathBounds = path.boundingRect();
     QRectF strokeBounds;
-    bool doStroke = (op & StrokeDraw) && (state->pen.style() != Qt::NoPen);
+    bool doStroke = (op & StrokeDraw) && (state->pen.style() != BobUI::NoPen);
     if (doStroke) {
         qreal penWidth = state->pen.widthF();
         if (penWidth == 0) {
@@ -358,7 +358,7 @@ void QPainterPrivate::draw_helper(const QPainterPath &originalPath, DrawOperatio
             strokeOffsetY = 1;
         } else {
             // In case of complex xform
-            if (state->matrix.type() > QTransform::TxScale) {
+            if (state->matrix.type() > BOBUIransform::TxScale) {
                 QPainterPathStroker stroker;
                 stroker.setWidth(penWidth);
                 stroker.setJoinStyle(state->pen.joinStyle());
@@ -383,7 +383,7 @@ void QPainterPrivate::draw_helper(const QPainterPath &originalPath, DrawOperatio
     if (q->hasClipping()) {
         bool hasPerspectiveTransform = false;
         for (const QPainterClipInfo &info : std::as_const(state->clipInfo)) {
-            if (info.matrix.type() == QTransform::TxProject) {
+            if (info.matrix.type() == BOBUIransform::TxProject) {
                 hasPerspectiveTransform = true;
                 break;
             }
@@ -397,9 +397,9 @@ void QPainterPrivate::draw_helper(const QPainterPath &originalPath, DrawOperatio
             // coordinates and converting to/from logical coordinates will
             // lose precision.
             bool old_txinv = txinv;
-            QTransform old_invMatrix = invMatrix;
+            BOBUIransform old_invMatrix = invMatrix;
             txinv = true;
-            invMatrix = QTransform();
+            invMatrix = BOBUIransform();
             QPainterPath clipPath = q->clipPath();
             QRectF r = clipPath.boundingRect().intersected(absPathRect);
             absPathRect = r.toAlignedRect();
@@ -427,8 +427,8 @@ void QPainterPrivate::draw_helper(const QPainterPath &originalPath, DrawOperatio
     p.setOpacity(state->opacity);
     p.translate(-absPathRect.x(), -absPathRect.y());
     p.setTransform(state->matrix, true);
-    p.setPen(doStroke ? state->pen : QPen(Qt::NoPen));
-    p.setBrush((op & FillDraw) ? state->brush : QBrush(Qt::NoBrush));
+    p.setPen(doStroke ? state->pen : QPen(BobUI::NoPen));
+    p.setBrush((op & FillDraw) ? state->brush : QBrush(BobUI::NoBrush));
     p.setBackground(state->bgBrush);
     p.setBackgroundMode(state->bgMode);
     p.setBrushOrigin(state->brushOrigin);
@@ -439,8 +439,8 @@ void QPainterPrivate::draw_helper(const QPainterPath &originalPath, DrawOperatio
 
     p.drawPath(originalPath);
 
-#ifndef QT_NO_DEBUG
-    static bool do_fallback_overlay = !qEnvironmentVariableIsEmpty("QT_PAINT_FALLBACK_OVERLAY");
+#ifndef BOBUI_NO_DEBUG
+    static bool do_fallback_overlay = !qEnvironmentVariableIsEmpty("BOBUI_PAINT_FALLBACK_OVERLAY");
     if (do_fallback_overlay) {
         QImage block(8, 8, QImage::Format_ARGB32_Premultiplied);
         QPainter pt(&block);
@@ -457,7 +457,7 @@ void QPainterPrivate::draw_helper(const QPainterPath &originalPath, DrawOperatio
     p.end();
 
     q->save();
-    state->matrix = QTransform();
+    state->matrix = BOBUIransform();
     if (extended) {
         extended->transformChanged();
     } else {
@@ -467,7 +467,7 @@ void QPainterPrivate::draw_helper(const QPainterPath &originalPath, DrawOperatio
     engine->drawImage(absPathRect,
                  image,
                  QRectF(0, 0, absPathRect.width(), absPathRect.height()),
-                 Qt::OrderedDither | Qt::OrderedAlphaDither);
+                 BobUI::OrderedDither | BobUI::OrderedAlphaDither);
     q->restore();
 }
 
@@ -475,27 +475,27 @@ void QPainterPrivate::drawOpaqueBackground(const QPainterPath &path, DrawOperati
 {
     Q_Q(QPainter);
 
-    q->setBackgroundMode(Qt::TransparentMode);
+    q->setBackgroundMode(BobUI::TransparentMode);
 
-    if (op & FillDraw && state->brush.style() != Qt::NoBrush) {
+    if (op & FillDraw && state->brush.style() != BobUI::NoBrush) {
         q->fillPath(path, state->bgBrush.color());
         q->fillPath(path, state->brush);
     }
 
-    if (op & StrokeDraw && state->pen.style() != Qt::NoPen) {
+    if (op & StrokeDraw && state->pen.style() != BobUI::NoPen) {
         q->strokePath(path, QPen(state->bgBrush.color(), state->pen.width()));
         q->strokePath(path, state->pen);
     }
 
-    q->setBackgroundMode(Qt::OpaqueMode);
+    q->setBackgroundMode(BobUI::OpaqueMode);
 }
 
 static inline QBrush stretchGradientToUserSpace(const QBrush &brush, const QRectF &boundingRect)
 {
-    Q_ASSERT(brush.style() >= Qt::LinearGradientPattern
-             && brush.style() <= Qt::ConicalGradientPattern);
+    Q_ASSERT(brush.style() >= BobUI::LinearGradientPattern
+             && brush.style() <= BobUI::ConicalGradientPattern);
 
-    QTransform gradientToUser(boundingRect.width(), 0, 0, boundingRect.height(),
+    BOBUIransform gradientToUser(boundingRect.width(), 0, 0, boundingRect.height(),
                               boundingRect.x(), boundingRect.y());
 
     QGradient g = *brush.gradient();
@@ -529,16 +529,16 @@ void QPainterPrivate::drawStretchedGradient(const QPainterPath &path, DrawOperat
     QRectF boundingRect;
 
     // Draw the xformed fill if the brush is a stretch gradient.
-    if ((op & FillDraw) && brush.style() != Qt::NoBrush) {
+    if ((op & FillDraw) && brush.style() != BobUI::NoBrush) {
         if (brushMode == QGradient::StretchToDeviceMode) {
-            q->setPen(Qt::NoPen);
-            changedPen = pen.style() != Qt::NoPen;
+            q->setPen(BobUI::NoPen);
+            changedPen = pen.style() != BobUI::NoPen;
             q->scale(sw, sh);
             updateState(state);
 
             const qreal isw = 1.0 / sw;
             const qreal ish = 1.0 / sh;
-            QTransform inv(isw, 0, 0, ish, 0, 0);
+            BOBUIransform inv(isw, 0, 0, ish, 0, 0);
             engine->drawPath(path * inv);
             q->scale(isw, ish);
         } else {
@@ -553,10 +553,10 @@ void QPainterPrivate::drawStretchedGradient(const QPainterPath &path, DrawOperat
         }
     }
 
-    if ((op & StrokeDraw) && pen.style() != Qt::NoPen) {
+    if ((op & StrokeDraw) && pen.style() != BobUI::NoPen) {
         // Draw the xformed outline if the pen is a stretch gradient.
         if (penMode == QGradient::StretchToDeviceMode) {
-            q->setPen(Qt::NoPen);
+            q->setPen(BobUI::NoPen);
             changedPen = true;
 
             if (needsFill) {
@@ -579,12 +579,12 @@ void QPainterPrivate::drawStretchedGradient(const QPainterPath &path, DrawOperat
 
             const qreal isw = 1.0 / sw;
             const qreal ish = 1.0 / sh;
-            QTransform inv(isw, 0, 0, ish, 0, 0);
+            BOBUIransform inv(isw, 0, 0, ish, 0, 0);
             engine->drawPath(stroke * inv);
             q->scale(isw, ish);
         } else {
-            if (!needsFill && brush.style() != Qt::NoBrush) {
-                q->setBrush(Qt::NoBrush);
+            if (!needsFill && brush.style() != BobUI::NoBrush) {
+                q->setBrush(BobUI::NoBrush);
                 changedBrush = true;
             }
 
@@ -608,8 +608,8 @@ void QPainterPrivate::drawStretchedGradient(const QPainterPath &path, DrawOperat
             engine->drawPath(path);
         }
     } else if (needsFill) {
-        if (pen.style() != Qt::NoPen) {
-            q->setPen(Qt::NoPen);
+        if (pen.style() != BobUI::NoPen) {
+            q->setPen(BobUI::NoPen);
             changedPen = true;
         }
 
@@ -626,7 +626,7 @@ void QPainterPrivate::drawStretchedGradient(const QPainterPath &path, DrawOperat
 
 void QPainterPrivate::updateMatrix()
 {
-    state->matrix = state->WxF ? state->worldMatrix : QTransform();
+    state->matrix = state->WxF ? state->worldMatrix : BOBUIransform();
     if (state->VxF)
         state->matrix *= viewTransform();
 
@@ -651,7 +651,7 @@ void QPainterPrivate::updateInvMatrix()
     invMatrix = state->matrix.inverted();
 }
 
-extern bool qt_isExtendedRadialGradient(const QBrush &brush);
+extern bool bobui_isExtendedRadialGradient(const QBrush &brush);
 
 void QPainterPrivate::updateEmulationSpecifier(QPainterState *s)
 {
@@ -677,42 +677,42 @@ void QPainterPrivate::updateEmulationSpecifier(QPainterState *s)
 
         skip = false;
 
-        QBrush penBrush = (qpen_style(s->pen) == Qt::NoPen) ? QBrush(Qt::NoBrush) : qpen_brush(s->pen);
-        Qt::BrushStyle brushStyle = qbrush_style(s->brush);
-        Qt::BrushStyle penBrushStyle = qbrush_style(penBrush);
-        alpha = (penBrushStyle != Qt::NoBrush
-                 && (penBrushStyle < Qt::LinearGradientPattern && penBrush.color().alpha() != 255)
+        QBrush penBrush = (qpen_style(s->pen) == BobUI::NoPen) ? QBrush(BobUI::NoBrush) : qpen_brush(s->pen);
+        BobUI::BrushStyle brushStyle = qbrush_style(s->brush);
+        BobUI::BrushStyle penBrushStyle = qbrush_style(penBrush);
+        alpha = (penBrushStyle != BobUI::NoBrush
+                 && (penBrushStyle < BobUI::LinearGradientPattern && penBrush.color().alpha() != 255)
                  && !penBrush.isOpaque())
-                || (brushStyle != Qt::NoBrush
-                    && (brushStyle < Qt::LinearGradientPattern && s->brush.color().alpha() != 255)
+                || (brushStyle != BobUI::NoBrush
+                    && (brushStyle < BobUI::LinearGradientPattern && s->brush.color().alpha() != 255)
                     && !s->brush.isOpaque());
-        linearGradient = ((penBrushStyle == Qt::LinearGradientPattern) ||
-                           (brushStyle == Qt::LinearGradientPattern));
-        radialGradient = ((penBrushStyle == Qt::RadialGradientPattern) ||
-                           (brushStyle == Qt::RadialGradientPattern));
-        extendedRadialGradient = radialGradient && (qt_isExtendedRadialGradient(penBrush) || qt_isExtendedRadialGradient(s->brush));
-        conicalGradient = ((penBrushStyle == Qt::ConicalGradientPattern) ||
-                            (brushStyle == Qt::ConicalGradientPattern));
-        patternBrush = (((penBrushStyle > Qt::SolidPattern
-                           && penBrushStyle < Qt::LinearGradientPattern)
-                          || penBrushStyle == Qt::TexturePattern) ||
-                         ((brushStyle > Qt::SolidPattern
-                           && brushStyle < Qt::LinearGradientPattern)
-                          || brushStyle == Qt::TexturePattern));
+        linearGradient = ((penBrushStyle == BobUI::LinearGradientPattern) ||
+                           (brushStyle == BobUI::LinearGradientPattern));
+        radialGradient = ((penBrushStyle == BobUI::RadialGradientPattern) ||
+                           (brushStyle == BobUI::RadialGradientPattern));
+        extendedRadialGradient = radialGradient && (bobui_isExtendedRadialGradient(penBrush) || bobui_isExtendedRadialGradient(s->brush));
+        conicalGradient = ((penBrushStyle == BobUI::ConicalGradientPattern) ||
+                            (brushStyle == BobUI::ConicalGradientPattern));
+        patternBrush = (((penBrushStyle > BobUI::SolidPattern
+                           && penBrushStyle < BobUI::LinearGradientPattern)
+                          || penBrushStyle == BobUI::TexturePattern) ||
+                         ((brushStyle > BobUI::SolidPattern
+                           && brushStyle < BobUI::LinearGradientPattern)
+                          || brushStyle == BobUI::TexturePattern));
 
         bool penTextureAlpha = false;
-        if (penBrush.style() == Qt::TexturePattern)
+        if (penBrush.style() == BobUI::TexturePattern)
             penTextureAlpha = qHasPixmapTexture(penBrush)
                               ? (penBrush.texture().depth() > 1) && penBrush.texture().hasAlpha()
                               : penBrush.textureImage().hasAlphaChannel();
         bool brushTextureAlpha = false;
-        if (s->brush.style() == Qt::TexturePattern) {
+        if (s->brush.style() == BobUI::TexturePattern) {
             brushTextureAlpha = qHasPixmapTexture(s->brush)
                                 ? (s->brush.texture().depth() > 1) && s->brush.texture().hasAlpha()
                                 : s->brush.textureImage().hasAlphaChannel();
         }
-        if (((penBrush.style() == Qt::TexturePattern && penTextureAlpha)
-             || (s->brush.style() == Qt::TexturePattern && brushTextureAlpha))
+        if (((penBrush.style() == BobUI::TexturePattern && penTextureAlpha)
+             || (s->brush.style() == BobUI::TexturePattern && brushTextureAlpha))
             && !engine->hasFeature(QPaintEngine::MaskedBrush))
             s->emulationSpecifier |= QPaintEngine::MaskedBrush;
         else
@@ -751,13 +751,13 @@ void QPainterPrivate::updateEmulationSpecifier(QPainterState *s)
     if (s->state() & QPaintEngine::DirtyTransform) {
         xform = !s->matrix.isIdentity();
         complexXform = !s->matrix.isAffine();
-    } else if (s->matrix.type() >= QTransform::TxTranslate) {
+    } else if (s->matrix.type() >= BOBUIransform::TxTranslate) {
         xform = true;
         complexXform = !s->matrix.isAffine();
     }
 
-    const bool brushXform = (s->brush.transform().type() != QTransform::TxNone);
-    const bool penXform = (s->pen.brush().transform().type() != QTransform::TxNone);
+    const bool brushXform = (s->brush.transform().type() != BOBUIransform::TxNone);
+    const bool penXform = (s->pen.brush().transform().type() != BOBUIransform::TxNone);
 
     const bool patternXform = patternBrush && (xform || brushXform || penXform);
 
@@ -838,7 +838,7 @@ void QPainterPrivate::updateEmulationSpecifier(QPainterState *s)
         s->emulationSpecifier &= ~QPaintEngine::ObjectBoundingModeGradients;
 
     // Opaque backgrounds...
-    if (s->bgMode == Qt::OpaqueMode &&
+    if (s->bgMode == BobUI::OpaqueMode &&
         (is_pen_transparent(s->pen) || is_brush_transparent(s->brush)))
         s->emulationSpecifier |= QPaintEngine_OpaqueBackground;
     else
@@ -906,7 +906,7 @@ void QPainterPrivate::updateState(QPainterState *newState)
     \brief The QPainter class performs low-level painting on widgets and
     other paint devices.
 
-    \inmodule QtGui
+    \inmodule BobUIGui
     \ingroup painting
 
     \reentrant
@@ -938,7 +938,7 @@ void QPainterPrivate::updateState(QPainterState *newState)
     destructor, deactivates it.
 
     Together with the QPaintDevice and QPaintEngine classes, QPainter
-    form the basis for Qt's paint system. QPainter is the class used
+    form the basis for BobUI's paint system. QPainter is the class used
     to perform drawing operations. QPaintDevice represents a device
     that can be painted on using a QPainter. QPaintEngine provides the
     interface that the painter uses to draw onto different types of
@@ -974,10 +974,10 @@ void QPainterPrivate::updateState(QPainterState *newState)
        lines or boundaries.
 
     \li backgroundMode() defines whether there is a background() or
-       not, i.e it is either Qt::OpaqueMode or Qt::TransparentMode.
+       not, i.e it is either BobUI::OpaqueMode or BobUI::TransparentMode.
 
     \li background() only applies when backgroundMode() is \l
-       Qt::OpaqueMode and pen() is a stipple. In that case, it
+       BobUI::OpaqueMode and pen() is a stipple. In that case, it
        describes the color of the background pixels in the stipple.
 
     \li brushOrigin() defines the origin of the tiled brushes, normally
@@ -1067,8 +1067,8 @@ void QPainterPrivate::updateState(QPainterState *newState)
     See also the \l {painting/deform}{Vector Deformation} example which
     shows how to use advanced vector techniques to draw text using a
     QPainterPath, the \l {painting/gradients}{Gradients} example which shows
-    the different types of gradients that are available in Qt, and the \l
-    {painting/pathstroke}{Path Stroking} example which shows Qt's built-in
+    the different types of gradients that are available in BobUI, and the \l
+    {painting/pathstroke}{Path Stroking} example which shows BobUI's built-in
     dash patterns and shows how custom patterns can be used to extend
     the range of available patterns.
 
@@ -1110,7 +1110,7 @@ void QPainterPrivate::updateState(QPainterState *newState)
     This is for example the case when drawing a QPixmap of 64x64 pixels size with
     a device pixel ratio of 2 onto a high DPI screen which also has
     a device pixel ratio of 2. Note that the pixmap is then effectively 32x32
-    pixels in \e{user space}. Code paths in Qt that calculate layout geometry
+    pixels in \e{user space}. Code paths in BobUI that calculate layout geometry
     based on the pixmap size will use this size. The net effect of this is that
     the pixmap is displayed as high DPI pixmap rather than a large pixmap.
 
@@ -1191,7 +1191,7 @@ void QPainterPrivate::updateState(QPainterState *newState)
     \li
     \b {Affine Transformations Example}
 
-    The \l {painting/affine}{Affine Transformations} example shows Qt's
+    The \l {painting/affine}{Affine Transformations} example shows BobUI's
     ability to perform affine transformations on painting
     operations. The demo also allows the user to experiment with the
     transformation operations and see the results immediately.
@@ -1202,7 +1202,7 @@ void QPainterPrivate::updateState(QPainterState *newState)
     All the transformation operations operate on the transformation
     worldTransform(). A matrix transforms a point in the plane to another
     point. For more information about the transformation matrix, see
-    the \l {Coordinate System} and QTransform documentation.
+    the \l {Coordinate System} and BOBUIransform documentation.
 
     The setWorldTransform() function can replace or add to the currently
     set worldTransform(). The resetTransform() function resets any
@@ -1276,7 +1276,7 @@ void QPainterPrivate::updateState(QPainterState *newState)
     \b {Composition Modes Example}
 
     The \l {painting/composition}{Composition Modes} example, available in
-    Qt's examples directory, allows you to experiment with the various
+    BobUI's examples directory, allows you to experiment with the various
     composition modes and see the results immediately.
 
     \endtable
@@ -1284,17 +1284,17 @@ void QPainterPrivate::updateState(QPainterState *newState)
     \section1 Limitations
     \target Limitations
 
-    If you are using coordinates with Qt's raster-based paint engine, it is
+    If you are using coordinates with BobUI's raster-based paint engine, it is
     important to note that, while coordinates greater than +/- 2\sup 15 can
     be used, any painting performed with coordinates outside this range is not
     guaranteed to be shown; the drawing may be clipped. This is due to the
     use of \c{short int} in the implementation.
 
-    The outlines generated by Qt's stroker are only an approximation when dealing
+    The outlines generated by BobUI's stroker are only an approximation when dealing
     with curved shapes. It is in most cases impossible to represent the outline of
-    a bezier curve segment using another bezier curve segment, and so Qt approximates
+    a bezier curve segment using another bezier curve segment, and so BobUI approximates
     the curve outlines by using several smaller curves. For performance reasons there
-    is a limit to how many curves Qt uses for these outlines, and thus when using
+    is a limit to how many curves BobUI uses for these outlines, and thus when using
     large pen widths or scales the outline error increases. To generate outlines with
     smaller errors it is possible to use the QPainterPathStroker class, which has the
     setCurveThreshold member function which let's the user specify the error tolerance.
@@ -1372,7 +1372,7 @@ void QPainterPrivate::updateState(QPainterState *newState)
     cases where expensive operations are ok to use, for instance when
     the result is cached in a QPixmap.
 
-    \sa QPaintDevice, QPaintEngine, {Qt SVG}, {Basic Drawing Example}, {<qdrawutil.h>}{Drawing Utility Functions}
+    \sa QPaintDevice, QPaintEngine, {BobUI SVG}, {Basic Drawing Example}, {<qdrawutil.h>}{Drawing Utility Functions}
 */
 
 /*!
@@ -1401,20 +1401,20 @@ void QPainterPrivate::updateState(QPainterState *newState)
     consumption and some reduction in text rendering performance. Therefore, enabling
     this is not recommended unless the use case requires it. One such use case could
     be aligning glyphs with other visual primitives.
-    This value was added in Qt 6.1.
+    This value was added in BobUI 6.1.
 
     \value LosslessImageRendering Use a lossless image rendering, whenever possible.
     Currently, this hint is only used when QPainter is employed to output a PDF
     file through QPrinter or QPdfWriter, where drawImage()/drawPixmap() calls
     will encode images using a lossless compression algorithm instead of lossy
     JPEG compression.
-    This value was added in Qt 5.13.
+    This value was added in BobUI 5.13.
 
     \value NonCosmeticBrushPatterns When painting with a brush with one of the predefined pattern
     styles, transform the pattern too, along with the object being painted. The default is to treat
     the pattern as cosmetic, so that the pattern pixels will map directly to device pixels,
     independently of any active transformations.
-    This value was added in Qt 6.4.
+    This value was added in BobUI 6.4.
 
     \sa renderHints(), setRenderHint(), {QPainter#Rendering
     Quality}{Rendering Quality}
@@ -1473,12 +1473,12 @@ QPainter::QPainter(QPaintDevice *pd)
 QPainter::~QPainter()
 {
     d_ptr->inDestructor = true;
-    QT_TRY {
+    BOBUI_TRY {
         if (isActive())
             end();
         else if (d_ptr->refcount > 1)
             d_ptr->detachPainterPrivate(this);
-    } QT_CATCH(...) {
+    } BOBUI_CATCH(...) {
         // don't throw anything in the destructor.
     }
     if (d_ptr) {
@@ -1547,8 +1547,8 @@ void QPainterPrivate::setEngineDirtyFlags(QSpan<const QPaintEngine::DirtyFlags> 
 
 void QPainter::save()
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::save()\n");
 #endif
     Q_D(QPainter);
@@ -1581,8 +1581,8 @@ void QPainter::save()
 
 void QPainter::restore()
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::restore()\n");
 #endif
     Q_D(QPainter);
@@ -1610,7 +1610,7 @@ void QPainter::restore()
         && (tmp->changeFlags & (QPaintEngine::DirtyClipRegion | QPaintEngine::DirtyClipPath))) {
         // reuse the tmp state to avoid any extra allocs...
         tmp->dirtyFlags = QPaintEngine::DirtyClipPath;
-        tmp->clipOperation = Qt::NoClip;
+        tmp->clipOperation = BobUI::NoClip;
         tmp->clipPath = QPainterPath();
         d->engine->updateState(*tmp);
         // replay the list of clip states,
@@ -1668,7 +1668,7 @@ void QPainter::restore()
     \sa end(), QPainter()
 */
 
-static inline void qt_cleanup_painter_state(QPainterPrivate *d)
+static inline void bobui_cleanup_painter_state(QPainterPrivate *d)
 {
     d->savedStates.clear();
     d->state = nullptr;
@@ -1703,8 +1703,8 @@ bool QPainter::begin(QPaintDevice *pd)
     if (rpd)
         pd = rpd;
 
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::begin(), device=%p, type=%d\n", pd, pd->devType());
 #endif
 
@@ -1747,13 +1747,13 @@ bool QPainter::begin(QPaintDevice *pd)
             Q_ASSERT(pm);
             if (pm->isNull()) {
                 qWarning("QPainter::begin: Cannot paint on a null pixmap");
-                qt_cleanup_painter_state(d);
+                bobui_cleanup_painter_state(d);
                 return false;
             }
 
             if (pm->depth() == 1) {
-                d->state->pen = QPen(Qt::color1);
-                d->state->brush = QBrush(Qt::color0);
+                d->state->pen = QPen(BobUI::color1);
+                d->state->brush = QBrush(BobUI::color0);
             }
             break;
         }
@@ -1763,7 +1763,7 @@ bool QPainter::begin(QPaintDevice *pd)
             Q_ASSERT(img);
             if (img->isNull()) {
                 qWarning("QPainter::begin: Cannot paint on a null image");
-                qt_cleanup_painter_state(d);
+                bobui_cleanup_painter_state(d);
                 return false;
             } else if (img->format() == QImage::Format_Indexed8 ||
                        img->format() == QImage::Format_CMYK8888) {
@@ -1771,12 +1771,12 @@ bool QPainter::begin(QPaintDevice *pd)
                 qWarning() << "QPainter::begin: Cannot paint on an image with the"
                            << img->format()
                            << "format";
-                qt_cleanup_painter_state(d);
+                bobui_cleanup_painter_state(d);
                 return false;
             }
             if (img->depth() == 1) {
-                d->state->pen = QPen(Qt::color1);
-                d->state->brush = QBrush(Qt::color0);
+                d->state->pen = QPen(BobUI::color1);
+                d->state->brush = QBrush(BobUI::color0);
             }
             break;
         }
@@ -1794,7 +1794,7 @@ bool QPainter::begin(QPaintDevice *pd)
         if (d->engine->isActive()) {
             end();
         } else {
-            qt_cleanup_painter_state(d);
+            bobui_cleanup_painter_state(d);
         }
         return false;
     } else {
@@ -1807,7 +1807,7 @@ bool QPainter::begin(QPaintDevice *pd)
         break;
 
     default:
-        d->state->layoutDirection = Qt::LayoutDirectionAuto;
+        d->state->layoutDirection = BobUI::LayoutDirectionAuto;
         // make sure we have a font compatible with the paintdevice
         d->state->deviceFont = d->state->font = QFont(d->state->deviceFont, device());
         break;
@@ -1860,15 +1860,15 @@ bool QPainter::begin(QPaintDevice *pd)
 
 bool QPainter::end()
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::end()\n");
 #endif
     Q_D(QPainter);
 
     if (!d->engine) {
         qWarning("QPainter::end: Painter not active, aborted");
-        qt_cleanup_painter_state(d);
+        bobui_cleanup_painter_state(d);
         return false;
     }
 
@@ -1898,7 +1898,7 @@ bool QPainter::end()
     d->emulationEngine = nullptr;
     d->extended = nullptr;
 
-    qt_cleanup_painter_state(d);
+    bobui_cleanup_painter_state(d);
 
     return ended;
 }
@@ -2113,8 +2113,8 @@ QPointF QPainter::brushOriginF() const
     brush.
 
     Note that while the brushOrigin() was necessary to adopt the
-    parent's background for a widget in Qt 3, this is no longer the
-    case since the Qt 4 painter doesn't paint the background unless
+    parent's background for a widget in BobUI 3, this is no longer the
+    case since the BobUI 4 painter doesn't paint the background unless
     you explicitly tell it to do so by setting the widget's \l
     {QWidget::autoFillBackground}{autoFillBackground} property to
     true.
@@ -2125,8 +2125,8 @@ QPointF QPainter::brushOriginF() const
 void QPainter::setBrushOrigin(const QPointF &p)
 {
     Q_D(QPainter);
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::setBrushOrigin(), (%.2f,%.2f)\n", p.x(), p.y());
 #endif
 
@@ -2443,7 +2443,7 @@ bool QPainter::hasClipping() const
         qWarning("QPainter::hasClipping: Painter not active");
         return false;
     }
-    return d->state->clipEnabled && d->state->clipOperation != Qt::NoClip;
+    return d->state->clipEnabled && d->state->clipOperation != BobUI::NoClip;
 }
 
 
@@ -2457,8 +2457,8 @@ bool QPainter::hasClipping() const
 void QPainter::setClipping(bool enable)
 {
     Q_D(QPainter);
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::setClipping(), enable=%s, was=%s\n",
                enable ? "on" : "off",
                hasClipping() ? "on" : "off");
@@ -2473,7 +2473,7 @@ void QPainter::setClipping(bool enable)
 
     // we can't enable clipping if we don't have a clip
     if (enable
-        && (d->state->clipInfo.isEmpty() || d->state->clipInfo.constLast().operation == Qt::NoClip))
+        && (d->state->clipInfo.isEmpty() || d->state->clipInfo.constLast().operation == BobUI::NoClip))
         return;
     d->state->clipEnabled = enable;
 
@@ -2518,15 +2518,15 @@ QRegion QPainter::clipRegion() const
         switch (info.clipType) {
 
         case QPainterClipInfo::RegionClip: {
-            QTransform matrix = (info.matrix * d->invMatrix);
+            BOBUIransform matrix = (info.matrix * d->invMatrix);
             if (lastWasNothing) {
                 region = info.region * matrix;
                 lastWasNothing = false;
                 continue;
             }
-            if (info.operation == Qt::IntersectClip)
+            if (info.operation == BobUI::IntersectClip)
                 region &= info.region * matrix;
-            else if (info.operation == Qt::NoClip) {
+            else if (info.operation == BobUI::NoClip) {
                 lastWasNothing = true;
                 region = QRegion();
             } else
@@ -2535,17 +2535,17 @@ QRegion QPainter::clipRegion() const
         }
 
         case QPainterClipInfo::PathClip: {
-            QTransform matrix = (info.matrix * d->invMatrix);
+            BOBUIransform matrix = (info.matrix * d->invMatrix);
             if (lastWasNothing) {
                 region = QRegion((info.path * matrix).toFillPolygon().toPolygon(),
                                  info.path.fillRule());
                 lastWasNothing = false;
                 continue;
             }
-            if (info.operation == Qt::IntersectClip) {
+            if (info.operation == BobUI::IntersectClip) {
                 region &= QRegion((info.path * matrix).toFillPolygon().toPolygon(),
                                   info.path.fillRule());
-            } else if (info.operation == Qt::NoClip) {
+            } else if (info.operation == BobUI::NoClip) {
                 lastWasNothing = true;
                 region = QRegion();
             } else {
@@ -2556,19 +2556,19 @@ QRegion QPainter::clipRegion() const
         }
 
         case QPainterClipInfo::RectClip: {
-            QTransform matrix = (info.matrix * d->invMatrix);
+            BOBUIransform matrix = (info.matrix * d->invMatrix);
             if (lastWasNothing) {
                 region = QRegion(info.rect) * matrix;
                 lastWasNothing = false;
                 continue;
             }
-            if (info.operation == Qt::IntersectClip) {
+            if (info.operation == BobUI::IntersectClip) {
                 // Use rect intersection if possible.
-                if (matrix.type() <= QTransform::TxScale)
+                if (matrix.type() <= BOBUIransform::TxScale)
                     region &= matrix.mapRect(info.rect);
                 else
                     region &= matrix.map(QRegion(info.rect));
-            } else if (info.operation == Qt::NoClip) {
+            } else if (info.operation == BobUI::NoClip) {
                 lastWasNothing = true;
                 region = QRegion();
             } else {
@@ -2578,19 +2578,19 @@ QRegion QPainter::clipRegion() const
         }
 
         case QPainterClipInfo::RectFClip: {
-            QTransform matrix = (info.matrix * d->invMatrix);
+            BOBUIransform matrix = (info.matrix * d->invMatrix);
             if (lastWasNothing) {
                 region = QRegion(info.rectf.toRect()) * matrix;
                 lastWasNothing = false;
                 continue;
             }
-            if (info.operation == Qt::IntersectClip) {
+            if (info.operation == BobUI::IntersectClip) {
                 // Use rect intersection if possible.
-                if (matrix.type() <= QTransform::TxScale)
+                if (matrix.type() <= BOBUIransform::TxScale)
                     region &= matrix.mapRect(info.rectf.toRect());
                 else
                     region &= matrix.map(QRegion(info.rectf.toRect()));
-            } else if (info.operation == Qt::NoClip) {
+            } else if (info.operation == BobUI::NoClip) {
                 lastWasNothing = true;
                 region = QRegion();
             } else {
@@ -2604,7 +2604,7 @@ QRegion QPainter::clipRegion() const
     return region;
 }
 
-Q_GUI_EXPORT extern QPainterPath qt_regionToPath(const QRegion &region);
+Q_GUI_EXPORT extern QPainterPath bobui_regionToPath(const QRegion &region);
 
 /*!
     Returns the current clip path in logical coordinates.
@@ -2639,18 +2639,18 @@ QPainterPath QPainter::clipPath() const
         // For the simple case avoid conversion.
         if (d->state->clipInfo.size() == 1
             && d->state->clipInfo.at(0).clipType == QPainterClipInfo::PathClip) {
-            QTransform matrix = (d->state->clipInfo.at(0).matrix * d->invMatrix);
+            BOBUIransform matrix = (d->state->clipInfo.at(0).matrix * d->invMatrix);
             return d->state->clipInfo.at(0).path * matrix;
 
         } else if (d->state->clipInfo.size() == 1
                    && d->state->clipInfo.at(0).clipType == QPainterClipInfo::RectClip) {
-            QTransform matrix = (d->state->clipInfo.at(0).matrix * d->invMatrix);
+            BOBUIransform matrix = (d->state->clipInfo.at(0).matrix * d->invMatrix);
             QPainterPath path;
             path.addRect(d->state->clipInfo.at(0).rect);
             return path * matrix;
         } else {
             // Fallback to clipRegion() for now, since we don't have isect/unite for paths
-            return qt_regionToPath(clipRegion());
+            return bobui_regionToPath(clipRegion());
         }
     }
 }
@@ -2697,7 +2697,7 @@ QRectF QPainter::clipBoundingRect() const
 
          if (first)
              bounds = r;
-         else if (info.operation == Qt::IntersectClip)
+         else if (info.operation == BobUI::IntersectClip)
              bounds &= r;
          first = false;
     }
@@ -2712,7 +2712,7 @@ QRectF QPainter::clipBoundingRect() const
 }
 
 /*!
-    \fn void QPainter::setClipRect(const QRectF &rectangle, Qt::ClipOperation operation)
+    \fn void QPainter::setClipRect(const QRectF &rectangle, BobUI::ClipOperation operation)
 
     Enables clipping, and sets the clip region to the given \a
     rectangle using the given clip \a operation. The default operation
@@ -2723,7 +2723,7 @@ QRectF QPainter::clipBoundingRect() const
 
     \sa clipRegion(), setClipping(), {QPainter#Clipping}{Clipping}
 */
-void QPainter::setClipRect(const QRectF &rect, Qt::ClipOperation op)
+void QPainter::setClipRect(const QRectF &rect, BobUI::ClipOperation op)
 {
     Q_D(QPainter);
 
@@ -2733,8 +2733,8 @@ void QPainter::setClipRect(const QRectF &rect, Qt::ClipOperation op)
             return;
         }
         bool simplifyClipOp = (paintEngine()->type() != QPaintEngine::Picture);
-        if (simplifyClipOp && (!d->state->clipEnabled && op != Qt::NoClip))
-            op = Qt::ReplaceClip;
+        if (simplifyClipOp && (!d->state->clipEnabled && op != BobUI::NoClip))
+            op = BobUI::ReplaceClip;
 
         qreal right = rect.x() + rect.width();
         qreal bottom = rect.y() + rect.height();
@@ -2745,7 +2745,7 @@ void QPainter::setClipRect(const QRectF &rect, Qt::ClipOperation op)
         QVectorPath vp(pts, 4, nullptr, QVectorPath::RectangleHint);
         d->state->clipEnabled = true;
         d->extended->clip(vp, op);
-        if (op == Qt::ReplaceClip || op == Qt::NoClip)
+        if (op == BobUI::ReplaceClip || op == BobUI::NoClip)
             d->state->clipInfo.clear();
         d->state->clipInfo.append(QPainterClipInfo(rect, op, d->state->matrix));
         d->state->clipOperation = op;
@@ -2772,13 +2772,13 @@ void QPainter::setClipRect(const QRectF &rect, Qt::ClipOperation op)
 }
 
 /*!
-    \fn void QPainter::setClipRect(const QRect &rectangle, Qt::ClipOperation operation)
+    \fn void QPainter::setClipRect(const QRect &rectangle, BobUI::ClipOperation operation)
     \overload
 
     Enables clipping, and sets the clip region to the given \a rectangle using the given
     clip \a operation.
 */
-void QPainter::setClipRect(const QRect &rect, Qt::ClipOperation op)
+void QPainter::setClipRect(const QRect &rect, BobUI::ClipOperation op)
 {
     Q_D(QPainter);
 
@@ -2788,25 +2788,25 @@ void QPainter::setClipRect(const QRect &rect, Qt::ClipOperation op)
     }
     bool simplifyClipOp = (paintEngine()->type() != QPaintEngine::Picture);
 
-    if (simplifyClipOp && (!d->state->clipEnabled && op != Qt::NoClip))
-        op = Qt::ReplaceClip;
+    if (simplifyClipOp && (!d->state->clipEnabled && op != BobUI::NoClip))
+        op = BobUI::ReplaceClip;
 
     if (d->extended) {
         d->state->clipEnabled = true;
         d->extended->clip(rect, op);
-        if (op == Qt::ReplaceClip || op == Qt::NoClip)
+        if (op == BobUI::ReplaceClip || op == BobUI::NoClip)
             d->state->clipInfo.clear();
         d->state->clipInfo.append(QPainterClipInfo(rect, op, d->state->matrix));
         d->state->clipOperation = op;
         return;
     }
 
-    if (simplifyClipOp && d->state->clipOperation == Qt::NoClip && op == Qt::IntersectClip)
-        op = Qt::ReplaceClip;
+    if (simplifyClipOp && d->state->clipOperation == BobUI::NoClip && op == BobUI::IntersectClip)
+        op = BobUI::ReplaceClip;
 
     d->state->clipRegion = rect;
     d->state->clipOperation = op;
-    if (op == Qt::NoClip || op == Qt::ReplaceClip)
+    if (op == BobUI::NoClip || op == BobUI::ReplaceClip)
         d->state->clipInfo.clear();
     d->state->clipInfo.append(QPainterClipInfo(rect, op, d->state->matrix));
     d->state->clipEnabled = true;
@@ -2815,14 +2815,14 @@ void QPainter::setClipRect(const QRect &rect, Qt::ClipOperation op)
 }
 
 /*!
-    \fn void QPainter::setClipRect(int x, int y, int width, int height, Qt::ClipOperation operation)
+    \fn void QPainter::setClipRect(int x, int y, int width, int height, BobUI::ClipOperation operation)
 
     Enables clipping, and sets the clip region to the rectangle beginning at (\a x, \a y)
     with the given \a width and \a height.
 */
 
 /*!
-    \fn void QPainter::setClipRegion(const QRegion &region, Qt::ClipOperation operation)
+    \fn void QPainter::setClipRegion(const QRegion &region, BobUI::ClipOperation operation)
 
     Sets the clip region to the given \a region using the specified clip
     \a operation. The default clip operation is to replace the current
@@ -2832,12 +2832,12 @@ void QPainter::setClipRect(const QRect &rect, Qt::ClipOperation op)
 
     \sa clipRegion(), setClipRect(), {QPainter#Clipping}{Clipping}
 */
-void QPainter::setClipRegion(const QRegion &r, Qt::ClipOperation op)
+void QPainter::setClipRegion(const QRegion &r, BobUI::ClipOperation op)
 {
     Q_D(QPainter);
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     QRect rect = r.boundingRect();
-    if constexpr (qt_show_painter_debug_output)
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::setClipRegion(), size=%d, [%d,%d,%d,%d]\n",
            r.rectCount(), rect.x(), rect.y(), rect.width(), rect.height());
 #endif
@@ -2847,25 +2847,25 @@ void QPainter::setClipRegion(const QRegion &r, Qt::ClipOperation op)
     }
     bool simplifyClipOp = (paintEngine()->type() != QPaintEngine::Picture);
 
-    if (simplifyClipOp && (!d->state->clipEnabled && op != Qt::NoClip))
-        op = Qt::ReplaceClip;
+    if (simplifyClipOp && (!d->state->clipEnabled && op != BobUI::NoClip))
+        op = BobUI::ReplaceClip;
 
     if (d->extended) {
         d->state->clipEnabled = true;
         d->extended->clip(r, op);
-        if (op == Qt::NoClip || op == Qt::ReplaceClip)
+        if (op == BobUI::NoClip || op == BobUI::ReplaceClip)
             d->state->clipInfo.clear();
         d->state->clipInfo.append(QPainterClipInfo(r, op, d->state->matrix));
         d->state->clipOperation = op;
         return;
     }
 
-    if (simplifyClipOp && d->state->clipOperation == Qt::NoClip && op == Qt::IntersectClip)
-        op = Qt::ReplaceClip;
+    if (simplifyClipOp && d->state->clipOperation == BobUI::NoClip && op == BobUI::IntersectClip)
+        op = BobUI::ReplaceClip;
 
     d->state->clipRegion = r;
     d->state->clipOperation = op;
-    if (op == Qt::NoClip || op == Qt::ReplaceClip)
+    if (op == BobUI::NoClip || op == BobUI::ReplaceClip)
         d->state->clipInfo.clear();
     d->state->clipInfo.append(QPainterClipInfo(r, op, d->state->matrix));
     d->state->clipEnabled = true;
@@ -2887,8 +2887,8 @@ void QPainter::setClipRegion(const QRegion &r, Qt::ClipOperation op)
 void QPainter::setWorldMatrixEnabled(bool enable)
 {
     Q_D(QPainter);
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::setMatrixEnabled(), enable=%d\n", enable);
 #endif
 
@@ -2930,8 +2930,8 @@ bool QPainter::worldMatrixEnabled() const
 
 void QPainter::scale(qreal sx, qreal sy)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::scale(), sx=%f, sy=%f\n", sx, sy);
 #endif
     Q_D(QPainter);
@@ -2953,8 +2953,8 @@ void QPainter::scale(qreal sx, qreal sy)
 
 void QPainter::shear(qreal sh, qreal sv)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::shear(), sh=%f, sv=%f\n", sh, sv);
 #endif
     Q_D(QPainter);
@@ -2978,8 +2978,8 @@ void QPainter::shear(qreal sh, qreal sv)
 
 void QPainter::rotate(qreal a)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::rotate(), angle=%f\n", a);
 #endif
     Q_D(QPainter);
@@ -3003,8 +3003,8 @@ void QPainter::translate(const QPointF &offset)
 {
     qreal dx = offset.x();
     qreal dy = offset.y();
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::translate(), dx=%f, dy=%f\n", dx, dy);
 #endif
     Q_D(QPainter);
@@ -3033,7 +3033,7 @@ void QPainter::translate(const QPointF &offset)
 */
 
 /*!
-    \fn void QPainter::setClipPath(const QPainterPath &path, Qt::ClipOperation operation)
+    \fn void QPainter::setClipPath(const QPainterPath &path, BobUI::ClipOperation operation)
 
     Enables clipping, and sets the clip path for the painter to the
     given \a path, with the clip \a operation.
@@ -3044,10 +3044,10 @@ void QPainter::translate(const QPointF &offset)
     \sa clipPath(), clipRegion(), {QPainter#Clipping}{Clipping}
 
 */
-void QPainter::setClipPath(const QPainterPath &path, Qt::ClipOperation op)
+void QPainter::setClipPath(const QPainterPath &path, BobUI::ClipOperation op)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output) {
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output) {
         QRectF b = path.boundingRect();
         printf("QPainter::setClipPath(), size=%d, op=%d, bounds=[%.2f,%.2f,%.2f,%.2f]\n",
                path.elementCount(), op, b.x(), b.y(), b.width(), b.height());
@@ -3061,25 +3061,25 @@ void QPainter::setClipPath(const QPainterPath &path, Qt::ClipOperation op)
     }
 
     bool simplifyClipOp = (paintEngine()->type() != QPaintEngine::Picture);
-    if (simplifyClipOp && (!d->state->clipEnabled && op != Qt::NoClip))
-        op = Qt::ReplaceClip;
+    if (simplifyClipOp && (!d->state->clipEnabled && op != BobUI::NoClip))
+        op = BobUI::ReplaceClip;
 
     if (d->extended) {
         d->state->clipEnabled = true;
         d->extended->clip(path, op);
-        if (op == Qt::NoClip || op == Qt::ReplaceClip)
+        if (op == BobUI::NoClip || op == BobUI::ReplaceClip)
             d->state->clipInfo.clear();
         d->state->clipInfo.append(QPainterClipInfo(path, op, d->state->matrix));
         d->state->clipOperation = op;
         return;
     }
 
-    if (simplifyClipOp && d->state->clipOperation == Qt::NoClip && op == Qt::IntersectClip)
-        op = Qt::ReplaceClip;
+    if (simplifyClipOp && d->state->clipOperation == BobUI::NoClip && op == BobUI::IntersectClip)
+        op = BobUI::ReplaceClip;
 
     d->state->clipPath = path;
     d->state->clipOperation = op;
-    if (op == Qt::NoClip || op == Qt::ReplaceClip)
+    if (op == BobUI::NoClip || op == BobUI::ReplaceClip)
         d->state->clipInfo.clear();
     d->state->clipInfo.append(QPainterClipInfo(path, op, d->state->matrix));
     d->state->clipEnabled = true;
@@ -3106,7 +3106,7 @@ void QPainter::strokePath(const QPainterPath &path, const QPen &pen)
         return;
 
     if (d->extended && !needsEmulation(pen.brush())) {
-        d->extended->stroke(qtVectorPathForPath(path), pen);
+        d->extended->stroke(bobuiVectorPathForPath(path), pen);
         return;
     }
 
@@ -3114,7 +3114,7 @@ void QPainter::strokePath(const QPainterPath &path, const QPen &pen)
     QPen oldPen = d->state->pen;
 
     setPen(pen);
-    setBrush(Qt::NoBrush);
+    setBrush(BobUI::NoBrush);
 
     drawPath(path);
 
@@ -3146,14 +3146,14 @@ void QPainter::fillPath(const QPainterPath &path, const QBrush &brush)
         return;
 
     if (d->extended && !needsEmulation(brush)) {
-        d->extended->fill(qtVectorPathForPath(path), brush);
+        d->extended->fill(bobuiVectorPathForPath(path), brush);
         return;
     }
 
     QBrush oldBrush = d->state->brush;
     QPen oldPen = d->state->pen;
 
-    setPen(Qt::NoPen);
+    setPen(BobUI::NoPen);
     setBrush(brush);
 
     drawPath(path);
@@ -3179,9 +3179,9 @@ void QPainter::fillPath(const QPainterPath &path, const QBrush &brush)
 */
 void QPainter::drawPath(const QPainterPath &path)
 {
-#ifdef QT_DEBUG_DRAW
+#ifdef BOBUI_DEBUG_DRAW
     QRectF pathBounds = path.boundingRect();
-    if constexpr (qt_show_painter_debug_output)
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::drawPath(), size=%d, [%.2f,%.2f,%.2f,%.2f]\n",
                path.elementCount(),
                pathBounds.x(), pathBounds.y(), pathBounds.width(), pathBounds.height());
@@ -3295,8 +3295,8 @@ void QPainter::drawPath(const QPainterPath &path)
 */
 void QPainter::drawRects(const QRectF *rects, int rectCount)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::drawRects(), count=%d\n", rectCount);
 #endif
     Q_D(QPainter);
@@ -3322,7 +3322,7 @@ void QPainter::drawRects(const QRectF *rects, int rectCount)
     }
 
     if (d->state->emulationSpecifier == QPaintEngine::PrimitiveTransform
-        && d->state->matrix.type() == QTransform::TxTranslate) {
+        && d->state->matrix.type() == BOBUIransform::TxTranslate) {
         for (int i=0; i<rectCount; ++i) {
             QRectF r(rects[i].x() + d->state->matrix.dx(),
                      rects[i].y() + d->state->matrix.dy(),
@@ -3355,8 +3355,8 @@ void QPainter::drawRects(const QRectF *rects, int rectCount)
 */
 void QPainter::drawRects(const QRect *rects, int rectCount)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::drawRects(), count=%d\n", rectCount);
 #endif
     Q_D(QPainter);
@@ -3382,7 +3382,7 @@ void QPainter::drawRects(const QRect *rects, int rectCount)
     }
 
     if (d->state->emulationSpecifier == QPaintEngine::PrimitiveTransform
-        && d->state->matrix.type() == QTransform::TxTranslate) {
+        && d->state->matrix.type() == BOBUIransform::TxTranslate) {
         for (int i=0; i<rectCount; ++i) {
             QRectF r(rects[i].x() + d->state->matrix.dx(),
                      rects[i].y() + d->state->matrix.dy(),
@@ -3455,8 +3455,8 @@ void QPainter::drawRects(const QRect *rects, int rectCount)
 */
 void QPainter::drawPoints(const QPointF *points, int pointCount)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::drawPoints(), count=%d\n", pointCount);
 #endif
     Q_D(QPainter);
@@ -3482,7 +3482,7 @@ void QPainter::drawPoints(const QPointF *points, int pointCount)
     }
 
     if (d->state->emulationSpecifier == QPaintEngine::PrimitiveTransform
-        && d->state->matrix.type() == QTransform::TxTranslate) {
+        && d->state->matrix.type() == BOBUIransform::TxTranslate) {
         // ### use drawPoints function
         for (int i=0; i<pointCount; ++i) {
             QPointF pt(points[i].x() + d->state->matrix.dx(),
@@ -3491,10 +3491,10 @@ void QPainter::drawPoints(const QPointF *points, int pointCount)
         }
     } else {
         QPen pen = d->state->pen;
-        bool flat_pen = pen.capStyle() == Qt::FlatCap;
+        bool flat_pen = pen.capStyle() == BobUI::FlatCap;
         if (flat_pen) {
             save();
-            pen.setCapStyle(Qt::SquareCap);
+            pen.setCapStyle(BobUI::SquareCap);
             setPen(pen);
         }
         QPainterPath path;
@@ -3517,8 +3517,8 @@ void QPainter::drawPoints(const QPointF *points, int pointCount)
 
 void QPainter::drawPoints(const QPoint *points, int pointCount)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::drawPoints(), count=%d\n", pointCount);
 #endif
     Q_D(QPainter);
@@ -3544,7 +3544,7 @@ void QPainter::drawPoints(const QPoint *points, int pointCount)
     }
 
     if (d->state->emulationSpecifier == QPaintEngine::PrimitiveTransform
-        && d->state->matrix.type() == QTransform::TxTranslate) {
+        && d->state->matrix.type() == BOBUIransform::TxTranslate) {
         // ### use drawPoints function
         for (int i=0; i<pointCount; ++i) {
             QPointF pt(points[i].x() + d->state->matrix.dx(),
@@ -3553,10 +3553,10 @@ void QPainter::drawPoints(const QPoint *points, int pointCount)
         }
     } else {
         QPen pen = d->state->pen;
-        bool flat_pen = (pen.capStyle() == Qt::FlatCap);
+        bool flat_pen = (pen.capStyle() == BobUI::FlatCap);
         if (flat_pen) {
             save();
-            pen.setCapStyle(Qt::SquareCap);
+            pen.setCapStyle(BobUI::SquareCap);
             setPen(pen);
         }
         QPainterPath path;
@@ -3589,8 +3589,8 @@ void QPainter::drawPoints(const QPoint *points, int pointCount)
 /*!
     Sets the background mode of the painter to the given \a mode
 
-    Qt::TransparentMode (the default) draws stippled lines and text
-    without setting the background pixels.  Qt::OpaqueMode fills these
+    BobUI::TransparentMode (the default) draws stippled lines and text
+    without setting the background pixels.  BobUI::OpaqueMode fills these
     space with the current background color.
 
     Note that in order to draw a bitmap or pixmap transparently, you
@@ -3600,10 +3600,10 @@ void QPainter::drawPoints(const QPoint *points, int pointCount)
     {QPainter#Settings}{Settings}
 */
 
-void QPainter::setBackgroundMode(Qt::BGMode mode)
+void QPainter::setBackgroundMode(BobUI::BGMode mode)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::setBackgroundMode(), mode=%d\n", mode);
 #endif
 
@@ -3628,12 +3628,12 @@ void QPainter::setBackgroundMode(Qt::BGMode mode)
 
     \sa setBackgroundMode(), {QPainter#Settings}{Settings}
 */
-Qt::BGMode QPainter::backgroundMode() const
+BobUI::BGMode QPainter::backgroundMode() const
 {
     Q_D(const QPainter);
     if (!d->engine) {
         qWarning("QPainter::backgroundMode: Painter not active");
-        return Qt::TransparentMode;
+        return BobUI::TransparentMode;
     }
     return d->state->bgMode;
 }
@@ -3642,14 +3642,14 @@ Qt::BGMode QPainter::backgroundMode() const
 /*!
     \overload
 
-    Sets the painter's pen to have style Qt::SolidLine, width 1 and the
+    Sets the painter's pen to have style BobUI::SolidLine, width 1 and the
     specified \a color.
 */
 
 void QPainter::setPen(const QColor &color)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::setPen(), color=%04x\n", color.rgb());
 #endif
     Q_D(QPainter);
@@ -3658,7 +3658,7 @@ void QPainter::setPen(const QColor &color)
         return;
     }
 
-    const QColor actualColor = color.isValid() ? color : QColor(Qt::black);
+    const QColor actualColor = color.isValid() ? color : QColor(BobUI::black);
     if (d->state->pen == actualColor)
         return;
 
@@ -3689,8 +3689,8 @@ void QPainter::setPen(const QColor &color)
 void QPainter::doSetPen(const QPen &pen, QPen *rvalue)
 {
 
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::setPen(), color=%04x, (brushStyle=%d) style=%d, cap=%d, join=%d\n",
            pen.color().rgb(), pen.brush().style(), pen.style(), pen.capStyle(), pen.joinStyle());
 #endif
@@ -3721,7 +3721,7 @@ void QPainter::doSetPen(const QPen &pen, QPen *rvalue)
     black color.
 */
 
-void QPainter::setPen(Qt::PenStyle style)
+void QPainter::setPen(BobUI::PenStyle style)
 {
     Q_D(QPainter);
     if (!d->engine) {
@@ -3776,8 +3776,8 @@ const QPen &QPainter::pen() const
 
 void QPainter::doSetBrush(const QBrush &brush, QBrush *rvalue)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::setBrush(), color=%04x, style=%d\n", brush.color().rgb(), brush.style());
 #endif
     Q_D(QPainter);
@@ -3808,7 +3808,7 @@ void QPainter::doSetBrush(const QBrush &brush, QBrush *rvalue)
     style.
 */
 
-void QPainter::setBrush(Qt::BrushStyle style)
+void QPainter::setBrush(BobUI::BrushStyle style)
 {
     Q_D(QPainter);
     if (!d->engine) {
@@ -3817,7 +3817,7 @@ void QPainter::setBrush(Qt::BrushStyle style)
     }
     if (d->state->brush == style)
         return;
-    d->state->brush = QBrush(Qt::black, style);
+    d->state->brush = QBrush(BobUI::black, style);
     if (d->extended)
         d->extended->brushChanged();
     else
@@ -3840,7 +3840,7 @@ void QPainter::setBrush(QColor color)
         return;
     }
 
-    const QColor actualColor = color.isValid() ? color : QColor(Qt::black);
+    const QColor actualColor = color.isValid() ? color : QColor(BobUI::black);
     if (d->state->brush == actualColor)
         return;
     d->state->brush = actualColor;
@@ -3851,7 +3851,7 @@ void QPainter::setBrush(QColor color)
 }
 
 /*!
-    \fn void QPainter::setBrush(Qt::GlobalColor color)
+    \fn void QPainter::setBrush(BobUI::GlobalColor color)
     \overload
     \since 6.9
 
@@ -3891,8 +3891,8 @@ const QBrush &QPainter::brush() const
 
 void QPainter::setBackground(const QBrush &bg)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::setBackground(), color=%04x, style=%d\n", bg.color().rgb(), bg.style());
 #endif
 
@@ -3912,7 +3912,7 @@ void QPainter::setBackground(const QBrush &bg)
     This font is used by subsequent drawText() functions. The text
     color is the same as the pen color.
 
-    If you set a font that isn't available, Qt finds a close match.
+    If you set a font that isn't available, BobUI finds a close match.
     font() will return what you set using setFont() and fontInfo() returns the
     font actually being used (which may be the same).
 
@@ -3923,8 +3923,8 @@ void QPainter::setFont(const QFont &font)
 {
     Q_D(QPainter);
 
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::setFont(), family=%s, pointSize=%d\n", font.families().first().toLatin1().constData(), font.pointSize());
 #endif
 
@@ -3960,7 +3960,7 @@ const QFont &QPainter::font() const
 
     The \a xRadius and \a yRadius arguments specify the radii
     of the ellipses defining the corners of the rounded rectangle.
-    When \a mode is Qt::RelativeSize, \a xRadius and
+    When \a mode is BobUI::RelativeSize, \a xRadius and
     \a yRadius are specified in percentage of half the rectangle's
     width and height respectively, and should be in the range
     0.0 to 100.0.
@@ -3977,10 +3977,10 @@ const QFont &QPainter::font() const
 
     \sa drawRect(), QPen
 */
-void QPainter::drawRoundedRect(const QRectF &rect, qreal xRadius, qreal yRadius, Qt::SizeMode mode)
+void QPainter::drawRoundedRect(const QRectF &rect, qreal xRadius, qreal yRadius, BobUI::SizeMode mode)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::drawRoundedRect(), [%.2f,%.2f,%.2f,%.2f]\n", rect.x(), rect.y(), rect.width(), rect.height());
 #endif
     Q_D(QPainter);
@@ -4007,7 +4007,7 @@ void QPainter::drawRoundedRect(const QRectF &rect, qreal xRadius, qreal yRadius,
 
 /*!
     \fn void QPainter::drawRoundedRect(const QRect &rect, qreal xRadius, qreal yRadius,
-                                       Qt::SizeMode mode = Qt::AbsoluteSize);
+                                       BobUI::SizeMode mode = BobUI::AbsoluteSize);
     \since 4.4
     \overload
 
@@ -4016,7 +4016,7 @@ void QPainter::drawRoundedRect(const QRectF &rect, qreal xRadius, qreal yRadius,
 
 /*!
     \fn void QPainter::drawRoundedRect(int x, int y, int w, int h, qreal xRadius, qreal yRadius,
-                                       Qt::SizeMode mode = Qt::AbsoluteSize);
+                                       BobUI::SizeMode mode = BobUI::AbsoluteSize);
     \since 4.4
     \overload
 
@@ -4043,8 +4043,8 @@ void QPainter::drawRoundedRect(const QRectF &rect, qreal xRadius, qreal yRadius,
 */
 void QPainter::drawEllipse(const QRectF &r)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::drawEllipse(), [%.2f,%.2f,%.2f,%.2f]\n", r.x(), r.y(), r.width(), r.height());
 #endif
     Q_D(QPainter);
@@ -4064,7 +4064,7 @@ void QPainter::drawEllipse(const QRectF &r)
     d->updateState(d->state);
     if (d->state->emulationSpecifier) {
         if (d->state->emulationSpecifier == QPaintEngine::PrimitiveTransform
-            && d->state->matrix.type() == QTransform::TxTranslate) {
+            && d->state->matrix.type() == BOBUIransform::TxTranslate) {
             rect.translate(QPointF(d->state->matrix.dx(), d->state->matrix.dy()));
         } else {
             QPainterPath path;
@@ -4086,8 +4086,8 @@ void QPainter::drawEllipse(const QRectF &r)
 */
 void QPainter::drawEllipse(const QRect &r)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::drawEllipse(), [%d,%d,%d,%d]\n", r.x(), r.y(), r.width(), r.height());
 #endif
     Q_D(QPainter);
@@ -4108,7 +4108,7 @@ void QPainter::drawEllipse(const QRect &r)
 
     if (d->state->emulationSpecifier) {
         if (d->state->emulationSpecifier == QPaintEngine::PrimitiveTransform
-            && d->state->matrix.type() == QTransform::TxTranslate) {
+            && d->state->matrix.type() == BOBUIransform::TxTranslate) {
             rect.translate(QPoint(qRound(d->state->matrix.dx()), qRound(d->state->matrix.dy())));
         } else {
             QPainterPath path;
@@ -4174,8 +4174,8 @@ void QPainter::drawEllipse(const QRect &r)
 
 void QPainter::drawArc(const QRectF &r, int a, int alen)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::drawArc(), [%.2f,%.2f,%.2f,%.2f], angle=%d, sweep=%d\n",
            r.x(), r.y(), r.width(), r.height(), a/16, alen/16);
 #endif
@@ -4238,8 +4238,8 @@ void QPainter::drawArc(const QRectF &r, int a, int alen)
 */
 void QPainter::drawPie(const QRectF &r, int a, int alen)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::drawPie(), [%.2f,%.2f,%.2f,%.2f], angle=%d, sweep=%d\n",
            r.x(), r.y(), r.width(), r.height(), a/16, alen/16);
 #endif
@@ -4309,8 +4309,8 @@ void QPainter::drawPie(const QRectF &r, int a, int alen)
 */
 void QPainter::drawChord(const QRectF &r, int a, int alen)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::drawChord(), [%.2f,%.2f,%.2f,%.2f], angle=%d, sweep=%d\n",
            r.x(), r.y(), r.width(), r.height(), a/16, alen/16);
 #endif
@@ -4358,8 +4358,8 @@ void QPainter::drawChord(const QRectF &r, int a, int alen)
 */
 void QPainter::drawLines(const QLineF *lines, int lineCount)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::drawLines(), line count=%d\n", lineCount);
 #endif
 
@@ -4379,7 +4379,7 @@ void QPainter::drawLines(const QLineF *lines, int lineCount)
 
     if (lineEmulation) {
         if (lineEmulation == QPaintEngine::PrimitiveTransform
-            && d->state->matrix.type() == QTransform::TxTranslate) {
+            && d->state->matrix.type() == BOBUIransform::TxTranslate) {
             for (int i = 0; i < lineCount; ++i) {
                 QLineF line = lines[i];
                 line.translate(d->state->matrix.dx(), d->state->matrix.dy());
@@ -4407,8 +4407,8 @@ void QPainter::drawLines(const QLineF *lines, int lineCount)
 */
 void QPainter::drawLines(const QLine *lines, int lineCount)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::drawLine(), line count=%d\n", lineCount);
 #endif
 
@@ -4428,7 +4428,7 @@ void QPainter::drawLines(const QLine *lines, int lineCount)
 
     if (lineEmulation) {
         if (lineEmulation == QPaintEngine::PrimitiveTransform
-            && d->state->matrix.type() == QTransform::TxTranslate) {
+            && d->state->matrix.type() == BOBUIransform::TxTranslate) {
             for (int i = 0; i < lineCount; ++i) {
                 QLineF line = lines[i];
                 line.translate(d->state->matrix.dx(), d->state->matrix.dy());
@@ -4526,8 +4526,8 @@ void QPainter::drawLines(const QPoint *pointPairs, int lineCount)
 */
 void QPainter::drawPolyline(const QPointF *points, int pointCount)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::drawPolyline(), count=%d\n", pointCount);
 #endif
     Q_D(QPainter);
@@ -4547,7 +4547,7 @@ void QPainter::drawPolyline(const QPointF *points, int pointCount)
     if (lineEmulation) {
         // ###
 //         if (lineEmulation == QPaintEngine::PrimitiveTransform
-//             && d->state->matrix.type() == QTransform::TxTranslate) {
+//             && d->state->matrix.type() == BOBUIransform::TxTranslate) {
 //         } else {
         QPainterPath polylinePath(points[0]);
         for (int i=1; i<pointCount; ++i)
@@ -4567,8 +4567,8 @@ void QPainter::drawPolyline(const QPointF *points, int pointCount)
  */
 void QPainter::drawPolyline(const QPoint *points, int pointCount)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::drawPolyline(), count=%d\n", pointCount);
 #endif
     Q_D(QPainter);
@@ -4588,7 +4588,7 @@ void QPainter::drawPolyline(const QPoint *points, int pointCount)
     if (lineEmulation) {
         // ###
 //         if (lineEmulation == QPaintEngine::PrimitiveTransform
-//             && d->state->matrix.type() == QTransform::TxTranslate) {
+//             && d->state->matrix.type() == BOBUIransform::TxTranslate) {
 //         } else {
         QPainterPath polylinePath(points[0]);
         for (int i=1; i<pointCount; ++i)
@@ -4632,18 +4632,18 @@ void QPainter::drawPolyline(const QPoint *points, int pointCount)
     The first point is implicitly connected to the last point, and the
     polygon is filled with the current brush().
 
-    If \a fillRule is Qt::WindingFill, the polygon is filled using the
-    winding fill algorithm.  If \a fillRule is Qt::OddEvenFill, the
+    If \a fillRule is BobUI::WindingFill, the polygon is filled using the
+    winding fill algorithm.  If \a fillRule is BobUI::OddEvenFill, the
     polygon is filled using the odd-even fill algorithm. See
-    \l{Qt::FillRule} for a more detailed description of these fill
+    \l{BobUI::FillRule} for a more detailed description of these fill
     rules.
 
     \sa drawConvexPolygon(), drawPolyline(), {Coordinate System}
 */
-void QPainter::drawPolygon(const QPointF *points, int pointCount, Qt::FillRule fillRule)
+void QPainter::drawPolygon(const QPointF *points, int pointCount, BobUI::FillRule fillRule)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::drawPolygon(), count=%d\n", pointCount);
 #endif
 
@@ -4679,10 +4679,10 @@ void QPainter::drawPolygon(const QPointF *points, int pointCount, Qt::FillRule f
     Draws the polygon defined by the first \a pointCount points in the
     array \a points.
 */
-void QPainter::drawPolygon(const QPoint *points, int pointCount, Qt::FillRule fillRule)
+void QPainter::drawPolygon(const QPoint *points, int pointCount, BobUI::FillRule fillRule)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::drawPolygon(), count=%d\n", pointCount);
 #endif
 
@@ -4713,7 +4713,7 @@ void QPainter::drawPolygon(const QPoint *points, int pointCount, Qt::FillRule fi
     d->engine->drawPolygon(points, pointCount, QPaintEngine::PolygonDrawMode(fillRule));
 }
 
-/*! \fn void QPainter::drawPolygon(const QPolygonF &points, Qt::FillRule fillRule)
+/*! \fn void QPainter::drawPolygon(const QPolygonF &points, BobUI::FillRule fillRule)
 
     \overload
 
@@ -4721,7 +4721,7 @@ void QPainter::drawPolygon(const QPoint *points, int pointCount, Qt::FillRule fi
     rule \a fillRule.
 */
 
-/*! \fn void QPainter::drawPolygon(const QPolygon &points, Qt::FillRule fillRule)
+/*! \fn void QPainter::drawPolygon(const QPolygon &points, BobUI::FillRule fillRule)
 
     \overload
 
@@ -4780,8 +4780,8 @@ void QPainter::drawPolygon(const QPoint *points, int pointCount, Qt::FillRule fi
 
 void QPainter::drawConvexPolygon(const QPoint *points, int pointCount)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::drawConvexPolygon(), count=%d\n", pointCount);
 #endif
 
@@ -4804,7 +4804,7 @@ void QPainter::drawConvexPolygon(const QPoint *points, int pointCount)
         for (int i=1; i<pointCount; ++i)
             polygonPath.lineTo(points[i]);
         polygonPath.closeSubpath();
-        polygonPath.setFillRule(Qt::WindingFill);
+        polygonPath.setFillRule(BobUI::WindingFill);
         d->draw_helper(polygonPath);
         return;
     }
@@ -4814,8 +4814,8 @@ void QPainter::drawConvexPolygon(const QPoint *points, int pointCount)
 
 void QPainter::drawConvexPolygon(const QPointF *points, int pointCount)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::drawConvexPolygon(), count=%d\n", pointCount);
 #endif
 
@@ -4838,7 +4838,7 @@ void QPainter::drawConvexPolygon(const QPointF *points, int pointCount)
         for (int i=1; i<pointCount; ++i)
             polygonPath.lineTo(points[i]);
         polygonPath.closeSubpath();
-        polygonPath.setFillRule(Qt::WindingFill);
+        polygonPath.setFillRule(BobUI::WindingFill);
         d->draw_helper(polygonPath);
         return;
     }
@@ -4846,7 +4846,7 @@ void QPainter::drawConvexPolygon(const QPointF *points, int pointCount)
     d->engine->drawPolygon(points, pointCount, QPaintEngine::ConvexMode);
 }
 
-static inline QPointF roundInDeviceCoordinates(const QPointF &p, const QTransform &m)
+static inline QPointF roundInDeviceCoordinates(const QPointF &p, const BOBUIransform &m)
 {
     return m.inverted().map(QPointF(m.map(p).toPoint()));
 }
@@ -4868,9 +4868,9 @@ static inline QPointF roundInDeviceCoordinates(const QPointF &p, const QTransfor
     \endtable
 
     If \a pixmap is a QBitmap it is drawn with the bits that are "set"
-    using the pens color. If backgroundMode is Qt::OpaqueMode, the
+    using the pens color. If backgroundMode is BobUI::OpaqueMode, the
     "unset" bits are drawn using the color of the background brush; if
-    backgroundMode is Qt::TransparentMode, the "unset" bits are
+    backgroundMode is BobUI::TransparentMode, the "unset" bits are
     transparent. Drawing bitmaps with gradient or texture colors is
     not supported.
 
@@ -4878,8 +4878,8 @@ static inline QPointF roundInDeviceCoordinates(const QPointF &p, const QTransfor
 */
 void QPainter::drawPixmap(const QPointF &p, const QPixmap &pm)
 {
-#if defined QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#if defined BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::drawPixmap(), p=[%.2f,%.2f], pix=[%d,%d]\n",
                p.x(), p.y(),
                pm.width(), pm.height());
@@ -4890,8 +4890,8 @@ void QPainter::drawPixmap(const QPointF &p, const QPixmap &pm)
     if (!d->engine || pm.isNull())
         return;
 
-#ifndef QT_NO_DEBUG
-    qt_painter_thread_test(d->device->devType(), d->engine->type(), "drawPixmap()");
+#ifndef BOBUI_NO_DEBUG
+    bobui_painter_thread_test(d->device->devType(), d->engine->type(), "drawPixmap()");
 #endif
 
     if (d->extended) {
@@ -4909,13 +4909,13 @@ void QPainter::drawPixmap(const QPointF &p, const QPixmap &pm)
         return;
 
     // Emulate opaque background for bitmaps
-    if (d->state->bgMode == Qt::OpaqueMode && pm.isQBitmap()) {
+    if (d->state->bgMode == BobUI::OpaqueMode && pm.isQBitmap()) {
         fillRect(QRectF(x, y, w, h), d->state->bgBrush.color());
     }
 
     d->updateState(d->state);
 
-    if ((d->state->matrix.type() > QTransform::TxTranslate
+    if ((d->state->matrix.type() > BOBUIransform::TxTranslate
          && !d->engine->hasFeature(QPaintEngine::PixmapTransform))
         || (!d->state->matrix.isAffine() && !d->engine->hasFeature(QPaintEngine::PerspectiveTransform))
         || (d->state->opacity != 1.0 && !d->engine->hasFeature(QPaintEngine::ConstantOpacity)))
@@ -4923,17 +4923,17 @@ void QPainter::drawPixmap(const QPointF &p, const QPixmap &pm)
         save();
         // If there is no rotation involved we have to make sure we use the
         // antialiased and not the aliased coordinate system by rounding the coordinates.
-        if (d->state->matrix.type() <= QTransform::TxScale) {
+        if (d->state->matrix.type() <= BOBUIransform::TxScale) {
             const QPointF p = roundInDeviceCoordinates(QPointF(x, y), d->state->matrix);
             x = p.x();
             y = p.y();
         }
         translate(x, y);
-        setBackgroundMode(Qt::TransparentMode);
+        setBackgroundMode(BobUI::TransparentMode);
         setRenderHint(Antialiasing, renderHints() & SmoothPixmapTransform);
         QBrush brush(d->state->pen.color(), pm);
         setBrush(brush);
-        setPen(Qt::NoPen);
+        setPen(BobUI::NoPen);
         setBrushOrigin(QPointF(0, 0));
 
         drawRect(pm.rect());
@@ -4950,8 +4950,8 @@ void QPainter::drawPixmap(const QPointF &p, const QPixmap &pm)
 
 void QPainter::drawPixmap(const QRectF &r, const QPixmap &pm, const QRectF &sr)
 {
-#if defined QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#if defined BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::drawPixmap(), target=[%.2f,%.2f,%.2f,%.2f], pix=[%d,%d], source=[%.2f,%.2f,%.2f,%.2f]\n",
                r.x(), r.y(), r.width(), r.height(),
                pm.width(), pm.height(),
@@ -4961,8 +4961,8 @@ void QPainter::drawPixmap(const QRectF &r, const QPixmap &pm, const QRectF &sr)
     Q_D(QPainter);
     if (!d->engine || pm.isNull())
         return;
-#ifndef QT_NO_DEBUG
-    qt_painter_thread_test(d->device->devType(), d->engine->type(), "drawPixmap()");
+#ifndef BOBUI_NO_DEBUG
+    bobui_painter_thread_test(d->device->devType(), d->engine->type(), "drawPixmap()");
 #endif
 
     qreal x = r.x();
@@ -5030,12 +5030,12 @@ void QPainter::drawPixmap(const QRectF &r, const QPixmap &pm, const QRectF &sr)
     }
 
     // Emulate opaque background for bitmaps
-    if (d->state->bgMode == Qt::OpaqueMode && pm.isQBitmap())
+    if (d->state->bgMode == BobUI::OpaqueMode && pm.isQBitmap())
         fillRect(QRectF(x, y, w, h), d->state->bgBrush.color());
 
     d->updateState(d->state);
 
-    if ((d->state->matrix.type() > QTransform::TxTranslate
+    if ((d->state->matrix.type() > BOBUIransform::TxTranslate
          && !d->engine->hasFeature(QPaintEngine::PixmapTransform))
         || (!d->state->matrix.isAffine() && !d->engine->hasFeature(QPaintEngine::PerspectiveTransform))
         || (d->state->opacity != 1.0 && !d->engine->hasFeature(QPaintEngine::ConstantOpacity))
@@ -5044,13 +5044,13 @@ void QPainter::drawPixmap(const QRectF &r, const QPixmap &pm, const QRectF &sr)
         save();
         // If there is no rotation involved we have to make sure we use the
         // antialiased and not the aliased coordinate system by rounding the coordinates.
-        if (d->state->matrix.type() <= QTransform::TxScale) {
+        if (d->state->matrix.type() <= BOBUIransform::TxScale) {
             const QPointF p = roundInDeviceCoordinates(QPointF(x, y), d->state->matrix);
             x = p.x();
             y = p.y();
         }
 
-        if (d->state->matrix.type() <= QTransform::TxTranslate && sw == w && sh == h) {
+        if (d->state->matrix.type() <= BOBUIransform::TxTranslate && sw == w && sh == h) {
             sx = qRound(sx);
             sy = qRound(sy);
             sw = qRound(sw);
@@ -5059,7 +5059,7 @@ void QPainter::drawPixmap(const QRectF &r, const QPixmap &pm, const QRectF &sr)
 
         translate(x, y);
         scale(w / sw, h / sh);
-        setBackgroundMode(Qt::TransparentMode);
+        setBackgroundMode(BobUI::TransparentMode);
         setRenderHint(Antialiasing, renderHints() & SmoothPixmapTransform);
         QBrush brush;
 
@@ -5069,7 +5069,7 @@ void QPainter::drawPixmap(const QRectF &r, const QPixmap &pm, const QRectF &sr)
             brush = QBrush(d->state->pen.color(), pm.copy(sx, sy, sw, sh));
 
         setBrush(brush);
-        setPen(Qt::NoPen);
+        setPen(BobUI::NoPen);
 
         drawRect(QRectF(0, 0, sw, sh));
         restore();
@@ -5206,7 +5206,7 @@ void QPainter::drawImage(const QPointF &p, const QImage &image)
 
     d->updateState(d->state);
 
-    if (((d->state->matrix.type() > QTransform::TxTranslate)
+    if (((d->state->matrix.type() > BOBUIransform::TxTranslate)
          && !d->engine->hasFeature(QPaintEngine::PixmapTransform))
         || (!d->state->matrix.isAffine() && !d->engine->hasFeature(QPaintEngine::PerspectiveTransform))
         || (d->state->opacity != 1.0 && !d->engine->hasFeature(QPaintEngine::ConstantOpacity)))
@@ -5214,34 +5214,34 @@ void QPainter::drawImage(const QPointF &p, const QImage &image)
         save();
         // If there is no rotation involved we have to make sure we use the
         // antialiased and not the aliased coordinate system by rounding the coordinates.
-        if (d->state->matrix.type() <= QTransform::TxScale) {
+        if (d->state->matrix.type() <= BOBUIransform::TxScale) {
             const QPointF p = roundInDeviceCoordinates(QPointF(x, y), d->state->matrix);
             x = p.x();
             y = p.y();
         }
         translate(x, y);
-        setBackgroundMode(Qt::TransparentMode);
+        setBackgroundMode(BobUI::TransparentMode);
         setRenderHint(Antialiasing, renderHints() & SmoothPixmapTransform);
         QBrush brush(image);
         setBrush(brush);
-        setPen(Qt::NoPen);
+        setPen(BobUI::NoPen);
         setBrushOrigin(QPointF(0, 0));
         drawRect(QRect(QPoint(0, 0), image.size() / scale));
         restore();
         return;
     }
 
-    if (d->state->matrix.type() == QTransform::TxTranslate
+    if (d->state->matrix.type() == BOBUIransform::TxTranslate
         && !d->engine->hasFeature(QPaintEngine::PixmapTransform)) {
         x += d->state->matrix.dx();
         y += d->state->matrix.dy();
     }
 
-    d->engine->drawImage(QRectF(x, y, w / scale, h / scale), image, QRectF(0, 0, w, h), Qt::AutoColor);
+    d->engine->drawImage(QRectF(x, y, w / scale, h / scale), image, QRectF(0, 0, w, h), BobUI::AutoColor);
 }
 
 void QPainter::drawImage(const QRectF &targetRect, const QImage &image, const QRectF &sourceRect,
-                         Qt::ImageConversionFlags flags)
+                         BobUI::ImageConversionFlags flags)
 {
     Q_D(QPainter);
 
@@ -5310,7 +5310,7 @@ void QPainter::drawImage(const QRectF &targetRect, const QImage &image, const QR
 
     d->updateState(d->state);
 
-    if (((d->state->matrix.type() > QTransform::TxTranslate || (sw != w || sh != h))
+    if (((d->state->matrix.type() > BOBUIransform::TxTranslate || (sw != w || sh != h))
          && !d->engine->hasFeature(QPaintEngine::PixmapTransform))
         || (!d->state->matrix.isAffine() && !d->engine->hasFeature(QPaintEngine::PerspectiveTransform))
         || (d->state->opacity != 1.0 && !d->engine->hasFeature(QPaintEngine::ConstantOpacity)))
@@ -5318,13 +5318,13 @@ void QPainter::drawImage(const QRectF &targetRect, const QImage &image, const QR
         save();
         // If there is no rotation involved we have to make sure we use the
         // antialiased and not the aliased coordinate system by rounding the coordinates.
-        if (d->state->matrix.type() <= QTransform::TxScale) {
+        if (d->state->matrix.type() <= BOBUIransform::TxScale) {
             const QPointF p = roundInDeviceCoordinates(QPointF(x, y), d->state->matrix);
             x = p.x();
             y = p.y();
         }
 
-        if (d->state->matrix.type() <= QTransform::TxTranslate && sw == w && sh == h) {
+        if (d->state->matrix.type() <= BOBUIransform::TxTranslate && sw == w && sh == h) {
             sx = qRound(sx);
             sy = qRound(sy);
             sw = qRound(sw);
@@ -5332,11 +5332,11 @@ void QPainter::drawImage(const QRectF &targetRect, const QImage &image, const QR
         }
         translate(x, y);
         scale(w / sw, h / sh);
-        setBackgroundMode(Qt::TransparentMode);
+        setBackgroundMode(BobUI::TransparentMode);
         setRenderHint(Antialiasing, renderHints() & SmoothPixmapTransform);
         QBrush brush(image);
         setBrush(brush);
-        setPen(Qt::NoPen);
+        setPen(BobUI::NoPen);
         setBrushOrigin(QPointF(-sx, -sy));
 
         drawRect(QRectF(0, 0, sw, sh));
@@ -5344,7 +5344,7 @@ void QPainter::drawImage(const QRectF &targetRect, const QImage &image, const QR
         return;
     }
 
-    if (d->state->matrix.type() == QTransform::TxTranslate
+    if (d->state->matrix.type() == BOBUIransform::TxTranslate
         && !d->engine->hasFeature(QPaintEngine::PixmapTransform)) {
         x += d->state->matrix.dx();
         y += d->state->matrix.dy();
@@ -5364,7 +5364,7 @@ void QPainter::drawImage(const QRectF &targetRect, const QImage &image, const QR
 
     \sa QGlyphRun::setRawFont(), QGlyphRun::setPositions(), QGlyphRun::setGlyphIndexes()
 */
-#if !defined(QT_NO_RAWFONT)
+#if !defined(BOBUI_NO_RAWFONT)
 void QPainter::drawGlyphRun(const QPointF &position, const QGlyphRun &glyphRun)
 {
     Q_D(QPainter);
@@ -5436,7 +5436,7 @@ void QPainterPrivate::drawGlyphs(const QPointF &decorationPosition,
 
         extended->drawStaticTextItem(&staticTextItem);
     } else {
-        QTextItemInt textItem;
+        BOBUIextItemInt textItem;
         textItem.fontEngine = fontEngine;
 
         QVarLengthArray<QFixed, 128> advances(glyphCount);
@@ -5456,7 +5456,7 @@ void QPainterPrivate::drawGlyphs(const QPointF &decorationPosition,
         engine->drawTextItem(QPointF(0, 0), textItem);
     }
 
-    qt_draw_decoration_for_glyphs(q,
+    bobui_draw_decoration_for_glyphs(q,
                                   decorationPosition,
                                   glyphArray,
                                   positions,
@@ -5466,7 +5466,7 @@ void QPainterPrivate::drawGlyphs(const QPointF &decorationPosition,
                                   overline,
                                   strikeOut);
 }
-#endif // QT_NO_RAWFONT
+#endif // BOBUI_NO_RAWFONT
 
 /*!
 
@@ -5538,7 +5538,7 @@ void QPainter::drawText(const QPointF &p, const QString &str)
 void QPainter::drawStaticText(const QPointF &topLeftPosition, const QStaticText &staticText)
 {
     Q_D(QPainter);
-    if (!d->engine || staticText.text().isEmpty() || pen().style() == Qt::NoPen)
+    if (!d->engine || staticText.text().isEmpty() || pen().style() == BobUI::NoPen)
         return;
 
     QStaticTextPrivate *staticText_d =
@@ -5585,7 +5585,7 @@ void QPainter::drawStaticText(const QPointF &topLeftPosition, const QStaticText 
     QPointF transformedPosition = topLeftPosition;
     if (!staticText_d->untransformedCoordinates)
         transformedPosition = transformedPosition * d->state->matrix;
-    QTransform oldMatrix;
+    BOBUIransform oldMatrix;
 
     // The translation has been applied to transformedPosition. Remove translation
     // component from matrix.
@@ -5648,7 +5648,7 @@ void QPainter::drawStaticText(const QPointF &topLeftPosition, const QStaticText 
         }
         d->extended->drawStaticTextItem(item);
 
-        qt_draw_decoration_for_glyphs(this,
+        bobui_draw_decoration_for_glyphs(this,
                                       topLeftPosition,
                                       item->glyphs,
                                       item->glyphPositions,
@@ -5670,21 +5670,21 @@ void QPainter::drawStaticText(const QPointF &topLeftPosition, const QStaticText 
 */
 void QPainter::drawText(const QPointF &p, const QString &str, int tf, int justificationPadding)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::drawText(), pos=[%.2f,%.2f], str='%s'\n", p.x(), p.y(), str.toLatin1().constData());
 #endif
 
     Q_D(QPainter);
 
-    if (!d->engine || str.isEmpty() || pen().style() == Qt::NoPen)
+    if (!d->engine || str.isEmpty() || pen().style() == BobUI::NoPen)
         return;
 
     Q_DECL_UNINITIALIZED QStackTextEngine engine(str, d->state->font);
     engine.option.setTextDirection(d->state->layoutDirection);
-    if (tf & (Qt::TextForceLeftToRight|Qt::TextForceRightToLeft)) {
+    if (tf & (BobUI::TextForceLeftToRight|BobUI::TextForceRightToLeft)) {
         engine.ignoreBidi = true;
-        engine.option.setTextDirection((tf & Qt::TextForceLeftToRight) ? Qt::LeftToRight : Qt::RightToLeft);
+        engine.option.setTextDirection((tf & BobUI::TextForceLeftToRight) ? BobUI::LeftToRight : BobUI::RightToLeft);
     }
     engine.itemize();
     QScriptLine line;
@@ -5696,10 +5696,10 @@ void QPainter::drawText(const QPointF &p, const QString &str, int tf, int justif
     QVarLengthArray<uchar> levels(nItems);
     for (int i = 0; i < nItems; ++i)
         levels[i] = engine.layoutData->items[i].analysis.bidiLevel;
-    QTextEngine::bidiReorder(nItems, levels.data(), visualOrder.data());
+    BOBUIextEngine::bidiReorder(nItems, levels.data(), visualOrder.data());
 
     if (justificationPadding > 0) {
-        engine.option.setAlignment(Qt::AlignJustify);
+        engine.option.setAlignment(BobUI::AlignJustify);
         engine.forceJustification = true;
         // this works because justify() is only interested in the difference between width and textWidth
         line.width = justificationPadding;
@@ -5715,7 +5715,7 @@ void QPainter::drawText(const QPointF &p, const QString &str, int tf, int justif
             continue;
         }
         QFont f = engine.font(si);
-        QTextItemInt gf(si, &f);
+        BOBUIextItemInt gf(si, &f);
         gf.glyphs = engine.shapedGlyphs(&si);
         gf.chars = engine.layoutData->string.unicode() + si.position;
         gf.num_chars = engine.length(item);
@@ -5735,22 +5735,22 @@ void QPainter::drawText(const QPointF &p, const QString &str, int tf, int justif
 
 void QPainter::drawText(const QRect &r, int flags, const QString &str, QRect *br)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::drawText(), r=[%d,%d,%d,%d], flags=%d, str='%s'\n",
            r.x(), r.y(), r.width(), r.height(), flags, str.toLatin1().constData());
 #endif
 
     Q_D(QPainter);
 
-    if (!d->engine || str.size() == 0 || pen().style() == Qt::NoPen)
+    if (!d->engine || str.size() == 0 || pen().style() == BobUI::NoPen)
         return;
 
     if (!d->extended)
         d->updateState(d->state);
 
     QRectF bounds;
-    qt_format_text(d->state->font, r, flags, nullptr, str, br ? &bounds : nullptr, 0, nullptr, 0, this);
+    bobui_format_text(d->state->font, r, flags, nullptr, str, br ? &bounds : nullptr, 0, nullptr, 0, this);
     if (br)
         *br = bounds.toAlignedRect();
 }
@@ -5798,23 +5798,23 @@ void QPainter::drawText(const QRect &r, int flags, const QString &str, QRect *br
     The \a flags argument is a bitwise OR of the following flags:
 
     \list
-    \li Qt::AlignLeft
-    \li Qt::AlignRight
-    \li Qt::AlignHCenter
-    \li Qt::AlignJustify
-    \li Qt::AlignTop
-    \li Qt::AlignBottom
-    \li Qt::AlignVCenter
-    \li Qt::AlignCenter
-    \li Qt::TextDontClip
-    \li Qt::TextSingleLine
-    \li Qt::TextExpandTabs
-    \li Qt::TextShowMnemonic
-    \li Qt::TextWordWrap
-    \li Qt::TextIncludeTrailingSpaces
+    \li BobUI::AlignLeft
+    \li BobUI::AlignRight
+    \li BobUI::AlignHCenter
+    \li BobUI::AlignJustify
+    \li BobUI::AlignTop
+    \li BobUI::AlignBottom
+    \li BobUI::AlignVCenter
+    \li BobUI::AlignCenter
+    \li BobUI::TextDontClip
+    \li BobUI::TextSingleLine
+    \li BobUI::TextExpandTabs
+    \li BobUI::TextShowMnemonic
+    \li BobUI::TextWordWrap
+    \li BobUI::TextIncludeTrailingSpaces
     \endlist
 
-    \sa Qt::AlignmentFlag, Qt::TextFlag, boundingRect(), layoutDirection()
+    \sa BobUI::AlignmentFlag, BobUI::TextFlag, boundingRect(), layoutDirection()
 
     By default, QPainter draws text anti-aliased.
 
@@ -5822,21 +5822,21 @@ void QPainter::drawText(const QRect &r, int flags, const QString &str, QRect *br
 */
 void QPainter::drawText(const QRectF &r, int flags, const QString &str, QRectF *br)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::drawText(), r=[%.2f,%.2f,%.2f,%.2f], flags=%d, str='%s'\n",
            r.x(), r.y(), r.width(), r.height(), flags, str.toLatin1().constData());
 #endif
 
     Q_D(QPainter);
 
-    if (!d->engine || str.size() == 0 || pen().style() == Qt::NoPen)
+    if (!d->engine || str.size() == 0 || pen().style() == BobUI::NoPen)
         return;
 
     if (!d->extended)
         d->updateState(d->state);
 
-    qt_format_text(d->state->font, r, flags, nullptr, str, br, 0, nullptr, 0, this);
+    bobui_format_text(d->state->font, r, flags, nullptr, str, br, 0, nullptr, 0, this);
 }
 
 /*!
@@ -5903,30 +5903,30 @@ void QPainter::drawText(const QRectF &r, int flags, const QString &str, QRectF *
     The \a flags argument is a bitwise OR of the following flags:
 
     \list
-    \li Qt::AlignLeft
-    \li Qt::AlignRight
-    \li Qt::AlignHCenter
-    \li Qt::AlignJustify
-    \li Qt::AlignTop
-    \li Qt::AlignBottom
-    \li Qt::AlignVCenter
-    \li Qt::AlignCenter
-    \li Qt::TextSingleLine
-    \li Qt::TextExpandTabs
-    \li Qt::TextShowMnemonic
-    \li Qt::TextWordWrap
+    \li BobUI::AlignLeft
+    \li BobUI::AlignRight
+    \li BobUI::AlignHCenter
+    \li BobUI::AlignJustify
+    \li BobUI::AlignTop
+    \li BobUI::AlignBottom
+    \li BobUI::AlignVCenter
+    \li BobUI::AlignCenter
+    \li BobUI::TextSingleLine
+    \li BobUI::TextExpandTabs
+    \li BobUI::TextShowMnemonic
+    \li BobUI::TextWordWrap
     \endlist
 
     By default, QPainter draws text anti-aliased.
 
     \note The y-position is used as the top of the font.
 
-    \sa Qt::AlignmentFlag, Qt::TextFlag, setFont(), setPen()
+    \sa BobUI::AlignmentFlag, BobUI::TextFlag, setFont(), setPen()
 */
 
 /*!
     \fn void QPainter::drawText(const QRectF &rectangle, const QString &text,
-        const QTextOption &option)
+        const BOBUIextOption &option)
     \overload
 
     Draws the given \a text in the \a rectangle specified using the \a option
@@ -5939,34 +5939,34 @@ void QPainter::drawText(const QRectF &r, int flags, const QString &str, QRectF *
 
     \sa setFont(), setPen()
 */
-void QPainter::drawText(const QRectF &r, const QString &text, const QTextOption &o)
+void QPainter::drawText(const QRectF &r, const QString &text, const BOBUIextOption &o)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::drawText(), r=[%.2f,%.2f,%.2f,%.2f], str='%s'\n",
            r.x(), r.y(), r.width(), r.height(), text.toLatin1().constData());
 #endif
 
     Q_D(QPainter);
 
-    if (!d->engine || text.size() == 0 || pen().style() == Qt::NoPen)
+    if (!d->engine || text.size() == 0 || pen().style() == BobUI::NoPen)
         return;
 
     if (!d->extended)
         d->updateState(d->state);
 
-    qt_format_text(d->state->font, r, 0, &o, text, nullptr, 0, nullptr, 0, this);
+    bobui_format_text(d->state->font, r, 0, &o, text, nullptr, 0, nullptr, 0, this);
 }
 
 /*!
-    \fn void QPainter::drawTextItem(int x, int y, const QTextItem &ti)
+    \fn void QPainter::drawTextItem(int x, int y, const BOBUIextItem &ti)
 
     \internal
     \overload
 */
 
 /*!
-    \fn void QPainter::drawTextItem(const QPoint &p, const QTextItem &ti)
+    \fn void QPainter::drawTextItem(const QPoint &p, const BOBUIextItem &ti)
 
     \internal
     \overload
@@ -5975,7 +5975,7 @@ void QPainter::drawText(const QRectF &r, const QString &text, const QTextOption 
 */
 
 /*!
-    \fn void QPainter::drawTextItem(const QPointF &p, const QTextItem &ti)
+    \fn void QPainter::drawTextItem(const QPointF &p, const BOBUIextItem &ti)
 
     \internal
     \since 4.1
@@ -5983,7 +5983,7 @@ void QPainter::drawText(const QRectF &r, const QString &text, const QTextOption 
     Draws the text item \a ti at position \a p.
 
     This method ignores the painters background mode and
-    color. drawText and qt_format_text have to do it themselves, as
+    color. drawText and bobui_format_text have to do it themselves, as
     only they know the extents of the complete string.
 
     It ignores the font set on the painter as the text item has one of its own.
@@ -6022,10 +6022,10 @@ static QPixmap generateWavyPixmap(qreal maxRadius, const QPen &pen)
     }
 
     pixmap = QPixmap(width, radius * 2);
-    pixmap.fill(Qt::transparent);
+    pixmap.fill(BobUI::transparent);
     {
         QPen wavePen = pen;
-        wavePen.setCapStyle(Qt::SquareCap);
+        wavePen.setCapStyle(BobUI::SquareCap);
 
         // This is to protect against making the line too fat, as happens on OS X
         // due to it having a rather thick width for the regular underline.
@@ -6045,36 +6045,36 @@ static QPixmap generateWavyPixmap(qreal maxRadius, const QPen &pen)
     return pixmap;
 }
 
-static void drawTextItemDecoration(QPainter *painter, const QPointF &pos, const QFontEngine *fe, QTextEngine *textEngine,
-                                   QTextCharFormat::UnderlineStyle underlineStyle,
-                                   QTextItem::RenderFlags flags, qreal width,
-                                   const QTextCharFormat &charFormat)
+static void drawTextItemDecoration(QPainter *painter, const QPointF &pos, const QFontEngine *fe, BOBUIextEngine *textEngine,
+                                   BOBUIextCharFormat::UnderlineStyle underlineStyle,
+                                   BOBUIextItem::RenderFlags flags, qreal width,
+                                   const BOBUIextCharFormat &charFormat)
 {
-    if (underlineStyle == QTextCharFormat::NoUnderline
-        && !(flags & (QTextItem::StrikeOut | QTextItem::Overline)))
+    if (underlineStyle == BOBUIextCharFormat::NoUnderline
+        && !(flags & (BOBUIextItem::StrikeOut | BOBUIextItem::Overline)))
         return;
 
     const QPen oldPen = painter->pen();
     const QBrush oldBrush = painter->brush();
-    painter->setBrush(Qt::NoBrush);
+    painter->setBrush(BobUI::NoBrush);
     QPen pen = oldPen;
-    pen.setStyle(Qt::SolidLine);
+    pen.setStyle(BobUI::SolidLine);
     pen.setWidthF(fe->lineThickness().toReal());
-    pen.setCapStyle(Qt::FlatCap);
+    pen.setCapStyle(BobUI::FlatCap);
 
     QLineF line(qFloor(pos.x()), pos.y(), qFloor(pos.x() + width), pos.y());
 
     const qreal underlineOffset = fe->underlinePosition().toReal();
 
-    if (underlineStyle == QTextCharFormat::SpellCheckUnderline) {
+    if (underlineStyle == BOBUIextCharFormat::SpellCheckUnderline) {
         QPlatformTheme *theme = QGuiApplicationPrivate::platformTheme();
         if (theme)
-            underlineStyle = QTextCharFormat::UnderlineStyle(theme->themeHint(QPlatformTheme::SpellCheckUnderlineStyle).toInt());
-        if (underlineStyle == QTextCharFormat::SpellCheckUnderline) // still not resolved
-            underlineStyle = QTextCharFormat::WaveUnderline;
+            underlineStyle = BOBUIextCharFormat::UnderlineStyle(theme->themeHint(QPlatformTheme::SpellCheckUnderlineStyle).toInt());
+        if (underlineStyle == BOBUIextCharFormat::SpellCheckUnderline) // still not resolved
+            underlineStyle = BOBUIextCharFormat::WaveUnderline;
     }
 
-    if (underlineStyle == QTextCharFormat::WaveUnderline) {
+    if (underlineStyle == BOBUIextCharFormat::WaveUnderline) {
         painter->save();
         painter->translate(0, pos.y() + 1);
         qreal maxHeight = fe->descent().toReal() - qreal(1);
@@ -6090,7 +6090,7 @@ static void drawTextItemDecoration(QPainter *painter, const QPointF &pos, const 
         painter->setBrushOrigin(painter->brushOrigin().x(), 0);
         painter->fillRect(pos.x(), 0, qCeil(width), qMin(wave.height(), descent), wave);
         painter->restore();
-    } else if (underlineStyle != QTextCharFormat::NoUnderline) {
+    } else if (underlineStyle != BOBUIextCharFormat::NoUnderline) {
         const bool isAntialiasing = painter->renderHints().testFlag(QPainter::Antialiasing);
         if (!isAntialiasing)
             pen.setWidthF(qMax(fe->lineThickness().round(), QFixed(1)).toReal());
@@ -6106,7 +6106,7 @@ static void drawTextItemDecoration(QPainter *painter, const QPointF &pos, const 
         if (uc.isValid())
             pen.setColor(uc);
 
-        pen.setStyle((Qt::PenStyle)(underlineStyle));
+        pen.setStyle((BobUI::PenStyle)(underlineStyle));
         painter->setPen(pen);
         QLineF underline(line.x1(), underlinePos, line.x2(), underlinePos);
         if (textEngine)
@@ -6118,10 +6118,10 @@ static void drawTextItemDecoration(QPainter *painter, const QPointF &pos, const 
             pen.setWidthF(fe->lineThickness().toReal());
     }
 
-    pen.setStyle(Qt::SolidLine);
+    pen.setStyle(BobUI::SolidLine);
     pen.setColor(oldPen.color());
 
-    if (flags & QTextItem::StrikeOut) {
+    if (flags & BOBUIextItem::StrikeOut) {
         QLineF strikeOutLine = line;
         strikeOutLine.translate(0., - fe->ascent().toReal() / 3.);
         QColor uc = charFormat.underlineColor();
@@ -6134,7 +6134,7 @@ static void drawTextItemDecoration(QPainter *painter, const QPointF &pos, const 
             painter->drawLine(strikeOutLine);
     }
 
-    if (flags & QTextItem::Overline) {
+    if (flags & BOBUIextItem::Overline) {
         QLineF overline = line;
         overline.translate(0., - fe->ascent().toReal());
         QColor uc = charFormat.underlineColor();
@@ -6151,7 +6151,7 @@ static void drawTextItemDecoration(QPainter *painter, const QPointF &pos, const 
     painter->setBrush(oldBrush);
 }
 
-static void qt_draw_decoration_for_glyphs(QPainter *painter,
+static void bobui_draw_decoration_for_glyphs(QPainter *painter,
                                           const QPointF &decorationPosition,
                                           const glyph_t *glyphArray,
                                           const QFixedPoint *positions,
@@ -6164,13 +6164,13 @@ static void qt_draw_decoration_for_glyphs(QPainter *painter,
     if (!underline && !overline && !strikeOut)
         return;
 
-    QTextItem::RenderFlags flags;
+    BOBUIextItem::RenderFlags flags;
     if (underline)
-        flags |= QTextItem::Underline;
+        flags |= BOBUIextItem::Underline;
     if (overline)
-        flags |= QTextItem::Overline;
+        flags |= BOBUIextItem::Overline;
     if (strikeOut)
-        flags |= QTextItem::StrikeOut;
+        flags |= BOBUIextItem::StrikeOut;
 
     bool rtl = positions[glyphCount - 1].x < positions[0].x;
     QFixed baseline = positions[0].y;
@@ -6184,24 +6184,24 @@ static void qt_draw_decoration_for_glyphs(QPainter *painter,
                            QPointF(decorationPosition.x(), baseline.toReal()),
                            fontEngine,
                            nullptr, // textEngine
-                           underline ? QTextCharFormat::SingleUnderline
-                                     : QTextCharFormat::NoUnderline,
+                           underline ? BOBUIextCharFormat::SingleUnderline
+                                     : BOBUIextCharFormat::NoUnderline,
                            flags,
                            width,
-                           QTextCharFormat());
+                           BOBUIextCharFormat());
 }
 
-void QPainter::drawTextItem(const QPointF &p, const QTextItem &ti)
+void QPainter::drawTextItem(const QPointF &p, const BOBUIextItem &ti)
 {
     Q_D(QPainter);
 
-    d->drawTextItem(p, ti, static_cast<QTextEngine *>(nullptr));
+    d->drawTextItem(p, ti, static_cast<BOBUIextEngine *>(nullptr));
 }
 
-void QPainterPrivate::drawTextItem(const QPointF &p, const QTextItem &_ti, QTextEngine *textEngine)
+void QPainterPrivate::drawTextItem(const QPointF &p, const BOBUIextItem &_ti, BOBUIextEngine *textEngine)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::drawTextItem(), pos=[%.f,%.f], str='%s'\n",
                p.x(), p.y(), qPrintable(_ti.text()));
 #endif
@@ -6211,24 +6211,24 @@ void QPainterPrivate::drawTextItem(const QPointF &p, const QTextItem &_ti, QText
     if (!engine)
         return;
 
-    QTextItemInt &ti = const_cast<QTextItemInt &>(static_cast<const QTextItemInt &>(_ti));
+    BOBUIextItemInt &ti = const_cast<BOBUIextItemInt &>(static_cast<const BOBUIextItemInt &>(_ti));
 
-    if (!extended && state->bgMode == Qt::OpaqueMode) {
+    if (!extended && state->bgMode == BobUI::OpaqueMode) {
         QRectF rect(p.x(), p.y() - ti.ascent.toReal(), ti.width.toReal(), (ti.ascent + ti.descent).toReal());
         q->fillRect(rect, state->bgBrush);
     }
 
-    if (q->pen().style() == Qt::NoPen)
+    if (q->pen().style() == BobUI::NoPen)
         return;
 
     const QPainter::RenderHints oldRenderHints = state->renderHints;
-    if (!(state->renderHints & QPainter::Antialiasing) && state->matrix.type() >= QTransform::TxScale) {
+    if (!(state->renderHints & QPainter::Antialiasing) && state->matrix.type() >= BOBUIransform::TxScale) {
         // draw antialias decoration (underline/overline/strikeout) with
         // transformed text
 
         bool aa = true;
-        const QTransform &m = state->matrix;
-        if (state->matrix.type() < QTransform::TxShear) {
+        const BOBUIransform &m = state->matrix;
+        if (state->matrix.type() < BOBUIransform::TxShear) {
             bool isPlain90DegreeRotation =
                 (qFuzzyIsNull(m.m11())
                  && qFuzzyIsNull(m.m12() - qreal(1))
@@ -6269,7 +6269,7 @@ void QPainterPrivate::drawTextItem(const QPointF &p, const QTextItem &_ti, QText
         qreal x = p.x();
         qreal y = p.y();
 
-        bool rtl = ti.flags & QTextItem::RightToLeft;
+        bool rtl = ti.flags & BOBUIextItem::RightToLeft;
         if (rtl)
             x += ti.width.toReal();
 
@@ -6282,7 +6282,7 @@ void QPainterPrivate::drawTextItem(const QPointF &p, const QTextItem &_ti, QText
 
 
             multi->ensureEngineAt(which);
-            QTextItemInt ti2 = ti.midItem(multi->engine(which), start, end - start);
+            BOBUIextItemInt ti2 = ti.midItem(multi->engine(which), start, end - start);
             ti2.width = 0;
             // set the high byte to zero and calc the width
             for (i = start; i < end; ++i) {
@@ -6315,7 +6315,7 @@ void QPainterPrivate::drawTextItem(const QPointF &p, const QTextItem &_ti, QText
         }
 
         multi->ensureEngineAt(which);
-        QTextItemInt ti2 = ti.midItem(multi->engine(which), start, end - start);
+        BOBUIextItemInt ti2 = ti.midItem(multi->engine(which), start, end - start);
         ti2.width = 0;
         // set the high byte to zero and calc the width
         for (i = start; i < end; ++i) {
@@ -6371,23 +6371,23 @@ void QPainterPrivate::drawTextItem(const QPointF &p, const QTextItem &_ti, QText
 
     The \a flags argument is a bitwise OR of the following flags:
     \list
-         \li Qt::AlignLeft
-         \li Qt::AlignRight
-         \li Qt::AlignHCenter
-         \li Qt::AlignTop
-         \li Qt::AlignBottom
-         \li Qt::AlignVCenter
-         \li Qt::AlignCenter
-         \li Qt::TextSingleLine
-         \li Qt::TextExpandTabs
-         \li Qt::TextShowMnemonic
-         \li Qt::TextWordWrap
-         \li Qt::TextIncludeTrailingSpaces
+         \li BobUI::AlignLeft
+         \li BobUI::AlignRight
+         \li BobUI::AlignHCenter
+         \li BobUI::AlignTop
+         \li BobUI::AlignBottom
+         \li BobUI::AlignVCenter
+         \li BobUI::AlignCenter
+         \li BobUI::TextSingleLine
+         \li BobUI::TextExpandTabs
+         \li BobUI::TextShowMnemonic
+         \li BobUI::TextWordWrap
+         \li BobUI::TextIncludeTrailingSpaces
     \endlist
     If several of the horizontal or several of the vertical alignment
     flags are set, the resulting alignment is undefined.
 
-    \sa drawText(), Qt::Alignment, Qt::TextFlag
+    \sa drawText(), BobUI::Alignment, BobUI::TextFlag
 */
 
 /*!
@@ -6416,7 +6416,7 @@ QRect QPainter::boundingRect(const QRect &rect, int flags, const QString &str)
     if (str.isEmpty())
         return QRect(rect.x(),rect.y(), 0,0);
     QRect brect;
-    drawText(rect, flags | Qt::TextDontPrint, str, &brect);
+    drawText(rect, flags | BobUI::TextDontPrint, str, &brect);
     return brect;
 }
 
@@ -6427,24 +6427,24 @@ QRectF QPainter::boundingRect(const QRectF &rect, int flags, const QString &str)
     if (str.isEmpty())
         return QRectF(rect.x(),rect.y(), 0,0);
     QRectF brect;
-    drawText(rect, flags | Qt::TextDontPrint, str, &brect);
+    drawText(rect, flags | BobUI::TextDontPrint, str, &brect);
     return brect;
 }
 
 /*!
     \fn QRectF QPainter::boundingRect(const QRectF &rectangle,
-        const QString &text, const QTextOption &option)
+        const QString &text, const BOBUIextOption &option)
 
     \overload
 
     Instead of specifying flags as a bitwise OR of the
-    Qt::AlignmentFlag and Qt::TextFlag, this overloaded function takes
-    an \a option argument. The QTextOption class provides a
+    BobUI::AlignmentFlag and BobUI::TextFlag, this overloaded function takes
+    an \a option argument. The BOBUIextOption class provides a
     description of general rich text properties.
 
-    \sa QTextOption
+    \sa BOBUIextOption
 */
-QRectF QPainter::boundingRect(const QRectF &r, const QString &text, const QTextOption &o)
+QRectF QPainter::boundingRect(const QRectF &r, const QString &text, const BOBUIextOption &o)
 {
     Q_D(QPainter);
 
@@ -6452,7 +6452,7 @@ QRectF QPainter::boundingRect(const QRectF &r, const QString &text, const QTextO
         return QRectF(r.x(),r.y(), 0,0);
 
     QRectF br;
-    qt_format_text(d->state->font, r, Qt::TextDontPrint, &o, text, &br, 0, nullptr, 0, this);
+    bobui_format_text(d->state->font, r, BobUI::TextDontPrint, &o, text, &br, 0, nullptr, 0, this);
     return br;
 }
 
@@ -6482,8 +6482,8 @@ QRectF QPainter::boundingRect(const QRectF &r, const QString &text, const QTextO
 */
 void QPainter::drawTiledPixmap(const QRectF &r, const QPixmap &pixmap, const QPointF &sp)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::drawTiledPixmap(), target=[%.2f,%.2f,%.2f,%.2f], pix=[%d,%d], offset=[%.2f,%.2f]\n",
                r.x(), r.y(), r.width(), r.height(),
                pixmap.width(), pixmap.height(),
@@ -6494,8 +6494,8 @@ void QPainter::drawTiledPixmap(const QRectF &r, const QPixmap &pixmap, const QPo
     if (!d->engine || pixmap.isNull() || r.isEmpty())
         return;
 
-#ifndef QT_NO_DEBUG
-    qt_painter_thread_test(d->device->devType(), d->engine->type(), "drawTiledPixmap()");
+#ifndef BOBUI_NO_DEBUG
+    bobui_painter_thread_test(d->device->devType(), d->engine->type(), "drawTiledPixmap()");
 #endif
 
     const qreal sw = pixmap.width() / pixmap.devicePixelRatio();
@@ -6517,26 +6517,26 @@ void QPainter::drawTiledPixmap(const QRectF &r, const QPixmap &pixmap, const QPo
         return;
     }
 
-    if (d->state->bgMode == Qt::OpaqueMode && pixmap.isQBitmap())
+    if (d->state->bgMode == BobUI::OpaqueMode && pixmap.isQBitmap())
         fillRect(r, d->state->bgBrush);
 
     d->updateState(d->state);
-    if ((d->state->matrix.type() > QTransform::TxTranslate
+    if ((d->state->matrix.type() > BOBUIransform::TxTranslate
         && !d->engine->hasFeature(QPaintEngine::PixmapTransform))
         || (d->state->opacity != 1.0 && !d->engine->hasFeature(QPaintEngine::ConstantOpacity)))
     {
         save();
-        setBackgroundMode(Qt::TransparentMode);
+        setBackgroundMode(BobUI::TransparentMode);
         setRenderHint(Antialiasing, renderHints() & SmoothPixmapTransform);
         setBrush(QBrush(d->state->pen.color(), pixmap));
-        setPen(Qt::NoPen);
+        setPen(BobUI::NoPen);
 
         // If there is no rotation involved we have to make sure we use the
         // antialiased and not the aliased coordinate system by rounding the coordinates.
-        if (d->state->matrix.type() <= QTransform::TxScale) {
+        if (d->state->matrix.type() <= BOBUIransform::TxScale) {
             const QPointF p = roundInDeviceCoordinates(r.topLeft(), d->state->matrix);
 
-            if (d->state->matrix.type() <= QTransform::TxTranslate) {
+            if (d->state->matrix.type() <= BOBUIransform::TxTranslate) {
                 sx = qRound(sx);
                 sy = qRound(sy);
             }
@@ -6553,7 +6553,7 @@ void QPainter::drawTiledPixmap(const QRectF &r, const QPixmap &pixmap, const QPo
 
     qreal x = r.x();
     qreal y = r.y();
-    if (d->state->matrix.type() == QTransform::TxTranslate
+    if (d->state->matrix.type() == BOBUIransform::TxTranslate
         && !d->engine->hasFeature(QPaintEngine::PixmapTransform)) {
         x += d->state->matrix.dx();
         y += d->state->matrix.dy();
@@ -6588,7 +6588,7 @@ void QPainter::drawTiledPixmap(const QRectF &r, const QPixmap &pixmap, const QPo
     to (0, 0).
 */
 
-#ifndef QT_NO_PICTURE
+#ifndef BOBUI_NO_PICTURE
 
 /*!
     \fn void QPainter::drawPicture(const QPointF &point, const QPicture &picture)
@@ -6646,7 +6646,7 @@ void QPainter::drawPicture(const QPointF &p, const QPicture &picture)
     Draws the given \a picture at point (\a x, \a y).
 */
 
-#endif // QT_NO_PICTURE
+#endif // BOBUI_NO_PICTURE
 
 /*!
     \fn void QPainter::eraseRect(const QRectF &rectangle)
@@ -6666,9 +6666,9 @@ void QPainter::eraseRect(const QRectF &r)
 
 static inline bool needsResolving(const QBrush &brush)
 {
-    Qt::BrushStyle s = brush.style();
-    return ((s == Qt::LinearGradientPattern || s == Qt::RadialGradientPattern ||
-             s == Qt::ConicalGradientPattern) &&
+    BobUI::BrushStyle s = brush.style();
+    return ((s == BobUI::LinearGradientPattern || s == BobUI::RadialGradientPattern ||
+             s == BobUI::ConicalGradientPattern) &&
             (brush.gradient()->coordinateMode() == QGradient::ObjectBoundingMode ||
              brush.gradient()->coordinateMode() == QGradient::ObjectMode));
 }
@@ -6690,7 +6690,7 @@ static inline bool needsResolving(const QBrush &brush)
 
 
 /*!
-    \fn void QPainter::fillRect(int x, int y, int width, int height, Qt::BrushStyle style)
+    \fn void QPainter::fillRect(int x, int y, int width, int height, BobUI::BrushStyle style)
     \overload
 
     Fills the rectangle beginning at (\a{x}, \a{y}) with the given \a
@@ -6700,7 +6700,7 @@ static inline bool needsResolving(const QBrush &brush)
 */
 
 /*!
-    \fn void QPainter::fillRect(const QRect &rectangle, Qt::BrushStyle style)
+    \fn void QPainter::fillRect(const QRect &rectangle, BobUI::BrushStyle style)
     \overload
 
     Fills the given \a rectangle  with the brush \a style specified.
@@ -6709,7 +6709,7 @@ static inline bool needsResolving(const QBrush &brush)
 */
 
 /*!
-    \fn void QPainter::fillRect(const QRectF &rectangle, Qt::BrushStyle style)
+    \fn void QPainter::fillRect(const QRectF &rectangle, BobUI::BrushStyle style)
     \overload
 
     Fills the given \a rectangle  with the brush \a style specified.
@@ -6744,9 +6744,9 @@ void QPainter::fillRect(const QRectF &r, const QBrush &brush)
 
     QPen oldPen = pen();
     QBrush oldBrush = this->brush();
-    setPen(Qt::NoPen);
-    if (brush.style() == Qt::SolidPattern) {
-        d->colorBrush.setStyle(Qt::SolidPattern);
+    setPen(BobUI::NoPen);
+    if (brush.style() == BobUI::SolidPattern) {
+        d->colorBrush.setStyle(BobUI::SolidPattern);
         d->colorBrush.setColor(brush.color());
         setBrush(d->colorBrush);
     } else {
@@ -6781,9 +6781,9 @@ void QPainter::fillRect(const QRect &r, const QBrush &brush)
 
     QPen oldPen = pen();
     QBrush oldBrush = this->brush();
-    setPen(Qt::NoPen);
-    if (brush.style() == Qt::SolidPattern) {
-        d->colorBrush.setStyle(Qt::SolidPattern);
+    setPen(BobUI::NoPen);
+    if (brush.style() == BobUI::SolidPattern) {
+        d->colorBrush.setStyle(BobUI::SolidPattern);
         d->colorBrush.setColor(brush.color());
         setBrush(d->colorBrush);
     } else {
@@ -6867,7 +6867,7 @@ void QPainter::fillRect(const QRectF &r, const QColor &color)
 */
 
 /*!
-    \fn void QPainter::fillRect(int x, int y, int width, int height, Qt::GlobalColor color)
+    \fn void QPainter::fillRect(int x, int y, int width, int height, BobUI::GlobalColor color)
 
     \overload
 
@@ -6878,7 +6878,7 @@ void QPainter::fillRect(const QRectF &r, const QColor &color)
 */
 
 /*!
-    \fn void QPainter::fillRect(const QRect &rectangle, Qt::GlobalColor color);
+    \fn void QPainter::fillRect(const QRect &rectangle, BobUI::GlobalColor color);
 
     \overload
 
@@ -6888,7 +6888,7 @@ void QPainter::fillRect(const QRectF &r, const QColor &color)
 */
 
 /*!
-    \fn void QPainter::fillRect(const QRectF &rectangle, Qt::GlobalColor color);
+    \fn void QPainter::fillRect(const QRectF &rectangle, BobUI::GlobalColor color);
 
     \overload
 
@@ -6937,13 +6937,13 @@ void QPainter::fillRect(const QRectF &r, const QColor &color)
 */
 void QPainter::setRenderHint(RenderHint hint, bool on)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::setRenderHint: hint=%x, %s\n", hint, on ? "on" : "off");
 #endif
 
-#ifndef QT_NO_DEBUG
-    static const bool antialiasingDisabled = qEnvironmentVariableIntValue("QT_NO_ANTIALIASING");
+#ifndef BOBUI_NO_DEBUG
+    static const bool antialiasingDisabled = qEnvironmentVariableIntValue("BOBUI_NO_ANTIALIASING");
     if (hint == QPainter::Antialiasing && antialiasingDisabled)
         return;
 #endif
@@ -7050,8 +7050,8 @@ bool QPainter::viewTransformEnabled() const
 
 void QPainter::setWindow(const QRect &r)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::setWindow(), [%d,%d,%d,%d]\n", r.x(), r.y(), r.width(), r.height());
 #endif
 
@@ -7114,8 +7114,8 @@ QRect QPainter::window() const
 
 void QPainter::setViewport(const QRect &r)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::setViewport(), [%d,%d,%d,%d]\n", r.x(), r.y(), r.width(), r.height());
 #endif
 
@@ -7161,8 +7161,8 @@ QRect QPainter::viewport() const
 
 void QPainter::setViewTransformEnabled(bool enable)
 {
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::setViewTransformEnabled(), enable=%d\n", enable);
 #endif
 
@@ -7180,11 +7180,11 @@ void QPainter::setViewTransformEnabled(bool enable)
     d->updateMatrix();
 }
 
-void qt_format_text(const QFont &fnt,
+void bobui_format_text(const QFont &fnt,
                     const QRectF &_r,
                     int tf,
                     int alignment,
-                    const QTextOption *option,
+                    const BOBUIextOption *option,
                     const QString& str,
                     QRectF *brect,
                     int tabstops,
@@ -7192,57 +7192,57 @@ void qt_format_text(const QFont &fnt,
                     int tabarraylen,
                     QPainter *painter)
 {
-    Q_ASSERT( !((tf & ~Qt::TextDontPrint)!=0 && option!=nullptr) ); // we either have an option or flags
+    Q_ASSERT( !((tf & ~BobUI::TextDontPrint)!=0 && option!=nullptr) ); // we either have an option or flags
 
-    if (_r.isEmpty() && !(tf & Qt::TextDontClip)) {
+    if (_r.isEmpty() && !(tf & BobUI::TextDontClip)) {
         if (!brect)
             return;
         else
-            tf |= Qt::TextDontPrint;
+            tf |= BobUI::TextDontPrint;
     }
 
     if (option) {
         alignment |= option->alignment();
-        if (option->wrapMode() != QTextOption::NoWrap)
-            tf |= Qt::TextWordWrap;
+        if (option->wrapMode() != BOBUIextOption::NoWrap)
+            tf |= BobUI::TextWordWrap;
 
-        if (option->flags() & QTextOption::IncludeTrailingSpaces)
-            tf |= Qt::TextIncludeTrailingSpaces;
+        if (option->flags() & BOBUIextOption::IncludeTrailingSpaces)
+            tf |= BobUI::TextIncludeTrailingSpaces;
 
         if (option->tabStopDistance() >= 0 || !option->tabArray().isEmpty())
-            tf |= Qt::TextExpandTabs;
+            tf |= BobUI::TextExpandTabs;
     }
 
     // we need to copy r here to protect against the case (&r == brect).
     QRectF r(_r);
 
-    bool dontclip  = (tf & Qt::TextDontClip);
-    bool wordwrap  = (tf & Qt::TextWordWrap) || (tf & Qt::TextWrapAnywhere);
-    bool singleline = (tf & Qt::TextSingleLine);
-    bool showmnemonic = (tf & Qt::TextShowMnemonic);
-    bool hidemnmemonic = (tf & Qt::TextHideMnemonic);
+    bool dontclip  = (tf & BobUI::TextDontClip);
+    bool wordwrap  = (tf & BobUI::TextWordWrap) || (tf & BobUI::TextWrapAnywhere);
+    bool singleline = (tf & BobUI::TextSingleLine);
+    bool showmnemonic = (tf & BobUI::TextShowMnemonic);
+    bool hidemnmemonic = (tf & BobUI::TextHideMnemonic);
 
-    Qt::LayoutDirection layout_direction;
-    if (tf & Qt::TextForceLeftToRight)
-        layout_direction = Qt::LeftToRight;
-    else if (tf & Qt::TextForceRightToLeft)
-        layout_direction = Qt::RightToLeft;
+    BobUI::LayoutDirection layout_direction;
+    if (tf & BobUI::TextForceLeftToRight)
+        layout_direction = BobUI::LeftToRight;
+    else if (tf & BobUI::TextForceRightToLeft)
+        layout_direction = BobUI::RightToLeft;
     else if (option)
         layout_direction = option->textDirection();
     else if (painter)
         layout_direction = painter->layoutDirection();
     else
-        layout_direction = Qt::LeftToRight;
+        layout_direction = BobUI::LeftToRight;
 
     alignment = QGuiApplicationPrivate::visualAlignment(layout_direction, QFlag(alignment));
 
-    bool isRightToLeft = layout_direction == Qt::RightToLeft;
-    bool expandtabs = ((tf & Qt::TextExpandTabs) &&
-                        (((alignment & Qt::AlignLeft) && !isRightToLeft) ||
-                          ((alignment & Qt::AlignRight) && isRightToLeft)));
+    bool isRightToLeft = layout_direction == BobUI::RightToLeft;
+    bool expandtabs = ((tf & BobUI::TextExpandTabs) &&
+                        (((alignment & BobUI::AlignLeft) && !isRightToLeft) ||
+                          ((alignment & BobUI::AlignRight) && isRightToLeft)));
 
     if (!painter)
-        tf |= Qt::TextDontPrint;
+        tf |= BobUI::TextDontPrint;
 
     uint maxUnderlines = 0;
 
@@ -7275,7 +7275,7 @@ start_lengthVariant:
         }
     }
 
-    QList<QTextLayout::FormatRange> underlineFormats;
+    QList<BOBUIextLayout::FormatRange> underlineFormats;
     int length = offset - old_offset;
     if ((hidemnmemonic || showmnemonic) && maxUnderlines > 0) {
         QChar *cout = text.data() + old_offset;
@@ -7289,8 +7289,8 @@ start_lengthVariant:
                 --l;
                 if (!l)
                     break;
-                if (*cin != u'&' && !hidemnmemonic && !(tf & Qt::TextDontPrint)) {
-                    QTextLayout::FormatRange range;
+                if (*cin != u'&' && !hidemnmemonic && !(tf & BobUI::TextDontPrint)) {
+                    BOBUIextLayout::FormatRange range;
                     range.start = cout - cout0;
                     range.length = 1;
                     range.format.setFontUnderline(true);
@@ -7338,37 +7338,37 @@ start_lengthVariant:
     }
 
     engine.option.setTextDirection(layout_direction);
-    if (alignment & Qt::AlignJustify)
-        engine.option.setAlignment(Qt::AlignJustify);
+    if (alignment & BobUI::AlignJustify)
+        engine.option.setAlignment(BobUI::AlignJustify);
     else
-        engine.option.setAlignment(Qt::AlignLeft); // do not do alignment twice
+        engine.option.setAlignment(BobUI::AlignLeft); // do not do alignment twice
 
-    if (!option && (tf & Qt::TextWrapAnywhere))
-        engine.option.setWrapMode(QTextOption::WrapAnywhere);
+    if (!option && (tf & BobUI::TextWrapAnywhere))
+        engine.option.setWrapMode(BOBUIextOption::WrapAnywhere);
 
-    if (tf & Qt::TextJustificationForced)
+    if (tf & BobUI::TextJustificationForced)
         engine.forceJustification = true;
-    QTextLayout textLayout(&engine);
+    BOBUIextLayout textLayout(&engine);
     textLayout.setCacheEnabled(true);
     textLayout.setFormats(underlineFormats);
 
     if (finalText.isEmpty()) {
         height = fm.height();
         width = 0;
-        tf |= Qt::TextDontPrint;
+        tf |= BobUI::TextDontPrint;
     } else {
         qreal lineWidth = 0x01000000;
-        if (wordwrap || (tf & Qt::TextJustificationForced))
+        if (wordwrap || (tf & BobUI::TextJustificationForced))
             lineWidth = qMax<qreal>(0, r.width());
         if (!wordwrap)
-            tf |= Qt::TextIncludeTrailingSpaces;
+            tf |= BobUI::TextIncludeTrailingSpaces;
         textLayout.beginLayout();
 
         qreal leading = fm.leading();
         height = -leading;
 
         while (1) {
-            QTextLine l = textLayout.createLine();
+            BOBUIextLine l = textLayout.createLine();
             if (!l.isValid())
                 break;
 
@@ -7378,7 +7378,7 @@ start_lengthVariant:
             // Make sure lines are positioned on whole pixels
             height = qCeil(height);
 
-            if (alignment & Qt::AlignBaseline && l.lineNumber() == 0)
+            if (alignment & BobUI::AlignBaseline && l.lineNumber() == 0)
                 height -= l.ascent();
 
             l.setPosition(QPointF(0., height));
@@ -7392,44 +7392,44 @@ start_lengthVariant:
 
     qreal yoff = 0;
     qreal xoff = 0;
-    if (alignment & Qt::AlignBottom)
+    if (alignment & BobUI::AlignBottom)
         yoff = r.height() - height;
-    else if (alignment & Qt::AlignVCenter)
+    else if (alignment & BobUI::AlignVCenter)
         yoff = (r.height() - height)/2;
 
-    if (alignment & Qt::AlignRight)
+    if (alignment & BobUI::AlignRight)
         xoff = r.width() - width;
-    else if (alignment & Qt::AlignHCenter)
+    else if (alignment & BobUI::AlignHCenter)
         xoff = (r.width() - width)/2;
 
     QRectF bounds = QRectF(r.x() + xoff, r.y() + yoff, width, height);
 
-    if (hasMoreLengthVariants && !(tf & Qt::TextLongestVariant) && !r.contains(bounds)) {
+    if (hasMoreLengthVariants && !(tf & BobUI::TextLongestVariant) && !r.contains(bounds)) {
         offset++;
         goto start_lengthVariant;
     }
     if (brect)
         *brect = bounds;
 
-    if (!(tf & Qt::TextDontPrint)) {
+    if (!(tf & BobUI::TextDontPrint)) {
         bool restore = false;
         if (!dontclip && !r.contains(bounds)) {
             restore = true;
             painter->save();
-            painter->setClipRect(r, Qt::IntersectClip);
+            painter->setClipRect(r, BobUI::IntersectClip);
         }
 
         for (int i = 0; i < textLayout.lineCount(); i++) {
-            QTextLine line = textLayout.lineAt(i);
-            QTextEngine *eng = textLayout.engine();
+            BOBUIextLine line = textLayout.lineAt(i);
+            BOBUIextEngine *eng = textLayout.engine();
             eng->enableDelayDecorations();
 
             qreal advance = line.horizontalAdvance();
             xoff = 0;
-            if (alignment & Qt::AlignRight) {
+            if (alignment & BobUI::AlignRight) {
                 xoff = r.width() - advance -
                     eng->leadingSpaceWidth(eng->lines[line.lineNumber()]).toReal();
-            } else if (alignment & Qt::AlignHCenter) {
+            } else if (alignment & BobUI::AlignHCenter) {
                 xoff = (r.width() - advance) / 2;
             }
 
@@ -7443,15 +7443,15 @@ start_lengthVariant:
     }
 }
 
-void qt_format_text(const QFont &fnt, const QRectF &_r,
+void bobui_format_text(const QFont &fnt, const QRectF &_r,
                     int tf, const QString& str, QRectF *brect,
                     int tabstops, int *ta, int tabarraylen,
                     QPainter *painter)
 {
-    qt_format_text(fnt,
+    bobui_format_text(fnt,
                    _r,
                    tf,
-                   tf & ~Qt::AlignBaseline, // Qt::AlignBaseline conflicts with Qt::TextSingleLine
+                   tf & ~BobUI::AlignBaseline, // BobUI::AlignBaseline conflicts with BobUI::TextSingleLine
                    nullptr,
                    str,
                    brect,
@@ -7461,10 +7461,10 @@ void qt_format_text(const QFont &fnt, const QRectF &_r,
                    painter);
 }
 
-void qt_format_text(const QFont &fnt,
+void bobui_format_text(const QFont &fnt,
                     const QRectF &_r,
                     int tf,
-                    const QTextOption *option,
+                    const BOBUIextOption *option,
                     const QString& str,
                     QRectF *brect,
                     int tabstops,
@@ -7472,10 +7472,10 @@ void qt_format_text(const QFont &fnt,
                     int tabarraylen,
                     QPainter *painter)
 {
-    qt_format_text(fnt,
+    bobui_format_text(fnt,
                    _r,
                    tf,
-                   tf & ~Qt::AlignBaseline, // Qt::AlignBaseline conflicts with Qt::TextSingleLine
+                   tf & ~BobUI::AlignBaseline, // BobUI::AlignBaseline conflicts with BobUI::TextSingleLine
                    option,
                    str,
                    brect,
@@ -7489,12 +7489,12 @@ void qt_format_text(const QFont &fnt,
     Sets the layout direction used by the painter when drawing text,
     to the specified \a direction.
 
-    The default is Qt::LayoutDirectionAuto, which will implicitly determine the
+    The default is BobUI::LayoutDirectionAuto, which will implicitly determine the
     direction from the text drawn.
 
-    \sa QTextOption::setTextDirection(), layoutDirection(), drawText(), {QPainter#Settings}{Settings}
+    \sa BOBUIextOption::setTextDirection(), layoutDirection(), drawText(), {QPainter#Settings}{Settings}
 */
-void QPainter::setLayoutDirection(Qt::LayoutDirection direction)
+void QPainter::setLayoutDirection(BobUI::LayoutDirection direction)
 {
     Q_D(QPainter);
     if (d->state)
@@ -7504,12 +7504,12 @@ void QPainter::setLayoutDirection(Qt::LayoutDirection direction)
 /*!
     Returns the layout direction used by the painter when drawing text.
 
-    \sa QTextOption::textDirection(), setLayoutDirection(), drawText(), {QPainter#Settings}{Settings}
+    \sa BOBUIextOption::textDirection(), setLayoutDirection(), drawText(), {QPainter#Settings}{Settings}
 */
-Qt::LayoutDirection QPainter::layoutDirection() const
+BobUI::LayoutDirection QPainter::layoutDirection() const
 {
     Q_D(const QPainter);
-    return d->state ? d->state->layoutDirection : Qt::LayoutDirectionAuto;
+    return d->state ? d->state->layoutDirection : BobUI::LayoutDirectionAuto;
 }
 
 QPainterState::QPainterState(const QPainterState *s)
@@ -7541,8 +7541,8 @@ QPainterState::~QPainterState()
 }
 
 void QPainterState::init(QPainter *p) {
-    bgBrush = Qt::white;
-    bgMode = Qt::TransparentMode;
+    bgBrush = BobUI::white;
+    bgMode = BobUI::TransparentMode;
     WxF = false;
     VxF = false;
     clipEnabled = true;
@@ -7555,7 +7555,7 @@ void QPainterState::init(QPainter *p) {
     font = deviceFont = QFont();
     clipRegion = QRegion();
     clipPath = QPainterPath();
-    clipOperation = Qt::NoClip;
+    clipOperation = BobUI::NoClip;
     clipInfo.clear();
     worldMatrix.reset();
     matrix.reset();
@@ -7570,7 +7570,7 @@ void QPainterState::init(QPainter *p) {
 
 /*!
     \fn void QPainter::drawImage(const QRectF &target, const QImage &image, const QRectF &source,
-                         Qt::ImageConversionFlags flags)
+                         BobUI::ImageConversionFlags flags)
 
     Draws the rectangular portion \a source of the given \a image
     into the \a target rectangle in the paint device.
@@ -7594,7 +7594,7 @@ void QPainterState::init(QPainter *p) {
 
 /*!
     \fn void QPainter::drawImage(const QRect &target, const QImage &image, const QRect &source,
-                                 Qt::ImageConversionFlags flags)
+                                 BobUI::ImageConversionFlags flags)
     \overload
 
     Draws the rectangular portion \a source of the given \a image
@@ -7621,7 +7621,7 @@ void QPainterState::init(QPainter *p) {
 
 /*!
     \fn void QPainter::drawImage(const QPointF &point, const QImage &image, const QRectF &source,
-                                 Qt::ImageConversionFlags flags = Qt::AutoColor)
+                                 BobUI::ImageConversionFlags flags = BobUI::AutoColor)
 
     \overload
 
@@ -7631,7 +7631,7 @@ void QPainterState::init(QPainter *p) {
 
 /*!
     \fn void QPainter::drawImage(const QPoint &point, const QImage &image, const QRect &source,
-                                 Qt::ImageConversionFlags flags = Qt::AutoColor)
+                                 BobUI::ImageConversionFlags flags = BobUI::AutoColor)
     \overload
 
     Draws the rectangular portion \a source of the given \a image with
@@ -7661,7 +7661,7 @@ void QPainterState::init(QPainter *p) {
 /*!
     \fn void QPainter::drawImage(int x, int y, const QImage &image,
                                  int sx, int sy, int sw, int sh,
-                                 Qt::ImageConversionFlags flags)
+                                 BobUI::ImageConversionFlags flags)
     \overload
 
     Draws an image at (\a{x}, \a{y}) by copying a part of \a image into
@@ -7679,7 +7679,7 @@ void QPainterState::init(QPainter *p) {
 /*!
     \class QPaintEngineState
     \since 4.1
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QPaintEngineState class provides information about the
     active paint engine's current state.
@@ -7810,7 +7810,7 @@ QBrush QPaintEngineState::backgroundBrush() const
     \sa state(), QPaintEngine::updateState()
 */
 
-Qt::BGMode QPaintEngineState::backgroundMode() const
+BobUI::BGMode QPaintEngineState::backgroundMode() const
 {
     return static_cast<const QPainterState *>(this)->bgMode;
 }
@@ -7842,7 +7842,7 @@ QFont QPaintEngineState::font() const
 */
 
 
-QTransform QPaintEngineState::transform() const
+BOBUIransform QPaintEngineState::transform() const
 {
     const QPainterState *st = static_cast<const QPainterState *>(this);
 
@@ -7861,7 +7861,7 @@ QTransform QPaintEngineState::transform() const
     \sa state(), QPaintEngine::updateState()
 */
 
-Qt::ClipOperation QPaintEngineState::clipOperation() const
+BobUI::ClipOperation QPaintEngineState::clipOperation() const
 {
     return static_cast<const QPainterState *>(this)->clipOperation;
 }
@@ -8000,7 +8000,7 @@ qreal QPaintEngineState::opacity() const
     \sa transform(), setWorldTransform()
 */
 
-void QPainter::setTransform(const QTransform &transform, bool combine )
+void QPainter::setTransform(const BOBUIransform &transform, bool combine )
 {
     setWorldTransform(transform, combine);
 }
@@ -8012,7 +8012,7 @@ void QPainter::setTransform(const QTransform &transform, bool combine )
     \sa worldTransform()
 */
 
-const QTransform & QPainter::transform() const
+const BOBUIransform & QPainter::transform() const
 {
     return worldTransform();
 }
@@ -8023,7 +8023,7 @@ const QTransform & QPainter::transform() const
     device coordinates of the platform dependent paint device.
 
     This function is \e only needed when using platform painting
-    commands on the platform dependent handle (Qt::HANDLE), and the
+    commands on the platform dependent handle (BobUI::HANDLE), and the
     platform does not do transformations nativly.
 
     The QPaintEngine::PaintEngineFeature enum can be queried to
@@ -8033,7 +8033,7 @@ const QTransform & QPainter::transform() const
     \sa worldTransform(), QPaintEngine::hasFeature(),
 */
 
-const QTransform & QPainter::deviceTransform() const
+const BOBUIransform & QPainter::deviceTransform() const
 {
     Q_D(const QPainter);
     if (!d->engine) {
@@ -8055,8 +8055,8 @@ const QTransform & QPainter::deviceTransform() const
 void QPainter::resetTransform()
 {
      Q_D(QPainter);
-#ifdef QT_DEBUG_DRAW
-    if constexpr (qt_show_painter_debug_output)
+#ifdef BOBUI_DEBUG_DRAW
+    if constexpr (bobui_show_painter_debug_output)
         printf("QPainter::resetMatrix()\n");
 #endif
     if (!d->engine) {
@@ -8067,7 +8067,7 @@ void QPainter::resetTransform()
     d->state->wx = d->state->wy = d->state->vx = d->state->vy = 0;                        // default view origins
     d->state->ww = d->state->vw = d->device->metric(QPaintDevice::PdmWidth);
     d->state->wh = d->state->vh = d->device->metric(QPaintDevice::PdmHeight);
-    d->state->worldMatrix = QTransform();
+    d->state->worldMatrix = BOBUIransform();
     setWorldMatrixEnabled(false);
     setViewTransformEnabled(false);
     if (d->extended)
@@ -8084,7 +8084,7 @@ void QPainter::resetTransform()
     \sa transform(), setTransform()
 */
 
-void QPainter::setWorldTransform(const QTransform &matrix, bool combine )
+void QPainter::setWorldTransform(const BOBUIransform &matrix, bool combine )
 {
     Q_D(QPainter);
 
@@ -8106,7 +8106,7 @@ void QPainter::setWorldTransform(const QTransform &matrix, bool combine )
     Returns the world transformation matrix.
 */
 
-const QTransform & QPainter::worldTransform() const
+const BOBUIransform & QPainter::worldTransform() const
 {
     Q_D(const QPainter);
     if (!d->engine) {
@@ -8123,12 +8123,12 @@ const QTransform & QPainter::worldTransform() const
     \sa setWorldTransform(), setWindow(), setViewport()
 */
 
-QTransform QPainter::combinedTransform() const
+BOBUIransform QPainter::combinedTransform() const
 {
     Q_D(const QPainter);
     if (!d->engine) {
         qWarning("QPainter::combinedTransform: Painter not active");
-        return QTransform();
+        return BOBUIransform();
     }
     return d->state->worldMatrix * d->viewTransform() * d->hidpiScaleTransform();
 }
@@ -8156,7 +8156,7 @@ void QPainter::drawPixmapFragments(const PixmapFragment *fragments, int fragment
     if (!d->engine || pixmap.isNull())
         return;
 
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     for (int i = 0; i < fragmentCount; ++i) {
         QRectF sourceRect(fragments[i].sourceLeft, fragments[i].sourceTop,
                           fragments[i].width, fragments[i].height);
@@ -8169,10 +8169,10 @@ void QPainter::drawPixmapFragments(const PixmapFragment *fragments, int fragment
         d->extended->drawPixmapFragments(fragments, fragmentCount, pixmap, hints);
     } else {
         qreal oldOpacity = opacity();
-        QTransform oldTransform = transform();
+        BOBUIransform oldTransform = transform();
 
         for (int i = 0; i < fragmentCount; ++i) {
-            QTransform transform = oldTransform;
+            BOBUIransform transform = oldTransform;
             qreal xOffset = 0;
             qreal yOffset = 0;
             if (fragments[i].rotation == 0) {
@@ -8200,7 +8200,7 @@ void QPainter::drawPixmapFragments(const PixmapFragment *fragments, int fragment
 /*!
     \since 4.7
     \class QPainter::PixmapFragment
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief This class is used in conjunction with the
     QPainter::drawPixmapFragments() function to specify how a pixmap, or
@@ -8304,11 +8304,11 @@ QPainter::PixmapFragment QPainter::PixmapFragment::create(const QPointF &pos, co
     \sa QPainter::drawPixmapFragments(), QPainter::PixmapFragment
 */
 
-void qt_draw_helper(QPainterPrivate *p, const QPainterPath &path, QPainterPrivate::DrawOperation operation)
+void bobui_draw_helper(QPainterPrivate *p, const QPainterPath &path, QPainterPrivate::DrawOperation operation)
 {
     p->draw_helper(path, operation);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qpainter.cpp"

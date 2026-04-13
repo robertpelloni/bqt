@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QAtomicScopedValueRollback
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief Provides a QScopedValueRollback for atomic variables.
     \ingroup misc
     \ingroup tools
@@ -20,7 +20,7 @@ QT_BEGIN_NAMESPACE
     function is exited normally, exited early by a return statement, or exited by
     an exception.
 
-    The class works on std::atomic and the Qt atomic classes: QBasicAtomicInteger,
+    The class works on std::atomic and the BobUI atomic classes: QBasicAtomicInteger,
     \l QAtomicInteger, \l QAtomicInt, QBasicAtomicPointer and \l QAtomicPointer.
 
     \target Memory Order
@@ -120,4 +120,4 @@ QT_BEGIN_NAMESPACE
     See \l{Memory Order} for the meaning of \c{mo}.
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

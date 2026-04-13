@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qpixmapcache.h"
 #include "qbasictimer.h"
 #include "qobject.h"
 #include "qdebug.h"
 #include "qpixmapcache_p.h"
-#include "qthread.h"
+#include "bobuihread.h"
 #include "qcoreapplication.h"
 
 using namespace std::chrono_literals;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QPixmapCache
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QPixmapCache class provides an application-wide cache for pixmaps.
 
@@ -46,8 +46,8 @@ QT_BEGIN_NAMESPACE
     A pixmap takes roughly (\e{width} * \e{height} * \e{depth})/8 bytes of
     memory.
 
-    The \e{Qt Quarterly} article
-    \l{http://doc.qt.io/archives/qq/qq12-qpixmapcache.html}{Optimizing
+    The \e{BobUI Quarterly} article
+    \l{http://doc.bobui.io/archives/qq/qq12-qpixmapcache.html}{Optimizing
     with QPixmapCache} explains how to use QPixmapCache to speed up
     applications by caching the results of painting.
 
@@ -69,9 +69,9 @@ static inline qsizetype cost(const QPixmap &pixmap)
     return static_cast<qsizetype>(qBound(1LL, costKb, costMax));
 }
 
-static inline bool qt_pixmapcache_thread_test()
+static inline bool bobui_pixmapcache_thread_test()
 {
-    if (Q_LIKELY(QThread::isMainThread()))
+    if (Q_LIKELY(BOBUIhread::isMainThread()))
         return true;
 
     return false;
@@ -81,7 +81,7 @@ static inline bool qt_pixmapcache_thread_test()
     \class QPixmapCache::Key
     \brief The QPixmapCache::Key class can be used for efficient access
     to the QPixmapCache.
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     Use QPixmapCache::insert() to receive an instance of Key generated
     by the pixmap cache. You can store the key in your own objects for
@@ -181,7 +181,7 @@ public:
     QPMCache();
     ~QPMCache();
 
-    void timerEvent(QTimerEvent *) override;
+    void timerEvent(BOBUIimerEvent *) override;
     bool insert(const QString& key, const QPixmap &pixmap, int cost);
     QPixmapCache::Key insert(const QPixmap &pixmap, int cost);
     bool remove(const QString &key);
@@ -214,9 +214,9 @@ private:
     bool t;
 };
 
-QT_BEGIN_INCLUDE_NAMESPACE
+BOBUI_BEGIN_INCLUDE_NAMESPACE
 #include "qpixmapcache.moc"
-QT_END_INCLUDE_NAMESPACE
+BOBUI_END_INCLUDE_NAMESPACE
 
 /*!
     \fn size_t QPixmapCache::Key::qHash(const Key &key, size_t seed)
@@ -248,7 +248,7 @@ QPMCache::~QPMCache()
   cache is in active use.
 
   When the last detached pixmap has been deleted from the cache, kill the
-  timer so Qt won't keep the CPU from going into sleep mode. Currently
+  timer so BobUI won't keep the CPU from going into sleep mode. Currently
   the timer is not restarted when the pixmap becomes unused, but it does
   restart once something else is added (i.e. the cache space is actually needed).
 
@@ -266,7 +266,7 @@ bool QPMCache::flushDetachedPixmaps(bool nt)
     return size() != oldSize;
 }
 
-void QPMCache::timerEvent(QTimerEvent *)
+void QPMCache::timerEvent(BOBUIimerEvent *)
 {
     bool nt = totalCost() == ps;
     if (!flushDetachedPixmaps(nt)) {
@@ -421,7 +421,7 @@ QPixmapCacheEntry::~QPixmapCacheEntry()
 
 bool QPixmapCache::find(const QString &key, QPixmap *pixmap)
 {
-    if (key.isEmpty() || !qt_pixmapcache_thread_test())
+    if (key.isEmpty() || !bobui_pixmapcache_thread_test())
         return false;
     QPixmap *ptr = pm_cache()->object(key);
     if (ptr && pixmap)
@@ -438,7 +438,7 @@ bool QPixmapCache::find(const QString &key, QPixmap *pixmap)
 */
 bool QPixmapCache::find(const Key &key, QPixmap *pixmap)
 {
-    if (!qt_pixmapcache_thread_test())
+    if (!bobui_pixmapcache_thread_test())
         return false;
     //The key is not valid anymore, a flush happened before probably
     if (!key.d || !key.d->isValid)
@@ -453,8 +453,8 @@ bool QPixmapCache::find(const Key &key, QPixmap *pixmap)
     Inserts a copy of the pixmap \a pixmap associated with the \a key into
     the cache.
 
-    All pixmaps inserted by the Qt library have a key starting with
-    "$qt", so your own pixmap keys should never begin "$qt".
+    All pixmaps inserted by the BobUI library have a key starting with
+    "$bobui", so your own pixmap keys should never begin "$bobui".
 
     When a pixmap is inserted and the cache is about to exceed its
     limit, it removes pixmaps until there is enough room for the
@@ -471,7 +471,7 @@ bool QPixmapCache::find(const Key &key, QPixmap *pixmap)
 
 bool QPixmapCache::insert(const QString &key, const QPixmap &pixmap)
 {
-    if (key.isEmpty() || !qt_pixmapcache_thread_test())
+    if (key.isEmpty() || !bobui_pixmapcache_thread_test())
         return false;
     return pm_cache()->insert(key, pixmap, cost(pixmap));
 }
@@ -491,12 +491,12 @@ bool QPixmapCache::insert(const QString &key, const QPixmap &pixmap)
 */
 QPixmapCache::Key QPixmapCache::insert(const QPixmap &pixmap)
 {
-    if (!qt_pixmapcache_thread_test())
+    if (!bobui_pixmapcache_thread_test())
         return QPixmapCache::Key();
     return pm_cache()->insert(pixmap, cost(pixmap));
 }
 
-#if QT_DEPRECATED_SINCE(6, 6)
+#if BOBUI_DEPRECATED_SINCE(6, 6)
 /*!
     \fn bool QPixmapCache::replace(const Key &key, const QPixmap &pixmap)
 
@@ -512,7 +512,7 @@ QPixmapCache::Key QPixmapCache::insert(const QPixmap &pixmap)
 
     \sa setCacheLimit(), insert()
 */
-#endif // QT_DEPRECATED_SINCE(6, 6)
+#endif // BOBUI_DEPRECATED_SINCE(6, 6)
 
 /*!
     Returns the cache limit (in kilobytes).
@@ -524,7 +524,7 @@ QPixmapCache::Key QPixmapCache::insert(const QPixmap &pixmap)
 
 int QPixmapCache::cacheLimit()
 {
-    if (!qt_pixmapcache_thread_test())
+    if (!bobui_pixmapcache_thread_test())
         return 0;
     return pm_cache()->maxCost();
 }
@@ -539,7 +539,7 @@ int QPixmapCache::cacheLimit()
 
 void QPixmapCache::setCacheLimit(int n)
 {
-    if (!qt_pixmapcache_thread_test())
+    if (!bobui_pixmapcache_thread_test())
         return;
     pm_cache()->setMaxCost(n);
 }
@@ -549,7 +549,7 @@ void QPixmapCache::setCacheLimit(int n)
 */
 void QPixmapCache::remove(const QString &key)
 {
-    if (key.isEmpty() || !qt_pixmapcache_thread_test())
+    if (key.isEmpty() || !bobui_pixmapcache_thread_test())
         return;
     pm_cache()->remove(key);
 }
@@ -560,7 +560,7 @@ void QPixmapCache::remove(const QString &key)
 */
 void QPixmapCache::remove(const Key &key)
 {
-    if (!qt_pixmapcache_thread_test())
+    if (!bobui_pixmapcache_thread_test())
         return;
     //The key is not valid anymore, a flush happened before probably
     if (!key.d || !key.d->isValid)
@@ -574,27 +574,27 @@ void QPixmapCache::remove(const Key &key)
 
 void QPixmapCache::clear()
 {
-    if (!QCoreApplication::closingDown() && !qt_pixmapcache_thread_test())
+    if (!QCoreApplication::closingDown() && !bobui_pixmapcache_thread_test())
         return;
-    QT_TRY {
+    BOBUI_TRY {
         if (pm_cache.exists())
             pm_cache->clear();
-    } QT_CATCH(const std::bad_alloc &) {
+    } BOBUI_CATCH(const std::bad_alloc &) {
         // if we ran out of memory during pm_cache(), it's no leak,
         // so just ignore it.
     }
 }
 
-Q_AUTOTEST_EXPORT void qt_qpixmapcache_flush_detached_pixmaps() // for tst_qpixmapcache
+Q_AUTOTEST_EXPORT void bobui_qpixmapcache_flush_detached_pixmaps() // for tst_qpixmapcache
 {
-    if (!qt_pixmapcache_thread_test())
+    if (!bobui_pixmapcache_thread_test())
         return;
     pm_cache()->flushDetachedPixmaps(true);
 }
 
-Q_AUTOTEST_EXPORT int qt_qpixmapcache_qpixmapcache_total_used() // for tst_qpixmapcache
+Q_AUTOTEST_EXPORT int bobui_qpixmapcache_qpixmapcache_total_used() // for tst_qpixmapcache
 {
-    if (!qt_pixmapcache_thread_test())
+    if (!bobui_pixmapcache_thread_test())
         return 0;
     return (pm_cache()->totalCost()+1023) / 1024;
 }
@@ -613,4 +613,4 @@ Q_AUTOTEST_EXPORT int qt_qpixmapcache_qpixmapcache_total_used() // for tst_qpixm
 
    \internal
 */
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

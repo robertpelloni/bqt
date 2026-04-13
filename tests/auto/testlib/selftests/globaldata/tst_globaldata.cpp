@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QtCore/QCoreApplication>
-#include <QTest>
+#include <BobUICore/QCoreApplication>
+#include <BOBUIest>
 #include <QDebug>
 
 class tst_globaldata: public QObject
@@ -35,44 +35,44 @@ private slots:
 void tst_globaldata::initTestCase()
 {
     qDebug() << "initTestCase"
-             << (QTest::currentTestFunction() ? QTest::currentTestFunction() : "(null)")
-             << (QTest::currentDataTag() ? QTest::currentDataTag() : "(null)");
+             << (BOBUIest::currentTestFunction() ? BOBUIest::currentTestFunction() : "(null)")
+             << (BOBUIest::currentDataTag() ? BOBUIest::currentDataTag() : "(null)");
 }
 
 void tst_globaldata::initTestCase_data()
 {
     // QFETCH_GLOBAL shall iterate these, for every test:
-    QTest::addColumn<bool>("global");
-    QTest::newRow("global=false") << false;
-    QTest::newRow("global=true") << true;
+    BOBUIest::addColumn<bool>("global");
+    BOBUIest::newRow("global=false") << false;
+    BOBUIest::newRow("global=true") << true;
 }
 
 void tst_globaldata::cleanupTestCase()
 {
     qDebug() << "cleanupTestCase"
-             << (QTest::currentTestFunction() ? QTest::currentTestFunction() : "(null)")
-             << (QTest::currentDataTag() ? QTest::currentDataTag() : "(null)");
+             << (BOBUIest::currentTestFunction() ? BOBUIest::currentTestFunction() : "(null)")
+             << (BOBUIest::currentDataTag() ? BOBUIest::currentDataTag() : "(null)");
 }
 
 void tst_globaldata::init()
 {
     qDebug() << "init"
-             << (QTest::currentTestFunction() ? QTest::currentTestFunction() : "(null)")
-             << (QTest::currentDataTag() ? QTest::currentDataTag() : "(null)");
+             << (BOBUIest::currentTestFunction() ? BOBUIest::currentTestFunction() : "(null)")
+             << (BOBUIest::currentDataTag() ? BOBUIest::currentDataTag() : "(null)");
 }
 
 void tst_globaldata::cleanup()
 {
     qDebug() << "cleanup"
-             << (QTest::currentTestFunction() ? QTest::currentTestFunction() : "(null)")
-             << (QTest::currentDataTag() ? QTest::currentDataTag() : "(null)");
+             << (BOBUIest::currentTestFunction() ? BOBUIest::currentTestFunction() : "(null)")
+             << (BOBUIest::currentDataTag() ? BOBUIest::currentDataTag() : "(null)");
 }
 
 void tst_globaldata::testGlobal_data()
 {
-    QTest::addColumn<bool>("local");
-    QTest::newRow("local=false") << false;
-    QTest::newRow("local=true") << true;
+    BOBUIest::addColumn<bool>("local");
+    BOBUIest::newRow("local=false") << false;
+    BOBUIest::newRow("local=true") << true;
 }
 
 void tst_globaldata::testGlobal()
@@ -113,6 +113,6 @@ void tst_globaldata::skipLocal()
     QSKIP("skipping");
 }
 
-QTEST_MAIN(tst_globaldata)
+BOBUIEST_MAIN(tst_globaldata)
 
 #include "tst_globaldata.moc"

@@ -1,23 +1,23 @@
 // Copyright (C) 2020 Aleix Pol Gonzalez <aleixpol@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #pragma once
 
 #include <QObject>
 #include "qwayland-xdg-activation-v1.h"
 
-#include <QtWaylandClient/qtwaylandclientglobal.h>
+#include <BobUIWaylandClient/bobuiwaylandclientglobal.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 class QWaylandDisplay;
 class QWaylandSurface;
 
 class Q_WAYLANDCLIENT_EXPORT QWaylandXdgActivationTokenV1
     : public QObject,
-      public QtWayland::xdg_activation_token_v1
+      public BobUIWayland::xdg_activation_token_v1
 {
     Q_OBJECT
 public:
@@ -28,7 +28,7 @@ Q_SIGNALS:
     void done(const QString &token);
 };
 
-class Q_WAYLANDCLIENT_EXPORT QWaylandXdgActivationV1 : public QtWayland::xdg_activation_v1
+class Q_WAYLANDCLIENT_EXPORT QWaylandXdgActivationV1 : public BobUIWayland::xdg_activation_v1
 {
 public:
     QWaylandXdgActivationV1(struct ::wl_registry *registry, uint32_t id, uint32_t availableVersion);
@@ -40,6 +40,6 @@ public:
                                                             const QString &app_id);
 };
 
-} // namespace QtWaylandClient
+} // namespace BobUIWaylandClient
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

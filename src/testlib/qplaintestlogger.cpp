@@ -1,14 +1,14 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtTest/private/qtestresult_p.h>
-#include <QtTest/qtestassert.h>
-#include <QtTest/private/qtestlog_p.h>
-#include <QtTest/private/qplaintestlogger_p.h>
-#include <QtTest/private/qbenchmark_p.h>
-#include <QtTest/private/qbenchmarkmetric_p.h>
+#include <BobUITest/private/bobuiestresult_p.h>
+#include <BobUITest/bobuiestassert.h>
+#include <BobUITest/private/bobuiestlog_p.h>
+#include <BobUITest/private/qplaintestlogger_p.h>
+#include <BobUITest/private/qbenchmark_p.h>
+#include <BobUITest/private/qbenchmarkmetric_p.h>
 
-#include <QtCore/private/qlogging_p.h>
+#include <BobUICore/private/qlogging_p.h>
 
 #include <array>
 #include <cstdio>
@@ -17,21 +17,21 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <QtCore/QByteArray>
-#include <QtCore/qmath.h>
-#include <QtCore/QLibraryInfo>
+#include <BobUICore/QByteArray>
+#include <BobUICore/qmath.h>
+#include <BobUICore/QLibraryInfo>
 
 #ifdef Q_OS_ANDROID
 #  include <android/log.h>
 #endif
 
 #ifdef Q_OS_WIN
-#  include <qt_windows.h>
+#  include <bobui_windows.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 namespace {
 static const char multiplePrefixes[] = "\0kMGTPE"; // kilo, mega, giga, tera, peta, exa
@@ -102,7 +102,7 @@ template <int N> struct FixedBufString
 };
 } // unnamed namespace
 
-namespace QTest {
+namespace BOBUIest {
 
     static const char *ptIncidentType2String(QAbstractTestLogger::IncidentTypes type)
     {
@@ -233,23 +233,23 @@ namespace QTest {
 
 /*! \internal
     \class QPlainTestLogger
-    \inmodule QtTest
+    \inmodule BobUITest
 
     QPlainTestLogger implements basic logging of test results.
 
-    The format is Qt-specific and aims to be easy to read.
+    The format is BobUI-specific and aims to be easy to read.
 */
 
 void QPlainTestLogger::outputMessage(const char *str)
 {
 #if defined(Q_OS_WIN)
     // Log to system log only if output is not redirected and stderr not preferred
-    if (stream == stdout && !QtPrivate::shouldLogToStderr()) {
+    if (stream == stdout && !BobUIPrivate::shouldLogToStderr()) {
         OutputDebugStringA(str);
         return;
     }
 #elif defined(Q_OS_ANDROID)
-    __android_log_write(ANDROID_LOG_INFO, "QTestLib", str);
+    __android_log_write(ANDROID_LOG_INFO, "BOBUIestLib", str);
 #endif
     outputString(str);
 }
@@ -257,12 +257,12 @@ void QPlainTestLogger::outputMessage(const char *str)
 void QPlainTestLogger::printMessage(MessageSource source, const char *type, const char *msg,
                                     const char *file, int line)
 {
-    QTEST_ASSERT(type);
-    QTEST_ASSERT(msg);
+    BOBUIEST_ASSERT(type);
+    BOBUIEST_ASSERT(msg);
 
-    QTestCharBuffer messagePrefix;
+    BOBUIestCharBuffer messagePrefix;
 
-    QTestCharBuffer messageLocation;
+    BOBUIestCharBuffer messageLocation;
 #ifdef Q_OS_WIN
     constexpr const char *INCIDENT_LOCATION_STR = "\n%s(%d) : failure location";
     constexpr const char *OTHER_LOCATION_STR = "\n%s(%d) : message location";
@@ -274,18 +274,18 @@ void QPlainTestLogger::printMessage(MessageSource source, const char *type, cons
     if (file) {
         switch (source) {
         case MessageSource::Incident:
-            QTest::qt_asprintf(&messageLocation, INCIDENT_LOCATION_STR, file, line);
+            BOBUIest::bobui_asprintf(&messageLocation, INCIDENT_LOCATION_STR, file, line);
             break;
         case MessageSource::Other:
-            QTest::qt_asprintf(&messageLocation, OTHER_LOCATION_STR, file, line);
+            BOBUIest::bobui_asprintf(&messageLocation, OTHER_LOCATION_STR, file, line);
             break;
         }
     }
 
     const char *msgFiller = msg[0] ? " " : "";
-    QTestCharBuffer testIdentifier;
-    QTestPrivate::generateTestIdentifier(&testIdentifier);
-    QTest::qt_asprintf(&messagePrefix, "%s: %s%s%s%s\n",
+    BOBUIestCharBuffer testIdentifier;
+    BOBUIestPrivate::generateTestIdentifier(&testIdentifier);
+    BOBUIest::bobui_asprintf(&messagePrefix, "%s: %s%s%s%s\n",
                        type, testIdentifier.data(), msgFiller, msg, messageLocation.data());
 
     // In colored mode, printf above stripped our nonprintable control characters.
@@ -298,11 +298,11 @@ void QPlainTestLogger::printMessage(MessageSource source, const char *type, cons
 void QPlainTestLogger::printBenchmarkResultsHeader(const QBenchmarkResult &result)
 {
     FixedBufString<1022> buf;
-    buf.appendf("%s: %s::%s", QTest::benchmarkResult2String(),
-                QTestResult::currentTestObjectName(), result.context.slotName.toLatin1().data());
+    buf.appendf("%s: %s::%s", BOBUIest::benchmarkResult2String(),
+                BOBUIestResult::currentTestObjectName(), result.context.slotName.toLatin1().data());
 
-    QByteArray tag = QTestResult::currentDataTag();
-    QByteArray gtag = QTestResult::currentGlobalDataTag();
+    QByteArray tag = BOBUIestResult::currentDataTag();
+    QByteArray gtag = BOBUIestResult::currentGlobalDataTag();
 
     if (!gtag.isEmpty() && !tag.isEmpty())
         buf.appendf(":\"%s:%s\":\n", gtag.constData(), tag.constData());
@@ -319,7 +319,7 @@ void QPlainTestLogger::printBenchmarkResults(const QList<QBenchmarkResult> &resu
 {
     using namespace std::chrono;
     FixedBufString<1022> buf;
-    auto findResultFor = [&results](QTest::QBenchmarkMetric metric) -> std::optional<qreal> {
+    auto findResultFor = [&results](BOBUIest::QBenchmarkMetric metric) -> std::optional<qreal> {
         for (const QBenchmarkResult &result : results) {
             if (result.measurement.metric == metric)
                 return result.measurement.value;
@@ -329,79 +329,79 @@ void QPlainTestLogger::printBenchmarkResults(const QList<QBenchmarkResult> &resu
 
     // we need the execution time quite often, so find it first
     qreal executionTime = 0;
-    if (auto ns = findResultFor(QTest::WalltimeNanoseconds))
+    if (auto ns = findResultFor(BOBUIest::WalltimeNanoseconds))
         executionTime = *ns / (1000 * 1000 * 1000);
-    else if (auto ms = findResultFor(QTest::WalltimeMilliseconds))
+    else if (auto ms = findResultFor(BOBUIest::WalltimeMilliseconds))
         executionTime = *ms / 1000;
 
     for (const QBenchmarkResult &result : results) {
         buf.clear();
 
-        const char * unitText = QTest::benchmarkMetricUnit(result.measurement.metric);
-        int significantDigits = QTest::countSignificantDigits(result.measurement.value);
+        const char * unitText = BOBUIest::benchmarkMetricUnit(result.measurement.metric);
+        int significantDigits = BOBUIest::countSignificantDigits(result.measurement.value);
         qreal valuePerIteration = qreal(result.measurement.value) / qreal(result.iterations);
-        buf.appendf("     %s %s%s", QTest::formatResult(valuePerIteration, significantDigits).constData(),
+        buf.appendf("     %s %s%s", BOBUIest::formatResult(valuePerIteration, significantDigits).constData(),
                     unitText, result.setByMacro ? " per iteration" : "");
 
         switch (result.measurement.metric) {
-        case QTest::BitsPerSecond:
+        case BOBUIest::BitsPerSecond:
             // for bits/s, we'll use powers of 10 (1 Mbit/s = 1000 kbit/s = 1000000 bit/s)
             buf.appendScaled<1000>(result.measurement.value, "bit/s");
             break;
-        case QTest::BytesPerSecond:
+        case BOBUIest::BytesPerSecond:
             // for B/s, we'll use powers of 2 (1 MB/s = 1024 kB/s = 1048576 B/s)
             buf.appendScaled<1024>(result.measurement.value, "B/s");
             break;
 
-        case QTest::CPUCycles:
-        case QTest::RefCPUCycles:
+        case BOBUIest::CPUCycles:
+        case BOBUIest::RefCPUCycles:
             if (!qIsNull(executionTime))
                 buf.appendScaled(result.measurement.value / executionTime, "Hz");
             break;
 
-        case QTest::Instructions:
-            if (auto cycles = findResultFor(QTest::CPUCycles)) {
+        case BOBUIest::Instructions:
+            if (auto cycles = findResultFor(BOBUIest::CPUCycles)) {
                 buf.appendf(", %.3f instr/cycle", result.measurement.value / *cycles);
                 break;
             }
             Q_FALLTHROUGH();
 
-        case QTest::InstructionReads:
-        case QTest::Events:
-        case QTest::BytesAllocated:
-        case QTest::CPUMigrations:
-        case QTest::BusCycles:
-        case QTest::StalledCycles:
-        case QTest::BranchInstructions:
-        case QTest::BranchMisses:
-        case QTest::CacheReferences:
-        case QTest::CacheReads:
-        case QTest::CacheWrites:
-        case QTest::CachePrefetches:
-        case QTest::CacheMisses:
-        case QTest::CacheReadMisses:
-        case QTest::CacheWriteMisses:
-        case QTest::CachePrefetchMisses:
-        case QTest::ContextSwitches:
-        case QTest::PageFaults:
-        case QTest::MinorPageFaults:
-        case QTest::MajorPageFaults:
-        case QTest::AlignmentFaults:
-        case QTest::EmulationFaults:
+        case BOBUIest::InstructionReads:
+        case BOBUIest::Events:
+        case BOBUIest::BytesAllocated:
+        case BOBUIest::CPUMigrations:
+        case BOBUIest::BusCycles:
+        case BOBUIest::StalledCycles:
+        case BOBUIest::BranchInstructions:
+        case BOBUIest::BranchMisses:
+        case BOBUIest::CacheReferences:
+        case BOBUIest::CacheReads:
+        case BOBUIest::CacheWrites:
+        case BOBUIest::CachePrefetches:
+        case BOBUIest::CacheMisses:
+        case BOBUIest::CacheReadMisses:
+        case BOBUIest::CacheWriteMisses:
+        case BOBUIest::CachePrefetchMisses:
+        case BOBUIest::ContextSwitches:
+        case BOBUIest::PageFaults:
+        case BOBUIest::MinorPageFaults:
+        case BOBUIest::MajorPageFaults:
+        case BOBUIest::AlignmentFaults:
+        case BOBUIest::EmulationFaults:
             if (!qIsNull(executionTime))
                 buf.appendScaled(result.measurement.value / executionTime, "/sec");
             break;
 
-        case QTest::FramesPerSecond:
-        case QTest::CPUTicks:
-        case QTest::WalltimeMilliseconds:
-        case QTest::WalltimeNanoseconds:
+        case BOBUIest::FramesPerSecond:
+        case BOBUIest::CPUTicks:
+        case BOBUIest::WalltimeMilliseconds:
+        case BOBUIest::WalltimeNanoseconds:
             break;  // no additional information
         }
 
         Q_ASSERT(result.iterations > 0);
         buf.appendf(" (total: %s, iterations: %d)\n",
-                    QTest::formatResult(result.measurement.value, significantDigits).constData(),
+                    BOBUIest::formatResult(result.measurement.value, significantDigits).constData(),
                     result.iterations);
 
         outputMessage(buf);
@@ -420,13 +420,13 @@ void QPlainTestLogger::startLogging()
     QAbstractTestLogger::startLogging();
 
     char buf[1024];
-    if (QTestLog::verboseLevel() < 0) {
-        std::snprintf(buf, sizeof(buf), "Testing %s\n", QTestResult::currentTestObjectName());
+    if (BOBUIestLog::verboseLevel() < 0) {
+        std::snprintf(buf, sizeof(buf), "Testing %s\n", BOBUIestResult::currentTestObjectName());
     } else {
         std::snprintf(buf, sizeof(buf),
                       "********* Start testing of %s *********\n"
-                      "Config: Using QtTest library " QTEST_VERSION_STR
-                      ", %s, %s %s\n", QTestResult::currentTestObjectName(), QLibraryInfo::build(),
+                      "Config: Using BobUITest library " BOBUIEST_VERSION_STR
+                      ", %s, %s %s\n", BOBUIestResult::currentTestObjectName(), QLibraryInfo::build(),
                       qPrintable(QSysInfo::productType()), qPrintable(QSysInfo::productVersion()));
     }
     outputMessage(buf);
@@ -435,19 +435,19 @@ void QPlainTestLogger::startLogging()
 void QPlainTestLogger::stopLogging()
 {
     char buf[1024];
-    const int timeMs = qRound(QTestLog::msecsTotalTime());
-    if (QTestLog::verboseLevel() < 0) {
+    const int timeMs = qRound(BOBUIestLog::msecsTotalTime());
+    if (BOBUIestLog::verboseLevel() < 0) {
         std::snprintf(buf, sizeof(buf),
                       "Totals: %d passed, %d failed, %d skipped, %d blacklisted, %dms\n",
-                      QTestLog::passCount(), QTestLog::failCount(),
-                      QTestLog::skipCount(), QTestLog::blacklistCount(), timeMs);
+                      BOBUIestLog::passCount(), BOBUIestLog::failCount(),
+                      BOBUIestLog::skipCount(), BOBUIestLog::blacklistCount(), timeMs);
     } else {
         std::snprintf(buf, sizeof(buf),
                       "Totals: %d passed, %d failed, %d skipped, %d blacklisted, %dms\n"
                       "********* Finished testing of %s *********\n",
-                      QTestLog::passCount(), QTestLog::failCount(),
-                      QTestLog::skipCount(), QTestLog::blacklistCount(), timeMs,
-                      QTestResult::currentTestObjectName());
+                      BOBUIestLog::passCount(), BOBUIestLog::failCount(),
+                      BOBUIestLog::skipCount(), BOBUIestLog::blacklistCount(), timeMs,
+                      BOBUIestResult::currentTestObjectName());
     }
     outputMessage(buf);
 
@@ -457,8 +457,8 @@ void QPlainTestLogger::stopLogging()
 
 void QPlainTestLogger::enterTestFunction(const char * /*function*/)
 {
-    if (QTestLog::verboseLevel() >= 1)
-        printMessage(MessageSource::Other, QTest::ptMessageType2String(Info), "entering");
+    if (BOBUIestLog::verboseLevel() >= 1)
+        printMessage(MessageSource::Other, BOBUIest::ptMessageType2String(Info), "entering");
 }
 
 void QPlainTestLogger::leaveTestFunction()
@@ -470,23 +470,23 @@ void QPlainTestLogger::addIncident(IncidentTypes type, const char *description,
 {
     // suppress B?PASS and B?XFAIL in silent mode
     if ((type == Pass || type == BlacklistedPass || type == XFail || type == BlacklistedXFail)
-        && QTestLog::verboseLevel() < 0)
+        && BOBUIestLog::verboseLevel() < 0)
         return;
 
-    printMessage(MessageSource::Incident, QTest::ptIncidentType2String(type), description, file, line);
+    printMessage(MessageSource::Incident, BOBUIest::ptIncidentType2String(type), description, file, line);
 }
 
 void QPlainTestLogger::addBenchmarkResults(const QList<QBenchmarkResult> &results)
 {
     // suppress benchmark results in silent mode
-    if (QTestLog::verboseLevel() < 0 || results.isEmpty())
+    if (BOBUIestLog::verboseLevel() < 0 || results.isEmpty())
         return;
 
     printBenchmarkResultsHeader(results.first());
     printBenchmarkResults(results);
 }
 
-void QPlainTestLogger::addMessage(QtMsgType type, const QMessageLogContext &context, const QString &message)
+void QPlainTestLogger::addMessage(BobUIMsgType type, const QMessageLogContext &context, const QString &message)
 {
     QAbstractTestLogger::addMessage(type, context, message);
 }
@@ -495,10 +495,10 @@ void QPlainTestLogger::addMessage(MessageTypes type, const QString &message,
                                   const char *file, int line)
 {
     // suppress non-fatal messages in silent mode
-    if (type != QFatal && QTestLog::verboseLevel() < 0)
+    if (type != QFatal && BOBUIestLog::verboseLevel() < 0)
         return;
 
-    printMessage(MessageSource::Other, QTest::ptMessageType2String(type), qPrintable(message), file, line);
+    printMessage(MessageSource::Other, BOBUIest::ptMessageType2String(type), qPrintable(message), file, line);
 }
 
 bool QPlainTestLogger::isRepeatSupported() const
@@ -510,4 +510,4 @@ bool QPlainTestLogger::isRepeatSupported() const
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

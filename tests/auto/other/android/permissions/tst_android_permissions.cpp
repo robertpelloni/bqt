@@ -1,16 +1,16 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QCoreApplication>
 #include <QJniObject>
 #include <QSet>
 #include <QString>
-#include <QTest>
+#include <BOBUIest>
 
 constexpr int GET_PERMISSIONS(0x00001000);
 
 using namespace QNativeInterface;
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 Q_DECLARE_JNI_CLASS(PackageManager, "android/content/pm/PackageManager")
 Q_DECLARE_JNI_CLASS(PackageInfo, "android/content/pm/PackageInfo")
@@ -35,10 +35,10 @@ void tst_android_permissions::initTestCase()
     QVERIFY(appCtx.isValid());
 
     const auto packageName = appCtx.callMethod<QString>("getPackageName");
-    const auto packageManager = appCtx.callMethod<QtJniTypes::PackageManager>("getPackageManager");
+    const auto packageManager = appCtx.callMethod<BobUIJniTypes::PackageManager>("getPackageManager");
     QVERIFY(packageManager.isValid());
 
-    const auto packageInfo = QJniObject(packageManager.callMethod<QtJniTypes::PackageInfo>(
+    const auto packageInfo = QJniObject(packageManager.callMethod<BobUIJniTypes::PackageInfo>(
             "getPackageInfo", packageName, jint(GET_PERMISSIONS)));
     QVERIFY(packageInfo.isValid());
 
@@ -75,6 +75,6 @@ void tst_android_permissions::checkNonDefaultPermissions()
     QVERIFY(hasNonDefaultPermissions);
 }
 
-QTEST_MAIN(tst_android_permissions);
+BOBUIEST_MAIN(tst_android_permissions);
 
 #include "tst_android_permissions.moc"

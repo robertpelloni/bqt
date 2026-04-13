@@ -1,6 +1,6 @@
-import QtQuick 2.15
-import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.15
+import BobUIQuick 2.15
+import BobUIQuick.Controls 2.15
+import BobUIQuick.Layouts 1.15
 import Omni.Net 1.0
 
 ApplicationWindow {
@@ -247,7 +247,7 @@ ApplicationWindow {
 
                     Button {
                         text: "Send Payload"
-                        Layout.alignment: Qt.AlignRight
+                        Layout.alignment: BobUI.AlignRight
                         enabled: OmniWebSocket.connected
                         onClicked: OmniWebSocket.send(jsonPayload.text)
                         ToolTip.visible: hovered; ToolTip.text: "Serialize the JSON block above and fire it through the active socket"

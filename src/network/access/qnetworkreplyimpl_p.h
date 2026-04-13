@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QNETWORKREPLYIMPL_P_H
 #define QNETWORKREPLYIMPL_P_H
@@ -9,28 +9,28 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of the Network Access API.  This header file may change from
 // version to version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtNetwork/private/qbytedatabuffer_p.h>
+#include <BobUINetwork/private/qbytedatabuffer_p.h>
 #include "qnetworkreply.h"
 #include "qnetworkreply_p.h"
 #include "qnetworkaccessmanager.h"
 #include "qnetworkproxy.h"
 
-#include "QtCore/qmap.h"
-#include "QtCore/qqueue.h"
-#include "QtCore/qbuffer.h"
+#include "BobUICore/qmap.h"
+#include "BobUICore/qqueue.h"
+#include "BobUICore/qbuffer.h"
 #include "private/qringbuffer_p.h"
 #include <QSharedPointer>
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QAbstractNetworkCache;
 class QNetworkAccessBackend;
@@ -59,7 +59,7 @@ public:
     Q_PRIVATE_SLOT(d_func(), void _q_bufferOutgoingData())
     Q_PRIVATE_SLOT(d_func(), void _q_bufferOutgoingDataFinished())
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
 protected:
     void sslConfigurationImplementation(QSslConfiguration &configuration) const override;
     void setSslConfigurationImplementation(const QSslConfiguration &configuration) override;
@@ -131,7 +131,7 @@ public:
     bool notificationHandlingPaused;
 
     QUrl urlForLastAuthentication;
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     QNetworkProxy lastProxyAuthentication;
     QList<QNetworkProxy> proxyList;
 #endif
@@ -156,6 +156,6 @@ public:
 };
 Q_DECLARE_TYPEINFO(QNetworkReplyImplPrivate::InternalNotifications, Q_PRIMITIVE_TYPE);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

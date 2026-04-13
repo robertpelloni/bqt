@@ -1,26 +1,26 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/QTest>
+#include <BobUITest/BOBUIest>
 
-#include <QtCore/private/qandroiditemmodelproxy_p.h>
-#include <QtCore/private/qandroidmodelindexproxy_p.h>
-#include <QtCore/private/qandroidtypes_p.h>
+#include <BobUICore/private/qandroiditemmodelproxy_p.h>
+#include <BobUICore/private/qandroidmodelindexproxy_p.h>
+#include <BobUICore/private/qandroidtypes_p.h>
 
 #include <QGuiApplication>
-#include <QtCore/qabstractitemmodel.h>
-#include <QtCore/qjniobject.h>
-#include <QtCore/qjnitypes.h>
-#include <QtCore/qstring.h>
+#include <BobUICore/qabstractitemmodel.h>
+#include <BobUICore/qjniobject.h>
+#include <BobUICore/qjnitypes.h>
+#include <BobUICore/qstring.h>
 #include <QSignalSpy>
 #include <QAbstractItemModelTester>
 
-using namespace Qt::Literals;
+using namespace BobUI::Literals;
 
-Q_DECLARE_JNI_CLASS(TestQtAbstractItemModel,
-                    "org/qtproject/qt/android/tests/TestQtAbstractItemModel")
-Q_DECLARE_JNI_CLASS(TestQtAbstractListModel,
-                    "org/qtproject/qt/android/tests/TestQtAbstractListModel")
+Q_DECLARE_JNI_CLASS(TestBobUIAbstractItemModel,
+                    "org/bobuiproject/bobui/android/tests/TestBobUIAbstractItemModel")
+Q_DECLARE_JNI_CLASS(TestBobUIAbstractListModel,
+                    "org/bobuiproject/bobui/android/tests/TestBobUIAbstractListModel")
 
 class tst_AndroidItemModel : public QObject
 {
@@ -30,7 +30,7 @@ class tst_AndroidItemModel : public QObject
     void resetModel();
 
     enum DataRole{
-        ROLE_STRING = Qt::UserRole,
+        ROLE_STRING = BobUI::UserRole,
         ROLE_BOOLEAN,
         ROLE_INTEGER,
         ROLE_DOUBLE,
@@ -56,13 +56,13 @@ private slots:
 
 void tst_AndroidItemModel::initTestCase_data()
 {
-    QTest::addColumn<QJniObject>("JavaModel");
-    QTest::addColumn<int>("columnCount");
-    QTest::addColumn<bool>("isList");
-    QTest::newRow("TestItemModel")
-            << QJniObject::construct<QtJniTypes::TestQtAbstractItemModel>() << 3 << false;
-    QTest::newRow("TestListModel")
-            << QJniObject::construct<QtJniTypes::TestQtAbstractListModel>() << 1 << true;
+    BOBUIest::addColumn<QJniObject>("JavaModel");
+    BOBUIest::addColumn<int>("columnCount");
+    BOBUIest::addColumn<bool>("isList");
+    BOBUIest::newRow("TestItemModel")
+            << QJniObject::construct<BobUIJniTypes::TestBobUIAbstractItemModel>() << 3 << false;
+    BOBUIest::newRow("TestListModel")
+            << QJniObject::construct<BobUIJniTypes::TestBobUIAbstractListModel>() << 1 << true;
 }
 
 void tst_AndroidItemModel::init()
@@ -234,13 +234,13 @@ void tst_AndroidItemModel::data()
 
 void tst_AndroidItemModel::setData_data()
 {
-    QTest::addColumn<int>("row");
-    QTest::addColumn<int>("column");
-    QTest::addColumn<int>("role");
+    BOBUIest::addColumn<int>("row");
+    BOBUIest::addColumn<int>("column");
+    BOBUIest::addColumn<int>("role");
 
-    QTest::newRow("role0") << 0 << 0 << int(ROLE_STRING);
-    QTest::newRow("role1") << 0 << 0 << int(ROLE_BOOLEAN);
-    QTest::newRow("role2") << 0 << 0 << int(ROLE_INTEGER);
+    BOBUIest::newRow("role0") << 0 << 0 << int(ROLE_STRING);
+    BOBUIest::newRow("role1") << 0 << 0 << int(ROLE_BOOLEAN);
+    BOBUIest::newRow("role2") << 0 << 0 << int(ROLE_INTEGER);
 }
 
 void tst_AndroidItemModel::setData()
@@ -259,9 +259,9 @@ void tst_AndroidItemModel::setData()
     QCOMPARE_EQ(qProxy->rowCount(), 1);
     QCOMPARE_EQ(qProxy->columnCount(), 1);
 
-    JQtModelIndex index = jModel.callMethod<JQtModelIndex>("index", row, column, JQtModelIndex());
+    JBobUIModelIndex index = jModel.callMethod<JBobUIModelIndex>("index", row, column, JBobUIModelIndex());
     QVERIFY(jModel.callMethod<jboolean>("setData", index, QJniObject(Void()), role));
-    QTRY_COMPARE(spy.count(), 1);
+    BOBUIRY_COMPARE(spy.count(), 1);
 
     const QList<QVariant> arguments = spy.takeFirst();
     QCOMPARE(arguments.size(), 3);
@@ -274,7 +274,7 @@ void tst_AndroidItemModel::setData()
     QCOMPARE(bottomRight, qProxy->index(row, column, QModelIndex()));
     QCOMPARE(roles, QList<int>{role});
 
-    QTRY_COMPARE(jModel.getField<jint>("m_dataChangedCount"), 1);
+    BOBUIRY_COMPARE(jModel.getField<jint>("m_dataChangedCount"), 1);
 }
 
 void tst_AndroidItemModel::resetModel()
@@ -285,4 +285,4 @@ void tst_AndroidItemModel::resetModel()
 
 #include "tst_androiditemmodel.moc"
 
-QTEST_MAIN(tst_AndroidItemModel)
+BOBUIEST_MAIN(tst_AndroidItemModel)

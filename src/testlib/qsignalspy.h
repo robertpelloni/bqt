@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QSIGNALSPY_H
 #define QSIGNALSPY_H
 
-#include <QtCore/qbytearray.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qmetaobject.h>
-#include <QtTest/qtesteventloop.h>
-#include <QtCore/qvariant.h>
-#include <QtCore/qmutex.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qmetaobject.h>
+#include <BobUITest/bobuiesteventloop.h>
+#include <BobUICore/qvariant.h>
+#include <BobUICore/qmutex.h>
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QVariant;
@@ -34,7 +34,7 @@ public:
     QSignalSpy(const QObject *object, PointerToMemberFunction signal);
 #else
     template <typename Func>
-    QSignalSpy(const typename QtPrivate::FunctionPointer<Func>::Object *obj, Func signal0)
+    QSignalSpy(const typename BobUIPrivate::FunctionPointer<Func>::Object *obj, Func signal0)
         : QSignalSpy(verify(obj, QMetaMethod::fromSignal(signal0))) {}
 #endif // Q_QDOC
     QSignalSpy(const QObject *obj, QMetaMethod signal)
@@ -62,11 +62,11 @@ private:
     // holds the QMetaType types for the argument list of the signal
     const QList<int> args;
 
-    QTestEventLoop m_loop;
+    BOBUIestEventLoop m_loop;
     bool m_waiting = false;
     QMutex m_mutex; // protects m_waiting and the QList base class, between appendArgs() and wait()
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

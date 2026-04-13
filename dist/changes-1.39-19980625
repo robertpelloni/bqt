@@ -17,7 +17,7 @@ examples/dragdrop/dropsite.cpp    1.8  warwick  +44 -24
 
 examples/dragdrop/dropsite.cpp    1.9  warwick  +36 -81
 examples/dragdrop/dropsite.h    1.4  warwick  +7 -9
-src/qt.pro    2.30  warwick  +2 -0
+src/bobui.pro    2.30  warwick  +2 -0
 src/kernel/qclipboard_x11.cpp    2.15  warwick  +10 -8
 src/kernel/qdnd_win.cpp    2.15  warwick  +1 -18
 src/kernel/qdnd_x11.cpp    2.33  warwick  +62 -67

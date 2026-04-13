@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 #include "addressbook.h"
 
 //! [constructor and input fields]
@@ -12,14 +12,14 @@ AddressBook::AddressBook(QWidget *parent)
     nameLine = new QLineEdit;
 
     QLabel *addressLabel = new QLabel(tr("Address:"));
-    addressText = new QTextEdit;
+    addressText = new BOBUIextEdit;
 //! [constructor and input fields]
 
 //! [layout]
     QGridLayout *mainLayout = new QGridLayout;
     mainLayout->addWidget(nameLabel, 0, 0);
     mainLayout->addWidget(nameLine, 0, 1);
-    mainLayout->addWidget(addressLabel, 1, 0, Qt::AlignTop);
+    mainLayout->addWidget(addressLabel, 1, 0, BobUI::AlignTop);
     mainLayout->addWidget(addressText, 1, 1);
 //! [layout]
 

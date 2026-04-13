@@ -1,26 +1,26 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:provides-trusted-directory-paths
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:provides-trusted-directory-paths
 
 #include "qstandardpaths.h"
 
 #include <qdir.h>
 #include <qstringlist.h>
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 #include <qcoreapplication.h>
 #endif
 
-#include <qt_windows.h>
+#include <bobui_windows.h>
 #include <shlobj.h>
 #include <intshcut.h>
 #include <qvarlengtharray.h>
 
-#ifndef QT_NO_STANDARDPATHS
+#ifndef BOBUI_NO_STANDARDPATHS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static QString convertCharArray(const wchar_t *path)
 {
@@ -41,14 +41,14 @@ static inline bool isConfigLocation(QStandardPaths::StandardLocation type)
 
 static void appendOrganizationAndApp(QString &path) // Courtesy qstandardpaths_unix.cpp
 {
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
     const QString &org = QCoreApplication::organizationName();
     if (!org.isEmpty())
         path += u'/' + org;
     const QString &appName = QCoreApplication::applicationName();
     if (!appName.isEmpty())
         path += u'/' + appName;
-#else // !QT_BOOTSTRAPPED
+#else // !BOBUI_BOOTSTRAPPED
     Q_UNUSED(path);
 #endif
 }
@@ -56,7 +56,7 @@ static void appendOrganizationAndApp(QString &path) // Courtesy qstandardpaths_u
 static inline void appendTestMode(QString &path)
 {
     if (QStandardPaths::isTestModeEnabled())
-        path += "/qttest"_L1;
+        path += "/bobuitest"_L1;
 }
 
 static bool isProcessLowIntegrity()
@@ -218,7 +218,7 @@ QString QStandardPaths::writableLocation(StandardLocation type)
     return result;
 }
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 extern QString qAppFileName();
 #endif
 
@@ -237,7 +237,7 @@ QStringList QStandardPaths::standardLocations(StandardLocation type)
                 appendOrganizationAndApp(programData);
             dirs.append(programData);
         }
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
         // Note: QCoreApplication::applicationDirPath(), while static, requires
         // an application instance. But we might need to resolve the standard
         // locations earlier than that, so we fall back to qAppFileName().
@@ -253,12 +253,12 @@ QStringList QStandardPaths::standardLocations(StandardLocation type)
             if (appDataDir != dataDir)
                 dirs.append(appDataDir);
         }
-#endif // !QT_BOOTSTRAPPED
+#endif // !BOBUI_BOOTSTRAPPED
     } // isConfigLocation()
 
     return dirs;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_STANDARDPATHS
+#endif // BOBUI_NO_STANDARDPATHS

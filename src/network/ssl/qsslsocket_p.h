@@ -1,6 +1,6 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 
 #ifndef QSSLSOCKET_P_H
@@ -12,34 +12,34 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists purely as an
+// This file is not part of the BobUI API. It exists purely as an
 // implementation detail. This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtNetwork/private/qtnetworkglobal_p.h>
+#include <BobUINetwork/private/bobuinetworkglobal_p.h>
 
-#include <private/qtcpsocket_p.h>
+#include <private/bobuicpsocket_p.h>
 
 #include "qocspresponse.h"
 #include "qsslconfiguration_p.h"
 #include "qsslkey.h"
-#include "qtlsbackend_p.h"
+#include "bobuilsbackend_p.h"
 
-#include <QtCore/qlist.h>
-#include <QtCore/qmutex.h>
-#include <QtCore/qstringlist.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qmutex.h>
+#include <BobUICore/qstringlist.h>
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QSslContext;
-class QTlsBackend;
+class BOBUIlsBackend;
 
-class Q_NETWORK_EXPORT QSslSocketPrivate : public QTcpSocketPrivate
+class Q_NETWORK_EXPORT QSslSocketPrivate : public BOBUIcpSocketPrivate
 {
     Q_DECLARE_PUBLIC(QSslSocket)
 public:
@@ -90,7 +90,7 @@ public:
     static bool isMatchingHostname(const QString &cn, const QString &hostname);
 
     // The socket itself, including private slots.
-    QTcpSocket *plainSocket = nullptr;
+    BOBUIcpSocket *plainSocket = nullptr;
     void createPlainSocket(QIODevice::OpenMode openMode);
     static void pauseSocketNotifiers(QSslSocket*);
     static void resumeSocketNotifiers(QSslSocket*);
@@ -132,14 +132,14 @@ public:
     static bool rootCertOnDemandLoadingSupported();
     static void setRootCertOnDemandLoadingSupported(bool supported);
 
-    static QTlsBackend *tlsBackendInUse();
+    static BOBUIlsBackend *tlsBackendInUse();
 
     // Needed by TlsCryptograph:
     QSslSocket::SslMode tlsMode() const;
     bool isRootsOnDemandAllowed() const;
     QString verificationName() const;
     QString tlsHostName() const;
-    QTcpSocket *plainTcpSocket() const;
+    BOBUIcpSocket *plainTcpSocket() const;
     bool verifyErrorsHaveBeenIgnored();
     bool isAutoStartingHandshake() const;
     bool isPendingClose() const;
@@ -160,11 +160,11 @@ protected:
 
     static inline QMutex backendMutex;
     static inline QString activeBackendName;
-    static inline QTlsBackend *tlsBackend = nullptr;
+    static inline BOBUIlsBackend *tlsBackend = nullptr;
 
-    std::unique_ptr<QTlsPrivate::TlsCryptograph> backend;
+    std::unique_ptr<BOBUIlsPrivate::TlsCryptograph> backend;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

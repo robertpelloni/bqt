@@ -1,17 +1,17 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qsize.h"
 #include "qdatastream.h"
 
 #include <private/qdebug_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QSize
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup painting
 
     \brief The QSize class defines the size of a two-dimensional
@@ -143,16 +143,16 @@ void QSize::transpose() noexcept
 */
 
 /*!
-  \fn void QSize::scale(int width, int height, Qt::AspectRatioMode mode)
+  \fn void QSize::scale(int width, int height, BobUI::AspectRatioMode mode)
 
     Scales the size to a rectangle with the given \a width and \a
     height, according to the specified \a mode:
 
     \list
-    \li If \a mode is Qt::IgnoreAspectRatio, the size is set to (\a width, \a height).
-    \li If \a mode is Qt::KeepAspectRatio, the current size is scaled to a rectangle
+    \li If \a mode is BobUI::IgnoreAspectRatio, the size is set to (\a width, \a height).
+    \li If \a mode is BobUI::KeepAspectRatio, the current size is scaled to a rectangle
        as large as possible inside (\a width, \a height), preserving the aspect ratio.
-    \li If \a mode is Qt::KeepAspectRatioByExpanding, the current size is scaled to a rectangle
+    \li If \a mode is BobUI::KeepAspectRatioByExpanding, the current size is scaled to a rectangle
        as small as possible outside (\a width, \a height), preserving the aspect ratio.
     \endlist
 
@@ -163,7 +163,7 @@ void QSize::transpose() noexcept
 */
 
 /*!
-    \fn void QSize::scale(const QSize &size, Qt::AspectRatioMode mode)
+    \fn void QSize::scale(const QSize &size, BobUI::AspectRatioMode mode)
     \overload
 
     Scales the size to a rectangle with the given \a size, according to
@@ -171,7 +171,7 @@ void QSize::transpose() noexcept
 */
 
 /*!
-    \fn QSize QSize::scaled(int width, int height, Qt::AspectRatioMode mode) const
+    \fn QSize QSize::scaled(int width, int height, BobUI::AspectRatioMode mode) const
     \since 5.0
 
     Return a size scaled to a rectangle with the given \a width and \a
@@ -187,17 +187,17 @@ void QSize::transpose() noexcept
     Return a size scaled to a rectangle with the given size \a s,
     according to the specified \a mode.
 */
-QSize QSize::scaled(const QSize &s, Qt::AspectRatioMode mode) const noexcept
+QSize QSize::scaled(const QSize &s, BobUI::AspectRatioMode mode) const noexcept
 {
-    if (mode == Qt::IgnoreAspectRatio || wd == 0 || ht == 0) {
+    if (mode == BobUI::IgnoreAspectRatio || wd == 0 || ht == 0) {
         return s;
     } else {
         bool useHeight;
         qint64 rw = qint64(s.height()) * qint64(width()) / qint64(height());
 
-        if (mode == Qt::KeepAspectRatio) {
+        if (mode == BobUI::KeepAspectRatio) {
             useHeight = (rw <= s.width());
-        } else { // mode == Qt::KeepAspectRatioByExpanding
+        } else { // mode == BobUI::KeepAspectRatioByExpanding
             useHeight = (rw >= s.width());
         }
 
@@ -380,7 +380,7 @@ QSize QSize::scaled(const QSize &s, Qt::AspectRatioMode mode) const noexcept
 /*****************************************************************************
   QSize stream functions
  *****************************************************************************/
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 /*!
     \fn QDataStream &operator<<(QDataStream &stream, const QSize &size)
     \relates QSize
@@ -388,7 +388,7 @@ QSize QSize::scaled(const QSize &s, Qt::AspectRatioMode mode) const noexcept
     Writes the given \a size to the given \a stream, and returns a
     reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator<<(QDataStream &s, const QSize &sz)
@@ -407,7 +407,7 @@ QDataStream &operator<<(QDataStream &s, const QSize &sz)
     Reads a size from the given \a stream into the given \a size, and
     returns a reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator>>(QDataStream &s, QSize &sz)
@@ -424,15 +424,15 @@ QDataStream &operator>>(QDataStream &s, QSize &sz)
     }
     return s;
 }
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QSize &s)
 {
     QDebugStateSaver saver(dbg);
     dbg.nospace();
     dbg << "QSize(";
-    QtDebugUtils::formatQSize(dbg, s);
+    BobUIDebugUtils::formatQSize(dbg, s);
     dbg << ')';
     return dbg;
 }
@@ -442,7 +442,7 @@ QDebug operator<<(QDebug dbg, const QSize &s)
 
 /*!
     \class QSizeF
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QSizeF class defines the size of a two-dimensional object
     using floating point precision.
 
@@ -594,16 +594,16 @@ void QSizeF::transpose() noexcept
 */
 
 /*!
-  \fn void QSizeF::scale(qreal width, qreal height, Qt::AspectRatioMode mode)
+  \fn void QSizeF::scale(qreal width, qreal height, BobUI::AspectRatioMode mode)
 
     Scales the size to a rectangle with the given \a width and \a
     height, according to the specified \a mode.
 
     \list
-    \li If \a mode is Qt::IgnoreAspectRatio, the size is set to (\a width, \a height).
-    \li If \a mode is Qt::KeepAspectRatio, the current size is scaled to a rectangle
+    \li If \a mode is BobUI::IgnoreAspectRatio, the size is set to (\a width, \a height).
+    \li If \a mode is BobUI::KeepAspectRatio, the current size is scaled to a rectangle
        as large as possible inside (\a width, \a height), preserving the aspect ratio.
-    \li If \a mode is Qt::KeepAspectRatioByExpanding, the current size is scaled to a rectangle
+    \li If \a mode is BobUI::KeepAspectRatioByExpanding, the current size is scaled to a rectangle
        as small as possible outside (\a width, \a height), preserving the aspect ratio.
     \endlist
 
@@ -614,7 +614,7 @@ void QSizeF::transpose() noexcept
 */
 
 /*!
-    \fn void QSizeF::scale(const QSizeF &size, Qt::AspectRatioMode mode)
+    \fn void QSizeF::scale(const QSizeF &size, BobUI::AspectRatioMode mode)
     \overload
 
     Scales the size to a rectangle with the given \a size, according to
@@ -622,7 +622,7 @@ void QSizeF::transpose() noexcept
 */
 
 /*!
-    \fn QSizeF QSizeF::scaled(qreal width, qreal height, Qt::AspectRatioMode mode) const
+    \fn QSizeF QSizeF::scaled(qreal width, qreal height, BobUI::AspectRatioMode mode) const
     \since 5.0
 
     Returns a size scaled to a rectangle with the given \a width and
@@ -638,17 +638,17 @@ void QSizeF::transpose() noexcept
     Returns a size scaled to a rectangle with the given size \a s,
     according to the specified \a mode.
 */
-QSizeF QSizeF::scaled(const QSizeF &s, Qt::AspectRatioMode mode) const noexcept
+QSizeF QSizeF::scaled(const QSizeF &s, BobUI::AspectRatioMode mode) const noexcept
 {
-    if (mode == Qt::IgnoreAspectRatio || qIsNull(wd) || qIsNull(ht)) {
+    if (mode == BobUI::IgnoreAspectRatio || qIsNull(wd) || qIsNull(ht)) {
         return s;
     } else {
         bool useHeight;
         qreal rw = s.ht * wd / ht;
 
-        if (mode == Qt::KeepAspectRatio) {
+        if (mode == BobUI::KeepAspectRatio) {
             useHeight = (rw <= s.wd);
-        } else { // mode == Qt::KeepAspectRatioByExpanding
+        } else { // mode == BobUI::KeepAspectRatioByExpanding
             useHeight = (rw >= s.wd);
         }
 
@@ -831,7 +831,7 @@ QSizeF QSizeF::scaled(const QSizeF &s, Qt::AspectRatioMode mode) const noexcept
 /*****************************************************************************
   QSizeF stream functions
  *****************************************************************************/
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 /*!
     \fn QDataStream &operator<<(QDataStream &stream, const QSizeF &size)
     \relates QSizeF
@@ -839,7 +839,7 @@ QSizeF QSizeF::scaled(const QSizeF &s, Qt::AspectRatioMode mode) const noexcept
     Writes the given \a size to the given \a stream and returns a
     reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator<<(QDataStream &s, const QSizeF &sz)
@@ -855,7 +855,7 @@ QDataStream &operator<<(QDataStream &s, const QSizeF &sz)
     Reads a size from the given \a stream into the given \a size and
     returns a reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator>>(QDataStream &s, QSizeF &sz)
@@ -867,18 +867,18 @@ QDataStream &operator>>(QDataStream &s, QSizeF &sz)
     sz.setHeight(qreal(h));
     return s;
 }
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QSizeF &s)
 {
     QDebugStateSaver saver(dbg);
     dbg.nospace();
     dbg << "QSizeF(";
-    QtDebugUtils::formatQSize(dbg, s);
+    BobUIDebugUtils::formatQSize(dbg, s);
     dbg << ')';
     return dbg;
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

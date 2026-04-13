@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
-#include <QtCore/qfuturesynchronizer.h>
-#include <QtCore/qfuture.h>
+#include <BobUICore/qfuturesynchronizer.h>
+#include <BobUICore/qfuture.h>
 
 class tst_QFutureSynchronizer : public QObject
 {
@@ -39,7 +39,7 @@ void tst_QFutureSynchronizer::setFutureAliasingExistingMember()
     //
     // GIVEN: a QFutureSynchronizer with one QFuture:
     //
-    QFutureSynchronizer synchronizer(QtFuture::makeReadyValueFuture(42));
+    QFutureSynchronizer synchronizer(BobUIFuture::makeReadyValueFuture(42));
 
     //
     // WHEN: calling setFuture() with an alias of the QFuture already in `synchronizer`:
@@ -50,12 +50,12 @@ void tst_QFutureSynchronizer::setFutureAliasingExistingMember()
         // around to avoid the warning, as the extra copy would cause a detach()
         // of m_futures inside setFuture() with the consequence that `f` no longer
         // aliases an element in m_futures, which is the goal of this test.
-QT_WARNING_PUSH
+BOBUI_WARNING_PUSH
 #if defined(Q_CC_GNU_ONLY) && Q_CC_GNU >= 1301
-QT_WARNING_DISABLE_GCC("-Wdangling-reference")
+BOBUI_WARNING_DISABLE_GCC("-Wdangling-reference")
 #endif
         const auto &f = synchronizer.futures().constFirst();
-QT_WARNING_POP
+BOBUI_WARNING_POP
         synchronizer.setFuture(f);
     }
 
@@ -147,6 +147,6 @@ void tst_QFutureSynchronizer::waitForFinished()
     }
 }
 
-QTEST_MAIN(tst_QFutureSynchronizer)
+BOBUIEST_MAIN(tst_QFutureSynchronizer)
 
 #include "tst_qfuturesynchronizer.moc"

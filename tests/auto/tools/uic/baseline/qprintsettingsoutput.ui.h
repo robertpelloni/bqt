@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'qprintsettingsoutput.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,27 +9,27 @@
 #ifndef QPRINTSETTINGSOUTPUT_H
 #define QPRINTSETTINGSOUTPUT_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QRadioButton>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QSpinBox>
-#include <QtWidgets/QTabWidget>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QCheckBox>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QGroupBox>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QRadioButton>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/QSpinBox>
+#include <BobUIWidgets/BOBUIabWidget>
+#include <BobUIWidgets/QVBoxLayout>
+#include <BobUIWidgets/QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_QPrintSettingsOutput
 {
 public:
     QHBoxLayout *horizontalLayout_2;
-    QTabWidget *tabs;
+    BOBUIabWidget *tabs;
     QWidget *copiesTab;
     QHBoxLayout *horizontalLayout;
     QGroupBox *gbPrintRange;
@@ -75,7 +75,7 @@ public:
         horizontalLayout_2 = new QHBoxLayout(QPrintSettingsOutput);
         horizontalLayout_2->setContentsMargins(0, 0, 0, 0);
         horizontalLayout_2->setObjectName("horizontalLayout_2");
-        tabs = new QTabWidget(QPrintSettingsOutput);
+        tabs = new BOBUIabWidget(QPrintSettingsOutput);
         tabs->setObjectName("tabs");
         copiesTab = new QWidget();
         copiesTab->setObjectName("copiesTab");
@@ -258,9 +258,9 @@ public:
 
         horizontalLayout_2->addWidget(tabs);
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
         label->setBuddy(copies);
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
         retranslateUi(QPrintSettingsOutput);
         QObject::connect(printRange, &QRadioButton::toggled, from, &QSpinBox::setEnabled);
@@ -301,6 +301,6 @@ namespace Ui {
     class QPrintSettingsOutput: public Ui_QPrintSettingsOutput {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPRINTSETTINGSOUTPUT_H

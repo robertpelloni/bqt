@@ -1,9 +1,9 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 #ifndef RASTERWINDOW_H
 #define RASTERWINDOW_H
 
-#include <QtGui>
+#include <BobUIGui>
 
 class RasterWindow : public QRasterWindow
 {
@@ -26,8 +26,8 @@ public:
 //    virtual bool nativeEvent(const QByteArray & eventType, void * message, long * result);
     virtual void resizeEvent(QResizeEvent * ev);
     virtual void showEvent(QShowEvent * ev);
-    virtual void tabletEvent(QTabletEvent * ev);
-    virtual void touchEvent(QTouchEvent * ev);
+    virtual void tabletEvent(BOBUIabletEvent * ev);
+    virtual void touchEvent(BOBUIouchEvent * ev);
     virtual void wheelEvent(QWheelEvent * ev);
 private:
     void incrementEventCount();

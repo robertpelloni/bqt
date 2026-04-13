@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example draganddrop/dropsite
@@ -90,13 +90,13 @@
            \l{QLabel::setPixmap()}{setPixmap()}.
         \li If \c mimeData contains HTML, we display it with
            \l{QLabel::setText()}{setText()} and set \c{DropArea}'s text format
-           as Qt::RichText.
+           as BobUI::RichText.
         \li If \c mimeData contains Markdown, we display it with
            \l{QLabel::setText()}{setText()} and set \c{DropArea}'s text format
-           as Qt::MarkdownText.
+           as BobUI::MarkdownText.
         \li If \c mimeData contains plain text, we display it with
            \l{QLabel::setText()}{setText()} and set \c{DropArea}'s text format
-           as Qt::PlainText. In the event that \c mimeData contains URLs, we
+           as BobUI::PlainText. In the event that \c mimeData contains URLs, we
            iterate through the list of URLs to display them on individual
            lines.
         \li If \c mimeData contains other types of objects, we set
@@ -131,7 +131,7 @@
     \snippet draganddrop/dropsite/dropsitewindow.h DropSiteWindow header
 
     The class also contains a private instance of \c DropArea, \c dropArea,
-    QLabel, \c abstractLabel, QTableWidget, \c formatsTable, QDialogButtonBox,
+    QLabel, \c abstractLabel, BOBUIableWidget, \c formatsTable, QDialogButtonBox,
     \c buttonBox, and two QPushButton objects, \c clearButton and
     \c quitButton.
 
@@ -149,7 +149,7 @@
 
     \snippet draganddrop/dropsite/dropsitewindow.cpp constructor part2
 
-    We now set up the QTableWidget object, \c formatsTable. Its
+    We now set up the BOBUIableWidget object, \c formatsTable. Its
     horizontal header is set using a QStringList object, \c labels. The number
     of columms are set to two and the table is not editable. Also, the
     \c{formatTable}'s horizontal header is formatted to ensure that its second
@@ -176,8 +176,8 @@
 
     We move on to the \c updateFormatsTable() function. This function updates
     the \c formatsTable, displaying the MIME formats of the object dropped onto
-    the \c DropArea object. First, we set \l{QTableWidget}'s
-    \l{QTableWidget::setRowCount()}{rowCount} property to 0. Then, we validate
+    the \c DropArea object. First, we set \l{BOBUIableWidget}'s
+    \l{BOBUIableWidget::setRowCount()}{rowCount} property to 0. Then, we validate
     to ensure that the QMimeData object passed in is a valid object.
 
     \snippet draganddrop/dropsite/dropsitewindow.cpp updateFormatsTable() part1
@@ -191,10 +191,10 @@
 
     \snippet draganddrop/dropsite/dropsitewindow.cpp updateFormatsTable() part2
 
-    Within each iteration, we create a QTableWidgetItem, \c formatItem and we
-    set its \l{QTableWidgetItem::setFlags()}{flags} to Qt::ItemIsEnabled, and
-    its \l{QTableWidgetItem::setTextAlignment()}{text alignment} to Qt::AlignTop
-    and Qt::AlignLeft.
+    Within each iteration, we create a BOBUIableWidgetItem, \c formatItem and we
+    set its \l{BOBUIableWidgetItem::setFlags()}{flags} to BobUI::ItemIsEnabled, and
+    its \l{BOBUIableWidgetItem::setTextAlignment()}{text alignment} to BobUI::AlignTop
+    and BobUI::AlignLeft.
 
     A QString object, \c text, is customized to display data according to the
     contents of \c format. We invoke \l{QString}'s \l{QString::simplified()}
@@ -211,8 +211,8 @@
 
     Once \c text has been customized to contain the appropriate data, we insert
     both \c format and \c text into \c formatsTable with
-    \l{QTableWidget::setItem()}{setItem()}. Lastly, we invoke
-    \l{QTableView::resizeColumnToContents()}{resizeColumnToContents()} on
+    \l{BOBUIableWidget::setItem()}{setItem()}. Lastly, we invoke
+    \l{BOBUIableView::resizeColumnToContents()}{resizeColumnToContents()} on
     \c{formatsTable}'s first column.
 
     \section1 The main() Function

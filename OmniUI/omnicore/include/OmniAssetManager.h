@@ -8,7 +8,7 @@
 #include <QFile>
 
 // A custom Virtual File System (VFS) to dynamically mount .pak/.wad style asset bundles
-// at runtime, bypassing the need to recompile Qt .qrc resource files.
+// at runtime, bypassing the need to recompile BobUI .qrc resource files.
 class OmniAssetManager : public QObject {
     Q_OBJECT
 

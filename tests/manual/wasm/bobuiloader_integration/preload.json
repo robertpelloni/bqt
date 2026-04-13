@@ -1,0 +1,10 @@
+[
+    {
+        "source": "bobuiloader.js",
+        "destination": "/preload/bobuiloader.js"
+    },
+    {
+        "source": "$BOBUIDIR/bobuilogo.svg",
+        "destination": "/preload/bobuilogo.svg"
+    }
+]

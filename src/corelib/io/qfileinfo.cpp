@@ -1,6 +1,6 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qplatformdefs.h"
 #include "qfileinfo.h"
@@ -9,11 +9,11 @@
 #include "qfileinfo_p.h"
 #include "qdebug.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-QT_IMPL_METATYPE_EXTERN(QFileInfo)
+BOBUI_IMPL_METATYPE_EXTERN(QFileInfo)
 
 QString QFileInfoPrivate::getFileName(QAbstractFileEngine::FileName name) const
 {
@@ -191,7 +191,7 @@ QDateTime &QFileInfoPrivate::getFileTime(QFile::FileTime request) const
 
 /*!
     \class QFileInfo
-    \inmodule QtCore
+    \inmodule BobUICore
     \reentrant
     \brief The QFileInfo class provides an OS-independent API to retrieve
     information about file system entries.
@@ -204,7 +204,7 @@ QDateTime &QFileInfoPrivate::getFileTime(QFile::FileTime request) const
     QFileInfo provides information about a file system entry, such as its
     name, path, access rights and whether it is a regular file, directory or
     symbolic link. The entry's size and last modified/read times are also
-    available. QFileInfo can also be used to obtain information about a Qt
+    available. QFileInfo can also be used to obtain information about a BobUI
     \l{resource system}{resource}.
 
     A QFileInfo can point to a file system entry with either an absolute or
@@ -237,7 +237,7 @@ QDateTime &QFileInfoPrivate::getFileTime(QFile::FileTime request) const
     The path elements of the file system entry can be extracted with path()
     and fileName(). The fileName()'s parts can be extracted with baseName(),
     suffix(), or completeSuffix(). QFileInfo objects referring to directories
-    created by Qt classes will not have a trailing directory separator
+    created by BobUI classes will not have a trailing directory separator
     \c{'/'}. If you wish to use trailing separators in your own file info
     objects, just append one to the entry's path given to the constructors
     or setFile().
@@ -263,7 +263,7 @@ QDateTime &QFileInfoPrivate::getFileTime(QFile::FileTime request) const
     On Windows, shortcuts (\c .lnk files) are currently treated as symlinks. As
     on Unix systems, the property getters return the size of the target,
     not the \c .lnk file itself. This behavior is deprecated and will likely
-    be removed in a future version of Qt, after which \c .lnk files will be
+    be removed in a future version of BobUI, after which \c .lnk files will be
     treated as regular files.
 
     \snippet code/src_corelib_io_qfileinfo.cpp 1
@@ -277,16 +277,16 @@ QDateTime &QFileInfoPrivate::getFileTime(QFile::FileTime request) const
     \snippet ntfsp.cpp 0
 
     Permission checking is then turned on and off by incrementing and
-    decrementing \c qt_ntfs_permission_lookup by 1.
+    decrementing \c bobui_ntfs_permission_lookup by 1.
 
     \snippet ntfsp.cpp 1
 
     \note Since this is a non-atomic global variable, it is only safe
-    to increment or decrement \c qt_ntfs_permission_lookup before any
+    to increment or decrement \c bobui_ntfs_permission_lookup before any
     threads other than the main thread have started or after every thread
     other than the main thread has ended.
 
-    \note From Qt 6.6 the variable \c qt_ntfs_permission_lookup is
+    \note From BobUI 6.6 the variable \c bobui_ntfs_permission_lookup is
     deprecated. Please use the following alternatives.
 
     The safe and easy way to manage permission checks is to use the RAII class
@@ -324,7 +324,7 @@ QDateTime &QFileInfoPrivate::getFileTime(QFile::FileTime request) const
     and \l{metadataChangeTime()} return times in \e{local time} by default.
     Since native file system API typically uses UTC, this requires a conversion.
     If you don't actually need the local time, you can avoid this by requesting
-    the time in QTimeZone::UTC directly.
+    the time in BOBUIimeZone::UTC directly.
 
     \section1 Platform Specific Issues
 
@@ -459,7 +459,7 @@ bool comparesEqual(const QFileInfo &lhs, const QFileInfo &rhs)
     if (lhs.d_ptr->fileEntry.filePath() == rhs.d_ptr->fileEntry.filePath())
         return true;
 
-    Qt::CaseSensitivity sensitive;
+    BobUI::CaseSensitivity sensitive;
     if (lhs.d_ptr->fileEngine == nullptr || rhs.d_ptr->fileEngine == nullptr) {
         if (lhs.d_ptr->fileEngine != rhs.d_ptr->fileEngine) // one is native, the other is a custom file-engine
             return false;
@@ -468,11 +468,11 @@ bool comparesEqual(const QFileInfo &lhs, const QFileInfo &rhs)
         if (lhsCaseSensitive != QFileSystemEngine::isCaseSensitive(rhs.d_ptr->fileEntry, rhs.d_ptr->metaData))
             return false;
 
-        sensitive = lhsCaseSensitive ? Qt::CaseSensitive : Qt::CaseInsensitive;
+        sensitive = lhsCaseSensitive ? BobUI::CaseSensitive : BobUI::CaseInsensitive;
     } else {
         if (lhs.d_ptr->fileEngine->caseSensitive() != rhs.d_ptr->fileEngine->caseSensitive())
             return false;
-        sensitive = lhs.d_ptr->fileEngine->caseSensitive() ? Qt::CaseSensitive : Qt::CaseInsensitive;
+        sensitive = lhs.d_ptr->fileEngine->caseSensitive() ? BobUI::CaseSensitive : BobUI::CaseInsensitive;
     }
 
    // Fallback to expensive canonical path computation
@@ -1040,7 +1040,7 @@ bool QFileInfo::isHidden() const
     \since 5.0
     Returns \c true if the file path can be used directly with native APIs.
     Returns \c false if the file is otherwise supported by a virtual file system
-    inside Qt, such as \l{the Qt Resource System}.
+    inside BobUI, such as \l{the BobUI Resource System}.
 
     \b{Note:} Native paths may still require conversion of path separators
     and character encoding, depending on platform and input requirements of the
@@ -1127,7 +1127,7 @@ bool QFileInfo::isBundle() const
 
     In addition, true will be returned for shortcuts (\c *.lnk files) on
     Windows, and aliases on \macos. This behavior is deprecated and will
-    likely change in a future version of Qt. Opening a shortcut or alias
+    likely change in a future version of BobUI. Opening a shortcut or alias
     will open the \c .lnk or alias file itself.
 
     Example:
@@ -1553,15 +1553,15 @@ qint64 QFileInfo::size() const
 
     \include qfileinfo.cpp info-about-target-not-symlink
 
-    This function overloads QFileInfo::birthTime(const QTimeZone &tz), and
-    returns the same as \c{birthTime(QTimeZone::LocalTime)}.
+    This function overloads QFileInfo::birthTime(const BOBUIimeZone &tz), and
+    returns the same as \c{birthTime(BOBUIimeZone::LocalTime)}.
 
     \since 5.10
     \sa lastModified(), lastRead(), metadataChangeTime(), fileTime()
 */
 
 /*!
-    \fn QDateTime QFileInfo::birthTime(const QTimeZone &tz) const
+    \fn QDateTime QFileInfo::birthTime(const BOBUIimeZone &tz) const
 
     Returns the date and time when the file was created (born).
 
@@ -1573,9 +1573,9 @@ qint64 QFileInfo::size() const
     \include qfileinfo.cpp info-about-target-not-symlink
 
     \since 6.6
-    \sa lastModified(const QTimeZone &), lastRead(const QTimeZone &),
-        metadataChangeTime(const QTimeZone &),
-        fileTime(QFileDevice::FileTime, const QTimeZone &)
+    \sa lastModified(const BOBUIimeZone &), lastRead(const BOBUIimeZone &),
+        metadataChangeTime(const BOBUIimeZone &),
+        fileTime(QFileDevice::FileTime, const BOBUIimeZone &)
 */
 
 /*!
@@ -1590,15 +1590,15 @@ qint64 QFileInfo::size() const
 
     \include qfileinfo.cpp info-about-target-not-symlink
 
-    This function overloads QFileInfo::metadataChangeTime(const QTimeZone &tz),
-    and returns the same as \c{metadataChangeTime(QTimeZone::LocalTime)}.
+    This function overloads QFileInfo::metadataChangeTime(const BOBUIimeZone &tz),
+    and returns the same as \c{metadataChangeTime(BOBUIimeZone::LocalTime)}.
 
     \since 5.10
     \sa birthTime(), lastModified(), lastRead(), fileTime()
 */
 
 /*!
-    \fn QDateTime QFileInfo::metadataChangeTime(const QTimeZone &tz) const
+    \fn QDateTime QFileInfo::metadataChangeTime(const BOBUIimeZone &tz) const
 
     Returns the date and time when the file's metadata was last changed.
     A metadata change occurs when the file is first created, but it also
@@ -1610,9 +1610,9 @@ qint64 QFileInfo::size() const
     \include qfileinfo.cpp info-about-target-not-symlink
 
     \since 6.6
-    \sa birthTime(const QTimeZone &), lastModified(const QTimeZone &),
-        lastRead(const QTimeZone &),
-        fileTime(QFileDevice::FileTime time, const QTimeZone &)
+    \sa birthTime(const BOBUIimeZone &), lastModified(const BOBUIimeZone &),
+        lastRead(const BOBUIimeZone &),
+        fileTime(QFileDevice::FileTime time, const BOBUIimeZone &)
 */
 
 /*!
@@ -1622,14 +1622,14 @@ qint64 QFileInfo::size() const
 
     \include qfileinfo.cpp info-about-target-not-symlink
 
-    This function overloads \l{QFileInfo::lastModified(const QTimeZone &)},
-    and returns the same as \c{lastModified(QTimeZone::LocalTime)}.
+    This function overloads \l{QFileInfo::lastModified(const BOBUIimeZone &)},
+    and returns the same as \c{lastModified(BOBUIimeZone::LocalTime)}.
 
     \sa birthTime(), lastRead(), metadataChangeTime(), fileTime()
 */
 
 /*!
-    \fn QDateTime QFileInfo::lastModified(const QTimeZone &tz) const
+    \fn QDateTime QFileInfo::lastModified(const BOBUIimeZone &tz) const
 
     Returns the date and time when the file was last modified.
 
@@ -1638,9 +1638,9 @@ qint64 QFileInfo::size() const
     \include qfileinfo.cpp info-about-target-not-symlink
 
     \since 6.6
-    \sa birthTime(const QTimeZone &), lastRead(const QTimeZone &),
-        metadataChangeTime(const QTimeZone &),
-        fileTime(QFileDevice::FileTime, const QTimeZone &)
+    \sa birthTime(const BOBUIimeZone &), lastRead(const BOBUIimeZone &),
+        metadataChangeTime(const BOBUIimeZone &),
+        fileTime(QFileDevice::FileTime, const BOBUIimeZone &)
 */
 
 /*!
@@ -1653,14 +1653,14 @@ qint64 QFileInfo::size() const
 
     \include qfileinfo.cpp info-about-target-not-symlink
 
-    This function overloads \l{QFileInfo::lastRead(const QTimeZone &)},
-    and returns the same as \c{lastRead(QTimeZone::LocalTime)}.
+    This function overloads \l{QFileInfo::lastRead(const BOBUIimeZone &)},
+    and returns the same as \c{lastRead(BOBUIimeZone::LocalTime)}.
 
     \sa birthTime(), lastModified(), metadataChangeTime(), fileTime()
 */
 
 /*!
-    \fn QDateTime QFileInfo::lastRead(const QTimeZone &tz) const
+    \fn QDateTime QFileInfo::lastRead(const BOBUIimeZone &tz) const
 
     Returns the date and time when the file was last read (accessed).
 
@@ -1672,12 +1672,12 @@ qint64 QFileInfo::size() const
     \include qfileinfo.cpp info-about-target-not-symlink
 
     \since 6.6
-    \sa birthTime(const QTimeZone &), lastModified(const QTimeZone &),
-        metadataChangeTime(const QTimeZone &),
-        fileTime(QFileDevice::FileTime, const QTimeZone &)
+    \sa birthTime(const BOBUIimeZone &), lastModified(const BOBUIimeZone &),
+        metadataChangeTime(const BOBUIimeZone &),
+        fileTime(QFileDevice::FileTime, const BOBUIimeZone &)
 */
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0) && !defined(QT_BOOTSTRAPPED)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0) && !defined(BOBUI_BOOTSTRAPPED)
 /*!
     Returns the file time specified by \a time.
 
@@ -1686,14 +1686,14 @@ qint64 QFileInfo::size() const
     \include qfileinfo.cpp info-about-target-not-symlink
 
     This function overloads
-    \l{QFileInfo::fileTime(QFileDevice::FileTime, const QTimeZone &)},
-    and returns the same as \c{fileTime(time, QTimeZone::LocalTime)}.
+    \l{QFileInfo::fileTime(QFileDevice::FileTime, const BOBUIimeZone &)},
+    and returns the same as \c{fileTime(time, BOBUIimeZone::LocalTime)}.
 
     \since 5.10
     \sa birthTime(), lastModified(), lastRead(), metadataChangeTime()
 */
 QDateTime QFileInfo::fileTime(QFile::FileTime time) const {
-    return fileTime(time, QTimeZone::LocalTime);
+    return fileTime(time, BOBUIimeZone::LocalTime);
 }
 #endif
 
@@ -1702,9 +1702,9 @@ QDateTime QFileInfo::fileTime(QFile::FileTime time) const {
 
 //! [file-times-in-time-zone]
     The returned time is in the time zone specified by \a tz. For example,
-    you can use QTimeZone::LocalTime or QTimeZone::UTC to get the time in
+    you can use BOBUIimeZone::LocalTime or BOBUIimeZone::UTC to get the time in
     the Local time zone or UTC, respectively. Since native file system API
-    typically uses UTC, using QTimeZone::UTC is often faster, as it does not
+    typically uses UTC, using BOBUIimeZone::UTC is often faster, as it does not
     require any conversions.
 //! [file-times-in-time-zone]
 
@@ -1713,11 +1713,11 @@ QDateTime QFileInfo::fileTime(QFile::FileTime time) const {
     \include qfileinfo.cpp info-about-target-not-symlink
 
     \since 6.6
-    \sa birthTime(const QTimeZone &), lastModified(const QTimeZone &),
-        lastRead(const QTimeZone &), metadataChangeTime(const QTimeZone &),
+    \sa birthTime(const BOBUIimeZone &), lastModified(const BOBUIimeZone &),
+        lastRead(const BOBUIimeZone &), metadataChangeTime(const BOBUIimeZone &),
         QDateTime::isValid()
 */
-QDateTime QFileInfo::fileTime(QFile::FileTime time, const QTimeZone &tz) const
+QDateTime QFileInfo::fileTime(QFile::FileTime time, const BOBUIimeZone &tz) const
 {
     Q_D(const QFileInfo);
     QFileSystemMetaData::MetaDataFlags flag;
@@ -1803,7 +1803,7 @@ void QFileInfo::stat()
     Synonym for QList<QFileInfo>.
 */
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QFileInfo &fi)
 {
     QDebugStateSaver saver(dbg);
@@ -1905,7 +1905,7 @@ QDebug operator<<(QDebug dbg, const QFileInfo &fi)
     \sa junctionTarget()
 */
 /*!
-    \macro QT_IMPLICIT_QFILEINFO_CONSTRUCTION
+    \macro BOBUI_IMPLICIT_QFILEINFO_CONSTRUCTION
     \since 6.0
     \relates QFileInfo
 
@@ -1960,4 +1960,4 @@ QDebug operator<<(QDebug dbg, const QFileInfo &fi)
     recommended in new code.
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

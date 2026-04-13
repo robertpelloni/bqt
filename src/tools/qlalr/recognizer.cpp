@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "recognizer.h"
 
-#include <QtCore/qdir.h>
+#include <BobUICore/qdir.h>
 
 #include <cstdlib>
 #include <cstring>
 #include <cctype>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 Recognizer::Recognizer (Grammar *grammar, bool no_lines):
   tos(0),
@@ -74,7 +74,7 @@ int Recognizer::nextToken()
       if (ch == u'"')
         inp ();
       else
-        qerr() << _M_input_file << ":" << _M_line << ": Warning. Expected `\"'" << Qt::endl;
+        qerr() << _M_input_file << ":" << _M_line << ": Warning. Expected `\"'" << BobUI::endl;
 
       _M_current_value = text;
       return (token = STRING_LITERAL);
@@ -127,7 +127,7 @@ int Recognizer::nextToken()
         return (token = PREC);
       else
         {
-          qerr() << _M_input_file << ":" << _M_line << ": Unknown keyword `" << text << "'" << Qt::endl;
+          qerr() << _M_input_file << ":" << _M_line << ": Unknown keyword `" << text << "'" << BobUI::endl;
           exit (EXIT_FAILURE);
           return (token = ERROR);
         }
@@ -256,7 +256,7 @@ bool Recognizer::parse (const QString &input_file)
       return false;
     }
 
-  QString _M_contents = QTextStream(&file).readAll();
+  QString _M_contents = BOBUIextStream(&file).readAll();
   _M_firstChar = _M_contents.constBegin();
   _M_lastChar = _M_contents.constEnd();
   _M_currentChar = _M_firstChar;
@@ -382,7 +382,7 @@ case 34: {
 
   if (_M_grammar->terminals.find (_M_current_rule->lhs) != _M_grammar->terminals.end ())
     {
-      qerr() << _M_input_file << ":" << _M_line << ": Invalid non terminal `" << *_M_current_rule->lhs << "'" << Qt::endl;
+      qerr() << _M_input_file << ":" << _M_line << ": Invalid non terminal `" << *_M_current_rule->lhs << "'" << BobUI::endl;
       return false;
     }
 
@@ -397,7 +397,7 @@ case 38: {
 
   if (_M_grammar->terminals.find (_M_current_rule->lhs) != _M_grammar->terminals.end ())
     {
-      qerr() << _M_input_file << ":" << _M_line << ": Invalid non terminal `" << *_M_current_rule->lhs << "'" << Qt::endl;
+      qerr() << _M_input_file << ":" << _M_line << ": Invalid non terminal `" << *_M_current_rule->lhs << "'" << BobUI::endl;
       return false;
     }
 
@@ -420,7 +420,7 @@ case 40: {
   Name tok = _M_grammar->intern (sym(2));
   if (! _M_grammar->isTerminal (tok))
     {
-      qerr() << _M_input_file << ":" << _M_line << ": `" << *tok << " is not a terminal symbol" << Qt::endl;
+      qerr() << _M_input_file << ":" << _M_line << ": `" << *tok << " is not a terminal symbol" << BobUI::endl;
       _M_current_rule->prec = _M_grammar->names.end ();
     }
   else
@@ -451,7 +451,7 @@ case 43: {
         }
     }
 
-  qerr() << _M_input_file << ":" << _M_line << ": Syntax error" << Qt::endl;
+  qerr() << _M_input_file << ":" << _M_line << ": Syntax error" << BobUI::endl;
   return false;
 }
 

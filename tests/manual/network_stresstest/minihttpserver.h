@@ -1,20 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
 #ifndef MINIHTTPSERVER_H
 #define MINIHTTPSERVER_H
 
-#include <QtCore/QThread>
-#include <QtCore/QFile>
-#include <QtCore/QTimer>
+#include <BobUICore/BOBUIhread>
+#include <BobUICore/QFile>
+#include <BobUICore/BOBUIimer>
 
 class QFile;
 class QSemaphore;
-class QTcpServer;
-class QTcpSocket;
+class BOBUIcpServer;
+class BOBUIcpSocket;
 
-class MiniHttpServer : public QThread
+class MiniHttpServer : public BOBUIhread
 {
     Q_OBJECT
 public:
@@ -30,7 +30,7 @@ private slots:
     void handleConnection();
 
 private:
-    QTcpServer *server;
+    BOBUIcpServer *server;
     QObject *quitObject;
     QSemaphore *readyToGo;
     int portnum;
@@ -39,13 +39,13 @@ private:
 class MiniHttpServerConnection: public QObject
 {
     Q_OBJECT
-    QTcpSocket * const socket;
+    BOBUIcpSocket * const socket;
     QFile source;
-    QTimer timeout;
+    BOBUIimer timeout;
     QByteArray buffer;
     bool connectionClose;
 public:
-    explicit MiniHttpServerConnection(QTcpSocket *socket);
+    explicit MiniHttpServerConnection(BOBUIcpSocket *socket);
 
     void sendError500();
     void sendError404();

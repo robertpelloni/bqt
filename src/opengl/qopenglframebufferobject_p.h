@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QOPENGLFRAMEBUFFEROBJECT_P_H
 #define QOPENGLFRAMEBUFFEROBJECT_P_H
@@ -8,19 +8,19 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists purely as an
+// This file is not part of the BobUI API. It exists purely as an
 // implementation detail. This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/qvarlengtharray.h>
+#include <BobUICore/qvarlengtharray.h>
 #include <qopenglframebufferobject.h>
 #include <private/qopenglcontext_p.h>
 #include <private/qopenglextensions_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QOpenGLFramebufferObjectFormatPrivate
 {
@@ -32,7 +32,7 @@ public:
           target(GL_TEXTURE_2D),
           mipmap(false)
     {
-#if !QT_CONFIG(opengles2)
+#if !BOBUI_CONFIG(opengles2)
         // There is nothing that says QOpenGLFramebufferObjectFormat needs a current
         // context, so we need a fallback just to be safe, even though in practice there
         // will usually be a current context.
@@ -111,8 +111,8 @@ public:
     inline GLuint fbo() const { return fbo_guard ? fbo_guard->id() : 0; }
 };
 
-Q_OPENGL_EXPORT QImage qt_gl_read_framebuffer(const QSize &size, bool alpha_format, bool include_alpha);
+Q_OPENGL_EXPORT QImage bobui_gl_read_framebuffer(const QSize &size, bool alpha_format, bool include_alpha);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QOPENGLFRAMEBUFFEROBJECT_P_H

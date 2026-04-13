@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QFile>
 
@@ -29,7 +29,7 @@ void wrapInFunction()
     {
         QDataStream stream;
         //! [2]
-        stream.setVersion(QDataStream::Qt_4_0);
+        stream.setVersion(QDataStream::BobUI_4_0);
         //! [2]
     }
 
@@ -44,7 +44,7 @@ void wrapInFunction()
         out << (quint32)0xA0B0C0D0;
         out << (qint32)123;
 
-        out.setVersion(QDataStream::Qt_4_0);
+        out.setVersion(QDataStream::BobUI_4_0);
 
         // Write the data
         out << lots_of_interesting_data;
@@ -81,9 +81,9 @@ int read_data_example()
         return XXX_BAD_FILE_TOO_NEW;
 
     if (version <= 110)
-        in.setVersion(QDataStream::Qt_3_1);
+        in.setVersion(QDataStream::BobUI_3_1);
     else
-        in.setVersion(QDataStream::Qt_4_0);
+        in.setVersion(QDataStream::BobUI_4_0);
 
     // Read the data
     in >> lots_of_interesting_data;
@@ -98,7 +98,7 @@ void read_data_transaction_example(QFile file, QDataStream in)
 {
     //! [5]
     QDataStream out(&file);
-    out.setVersion(QDataStream::Qt_4_0);
+    out.setVersion(QDataStream::BobUI_4_0);
     //! [5]
 
     //! [6]

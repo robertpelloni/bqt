@@ -1,6 +1,6 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #pragma once
 
@@ -10,10 +10,10 @@
 
 #define VK_USE_PLATFORM_XCB_KHR
 
-#include <QtGui/private/qbasicvulkanplatforminstance_p.h>
+#include <BobUIGui/private/qbasicvulkanplatforminstance_p.h>
 #include <QLibrary>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QXcbWindow;
 
@@ -35,4 +35,4 @@ private:
     PFN_vkCreateXcbSurfaceKHR m_createSurface;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

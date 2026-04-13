@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QINPUTMETHOD_H
 #define QINPUTMETHOD_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qobject.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qobject.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QInputMethodPrivate;
 class QWindow;
 class QRectF;
-class QTransform;
+class BOBUIransform;
 class QInputMethodQueryEvent;
 
 class Q_GUI_EXPORT QInputMethod : public QObject
@@ -27,11 +27,11 @@ class Q_GUI_EXPORT QInputMethod : public QObject
     Q_PROPERTY(bool visible READ isVisible NOTIFY visibleChanged)
     Q_PROPERTY(bool animating READ isAnimating NOTIFY animatingChanged)
     Q_PROPERTY(QLocale locale READ locale NOTIFY localeChanged)
-    Q_PROPERTY(Qt::LayoutDirection inputDirection READ inputDirection NOTIFY inputDirectionChanged)
+    Q_PROPERTY(BobUI::LayoutDirection inputDirection READ inputDirection NOTIFY inputDirectionChanged)
 
 public:
-    QTransform inputItemTransform() const;
-    void setInputItemTransform(const QTransform &transform);
+    BOBUIransform inputItemTransform() const;
+    void setInputItemTransform(const BOBUIransform &transform);
 
     QRectF inputItemRectangle() const;
     void setInputItemRectangle(const QRectF &rect);
@@ -57,15 +57,15 @@ public:
     bool isAnimating() const;
 
     QLocale locale() const;
-    Qt::LayoutDirection inputDirection() const;
+    BobUI::LayoutDirection inputDirection() const;
 
-    static QVariant queryFocusObject(Qt::InputMethodQuery query, const QVariant &argument);
+    static QVariant queryFocusObject(BobUI::InputMethodQuery query, const QVariant &argument);
 
 public Q_SLOTS:
     void show();
     void hide();
 
-    void update(Qt::InputMethodQueries queries);
+    void update(BobUI::InputMethodQueries queries);
     void reset();
     void commit();
 
@@ -79,7 +79,7 @@ Q_SIGNALS:
     void visibleChanged();
     void animatingChanged();
     void localeChanged();
-    void inputDirectionChanged(Qt::LayoutDirection newDirection);
+    void inputDirectionChanged(BobUI::LayoutDirection newDirection);
 
 private:
     friend class QGuiApplication;
@@ -89,6 +89,6 @@ private:
     ~QInputMethod();
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

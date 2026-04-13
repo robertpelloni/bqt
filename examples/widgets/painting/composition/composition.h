@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef COMPOSITION_H
 #define COMPOSITION_H
@@ -12,10 +12,10 @@
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QPushButton;
 class QRadioButton;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 class CompositionWidget : public QWidget
 {
@@ -86,7 +86,7 @@ protected:
     void mousePressEvent(QMouseEvent *) override;
     void mouseMoveEvent(QMouseEvent *) override;
     void mouseReleaseEvent(QMouseEvent *) override;
-    void timerEvent(QTimerEvent *) override;
+    void timerEvent(BOBUIimerEvent *) override;
 
 public slots:
     void setClearMode() { m_composition_mode = QPainter::CompositionMode_Clear; update(); }

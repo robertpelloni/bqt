@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qglobal.h"
 
@@ -9,31 +9,31 @@
 #if defined(Q_OS_MACOS)
 #import <AppKit/AppKit.h>
 #import <IOKit/graphics/IOGraphicsLib.h>
-#elif defined(QT_PLATFORM_UIKIT)
+#elif defined(BOBUI_PLATFORM_UIKIT)
 #import <UIKit/UIFont.h>
 #endif
 
-#include <QtCore/qelapsedtimer.h>
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/qelapsedtimer.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
 #include "qcoretextfontdatabase_p.h"
 #include "qfontengine_coretext_p.h"
-#if QT_CONFIG(settings)
-#include <QtCore/QSettings>
+#if BOBUI_CONFIG(settings)
+#include <BobUICore/QSettings>
 #endif
-#include <QtCore/QtEndian>
-#ifndef QT_NO_FREETYPE
-#include <QtGui/private/qfontengine_ft_p.h>
+#include <BobUICore/BobUIEndian>
+#ifndef BOBUI_NO_FREETYPE
+#include <BobUIGui/private/qfontengine_ft_p.h>
 #endif
 
-#include <QtGui/qpa/qwindowsysteminterface.h>
+#include <BobUIGui/qpa/qwindowsysteminterface.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-QT_IMPL_METATYPE_EXTERN_TAGGED(QCFType<CGFontRef>, QCFType_CGFontRef)
-QT_IMPL_METATYPE_EXTERN_TAGGED(QCFType<CFURLRef>, QCFType_CFURLRef)
+BOBUI_IMPL_METATYPE_EXTERN_TAGGED(QCFType<CGFontRef>, QCFType_CGFontRef)
+BOBUI_IMPL_METATYPE_EXTERN_TAGGED(QCFType<CFURLRef>, QCFType_CFURLRef)
 
 // this could become a list of all languages used for each writing
 // system, instead of using the single most common language.
@@ -112,7 +112,7 @@ void QCoreTextFontDatabase::populateFontDatabase()
     // on the platform, so that it may be used by applications directly, but does not
     // get enumerated. Since there are no alternatives, we hardcode it.
     if (QOperatingSystemVersion::current() >= QOperatingSystemVersion::MacOSCatalina
-            && !qEnvironmentVariableIsSet("QT_NO_HARDCODED_FALLBACK_FONTS")) {
+            && !qEnvironmentVariableIsSet("BOBUI_NO_HARDCODED_FALLBACK_FONTS")) {
         m_hardcodedFallbackFonts[QChar::Script_Adlam] = QStringLiteral("Noto Sans Adlam");
         m_hardcodedFallbackFonts[QChar::Script_Ahom] = QStringLiteral("Noto Serif Ahom");
         m_hardcodedFallbackFonts[QChar::Script_Avestan] = QStringLiteral("Noto Sans Avestan");
@@ -332,7 +332,7 @@ struct FontDescription {
     QSupportedWritingSystems writingSystems;
 };
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_DECL_UNUSED static inline QDebug operator<<(QDebug debug, const FontDescription &fd)
 {
     QDebugStateSaver saver(debug);
@@ -386,7 +386,7 @@ static void getFontDescription(CTFontDescriptorRef font, FontDescription *fd)
         if (CFNumberRef weightValue = (CFNumberRef) CFDictionaryGetValue(styles, kCTFontWeightTrait)) {
             double normalizedWeight;
             if (CFNumberGetValue(weightValue, kCFNumberFloat64Type, &normalizedWeight))
-                fd->weight = QCoreTextFontEngine::qtWeightFromCFWeight(float(normalizedWeight));
+                fd->weight = QCoreTextFontEngine::bobuiWeightFromCFWeight(float(normalizedWeight));
         }
         if (CFNumberRef italic = (CFNumberRef) CFDictionaryGetValue(styles, kCTFontSlantTrait)) {
             double d;
@@ -462,7 +462,7 @@ void QCoreTextFontDatabase::populateFromDescriptor(CTFontDescriptorRef font, con
             fd.fixedPitch, fd.colorFont, fd.writingSystems, (void *)font);
 }
 
-static NSString * const kQtFontDataAttribute = @"QtFontDataAttribute";
+static NSString * const kBobUIFontDataAttribute = @"BobUIFontDataAttribute";
 
 template <typename T>
 T *descriptorAttribute(CTFontDescriptorRef descriptor, CFStringRef name)
@@ -473,14 +473,14 @@ T *descriptorAttribute(CTFontDescriptorRef descriptor, CFStringRef name)
 void QCoreTextFontDatabase::releaseHandle(void *handle)
 {
     CTFontDescriptorRef descriptor = static_cast<CTFontDescriptorRef>(handle);
-    if (NSValue *fontDataValue = descriptorAttribute<NSValue>(descriptor, (CFStringRef)kQtFontDataAttribute)) {
+    if (NSValue *fontDataValue = descriptorAttribute<NSValue>(descriptor, (CFStringRef)kBobUIFontDataAttribute)) {
         QByteArray *fontData = static_cast<QByteArray *>(fontDataValue.pointerValue);
         delete fontData;
     }
     CFRelease(descriptor);
 }
 
-extern CGAffineTransform qt_transform_from_fontdef(const QFontDef &fontDef);
+extern CGAffineTransform bobui_transform_from_fontdef(const QFontDef &fontDef);
 
 template <>
 QFontEngine *QCoreTextFontDatabaseEngineFactory<QCoreTextFontEngine>::fontEngine(const QFontDef &fontDef, void *usrPtr)
@@ -496,7 +496,7 @@ QFontEngine *QCoreTextFontDatabaseEngineFactory<QCoreTextFontEngine>::fontEngine
     // DPI, and we can use that directly.
     qreal scaledPointSize = fontDef.pixelSize;
 
-    CGAffineTransform matrix = qt_transform_from_fontdef(fontDef);
+    CGAffineTransform matrix = bobui_transform_from_fontdef(fontDef);
 
     if (!fontDef.variableAxisValues.isEmpty()) {
         QCFType<CFMutableDictionaryRef> variations = CFDictionaryCreateMutable(nullptr,
@@ -528,13 +528,13 @@ QFontEngine *QCoreTextFontDatabaseEngineFactory<QCoreTextFontEngine>::fontEngine
     return nullptr;
 }
 
-#ifndef QT_NO_FREETYPE
+#ifndef BOBUI_NO_FREETYPE
 template <>
 QFontEngine *QCoreTextFontDatabaseEngineFactory<QFontEngineFT>::fontEngine(const QFontDef &fontDef, void *usrPtr)
 {
     CTFontDescriptorRef descriptor = static_cast<CTFontDescriptorRef>(usrPtr);
 
-    if (NSValue *fontDataValue = descriptorAttribute<NSValue>(descriptor, (CFStringRef)kQtFontDataAttribute)) {
+    if (NSValue *fontDataValue = descriptorAttribute<NSValue>(descriptor, (CFStringRef)kBobUIFontDataAttribute)) {
         QByteArray *fontData = static_cast<QByteArray *>(fontDataValue.pointerValue);
         return QFontEngineFT::create(*fontData, fontDef.pixelSize,
             static_cast<QFont::HintingPreference>(fontDef.hintingPreference), fontDef.variableAxisValues);
@@ -552,7 +552,7 @@ QFontEngine *QCoreTextFontDatabaseEngineFactory<QFontEngineFT>::fontEngine(const
 
         return QFontEngineFT::create(fontDef, faceId);
     }
-    // We end up here with a descriptor does not contain Qt font data or kCTFontURLAttribute.
+    // We end up here with a descriptor does not contain BobUI font data or kCTFontURLAttribute.
     // Since the FT engine can't deal with a descriptor with just a NSFontNameAttribute,
     // we should return nullptr.
     return nullptr;
@@ -567,7 +567,7 @@ QFontEngine *QCoreTextFontDatabaseEngineFactory<T>::fontEngine(const QByteArray 
 
 // Explicitly instantiate so that we don't need the plugin to involve FreeType
 template class QCoreTextFontDatabaseEngineFactory<QCoreTextFontEngine>;
-#ifndef QT_NO_FREETYPE
+#ifndef BOBUI_NO_FREETYPE
 template class QCoreTextFontDatabaseEngineFactory<QFontEngineFT>;
 #endif
 
@@ -686,7 +686,7 @@ QStringList QCoreTextFontDatabase::fallbacksForFamily(const QString &family,
 
         if (!isFamilyPopulated(fallbackFamilyName)) {
             // We need to populate, or at least register the fallback fonts,
-            // otherwise the Qt font database may not know they exist.
+            // otherwise the BobUI font database may not know they exist.
             if (isPrivateFontFamily(fallbackFamilyName))
                 const_cast<QCoreTextFontDatabase *>(this)->populateFromDescriptor(fallbackDescriptor);
             else
@@ -748,8 +748,8 @@ QStringList QCoreTextFontDatabase::fallbacksForFamily(const QString &family,
     }
 #endif
 
-    extern QStringList qt_sort_families_by_writing_system(QFontDatabasePrivate::ExtendedScript, const QStringList &);
-    fallbackList = qt_sort_families_by_writing_system(script, fallbackList);
+    extern QStringList bobui_sort_families_by_writing_system(QFontDatabasePrivate::ExtendedScript, const QStringList &);
+    fallbackList = bobui_sort_families_by_writing_system(script, fallbackList);
 
     qCDebug(lcQpaFonts).nospace() << "Fallback families ordered by script " << script << ": " << fallbackList;
 
@@ -771,7 +771,7 @@ QStringList QCoreTextFontDatabase::addApplicationFont(const QByteArray &fontData
 
                 // There's no way to get the data back out of a font descriptor created with
                 // CTFontManagerCreateFontDescriptorFromData, so we attach the data manually.
-                NSDictionary *attributes = @{ kQtFontDataAttribute : [NSValue valueWithPointer:new QByteArray(fontData)] };
+                NSDictionary *attributes = @{ kBobUIFontDataAttribute : [NSValue valueWithPointer:new QByteArray(fontData)] };
                 QCFType<CTFontDescriptorRef> copiedDescriptor = CTFontDescriptorCreateCopyWithAttributes(descriptor, (CFDictionaryRef)attributes);
                 CFArrayAppendValue(array, copiedDescriptor);
             }
@@ -885,7 +885,7 @@ static CTFontUIFontType fontTypeFromTheme(QPlatformTheme::Font f)
 
 static CTFontDescriptorRef fontDescriptorFromTheme(QPlatformTheme::Font f)
 {
-#if defined(QT_PLATFORM_UIKIT)
+#if defined(BOBUI_PLATFORM_UIKIT)
     // Use Dynamic Type to resolve theme fonts if possible, to get
     // correct font sizes and style based on user configuration.
     NSString *textStyle = 0;
@@ -917,7 +917,7 @@ static CTFontDescriptorRef fontDescriptorFromTheme(QPlatformTheme::Font f)
         UIFontDescriptor *desc = [UIFontDescriptor preferredFontDescriptorWithTextStyle:textStyle];
         return static_cast<CTFontDescriptorRef>(CFBridgingRetain(desc));
     }
-#endif // QT_PLATFORM_UIKIT
+#endif // BOBUI_PLATFORM_UIKIT
 
     // macOS default case and iOS fallback case
     return descriptorForFontType(fontTypeFromTheme(f));
@@ -1043,5 +1043,5 @@ bool QCoreTextFontDatabase::supportsVariableApplicationFonts() const
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 

@@ -1,8 +1,8 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/qtest.h>
-#include <QtCore/qfile.h>
+#include <BobUITest/bobuiest.h>
+#include <BobUICore/qfile.h>
 
 class TestAddResourcePrefix : public QObject
 {
@@ -29,5 +29,5 @@ void TestAddResourcePrefix::xmlEscaping()
     QVERIFY(QFile::exists(":/&\"'<>/&\"'<>.alias"));
 }
 
-QTEST_MAIN(TestAddResourcePrefix)
+BOBUIEST_MAIN(TestAddResourcePrefix)
 #include "main.moc"

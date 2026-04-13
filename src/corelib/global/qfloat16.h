@@ -1,24 +1,24 @@
-// Copyright (C) 2022 The Qt Company Ltd.
+// Copyright (C) 2022 The BobUI Company Ltd.
 // Copyright (C) 2016 by Southwest Research Institute (R)
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QFLOAT16_H
 #define QFLOAT16_H
 
-#include <QtCore/qcompare.h>
-#include <QtCore/qglobal.h>
-#include <QtCore/qhashfunctions.h>
-#include <QtCore/qmath.h>
-#include <QtCore/qnamespace.h>
-#include <QtCore/qtconfigmacros.h>
-#include <QtCore/qtformat_impl.h>
-#include <QtCore/qtypes.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qhashfunctions.h>
+#include <BobUICore/qmath.h>
+#include <BobUICore/qnamespace.h>
+#include <BobUICore/bobuiconfigmacros.h>
+#include <BobUICore/bobuiformat_impl.h>
+#include <BobUICore/bobuiypes.h>
 
 #include <limits>
 #include <string.h>
 #include <type_traits>
 
-#if defined(QT_COMPILER_SUPPORTS_F16C) && defined(__AVX2__) && !defined(__F16C__)
+#if defined(BOBUI_COMPILER_SUPPORTS_F16C) && defined(__AVX2__) && !defined(__F16C__)
 // All processors that support AVX2 do support F16C too, so we could enable the
 // feature unconditionally if __AVX2__ is defined. However, all currently
 // supported compilers except Microsoft's are able to define __F16C__ on their
@@ -28,21 +28,21 @@
 #  endif
 #endif
 
-#if defined(QT_COMPILER_SUPPORTS_F16C) && defined(__F16C__)
+#if defined(BOBUI_COMPILER_SUPPORTS_F16C) && defined(__F16C__)
 #include <immintrin.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #if 0
-#pragma qt_class(QFloat16)
-#pragma qt_no_master_include
+#pragma bobui_class(QFloat16)
+#pragma bobui_no_master_include
 #endif
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 class QDataStream;
 #endif
-class QTextStream;
+class BOBUIextStream;
 
 // These macros from math.h conflict with the real functions in the std namespace:
 #ifdef signbit
@@ -63,13 +63,13 @@ class qfloat16
     using if_type_is_integral = std::enable_if_t<std::is_integral_v<std::remove_reference_t<T>>, bool>;
 
 public:
-    using NativeType = QtPrivate::NativeFloat16Type;
+    using NativeType = BobUIPrivate::NativeFloat16Type;
 
     static constexpr bool IsNative = QFLOAT16_IS_NATIVE;
     using NearestFloat = std::conditional_t<IsNative, NativeType, float>;
 
     constexpr inline qfloat16() noexcept : b16(0) {}
-    explicit qfloat16(Qt::Initialization) noexcept { }
+    explicit qfloat16(BobUI::Initialization) noexcept { }
 
 #if QFLOAT16_IS_NATIVE
     constexpr inline qfloat16(NativeType f) : nf(f) {}
@@ -105,7 +105,7 @@ public:
     static constexpr qfloat16 _limit_lowest()     noexcept { return Bounds::lowest(); }
     static constexpr qfloat16 _limit_infinity()   noexcept { return Bounds::infinity(); }
     static constexpr qfloat16 _limit_quiet_NaN()  noexcept { return Bounds::quiet_NaN(); }
-#if QT_CONFIG(signaling_nan)
+#if BOBUI_CONFIG(signaling_nan)
     static constexpr qfloat16 _limit_signaling_NaN() noexcept { return Bounds::signaling_NaN(); }
 #endif
 #else
@@ -116,18 +116,18 @@ public:
     static constexpr qfloat16 _limit_lowest()     noexcept { return qfloat16(Wrap(0xfbff)); }
     static constexpr qfloat16 _limit_infinity()   noexcept { return qfloat16(Wrap(0x7c00)); }
     static constexpr qfloat16 _limit_quiet_NaN()  noexcept { return qfloat16(Wrap(0x7e00)); }
-#if QT_CONFIG(signaling_nan)
+#if BOBUI_CONFIG(signaling_nan)
     static constexpr qfloat16 _limit_signaling_NaN() noexcept { return qfloat16(Wrap(0x7d00)); }
 #endif
 #endif
     inline constexpr bool isNormal() const noexcept
     { return (b16 & 0x7c00) && (b16 & 0x7c00) != 0x7c00; }
 private:
-    // ABI note: Qt 6's qfloat16 began with just a quint16 member so it ended
+    // ABI note: BobUI 6's qfloat16 began with just a quint16 member so it ended
     // up passed in general purpose registers in any function call taking
     // qfloat16 by value (it has trivial copy constructors). This means the
     // integer member in the anonymous union below must remain until a
-    // binary-incompatible version of Qt. If you remove it, on platforms using
+    // binary-incompatible version of BobUI. If you remove it, on platforms using
     // the System V ABI for C, the native type is passed in FP registers.
     union {
         quint16 b16;
@@ -165,10 +165,10 @@ private:
     friend inline qfloat16 operator/(qfloat16 a, qfloat16 b) noexcept { return qfloat16(static_cast<NearestFloat>(a) / static_cast<NearestFloat>(b)); }
 
     friend size_t qHash(qfloat16 key, size_t seed = 0) noexcept
-    { return qHash(float(key), seed); } // 6.4 algorithm, so keep using it; ### Qt 7: fix QTBUG-116077
+    { return qHash(float(key), seed); } // 6.4 algorithm, so keep using it; ### BobUI 7: fix BOBUIBUG-116077
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_GCC("-Wfloat-conversion")
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_GCC("-Wfloat-conversion")
 
 #define QF16_MAKE_ARITH_OP_FP(FP, OP) \
     friend inline FP operator OP(qfloat16 lhs, FP rhs) noexcept { return static_cast<FP>(lhs) OP rhs; } \
@@ -205,7 +205,7 @@ QT_WARNING_DISABLE_GCC("-Wfloat-conversion")
     QF16_MAKE_ARITH_OP_INT(/)
 #undef QF16_MAKE_ARITH_OP_INT
 
-QT_WARNING_DISABLE_FLOAT_COMPARE
+BOBUI_WARNING_DISABLE_FLOAT_COMPARE
 
 #if QFLOAT16_IS_NATIVE
 #  define QF16_CONSTEXPR constexpr
@@ -218,16 +218,16 @@ QT_WARNING_DISABLE_FLOAT_COMPARE
     friend QF16_CONSTEXPR bool comparesEqual(const qfloat16 &lhs, const qfloat16 &rhs) noexcept
     { return static_cast<NearestFloat>(lhs) == static_cast<NearestFloat>(rhs); }
     friend QF16_CONSTEXPR
-    Qt::partial_ordering compareThreeWay(const qfloat16 &lhs, const qfloat16 &rhs) noexcept
-    { return Qt::compareThreeWay(static_cast<NearestFloat>(lhs), static_cast<NearestFloat>(rhs)); }
+    BobUI::partial_ordering compareThreeWay(const qfloat16 &lhs, const qfloat16 &rhs) noexcept
+    { return BobUI::compareThreeWay(static_cast<NearestFloat>(lhs), static_cast<NearestFloat>(rhs)); }
     QF16_PARTIALLY_ORDERED(qfloat16)
 
 #define QF16_MAKE_ORDER_OP_FP(FP) \
     friend QF16_CONSTEXPR bool comparesEqual(const qfloat16 &lhs, FP rhs) noexcept \
     { return static_cast<FP>(lhs) == rhs; } \
     friend QF16_CONSTEXPR \
-    Qt::partial_ordering compareThreeWay(const qfloat16 &lhs, FP rhs) noexcept \
-    { return Qt::compareThreeWay(static_cast<FP>(lhs), rhs); } \
+    BobUI::partial_ordering compareThreeWay(const qfloat16 &lhs, FP rhs) noexcept \
+    { return BobUI::compareThreeWay(static_cast<FP>(lhs), rhs); } \
     QF16_PARTIALLY_ORDERED(qfloat16, FP)
 
     QF16_MAKE_ORDER_OP_FP(long double)
@@ -242,8 +242,8 @@ QT_WARNING_DISABLE_FLOAT_COMPARE
     friend QF16_CONSTEXPR bool comparesEqual(const qfloat16 &lhs, T rhs) noexcept
     { return static_cast<NearestFloat>(lhs) == static_cast<NearestFloat>(rhs); }
     template <typename T, if_type_is_integral<T> = true>
-    friend QF16_CONSTEXPR Qt::partial_ordering compareThreeWay(const qfloat16 &lhs, T rhs) noexcept
-    { return Qt::compareThreeWay(static_cast<NearestFloat>(lhs), static_cast<NearestFloat>(rhs)); }
+    friend QF16_CONSTEXPR BobUI::partial_ordering compareThreeWay(const qfloat16 &lhs, T rhs) noexcept
+    { return BobUI::compareThreeWay(static_cast<NearestFloat>(lhs), static_cast<NearestFloat>(rhs)); }
 
     QF16_PARTIALLY_ORDERED(qfloat16, qint8)
     QF16_PARTIALLY_ORDERED(qfloat16, quint8)
@@ -255,7 +255,7 @@ QT_WARNING_DISABLE_FLOAT_COMPARE
     QF16_PARTIALLY_ORDERED(qfloat16, unsigned long)
     QF16_PARTIALLY_ORDERED(qfloat16, qint64)
     QF16_PARTIALLY_ORDERED(qfloat16, quint64)
-#ifdef QT_SUPPORTS_INT128
+#ifdef BOBUI_SUPPORTS_INT128
     QF16_PARTIALLY_ORDERED(qfloat16, qint128)
     QF16_PARTIALLY_ORDERED(qfloat16, quint128)
 #endif
@@ -263,14 +263,14 @@ QT_WARNING_DISABLE_FLOAT_COMPARE
 #undef QF16_PARTIALLY_ORDERED
 #undef QF16_CONSTEXPR
 
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
     friend Q_CORE_EXPORT QDataStream &operator<<(QDataStream &ds, qfloat16 f);
     friend Q_CORE_EXPORT QDataStream &operator>>(QDataStream &ds, qfloat16 &f);
 #endif
-    friend Q_CORE_EXPORT QTextStream &operator<<(QTextStream &ts, qfloat16 f);
-    friend Q_CORE_EXPORT QTextStream &operator>>(QTextStream &ts, qfloat16 &f);
+    friend Q_CORE_EXPORT BOBUIextStream &operator<<(BOBUIextStream &ts, qfloat16 f);
+    friend Q_CORE_EXPORT BOBUIextStream &operator>>(BOBUIextStream &ts, qfloat16 &f);
 };
 
 Q_DECLARE_TYPEINFO(qfloat16, Q_PRIMITIVE_TYPE);
@@ -361,12 +361,12 @@ inline int qIntCast(qfloat16 f) noexcept
 #if !defined(Q_QDOC) && !QFLOAT16_IS_NATIVE
 inline qfloat16::qfloat16(float f) noexcept
 {
-#if defined(QT_COMPILER_SUPPORTS_F16C) && defined(__F16C__)
+#if defined(BOBUI_COMPILER_SUPPORTS_F16C) && defined(__F16C__)
     __m128 packsingle = _mm_set_ss(f);
-    QT_WARNING_PUSH
-    QT_WARNING_DISABLE_GCC("-Wold-style-cast") // _mm_cvtps_ph() may be a macro using C-style casts
+    BOBUI_WARNING_PUSH
+    BOBUI_WARNING_DISABLE_GCC("-Wold-style-cast") // _mm_cvtps_ph() may be a macro using C-style casts
     __m128i packhalf = _mm_cvtps_ph(packsingle, 0);
-    QT_WARNING_POP
+    BOBUI_WARNING_POP
     b16 = quint16(_mm_extract_epi16(packhalf, 0));
 #elif defined (__ARM_FP16_FORMAT_IEEE)
     __fp16 f16 = __fp16(f);
@@ -401,7 +401,7 @@ inline qfloat16::qfloat16(float f) noexcept
 
 inline qfloat16::operator float() const noexcept
 {
-#if defined(QT_COMPILER_SUPPORTS_F16C) && defined(__F16C__)
+#if defined(BOBUI_COMPILER_SUPPORTS_F16C) && defined(__F16C__)
     __m128i packhalf = _mm_cvtsi32_si128(b16);
     __m128 packsingle = _mm_cvtph_ps(packhalf);
     return _mm_cvtss_f32(packsingle);
@@ -422,7 +422,7 @@ inline qfloat16::operator float() const noexcept
 /*
   qHypot compatibility; see ../kernel/qmath.h
 */
-namespace QtPrivate {
+namespace BobUIPrivate {
 template <> struct QHypotType<qfloat16, qfloat16>
 {
     using type = qfloat16;
@@ -440,8 +440,8 @@ template <typename R> struct QHypotType<qfloat16, R> : QHypotType<R, qfloat16>
 // consistent with the above:
 inline auto qHypot(qfloat16 x, qfloat16 y)
 {
-#if defined(QT_COMPILER_SUPPORTS_F16C) && defined(__F16C__) || QFLOAT16_IS_NATIVE
-    return QtPrivate::QHypotHelper<qfloat16>(x).add(y).result();
+#if defined(BOBUI_COMPILER_SUPPORTS_F16C) && defined(__F16C__) || QFLOAT16_IS_NATIVE
+    return BobUIPrivate::QHypotHelper<qfloat16>(x).add(y).result();
 #else
     return qfloat16(qHypot(float(x), float(y)));
 #endif
@@ -450,7 +450,7 @@ inline auto qHypot(qfloat16 x, qfloat16 y)
 // in ../kernel/qmath.h
 template<typename F, typename ...Fs> auto qHypot(F first, Fs... rest);
 
-template <typename T> typename QtPrivate::QHypotType<T, qfloat16>::type
+template <typename T> typename BobUIPrivate::QHypotType<T, qfloat16>::type
 qHypot(T x, qfloat16 y)
 {
     if constexpr (std::is_floating_point_v<T>)
@@ -487,19 +487,19 @@ auto qHypot(Tx x, Ty y, qfloat16 z) { return qHypot(x, y, qfloat16::NearestFloat
 // If all are qfloat16, stay with qfloat16 (albeit via float, if no native support):
 inline auto qHypot(qfloat16 x, qfloat16 y, qfloat16 z)
 {
-#if (defined(QT_COMPILER_SUPPORTS_F16C) && defined(__F16C__)) || QFLOAT16_IS_NATIVE
-    return QtPrivate::QHypotHelper<qfloat16>(x).add(y).add(z).result();
+#if (defined(BOBUI_COMPILER_SUPPORTS_F16C) && defined(__F16C__)) || QFLOAT16_IS_NATIVE
+    return BobUIPrivate::QHypotHelper<qfloat16>(x).add(y).add(z).result();
 #else
     return qfloat16(qHypot(float(x), float(y), float(z)));
 #endif
 }
 #endif // 3-arg std::hypot() is available
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 namespace std {
 template<>
-class numeric_limits<QT_PREPEND_NAMESPACE(qfloat16)> : public numeric_limits<float>
+class numeric_limits<BOBUI_PREPEND_NAMESPACE(qfloat16)> : public numeric_limits<float>
 {
 public:
     /*
@@ -521,45 +521,45 @@ public:
     static constexpr int min_exponent10 = -4;
     static constexpr int max_exponent10 = 4;
 
-    static constexpr QT_PREPEND_NAMESPACE(qfloat16) epsilon()
-    { return QT_PREPEND_NAMESPACE(qfloat16)::_limit_epsilon(); }
-    static constexpr QT_PREPEND_NAMESPACE(qfloat16) (min)()
-    { return QT_PREPEND_NAMESPACE(qfloat16)::_limit_min(); }
-    static constexpr QT_PREPEND_NAMESPACE(qfloat16) denorm_min()
-    { return QT_PREPEND_NAMESPACE(qfloat16)::_limit_denorm_min(); }
-    static constexpr QT_PREPEND_NAMESPACE(qfloat16) (max)()
-    { return QT_PREPEND_NAMESPACE(qfloat16)::_limit_max(); }
-    static constexpr QT_PREPEND_NAMESPACE(qfloat16) lowest()
-    { return QT_PREPEND_NAMESPACE(qfloat16)::_limit_lowest(); }
-    static constexpr QT_PREPEND_NAMESPACE(qfloat16) infinity()
-    { return QT_PREPEND_NAMESPACE(qfloat16)::_limit_infinity(); }
-    static constexpr QT_PREPEND_NAMESPACE(qfloat16) quiet_NaN()
-    { return QT_PREPEND_NAMESPACE(qfloat16)::_limit_quiet_NaN(); }
-#if QT_CONFIG(signaling_nan)
-    static constexpr QT_PREPEND_NAMESPACE(qfloat16) signaling_NaN()
-    { return QT_PREPEND_NAMESPACE(qfloat16)::_limit_signaling_NaN(); }
+    static constexpr BOBUI_PREPEND_NAMESPACE(qfloat16) epsilon()
+    { return BOBUI_PREPEND_NAMESPACE(qfloat16)::_limit_epsilon(); }
+    static constexpr BOBUI_PREPEND_NAMESPACE(qfloat16) (min)()
+    { return BOBUI_PREPEND_NAMESPACE(qfloat16)::_limit_min(); }
+    static constexpr BOBUI_PREPEND_NAMESPACE(qfloat16) denorm_min()
+    { return BOBUI_PREPEND_NAMESPACE(qfloat16)::_limit_denorm_min(); }
+    static constexpr BOBUI_PREPEND_NAMESPACE(qfloat16) (max)()
+    { return BOBUI_PREPEND_NAMESPACE(qfloat16)::_limit_max(); }
+    static constexpr BOBUI_PREPEND_NAMESPACE(qfloat16) lowest()
+    { return BOBUI_PREPEND_NAMESPACE(qfloat16)::_limit_lowest(); }
+    static constexpr BOBUI_PREPEND_NAMESPACE(qfloat16) infinity()
+    { return BOBUI_PREPEND_NAMESPACE(qfloat16)::_limit_infinity(); }
+    static constexpr BOBUI_PREPEND_NAMESPACE(qfloat16) quiet_NaN()
+    { return BOBUI_PREPEND_NAMESPACE(qfloat16)::_limit_quiet_NaN(); }
+#if BOBUI_CONFIG(signaling_nan)
+    static constexpr BOBUI_PREPEND_NAMESPACE(qfloat16) signaling_NaN()
+    { return BOBUI_PREPEND_NAMESPACE(qfloat16)::_limit_signaling_NaN(); }
 #else
     static constexpr bool has_signaling_NaN = false;
 #endif
 };
 
-template<> class numeric_limits<const QT_PREPEND_NAMESPACE(qfloat16)>
-    : public numeric_limits<QT_PREPEND_NAMESPACE(qfloat16)> {};
-template<> class numeric_limits<volatile QT_PREPEND_NAMESPACE(qfloat16)>
-    : public numeric_limits<QT_PREPEND_NAMESPACE(qfloat16)> {};
-template<> class numeric_limits<const volatile QT_PREPEND_NAMESPACE(qfloat16)>
-    : public numeric_limits<QT_PREPEND_NAMESPACE(qfloat16)> {};
+template<> class numeric_limits<const BOBUI_PREPEND_NAMESPACE(qfloat16)>
+    : public numeric_limits<BOBUI_PREPEND_NAMESPACE(qfloat16)> {};
+template<> class numeric_limits<volatile BOBUI_PREPEND_NAMESPACE(qfloat16)>
+    : public numeric_limits<BOBUI_PREPEND_NAMESPACE(qfloat16)> {};
+template<> class numeric_limits<const volatile BOBUI_PREPEND_NAMESPACE(qfloat16)>
+    : public numeric_limits<BOBUI_PREPEND_NAMESPACE(qfloat16)> {};
 
 // Adding overloads to std isn't allowed, so we can't extend this to support
 // for fpclassify(), isnormal() &c. (which, furthermore, are macros on MinGW).
 } // namespace std
 
 // std::format support
-#ifdef QT_SUPPORTS_STD_FORMAT
+#ifdef BOBUI_SUPPORTS_STD_FORMAT
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 // [format.formatter.spec] / 5
 template <typename T, typename CharT>
@@ -580,24 +580,24 @@ using QFloat16FormatterBaseType =
                            float,
                            qfloat16::NearestFloat>;
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 namespace std {
 template <typename CharT>
-struct formatter<QT_PREPEND_NAMESPACE(qfloat16), CharT>
-    : std::formatter<QT_PREPEND_NAMESPACE(QtPrivate::QFloat16FormatterBaseType<CharT>), CharT>
+struct formatter<BOBUI_PREPEND_NAMESPACE(qfloat16), CharT>
+    : std::formatter<BOBUI_PREPEND_NAMESPACE(BobUIPrivate::QFloat16FormatterBaseType<CharT>), CharT>
 {
     template <typename FormatContext>
-    auto format(QT_PREPEND_NAMESPACE(qfloat16) val, FormatContext &ctx) const
+    auto format(BOBUI_PREPEND_NAMESPACE(qfloat16) val, FormatContext &ctx) const
     {
-        using FloatType = QT_PREPEND_NAMESPACE(QtPrivate::QFloat16FormatterBaseType<CharT>);
+        using FloatType = BOBUI_PREPEND_NAMESPACE(BobUIPrivate::QFloat16FormatterBaseType<CharT>);
         return std::formatter<FloatType, CharT>::format(FloatType(val), ctx);
     }
 };
 } // namespace std
 
-#endif // QT_SUPPORTS_STD_FORMAT
+#endif // BOBUI_SUPPORTS_STD_FORMAT
 
 #endif // QFLOAT16_H

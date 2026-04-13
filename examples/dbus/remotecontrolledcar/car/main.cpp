@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "car.h"
 #include "car_adaptor.h"
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QGraphicsView>
-#include <QtWidgets/QGraphicsScene>
-#include <QtDBus/QDBusConnection>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QGraphicsView>
+#include <BobUIWidgets/QGraphicsScene>
+#include <BobUIDBus/QDBusConnection>
 
 int main(int argc, char *argv[])
 {
@@ -21,8 +21,8 @@ int main(int argc, char *argv[])
 
     QGraphicsView view(&scene);
     view.setRenderHint(QPainter::Antialiasing);
-    view.setBackgroundBrush(Qt::darkGray);
-    view.setWindowTitle(QT_TRANSLATE_NOOP(QGraphicsView, "Qt DBus Controlled Car"));
+    view.setBackgroundBrush(BobUI::darkGray);
+    view.setWindowTitle(BOBUI_TRANSLATE_NOOP(QGraphicsView, "BobUI DBus Controlled Car"));
     view.resize(view.sizeHint());
     view.show();
 

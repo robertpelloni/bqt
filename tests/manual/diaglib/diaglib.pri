@@ -17,8 +17,8 @@ win32:  {
     SOURCES += $$PWD/nativewindowdump.cpp
 }
 
-QT += gui-private core-private
-contains(QT, widgets) {
+BOBUI += gui-private core-private
+contains(BOBUI, widgets) {
     HEADERS += \
         $$PWD/qwidgetdump.h \
         $$PWD/debugproxystyle.h \
@@ -28,17 +28,17 @@ contains(QT, widgets) {
         $$PWD/qwidgetdump.cpp \
         $$PWD/debugproxystyle.cpp \
         $$PWD/logwidget.cpp
-    QT += widgets-private
+    BOBUI += widgets-private
 }
 
-contains(QT, opengl) {
+contains(BOBUI, opengl) {
     HEADERS += \
         $$PWD/glinfo.h
 
     SOURCES += \
         $$PWD/glinfo.cpp
 
-    QT += opengl openglwidgets
+    BOBUI += opengl openglwidgets
 }
 
-DEFINES += QT_DIAG_LIB
+DEFINES += BOBUI_DIAG_LIB

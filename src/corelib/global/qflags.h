@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QFLAGS_H
 #define QFLAGS_H
 
-#include <QtCore/qcompare_impl.h>
-#include <QtCore/qtypeinfo.h>
+#include <BobUICore/qcompare_impl.h>
+#include <BobUICore/bobuiypeinfo.h>
 
 #include <algorithm>
 #include <initializer_list>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 template<typename Enum> class QFlags;
 
@@ -48,7 +48,7 @@ Q_DECLARE_TYPEINFO(QIncompatibleFlag, Q_PRIMITIVE_TYPE);
 
 constexpr inline QIncompatibleFlag::QIncompatibleFlag(int value) noexcept : i(value) {}
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 template <typename T> struct IsQFlags : std::false_type {};
 template <typename E> struct IsQFlags<QFlags<E>> : std::true_type {};
 
@@ -71,7 +71,7 @@ protected:
 
     Int i = 0;
 
-    QT_DECLARE_RO5_SMF_AS_DEFAULTED(QFlagsStorage)
+    BOBUI_DECLARE_RO5_SMF_AS_DEFAULTED(QFlagsStorage)
 public:
     constexpr inline QFlagsStorage() noexcept = default;
     constexpr inline explicit QFlagsStorage(std::in_place_t, Int v) : i(v) {}
@@ -82,30 +82,30 @@ struct QFlagsStorageHelper : QFlagsStorage<Enum>
 {
     using QFlagsStorage<Enum>::QFlagsStorage;
 protected:
-    QT_DECLARE_RO5_SMF_AS_DEFAULTED(QFlagsStorageHelper)
+    BOBUI_DECLARE_RO5_SMF_AS_DEFAULTED(QFlagsStorageHelper)
 };
 template <typename Enum> struct QFlagsStorageHelper<Enum, sizeof(int)> : QFlagsStorage<Enum>
 {
     using QFlagsStorage<Enum>::QFlagsStorage;
 
-    // For compatibility with Qt 3, moc goes through QFlag in order to
+    // For compatibility with BobUI 3, moc goes through QFlag in order to
     // read/write properties of type QFlags; so a conversion to QFlag is also
     // needed here. (It otherwise goes through a QFlags->int->QFlag conversion
     // sequence.)
     constexpr inline Q_IMPLICIT QFlagsStorageHelper(QFlag flag) noexcept
         : QFlagsStorage<Enum>(std::in_place, flag) {}
-#ifdef QT_TYPESAFE_FLAGS
+#ifdef BOBUI_TYPESAFE_FLAGS
     constexpr inline explicit operator QFlag() const noexcept { return QFlag(this->i); }
 #endif
 protected:
-    QT_DECLARE_RO5_SMF_AS_DEFAULTED(QFlagsStorageHelper)
+    BOBUI_DECLARE_RO5_SMF_AS_DEFAULTED(QFlagsStorageHelper)
 };
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 template<typename Enum>
-class QFlags : public QtPrivate::QFlagsStorageHelper<Enum>
+class QFlags : public BobUIPrivate::QFlagsStorageHelper<Enum>
 {
-    using Base = QtPrivate::QFlagsStorageHelper<Enum>;
+    using Base = BobUIPrivate::QFlagsStorageHelper<Enum>;
 public:
     typedef Enum enum_type;
     using Int = typename Base::Int;
@@ -128,7 +128,7 @@ public:
     constexpr static inline QFlags fromInt(Int i) noexcept { return QFlags(std::in_place, i); }
     constexpr inline Int toInt() const noexcept { return i; }
 
-#ifndef QT_TYPESAFE_FLAGS
+#ifndef BOBUI_TYPESAFE_FLAGS
     constexpr inline QFlags &operator&=(int mask) noexcept { i &= mask; return *this; }
     constexpr inline QFlags &operator&=(uint mask) noexcept { i &= mask; return *this; }
 #endif
@@ -139,7 +139,7 @@ public:
     constexpr inline QFlags &operator^=(QFlags other) noexcept { i ^= other.i; return *this; }
     constexpr inline QFlags &operator^=(Enum other) noexcept { i ^= Int(other); return *this; }
 
-#ifdef QT_TYPESAFE_FLAGS
+#ifdef BOBUI_TYPESAFE_FLAGS
     constexpr inline explicit operator Int() const noexcept { return i; }
     constexpr inline explicit operator bool() const noexcept { return i; }
 #else
@@ -151,7 +151,7 @@ public:
     constexpr inline QFlags operator|(Enum other) const noexcept { return QFlags(std::in_place, i | Int(other)); }
     constexpr inline QFlags operator^(QFlags other) const noexcept { return QFlags(std::in_place, i ^ other.i); }
     constexpr inline QFlags operator^(Enum other) const noexcept { return QFlags(std::in_place, i ^ Int(other)); }
-#ifndef QT_TYPESAFE_FLAGS
+#ifndef BOBUI_TYPESAFE_FLAGS
     constexpr inline QFlags operator&(int mask) const noexcept { return QFlags(std::in_place, i & mask); }
     constexpr inline QFlags operator&(uint mask) const noexcept { return QFlags(std::in_place, i & mask); }
 #endif
@@ -188,17 +188,17 @@ public:
     friend constexpr inline bool operator!=(Enum lhs, QFlags rhs) noexcept
     { return QFlags(lhs) != rhs; }
 
-#ifdef QT_TYPESAFE_FLAGS
+#ifdef BOBUI_TYPESAFE_FLAGS
     // Provide means of comparing flags against a literal 0; opt-in
     // because otherwise they're ambiguous against operator==(int,int)
     // after a QFlags->int conversion.
-    friend constexpr inline bool operator==(QFlags flags, QtPrivate::CompareAgainstLiteralZero) noexcept
+    friend constexpr inline bool operator==(QFlags flags, BobUIPrivate::CompareAgainstLiteralZero) noexcept
     { return flags.i == Int(0); }
-    friend constexpr inline bool operator!=(QFlags flags, QtPrivate::CompareAgainstLiteralZero) noexcept
+    friend constexpr inline bool operator!=(QFlags flags, BobUIPrivate::CompareAgainstLiteralZero) noexcept
     { return flags.i != Int(0); }
-    friend constexpr inline bool operator==(QtPrivate::CompareAgainstLiteralZero, QFlags flags) noexcept
+    friend constexpr inline bool operator==(BobUIPrivate::CompareAgainstLiteralZero, QFlags flags) noexcept
     { return Int(0) == flags.i; }
-    friend constexpr inline bool operator!=(QtPrivate::CompareAgainstLiteralZero, QFlags flags) noexcept
+    friend constexpr inline bool operator!=(BobUIPrivate::CompareAgainstLiteralZero, QFlags flags) noexcept
     { return Int(0) != flags.i; }
 #endif
 
@@ -218,17 +218,17 @@ private:
 typedef QFlags<Enum> Flags;
 #endif
 
-#ifdef QT_TYPESAFE_FLAGS
+#ifdef BOBUI_TYPESAFE_FLAGS
 
 // These are opt-in, for backwards compatibility
-#define QT_DECLARE_TYPESAFE_OPERATORS_FOR_FLAGS_ENUM(Flags) \
+#define BOBUI_DECLARE_TYPESAFE_OPERATORS_FOR_FLAGS_ENUM(Flags) \
 [[maybe_unused]] \
 constexpr inline Flags operator~(Flags::enum_type e) noexcept \
 { return ~Flags(e); } \
 [[maybe_unused]] \
 constexpr inline void operator|(Flags::enum_type f1, int f2) noexcept = delete;
 #else
-#define QT_DECLARE_TYPESAFE_OPERATORS_FOR_FLAGS_ENUM(Flags) \
+#define BOBUI_DECLARE_TYPESAFE_OPERATORS_FOR_FLAGS_ENUM(Flags) \
 [[maybe_unused]] \
 constexpr inline QIncompatibleFlag operator|(Flags::enum_type f1, int f2) noexcept \
 { return QIncompatibleFlag(int(f1) | f2); }
@@ -263,7 +263,7 @@ constexpr inline void operator+(int f1, Flags::enum_type f2) noexcept = delete; 
 constexpr inline void operator+(Flags::enum_type f1, int f2) noexcept = delete; \
 constexpr inline void operator-(int f1, Flags::enum_type f2) noexcept = delete; \
 constexpr inline void operator-(Flags::enum_type f1, int f2) noexcept = delete; \
-QT_DECLARE_TYPESAFE_OPERATORS_FOR_FLAGS_ENUM(Flags)
+BOBUI_DECLARE_TYPESAFE_OPERATORS_FOR_FLAGS_ENUM(Flags)
 
 // restore bit-wise enum-enum operators deprecated in C++20,
 // but used in a few places in the API
@@ -293,6 +293,6 @@ QT_DECLARE_TYPESAFE_OPERATORS_FOR_FLAGS_ENUM(Flags)
     /* end */
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QFLAGS_H

@@ -1,5 +1,5 @@
-QT += widgets
-requires(qtConfig(combobox))
+BOBUI += widgets
+requires(bobuiConfig(combobox))
 
 HEADERS     = renderarea.h \
               window.h
@@ -8,5 +8,5 @@ SOURCES     = main.cpp \
 	      window.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/painting/transformations
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/painting/transformations
 INSTALLS += target

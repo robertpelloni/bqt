@@ -1,10 +1,10 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "private/qabstractfileengine_p.h"
 #include "private/qfsfileengine_p.h"
-#ifdef QT_BUILD_CORE_LIB
+#ifdef BOBUI_BUILD_CORE_LIB
 #include "private/qresource_p.h"
 #endif
 #include "qdatetime.h"
@@ -14,13 +14,13 @@
 #include "qdirlisting.h"
 #include "qstringbuilder.h"
 
-#include <QtCore/private/qfilesystementry_p.h>
-#include <QtCore/private/qfilesystemmetadata_p.h>
-#include <QtCore/private/qfilesystemengine_p.h>
+#include <BobUICore/private/qfilesystementry_p.h>
+#include <BobUICore/private/qfilesystemmetadata_p.h>
+#include <BobUICore/private/qfilesystemengine_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static QString appendSlashIfNeeded(const QString &path)
 {
@@ -38,7 +38,7 @@ QAbstractFileEnginePrivate::~QAbstractFileEnginePrivate()
 
 /*!
     \class QAbstractFileEngineHandler
-    \inmodule QtCore
+    \inmodule BobUICore
     \reentrant
     \internal
 
@@ -52,24 +52,24 @@ QAbstractFileEnginePrivate::~QAbstractFileEnginePrivate()
     objects (file engines), which are used internally by QFile, QFileInfo, and
     QDir when working with files and directories.
 
-    When you open a file, Qt chooses a suitable file engine by passing the
+    When you open a file, BobUI chooses a suitable file engine by passing the
     file name from QFile or QDir through an internal list of registered file
     engine handlers. The first handler to recognize the file name is used to
-    create the engine. Qt provides internal file engines for working with
+    create the engine. BobUI provides internal file engines for working with
     regular files and resources, but you can also register your own
     QAbstractFileEngine subclasses.
 
     To install an application-specific file engine, you subclass
     QAbstractFileEngineHandler and reimplement create(). When you instantiate
     the handler (e.g. by creating an instance on the stack or on the heap), it
-    will automatically register with Qt. (The latest registered handler takes
+    will automatically register with BobUI. (The latest registered handler takes
     precedence over existing handlers.)
 
     For example:
 
     \snippet code/src_corelib_io_qabstractfileengine.cpp 0
 
-    When the handler is destroyed, it is automatically removed from Qt.
+    When the handler is destroyed, it is automatically removed from BobUI.
 
     The most common approach to registering a handler is to create an instance
     as part of the start-up phase of your application. It is also possible to
@@ -82,14 +82,14 @@ QAbstractFileEnginePrivate::~QAbstractFileEnginePrivate()
     \sa QAbstractFileEngine, QAbstractFileEngine::create()
 */
 
-Q_CONSTINIT static QBasicAtomicInt qt_file_engine_handlers_in_use = Q_BASIC_ATOMIC_INITIALIZER(false);
+Q_CONSTINIT static QBasicAtomicInt bobui_file_engine_handlers_in_use = Q_BASIC_ATOMIC_INITIALIZER(false);
 
 /*
     All application-wide handlers are stored in this list. The mutex must be
     acquired to ensure thread safety.
  */
 Q_GLOBAL_STATIC(QReadWriteLock, fileEngineHandlerMutex, QReadWriteLock::Recursive)
-Q_CONSTINIT static bool qt_abstractfileenginehandlerlist_shutDown = false;
+Q_CONSTINIT static bool bobui_abstractfileenginehandlerlist_shutDown = false;
 class QAbstractFileEngineHandlerList : public QList<QAbstractFileEngineHandler *>
 {
     Q_DISABLE_COPY_MOVE(QAbstractFileEngineHandlerList)
@@ -99,13 +99,13 @@ public:
     ~QAbstractFileEngineHandlerList()
     {
         QWriteLocker locker(fileEngineHandlerMutex());
-        qt_abstractfileenginehandlerlist_shutDown = true;
+        bobui_abstractfileenginehandlerlist_shutDown = true;
     }
 };
 Q_GLOBAL_STATIC(QAbstractFileEngineHandlerList, fileEngineHandlers)
 
 /*!
-    Constructs a file handler and registers it with Qt. Once created this
+    Constructs a file handler and registers it with BobUI. Once created this
     handler's create() function will be called (along with all the other
     handlers) for any paths used. The most recently created handler that
     recognizes the given path (i.e. that returns a QAbstractFileEngine) is
@@ -116,23 +116,23 @@ Q_GLOBAL_STATIC(QAbstractFileEngineHandlerList, fileEngineHandlers)
 QAbstractFileEngineHandler::QAbstractFileEngineHandler()
 {
     QWriteLocker locker(fileEngineHandlerMutex());
-    qt_file_engine_handlers_in_use.storeRelaxed(true);
+    bobui_file_engine_handlers_in_use.storeRelaxed(true);
     fileEngineHandlers()->prepend(this);
 }
 
 /*!
     Destroys the file handler. This will automatically unregister the handler
-    from Qt.
+    from BobUI.
  */
 QAbstractFileEngineHandler::~QAbstractFileEngineHandler()
 {
     QWriteLocker locker(fileEngineHandlerMutex());
     // Remove this handler from the handler list only if the list is valid.
-    if (!qt_abstractfileenginehandlerlist_shutDown) {
+    if (!bobui_abstractfileenginehandlerlist_shutDown) {
         QAbstractFileEngineHandlerList *handlers = fileEngineHandlers();
         handlers->removeOne(this);
         if (handlers->isEmpty())
-            qt_file_engine_handlers_in_use.storeRelaxed(false);
+            bobui_file_engine_handlers_in_use.storeRelaxed(false);
     }
 }
 
@@ -141,9 +141,9 @@ QAbstractFileEngineHandler::~QAbstractFileEngineHandler()
 
    Handles calls to custom file engine handlers.
 */
-std::unique_ptr<QAbstractFileEngine> qt_custom_file_engine_handler_create(const QString &path)
+std::unique_ptr<QAbstractFileEngine> bobui_custom_file_engine_handler_create(const QString &path)
 {
-    if (qt_file_engine_handlers_in_use.loadRelaxed()) {
+    if (bobui_file_engine_handlers_in_use.loadRelaxed()) {
         QReadLocker locker(fileEngineHandlerMutex());
 
         // check for registered handlers that can load the file
@@ -189,7 +189,7 @@ std::unique_ptr<QAbstractFileEngine> QAbstractFileEngine::create(const QString &
     QFileSystemMetaData metaData;
     auto engine = QFileSystemEngine::createLegacyEngine(entry, metaData);
 
-#ifndef QT_NO_FSFILEENGINE
+#ifndef BOBUI_NO_FSFILEENGINE
     if (!engine) // fall back to regular file engine
         engine = std::make_unique<QFSFileEngine>(entry.filePath());
 #endif
@@ -199,7 +199,7 @@ std::unique_ptr<QAbstractFileEngine> QAbstractFileEngine::create(const QString &
 
 /*!
     \class QAbstractFileEngine
-    \inmodule QtCore
+    \inmodule BobUICore
     \reentrant
     \internal
 
@@ -211,7 +211,7 @@ std::unique_ptr<QAbstractFileEngine> QAbstractFileEngine::create(const QString &
 
     The QDir, QFile, and QFileInfo classes all make use of a
     QAbstractFileEngine internally. If you create your own QAbstractFileEngine
-    subclass (and register it with Qt by creating a QAbstractFileEngineHandler
+    subclass (and register it with BobUI by creating a QAbstractFileEngineHandler
     subclass), your file engine will be used when the path is one that your
     file engine handles.
 
@@ -799,7 +799,7 @@ QAbstractFileEngine::TriStateResult QAbstractFileEngine::cloneTo(QAbstractFileEn
 /*!
     \since 4.3
     \class QAbstractFileEngineIterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QAbstractFileEngineIterator class provides an iterator
     interface for custom file engines.
     \internal
@@ -1085,7 +1085,7 @@ qint64 QAbstractFileEngine::readLine(char *data, qint64 maxlen)
 
 /*!
    \class QAbstractFileEngine::ExtensionOption
-   \inmodule QtCore
+   \inmodule BobUICore
    \since 4.3
    \brief provides an extended input argument to QAbstractFileEngine's
    extension support.
@@ -1095,7 +1095,7 @@ qint64 QAbstractFileEngine::readLine(char *data, qint64 maxlen)
 
 /*!
    \class QAbstractFileEngine::ExtensionReturn
-   \inmodule QtCore
+   \inmodule BobUICore
    \since 4.3
    \brief provides an extended output argument to QAbstractFileEngine's
    extension support.
@@ -1184,4 +1184,4 @@ void QAbstractFileEngine::setError(QFile::FileError error, const QString &errorS
     d->errorString = errorString;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,6 +1,6 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QRANGEMODELADAPTER_IMPL_H
 #define QRANGEMODELADAPTER_IMPL_H
@@ -12,16 +12,16 @@
 #endif
 
 #if 0
-#pragma qt_sync_skip_header_check
-#pragma qt_sync_stop_processing
+#pragma bobui_sync_skip_header_check
+#pragma bobui_sync_stop_processing
 #endif
 
-#include <QtCore/qrangemodel.h>
-#include <QtCore/qspan.h>
+#include <BobUICore/qrangemodel.h>
+#include <BobUICore/qspan.h>
 #include <set>
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace QRangeModelDetails
 {
@@ -60,7 +60,7 @@ struct data_type { using type = T; };
 template <>
 struct data_type<void> { using type = QVariant; };
 
-// pointer types of iterators use QtPrivate::ArrowProxy if the type does not
+// pointer types of iterators use BobUIPrivate::ArrowProxy if the type does not
 // provide operator->() (or is a pointer).
 template <typename T, typename = void> struct test_pointerAccess : std::false_type {};
 template <typename T> struct test_pointerAccess<T *> : std::true_type {};
@@ -71,7 +71,7 @@ struct test_pointerAccess<T, std::void_t<decltype(std::declval<T>().operator->()
 
 template <typename T>
 using data_pointer_t = std::conditional_t<test_pointerAccess<T>::value,
-                                          T, QtPrivate::ArrowProxy<T>>;
+                                          T, BobUIPrivate::ArrowProxy<T>>;
 
 // Helpers to make a type const "in depth", taking into account raw pointers
 // and wrapping types, like smart pointers and std::reference_wrapper.
@@ -414,7 +414,7 @@ struct AdapterStorage : ParentIndex<Impl::protocol_traits::is_tree>
 
 } // QRangeModelDetails
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // Q_QDOC
 

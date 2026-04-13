@@ -1,5 +1,5 @@
-import QtQuick 2.15
-import QtQuick.Layouts 1.15
+import BobUIQuick 2.15
+import BobUIQuick.Layouts 1.15
 import OmniUI 1.0
 
 import OmniAudio 1.0
@@ -81,7 +81,7 @@ ApplicationWindow {
                 Layout.fillHeight: true
                 Node { title: "Oscillator 1"; x: 50; y: 50 }
                 Node { title: "Filter"; x: 300; y: 100 }
-                ConnectionLine { start: Qt.point(150, 100); end: Qt.point(300, 150) }
+                ConnectionLine { start: BobUI.point(150, 100); end: BobUI.point(300, 150) }
             }
             ColumnLayout {
                 Layout.preferredWidth: 200

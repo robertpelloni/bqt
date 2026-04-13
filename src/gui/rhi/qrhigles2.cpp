@@ -1,19 +1,19 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qrhigles2_p.h"
 #include <QOffscreenSurface>
 #include <QOpenGLContext>
-#include <QtCore/qmap.h>
-#include <QtGui/private/qguiapplication_p.h>
-#include <QtGui/private/qopenglextensions_p.h>
-#include <QtGui/private/qopenglprogrambinarycache_p.h>
-#include <QtGui/private/qwindow_p.h>
+#include <BobUICore/qmap.h>
+#include <BobUIGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qopenglextensions_p.h>
+#include <BobUIGui/private/qopenglprogrambinarycache_p.h>
+#include <BobUIGui/private/qwindow_p.h>
 #include <kernel/qplatformintegration.h>
 #include <qpa/qplatformopenglcontext.h>
 #include <qmath.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*
   OpenGL backend. Binding vertex attribute locations and decomposing uniform
@@ -30,7 +30,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \class QRhiGles2InitParams
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief OpenGL specific initialization parameters.
@@ -92,7 +92,7 @@ QT_BEGIN_NAMESPACE
 
     In case resource sharing with an existing QOpenGLContext is desired, \c
     shareContext can be set to an existing QOpenGLContext. Alternatively,
-    Qt::AA_ShareOpenGLContexts is honored as well, when enabled.
+    BobUI::AA_ShareOpenGLContexts is honored as well, when enabled.
 
     \section2 Working with existing OpenGL contexts
 
@@ -142,7 +142,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \class QRhiGles2NativeHandles
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Holds the OpenGL context used by the QRhi.
@@ -620,7 +620,7 @@ QRhiGles2InitParams::QRhiGles2InitParams()
  */
 QOffscreenSurface *QRhiGles2InitParams::newFallbackSurface(const QSurfaceFormat &format)
 {
-    Q_ASSERT(QThread::isMainThread()
+    Q_ASSERT(BOBUIhread::isMainThread()
              || QGuiApplicationPrivate::platformIntegration()->hasCapability(
                      QPlatformIntegration::OffscreenSurface));
 
@@ -1774,7 +1774,7 @@ QByteArray QRhiGles2::pipelineCacheData()
                   + sizeof(quint32);
     }
 
-    QByteArray buf(dataOffset + dataSize, Qt::Uninitialized);
+    QByteArray buf(dataOffset + dataSize, BobUI::Uninitialized);
     char *p = buf.data() + dataOffset;
     for (auto it = m_pipelineCache.cbegin(), end = m_pipelineCache.cend(); it != end; ++it) {
         const QByteArray key = it.key();
@@ -1851,13 +1851,13 @@ void QRhiGles2::setPipelineCacheData(const QByteArray &data)
         quint32 len = 0;
         memcpy(&len, p, 4);
         p += 4;
-        QByteArray key(len, Qt::Uninitialized);
+        QByteArray key(len, BobUI::Uninitialized);
         memcpy(key.data(), p, len);
         p += len;
 
         memcpy(&len, p, 4);
         p += 4;
-        QByteArray data(len, Qt::Uninitialized);
+        QByteArray data(len, BobUI::Uninitialized);
         memcpy(data.data(), p, len);
         p += len;
 
@@ -3853,7 +3853,7 @@ void QRhiGles2::executeCommandBuffer(QRhiCommandBuffer *cb)
             f->glBlitFramebuffer(0, 0, cmd.args.blitFromRenderbuffer.w, cmd.args.blitFromRenderbuffer.h,
                                  0, 0, cmd.args.blitFromRenderbuffer.w, cmd.args.blitFromRenderbuffer.h,
                                  ds ? GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT : GL_COLOR_BUFFER_BIT,
-                                 GL_NEAREST); // Qt 5 used Nearest when resolving samples, stick to that
+                                 GL_NEAREST); // BobUI 5 used Nearest when resolving samples, stick to that
             f->glBindFramebuffer(GL_FRAMEBUFFER, ctx->defaultFramebufferObject());
             f->glDeleteFramebuffers(2, fbo);
         }
@@ -3926,7 +3926,7 @@ void QRhiGles2::executeCommandBuffer(QRhiCommandBuffer *cb)
             f->glBlitFramebuffer(0, 0, cmd.args.blitFromTexture.w, cmd.args.blitFromTexture.h,
                                  0, 0, cmd.args.blitFromTexture.w, cmd.args.blitFromTexture.h,
                                  ds ? GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT : GL_COLOR_BUFFER_BIT,
-                                 GL_NEAREST); // Qt 5 used Nearest when resolving samples, stick to that
+                                 GL_NEAREST); // BobUI 5 used Nearest when resolving samples, stick to that
             f->glBindFramebuffer(GL_FRAMEBUFFER, ctx->defaultFramebufferObject());
             f->glDeleteFramebuffers(2, fbo);
         }
@@ -4308,7 +4308,7 @@ void QRhiGles2::bindShaderResources(QGles2CommandBuffer *cbD,
                     // so this should not cause unaligned reads
                     const void *src = bufView + uniform.offset;
 
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
                     if (uniform.arrayDim > 0
                             && uniform.type != QShaderDescription::Float
                             && uniform.type != QShaderDescription::Vec2
@@ -4663,8 +4663,8 @@ QGles2RenderTargetData *QRhiGles2::enqueueBindFramebuffer(QRhiRenderTarget *rt, 
     QGles2CommandBuffer::Command &fbCmd(cbD->commands.get());
     fbCmd.cmd = QGles2CommandBuffer::Command::BindFramebuffer;
 
-    static const bool doClearBuffers = qEnvironmentVariableIntValue("QT_GL_NO_CLEAR_BUFFERS") == 0;
-    static const bool doClearColorBuffer = qEnvironmentVariableIntValue("QT_GL_NO_CLEAR_COLOR_BUFFER") == 0;
+    static const bool doClearBuffers = qEnvironmentVariableIntValue("BOBUI_GL_NO_CLEAR_BUFFERS") == 0;
+    static const bool doClearColorBuffer = qEnvironmentVariableIntValue("BOBUI_GL_NO_CLEAR_COLOR_BUFFER") == 0;
 
     switch (rt->resourceType()) {
     case QRhiResource::SwapChainRenderTarget:
@@ -5387,7 +5387,7 @@ QRhiGles2::ProgramCacheResult QRhiGles2::tryLoadFromDiskOrPipelineCache(const QR
 {
     Q_ASSERT(cacheKey);
 
-    // the traditional QOpenGL disk cache since Qt 5.9
+    // the traditional QOpenGL disk cache since BobUI 5.9
     const bool legacyDiskCacheEnabled = isProgramBinaryDiskCacheEnabled();
 
     // QRhi's own (set)PipelineCacheData()
@@ -5471,7 +5471,7 @@ QRhiGles2::ProgramCacheResult QRhiGles2::tryLoadFromDiskOrPipelineCache(const QR
 
 void QRhiGles2::trySaveToDiskCache(GLuint program, const QByteArray &cacheKey)
 {
-    // This is only for the traditional QOpenGL disk cache since Qt 5.9.
+    // This is only for the traditional QOpenGL disk cache since BobUI 5.9.
 
     if (isProgramBinaryDiskCacheEnabled()) {
         // use the logging category QOpenGLShaderProgram would
@@ -5489,7 +5489,7 @@ void QRhiGles2::trySaveToPipelineCache(GLuint program, const QByteArray &cacheKe
     if (caps.programBinary && (force || !m_pipelineCache.contains(cacheKey))) {
         GLint blobSize = 0;
         f->glGetProgramiv(program, GL_PROGRAM_BINARY_LENGTH, &blobSize);
-        QByteArray blob(blobSize, Qt::Uninitialized);
+        QByteArray blob(blobSize, BobUI::Uninitialized);
         GLint outSize = 0;
         GLenum binaryFormat = 0;
         f->glGetProgramBinary(program, blobSize, &outSize, &binaryFormat, blob.data());
@@ -6655,7 +6655,7 @@ bool QGles2GraphicsPipeline::create()
             rhiD->trySaveToPipelineCache(program, cacheKey, true);
         } else {
             // legacy QOpenGLShaderProgram style behavior: the "pipeline cache"
-            // was not enabled, so instead store to the Qt 5 disk cache
+            // was not enabled, so instead store to the BobUI 5 disk cache
             rhiD->trySaveToDiskCache(program, cacheKey);
         }
     } else {
@@ -6775,7 +6775,7 @@ bool QGles2ComputePipeline::create()
             rhiD->trySaveToPipelineCache(program, cacheKey, true);
         } else {
             // legacy QOpenGLShaderProgram style behavior: the "pipeline cache"
-            // was not enabled, so instead store to the Qt 5 disk cache
+            // was not enabled, so instead store to the BobUI 5 disk cache
             rhiD->trySaveToDiskCache(program, cacheKey);
         }
     } else {
@@ -6981,4 +6981,4 @@ bool QGles2SwapChainTimestamps::tryQueryTimestamps(int pairIndex, QRhiGles2 *rhi
     return result;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

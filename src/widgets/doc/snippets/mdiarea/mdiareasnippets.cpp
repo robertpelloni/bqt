@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 void mainWindowExample()
 {
@@ -26,7 +26,7 @@ void addingSubWindowsExample()
     QMdiArea mdiArea;
     QMdiSubWindow *subWindow1 = new QMdiSubWindow;
     subWindow1->setWidget(internalWidget1);
-    subWindow1->setAttribute(Qt::WA_DeleteOnClose);
+    subWindow1->setAttribute(BobUI::WA_DeleteOnClose);
     mdiArea.addSubWindow(subWindow1);
 
     QMdiSubWindow *subWindow2 =

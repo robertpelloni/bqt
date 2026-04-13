@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "wizardpanel.h"
 
@@ -22,7 +22,7 @@
 #include <QFontMetrics>
 #include <QHash>
 
-static QIcon coloredIcon(const Qt::GlobalColor color)
+static QIcon coloredIcon(const BobUI::GlobalColor color)
 {
     QImage image(QSize(24, 24), QImage::Format_RGB32);
     image.fill(color);
@@ -39,7 +39,7 @@ static QPixmap pixmapWithText(const QString &text, const QColor color)
     image.fill(color);
     QPainter painter(&image);
     painter.setFont(font);
-    painter.drawText(rectangle, Qt::AlignHCenter | Qt::AlignVCenter, text);
+    painter.drawText(rectangle, BobUI::AlignHCenter | BobUI::AlignVCenter, text);
     return QPixmap::fromImage(image);
 }
 
@@ -173,7 +173,7 @@ void WizardOptionsControl::setWizardOptions(int options)
 class Wizard : public QWizard {
     Q_OBJECT
 public:
-    explicit Wizard(QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags());
+    explicit Wizard(QWidget *parent = nullptr, BobUI::WindowFlags flags = BobUI::WindowFlags());
 
 public slots:
     void changeWizardStyle(int newStyle);
@@ -219,17 +219,17 @@ void WizardPage::initializePage()
     }
 }
 
-Wizard::Wizard(QWidget *parent, Qt::WindowFlags flags)
+Wizard::Wizard(QWidget *parent, BobUI::WindowFlags flags)
     : QWizard(parent, flags)
 {
-    setWindowIcon(coloredIcon(Qt::red));
-    setWindowTitle(QLatin1String("Wizard ") + QLatin1String(QT_VERSION_STR));
+    setWindowIcon(coloredIcon(BobUI::red));
+    setWindowTitle(QLatin1String("Wizard ") + QLatin1String(BOBUI_VERSION_STR));
     addPage(new WizardPage(tr("Page 1"), this));
     addPage(new WizardPage(tr("Page 2"), this));
     addPage(new WizardPage(tr("Page 3"), this));
 }
 
-// A dialog using a Wizard as child widget (emulating Qt Widgets Designer).
+// A dialog using a Wizard as child widget (emulating BobUI Widgets Designer).
 class WizardEmbeddingDialog : public QDialog {
 public:
     explicit WizardEmbeddingDialog(QWidget *parent = nullptr);
@@ -244,12 +244,12 @@ WizardEmbeddingDialog::WizardEmbeddingDialog(QWidget *parent)
     : QDialog(parent)
     , m_wizard(new Wizard)
 {
-    setWindowTitle(QString::fromLatin1("Dialog Embedding QWizard %1").arg(QT_VERSION_STR));
+    setWindowTitle(QString::fromLatin1("Dialog Embedding QWizard %1").arg(BOBUI_VERSION_STR));
     QGridLayout *gridLayout = new QGridLayout(this);
     gridLayout->addWidget(new QLabel(tr("Above wizard")), 0, 0, 1, 3);
     gridLayout->addWidget(new QLabel(tr("Left of wizard")), 1, 0);
     m_wizard->setObjectName(QLatin1String("EmbeddedWizard"));
-    m_wizard->setParent(this, Qt::Widget);
+    m_wizard->setParent(this, BobUI::Widget);
     gridLayout->addWidget(m_wizard, 1, 1);
     gridLayout->addWidget(new QLabel(tr("Right of wizard")), 1, 2);
     gridLayout->addWidget(new QLabel(tr("Below wizard")), 2, 0, 1, 3);
@@ -275,10 +275,10 @@ WizardPanel::WizardPanel(QWidget *parent)
     connect(button, SIGNAL(clicked()), this, SLOT(execModal()));
     vLayout->addWidget(button);
     button = new QPushButton(tr("Show application modal"), this);
-    connect(button, &QPushButton::clicked, [this]() { showModal(Qt::ApplicationModal); });
+    connect(button, &QPushButton::clicked, [this]() { showModal(BobUI::ApplicationModal); });
     vLayout->addWidget(button);
     button = new QPushButton(tr("Show window modal"), this);
-    connect(button, &QPushButton::clicked, [this]() { showModal(Qt::WindowModal); });
+    connect(button, &QPushButton::clicked, [this]() { showModal(BobUI::WindowModal); });
     vLayout->addWidget(button);
     button = new QPushButton(tr("Show non-modal"), this);
     connect(button, SIGNAL(clicked()), this, SLOT(showNonModal()));
@@ -298,12 +298,12 @@ void WizardPanel::execModal()
     wizard.exec();
 }
 
-void WizardPanel::showModal(Qt::WindowModality modality)
+void WizardPanel::showModal(BobUI::WindowModality modality)
 {
     Wizard *wizard = new Wizard(this);
     applyParameters(wizard);
     wizard->setModal(true);
-    wizard->setAttribute(Qt::WA_DeleteOnClose);
+    wizard->setAttribute(BobUI::WA_DeleteOnClose);
     wizard->setWindowModality(modality);
     wizard->show();
 }
@@ -313,7 +313,7 @@ void WizardPanel::showNonModal()
     Wizard *wizard = new Wizard(this);
     applyParameters(wizard);
     wizard->setModal(false);
-    wizard->setAttribute(Qt::WA_DeleteOnClose);
+    wizard->setAttribute(BobUI::WA_DeleteOnClose);
     wizard->show();
 }
 
@@ -322,7 +322,7 @@ void WizardPanel::showEmbedded()
     WizardEmbeddingDialog *dialog = new WizardEmbeddingDialog(this);
     applyParameters(dialog->wizard());
     dialog->setModal(false);
-    dialog->setAttribute(Qt::WA_DeleteOnClose);
+    dialog->setAttribute(BobUI::WA_DeleteOnClose);
     dialog->show();
 }
 
@@ -330,10 +330,10 @@ void WizardPanel::applyParameters(QWizard *wizard) const
 {
     wizard->setWizardStyle(m_styleControl->wizardStyle());
     wizard->setOptions(m_optionsControl->wizardOptions());
-    wizard->setPixmap(QWizard::WatermarkPixmap, pixmapWithText(QLatin1String("Watermark"), QColor(Qt::blue).lighter()));
-    wizard->setPixmap(QWizard::LogoPixmap, pixmapWithText(QLatin1String("Logo"), Qt::green));
-    wizard->setPixmap(QWizard::BannerPixmap, pixmapWithText(QLatin1String("Banner"), Qt::green));
-    wizard->setPixmap(QWizard::BackgroundPixmap, pixmapWithText(QLatin1String("Background"), QColor(Qt::red).lighter()));
+    wizard->setPixmap(QWizard::WatermarkPixmap, pixmapWithText(QLatin1String("Watermark"), QColor(BobUI::blue).lighter()));
+    wizard->setPixmap(QWizard::LogoPixmap, pixmapWithText(QLatin1String("Logo"), BobUI::green));
+    wizard->setPixmap(QWizard::BannerPixmap, pixmapWithText(QLatin1String("Banner"), BobUI::green));
+    wizard->setPixmap(QWizard::BackgroundPixmap, pixmapWithText(QLatin1String("Background"), QColor(BobUI::red).lighter()));
 }
 
 #include "wizardpanel.moc"

@@ -1,20 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandbrcmeglintegration.h"
 
-#include <QtWaylandClient/private/qwaylandclientbufferintegration_p.h>
+#include <BobUIWaylandClient/private/qwaylandclientbufferintegration_p.h>
 
 #include "qwaylandbrcmeglwindow.h"
 #include "qwaylandbrcmglcontext.h"
 
-#include <QtCore/QDebug>
+#include <BobUICore/QDebug>
 
 #include "wayland-brcm-client-protocol.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 QWaylandBrcmEglIntegration::QWaylandBrcmEglIntegration()
 {
@@ -24,13 +24,13 @@ QWaylandBrcmEglIntegration::QWaylandBrcmEglIntegration()
 void QWaylandBrcmEglIntegration::wlDisplayHandleGlobal(void *data, struct ::wl_registry *registry, uint32_t id, const QString &interface, uint32_t version)
 {
     Q_UNUSED(version);
-    if (interface == "qt_brcm") {
+    if (interface == "bobui_brcm") {
         QWaylandBrcmEglIntegration *integration = static_cast<QWaylandBrcmEglIntegration *>(data);
-        integration->m_waylandBrcm = static_cast<struct qt_brcm *>(wl_registry_bind(registry, id, &qt_brcm_interface, 1));
+        integration->m_waylandBrcm = static_cast<struct bobui_brcm *>(wl_registry_bind(registry, id, &bobui_brcm_interface, 1));
     }
 }
 
-qt_brcm *QWaylandBrcmEglIntegration::waylandBrcm() const
+bobui_brcm *QWaylandBrcmEglIntegration::waylandBrcm() const
 {
     return m_waylandBrcm;
 }
@@ -123,4 +123,4 @@ void *QWaylandBrcmEglIntegration::nativeResourceForContext(NativeResource resour
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

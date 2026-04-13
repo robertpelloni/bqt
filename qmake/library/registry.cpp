@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
-#include <QtCore/qstringlist.h>
+#include <BobUICore/qstringlist.h>
 #include "registry_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #ifdef Q_OS_WIN32
 /*
@@ -44,7 +44,7 @@ static QString keyName(const QString &rKey)
 }
 #endif
 
-QString qt_readRegistryKey(HKEY parentHandle, const QString &rSubkey, unsigned long options)
+QString bobui_readRegistryKey(HKEY parentHandle, const QString &rSubkey, unsigned long options)
 {
     QString result;
 
@@ -129,5 +129,5 @@ QString qt_readRegistryKey(HKEY parentHandle, const QString &rSubkey, unsigned l
     return result;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 

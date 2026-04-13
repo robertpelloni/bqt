@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include <qpa/qplatformintegrationfactory_p.h>
 #include <qpa/qplatformintegrationplugin.h>
@@ -10,12 +10,12 @@
 #include "qguiapplication.h"
 #include "qdebug.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, piLoader,
-    (QPlatformIntegrationFactoryInterface_iid, "/platforms"_L1, Qt::CaseInsensitive))
+    (QPlatformIntegrationFactoryInterface_iid, "/platforms"_L1, BobUI::CaseInsensitive))
 
 QPlatformIntegration *QPlatformIntegrationFactory::create(const QString &platform, const QStringList &paramList, int &argc, char **argv, const QString &platformPluginPath)
 {
@@ -37,5 +37,5 @@ QStringList QPlatformIntegrationFactory::keys(const QString &platformPluginPath)
     return piLoader->keyMap().values();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 

@@ -1,5 +1,5 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
@@ -7,8 +7,8 @@
 #include <QAction>
 #include <QMainWindow>
 #include <QModelIndexList>
-#include <QTextEdit>
-#include <QTreeView>
+#include <BOBUIextEdit>
+#include <BOBUIreeView>
 
 class MimetypeModel;
 
@@ -30,8 +30,8 @@ private:
     void updateFindActions();
 
     MimetypeModel *m_model;
-    QTreeView *m_treeView;
-    QTextEdit *m_detailsText;
+    BOBUIreeView *m_treeView;
+    BOBUIextEdit *m_detailsText;
     QAction *m_findNextAction;
     QAction *m_findPreviousAction;
     QModelIndexList m_findMatches;

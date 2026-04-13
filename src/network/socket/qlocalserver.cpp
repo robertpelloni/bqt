@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qlocalserver.h"
 #include "qlocalserver_p.h"
 #include "qlocalsocket.h"
 
-#if defined(Q_OS_WIN) && !defined(QT_LOCALSOCKET_TCP)
-#include <QtCore/qt_windows.h>
+#if defined(Q_OS_WIN) && !defined(BOBUI_LOCALSOCKET_TCP)
+#include <BobUICore/bobui_windows.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*!
     \class QLocalServer
     \since 4.4
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     \brief The QLocalServer class provides a local socket based server.
 
@@ -46,7 +46,7 @@ using namespace Qt::StringLiterals;
     to use it without one. In that case, you must use waitForNewConnection(),
     which blocks until either a connection is available or a timeout expires.
 
-    \sa QLocalSocket, QTcpServer
+    \sa QLocalSocket, BOBUIcpServer
 */
 
 /*!
@@ -180,8 +180,8 @@ QBindable<QLocalServer::SocketOptions> QLocalServer::bindableSocketOptions()
         \l{Winsock 2 Socket Handle}.
 
         \li On INTEGRITY, the returned value is the
-        QTcpServer socket descriptor and the type is defined by
-        \l{QTcpServer::socketDescriptor}{socketDescriptor}.
+        BOBUIcpServer socket descriptor and the type is defined by
+        \l{BOBUIcpServer::socketDescriptor}{socketDescriptor}.
 
         \li On all other UNIX-like operating systems, the type is
         a file descriptor representing a listening socket.
@@ -194,7 +194,7 @@ qintptr QLocalServer::socketDescriptor() const
     Q_D(const QLocalServer);
     if (!isListening())
         return -1;
-#if defined(QT_LOCALSOCKET_TCP)
+#if defined(BOBUI_LOCALSOCKET_TCP)
     return d->tcpServer.socketDescriptor();
 #elif defined(Q_OS_WIN)
     const auto handle = d->connectionEventNotifier->handle();
@@ -424,7 +424,7 @@ QLocalSocket *QLocalServer::nextPendingConnection()
     if (d->pendingConnections.isEmpty())
         return nullptr;
     QLocalSocket *nextSocket = d->pendingConnections.dequeue();
-#ifndef QT_LOCALSOCKET_TCP
+#ifndef BOBUI_LOCALSOCKET_TCP
     if (d->pendingConnections.size() <= d->maxPendingConnections)
 #ifndef Q_OS_WIN
         d->socketNotifier->setEnabled(true);
@@ -569,6 +569,6 @@ int QLocalServer::listenBacklogSize() const
     return d->listenBacklog;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qlocalserver.cpp"

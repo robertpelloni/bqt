@@ -1,14 +1,14 @@
 /*
 
-* Copyright (C) 2016 The Qt Company Ltd.
-* SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+* Copyright (C) 2016 The BobUI Company Ltd.
+* SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 */
 
 /********************************************************************************
 ** Form generated from reading UI file 'newactiondialog.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -16,21 +16,21 @@
 #ifndef NEWACTIONDIALOG_H
 #define NEWACTIONDIALOG_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QAbstractButton>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QFormLayout>
-#include <QtWidgets/QFrame>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QVBoxLayout>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QAbstractButton>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QDialog>
+#include <BobUIWidgets/QDialogButtonBox>
+#include <BobUIWidgets/QFormLayout>
+#include <BobUIWidgets/QFrame>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QLineEdit>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/QVBoxLayout>
 #include "iconselector_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace qdesigner_internal {
 
@@ -116,16 +116,16 @@ public:
 
         buttonBox = new QDialogButtonBox(qdesigner_internal__NewActionDialog);
         buttonBox->setObjectName("buttonBox");
-        buttonBox->setOrientation(Qt::Orientation::Horizontal);
+        buttonBox->setOrientation(BobUI::Orientation::Horizontal);
         buttonBox->setStandardButtons(QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok);
 
         verticalLayout->addWidget(buttonBox);
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
         label->setBuddy(editActionText);
         label_3->setBuddy(editObjectName);
         label_2->setBuddy(iconSelector);
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
         QWidget::setTabOrder(editActionText, editObjectName);
 
         retranslateUi(qdesigner_internal__NewActionDialog);
@@ -153,6 +153,6 @@ namespace Ui {
 } // namespace Ui
 } // namespace qdesigner_internal
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // NEWACTIONDIALOG_H

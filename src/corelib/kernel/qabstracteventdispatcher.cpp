@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qabstracteventdispatcher.h"
 #include "qabstracteventdispatcher_p.h"
 #include "qabstractnativeeventfilter.h"
 
-#include "qthread.h"
-#include <private/qthread_p.h>
+#include "bobuihread.h"
+#include <private/bobuihread_p.h>
 #include <private/qcoreapplication_p.h>
 #include <private/qfreelist_p.h>
 
-#include <QtCore/q26numeric.h>
+#include <BobUICore/q26numeric.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace std::chrono_literals;
 
 // we allow for 2^24 = 8^8 = 16777216 simultaneously running timers
-struct QtTimerIdFreeListConstants : public QFreeListDefaultConstants
+struct BobUITimerIdFreeListConstants : public QFreeListDefaultConstants
 {
     enum
     {
@@ -41,10 +41,10 @@ enum {
     Size2 = Offset3 - Offset2,
     Size3 = Offset4 - Offset3,
     Size4 = Offset5 - Offset4,
-    Size5 = QtTimerIdFreeListConstants::MaxIndex - Offset5
+    Size5 = BobUITimerIdFreeListConstants::MaxIndex - Offset5
 };
 
-Q_CONSTINIT const int QtTimerIdFreeListConstants::Sizes[QtTimerIdFreeListConstants::BlockCount] = {
+Q_CONSTINIT const int BobUITimerIdFreeListConstants::Sizes[BobUITimerIdFreeListConstants::BlockCount] = {
     Size0,
     Size1,
     Size2,
@@ -53,8 +53,8 @@ Q_CONSTINIT const int QtTimerIdFreeListConstants::Sizes[QtTimerIdFreeListConstan
     Size5
 };
 
-typedef QFreeList<void, QtTimerIdFreeListConstants> QtTimerIdFreeList;
-Q_GLOBAL_STATIC(QtTimerIdFreeList, timerIdFreeList)
+typedef QFreeList<void, BobUITimerIdFreeListConstants> BobUITimerIdFreeList;
+Q_GLOBAL_STATIC(BobUITimerIdFreeList, timerIdFreeList)
 
 template <typename T> static T fromDuration(std::chrono::nanoseconds interval)
 {
@@ -63,7 +63,7 @@ template <typename T> static T fromDuration(std::chrono::nanoseconds interval)
     return q26::saturate_cast<T>(value);
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
 static inline QAbstractEventDispatcherV2 *v2(QAbstractEventDispatcher *self)
 {
     if (QAbstractEventDispatcherPrivate::get(self)->isV2)
@@ -77,13 +77,13 @@ static inline const QAbstractEventDispatcherV2 *v2(const QAbstractEventDispatche
         return static_cast<const QAbstractEventDispatcherV2 *>(self);
     return nullptr;
 }
-#endif // Qt 7
+#endif // BobUI 7
 
 QAbstractEventDispatcherPrivate::QAbstractEventDispatcherPrivate()
 {
     // Create the timer ID free list here to make sure that it is destroyed
     // after any global static thread that may be using it.
-    // See also QTBUG-58732.
+    // See also BOBUIBUG-58732.
     if (!timerIdFreeList.isDestroyed())
         (void)timerIdFreeList();
 }
@@ -97,8 +97,8 @@ int QAbstractEventDispatcherPrivate::allocateTimerId()
     // for example in case when application exits without waiting for
     // running threads to exit and running thread finished() has been connected
     // to a slot which triggers a sequence that registers new timer.
-    // See https://bugreports.qt-project.org/browse/QTBUG-38957.
-    if (QtTimerIdFreeList *fl = timerIdFreeList())
+    // See https://bugreports.bobui-project.org/browse/BOBUIBUG-38957.
+    if (BobUITimerIdFreeList *fl = timerIdFreeList())
         return fl->next();
     return 0; // Note! returning 0 generates a warning
 }
@@ -107,14 +107,14 @@ void QAbstractEventDispatcherPrivate::releaseTimerId(int timerId)
 {
     // this function may be called by a global destructor after
     // timerIdFreeList() has been destructed
-    if (QtTimerIdFreeList *fl = timerIdFreeList())
+    if (BobUITimerIdFreeList *fl = timerIdFreeList())
         fl->release(timerId);
 }
 
 /*!
     \class QAbstractEventDispatcher
-    \inmodule QtCore
-    \brief The QAbstractEventDispatcher class provides an interface to manage Qt's event queue.
+    \inmodule BobUICore
+    \brief The QAbstractEventDispatcher class provides an interface to manage BobUI's event queue.
 
     \ingroup events
 
@@ -131,7 +131,7 @@ void QAbstractEventDispatcherPrivate::releaseTimerId(int timerId)
     object that is returned. If you want to use your own instance of
     QAbstractEventDispatcher or of a QAbstractEventDispatcher
     subclass, you must install it with QCoreApplication::setEventDispatcher()
-    or QThread::setEventDispatcher() \e before a default event dispatcher has
+    or BOBUIhread::setEventDispatcher() \e before a default event dispatcher has
     been installed.
 
     The main event loop is started by calling
@@ -144,9 +144,9 @@ void QAbstractEventDispatcherPrivate::releaseTimerId(int timerId)
     values to control which events should be delivered.
 
     QAbstractEventDispatcher also allows the integration of an
-    external event loop with the Qt event loop.
+    external event loop with the BobUI event loop.
 
-    \sa QEventLoop, QCoreApplication, QThread
+    \sa QEventLoop, QCoreApplication, BOBUIhread
 */
 /*!
     \typedef QAbstractEventDispatcher::Duration
@@ -176,8 +176,8 @@ QAbstractEventDispatcher::QAbstractEventDispatcher(QAbstractEventDispatcherPriva
 */
 QAbstractEventDispatcher::~QAbstractEventDispatcher()
 {
-    // don't recreate the QThreadData if it has already been destroyed
-    QThreadData *data = QThreadData::currentThreadData();
+    // don't recreate the BOBUIhreadData if it has already been destroyed
+    BOBUIhreadData *data = BOBUIhreadData::currentThreadData();
     if (data && data->eventDispatcher.loadRelaxed() == this)
         data->eventDispatcher.storeRelaxed(nullptr);
 }
@@ -188,13 +188,13 @@ QAbstractEventDispatcher::~QAbstractEventDispatcher()
     event dispatcher exists for the specified thread, this function
     returns \nullptr.
 
-    \b{Note:} If Qt is built without thread support, the \a thread
+    \b{Note:} If BobUI is built without thread support, the \a thread
     argument is ignored.
  */
-QAbstractEventDispatcher *QAbstractEventDispatcher::instance(QThread *thread)
+QAbstractEventDispatcher *QAbstractEventDispatcher::instance(BOBUIhread *thread)
 {
-    // do create a QThreadData, in case this is very early in an adopted thread
-    QThreadData *data = thread ? QThreadData::get2(thread) : QThreadData::current();
+    // do create a BOBUIhreadData, in case this is very early in an adopted thread
+    BOBUIhreadData *data = thread ? BOBUIhreadData::get2(thread) : BOBUIhreadData::current();
     return data->eventDispatcher.loadRelaxed();
 }
 
@@ -235,7 +235,7 @@ QAbstractEventDispatcher *QAbstractEventDispatcher::instance(QThread *thread)
 
     \note processEvents() only processes events queued before the function
     is called. Events that are posted while the function runs will be queued
-    until a later round of event processing. This only applies to posted Qt
+    until a later round of event processing. This only applies to posted BobUI
     events. For timers and system level events, the situation is unknown.
 */
 
@@ -256,12 +256,12 @@ QAbstractEventDispatcher *QAbstractEventDispatcher::instance(QThread *thread)
 */
 
 /*!
-    \obsolete [6.8] This function will be removed in Qt 7. Use the overload taking \l Duration.
+    \obsolete [6.8] This function will be removed in BobUI 7. Use the overload taking \l Duration.
 
     Registers a timer with the specified \a interval and \a timerType for the
     given \a object and returns the timer id.
 */
-int QAbstractEventDispatcher::registerTimer(qint64 interval, Qt::TimerType timerType, QObject *object)
+int QAbstractEventDispatcher::registerTimer(qint64 interval, BobUI::TimerType timerType, QObject *object)
 {
     return int(registerTimer(interval * 1ms, timerType, object));
 }
@@ -273,11 +273,11 @@ int QAbstractEventDispatcher::registerTimer(qint64 interval, Qt::TimerType timer
     Registers a timer with the specified \a interval and \a timerType for the
     given \a object and returns the timer id.
 */
-Qt::TimerId QAbstractEventDispatcher::registerTimer(Duration interval, Qt::TimerType timerType,
+BobUI::TimerId QAbstractEventDispatcher::registerTimer(Duration interval, BobUI::TimerType timerType,
                                                     QObject *object)
 {
-    auto id = Qt::TimerId(QAbstractEventDispatcherPrivate::allocateTimerId());
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+    auto id = BobUI::TimerId(QAbstractEventDispatcherPrivate::allocateTimerId());
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
     if (QAbstractEventDispatcherV2 *self = v2(this))
         self->registerTimer(id, interval, timerType, object);
     else
@@ -288,9 +288,9 @@ Qt::TimerId QAbstractEventDispatcher::registerTimer(Duration interval, Qt::Timer
     return id;
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
 /*!
-    \fn void QAbstractEventDispatcher::registerTimer(int timerId, qint64 interval, Qt::TimerType timerType, QObject *object)
+    \fn void QAbstractEventDispatcher::registerTimer(int timerId, qint64 interval, BobUI::TimerType timerType, QObject *object)
 
     Register a timer with the specified \a timerId, \a interval, and \a
     timerType for the given \a object.
@@ -311,7 +311,7 @@ Qt::TimerId QAbstractEventDispatcher::registerTimer(Duration interval, Qt::Timer
     Returns a list of registered timers for \a object. The TimerInfo struct has
     \c timerId, \c interval, and \c timerType members.
 
-    \sa Qt::TimerType
+    \sa BobUI::TimerType
 */
 
 /*!
@@ -321,11 +321,11 @@ Qt::TimerId QAbstractEventDispatcher::registerTimer(Duration interval, Qt::Timer
     If the timer is inactive, the returned value will be -1. If the timer is
     overdue, the returned value will be 0.
 
-    \sa Qt::TimerType
+    \sa BobUI::TimerType
 */
-#else // Qt 7
+#else // BobUI 7
 /*!
-    \fn void QAbstractEventDispatcher::registerTimer(Qt::TimerId timerId, Duration interval, Qt::TimerType timerType, QObject *object)
+    \fn void QAbstractEventDispatcher::registerTimer(BobUI::TimerId timerId, Duration interval, BobUI::TimerType timerType, QObject *object)
     \since 6.8
 
     Register a timer with the specified \a timerId, \a interval, and \a
@@ -335,7 +335,7 @@ Qt::TimerId QAbstractEventDispatcher::registerTimer(Duration interval, Qt::Timer
 */
 
 /*!
-    \fn bool QAbstractEventDispatcher::unregisterTimer(Qt::TimerId timerId)
+    \fn bool QAbstractEventDispatcher::unregisterTimer(BobUI::TimerId timerId)
     \since 6.8
 
     Unregisters the timer with the given \a timerId.
@@ -351,17 +351,17 @@ Qt::TimerId QAbstractEventDispatcher::registerTimer(Duration interval, Qt::Timer
     Returns a list of registered timers for \a object. The TimerInfoV2 struct has
     \c timerId, \c interval, and \c timerType members.
 
-    \sa Qt::TimerType, registerTimer(), unregisterTimer()
+    \sa BobUI::TimerType, registerTimer(), unregisterTimer()
 */
 
 /*!
-    \fn QAbstractEventDispatcher::remainingTime(Qt::TimerId timerId) const
+    \fn QAbstractEventDispatcher::remainingTime(BobUI::TimerId timerId) const
 
     Returns the remaining time of the timer with the given \a timerId.
     If the timer is inactive, the returned value will be negative. If the timer
     is overdue, the returned value will be 0.
 
-    \sa Qt::TimerType, registerTimer(), unregisterTimer()
+    \sa BobUI::TimerType, registerTimer(), unregisterTimer()
 */
 #endif
 
@@ -381,7 +381,7 @@ Qt::TimerId QAbstractEventDispatcher::registerTimer(Duration interval, Qt::Timer
     Wakes up the event loop.
 
     \omit
-    ### FIXME - QTBUG-70229
+    ### FIXME - BOBUIBUG-70229
     On Unix and Glib event dispatchers, if the dispatcher is already awake when
     this function is called, it is ensured that the current iteration won't block
     waiting for more events, but will instead do another event loop iteration.
@@ -416,7 +416,7 @@ void QAbstractEventDispatcher::closingDown()
 /*!
     \class QAbstractEventDispatcher::TimerInfo
     \deprecated [6.8] Use TimerInfoV2
-    \inmodule QtCore
+    \inmodule BobUICore
 
     This struct represents information about a timer:
     \l{QAbstractEventDispatcher::TimerInfo::timerId}{timerId},
@@ -425,7 +425,7 @@ void QAbstractEventDispatcher::closingDown()
 
     \sa registeredTimers(), QAbstractEventDispatcher::TimerInfoV2, timersForObject()
 */
-/*! \fn QAbstractEventDispatcher::TimerInfo::TimerInfo(int timerId, int interval, Qt::TimerType timerType)
+/*! \fn QAbstractEventDispatcher::TimerInfo::TimerInfo(int timerId, int interval, BobUI::TimerType timerType)
 
     Constructs a TimerInfo struct with the given \a timerId, \a interval, and
     \a timerType.
@@ -445,12 +445,12 @@ void QAbstractEventDispatcher::closingDown()
 
     The timer's type
 
-    \sa Qt::TimerType
+    \sa BobUI::TimerType
 */
 
 /*!
     \class QAbstractEventDispatcher::TimerInfoV2
-    \inmodule QtCore
+    \inmodule BobUICore
 
     This struct represents information about a timer:
     \l{QAbstractEventDispatcher::TimerInfoV2::timerId}{timerId},
@@ -464,7 +464,7 @@ void QAbstractEventDispatcher::closingDown()
 
     The timer's unique id. This is created by registerTimer() upon creation and
     uniquely identifies a timer while it is active. It is also used by
-    QTimer::id() and returned by QObject::startTimer().
+    BOBUIimer::id() and returned by QObject::startTimer().
 */
 /*!
     \variable QAbstractEventDispatcher::TimerInfoV2::interval
@@ -476,7 +476,7 @@ void QAbstractEventDispatcher::closingDown()
 
     The timer's type
 
-    \sa Qt::TimerType
+    \sa BobUI::TimerType
 */
 
 /*!
@@ -487,8 +487,8 @@ void QAbstractEventDispatcher::closingDown()
 
     The  \l {QAbstractNativeEventFilter::}{nativeEventFilter()} function should return true
     if the event should be filtered, (in this case, stopped). It should return false to allow
-    normal Qt processing to continue: the native event can then be translated
-    into a QEvent and handled by the standard Qt \l{QEvent} {event} filtering,
+    normal BobUI processing to continue: the native event can then be translated
+    into a QEvent and handled by the standard BobUI \l{QEvent} {event} filtering,
     e.g. QObject::installEventFilter().
 
     If multiple event filters are installed, the filter that was installed last
@@ -591,9 +591,9 @@ bool QAbstractEventDispatcher::filterNativeEvent(const QByteArray &eventType, vo
     \sa awake()
 */
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
-void QAbstractEventDispatcher::registerTimer(Qt::TimerId timerId, Duration interval,
-                                             Qt::TimerType timerType, QObject *object)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
+void QAbstractEventDispatcher::registerTimer(BobUI::TimerId timerId, Duration interval,
+                                             BobUI::TimerType timerType, QObject *object)
 {
     if (QAbstractEventDispatcherV2 *self = v2(this))
         self->registerTimer(timerId, interval, timerType, object);
@@ -601,7 +601,7 @@ void QAbstractEventDispatcher::registerTimer(Qt::TimerId timerId, Duration inter
         registerTimer(int(timerId), fromDuration<qint64>(interval), timerType, object);
 }
 
-bool QAbstractEventDispatcher::unregisterTimer(Qt::TimerId timerId)
+bool QAbstractEventDispatcher::unregisterTimer(BobUI::TimerId timerId)
 {
     if (QAbstractEventDispatcherV2 *self = v2(this))
         return self->unregisterTimer(timerId);
@@ -617,12 +617,12 @@ QAbstractEventDispatcher::timersForObject(QObject *object) const
     QList<TimerInfoV2> result;
     result.reserve(timers.size());
     for (const TimerInfo &t : timers)
-        result.emplaceBack(TimerInfoV2{ t.interval * 1ms, Qt::TimerId(t.timerId), t.timerType });
+        result.emplaceBack(TimerInfoV2{ t.interval * 1ms, BobUI::TimerId(t.timerId), t.timerType });
     return result;
 }
 
 QAbstractEventDispatcher::Duration
-QAbstractEventDispatcher::remainingTime(Qt::TimerId timerId) const
+QAbstractEventDispatcher::remainingTime(BobUI::TimerId timerId) const
 {
     if (const QAbstractEventDispatcherV2 *self = v2(this))
         return self->remainingTime(timerId);
@@ -631,10 +631,10 @@ QAbstractEventDispatcher::remainingTime(Qt::TimerId timerId) const
 
 /*!
     \class QAbstractEventDispatcherV2
-    \inmodule QtCore
+    \inmodule BobUICore
 
     This class is a temporary hack to enable transition to an API based on
-    \c{std::chrono} for the Qt event dispatcher. In Qt 7, it will be merged
+    \c{std::chrono} for the BobUI event dispatcher. In BobUI 7, it will be merged
     with QAbstractEventDispatcher, replacing the pure virtuals there with the
     ones defined here.
 
@@ -669,10 +669,10 @@ QAbstractEventDispatcherV2::~QAbstractEventDispatcherV2() = default;
     Temporary compatibility override.
 */
 void QAbstractEventDispatcherV2::registerTimer(int timerId, qint64 interval,
-                                               Qt::TimerType timerType, QObject *object)
+                                               BobUI::TimerType timerType, QObject *object)
 {
     auto self = static_cast<QAbstractEventDispatcherV2 *>(this);
-    self->registerTimer(Qt::TimerId(timerId), interval * 1ms, timerType, object);
+    self->registerTimer(BobUI::TimerId(timerId), interval * 1ms, timerType, object);
 }
 
 /*!
@@ -682,7 +682,7 @@ void QAbstractEventDispatcherV2::registerTimer(int timerId, qint64 interval,
 bool QAbstractEventDispatcherV2::unregisterTimer(int timerId)
 {
     auto self = static_cast<QAbstractEventDispatcherV2 *>(this);
-    return self->unregisterTimer(Qt::TimerId(timerId));
+    return self->unregisterTimer(BobUI::TimerId(timerId));
 }
 
 /*!
@@ -707,7 +707,7 @@ auto QAbstractEventDispatcherV2::registeredTimers(QObject *object) const -> QLis
 int QAbstractEventDispatcherV2::remainingTime(int timerId)
 {
     auto self = static_cast<QAbstractEventDispatcherV2 *>(this);
-    return fromDuration<int>(self->remainingTime(Qt::TimerId(timerId)));
+    return fromDuration<int>(self->remainingTime(BobUI::TimerId(timerId)));
 }
 
 /*!
@@ -719,8 +719,8 @@ bool QAbstractEventDispatcherV2::processEventsWithDeadline(QEventLoop::ProcessEv
     Q_UNUSED(deadline);
     return processEvents(flags);
 }
-#endif // ! Qt 7
+#endif // ! BobUI 7
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qabstracteventdispatcher.cpp"

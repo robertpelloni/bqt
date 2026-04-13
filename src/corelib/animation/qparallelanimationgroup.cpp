@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 /*!
     \class QParallelAnimationGroup
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QParallelAnimationGroup class provides a parallel group of animations.
     \since 4.6
     \ingroup animation
@@ -31,7 +31,7 @@
 #include "qparallelanimationgroup_p.h"
 //#define QANIMATION_DEBUG
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 typedef QList<QAbstractAnimation *>::ConstIterator AnimationListConstIt;
 typedef QHash<QAbstractAnimation*, int>::Iterator AnimationTimeHashIt;
@@ -288,6 +288,6 @@ bool QParallelAnimationGroup::event(QEvent *event)
     return QAnimationGroup::event(event);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qparallelanimationgroup.cpp"

@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QMINIMALEGLSCREEN_H
 #define QMINIMALEGLSCREEN_H
 
 #include <qpa/qplatformscreen.h>
 
-#include <QtCore/QTextStream>
+#include <BobUICore/BOBUIextStream>
 
-#include <QtGui/private/qt_egl_p.h>
+#include <BobUIGui/private/bobui_egl_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QPlatformOpenGLContext;
 
@@ -23,7 +23,7 @@ public:
     QRect geometry() const override;
     int depth() const override;
     QImage::Format format() const override;
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     QPlatformOpenGLContext *platformContext() const;
 #endif
     EGLSurface surface() const { return m_surface; }
@@ -40,5 +40,5 @@ private:
     EGLSurface m_surface;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 #endif // QMINIMALEGLSCREEN_H

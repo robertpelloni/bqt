@@ -1,5 +1,5 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QAction>
 #include <QApplication>
@@ -16,8 +16,8 @@
 #include <QPlainTextEdit>
 #include <QScreen>
 #include <QStyle>
-#include <QTabWidget>
-#include <QTextStream>
+#include <BOBUIabWidget>
+#include <BOBUIextStream>
 #include <QVBoxLayout>
 #include <QWindow>
 
@@ -38,7 +38,7 @@ static inline QString formatEnumValue(Enum value)
     return result;
 }
 
-static QTextStream &operator<<(QTextStream &str, const QSize &s)
+static BOBUIextStream &operator<<(BOBUIextStream &str, const QSize &s)
 {
     str << s.width();
     if (s.width() != s.height())
@@ -92,7 +92,7 @@ static IconDisplayWidget *createStandardPixmapDisplay(const StyleIconEntry &e, Q
 {
     QPixmap pixmap = parent->style()->standardPixmap(e.pixmap, nullptr, parent);
     QString description;
-    QTextStream str(&description);
+    BOBUIextStream str(&description);
     str << pixmap.size();
     return new IconDisplayWidget(e.name, description, pixmap, parent);
 }
@@ -124,7 +124,7 @@ static IconDisplayWidget *createStandardIconDisplay(const StyleIconEntry &e,
 {
     QIcon icon = parent->style()->standardIcon(e.pixmap, nullptr, parent);
     QString description;
-    QTextStream str(&description);
+    BOBUIextStream str(&description);
     auto availableSizes = icon.availableSizes();
     std::sort(availableSizes.begin(), availableSizes.end(),
               [](QSize s1, QSize s2) { return s1.width() < s2.width(); });
@@ -160,7 +160,7 @@ static QWidget *createMetricsPage(QWidget *parent)
 {
     QPlainTextEdit *result = new QPlainTextEdit(parent);
     QString text;
-    QTextStream str(&text);
+    BOBUIextStream str(&text);
     for (int i = 0; i <= int(QStyle::PM_HeaderDefaultSectionSizeVertical); ++i) {
         const QStyle::PixelMetric m = static_cast<QStyle::PixelMetric>(i);
         str << formatEnumValue(m) << '(' << int(m) << ")="
@@ -175,7 +175,7 @@ static QWidget *createHintsPage(QWidget *parent)
 {
     QPlainTextEdit *result = new QPlainTextEdit(parent);
     QString text;
-    QTextStream str(&text);
+    BOBUIextStream str(&text);
     for (int i = 0; i <= int(QStyle::SH_Menu_SubMenuDontStartSloppyOnLeave); ++i) {
         const QStyle::StyleHint h = static_cast<QStyle::StyleHint>(i);
         str << formatEnumValue(h) << '(' << int(h) << ")="
@@ -229,17 +229,17 @@ public slots:
     void updateDescription();
 
 private:
-    QTabWidget *m_tabWidget;
+    BOBUIabWidget *m_tabWidget;
     QLabel *m_descriptionLabel;
 };
 
 MainWindow::MainWindow()
-    : m_tabWidget(new QTabWidget)
+    : m_tabWidget(new BOBUIabWidget)
     , m_descriptionLabel(new QLabel)
 {
     QMenu *fileMenu = menuBar()->addMenu("&File");
     QAction *a = fileMenu->addAction("Quit", this, &QWidget::close);
-    a->setShortcut(Qt::CTRL | Qt::Key_Q);
+    a->setShortcut(BobUI::CTRL | BobUI::Key_Q);
 
     QWidget *central = new QWidget;
     QVBoxLayout *mainLayout = new QVBoxLayout(central);
@@ -252,15 +252,15 @@ MainWindow::MainWindow()
     m_tabWidget->addTab(createColorsPage(m_tabWidget), "Colors");
     setCentralWidget(central);
 
-    setWindowTitle(QLatin1String("Style Tester (Qt") + QLatin1String(QT_VERSION_STR)
+    setWindowTitle(QLatin1String("Style Tester (BobUI") + QLatin1String(BOBUI_VERSION_STR)
                    + QLatin1String(", ") + style()->objectName() + QLatin1Char(')'));
 }
 
 void MainWindow::updateDescription()
 {
     QString text;
-    QTextStream str(&text);
-    str << "Qt " << QT_VERSION_STR << ", platform: " << QGuiApplication::platformName()
+    BOBUIextStream str(&text);
+    str << "BobUI " << BOBUI_VERSION_STR << ", platform: " << QGuiApplication::platformName()
         << ", Style: \"" << style()->objectName() << "\", DPR=" << devicePixelRatio()
         << ' ' << logicalDpiX() << ',' << logicalDpiY() << "DPI";
     if (const QWindow *w = windowHandle())

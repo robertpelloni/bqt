@@ -1,7 +1,7 @@
 // Copyright (C) 2013 Imagination Technologies Limited, www.imgtec.com
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include "qt_mips_asm_dsp_p.h"
+#include "bobui_mips_asm_dsp_p.h"
 
 LEAF_MIPS_DSP(destfetchARGB32_asm_mips_dsp)
 /*
@@ -96,7 +96,7 @@ LEAF_MIPS_DSP(destfetchARGB32_asm_mips_dsp)
 
 END(destfetchARGB32_asm_mips_dsp)
 
-LEAF_MIPS_DSP(qt_memfill32_asm_mips_dsp)
+LEAF_MIPS_DSP(bobui_memfill32_asm_mips_dsp)
 /*
  * a0 - destination address (dst)
  * a1 - value
@@ -149,7 +149,7 @@ LEAF_MIPS_DSP(qt_memfill32_asm_mips_dsp)
     jr        ra
      nop
 
-END(qt_memfill32_asm_mips_dsp)
+END(bobui_memfill32_asm_mips_dsp)
 
 LEAF_MIPS_DSP(comp_func_SourceOver_asm_mips_dsp)
 /*
@@ -250,7 +250,7 @@ LEAF_MIPS_DSP(comp_func_SourceOver_asm_mips_dsp)
 
 END(comp_func_SourceOver_asm_mips_dsp)
 
-LEAF_MIPS_DSPR2(qt_destStoreARGB32_asm_mips_dsp)
+LEAF_MIPS_DSPR2(bobui_destStoreARGB32_asm_mips_dsp)
 /*
  * a0 - uint * data
  * a1 - const uint *buffer
@@ -322,7 +322,7 @@ LEAF_MIPS_DSPR2(qt_destStoreARGB32_asm_mips_dsp)
     jr        ra
      nop
 
-END(qt_destStoreARGB32_asm_mips_dsp)
+END(bobui_destStoreARGB32_asm_mips_dsp)
 
 LEAF_MIPS_DSP(comp_func_solid_Source_dsp_asm_x2)
 /*
@@ -1455,7 +1455,7 @@ LEAF_MIPS_DSP(comp_func_Source_dsp_asm_x2)
 
 END(comp_func_Source_dsp_asm_x2)
 
-LEAF_MIPS_DSP(qt_blend_argb32_on_argb32_mips_dsp_asm_x2)
+LEAF_MIPS_DSP(bobui_blend_argb32_on_argb32_mips_dsp_asm_x2)
 /*
  * a0 - uint *dest
  * a1 - const uint *src
@@ -1508,9 +1508,9 @@ LEAF_MIPS_DSP(qt_blend_argb32_on_argb32_mips_dsp_asm_x2)
      nop
     .set              at
 
-END(qt_blend_argb32_on_argb32_mips_dsp_asm_x2)
+END(bobui_blend_argb32_on_argb32_mips_dsp_asm_x2)
 
-LEAF_MIPS_DSP(qt_blend_argb32_on_argb32_const_alpha_256_mips_dsp_asm)
+LEAF_MIPS_DSP(bobui_blend_argb32_on_argb32_const_alpha_256_mips_dsp_asm)
 /*
  * a0 - uint *dest
  * a1 - const uint *src
@@ -1562,7 +1562,7 @@ LEAF_MIPS_DSP(qt_blend_argb32_on_argb32_const_alpha_256_mips_dsp_asm)
     jr                ra
      nop
 
-END(qt_blend_argb32_on_argb32_const_alpha_256_mips_dsp_asm)
+END(bobui_blend_argb32_on_argb32_const_alpha_256_mips_dsp_asm)
 
 
 #if defined(__MIPSEL) && __MIPSEL
@@ -1579,7 +1579,7 @@ END(qt_blend_argb32_on_argb32_const_alpha_256_mips_dsp_asm)
 # define LDLO(r, o, b)  lwl r, o + 2 (b)
 #endif
 
-LEAF_MIPS_DSP(qt_blend_rgb16_on_rgb16_const_alpha_256_mips_dsp_asm)
+LEAF_MIPS_DSP(bobui_blend_rgb16_on_rgb16_const_alpha_256_mips_dsp_asm)
 /*
  * a0 - dst (*r5g6b5)
  * a1 - src (const *r5g6b5)
@@ -1730,7 +1730,7 @@ LEAF_MIPS_DSP(qt_blend_rgb16_on_rgb16_const_alpha_256_mips_dsp_asm)
 0:  jr ra
      nop
 
-END(qt_blend_rgb16_on_rgb16_const_alpha_256_mips_dsp_asm)
+END(bobui_blend_rgb16_on_rgb16_const_alpha_256_mips_dsp_asm)
 
 
 #undef LDHI
@@ -1740,7 +1740,7 @@ END(qt_blend_rgb16_on_rgb16_const_alpha_256_mips_dsp_asm)
 #undef SWLO
 
 
-LEAF_MIPS_DSP(qt_blend_rgb16_on_rgb16_mips_dsp_asm)
+LEAF_MIPS_DSP(bobui_blend_rgb16_on_rgb16_mips_dsp_asm)
 /*
  * a0 - dst (*r5g6b5)
  * a1 - src (const *r5g6b5)
@@ -1789,7 +1789,7 @@ LEAF_MIPS_DSP(qt_blend_rgb16_on_rgb16_mips_dsp_asm)
     jr      ra
      nop
 
-END(qt_blend_rgb16_on_rgb16_mips_dsp_asm)
+END(bobui_blend_rgb16_on_rgb16_mips_dsp_asm)
 
 
 LEAF_MIPS_DSP(fetchUntransformed_888_asm_mips_dsp)

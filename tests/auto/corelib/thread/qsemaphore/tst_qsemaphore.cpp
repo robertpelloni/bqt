@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qcoreapplication.h>
 #include <qelapsedtimer.h>
-#include <qthread.h>
+#include <bobuihread.h>
 #include <qsemaphore.h>
 
 #include <chrono>
@@ -32,7 +32,7 @@ private slots:
 
 static QSemaphore *semaphore = nullptr;
 
-class ThreadOne : public QThread
+class ThreadOne : public BOBUIhread
 {
 public:
     ThreadOne() {}
@@ -49,7 +49,7 @@ protected:
     }
 };
 
-class ThreadN : public QThread
+class ThreadN : public BOBUIhread
 {
     int N;
 
@@ -134,7 +134,7 @@ void tst_QSemaphore::acquire()
 
 void tst_QSemaphore::multiRelease()
 {
-    class Thread : public QThread
+    class Thread : public BOBUIhread
     {
     public:
         QSemaphore &sem;
@@ -157,7 +157,7 @@ void tst_QSemaphore::multiRelease()
 
     // wait for all threads to reach the sem.acquire() and then
     // release them all
-    QTest::qSleep(1);
+    BOBUIest::qSleep(1);
     sem.release(int(threads.size()));
 
     for (Thread *&t : threads)
@@ -167,7 +167,7 @@ void tst_QSemaphore::multiRelease()
 
 void tst_QSemaphore::multiAcquireRelease()
 {
-    class Thread : public QThread
+    class Thread : public BOBUIhread
     {
     public:
         QSemaphore &sem;
@@ -191,7 +191,7 @@ void tst_QSemaphore::multiAcquireRelease()
 
     // wait for all threads to reach the sem.acquire() and then
     // release them all
-    QTest::qSleep(1);
+    BOBUIest::qSleep(1);
     sem.release();
 
     for (Thread *&t : threads)
@@ -272,10 +272,10 @@ void tst_QSemaphore::tryAcquire()
 
 void tst_QSemaphore::tryAcquireWithTimeout_data()
 {
-    QTest::addColumn<int>("timeout");
+    BOBUIest::addColumn<int>("timeout");
 
-    QTest::newRow("0.2s") << 200;
-    QTest::newRow("2s") << 2000;
+    BOBUIest::newRow("0.2s") << 200;
+    BOBUIest::newRow("2s") << 2000;
 }
 
 void tst_QSemaphore::tryAcquireWithTimeout()
@@ -374,7 +374,7 @@ void tst_QSemaphore::tryAcquireWithTimeout()
 
 void tst_QSemaphore::tryAcquireWithTimeoutStarvation()
 {
-    class Thread : public QThread
+    class Thread : public BOBUIhread
     {
     public:
         QSemaphore startup;
@@ -418,22 +418,22 @@ void tst_QSemaphore::tryAcquireWithTimeoutStarvation()
 
 void tst_QSemaphore::tryAcquireWithTimeoutForever_data()
 {
-    QTest::addColumn<int>("timeout");
-    QTest::newRow("-1") << -1;
+    BOBUIest::addColumn<int>("timeout");
+    BOBUIest::newRow("-1") << -1;
 
     // tryAcquire is documented to take any negative value as "forever"
-    QTest::newRow("INT_MIN") << INT_MIN;
+    BOBUIest::newRow("INT_MIN") << INT_MIN;
 }
 
 void tst_QSemaphore::tryAcquireWithTimeoutForever()
 {
     enum { WaitTime = 1000 };
-    struct Thread : public QThread {
+    struct Thread : public BOBUIhread {
         QSemaphore sem;
 
         void run() override
         {
-            QTest::qWait(WaitTime);
+            BOBUIest::qWait(WaitTime);
             sem.release(2);
         }
     };
@@ -475,7 +475,7 @@ const int DataSize = ProducerChunkSize * ConsumerChunkSize * BufferSize * Multip
 static QSemaphore freeSpace(BufferSize);
 static QSemaphore usedSpace;
 
-class Producer : public QThread
+class Producer : public BOBUIhread
 {
 public:
     void run() override;
@@ -499,7 +499,7 @@ void Producer::run()
     }
 }
 
-class Consumer : public QThread
+class Consumer : public BOBUIhread
 {
 public:
     void run() override;
@@ -609,5 +609,5 @@ void tst_QSemaphore::stdCompat()
     QCOMPARE(sem.available(), 0);
 }
 
-QTEST_MAIN(tst_QSemaphore)
+BOBUIEST_MAIN(tst_QSemaphore)
 #include "tst_qsemaphore.moc"

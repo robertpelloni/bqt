@@ -1,8 +1,8 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/qtest.h>
-#include <QtWidgets/qmainwindow.h>
+#include <BobUITest/bobuiest.h>
+#include <BobUIWidgets/qmainwindow.h>
 
 class test_widgets_app_deployment : public QObject
 {
@@ -15,9 +15,9 @@ void test_widgets_app_deployment::canRun()
 {
     QMainWindow mw;
     mw.show();
-    QVERIFY(QTest::qWaitForWindowActive(&mw));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&mw));
 }
 
-QTEST_MAIN(test_widgets_app_deployment)
+BOBUIEST_MAIN(test_widgets_app_deployment)
 
 #include "main.moc"

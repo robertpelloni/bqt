@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDIRECTFB_EGL_H
 #define QDIRECTFB_EGL_H
@@ -9,7 +9,7 @@
 
 #ifdef DIRECTFB_GL_EGL
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDirectFbIntegrationEGL : public QDirectFbIntegration {
 public:
@@ -22,7 +22,7 @@ protected:
     void initializeScreen();
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif
 #endif

@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <qapplication.h>
 #include <qlineedit.h>
 #include <qmenu.h>
@@ -16,9 +16,9 @@
 #include <qpa/qplatformintegration.h>
 #include <private/qguiapplication_p.h>
 
-#include <QtWidgets/private/qapplication_p.h>
+#include <BobUIWidgets/private/qapplication_p.h>
 
-QT_FORWARD_DECLARE_CLASS(QWidget)
+BOBUI_FORWARD_DECLARE_CLASS(QWidget)
 
 class FocusLineEdit : public QLineEdit
 {
@@ -68,7 +68,7 @@ private slots:
     void checkReason_BackTab();
     void checkReason_Popup();
     void checkReason_focusWidget();
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     void checkReason_Shortcut();
 #endif
     void checkReason_ActiveWindow();
@@ -90,10 +90,10 @@ void tst_QFocusEvent::initTestCase()
     childFocusWidgetTwo = new FocusLineEdit( testFocusWidget );
     childFocusWidgetTwo->setGeometry( 10, 50, 180, 20 );
 
-    //qApp->setMainWidget( testFocusWidget ); Qt4
+    //qApp->setMainWidget( testFocusWidget ); BobUI4
     testFocusWidget->resize( 200,100 );
     testFocusWidget->show();
-    QVERIFY(QTest::qWaitForWindowExposed(testFocusWidget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(testFocusWidget));
 // Applications don't get focus when launched from the command line on Mac.
 #ifdef Q_OS_MAC
     testFocusWidget->raise();
@@ -116,8 +116,8 @@ void tst_QFocusEvent::initWidget()
     // this is processed straight away.
     QApplicationPrivate::setActiveWindow(testFocusWidget);
     childFocusWidgetOne->setFocus(); // The first lineedit should have focus
-    QVERIFY(QTest::qWaitForWindowActive(testFocusWidget));
-    QTRY_VERIFY(childFocusWidgetOne->hasFocus());
+    QVERIFY(BOBUIest::qWaitForWindowActive(testFocusWidget));
+    BOBUIRY_VERIFY(childFocusWidgetOne->hasFocus());
 
     childFocusWidgetOne->focusInEventRecieved = false;
     childFocusWidgetOne->focusInEventGotFocus = false;
@@ -138,7 +138,7 @@ void tst_QFocusEvent::checkReason_Tab()
     initWidget();
 
     // Now test the tab key
-    QTest::keyClick( childFocusWidgetOne, Qt::Key_Tab );
+    BOBUIest::keyClick( childFocusWidgetOne, BobUI::Key_Tab );
 
     QVERIFY(childFocusWidgetOne->focusOutEventRecieved);
     QVERIFY(childFocusWidgetTwo->focusInEventRecieved);
@@ -146,8 +146,8 @@ void tst_QFocusEvent::checkReason_Tab()
     QVERIFY(childFocusWidgetTwo->focusInEventGotFocus);
 
     QVERIFY( childFocusWidgetTwo->hasFocus() );
-    QCOMPARE( childFocusWidgetOne->focusOutEventReason, (int) Qt::TabFocusReason );
-    QCOMPARE( childFocusWidgetTwo->focusInEventReason, (int) Qt::TabFocusReason );
+    QCOMPARE( childFocusWidgetOne->focusOutEventReason, (int) BobUI::TabFocusReason );
+    QCOMPARE( childFocusWidgetTwo->focusInEventReason, (int) BobUI::TabFocusReason );
 }
 
 void tst_QFocusEvent::checkReason_ShiftTab()
@@ -155,7 +155,7 @@ void tst_QFocusEvent::checkReason_ShiftTab()
     initWidget();
 
     // Now test the shift + tab key
-    QTest::keyClick( childFocusWidgetOne, Qt::Key_Tab, Qt::ShiftModifier );
+    BOBUIest::keyClick( childFocusWidgetOne, BobUI::Key_Tab, BobUI::ShiftModifier );
 
     QVERIFY(childFocusWidgetOne->focusOutEventRecieved);
     QVERIFY(childFocusWidgetTwo->focusInEventRecieved);
@@ -163,13 +163,13 @@ void tst_QFocusEvent::checkReason_ShiftTab()
     QVERIFY(childFocusWidgetTwo->focusInEventGotFocus);
 
     QVERIFY( childFocusWidgetTwo->hasFocus() );
-    QCOMPARE( childFocusWidgetOne->focusOutEventReason, (int)Qt::BacktabFocusReason );
-    QCOMPARE( childFocusWidgetTwo->focusInEventReason, (int)Qt::BacktabFocusReason );
+    QCOMPARE( childFocusWidgetOne->focusOutEventReason, (int)BobUI::BacktabFocusReason );
+    QCOMPARE( childFocusWidgetTwo->focusInEventReason, (int)BobUI::BacktabFocusReason );
 
 }
 
 /*!
-    In this test we verify that the Qt::KeyBacktab key is handled in a qfocusevent
+    In this test we verify that the BobUI::KeyBacktab key is handled in a qfocusevent
 */
 void tst_QFocusEvent::checkReason_BackTab()
 {
@@ -180,16 +180,16 @@ void tst_QFocusEvent::checkReason_BackTab()
     QVERIFY( childFocusWidgetOne->hasFocus() );
 
     // Now test the backtab key
-    QTest::keyClick( childFocusWidgetOne, Qt::Key_Backtab );
+    BOBUIest::keyClick( childFocusWidgetOne, BobUI::Key_Backtab );
 
-    QTRY_VERIFY(childFocusWidgetOne->focusOutEventRecieved);
+    BOBUIRY_VERIFY(childFocusWidgetOne->focusOutEventRecieved);
     QVERIFY(childFocusWidgetTwo->focusInEventRecieved);
     QVERIFY(childFocusWidgetOne->focusOutEventLostFocus);
     QVERIFY(childFocusWidgetTwo->focusInEventGotFocus);
 
     QVERIFY( childFocusWidgetTwo->hasFocus() );
-    QCOMPARE( childFocusWidgetOne->focusOutEventReason, int(Qt::BacktabFocusReason) );
-    QCOMPARE( childFocusWidgetTwo->focusInEventReason, int(Qt::BacktabFocusReason) );
+    QCOMPARE( childFocusWidgetOne->focusOutEventReason, int(BobUI::BacktabFocusReason) );
+    QCOMPARE( childFocusWidgetTwo->focusInEventReason, int(BobUI::BacktabFocusReason) );
 #endif
 }
 
@@ -202,14 +202,14 @@ void tst_QFocusEvent::checkReason_Popup()
     popupMenu->addMenu( "Test" );
     popupMenu->popup( QPoint(0,0) );
 
-    QTRY_VERIFY(childFocusWidgetOne->focusOutEventLostFocus);
+    BOBUIRY_VERIFY(childFocusWidgetOne->focusOutEventLostFocus);
 
-    QTRY_VERIFY( childFocusWidgetOne->hasFocus() );
+    BOBUIRY_VERIFY( childFocusWidgetOne->hasFocus() );
     QVERIFY( !childFocusWidgetOne->focusInEventRecieved );
     QVERIFY( childFocusWidgetOne->focusOutEventRecieved );
     QVERIFY( !childFocusWidgetTwo->focusInEventRecieved );
     QVERIFY( !childFocusWidgetTwo->focusOutEventRecieved );
-    QCOMPARE( childFocusWidgetOne->focusOutEventReason, int(Qt::PopupFocusReason));
+    QCOMPARE( childFocusWidgetOne->focusOutEventReason, int(BobUI::PopupFocusReason));
 
     popupMenu->hide();
 
@@ -224,18 +224,18 @@ void tst_QFocusEvent::checkReason_Popup()
 }
 
 #ifdef Q_OS_MAC
-QT_BEGIN_NAMESPACE
-    extern void qt_set_sequence_auto_mnemonic(bool);
-QT_END_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
+    extern void bobui_set_sequence_auto_mnemonic(bool);
+BOBUI_END_NAMESPACE
 #endif
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 
 void tst_QFocusEvent::checkReason_Shortcut()
 {
     initWidget();
 #ifdef Q_OS_MAC
-    qt_set_sequence_auto_mnemonic(true);
+    bobui_set_sequence_auto_mnemonic(true);
 #endif
     QLabel* label = new QLabel( "&Test", testFocusWidget );
     label->setBuddy( childFocusWidgetTwo );
@@ -246,7 +246,7 @@ void tst_QFocusEvent::checkReason_Shortcut()
     QVERIFY( childFocusWidgetOne->hasFocus() );
     QVERIFY( !childFocusWidgetTwo->hasFocus() );
 
-    QTest::keyClick( label, Qt::Key_T, Qt::AltModifier );
+    BOBUIest::keyClick( label, BobUI::Key_T, BobUI::AltModifier );
 
     QVERIFY(childFocusWidgetOne->focusOutEventRecieved);
     QVERIFY(childFocusWidgetTwo->focusInEventRecieved);
@@ -256,20 +256,20 @@ void tst_QFocusEvent::checkReason_Shortcut()
     QVERIFY( childFocusWidgetTwo->hasFocus() );
     QVERIFY( !childFocusWidgetOne->focusInEventRecieved );
     QVERIFY( childFocusWidgetOne->focusOutEventRecieved );
-    QCOMPARE( childFocusWidgetOne->focusOutEventReason, (int)Qt::ShortcutFocusReason );
+    QCOMPARE( childFocusWidgetOne->focusOutEventReason, (int)BobUI::ShortcutFocusReason );
     QVERIFY( childFocusWidgetTwo->focusInEventRecieved );
-    QCOMPARE( childFocusWidgetTwo->focusInEventReason, (int)Qt::ShortcutFocusReason );
+    QCOMPARE( childFocusWidgetTwo->focusInEventReason, (int)BobUI::ShortcutFocusReason );
     QVERIFY( !childFocusWidgetTwo->focusOutEventRecieved );
 
     label->hide();
     QVERIFY( childFocusWidgetTwo->hasFocus() );
     QVERIFY( !childFocusWidgetOne->hasFocus() );
 #ifdef Q_OS_MAC
-    qt_set_sequence_auto_mnemonic(false);
+    bobui_set_sequence_auto_mnemonic(false);
 #endif
 }
 
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
 void tst_QFocusEvent::checkReason_focusWidget()
 {
@@ -293,10 +293,10 @@ void tst_QFocusEvent::checkReason_focusWidget()
     frame1.setLayout(&leftLayout);
     frame2.setLayout(&rightLayout);
     window1.show();
-    QVERIFY(QTest::qWaitForWindowActive(&window1));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&window1));
 
     edit1.setFocus();
-    QTRY_VERIFY(edit1.hasFocus());
+    BOBUIRY_VERIFY(edit1.hasFocus());
     edit2.setFocus();
 
     QVERIFY(frame1.focusWidget() != nullptr);
@@ -309,10 +309,10 @@ void tst_QFocusEvent::checkReason_ActiveWindow()
 
     QDialog* d = new QDialog( testFocusWidget );
     d->show();
-    QVERIFY(QTest::qWaitForWindowExposed(d));
-    QVERIFY(QTest::qWaitForWindowActive(d));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(d));
+    QVERIFY(BOBUIest::qWaitForWindowActive(d));
 
-    QTRY_VERIFY(childFocusWidgetOne->focusOutEventRecieved);
+    BOBUIRY_VERIFY(childFocusWidgetOne->focusOutEventRecieved);
     QVERIFY(childFocusWidgetOne->focusOutEventLostFocus);
 
 #if defined(Q_OS_WIN)
@@ -325,32 +325,32 @@ void tst_QFocusEvent::checkReason_ActiveWindow()
 
     QVERIFY( !childFocusWidgetOne->focusInEventRecieved );
     QVERIFY( childFocusWidgetOne->focusOutEventRecieved );
-    QCOMPARE( childFocusWidgetOne->focusOutEventReason, (int)Qt::ActiveWindowFocusReason);
+    QCOMPARE( childFocusWidgetOne->focusOutEventReason, (int)BobUI::ActiveWindowFocusReason);
     QVERIFY( !childFocusWidgetOne->hasFocus() );
 
     d->hide();
 
-    if (!QGuiApplication::platformName().compare(QLatin1String("offscreen"), Qt::CaseInsensitive)
-            || !QGuiApplication::platformName().compare(QLatin1String("minimal"), Qt::CaseInsensitive)
-            || !QGuiApplication::platformName().compare(QLatin1String("cocoa"), Qt::CaseInsensitive)) {
+    if (!QGuiApplication::platformName().compare(QLatin1String("offscreen"), BobUI::CaseInsensitive)
+            || !QGuiApplication::platformName().compare(QLatin1String("minimal"), BobUI::CaseInsensitive)
+            || !QGuiApplication::platformName().compare(QLatin1String("cocoa"), BobUI::CaseInsensitive)) {
         // Activate window of testFocusWidget, focus in that window goes to childFocusWidgetOne
         qWarning("Platforms offscreen, minimal and macOS require explicit activateWindow()");
         testFocusWidget->activateWindow();
     }
 
-    QTRY_VERIFY(childFocusWidgetOne->focusInEventRecieved);
+    BOBUIRY_VERIFY(childFocusWidgetOne->focusInEventRecieved);
     QVERIFY(childFocusWidgetOne->focusInEventGotFocus);
 
     QVERIFY( childFocusWidgetOne->hasFocus() );
     QVERIFY( childFocusWidgetOne->focusInEventRecieved );
-    QCOMPARE( childFocusWidgetOne->focusInEventReason, (int)Qt::ActiveWindowFocusReason);
+    QCOMPARE( childFocusWidgetOne->focusInEventReason, (int)BobUI::ActiveWindowFocusReason);
 
     const bool windowActivationReasonFail =
         QGuiApplication::platformName().toLower() == "minimal";
 
     struct Window : public QWindow
     {
-        Qt::FocusReason lastReason = Qt::NoFocusReason;
+        BobUI::FocusReason lastReason = BobUI::NoFocusReason;
     protected:
         void focusInEvent(QFocusEvent *event) override
         {
@@ -364,22 +364,22 @@ void tst_QFocusEvent::checkReason_ActiveWindow()
 
     Window window;
     window.show();
-    QVERIFY(QTest::qWaitForWindowActive(&window));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&window));
 
     if (windowActivationReasonFail)
         QEXPECT_FAIL("", "Platform doesn't set window activation reason for QWindow", Continue);
-    QCOMPARE(window.lastReason, Qt::ActiveWindowFocusReason);
-    window.lastReason = Qt::NoFocusReason;
+    QCOMPARE(window.lastReason, BobUI::ActiveWindowFocusReason);
+    window.lastReason = BobUI::NoFocusReason;
 
     Window window2;
     window2.show();
-    QVERIFY(QTest::qWaitForWindowActive(&window2));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&window2));
 
     if (windowActivationReasonFail)
         QEXPECT_FAIL("", "Platform doesn't set window activation reason for QWindow", Continue);
-    QCOMPARE(window.lastReason, Qt::ActiveWindowFocusReason);
+    QCOMPARE(window.lastReason, BobUI::ActiveWindowFocusReason);
 }
 
 
-QTEST_MAIN(tst_QFocusEvent)
+BOBUIEST_MAIN(tst_QFocusEvent)
 #include "tst_qfocusevent.moc"

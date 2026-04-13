@@ -1,5 +1,5 @@
 TEMPLATE = app
-QT = core network
+BOBUI = core network
 CONFIG += console
 
 SOURCES += qget.cpp

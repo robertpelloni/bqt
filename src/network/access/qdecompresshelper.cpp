@@ -1,28 +1,28 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qdecompresshelper_p.h"
 
-#include <QtCore/qiodevice.h>
-#include <QtCore/qcoreapplication.h>
+#include <BobUICore/qiodevice.h>
+#include <BobUICore/qcoreapplication.h>
 
 #include <limits>
 #include <zlib.h>
 
-#if QT_CONFIG(brotli)
+#if BOBUI_CONFIG(brotli)
 #    include <brotli/decode.h>
 #endif
 
-#if QT_CONFIG(zstd)
+#if BOBUI_CONFIG(zstd)
 #    include <zstd.h>
 #endif
 
 #include <array>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 namespace {
 struct ContentEncodingMapping
@@ -32,10 +32,10 @@ struct ContentEncodingMapping
 };
 
 constexpr ContentEncodingMapping contentEncodingMapping[] {
-#if QT_CONFIG(zstd)
+#if BOBUI_CONFIG(zstd)
     { "zstd", QDecompressHelper::Zstandard },
 #endif
-#if QT_CONFIG(brotli)
+#if BOBUI_CONFIG(brotli)
     { "br", QDecompressHelper::Brotli },
 #endif
     { "gzip", QDecompressHelper::GZip },
@@ -45,7 +45,7 @@ constexpr ContentEncodingMapping contentEncodingMapping[] {
 QDecompressHelper::ContentEncoding encodingFromByteArray(QByteArrayView ce) noexcept
 {
     for (const auto &mapping : contentEncodingMapping) {
-        if (ce.compare(mapping.name, Qt::CaseInsensitive) == 0)
+        if (ce.compare(mapping.name, BobUI::CaseInsensitive) == 0)
             return mapping.encoding;
     }
     return QDecompressHelper::None;
@@ -56,14 +56,14 @@ z_stream *toZlibPointer(void *ptr)
     return static_cast<z_stream_s *>(ptr);
 }
 
-#if QT_CONFIG(brotli)
+#if BOBUI_CONFIG(brotli)
 BrotliDecoderState *toBrotliPointer(void *ptr)
 {
     return static_cast<BrotliDecoderState *>(ptr);
 }
 #endif
 
-#if QT_CONFIG(zstd)
+#if BOBUI_CONFIG(zstd)
 ZSTD_DStream *toZstandardPointer(void *ptr)
 {
     return static_cast<ZSTD_DStream *>(ptr);
@@ -132,14 +132,14 @@ bool QDecompressHelper::setEncoding(ContentEncoding ce)
         break;
     }
     case Brotli:
-#if QT_CONFIG(brotli)
+#if BOBUI_CONFIG(brotli)
         decoderPointer = BrotliDecoderCreateInstance(nullptr, nullptr, nullptr);
 #else
         Q_UNREACHABLE();
 #endif
         break;
     case Zstandard:
-#if QT_CONFIG(zstd)
+#if BOBUI_CONFIG(zstd)
         decoderPointer = ZSTD_createDStream();
 #else
         Q_UNREACHABLE();
@@ -298,7 +298,7 @@ bool QDecompressHelper::countInternal()
     while (hasDataInternal()
            && decompressedDataBuffer.byteAmount() < MaxDecompressedDataBufferSize) {
         const qsizetype toRead = 256 * 1024;
-        QByteArray buffer(toRead, Qt::Uninitialized);
+        QByteArray buffer(toRead, BobUI::Uninitialized);
         qsizetype bytesRead = readInternal(buffer.data(), buffer.size());
         if (bytesRead == -1)
             return false;
@@ -537,7 +537,7 @@ void QDecompressHelper::clear()
         break;
     }
     case Brotli: {
-#if QT_CONFIG(brotli)
+#if BOBUI_CONFIG(brotli)
         BrotliDecoderState *brotliDecoderState = toBrotliPointer(decoderPointer);
         if (brotliDecoderState)
             BrotliDecoderDestroyInstance(brotliDecoderState);
@@ -545,7 +545,7 @@ void QDecompressHelper::clear()
         break;
     }
     case Zstandard: {
-#if QT_CONFIG(zstd)
+#if BOBUI_CONFIG(zstd)
         ZSTD_DStream *zstdStream = toZstandardPointer(decoderPointer);
         if (zstdStream)
             ZSTD_freeDStream(zstdStream);
@@ -672,7 +672,7 @@ qsizetype QDecompressHelper::readZLib(char *data, const qsizetype maxSize)
 
 qsizetype QDecompressHelper::readBrotli(char *data, const qsizetype maxSize)
 {
-#if !QT_CONFIG(brotli)
+#if !BOBUI_CONFIG(brotli)
     Q_UNUSED(data);
     Q_UNUSED(maxSize);
     Q_UNREACHABLE();
@@ -754,7 +754,7 @@ qsizetype QDecompressHelper::readBrotli(char *data, const qsizetype maxSize)
 
 qsizetype QDecompressHelper::readZstandard(char *data, const qsizetype maxSize)
 {
-#if !QT_CONFIG(zstd)
+#if !BOBUI_CONFIG(zstd)
     Q_UNUSED(data);
     Q_UNUSED(maxSize);
     Q_UNREACHABLE();
@@ -790,4 +790,4 @@ qsizetype QDecompressHelper::readZstandard(char *data, const qsizetype maxSize)
 #endif
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

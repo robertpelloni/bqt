@@ -1,24 +1,24 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef ANDROIDCONNECTIVITYMANAGER_H
 #define ANDROIDCONNECTIVITYMANAGER_H
 
 #include <QObject>
-#include <QtCore/qjniobject.h>
+#include <BobUICore/qjniobject.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class AndroidConnectivityManager : public QObject
 {
     Q_OBJECT
 public:
-    // Keep synchronized with AndroidConnectivity in QtAndroidNetworkInformation.java
+    // Keep synchronized with AndroidConnectivity in BobUIAndroidNetworkInformation.java
     enum class AndroidConnectivity { Connected, Unknown, Disconnected };
     Q_ENUM(AndroidConnectivity);
 
-    // Keep synchronized with Transport in QtAndroidNetworkInformation.java
+    // Keep synchronized with Transport in BobUIAndroidNetworkInformation.java
     enum class AndroidTransport {
         Unknown,
         Bluetooth,
@@ -50,6 +50,6 @@ private:
     Q_DISABLE_COPY_MOVE(AndroidConnectivityManager);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // ANDROIDCONNECTIVITYMANAGER_H

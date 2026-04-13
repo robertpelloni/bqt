@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "toolbar.h"
 
@@ -12,7 +12,7 @@
 #include <QPainterPath>
 #include <QSpinBox>
 #include <QLabel>
-#include <QToolTip>
+#include <BOBUIoolTip>
 
 #include <stdlib.h>
 
@@ -26,10 +26,10 @@ static QPixmap genIcon(const QSize &iconSize, const QString &, const QColor &col
 
     QPainter p(&image);
 
-    extern void render_qt_text(QPainter *, int, int, const QColor &);
-    render_qt_text(&p, w, h, color);
+    extern void render_bobui_text(QPainter *, int, int, const QColor &);
+    render_bobui_text(&p, w, h, color);
 
-    QPixmap pm = QPixmap::fromImage(image, Qt::DiffuseDither | Qt::DiffuseAlphaDither);
+    QPixmap pm = QPixmap::fromImage(image, BobUI::DiffuseDither | BobUI::DiffuseAlphaDither);
     pm.setDevicePixelRatio(pixelRatio);
     return pm;
 }
@@ -38,7 +38,7 @@ static QPixmap genIcon(const QSize &iconSize, int number, const QColor &color, q
 { return genIcon(iconSize, QString::number(number), color, pixelRatio); }
 
 ToolBar::ToolBar(const QString &title, QMainWindow *mainWindow)
-    : QToolBar(mainWindow)
+    : BOBUIoolBar(mainWindow)
     , mainWindow(mainWindow)
     , spinbox(nullptr)
     , spinboxAction(nullptr)
@@ -50,21 +50,21 @@ ToolBar::ToolBar(const QString &title, QMainWindow *mainWindow)
 
     qreal dpr = devicePixelRatio();
     menu = new QMenu("One", this);
-    menu->setIcon(genIcon(iconSize(), 1, Qt::black, dpr));
-    menu->addAction(genIcon(iconSize(), "A", Qt::blue, dpr), "A");
-    menu->addAction(genIcon(iconSize(), "B", Qt::blue, dpr), "B");
-    menu->addAction(genIcon(iconSize(), "C", Qt::blue, dpr), "C");
+    menu->setIcon(genIcon(iconSize(), 1, BobUI::black, dpr));
+    menu->addAction(genIcon(iconSize(), "A", BobUI::blue, dpr), "A");
+    menu->addAction(genIcon(iconSize(), "B", BobUI::blue, dpr), "B");
+    menu->addAction(genIcon(iconSize(), "C", BobUI::blue, dpr), "C");
     addAction(menu->menuAction());
 
-    QAction *two = addAction(genIcon(iconSize(), 2, Qt::white, dpr), "Two");
+    QAction *two = addAction(genIcon(iconSize(), 2, BobUI::white, dpr), "Two");
     QFont boldFont;
     boldFont.setBold(true);
     two->setFont(boldFont);
 
-    addAction(genIcon(iconSize(), 3, Qt::red, dpr), "Three");
-    addAction(genIcon(iconSize(), 4, Qt::green, dpr), "Four");
-    addAction(genIcon(iconSize(), 5, Qt::blue, dpr), "Five");
-    addAction(genIcon(iconSize(), 6, Qt::yellow, dpr), "Six");
+    addAction(genIcon(iconSize(), 3, BobUI::red, dpr), "Three");
+    addAction(genIcon(iconSize(), 4, BobUI::green, dpr), "Four");
+    addAction(genIcon(iconSize(), 5, BobUI::blue, dpr), "Five");
+    addAction(genIcon(iconSize(), 6, BobUI::yellow, dpr), "Six");
     orderAction = new QAction(this);
     orderAction->setText(tr("Order Items in Tool Bar"));
     connect(orderAction, &QAction::triggered, this, &ToolBar::order);
@@ -162,33 +162,33 @@ ToolBar::ToolBar(const QString &title, QMainWindow *mainWindow)
 
 void ToolBar::updateMenu()
 {
-    const Qt::ToolBarArea area = mainWindow->toolBarArea(this);
-    const Qt::ToolBarAreas areas = allowedAreas();
+    const BobUI::ToolBarArea area = mainWindow->toolBarArea(this);
+    const BobUI::ToolBarAreas areas = allowedAreas();
 
     movableAction->setChecked(isMovable());
 
-    allowLeftAction->setChecked(isAreaAllowed(Qt::LeftToolBarArea));
-    allowRightAction->setChecked(isAreaAllowed(Qt::RightToolBarArea));
-    allowTopAction->setChecked(isAreaAllowed(Qt::TopToolBarArea));
-    allowBottomAction->setChecked(isAreaAllowed(Qt::BottomToolBarArea));
+    allowLeftAction->setChecked(isAreaAllowed(BobUI::LeftToolBarArea));
+    allowRightAction->setChecked(isAreaAllowed(BobUI::RightToolBarArea));
+    allowTopAction->setChecked(isAreaAllowed(BobUI::TopToolBarArea));
+    allowBottomAction->setChecked(isAreaAllowed(BobUI::BottomToolBarArea));
 
     if (allowedAreasActions->isEnabled()) {
-        allowLeftAction->setEnabled(area != Qt::LeftToolBarArea);
-        allowRightAction->setEnabled(area != Qt::RightToolBarArea);
-        allowTopAction->setEnabled(area != Qt::TopToolBarArea);
-        allowBottomAction->setEnabled(area != Qt::BottomToolBarArea);
+        allowLeftAction->setEnabled(area != BobUI::LeftToolBarArea);
+        allowRightAction->setEnabled(area != BobUI::RightToolBarArea);
+        allowTopAction->setEnabled(area != BobUI::TopToolBarArea);
+        allowBottomAction->setEnabled(area != BobUI::BottomToolBarArea);
     }
 
-    leftAction->setChecked(area == Qt::LeftToolBarArea);
-    rightAction->setChecked(area == Qt::RightToolBarArea);
-    topAction->setChecked(area == Qt::TopToolBarArea);
-    bottomAction->setChecked(area == Qt::BottomToolBarArea);
+    leftAction->setChecked(area == BobUI::LeftToolBarArea);
+    rightAction->setChecked(area == BobUI::RightToolBarArea);
+    topAction->setChecked(area == BobUI::TopToolBarArea);
+    bottomAction->setChecked(area == BobUI::BottomToolBarArea);
 
     if (areaActions->isEnabled()) {
-        leftAction->setEnabled(areas & Qt::LeftToolBarArea);
-        rightAction->setEnabled(areas & Qt::RightToolBarArea);
-        topAction->setEnabled(areas & Qt::TopToolBarArea);
-        bottomAction->setEnabled(areas & Qt::BottomToolBarArea);
+        leftAction->setEnabled(areas & BobUI::LeftToolBarArea);
+        rightAction->setEnabled(areas & BobUI::RightToolBarArea);
+        topAction->setEnabled(areas & BobUI::TopToolBarArea);
+        bottomAction->setEnabled(areas & BobUI::BottomToolBarArea);
     }
 }
 
@@ -246,21 +246,21 @@ void ToolBar::removeSpinBox()
     removeSpinBoxAction->setEnabled(false);
 }
 
-void ToolBar::allow(Qt::ToolBarArea area, bool a)
+void ToolBar::allow(BobUI::ToolBarArea area, bool a)
 {
-    Qt::ToolBarAreas areas = allowedAreas();
+    BobUI::ToolBarAreas areas = allowedAreas();
     areas = a ? areas | area : areas & ~area;
     setAllowedAreas(areas);
 
     if (areaActions->isEnabled()) {
-        leftAction->setEnabled(areas & Qt::LeftToolBarArea);
-        rightAction->setEnabled(areas & Qt::RightToolBarArea);
-        topAction->setEnabled(areas & Qt::TopToolBarArea);
-        bottomAction->setEnabled(areas & Qt::BottomToolBarArea);
+        leftAction->setEnabled(areas & BobUI::LeftToolBarArea);
+        rightAction->setEnabled(areas & BobUI::RightToolBarArea);
+        topAction->setEnabled(areas & BobUI::TopToolBarArea);
+        bottomAction->setEnabled(areas & BobUI::BottomToolBarArea);
     }
 }
 
-void ToolBar::place(Qt::ToolBarArea area, bool p)
+void ToolBar::place(BobUI::ToolBarArea area, bool p)
 {
     if (!p)
         return;
@@ -268,10 +268,10 @@ void ToolBar::place(Qt::ToolBarArea area, bool p)
     mainWindow->addToolBar(area, this);
 
     if (allowedAreasActions->isEnabled()) {
-        allowLeftAction->setEnabled(area != Qt::LeftToolBarArea);
-        allowRightAction->setEnabled(area != Qt::RightToolBarArea);
-        allowTopAction->setEnabled(area != Qt::TopToolBarArea);
-        allowBottomAction->setEnabled(area != Qt::BottomToolBarArea);
+        allowLeftAction->setEnabled(area != BobUI::LeftToolBarArea);
+        allowRightAction->setEnabled(area != BobUI::RightToolBarArea);
+        allowTopAction->setEnabled(area != BobUI::TopToolBarArea);
+        allowBottomAction->setEnabled(area != BobUI::BottomToolBarArea);
     }
 }
 
@@ -279,28 +279,28 @@ void ToolBar::changeMovable(bool movable)
 { setMovable(movable); }
 
 void ToolBar::allowLeft(bool a)
-{ allow(Qt::LeftToolBarArea, a); }
+{ allow(BobUI::LeftToolBarArea, a); }
 
 void ToolBar::allowRight(bool a)
-{ allow(Qt::RightToolBarArea, a); }
+{ allow(BobUI::RightToolBarArea, a); }
 
 void ToolBar::allowTop(bool a)
-{ allow(Qt::TopToolBarArea, a); }
+{ allow(BobUI::TopToolBarArea, a); }
 
 void ToolBar::allowBottom(bool a)
-{ allow(Qt::BottomToolBarArea, a); }
+{ allow(BobUI::BottomToolBarArea, a); }
 
 void ToolBar::placeLeft(bool p)
-{ place(Qt::LeftToolBarArea, p); }
+{ place(BobUI::LeftToolBarArea, p); }
 
 void ToolBar::placeRight(bool p)
-{ place(Qt::RightToolBarArea, p); }
+{ place(BobUI::RightToolBarArea, p); }
 
 void ToolBar::placeTop(bool p)
-{ place(Qt::TopToolBarArea, p); }
+{ place(BobUI::TopToolBarArea, p); }
 
 void ToolBar::placeBottom(bool p)
-{ place(Qt::BottomToolBarArea, p); }
+{ place(BobUI::BottomToolBarArea, p); }
 
 void ToolBar::insertToolBarBreak()
 {

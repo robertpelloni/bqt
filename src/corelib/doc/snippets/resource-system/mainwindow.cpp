@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 #include "mainwindow.h"
 MainWindow::MainWindow()
@@ -16,7 +16,7 @@ MainWindow::MainWindow()
 
     readSettings();
 
-    connect(textEdit->document(), &QTextEdit::contentsChanged,
+    connect(textEdit->document(), &BOBUIextEdit::contentsChanged,
             this, &QAction::documentWasModified);
 
     setCurrentFile(QString());
@@ -72,7 +72,7 @@ void MainWindow::about()
 {
    QMessageBox::about(this, tr("About Application"),
             tr("The <b>Application</b> example demonstrates how to "
-               "write modern GUI applications using Qt, with a menu bar, "
+               "write modern GUI applications using BobUI, with a menu bar, "
                "toolbars, and a status bar."));
 }
 
@@ -114,33 +114,33 @@ void MainWindow::createActions()
     cutAct->setShortcuts(QKeySequence::Cut);
     cutAct->setStatusTip(tr("Cut the current selection's contents to the "
                             "clipboard"));
-    connect(cutAct, &QAction::triggered, textEdit, &QTextEdit::cut);
+    connect(cutAct, &QAction::triggered, textEdit, &BOBUIextEdit::cut);
 
     copyAct = new QAction(QIcon(":/images/copy.png"), tr("&Copy"), this);
     copyAct->setShortcuts(QKeySequence::Copy);
     copyAct->setStatusTip(tr("Copy the current selection's contents to the "
                              "clipboard"));
-    connect(copyAct, &QAction::triggered, textEdit, &QTextEdit::copy);
+    connect(copyAct, &QAction::triggered, textEdit, &BOBUIextEdit::copy);
 
     pasteAct = new QAction(QIcon(":/images/paste.png"), tr("&Paste"), this);
     pasteAct->setShortcuts(QKeySequence::Paste);
     pasteAct->setStatusTip(tr("Paste the clipboard's contents into the current "
                               "selection"));
-    connect(pasteAct, &QAction::triggered, textEdit, &QTextEdit::paste);
+    connect(pasteAct, &QAction::triggered, textEdit, &BOBUIextEdit::paste);
 
     aboutAct = new QAction(tr("&About"), this);
     aboutAct->setStatusTip(tr("Show the application's About box"));
     connect(aboutAct, &QAction::triggered, this, &MainWindow::about);
 
-    aboutQtAct = new QAction(tr("About &Qt"), this);
-    aboutQtAct->setStatusTip(tr("Show the Qt library's About box"));
-    connect(aboutQtAct, &QAction::triggered, qApp, &QApplication::aboutQt);
+    aboutBobUIAct = new QAction(tr("About &BobUI"), this);
+    aboutBobUIAct->setStatusTip(tr("Show the BobUI library's About box"));
+    connect(aboutBobUIAct, &QAction::triggered, qApp, &QApplication::aboutBobUI);
 
     cutAct->setEnabled(false);
     copyAct->setEnabled(false);
-    connect(textEdit, &QTextEdit::copyAvailable,
+    connect(textEdit, &BOBUIextEdit::copyAvailable,
             cutAct, &QAction::setEnabled);
-    connect(textEdit, &QTextEdit::copyAvailable,
+    connect(textEdit, &BOBUIextEdit::copyAvailable,
             copyAct, &QAction::setEnabled);
 }
 
@@ -163,7 +163,7 @@ void MainWindow::createMenus()
 
     helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addAction(aboutAct);
-    helpMenu->addAction(aboutQtAct);
+    helpMenu->addAction(aboutBobUIAct);
 }
 
 void MainWindow::createToolBars()
@@ -186,7 +186,7 @@ void MainWindow::createStatusBar()
 
 void MainWindow::readSettings()
 {
-    QSettings settings("QtProject", "Application Example");
+    QSettings settings("BobUIProject", "Application Example");
     QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
     QSize size = settings.value("size", QSize(400, 400)).toSize();
     resize(size);
@@ -195,7 +195,7 @@ void MainWindow::readSettings()
 
 void MainWindow::writeSettings()
 {
-    QSettings settings("QtProject", "Application Example");
+    QSettings settings("BobUIProject", "Application Example");
     settings.setValue("pos", pos());
     settings.setValue("size", size());
 }
@@ -227,12 +227,12 @@ void MainWindow::loadFile(const QString &fileName)
         return;
     }
 
-    QTextStream in(&file);
-#ifndef QT_NO_CURSOR
-    QGuiApplication::setOverrideCursor(Qt::WaitCursor);
+    BOBUIextStream in(&file);
+#ifndef BOBUI_NO_CURSOR
+    QGuiApplication::setOverrideCursor(BobUI::WaitCursor);
 #endif
     textEdit->setPlainText(in.readAll());
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     QGuiApplication::restoreOverrideCursor();
 #endif
 
@@ -251,12 +251,12 @@ bool MainWindow::saveFile(const QString &fileName)
         return false;
     }
 
-    QTextStream out(&file);
-#ifndef QT_NO_CURSOR
-    QGuiApplication::setOverrideCursor(Qt::WaitCursor);
+    BOBUIextStream out(&file);
+#ifndef BOBUI_NO_CURSOR
+    QGuiApplication::setOverrideCursor(BobUI::WaitCursor);
 #endif
     out << textEdit->toPlainText();
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     QGuiApplication::restoreOverrideCursor();
 #endif
 

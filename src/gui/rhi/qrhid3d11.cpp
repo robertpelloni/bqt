@@ -1,20 +1,20 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qrhid3d11_p.h"
 #include "qshader.h"
 #include "vs_test_p.h"
 #include <QWindow>
 #include <qmath.h>
-#include <QtCore/qcryptographichash.h>
-#include <QtCore/private/qsystemerror_p.h>
+#include <BobUICore/qcryptographichash.h>
+#include <BobUICore/private/qsystemerror_p.h>
 #include "qrhid3dhelpers_p.h"
 
 #include <cstdio>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*
   Direct3D 11 backend. Provides a double-buffered flip model swapchain.
@@ -28,7 +28,7 @@ using namespace Qt::StringLiterals;
 
 /*!
     \class QRhiD3D11InitParams
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Direct3D 11 specific initialization parameters.
@@ -82,7 +82,7 @@ using namespace Qt::StringLiterals;
 
 /*!
     \class QRhiD3D11NativeHandles
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Holds the D3D device and device context used by the QRhi.
@@ -218,17 +218,17 @@ bool QRhiD3D11::create(QRhi::Flags flags)
         factory5->Release();
     }
 
-    if (qEnvironmentVariableIntValue("QT_D3D_FLIP_DISCARD"))
-        qWarning("The default swap effect is FLIP_DISCARD, QT_D3D_FLIP_DISCARD is now ignored");
+    if (qEnvironmentVariableIntValue("BOBUI_D3D_FLIP_DISCARD"))
+        qWarning("The default swap effect is FLIP_DISCARD, BOBUI_D3D_FLIP_DISCARD is now ignored");
 
     // Support for flip model swapchains is required now (since we are
     // targeting Windows 10+), but the option for using the old model is still
     // there. (some features are not supported then, however)
-    useLegacySwapchainModel = qEnvironmentVariableIntValue("QT_D3D_NO_FLIP");
+    useLegacySwapchainModel = qEnvironmentVariableIntValue("BOBUI_D3D_NO_FLIP");
 
     if (!useLegacySwapchainModel) {
-        if (qEnvironmentVariableIsSet("QT_D3D_MAX_FRAME_LATENCY"))
-            maxFrameLatency = UINT(qMax(0, qEnvironmentVariableIntValue("QT_D3D_MAX_FRAME_LATENCY")));
+        if (qEnvironmentVariableIsSet("BOBUI_D3D_MAX_FRAME_LATENCY"))
+            maxFrameLatency = UINT(qMax(0, qEnvironmentVariableIntValue("BOBUI_D3D_MAX_FRAME_LATENCY")));
     } else {
         maxFrameLatency = 0;
     }
@@ -245,8 +245,8 @@ bool QRhiD3D11::create(QRhi::Flags flags)
     if (!importedDeviceAndContext) {
         IDXGIAdapter1 *adapter;
         int requestedAdapterIndex = -1;
-        if (qEnvironmentVariableIsSet("QT_D3D_ADAPTER_INDEX"))
-            requestedAdapterIndex = qEnvironmentVariableIntValue("QT_D3D_ADAPTER_INDEX");
+        if (qEnvironmentVariableIsSet("BOBUI_D3D_ADAPTER_INDEX"))
+            requestedAdapterIndex = qEnvironmentVariableIntValue("BOBUI_D3D_ADAPTER_INDEX");
 
         if (requestedRhiAdapter)
             adapterLuid = static_cast<QD3D11Adapter *>(requestedRhiAdapter)->luid;
@@ -836,7 +836,7 @@ QByteArray QRhiD3D11::pipelineCacheData()
                 + sizeof(quint32) + bytecode.size();
     }
 
-    QByteArray buf(dataOffset + dataSize, Qt::Uninitialized);
+    QByteArray buf(dataOffset + dataSize, BobUI::Uninitialized);
     char *p = buf.data() + dataOffset;
     for (auto it = m_bytecodeCache.cbegin(), end = m_bytecodeCache.cend(); it != end; ++it) {
         BytecodeCacheKey key = it.key();
@@ -919,19 +919,19 @@ void QRhiD3D11::setPipelineCacheData(const QByteArray &data)
         quint32 len = 0;
         memcpy(&len, p, 4);
         p += 4;
-        QByteArray sourceHash(len, Qt::Uninitialized);
+        QByteArray sourceHash(len, BobUI::Uninitialized);
         memcpy(sourceHash.data(), p, len);
         p += len;
 
         memcpy(&len, p, 4);
         p += 4;
-        QByteArray target(len, Qt::Uninitialized);
+        QByteArray target(len, BobUI::Uninitialized);
         memcpy(target.data(), p, len);
         p += len;
 
         memcpy(&len, p, 4);
         p += 4;
-        QByteArray entryPoint(len, Qt::Uninitialized);
+        QByteArray entryPoint(len, BobUI::Uninitialized);
         memcpy(entryPoint.data(), p, len);
         p += len;
 
@@ -941,7 +941,7 @@ void QRhiD3D11::setPipelineCacheData(const QByteArray &data)
 
         memcpy(&len, p, 4);
         p += 4;
-        QByteArray bytecode(len, Qt::Uninitialized);
+        QByteArray bytecode(len, BobUI::Uninitialized);
         memcpy(bytecode.data(), p, len);
         p += len;
 
@@ -5615,4 +5615,4 @@ bool RenderTargetUavUpdateState::update(QD3D11RenderTargetData *data, ID3D11Unor
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,7 +1,7 @@
 // Copyright (C) 2012 Thorbjørn Lund Martsum - tmartsum[at]gmail.com
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtWidgets/QtWidgets>
+#include <BobUIWidgets/BobUIWidgets>
 
 const int columnCount = 1500;
 
@@ -14,7 +14,7 @@ public:
     {
         resize(1200, 400);
         gridLayout = new QGridLayout(this);
-        tableView = new QTableView(this);
+        tableView = new BOBUIableView(this);
 
         gridLayout->addWidget(tableView, 0, 0, 2, 1);
         spinPrecision = new QSpinBox(this);
@@ -41,8 +41,8 @@ public:
             model.setData(model.index(0, u), col);
             model.setData(model.index(1, v), col);
 
-            model.setData(model.index(0, u), f,  Qt::FontRole);
-            model.setData(model.index(1, v), f,  Qt::FontRole);
+            model.setData(model.index(0, u), f,  BobUI::FontRole);
+            model.setData(model.index(1, v), f,  BobUI::FontRole);
         }
         tableView->setModel(&model);
 
@@ -51,7 +51,7 @@ public:
 
         // Make last index in first row a bit special
         f.setPixelSize(96);
-        model.setData(model.index(0, columnCount - 1), f,  Qt::FontRole);
+        model.setData(model.index(0, columnCount - 1), f,  BobUI::FontRole);
         model.setData(model.index(0, columnCount - 1), QString::fromLatin1("qI"));
         tableView->horizontalHeader()->resizeSection(columnCount - 1, 140);
 
@@ -64,7 +64,7 @@ protected slots:
     void slotValueChanged(int newval);
 protected:
     QGridLayout *gridLayout;
-    QTableView *tableView;
+    BOBUIableView *tableView;
     QSpinBox *spinPrecision;
     QSpacerItem *verticalSpacer;
     QStandardItemModel model;

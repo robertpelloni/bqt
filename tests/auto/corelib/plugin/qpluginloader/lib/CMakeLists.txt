@@ -1,18 +1,18 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## tst_qpluginloaderlib Generic Library:
 #####################################################################
 
-qt_internal_add_cmake_library(tst_qpluginloaderlib
+bobui_internal_add_cmake_library(tst_qpluginloaderlib
     SHARED
     INSTALL_DIRECTORY "${INSTALL_TESTSDIR}/tst_qpluginloader/bin"
     OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/../bin"
     SOURCES
         mylib.c
     LIBRARIES
-        Qt::Core
+        BobUI::Core
 )
 
 if(WIN32)
@@ -23,7 +23,7 @@ endif()
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(tst_qpluginloaderlib CONDITION MSVC
+bobui_internal_extend_target(tst_qpluginloaderlib CONDITION MSVC
     DEFINES
         WIN32_MSVC
 )

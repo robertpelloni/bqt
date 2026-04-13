@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QJSONVALUE_H
 #define QJSONVALUE_H
 
-#include <QtCore/qcborvalue.h>
-#include <QtCore/qcompare.h>
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < QT_VERSION_CHECK(7, 0, 0)) && !defined(QT_BOOTSTRAPPED)
-#include <QtCore/qjsondocument.h>
+#include <BobUICore/qcborvalue.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qglobal.h>
+#if (BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)) && !defined(BOBUI_BOOTSTRAPPED)
+#include <BobUICore/qjsondocument.h>
 #endif
-#include <QtCore/qjsonparseerror.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qshareddata.h>
+#include <BobUICore/qjsonparseerror.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qshareddata.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QVariant;
 class QJsonArray;
@@ -39,7 +39,7 @@ public:
         Undefined = 0x80
     };
 
-#if (QT_VERSION < QT_VERSION_CHECK(7, 0, 0)) && !defined(QT_BOOTSTRAPPED)
+#if (BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)) && !defined(BOBUI_BOOTSTRAPPED)
     using JsonFormat = QJsonDocument::JsonFormat;
 #else
     enum class JsonFormat {
@@ -55,8 +55,8 @@ public:
     QJsonValue(qint64 v);
     QJsonValue(const QString &s);
     QJsonValue(QLatin1StringView s);
-#ifndef QT_NO_CAST_FROM_ASCII
-    QT_ASCII_CAST_WARN inline QJsonValue(const char *s)
+#ifndef BOBUI_NO_CAST_FROM_ASCII
+    BOBUI_ASCII_CAST_WARN inline QJsonValue(const char *s)
         : QJsonValue(QString::fromUtf8(s)) {}
 #endif
     QJsonValue(const QJsonArray &a);
@@ -112,7 +112,7 @@ public:
     const QJsonValue operator[](QLatin1StringView key) const;
     const QJsonValue operator[](qsizetype i) const;
 
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
     bool operator==(const QJsonValue &other) const;
     bool operator!=(const QJsonValue &other) const;
 #endif
@@ -209,7 +209,7 @@ protected:
     Q_CORE_EXPORT static QAnyStringView objectKeyView(QJsonValueConstRef self);
     QAnyStringView objectKeyView() const { return objectKeyView(*this); }
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0) && !defined(QT_BOOTSTRAPPED)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0) && !defined(BOBUI_BOOTSTRAPPED)
     QJsonValueConstRef(QJsonArray *array, qsizetype idx)
         : a(array), is_object(false), index(static_cast<quint64>(idx)) {}
     QJsonValueConstRef(QJsonObject *object, qsizetype idx)
@@ -257,16 +257,16 @@ protected:
     friend class QJsonPrivate::Value;
 };
 
-QT_WARNING_PUSH
-QT6_ONLY(QT_WARNING_DISABLE_MSVC(4275)) // non dll-interface class 'QJsonValueConstRef' used as base for dll-interface class 'QJsonValueRef'
-class QT6_ONLY(Q_CORE_EXPORT) QJsonValueRef : public QJsonValueConstRef
+BOBUI_WARNING_PUSH
+BOBUI6_ONLY(BOBUI_WARNING_DISABLE_MSVC(4275)) // non dll-interface class 'QJsonValueConstRef' used as base for dll-interface class 'QJsonValueRef'
+class BOBUI6_ONLY(Q_CORE_EXPORT) QJsonValueRef : public QJsonValueConstRef
 {
 public:
     QJsonValueRef(const QJsonValueRef &) = default;
-    QT7_ONLY(Q_CORE_EXPORT) QJsonValueRef &operator = (const QJsonValue &val);
-    QT7_ONLY(Q_CORE_EXPORT) QJsonValueRef &operator = (const QJsonValueRef &val);
+    BOBUI7_ONLY(Q_CORE_EXPORT) QJsonValueRef &operator = (const QJsonValue &val);
+    BOBUI7_ONLY(Q_CORE_EXPORT) QJsonValueRef &operator = (const QJsonValueRef &val);
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0) && !defined(QT_BOOTSTRAPPED)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0) && !defined(BOBUI_BOOTSTRAPPED)
     // retained for binary compatibility (due to the Q_CORE_EXPORT) because at
     // least one compiler emits and exports all inlines in an exported class
 
@@ -301,7 +301,7 @@ public:
     const QJsonValue operator[](QLatin1StringView key) const { return QJsonValueConstRef::operator[](key); }
     const QJsonValue operator[](qsizetype i) const { return QJsonValueConstRef::operator[](i); }
 
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
     inline bool operator==(const QJsonValue &other) const { return comparesEqual(*this, other); }
     inline bool operator!=(const QJsonValue &other) const { return !comparesEqual(*this, other); }
 #endif
@@ -326,13 +326,13 @@ private:
 
 private:
     using QJsonValueConstRef::QJsonValueConstRef;
-#endif // < Qt 7
+#endif // < BobUI 7
 
-    QT7_ONLY(Q_CORE_EXPORT) void detach();
+    BOBUI7_ONLY(Q_CORE_EXPORT) void detach();
     friend class QJsonArray;
     friend class QJsonObject;
 };
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
 inline QJsonValue QCborValueConstRef::toJsonValue() const
 {
@@ -341,15 +341,15 @@ inline QJsonValue QCborValueConstRef::toJsonValue() const
 
 Q_CORE_EXPORT size_t qHash(const QJsonValue &value, size_t seed = 0);
 
-#if !defined(QT_NO_DEBUG_STREAM)
+#if !defined(BOBUI_NO_DEBUG_STREAM)
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QJsonValue &);
 #endif
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QJsonValue &);
 Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QJsonValue &);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QJSONVALUE_H

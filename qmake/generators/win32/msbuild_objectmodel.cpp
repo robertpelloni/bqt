@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "msbuild_objectmodel.h"
 
@@ -12,7 +12,7 @@
 #include <qregularexpression.h>
 #include <qvarlengtharray.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // XML Tags ---------------------------------------------------------
 const char _CLCompile[]                         = "ClCompile";
@@ -284,7 +284,7 @@ static QString commandLinesForOutput(QStringList commands)
     // backends), we insert the checks ourselves, using the undocumented jump target.
     static QString errchk = QStringLiteral("if errorlevel 1 goto VCEnd");
     for (int i = commands.size() - 2; i >= 0; --i) {
-        if (!commands.at(i).startsWith("rem", Qt::CaseInsensitive))
+        if (!commands.at(i).startsWith("rem", BobUI::CaseInsensitive))
             commands.insert(i + 1, errchk);
     }
     return commands.join("\r\n");
@@ -516,7 +516,7 @@ void VCXProjectWriter::write(XmlOutput &xml, VCProjectSingleConfig &tool)
         warn_msg(WarnLogic, "Generator: cannot open output filter file");
         return;
     }
-    QTextStream ts(&filterFile);
+    BOBUIextStream ts(&filterFile);
     XmlOutput xmlFilter(ts, XmlOutput::NoConversion);
 
     xmlFilter.setIndentString("  ");
@@ -746,9 +746,9 @@ void VCXProjectWriter::write(XmlOutput &xml, VCProject &tool)
 
         xml << closetag();
 
-        // windeployqt
-        if (!config.windeployqt.ExcludedFromBuild)
-            write(xml, config.windeployqt);
+        // windeploybobui
+        if (!config.windeploybobui.ExcludedFromBuild)
+            write(xml, config.windeploybobui);
     }
 
     // The file filters are added in a separate file for MSBUILD.
@@ -758,7 +758,7 @@ void VCXProjectWriter::write(XmlOutput &xml, VCProject &tool)
         warn_msg(WarnLogic, "Cannot open output filter file");
         return;
     }
-    QTextStream ts(&filterFile);
+    BOBUIextStream ts(&filterFile);
     XmlOutput xmlFilter(ts, XmlOutput::NoConversion);
 
     xmlFilter.setIndentString("  ");
@@ -1379,7 +1379,7 @@ static XmlOutput::xml_output fixedProgramDataBaseFileNameOutput(const VCCLCompil
     if (tool.config->CompilerVersion >= NET2012
             && tool.DebugInformationFormat == debugDisabled
             && tool.ProgramDataBaseFileName.isEmpty()) {
-        // Force the creation of an empty tag to work-around Visual Studio bug. See QTBUG-35570.
+        // Force the creation of an empty tag to work-around Visual Studio bug. See BOBUIBUG-35570.
         return tagValue(_ProgramDataBaseFileName, tool.ProgramDataBaseFileName);
     }
     return attrTagS(_ProgramDataBaseFileName, tool.ProgramDataBaseFileName);
@@ -1672,9 +1672,9 @@ void VCXProjectWriter::write(XmlOutput &xml, const VCDeploymentTool &tool)
     // SmartDevice deployment not supported in VS 2010
 }
 
-void VCXProjectWriter::write(XmlOutput &xml, const VCWinDeployQtTool &tool)
+void VCXProjectWriter::write(XmlOutput &xml, const VCWinDeployBobUITool &tool)
 {
-    const QString name = QStringLiteral("WinDeployQt_") + tool.config->Name;
+    const QString name = QStringLiteral("WinDeployBobUI_") + tool.config->Name;
     xml << tag("Target")
            << attrTag(_Name, name)
            << attrTag("Condition", generateCondition(*tool.config))
@@ -1688,7 +1688,7 @@ void VCXProjectWriter::write(XmlOutput &xml, const VCWinDeployQtTool &tool)
            << closetag()
         << closetag()
         << tag("Target")
-           << attrTag(_Name, QStringLiteral("PopulateWinDeployQtItems_") + tool.config->Name)
+           << attrTag(_Name, QStringLiteral("PopulateWinDeployBobUIItems_") + tool.config->Name)
            << attrTag("Condition", generateCondition(*tool.config))
            << attrTag("AfterTargets", "Link")
            << attrTag("DependsOnTargets", name)
@@ -1922,7 +1922,7 @@ bool VCXProjectWriter::outputFileConfig(OutputFilterData *d, XmlOutput &xml, Xml
 static bool isFileClCompatible(const QString &filePath)
 {
     auto filePathEndsWith = [&filePath] (const QString &ext) {
-        return filePath.endsWith(ext, Qt::CaseInsensitive);
+        return filePath.endsWith(ext, BobUI::CaseInsensitive);
     };
     return std::any_of(Option::cpp_ext.cbegin(), Option::cpp_ext.cend(), filePathEndsWith)
             || std::any_of(Option::c_ext.cbegin(), Option::c_ext.cend(), filePathEndsWith);
@@ -1998,4 +1998,4 @@ XmlOutput::xml_output VCXProjectWriter::attrTagToolsVersion(const VCConfiguratio
     return attrTag("ToolsVersion", "4.0");
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

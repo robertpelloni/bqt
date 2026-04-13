@@ -15,7 +15,7 @@ repositories {
     mavenCentral()
 }
 
-apply plugin: qtGradlePluginType
+apply plugin: bobuiGradlePluginType
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
@@ -28,13 +28,13 @@ android {
      * The following variables:
      * - androidBuildToolsVersion,
      * - androidCompileSdkVersion
-     * - qtAndroidDir - holds the path to qt android files
-     *                   needed to build any Qt application
+     * - bobuiAndroidDir - holds the path to bobui android files
+     *                   needed to build any BobUI application
      *                   on Android.
-     * - qtGradlePluginType - whether to build an app or a library
+     * - bobuiGradlePluginType - whether to build an app or a library
      *
      * are defined in gradle.properties file. This file is
-     * updated by QtCreator and androiddeployqt tools.
+     * updated by BobUICreator and androiddeploybobui tools.
      * Changing them manually might break the compilation!
      *******************************************************/
 
@@ -46,9 +46,9 @@ android {
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = [qtAndroidDir + '/src', 'src', 'java']
-            aidl.srcDirs = [qtAndroidDir + '/src', 'src', 'aidl']
-            res.srcDirs = [qtAndroidDir + '/res', 'res']
+            java.srcDirs = [bobuiAndroidDir + '/src', 'src', 'java']
+            aidl.srcDirs = [bobuiAndroidDir + '/src', 'src', 'aidl']
+            res.srcDirs = [bobuiAndroidDir + '/res', 'res']
             resources.srcDirs = ['resources']
             renderscript.srcDirs = ['src']
             assets.srcDirs = ['assets']
@@ -71,7 +71,7 @@ android {
     }
 
     aaptOptions {
-        // Do not compress Qt binary resources file
+        // Do not compress BobUI binary resources file
         noCompress 'rcc'
     }
 
@@ -83,8 +83,8 @@ android {
 
     defaultConfig {
         resConfig "en"
-        minSdkVersion qtMinSdkVersion
-        targetSdkVersion qtTargetSdkVersion
-        ndk.abiFilters = qtTargetAbiList.split(",")
+        minSdkVersion bobuiMinSdkVersion
+        targetSdkVersion bobuiTargetSdkVersion
+        ndk.abiFilters = bobuiTargetAbiList.split(",")
     }
 }

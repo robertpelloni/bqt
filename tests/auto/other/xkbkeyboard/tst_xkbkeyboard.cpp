@@ -1,10 +1,10 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/qtest.h>
+#include <BobUITest/bobuiest.h>
 
-#include <QtCore/qobject.h>
-#include <QtCore/qmetaobject.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qmetaobject.h>
 
 #include <qpa/qplatforminputcontextfactory_p.h>
 #include <qpa/qplatforminputcontext.h>
@@ -31,6 +31,6 @@ void tst_XkbKeyboard::verifyComposeInputContextInterface()
     Q_ASSERT(method.isValid());
 }
 
-QTEST_MAIN(tst_XkbKeyboard)
+BOBUIEST_MAIN(tst_XkbKeyboard)
 #include "tst_xkbkeyboard.moc"
 

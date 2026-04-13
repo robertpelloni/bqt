@@ -1,6 +1,6 @@
 // Copyright (C) 2016 Dmitry Shachnev <mitya57@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qdbusmenubar_p.h"
 #include "qdbusmenuregistrarproxy_p.h"
@@ -9,12 +9,12 @@
 #include <private/qdesktopunixservices_p.h>
 #include <qpa/qplatformintegration.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /* note: do not change these to QStringLiteral;
-   we are unloaded before QtDBus is done using the strings.
+   we are unloaded before BobUIDBus is done using the strings.
  */
 #define REGISTRAR_SERVICE "com.canonical.AppMenu.Registrar"_L1
 #define REGISTRAR_PATH "/com/canonical/AppMenu/Registrar"_L1
@@ -160,6 +160,6 @@ void QDBusMenuBar::unregisterMenuBar()
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qdbusmenubar_p.cpp"

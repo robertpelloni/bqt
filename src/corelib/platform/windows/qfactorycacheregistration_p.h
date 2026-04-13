@@ -1,6 +1,6 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QFACTORYCACHEREGISTRATION_P_H
 #define QFACTORYCACHEREGISTRATION_P_H
@@ -9,24 +9,24 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/qglobal.h>
+#include <BobUICore/qglobal.h>
 
-#if !defined(QT_BOOTSTRAPPED) && QT_CONFIG(cpp_winrt)
-#    define QT_USE_FACTORY_CACHE_REGISTRATION
+#if !defined(BOBUI_BOOTSTRAPPED) && BOBUI_CONFIG(cpp_winrt)
+#    define BOBUI_USE_FACTORY_CACHE_REGISTRATION
 #endif
 
-#ifdef QT_USE_FACTORY_CACHE_REGISTRATION
+#ifdef BOBUI_USE_FACTORY_CACHE_REGISTRATION
 
-#include "qt_winrtbase_p.h"
+#include "bobui_winrtbase_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace detail {
 
@@ -47,7 +47,7 @@ private:
 inline QWinRTFactoryCacheRegistration reg([]() noexcept { winrt::clear_factory_cache(); });
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif
 #endif // QFACTORYCACHEREGISTRATION_P_H

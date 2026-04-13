@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPAINTENGINE_BLITTER_P_H
 #define QPAINTENGINE_BLITTER_P_H
@@ -8,18 +8,18 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
 #include "private/qpaintengine_raster_p.h"
 
-#ifndef QT_NO_BLITTABLE
-QT_BEGIN_NAMESPACE
+#ifndef BOBUI_NO_BLITTABLE
+BOBUI_BEGIN_NAMESPACE
 
 class QBlitterPaintEnginePrivate;
 class QBlittablePlatformPixmap;
@@ -64,9 +64,9 @@ public:
     void drawEllipse(const QRectF &rect) override;
     void drawImage(const QPointF &p, const QImage &img) override;
     void drawImage(const QRectF &r, const QImage &pm, const QRectF &sr,
-                   Qt::ImageConversionFlags flags = Qt::AutoColor) override;
+                   BobUI::ImageConversionFlags flags = BobUI::AutoColor) override;
     void drawTiledPixmap(const QRectF &r, const QPixmap &pm, const QPointF &sr) override;
-    void drawTextItem(const QPointF &p, const QTextItem &textItem) override;
+    void drawTextItem(const QPointF &p, const BOBUIextItem &textItem) override;
     void drawPoints(const QPointF *points, int pointCount) override;
     void drawPoints(const QPoint *points, int pointCount) override;
     void stroke(const QVectorPath &path, const QPen &pen) override;
@@ -75,7 +75,7 @@ public:
                           QFontEngine *fontEngine) override;
 };
 
-QT_END_NAMESPACE
-#endif //QT_NO_BLITTABLE
+BOBUI_END_NAMESPACE
+#endif //BOBUI_NO_BLITTABLE
 #endif // QPAINTENGINE_BLITTER_P_H
 

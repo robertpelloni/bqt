@@ -1,24 +1,24 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSTYLEANIMATION_P_H
 #define QSTYLEANIMATION_P_H
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 #include "qabstractanimation.h"
 #include "qdatetime.h"
 #include "qimage.h"
 
-QT_REQUIRE_CONFIG(animation);
+BOBUI_REQUIRE_CONFIG(animation);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists for the convenience of
+// This file is not part of the BobUI API. It exists for the convenience of
 // qcommonstyle.cpp.  This header file may change from version to version
 // without notice, or even be removed.
 //
@@ -41,8 +41,8 @@ public:
     int delay() const;
     void setDelay(int delay);
 
-    QTime startTime() const;
-    void setStartTime(QTime time);
+    BOBUIime startTime() const;
+    void setStartTime(BOBUIime time);
 
     enum FrameRate {
         DefaultFps,
@@ -67,7 +67,7 @@ protected:
 private:
     int _delay;
     int _duration;
-    QTime _startTime;
+    BOBUIime _startTime;
     FrameRate _fps;
     int _skip;
 };
@@ -166,6 +166,6 @@ private:
     bool _active;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSTYLEANIMATION_P_H

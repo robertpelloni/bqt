@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtCore/qt_windows.h>
+#include <BobUICore/bobui_windows.h>
 #include "qwindowsdrag.h"
 #include "qwindowscontext.h"
 #include "qwindowsscreen.h"
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
 #  include "qwindowsclipboard.h"
 #endif
 #include "qwindowsintegration.h"
@@ -15,25 +15,25 @@
 #include "qwindowscursor.h"
 #include "qwindowskeymapper.h"
 
-#include <QtGui/qevent.h>
-#include <QtGui/qpixmap.h>
-#include <QtGui/qpainter.h>
-#include <QtGui/qrasterwindow.h>
-#include <QtGui/qguiapplication.h>
+#include <BobUIGui/qevent.h>
+#include <BobUIGui/qpixmap.h>
+#include <BobUIGui/qpainter.h>
+#include <BobUIGui/qrasterwindow.h>
+#include <BobUIGui/qguiapplication.h>
 #include <qpa/qwindowsysteminterface_p.h>
-#include <QtGui/private/qdnd_p.h>
-#include <QtGui/private/qguiapplication_p.h>
-#include <QtGui/private/qhighdpiscaling_p.h>
+#include <BobUIGui/private/qdnd_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qhighdpiscaling_p.h>
 
-#include <QtCore/qdebug.h>
-#include <QtCore/qbuffer.h>
-#include <QtCore/qpoint.h>
-#include <QtCore/qpointer.h>
-#include <QtCore/private/qcomobject_p.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qbuffer.h>
+#include <BobUICore/qpoint.h>
+#include <BobUICore/qpointer.h>
+#include <BobUICore/private/qcomobject_p.h>
 
 #include <shlobj.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QWindowsDragCursorWindow
@@ -68,9 +68,9 @@ QWindowsDragCursorWindow::QWindowsDragCursorWindow(QWindow *parent)
     windowFormat.setAlphaBufferSize(8);
     setFormat(windowFormat);
     setObjectName(QStringLiteral("QWindowsDragCursorWindow"));
-    setFlags(Qt::Popup | Qt::NoDropShadowWindowHint
-             | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint
-             | Qt::WindowDoesNotAcceptFocus | Qt::WindowTransparentForInput);
+    setFlags(BobUI::Popup | BobUI::NoDropShadowWindowHint
+             | BobUI::FramelessWindowHint | BobUI::WindowStaysOnTopHint
+             | BobUI::WindowDoesNotAcceptFocus | BobUI::WindowTransparentForInput);
 }
 
 void QWindowsDragCursorWindow::setPixmap(const QPixmap &p)
@@ -107,57 +107,57 @@ IDataObject *QWindowsDropMimeData::retrieveDataObject() const
     return QWindowsDrag::instance()->dropDataObject();
 }
 
-static inline Qt::DropActions translateToQDragDropActions(DWORD pdwEffects)
+static inline BobUI::DropActions translateToQDragDropActions(DWORD pdwEffects)
 {
-    Qt::DropActions actions = Qt::IgnoreAction;
+    BobUI::DropActions actions = BobUI::IgnoreAction;
     if (pdwEffects & DROPEFFECT_LINK)
-        actions |= Qt::LinkAction;
+        actions |= BobUI::LinkAction;
     if (pdwEffects & DROPEFFECT_COPY)
-        actions |= Qt::CopyAction;
+        actions |= BobUI::CopyAction;
     if (pdwEffects & DROPEFFECT_MOVE)
-        actions |= Qt::MoveAction;
+        actions |= BobUI::MoveAction;
     return actions;
 }
 
-static inline Qt::DropAction translateToQDragDropAction(DWORD pdwEffect)
+static inline BobUI::DropAction translateToQDragDropAction(DWORD pdwEffect)
 {
     if (pdwEffect & DROPEFFECT_LINK)
-        return Qt::LinkAction;
+        return BobUI::LinkAction;
     if (pdwEffect & DROPEFFECT_COPY)
-        return Qt::CopyAction;
+        return BobUI::CopyAction;
     if (pdwEffect & DROPEFFECT_MOVE)
-        return Qt::MoveAction;
-    return Qt::IgnoreAction;
+        return BobUI::MoveAction;
+    return BobUI::IgnoreAction;
 }
 
-static inline DWORD translateToWinDragEffects(Qt::DropActions action)
+static inline DWORD translateToWinDragEffects(BobUI::DropActions action)
 {
     DWORD effect = DROPEFFECT_NONE;
-    if (action & Qt::LinkAction)
+    if (action & BobUI::LinkAction)
         effect |= DROPEFFECT_LINK;
-    if (action & Qt::CopyAction)
+    if (action & BobUI::CopyAction)
         effect |= DROPEFFECT_COPY;
-    if (action & Qt::MoveAction)
+    if (action & BobUI::MoveAction)
         effect |= DROPEFFECT_MOVE;
     return effect;
 }
 
-static inline Qt::KeyboardModifiers toQtKeyboardModifiers(DWORD keyState)
+static inline BobUI::KeyboardModifiers toBobUIKeyboardModifiers(DWORD keyState)
 {
-    Qt::KeyboardModifiers modifiers = Qt::NoModifier;
+    BobUI::KeyboardModifiers modifiers = BobUI::NoModifier;
 
     if (keyState & MK_SHIFT)
-        modifiers |= Qt::ShiftModifier;
+        modifiers |= BobUI::ShiftModifier;
     if (keyState & MK_CONTROL)
-        modifiers |= Qt::ControlModifier;
+        modifiers |= BobUI::ControlModifier;
     if (keyState & MK_ALT)
-        modifiers |= Qt::AltModifier;
+        modifiers |= BobUI::AltModifier;
 
     return modifiers;
 }
 
-static Qt::KeyboardModifiers lastModifiers = Qt::NoModifier;
-static Qt::MouseButtons lastButtons = Qt::NoButton;
+static BobUI::KeyboardModifiers lastModifiers = BobUI::NoModifier;
+static BobUI::MouseButtons lastButtons = BobUI::NoButton;
 
 /*!
     \class QWindowsOleDropSource
@@ -198,16 +198,16 @@ private:
         QPoint hotSpot;
     };
 
-    typedef QMap<Qt::DropAction, CursorEntry> ActionCursorMap;
+    typedef QMap<BobUI::DropAction, CursorEntry> ActionCursorMap;
 
     Mode m_mode;
     QWindowsDrag *m_drag;
     QPointer<QWindow> m_windowUnderMouse;
-    Qt::MouseButtons m_currentButtons;
+    BobUI::MouseButtons m_currentButtons;
     ActionCursorMap m_cursors;
     QWindowsDragCursorWindow *m_touchDragWindow;
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
     friend QDebug operator<<(QDebug, const QWindowsOleDropSource::CursorEntry &);
 #endif
 };
@@ -216,7 +216,7 @@ QWindowsOleDropSource::QWindowsOleDropSource(QWindowsDrag *drag)
     : m_mode(QWindowsCursor::cursorState() != QWindowsCursor::State::Suppressed ? MouseDrag : TouchDrag)
     , m_drag(drag)
     , m_windowUnderMouse(QWindowsContext::instance()->windowUnderMouse())
-    , m_currentButtons(Qt::NoButton)
+    , m_currentButtons(BobUI::NoButton)
     , m_touchDragWindow(nullptr)
 {
     qCDebug(lcQpaMime) << __FUNCTION__ << m_mode;
@@ -229,14 +229,14 @@ QWindowsOleDropSource::~QWindowsOleDropSource()
     qCDebug(lcQpaMime) << __FUNCTION__;
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug d, const QWindowsOleDropSource::CursorEntry &e)
 {
     d << "CursorEntry:" << e.pixmap.size() << '#' << e.cacheKey
       << "HCURSOR" << e.cursor->handle() << "hotspot:" << e.hotSpot;
     return d;
 }
-#endif // !QT_NO_DEBUG_STREAM
+#endif // !BOBUI_NO_DEBUG_STREAM
 
 /*!
     \brief Blend custom pixmap with cursors.
@@ -276,18 +276,18 @@ void QWindowsOleDropSource::createCursors()
     QPixmap scaledPixmap = (!hasPixmap || qFuzzyCompare(pixmapScaleFactor, 1.0))
         ? pixmap
         :  pixmap.scaled((QSizeF(pixmap.size()) * pixmapScaleFactor).toSize(),
-                         Qt::KeepAspectRatio, Qt::SmoothTransformation);
+                         BobUI::KeepAspectRatio, BobUI::SmoothTransformation);
     scaledPixmap.setDevicePixelRatio(1);
 
-    Qt::DropAction actions[] = { Qt::MoveAction, Qt::CopyAction, Qt::LinkAction, Qt::IgnoreAction };
+    BobUI::DropAction actions[] = { BobUI::MoveAction, BobUI::CopyAction, BobUI::LinkAction, BobUI::IgnoreAction };
     int actionCount = int(sizeof(actions) / sizeof(actions[0]));
     if (!hasPixmap)
-        --actionCount; // No Qt::IgnoreAction unless pixmap
+        --actionCount; // No BobUI::IgnoreAction unless pixmap
     const QPoint hotSpot = qFuzzyCompare(hotSpotScaleFactor, 1.0)
         ?  drag->hotSpot()
         : (QPointF(drag->hotSpot()) * hotSpotScaleFactor).toPoint();
     for (int cnum = 0; cnum < actionCount; ++cnum) {
-        const Qt::DropAction action = actions[cnum];
+        const BobUI::DropAction action = actions[cnum];
         QPixmap cursorPixmap = drag->dragCursor(action);
         if (cursorPixmap.isNull() && platformCursor)
             cursorPixmap = static_cast<QWindowsCursor *>(platformCursor)->dragDefaultCursor(action);
@@ -309,7 +309,7 @@ void QWindowsOleDropSource::createCursors()
             const int y1 = qMin(-hotSpot.y(), 0);
             const int y2 = qMax(scaledPixmap.height() - hotSpot.y(), cursorPixmap.height());
             QPixmap newCursor(x2 - x1 + 1, y2 - y1 + 1);
-            newCursor.fill(Qt::transparent);
+            newCursor.fill(BobUI::transparent);
             QPainter p(&newCursor);
             const QPoint pmDest = QPoint(qMax(0, -hotSpot.x()), qMax(0, -hotSpot.y()));
             p.drawPixmap(pmDest, scaledPixmap);
@@ -326,28 +326,28 @@ void QWindowsOleDropSource::createCursors()
                 it.value() = entry;
         }
     }
-#ifndef QT_NO_DEBUG_OUTPUT
+#ifndef BOBUI_NO_DEBUG_OUTPUT
     if (lcQpaMime().isDebugEnabled())
         qCDebug(lcQpaMime) << __FUNCTION__ << "pixmap" << pixmap.size() << m_cursors.size() << "cursors:\n" << m_cursors;
-#endif // !QT_NO_DEBUG_OUTPUT
+#endif // !BOBUI_NO_DEBUG_OUTPUT
 }
 
 /*!
     \brief Check for cancel.
 */
 
-QT_ENSURE_STACK_ALIGNED_FOR_SSE STDMETHODIMP
+BOBUI_ENSURE_STACK_ALIGNED_FOR_SSE STDMETHODIMP
 QWindowsOleDropSource::QueryContinueDrag(BOOL fEscapePressed, DWORD grfKeyState) noexcept
 {
     // In some rare cases, when a mouse button is released but the mouse is static,
     // grfKeyState will not be updated with these released buttons until the mouse
     // is moved. So we use the async key state given by queryMouseButtons() instead.
-    Qt::MouseButtons buttons = QWindowsPointerHandler::queryMouseButtons();
+    BobUI::MouseButtons buttons = QWindowsPointerHandler::queryMouseButtons();
 
     SCODE result = S_OK;
     if (fEscapePressed || QWindowsDrag::isCanceled()) {
         result = DRAGDROP_S_CANCEL;
-        buttons = Qt::NoButton;
+        buttons = BobUI::NoButton;
     } else {
         if (buttons && !m_currentButtons) {
             m_currentButtons = buttons;
@@ -361,16 +361,16 @@ QWindowsOleDropSource::QueryContinueDrag(BOOL fEscapePressed, DWORD grfKeyState)
         case DRAGDROP_S_CANCEL:
             if (!m_windowUnderMouse.isNull() && m_mode != TouchDrag && fEscapePressed == FALSE
                 && buttons != lastButtons) {
-                // QTBUG 66447: Synthesize a mouse release to the window under mouse at
+                // BOBUIBUG 66447: Synthesize a mouse release to the window under mouse at
                 // start of the DnD operation as Windows does not send any.
                 const QPoint globalPos = QWindowsCursor::mousePosition();
                 const QPoint localPos = m_windowUnderMouse->handle()->mapFromGlobal(globalPos);
                 QWindowSystemInterface::handleMouseEvent(m_windowUnderMouse.data(),
                                                          QPointF(localPos), QPointF(globalPos),
                                                          QWindowsPointerHandler::queryMouseButtons(),
-                                                         Qt::LeftButton, QEvent::MouseButtonRelease);
+                                                         BobUI::LeftButton, QEvent::MouseButtonRelease);
             }
-            m_currentButtons = Qt::NoButton;
+            m_currentButtons = BobUI::NoButton;
             break;
 
         default:
@@ -381,7 +381,7 @@ QWindowsOleDropSource::QueryContinueDrag(BOOL fEscapePressed, DWORD grfKeyState)
     if (QWindowsContext::verbose > 1 || result != S_OK) {
         qCDebug(lcQpaMime) << __FUNCTION__ << "fEscapePressed=" << fEscapePressed
             << "grfKeyState=" << grfKeyState << "buttons" << m_currentButtons
-            << "returns 0x" << Qt::hex << int(result) << Qt::dec;
+            << "returns 0x" << BobUI::hex << int(result) << BobUI::dec;
     }
     return ResultFromScode(result);
 }
@@ -390,10 +390,10 @@ QWindowsOleDropSource::QueryContinueDrag(BOOL fEscapePressed, DWORD grfKeyState)
     \brief Give feedback: Change cursor according to action.
 */
 
-QT_ENSURE_STACK_ALIGNED_FOR_SSE STDMETHODIMP
+BOBUI_ENSURE_STACK_ALIGNED_FOR_SSE STDMETHODIMP
 QWindowsOleDropSource::GiveFeedback(DWORD dwEffect) noexcept
 {
-    const Qt::DropAction action = translateToQDragDropAction(dwEffect);
+    const BobUI::DropAction action = translateToQDragDropAction(dwEffect);
     m_drag->updateAction(action);
 
     const qint64 currentCacheKey = m_drag->currentDrag()->dragCursor(action).cacheKey();
@@ -458,18 +458,18 @@ void QWindowsOleDropTarget::handleDrag(QWindow *window, DWORD grfKeyState,
     m_lastKeyState = grfKeyState;
 
     QWindowsDrag *windowsDrag = QWindowsDrag::instance();
-    const Qt::DropActions actions = translateToQDragDropActions(*pdwEffect);
+    const BobUI::DropActions actions = translateToQDragDropActions(*pdwEffect);
 
-    lastModifiers = toQtKeyboardModifiers(grfKeyState);
+    lastModifiers = toBobUIKeyboardModifiers(grfKeyState);
     lastButtons = QWindowsPointerHandler::queryMouseButtons();
 
-    const QPlatformDragQtResponse response =
+    const QPlatformDragBobUIResponse response =
           QWindowSystemInterface::handleDrag(window, windowsDrag->dropData(),
                                              m_lastPoint, actions,
                                              lastButtons, lastModifiers);
 
     m_answerRect = response.answerRect();
-    const Qt::DropAction action = response.acceptedAction();
+    const BobUI::DropAction action = response.acceptedAction();
     if (response.isAccepted()) {
         m_chosenEffect = translateToWinDragEffects(action);
     } else {
@@ -483,7 +483,7 @@ void QWindowsOleDropTarget::handleDrag(QWindow *window, DWORD grfKeyState,
         << m_answerRect << " effect" << *pdwEffect;
 }
 
-QT_ENSURE_STACK_ALIGNED_FOR_SSE STDMETHODIMP
+BOBUI_ENSURE_STACK_ALIGNED_FOR_SSE STDMETHODIMP
 QWindowsOleDropTarget::DragEnter(LPDATAOBJECT pDataObj, DWORD grfKeyState,
                                  POINTL pt, LPDWORD pdwEffect) noexcept
 {
@@ -500,7 +500,7 @@ QWindowsOleDropTarget::DragEnter(LPDATAOBJECT pDataObj, DWORD grfKeyState,
     return NOERROR;
 }
 
-QT_ENSURE_STACK_ALIGNED_FOR_SSE STDMETHODIMP
+BOBUI_ENSURE_STACK_ALIGNED_FOR_SSE STDMETHODIMP
 QWindowsOleDropTarget::DragOver(DWORD grfKeyState, POINTL pt, LPDWORD pdwEffect) noexcept
 {
     if (IDropTargetHelper* dh = QWindowsDrag::instance()->dropHelper())
@@ -521,7 +521,7 @@ QWindowsOleDropTarget::DragOver(DWORD grfKeyState, POINTL pt, LPDWORD pdwEffect)
     return NOERROR;
 }
 
-QT_ENSURE_STACK_ALIGNED_FOR_SSE STDMETHODIMP
+BOBUI_ENSURE_STACK_ALIGNED_FOR_SSE STDMETHODIMP
 QWindowsOleDropTarget::DragLeave() noexcept
 {
     if (IDropTargetHelper* dh = QWindowsDrag::instance()->dropHelper())
@@ -533,8 +533,8 @@ QWindowsOleDropTarget::DragLeave() noexcept
     lastModifiers = keyMapper->queryKeyboardModifiers();
     lastButtons = QWindowsPointerHandler::queryMouseButtons();
 
-    QWindowSystemInterface::handleDrag(m_window, nullptr, QPoint(), Qt::IgnoreAction,
-                                       Qt::NoButton, Qt::NoModifier);
+    QWindowSystemInterface::handleDrag(m_window, nullptr, QPoint(), BobUI::IgnoreAction,
+                                       BobUI::NoButton, BobUI::NoModifier);
 
     if (!QDragManager::self()->source())
         m_lastKeyState = 0;
@@ -545,7 +545,7 @@ QWindowsOleDropTarget::DragLeave() noexcept
 
 #define KEY_STATE_BUTTON_MASK (MK_LBUTTON | MK_MBUTTON | MK_RBUTTON)
 
-QT_ENSURE_STACK_ALIGNED_FOR_SSE STDMETHODIMP
+BOBUI_ENSURE_STACK_ALIGNED_FOR_SSE STDMETHODIMP
 QWindowsOleDropTarget::Drop(LPDATAOBJECT pDataObj, DWORD grfKeyState,
                             POINTL pt, LPDWORD pdwEffect) noexcept
 {
@@ -559,10 +559,10 @@ QWindowsOleDropTarget::Drop(LPDATAOBJECT pDataObj, DWORD grfKeyState,
 
     QWindowsDrag *windowsDrag = QWindowsDrag::instance();
 
-    lastModifiers = toQtKeyboardModifiers(grfKeyState);
+    lastModifiers = toBobUIKeyboardModifiers(grfKeyState);
     lastButtons = QWindowsPointerHandler::queryMouseButtons();
 
-    const QPlatformDropQtResponse response =
+    const QPlatformDropBobUIResponse response =
         QWindowSystemInterface::handleDrop(m_window, windowsDrag->dropData(),
                                            m_lastPoint,
                                            translateToQDragDropActions(*pdwEffect),
@@ -572,9 +572,9 @@ QWindowsOleDropTarget::Drop(LPDATAOBJECT pDataObj, DWORD grfKeyState,
     m_lastKeyState = grfKeyState;
 
     if (response.isAccepted()) {
-        const Qt::DropAction action = response.acceptedAction();
-        if (action == Qt::MoveAction || action == Qt::TargetMoveAction) {
-            if (action == Qt::MoveAction)
+        const BobUI::DropAction action = response.acceptedAction();
+        if (action == BobUI::MoveAction || action == BobUI::TargetMoveAction) {
+            if (action == BobUI::MoveAction)
                 m_chosenEffect = DROPEFFECT_MOVE;
             else
                 m_chosenEffect = DROPEFFECT_COPY;
@@ -727,26 +727,26 @@ static HRESULT startDoDragDrop(LPDATAOBJECT pDataObj, LPDROPSOURCE pDropSource, 
     }
 }
 
-Qt::DropAction QWindowsDrag::drag(QDrag *drag)
+BobUI::DropAction QWindowsDrag::drag(QDrag *drag)
 {
     // TODO: Accessibility handling?
     QMimeData *dropData = drag->mimeData();
-    Qt::DropAction dragResult = Qt::IgnoreAction;
+    BobUI::DropAction dragResult = BobUI::IgnoreAction;
 
     DWORD resultEffect;
     QWindowsDrag::m_canceled = false;
     auto *windowDropSource = new QWindowsOleDropSource(this);
     windowDropSource->createCursors();
     auto *dropDataObject = new QWindowsDropDataObject(dropData);
-    const Qt::DropActions possibleActions = drag->supportedActions();
+    const BobUI::DropActions possibleActions = drag->supportedActions();
     const DWORD allowedEffects = translateToWinDragEffects(possibleActions);
     qCDebug(lcQpaMime) << '>' << __FUNCTION__ << "possible Actions=0x"
-        << Qt::hex << int(possibleActions) << "effects=0x" << allowedEffects << Qt::dec;
+        << BobUI::hex << int(possibleActions) << "effects=0x" << allowedEffects << BobUI::dec;
     const HRESULT r = startDoDragDrop(dropDataObject, windowDropSource, allowedEffects, &resultEffect);
     const DWORD  reportedPerformedEffect = dropDataObject->reportedPerformedEffect();
     if (r == DRAGDROP_S_DROP) {
         if (reportedPerformedEffect == DROPEFFECT_MOVE && resultEffect != DROPEFFECT_MOVE) {
-            dragResult = Qt::TargetMoveAction;
+            dragResult = BobUI::TargetMoveAction;
             resultEffect = DROPEFFECT_MOVE;
         } else {
             dragResult = translateToQDragDropAction(resultEffect);
@@ -754,17 +754,17 @@ Qt::DropAction QWindowsDrag::drag(QDrag *drag)
         // Force it to be a copy if an unsupported operation occurred.
         // This indicates a bug in the drop target.
         if (resultEffect != DROPEFFECT_NONE && !(resultEffect & allowedEffects)) {
-            qWarning("%s: Forcing Qt::CopyAction", __FUNCTION__);
-            dragResult = Qt::CopyAction;
+            qWarning("%s: Forcing BobUI::CopyAction", __FUNCTION__);
+            dragResult = BobUI::CopyAction;
         }
     }
     // clean up
-    dropDataObject->releaseQt();
+    dropDataObject->releaseBobUI();
     dropDataObject->Release();        // Will delete obj if refcount becomes 0
     windowDropSource->Release();        // Will delete src if refcount becomes 0
-    qCDebug(lcQpaMime) << '<' << __FUNCTION__ << Qt::hex << "allowedEffects=0x" << allowedEffects
+    qCDebug(lcQpaMime) << '<' << __FUNCTION__ << BobUI::hex << "allowedEffects=0x" << allowedEffects
         << "reportedPerformedEffect=0x" << reportedPerformedEffect
-        <<  " resultEffect=0x" << resultEffect << "hr=0x" << int(r) << Qt::dec << "dropAction=" << dragResult;
+        <<  " resultEffect=0x" << resultEffect << "hr=0x" << int(r) << BobUI::dec << "dropAction=" << dragResult;
     return dragResult;
 }
 
@@ -782,4 +782,4 @@ void QWindowsDrag::releaseDropDataObject()
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

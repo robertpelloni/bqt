@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSET_H
 #define QSET_H
 
-#include <QtCore/qhash.h>
-#include <QtCore/qcontainertools_impl.h>
-#include <QtCore/qttypetraits.h>
+#include <BobUICore/qhash.h>
+#include <BobUICore/qcontainertools_impl.h>
+#include <BobUICore/bobuitypetraits.h>
 
 #include <initializer_list>
 #include <iterator>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 template <class T>
@@ -24,10 +24,10 @@ public:
     inline QSet() noexcept {}
     inline QSet(std::initializer_list<T> list)
         : QSet(list.begin(), list.end()) {}
-    template <typename InputIterator, QtPrivate::IfIsInputIterator<InputIterator> = true>
+    template <typename InputIterator, BobUIPrivate::IfIsInputIterator<InputIterator> = true>
     inline QSet(InputIterator first, InputIterator last)
     {
-        QtPrivate::reserveIfForwardIterator(this, first, last);
+        BobUIPrivate::reserveIfForwardIterator(this, first, last);
         for (; first != last; ++first)
             insert(*first);
     }
@@ -39,13 +39,13 @@ public:
 
 #ifndef Q_QDOC
 private:
-    template <typename U = T, QTypeTraits::compare_eq_result_container<QSet, U> = true>
+    template <typename U = T, BOBUIypeTraits::compare_eq_result_container<QSet, U> = true>
     friend bool comparesEqual(const QSet &lhs, const QSet &rhs) noexcept
     {
         return lhs.q_hash == rhs.q_hash;
     }
-    QT_DECLARE_EQUALITY_OPERATORS_HELPER(QSet, QSet, /* non-constexpr */, noexcept,
-            template <typename U = T, QTypeTraits::compare_eq_result_container<QSet, U> = true>)
+    BOBUI_DECLARE_EQUALITY_OPERATORS_HELPER(QSet, QSet, /* non-constexpr */, noexcept,
+            template <typename U = T, BOBUIypeTraits::compare_eq_result_container<QSet, U> = true>)
 public:
 #else
     friend bool operator==(const QSet &lhs, const QSet &rhs) noexcept;
@@ -70,7 +70,7 @@ public:
     template <typename Pred>
     inline qsizetype removeIf(Pred predicate)
     {
-        return QtPrivate::qset_erase_if(*this, predicate);
+        return BobUIPrivate::qset_erase_if(*this, predicate);
     }
 
     inline bool contains(const T &value) const { return q_hash.contains(value); }
@@ -153,7 +153,7 @@ public:
         return q_hash.erase(i.i);
     }
 
-    // more Qt
+    // more BobUI
     typedef iterator Iterator;
     typedef const_iterator ConstIterator;
     inline qsizetype count() const { return q_hash.size(); }
@@ -227,7 +227,7 @@ private:
 
 template <typename InputIterator,
           typename ValueType = typename std::iterator_traits<InputIterator>::value_type,
-          QtPrivate::IfIsInputIterator<InputIterator> = true>
+          BobUIPrivate::IfIsInputIterator<InputIterator> = true>
 QSet(InputIterator, InputIterator) -> QSet<ValueType>;
 
 template <typename T>
@@ -399,7 +399,7 @@ QList<T> QSet<T>::values() const
 
 Q_DECLARE_SEQUENTIAL_ITERATOR(Set)
 
-#if !defined(QT_NO_JAVA_STYLE_ITERATORS)
+#if !defined(BOBUI_NO_JAVA_STYLE_ITERATORS)
 template <typename T>
 class QMutableSetIterator
 {
@@ -425,14 +425,14 @@ public:
     inline bool findNext(const T &t)
     { while (c->constEnd() != (n = i)) if (*i++ == t) return true; return false; }
 };
-#endif // QT_NO_JAVA_STYLE_ITERATORS
+#endif // BOBUI_NO_JAVA_STYLE_ITERATORS
 
 template <typename T, typename Predicate>
 qsizetype erase_if(QSet<T> &set, Predicate pred)
 {
-    return QtPrivate::qset_erase_if(set, pred);
+    return BobUIPrivate::qset_erase_if(set, pred);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSET_H

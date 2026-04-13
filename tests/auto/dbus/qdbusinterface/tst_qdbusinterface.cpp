@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QDebug>
-#include <QTestEventLoop>
+#include <BOBUIestEventLoop>
 #include <QCoreApplication>
 #include <QMetaType>
 #include <QRegularExpression>
 #include <QVariant>
 #include <QVersionNumber>
 #include <QProcess>
-#include <QTimer>
+#include <BOBUIimer>
 #include <QDBusInterface>
 #include <QDBusConnectionInterface>
 #include <QDBusVirtualObject>
@@ -20,13 +20,13 @@
 #include "../qdbusmarshall/common.h"
 #include "myobject.h"
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-#define TEST_INTERFACE_NAME "org.qtproject.QtDBus.MyObject"
+#define TEST_INTERFACE_NAME "org.bobuiproject.BobUIDBus.MyObject"
 #define TEST_SIGNAL_NAME "somethingHappened"
 
-static const char serviceName[] = "org.qtproject.autotests.qmyserver";
-static const char objectPath[] = "/org/qtproject/qmyserver";
+static const char serviceName[] = "org.bobuiproject.autotests.qmyserver";
+static const char objectPath[] = "/org/bobuiproject/qmyserver";
 static const char *interfaceName = serviceName;
 
 int MyObject::callCount = 0;
@@ -35,9 +35,9 @@ QVariantList MyObject::callArgs;
 class MyObjectUnknownType: public QObject
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "org.qtproject.QtDBus.MyObject")
+    Q_CLASSINFO("D-Bus Interface", "org.bobuiproject.BobUIDBus.MyObject")
     Q_CLASSINFO("D-Bus Introspection", ""
-"  <interface name=\"org.qtproject.QtDBus.MyObjectUnknownTypes\" >\n"
+"  <interface name=\"org.bobuiproject.BobUIDBus.MyObjectUnknownTypes\" >\n"
 "    <property access=\"readwrite\" type=\"~\" name=\"prop1\" />\n"
 "    <signal name=\"somethingHappened\" >\n"
 "      <arg direction=\"out\" type=\"~\" />\n"
@@ -88,7 +88,7 @@ void emitSignal(const QString &interface, const QString &name, const QString &ar
     msg << arg;
     QDBusConnection::sessionBus().send(msg);
 
-    QTest::qWait(1000);
+    BOBUIest::qWait(1000);
 }
 
 void emitSignalPeer(const QString &interface, const QString &name, const QString &arg)
@@ -99,7 +99,7 @@ void emitSignalPeer(const QString &interface, const QString &name, const QString
     req << arg;
     QDBusConnection::sessionBus().send(req);
 
-    QTest::qWait(1000);
+    BOBUIest::qWait(1000);
 }
 
 int callCountPeer()
@@ -159,7 +159,7 @@ public slots:
     void testServiceOwnerChanged(const QString &service)
     {
         if (service == "com.example.Test")
-            QTestEventLoop::instance().exitLoop();
+            BOBUIestEventLoop::instance().exitLoop();
     }
 
 private slots:
@@ -231,7 +231,7 @@ WaitForQMyServer::WaitForQMyServer()
     if (!ok()) {
         connect(con.interface(), SIGNAL(serviceOwnerChanged(QString,QString,QString)),
                 SLOT(ownerChange(QString)));
-        QTimer::singleShot(2000, &loop, SLOT(quit()));
+        BOBUIimer::singleShot(2000, &loop, SLOT(quit()));
         loop.exec();
     }
 }
@@ -246,7 +246,7 @@ void tst_QDBusInterface::initTestCase()
 {
     QDBusConnection con = QDBusConnection::sessionBus();
     QVERIFY(con.isConnected());
-    QTest::qWait(500);
+    BOBUIest::qWait(500);
 
     con.registerObject("/", &obj, QDBusConnection::ExportAllProperties
                        | QDBusConnection::ExportAllSlots
@@ -264,7 +264,7 @@ void tst_QDBusInterface::initTestCase()
 
     WaitForQMyServer w;
     QVERIFY(w.ok());
-    //QTest::qWait(2000);
+    //BOBUIest::qWait(2000);
 
     // get peer server address
     QDBusMessage req = QDBusMessage::createMethodCall(serviceName, objectPath, interfaceName, "address");
@@ -299,7 +299,7 @@ void tst_QDBusInterface::notConnected()
                              connection);
 
     QVERIFY(!interface.isValid());
-    QVERIFY(!QMetaObject::invokeMethod(&interface, "ListNames", Qt::DirectConnection));
+    QVERIFY(!QMetaObject::invokeMethod(&interface, "ListNames", BobUI::DirectConnection));
 }
 
 void tst_QDBusInterface::notValid()
@@ -311,21 +311,21 @@ void tst_QDBusInterface::notValid()
                              connection);
 
     QVERIFY(!interface.isValid());
-    QVERIFY(!QMetaObject::invokeMethod(&interface, "ListNames", Qt::DirectConnection));
+    QVERIFY(!QMetaObject::invokeMethod(&interface, "ListNames", BobUI::DirectConnection));
 
     // With a connection, but empty/null service and path specified
     QDBusConnection con = QDBusConnection::sessionBus();
     QVERIFY(con.isConnected());
     QDBusInterface iface({}, {}, {}, con);
     QVERIFY(!iface.isValid());
-    QVERIFY(!QMetaObject::invokeMethod(&interface, "ListNames", Qt::DirectConnection));
+    QVERIFY(!QMetaObject::invokeMethod(&interface, "ListNames", BobUI::DirectConnection));
 }
 
 void tst_QDBusInterface::notValidDerived()
 {
     DerivedFromQDBusInterface c;
     QVERIFY(!c.isValid());
-    QMetaObject::invokeMethod(&c, "method", Qt::DirectConnection);
+    QMetaObject::invokeMethod(&c, "method", BobUI::DirectConnection);
 }
 
 void tst_QDBusInterface::invalidAfterServiceOwnerChanged()
@@ -339,13 +339,13 @@ void tst_QDBusInterface::invalidAfterServiceOwnerChanged()
     QDBusInterface invalidInterface("com.example.Test", "/");
     QVERIFY(!invalidInterface.isValid());
 
-    QTestEventLoop::instance().connect(connIface, SIGNAL(serviceOwnerChanged(QString,QString,QString)),
+    BOBUIestEventLoop::instance().connect(connIface, SIGNAL(serviceOwnerChanged(QString,QString,QString)),
                                        SLOT(exitLoop()));
     QCOMPARE(connIface->registerService("com.example.Test").value(), QDBusConnectionInterface::ServiceRegistered);
 
-    QTestEventLoop::instance().enterLoop(5);
+    BOBUIestEventLoop::instance().enterLoop(5);
 
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
     QVERIFY(invalidInterface.isValid());
 }
 
@@ -370,7 +370,7 @@ void tst_QDBusInterface::introspectUnknownTypes()
     MyObjectUnknownType obj;
     con.registerObject("/unknownTypes", &obj, QDBusConnection::ExportAllContents);
     QDBusInterface iface(QDBusConnection::sessionBus().baseService(), QLatin1String("/unknownTypes"),
-                         "org.qtproject.QtDBus.MyObjectUnknownTypes");
+                         "org.bobuiproject.BobUIDBus.MyObjectUnknownTypes");
 
     const QMetaObject *mo = iface.metaObject();
     QVERIFY(mo->indexOfMethod("regularMethod()") != -1); // this is the control
@@ -401,11 +401,11 @@ public:
 
     QString introspect(const QString &path) const override
     {
-        Q_ASSERT(QThread::currentThread() == thread());
+        Q_ASSERT(BOBUIhread::currentThread() == thread());
         if (path == "/some/path/superNode")
             return "zitroneneis";
         if (path == "/some/path/superNode/foo")
-            return  "  <interface name=\"org.qtproject.QtDBus.VirtualObject\">\n"
+            return  "  <interface name=\"org.bobuiproject.BobUIDBus.VirtualObject\">\n"
                     "    <method name=\"klingeling\" />\n"
                     "  </interface>\n" ;
         return QString();
@@ -413,7 +413,7 @@ public:
 
     bool handleMessage(const QDBusMessage &message, const QDBusConnection &connection) override
     {
-        Q_ASSERT(QThread::currentThread() == thread());
+        Q_ASSERT(BOBUIhread::currentThread() == thread());
         ++callCount;
         lastMessage = message;
 
@@ -454,7 +454,7 @@ void tst_QDBusInterface::introspectVirtualObject()
     QDBusMessage message2 = QDBusMessage::createMethodCall(con.baseService(), path + "/foo", "org.freedesktop.DBus.Introspectable", "Introspect");
     QDBusMessage reply2 = con.call(message2, QDBus::Block, 5000);
     QVERIFY(reply2.arguments().at(0).toString().contains(
-            QRegularExpression("<node>.*<interface name=\"org.qtproject.QtDBus.VirtualObject\">"
+            QRegularExpression("<node>.*<interface name=\"org.bobuiproject.BobUIDBus.VirtualObject\">"
                                ".*<method name=\"klingeling\" />\n"
                                ".*</interface>.*<interface name=",
                                QRegularExpression::DotMatchesEverythingOption)));
@@ -1162,14 +1162,14 @@ public Q_SLOTS:
 
 void tst_QDBusInterface::interfaceNameFallback_data()
 {
-    QTest::addColumn<QString>("appName");
-    QTest::addColumn<QString>("orgDomain");
-    QTest::addColumn<QString>("interfaceName");
+    BOBUIest::addColumn<QString>("appName");
+    BOBUIest::addColumn<QString>("orgDomain");
+    BOBUIest::addColumn<QString>("interfaceName");
 
-    QTest::addRow("empty.empty") << "" << "" << "local.tst_qdbusinterface";
-    QTest::addRow("with-domain") << "" << "qt-project.org" << "org.qt_project.tst_qdbusinterface";
-    QTest::addRow("numbers") << "prog42" << "7-zip.org" << "org._7_zip.prog42";
-    QTest::addRow("non-latin1") << u"\u00e6"_s << u"\u00e5"_s << "xn__5ca.xn__6ca";
+    BOBUIest::addRow("empty.empty") << "" << "" << "local.tst_qdbusinterface";
+    BOBUIest::addRow("with-domain") << "" << "bobui-project.org" << "org.bobui_project.tst_qdbusinterface";
+    BOBUIest::addRow("numbers") << "prog42" << "7-zip.org" << "org._7_zip.prog42";
+    BOBUIest::addRow("non-latin1") << u"\u00e6"_s << u"\u00e5"_s << "xn__5ca.xn__6ca";
 }
 
 void tst_QDBusInterface::interfaceNameFallback()
@@ -1207,6 +1207,6 @@ void tst_QDBusInterface::interfaceNameFallback()
     QVERIFY2(result.contains(tag), qUtf8Printable(u"Tag '%1' not found\n%2"_s.arg(tag, result)));
 }
 
-QTEST_MAIN(tst_QDBusInterface)
+BOBUIEST_MAIN(tst_QDBusInterface)
 
 #include "tst_qdbusinterface.moc"

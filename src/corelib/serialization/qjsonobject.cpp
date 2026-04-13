@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include <qjsonobject.h>
 #include <qjsonvalue.h>
@@ -19,14 +19,14 @@
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QJsonObject
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup json
     \ingroup shared
-    \ingroup qtserialization
+    \ingroup bobuiserialization
     \reentrant
     \since 5.0
 
@@ -48,19 +48,19 @@ QT_BEGIN_NAMESPACE
 
     You can convert the object to and from text based JSON through QJsonDocument.
 
-    \sa {JSON Support in Qt}, {Saving and Loading a Game}
+    \sa {JSON Support in BobUI}, {Saving and Loading a Game}
 */
 
 /*!
     \typedef QJsonObject::Iterator
 
-    Qt-style synonym for QJsonObject::iterator.
+    BobUI-style synonym for QJsonObject::iterator.
 */
 
 /*!
     \typedef QJsonObject::ConstIterator
 
-    Qt-style synonym for QJsonObject::const_iterator.
+    BobUI-style synonym for QJsonObject::const_iterator.
 */
 
 /*!
@@ -160,7 +160,7 @@ QJsonObject &QJsonObject::operator =(const QJsonObject &other) noexcept = defaul
     \memberswap{object}
 */
 
-#ifndef QT_NO_VARIANT
+#ifndef BOBUI_NO_VARIANT
 /*!
     Converts the variant map \a map to a QJsonObject.
 
@@ -223,7 +223,7 @@ QVariantHash QJsonObject::toVariantHash() const
 {
     return QCborMap::fromJsonObject(*this).toVariantHash();
 }
-#endif // !QT_NO_VARIANT
+#endif // !BOBUI_NO_VARIANT
 
 /*!
     Returns a list of all keys in this object.
@@ -269,7 +269,7 @@ static qsizetype indexOf(const QExplicitlySharedDataPointer<QCborContainerPrivat
     const auto it = std::lower_bound(
                 begin, end, key,
                 [&](const QJsonPrivate::ConstKeyIterator::value_type &e, const String &key) {
-        return o->stringCompareElement(e.key(), key, QtCbor::Comparison::ForOrdering) < 0;
+        return o->stringCompareElement(e.key(), key, BobUICbor::Comparison::ForOrdering) < 0;
     });
 
     *keyExists = (it != end) && o->stringEqualsElement((*it).key(), key);
@@ -833,7 +833,7 @@ QJsonObject::const_iterator QJsonObject::constFindImpl(T key) const
 */
 
 /*! \typedef QJsonObject::const_key_value_iterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 6.10
     \brief The QJsonObject::const_key_value_iterator typedef provides an STL-style iterator for
    QJsonObject.
@@ -846,7 +846,7 @@ QJsonObject::const_iterator QJsonObject::constFindImpl(T key) const
 */
 
 /*! \typedef QJsonObject::key_value_iterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 6.10
     \brief The QJsonObject::key_value_iterator typedef provides an STL-style iterator for
    QJsonObject.
@@ -934,7 +934,7 @@ QJsonObject::const_iterator QJsonObject::constFindImpl(T key) const
 */
 
 /*! \class QJsonObject::iterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup json
     \reentrant
     \since 5.0
@@ -961,7 +961,7 @@ QJsonObject::const_iterator QJsonObject::constFindImpl(T key) const
     Multiple iterators can be used on the same object. Existing iterators will however
     become dangling once the object gets modified.
 
-    \sa QJsonObject::const_iterator, {JSON Support in Qt}, {Saving and Loading a Game}
+    \sa QJsonObject::const_iterator, {JSON Support in BobUI}, {Saving and Loading a Game}
 */
 
 /*! \typedef QJsonObject::iterator::difference_type
@@ -974,7 +974,7 @@ QJsonObject::const_iterator QJsonObject::constFindImpl(T key) const
     A synonym for \e {std::random_access_iterator_tag} indicating
     this iterator is a random-access iterator.
 
-    \note In Qt versions before 5.6, this was set by mistake to
+    \note In BobUI versions before 5.6, this was set by mistake to
     \e {std::bidirectional_iterator_tag}.
 */
 
@@ -1227,7 +1227,7 @@ QJsonObject::const_iterator QJsonObject::constFindImpl(T key) const
 
 /*!
     \class QJsonObject::const_iterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup json
     \since 5.0
     \brief The QJsonObject::const_iterator class provides an STL-style const iterator for QJsonObject.
@@ -1252,7 +1252,7 @@ QJsonObject::const_iterator QJsonObject::constFindImpl(T key) const
     Multiple iterators can be used on the same object. Existing iterators
     will however become dangling if the object gets modified.
 
-    \sa QJsonObject::iterator, {JSON Support in Qt}, {Saving and Loading a Game}
+    \sa QJsonObject::iterator, {JSON Support in BobUI}, {Saving and Loading a Game}
 */
 
 /*! \typedef QJsonObject::const_iterator::difference_type
@@ -1265,7 +1265,7 @@ QJsonObject::const_iterator QJsonObject::constFindImpl(T key) const
     A synonym for \e {std::random_access_iterator_tag} indicating
     this iterator is a random-access iterator.
 
-    \note In Qt versions before 5.6, this was set by mistake to
+    \note In BobUI versions before 5.6, this was set by mistake to
     \e {std::bidirectional_iterator_tag}.
 */
 
@@ -1499,7 +1499,7 @@ bool QJsonObject::detach(qsizetype reserve)
     return o;
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0) && !defined(QT_BOOTSTRAPPED)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0) && !defined(BOBUI_BOOTSTRAPPED)
 /*!
     \internal
  */
@@ -1533,7 +1533,7 @@ void QJsonObject::setValueAt(qsizetype i, const QJsonValue &val)
         o->replaceAt(2 * i + 1, QCborValue::fromJsonValue(val));
     }
 }
-#endif // Qt 7
+#endif // BobUI 7
 
 /*!
     \internal
@@ -1547,7 +1547,7 @@ void QJsonObject::removeAt(qsizetype index)
 
 size_t qHash(const QJsonObject &object, size_t seed)
 {
-    QtPrivate::QHashCombine hash(seed);
+    BobUIPrivate::QHashCombine hash(seed);
     for (auto it = object.begin(), end = object.end(); it != end; ++it) {
         const QString key = it.key();
         const QJsonValue value = it.value();
@@ -1556,7 +1556,7 @@ size_t qHash(const QJsonObject &object, size_t seed)
     return seed;
 }
 
-#if !defined(QT_NO_DEBUG_STREAM)
+#if !defined(BOBUI_NO_DEBUG_STREAM)
 QDebug operator<<(QDebug dbg, const QJsonObject &o)
 {
     QDebugStateSaver saver(dbg);
@@ -1573,7 +1573,7 @@ QDebug operator<<(QDebug dbg, const QJsonObject &o)
 }
 #endif
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 QDataStream &operator<<(QDataStream &stream, const QJsonObject &object)
 {
     QJsonDocument doc{object};
@@ -1590,4 +1590,4 @@ QDataStream &operator>>(QDataStream &stream, QJsonObject &object)
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

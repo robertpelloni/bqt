@@ -72,7 +72,7 @@ StartElement( name="text" namespaceUri="http://www.w3.org/2000/svg" qualifiedNam
 
     Attribute( name="y" qualifiedName="y" value="726" )
  )
-Characters( text="Qt Library" )
+Characters( text="BobUI Library" )
 EndElement( name="text" namespaceUri="http://www.w3.org/2000/svg" qualifiedName="text" )
 Characters( whitespace text="
 " )
@@ -104,7 +104,7 @@ StartElement( name="text" namespaceUri="http://www.w3.org/2000/svg" qualifiedNam
 
     Attribute( name="y" qualifiedName="y" value="758" )
  )
-Characters( text="QtCore.dll" )
+Characters( text="BobUICore.dll" )
 EndElement( name="text" namespaceUri="http://www.w3.org/2000/svg" qualifiedName="text" )
 Characters( whitespace text="
 " )
@@ -136,7 +136,7 @@ StartElement( name="text" namespaceUri="http://www.w3.org/2000/svg" qualifiedNam
 
     Attribute( name="y" qualifiedName="y" value="758" )
  )
-Characters( text="QtGui.dll" )
+Characters( text="BobUIGui.dll" )
 EndElement( name="text" namespaceUri="http://www.w3.org/2000/svg" qualifiedName="text" )
 Characters( whitespace text="
 " )
@@ -1060,7 +1060,7 @@ Characters( whitespace text="
 EndElement( name="g" namespaceUri="http://www.w3.org/2000/svg" qualifiedName="g" )
 Characters( whitespace text="
 " )
-Comment( text=" QTabWidget " )
+Comment( text=" BOBUIabWidget " )
 Characters( whitespace text="
 " )
 StartElement( name="g" namespaceUri="http://www.w3.org/2000/svg" qualifiedName="g"
@@ -1069,7 +1069,7 @@ StartElement( name="g" namespaceUri="http://www.w3.org/2000/svg" qualifiedName="
     Attribute( name="class" qualifiedName="class" value="node" )
  )
 StartElement( name="title" namespaceUri="http://www.w3.org/2000/svg" qualifiedName="title" )
-Characters( text="QTabWidget" )
+Characters( text="BOBUIabWidget" )
 EndElement( name="title" namespaceUri="http://www.w3.org/2000/svg" qualifiedName="title" )
 Characters( whitespace text="
 " )
@@ -1088,14 +1088,14 @@ StartElement( name="text" namespaceUri="http://www.w3.org/2000/svg" qualifiedNam
 
     Attribute( name="y" qualifiedName="y" value="796" )
  )
-Characters( text="QTabWidget" )
+Characters( text="BOBUIabWidget" )
 EndElement( name="text" namespaceUri="http://www.w3.org/2000/svg" qualifiedName="text" )
 Characters( whitespace text="
 " )
 EndElement( name="g" namespaceUri="http://www.w3.org/2000/svg" qualifiedName="g" )
 Characters( whitespace text="
 " )
-Comment( text=" QTextEdit " )
+Comment( text=" BOBUIextEdit " )
 Characters( whitespace text="
 " )
 StartElement( name="g" namespaceUri="http://www.w3.org/2000/svg" qualifiedName="g"
@@ -1104,7 +1104,7 @@ StartElement( name="g" namespaceUri="http://www.w3.org/2000/svg" qualifiedName="
     Attribute( name="class" qualifiedName="class" value="node" )
  )
 StartElement( name="title" namespaceUri="http://www.w3.org/2000/svg" qualifiedName="title" )
-Characters( text="QTextEdit" )
+Characters( text="BOBUIextEdit" )
 EndElement( name="title" namespaceUri="http://www.w3.org/2000/svg" qualifiedName="title" )
 Characters( whitespace text="
 " )
@@ -1123,7 +1123,7 @@ StartElement( name="text" namespaceUri="http://www.w3.org/2000/svg" qualifiedNam
 
     Attribute( name="y" qualifiedName="y" value="796" )
  )
-Characters( text="QTextEdit" )
+Characters( text="BOBUIextEdit" )
 EndElement( name="text" namespaceUri="http://www.w3.org/2000/svg" qualifiedName="text" )
 Characters( whitespace text="
 " )
@@ -1442,7 +1442,7 @@ Characters( whitespace text="
 EndElement( name="g" namespaceUri="http://www.w3.org/2000/svg" qualifiedName="g" )
 Characters( whitespace text="
 " )
-Comment( text=" TabbedEdits&#45;&gt;QTabWidget " )
+Comment( text=" TabbedEdits&#45;&gt;BOBUIabWidget " )
 Characters( whitespace text="
 " )
 StartElement( name="g" namespaceUri="http://www.w3.org/2000/svg" qualifiedName="g"
@@ -1451,7 +1451,7 @@ StartElement( name="g" namespaceUri="http://www.w3.org/2000/svg" qualifiedName="
     Attribute( name="class" qualifiedName="class" value="edge" )
  )
 StartElement( name="title" namespaceUri="http://www.w3.org/2000/svg" qualifiedName="title" )
-Characters( text="TabbedEdits->QTabWidget" )
+Characters( text="TabbedEdits->BOBUIabWidget" )
 EndElement( name="title" namespaceUri="http://www.w3.org/2000/svg" qualifiedName="title" )
 Characters( whitespace text="
 " )
@@ -1563,7 +1563,7 @@ Characters( whitespace text="
 EndElement( name="g" namespaceUri="http://www.w3.org/2000/svg" qualifiedName="g" )
 Characters( whitespace text="
 " )
-Comment( text=" EditorComponent&#45;&gt;QTextEdit " )
+Comment( text=" EditorComponent&#45;&gt;BOBUIextEdit " )
 Characters( whitespace text="
 " )
 StartElement( name="g" namespaceUri="http://www.w3.org/2000/svg" qualifiedName="g"
@@ -1572,7 +1572,7 @@ StartElement( name="g" namespaceUri="http://www.w3.org/2000/svg" qualifiedName="
     Attribute( name="class" qualifiedName="class" value="edge" )
  )
 StartElement( name="title" namespaceUri="http://www.w3.org/2000/svg" qualifiedName="title" )
-Characters( text="EditorComponent->QTextEdit" )
+Characters( text="EditorComponent->BOBUIextEdit" )
 EndElement( name="title" namespaceUri="http://www.w3.org/2000/svg" qualifiedName="title" )
 Characters( whitespace text="
 " )

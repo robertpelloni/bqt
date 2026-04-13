@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtGui>
-#include <QtWidgets>
+#include <BobUIGui>
+#include <BobUIWidgets>
 
 #include "include/mainwindow.h"
 
@@ -28,15 +28,15 @@ void MainWindow::createMenus()
 
 void MainWindow::createToolBars()
 {
-    setToolButtonStyle(Qt::ToolButtonTextOnly);
-    QToolBar *t1 = new QToolBar;
+    setToolButtonStyle(BobUI::ToolButtonTextOnly);
+    BOBUIoolBar *t1 = new BOBUIoolBar;
     t1->addAction(new QAction("t1", this));
 
-    QToolBar *t2 = new QToolBar;
+    BOBUIoolBar *t2 = new BOBUIoolBar;
     t2->addAction(new QAction("t2", this));
 
-    addToolBar(Qt::LeftToolBarArea, t1);
-    addToolBar(Qt::LeftToolBarArea, t2);
+    addToolBar(BobUI::LeftToolBarArea, t1);
+    addToolBar(BobUI::LeftToolBarArea, t2);
 }
 
 void MainWindow::createDockWidgets()
@@ -47,9 +47,9 @@ void MainWindow::createDockWidgets()
 
     //! [0]
     QDockWidget *dockWidget = new QDockWidget(tr("Dock Widget"), this);
-    dockWidget->setAllowedAreas(Qt::LeftDockWidgetArea |
-                                Qt::RightDockWidgetArea);
+    dockWidget->setAllowedAreas(BobUI::LeftDockWidgetArea |
+                                BobUI::RightDockWidgetArea);
     dockWidget->setWidget(dockWidgetContents);
-    addDockWidget(Qt::LeftDockWidgetArea, dockWidget);
+    addDockWidget(BobUI::LeftDockWidgetArea, dockWidget);
     //! [0]
 }

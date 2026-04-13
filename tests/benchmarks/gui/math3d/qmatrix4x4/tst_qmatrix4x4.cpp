@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtGui/qmatrix4x4.h>
+#include <BOBUIest>
+#include <BobUIGui/qmatrix4x4.h>
 
 class tst_QMatrix4x4 : public QObject
 {
@@ -66,16 +66,16 @@ static float const generalValues[16] =
 
 void tst_QMatrix4x4::multiply_data()
 {
-    QTest::addColumn<QMatrix4x4>("m1");
-    QTest::addColumn<QMatrix4x4>("m2");
+    BOBUIest::addColumn<QMatrix4x4>("m1");
+    BOBUIest::addColumn<QMatrix4x4>("m2");
 
-    QTest::newRow("identity * identity")
+    BOBUIest::newRow("identity * identity")
         << QMatrix4x4() << QMatrix4x4();
-    QTest::newRow("identity * general")
+    BOBUIest::newRow("identity * general")
         << QMatrix4x4() << QMatrix4x4(generalValues);
-    QTest::newRow("general * identity")
+    BOBUIest::newRow("general * identity")
         << QMatrix4x4(generalValues) << QMatrix4x4();
-    QTest::newRow("general * general")
+    BOBUIest::newRow("general * general")
         << QMatrix4x4(generalValues) << QMatrix4x4(generalValues);
 }
 
@@ -154,26 +154,26 @@ QVector3D vresult;
 
 void tst_QMatrix4x4::mapVector3D_data()
 {
-    QTest::addColumn<QMatrix4x4>("m1");
+    BOBUIest::addColumn<QMatrix4x4>("m1");
 
-    QTest::newRow("identity") << QMatrix4x4();
-    QTest::newRow("general") << QMatrix4x4(generalValues);
+    BOBUIest::newRow("identity") << QMatrix4x4();
+    BOBUIest::newRow("general") << QMatrix4x4(generalValues);
 
     QMatrix4x4 t1;
     t1.translate(-100.5f, 64.0f, 75.25f);
-    QTest::newRow("translate3D") << t1;
+    BOBUIest::newRow("translate3D") << t1;
 
     QMatrix4x4 t2;
     t2.translate(-100.5f, 64.0f);
-    QTest::newRow("translate2D") << t2;
+    BOBUIest::newRow("translate2D") << t2;
 
     QMatrix4x4 s1;
     s1.scale(-100.5f, 64.0f, 75.25f);
-    QTest::newRow("scale3D") << s1;
+    BOBUIest::newRow("scale3D") << s1;
 
     QMatrix4x4 s2;
     s2.scale(-100.5f, 64.0f);
-    QTest::newRow("scale2D") << s2;
+    BOBUIest::newRow("scale2D") << s2;
 }
 void tst_QMatrix4x4::mapVector3D()
 {
@@ -247,39 +247,39 @@ void tst_QMatrix4x4::mapVectorDirect()
     }
 }
 
-// Compare the performance of QTransform::translate() to
+// Compare the performance of BOBUIransform::translate() to
 // QMatrix4x4::translate().
 void tst_QMatrix4x4::compareTranslate_data()
 {
-    QTest::addColumn<bool>("useQTransform");
-    QTest::addColumn<QVector3D>("translation");
+    BOBUIest::addColumn<bool>("useBOBUIransform");
+    BOBUIest::addColumn<QVector3D>("translation");
 
-    QTest::newRow("QTransform::translate(0, 0, 0)")
+    BOBUIest::newRow("BOBUIransform::translate(0, 0, 0)")
         << true << QVector3D(0, 0, 0);
-    QTest::newRow("QMatrix4x4::translate(0, 0, 0)")
+    BOBUIest::newRow("QMatrix4x4::translate(0, 0, 0)")
         << false << QVector3D(0, 0, 0);
 
-    QTest::newRow("QTransform::translate(1, 2, 0)")
+    BOBUIest::newRow("BOBUIransform::translate(1, 2, 0)")
         << true << QVector3D(1, 2, 0);
-    QTest::newRow("QMatrix4x4::translate(1, 2, 0)")
+    BOBUIest::newRow("QMatrix4x4::translate(1, 2, 0)")
         << false << QVector3D(1, 2, 0);
 
-    QTest::newRow("QTransform::translate(1, 2, 4)")
+    BOBUIest::newRow("BOBUIransform::translate(1, 2, 4)")
         << true << QVector3D(1, 2, 4);
-    QTest::newRow("QMatrix4x4::translate(1, 2, 4)")
+    BOBUIest::newRow("QMatrix4x4::translate(1, 2, 4)")
         << false << QVector3D(1, 2, 4);
 }
 void tst_QMatrix4x4::compareTranslate()
 {
-    QFETCH(bool, useQTransform);
+    QFETCH(bool, useBOBUIransform);
     QFETCH(QVector3D, translation);
 
     float x = translation.x();
     float y = translation.y();
     float z = translation.z();
 
-    if (useQTransform) {
-        QTransform t;
+    if (useBOBUIransform) {
+        BOBUIransform t;
         QBENCHMARK {
             t.translate(x, y);
         }
@@ -296,7 +296,7 @@ void tst_QMatrix4x4::compareTranslate()
     }
 }
 
-// Compare the performance of QTransform::translate() to
+// Compare the performance of BOBUIransform::translate() to
 // QMatrix4x4::translate() after priming the matrix with a scale().
 void tst_QMatrix4x4::compareTranslateAfterScale_data()
 {
@@ -304,15 +304,15 @@ void tst_QMatrix4x4::compareTranslateAfterScale_data()
 }
 void tst_QMatrix4x4::compareTranslateAfterScale()
 {
-    QFETCH(bool, useQTransform);
+    QFETCH(bool, useBOBUIransform);
     QFETCH(QVector3D, translation);
 
     float x = translation.x();
     float y = translation.y();
     float z = translation.z();
 
-    if (useQTransform) {
-        QTransform t;
+    if (useBOBUIransform) {
+        BOBUIransform t;
         t.scale(3, 4);
         QBENCHMARK {
             t.translate(x, y);
@@ -332,7 +332,7 @@ void tst_QMatrix4x4::compareTranslateAfterScale()
     }
 }
 
-// Compare the performance of QTransform::translate() to
+// Compare the performance of BOBUIransform::translate() to
 // QMatrix4x4::translate() after priming the matrix with a rotate().
 void tst_QMatrix4x4::compareTranslateAfterRotate_data()
 {
@@ -340,15 +340,15 @@ void tst_QMatrix4x4::compareTranslateAfterRotate_data()
 }
 void tst_QMatrix4x4::compareTranslateAfterRotate()
 {
-    QFETCH(bool, useQTransform);
+    QFETCH(bool, useBOBUIransform);
     QFETCH(QVector3D, translation);
 
     float x = translation.x();
     float y = translation.y();
     float z = translation.z();
 
-    if (useQTransform) {
-        QTransform t;
+    if (useBOBUIransform) {
+        BOBUIransform t;
         t.rotate(45.0f);
         QBENCHMARK {
             t.translate(x, y);
@@ -368,39 +368,39 @@ void tst_QMatrix4x4::compareTranslateAfterRotate()
     }
 }
 
-// Compare the performance of QTransform::scale() to
+// Compare the performance of BOBUIransform::scale() to
 // QMatrix4x4::scale().
 void tst_QMatrix4x4::compareScale_data()
 {
-    QTest::addColumn<bool>("useQTransform");
-    QTest::addColumn<QVector3D>("scale");
+    BOBUIest::addColumn<bool>("useBOBUIransform");
+    BOBUIest::addColumn<QVector3D>("scale");
 
-    QTest::newRow("QTransform::scale(1, 1, 1)")
+    BOBUIest::newRow("BOBUIransform::scale(1, 1, 1)")
         << true << QVector3D(1, 1, 1);
-    QTest::newRow("QMatrix4x4::scale(1, 1, 1)")
+    BOBUIest::newRow("QMatrix4x4::scale(1, 1, 1)")
         << false << QVector3D(1, 1, 1);
 
-    QTest::newRow("QTransform::scale(3, 6, 1)")
+    BOBUIest::newRow("BOBUIransform::scale(3, 6, 1)")
         << true << QVector3D(3, 6, 1);
-    QTest::newRow("QMatrix4x4::scale(3, 6, 1)")
+    BOBUIest::newRow("QMatrix4x4::scale(3, 6, 1)")
         << false << QVector3D(3, 6, 1);
 
-    QTest::newRow("QTransform::scale(3, 6, 4)")
+    BOBUIest::newRow("BOBUIransform::scale(3, 6, 4)")
         << true << QVector3D(3, 6, 4);
-    QTest::newRow("QMatrix4x4::scale(3, 6, 4)")
+    BOBUIest::newRow("QMatrix4x4::scale(3, 6, 4)")
         << false << QVector3D(3, 6, 4);
 }
 void tst_QMatrix4x4::compareScale()
 {
-    QFETCH(bool, useQTransform);
+    QFETCH(bool, useBOBUIransform);
     QFETCH(QVector3D, scale);
 
     float x = scale.x();
     float y = scale.y();
     float z = scale.z();
 
-    if (useQTransform) {
-        QTransform t;
+    if (useBOBUIransform) {
+        BOBUIransform t;
         QBENCHMARK {
             t.scale(x, y);
         }
@@ -417,7 +417,7 @@ void tst_QMatrix4x4::compareScale()
     }
 }
 
-// Compare the performance of QTransform::scale() to
+// Compare the performance of BOBUIransform::scale() to
 // QMatrix4x4::scale() after priming the matrix with a translate().
 void tst_QMatrix4x4::compareScaleAfterTranslate_data()
 {
@@ -425,15 +425,15 @@ void tst_QMatrix4x4::compareScaleAfterTranslate_data()
 }
 void tst_QMatrix4x4::compareScaleAfterTranslate()
 {
-    QFETCH(bool, useQTransform);
+    QFETCH(bool, useBOBUIransform);
     QFETCH(QVector3D, scale);
 
     float x = scale.x();
     float y = scale.y();
     float z = scale.z();
 
-    if (useQTransform) {
-        QTransform t;
+    if (useBOBUIransform) {
+        BOBUIransform t;
         t.translate(20, 34);
         QBENCHMARK {
             t.scale(x, y);
@@ -453,7 +453,7 @@ void tst_QMatrix4x4::compareScaleAfterTranslate()
     }
 }
 
-// Compare the performance of QTransform::scale() to
+// Compare the performance of BOBUIransform::scale() to
 // QMatrix4x4::scale() after priming the matrix with a rotate().
 void tst_QMatrix4x4::compareScaleAfterRotate_data()
 {
@@ -461,15 +461,15 @@ void tst_QMatrix4x4::compareScaleAfterRotate_data()
 }
 void tst_QMatrix4x4::compareScaleAfterRotate()
 {
-    QFETCH(bool, useQTransform);
+    QFETCH(bool, useBOBUIransform);
     QFETCH(QVector3D, scale);
 
     float x = scale.x();
     float y = scale.y();
     float z = scale.z();
 
-    if (useQTransform) {
-        QTransform t;
+    if (useBOBUIransform) {
+        BOBUIransform t;
         t.rotate(45.0f);
         QBENCHMARK {
             t.scale(x, y);
@@ -489,63 +489,63 @@ void tst_QMatrix4x4::compareScaleAfterRotate()
     }
 }
 
-// Compare the performance of QTransform::rotate() to
+// Compare the performance of BOBUIransform::rotate() to
 // QMatrix4x4::rotate().
 void tst_QMatrix4x4::compareRotate_data()
 {
-    QTest::addColumn<bool>("useQTransform");
-    QTest::addColumn<float>("angle");
-    QTest::addColumn<QVector3D>("rotation");
-    QTest::addColumn<int>("axis");
+    BOBUIest::addColumn<bool>("useBOBUIransform");
+    BOBUIest::addColumn<float>("angle");
+    BOBUIest::addColumn<QVector3D>("rotation");
+    BOBUIest::addColumn<int>("axis");
 
-    QTest::newRow("QTransform::rotate(0, ZAxis)")
-        << true << 0.0f << QVector3D(0, 0, 1) << int(Qt::ZAxis);
-    QTest::newRow("QMatrix4x4::rotate(0, ZAxis)")
-        << false << 0.0f << QVector3D(0, 0, 1) << int(Qt::ZAxis);
+    BOBUIest::newRow("BOBUIransform::rotate(0, ZAxis)")
+        << true << 0.0f << QVector3D(0, 0, 1) << int(BobUI::ZAxis);
+    BOBUIest::newRow("QMatrix4x4::rotate(0, ZAxis)")
+        << false << 0.0f << QVector3D(0, 0, 1) << int(BobUI::ZAxis);
 
-    QTest::newRow("QTransform::rotate(45, ZAxis)")
-        << true << 45.0f << QVector3D(0, 0, 1) << int(Qt::ZAxis);
-    QTest::newRow("QMatrix4x4::rotate(45, ZAxis)")
-        << false << 45.0f << QVector3D(0, 0, 1) << int(Qt::ZAxis);
+    BOBUIest::newRow("BOBUIransform::rotate(45, ZAxis)")
+        << true << 45.0f << QVector3D(0, 0, 1) << int(BobUI::ZAxis);
+    BOBUIest::newRow("QMatrix4x4::rotate(45, ZAxis)")
+        << false << 45.0f << QVector3D(0, 0, 1) << int(BobUI::ZAxis);
 
-    QTest::newRow("QTransform::rotate(90, ZAxis)")
-        << true << 90.0f << QVector3D(0, 0, 1) << int(Qt::ZAxis);
-    QTest::newRow("QMatrix4x4::rotate(90, ZAxis)")
-        << false << 90.0f << QVector3D(0, 0, 1) << int(Qt::ZAxis);
+    BOBUIest::newRow("BOBUIransform::rotate(90, ZAxis)")
+        << true << 90.0f << QVector3D(0, 0, 1) << int(BobUI::ZAxis);
+    BOBUIest::newRow("QMatrix4x4::rotate(90, ZAxis)")
+        << false << 90.0f << QVector3D(0, 0, 1) << int(BobUI::ZAxis);
 
-    QTest::newRow("QTransform::rotate(0, YAxis)")
-        << true << 0.0f << QVector3D(0, 1, 0) << int(Qt::YAxis);
-    QTest::newRow("QMatrix4x4::rotate(0, YAxis)")
-        << false << 0.0f << QVector3D(0, 1, 0) << int(Qt::YAxis);
+    BOBUIest::newRow("BOBUIransform::rotate(0, YAxis)")
+        << true << 0.0f << QVector3D(0, 1, 0) << int(BobUI::YAxis);
+    BOBUIest::newRow("QMatrix4x4::rotate(0, YAxis)")
+        << false << 0.0f << QVector3D(0, 1, 0) << int(BobUI::YAxis);
 
-    QTest::newRow("QTransform::rotate(45, YAxis)")
-        << true << 45.0f << QVector3D(0, 1, 0) << int(Qt::YAxis);
-    QTest::newRow("QMatrix4x4::rotate(45, YAxis)")
-        << false << 45.0f << QVector3D(0, 1, 0) << int(Qt::YAxis);
+    BOBUIest::newRow("BOBUIransform::rotate(45, YAxis)")
+        << true << 45.0f << QVector3D(0, 1, 0) << int(BobUI::YAxis);
+    BOBUIest::newRow("QMatrix4x4::rotate(45, YAxis)")
+        << false << 45.0f << QVector3D(0, 1, 0) << int(BobUI::YAxis);
 
-    QTest::newRow("QTransform::rotate(90, YAxis)")
-        << true << 90.0f << QVector3D(0, 1, 0) << int(Qt::YAxis);
-    QTest::newRow("QMatrix4x4::rotate(90, YAxis)")
-        << false << 90.0f << QVector3D(0, 1, 0) << int(Qt::YAxis);
+    BOBUIest::newRow("BOBUIransform::rotate(90, YAxis)")
+        << true << 90.0f << QVector3D(0, 1, 0) << int(BobUI::YAxis);
+    BOBUIest::newRow("QMatrix4x4::rotate(90, YAxis)")
+        << false << 90.0f << QVector3D(0, 1, 0) << int(BobUI::YAxis);
 
-    QTest::newRow("QTransform::rotate(0, XAxis)")
-        << true << 0.0f << QVector3D(0, 1, 0) << int(Qt::XAxis);
-    QTest::newRow("QMatrix4x4::rotate(0, XAxis)")
-        << false << 0.0f << QVector3D(0, 1, 0) << int(Qt::XAxis);
+    BOBUIest::newRow("BOBUIransform::rotate(0, XAxis)")
+        << true << 0.0f << QVector3D(0, 1, 0) << int(BobUI::XAxis);
+    BOBUIest::newRow("QMatrix4x4::rotate(0, XAxis)")
+        << false << 0.0f << QVector3D(0, 1, 0) << int(BobUI::XAxis);
 
-    QTest::newRow("QTransform::rotate(45, XAxis)")
-        << true << 45.0f << QVector3D(1, 0, 0) << int(Qt::XAxis);
-    QTest::newRow("QMatrix4x4::rotate(45, XAxis)")
-        << false << 45.0f << QVector3D(1, 0, 0) << int(Qt::XAxis);
+    BOBUIest::newRow("BOBUIransform::rotate(45, XAxis)")
+        << true << 45.0f << QVector3D(1, 0, 0) << int(BobUI::XAxis);
+    BOBUIest::newRow("QMatrix4x4::rotate(45, XAxis)")
+        << false << 45.0f << QVector3D(1, 0, 0) << int(BobUI::XAxis);
 
-    QTest::newRow("QTransform::rotate(90, XAxis)")
-        << true << 90.0f << QVector3D(1, 0, 0) << int(Qt::XAxis);
-    QTest::newRow("QMatrix4x4::rotate(90, XAxis)")
-        << false << 90.0f << QVector3D(1, 0, 0) << int(Qt::XAxis);
+    BOBUIest::newRow("BOBUIransform::rotate(90, XAxis)")
+        << true << 90.0f << QVector3D(1, 0, 0) << int(BobUI::XAxis);
+    BOBUIest::newRow("QMatrix4x4::rotate(90, XAxis)")
+        << false << 90.0f << QVector3D(1, 0, 0) << int(BobUI::XAxis);
 }
 void tst_QMatrix4x4::compareRotate()
 {
-    QFETCH(bool, useQTransform);
+    QFETCH(bool, useBOBUIransform);
     QFETCH(float, angle);
     QFETCH(QVector3D, rotation);
     QFETCH(int, axis);
@@ -554,10 +554,10 @@ void tst_QMatrix4x4::compareRotate()
     float y = rotation.y();
     float z = rotation.z();
 
-    if (useQTransform) {
-        QTransform t;
+    if (useBOBUIransform) {
+        BOBUIransform t;
         QBENCHMARK {
-            t.rotate(angle, Qt::Axis(axis));
+            t.rotate(angle, BobUI::Axis(axis));
         }
     } else {
         QMatrix4x4 m;
@@ -567,7 +567,7 @@ void tst_QMatrix4x4::compareRotate()
     }
 }
 
-// Compare the performance of QTransform::rotate() to
+// Compare the performance of BOBUIransform::rotate() to
 // QMatrix4x4::rotate() after priming the matrix with a translate().
 void tst_QMatrix4x4::compareRotateAfterTranslate_data()
 {
@@ -575,7 +575,7 @@ void tst_QMatrix4x4::compareRotateAfterTranslate_data()
 }
 void tst_QMatrix4x4::compareRotateAfterTranslate()
 {
-    QFETCH(bool, useQTransform);
+    QFETCH(bool, useBOBUIransform);
     QFETCH(float, angle);
     QFETCH(QVector3D, rotation);
     QFETCH(int, axis);
@@ -584,11 +584,11 @@ void tst_QMatrix4x4::compareRotateAfterTranslate()
     float y = rotation.y();
     float z = rotation.z();
 
-    if (useQTransform) {
-        QTransform t;
+    if (useBOBUIransform) {
+        BOBUIransform t;
         t.translate(3, 4);
         QBENCHMARK {
-            t.rotate(angle, Qt::Axis(axis));
+            t.rotate(angle, BobUI::Axis(axis));
         }
     } else {
         QMatrix4x4 m;
@@ -599,7 +599,7 @@ void tst_QMatrix4x4::compareRotateAfterTranslate()
     }
 }
 
-// Compare the performance of QTransform::rotate() to
+// Compare the performance of BOBUIransform::rotate() to
 // QMatrix4x4::rotate() after priming the matrix with a scale().
 void tst_QMatrix4x4::compareRotateAfterScale_data()
 {
@@ -607,7 +607,7 @@ void tst_QMatrix4x4::compareRotateAfterScale_data()
 }
 void tst_QMatrix4x4::compareRotateAfterScale()
 {
-    QFETCH(bool, useQTransform);
+    QFETCH(bool, useBOBUIransform);
     QFETCH(float, angle);
     QFETCH(QVector3D, rotation);
     QFETCH(int, axis);
@@ -616,11 +616,11 @@ void tst_QMatrix4x4::compareRotateAfterScale()
     float y = rotation.y();
     float z = rotation.z();
 
-    if (useQTransform) {
-        QTransform t;
+    if (useBOBUIransform) {
+        BOBUIransform t;
         t.scale(3, 4);
         QBENCHMARK {
-            t.rotate(angle, Qt::Axis(axis));
+            t.rotate(angle, BobUI::Axis(axis));
         }
     } else {
         QMatrix4x4 m;
@@ -631,6 +631,6 @@ void tst_QMatrix4x4::compareRotateAfterScale()
     }
 }
 
-QTEST_MAIN(tst_QMatrix4x4)
+BOBUIEST_MAIN(tst_QMatrix4x4)
 
 #include "tst_qmatrix4x4.moc"

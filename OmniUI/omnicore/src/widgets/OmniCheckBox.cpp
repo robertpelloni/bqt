@@ -9,7 +9,7 @@ OmniCheckBox::OmniCheckBox(QQuickItem *parent)
     : QQuickPaintedItem(parent), m_checked(false), m_text("CheckBox"),
       m_accentColor(QColor("#0078D7")), m_isHovered(false), m_isPressed(false)
 {
-    setAcceptedMouseButtons(Qt::LeftButton);
+    setAcceptedMouseButtons(BobUI::LeftButton);
     setAcceptHoverEvents(true);
     setWidth(120); setHeight(24);
     connect(OmniThemeManager::instance(), &OmniThemeManager::themeChanged, this, [this]() { update(); });
@@ -67,13 +67,13 @@ void OmniCheckBox::paint(QPainter *painter) {
     painter->drawRoundedRect(boxRect, 3, 3);
 
     if (m_checked) {
-        painter->setPen(QPen(Qt::white, 2));
+        painter->setPen(QPen(BobUI::white, 2));
         painter->drawLine(boxRect.left()+4, boxRect.center().y(), boxRect.left()+8, boxRect.bottom()-4);
         painter->drawLine(boxRect.left()+8, boxRect.bottom()-4, boxRect.right()-4, boxRect.top()+4);
     }
 
     painter->setPen(theme->text());
-    painter->drawText(QRectF(boxRect.right()+8, 0, rect.width(), rect.height()), Qt::AlignVCenter, m_text);
+    painter->drawText(QRectF(boxRect.right()+8, 0, rect.width(), rect.height()), BobUI::AlignVCenter, m_text);
 }
 
 // Logic implementations omitted but preserved in kernel...

@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <qtest.h>
+#include <bobuiest.h>
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 #include <QGraphicsView>
@@ -54,5 +54,5 @@ void tst_QGraphicsWidget::move()
     }
 }
 
-QTEST_MAIN(tst_QGraphicsWidget)
+BOBUIEST_MAIN(tst_QGraphicsWidget)
 #include "tst_qgraphicswidget.moc"

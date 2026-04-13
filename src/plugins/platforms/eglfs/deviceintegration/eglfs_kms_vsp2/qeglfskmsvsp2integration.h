@@ -1,16 +1,16 @@
 // Copyright (C) 2015 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
-// Copyright (C) 2017 The Qt Company Ltd.
+// Copyright (C) 2017 The BobUI Company Ltd.
 // Copyright (C) 2016 Pelagicore AG
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QEGLFSKMSVSP2INTEGRATION_H
 #define QEGLFSKMSVSP2INTEGRATION_H
 
 #include "qeglfskmsintegration_p.h"
-#include <QtCore/QMap>
-#include <QtCore/QVariant>
+#include <BobUICore/QMap>
+#include <BobUICore/QVariant>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QEglFSKmsDevice;
 
@@ -30,6 +30,6 @@ protected:
     QKmsDevice *createDevice() override;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QEGLFSKMSVSP2INTEGRATION_H

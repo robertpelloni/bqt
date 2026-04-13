@@ -1,5 +1,5 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandtabletv2_p.h"
 #include "qwaylandinputdevice_p.h"
@@ -10,20 +10,20 @@
 #include "qwaylandcursorsurface_p.h"
 #include "qwaylandcursor_p.h"
 
-#include <QtGui/private/qguiapplication_p.h>
-#include <QtGui/private/qpointingdevice_p.h>
-#include <QtGui/qpa/qplatformtheme.h>
-#include <QtGui/qpa/qwindowsysteminterface_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qpointingdevice_p.h>
+#include <BobUIGui/qpa/qplatformtheme.h>
+#include <BobUIGui/qpa/qwindowsysteminterface_p.h>
 
 #include <wayland-cursor.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
 int QWaylandTabletToolV2::idealCursorScale() const
 {
     if (m_tabletSeat->seat()->mQDisplay->compositor()->version() < 3) {
@@ -61,7 +61,7 @@ void QWaylandTabletToolV2::updateCursorTheme()
     if (!mCursor.theme)
         return; // A warning has already been printed in loadCursorTheme
 
-    if (auto *arrow = mCursor.theme->cursor(Qt::ArrowCursor)) {
+    if (auto *arrow = mCursor.theme->cursor(BobUI::ArrowCursor)) {
         int arrowPixelSize = qMax(arrow->images[0]->width,
                                   arrow->images[0]->height); // Not all cursor themes are square
         while (scale > 1 && arrowPixelSize / scale < cursorSize.width())
@@ -79,14 +79,14 @@ void QWaylandTabletToolV2::updateCursor()
 
     auto shape = m_tabletSeat->seat()->mCursor.shape;
 
-    if (shape == Qt::BlankCursor) {
+    if (shape == BobUI::BlankCursor) {
         if (mCursor.surface)
             mCursor.surface->reset();
         set_cursor(mEnterSerial, nullptr, 0, 0);
         return;
     }
 
-    if (shape == Qt::BitmapCursor) {
+    if (shape == BobUI::BitmapCursor) {
         auto buffer = m_tabletSeat->seat()->mCursor.bitmapBuffer;
         if (!buffer) {
             qCWarning(lcQpaWayland) << "No buffer for bitmap cursor, can't set cursor";
@@ -164,7 +164,7 @@ void QWaylandTabletToolV2::cursorFrameCallback()
         updateCursor();
 }
 
-#endif // QT_CONFIG(cursor)
+#endif // BOBUI_CONFIG(cursor)
 
 QWaylandTabletManagerV2::QWaylandTabletManagerV2(QWaylandDisplay *display, uint id, uint version)
     : zwp_tablet_manager_v2(display->wl_registry(), id, qMin(version, uint(1)))
@@ -178,7 +178,7 @@ QWaylandTabletManagerV2::~QWaylandTabletManagerV2()
 }
 
 QWaylandTabletSeatV2::QWaylandTabletSeatV2(QWaylandTabletManagerV2 *manager, QWaylandInputDevice *seat)
-    : QtWayland::zwp_tablet_seat_v2(manager->get_tablet_seat(seat->wl_seat()))
+    : BobUIWayland::zwp_tablet_seat_v2(manager->get_tablet_seat(seat->wl_seat()))
     , m_seat(seat)
 {
     qCDebug(lcQpaInputDevices) << "new tablet seat" << seat->seatname() << "id" << seat->id();
@@ -240,7 +240,7 @@ QWaylandTabletV2::QWaylandTabletV2(::zwp_tablet_v2 *tablet, const QString &seatN
     : QPointingDevice(u"unknown"_s, -1, DeviceType::Stylus, PointerType::Pen,
                       Capability::Position | Capability::Hover,
                       1, 1, seatName)
-    , QtWayland::zwp_tablet_v2(tablet)
+    , BobUIWayland::zwp_tablet_v2(tablet)
 {
     qCDebug(lcQpaInputDevices) << "new tablet on seat" << seatName;
     QPointingDevicePrivate *d = QPointingDevicePrivate::get(this);
@@ -297,12 +297,12 @@ QWaylandTabletToolV2::QWaylandTabletToolV2(QWaylandTabletSeatV2 *tabletSeat, ::z
     : QPointingDevice(u"tool"_s, -1, DeviceType::Stylus, PointerType::Pen,
                       Capability::Position | Capability::Hover,
                       1, 1, tabletSeat->seat()->seatname())
-    , QtWayland::zwp_tablet_tool_v2(tool)
+    , BobUIWayland::zwp_tablet_tool_v2(tool)
     , m_tabletSeat(tabletSeat)
 {
     // TODO get the number of buttons somehow?
 
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
     if (auto cursorShapeManager = m_tabletSeat->seat()->mQDisplay->cursorShapeManager()) {
         mCursor.shape.reset(
                 new QWaylandCursorShape(cursorShapeManager->get_tablet_tool_v2(object())));
@@ -427,7 +427,7 @@ void QWaylandTabletToolV2::zwp_tablet_tool_v2_proximity_in(uint32_t serial, zwp_
     m_pending.enteredSurface = true;
     m_pending.proximitySurface = QWaylandSurface::fromWlSurface(surface);
 
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
     // Depends on mEnterSerial being updated
     updateCursor();
 #endif
@@ -490,14 +490,14 @@ void QWaylandTabletToolV2::zwp_tablet_tool_v2_slider(int32_t position)
     m_pending.slider = qreal(position) / 65535;
 }
 
-static Qt::MouseButton mouseButtonFromTablet(uint button)
+static BobUI::MouseButton mouseButtonFromTablet(uint button)
 {
     switch (button) {
-    case 0x110: return Qt::MouseButton::LeftButton; // BTN_LEFT
-    case 0x14b: return Qt::MouseButton::MiddleButton; // BTN_STYLUS
-    case 0x14c: return Qt::MouseButton::RightButton; // BTN_STYLUS2
+    case 0x110: return BobUI::MouseButton::LeftButton; // BTN_LEFT
+    case 0x14b: return BobUI::MouseButton::MiddleButton; // BTN_STYLUS
+    case 0x14c: return BobUI::MouseButton::RightButton; // BTN_STYLUS2
     default:
-        return Qt::NoButton;
+        return BobUI::NoButton;
     }
 }
 
@@ -506,16 +506,16 @@ void QWaylandTabletToolV2::zwp_tablet_tool_v2_button(uint32_t serial, uint32_t b
     m_tabletSeat->seat()->mSerial = serial;
 
     QPointingDevicePrivate *d = QPointingDevicePrivate::get(this);
-    Qt::MouseButton mouseButton = mouseButtonFromTablet(button);
+    BobUI::MouseButton mouseButton = mouseButtonFromTablet(button);
     if (state == button_state_pressed)
         m_pending.buttons |= mouseButton;
     else
         m_pending.buttons &= ~mouseButton;
     // ideally we'd get button count when the tool is discovered; seems to be a shortcoming in tablet-unstable-v2
     // but if we get events from buttons we didn't know existed, increase it
-    if (mouseButton == Qt::RightButton)
+    if (mouseButton == BobUI::RightButton)
         d->buttonCount = qMax(d->buttonCount, 2);
-    else if (mouseButton == Qt::MiddleButton)
+    else if (mouseButton == BobUI::MiddleButton)
         d->buttonCount = qMax(d->buttonCount, 3);
 }
 
@@ -548,7 +548,7 @@ void QWaylandTabletToolV2::zwp_tablet_tool_v2_frame(uint32_t time)
 
         const QPointF globalPosition = waylandWindow->mapToGlobalF(localPosition);
 
-        Qt::MouseButtons buttons = m_pending.down ? Qt::MouseButton::LeftButton : Qt::MouseButton::NoButton;
+        BobUI::MouseButtons buttons = m_pending.down ? BobUI::MouseButton::LeftButton : BobUI::MouseButton::NoButton;
         buttons |= m_pending.buttons;
         qreal pressure = m_pending.pressure;
         qreal xTilt = m_pending.xTilt;
@@ -557,7 +557,7 @@ void QWaylandTabletToolV2::zwp_tablet_tool_v2_frame(uint32_t time)
         qreal rotation = m_pending.rotation;
         int z = int(m_pending.distance);
 
-        // do not use localPosition here since that is in Qt window coordinates
+        // do not use localPosition here since that is in BobUI window coordinates
         // but we need surface coordinates to include the decoration
         bool decorationHandledEvent = waylandWindow->handleTabletEventDecoration(
                 m_tabletSeat->seat(), m_pending.surfacePosition,
@@ -595,7 +595,7 @@ QWaylandTabletPadV2::QWaylandTabletPadV2(::zwp_tablet_pad_v2 *pad)
     : QPointingDevice(u"tablet touchpad"_s, -1, DeviceType::TouchPad, PointerType::Finger,
                       Capability::Position,
                       1, 1)
-    , QtWayland::zwp_tablet_pad_v2(pad)
+    , BobUIWayland::zwp_tablet_pad_v2(pad)
 {
 }
 
@@ -618,7 +618,7 @@ void QWaylandTabletPadV2::zwp_tablet_pad_v2_buttons(uint32_t buttons)
 
 void QWaylandTabletPadV2::zwp_tablet_pad_v2_group(zwp_tablet_pad_group_v2 *pad_group)
 {
-    // As of writing Qt does not handle tablet pads group and the controls on it
+    // As of writing BobUI does not handle tablet pads group and the controls on it
     // This proxy is server created so it is just deleted here to not leak it
     zwp_tablet_pad_group_v2_destroy(pad_group);
 }
@@ -633,8 +633,8 @@ void QWaylandTabletPadV2::zwp_tablet_pad_v2_removed()
     delete this;
 }
 
-} // namespace QtWaylandClient
+} // namespace BobUIWaylandClient
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qwaylandtabletv2_p.cpp"

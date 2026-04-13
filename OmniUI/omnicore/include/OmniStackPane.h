@@ -2,18 +2,18 @@
 #define OMNISTACKPANE_H
 
 #include <QQuickItem>
-#include <Qt>
+#include <BobUI>
 
 class OmniStackPane : public QQuickItem {
     Q_OBJECT
-    Q_PROPERTY(Qt::Alignment alignment READ alignment WRITE setAlignment NOTIFY alignmentChanged)
+    Q_PROPERTY(BobUI::Alignment alignment READ alignment WRITE setAlignment NOTIFY alignmentChanged)
 
 public:
     explicit OmniStackPane(QQuickItem *parent = nullptr);
     virtual ~OmniStackPane();
 
-    Qt::Alignment alignment() const;
-    void setAlignment(Qt::Alignment align);
+    BobUI::Alignment alignment() const;
+    void setAlignment(BobUI::Alignment align);
 
 signals:
     void alignmentChanged();
@@ -24,7 +24,7 @@ protected:
 
 private:
     void layoutChildren();
-    Qt::Alignment m_alignment;
+    BobUI::Alignment m_alignment;
 };
 
 #endif // OMNISTACKPANE_H

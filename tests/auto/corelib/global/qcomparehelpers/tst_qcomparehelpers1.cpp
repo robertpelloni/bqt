@@ -1,5 +1,5 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "tst_qcomparehelpers.h"
 
@@ -37,7 +37,7 @@ private: \
     __VA_ARGS__ \
     friend Constexpr auto \
     compareThreeWay(const TemplatedAuto ## Name &lhs, X rhs) noexcept(Noex) \
-    { using Qt::compareThreeWay; return compareThreeWay(lhs.val, rhs); } \
+    { using BobUI::compareThreeWay; return compareThreeWay(lhs.val, rhs); } \
     Q_DECLARE_ORDERED ## Suffix (TemplatedAuto ## Name, X, __VA_ARGS__) \
 \
     Type val = {}; \
@@ -45,20 +45,20 @@ private: \
 /* END */
 
 #define DECLARE_TYPES_FOR_N_ATTRS(N, ...) \
-DECLARE_TYPE(PartialConst ## N, PARTIALLY, Qt::partial_ordering, constexpr, \
+DECLARE_TYPE(PartialConst ## N, PARTIALLY, BobUI::partial_ordering, constexpr, \
              true, _LITERAL_TYPE, __VA_ARGS__) \
-DECLARE_TYPE(Partial ## N, PARTIALLY, Qt::partial_ordering, , true, , __VA_ARGS__) \
-DECLARE_TYPE(PartialNonNoex ## N, PARTIALLY, Qt::partial_ordering, , false, \
+DECLARE_TYPE(Partial ## N, PARTIALLY, BobUI::partial_ordering, , true, , __VA_ARGS__) \
+DECLARE_TYPE(PartialNonNoex ## N, PARTIALLY, BobUI::partial_ordering, , false, \
              _NON_NOEXCEPT, __VA_ARGS__) \
-DECLARE_TYPE(WeakConst ## N, WEAKLY, Qt::weak_ordering, constexpr, true, \
+DECLARE_TYPE(WeakConst ## N, WEAKLY, BobUI::weak_ordering, constexpr, true, \
              _LITERAL_TYPE, __VA_ARGS__) \
-DECLARE_TYPE(Weak ## N, WEAKLY, Qt::weak_ordering, , true, , __VA_ARGS__) \
-DECLARE_TYPE(WeakNonNoex ## N, WEAKLY, Qt::weak_ordering, , false, \
+DECLARE_TYPE(Weak ## N, WEAKLY, BobUI::weak_ordering, , true, , __VA_ARGS__) \
+DECLARE_TYPE(WeakNonNoex ## N, WEAKLY, BobUI::weak_ordering, , false, \
              _NON_NOEXCEPT, __VA_ARGS__) \
-DECLARE_TYPE(StrongConst ## N, STRONGLY, Qt::strong_ordering, constexpr, true, \
+DECLARE_TYPE(StrongConst ## N, STRONGLY, BobUI::strong_ordering, constexpr, true, \
              _LITERAL_TYPE, __VA_ARGS__) \
-DECLARE_TYPE(Strong ## N, STRONGLY, Qt::strong_ordering, , true, , __VA_ARGS__) \
-DECLARE_TYPE(StrongNonNoex ## N, STRONGLY, Qt::strong_ordering, , false, \
+DECLARE_TYPE(Strong ## N, STRONGLY, BobUI::strong_ordering, , true, , __VA_ARGS__) \
+DECLARE_TYPE(StrongNonNoex ## N, STRONGLY, BobUI::strong_ordering, , false, \
              _NON_NOEXCEPT, __VA_ARGS__) \
 DECLARE_AUTO_TYPE(Def ## N, int, , true, , __VA_ARGS__) \
 DECLARE_AUTO_TYPE(Const ## N, int, constexpr, true, _LITERAL_TYPE, __VA_ARGS__) \
@@ -135,16 +135,16 @@ void tst_QCompareHelpers::compareWithAttributes()
 
 void tst_QCompareHelpers::totallyOrderedWrapperBasics()
 {
-    Qt::totally_ordered_wrapper<int*> pi; // partially-formed
+    BobUI::totally_ordered_wrapper<int*> pi; // partially-formed
     pi = nullptr;
     QCOMPARE_EQ(pi.get(), nullptr);
 
     // Test that we can create a wrapper for void*.
-    [[maybe_unused]] constexpr Qt::totally_ordered_wrapper<void*> voidWrp{nullptr};
+    [[maybe_unused]] constexpr BobUI::totally_ordered_wrapper<void*> voidWrp{nullptr};
 
     // test that operator*() works
     int val = 10;
-    Qt::totally_ordered_wrapper<int*> intWrp{&val};
+    BobUI::totally_ordered_wrapper<int*> intWrp{&val};
     QCOMPARE_EQ(*intWrp, 10);
     *intWrp = 20;
     QCOMPARE_EQ(*intWrp, 20);
@@ -164,7 +164,7 @@ private:
 
     friend auto
     compareThreeWay(const AutoComparisonTester &lhs, const AutoComparisonTester &rhs) noexcept
-    { using Qt::compareThreeWay; return compareThreeWay(lhs.val, rhs.val); }
+    { using BobUI::compareThreeWay; return compareThreeWay(lhs.val, rhs.val); }
 
     Q_DECLARE_ORDERED(AutoComparisonTester)
 
@@ -178,24 +178,24 @@ void tst_QCompareHelpers::compareAutoReturnType()
         using StrongT = AutoComparisonTester<int>;
         static_assert(std::is_same_v<decltype(compareThreeWay(std::declval<const StrongT &>(),
                                                               std::declval<const StrongT &>())),
-                                     Qt::strong_ordering>);
-        QTestPrivate::testAllComparisonOperatorsCompile<StrongT>();
+                                     BobUI::strong_ordering>);
+        BOBUIestPrivate::testAllComparisonOperatorsCompile<StrongT>();
     }
     // partial
     {
         using PartialT = AutoComparisonTester<float>;
         static_assert(std::is_same_v<decltype(compareThreeWay(std::declval<const PartialT &>(),
                                                               std::declval<const PartialT &>())),
-                                     Qt::partial_ordering>);
-        QTestPrivate::testAllComparisonOperatorsCompile<PartialT>();
+                                     BobUI::partial_ordering>);
+        BOBUIestPrivate::testAllComparisonOperatorsCompile<PartialT>();
     }
     // weak
     {
         using WeakT = AutoComparisonTester<QDateTime>;
         static_assert(std::is_same_v<decltype(compareThreeWay(std::declval<const WeakT &>(),
                                                               std::declval<const WeakT &>())),
-                                     Qt::weak_ordering>);
-        QTestPrivate::testAllComparisonOperatorsCompile<WeakT>();
+                                     BobUI::weak_ordering>);
+        BOBUIestPrivate::testAllComparisonOperatorsCompile<WeakT>();
     }
 }
 
@@ -231,13 +231,13 @@ private:
     template <typename U = T>
     friend auto compareThreeWay(ThreeWayCmp lhs, ThreeWayCmp rhs)
     {
-        using Qt::compareThreeWay;
+        using BobUI::compareThreeWay;
         return compareThreeWay(lhs.val, rhs.val);
     }
     template <typename U = T>
     friend auto compareThreeWay(ThreeWayCmp lhs, LessOnly<U> rhs)
     {
-        using Qt::compareThreeWay;
+        using BobUI::compareThreeWay;
         return compareThreeWay(lhs.val, rhs.value());
     }
 
@@ -251,10 +251,10 @@ struct Weak
 private:
     friend constexpr bool comparesEqual(Weak lhs, Weak rhs) noexcept
     { return lhs.val == rhs.val; }
-    friend constexpr Qt::weak_ordering compareThreeWay(Weak lhs, Weak rhs) noexcept
+    friend constexpr BobUI::weak_ordering compareThreeWay(Weak lhs, Weak rhs) noexcept
     {
-        const auto r = Qt::compareThreeWay(lhs.val, rhs.val);
-        return Qt::weak_ordering{r};
+        const auto r = BobUI::compareThreeWay(lhs.val, rhs.val);
+        return BobUI::weak_ordering{r};
     }
     Q_DECLARE_WEAKLY_ORDERED_LITERAL_TYPE(Weak)
 };
@@ -262,9 +262,9 @@ private:
 template <typename LeftType, typename RightType, typename OrderingType>
 void tst_QCompareHelpers::lexicographicalCompareThreeWayDataImpl()
 {
-    QTest::addColumn<QList<LeftType>>("lhs");
-    QTest::addColumn<QList<RightType>>("rhs");
-    QTest::addColumn<OrderingType>("expectedResult");
+    BOBUIest::addColumn<QList<LeftType>>("lhs");
+    BOBUIest::addColumn<QList<RightType>>("rhs");
+    BOBUIest::addColumn<OrderingType>("expectedResult");
 
     using LT = typename LeftType::Type;
     using RT = typename RightType::Type;
@@ -273,40 +273,40 @@ void tst_QCompareHelpers::lexicographicalCompareThreeWayDataImpl()
                                     && std::is_same_v<RightType, LessOnly<RT>>;
 
     if constexpr (!HasOnlyOpLess)
-        static_assert(std::is_same_v<Qt::if_has_qt_compare_three_way<LeftType, RightType>, bool>);
+        static_assert(std::is_same_v<BobUI::if_has_bobui_compare_three_way<LeftType, RightType>, bool>);
 
-    QTest::addRow("empty")
+    BOBUIest::addRow("empty")
             << QList<LeftType>{}
             << QList<RightType>{}
             << OrderingType::equivalent;
-    QTest::addRow("same_length_equal")
+    BOBUIest::addRow("same_length_equal")
             << QList<LeftType>{LT{1}, LT{2}, LT{3}}
             << QList<RightType>{RT{1}, RT{2}, RT{3}}
             << OrderingType::equivalent;
-    QTest::addRow("greater_val")
+    BOBUIest::addRow("greater_val")
             << QList<LeftType>{LT{1}, LT{3}, LT{2}}
             << QList<RightType>{RT{1}, RT{2}, RT{3}, RT{4}}
             << OrderingType::greater;
-    QTest::addRow("less_val")
+    BOBUIest::addRow("less_val")
             << QList<LeftType>{LT{1}, LT{2}, LT{3}, LT{4}}
             << QList<RightType>{RT{1}, RT{3}, RT{2}}
             << OrderingType::less;
-    QTest::addRow("greater_length")
+    BOBUIest::addRow("greater_length")
             << QList<LeftType>{LT{1}, LT{2}, LT{3}}
             << QList<RightType>{RT{1}, RT{2}}
             << OrderingType::greater;
-    QTest::addRow("less_length")
+    BOBUIest::addRow("less_length")
             << QList<LeftType>{LT{1}, LT{2}, LT{3}}
             << QList<RightType>{RT{1}, RT{2}, RT{3}, RT{4}}
             << OrderingType::less;
 
-    if constexpr (!HasOnlyOpLess && std::is_same_v<OrderingType, Qt::partial_ordering>) {
+    if constexpr (!HasOnlyOpLess && std::is_same_v<OrderingType, BobUI::partial_ordering>) {
         const float nan = std::numeric_limits<float>::quiet_NaN();
-        QTest::addRow("unordered")
+        BOBUIest::addRow("unordered")
                 << QList<LeftType>{LT{nan}, LT{2}, LT{3}}
                 << QList<RightType>{RT{1}, RT{2}, RT{3}}
                 << OrderingType::unordered;
-        QTest::addRow("unordered_start_with_nan")
+        BOBUIest::addRow("unordered_start_with_nan")
                 << QList<LeftType>{LT{nan}, LT{2}, LT{3}}
                 << QList<RightType>{RT{nan}, RT{3}, RT{2}}
                 << OrderingType::unordered;
@@ -321,25 +321,25 @@ void tst_QCompareHelpers::lexicographicalCompareThreeWayImpl()
     QFETCH(const OrderingType, expectedResult);
 
     const auto res =
-            QtOrderingPrivate::lexicographicalCompareThreeWay(lhs.begin(), lhs.end(),
+            BobUIOrderingPrivate::lexicographicalCompareThreeWay(lhs.begin(), lhs.end(),
                                                               rhs.begin(), rhs.end());
     QCOMPARE_EQ(res, expectedResult);
 
     // check the C-style arrays as well
     const auto rawRes =
-            QtOrderingPrivate::lexicographicalCompareThreeWay(lhs.data(), lhs.data() + lhs.size(),
+            BobUIOrderingPrivate::lexicographicalCompareThreeWay(lhs.data(), lhs.data() + lhs.size(),
                                                               rhs.data(), rhs.data() + rhs.size());
     QCOMPARE_EQ(rawRes, expectedResult);
 }
 
 template <typename LT, typename RT = LT>
-Qt::strong_ordering lessOnlyCmp(LT const &lhs, RT const &rhs)
+BobUI::strong_ordering lessOnlyCmp(LT const &lhs, RT const &rhs)
 {
     if (std::less<>{}(lhs, rhs))
-        return Qt::strong_ordering::less;
+        return BobUI::strong_ordering::less;
     if (std::less<>{}(rhs, lhs))
-        return Qt::strong_ordering::greater;
-    return Qt::strong_ordering::equivalent;
+        return BobUI::strong_ordering::greater;
+    return BobUI::strong_ordering::equivalent;
 }
 
 template <typename LeftType, typename RightType, typename OrderingType>
@@ -352,14 +352,14 @@ void tst_QCompareHelpers::lexicographicalCompareThreeWayComparatorImpl()
     // free function
     {
         const auto res =
-            QtOrderingPrivate::lexicographicalCompareThreeWay(lhs.begin(), lhs.end(),
+            BobUIOrderingPrivate::lexicographicalCompareThreeWay(lhs.begin(), lhs.end(),
                                                               rhs.begin(), rhs.end(),
                                                               lessOnlyCmp<LeftType, RightType>);
         QCOMPARE_EQ(res, expectedResult);
 
         // check the C-style arrays as well
         const auto rawRes =
-            QtOrderingPrivate::lexicographicalCompareThreeWay(lhs.data(), lhs.data() + lhs.size(),
+            BobUIOrderingPrivate::lexicographicalCompareThreeWay(lhs.data(), lhs.data() + lhs.size(),
                                                               rhs.data(), rhs.data() + rhs.size(),
                                                               lessOnlyCmp<LeftType, RightType>);
         QCOMPARE_EQ(rawRes, expectedResult);
@@ -370,14 +370,14 @@ void tst_QCompareHelpers::lexicographicalCompareThreeWayComparatorImpl()
             return lessOnlyCmp(lhs, rhs);
         };
         const auto res =
-            QtOrderingPrivate::lexicographicalCompareThreeWay(lhs.begin(), lhs.end(),
+            BobUIOrderingPrivate::lexicographicalCompareThreeWay(lhs.begin(), lhs.end(),
                                                               rhs.begin(), rhs.end(),
                                                               cmp);
         QCOMPARE_EQ(res, expectedResult);
 
         // check the C-style arrays as well
         const auto rawRes =
-            QtOrderingPrivate::lexicographicalCompareThreeWay(lhs.data(), lhs.data() + lhs.size(),
+            BobUIOrderingPrivate::lexicographicalCompareThreeWay(lhs.data(), lhs.data() + lhs.size(),
                                                               rhs.data(), rhs.data() + rhs.size(),
                                                               std::move(cmp));
         QCOMPARE_EQ(rawRes, expectedResult);
@@ -387,92 +387,92 @@ void tst_QCompareHelpers::lexicographicalCompareThreeWayComparatorImpl()
 void tst_QCompareHelpers::lexicographicalCompareThreeWay_ThreeWayCmp_Int_data()
 {
     lexicographicalCompareThreeWayDataImpl<ThreeWayCmp<int>, ThreeWayCmp<int>,
-                                           Qt::strong_ordering>();
+                                           BobUI::strong_ordering>();
 }
 void tst_QCompareHelpers::lexicographicalCompareThreeWay_ThreeWayCmp_Int()
 {
     lexicographicalCompareThreeWayImpl<ThreeWayCmp<int>, ThreeWayCmp<int>,
-                                       Qt::strong_ordering>();
+                                       BobUI::strong_ordering>();
 }
 void tst_QCompareHelpers::lexicographicalCompareThreeWay_ThreeWayCmp_Float_data()
 {
     lexicographicalCompareThreeWayDataImpl<ThreeWayCmp<float>, ThreeWayCmp<float>,
-                                           Qt::partial_ordering>();
+                                           BobUI::partial_ordering>();
 }
 void tst_QCompareHelpers::lexicographicalCompareThreeWay_ThreeWayCmp_Float()
 {
     lexicographicalCompareThreeWayImpl<ThreeWayCmp<float>, ThreeWayCmp<float>,
-                                       Qt::partial_ordering>();
+                                       BobUI::partial_ordering>();
 }
 void tst_QCompareHelpers::lexicographicalCompareThreeWay_ThreeWayCmp_Weak_data()
 {
     lexicographicalCompareThreeWayDataImpl<ThreeWayCmp<Weak>, ThreeWayCmp<Weak>,
-                                           Qt::weak_ordering>();
+                                           BobUI::weak_ordering>();
 }
 void tst_QCompareHelpers::lexicographicalCompareThreeWay_ThreeWayCmp_Weak()
 {
     lexicographicalCompareThreeWayImpl<ThreeWayCmp<Weak>, ThreeWayCmp<Weak>,
-                                       Qt::weak_ordering>();
+                                       BobUI::weak_ordering>();
 }
 
 void tst_QCompareHelpers::lexicographicalCompareThreeWay_Mixed_Int_data()
 {
     lexicographicalCompareThreeWayDataImpl<LessOnly<int>, ThreeWayCmp<int>,
-                                           Qt::strong_ordering>();
+                                           BobUI::strong_ordering>();
 }
 void tst_QCompareHelpers::lexicographicalCompareThreeWay_Mixed_Int()
 {
     lexicographicalCompareThreeWayImpl<LessOnly<int>, ThreeWayCmp<int>,
-                                       Qt::strong_ordering>();
+                                       BobUI::strong_ordering>();
 }
 void tst_QCompareHelpers::lexicographicalCompareThreeWay_Mixed_Float_data()
 {
     lexicographicalCompareThreeWayDataImpl<LessOnly<float>, ThreeWayCmp<float>,
-                                           Qt::partial_ordering>();
+                                           BobUI::partial_ordering>();
 }
 void tst_QCompareHelpers::lexicographicalCompareThreeWay_Mixed_Float()
 {
     lexicographicalCompareThreeWayImpl<LessOnly<float>, ThreeWayCmp<float>,
-                                       Qt::partial_ordering>();
+                                       BobUI::partial_ordering>();
 }
 void tst_QCompareHelpers::lexicographicalCompareThreeWay_Mixed_Weak_data()
 {
     lexicographicalCompareThreeWayDataImpl<LessOnly<Weak>, ThreeWayCmp<Weak>,
-                                           Qt::weak_ordering>();
+                                           BobUI::weak_ordering>();
 }
 void tst_QCompareHelpers::lexicographicalCompareThreeWay_Mixed_Weak()
 {
     lexicographicalCompareThreeWayImpl<LessOnly<Weak>, ThreeWayCmp<Weak>,
-                                       Qt::weak_ordering>();
+                                       BobUI::weak_ordering>();
 }
 
 void tst_QCompareHelpers::lexicographicalCompareThreeWay_Comparator_Int_data()
 {
-    lexicographicalCompareThreeWayDataImpl<LessOnly<int>, LessOnly<int>, Qt::strong_ordering>();
+    lexicographicalCompareThreeWayDataImpl<LessOnly<int>, LessOnly<int>, BobUI::strong_ordering>();
 }
 void tst_QCompareHelpers::lexicographicalCompareThreeWay_Comparator_Int()
 {
     lexicographicalCompareThreeWayComparatorImpl<LessOnly<int>, LessOnly<int>,
-                                                 Qt::strong_ordering>();
+                                                 BobUI::strong_ordering>();
 }
 void tst_QCompareHelpers::lexicographicalCompareThreeWay_Comparator_Float_data()
 {
     lexicographicalCompareThreeWayDataImpl<LessOnly<float>, LessOnly<float>,
-                                           Qt::partial_ordering>();
+                                           BobUI::partial_ordering>();
 }
 void tst_QCompareHelpers::lexicographicalCompareThreeWay_Comparator_Float()
 {
     lexicographicalCompareThreeWayComparatorImpl<LessOnly<float>, LessOnly<float>,
-                                                 Qt::partial_ordering>();
+                                                 BobUI::partial_ordering>();
 }
 void tst_QCompareHelpers::lexicographicalCompareThreeWay_Comparator_Weak_data()
 {
-    lexicographicalCompareThreeWayDataImpl<LessOnly<Weak>, LessOnly<Weak>, Qt::weak_ordering>();
+    lexicographicalCompareThreeWayDataImpl<LessOnly<Weak>, LessOnly<Weak>, BobUI::weak_ordering>();
 }
 void tst_QCompareHelpers::lexicographicalCompareThreeWay_Comparator_Weak()
 {
     lexicographicalCompareThreeWayComparatorImpl<LessOnly<Weak>, LessOnly<Weak>,
-                                                 Qt::weak_ordering>();
+                                                 BobUI::weak_ordering>();
 }
 
 void tst_QCompareHelpers::lexicographicalCompareThreeWay_Pointers()
@@ -482,30 +482,30 @@ void tst_QCompareHelpers::lexicographicalCompareThreeWay_Pointers()
     {
         const QList<const int*> lhs{&a[0], &a[1], &a[2]};
         const QList<const int*> rhs{&a[0], &a[1], &a[2]};
-        const auto res = QtOrderingPrivate::lexicographicalCompareThreeWay(lhs.begin(), lhs.end(),
+        const auto res = BobUIOrderingPrivate::lexicographicalCompareThreeWay(lhs.begin(), lhs.end(),
                                                                            rhs.begin(), rhs.end());
-        QCOMPARE_EQ(res, Qt::strong_ordering::equivalent);
+        QCOMPARE_EQ(res, BobUI::strong_ordering::equivalent);
     }
     {
         const QList<const int*> lhs{&a[0], &a[1], &a[2]};
         const QList<const int*> rhs{&a[0], &a[2]};
-        const auto res = QtOrderingPrivate::lexicographicalCompareThreeWay(lhs.begin(), lhs.end(),
+        const auto res = BobUIOrderingPrivate::lexicographicalCompareThreeWay(lhs.begin(), lhs.end(),
                                                                            rhs.begin(), rhs.end());
-        QCOMPARE_EQ(res, Qt::strong_ordering::less);
+        QCOMPARE_EQ(res, BobUI::strong_ordering::less);
     }
     {
         const QList<const int*> lhs{&a[0], &a[2], &a[1]};
         const QList<const int*> rhs{&a[0], &a[1], &a[2]};
-        const auto res = QtOrderingPrivate::lexicographicalCompareThreeWay(lhs.begin(), lhs.end(),
+        const auto res = BobUIOrderingPrivate::lexicographicalCompareThreeWay(lhs.begin(), lhs.end(),
                                                                            rhs.begin(), rhs.end());
-        QCOMPARE_EQ(res, Qt::strong_ordering::greater);
+        QCOMPARE_EQ(res, BobUI::strong_ordering::greater);
     }
     {
         const QList<const int*> lhs{&a[0], &a[1], &a[2], &a[0]};
         const QList<const int*> rhs{&a[0], &a[1], &a[2]};
-        const auto res = QtOrderingPrivate::lexicographicalCompareThreeWay(lhs.begin(), lhs.end(),
+        const auto res = BobUIOrderingPrivate::lexicographicalCompareThreeWay(lhs.begin(), lhs.end(),
                                                                            rhs.begin(), rhs.end());
-        QCOMPARE_EQ(res, Qt::strong_ordering::greater);
+        QCOMPARE_EQ(res, BobUI::strong_ordering::greater);
     }
 }
 
@@ -519,7 +519,7 @@ struct NonCopyMove
 private:
     friend auto compareThreeWay(const NonCopyMove &lhs, const NonCopyMove &rhs)
     {
-        return Qt::compareThreeWay(lhs.val, rhs.val);
+        return BobUI::compareThreeWay(lhs.val, rhs.val);
     }
 };
 
@@ -531,24 +531,24 @@ void tst_QCompareHelpers::lexicographicalCompareThreeWay_NonCopyMove()
                                NonCopyMove{2.f}, NonCopyMove{3.f}};
 
     {
-        const auto res = QtOrderingPrivate::lexicographicalCompareThreeWay(a1.begin(), a1.end(),
+        const auto res = BobUIOrderingPrivate::lexicographicalCompareThreeWay(a1.begin(), a1.end(),
                                                                            a1.begin(), a1.end());
-        QCOMPARE_EQ(res, Qt::partial_ordering::equivalent);
+        QCOMPARE_EQ(res, BobUI::partial_ordering::equivalent);
     }
     {
-        const auto res = QtOrderingPrivate::lexicographicalCompareThreeWay(a1.begin(), a1.end(),
+        const auto res = BobUIOrderingPrivate::lexicographicalCompareThreeWay(a1.begin(), a1.end(),
                                                                            a2.begin(), a2.end());
-        QCOMPARE_EQ(res, Qt::partial_ordering::less);
+        QCOMPARE_EQ(res, BobUI::partial_ordering::less);
     }
     {
-        const auto res = QtOrderingPrivate::lexicographicalCompareThreeWay(a2.begin(), a2.end(),
+        const auto res = BobUIOrderingPrivate::lexicographicalCompareThreeWay(a2.begin(), a2.end(),
                                                                            a1.begin(), a1.end());
-        QCOMPARE_EQ(res, Qt::partial_ordering::greater);
+        QCOMPARE_EQ(res, BobUI::partial_ordering::greater);
     }
     {
-        const auto res = QtOrderingPrivate::lexicographicalCompareThreeWay(a1.begin(), a1.end(),
+        const auto res = BobUIOrderingPrivate::lexicographicalCompareThreeWay(a1.begin(), a1.end(),
                                                                            a3.begin(), a3.end());
-        QCOMPARE_EQ(res, Qt::partial_ordering::unordered);
+        QCOMPARE_EQ(res, BobUI::partial_ordering::unordered);
     }
 }
 
@@ -561,16 +561,16 @@ private:
                                 const WithCustomPointerCompareThreeWayHelper *rhs)
     {
         if (lhs && rhs)
-            return Qt::compareThreeWay(lhs->val, rhs->val);
+            return BobUI::compareThreeWay(lhs->val, rhs->val);
         else if (lhs)
-            return Qt::partial_ordering::greater;
+            return BobUI::partial_ordering::greater;
         else
-            return Qt::partial_ordering::less;
+            return BobUI::partial_ordering::less;
     }
 };
 
-static_assert(QtOrderingPrivate::HasCustomCompareThreeWay<WithCustomPointerCompareThreeWayHelper*>::value);
-static_assert(!QtOrderingPrivate::HasCustomCompareThreeWay<int*>::value);
+static_assert(BobUIOrderingPrivate::HasCustomCompareThreeWay<WithCustomPointerCompareThreeWayHelper*>::value);
+static_assert(!BobUIOrderingPrivate::HasCustomCompareThreeWay<int*>::value);
 
 void tst_QCompareHelpers::lexicographicalCompareThreeWay_CustomPointerHelper()
 {
@@ -584,23 +584,23 @@ void tst_QCompareHelpers::lexicographicalCompareThreeWay_CustomPointerHelper()
     const std::array a3 = {&nan, &val2, &val3};
 
     {
-        const auto res = QtOrderingPrivate::lexicographicalCompareThreeWay(a1.begin(), a1.end(),
+        const auto res = BobUIOrderingPrivate::lexicographicalCompareThreeWay(a1.begin(), a1.end(),
                                                                            a1.begin(), a1.end());
-        QCOMPARE_EQ(res, Qt::partial_ordering::equivalent);
+        QCOMPARE_EQ(res, BobUI::partial_ordering::equivalent);
     }
     {
-        const auto res = QtOrderingPrivate::lexicographicalCompareThreeWay(a1.begin(), a1.end(),
+        const auto res = BobUIOrderingPrivate::lexicographicalCompareThreeWay(a1.begin(), a1.end(),
                                                                            a2.begin(), a2.end());
-        QCOMPARE_EQ(res, Qt::partial_ordering::less);
+        QCOMPARE_EQ(res, BobUI::partial_ordering::less);
     }
     {
-        const auto res = QtOrderingPrivate::lexicographicalCompareThreeWay(a2.begin(), a2.end(),
+        const auto res = BobUIOrderingPrivate::lexicographicalCompareThreeWay(a2.begin(), a2.end(),
                                                                            a1.begin(), a1.end());
-        QCOMPARE_EQ(res, Qt::partial_ordering::greater);
+        QCOMPARE_EQ(res, BobUI::partial_ordering::greater);
     }
     {
-        const auto res = QtOrderingPrivate::lexicographicalCompareThreeWay(a1.begin(), a1.end(),
+        const auto res = BobUIOrderingPrivate::lexicographicalCompareThreeWay(a1.begin(), a1.end(),
                                                                            a3.begin(), a3.end());
-        QCOMPARE_EQ(res, Qt::partial_ordering::unordered);
+        QCOMPARE_EQ(res, BobUI::partial_ordering::unordered);
     }
 }

@@ -1,17 +1,17 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-qt_find_package(GTK3 MODULE)
+bobui_find_package(GTK3 MODULE)
 
-if(QT_FEATURE_xlib)
-    qt_find_package(X11 MODULE)
+if(BOBUI_FEATURE_xlib)
+    bobui_find_package(X11 MODULE)
 endif()
 
 #####################################################################
 ## QGtk3ThemePlugin Plugin:
 #####################################################################
 
-qt_internal_add_plugin(QGtk3ThemePlugin
+bobui_internal_add_plugin(QGtk3ThemePlugin
     OUTPUT_NAME qgtk3
     PLUGIN_TYPE platformthemes
     DEFAULT_IF FALSE
@@ -25,23 +25,23 @@ qt_internal_add_plugin(QGtk3ThemePlugin
         qgtk3storage.cpp qgtk3storage_p.h
         qgtk3json.cpp qgtk3json_p.h
     NO_PCH_SOURCES
-        qgtk3dialoghelpers.cpp # undef QT_NO_FOREACH
+        qgtk3dialoghelpers.cpp # undef BOBUI_NO_FOREACH
     DEFINES
         GDK_VERSION_MIN_REQUIRED=GDK_VERSION_3_6
     LIBRARIES
         PkgConfig::GTK3
-        Qt::Core
-        Qt::CorePrivate
-        Qt::Gui
-        Qt::GuiPrivate
+        BobUI::Core
+        BobUI::CorePrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
 )
 
-qt_internal_extend_target(QGtk3ThemePlugin CONDITION QT_FEATURE_dbus
+bobui_internal_extend_target(QGtk3ThemePlugin CONDITION BOBUI_FEATURE_dbus
     LIBRARIES
-        Qt::DBus
+        BobUI::DBus
 )
 
-qt_internal_extend_target(QGtk3ThemePlugin CONDITION QT_FEATURE_xlib
+bobui_internal_extend_target(QGtk3ThemePlugin CONDITION BOBUI_FEATURE_xlib
     LIBRARIES
         X11::X11
 )

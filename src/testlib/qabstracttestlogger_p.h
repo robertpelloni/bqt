@@ -1,5 +1,5 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QABSTRACTTESTLOGGER_P_H
 #define QABSTRACTTESTLOGGER_P_H
@@ -8,24 +8,24 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtTest/qttestglobal.h>
-#include <QtCore/private/qglobal_p.h>
-#include <QtCore/qbytearrayalgorithms.h>
+#include <BobUITest/bobuitestglobal.h>
+#include <BobUICore/private/qglobal_p.h>
+#include <BobUICore/qbytearrayalgorithms.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QBenchmarkResult;
-class QTestData;
+class BOBUIestData;
 
 class Q_TESTLIB_EXPORT QAbstractTestLogger
 {
@@ -63,14 +63,14 @@ public:
     virtual void enterTestFunction(const char *function) = 0;
     virtual void leaveTestFunction() = 0;
 
-    virtual void enterTestData(QTestData *) {}
+    virtual void enterTestData(BOBUIestData *) {}
 
     virtual void addIncident(IncidentTypes type, const char *description,
                              const char *file = nullptr, int line = 0) = 0;
     virtual void addBenchmarkResult(const QBenchmarkResult &result) = 0;
     virtual void addBenchmarkResults(const QList<QBenchmarkResult> &result);
 
-    virtual void addMessage(QtMsgType, const QMessageLogContext &,
+    virtual void addMessage(BobUIMsgType, const QMessageLogContext &,
                             const QString &);
 
     virtual void addMessage(MessageTypes type, const QString &message,
@@ -87,18 +87,18 @@ protected:
     FILE *stream;
 };
 
-struct QTestCharBuffer
+struct BOBUIestCharBuffer
 {
     enum { InitialSize = 512 };
 
-    inline QTestCharBuffer() : buf(staticBuf)
+    inline BOBUIestCharBuffer() : buf(staticBuf)
     {
         staticBuf[0] = '\0';
     }
 
-    Q_DISABLE_COPY_MOVE(QTestCharBuffer)
+    Q_DISABLE_COPY_MOVE(BOBUIestCharBuffer)
 
-    inline ~QTestCharBuffer()
+    inline ~BOBUIestCharBuffer()
     {
         if (buf != staticBuf)
             free(buf);
@@ -159,18 +159,18 @@ private:
     char staticBuf[InitialSize];
 };
 
-namespace QTest
+namespace BOBUIest
 {
-    int qt_asprintf(QTestCharBuffer *buf, const char *format, ...);
+    int bobui_asprintf(BOBUIestCharBuffer *buf, const char *format, ...);
 }
 
-namespace QTestPrivate
+namespace BOBUIestPrivate
 {
     enum IdentifierPart { TestObject = 0x1, TestFunction = 0x2, TestDataTag = 0x4, AllParts = 0xFFFF };
-    void Q_TESTLIB_EXPORT generateTestIdentifier(QTestCharBuffer *identifier, int parts = AllParts);
-    bool appendCharBuffer(QTestCharBuffer *accumulator, const QTestCharBuffer &more);
+    void Q_TESTLIB_EXPORT generateTestIdentifier(BOBUIestCharBuffer *identifier, int parts = AllParts);
+    bool appendCharBuffer(BOBUIestCharBuffer *accumulator, const BOBUIestCharBuffer &more);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

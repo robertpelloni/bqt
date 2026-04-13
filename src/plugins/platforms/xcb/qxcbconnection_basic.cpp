@@ -1,6 +1,6 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qxcbconnection_basic.h"
 #include "qxcbbackingstore.h" // for createSystemVShmSegment()
@@ -16,7 +16,7 @@
 #include <xcb/xkb.h>
 #undef explicit
 
-#if QT_CONFIG(xcb_xlib)
+#if BOBUI_CONFIG(xcb_xlib)
 #define register        /* C++17 deprecated register */
 #include <X11/Xlib.h>
 #include <X11/Xlib-xcb.h>
@@ -25,11 +25,11 @@
 #undef register
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcQpaXcb, "qt.qpa.xcb")
+Q_LOGGING_CATEGORY(lcQpaXcb, "bobui.qpa.xcb")
 
-#if QT_CONFIG(xcb_xlib)
+#if BOBUI_CONFIG(xcb_xlib)
 static constexpr auto xcbConnectionErrors = qOffsetStringArray(
     "No error", /* Error 0 */
     "I/O error", /* XCB_CONN_ERROR */
@@ -75,7 +75,7 @@ static int ioErrorHandler(Display *dpy)
 QXcbBasicConnection::QXcbBasicConnection(const char *displayName)
     : m_displayName(displayName ? QByteArray(displayName) : qgetenv("DISPLAY"))
 {
-#if QT_CONFIG(xcb_xlib)
+#if BOBUI_CONFIG(xcb_xlib)
     Display *dpy = XOpenDisplay(m_displayName.constData());
     if (dpy) {
         m_primaryScreenNumber = DefaultScreen(dpy);
@@ -106,13 +106,13 @@ QXcbBasicConnection::QXcbBasicConnection(const char *displayName)
         xcb_prefetch_extension_data (m_xcbConnection, *ext_it);
 
     initializeXSync();
-    if (!qEnvironmentVariableIsSet("QT_XCB_NO_MITSHM"))
+    if (!qEnvironmentVariableIsSet("BOBUI_XCB_NO_MITSHM"))
         initializeShm();
-    if (!qEnvironmentVariableIsSet("QT_XCB_NO_XRANDR"))
+    if (!qEnvironmentVariableIsSet("BOBUI_XCB_NO_XRANDR"))
         initializeXRandr();
     initializeXFixes();
     initializeXRender();
-    if (!qEnvironmentVariableIsSet("QT_XCB_NO_XI2"))
+    if (!qEnvironmentVariableIsSet("BOBUI_XCB_NO_XI2"))
         initializeXInput2();
     initializeXShape();
     initializeXKB();
@@ -121,7 +121,7 @@ QXcbBasicConnection::QXcbBasicConnection(const char *displayName)
 QXcbBasicConnection::~QXcbBasicConnection()
 {
     if (isConnected()) {
-#if QT_CONFIG(xcb_xlib)
+#if BOBUI_CONFIG(xcb_xlib)
         XCloseDisplay(static_cast<Display *>(m_xlibDisplay));
 #else
         xcb_disconnect(m_xcbConnection);
@@ -173,17 +173,17 @@ bool QXcbBasicConnection::hasBigRequest() const
 // - "pad0" became "extension"
 // - "pad1" and "pad" became "pad0"
 // New and old version of this struct share the following fields:
-typedef struct qt_xcb_ge_event_t {
+typedef struct bobui_xcb_ge_event_t {
     uint8_t  response_type;
     uint8_t  extension;
     uint16_t sequence;
     uint32_t length;
     uint16_t event_type;
-} qt_xcb_ge_event_t;
+} bobui_xcb_ge_event_t;
 
 bool QXcbBasicConnection::isXIEvent(xcb_generic_event_t *event) const
 {
-    qt_xcb_ge_event_t *e = reinterpret_cast<qt_xcb_ge_event_t *>(event);
+    bobui_xcb_ge_event_t *e = reinterpret_cast<bobui_xcb_ge_event_t *>(event);
     return e->extension == m_xiOpCode;
 }
 
@@ -192,7 +192,7 @@ bool QXcbBasicConnection::isXIType(xcb_generic_event_t *event, uint16_t type) co
     if (!isXIEvent(event))
         return false;
 
-    auto *e = reinterpret_cast<qt_xcb_ge_event_t *>(event);
+    auto *e = reinterpret_cast<bobui_xcb_ge_event_t *>(event);
     return e->event_type == type;
 }
 
@@ -243,16 +243,16 @@ void QXcbBasicConnection::initializeShm()
 
     // Temporary disable warnings (unless running in debug mode).
     auto logging = const_cast<QLoggingCategory*>(&lcQpaXcb());
-    bool wasEnabled = logging->isEnabled(QtMsgType::QtWarningMsg);
-    if (!logging->isEnabled(QtMsgType::QtDebugMsg))
-        logging->setEnabled(QtMsgType::QtWarningMsg, false);
+    bool wasEnabled = logging->isEnabled(BobUIMsgType::BobUIWarningMsg);
+    if (!logging->isEnabled(BobUIMsgType::BobUIDebugMsg))
+        logging->setEnabled(BobUIMsgType::BobUIWarningMsg, false);
     if (!QXcbBackingStore::createSystemVShmSegment(m_xcbConnection)) {
         qCDebug(lcQpaXcb, "failed to create System V shared memory segment (remote "
                           "X11 connection?), disabling SHM");
         m_hasShm = m_hasShmFd = false;
     }
     if (wasEnabled)
-        logging->setEnabled(QtMsgType::QtWarningMsg, true);
+        logging->setEnabled(BobUIMsgType::BobUIWarningMsg, true);
 }
 
 void QXcbBasicConnection::initializeXRender()
@@ -386,6 +386,6 @@ void QXcbBasicConnection::initializeXKB()
     m_xkbFirstEvent = reply->first_event;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qxcbconnection_basic.cpp"

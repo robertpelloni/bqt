@@ -1,24 +1,24 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## nativetext Binary:
 #####################################################################
 
-qt_internal_add_manual_test(nativetext
+bobui_internal_add_manual_test(nativetext
     SOURCES
         main.cpp
     LIBRARIES
-        Qt::CorePrivate
-        Qt::Gui
-        Qt::GuiPrivate
-        Qt::Widgets
+        BobUI::CorePrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
+        BobUI::Widgets
 )
 
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(nativetext CONDITION APPLE
+bobui_internal_extend_target(nativetext CONDITION APPLE
     LIBRARIES
         ${FWAppKit}
         ${FWCoreGraphics}

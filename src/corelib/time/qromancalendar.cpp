@@ -1,18 +1,18 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qglobal.h"
 #include "qromancalendar_p.h"
 #include "qromancalendar_data_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \since 5.14
     \internal
 
     \class QRomanCalendar
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QRomanCalendar class is a shared base for calendars based on the
     ancient Roman calendar.
 
@@ -58,12 +58,12 @@ bool QRomanCalendar::isSolar() const
 
 const QCalendarLocale *QRomanCalendar::localeMonthIndexData() const
 {
-    return QtPrivate::Roman::locale_data;
+    return BobUIPrivate::Roman::locale_data;
 }
 
 const char16_t *QRomanCalendar::localeMonthData() const
 {
-    return QtPrivate::Roman::months_data;
+    return BobUIPrivate::Roman::months_data;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

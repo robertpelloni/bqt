@@ -1,9 +1,9 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qrhid3d12_p.h"
 #include <qmath.h>
-#include <QtCore/private/qsystemerror_p.h>
+#include <BobUICore/private/qsystemerror_p.h>
 #include <comdef.h>
 #include "qrhid3dhelpers_p.h"
 #include "cs_mipmap_p.h"
@@ -16,7 +16,7 @@
 
 #ifdef __ID3D12Device2_INTERFACE_DEFINED__
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*
   Direct 3D 12 backend.
@@ -24,7 +24,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \class QRhiD3D12InitParams
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \brief Direct3D 12 specific initialization parameters.
 
@@ -72,7 +72,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \class QRhiD3D12NativeHandles
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \brief Holds the D3D12 device used by the QRhi.
 
@@ -132,7 +132,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \class QRhiD3D12CommandBufferNativeHandles
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \brief Holds the ID3D12GraphicsCommandList1 object that is backing a QRhiCommandBuffer.
 
@@ -227,8 +227,8 @@ bool QRhiD3D12::create(QRhi::Flags flags)
         }
     }
 
-    if (qEnvironmentVariableIsSet("QT_D3D_MAX_FRAME_LATENCY"))
-        maxFrameLatency = UINT(qMax(0, qEnvironmentVariableIntValue("QT_D3D_MAX_FRAME_LATENCY")));
+    if (qEnvironmentVariableIsSet("BOBUI_D3D_MAX_FRAME_LATENCY"))
+        maxFrameLatency = UINT(qMax(0, qEnvironmentVariableIntValue("BOBUI_D3D_MAX_FRAME_LATENCY")));
     if (maxFrameLatency != 0)
         qCDebug(QRHI_LOG_INFO, "Using frame latency waitable object with max frame latency %u", maxFrameLatency);
 
@@ -255,8 +255,8 @@ bool QRhiD3D12::create(QRhi::Flags flags)
     if (!importedDevice) {
         IDXGIAdapter1 *adapter;
         int requestedAdapterIndex = -1;
-        if (qEnvironmentVariableIsSet("QT_D3D_ADAPTER_INDEX"))
-            requestedAdapterIndex = qEnvironmentVariableIntValue("QT_D3D_ADAPTER_INDEX");
+        if (qEnvironmentVariableIsSet("BOBUI_D3D_ADAPTER_INDEX"))
+            requestedAdapterIndex = qEnvironmentVariableIntValue("BOBUI_D3D_ADAPTER_INDEX");
 
         if (requestedRhiAdapter)
             adapterLuid = static_cast<QD3D12Adapter *>(requestedRhiAdapter)->luid;
@@ -353,7 +353,7 @@ bool QRhiD3D12::create(QRhi::Flags flags)
     if (debugLayer) {
         ID3D12InfoQueue *infoQueue;
         if (SUCCEEDED(dev->QueryInterface(__uuidof(ID3D12InfoQueue), reinterpret_cast<void **>(&infoQueue)))) {
-            if (qEnvironmentVariableIntValue("QT_D3D_DEBUG_BREAK")) {
+            if (qEnvironmentVariableIntValue("BOBUI_D3D_DEBUG_BREAK")) {
                 infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, true);
                 infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);
                 infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, true);
@@ -467,7 +467,7 @@ bool QRhiD3D12::create(QRhi::Flags flags)
     }
 
     if (flags.testFlag(QRhi::EnableTimestamps)) {
-        static bool wantsStablePowerState = qEnvironmentVariableIntValue("QT_D3D_STABLE_POWER_STATE");
+        static bool wantsStablePowerState = qEnvironmentVariableIntValue("BOBUI_D3D_STABLE_POWER_STATE");
         //
         // https://learn.microsoft.com/en-us/windows/win32/api/d3d12/nf-d3d12-id3d12device-setstablepowerstate
         //
@@ -1582,7 +1582,7 @@ void QRhiD3D12::setShadingRate(QRhiCommandBuffer *cb, const QSize &coarsePixelSi
 #else
     Q_UNUSED(cb);
     Q_UNUSED(coarsePixelSize);
-    qWarning("Attempted to set ShadingRate without building Qt against a sufficiently new Windows SDK and d3d12.h. This cannot work.");
+    qWarning("Attempted to set ShadingRate without building BobUI against a sufficiently new Windows SDK and d3d12.h. This cannot work.");
 #endif
 }
 
@@ -1709,7 +1709,7 @@ QRhi::FrameOpResult QRhiD3D12::beginFrame(QRhiSwapChain *swapChain, QRhi::BeginF
     // its own frame 0 will make B wait for A's frame 0 commands. If a resource
     // is written in B's frame or when B checks for pending resource releases,
     // that won't mess up A's in-flight commands (as they are guaranteed not to
-    // be in flight anymore). With Qt Quick this situation cannot happen anyway
+    // be in flight anymore). With BobUI Quick this situation cannot happen anyway
     // by design (one QRhi per window).
     for (QD3D12SwapChain *sc : std::as_const(swapchains))
         sc->waitCommandCompletionForFrameSlot(currentFrameSlot); // note: swapChainD->currentFrameSlot, not sc's
@@ -2380,12 +2380,12 @@ bool QD3D12CpuDescriptorPool::create(ID3D12Device *device, D3D12_DESCRIPTOR_HEAP
 
 void QD3D12CpuDescriptorPool::destroy()
 {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     // debug builds: just do it always
     static bool leakCheck = true;
 #else
     // release builds: opt-in
-    static bool leakCheck = qEnvironmentVariableIntValue("QT_RHI_LEAK_CHECK");
+    static bool leakCheck = qEnvironmentVariableIntValue("BOBUI_RHI_LEAK_CHECK");
 #endif
     if (leakCheck) {
         for (HeapWithMap &heap : heaps) {
@@ -3451,7 +3451,7 @@ bool QD3D12MemoryAllocator::create(ID3D12Device *device, IDXGIAdapter1 *adapter)
     // allocator is interesting for efficiency mainly since it can suballocate
     // instead of making everything a committed resource allocation.
 
-    static bool disableMA = qEnvironmentVariableIntValue("QT_D3D_NO_SUBALLOC");
+    static bool disableMA = qEnvironmentVariableIntValue("BOBUI_D3D_NO_SUBALLOC");
     if (disableMA)
         return true;
 
@@ -5665,7 +5665,7 @@ static QByteArray dxcCompile(const QShaderCode &hlslSource, const char *target, 
     IDxcCompiler *compiler = dxc.first;
     if (!compiler) {
         qWarning("Unable to instantiate IDxcCompiler. Likely no dxcompiler.dll and dxil.dll present. "
-                 "Use windeployqt or try https://github.com/microsoft/DirectXShaderCompiler/releases");
+                 "Use windeploybobui or try https://github.com/microsoft/DirectXShaderCompiler/releases");
         return QByteArray();
     }
     IDxcLibrary *library = dxc.second;
@@ -5804,8 +5804,8 @@ static QByteArray compileHlslShaderSource(const QShader &shader,
         return dxcCompile(hlslSource, target, flags, error);
 #else
         qWarning("Attempted to runtime-compile HLSL source code for shader model >= 6.0 "
-                 "but the Qt build has no support for DXC. "
-                 "Rebuild Qt with a recent Windows SDK or switch to an MSVC build.");
+                 "but the BobUI build has no support for DXC. "
+                 "Rebuild BobUI with a recent Windows SDK or switch to an MSVC build.");
 #endif
     }
 
@@ -7092,6 +7092,6 @@ bool QD3D12SwapChain::createOrResize()
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // __ID3D12Device2_INTERFACE_DEFINED__

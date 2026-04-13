@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 #include "private/qstylehelper_p.h"
 #include "qstyleoption.h"
 #include "qapplication.h"
 #include <qdebug.h>
-#include <QtCore/qmath.h>
+#include <BobUICore/qmath.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QStyleOption
     \brief The QStyleOption class stores the parameters used by QStyle functions.
 
     \ingroup appearance
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QStyleOption and its subclasses contain all the information that
     QStyle functions need to draw a graphical element.
@@ -28,7 +28,7 @@ QT_BEGIN_NAMESPACE
     functions.
 
     The caller of a QStyle function usually creates QStyleOption
-    objects on the stack. This combined with Qt's extensive use of
+    objects on the stack. This combined with BobUI's extensive use of
     \l{implicit sharing} for types such as QString, QPalette, and
     QColor ensures that no memory allocation needlessly takes place.
 
@@ -146,7 +146,7 @@ void QStyleOption::initFrom(const QWidget *widget)
         state |= QStyle::State_Enabled;
     if (widget->hasFocus())
         state |= QStyle::State_HasFocus;
-    if (window->testAttribute(Qt::WA_KeyboardFocusChange))
+    if (window->testAttribute(BobUI::WA_KeyboardFocusChange))
         state |= QStyle::State_KeyboardFocusChange;
     if (widget->underMouse())
         state |= QStyle::State_MouseOver;
@@ -164,7 +164,7 @@ void QStyleOption::initFrom(const QWidget *widget)
     default:
         ;
     }
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     if (widget->hasEditFocus())
         state |= QStyle::State_HasEditFocus;
 #endif
@@ -245,7 +245,7 @@ QStyleOption &QStyleOption::operator=(const QStyleOption &other)
     \variable QStyleOption::direction
     \brief the text layout direction that should be used when drawing text in the control
 
-    By default, the layout direction is Qt::LeftToRight.
+    By default, the layout direction is BobUI::LeftToRight.
 
     \sa initFrom()
 */
@@ -319,7 +319,7 @@ QStyleOption &QStyleOption::operator=(const QStyleOption &other)
     \brief The QStyleOptionFocusRect class is used to describe the
     parameters for drawing a focus rectangle with QStyle.
 
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     For performance reasons, there are few member functions and the
     access to the member variables is direct (i.e., using the \c . or
@@ -400,9 +400,9 @@ QStyleOptionFocusRect::QStyleOptionFocusRect(int version)
     \brief The QStyleOptionFrame class is used to describe the
     parameters for drawing a frame.
 
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
-    QStyleOptionFrame is used for drawing several built-in Qt widgets,
+    QStyleOptionFrame is used for drawing several built-in BobUI widgets,
     including QFrame, QGroupBox, QLineEdit, and QMenu.
 
     For performance reasons, there are few member functions and the
@@ -532,7 +532,7 @@ QStyleOptionFrame::QStyleOptionFrame(int version)
     drawing a group box.
 
     \since 4.1
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QStyleOptionButton contains all the information that QStyle
     functions need the various graphical elements of a group box.
@@ -613,7 +613,7 @@ QStyleOptionFrame::QStyleOptionFrame(int version)
     \variable QStyleOptionGroupBox::textAlignment
     \brief the alignment of the group box title
 
-    The default value is Qt::AlignLeft.
+    The default value is BobUI::AlignLeft.
 
     \sa QGroupBox::alignment
 */
@@ -656,7 +656,7 @@ QStyleOptionGroupBox::QStyleOptionGroupBox()
 */
 QStyleOptionGroupBox::QStyleOptionGroupBox(int version)
     : QStyleOptionComplex(version, Type), features(QStyleOptionFrame::None),
-      textAlignment(Qt::AlignLeft), lineWidth(0), midLineWidth(0)
+      textAlignment(BobUI::AlignLeft), lineWidth(0), midLineWidth(0)
 {
 }
 
@@ -665,7 +665,7 @@ QStyleOptionGroupBox::QStyleOptionGroupBox(int version)
     \brief The QStyleOptionHeader class is used to describe the
     parameters for drawing a header.
 
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QStyleOptionHeader contains all the information that QStyle
     functions need to draw the item views' header pane, header sort
@@ -695,10 +695,10 @@ QStyleOptionHeader::QStyleOptionHeader()
 */
 QStyleOptionHeader::QStyleOptionHeader(int version)
     : QStyleOption(version, SO_Header),
-      section(0), textAlignment(Qt::AlignLeft), iconAlignment(Qt::AlignLeft),
+      section(0), textAlignment(BobUI::AlignLeft), iconAlignment(BobUI::AlignLeft),
       position(QStyleOptionHeader::Beginning),
       selectedPosition(QStyleOptionHeader::NotAdjacent), sortIndicator(None),
-      orientation(Qt::Horizontal)
+      orientation(BobUI::Horizontal)
 {
 }
 
@@ -706,7 +706,7 @@ QStyleOptionHeader::QStyleOptionHeader(int version)
     \variable QStyleOptionHeader::orientation
     \brief the header's orientation (horizontal or vertical)
 
-    The default orientation is Qt::Horizontal
+    The default orientation is BobUI::Horizontal
 */
 
 /*!
@@ -764,7 +764,7 @@ QStyleOptionHeader::QStyleOptionHeader(int version)
     \variable QStyleOptionHeader::textAlignment
     \brief the alignment flags for the text of the header
 
-    The default value is Qt::AlignLeft.
+    The default value is BobUI::AlignLeft.
 */
 
 /*!
@@ -779,7 +779,7 @@ QStyleOptionHeader::QStyleOptionHeader(int version)
     \variable QStyleOptionHeader::iconAlignment
     \brief the alignment flags for the icon of the header
 
-    The default value is Qt::AlignLeft.
+    The default value is BobUI::AlignLeft.
 */
 
 /*!
@@ -846,7 +846,7 @@ QStyleOptionHeader::QStyleOptionHeader(int version)
     \brief The QStyleOptionHeaderV2 class is used to describe the
     parameters for drawing a header.
 
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 */
 
 /*!
@@ -862,7 +862,7 @@ QStyleOptionHeaderV2::QStyleOptionHeaderV2()
     \internal
 */
 QStyleOptionHeaderV2::QStyleOptionHeaderV2(int version)
-: QStyleOptionHeader(version), textElideMode(Qt::ElideNone), isSectionDragTarget(false), unused(0)
+: QStyleOptionHeader(version), textElideMode(BobUI::ElideNone), isSectionDragTarget(false), unused(0)
 {}
 
 /*!
@@ -870,9 +870,9 @@ QStyleOptionHeaderV2::QStyleOptionHeaderV2(int version)
     \brief where ellipsis should be added for text that is too long to fit
     into an item
 
-    The default value is Qt::ElideNone.
+    The default value is BobUI::ElideNone.
 
-    \sa Qt::TextElideMode
+    \sa BobUI::TextElideMode
 */
 
 /*!
@@ -889,7 +889,7 @@ QStyleOptionHeaderV2::QStyleOptionHeaderV2(int version)
     \brief The QStyleOptionButton class is used to describe the
     parameters for drawing buttons.
 
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QStyleOptionButton contains all the information that QStyle
     functions need to draw graphical elements like QPushButton,
@@ -1006,17 +1006,17 @@ QStyleOptionButton::QStyleOptionButton(int version)
 */
 
 
-#if QT_CONFIG(toolbar)
+#if BOBUI_CONFIG(toolbar)
 /*!
     \class QStyleOptionToolBar
     \brief The QStyleOptionToolBar class is used to describe the
     parameters for drawing a toolbar.
 
     \since 4.1
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QStyleOptionToolBar contains all the information that QStyle
-    functions need to draw QToolBar.
+    functions need to draw BOBUIoolBar.
 
     The QStyleOptionToolBar class holds the lineWidth and the
     midLineWidth for drawing the widget. It also stores information
@@ -1061,7 +1061,7 @@ QStyleOptionToolBar::QStyleOptionToolBar()
 */
 QStyleOptionToolBar::QStyleOptionToolBar(int version)
 : QStyleOption(version, SO_ToolBar), positionOfLine(OnlyOne), positionWithinLine(OnlyOne),
-  toolBarArea(Qt::TopToolBarArea), features(None), lineWidth(0), midLineWidth(0)
+  toolBarArea(BobUI::TopToolBarArea), features(None), lineWidth(0), midLineWidth(0)
 {
 
 }
@@ -1104,7 +1104,7 @@ QStyleOptionToolBar::QStyleOptionToolBar(int version)
     \value Movable The toolbar is movable, and a handle will appear when
            holding the cursor over the toolbar's boundary.
 
-    \sa features, QToolBar::isMovable()
+    \sa features, BOBUIoolBar::isMovable()
 */
 
 /*!
@@ -1128,9 +1128,9 @@ QStyleOptionToolBar::QStyleOptionToolBar(int version)
 
     This variable holds the location for drawing the toolbar.
 
-    The default value is Qt::TopToolBarArea.
+    The default value is BobUI::TopToolBarArea.
 
-    \sa Qt::ToolBarArea
+    \sa BobUI::ToolBarArea
 */
 
 /*!
@@ -1191,16 +1191,16 @@ QStyleOptionToolBar::QStyleOptionToolBar(int version)
 
 #endif
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
 /*!
     \class QStyleOptionTab
     \brief The QStyleOptionTab class is used to describe the
     parameters for drawing a tab bar.
 
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
-    The QStyleOptionTab class is used for drawing several built-in Qt
-    widgets including \l QTabBar and the panel for \l QTabWidget.
+    The QStyleOptionTab class is used for drawing several built-in BobUI
+    widgets including \l BOBUIabBar and the panel for \l BOBUIabWidget.
 
     An instance of the QStyleOptionTab class has
     \l{QStyleOption::type} {type} \l SO_Tab and
@@ -1237,7 +1237,7 @@ QStyleOptionTab::QStyleOptionTab()
 */
 QStyleOptionTab::QStyleOptionTab(int version)
     : QStyleOption(version, SO_Tab),
-      shape(QTabBar::RoundedNorth),
+      shape(BOBUIabBar::RoundedNorth),
       row(0),
       position(Beginning),
       selectedPosition(NotAdjacent), cornerWidgets(QStyleOptionTab::NoCornerWidgets),
@@ -1344,9 +1344,9 @@ QStyleOptionTab::QStyleOptionTab(int version)
 /*!
     \variable QStyleOptionTab::shape
     \brief the tab shape used to draw the tab; by default
-    QTabBar::RoundedNorth.
+    BOBUIabBar::RoundedNorth.
 
-    \sa QTabBar::Shape
+    \sa BOBUIabBar::Shape
 */
 
 /*!
@@ -1386,7 +1386,7 @@ QStyleOptionTab::QStyleOptionTab(int version)
     The default value is QSize(-1, -1), i.e. an invalid size; use
     QStyle::pixelMetric() to find the default icon size for tab bars.
 
-    \sa QTabBar::iconSize()
+    \sa BOBUIabBar::iconSize()
 */
 
 /*!
@@ -1430,14 +1430,14 @@ QStyleOptionTab::QStyleOptionTab(int version)
     The default value is -1, i.e. a tab not on a tabbar;
  */
 
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabbar)
 
 /*!
     \class QStyleOptionProgressBar
     \brief The QStyleOptionProgressBar class is used to describe the
     parameters necessary for drawing a progress bar.
 
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     An instance of the QStyleOptionProgressBar class has type
     SO_ProgressBar and version 2.
@@ -1474,7 +1474,7 @@ QStyleOptionProgressBar::QStyleOptionProgressBar()
 */
 QStyleOptionProgressBar::QStyleOptionProgressBar(int version)
     : QStyleOption(version, SO_ProgressBar),
-      minimum(0), maximum(0), progress(0), textAlignment(Qt::AlignLeft), textVisible(false),
+      minimum(0), maximum(0), progress(0), textAlignment(BobUI::AlignLeft), textVisible(false),
       invertedAppearance(false), bottomToTop(false)
 {
     state |= QStyle::State_Horizontal;
@@ -1564,7 +1564,7 @@ QStyleOptionProgressBar::QStyleOptionProgressBar(int version)
     \brief the text alignment for the text in the QProgressBar.
 
     This can be used as a guide on where the text should be in the
-    progress bar. The default value is Qt::AlignLeft.
+    progress bar. The default value is BobUI::AlignLeft.
 */
 
 /*!
@@ -1603,7 +1603,7 @@ QStyleOptionProgressBar::QStyleOptionProgressBar(int version)
     \brief The QStyleOptionMenuItemV2 class enhances
     QStyleOptionMenuItem with new members.
 
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 */
 
 /*!
@@ -1643,7 +1643,7 @@ QStyleOptionMenuItemV2::QStyleOptionMenuItemV2(int version)
     \brief The QStyleOptionMenuItem class is used to describe the
     parameter necessary for drawing a menu item.
 
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QStyleOptionMenuItem contains all the information that QStyle
     functions need to draw the menu items from \l QMenu. It is also
@@ -1843,7 +1843,7 @@ QStyleOptionMenuItem::QStyleOptionMenuItem(int version)
     \brief The QStyleOptionComplex class is used to hold parameters that are
     common to all complex controls.
 
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     This class is not used on its own. Instead it is used to derive
     other complex control options, for example QStyleOptionSlider and
@@ -1928,13 +1928,13 @@ QStyleOptionComplex::QStyleOptionComplex(int version, int type)
     \sa QStyle::SubControl
 */
 
-#if QT_CONFIG(slider)
+#if BOBUI_CONFIG(slider)
 /*!
     \class QStyleOptionSlider
     \brief The QStyleOptionSlider class is used to describe the
     parameters needed for drawing a slider.
 
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QStyleOptionSlider contains all the information that QStyle
     functions need to draw QSlider and QScrollBar.
@@ -1962,7 +1962,7 @@ QStyleOptionSlider::QStyleOptionSlider()
     \internal
 */
 QStyleOptionSlider::QStyleOptionSlider(int version)
-    : QStyleOptionComplex(version, SO_Slider), orientation(Qt::Horizontal), minimum(0), maximum(0),
+    : QStyleOptionComplex(version, SO_Slider), orientation(BobUI::Horizontal), minimum(0), maximum(0),
       tickPosition(QSlider::NoTicks), tickInterval(0), upsideDown(false),
       sliderPosition(0), sliderValue(0), singleStep(0), pageStep(0), notchTarget(0.0),
       dialWrapping(false), keyboardModifiers{}
@@ -2010,9 +2010,9 @@ QStyleOptionSlider::QStyleOptionSlider(int version)
     \variable QStyleOptionSlider::orientation
     \brief the slider's orientation (horizontal or vertical)
 
-    The default orientation is Qt::Horizontal.
+    The default orientation is BobUI::Horizontal.
 
-    \sa Qt::Orientation
+    \sa BobUI::Orientation
 */
 
 /*!
@@ -2120,15 +2120,15 @@ QStyleOptionSlider::QStyleOptionSlider(int version)
 
     \sa QAbstractSlider::pageStep
 */
-#endif // QT_CONFIG(slider)
+#endif // BOBUI_CONFIG(slider)
 
-#if QT_CONFIG(spinbox)
+#if BOBUI_CONFIG(spinbox)
 /*!
     \class QStyleOptionSpinBox
     \brief The QStyleOptionSpinBox class is used to describe the
     parameters necessary for drawing a spin box.
 
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QStyleOptionSpinBox contains all the information that QStyle
     functions need to draw QSpinBox and QDateTimeEdit.
@@ -2223,14 +2223,14 @@ QStyleOptionSpinBox::QStyleOptionSpinBox(int version)
 
     The default value is false, i.e. the spin box has no frame.
 */
-#endif // QT_CONFIG(spinbox)
+#endif // BOBUI_CONFIG(spinbox)
 
 /*!
     \class QStyleOptionDockWidget
     \brief The QStyleOptionDockWidget class is used to describe the
     parameters for drawing a dock widget.
 
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QStyleOptionDockWidget contains all the information that QStyle
     functions need to draw graphical elements like QDockWidget.
@@ -2328,16 +2328,16 @@ QStyleOptionDockWidget::QStyleOptionDockWidget(int version)
     The default value is true.
 */
 
-#if QT_CONFIG(toolbutton)
+#if BOBUI_CONFIG(toolbutton)
 /*!
     \class QStyleOptionToolButton
     \brief The QStyleOptionToolButton class is used to describe the
     parameters for drawing a tool button.
 
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QStyleOptionToolButton contains all the information that QStyle
-    functions need to draw QToolButton.
+    functions need to draw BOBUIoolButton.
 
     For performance reasons, there are few member functions and the
     access to the member variables is direct (i.e., using the \c . or
@@ -2360,7 +2360,7 @@ QStyleOptionDockWidget::QStyleOptionDockWidget(int version)
     \value MenuButtonPopup The button should display an arrow to
            indicate that a menu is present.
 
-    \sa features, QToolButton::toolButtonStyle(), QToolButton::popupMode()
+    \sa features, BOBUIoolButton::toolButtonStyle(), BOBUIoolButton::popupMode()
 */
 
 /*!
@@ -2377,8 +2377,8 @@ QStyleOptionToolButton::QStyleOptionToolButton()
     \internal
 */
 QStyleOptionToolButton::QStyleOptionToolButton(int version)
-    : QStyleOptionComplex(version, SO_ToolButton), features(None), arrowType(Qt::DownArrow)
-    , toolButtonStyle(Qt::ToolButtonIconOnly)
+    : QStyleOptionComplex(version, SO_ToolButton), features(None), arrowType(BobUI::DownArrow)
+    , toolButtonStyle(BobUI::ToolButtonIconOnly)
 
 {
 }
@@ -2451,8 +2451,8 @@ QStyleOptionToolButton::QStyleOptionToolButton(int version)
     \brief the text of the tool button
 
     This value is only used if toolButtonStyle is
-    Qt::ToolButtonTextUnderIcon, Qt::ToolButtonTextBesideIcon, or
-    Qt::ToolButtonTextOnly. The default value is an empty string.
+    BobUI::ToolButtonTextUnderIcon, BobUI::ToolButtonTextBesideIcon, or
+    BobUI::ToolButtonTextOnly. The default value is an empty string.
 */
 
 /*!
@@ -2460,17 +2460,17 @@ QStyleOptionToolButton::QStyleOptionToolButton(int version)
     \brief the direction of the arrow for the tool button
 
     This value is only used if \l features includes \l Arrow. The
-    default value is Qt::DownArrow.
+    default value is BobUI::DownArrow.
 */
 
 /*!
     \variable QStyleOptionToolButton::toolButtonStyle
-    \brief a Qt::ToolButtonStyle value describing the appearance of
+    \brief a BobUI::ToolButtonStyle value describing the appearance of
     the tool button
 
-    The default value is Qt::ToolButtonIconOnly.
+    The default value is BobUI::ToolButtonIconOnly.
 
-    \sa QToolButton::toolButtonStyle()
+    \sa BOBUIoolButton::toolButtonStyle()
 */
 
 /*!
@@ -2485,18 +2485,18 @@ QStyleOptionToolButton::QStyleOptionToolButton(int version)
     \brief the font that is used for the text
 
     This value is only used if toolButtonStyle is
-    Qt::ToolButtonTextUnderIcon, Qt::ToolButtonTextBesideIcon, or
-    Qt::ToolButtonTextOnly. By default, the application's default font
+    BobUI::ToolButtonTextUnderIcon, BobUI::ToolButtonTextBesideIcon, or
+    BobUI::ToolButtonTextOnly. By default, the application's default font
     is used.
 */
-#endif  // QT_CONFIG(toolbutton)
+#endif  // BOBUI_CONFIG(toolbutton)
 
 /*!
     \class QStyleOptionComboBox
     \brief The QStyleOptionComboBox class is used to describe the
     parameter for drawing a combobox.
 
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QStyleOptionButton contains all the information that QStyle
     functions need to draw QComboBox.
@@ -2621,7 +2621,7 @@ QStyleOptionComboBox::QStyleOptionComboBox(int version)
     \variable QStyleOptionComboBox::textAlignment
     \brief the alignment of the current text in the combo box
 
-    The default value is Qt::AlignLeft | Qt::AlignVCenter.
+    The default value is BobUI::AlignLeft | BobUI::AlignVCenter.
 */
 
 /*!
@@ -2629,10 +2629,10 @@ QStyleOptionComboBox::QStyleOptionComboBox(int version)
     \brief The QStyleOptionToolBox class is used to describe the
     parameters needed for drawing a tool box.
 
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QStyleOptionToolBox contains all the information that QStyle
-    functions need to draw QToolBox.
+    functions need to draw BOBUIoolBox.
 
     For performance reasons, there are few member functions and the
     access to the member variables is direct (i.e., using the \c . or
@@ -2640,7 +2640,7 @@ QStyleOptionComboBox::QStyleOptionComboBox(int version)
     and emphasizes that these are simply parameters used by the style
     functions.
 
-    \sa QStyleOption, QToolBox
+    \sa QStyleOption, BOBUIoolBox
 */
 
 /*!
@@ -2747,13 +2747,13 @@ QStyleOptionToolBox::QStyleOptionToolBox(int version)
     a selected tab nor is it the selected tab.
 */
 
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
 /*!
     \class QStyleOptionRubberBand
     \brief The QStyleOptionRubberBand class is used to describe the
     parameters needed for drawing a rubber band.
 
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QStyleOptionRubberBand contains all the information that
     QStyle functions need to draw QRubberBand.
@@ -2835,14 +2835,14 @@ QStyleOptionRubberBand::QStyleOptionRubberBand(int version)
 
     The default value is true.
 */
-#endif // QT_CONFIG(rubberband)
+#endif // BOBUI_CONFIG(rubberband)
 
 /*!
     \class QStyleOptionTitleBar
     \brief The QStyleOptionTitleBar class is used to describe the
     parameters for drawing a title bar.
 
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QStyleOptionTitleBar contains all the information that QStyle
     functions need to draw the title bar of a QMdiSubWindow.
@@ -2941,21 +2941,21 @@ QStyleOptionTitleBar::QStyleOptionTitleBar(int version)
     \variable QStyleOptionTitleBar::titleBarFlags
     \brief the widget flags for the title bar
 
-    The default value is Qt::Widget.
+    The default value is BobUI::Widget.
 
-    \sa Qt::WindowFlags
+    \sa BobUI::WindowFlags
 */
 
-#if QT_CONFIG(itemviews)
+#if BOBUI_CONFIG(itemviews)
 /*!
     \class QStyleOptionViewItem
     \brief The QStyleOptionViewItem class is used to describe the
     parameters used to draw an item in a view widget.
 
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QStyleOptionViewItem contains all the information that QStyle
-    functions need to draw the items for Qt's model/view classes.
+    functions need to draw the items for BobUI's model/view classes.
 
     For performance reasons, there are few member functions and the
     access to the member variables is direct (i.e., using the \c . or
@@ -3014,10 +3014,10 @@ QStyleOptionTitleBar::QStyleOptionTitleBar(int version)
     \brief where ellipsis should be added for text that is too long to fit
     into an item
 
-    The default value is Qt::ElideMiddle, i.e. the ellipsis appears in
+    The default value is BobUI::ElideMiddle, i.e. the ellipsis appears in
     the middle of the text.
 
-    \sa Qt::TextElideMode, QStyle::SH_ItemView_EllipsisLocation
+    \sa BobUI::TextElideMode, QStyle::SH_ItemView_EllipsisLocation
 */
 
 /*!
@@ -3035,10 +3035,10 @@ QStyleOptionViewItem::QStyleOptionViewItem()
 */
 QStyleOptionViewItem::QStyleOptionViewItem(int version)
     : QStyleOption(version, SO_ViewItem),
-      displayAlignment(Qt::AlignLeft), decorationAlignment(Qt::AlignLeft),
-      textElideMode(Qt::ElideMiddle), decorationPosition(Left),
+      displayAlignment(BobUI::AlignLeft), decorationAlignment(BobUI::AlignLeft),
+      textElideMode(BobUI::ElideMiddle), decorationPosition(Left),
       showDecorationSelected(false), features(None), widget(nullptr),
-      checkState(Qt::Unchecked), viewItemPosition(QStyleOptionViewItem::Invalid)
+      checkState(BobUI::Unchecked), viewItemPosition(QStyleOptionViewItem::Invalid)
 {
 }
 
@@ -3083,14 +3083,14 @@ QStyleOptionViewItem::QStyleOptionViewItem(int version)
     \variable QStyleOptionViewItem::displayAlignment
     \brief the alignment of the display value for the item
 
-    The default value is Qt::AlignLeft.
+    The default value is BobUI::AlignLeft.
 */
 
 /*!
     \variable QStyleOptionViewItem::decorationAlignment
     \brief the alignment of the decoration for the item
 
-    The default value is Qt::AlignLeft.
+    The default value is BobUI::AlignLeft.
 */
 
 /*!
@@ -3204,7 +3204,7 @@ QStyleOptionViewItem::QStyleOptionViewItem(int version)
                      therefore both at the beginning and the end.
 */
 
-#endif // QT_CONFIG(itemviews)
+#endif // BOBUI_CONFIG(itemviews)
 /*!
     \fn template <typename T> T qstyleoption_cast<T>(const QStyleOption *option)
     \relates QStyleOption
@@ -3227,16 +3227,16 @@ QStyleOptionViewItem::QStyleOptionViewItem(int version)
     Returns a T or \nullptr depending on the type of the given \a option.
 */
 
-#if QT_CONFIG(tabwidget)
+#if BOBUI_CONFIG(tabwidget)
 /*!
     \class QStyleOptionTabWidgetFrame
     \brief The QStyleOptionTabWidgetFrame class is used to describe the
     parameters for drawing the frame around a tab widget.
 
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QStyleOptionTabWidgetFrame contains all the information that
-    QStyle functions need to draw the frame around QTabWidget.
+    QStyle functions need to draw the frame around BOBUIabWidget.
 
     For performance reasons, there are few member functions and the
     access to the member variables is direct (i.e., using the \c . or
@@ -3244,7 +3244,7 @@ QStyleOptionViewItem::QStyleOptionViewItem(int version)
     and emphasizes that these are simply parameters used by the style
     functions.
 
-    \sa QStyleOption, QTabWidget
+    \sa QStyleOption, BOBUIabWidget
 */
 
 /*!
@@ -3265,7 +3265,7 @@ QStyleOptionTabWidgetFrame::QStyleOptionTabWidgetFrame()
 /*! \internal */
 QStyleOptionTabWidgetFrame::QStyleOptionTabWidgetFrame(int version)
     : QStyleOption(version, SO_TabWidgetFrame), lineWidth(0), midLineWidth(0),
-      shape(QTabBar::RoundedNorth)
+      shape(BOBUIabBar::RoundedNorth)
 {
 }
 
@@ -3319,7 +3319,7 @@ QStyleOptionTabWidgetFrame::QStyleOptionTabWidgetFrame(int version)
     \variable QStyleOptionTabWidgetFrame::shape
     \brief the tab shape used to draw the tabs
 
-    The default value is QTabBar::RoundedNorth.
+    The default value is BOBUIabBar::RoundedNorth.
 */
 
 /*!
@@ -3360,9 +3360,9 @@ QStyleOptionTabWidgetFrame::QStyleOptionTabWidgetFrame(int version)
     and the height set to 0.
 */
 
-#endif // QT_CONFIG(tabwidget)
+#endif // BOBUI_CONFIG(tabwidget)
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
 
 /*!
     \class QStyleOptionTabBarBase
@@ -3370,12 +3370,12 @@ QStyleOptionTabWidgetFrame::QStyleOptionTabWidgetFrame(int version)
     the base of a tab bar, i.e. the part that the tab bar usually
     overlaps with.
 
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QStyleOptionTabBarBase  contains all the information that QStyle
     functions need to draw the tab bar base. Note that this is only
-    drawn for a standalone QTabBar (one that isn't part of a
-    QTabWidget).
+    drawn for a standalone BOBUIabBar (one that isn't part of a
+    BOBUIabWidget).
 
     For performance reasons, there are few member functions and the
     access to the member variables is direct (i.e., using the \c . or
@@ -3383,7 +3383,7 @@ QStyleOptionTabWidgetFrame::QStyleOptionTabWidgetFrame(int version)
     and emphasizes that these are simply parameters used by the style
     functions.
 
-    \sa QStyleOption, QTabBar::drawBase()
+    \sa QStyleOption, BOBUIabBar::drawBase()
 */
 
 /*!
@@ -3397,7 +3397,7 @@ QStyleOptionTabBarBase::QStyleOptionTabBarBase()
 
 /*! \internal */
 QStyleOptionTabBarBase::QStyleOptionTabBarBase(int version)
-    : QStyleOption(version, SO_TabBarBase), shape(QTabBar::RoundedNorth),
+    : QStyleOption(version, SO_TabBarBase), shape(BOBUIabBar::RoundedNorth),
       documentMode(false)
 {
 }
@@ -3443,7 +3443,7 @@ QStyleOptionTabBarBase::QStyleOptionTabBarBase(int version)
     \variable QStyleOptionTabBarBase::shape
     \brief the shape of the tab bar
 
-    The default value is QTabBar::RoundedNorth.
+    The default value is BOBUIabBar::RoundedNorth.
 */
 
 /*!
@@ -3471,15 +3471,15 @@ QStyleOptionTabBarBase::QStyleOptionTabBarBase(int version)
     The default value is false;
 */
 
-#endif // QT_CONFIG(tabbar)
+#endif // BOBUI_CONFIG(tabbar)
 
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
 /*!
     \class QStyleOptionSizeGrip
     \brief The QStyleOptionSizeGrip class is used to describe the
     parameter for drawing a size grip.
     \since 4.2
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QStyleOptionButton contains all the information that QStyle
     functions need to draw QSizeGrip.
@@ -3511,7 +3511,7 @@ QStyleOptionSizeGrip::QStyleOptionSizeGrip()
     \internal
 */
 QStyleOptionSizeGrip::QStyleOptionSizeGrip(int version)
-    : QStyleOptionComplex(version, Type), corner(Qt::BottomRightCorner)
+    : QStyleOptionComplex(version, Type), corner(BobUI::BottomRightCorner)
 {
 }
 
@@ -3551,7 +3551,7 @@ QStyleOptionSizeGrip::QStyleOptionSizeGrip(int version)
 
     \sa StyleOptionType
 */
-#endif // QT_CONFIG(sizegrip)
+#endif // BOBUI_CONFIG(sizegrip)
 
 /*!
     \class QStyleOptionGraphicsItem
@@ -3559,7 +3559,7 @@ QStyleOptionSizeGrip::QStyleOptionSizeGrip(int version)
     the parameters needed to draw a QGraphicsItem.
     \since 4.2
     \ingroup graphicsview-api
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     For performance reasons, there are few member functions and the
     access to the member variables is direct (i.e., using the \c . or
@@ -3630,9 +3630,9 @@ QStyleOptionGraphicsItem::QStyleOptionGraphicsItem(int version)
 
     \sa QGraphicsScene::minimumRenderSize()
 */
-qreal QStyleOptionGraphicsItem::levelOfDetailFromTransform(const QTransform &worldTransform)
+qreal QStyleOptionGraphicsItem::levelOfDetailFromTransform(const BOBUIransform &worldTransform)
 {
-    if (worldTransform.type() <= QTransform::TxTranslate)
+    if (worldTransform.type() <= BOBUIransform::TxTranslate)
         return 1; // Translation only? The LOD is 1.
 
     // Two unit vectors.
@@ -3666,7 +3666,7 @@ qreal QStyleOptionGraphicsItem::levelOfDetailFromTransform(const QTransform &wor
     than basic data types.
 
     \ingroup appearance
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QStyleHintReturn and its subclasses are used to pass information
     from a style back to the querying widget. This is most useful
@@ -3760,7 +3760,7 @@ QStyleHintReturn::~QStyleHintReturn()
     \brief The QStyleHintReturnMask class provides style hints that return a QRegion.
 
     \ingroup appearance
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 */
 
 /*!
@@ -3820,7 +3820,7 @@ QStyleHintReturnMask::~QStyleHintReturnMask()
     \brief The QStyleHintReturnVariant class provides style hints that return a QVariant.
     \since 4.3
     \ingroup appearance
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 */
 
 /*!
@@ -3897,10 +3897,10 @@ QStyleHintReturnVariant::~QStyleHintReturnVariant()
     Returns a T or \nullptr depending on the type of \a hint.
 */
 
-#if !defined(QT_NO_DEBUG_STREAM)
+#if !defined(BOBUI_NO_DEBUG_STREAM)
 QDebug operator<<(QDebug debug, const QStyleOption::OptionType &optionType)
 {
-#if !defined(QT_NO_DEBUG)
+#if !defined(BOBUI_NO_DEBUG)
     switch (optionType) {
     case QStyleOption::SO_Default:
         debug << "SO_Default"; break;
@@ -3963,10 +3963,10 @@ QDebug operator<<(QDebug debug, const QStyleOption::OptionType &optionType)
 
 QDebug operator<<(QDebug debug, const QStyleOption &option)
 {
-#if !defined(QT_NO_DEBUG)
+#if !defined(BOBUI_NO_DEBUG)
     debug << "QStyleOption(";
     debug << QStyleOption::OptionType(option.type);
-    debug << ',' << (option.direction == Qt::RightToLeft ? "RightToLeft" : "LeftToRight");
+    debug << ',' << (option.direction == BobUI::RightToLeft ? "RightToLeft" : "LeftToRight");
     debug << ',' << option.state;
     debug << ',' << option.rect;
     debug << ',' << option.styleObject;
@@ -3978,4 +3978,4 @@ QDebug operator<<(QDebug debug, const QStyleOption &option)
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,7 +1,7 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtGui>
+#include <BobUIGui>
 #include <qpa/qplatformscreen.h>
 
 QString debugDescription(const QColorSpace &colorSpace)
@@ -23,7 +23,7 @@ public:
     TestWindow()
     {
         resize(900, 300);
-        setFlag(Qt::NoDropShadowWindowHint);
+        setFlag(BobUI::NoDropShadowWindowHint);
 
         // Moving a window to a different screen may not result
         // in an automatic expose/paint event, as the window's
@@ -58,12 +58,12 @@ protected:
         }
 
         QColor colors[] = {
-            QColor(Qt::red),
-            QColor(Qt::green),
-            QColor(Qt::blue),
-            QColor(Qt::cyan),
-            QColor(Qt::magenta),
-            QColor(Qt::yellow)
+            QColor(BobUI::red),
+            QColor(BobUI::green),
+            QColor(BobUI::blue),
+            QColor(BobUI::cyan),
+            QColor(BobUI::magenta),
+            QColor(BobUI::yellow)
         };
         qreal colorWidth = width() / qreal(std::size(colors));
         for (size_t i = 0; i < std::size(colors); ++i) {
@@ -75,8 +75,8 @@ protected:
         }
 
         QRect rect(0, 0, width(), height());
-        painter.fillRect(rect.adjusted(20, 100, -20, -100), Qt::white);
-        painter.drawText(rect, Qt::AlignCenter,
+        painter.fillRect(rect.adjusted(20, 100, -20, -100), BobUI::white);
+        painter.drawText(rect, BobUI::AlignCenter,
             QString("Assets: %1\nRequested: %2\nWindow: %3\nScreen: %4").arg(
                 debugDescription(assetColorSpace)
             ).arg(

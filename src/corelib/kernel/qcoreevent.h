@@ -1,15 +1,15 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QCOREEVENT_H
 #define QCOREEVENT_H
 
-#include <QtCore/qbasictimer.h>
-#include <QtCore/qnamespace.h>
-#include <QtCore/qbytearray.h>
-#include <QtCore/qobjectdefs.h>
+#include <BobUICore/qbasictimer.h>
+#include <BobUICore/qnamespace.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qobjectdefs.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 template <typename Event> class QEventStorage;
 
@@ -57,7 +57,7 @@ public:
           If you get a strange compiler error on the line with None,
           it's probably because you're also including X11 headers,
           which #define the symbol None. Put the X11 includes after
-          the Qt includes to solve this problem.
+          the BobUI includes to solve this problem.
         */
         None = 0,                               // invalid event
         Timer = 1,                              // timer event
@@ -182,7 +182,7 @@ public:
 
         // last event id used = 132
 
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
         EnterEditFocus = 150,                   // enter edit mode in keypad navigation
         LeaveEditFocus = 151,                   // enter edit mode in keypad navigation
 #endif
@@ -218,7 +218,7 @@ public:
         NonClientAreaMouseButtonRelease = 175,
         NonClientAreaMouseButtonDblClick = 176,
 
-        MacSizeChange = 177,                    // when the Qt::WA_Mac{Normal,Small,Mini}Size changes
+        MacSizeChange = 177,                    // when the BobUI::WA_Mac{Normal,Small,Mini}Size changes
 
         ContentsRectChange = 178,               // sent by QWidget::setContentsMargins (internal)
 
@@ -246,14 +246,14 @@ public:
         TouchUpdate = 195,
         TouchEnd = 196,
 
-#ifndef QT_NO_GESTURES
-        NativeGesture = 197,                    // QtGui native gesture
+#ifndef BOBUI_NO_GESTURES
+        NativeGesture = 197,                    // BobUIGui native gesture
 #endif
         RequestSoftwareInputPanel = 199,
         CloseSoftwareInputPanel = 200,
 
         WinIdChange = 203,
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
         Gesture = 198,
         GestureOverride = 202,
 #endif
@@ -281,7 +281,7 @@ public:
 
         PlatformSurface = 217,                  // Platform surface created or about to be destroyed
 
-        Pointer = 218,                          // Qt 5: QQuickPointerEvent; Qt 6: unused so far
+        Pointer = 218,                          // BobUI 5: QQuickPointerEvent; BobUI 6: unused so far
 
         TabletTrackingChange = 219,             // tablet tracking state has changed
 
@@ -297,8 +297,8 @@ public:
 
         SafeAreaMarginsChange = 227,
 
-        // 512 reserved for Qt Jambi's MetaCall event
-        // 513 reserved for Qt Jambi's DeleteOnMainThread event
+        // 512 reserved for BobUI Jambi's MetaCall event
+        // 513 reserved for BobUI Jambi's DeleteOnMainThread event
 
         User = 1000,                            // first user event id
         MaxUser = 65535                         // last user event id
@@ -325,11 +325,11 @@ public:
     virtual QEvent *clone() const;
 
 protected:
-    QT_DEFINE_TAG_STRUCT(InputEventTag);
+    BOBUI_DEFINE_TAG_STRUCT(InputEventTag);
     QEvent(Type type, InputEventTag) : QEvent(type) { m_inputEvent = true; }
-    QT_DEFINE_TAG_STRUCT(PointerEventTag);
+    BOBUI_DEFINE_TAG_STRUCT(PointerEventTag);
     QEvent(Type type, PointerEventTag) : QEvent(type, InputEventTag{}) { m_pointerEvent = true; }
-    QT_DEFINE_TAG_STRUCT(SinglePointEventTag);
+    BOBUI_DEFINE_TAG_STRUCT(SinglePointEventTag);
     QEvent(Type type, SinglePointEventTag) : QEvent(type, PointerEventTag{}) { m_singlePointEvent = true; }
     quint16 t;
 
@@ -356,32 +356,32 @@ private:
 
     friend class QCoreApplication;
     friend class QCoreApplicationPrivate;
-    friend class QThreadData;
+    friend class BOBUIhreadData;
     friend class QApplication;
     friend class QGraphicsScenePrivate;
-    // from QtTest:
-    // QtWebEngine event handling requires forwarding events as spontaneous.
-    // Impersonated QSpontaneKeyEvent in QtWebEngine to handle such cases.
+    // from BobUITest:
+    // BobUIWebEngine event handling requires forwarding events as spontaneous.
+    // Impersonated QSpontaneKeyEvent in BobUIWebEngine to handle such cases.
     friend class QSpontaneKeyEvent;
     // needs this:
     Q_ALWAYS_INLINE
     void setSpontaneous() { m_spont = true; }
 };
 
-class Q_CORE_EXPORT QTimerEvent : public QEvent
+class Q_CORE_EXPORT BOBUIimerEvent : public QEvent
 {
-    Q_DECL_EVENT_COMMON(QTimerEvent)
+    Q_DECL_EVENT_COMMON(BOBUIimerEvent)
 public:
-    explicit QTimerEvent(int timerId);
-    explicit QTimerEvent(Qt::TimerId timerId);
+    explicit BOBUIimerEvent(int timerId);
+    explicit BOBUIimerEvent(BobUI::TimerId timerId);
 
     int timerId() const { return qToUnderlying(id()); }
-    Qt::TimerId id() const { return m_id; }
+    BobUI::TimerId id() const { return m_id; }
     bool matches(const QBasicTimer &timer) const noexcept
     { return m_id == timer.id(); }
 
 protected:
-    Qt::TimerId m_id;
+    BobUI::TimerId m_id;
 };
 
 class QObject;
@@ -413,6 +413,6 @@ private:
     QByteArray n;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCOREEVENT_H

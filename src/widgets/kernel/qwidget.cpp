@@ -1,7 +1,7 @@
-// Copyright (C) 2017 The Qt Company Ltd.
+// Copyright (C) 2017 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qapplication.h"
 #include "qapplication_p.h"
@@ -10,7 +10,7 @@
 #include "private/qduplicatetracker_p.h"
 #include "qevent.h"
 #include "qlayout.h"
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
 #include "qmenu.h"
 #endif
 #include "qmetaobject.h"
@@ -23,7 +23,7 @@
 #include "qwidget.h"
 #include "qstyleoption.h"
 #include "qstylehints.h"
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 # include "qaccessible.h"
 # include <private/qaccessiblecache_p.h>
 #endif
@@ -31,23 +31,23 @@
 #include <qpa/qplatformwindow_p.h>
 #include "private/qwidgetwindow_p.h"
 #include "qpainter.h"
-#if QT_CONFIG(tooltip)
-#include "private/qtooltip_p.h"
+#if BOBUI_CONFIG(tooltip)
+#include "private/bobuiooltip_p.h"
 #endif
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
 #include "qwhatsthis.h"
 #endif
 #include "qdebug.h"
-#if QT_CONFIG(style_stylesheet)
+#if BOBUI_CONFIG(style_stylesheet)
 #include "private/qstylesheetstyle_p.h"
 #endif
 #include "private/qstyle_p.h"
 #include "qfileinfo.h"
 #include "qscopeguard.h"
-#include <QtGui/private/qhighdpiscaling_p.h>
-#include <QtGui/qinputmethod.h>
+#include <BobUIGui/private/qhighdpiscaling_p.h>
+#include <BobUIGui/qinputmethod.h>
 
-#if QT_CONFIG(graphicseffect)
+#if BOBUI_CONFIG(graphicseffect)
 #include <private/qgraphicseffect_p.h>
 #endif
 #include <qbackingstore.h>
@@ -55,44 +55,44 @@
 #include <private/qpaintengine_raster_p.h>
 
 #include "qwidget_p.h"
-#include <QtGui/private/qwindow_p.h>
-#if QT_CONFIG(action)
-#  include "QtGui/private/qaction_p.h"
+#include <BobUIGui/private/qwindow_p.h>
+#if BOBUI_CONFIG(action)
+#  include "BobUIGui/private/qaction_p.h"
 #endif
 #include "qlayout_p.h"
-#if QT_CONFIG(graphicsview)
-#include "QtWidgets/qgraphicsproxywidget.h"
-#include "QtWidgets/qgraphicsscene.h"
+#if BOBUI_CONFIG(graphicsview)
+#include "BobUIWidgets/qgraphicsproxywidget.h"
+#include "BobUIWidgets/qgraphicsscene.h"
 #include "private/qgraphicsproxywidget_p.h"
 #include "private/qgraphicsview_p.h"
 #endif
-#include "QtWidgets/qabstractscrollarea.h"
+#include "BobUIWidgets/qabstractscrollarea.h"
 #include "private/qabstractscrollarea_p.h"
 #include "private/qevent_p.h"
 
 #include "private/qgesturemanager_p.h"
 
-#ifdef QT_KEYPAD_NAVIGATION
-#if QT_CONFIG(tabwidget)
-#include "qtabwidget.h" // Needed in inTabWidget()
+#ifdef BOBUI_KEYPAD_NAVIGATION
+#if BOBUI_CONFIG(tabwidget)
+#include "bobuiabwidget.h" // Needed in inTabWidget()
 #endif
-#endif // QT_KEYPAD_NAVIGATION
+#endif // BOBUI_KEYPAD_NAVIGATION
 
 #include "qwindowcontainer_p.h"
 
 #include <sstream>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace QNativeInterface::Private;
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_LOGGING_CATEGORY(lcWidgetPainting, "qt.widgets.painting", QtWarningMsg);
-Q_LOGGING_CATEGORY(lcWidgetShowHide, "qt.widgets.showhide", QtWarningMsg);
-Q_STATIC_LOGGING_CATEGORY(lcWidgetWindow, "qt.widgets.window", QtWarningMsg);
-Q_STATIC_LOGGING_CATEGORY(lcWidgetFocus, "qt.widgets.focus")
+Q_LOGGING_CATEGORY(lcWidgetPainting, "bobui.widgets.painting", BobUIWarningMsg);
+Q_LOGGING_CATEGORY(lcWidgetShowHide, "bobui.widgets.showhide", BobUIWarningMsg);
+Q_STATIC_LOGGING_CATEGORY(lcWidgetWindow, "bobui.widgets.window", BobUIWarningMsg);
+Q_STATIC_LOGGING_CATEGORY(lcWidgetFocus, "bobui.widgets.focus")
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 namespace {
     struct WidgetAttributes { const QWidget *widget; };
     QDebug operator<<(QDebug debug, const WidgetAttributes &attributes);
@@ -105,9 +105,9 @@ static inline bool qRectIntersects(const QRect &r1, const QRect &r2)
             qMax(r1.top(), r2.top()) <= qMin(r1.bottom(), r2.bottom()));
 }
 
-extern bool qt_sendSpontaneousEvent(QObject*, QEvent*); // qapplication.cpp
+extern bool bobui_sendSpontaneousEvent(QObject*, QEvent*); // qapplication.cpp
 
-static void setAttribute_internal(Qt::WidgetAttribute attribute,
+static void setAttribute_internal(BobUI::WidgetAttribute attribute,
     bool on, QWidgetData *data, QWidgetPrivate *d);
 
 QWidgetPrivate::QWidgetPrivate(decltype(QObjectPrivateVersion) version)
@@ -122,10 +122,10 @@ QWidgetPrivate::QWidgetPrivate(decltype(QObjectPrivateVersion) version)
       , extraPaintEngine(nullptr)
       , polished(nullptr)
       , graphicsEffect(nullptr)
-#if !defined(QT_NO_IM)
-      , imHints(Qt::ImhNone)
+#if !defined(BOBUI_NO_IM)
+      , imHints(BobUI::ImhNone)
 #endif
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
       , toolTipDuration(-1)
 #endif
       , directFontResolveMask(0)
@@ -154,7 +154,7 @@ QWidgetPrivate::QWidgetPrivate(decltype(QObjectPrivateVersion) version)
       , mustHaveWindowHandle(0)
       , renderToTexture(0)
       , textureChildSeen(0)
-#ifndef QT_NO_IM
+#ifndef BOBUI_NO_IM
       , inheritsInputMethodHints(0)
 #endif
       , renderToTextureReallyDirty(1)
@@ -206,7 +206,7 @@ void QWidgetPrivate::scrollChildren(int dx, int dy)
                 QPoint oldp = w->pos();
                 QRect  r(w->pos() + pd, w->size());
                 w->data->crect = r;
-                if (w->testAttribute(Qt::WA_WState_Created))
+                if (w->testAttribute(BobUI::WA_WState_Created))
                     w->d_func()->setWSGeometry();
                 w->d_func()->setDirtyOpaqueRegion();
                 QMoveEvent e(r.topLeft(), oldp);
@@ -227,22 +227,22 @@ void QWidgetPrivate::updateWidgetTransform(QEvent *event)
 {
     Q_Q(QWidget);
     if (q == QGuiApplication::focusObject() || event->type() == QEvent::FocusIn) {
-        QTransform t;
+        BOBUIransform t;
         QPoint p = q->mapTo(q->topLevelWidget(), QPoint(0,0));
         t.translate(p.x(), p.y());
         QGuiApplication::inputMethod()->setInputItemTransform(t);
         QGuiApplication::inputMethod()->setInputItemRectangle(q->rect());
-        QGuiApplication::inputMethod()->update(Qt::ImInputItemClipRectangle);
+        QGuiApplication::inputMethod()->update(BobUI::ImInputItemClipRectangle);
     }
 }
 
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
 QPointer<QWidget> QWidgetPrivate::editingWidget;
 
 /*!
     Returns \c true if this widget currently has edit focus; otherwise false.
 
-    This feature is only available in Qt for Embedded Linux.
+    This feature is only available in BobUI for Embedded Linux.
 
     \sa setEditFocus(), QApplication::navigationMode()
 */
@@ -258,11 +258,11 @@ bool QWidget::hasEditFocus() const
     \fn void QWidget::setEditFocus(bool enable)
 
     If \a enable is true, make this widget have edit focus, in which
-    case Qt::Key_Up and Qt::Key_Down will be delivered to the widget
-    normally; otherwise, Qt::Key_Up and Qt::Key_Down are used to
+    case BobUI::Key_Up and BobUI::Key_Down will be delivered to the widget
+    normally; otherwise, BobUI::Key_Up and BobUI::Key_Down are used to
     change focus.
 
-    This feature is only available in Qt for Embedded Linux.
+    This feature is only available in BobUI for Embedded Linux.
 
     \sa hasEditFocus(), QApplication::navigationMode()
 */
@@ -302,7 +302,7 @@ void QWidget::setEditFocus(bool on)
     \brief whether the widget background is filled automatically
     \since 4.1
 
-    If enabled, this property will cause Qt to fill the background of the
+    If enabled, this property will cause BobUI to fill the background of the
     widget before invoking the paint event. The color used is defined by the
     QPalette::Window color role from the widget's \l{QPalette}{palette}.
 
@@ -313,12 +313,12 @@ void QWidget::setEditFocus(bool on)
     parent has a static gradient for its background.
 
     \warning Use this property with caution in conjunction with
-    \l{Qt Style Sheets}. When a widget has a style sheet with a valid
+    \l{BobUI Style Sheets}. When a widget has a style sheet with a valid
     background or a border-image, this property is automatically disabled.
 
     By default, this property is \c false.
 
-    \sa Qt::WA_OpaquePaintEvent, Qt::WA_NoSystemBackground,
+    \sa BobUI::WA_OpaquePaintEvent, BobUI::WA_NoSystemBackground,
     {QWidget#Transparency and Double Buffering}{Transparency and Double Buffering}
 */
 bool QWidget::autoFillBackground() const
@@ -346,7 +346,7 @@ void QWidget::setAutoFillBackground(bool enabled)
     \brief The QWidget class is the base class of all user interface objects.
 
     \ingroup basicwidgets
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     The widget is the atom of the user interface: it receives mouse, keyboard
     and other events from the window system, and paints a representation of
@@ -357,7 +357,7 @@ void QWidget::setAutoFillBackground(bool enabled)
     A widget that is not embedded in a parent widget is called a window.
     Usually, windows have a frame and a title bar, although it is also possible
     to create windows without such decoration using suitable
-    \l{Qt::WindowFlags}{window flags}. In Qt, QMainWindow and the various
+    \l{BobUI::WindowFlags}{window flags}. In BobUI, QMainWindow and the various
     subclasses of QDialog are the most common window types.
 
     Every widget's constructor accepts one or two standard arguments:
@@ -366,8 +366,8 @@ void QWidget::setAutoFillBackground(bool enabled)
         \li  \c{QWidget *parent = nullptr} is the parent of the new widget.
             If it is \nullptr (the default), the new widget will be a window.
             If not, it will be a child of \e parent, and be constrained by
-            \e parent's geometry (unless you specify Qt::Window as window flag).
-        \li  \c{Qt::WindowFlags f = { }} (where available) sets the window flags;
+            \e parent's geometry (unless you specify BobUI::Window as window flag).
+        \li  \c{BobUI::WindowFlags f = { }} (where available) sets the window flags;
             the default is suitable for most widgets, but to get, for
             example, a window without a window system frame, you must use
             special flags.
@@ -376,7 +376,7 @@ void QWidget::setAutoFillBackground(bool enabled)
     QWidget has many member functions, but some of them have little direct
     functionality; for example, QWidget has a font property, but never uses
     this itself. There are many subclasses that provide real functionality,
-    such as QLabel, QPushButton, QListWidget, and QTabWidget.
+    such as QLabel, QPushButton, QListWidget, and BOBUIabWidget.
 
 
     \section1 Top-Level and Child Widgets
@@ -386,7 +386,7 @@ void QWidget::setAutoFillBackground(bool enabled)
     title bar and icon, respectively.
 
     Non-window widgets are child widgets, displayed within their parent
-    widgets. Most widgets in Qt are mainly useful as child widgets. For
+    widgets. Most widgets in BobUI are mainly useful as child widgets. For
     example, it is possible to display a button as a top-level window, but most
     people prefer to put their buttons inside other widgets, such as QDialog.
 
@@ -412,9 +412,9 @@ void QWidget::setAutoFillBackground(bool enabled)
 
     Composite widgets can also be created by subclassing a standard widget,
     such as QWidget or QFrame, and adding the necessary layout and child
-    widgets in the constructor of the subclass. Many of the \l{Qt Widgets Examples}
-    {examples provided with Qt} use this approach, and it is also covered in
-    the Qt \l{Widgets Tutorial}.
+    widgets in the constructor of the subclass. Many of the \l{BobUI Widgets Examples}
+    {examples provided with BobUI} use this approach, and it is also covered in
+    the BobUI \l{Widgets Tutorial}.
 
 
     \section1 Custom Widgets and Painting
@@ -456,7 +456,7 @@ void QWidget::setAutoFillBackground(bool enabled)
 
     \section1 Events
 
-    Widgets respond to events that are typically caused by user actions. Qt
+    Widgets respond to events that are typically caused by user actions. BobUI
     delivers events to widgets by calling specific event handler functions with
     instances of QEvent subclasses containing information about each event.
 
@@ -527,7 +527,7 @@ void QWidget::setAutoFillBackground(bool enabled)
             button is held down. This can be useful during drag and drop
             operations. If you call \l{setMouseTracking()}{setMouseTracking}(true),
             you get mouse move events even when no buttons are held down.
-            (See also the \l{Drag and Drop in Qt}{Drag and Drop} guide.)
+            (See also the \l{Drag and Drop in BobUI}{Drag and Drop} guide.)
         \li  keyReleaseEvent() is called whenever a key is released and while it
             is held down (if the key is auto-repeating). In that case, the
             widget will receive a pair of key release and key press event for
@@ -674,7 +674,7 @@ void QWidget::setAutoFillBackground(bool enabled)
     performs a destructive action.
 
     The use of widget style sheets is described in more detail in the
-    \l{Qt Style Sheets} document.
+    \l{BobUI Style Sheets} document.
 
 
     \section1 Transparency and Double Buffering
@@ -684,7 +684,7 @@ void QWidget::setAutoFillBackground(bool enabled)
     flicker.
 
     The contents of parent widgets are propagated by
-    default to each of their children as long as Qt::WA_PaintOnScreen is not
+    default to each of their children as long as BobUI::WA_PaintOnScreen is not
     set. Custom widgets can be written to take advantage of this feature by
     updating irregular regions (to create non-rectangular child widgets), or
     painting with colors that have less than full alpha component. The
@@ -709,7 +709,7 @@ void QWidget::setAutoFillBackground(bool enabled)
             property is used with custom widgets that rely on the widget to
             supply a default background, and do not paint over their entire
             area with an opaque brush.
-        \li  The right widget has the Qt::WA_OpaquePaintEvent widget attribute
+        \li  The right widget has the BobUI::WA_OpaquePaintEvent widget attribute
             set. This indicates that the widget will paint over its entire area
             with opaque colors. The widget's area will initially be
             \e{uninitialized}, represented in the diagram with a red diagonal
@@ -724,15 +724,15 @@ void QWidget::setAutoFillBackground(bool enabled)
 
     To rapidly update custom widgets that constantly paint over their entire
     areas with opaque content, for example, video streaming widgets, it is
-    better to set the widget's Qt::WA_OpaquePaintEvent, avoiding any unnecessary
+    better to set the widget's BobUI::WA_OpaquePaintEvent, avoiding any unnecessary
     overhead associated with repainting the widget's background.
 
-    If a widget has both the Qt::WA_OpaquePaintEvent widget attribute \e{and}
-    the \l autoFillBackground property set, the Qt::WA_OpaquePaintEvent
+    If a widget has both the BobUI::WA_OpaquePaintEvent widget attribute \e{and}
+    the \l autoFillBackground property set, the BobUI::WA_OpaquePaintEvent
     attribute takes precedence. Depending on your requirements, you should
     choose either one of them.
 
-    The contents of parent widgets are also propagated to standard Qt widgets.
+    The contents of parent widgets are also propagated to standard BobUI widgets.
     This can lead to some unexpected results if the parent widget is decorated
     in a non-standard way, as shown in the diagram below.
 
@@ -740,7 +740,7 @@ void QWidget::setAutoFillBackground(bool enabled)
            {One widget has a transparent background
            and the other widget has a filled background}
 
-    The scope for customizing the painting behavior of standard Qt widgets,
+    The scope for customizing the painting behavior of standard BobUI widgets,
     without resorting to subclassing, is slightly less than that possible for
     custom widgets. Usually, the desired appearance of a standard widget can be
     achieved by setting its \l autoFillBackground property.
@@ -751,7 +751,7 @@ void QWidget::setAutoFillBackground(bool enabled)
     You can create windows with translucent regions on window systems that
     support compositing.
 
-    To enable this feature in a top-level widget, set its Qt::WA_TranslucentBackground
+    To enable this feature in a top-level widget, set its BobUI::WA_TranslucentBackground
     attribute with setAttribute() and ensure that its background is painted with
     non-opaque colors in the regions you want to be partially transparent.
 
@@ -760,9 +760,9 @@ void QWidget::setAutoFillBackground(bool enabled)
     \list
     \li X11: This feature relies on the use of an X server that supports ARGB visuals
     and a compositing window manager.
-    \li Windows: The widget needs to have the Qt::FramelessWindowHint window flag set
+    \li Windows: The widget needs to have the BobUI::FramelessWindowHint window flag set
     for the translucency to work.
-    \li \macos: The widget needs to have the Qt::FramelessWindowHint window flag set
+    \li \macos: The widget needs to have the BobUI::FramelessWindowHint window flag set
     for the translucency to work.
     \endlist
 
@@ -777,14 +777,14 @@ void QWidget::setAutoFillBackground(bool enabled)
     following options:
 
     \list 1
-        \li  Use the \c{QT_USE_NATIVE_WINDOWS=1} in your environment.
-        \li  Set the Qt::AA_NativeWindows attribute on your application. All
+        \li  Use the \c{BOBUI_USE_NATIVE_WINDOWS=1} in your environment.
+        \li  Set the BobUI::AA_NativeWindows attribute on your application. All
             widgets will be native widgets.
-        \li  Set the Qt::WA_NativeWindow attribute on widgets: The widget itself
+        \li  Set the BobUI::WA_NativeWindow attribute on widgets: The widget itself
             and all its ancestors will become native (unless
-            Qt::WA_DontCreateNativeAncestors is set).
+            BobUI::WA_DontCreateNativeAncestors is set).
         \li  Call QWidget::winId to enforce a native window (this implies 3).
-        \li  Set the Qt::WA_PaintOnScreen attribute to enforce a native window
+        \li  Set the BobUI::WA_PaintOnScreen attribute to enforce a native window
             (this implies 3).
     \endlist
 
@@ -803,16 +803,16 @@ QWidgetSet *QWidgetPrivate::allWidgets = nullptr;         // widgets with no wid
 /*
     Widget state flags:
   \list
-  \li Qt::WA_WState_Created The widget has a valid winId().
-  \li Qt::WA_WState_Visible The widget is currently visible.
-  \li Qt::WA_WState_Hidden The widget is hidden, i.e. it won't
-  become visible unless you call show() on it. Qt::WA_WState_Hidden
-  implies !Qt::WA_WState_Visible.
-  \li Qt::WA_WState_CompressKeys Compress keyboard events.
-  \li Qt::WA_WState_BlockUpdates Repaints and updates are disabled.
-  \li Qt::WA_WState_InPaintEvent Currently processing a paint event.
-  \li Qt::WA_WState_Reparented The widget has been reparented.
-  \li Qt::WA_WState_ConfigPending A configuration (resize/move) event is pending.
+  \li BobUI::WA_WState_Created The widget has a valid winId().
+  \li BobUI::WA_WState_Visible The widget is currently visible.
+  \li BobUI::WA_WState_Hidden The widget is hidden, i.e. it won't
+  become visible unless you call show() on it. BobUI::WA_WState_Hidden
+  implies !BobUI::WA_WState_Visible.
+  \li BobUI::WA_WState_CompressKeys Compress keyboard events.
+  \li BobUI::WA_WState_BlockUpdates Repaints and updates are disabled.
+  \li BobUI::WA_WState_InPaintEvent Currently processing a paint event.
+  \li BobUI::WA_WState_Reparented The widget has been reparented.
+  \li BobUI::WA_WState_ConfigPending A configuration (resize/move) event is pending.
   \endlist
 */
 
@@ -821,7 +821,7 @@ struct QWidgetExceptionCleaner
     /* this cleans up when the constructor throws an exception */
     static inline void cleanup(QWidget *that, QWidgetPrivate *d)
     {
-#ifdef QT_NO_EXCEPTIONS
+#ifdef BOBUI_NO_EXCEPTIONS
         Q_UNUSED(that);
         Q_UNUSED(d);
 #else
@@ -843,20 +843,20 @@ struct QWidgetExceptionCleaner
     The widget flags argument, \a f, is normally 0, but it can be set
     to customize the frame of a window (i.e. \a parent must be
     \nullptr). To customize the frame, use a value composed
-    from the bitwise OR of any of the \l{Qt::WindowFlags}{window flags}.
+    from the bitwise OR of any of the \l{BobUI::WindowFlags}{window flags}.
 
     If you add a child widget to an already visible widget you must
     explicitly show the child to make it visible.
 
-    Note that the X11 version of Qt may not be able to deliver all
+    Note that the X11 version of BobUI may not be able to deliver all
     combinations of style flags on all systems. This is because on
-    X11, Qt can only ask the window manager, and the window manager
-    can override the application's settings. On Windows, Qt can set
+    X11, BobUI can only ask the window manager, and the window manager
+    can override the application's settings. On Windows, BobUI can set
     whatever flags you want.
 
     \sa windowFlags
 */
-QWidget::QWidget(QWidget *parent, Qt::WindowFlags f)
+QWidget::QWidget(QWidget *parent, BobUI::WindowFlags f)
     : QWidget(*new QWidgetPrivate, parent, f)
 {
 }
@@ -864,16 +864,16 @@ QWidget::QWidget(QWidget *parent, Qt::WindowFlags f)
 
 /*! \internal
 */
-QWidget::QWidget(QWidgetPrivate &dd, QWidget* parent, Qt::WindowFlags f)
+QWidget::QWidget(QWidgetPrivate &dd, QWidget* parent, BobUI::WindowFlags f)
     : QObject(dd, nullptr), QPaintDevice()
     , data(&dd.data)
 {
     Q_D(QWidget);
-    QT_TRY {
+    BOBUI_TRY {
         d->init(parent, f);
-    } QT_CATCH(...) {
+    } BOBUI_CATCH(...) {
         QWidgetExceptionCleaner::cleanup(this, d_func());
-        QT_RETHROW;
+        BOBUI_RETHROW;
     }
 }
 
@@ -887,65 +887,65 @@ int QWidget::devType() const
 
 
 //### w is a "this" ptr, passed as a param because QWorkspace needs special logic
-void QWidgetPrivate::adjustFlags(Qt::WindowFlags &flags, QWidget *w)
+void QWidgetPrivate::adjustFlags(BobUI::WindowFlags &flags, QWidget *w)
 {
-    bool customize =  (flags & (Qt::CustomizeWindowHint
-            | Qt::FramelessWindowHint
-            | Qt::WindowTitleHint
-            | Qt::WindowSystemMenuHint
-            | Qt::WindowMinimizeButtonHint
-            | Qt::WindowMaximizeButtonHint
-            | Qt::WindowCloseButtonHint
-            | Qt::WindowContextHelpButtonHint));
+    bool customize =  (flags & (BobUI::CustomizeWindowHint
+            | BobUI::FramelessWindowHint
+            | BobUI::WindowTitleHint
+            | BobUI::WindowSystemMenuHint
+            | BobUI::WindowMinimizeButtonHint
+            | BobUI::WindowMaximizeButtonHint
+            | BobUI::WindowCloseButtonHint
+            | BobUI::WindowContextHelpButtonHint));
 
-    uint type = (flags & Qt::WindowType_Mask);
+    uint type = (flags & BobUI::WindowType_Mask);
 
-    if ((type == Qt::Widget || type == Qt::SubWindow) && w && !w->parent()) {
-        type = Qt::Window;
-        flags |= Qt::Window;
+    if ((type == BobUI::Widget || type == BobUI::SubWindow) && w && !w->parent()) {
+        type = BobUI::Window;
+        flags |= BobUI::Window;
     }
 
-    if (flags & Qt::CustomizeWindowHint) {
+    if (flags & BobUI::CustomizeWindowHint) {
         // modify window flags to make them consistent.
         // Only enable this on non-Mac platforms. Since the old way of doing this would
         // interpret WindowSystemMenuHint as a close button and we can't change that behavior
         // we can't just add this in.
-        if ((flags & (Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint | Qt::WindowContextHelpButtonHint))
+        if ((flags & (BobUI::WindowMinMaxButtonsHint | BobUI::WindowCloseButtonHint | BobUI::WindowContextHelpButtonHint))
 #  ifdef Q_OS_WIN
-            && type != Qt::Dialog // QTBUG-2027, allow for menu-less dialogs.
+            && type != BobUI::Dialog // BOBUIBUG-2027, allow for menu-less dialogs.
 #  endif
            ) {
-            flags |= Qt::WindowSystemMenuHint;
-            flags |= Qt::WindowTitleHint;
-            flags &= ~Qt::FramelessWindowHint;
+            flags |= BobUI::WindowSystemMenuHint;
+            flags |= BobUI::WindowTitleHint;
+            flags &= ~BobUI::FramelessWindowHint;
         }
-    } else if (customize && !(flags & Qt::FramelessWindowHint)) {
+    } else if (customize && !(flags & BobUI::FramelessWindowHint)) {
         // if any of the window hints that affect the titlebar are set
         // and the window is supposed to have frame, we add a titlebar
         // and system menu by default.
-        flags |= Qt::WindowSystemMenuHint;
-        flags |= Qt::WindowTitleHint;
+        flags |= BobUI::WindowSystemMenuHint;
+        flags |= BobUI::WindowTitleHint;
     }
     if (!customize) { // don't modify window flags if the user explicitly set them.
-        flags |= Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint;
-        if (type != Qt::Dialog && type != Qt::Sheet && type != Qt::Tool)
-            flags |= Qt::WindowMinimizeButtonHint | Qt::WindowMaximizeButtonHint | Qt::WindowFullscreenButtonHint;
+        flags |= BobUI::WindowTitleHint | BobUI::WindowSystemMenuHint | BobUI::WindowCloseButtonHint;
+        if (type != BobUI::Dialog && type != BobUI::Sheet && type != BobUI::Tool)
+            flags |= BobUI::WindowMinimizeButtonHint | BobUI::WindowMaximizeButtonHint | BobUI::WindowFullscreenButtonHint;
     }
-    if (w->testAttribute(Qt::WA_TransparentForMouseEvents))
-        flags |= Qt::WindowTransparentForInput;
+    if (w->testAttribute(BobUI::WA_TransparentForMouseEvents))
+        flags |= BobUI::WindowTransparentForInput;
 }
 
-void QWidgetPrivate::init(QWidget *parentWidget, Qt::WindowFlags f)
+void QWidgetPrivate::init(QWidget *parentWidget, BobUI::WindowFlags f)
 {
     Q_Q(QWidget);
     isWidget = true;
     wasWidget = true;
 
-#if QT_DEPRECATED_SINCE(6, 11)
-    QT_IGNORE_DEPRECATIONS(
-    Q_ASSERT_X(!f.testFlag(Qt::WindowType::Desktop), Q_FUNC_INFO, "Qt::WindowType::Desktop is not allowed.");
-    if (f.testFlag(Qt::WindowType::Desktop))
-        f.setFlag(Qt::WindowType::Desktop, false);
+#if BOBUI_DEPRECATED_SINCE(6, 11)
+    BOBUI_IGNORE_DEPRECATIONS(
+    Q_ASSERT_X(!f.testFlag(BobUI::WindowType::Desktop), Q_FUNC_INFO, "BobUI::WindowType::Desktop is not allowed.");
+    if (f.testFlag(BobUI::WindowType::Desktop))
+        f.setFlag(BobUI::WindowType::Desktop, false);
     )
 #endif
 
@@ -958,9 +958,9 @@ void QWidgetPrivate::init(QWidget *parentWidget, Qt::WindowFlags f)
     if (allWidgets)
         allWidgets->insert(q);
 
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
     if (!parent) {
-        Q_ASSERT_X(QThread::isMainThread(), "QWidget",
+        Q_ASSERT_X(BOBUIhread::isMainThread(), "QWidget",
                    "Widgets must be created in the GUI thread.");
     }
 #endif
@@ -972,8 +972,8 @@ void QWidgetPrivate::init(QWidget *parentWidget, Qt::WindowFlags f)
     data.window_flags = f;
     data.window_state = 0;
     data.focus_policy = 0;
-    data.context_menu_policy = Qt::DefaultContextMenu;
-    data.window_modality = Qt::NonModal;
+    data.context_menu_policy = BobUI::DefaultContextMenu;
+    data.window_modality = BobUI::NonModal;
 
     data.sizehint_forced = 0;
     data.is_closing = false;
@@ -981,16 +981,16 @@ void QWidgetPrivate::init(QWidget *parentWidget, Qt::WindowFlags f)
     data.in_set_window_state = 0;
     data.in_destructor = false;
 
-    // Widgets with Qt::MSWindowsOwnDC (typically QGLWidget) must have a window handle.
-    if (f & Qt::MSWindowsOwnDC) {
+    // Widgets with BobUI::MSWindowsOwnDC (typically QGLWidget) must have a window handle.
+    if (f & BobUI::MSWindowsOwnDC) {
         mustHaveWindowHandle = 1;
-        q->setAttribute(Qt::WA_NativeWindow);
+        q->setAttribute(BobUI::WA_NativeWindow);
     }
 
-    q->setAttribute(Qt::WA_QuitOnClose); // might be cleared in adjustQuitOnCloseAttribute()
+    q->setAttribute(BobUI::WA_QuitOnClose); // might be cleared in adjustQuitOnCloseAttribute()
     adjustQuitOnCloseAttribute();
 
-    q->setAttribute(Qt::WA_WState_Hidden);
+    q->setAttribute(BobUI::WA_WState_Hidden);
 
     //give potential windows a bigger "pre-initial" size; create() will give them a new size later
     data.crect = parentWidget ? QRect(0,0,100,30) : QRect(0,0,640,480);
@@ -1003,12 +1003,12 @@ void QWidgetPrivate::init(QWidget *parentWidget, Qt::WindowFlags f)
         resolveLayoutDirection();
         // opaque system background?
         const QBrush &background = q->palette().brush(QPalette::Window);
-        setOpaque(q->isWindow() && background.style() != Qt::NoBrush && background.isOpaque());
+        setOpaque(q->isWindow() && background.style() != BobUI::NoBrush && background.isOpaque());
     }
     data.fnt = QFont(data.fnt, q);
 
-    q->setAttribute(Qt::WA_PendingMoveEvent);
-    q->setAttribute(Qt::WA_PendingResizeEvent);
+    q->setAttribute(BobUI::WA_PendingMoveEvent);
+    q->setAttribute(BobUI::WA_PendingResizeEvent);
 
     if (++QWidgetPrivate::instanceCounter > QWidgetPrivate::maxInstances)
         QWidgetPrivate::maxInstances = QWidgetPrivate::instanceCounter;
@@ -1026,7 +1026,7 @@ void QWidgetPrivate::createRecursively()
     q->create(0, true, true);
     for (int i = 0; i < children.size(); ++i) {
         QWidget *child = qobject_cast<QWidget *>(children.at(i));
-        if (child && !child->isHidden() && !child->isWindow() && !child->testAttribute(Qt::WA_WState_Created))
+        if (child && !child->isHidden() && !child->isWindow() && !child->testAttribute(BobUI::WA_WState_Created))
             child->d_func()->createRecursively();
     }
 }
@@ -1062,7 +1062,7 @@ QWidget *QWidgetPrivate::closestParentWidgetWithWindowHandle() const
 QWindow *QWidgetPrivate::windowHandle(WindowHandleMode mode) const
 {
     if (mode == WindowHandleMode::Direct || mode == WindowHandleMode::Closest) {
-        if (QTLWExtra *x = maybeTopData()) {
+        if (BOBUILWExtra *x = maybeTopData()) {
             if (x->window != nullptr || mode == WindowHandleMode::Direct)
                 return x->window;
         }
@@ -1096,7 +1096,7 @@ QWindow *QWidgetPrivate::_q_closestWindowHandle() const
 
 QScreen *QWidgetPrivate::associatedScreen() const
 {
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
     // embedded widgets never have a screen associated, let QWidget::screen fall back to toplevel
     if (nearestGraphicsProxyWidget(q_func()))
         return nullptr;
@@ -1120,10 +1120,10 @@ static bool q_evaluateRhiConfigRecursive(const QWidget *w, QPlatformBackingStore
     for (const QObject *child : w->children()) {
         if (const QWidget *childWidget = qobject_cast<const QWidget *>(child)) {
             if (q_evaluateRhiConfigRecursive(childWidget, outConfig, outType)) {
-                static bool optOut = qEnvironmentVariableIsSet("QT_WIDGETS_NO_CHILD_RHI");
+                static bool optOut = qEnvironmentVariableIsSet("BOBUI_WIDGETS_NO_CHILD_RHI");
                 // Native child widgets should not trigger RHI for its parent
                 // hierarchy, but will still flush the native child using RHI.
-                if (!optOut && childWidget->testAttribute(Qt::WA_NativeWindow))
+                if (!optOut && childWidget->testAttribute(BobUI::WA_NativeWindow))
                     continue;
 
                 return true;
@@ -1154,13 +1154,13 @@ bool q_evaluateRhiConfig(const QWidget *w, QPlatformBackingStoreRhiConfig *outCo
     return false;
 }
 
-// ### fixme: Qt 6: Remove parameter window from QWidget::create()
+// ### fixme: BobUI 6: Remove parameter window from QWidget::create()
 
 /*!
     Creates a new widget window.
 
     The parameters \a window, \a initializeWindow, and \a destroyOldWindow
-    are ignored in Qt 5. Please use QWindow::fromWinId() to create a
+    are ignored in BobUI 5. Please use QWindow::fromWinId() to create a
     QWindow wrapping a foreign window and pass it to
     QWidget::createWindowContainer() instead.
 
@@ -1175,61 +1175,61 @@ void QWidget::create(WId window, bool initializeWindow, bool destroyOldWindow)
     Q_D(QWidget);
     if (Q_UNLIKELY(window))
         qWarning("QWidget::create(): Parameter 'window' does not have any effect.");
-    if (testAttribute(Qt::WA_WState_Created) && window == 0 && internalWinId())
+    if (testAttribute(BobUI::WA_WState_Created) && window == 0 && internalWinId())
         return;
 
     if (d->data.in_destructor)
         return;
 
-    Qt::WindowType type = windowType();
-    Qt::WindowFlags &flags = data->window_flags;
+    BobUI::WindowType type = windowType();
+    BobUI::WindowFlags &flags = data->window_flags;
 
-    if ((type == Qt::Widget || type == Qt::SubWindow) && !parentWidget()) {
-        type = Qt::Window;
-        flags |= Qt::Window;
+    if ((type == BobUI::Widget || type == BobUI::SubWindow) && !parentWidget()) {
+        type = BobUI::Window;
+        flags |= BobUI::Window;
     }
 
     if (QWidget *parent = parentWidget()) {
-        if (type & Qt::Window) {
-            if (!parent->testAttribute(Qt::WA_WState_Created))
+        if (type & BobUI::Window) {
+            if (!parent->testAttribute(BobUI::WA_WState_Created))
                 parent->createWinId();
-        } else if (testAttribute(Qt::WA_NativeWindow) && !parent->internalWinId()
-                   && !testAttribute(Qt::WA_DontCreateNativeAncestors)) {
+        } else if (testAttribute(BobUI::WA_NativeWindow) && !parent->internalWinId()
+                   && !testAttribute(BobUI::WA_DontCreateNativeAncestors)) {
             // We're about to create a native child widget that doesn't have a native parent;
-            // enforce a native handle for the parent unless the Qt::WA_DontCreateNativeAncestors
+            // enforce a native handle for the parent unless the BobUI::WA_DontCreateNativeAncestors
             // attribute is set.
             d->createWinId();
             // Nothing more to do.
-            Q_ASSERT(testAttribute(Qt::WA_WState_Created));
+            Q_ASSERT(testAttribute(BobUI::WA_WState_Created));
             Q_ASSERT(internalWinId());
             return;
         }
     }
 
 
-    static const bool paintOnScreenEnv = qEnvironmentVariableIntValue("QT_ONSCREEN_PAINT") > 0;
+    static const bool paintOnScreenEnv = qEnvironmentVariableIntValue("BOBUI_ONSCREEN_PAINT") > 0;
     if (paintOnScreenEnv)
-        setAttribute(Qt::WA_PaintOnScreen);
+        setAttribute(BobUI::WA_PaintOnScreen);
 
-    if (QApplicationPrivate::testAttribute(Qt::AA_NativeWindows))
-        setAttribute(Qt::WA_NativeWindow);
+    if (QApplicationPrivate::testAttribute(BobUI::AA_NativeWindows))
+        setAttribute(BobUI::WA_NativeWindow);
 
     if (isWindow()
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
         && !graphicsProxyWidget()
 #endif
     ) {
         // Make top levels automatically respect safe areas by default
         auto *topExtra = d->maybeTopData();
         if (!topExtra || !topExtra->explicitContentsMarginsRespectsSafeArea) {
-            setAttribute_internal(Qt::WA_ContentsMarginsRespectsSafeArea,
+            setAttribute_internal(BobUI::WA_ContentsMarginsRespectsSafeArea,
                 true, data, d);
         }
     }
 
     d->updateIsOpaque();
 
-    setAttribute(Qt::WA_WState_Created);                        // set created flag
+    setAttribute(BobUI::WA_WState_Created);                        // set created flag
     d->create();
 
     // A real toplevel window needs a paint manager
@@ -1238,11 +1238,11 @@ void QWidget::create(WId window, bool initializeWindow, bool destroyOldWindow)
 
     d->setModal_sys();
 
-    if (!isWindow() && parentWidget() && parentWidget()->testAttribute(Qt::WA_DropSiteRegistered))
-        setAttribute(Qt::WA_DropSiteRegistered, true);
+    if (!isWindow() && parentWidget() && parentWidget()->testAttribute(BobUI::WA_DropSiteRegistered))
+        setAttribute(BobUI::WA_DropSiteRegistered, true);
 
     // need to force the resting of the icon after changing parents
-    if (testAttribute(Qt::WA_SetWindowIcon))
+    if (testAttribute(BobUI::WA_SetWindowIcon))
         d->setWindowIcon_sys();
 
     if (isWindow() && !d->topData()->iconText.isEmpty())
@@ -1253,7 +1253,7 @@ void QWidget::create(WId window, bool initializeWindow, bool destroyOldWindow)
         d->setWindowFilePath_helper(d->topData()->filePath);
     d->updateSystemBackground();
 
-    if (isWindow() && !testAttribute(Qt::WA_SetWindowIcon))
+    if (isWindow() && !testAttribute(BobUI::WA_SetWindowIcon))
         d->setWindowIcon_sys();
 
     // Frame strut update needed in cases where there are native widgets such as QGLWidget,
@@ -1271,7 +1271,7 @@ void q_createNativeChildrenAndSetParent(const QWidget *parentWidget)
         if (children.at(i)->isWidgetType()) {
             const QWidget *childWidget = qobject_cast<const QWidget *>(children.at(i));
             if (childWidget) { // should not be necessary
-                if (childWidget->testAttribute(Qt::WA_NativeWindow)) {
+                if (childWidget->testAttribute(BobUI::WA_NativeWindow)) {
                     if (!childWidget->internalWinId())
                         childWidget->winId();
                     if (childWidget->windowHandle()) {
@@ -1294,7 +1294,7 @@ void QWidgetPrivate::create()
 {
     Q_Q(QWidget);
 
-    if (!q->testAttribute(Qt::WA_NativeWindow) && !q->isWindow())
+    if (!q->testAttribute(BobUI::WA_NativeWindow) && !q->isWindow())
         return; // we only care about real toplevels
 
     QWidgetWindow *win = topData()->window;
@@ -1312,20 +1312,20 @@ void QWidgetPrivate::create()
             win->setProperty(propertyName, q->property(propertyName));
     }
 
-    Qt::WindowFlags &flags = data.window_flags;
+    BobUI::WindowFlags &flags = data.window_flags;
 
-#if defined(QT_PLATFORM_UIKIT)
-    if (q->testAttribute(Qt::WA_ContentsMarginsRespectsSafeArea))
-        flags |= Qt::ExpandedClientAreaHint;
+#if defined(BOBUI_PLATFORM_UIKIT)
+    if (q->testAttribute(BobUI::WA_ContentsMarginsRespectsSafeArea))
+        flags |= BobUI::ExpandedClientAreaHint;
 #endif
 
-    if (q->testAttribute(Qt::WA_ShowWithoutActivating))
+    if (q->testAttribute(BobUI::WA_ShowWithoutActivating))
         win->setProperty("_q_showWithoutActivating", QVariant(true));
-    if (q->testAttribute(Qt::WA_MacAlwaysShowToolWindow))
+    if (q->testAttribute(BobUI::WA_MacAlwaysShowToolWindow))
         win->setProperty("_q_macAlwaysShowToolWindow", QVariant(true));
     win->setFlags(flags);
     fixPosIncludesFrame();
-    if (q->testAttribute(Qt::WA_Moved)
+    if (q->testAttribute(BobUI::WA_Moved)
         || !QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::WindowManagement))
         win->setGeometry(q->geometry());
     else
@@ -1339,15 +1339,15 @@ void QWidgetPrivate::create()
     }
 
     QSurfaceFormat format = win->requestedFormat();
-    if ((flags & Qt::Window) && win->surfaceType() != QSurface::OpenGLSurface
-            && q->testAttribute(Qt::WA_TranslucentBackground)) {
+    if ((flags & BobUI::Window) && win->surfaceType() != QSurface::OpenGLSurface
+            && q->testAttribute(BobUI::WA_TranslucentBackground)) {
         format.setAlphaBufferSize(8);
     }
     win->setFormat(format);
 
     if (QWidget *nativeParent = q->nativeParentWidget()) {
         if (nativeParent->windowHandle()) {
-            if (flags & Qt::Window) {
+            if (flags & BobUI::Window) {
                 win->setTransientParent(nativeParent->window()->windowHandle());
                 win->setParent(nullptr);
             } else {
@@ -1357,7 +1357,7 @@ void QWidgetPrivate::create()
         }
     }
 
-    qt_window_private(win)->positionPolicy = topData()->posIncludesFrame ?
+    bobui_window_private(win)->positionPolicy = topData()->posIncludesFrame ?
         QWindowPrivate::WindowFrameInclusive : QWindowPrivate::WindowFrameExclusive;
 
     win->create();
@@ -1367,13 +1367,13 @@ void QWidgetPrivate::create()
 
     data.window_flags = win->flags();
 
-#if QT_CONFIG(xcb)
+#if BOBUI_CONFIG(xcb)
     if (!topData()->role.isNull()) {
         if (auto *xcbWindow = dynamic_cast<QXcbWindow*>(win->handle()))
             xcbWindow->setWindowRole(topData()->role);
     }
 #endif
-#if QT_CONFIG(wayland)
+#if BOBUI_CONFIG(wayland)
     if (!topData()->role.isNull()) {
         if (auto *waylandWindow = dynamic_cast<QWaylandWindow*>(win->handle()))
             waylandWindow->setSessionRestoreId(topData()->role);
@@ -1411,9 +1411,9 @@ void QWidgetPrivate::create()
         setMask_sys(extra->mask);
 
     if (data.crect.width() == 0 || data.crect.height() == 0) {
-        q->setAttribute(Qt::WA_OutsideWSRange, true);
+        q->setAttribute(BobUI::WA_OutsideWSRange, true);
     } else {
-        q->setAttribute(Qt::WA_OutsideWSRange, false);
+        q->setAttribute(BobUI::WA_OutsideWSRange, false);
         if (q->isVisible()) {
             // If widget is already shown, set window visible, too
             win->setNativeWindowVisibility(true);
@@ -1428,7 +1428,7 @@ static const char activeXNativeParentHandleProperty[] = "_q_embedded_native_pare
 void QWidgetPrivate::createTLSysExtra()
 {
     Q_Q(QWidget);
-    if (!extra->topextra->window && (q->testAttribute(Qt::WA_NativeWindow) || q->isWindow())) {
+    if (!extra->topextra->window && (q->testAttribute(BobUI::WA_NativeWindow) || q->isWindow())) {
         extra->topextra->window = new QWidgetWindow(q);
         if (extra->minw || extra->minh)
             extra->topextra->window->setMinimumSize(QSize(extra->minw, extra->minh));
@@ -1437,8 +1437,8 @@ void QWidgetPrivate::createTLSysExtra()
         if (extra->topextra->opacity != 255 && q->isWindow())
             extra->topextra->window->setOpacity(qreal(extra->topextra->opacity) / qreal(255));
 
-#if QT_CONFIG(tooltip)
-        const bool isTipLabel = qobject_cast<const QTipLabel *>(q) != nullptr;
+#if BOBUI_CONFIG(tooltip)
+        const bool isTipLabel = qobject_cast<const BOBUIipLabel *>(q) != nullptr;
 #endif
         const bool isAlphaWidget = !isTipLabel && q->inherits("QAlphaWidget");
 #ifdef Q_OS_WIN
@@ -1450,7 +1450,7 @@ void QWidgetPrivate::createTLSysExtra()
             extra->topextra->window->setProperty("_q_windowsDropShadow", QVariant(true));
 #endif
         if (isTipLabel || isAlphaWidget || q->inherits("QRollEffect"))
-            qt_window_private(extra->topextra->window)->setAutomaticPositionAndResizeEnabled(false);
+            bobui_window_private(extra->topextra->window)->setAutomaticPositionAndResizeEnabled(false);
 
         updateIsTranslucent();
     }
@@ -1469,26 +1469,26 @@ QWidget::~QWidget()
     Q_D(QWidget);
     d->data.in_destructor = true;
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     if (QGuiApplicationPrivate::is_app_running && !QGuiApplicationPrivate::is_app_closing && QAccessible::isActive())
         QAccessibleCache::instance()->sendObjectDestroyedEvent(this);
 #endif
 
-#if defined (QT_CHECK_STATE)
+#if defined (BOBUI_CHECK_STATE)
     if (Q_UNLIKELY(paintingActive()))
         qWarning("QWidget: %s (%s) deleted while being painted", className(), name());
 #endif
 
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     if (QGestureManager *manager = QGestureManager::instance(QGestureManager::DontForceCreation)) {
-        // \forall Qt::GestureType type : ungrabGesture(type) (inlined)
+        // \forall BobUI::GestureType type : ungrabGesture(type) (inlined)
         for (auto it = d->gestureContext.keyBegin(), end = d->gestureContext.keyEnd(); it != end; ++it)
             manager->cleanupCachedGestures(this, *it);
     }
     d->gestureContext.clear();
 #endif
 
-#ifndef QT_NO_ACTION
+#ifndef BOBUI_NO_ACTION
     // remove all actions from this widget
     for (auto action : std::as_const(d->actions)) {
         QActionPrivate *apriv = action->d_func();
@@ -1497,10 +1497,10 @@ QWidget::~QWidget()
     d->actions.clear();
 #endif
 
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     // Remove all shortcuts grabbed by this
     // widget, unless application is closing
-    if (!QApplicationPrivate::is_app_closing && testAttribute(Qt::WA_GrabbedShortcut))
+    if (!QApplicationPrivate::is_app_closing && testAttribute(BobUI::WA_GrabbedShortcut))
         QGuiApplicationPrivate::instance()->shortcutMap.removeShortcut(0, this, QKeySequence());
 #endif
 
@@ -1511,8 +1511,8 @@ QWidget::~QWidget()
     // Remove this from focus list
     d->removeFromFocusChain(QWidgetPrivate::FocusChainRemovalRule::AssertConsistency);
 
-    QT_TRY {
-#if QT_CONFIG(graphicsview)
+    BOBUI_TRY {
+#if BOBUI_CONFIG(graphicsview)
         const QWidget* w = this;
         while (w->d_func()->extra && w->d_func()->extra->focus_proxy)
             w = w->d_func()->extra->focus_proxy;
@@ -1521,20 +1521,20 @@ QWidget::~QWidget()
         if (!e || !e->proxyWidget || (w->parentWidget() && w->parentWidget()->d_func()->focus_child == this))
 #endif
         clearFocus();
-    } QT_CATCH(...) {
+    } BOBUI_CATCH(...) {
         // swallow this problem because we are in a destructor
     }
 
     d->setDirtyOpaqueRegion();
 
     if (isWindow() && isVisible() && internalWinId()) {
-        QT_TRY {
+        BOBUI_TRY {
             d->close();
-        } QT_CATCH(...) {
+        } BOBUI_CATCH(...) {
             // if we're out of memory, at least hide the window.
-            QT_TRY {
+            BOBUI_TRY {
                 hide();
-            } QT_CATCH(...) {
+            } BOBUI_CATCH(...) {
                 // and if that also doesn't work, then give up
             }
         }
@@ -1544,7 +1544,7 @@ QWidget::~QWidget()
 
     if (QWidgetRepaintManager *repaintManager = d->maybeRepaintManager()) {
         repaintManager->removeDirtyWidget(this);
-        if (testAttribute(Qt::WA_StaticContents))
+        if (testAttribute(BobUI::WA_StaticContents))
             repaintManager->removeStaticWidget(this);
     }
 
@@ -1557,13 +1557,13 @@ QWidget::~QWidget()
     d->blockSig = 0; // unblock signals so we always emit destroyed()
 
     if (d->isSignalConnected(0)) {
-        QT_TRY {
+        BOBUI_TRY {
             emit destroyed(this);
-        } QT_CATCH(...) {
+        } BOBUI_CATCH(...) {
             // all the signal/slots connections are still in place - if we don't
             // quit now, we will crash pretty soon.
             qWarning("Detected an unexpected exception in ~QWidget while emitting destroyed().");
-            QT_RETHROW;
+            BOBUI_RETHROW;
         }
     }
 
@@ -1582,9 +1582,9 @@ QWidget::~QWidget()
 
     QCoreApplication::removePostedEvents(this);
 
-    QT_TRY {
+    BOBUI_TRY {
         destroy();                                        // platform-dependent cleanup
-    } QT_CATCH(...) {
+    } BOBUI_CATCH(...) {
         // if this fails we can't do anything about it but at least we are not allowed to throw.
     }
     --QWidgetPrivate::instanceCounter;
@@ -1592,14 +1592,14 @@ QWidget::~QWidget()
     if (QWidgetPrivate::allWidgets) // might have been deleted by ~QApplication
         QWidgetPrivate::allWidgets->remove(this);
 
-    QT_TRY {
+    BOBUI_TRY {
         QEvent e(QEvent::Destroy);
         QCoreApplication::sendEvent(this, &e);
-    } QT_CATCH(const std::exception&) {
+    } BOBUI_CATCH(const std::exception&) {
         // if this fails we can't do anything about it but at least we are not allowed to throw.
     }
 
-#if QT_CONFIG(graphicseffect)
+#if BOBUI_CONFIG(graphicseffect)
     delete d->graphicsEffect;
 #endif
     d->deleteExtra();
@@ -1635,8 +1635,8 @@ void QWidgetPrivate::createTLExtra()
     if (!extra)
         createExtra();
     if (!extra->topextra) {
-        extra->topextra = std::make_unique<QTLWExtra>();
-        QTLWExtra* x = extra->topextra.get();
+        extra->topextra = std::make_unique<BOBUILWExtra>();
+        BOBUILWExtra* x = extra->topextra.get();
         x->backingStore = nullptr;
         x->sharedPainter = nullptr;
         x->incw = x->inch = 0;
@@ -1669,7 +1669,7 @@ void QWidgetPrivate::createExtra()
     if (!extra) {                                // if not exists
         extra = std::make_unique<QWExtra>();
         extra->glContext = nullptr;
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
         extra->proxyWidget = nullptr;
 #endif
         extra->minw = 0;
@@ -1706,9 +1706,9 @@ void QWidgetPrivate::deleteExtra()
 {
     if (extra) {                                // if exists
         deleteSysExtra();
-#if QT_CONFIG(style_stylesheet)
+#if BOBUI_CONFIG(style_stylesheet)
         // dereference the stylesheet style
-        if (QStyleSheetStyle *proxy = qt_styleSheet(extra->style))
+        if (QStyleSheetStyle *proxy = bobui_styleSheet(extra->style))
             proxy->deref();
 #endif
         if (extra->topextra)
@@ -1809,7 +1809,7 @@ void QWidgetPrivate::paintOnScreen(const QRegion &rgn)
         return;
 
     Q_Q(QWidget);
-    if (q->testAttribute(Qt::WA_StaticContents)) {
+    if (q->testAttribute(BobUI::WA_StaticContents)) {
         if (!extra)
             createExtra();
         extra->staticContentsSize = data.crect.size();
@@ -1843,14 +1843,14 @@ void QWidgetPrivate::setUpdatesEnabled_helper(bool enable)
     if (enable && !q->isWindow() && q->parentWidget() && !q->parentWidget()->updatesEnabled())
         return; // nothing we can do
 
-    if (enable != q->testAttribute(Qt::WA_UpdatesDisabled))
+    if (enable != q->testAttribute(BobUI::WA_UpdatesDisabled))
         return; // nothing to do
 
-    q->setAttribute(Qt::WA_UpdatesDisabled, !enable);
+    q->setAttribute(BobUI::WA_UpdatesDisabled, !enable);
     if (enable)
         q->update();
 
-    Qt::WidgetAttribute attribute = enable ? Qt::WA_ForceUpdatesDisabled : Qt::WA_UpdatesDisabled;
+    BobUI::WidgetAttribute attribute = enable ? BobUI::WA_ForceUpdatesDisabled : BobUI::WA_UpdatesDisabled;
     for (int i = 0; i < children.size(); ++i) {
         QWidget *w = qobject_cast<QWidget *>(children.at(i));
         if (w && !w->isWindow() && !w->testAttribute(attribute))
@@ -1869,13 +1869,13 @@ void QWidgetPrivate::propagatePaletteChange()
 {
     Q_Q(QWidget);
     // Propagate a new inherited mask to all children.
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
     if (!q->parentWidget() && extra && extra->proxyWidget) {
         QGraphicsProxyWidget *p = extra->proxyWidget;
         inheritedPaletteResolveMask = p->d_func()->inheritedPaletteResolveMask | p->palette().resolveMask();
     } else
-#endif // QT_CONFIG(graphicsview)
-        if (q->isWindow() && !q->testAttribute(Qt::WA_WindowPropagation)) {
+#endif // BOBUI_CONFIG(graphicsview)
+        if (q->isWindow() && !q->testAttribute(BobUI::WA_WindowPropagation)) {
         inheritedPaletteResolveMask = 0;
     }
 
@@ -1883,14 +1883,14 @@ void QWidgetPrivate::propagatePaletteChange()
     auto mask = directPaletteResolveMask | inheritedPaletteResolveMask;
 
     const bool useStyleSheetPropagationInWidgetStyles =
-        QCoreApplication::testAttribute(Qt::AA_UseStyleSheetPropagationInWidgetStyles);
+        QCoreApplication::testAttribute(BobUI::AA_UseStyleSheetPropagationInWidgetStyles);
 
     QEvent pc(QEvent::PaletteChange);
     QCoreApplication::sendEvent(q, &pc);
     for (int i = 0; i < children.size(); ++i) {
         QWidget *w = qobject_cast<QWidget*>(children.at(i));
-        if (w && (!w->testAttribute(Qt::WA_StyleSheet) || useStyleSheetPropagationInWidgetStyles)
-            && (!w->isWindow() || w->testAttribute(Qt::WA_WindowPropagation))) {
+        if (w && (!w->testAttribute(BobUI::WA_StyleSheet) || useStyleSheetPropagationInWidgetStyles)
+            && (!w->isWindow() || w->testAttribute(BobUI::WA_WindowPropagation))) {
             QWidgetPrivate *wd = w->d_func();
             wd->inheritedPaletteResolveMask = mask;
             wd->resolvePalette();
@@ -1965,7 +1965,7 @@ QRegion QWidgetPrivate::clipRegion() const
 void QWidgetPrivate::setSystemClip(QPaintEngine *paintEngine, qreal devicePixelRatio, const QRegion &region)
 {
 // Transform the system clip region from device-independent pixels to device pixels
-    QTransform scaleTransform;
+    BOBUIransform scaleTransform;
     scaleTransform.scale(devicePixelRatio, devicePixelRatio);
 
     paintEngine->d_func()->baseSystemClip = region;
@@ -1973,7 +1973,7 @@ void QWidgetPrivate::setSystemClip(QPaintEngine *paintEngine, qreal devicePixelR
 
 }
 
-#if QT_CONFIG(graphicseffect)
+#if BOBUI_CONFIG(graphicseffect)
 void QWidgetPrivate::invalidateGraphicsEffectsRecursively()
 {
     Q_Q(QWidget);
@@ -1988,7 +1988,7 @@ void QWidgetPrivate::invalidateGraphicsEffectsRecursively()
         w = w->parentWidget();
     } while (w);
 }
-#endif // QT_CONFIG(graphicseffect)
+#endif // BOBUI_CONFIG(graphicseffect)
 
 void QWidgetPrivate::setDirtyOpaqueRegion()
 {
@@ -1996,9 +1996,9 @@ void QWidgetPrivate::setDirtyOpaqueRegion()
 
     dirtyOpaqueChildren = true;
 
-#if QT_CONFIG(graphicseffect)
+#if BOBUI_CONFIG(graphicseffect)
     invalidateGraphicsEffectsRecursively();
-#endif // QT_CONFIG(graphicseffect)
+#endif // BOBUI_CONFIG(graphicseffect)
 
     if (q->isWindow())
         return;
@@ -2058,7 +2058,7 @@ void QWidgetPrivate::subtractOpaqueSiblings(QRegion &sourceRegion, bool *hasDirt
                                             bool alsoNonOpaque) const
 {
     Q_Q(const QWidget);
-    static int disableSubtractOpaqueSiblings = qEnvironmentVariableIntValue("QT_NO_SUBTRACTOPAQUESIBLINGS");
+    static int disableSubtractOpaqueSiblings = qEnvironmentVariableIntValue("BOBUI_NO_SUBTRACTOPAQUESIBLINGS");
     if (disableSubtractOpaqueSiblings || q->isWindow())
         return;
 
@@ -2147,12 +2147,12 @@ void QWidgetPrivate::clipToEffectiveMask(QRegion &region) const
     const QWidget *w = q;
     QPoint offset;
 
-#if QT_CONFIG(graphicseffect)
+#if BOBUI_CONFIG(graphicseffect)
     if (graphicsEffect && !w->isWindow()) {
         w = q->parentWidget();
         offset -= data.crect.topLeft();
     }
-#endif // QT_CONFIG(graphicseffect)
+#endif // BOBUI_CONFIG(graphicseffect)
 
     while (w) {
         const QWidgetPrivate *wd = w->d_func();
@@ -2167,12 +2167,12 @@ void QWidgetPrivate::clipToEffectiveMask(QRegion &region) const
 
 bool QWidgetPrivate::shouldPaintOnScreen() const
 {
-#if defined(QT_NO_BACKINGSTORE)
+#if defined(BOBUI_NO_BACKINGSTORE)
     return true;
 #else
     Q_Q(const QWidget);
-    if (q->testAttribute(Qt::WA_PaintOnScreen)
-            || (!q->isWindow() && q->window()->testAttribute(Qt::WA_PaintOnScreen))) {
+    if (q->testAttribute(BobUI::WA_PaintOnScreen)
+            || (!q->isWindow() && q->window()->testAttribute(BobUI::WA_PaintOnScreen))) {
         return true;
     }
 
@@ -2185,16 +2185,16 @@ void QWidgetPrivate::updateIsOpaque()
     // hw: todo: only needed if opacity actually changed
     setDirtyOpaqueRegion();
 
-#if QT_CONFIG(graphicseffect)
+#if BOBUI_CONFIG(graphicseffect)
     if (graphicsEffect) {
         // ### We should probably add QGraphicsEffect::isOpaque at some point.
         setOpaque(false);
         return;
     }
-#endif // QT_CONFIG(graphicseffect)
+#endif // BOBUI_CONFIG(graphicseffect)
 
     Q_Q(QWidget);
-    if (q->testAttribute(Qt::WA_OpaquePaintEvent) || q->testAttribute(Qt::WA_PaintOnScreen)) {
+    if (q->testAttribute(BobUI::WA_OpaquePaintEvent) || q->testAttribute(BobUI::WA_PaintOnScreen)) {
         setOpaque(true);
         return;
     }
@@ -2203,15 +2203,15 @@ void QWidgetPrivate::updateIsOpaque()
 
     if (q->autoFillBackground()) {
         const QBrush &autoFillBrush = pal.brush(q->backgroundRole());
-        if (autoFillBrush.style() != Qt::NoBrush && autoFillBrush.isOpaque()) {
+        if (autoFillBrush.style() != BobUI::NoBrush && autoFillBrush.isOpaque()) {
             setOpaque(true);
             return;
         }
     }
 
-    if (q->isWindow() && !q->testAttribute(Qt::WA_NoSystemBackground)) {
+    if (q->isWindow() && !q->testAttribute(BobUI::WA_NoSystemBackground)) {
         const QBrush &windowBrush = q->palette().brush(QPalette::Window);
-        if (windowBrush.style() != Qt::NoBrush && windowBrush.isOpaque()) {
+        if (windowBrush.style() != BobUI::NoBrush && windowBrush.isOpaque()) {
             setOpaque(true);
             return;
         }
@@ -2233,9 +2233,9 @@ void QWidgetPrivate::updateIsTranslucent()
     if (QWindow *window = q->windowHandle()) {
         QSurfaceFormat format = window->format();
         const int oldAlpha = format.alphaBufferSize();
-        const int newAlpha = q->testAttribute(Qt::WA_TranslucentBackground) ? 8 : -1;
+        const int newAlpha = q->testAttribute(BobUI::WA_TranslucentBackground) ? 8 : -1;
         if (oldAlpha != newAlpha) {
-            // QTBUG-85714: Do this only when the QWindow has not yet been create()'ed yet.
+            // BOBUIBUG-85714: Do this only when the QWindow has not yet been create()'ed yet.
             //
             // If that is not the case, then the setFormat() is not just futile
             // but downright dangerous. Futile because the format matters only
@@ -2263,7 +2263,7 @@ static inline void fillRegion(QPainter *painter, const QRegion &rgn, const QBrus
 {
     Q_ASSERT(painter);
 
-    if (brush.style() == Qt::TexturePattern) {
+    if (brush.style() == BobUI::TexturePattern) {
         const QRect rect(rgn.boundingRect());
         painter->setClipRegion(rgn);
         painter->drawTiledPixmap(rect, brush.texture(), rect.topLeft());
@@ -2282,10 +2282,10 @@ static inline void fillRegion(QPainter *painter, const QRegion &rgn, const QBrus
 
 bool QWidgetPrivate::updateBrushOrigin(QPainter *painter, const QBrush &brush) const
 {
-#if QT_CONFIG(scrollarea)
+#if BOBUI_CONFIG(scrollarea)
     Q_Q(const QWidget);
     //If we are painting the viewport of a scrollarea, we must apply an offset to the brush in case we are drawing a texture
-    if (brush.style() == Qt::NoBrush || brush.style() == Qt::SolidPattern)
+    if (brush.style() == BobUI::NoBrush || brush.style() == BobUI::SolidPattern)
         return false;
     QAbstractScrollArea *scrollArea = qobject_cast<QAbstractScrollArea *>(parent);
     if (scrollArea && scrollArea->viewport() == q) {
@@ -2293,7 +2293,7 @@ bool QWidgetPrivate::updateBrushOrigin(QPainter *painter, const QBrush &brush) c
         QAbstractScrollAreaPrivate *priv = static_cast<QAbstractScrollAreaPrivate *>(scrollPrivate);
         painter->setBrushOrigin(-priv->contentsOffset());
     }
-#endif // QT_CONFIG(scrollarea)
+#endif // BOBUI_CONFIG(scrollarea)
     return true;
 }
 
@@ -2325,7 +2325,7 @@ void QWidgetPrivate::paintBackground(QPainter *painter, const QRegion &rgn, Draw
         fillRegion(painter, rgn, autoFillBrush);
     }
 
-    if (q->testAttribute(Qt::WA_StyledBackground)) {
+    if (q->testAttribute(BobUI::WA_StyledBackground)) {
         painter->setClipRegion(rgn);
         QStyleOption opt;
         opt.initFrom(q);
@@ -2340,7 +2340,7 @@ void QWidgetPrivate::paintBackground(QPainter *painter, const QRegion &rgn, Draw
   visible widgets.
 */
 
-extern QWidget *qt_button_down;
+extern QWidget *bobui_button_down;
 
 void QWidgetPrivate::deactivateWidgetCleanup()
 {
@@ -2349,8 +2349,8 @@ void QWidgetPrivate::deactivateWidgetCleanup()
     if (QApplication::activeWindow() == q)
         QApplicationPrivate::setActiveWindow(nullptr);
     // If the is the active mouse press widget, reset it
-    if (q == qt_button_down)
-        qt_button_down = nullptr;
+    if (q == bobui_button_down)
+        bobui_button_down = nullptr;
 }
 
 
@@ -2396,10 +2396,10 @@ QWidget *QWidget::find(WId id)
 WId QWidget::winId() const
 {
     if (!data->in_destructor
-        && (!testAttribute(Qt::WA_WState_Created) || !internalWinId()))
+        && (!testAttribute(BobUI::WA_WState_Created) || !internalWinId()))
     {
         QWidget *that = const_cast<QWidget*>(this);
-        that->setAttribute(Qt::WA_NativeWindow);
+        that->setAttribute(BobUI::WA_NativeWindow);
         that->d_func()->createWinId();
         return that->data->winid;
     }
@@ -2410,21 +2410,21 @@ void QWidgetPrivate::createWinId()
 {
     Q_Q(QWidget);
 
-    const bool forceNativeWindow = q->testAttribute(Qt::WA_NativeWindow);
-    if (!q->testAttribute(Qt::WA_WState_Created) || (forceNativeWindow && !q->internalWinId())) {
+    const bool forceNativeWindow = q->testAttribute(BobUI::WA_NativeWindow);
+    if (!q->testAttribute(BobUI::WA_WState_Created) || (forceNativeWindow && !q->internalWinId())) {
         if (!q->isWindow()) {
             QWidget *parent = q->parentWidget();
             QWidgetPrivate *pd = parent->d_func();
-            if (forceNativeWindow && !q->testAttribute(Qt::WA_DontCreateNativeAncestors))
-                parent->setAttribute(Qt::WA_NativeWindow);
+            if (forceNativeWindow && !q->testAttribute(BobUI::WA_DontCreateNativeAncestors))
+                parent->setAttribute(BobUI::WA_NativeWindow);
             if (!parent->internalWinId()) {
                 pd->createWinId();
             }
 
             for (int i = 0; i < pd->children.size(); ++i) {
                 QWidget *w = qobject_cast<QWidget *>(pd->children.at(i));
-                if (w && !w->isWindow() && (!w->testAttribute(Qt::WA_WState_Created)
-                                            || (!w->internalWinId() && w->testAttribute(Qt::WA_NativeWindow)))) {
+                if (w && !w->isWindow() && (!w->testAttribute(BobUI::WA_WState_Created)
+                                            || (!w->internalWinId() && w->testAttribute(BobUI::WA_NativeWindow)))) {
                     w->create();
                 }
             }
@@ -2437,7 +2437,7 @@ void QWidgetPrivate::createWinId()
 /*!
 \internal
 Ensures that the widget is set on the screen point is on. This is handy getting a correct
-size hint before a resize in e.g QMenu and QToolTip.
+size hint before a resize in e.g QMenu and BOBUIoolTip.
 Returns if the screen was changed.
 */
 
@@ -2501,7 +2501,7 @@ void QWidget::createWinId()
 WId QWidget::effectiveWinId() const
 {
     const WId id = internalWinId();
-    if (id || !testAttribute(Qt::WA_WState_Created))
+    if (id || !testAttribute(BobUI::WA_WState_Created))
         return id;
     if (const QWidget *realParent = nativeParentWidget())
         return realParent->internalWinId();
@@ -2538,7 +2538,7 @@ QScreen *QWidget::screen() const
     if (auto associatedScreen = d->associatedScreen())
         return associatedScreen;
     if (auto topLevel = window()) {
-        if (auto topData = qt_widget_private(topLevel)->topData()) {
+        if (auto topData = bobui_widget_private(topLevel)->topData()) {
             if (topData->initialScreen)
                 return topData->initialScreen;
         }
@@ -2566,7 +2566,7 @@ void QWidget::setScreen(QScreen *screen)
     d->setScreen(screen);
 }
 
-#if QT_CONFIG(style_stylesheet)
+#if BOBUI_CONFIG(style_stylesheet)
 
 /*!
     \property QWidget::styleSheet
@@ -2574,14 +2574,14 @@ void QWidget::setScreen(QScreen *screen)
     \since 4.2
 
     The style sheet contains a textual description of customizations to the
-    widget's style, as described in the \l{Qt Style Sheets} document.
+    widget's style, as described in the \l{BobUI Style Sheets} document.
 
-    Since Qt 4.5, Qt style sheets fully supports \macos.
+    Since BobUI 4.5, BobUI style sheets fully supports \macos.
 
-    \warning Qt style sheets are currently not supported for custom QStyle
+    \warning BobUI style sheets are currently not supported for custom QStyle
     subclasses. We plan to address this in some future release.
 
-    \sa setStyle(), QApplication::styleSheet, {Qt Style Sheets}
+    \sa setStyle(), QApplication::styleSheet, {BobUI Style Sheets}
 */
 QString QWidget::styleSheet() const
 {
@@ -2598,7 +2598,7 @@ void QWidget::setStyleSheet(const QString& styleSheet)
         return;
     d->createExtra();
 
-    QStyleSheetStyle *proxy = qt_styleSheet(d->extra->style);
+    QStyleSheetStyle *proxy = bobui_styleSheet(d->extra->style);
     d->extra->styleSheet = styleSheet;
     if (styleSheet.isEmpty()) { // stylesheet removed
         if (!proxy)
@@ -2623,14 +2623,14 @@ void QWidget::setStyleSheet(const QString& styleSheet)
         return;
     }
 
-    if (testAttribute(Qt::WA_SetStyle)) {
+    if (testAttribute(BobUI::WA_SetStyle)) {
         d->setStyle_helper(new QStyleSheetStyle(d->extra->style), true);
     } else {
         d->setStyle_helper(new QStyleSheetStyle(nullptr), true);
     }
 }
 
-#endif // QT_NO_STYLE_STYLESHEET
+#endif // BOBUI_NO_STYLE_STYLESHEET
 
 /*!
     \sa QWidget::setStyle(), QApplication::setStyle(), QApplication::style()
@@ -2656,11 +2656,11 @@ QStyle *QWidget::style() const
     widgets.
 
     \warning This function is particularly useful for demonstration
-    purposes, where you want to show Qt's styling capabilities. Real
+    purposes, where you want to show BobUI's styling capabilities. Real
     applications should avoid it and use one consistent GUI style
     instead.
 
-    \warning Qt style sheets are currently not supported for custom QStyle
+    \warning BobUI style sheets are currently not supported for custom QStyle
     subclasses. We plan to address this in some future release.
 
     \sa style(), QStyle, QApplication::style(), QApplication::setStyle()
@@ -2669,15 +2669,15 @@ QStyle *QWidget::style() const
 void QWidget::setStyle(QStyle *style)
 {
     Q_D(QWidget);
-    setAttribute(Qt::WA_SetStyle, style != nullptr);
+    setAttribute(BobUI::WA_SetStyle, style != nullptr);
     d->createExtra();
-#if QT_CONFIG(style_stylesheet)
-    if (QStyleSheetStyle *styleSheetStyle = qt_styleSheet(style)) {
+#if BOBUI_CONFIG(style_stylesheet)
+    if (QStyleSheetStyle *styleSheetStyle = bobui_styleSheet(style)) {
         //if for some reason someone try to set a QStyleSheetStyle, ref it
         //(this may happen for example in QButtonDialogBox which propagates its style)
         styleSheetStyle->ref();
         d->setStyle_helper(style, false);
-    } else if (qt_styleSheet(d->extra->style) || !qApp->styleSheet().isEmpty()) {
+    } else if (bobui_styleSheet(d->extra->style) || !qApp->styleSheet().isEmpty()) {
         // if we have an application stylesheet or have a proxy already, propagate
         d->setStyle_helper(new QStyleSheetStyle(style), true);
     } else
@@ -2692,7 +2692,7 @@ void QWidgetPrivate::setStyle_helper(QStyle *newStyle, bool propagate)
 
     createExtra();
 
-#if QT_CONFIG(style_stylesheet)
+#if BOBUI_CONFIG(style_stylesheet)
     QPointer<QStyle> origStyle = extra->style;
 #endif
     extra->style = newStyle;
@@ -2713,9 +2713,9 @@ void QWidgetPrivate::setStyle_helper(QStyle *newStyle, bool propagate)
         }
     }
 
-#if QT_CONFIG(style_stylesheet)
-    if (!qt_styleSheet(newStyle)) {
-        if (const QStyleSheetStyle* cssStyle = qt_styleSheet(origStyle)) {
+#if BOBUI_CONFIG(style_stylesheet)
+    if (!bobui_styleSheet(newStyle)) {
+        if (const QStyleSheetStyle* cssStyle = bobui_styleSheet(origStyle)) {
             cssStyle->clearWidgetFont(q);
         }
     }
@@ -2724,9 +2724,9 @@ void QWidgetPrivate::setStyle_helper(QStyle *newStyle, bool propagate)
     QEvent e(QEvent::StyleChange);
     QCoreApplication::sendEvent(q, &e);
 
-#if QT_CONFIG(style_stylesheet)
+#if BOBUI_CONFIG(style_stylesheet)
     // dereference the old stylesheet style
-    if (QStyleSheetStyle *proxy = qt_styleSheet(origStyle))
+    if (QStyleSheetStyle *proxy = bobui_styleSheet(origStyle))
         proxy->deref();
 #endif
 }
@@ -2734,12 +2734,12 @@ void QWidgetPrivate::setStyle_helper(QStyle *newStyle, bool propagate)
 // Inherits style from the current parent and propagates it as necessary
 void QWidgetPrivate::inheritStyle()
 {
-#if QT_CONFIG(style_stylesheet)
+#if BOBUI_CONFIG(style_stylesheet)
     Q_Q(QWidget);
 
     QStyle *extraStyle = extra ? (QStyle*)extra->style : nullptr;
 
-    QStyleSheetStyle *proxy = qt_styleSheet(extraStyle);
+    QStyleSheetStyle *proxy = bobui_styleSheet(extraStyle);
 
     if (!q->styleSheet().isEmpty()) {
         Q_ASSERT(proxy);
@@ -2758,13 +2758,13 @@ void QWidgetPrivate::inheritStyle()
     QStyle *parentStyle = (parent && parent->d_func()->extra) ? (QStyle*)parent->d_func()->extra->style : nullptr;
     // If we have stylesheet on app or parent has stylesheet style, we need
     // to be running a proxy
-    if (!qApp->styleSheet().isEmpty() || qt_styleSheet(parentStyle)) {
+    if (!qApp->styleSheet().isEmpty() || bobui_styleSheet(parentStyle)) {
         QStyle *newStyle = parentStyle;
-        if (q->testAttribute(Qt::WA_SetStyle) && qt_styleSheet(origStyle) == nullptr)
+        if (q->testAttribute(BobUI::WA_SetStyle) && bobui_styleSheet(origStyle) == nullptr)
             newStyle = new QStyleSheetStyle(origStyle);
-        else if (auto *styleSheetStyle = qt_styleSheet(origStyle))
+        else if (auto *styleSheetStyle = bobui_styleSheet(origStyle))
             newStyle = styleSheetStyle;
-        else if (QStyleSheetStyle *newProxy = qt_styleSheet(parentStyle))
+        else if (QStyleSheetStyle *newProxy = bobui_styleSheet(parentStyle))
             newProxy->ref();
 
         setStyle_helper(newStyle, true);
@@ -2779,11 +2779,11 @@ void QWidgetPrivate::inheritStyle()
     // We could have inherited the proxy from our parent (which has a custom style)
     // In such a case we need to start following the application style (i.e revert
     // the propagation behavior of QStyleSheetStyle)
-    if (!q->testAttribute(Qt::WA_SetStyle))
+    if (!q->testAttribute(BobUI::WA_SetStyle))
         origStyle = nullptr;
 
     setStyle_helper(origStyle, true);
-#endif // QT_NO_STYLE_STYLESHEET
+#endif // BOBUI_NO_STYLE_STYLESHEET
 }
 
 
@@ -2805,7 +2805,7 @@ void QWidgetPrivate::inheritStyle()
 
     QDialog and QMainWindow widgets are by default windows, even if a
     parent widget is specified in the constructor. This behavior is
-    specified by the Qt::Window flag.
+    specified by the BobUI::Window flag.
 
     \sa window(), isModal(), parentWidget()
 */
@@ -2833,22 +2833,22 @@ void QWidgetPrivate::inheritStyle()
     is visible. Changing this property while the window is visible has
     no effect; you must hide() the widget first, then show() it again.
 
-    By default, this property is Qt::NonModal.
+    By default, this property is BobUI::NonModal.
 
     \sa isWindow(), QWidget::modal, QDialog
 */
 
-Qt::WindowModality QWidget::windowModality() const
+BobUI::WindowModality QWidget::windowModality() const
 {
-    return static_cast<Qt::WindowModality>(data->window_modality);
+    return static_cast<BobUI::WindowModality>(data->window_modality);
 }
 
-void QWidget::setWindowModality(Qt::WindowModality windowModality)
+void QWidget::setWindowModality(BobUI::WindowModality windowModality)
 {
     data->window_modality = windowModality;
     // setModal_sys() will be called by setAttribute()
-    setAttribute(Qt::WA_ShowModal, (data->window_modality != Qt::NonModal));
-    setAttribute(Qt::WA_SetWindowModality, true);
+    setAttribute(BobUI::WA_ShowModal, (data->window_modality != BobUI::NonModal));
+    setAttribute(BobUI::WA_SetWindowModality, true);
 }
 
 void QWidgetPrivate::setModal_sys()
@@ -2881,7 +2881,7 @@ void QWidgetPrivate::setModal_sys()
     \sa showMinimized(), visible, show(), hide(), showNormal(), maximized
 */
 bool QWidget::isMinimized() const
-{ return data->window_state & Qt::WindowMinimized; }
+{ return data->window_state & BobUI::WindowMinimized; }
 
 /*!
     Shows the widget minimized, as an icon.
@@ -2900,7 +2900,7 @@ void QWidget::showMinimized()
     ensurePolished();
 
     if (!isMin)
-        setWindowState((windowState() & ~Qt::WindowActive) | Qt::WindowMinimized);
+        setWindowState((windowState() & ~BobUI::WindowActive) | BobUI::WindowMinimized);
     setVisible(true);
 }
 
@@ -2912,7 +2912,7 @@ void QWidget::showMinimized()
 
     \note Due to limitations on some window systems, this does not always
     report the expected results (e.g., if the user on X11 maximizes the
-    window via the window manager, Qt has no way of distinguishing this
+    window via the window manager, BobUI has no way of distinguishing this
     from any other resize). This is expected to improve as window manager
     protocols evolve.
 
@@ -2921,20 +2921,20 @@ void QWidget::showMinimized()
     \sa windowState(), showMaximized(), visible, show(), hide(), showNormal(), minimized
 */
 bool QWidget::isMaximized() const
-{ return data->window_state & Qt::WindowMaximized; }
+{ return data->window_state & BobUI::WindowMaximized; }
 
 
 
 /*!
     Returns the current window state. The window state is a OR'ed
-    combination of Qt::WindowState: Qt::WindowMinimized,
-    Qt::WindowMaximized, Qt::WindowFullScreen, and Qt::WindowActive.
+    combination of BobUI::WindowState: BobUI::WindowMinimized,
+    BobUI::WindowMaximized, BobUI::WindowFullScreen, and BobUI::WindowActive.
 
-  \sa Qt::WindowState, setWindowState()
+  \sa BobUI::WindowState, setWindowState()
  */
-Qt::WindowStates QWidget::windowState() const
+BobUI::WindowStates QWidget::windowState() const
 {
-    return Qt::WindowStates(data->window_state);
+    return BobUI::WindowStates(data->window_state);
 }
 
 /*!\internal
@@ -2944,19 +2944,19 @@ Qt::WindowStates QWidget::windowState() const
    event has the isOverride() flag set. It exists mainly to keep
    QWorkspace working.
  */
-void QWidget::overrideWindowState(Qt::WindowStates newstate)
+void QWidget::overrideWindowState(BobUI::WindowStates newstate)
 {
-    QWindowStateChangeEvent e(Qt::WindowStates(data->window_state), true);
+    QWindowStateChangeEvent e(BobUI::WindowStates(data->window_state), true);
     data->window_state  = newstate;
     QCoreApplication::sendEvent(this, &e);
 }
 
 /*!
-    \fn void QWidget::setWindowState(Qt::WindowStates windowState)
+    \fn void QWidget::setWindowState(BobUI::WindowStates windowState)
 
     Sets the window state to \a windowState. The window state is a OR'ed
-    combination of Qt::WindowState: Qt::WindowMinimized,
-    Qt::WindowMaximized, Qt::WindowFullScreen, and Qt::WindowActive.
+    combination of BobUI::WindowState: BobUI::WindowMinimized,
+    BobUI::WindowMaximized, BobUI::WindowFullScreen, and BobUI::WindowActive.
 
     If the window is not visible (i.e. isVisible() returns \c false), the
     window state will take effect when show() is called. For visible
@@ -2973,42 +2973,42 @@ void QWidget::overrideWindowState(Qt::WindowStates newstate)
     Calling this function will hide the widget. You must call show() to make
     the widget visible again.
 
-    \note On some window systems Qt::WindowActive is not immediate, and may be
+    \note On some window systems BobUI::WindowActive is not immediate, and may be
     ignored in certain cases.
 
     When the window state changes, the widget receives a changeEvent()
     of type QEvent::WindowStateChange.
 
-    \sa Qt::WindowState, windowState()
+    \sa BobUI::WindowState, windowState()
 */
-void QWidget::setWindowState(Qt::WindowStates newstate)
+void QWidget::setWindowState(BobUI::WindowStates newstate)
 {
     Q_D(QWidget);
-    Qt::WindowStates oldstate = windowState();
-    if (newstate.testFlag(Qt::WindowMinimized)) // QTBUG-46763
-       newstate.setFlag(Qt::WindowActive, false);
+    BobUI::WindowStates oldstate = windowState();
+    if (newstate.testFlag(BobUI::WindowMinimized)) // BOBUIBUG-46763
+       newstate.setFlag(BobUI::WindowActive, false);
     if (oldstate == newstate)
         return;
-    if (isWindow() && !testAttribute(Qt::WA_WState_Created))
+    if (isWindow() && !testAttribute(BobUI::WA_WState_Created))
         create();
 
     data->window_state = newstate;
     data->in_set_window_state = 1;
     if (isWindow()) {
         // Ensure the initial size is valid, since we store it as normalGeometry below.
-        if (!testAttribute(Qt::WA_Resized) && !isVisible())
+        if (!testAttribute(BobUI::WA_Resized) && !isVisible())
             adjustSize();
 
         d->createTLExtra();
-        if (!(oldstate & (Qt::WindowMinimized | Qt::WindowMaximized | Qt::WindowFullScreen)))
+        if (!(oldstate & (BobUI::WindowMinimized | BobUI::WindowMaximized | BobUI::WindowFullScreen)))
             d->topData()->normalGeometry = geometry();
 
         Q_ASSERT(windowHandle());
-        windowHandle()->setWindowStates(newstate & ~Qt::WindowActive);
+        windowHandle()->setWindowStates(newstate & ~BobUI::WindowActive);
     }
     data->in_set_window_state = 0;
 
-    if (newstate & Qt::WindowActive)
+    if (newstate & BobUI::WindowActive)
         activateWindow();
 
     QWindowStateChangeEvent e(oldstate);
@@ -3027,7 +3027,7 @@ void QWidget::setWindowState(Qt::WindowStates newstate)
     \sa windowState(), minimized, maximized
 */
 bool QWidget::isFullScreen() const
-{ return data->window_state & Qt::WindowFullScreen; }
+{ return data->window_state & BobUI::WindowFullScreen; }
 
 /*!
     Shows the widget in full-screen mode.
@@ -3048,7 +3048,7 @@ bool QWidget::isFullScreen() const
     supported by virtually all modern window managers.
 
     An alternative would be to bypass the window manager entirely and
-    create a window with the Qt::X11BypassWindowManagerHint flag. This
+    create a window with the BobUI::X11BypassWindowManagerHint flag. This
     has other severe problems though, like broken keyboard focus
     and very strange effects on desktop changes or when the user raises
     other windows.
@@ -3069,8 +3069,8 @@ void QWidget::showFullScreen()
 {
     ensurePolished();
 
-    setWindowState((windowState() & ~(Qt::WindowMinimized | Qt::WindowMaximized))
-                   | Qt::WindowFullScreen);
+    setWindowState((windowState() & ~(BobUI::WindowMinimized | BobUI::WindowMaximized))
+                   | BobUI::WindowFullScreen);
     setVisible(true);
 #if !defined Q_OS_QNX // On QNX this window will be activated anyway from libscreen
                       // activating it here before libscreen activates it causes problems
@@ -3092,8 +3092,8 @@ void QWidget::showMaximized()
 {
     ensurePolished();
 
-    setWindowState((windowState() & ~(Qt::WindowMinimized | Qt::WindowFullScreen))
-                   | Qt::WindowMaximized);
+    setWindowState((windowState() & ~(BobUI::WindowMinimized | BobUI::WindowFullScreen))
+                   | BobUI::WindowMaximized);
     setVisible(true);
 }
 
@@ -3108,9 +3108,9 @@ void QWidget::showNormal()
 {
     ensurePolished();
 
-    setWindowState(windowState() & ~(Qt::WindowMinimized
-                                     | Qt::WindowMaximized
-                                     | Qt::WindowFullScreen));
+    setWindowState(windowState() & ~(BobUI::WindowMinimized
+                                     | BobUI::WindowMaximized
+                                     | BobUI::WindowFullScreen));
     setVisible(true);
 }
 
@@ -3137,15 +3137,15 @@ void QWidget::showNormal()
 bool QWidget::isEnabledTo(const QWidget *ancestor) const
 {
     const QWidget * w = this;
-    while (!w->testAttribute(Qt::WA_ForceDisabled)
+    while (!w->testAttribute(BobUI::WA_ForceDisabled)
             && !w->isWindow()
             && w->parentWidget()
             && w->parentWidget() != ancestor)
         w = w->parentWidget();
-    return !w->testAttribute(Qt::WA_ForceDisabled);
+    return !w->testAttribute(BobUI::WA_ForceDisabled);
 }
 
-#ifndef QT_NO_ACTION
+#ifndef BOBUI_NO_ACTION
 /*!
     Appends the action \a action to this widget's list of actions.
 
@@ -3287,7 +3287,7 @@ QAction *QWidget::addAction(const QIcon &icon, const QString &text)
     return ret;
 }
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 QAction *QWidget::addAction(const QString &text, const QKeySequence &shortcut)
 {
     QAction *ret = addAction(text);
@@ -3304,10 +3304,10 @@ QAction *QWidget::addAction(const QIcon &icon, const QString &text, const QKeySe
 #endif
 
 /*!
-    \fn QAction *QWidget::addAction(const QString &text, const QObject *receiver, const char* member, Qt::ConnectionType type)
-    \fn QAction *QWidget::addAction(const QIcon &icon, const QString &text, const QObject *receiver, const char* member, Qt::ConnectionType type)
-    \fn QAction *QWidget::addAction(const QString &text, const QKeySequence &shortcut, const QObject *receiver, const char* member, Qt::ConnectionType type)
-    \fn QAction *QWidget::addAction(const QIcon &icon, const QString &text, const QKeySequence &shortcut, const QObject *receiver, const char* member, Qt::ConnectionType type)
+    \fn QAction *QWidget::addAction(const QString &text, const QObject *receiver, const char* member, BobUI::ConnectionType type)
+    \fn QAction *QWidget::addAction(const QIcon &icon, const QString &text, const QObject *receiver, const char* member, BobUI::ConnectionType type)
+    \fn QAction *QWidget::addAction(const QString &text, const QKeySequence &shortcut, const QObject *receiver, const char* member, BobUI::ConnectionType type)
+    \fn QAction *QWidget::addAction(const QIcon &icon, const QString &text, const QKeySequence &shortcut, const QObject *receiver, const char* member, BobUI::ConnectionType type)
 
     \overload
     \since 6.3
@@ -3322,7 +3322,7 @@ QAction *QWidget::addAction(const QIcon &icon, const QString &text, const QKeySe
     QWidget takes ownership of the returned QAction.
 */
 QAction *QWidget::addAction(const QString &text, const QObject *receiver, const char* member,
-                            Qt::ConnectionType type)
+                            BobUI::ConnectionType type)
 {
     QAction *action = addAction(text);
     QObject::connect(action, SIGNAL(triggered(bool)), receiver, member, type);
@@ -3331,17 +3331,17 @@ QAction *QWidget::addAction(const QString &text, const QObject *receiver, const 
 
 QAction *QWidget::addAction(const QIcon &icon, const QString &text,
                             const QObject *receiver, const char* member,
-                            Qt::ConnectionType type)
+                            BobUI::ConnectionType type)
 {
     QAction *action = addAction(icon, text);
     QObject::connect(action, SIGNAL(triggered(bool)), receiver, member, type);
     return action;
 }
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 QAction *QWidget::addAction(const QString &text, const QKeySequence &shortcut,
                             const QObject *receiver, const char* member,
-                            Qt::ConnectionType type)
+                            BobUI::ConnectionType type)
 {
     QAction *action = addAction(text, receiver, member, type);
     action->setShortcut(shortcut);
@@ -3350,13 +3350,13 @@ QAction *QWidget::addAction(const QString &text, const QKeySequence &shortcut,
 
 QAction *QWidget::addAction(const QIcon &icon, const QString &text, const QKeySequence &shortcut,
                             const QObject *receiver, const char* member,
-                            Qt::ConnectionType type)
+                            BobUI::ConnectionType type)
 {
     QAction *action = addAction(icon, text, receiver, member, type);
     action->setShortcut(shortcut);
     return action;
 }
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
 /*!
     \fn template<typename...Args, typename = compatible_action_slot_args<Args...>> QAction *QWidget::addAction(const QString &text, Args&&...args)
@@ -3372,14 +3372,14 @@ QAction *QWidget::addAction(const QIcon &icon, const QString &text, const QKeySe
 
     The action's \l{QAction::triggered()}{triggered()} signal is connected
     as if by a call to QObject::connect(action, &QAction::triggered, args...),
-    perfectly forwarding \a args, including a possible Qt::ConnectionType.
+    perfectly forwarding \a args, including a possible BobUI::ConnectionType.
 
     The function adds the newly created action to the widget's list of
     actions and returns it.
 
     QWidget takes ownership of the returned QAction.
 */
-#endif // QT_NO_ACTION
+#endif // BOBUI_NO_ACTION
 
 /*!
     \property QWidget::enabled
@@ -3406,14 +3406,14 @@ void QWidget::setEnabled(bool enable)
 {
     Q_D(QWidget);
 
-#if QT_CONFIG(accessibility)
-    const bool wasEnabled = !testAttribute(Qt::WA_ForceDisabled);
+#if BOBUI_CONFIG(accessibility)
+    const bool wasEnabled = !testAttribute(BobUI::WA_ForceDisabled);
 #endif
 
-    setAttribute(Qt::WA_ForceDisabled, !enable);
+    setAttribute(BobUI::WA_ForceDisabled, !enable);
     d->setEnabled_helper(enable);
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     // A widget is enabled if it's parent and itself is enabled.
     // We do not send state changed events recursively. It is up
     // to the receiver of the events to check children if required.
@@ -3433,10 +3433,10 @@ void QWidgetPrivate::setEnabled_helper(bool enable)
     if (enable && !q->isWindow() && q->parentWidget() && !q->parentWidget()->isEnabled())
         return; // nothing we can do
 
-    if (enable != q->testAttribute(Qt::WA_Disabled))
+    if (enable != q->testAttribute(BobUI::WA_Disabled))
         return; // nothing to do
 
-    q->setAttribute(Qt::WA_Disabled, !enable);
+    q->setAttribute(BobUI::WA_Disabled, !enable);
     updateSystemBackground();
 
     if (!enable && q->window()->focusWidget() == q) {
@@ -3445,32 +3445,32 @@ void QWidgetPrivate::setEnabled_helper(bool enable)
             q->clearFocus();
     }
 
-    Qt::WidgetAttribute attribute = enable ? Qt::WA_ForceDisabled : Qt::WA_Disabled;
+    BobUI::WidgetAttribute attribute = enable ? BobUI::WA_ForceDisabled : BobUI::WA_Disabled;
     for (int i = 0; i < children.size(); ++i) {
         QWidget *w = qobject_cast<QWidget *>(children.at(i));
         if (w && !w->testAttribute(attribute))
             w->d_func()->setEnabled_helper(enable);
     }
-#ifndef QT_NO_CURSOR
-    if (q->testAttribute(Qt::WA_SetCursor) || q->isWindow()) {
+#ifndef BOBUI_NO_CURSOR
+    if (q->testAttribute(BobUI::WA_SetCursor) || q->isWindow()) {
         // enforce the windows behavior of clearing the cursor on
         // disabled widgets
-        qt_qpa_set_cursor(q, false);
+        bobui_qpa_set_cursor(q, false);
     }
 #endif
-#ifndef QT_NO_IM
-    if (q->testAttribute(Qt::WA_InputMethodEnabled) && q->hasFocus()) {
+#ifndef BOBUI_NO_IM
+    if (q->testAttribute(BobUI::WA_InputMethodEnabled) && q->hasFocus()) {
         QWidget *focusWidget = effectiveFocusWidget();
 
         if (enable) {
-            if (focusWidget->testAttribute(Qt::WA_InputMethodEnabled))
-                QGuiApplication::inputMethod()->update(Qt::ImEnabled);
+            if (focusWidget->testAttribute(BobUI::WA_InputMethodEnabled))
+                QGuiApplication::inputMethod()->update(BobUI::ImEnabled);
         } else {
             QGuiApplication::inputMethod()->commit();
-            QGuiApplication::inputMethod()->update(Qt::ImEnabled);
+            QGuiApplication::inputMethod()->update(BobUI::ImEnabled);
         }
     }
-#endif //QT_NO_IM
+#endif //BOBUI_NO_IM
     QEvent e(QEvent::EnabledChange);
     QCoreApplication::sendEvent(q, &e);
 }
@@ -3486,16 +3486,16 @@ void QWidgetPrivate::setEnabled_helper(bool enable)
 
     By default, this property is \c false.
 
-    \sa {Drag and Drop in Qt}{Drag and Drop}
+    \sa {Drag and Drop in BobUI}{Drag and Drop}
 */
 bool QWidget::acceptDrops() const
 {
-    return testAttribute(Qt::WA_AcceptDrops);
+    return testAttribute(BobUI::WA_AcceptDrops);
 }
 
 void QWidget::setAcceptDrops(bool on)
 {
-    setAttribute(Qt::WA_AcceptDrops, on);
+    setAttribute(BobUI::WA_AcceptDrops, on);
 
 }
 
@@ -3528,7 +3528,7 @@ void QWidget::setDisabled(bool disable)
 QRect QWidget::frameGeometry() const
 {
     Q_D(const QWidget);
-    if (isWindow() && ! (windowType() == Qt::Popup)) {
+    if (isWindow() && ! (windowType() == BobUI::Popup)) {
         QRect fs = d->frameStrut();
         return QRect(data->crect.x() - fs.left(),
                      data->crect.y() - fs.top(),
@@ -3554,7 +3554,7 @@ QRect QWidget::frameGeometry() const
 int QWidget::x() const
 {
     Q_D(const QWidget);
-    if (isWindow() && ! (windowType() == Qt::Popup))
+    if (isWindow() && ! (windowType() == BobUI::Popup))
         return data->crect.x() - d->frameStrut().left();
     return data->crect.x();
 }
@@ -3574,7 +3574,7 @@ int QWidget::x() const
 int QWidget::y() const
 {
     Q_D(const QWidget);
-    if (isWindow() && ! (windowType() == Qt::Popup))
+    if (isWindow() && ! (windowType() == BobUI::Popup))
         return data->crect.y() - d->frameStrut().top();
     return data->crect.y();
 }
@@ -3610,7 +3610,7 @@ QPoint QWidget::pos() const
 {
     Q_D(const QWidget);
     QPoint result = data->crect.topLeft();
-    if (isWindow() && ! (windowType() == Qt::Popup))
+    if (isWindow() && ! (windowType() == BobUI::Popup))
         if (!d->maybeTopData() || !d->maybeTopData()->posIncludesFrame)
             result -= d->frameStrut().topLeft();
     return result;
@@ -3968,7 +3968,7 @@ bool QWidgetPrivate::setMinimumSize_helper(int &minw, int &minh)
         return false;
     extra->minw = mw;
     extra->minh = mh;
-    extra->explicitMinSize = (mw ? Qt::Horizontal : 0) | (mh ? Qt::Vertical : 0);
+    extra->explicitMinSize = (mw ? BobUI::Horizontal : 0) | (mh ? BobUI::Vertical : 0);
     return true;
 }
 
@@ -3977,7 +3977,7 @@ void QWidgetPrivate::setConstraints_sys()
     Q_Q(QWidget);
     if (extra && q->windowHandle()) {
         QWindow *win = q->windowHandle();
-        QWindowPrivate *winp = qt_window_private(win);
+        QWindowPrivate *winp = bobui_window_private(win);
 
         winp->minimumSize = QSize(extra->minw, extra->minh);
         winp->maximumSize = QSize(extra->maxw, extra->maxh);
@@ -4011,14 +4011,14 @@ void QWidget::setMinimumSize(int minw, int minh)
     if (isWindow())
         d->setConstraints_sys();
     if (minw > width() || minh > height()) {
-        bool resized = testAttribute(Qt::WA_Resized);
+        bool resized = testAttribute(BobUI::WA_Resized);
         bool maximized = isMaximized();
         resize(qMax(minw,width()), qMax(minh,height()));
-        setAttribute(Qt::WA_Resized, resized); //not a user resize
+        setAttribute(BobUI::WA_Resized, resized); //not a user resize
         if (maximized)
-            data->window_state = data->window_state | Qt::WindowMaximized;
+            data->window_state = data->window_state | BobUI::WindowMaximized;
     }
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
     if (d->extra) {
         if (d->extra->proxyWidget)
             d->extra->proxyWidget->setMinimumSize(minw, minh);
@@ -4050,8 +4050,8 @@ bool QWidgetPrivate::setMaximumSize_helper(int &maxw, int &maxh)
         return false;
     extra->maxw = maxw;
     extra->maxh = maxh;
-    extra->explicitMaxSize = (maxw != QWIDGETSIZE_MAX ? Qt::Horizontal : 0) |
-                             (maxh != QWIDGETSIZE_MAX ? Qt::Vertical : 0);
+    extra->explicitMaxSize = (maxw != QWIDGETSIZE_MAX ? BobUI::Horizontal : 0) |
+                             (maxh != QWIDGETSIZE_MAX ? BobUI::Vertical : 0);
     return true;
 }
 
@@ -4071,12 +4071,12 @@ void QWidget::setMaximumSize(int maxw, int maxh)
     if (isWindow())
         d->setConstraints_sys();
     if (maxw < width() || maxh < height()) {
-        bool resized = testAttribute(Qt::WA_Resized);
+        bool resized = testAttribute(BobUI::WA_Resized);
         resize(qMin(maxw,width()), qMin(maxh,height()));
-        setAttribute(Qt::WA_Resized, resized); //not a user resize
+        setAttribute(BobUI::WA_Resized, resized); //not a user resize
     }
 
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
     if (d->extra) {
         if (d->extra->proxyWidget)
             d->extra->proxyWidget->setMaximumSize(maxw, maxh);
@@ -4096,7 +4096,7 @@ void QWidget::setSizeIncrement(int w, int h)
 {
     Q_D(QWidget);
     d->createTLExtra();
-    QTLWExtra* x = d->topData();
+    BOBUILWExtra* x = d->topData();
     if (x->incw == w && x->inch == h)
         return;
     x->incw = w;
@@ -4115,7 +4115,7 @@ void QWidget::setBaseSize(int basew, int baseh)
 {
     Q_D(QWidget);
     d->createTLExtra();
-    QTLWExtra* x = d->topData();
+    BOBUILWExtra* x = d->topData();
     if (x->basew == basew && x->baseh == baseh)
         return;
     x->basew = basew;
@@ -4173,7 +4173,7 @@ void QWidget::setMinimumWidth(int w)
 {
     Q_D(QWidget);
     d->createExtra();
-    uint expl = d->extra->explicitMinSize | (w ? Qt::Horizontal : 0);
+    uint expl = d->extra->explicitMinSize | (w ? BobUI::Horizontal : 0);
     setMinimumSize(w, minimumSize().height());
     d->extra->explicitMinSize = expl;
 }
@@ -4182,7 +4182,7 @@ void QWidget::setMinimumHeight(int h)
 {
     Q_D(QWidget);
     d->createExtra();
-    uint expl = d->extra->explicitMinSize | (h ? Qt::Vertical : 0);
+    uint expl = d->extra->explicitMinSize | (h ? BobUI::Vertical : 0);
     setMinimumSize(minimumSize().width(), h);
     d->extra->explicitMinSize = expl;
 }
@@ -4191,7 +4191,7 @@ void QWidget::setMaximumWidth(int w)
 {
     Q_D(QWidget);
     d->createExtra();
-    uint expl = d->extra->explicitMaxSize | (w == QWIDGETSIZE_MAX ? 0 : Qt::Horizontal);
+    uint expl = d->extra->explicitMaxSize | (w == QWIDGETSIZE_MAX ? 0 : BobUI::Horizontal);
     setMaximumSize(w, maximumSize().height());
     d->extra->explicitMaxSize = expl;
 }
@@ -4200,7 +4200,7 @@ void QWidget::setMaximumHeight(int h)
 {
     Q_D(QWidget);
     d->createExtra();
-    uint expl = d->extra->explicitMaxSize | (h == QWIDGETSIZE_MAX ? 0 : Qt::Vertical);
+    uint expl = d->extra->explicitMaxSize | (h == QWIDGETSIZE_MAX ? 0 : BobUI::Vertical);
     setMaximumSize(maximumSize().width(), h);
     d->extra->explicitMaxSize = expl;
 }
@@ -4216,8 +4216,8 @@ void QWidget::setFixedWidth(int w)
 {
     Q_D(QWidget);
     d->createExtra();
-    uint explMin = d->extra->explicitMinSize | Qt::Horizontal;
-    uint explMax = d->extra->explicitMaxSize | Qt::Horizontal;
+    uint explMin = d->extra->explicitMinSize | BobUI::Horizontal;
+    uint explMax = d->extra->explicitMaxSize | BobUI::Horizontal;
     setMinimumSize(w, minimumSize().height());
     setMaximumSize(w, maximumSize().height());
     d->extra->explicitMinSize = explMin;
@@ -4236,8 +4236,8 @@ void QWidget::setFixedHeight(int h)
 {
     Q_D(QWidget);
     d->createExtra();
-    uint explMin = d->extra->explicitMinSize | Qt::Vertical;
-    uint explMax = d->extra->explicitMaxSize | Qt::Vertical;
+    uint explMin = d->extra->explicitMinSize | BobUI::Vertical;
+    uint explMax = d->extra->explicitMaxSize | BobUI::Vertical;
     setMinimumSize(minimumSize().width(), h);
     setMaximumSize(maximumSize().width(), h);
     d->extra->explicitMinSize = explMin;
@@ -4428,7 +4428,7 @@ QPalette::ColorRole QWidget::backgroundRole() const
         QPalette::ColorRole role = w->d_func()->bg_role;
         if (role != QPalette::NoRole)
             return role;
-        if (w->isWindow() || w->windowType() == Qt::SubWindow)
+        if (w->isWindow() || w->windowType() == BobUI::SubWindow)
             break;
         w = w->parentWidget();
     } while (w);
@@ -4554,11 +4554,11 @@ void QWidget::setForegroundRole(QPalette::ColorRole role)
     palette to a widget, that role will propagate to all the widget's
     children, overriding any system defaults for that role. Note that palettes
     by default don't propagate to windows (see isWindow()) unless the
-    Qt::WA_WindowPropagation attribute is enabled.
+    BobUI::WA_WindowPropagation attribute is enabled.
 
     QWidget's palette propagation is similar to its font propagation.
 
-    The current style, which is used to render the content of all standard Qt
+    The current style, which is used to render the content of all standard BobUI
     widgets, is free to choose colors and brushes from the widget palette, or,
     in some cases, to ignore the palette (partially, or completely). In
     particular, certain styles like GTK style, Mac style, and Windows Vista
@@ -4567,12 +4567,12 @@ void QWidget::setForegroundRole(QPalette::ColorRole role)
     assigning roles to a widget's palette is not guaranteed to change the
     appearance of the widget. Instead, you may choose to apply a \l {styleSheet}.
 
-    \warning Do not use this function in conjunction with \l{Qt Style Sheets}.
+    \warning Do not use this function in conjunction with \l{BobUI Style Sheets}.
     When using style sheets, the palette of a widget can be customized using
     the "color", "background-color", "selection-color",
     "selection-background-color" and "alternate-background-color".
 
-    \sa QGuiApplication::palette(), QWidget::font(), {Qt Style Sheets}
+    \sa QGuiApplication::palette(), QWidget::font(), {BobUI Style Sheets}
 */
 const QPalette &QWidget::palette() const
 {
@@ -4593,7 +4593,7 @@ const QPalette &QWidget::palette() const
 void QWidget::setPalette(const QPalette &palette)
 {
     Q_D(QWidget);
-    setAttribute(Qt::WA_SetPalette, palette.resolveMask() != 0);
+    setAttribute(BobUI::WA_SetPalette, palette.resolveMask() != 0);
 
     // Determine which palette is inherited from this widget's ancestors and
     // QApplication::palette, resolve this against \a palette (attributes from
@@ -4618,17 +4618,17 @@ QPalette QWidgetPrivate::naturalWidgetPalette(QPalette::ResolveMask inheritedMas
     Q_Q(const QWidget);
 
     const bool useStyleSheetPropagationInWidgetStyles =
-        QCoreApplication::testAttribute(Qt::AA_UseStyleSheetPropagationInWidgetStyles);
+        QCoreApplication::testAttribute(BobUI::AA_UseStyleSheetPropagationInWidgetStyles);
 
     QPalette naturalPalette = QApplication::palette(q);
-    if ((!q->testAttribute(Qt::WA_StyleSheet) || useStyleSheetPropagationInWidgetStyles)
-        && (!q->isWindow() || q->testAttribute(Qt::WA_WindowPropagation)
-#if QT_CONFIG(graphicsview)
+    if ((!q->testAttribute(BobUI::WA_StyleSheet) || useStyleSheetPropagationInWidgetStyles)
+        && (!q->isWindow() || q->testAttribute(BobUI::WA_WindowPropagation)
+#if BOBUI_CONFIG(graphicsview)
             || (extra && extra->proxyWidget)
-#endif // QT_CONFIG(graphicsview)
+#endif // BOBUI_CONFIG(graphicsview)
             )) {
         if (QWidget *p = q->parentWidget()) {
-            if (!p->testAttribute(Qt::WA_StyleSheet) || useStyleSheetPropagationInWidgetStyles) {
+            if (!p->testAttribute(BobUI::WA_StyleSheet) || useStyleSheetPropagationInWidgetStyles) {
                 if (!naturalPalette.isCopyOf(QGuiApplication::palette())) {
                     QPalette inheritedPalette = p->palette();
                     inheritedPalette.setResolveMask(inheritedMask);
@@ -4638,13 +4638,13 @@ QPalette QWidgetPrivate::naturalWidgetPalette(QPalette::ResolveMask inheritedMas
                 }
             }
         }
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
         else if (extra && extra->proxyWidget) {
             QPalette inheritedPalette = extra->proxyWidget->palette();
             inheritedPalette.setResolveMask(inheritedMask);
             naturalPalette = inheritedPalette.resolve(naturalPalette);
         }
-#endif // QT_CONFIG(graphicsview)
+#endif // BOBUI_CONFIG(graphicsview)
     }
     naturalPalette.setResolveMask(0);
     return naturalPalette;
@@ -4701,18 +4701,18 @@ void QWidgetPrivate::updateSystemBackground()
     also be special font defaults for certain types of widgets. You can also
     define default fonts for widgets yourself by passing a custom font and the
     name of a widget to QApplication::setFont(). Finally, the font is matched
-    against Qt's font database to find the best match.
+    against BobUI's font database to find the best match.
 
     QWidget propagates explicit font properties from parent to child. If you
     change a specific property on a font and assign that font to a widget,
     that property will propagate to all the widget's children, overriding any
     system defaults for that property. Note that fonts by default don't
-    propagate to windows (see isWindow()) unless the Qt::WA_WindowPropagation
+    propagate to windows (see isWindow()) unless the BobUI::WA_WindowPropagation
     attribute is enabled.
 
     QWidget's font propagation is similar to its palette propagation.
 
-    The current style, which is used to render the content of all standard Qt
+    The current style, which is used to render the content of all standard BobUI
     widgets, is free to choose to use the widget font, or in some cases, to
     ignore it (partially, or completely). In particular, certain styles like
     GTK style, Mac style, and Windows Vista style, apply special
@@ -4721,7 +4721,7 @@ void QWidgetPrivate::updateSystemBackground()
     guaranteed to change the appearance of the widget. Instead, you may choose
     to apply a \l styleSheet.
 
-    \note If \l{Qt Style Sheets} are used on the same widget as setFont(),
+    \note If \l{BobUI Style Sheets} are used on the same widget as setFont(),
     style sheets will take precedence if the settings conflict.
 
     \sa fontInfo(), fontMetrics()
@@ -4731,13 +4731,13 @@ void QWidget::setFont(const QFont &font)
 {
     Q_D(QWidget);
 
-#if QT_CONFIG(style_stylesheet)
+#if BOBUI_CONFIG(style_stylesheet)
     const QStyleSheetStyle* style;
-    if (d->extra && (style = qt_styleSheet(d->extra->style)))
+    if (d->extra && (style = bobui_styleSheet(d->extra->style)))
         style->saveWidgetFont(this, font);
 #endif
 
-    setAttribute(Qt::WA_SetFont, font.resolveMask() != 0);
+    setAttribute(BobUI::WA_SetFont, font.resolveMask() != 0);
 
     // Determine which font is inherited from this widget's ancestors and
     // QApplication::font, resolve this against \a font (attributes from the
@@ -4765,17 +4765,17 @@ QFont QWidgetPrivate::naturalWidgetFont(uint inheritedMask) const
     Q_Q(const QWidget);
 
     const bool useStyleSheetPropagationInWidgetStyles =
-        QCoreApplication::testAttribute(Qt::AA_UseStyleSheetPropagationInWidgetStyles);
+        QCoreApplication::testAttribute(BobUI::AA_UseStyleSheetPropagationInWidgetStyles);
 
     QFont naturalFont = QApplication::font(q);
-    if ((!q->testAttribute(Qt::WA_StyleSheet) || useStyleSheetPropagationInWidgetStyles)
-        && (!q->isWindow() || q->testAttribute(Qt::WA_WindowPropagation)
-#if QT_CONFIG(graphicsview)
+    if ((!q->testAttribute(BobUI::WA_StyleSheet) || useStyleSheetPropagationInWidgetStyles)
+        && (!q->isWindow() || q->testAttribute(BobUI::WA_WindowPropagation)
+#if BOBUI_CONFIG(graphicsview)
             || (extra && extra->proxyWidget)
-#endif // QT_CONFIG(graphicsview)
+#endif // BOBUI_CONFIG(graphicsview)
             )) {
         if (QWidget *p = q->parentWidget()) {
-            if (!p->testAttribute(Qt::WA_StyleSheet) || useStyleSheetPropagationInWidgetStyles) {
+            if (!p->testAttribute(BobUI::WA_StyleSheet) || useStyleSheetPropagationInWidgetStyles) {
                 if (!naturalFont.isCopyOf(QApplication::font())) {
                     if (inheritedMask != 0) {
                         QFont inheritedFont = p->font();
@@ -4787,7 +4787,7 @@ QFont QWidgetPrivate::naturalWidgetFont(uint inheritedMask) const
                 }
             }
         }
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
         else if (extra && extra->proxyWidget) {
             if (inheritedMask != 0) {
                 QFont inheritedFont = extra->proxyWidget->font();
@@ -4795,7 +4795,7 @@ QFont QWidgetPrivate::naturalWidgetFont(uint inheritedMask) const
                 naturalFont = inheritedFont.resolve(naturalFont);
             } // else nothing to do (naturalFont = naturalFont)
         }
-#endif // QT_CONFIG(graphicsview)
+#endif // BOBUI_CONFIG(graphicsview)
     }
     naturalFont.setResolveMask(0);
     return naturalFont;
@@ -4840,23 +4840,23 @@ void QWidgetPrivate::resolveFont()
 void QWidgetPrivate::updateFont(const QFont &font)
 {
     Q_Q(QWidget);
-#if QT_CONFIG(style_stylesheet)
+#if BOBUI_CONFIG(style_stylesheet)
     const QStyleSheetStyle* cssStyle;
-    cssStyle = extra ? qt_styleSheet(extra->style) : nullptr;
+    cssStyle = extra ? bobui_styleSheet(extra->style) : nullptr;
     const bool useStyleSheetPropagationInWidgetStyles =
-        QCoreApplication::testAttribute(Qt::AA_UseStyleSheetPropagationInWidgetStyles);
+        QCoreApplication::testAttribute(BobUI::AA_UseStyleSheetPropagationInWidgetStyles);
 #endif
 
     data.fnt = QFont(font, q);
 
     // Combine new mask with natural mask and propagate to children.
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
     if (!q->parentWidget() && extra && extra->proxyWidget) {
         QGraphicsProxyWidget *p = extra->proxyWidget;
         inheritedFontResolveMask = p->d_func()->inheritedFontResolveMask | p->font().resolveMask();
     } else
-#endif // QT_CONFIG(graphicsview)
-    if (q->isWindow() && !q->testAttribute(Qt::WA_WindowPropagation)) {
+#endif // BOBUI_CONFIG(graphicsview)
+    if (q->isWindow() && !q->testAttribute(BobUI::WA_WindowPropagation)) {
         inheritedFontResolveMask = 0;
     }
     uint newMask = data.fnt.resolveMask() | inheritedFontResolveMask;
@@ -4870,13 +4870,13 @@ void QWidgetPrivate::updateFont(const QFont &font)
         QWidget *w = qobject_cast<QWidget*>(children.at(i));
         if (w) {
             if (0) {
-#if QT_CONFIG(style_stylesheet)
-            } else if (!useStyleSheetPropagationInWidgetStyles && w->testAttribute(Qt::WA_StyleSheet)) {
+#if BOBUI_CONFIG(style_stylesheet)
+            } else if (!useStyleSheetPropagationInWidgetStyles && w->testAttribute(BobUI::WA_StyleSheet)) {
                 // Style sheets follow a different font propagation scheme.
                 if (cssStyle)
                     cssStyle->updateStyleSheetFont(w);
 #endif
-            } else if ((!w->isWindow() || w->testAttribute(Qt::WA_WindowPropagation))) {
+            } else if ((!w->isWindow() || w->testAttribute(BobUI::WA_WindowPropagation))) {
                 // Propagate font changes.
                 QWidgetPrivate *wd = w->d_func();
                 wd->inheritedFontResolveMask = newMask;
@@ -4885,7 +4885,7 @@ void QWidgetPrivate::updateFont(const QFont &font)
         }
     }
 
-#if QT_CONFIG(style_stylesheet)
+#if BOBUI_CONFIG(style_stylesheet)
     if (!useStyleSheetPropagationInWidgetStyles && cssStyle) {
         cssStyle->updateStyleSheetFont(q);
     }
@@ -4895,17 +4895,17 @@ void QWidgetPrivate::updateFont(const QFont &font)
     QCoreApplication::sendEvent(q, &e);
 }
 
-void QWidgetPrivate::setLayoutDirection_helper(Qt::LayoutDirection direction)
+void QWidgetPrivate::setLayoutDirection_helper(BobUI::LayoutDirection direction)
 {
     Q_Q(QWidget);
 
-    if ( (direction == Qt::RightToLeft) == q->testAttribute(Qt::WA_RightToLeft))
+    if ( (direction == BobUI::RightToLeft) == q->testAttribute(BobUI::WA_RightToLeft))
         return;
-    q->setAttribute(Qt::WA_RightToLeft, (direction == Qt::RightToLeft));
+    q->setAttribute(BobUI::WA_RightToLeft, (direction == BobUI::RightToLeft));
     if (!children.isEmpty()) {
         for (int i = 0; i < children.size(); ++i) {
             QWidget *w = qobject_cast<QWidget*>(children.at(i));
-            if (w && !w->isWindow() && !w->testAttribute(Qt::WA_SetLayoutDirection))
+            if (w && !w->isWindow() && !w->testAttribute(BobUI::WA_SetLayoutDirection))
                 w->d_func()->setLayoutDirection_helper(direction);
         }
     }
@@ -4916,7 +4916,7 @@ void QWidgetPrivate::setLayoutDirection_helper(Qt::LayoutDirection direction)
 void QWidgetPrivate::resolveLayoutDirection()
 {
     Q_Q(const QWidget);
-    if (!q->testAttribute(Qt::WA_SetLayoutDirection))
+    if (!q->testAttribute(BobUI::WA_SetLayoutDirection))
         setLayoutDirection_helper(q->isWindow() ? QGuiApplication::layoutDirection() : q->parentWidget()->layoutDirection());
 }
 
@@ -4925,9 +4925,9 @@ void QWidgetPrivate::resolveLayoutDirection()
 
     \brief the layout direction for this widget.
 
-    \note This method no longer affects text layout direction since Qt 4.7.
+    \note This method no longer affects text layout direction since BobUI 4.7.
 
-    By default, this property is set to Qt::LeftToRight.
+    By default, this property is set to BobUI::LeftToRight.
 
     When the layout direction is set on a widget, it will propagate to
     the widget's children, but not to a child that is a window and not
@@ -4939,28 +4939,28 @@ void QWidgetPrivate::resolveLayoutDirection()
 
     \sa QApplication::layoutDirection
 */
-void QWidget::setLayoutDirection(Qt::LayoutDirection direction)
+void QWidget::setLayoutDirection(BobUI::LayoutDirection direction)
 {
     Q_D(QWidget);
 
-    if (direction == Qt::LayoutDirectionAuto) {
+    if (direction == BobUI::LayoutDirectionAuto) {
         unsetLayoutDirection();
         return;
     }
 
-    setAttribute(Qt::WA_SetLayoutDirection);
+    setAttribute(BobUI::WA_SetLayoutDirection);
     d->setLayoutDirection_helper(direction);
 }
 
-Qt::LayoutDirection QWidget::layoutDirection() const
+BobUI::LayoutDirection QWidget::layoutDirection() const
 {
-    return testAttribute(Qt::WA_RightToLeft) ? Qt::RightToLeft : Qt::LeftToRight;
+    return testAttribute(BobUI::WA_RightToLeft) ? BobUI::RightToLeft : BobUI::LeftToRight;
 }
 
 void QWidget::unsetLayoutDirection()
 {
     Q_D(QWidget);
-    setAttribute(Qt::WA_SetLayoutDirection, false);
+    setAttribute(BobUI::WA_SetLayoutDirection, false);
     d->resolveLayoutDirection();
 }
 
@@ -4988,7 +4988,7 @@ void QWidget::unsetLayoutDirection()
     \brief the cursor shape for this widget
 
     The mouse cursor will assume this shape when it's over this
-    widget. See the \l{Qt::CursorShape}{list of predefined cursor objects} for a range of useful shapes.
+    widget. See the \l{BobUI::CursorShape}{list of predefined cursor objects} for a range of useful shapes.
 
     An editor widget might use an I-beam cursor:
     \snippet code/src_gui_kernel_qwidget.cpp 6
@@ -4996,7 +4996,7 @@ void QWidget::unsetLayoutDirection()
     If no cursor has been set, or after a call to unsetCursor(), the
     parent's cursor is used.
 
-    By default, this property contains a cursor with the Qt::ArrowCursor
+    By default, this property contains a cursor with the BobUI::ArrowCursor
     shape.
 
     Some underlying window implementations will reset the cursor if it
@@ -5007,29 +5007,29 @@ void QWidget::unsetLayoutDirection()
     \sa QGuiApplication::setOverrideCursor()
 */
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 QCursor QWidget::cursor() const
 {
     Q_D(const QWidget);
-    if (testAttribute(Qt::WA_SetCursor))
+    if (testAttribute(BobUI::WA_SetCursor))
         return (d->extra && d->extra->curs)
             ? *d->extra->curs
-            : QCursor(Qt::ArrowCursor);
+            : QCursor(BobUI::ArrowCursor);
     if (isWindow() || !parentWidget())
-        return QCursor(Qt::ArrowCursor);
+        return QCursor(BobUI::ArrowCursor);
     return parentWidget()->cursor();
 }
 
 void QWidget::setCursor(const QCursor &cursor)
 {
     Q_D(QWidget);
-    if (cursor.shape() != Qt::ArrowCursor
+    if (cursor.shape() != BobUI::ArrowCursor
         || (d->extra && d->extra->curs))
     {
         d->createExtra();
         d->extra->curs = std::make_unique<QCursor>(cursor);
     }
-    setAttribute(Qt::WA_SetCursor);
+    setAttribute(BobUI::WA_SetCursor);
     d->setCursor_sys(cursor);
 
     QEvent event(QEvent::CursorChange);
@@ -5040,7 +5040,7 @@ void QWidgetPrivate::setCursor_sys(const QCursor &cursor)
 {
     Q_UNUSED(cursor);
     Q_Q(QWidget);
-    qt_qpa_set_cursor(q, false);
+    bobui_qpa_set_cursor(q, false);
 }
 
 void QWidget::unsetCursor()
@@ -5049,7 +5049,7 @@ void QWidget::unsetCursor()
     if (d->extra)
         d->extra->curs.reset();
     if (!isWindow())
-        setAttribute(Qt::WA_SetCursor, false);
+        setAttribute(BobUI::WA_SetCursor, false);
     d->unsetCursor_sys();
 
     QEvent event(QEvent::CursorChange);
@@ -5059,7 +5059,7 @@ void QWidget::unsetCursor()
 void QWidgetPrivate::unsetCursor_sys()
 {
     Q_Q(QWidget);
-    qt_qpa_set_cursor(q, false);
+    bobui_qpa_set_cursor(q, false);
 }
 
 static inline void applyCursor(QWidget *w, const QCursor &c)
@@ -5074,9 +5074,9 @@ static inline void unsetCursor(QWidget *w)
         window->unsetCursor();
 }
 
-void qt_qpa_set_cursor(QWidget *w, bool force)
+void bobui_qpa_set_cursor(QWidget *w, bool force)
 {
-    if (!w->testAttribute(Qt::WA_WState_Created))
+    if (!w->testAttribute(BobUI::WA_WState_Created))
         return;
 
     static QPointer<QWidget> lastUnderMouse = nullptr;
@@ -5092,7 +5092,7 @@ void qt_qpa_set_cursor(QWidget *w, bool force)
     }
 
     while (!w->internalWinId() && w->parentWidget() && !w->isWindow()
-           && !w->testAttribute(Qt::WA_SetCursor))
+           && !w->testAttribute(BobUI::WA_SetCursor))
         w = w->parentWidget();
 
     QWidget *nativeParent = w;
@@ -5101,7 +5101,7 @@ void qt_qpa_set_cursor(QWidget *w, bool force)
     if (!nativeParent || !nativeParent->internalWinId())
         return;
 
-    if (w->isWindow() || w->testAttribute(Qt::WA_SetCursor)) {
+    if (w->isWindow() || w->testAttribute(BobUI::WA_SetCursor)) {
         if (w->isEnabled())
             applyCursor(nativeParent, w->cursor());
         else
@@ -5219,11 +5219,11 @@ void QWidget::render(QPainter *painter, const QPoint &targetOffset,
     d->setSharedPainter(painter);
 
     // Save current system clip, viewport and transform,
-    const QTransform oldTransform = enginePriv->systemTransform;
+    const BOBUIransform oldTransform = enginePriv->systemTransform;
     const QRegion oldSystemClip = enginePriv->systemClip;
     const QRegion oldBaseClip = enginePriv->baseSystemClip;
     const QRegion oldSystemViewport = enginePriv->systemViewport;
-    const Qt::LayoutDirection oldLayoutDirection = painter->layoutDirection();
+    const BobUI::LayoutDirection oldLayoutDirection = painter->layoutDirection();
 
     // This ensures that all painting triggered by render() is clipped to the current engine clip.
     if (painter->hasClipping()) {
@@ -5258,7 +5258,7 @@ static void sendResizeEvents(QWidget *target)
         if (!children.at(i)->isWidgetType())
             continue;
         QWidget *child = static_cast<QWidget*>(children.at(i));
-        if (!child->isWindow() && child->testAttribute(Qt::WA_PendingResizeEvent))
+        if (!child->isWindow() && child->testAttribute(BobUI::WA_PendingResizeEvent))
             sendResizeEvents(child);
     }
 }
@@ -5278,7 +5278,7 @@ static void sendResizeEvents(QWidget *target)
 QPixmap QWidget::grab(const QRect &rectangle)
 {
     Q_D(QWidget);
-    if (testAttribute(Qt::WA_PendingResizeEvent) || !testAttribute(Qt::WA_WState_Created))
+    if (testAttribute(BobUI::WA_PendingResizeEvent) || !testAttribute(BobUI::WA_WState_Created))
         sendResizeEvents(this);
 
     const QWidget::RenderFlags renderFlags = QWidget::DrawWindowBackground | QWidget::DrawChildren | QWidget::IgnoreMask;
@@ -5299,7 +5299,7 @@ QPixmap QWidget::grab(const QRect &rectangle)
     QPixmap res((QSizeF(r.size()) * dpr).toSize());
     res.setDevicePixelRatio(dpr);
     if (!d->isOpaque)
-        res.fill(Qt::transparent);
+        res.fill(BobUI::transparent);
     d->render(&res, QPoint(), QRegion(r), renderFlags);
 
     d->dirtyOpaqueChildren = oldDirtyOpaqueChildren;
@@ -5316,13 +5316,13 @@ QPixmap QWidget::grab(const QRect &rectangle)
 
     \sa setGraphicsEffect()
 */
-#if QT_CONFIG(graphicseffect)
+#if BOBUI_CONFIG(graphicseffect)
 QGraphicsEffect *QWidget::graphicsEffect() const
 {
     Q_D(const QWidget);
     return d->graphicsEffect;
 }
-#endif // QT_CONFIG(graphicseffect)
+#endif // BOBUI_CONFIG(graphicseffect)
 
 /*!
 
@@ -5346,7 +5346,7 @@ QGraphicsEffect *QWidget::graphicsEffect() const
 
     \sa graphicsEffect()
 */
-#if QT_CONFIG(graphicseffect)
+#if BOBUI_CONFIG(graphicseffect)
 void QWidget::setGraphicsEffect(QGraphicsEffect *effect)
 {
     Q_D(QWidget);
@@ -5370,7 +5370,7 @@ void QWidget::setGraphicsEffect(QGraphicsEffect *effect)
 
     d->updateIsOpaque();
 }
-#endif // QT_CONFIG(graphicseffect)
+#endif // BOBUI_CONFIG(graphicseffect)
 
 bool QWidgetPrivate::isAboutToShow() const
 {
@@ -5403,7 +5403,7 @@ QRegion QWidgetPrivate::prepareToRender(const QRegion &region, QWidget::RenderFl
         QWidgetList hiddenWidgets;
         while (widget) {
             if (widget->isHidden()) {
-                widget->setAttribute(Qt::WA_WState_Hidden, false);
+                widget->setAttribute(BobUI::WA_WState_Hidden, false);
                 hiddenWidgets.append(widget);
                 if (!widget->isWindow() && widget->parentWidget()->d_func()->layout)
                     widget->d_func()->updateGeometry_helper(true);
@@ -5416,11 +5416,11 @@ QRegion QWidgetPrivate::prepareToRender(const QRegion &region, QWidget::RenderFl
             topLevel->d_func()->layout->activate();
 
         // Adjust size if necessary.
-        QTLWExtra *topLevelExtra = topLevel->d_func()->maybeTopData();
+        BOBUILWExtra *topLevelExtra = topLevel->d_func()->maybeTopData();
         if (topLevelExtra && !topLevelExtra->sizeAdjusted
-            && !topLevel->testAttribute(Qt::WA_Resized)) {
+            && !topLevel->testAttribute(BobUI::WA_Resized)) {
             topLevel->adjustSize();
-            topLevel->setAttribute(Qt::WA_Resized, false);
+            topLevel->setAttribute(BobUI::WA_Resized, false);
         }
 
         // Activate child layouts.
@@ -5429,7 +5429,7 @@ QRegion QWidgetPrivate::prepareToRender(const QRegion &region, QWidget::RenderFl
         // We're not cheating with WA_WState_Hidden anymore.
         for (int i = 0; i < hiddenWidgets.size(); ++i) {
             QWidget *widget = hiddenWidgets.at(i);
-            widget->setAttribute(Qt::WA_WState_Hidden);
+            widget->setAttribute(BobUI::WA_WState_Hidden);
             if (!widget->isWindow() && widget->parentWidget()->d_func()->layout)
                 widget->parentWidget()->d_func()->layout->invalidate();
         }
@@ -5451,7 +5451,7 @@ void QWidgetPrivate::render_helper(QPainter *painter, const QPoint &targetOffset
     Q_ASSERT(!toBePainted.isEmpty());
 
     Q_Q(QWidget);
-    const QTransform originalTransform = painter->worldTransform();
+    const BOBUIransform originalTransform = painter->worldTransform();
     const bool useDeviceCoordinates = originalTransform.isScaling();
     if (!useDeviceCoordinates) {
         // Render via a pixmap.
@@ -5465,7 +5465,7 @@ void QWidgetPrivate::render_helper(QPainter *painter, const QPoint &targetOffset
         pixmap.setDevicePixelRatio(pixmapDevicePixelRatio);
 
         if (!(renderFlags & QWidget::DrawWindowBackground) || !isOpaque)
-            pixmap.fill(Qt::transparent);
+            pixmap.fill(BobUI::transparent);
         q->render(&pixmap, QPoint(), toBePainted, renderFlags);
 
         const bool restore = !(painter->renderHints() & QPainter::SmoothPixmapTransform);
@@ -5478,7 +5478,7 @@ void QWidgetPrivate::render_helper(QPainter *painter, const QPoint &targetOffset
 
     } else {
         // Render via a pixmap in device coordinates (to avoid pixmap scaling).
-        QTransform transform = originalTransform;
+        BOBUIransform transform = originalTransform;
         transform.translate(targetOffset.x(), targetOffset.y());
 
         QPaintDevice *device = painter->device();
@@ -5490,19 +5490,19 @@ void QWidgetPrivate::render_helper(QPainter *painter, const QPoint &targetOffset
         deviceRect &= QRect(0, 0, device->width(), device->height());
 
         QPixmap pixmap(deviceRect.size());
-        pixmap.fill(Qt::transparent);
+        pixmap.fill(BobUI::transparent);
 
         // Create a pixmap device coordinate painter.
         QPainter pixmapPainter(&pixmap);
         pixmapPainter.setRenderHints(painter->renderHints());
-        transform *= QTransform::fromTranslate(-deviceRect.x(), -deviceRect.y());
+        transform *= BOBUIransform::fromTranslate(-deviceRect.x(), -deviceRect.y());
         pixmapPainter.setTransform(transform);
 
         q->render(&pixmapPainter, QPoint(), toBePainted, renderFlags);
         pixmapPainter.end();
 
         // And then draw the pixmap.
-        painter->setTransform(QTransform());
+        painter->setTransform(BOBUIransform());
         painter->drawPixmap(deviceRect.topLeft(), pixmap);
         painter->setTransform(originalTransform);
     }
@@ -5522,7 +5522,7 @@ void QWidgetPrivate::drawWidget(QPaintDevice *pdev, const QRegion &rgn, const QP
     const bool asRoot = flags & DrawAsRoot;
     bool onScreen = shouldPaintOnScreen();
 
-#if QT_CONFIG(graphicseffect)
+#if BOBUI_CONFIG(graphicseffect)
     if (graphicsEffect && graphicsEffect->isEnabled()) {
         QGraphicsEffectSource *source = graphicsEffect->d_func()->source;
         QWidgetEffectSourcePrivate *sourced = static_cast<QWidgetEffectSourcePrivate *>
@@ -5559,7 +5559,7 @@ void QWidgetPrivate::drawWidget(QPaintDevice *pdev, const QRegion &rgn, const QP
             return;
         }
     }
-#endif // QT_CONFIG(graphicseffect)
+#endif // BOBUI_CONFIG(graphicseffect)
     flags = flags & ~UseEffectRegionBounds;
 
     const bool alsoOnScreen = flags & DrawPaintOnScreen;
@@ -5577,9 +5577,9 @@ void QWidgetPrivate::drawWidget(QPaintDevice *pdev, const QRegion &rgn, const QP
     if (!toBePainted.isEmpty()) {
         if (!onScreen || alsoOnScreen) {
             //update the "in paint event" flag
-            if (Q_UNLIKELY(q->testAttribute(Qt::WA_WState_InPaintEvent)))
+            if (Q_UNLIKELY(q->testAttribute(BobUI::WA_WState_InPaintEvent)))
                 qWarning("QWidget::repaint: Recursive repaint detected");
-            q->setAttribute(Qt::WA_WState_InPaintEvent);
+            q->setAttribute(BobUI::WA_WState_InPaintEvent);
 
             //clip away the new area
             QPaintEngine *paintEngine = pdev->paintEngine();
@@ -5592,8 +5592,8 @@ void QWidgetPrivate::drawWidget(QPaintDevice *pdev, const QRegion &rgn, const QP
                     paintEngine->d_func()->systemRect = q->data->crect;
 
                 //paint the background
-                if ((asRoot || q->autoFillBackground() || onScreen || q->testAttribute(Qt::WA_StyledBackground))
-                    && !q->testAttribute(Qt::WA_OpaquePaintEvent) && !q->testAttribute(Qt::WA_NoSystemBackground)) {
+                if ((asRoot || q->autoFillBackground() || onScreen || q->testAttribute(BobUI::WA_StyledBackground))
+                    && !q->testAttribute(BobUI::WA_OpaquePaintEvent) && !q->testAttribute(BobUI::WA_NoSystemBackground)) {
                     beginBackingStorePainting();
                     QPainter p(q);
                     p.setRenderHint(QPainter::SmoothPixmapTransform);
@@ -5604,7 +5604,7 @@ void QWidgetPrivate::drawWidget(QPaintDevice *pdev, const QRegion &rgn, const QP
                 if (!sharedPainter)
                     setSystemClip(pdev->paintEngine(), pdev->devicePixelRatio(), toBePainted.translated(offset));
 
-                if (!onScreen && !asRoot && !isOpaque && q->testAttribute(Qt::WA_TintedBackground)) {
+                if (!onScreen && !asRoot && !isOpaque && q->testAttribute(BobUI::WA_TintedBackground)) {
                     beginBackingStorePainting();
                     QPainter p(q);
                     QColor tint = q->palette().window().color();
@@ -5625,10 +5625,10 @@ void QWidgetPrivate::drawWidget(QPaintDevice *pdev, const QRegion &rgn, const QP
                 // This widget renders into a texture which is composed later. We just need to
                 // punch a hole in the backingstore, so the texture will be visible.
                 beginBackingStorePainting();
-                if (!q->testAttribute(Qt::WA_AlwaysStackOnTop) && repaintManager) {
+                if (!q->testAttribute(BobUI::WA_AlwaysStackOnTop) && repaintManager) {
                     QPainter p(q);
                     p.setCompositionMode(QPainter::CompositionMode_Source);
-                    p.fillRect(q->rect(), Qt::transparent);
+                    p.fillRect(q->rect(), BobUI::transparent);
                 } else if (!repaintManager) {
                     // We are not drawing to a backingstore: fall back to QImage
                     QImage img = grabFramebuffer();
@@ -5665,7 +5665,7 @@ void QWidgetPrivate::drawWidget(QPaintDevice *pdev, const QRegion &rgn, const QP
 
                 setSystemClip(pdev->paintEngine(), 1, QRegion());
             }
-            q->setAttribute(Qt::WA_WState_InPaintEvent, false);
+            q->setAttribute(BobUI::WA_WState_InPaintEvent, false);
             if (Q_UNLIKELY(q->paintingActive()))
                 qWarning("QWidget::repaint: It is dangerous to leave painters active on a widget outside of the PaintEvent");
 
@@ -5678,7 +5678,7 @@ void QWidgetPrivate::drawWidget(QPaintDevice *pdev, const QRegion &rgn, const QP
                 QPainter p(pdev);
                 p.setClipRegion(toBePainted);
                 const QBrush bg = q->palette().brush(QPalette::Window);
-                if (bg.style() == Qt::TexturePattern)
+                if (bg.style() == BobUI::TexturePattern)
                     p.drawTiledPixmap(q->rect(), bg.texture());
                 else
                     p.fillRect(q->rect(), bg);
@@ -5819,9 +5819,9 @@ void QWidgetPrivate::paintSiblingsRecursive(QPaintDevice *pdev, const QObjectLis
     }
 
     if (w->updatesEnabled()
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
             && (!w->d_func()->extra || !w->d_func()->extra->proxyWidget)
-#endif // QT_CONFIG(graphicsview)
+#endif // BOBUI_CONFIG(graphicsview)
        ) {
         QRegion wRegion(rgn);
         wRegion &= wd->effectiveRectFor(w->data->crect);
@@ -5832,10 +5832,10 @@ void QWidgetPrivate::paintSiblingsRecursive(QPaintDevice *pdev, const QObjectLis
     }
 }
 
-#if QT_CONFIG(graphicseffect)
-QRectF QWidgetEffectSourcePrivate::boundingRect(Qt::CoordinateSystem system) const
+#if BOBUI_CONFIG(graphicseffect)
+QRectF QWidgetEffectSourcePrivate::boundingRect(BobUI::CoordinateSystem system) const
 {
-    if (system != Qt::DeviceCoordinates)
+    if (system != BobUI::DeviceCoordinates)
         return m_widget->rect();
 
     if (Q_UNLIKELY(!context)) {
@@ -5858,7 +5858,7 @@ void QWidgetEffectSourcePrivate::draw(QPainter *painter)
     // nor the mask, so we have to clip it here before calling drawWidget.
     QRegion toBePainted = context->rgn;
     toBePainted &= m_widget->rect();
-    QWidgetPrivate *wd = qt_widget_private(m_widget);
+    QWidgetPrivate *wd = bobui_widget_private(m_widget);
     if (wd->extra && wd->extra->hasMask)
         toBePainted &= wd->extra->mask;
 
@@ -5866,10 +5866,10 @@ void QWidgetEffectSourcePrivate::draw(QPainter *painter)
                    context->sharedPainter, context->repaintManager);
 }
 
-QPixmap QWidgetEffectSourcePrivate::pixmap(Qt::CoordinateSystem system, QPoint *offset,
+QPixmap QWidgetEffectSourcePrivate::pixmap(BobUI::CoordinateSystem system, QPoint *offset,
                                            QGraphicsEffect::PixmapPadMode mode) const
 {
-    const bool deviceCoordinates = (system == Qt::DeviceCoordinates);
+    const bool deviceCoordinates = (system == BobUI::DeviceCoordinates);
     if (Q_UNLIKELY(!context && deviceCoordinates)) {
         // Device coordinates without context not yet supported.
         qWarning("QGraphicsEffectSource::pixmap: Not yet implemented, lacking device context");
@@ -5880,7 +5880,7 @@ QPixmap QWidgetEffectSourcePrivate::pixmap(Qt::CoordinateSystem system, QPoint *
     QRectF sourceRect = m_widget->rect();
 
     if (deviceCoordinates) {
-        const QTransform &painterTransform = context->painter->worldTransform();
+        const BOBUIransform &painterTransform = context->painter->worldTransform();
         sourceRect = painterTransform.mapRect(sourceRect);
         pixmapOffset = painterTransform.map(pixmapOffset);
     }
@@ -5907,13 +5907,13 @@ QPixmap QWidgetEffectSourcePrivate::pixmap(Qt::CoordinateSystem system, QPoint *
     QPixmap pixmap(effectRect.size() * dpr);
     pixmap.setDevicePixelRatio(dpr);
 
-    pixmap.fill(Qt::transparent);
+    pixmap.fill(BobUI::transparent);
     m_widget->render(&pixmap, pixmapOffset, QRegion(), QWidget::DrawChildren);
     return pixmap;
 }
-#endif // QT_CONFIG(graphicseffect)
+#endif // BOBUI_CONFIG(graphicseffect)
 
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
 /*!
     \internal
 
@@ -5962,9 +5962,9 @@ void QWidgetPrivate::setLocale_helper(const QLocale &loc, bool forceUpdate)
             QWidget *w = qobject_cast<QWidget*>(children.at(i));
             if (!w)
                 continue;
-            if (w->testAttribute(Qt::WA_SetLocale))
+            if (w->testAttribute(BobUI::WA_SetLocale))
                 continue;
-            if (w->isWindow() && !w->testAttribute(Qt::WA_WindowPropagation))
+            if (w->isWindow() && !w->testAttribute(BobUI::WA_WindowPropagation))
                 continue;
             w->d_func()->setLocale_helper(loc, forceUpdate);
         }
@@ -5977,7 +5977,7 @@ void QWidget::setLocale(const QLocale &locale)
 {
     Q_D(QWidget);
 
-    setAttribute(Qt::WA_SetLocale);
+    setAttribute(BobUI::WA_SetLocale);
     d->setLocale_helper(locale);
 }
 
@@ -5992,9 +5992,9 @@ void QWidgetPrivate::resolveLocale()
 {
     Q_Q(const QWidget);
 
-    if (!q->testAttribute(Qt::WA_SetLocale)) {
+    if (!q->testAttribute(BobUI::WA_SetLocale)) {
         QWidget *parent = q->parentWidget();
-        setLocale_helper(!parent || (q->isWindow() && !q->testAttribute(Qt::WA_WindowPropagation))
+        setLocale_helper(!parent || (q->isWindow() && !q->testAttribute(BobUI::WA_WindowPropagation))
                          ? QLocale() : parent->locale());
     }
 }
@@ -6002,7 +6002,7 @@ void QWidgetPrivate::resolveLocale()
 void QWidget::unsetLocale()
 {
     Q_D(QWidget);
-    setAttribute(Qt::WA_SetLocale, false);
+    setAttribute(BobUI::WA_SetLocale, false);
     d->resolveLocale();
 }
 
@@ -6052,7 +6052,7 @@ QString QWidget::windowTitle() const
 
     \internal
 */
-QString qt_setWindowTitle_helperHelper(const QString &title, const QWidget *widget)
+QString bobui_setWindowTitle_helperHelper(const QString &title, const QWidget *widget)
 {
     Q_ASSERT(widget);
 
@@ -6092,8 +6092,8 @@ QString qt_setWindowTitle_helperHelper(const QString &title, const QWidget *widg
 void QWidgetPrivate::setWindowTitle_helper(const QString &title)
 {
     Q_Q(QWidget);
-    if (q->testAttribute(Qt::WA_WState_Created))
-        setWindowTitle_sys(qt_setWindowTitle_helperHelper(title, q));
+    if (q->testAttribute(BobUI::WA_WState_Created))
+        setWindowTitle_sys(bobui_setWindowTitle_helperHelper(title, q));
 }
 
 void QWidgetPrivate::setWindowTitle_sys(const QString &caption)
@@ -6104,7 +6104,7 @@ void QWidgetPrivate::setWindowTitle_sys(const QString &caption)
 
     if (QWindow *window = q->windowHandle())
     {
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
         QString oldAccessibleName;
         const QAccessibleInterface *accessible = QAccessible::isActive()
                                                ? QAccessible::queryAccessibleInterface(q)
@@ -6115,7 +6115,7 @@ void QWidgetPrivate::setWindowTitle_sys(const QString &caption)
 
         window->setTitle(caption);
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
         if (accessible && accessible->text(QAccessible::Name) != oldAccessibleName) {
             QAccessibleEvent event(q, QAccessible::NameChanged);
             QAccessible::updateAccessibility(&event);
@@ -6127,13 +6127,13 @@ void QWidgetPrivate::setWindowTitle_sys(const QString &caption)
 void QWidgetPrivate::setWindowIconText_helper(const QString &title)
 {
     Q_Q(QWidget);
-    if (q->testAttribute(Qt::WA_WState_Created))
-        setWindowIconText_sys(qt_setWindowTitle_helperHelper(title, q));
+    if (q->testAttribute(BobUI::WA_WState_Created))
+        setWindowIconText_sys(bobui_setWindowTitle_helperHelper(title, q));
 }
 
 void QWidgetPrivate::setWindowIconText_sys(const QString &iconText)
 {
-#if QT_CONFIG(xcb)
+#if BOBUI_CONFIG(xcb)
     Q_Q(QWidget);
     // ### The QWidget property is deprecated, but the XCB window function is not.
     // It should remain available for the rare application that needs it.
@@ -6255,7 +6255,7 @@ void QWidget::setWindowIcon(const QIcon &icon)
 {
     Q_D(QWidget);
 
-    setAttribute(Qt::WA_SetWindowIcon, !icon.isNull());
+    setAttribute(BobUI::WA_SetWindowIcon, !icon.isNull());
     d->createTLExtra();
 
     if (!d->extra->topextra->icon)
@@ -6303,7 +6303,7 @@ QString QWidget::windowIconText() const
     \brief the file path associated with a widget
 
     This property only makes sense for windows. It associates a file path with
-    a window. If you set the file path, but have not set the window title, Qt
+    a window. If you set the file path, but have not set the window title, BobUI
     sets the window title to the file name of the specified path, obtained using
     QFileInfo::fileName().
 
@@ -6383,7 +6383,7 @@ QString QWidget::windowRole() const
 */
 void QWidget::setWindowRole(const QString &role)
 {
-#if QT_CONFIG(xcb) || QT_CONFIG(wayland)
+#if BOBUI_CONFIG(xcb) || BOBUI_CONFIG(wayland)
     Q_D(QWidget);
     d->createTLExtra();
     d->topData()->role = role;
@@ -6392,11 +6392,11 @@ void QWidget::setWindowRole(const QString &role)
 #endif
 
     if (windowHandle()) {
-#if QT_CONFIG(xcb)
+#if BOBUI_CONFIG(xcb)
         if (auto *xcbWindow = dynamic_cast<QXcbWindow*>(windowHandle()->handle()))
             xcbWindow->setWindowRole(role);
 #endif
-#if QT_CONFIG(wayland)
+#if BOBUI_CONFIG(wayland)
         if (auto *waylandWindow = dynamic_cast<QWaylandWindow*>(windowHandle()->handle()))
            waylandWindow->setSessionRestoreId(role);
 #endif
@@ -6501,7 +6501,7 @@ void QWidget::setFocusProxy(QWidget * w)
     }
 
     if (moveFocusToProxy)
-        setFocus(Qt::OtherFocusReason);
+        setFocus(BobUI::OtherFocusReason);
 }
 
 
@@ -6535,13 +6535,13 @@ bool QWidget::hasFocus() const
     const QWidget* w = this;
     while (w->d_func()->extra && w->d_func()->extra->focus_proxy)
         w = w->d_func()->extra->focus_proxy;
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
     if (QWidget *window = w->window()) {
         const auto &e = window->d_func()->extra;
         if (e && e->proxyWidget && e->proxyWidget->hasFocus() && window->focusWidget() == w)
             return true;
     }
-#endif // QT_CONFIG(graphicsview)
+#endif // BOBUI_CONFIG(graphicsview)
     return (QApplication::focusWidget() == w);
 }
 
@@ -6580,7 +6580,7 @@ bool QWidget::hasFocus() const
     grabMouse(), {Keyboard Focus in Widgets}, QEvent::RequestSoftwareInputPanel
 */
 
-void QWidget::setFocus(Qt::FocusReason reason)
+void QWidget::setFocus(BobUI::FocusReason reason)
 {
     if (!isEnabled())
         return;
@@ -6592,7 +6592,7 @@ void QWidget::setFocus(Qt::FocusReason reason)
     if (QApplication::focusWidget() == f)
         return;
 
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
     QWidget *previousProxyFocus = nullptr;
     if (const auto &topData = window()->d_func()->extra) {
         if (topData->proxyWidget && topData->proxyWidget->hasFocus()) {
@@ -6605,7 +6605,7 @@ void QWidget::setFocus(Qt::FocusReason reason)
     }
 #endif
 
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
     // Update proxy state
     if (const auto &topData = window()->d_func()->extra) {
         if (topData->proxyWidget && !topData->proxyWidget->hasFocus()) {
@@ -6620,12 +6620,12 @@ void QWidget::setFocus(Qt::FocusReason reason)
     if (f->isActiveWindow()) {
         QWidget *prev = QApplicationPrivate::focus_widget;
         if (prev) {
-            if (reason != Qt::PopupFocusReason && reason != Qt::MenuBarFocusReason
-                && prev->testAttribute(Qt::WA_InputMethodEnabled)) {
+            if (reason != BobUI::PopupFocusReason && reason != BobUI::MenuBarFocusReason
+                && prev->testAttribute(BobUI::WA_InputMethodEnabled)) {
                 QGuiApplication::inputMethod()->commit();
             }
 
-            if (reason != Qt::NoFocusReason) {
+            if (reason != BobUI::NoFocusReason) {
                 QFocusEvent focusAboutToChange(QEvent::FocusAboutToChange, reason);
                 QCoreApplication::sendEvent(prev, &focusAboutToChange);
             }
@@ -6634,7 +6634,7 @@ void QWidget::setFocus(Qt::FocusReason reason)
         f->d_func()->updateFocusChild();
 
         QApplicationPrivate::setFocusWidget(f, reason);
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
         // menus update the focus manually and this would create bogus events
         if (!(f->inherits("QMenuBar") || f->inherits("QMenu") || f->inherits("QMenuItem")))
         {
@@ -6642,7 +6642,7 @@ void QWidget::setFocus(Qt::FocusReason reason)
             QAccessible::updateAccessibility(&event);
         }
 #endif
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
         if (const auto &topData = window()->d_func()->extra) {
             if (topData->proxyWidget) {
                 if (previousProxyFocus && previousProxyFocus != f) {
@@ -6654,7 +6654,7 @@ void QWidget::setFocus(Qt::FocusReason reason)
                         QCoreApplication::sendEvent(that->style(), &event);
                 }
                 if (!isHidden()) {
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
                     // Update proxy state
                     if (const auto &topData = window()->d_func()->extra)
                         if (topData->proxyWidget && topData->proxyWidget->hasFocus())
@@ -6706,15 +6706,15 @@ void QWidgetPrivate::setFocus_sys()
 {
     Q_Q(QWidget);
     // Embedded native widget may have taken the focus; get it back to toplevel
-    // if that is the case (QTBUG-25852), unless widget is a window container.
+    // if that is the case (BOBUIBUG-25852), unless widget is a window container.
     if (extra && extra->hasWindowContainer)
         return;
-    // Do not activate in case the popup menu opens another application (QTBUG-70810)
-    // unless the application is embedded (QTBUG-71991).
-    if (QWindow *nativeWindow = q->testAttribute(Qt::WA_WState_Created) ? q->window()->windowHandle() : nullptr) {
-        if (nativeWindow->type() != Qt::Popup && nativeWindow != QGuiApplication::focusWindow()
-            && (QGuiApplication::applicationState() == Qt::ApplicationActive
-                || QCoreApplication::testAttribute(Qt::AA_PluginApplication)
+    // Do not activate in case the popup menu opens another application (BOBUIBUG-70810)
+    // unless the application is embedded (BOBUIBUG-71991).
+    if (QWindow *nativeWindow = q->testAttribute(BobUI::WA_WState_Created) ? q->window()->windowHandle() : nullptr) {
+        if (nativeWindow->type() != BobUI::Popup && nativeWindow != QGuiApplication::focusWindow()
+            && (QGuiApplication::applicationState() == BobUI::ApplicationActive
+                || QCoreApplication::testAttribute(BobUI::AA_PluginApplication)
                 || isEmbedded(nativeWindow))) {
             nativeWindow->requestActivate();
         }
@@ -6739,7 +6739,7 @@ void QWidgetPrivate::updateFocusChild()
         }
     }
 
-    if (QTLWExtra *extra = q->window()->d_func()->maybeTopData()) {
+    if (BOBUILWExtra *extra = q->window()->d_func()->maybeTopData()) {
         if (extra->window)
             emit extra->window->focusObjectChanged(q);
     }
@@ -6770,14 +6770,14 @@ void QWidgetPrivate::updateFocusChild()
 void QWidget::clearFocus()
 {
     if (hasFocus()) {
-        if (testAttribute(Qt::WA_InputMethodEnabled))
+        if (testAttribute(BobUI::WA_InputMethodEnabled))
             QGuiApplication::inputMethod()->commit();
 
         QFocusEvent focusAboutToChange(QEvent::FocusAboutToChange);
         QCoreApplication::sendEvent(this, &focusAboutToChange);
     }
 
-    QTLWExtra *extra = window()->d_func()->maybeTopData();
+    BOBUILWExtra *extra = window()->d_func()->maybeTopData();
     QObject *originalFocusObject = nullptr;
     if (extra && extra->window) {
         originalFocusObject = extra->window->focusObject();
@@ -6796,13 +6796,13 @@ void QWidget::clearFocus()
     }
 
     // We've potentially cleared the focus_child of our parents, so we need
-    // to report this to the rest of Qt. Note that the focus_child is not the same
+    // to report this to the rest of BobUI. Note that the focus_child is not the same
     // thing as the application's focusWidget, which is why this piece of code is
     // not inside a hasFocus() block.
     if (originalFocusObject && originalFocusObject != extra->window->focusObject())
         emit extra->window->focusObjectChanged(extra->window->focusObject());
 
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
     const auto &topData = d_func()->extra;
     if (topData && topData->proxyWidget)
         topData->proxyWidget->clearFocus();
@@ -6810,8 +6810,8 @@ void QWidget::clearFocus()
 
     if (hasFocus()) {
         // Update proxy state
-        QApplicationPrivate::setFocusWidget(nullptr, Qt::OtherFocusReason);
-#if QT_CONFIG(accessibility)
+        QApplicationPrivate::setFocusWidget(nullptr, BobUI::OtherFocusReason);
+#if BOBUI_CONFIG(accessibility)
         QAccessibleEvent event(this, QAccessible::Focus);
         QAccessible::updateAccessibility(&event);
 #endif
@@ -6864,10 +6864,10 @@ void QWidget::clearFocus()
 bool QWidget::focusNextPrevChild(bool next)
 {
     QWidget* p = parentWidget();
-    bool isSubWindow = (windowType() == Qt::SubWindow);
+    bool isSubWindow = (windowType() == BobUI::SubWindow);
     if (!isWindow() && !isSubWindow && p)
         return p->focusNextPrevChild(next);
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
     Q_D(QWidget);
     if (d->extra && d->extra->proxyWidget)
         return d->extra->proxyWidget->focusNextPrevChild(next);
@@ -6878,7 +6878,7 @@ bool QWidget::focusNextPrevChild(bool next)
                                                                 &wrappingOccurred);
     if (!w) return false;
 
-    Qt::FocusReason reason = next ? Qt::TabFocusReason : Qt::BacktabFocusReason;
+    BobUI::FocusReason reason = next ? BobUI::TabFocusReason : BobUI::BacktabFocusReason;
 
     /* If we are about to wrap the focus chain, give the platform
      * implementation a chance to alter the wrapping behavior.  This is
@@ -6888,7 +6888,7 @@ bool QWidget::focusNextPrevChild(bool next)
     if (wrappingOccurred) {
         QWindow *window = windowHandle();
         if (window != nullptr) {
-            QWindowPrivate *winp = qt_window_private(window);
+            QWindowPrivate *winp = bobui_window_private(window);
 
             if (winp->platformWindow != nullptr) {
                 QFocusEvent event(QEvent::FocusIn, reason);
@@ -6967,10 +6967,10 @@ QWidget *QWidget::previousInFocusChain() const
 bool QWidget::isActiveWindow() const
 {
     QWidget *tlw = window();
-    if (tlw == QApplication::activeWindow() || (isVisible() && (tlw->windowType() == Qt::Popup)))
+    if (tlw == QApplication::activeWindow() || (isVisible() && (tlw->windowType() == BobUI::Popup)))
         return true;
 
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
     if (const auto &tlwExtra = tlw->d_func()->extra) {
         if (isVisible() && tlwExtra->proxyWidget)
             return tlwExtra->proxyWidget->isActiveWindow();
@@ -6978,12 +6978,12 @@ bool QWidget::isActiveWindow() const
 #endif
 
     if (style()->styleHint(QStyle::SH_Widget_ShareActivation, nullptr, this)) {
-        if (tlw->windowType() == Qt::Tool &&
+        if (tlw->windowType() == BobUI::Tool &&
            !tlw->isModal() &&
            (!tlw->parentWidget() || tlw->parentWidget()->isActiveWindow()))
            return true;
         QWidget *w = QApplication::activeWindow();
-        while(w && tlw->windowType() == Qt::Tool &&
+        while(w && tlw->windowType() == BobUI::Tool &&
               !w->isModal() && w->parentWidget()) {
             w = w->parentWidget()->window();
             if (w == tlw)
@@ -7003,8 +7003,8 @@ bool QWidget::isActiveWindow() const
     }
 
     // Check if platform adaptation thinks the window is active. This is necessary for
-    // example in case of ActiveQt servers that are embedded into another application.
-    // Those are separate processes that are not part of the parent application Qt window/widget
+    // example in case of ActiveBobUI servers that are embedded into another application.
+    // Those are separate processes that are not part of the parent application BobUI window/widget
     // hierarchy, so they need to rely on native methods to determine if they are part of the
     // active window.
     if (const QWindow *w = tlw->windowHandle()) {
@@ -7033,7 +7033,7 @@ bool QWidget::isActiveWindow() const
     \snippet code/src_gui_kernel_qwidget.cpp 9.list
 
     The call does not create a closed tab focus loop. If there are more widgets
-    with \l{Qt::TabFocus} focus policy, tabbing on \c{d} will move focus to one
+    with \l{BobUI::TabFocus} focus policy, tabbing on \c{d} will move focus to one
     of those widgets, not back to \c{a}.
 
     \sa setFocusPolicy(), setFocusProxy(), {Keyboard Focus in Widgets}
@@ -7057,7 +7057,7 @@ bool QWidget::isActiveWindow() const
     If \a first or \a second has a focus proxy, setTabOrder()
     correctly substitutes the proxy.
 
-    \note Since Qt 5.10: A widget that has a child as focus proxy is understood as
+    \note Since BobUI 5.10: A widget that has a child as focus proxy is understood as
     a compound widget. When setting a tab order between one or two compound widgets, the
     local tab order inside each will be preserved. This means that if both widgets are
     compound widgets, the resulting tab order will be from the last child inside
@@ -7068,8 +7068,8 @@ bool QWidget::isActiveWindow() const
 void QWidget::setTabOrder(QWidget* first, QWidget *second)
 {
     if (!first || !second || first == second
-            || first->focusPolicy() == Qt::NoFocus
-            || second->focusPolicy() == Qt::NoFocus)
+            || first->focusPolicy() == BobUI::NoFocus
+            || second->focusPolicy() == BobUI::NoFocus)
         return;
 
     if (Q_UNLIKELY(first->window() != second->window())) {
@@ -7087,7 +7087,7 @@ void QWidget::setTabOrder(QWidget* first, QWidget *second)
 
         QWidget *focusProxy = target->d_func()->deepestFocusProxy();
         if (!focusProxy) {
-            // QTBUG-81097: Another case is possible here. We can have a child
+            // BOBUIBUG-81097: Another case is possible here. We can have a child
             // widget, that sets its focusProxy() to the parent (target).
             // An example of such widget is a QLineEdit, nested into
             // a QAbstractSpinBox. In this case such widget should be considered
@@ -7106,7 +7106,7 @@ void QWidget::setTabOrder(QWidget* first, QWidget *second)
                 focusNext = focusNext->nextInFocusChain()) {
                 if (focusNext == noFurtherThan)
                     break;
-                if (focusNext->focusPolicy() != Qt::NoFocus)
+                if (focusNext->focusPolicy() != BobUI::NoFocus)
                     lastFocusChild = focusNext;
             }
         }
@@ -7123,7 +7123,7 @@ void QWidget::setTabOrder(QWidget* first, QWidget *second)
     // Return if only NoFocus widgets are between first and second
     QWidget *oldPrev = second->previousInFocusChain();
     QWidget *prevWithFocus = oldPrev;
-    while (prevWithFocus->focusPolicy() == Qt::NoFocus)
+    while (prevWithFocus->focusPolicy() == BobUI::NoFocus)
         prevWithFocus = prevWithFocus->previousInFocusChain();
     if (prevWithFocus == first)
         return;
@@ -7179,7 +7179,7 @@ void QWidgetPrivate::reparentFocusWidgets(QWidget * oldtlw)
 QSize QWidget::frameSize() const
 {
     Q_D(const QWidget);
-    if (isWindow() && !(windowType() == Qt::Popup)) {
+    if (isWindow() && !(windowType() == BobUI::Popup)) {
         QRect fs = d->frameStrut();
         return QSize(data->crect.width() + fs.left() + fs.right(),
                       data->crect.height() + fs.top() + fs.bottom());
@@ -7197,8 +7197,8 @@ QSize QWidget::frameSize() const
 void QWidget::move(const QPoint &p)
 {
     Q_D(QWidget);
-    setAttribute(Qt::WA_Moved);
-    if (testAttribute(Qt::WA_WState_Created)) {
+    setAttribute(BobUI::WA_Moved);
+    if (testAttribute(BobUI::WA_WState_Created)) {
         if (isWindow())
             d->topData()->posIncludesFrame = false;
         d->setGeometry_sys(p.x() + geometry().x() - QWidget::x(),
@@ -7210,18 +7210,18 @@ void QWidget::move(const QPoint &p)
         if (isWindow())
             d->topData()->posIncludesFrame = true;
         data->crect.moveTopLeft(p); // no frame yet
-        setAttribute(Qt::WA_PendingMoveEvent);
+        setAttribute(BobUI::WA_PendingMoveEvent);
     }
 
     if (d->extra && d->extra->hasWindowContainer)
         QWindowContainer::parentWasMoved(this);
 }
 
-// move() was invoked with Qt::WA_WState_Created not set (frame geometry
+// move() was invoked with BobUI::WA_WState_Created not set (frame geometry
 // unknown), that is, crect has a position including the frame.
 // If we can determine the frame strut, fix that and clear the flag.
 // FIXME: This does not play well with window states other than
-// Qt::WindowNoState, as we depend on calling setGeometry() on the
+// BobUI::WindowNoState, as we depend on calling setGeometry() on the
 // platform window after fixing up the position so that the new
 // geometry is reflected in the platform window, but when the frame
 // comes in after the window has been shown (e.g. maximized), we're
@@ -7229,11 +7229,11 @@ void QWidget::move(const QPoint &p)
 void QWidgetPrivate::fixPosIncludesFrame()
 {
     Q_Q(QWidget);
-    if (QTLWExtra *te = maybeTopData()) {
+    if (BOBUILWExtra *te = maybeTopData()) {
         if (te->posIncludesFrame) {
-            // For Qt::WA_DontShowOnScreen, assume a frame of 0 (for
+            // For BobUI::WA_DontShowOnScreen, assume a frame of 0 (for
             // example, in QGraphicsProxyWidget).
-            if (q->testAttribute(Qt::WA_DontShowOnScreen)) {
+            if (q->testAttribute(BobUI::WA_DontShowOnScreen)) {
                 te->posIncludesFrame = 0;
             } else {
                 if (q->windowHandle() && q->windowHandle()->handle()) {
@@ -7245,7 +7245,7 @@ void QWidgetPrivate::fixPosIncludesFrame()
                 } // windowHandle()
             } // !WA_DontShowOnScreen
         } // posIncludesFrame
-    } // QTLWExtra
+    } // BOBUILWExtra
 }
 
 /*! \fn void QWidget::resize(int w, int h)
@@ -7257,8 +7257,8 @@ void QWidgetPrivate::fixPosIncludesFrame()
 void QWidget::resize(const QSize &s)
 {
     Q_D(QWidget);
-    setAttribute(Qt::WA_Resized);
-    if (testAttribute(Qt::WA_WState_Created)) {
+    setAttribute(BobUI::WA_Resized);
+    if (testAttribute(BobUI::WA_WState_Created)) {
         d->fixPosIncludesFrame();
         d->setGeometry_sys(geometry().x(), geometry().y(), s.width(), s.height(), false);
         d->setDirtyOpaqueRegion();
@@ -7266,18 +7266,18 @@ void QWidget::resize(const QSize &s)
         const auto oldRect = data->crect;
         data->crect.setSize(s.boundedTo(maximumSize()).expandedTo(minimumSize()));
         if (oldRect != data->crect)
-            setAttribute(Qt::WA_PendingResizeEvent);
+            setAttribute(BobUI::WA_PendingResizeEvent);
     }
 }
 
 void QWidget::setGeometry(const QRect &r)
 {
     Q_D(QWidget);
-    setAttribute(Qt::WA_Resized);
-    setAttribute(Qt::WA_Moved);
+    setAttribute(BobUI::WA_Resized);
+    setAttribute(BobUI::WA_Moved);
     if (isWindow())
         d->topData()->posIncludesFrame = 0;
-    if (testAttribute(Qt::WA_WState_Created)) {
+    if (testAttribute(BobUI::WA_WState_Created)) {
         d->setGeometry_sys(r.x(), r.y(), r.width(), r.height(), true);
         d->setDirtyOpaqueRegion();
     } else {
@@ -7285,8 +7285,8 @@ void QWidget::setGeometry(const QRect &r)
         data->crect.setTopLeft(r.topLeft());
         data->crect.setSize(r.size().boundedTo(maximumSize()).expandedTo(minimumSize()));
         if (oldRect != data->crect) {
-            setAttribute(Qt::WA_PendingMoveEvent);
-            setAttribute(Qt::WA_PendingResizeEvent);
+            setAttribute(BobUI::WA_PendingMoveEvent);
+            setAttribute(BobUI::WA_PendingResizeEvent);
         }
     }
 
@@ -7329,8 +7329,8 @@ void QWidgetPrivate::setGeometry_sys(int x, int y, int w, int h, bool isMove)
         return;
 
     if (!data.in_set_window_state) {
-        q->data->window_state &= ~Qt::WindowMaximized;
-        q->data->window_state &= ~Qt::WindowFullScreen;
+        q->data->window_state &= ~BobUI::WindowMaximized;
+        q->data->window_state &= ~BobUI::WindowFullScreen;
         if (q->isWindow())
             topData()->normalGeometry = QRect(0, 0, -1, -1);
     }
@@ -7341,19 +7341,19 @@ void QWidgetPrivate::setGeometry_sys(int x, int y, int w, int h, bool isMove)
     bool needsShow = false;
 
     if (q->isWindow() || q->windowHandle()) {
-        if (!(data.window_state & Qt::WindowFullScreen) && (w == 0 || h == 0)) {
-            q->setAttribute(Qt::WA_OutsideWSRange, true);
+        if (!(data.window_state & BobUI::WindowFullScreen) && (w == 0 || h == 0)) {
+            q->setAttribute(BobUI::WA_OutsideWSRange, true);
             if (q->isVisible())
                 hide_sys();
             data.crect = QRect(x, y, w, h);
-        } else if (q->testAttribute(Qt::WA_OutsideWSRange)) {
-            q->setAttribute(Qt::WA_OutsideWSRange, false);
+        } else if (q->testAttribute(BobUI::WA_OutsideWSRange)) {
+            q->setAttribute(BobUI::WA_OutsideWSRange, false);
             needsShow = true;
         }
     }
 
     if (q->isVisible()) {
-        if (!q->testAttribute(Qt::WA_DontShowOnScreen) && !q->testAttribute(Qt::WA_OutsideWSRange)) {
+        if (!q->testAttribute(BobUI::WA_DontShowOnScreen) && !q->testAttribute(BobUI::WA_OutsideWSRange)) {
             if (QWindow *win = q->windowHandle()) {
                 if (q->isWindow()) {
                     if (isResize && !isMove)
@@ -7396,12 +7396,12 @@ void QWidgetPrivate::setGeometry_sys(int x, int y, int w, int h, bool isMove)
         }
     } else { // not visible
         if (isMove && q->pos() != oldPos)
-            q->setAttribute(Qt::WA_PendingMoveEvent, true);
+            q->setAttribute(BobUI::WA_PendingMoveEvent, true);
         if (isResize)
-            q->setAttribute(Qt::WA_PendingResizeEvent, true);
+            q->setAttribute(BobUI::WA_PendingResizeEvent, true);
     }
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     if (QAccessible::isActive() && q->isVisible()) {
         QAccessibleEvent event(q, QAccessible::LocationChanged);
         QAccessible::updateAccessibility(&event);
@@ -7430,12 +7430,12 @@ QByteArray QWidget::saveGeometry() const
 {
     QByteArray array;
     QDataStream stream(&array, QIODevice::WriteOnly);
-    stream.setVersion(QDataStream::Qt_4_0);
+    stream.setVersion(QDataStream::BobUI_4_0);
     const quint32 magicNumber = 0x1D9D0CB;
     // Version history:
-    // - Qt 4.2 - 4.8.6, 5.0 - 5.3    : Version 1.0
-    // - Qt 4.8.6 - today, 5.4 - today: Version 2.0, save screen width in addition to check for high DPI scaling.
-    // - Qt 5.12 - today              : Version 3.0, save QWidget::geometry()
+    // - BobUI 4.2 - 4.8.6, 5.0 - 5.3    : Version 1.0
+    // - BobUI 4.8.6 - today, 5.4 - today: Version 2.0, save screen width in addition to check for high DPI scaling.
+    // - BobUI 5.12 - today              : Version 3.0, save QWidget::geometry()
     quint16 majorVersion = 3;
     quint16 minorVersion = 0;
     const int screenNumber = QGuiApplication::screens().indexOf(screen());
@@ -7445,8 +7445,8 @@ QByteArray QWidget::saveGeometry() const
            << frameGeometry()
            << normalGeometry()
            << qint32(screenNumber)
-           << quint8(windowState() & Qt::WindowMaximized)
-           << quint8(windowState() & Qt::WindowFullScreen)
+           << quint8(windowState() & BobUI::WindowMaximized)
+           << quint8(windowState() & BobUI::WindowFullScreen)
            << qint32(screen()->geometry().width()) // added in 2.0
            << geometry(); // added in 3.0
     return array;
@@ -7543,7 +7543,7 @@ bool QWidget::restoreGeometry(const QByteArray &geometry)
     if (geometry.size() < 4)
         return false;
     QDataStream stream(geometry);
-    stream.setVersion(QDataStream::Qt_4_0);
+    stream.setVersion(QDataStream::BobUI_4_0);
 
     const quint32 magicNumber = 0x1D9D0CB;
     quint32 storedMagicNumber;
@@ -7580,7 +7580,7 @@ bool QWidget::restoreGeometry(const QByteArray &geometry)
     if (majorVersion > 2)
         stream >> restoredGeometry;
 
-    // ### Qt 6 - Perhaps it makes sense to dumb down the restoreGeometry() logic, see QTBUG-69104
+    // ### BobUI 6 - Perhaps it makes sense to dumb down the restoreGeometry() logic, see BOBUIBUG-69104
 
     if (restoredScreenNumber >= qMax(QGuiApplication::screens().size(), 1))
         restoredScreenNumber = 0;
@@ -7593,7 +7593,7 @@ bool QWidget::restoreGeometry(const QByteArray &geometry)
         if (factor < 0.8 || factor > 1.25)
             return false;
     } else {
-        // Saved by Qt 5.3 and earlier, try to prevent too large windows
+        // Saved by BobUI 5.3 and earlier, try to prevent too large windows
         // unless the size will be adapted by maximized or fullscreen.
         if (!maximized && !fullScreen && qreal(restoredFrameGeometry.width()) / screenWidthF > 1.5)
             return false;
@@ -7626,19 +7626,19 @@ bool QWidget::restoreGeometry(const QByteArray &geometry)
     if (maximized || fullScreen) {
         // set geometry before setting the window state to make
         // sure the window is maximized to the right screen.
-        Qt::WindowStates ws = windowState();
+        BobUI::WindowStates ws = windowState();
 #ifndef Q_OS_WIN
         setGeometry(restoredNormalGeometry);
 #else
-        if (ws & Qt::WindowFullScreen) {
+        if (ws & BobUI::WindowFullScreen) {
             // Full screen is not a real window state on Windows.
             move(availableGeometry.topLeft());
-        } else if (ws & Qt::WindowMaximized) {
+        } else if (ws & BobUI::WindowMaximized) {
             // Setting a geometry on an already maximized window causes this to be
-            // restored into a broken, half-maximized state, non-resizable state (QTBUG-4397).
+            // restored into a broken, half-maximized state, non-resizable state (BOBUIBUG-4397).
             // Move the window in normal state if needed.
             if (restoredScreen != screen()) {
-                setWindowState(Qt::WindowNoState);
+                setWindowState(BobUI::WindowNoState);
                 setGeometry(restoredNormalGeometry);
             }
         } else {
@@ -7646,13 +7646,13 @@ bool QWidget::restoreGeometry(const QByteArray &geometry)
         }
 #endif // Q_OS_WIN
         if (maximized)
-            ws |= Qt::WindowMaximized;
+            ws |= BobUI::WindowMaximized;
         if (fullScreen)
-            ws |= Qt::WindowFullScreen;
+            ws |= BobUI::WindowFullScreen;
        setWindowState(ws);
        d_func()->topData()->normalGeometry = restoredNormalGeometry;
     } else {
-        setWindowState(windowState() & ~(Qt::WindowMaximized | Qt::WindowFullScreen));
+        setWindowState(windowState() & ~(BobUI::WindowMaximized | BobUI::WindowFullScreen));
 
         // FIXME: Why fall back to restoredNormalGeometry if majorVersion <= 2?
         if (majorVersion > 2)
@@ -7729,7 +7729,7 @@ void QWidgetPrivate::updateContentsRect()
         QResizeEvent e(q->data->crect.size(), q->data->crect.size());
         QCoreApplication::sendEvent(q, &e);
     } else {
-        q->setAttribute(Qt::WA_PendingResizeEvent, true);
+        q->setAttribute(BobUI::WA_PendingResizeEvent, true);
     }
 
     QEvent e(QEvent::ContentsRectChange);
@@ -7747,7 +7747,7 @@ QMargins QWidget::contentsMargins() const
 {
     Q_D(const QWidget);
     QMargins userMargins(d->leftmargin, d->topmargin, d->rightmargin, d->bottommargin);
-    return testAttribute(Qt::WA_ContentsMarginsRespectsSafeArea) ?
+    return testAttribute(BobUI::WA_ContentsMarginsRespectsSafeArea) ?
         userMargins | d->safeAreaMargins() : userMargins;
 }
 
@@ -7765,7 +7765,7 @@ QMargins QWidgetPrivate::safeAreaMargins() const
 {
     Q_Q(const QWidget);
 
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
     // Don't report margins for proxied widgets, as the logic
     // below doesn't handle that case (yet).
     if (nearestGraphicsProxyWidget(q))
@@ -7796,10 +7796,10 @@ QMargins QWidgetPrivate::safeAreaMargins() const
         const QWidget *assumedSafeWidget = nullptr;
         for (const QWidget *w = q; w != nativeWidget; w = w->parentWidget()) {
             QWidget *parentWidget = w->parentWidget();
-            if (!parentWidget->testAttribute(Qt::WA_ContentsMarginsRespectsSafeArea))
+            if (!parentWidget->testAttribute(BobUI::WA_ContentsMarginsRespectsSafeArea))
                 continue; // Layout can't help us
 
-            if (parentWidget->testAttribute(Qt::WA_LayoutOnEntireRect))
+            if (parentWidget->testAttribute(BobUI::WA_LayoutOnEntireRect))
                 continue; // Layout not going to help us
 
             QLayout *layout = parentWidget->layout();
@@ -7816,7 +7816,7 @@ QMargins QWidgetPrivate::safeAreaMargins() const
             break;
         }
 
-#if !defined(QT_DEBUG)
+#if !defined(BOBUI_DEBUG)
         if (assumedSafeWidget) {
             // We found a layout that we assume will take care of keeping us within the safe area
             // For debug builds we still map the safe area using the fallback logic, so that we
@@ -7852,7 +7852,7 @@ QMargins QWidgetPrivate::safeAreaMargins() const
   \fn void QWidget::customContextMenuRequested(const QPoint &pos)
 
   This signal is emitted when the widget's \l contextMenuPolicy is
-  Qt::CustomContextMenu, and the user has requested a context menu on
+  BobUI::CustomContextMenu, and the user has requested a context menu on
   the widget. The position \a pos is the position of the context menu
   event that the widget receives. Normally this is in widget
   coordinates. The exception to this rule is QAbstractScrollArea and
@@ -7868,22 +7868,22 @@ QMargins QWidgetPrivate::safeAreaMargins() const
     \property QWidget::contextMenuPolicy
     \brief how the widget shows a context menu
 
-    The default value of this property is Qt::DefaultContextMenu,
+    The default value of this property is BobUI::DefaultContextMenu,
     which means the contextMenuEvent() handler is called. Other values
-    are Qt::NoContextMenu, Qt::PreventContextMenu,
-    Qt::ActionsContextMenu, and Qt::CustomContextMenu. With
-    Qt::CustomContextMenu, the signal customContextMenuRequested() is
+    are BobUI::NoContextMenu, BobUI::PreventContextMenu,
+    BobUI::ActionsContextMenu, and BobUI::CustomContextMenu. With
+    BobUI::CustomContextMenu, the signal customContextMenuRequested() is
     emitted.
 
     \sa contextMenuEvent(), customContextMenuRequested(), actions()
 */
 
-Qt::ContextMenuPolicy QWidget::contextMenuPolicy() const
+BobUI::ContextMenuPolicy QWidget::contextMenuPolicy() const
 {
-    return (Qt::ContextMenuPolicy)data->context_menu_policy;
+    return (BobUI::ContextMenuPolicy)data->context_menu_policy;
 }
 
-void QWidget::setContextMenuPolicy(Qt::ContextMenuPolicy policy)
+void QWidget::setContextMenuPolicy(BobUI::ContextMenuPolicy policy)
 {
     data->context_menu_policy = (uint) policy;
 }
@@ -7892,16 +7892,16 @@ void QWidget::setContextMenuPolicy(Qt::ContextMenuPolicy policy)
     \property QWidget::focusPolicy
     \brief the way the widget accepts keyboard focus
 
-    The policy is Qt::TabFocus if the widget accepts keyboard
-    focus by tabbing, Qt::ClickFocus if the widget accepts
-    focus by clicking, Qt::StrongFocus if it accepts both, and
-    Qt::NoFocus (the default) if it does not accept focus at
+    The policy is BobUI::TabFocus if the widget accepts keyboard
+    focus by tabbing, BobUI::ClickFocus if the widget accepts
+    focus by clicking, BobUI::StrongFocus if it accepts both, and
+    BobUI::NoFocus (the default) if it does not accept focus at
     all.
 
     You must enable keyboard focus for a widget if it processes
     keyboard events. This is normally done from the widget's
     constructor. For instance, the QLineEdit constructor calls
-    setFocusPolicy(Qt::StrongFocus).
+    setFocusPolicy(BobUI::StrongFocus).
 
     If the widget has a focus proxy, then the focus policy will
     be propagated to it.
@@ -7910,12 +7910,12 @@ void QWidget::setContextMenuPolicy(Qt::ContextMenuPolicy policy)
 */
 
 
-Qt::FocusPolicy QWidget::focusPolicy() const
+BobUI::FocusPolicy QWidget::focusPolicy() const
 {
-    return (Qt::FocusPolicy)data->focus_policy;
+    return (BobUI::FocusPolicy)data->focus_policy;
 }
 
-void QWidget::setFocusPolicy(Qt::FocusPolicy policy)
+void QWidget::setFocusPolicy(BobUI::FocusPolicy policy)
 {
     data->focus_policy = (uint) policy;
     Q_D(QWidget);
@@ -7936,7 +7936,7 @@ void QWidget::setFocusPolicy(Qt::FocusPolicy policy)
 
     setUpdatesEnabled() is normally used to disable updates for a
     short period of time, for instance to avoid screen flicker during
-    large changes. In Qt, widgets normally do not generate screen
+    large changes. In BobUI, widgets normally do not generate screen
     flicker, but on X11 the server might erase regions on the screen
     when widgets get hidden before they can be replaced by other
     widgets. Disabling updates solves this.
@@ -7954,7 +7954,7 @@ void QWidget::setFocusPolicy(Qt::FocusPolicy policy)
 void QWidget::setUpdatesEnabled(bool enable)
 {
     Q_D(QWidget);
-    setAttribute(Qt::WA_ForceUpdatesDisabled, !enable);
+    setAttribute(BobUI::WA_ForceUpdatesDisabled, !enable);
     d->setUpdatesEnabled_helper(enable);
 }
 
@@ -7970,16 +7970,16 @@ void QWidget::setUpdatesEnabled(bool enable)
 */
 void QWidget::show()
 {
-    // Note: We don't call showNormal() as not to clobber Qt::Window(Max/Min)imized
+    // Note: We don't call showNormal() as not to clobber BobUI::Window(Max/Min)imized
 
     if (!isWindow()) {
         setVisible(true);
     } else {
         const auto *platformIntegration = QGuiApplicationPrivate::platformIntegration();
-        Qt::WindowState defaultState = platformIntegration->defaultWindowState(data->window_flags);
-        if (defaultState == Qt::WindowFullScreen)
+        BobUI::WindowState defaultState = platformIntegration->defaultWindowState(data->window_flags);
+        if (defaultState == BobUI::WindowFullScreen)
             showFullScreen();
-        else if (defaultState == Qt::WindowMaximized)
+        else if (defaultState == BobUI::WindowMaximized)
             showMaximized();
         else
             setVisible(true);
@@ -7996,7 +7996,7 @@ void QWidgetPrivate::show_recursive()
     Q_Q(QWidget);
     // polish if necessary
 
-    if (!q->testAttribute(Qt::WA_WState_Created))
+    if (!q->testAttribute(BobUI::WA_WState_Created))
         createRecursively();
     q->ensurePolished();
 
@@ -8015,22 +8015,22 @@ void QWidgetPrivate::sendPendingMoveAndResizeEvents(bool recursive, bool disable
 
     disableUpdates = disableUpdates && q->updatesEnabled();
     if (disableUpdates)
-        q->setAttribute(Qt::WA_UpdatesDisabled);
+        q->setAttribute(BobUI::WA_UpdatesDisabled);
 
-    if (q->testAttribute(Qt::WA_PendingMoveEvent)) {
+    if (q->testAttribute(BobUI::WA_PendingMoveEvent)) {
         QMoveEvent e(data.crect.topLeft(), data.crect.topLeft());
         QCoreApplication::sendEvent(q, &e);
-        q->setAttribute(Qt::WA_PendingMoveEvent, false);
+        q->setAttribute(BobUI::WA_PendingMoveEvent, false);
     }
 
-    if (q->testAttribute(Qt::WA_PendingResizeEvent)) {
+    if (q->testAttribute(BobUI::WA_PendingResizeEvent)) {
         QResizeEvent e(data.crect.size(), QSize());
         QCoreApplication::sendEvent(q, &e);
-        q->setAttribute(Qt::WA_PendingResizeEvent, false);
+        q->setAttribute(BobUI::WA_PendingResizeEvent, false);
     }
 
     if (disableUpdates)
-        q->setAttribute(Qt::WA_UpdatesDisabled, false);
+        q->setAttribute(BobUI::WA_UpdatesDisabled, false);
 
     if (!recursive)
         return;
@@ -8060,14 +8060,14 @@ void QWidgetPrivate::activateChildLayoutsRecursively()
         // Pretend we're visible.
         const bool wasVisible = child->isVisible();
         if (!wasVisible)
-            child->setAttribute(Qt::WA_WState_Visible);
+            child->setAttribute(BobUI::WA_WState_Visible);
 
         // Do the same for all my children.
         childPrivate->activateChildLayoutsRecursively();
 
         // We're not cheating anymore.
         if (!wasVisible)
-            child->setAttribute(Qt::WA_WState_Visible, false);
+            child->setAttribute(BobUI::WA_WState_Visible, false);
     }
 }
 
@@ -8079,7 +8079,7 @@ void QWidgetPrivate::show_helper()
     sendPendingMoveAndResizeEvents();
 
     // become visible before showing all children
-    q->setAttribute(Qt::WA_WState_Visible);
+    q->setAttribute(BobUI::WA_WState_Visible);
 
     // finally show all children recursively
     showChildren(false);
@@ -8087,7 +8087,7 @@ void QWidgetPrivate::show_helper()
 
 
     const bool isWindow = q->isWindow();
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
     bool isEmbedded = isWindow && q->graphicsProxyWidget() != nullptr;
 #else
     bool isEmbedded = false;
@@ -8097,10 +8097,10 @@ void QWidgetPrivate::show_helper()
     // existing popups must be closed. Also propagate the current
     // windows's KeyboardFocusChange status.
     if (isWindow && !isEmbedded) {
-        if ((q->windowType() == Qt::Tool) || (q->windowType() == Qt::Popup) || q->windowType() == Qt::ToolTip) {
+        if ((q->windowType() == BobUI::Tool) || (q->windowType() == BobUI::Popup) || q->windowType() == BobUI::ToolTip) {
             q->raise();
-            if (q->parentWidget() && q->parentWidget()->window()->testAttribute(Qt::WA_KeyboardFocusChange))
-                q->setAttribute(Qt::WA_KeyboardFocusChange);
+            if (q->parentWidget() && q->parentWidget()->window()->testAttribute(BobUI::WA_KeyboardFocusChange))
+                q->setAttribute(BobUI::WA_KeyboardFocusChange);
         } else {
             while (QApplication::activePopupWidget()) {
                 if (!QApplication::activePopupWidget()->close())
@@ -8111,7 +8111,7 @@ void QWidgetPrivate::show_helper()
 
     // Automatic embedding of child windows of widgets already embedded into
     // QGraphicsProxyWidget when they are shown the first time.
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
     if (isWindow) {
         if (!isEmbedded && !bypassGraphicsProxyWidget(q)) {
             QGraphicsProxyWidget *ancestorProxy = nearestGraphicsProxyWidget(q->parentWidget());
@@ -8131,11 +8131,11 @@ void QWidgetPrivate::show_helper()
 
     show_sys();
 
-    if (!isEmbedded && q->windowType() == Qt::Popup)
+    if (!isEmbedded && q->windowType() == BobUI::Popup)
         qApp->d_func()->openPopup(q);
 
-#if QT_CONFIG(accessibility)
-    if (q->windowType() != Qt::ToolTip) {    // Tooltips are read aloud twice in MS narrator.
+#if BOBUI_CONFIG(accessibility)
+    if (q->windowType() != BobUI::ToolTip) {    // Tooltips are read aloud twice in MS narrator.
         QAccessibleEvent event(q, QAccessible::ObjectShow);
         QAccessible::updateAccessibility(&event);
     }
@@ -8143,13 +8143,13 @@ void QWidgetPrivate::show_helper()
 
     if (QApplicationPrivate::hidden_focus_widget == q) {
         QApplicationPrivate::hidden_focus_widget = nullptr;
-        q->setFocus(Qt::OtherFocusReason);
+        q->setFocus(BobUI::OtherFocusReason);
     }
 
-    // Process events when showing a Qt::SplashScreen widget before the event loop
+    // Process events when showing a BobUI::SplashScreen widget before the event loop
     // is spinnning; otherwise it might not show up on particular platforms.
     // This makes QSplashScreen behave the same on all platforms.
-    if (!qApp->d_func()->in_exec && q->windowType() == Qt::SplashScreen)
+    if (!qApp->d_func()->in_exec && q->windowType() == BobUI::SplashScreen)
         QCoreApplication::processEvents();
 
     data.in_show = false;  // reset qws optimization
@@ -8161,15 +8161,15 @@ void QWidgetPrivate::show_sys()
 
     auto window = qobject_cast<QWidgetWindow *>(windowHandle());
 
-    if (q->testAttribute(Qt::WA_DontShowOnScreen)) {
+    if (q->testAttribute(BobUI::WA_DontShowOnScreen)) {
         invalidateBackingStore(q->rect());
-        q->setAttribute(Qt::WA_Mapped);
+        q->setAttribute(BobUI::WA_Mapped);
         // add our window the modal window list (native dialogs)
         if (window && q->isWindow()
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
             && (!extra || !extra->proxyWidget)
 #endif
-            && q->windowModality() != Qt::NonModal) {
+            && q->windowModality() != BobUI::NonModal) {
             QGuiApplicationPrivate::showModalWindow(window);
         }
         return;
@@ -8180,8 +8180,8 @@ void QWidgetPrivate::show_sys()
     else
         QCoreApplication::postEvent(q, new QUpdateLaterEvent(q->rect()));
 
-    if ((!q->isWindow() && !q->testAttribute(Qt::WA_NativeWindow))
-            || q->testAttribute(Qt::WA_OutsideWSRange)) {
+    if ((!q->isWindow() && !q->testAttribute(BobUI::WA_NativeWindow))
+            || q->testAttribute(BobUI::WA_OutsideWSRange)) {
         return;
     }
 
@@ -8195,15 +8195,15 @@ void QWidgetPrivate::show_sys()
         }
         const QRect windowRect = window->geometry();
         if (windowRect != geomRect) {
-            if (q->testAttribute(Qt::WA_Moved)
+            if (q->testAttribute(BobUI::WA_Moved)
                 || !QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::WindowManagement))
                 window->setGeometry(geomRect);
             else
                 window->resize(geomRect.size());
         }
 
-#ifndef QT_NO_CURSOR
-        qt_qpa_set_cursor(q, false); // Needed in case cursor was set before show
+#ifndef BOBUI_NO_CURSOR
+        bobui_qpa_set_cursor(q, false); // Needed in case cursor was set before show
 #endif
         invalidateBackingStore(q->rect());
         window->setNativeWindowVisibility(true);
@@ -8240,22 +8240,22 @@ void QWidgetPrivate::hide_helper()
     Q_Q(QWidget);
 
     bool isEmbedded = false;
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
     isEmbedded = q->isWindow() && !bypassGraphicsProxyWidget(q) && nearestGraphicsProxyWidget(q->parentWidget()) != nullptr;
 #else
     Q_UNUSED(isEmbedded);
 #endif
 
-    if (!isEmbedded && (q->windowType() == Qt::Popup))
+    if (!isEmbedded && (q->windowType() == BobUI::Popup))
         qApp->d_func()->closePopup(q);
 
-    q->setAttribute(Qt::WA_Mapped, false);
+    q->setAttribute(BobUI::WA_Mapped, false);
     hide_sys();
 
-    bool wasVisible = q->testAttribute(Qt::WA_WState_Visible);
+    bool wasVisible = q->testAttribute(BobUI::WA_WState_Visible);
 
     if (wasVisible) {
-        q->setAttribute(Qt::WA_WState_Visible, false);
+        q->setAttribute(BobUI::WA_WState_Visible, false);
 
     }
 
@@ -8280,7 +8280,7 @@ void QWidgetPrivate::hide_helper()
     if (QWidgetRepaintManager *repaintManager = maybeRepaintManager())
         repaintManager->removeDirtyWidget(q);
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     if (wasVisible) {
         QAccessibleEvent event(q, QAccessible::ObjectHide);
         QAccessible::updateAccessibility(&event);
@@ -8294,14 +8294,14 @@ void QWidgetPrivate::hide_sys()
 
     auto window = qobject_cast<QWidgetWindow *>(windowHandle());
 
-    if (q->testAttribute(Qt::WA_DontShowOnScreen)) {
-        q->setAttribute(Qt::WA_Mapped, false);
+    if (q->testAttribute(BobUI::WA_DontShowOnScreen)) {
+        q->setAttribute(BobUI::WA_Mapped, false);
         // remove our window from the modal window list (native dialogs)
         if (window && q->isWindow()
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
             && (!extra || !extra->proxyWidget)
 #endif
-            && q->windowModality() != Qt::NonModal) {
+            && q->windowModality() != BobUI::NonModal) {
             QGuiApplicationPrivate::hideModalWindow(window);
         }
         // do not return here, if window non-zero, we must hide it
@@ -8355,14 +8355,14 @@ void QWidget::setVisible(bool visible)
                               << "with attributes" << WidgetAttributes{this}
                               << "to" << visible << "via QWidget";
 
-    if (testAttribute(Qt::WA_WState_ExplicitShowHide) && testAttribute(Qt::WA_WState_Hidden) == !visible)
+    if (testAttribute(BobUI::WA_WState_ExplicitShowHide) && testAttribute(BobUI::WA_WState_Hidden) == !visible)
         return;
 
     if (d->dontSetExplicitShowHide) {
         d->dontSetExplicitShowHide = false;
     } else {
         // Remember that setVisible was called explicitly
-        setAttribute(Qt::WA_WState_ExplicitShowHide);
+        setAttribute(BobUI::WA_WState_ExplicitShowHide);
     }
 
     d->setVisible(visible);
@@ -8381,26 +8381,26 @@ void QWidgetPrivate::setVisible(bool visible)
     if (visible) { // show
         // Designer uses a trick to make grabWidget work without showing
         if (!q->isWindow() && q->parentWidget() && q->parentWidget()->isVisible()
-            && !q->parentWidget()->testAttribute(Qt::WA_WState_Created))
+            && !q->parentWidget()->testAttribute(BobUI::WA_WState_Created))
             q->parentWidget()->window()->d_func()->createRecursively();
 
         //create toplevels but not children of non-visible parents
         QWidget *pw = q->parentWidget();
-        if (!q->testAttribute(Qt::WA_WState_Created)
-            && (q->isWindow() || pw->testAttribute(Qt::WA_WState_Created))) {
+        if (!q->testAttribute(BobUI::WA_WState_Created)
+            && (q->isWindow() || pw->testAttribute(BobUI::WA_WState_Created))) {
             q->create();
         }
 
-        bool wasResized = q->testAttribute(Qt::WA_Resized);
-        Qt::WindowStates initialWindowState = q->windowState();
+        bool wasResized = q->testAttribute(BobUI::WA_Resized);
+        BobUI::WindowStates initialWindowState = q->windowState();
 
         // polish if necessary
         q->ensurePolished();
 
         // whether we need to inform the parent widget immediately
-        bool needUpdateGeometry = !q->isWindow() && q->testAttribute(Qt::WA_WState_Hidden);
+        bool needUpdateGeometry = !q->isWindow() && q->testAttribute(BobUI::WA_WState_Hidden);
         // we are no longer hidden
-        q->setAttribute(Qt::WA_WState_Hidden, false);
+        q->setAttribute(BobUI::WA_WState_Hidden, false);
 
         if (needUpdateGeometry)
             updateGeometry_helper(true);
@@ -8431,10 +8431,10 @@ void QWidgetPrivate::setVisible(bool visible)
             } else {
                 q->adjustSize();
             }
-            q->setAttribute(Qt::WA_Resized, false);
+            q->setAttribute(BobUI::WA_Resized, false);
         }
 
-        q->setAttribute(Qt::WA_KeyboardFocusChange, false);
+        q->setAttribute(BobUI::WA_KeyboardFocusChange, false);
 
         if (q->isWindow() || q->parentWidget()->isVisible()) {
             show_helper();
@@ -8455,8 +8455,8 @@ void QWidgetPrivate::setVisible(bool visible)
         if (!q->isWindow() && q->parentWidget()) // && !d->getOpaqueRegion().isEmpty())
             q->parentWidget()->d_func()->setDirtyOpaqueRegion();
 
-        if (!q->testAttribute(Qt::WA_WState_Hidden)) {
-            q->setAttribute(Qt::WA_WState_Hidden);
+        if (!q->testAttribute(BobUI::WA_WState_Hidden)) {
+            q->setAttribute(BobUI::WA_WState_Hidden);
             hide_helper();
         }
 
@@ -8484,7 +8484,7 @@ void QWidget::setHidden(bool hidden)
 bool QWidgetPrivate::isExplicitlyHidden() const
 {
     Q_Q(const QWidget);
-    return q->isHidden() && q->testAttribute(Qt::WA_WState_ExplicitShowHide);
+    return q->isHidden() && q->testAttribute(BobUI::WA_WState_ExplicitShowHide);
 }
 
 void QWidgetPrivate::_q_showIfNotHidden()
@@ -8507,17 +8507,17 @@ void QWidgetPrivate::showChildren(bool spontaneous)
             continue;
         qCDebug(lcWidgetShowHide) << "Considering" << widget
               << "with attributes" << WidgetAttributes{widget};
-        if (widget->windowHandle() && !widget->testAttribute(Qt::WA_WState_ExplicitShowHide))
-            widget->setAttribute(Qt::WA_WState_Hidden, false);
-        if (widget->isWindow() || widget->testAttribute(Qt::WA_WState_Hidden))
+        if (widget->windowHandle() && !widget->testAttribute(BobUI::WA_WState_ExplicitShowHide))
+            widget->setAttribute(BobUI::WA_WState_Hidden, false);
+        if (widget->isWindow() || widget->testAttribute(BobUI::WA_WState_Hidden))
             continue;
         if (spontaneous) {
-            widget->setAttribute(Qt::WA_Mapped);
+            widget->setAttribute(BobUI::WA_Mapped);
             widget->d_func()->showChildren(true);
             QShowEvent e;
             QApplication::sendSpontaneousEvent(widget, &e);
         } else {
-            if (widget->testAttribute(Qt::WA_WState_ExplicitShowHide)) {
+            if (widget->testAttribute(BobUI::WA_WState_ExplicitShowHide)) {
                 widget->d_func()->show_recursive();
             } else {
                 // Call QWidget::setVisible() here, so that subclasses
@@ -8549,9 +8549,9 @@ void QWidgetPrivate::hideChildren(bool spontaneous)
             continue;
 
         if (spontaneous)
-            widget->setAttribute(Qt::WA_Mapped, false);
+            widget->setAttribute(BobUI::WA_Mapped, false);
         else
-            widget->setAttribute(Qt::WA_WState_Visible, false);
+            widget->setAttribute(BobUI::WA_WState_Visible, false);
         widget->d_func()->hideChildren(spontaneous);
         QHideEvent e;
         if (spontaneous) {
@@ -8559,14 +8559,14 @@ void QWidgetPrivate::hideChildren(bool spontaneous)
         } else {
             QCoreApplication::sendEvent(widget, &e);
             if (widget->internalWinId()
-                && widget->testAttribute(Qt::WA_DontCreateNativeAncestors)) {
+                && widget->testAttribute(BobUI::WA_DontCreateNativeAncestors)) {
                 // hide_sys() on an ancestor won't have any affect on this
                 // widget, so it needs an explicit hide_sys() of its own
                 widget->d_func()->hide_sys();
             }
         }
         qApp->d_func()->sendSyntheticEnterLeave(widget);
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
         if (!spontaneous) {
             QAccessibleEvent event(widget, QAccessible::ObjectHide);
             QAccessible::updateAccessibility(&event);
@@ -8579,7 +8579,7 @@ void QWidgetPrivate::hideChildren(bool spontaneous)
     // Otherwise, we need to explicitly handle it here.
     if (QWidget* widgetWindow = q->window();
         widgetWindow && widgetWindow->data->is_closing) {
-        q->setAttribute(Qt::WA_UnderMouse, false);
+        q->setAttribute(BobUI::WA_UnderMouse, false);
     }
 }
 
@@ -8635,8 +8635,8 @@ bool QWidgetPrivate::handleClose(CloseMode mode)
 
     if (!that.isNull()) {
         data.is_closing = false;
-        if (q->testAttribute(Qt::WA_DeleteOnClose)) {
-            q->setAttribute(Qt::WA_DeleteOnClose, false);
+        if (q->testAttribute(BobUI::WA_DeleteOnClose)) {
+            q->setAttribute(BobUI::WA_DeleteOnClose, false);
             q->deleteLater();
         }
     }
@@ -8654,13 +8654,13 @@ bool QWidgetPrivate::handleClose(CloseMode mode)
     the event, nothing happens. The default
     implementation of QWidget::closeEvent() accepts the close event.
 
-    If the widget has the Qt::WA_DeleteOnClose flag, the widget
+    If the widget has the BobUI::WA_DeleteOnClose flag, the widget
     is also deleted. A close events is delivered to the widget no
     matter if the widget is visible or not.
 
     The \l QGuiApplication::lastWindowClosed() signal is emitted when the
     last visible primary window (i.e. window with no parent) with the
-    Qt::WA_QuitOnClose attribute set is closed. By default this
+    BobUI::WA_QuitOnClose attribute set is closed. By default this
     attribute is set for all widgets except transient windows such as
     splash screens, tool windows, and popup menus.
 
@@ -8697,8 +8697,8 @@ bool QWidgetPrivate::close()
     status if all its parent widgets up to the window are visible. If
     an ancestor is not visible, the widget won't become visible until
     all its ancestors are shown. If its size or position has changed,
-    Qt guarantees that a widget gets move and resize events just
-    before it is shown. If the widget has not been resized yet, Qt
+    BobUI guarantees that a widget gets move and resize events just
+    before it is shown. If the widget has not been resized yet, BobUI
     will adjust the widget's size to a useful default using
     adjustSize().
 
@@ -8792,7 +8792,7 @@ QSize QWidgetPrivate::adjustedSize() const
     QSize s = q->sizeHint();
 
     if (q->isWindow()) {
-        Qt::Orientations exp;
+        BobUI::Orientations exp;
         if (layout) {
             if (layout->hasHeightForWidth())
                 s.setHeight(layout->totalHeightForWidth(s.width()));
@@ -8803,9 +8803,9 @@ QSize QWidgetPrivate::adjustedSize() const
                 s.setHeight(q->heightForWidth(s.width()));
             exp = q->sizePolicy().expandingDirections();
         }
-        if (exp & Qt::Horizontal)
+        if (exp & BobUI::Horizontal)
             s.setWidth(qMax(s.width(), 200));
-        if (exp & Qt::Vertical)
+        if (exp & BobUI::Vertical)
             s.setHeight(qMax(s.height(), 100));
 
         QRect screen;
@@ -8817,7 +8817,7 @@ QSize QWidgetPrivate::adjustedSize() const
         s.setWidth(qMin(s.width(), screen.width()*2/3));
         s.setHeight(qMin(s.height(), screen.height()*2/3));
 
-        if (QTLWExtra *extra = maybeTopData())
+        if (BOBUILWExtra *extra = maybeTopData())
             extra->sizeAdjusted = true;
     }
 
@@ -8991,7 +8991,7 @@ bool QWidget::event(QEvent *event)
         case QEvent::ContextMenu:
         case QEvent::KeyPress:
         case QEvent::KeyRelease:
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
         case QEvent::Wheel:
 #endif
             return false;
@@ -9004,11 +9004,11 @@ bool QWidget::event(QEvent *event)
         // Sync up QWidget's view of whether or not the widget has been created
         switch (static_cast<QPlatformSurfaceEvent*>(event)->surfaceEventType()) {
         case QPlatformSurfaceEvent::SurfaceCreated:
-            if (!testAttribute(Qt::WA_WState_Created))
+            if (!testAttribute(BobUI::WA_WState_Created))
                 create();
             break;
         case QPlatformSurfaceEvent::SurfaceAboutToBeDestroyed:
-            if (testAttribute(Qt::WA_WState_Created)) {
+            if (testAttribute(BobUI::WA_WState_Created)) {
                 // Child windows have already been destroyed by QWindow,
                 // so we skip them here.
                 destroy(false, false);
@@ -9032,50 +9032,50 @@ bool QWidget::event(QEvent *event)
     case QEvent::MouseButtonDblClick:
         mouseDoubleClickEvent((QMouseEvent*)event);
         break;
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
     case QEvent::Wheel:
         wheelEvent((QWheelEvent*)event);
         break;
 #endif
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
     case QEvent::TabletMove:
-        if (static_cast<QTabletEvent *>(event)->buttons() == Qt::NoButton && !testAttribute(Qt::WA_TabletTracking))
+        if (static_cast<BOBUIabletEvent *>(event)->buttons() == BobUI::NoButton && !testAttribute(BobUI::WA_TabletTracking))
             break;
         Q_FALLTHROUGH();
     case QEvent::TabletPress:
     case QEvent::TabletRelease:
-        tabletEvent((QTabletEvent*)event);
+        tabletEvent((BOBUIabletEvent*)event);
         break;
 #endif
     case QEvent::KeyPress: {
         QKeyEvent *k = static_cast<QKeyEvent *>(event);
         bool res = false;
-        if (!(k->modifiers() & (Qt::ControlModifier | Qt::AltModifier))) {  //### Add MetaModifier?
-            if (k->key() == Qt::Key_Backtab
-                || (k->key() == Qt::Key_Tab && (k->modifiers() & Qt::ShiftModifier)))
+        if (!(k->modifiers() & (BobUI::ControlModifier | BobUI::AltModifier))) {  //### Add MetaModifier?
+            if (k->key() == BobUI::Key_Backtab
+                || (k->key() == BobUI::Key_Tab && (k->modifiers() & BobUI::ShiftModifier)))
                 res = focusNextPrevChild(false);
-            else if (k->key() == Qt::Key_Tab)
+            else if (k->key() == BobUI::Key_Tab)
                 res = focusNextPrevChild(true);
             if (res)
                 break;
         }
         keyPressEvent(k);
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
         if (!k->isAccepted() && QApplication::keypadNavigationEnabled()
-            && !(k->modifiers() & (Qt::ControlModifier | Qt::AltModifier | Qt::ShiftModifier))) {
-            if (QApplication::navigationMode() == Qt::NavigationModeKeypadTabOrder) {
-                if (k->key() == Qt::Key_Up)
+            && !(k->modifiers() & (BobUI::ControlModifier | BobUI::AltModifier | BobUI::ShiftModifier))) {
+            if (QApplication::navigationMode() == BobUI::NavigationModeKeypadTabOrder) {
+                if (k->key() == BobUI::Key_Up)
                     res = focusNextPrevChild(false);
-                else if (k->key() == Qt::Key_Down)
+                else if (k->key() == BobUI::Key_Down)
                     res = focusNextPrevChild(true);
-            } else if (QApplication::navigationMode() == Qt::NavigationModeKeypadDirectional) {
-                if (k->key() == Qt::Key_Up)
+            } else if (QApplication::navigationMode() == BobUI::NavigationModeKeypadDirectional) {
+                if (k->key() == BobUI::Key_Up)
                     res = QWidgetPrivate::navigateToDirection(QWidgetPrivate::DirectionNorth);
-                else if (k->key() == Qt::Key_Right)
+                else if (k->key() == BobUI::Key_Right)
                     res = QWidgetPrivate::navigateToDirection(QWidgetPrivate::DirectionEast);
-                else if (k->key() == Qt::Key_Down)
+                else if (k->key() == BobUI::Key_Down)
                     res = QWidgetPrivate::navigateToDirection(QWidgetPrivate::DirectionSouth);
-                else if (k->key() == Qt::Key_Left)
+                else if (k->key() == BobUI::Key_Left)
                     res = QWidgetPrivate::navigateToDirection(QWidgetPrivate::DirectionWest);
             }
             if (res) {
@@ -9084,11 +9084,11 @@ bool QWidget::event(QEvent *event)
             }
         }
 #endif
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
         if (!k->isAccepted()
-            && k->modifiers() & Qt::ShiftModifier && k->key() == Qt::Key_F1
+            && k->modifiers() & BobUI::ShiftModifier && k->key() == BobUI::Key_F1
             && d->whatsThis.size()) {
-            QWhatsThis::showText(mapToGlobal(inputMethodQuery(Qt::ImCursorRectangle).toRect().center()), d->whatsThis, this);
+            QWhatsThis::showText(mapToGlobal(inputMethodQuery(BobUI::ImCursorRectangle).toRect().center()), d->whatsThis, this);
             k->accept();
         }
 #endif
@@ -9107,19 +9107,19 @@ bool QWidget::event(QEvent *event)
 
     case QEvent::InputMethodQuery: {
             QInputMethodQueryEvent *query = static_cast<QInputMethodQueryEvent *>(event);
-            Qt::InputMethodQueries queries = query->queries();
+            BobUI::InputMethodQueries queries = query->queries();
             for (uint i = 0; i < 32; ++i) {
-                Qt::InputMethodQuery q = (Qt::InputMethodQuery)(int)(queries & (1<<i));
+                BobUI::InputMethodQuery q = (BobUI::InputMethodQuery)(int)(queries & (1<<i));
                 if (q) {
                     QVariant v = inputMethodQuery(q);
-                    if (q == Qt::ImEnabled && !v.isValid() && isEnabled()) {
-                        // Qt:ImEnabled was added in Qt 5.3. So not all widgets support it, even
+                    if (q == BobUI::ImEnabled && !v.isValid() && isEnabled()) {
+                        // BobUI:ImEnabled was added in BobUI 5.3. So not all widgets support it, even
                         // if they implement IM otherwise (by overriding inputMethodQuery()). Instead
-                        // they set the widget attribute Qt::WA_InputMethodEnabled. But this attribute
+                        // they set the widget attribute BobUI::WA_InputMethodEnabled. But this attribute
                         // will only be set if the widget supports IM _and_ is not read-only. So for
                         // read-only widgets, not all IM features will be supported when ImEnabled is
                         // not implemented explicitly (e.g selection handles for read-only widgets on iOS).
-                        v = QVariant(testAttribute(Qt::WA_InputMethodEnabled));
+                        v = QVariant(testAttribute(BobUI::WA_InputMethodEnabled));
                     }
                     query->setValue(q, v);
                 }
@@ -9134,7 +9134,7 @@ bool QWidget::event(QEvent *event)
 
     case QEvent::Polish: {
         style()->polish(this);
-        setAttribute(Qt::WA_WState_Polished);
+        setAttribute(BobUI::WA_WState_Polished);
         if (!QApplication::font(this).isCopyOf(QApplication::font()))
             d->resolveFont();
         if (!QApplication::palette(this).isCopyOf(QGuiApplication::palette()))
@@ -9143,7 +9143,7 @@ bool QWidget::event(QEvent *event)
         break;
 
     case QEvent::ApplicationWindowIconChange:
-        if (isWindow() && !testAttribute(Qt::WA_SetWindowIcon)) {
+        if (isWindow() && !testAttribute(BobUI::WA_SetWindowIcon)) {
             d->setWindowIcon_sys();
             d->setWindowIcon_helper();
         }
@@ -9158,7 +9158,7 @@ bool QWidget::event(QEvent *event)
         break;
 
     case QEvent::Enter:
-#if QT_CONFIG(statustip)
+#if BOBUI_CONFIG(statustip)
         if (d->statusTip.size()) {
             QStatusTipEvent tip(d->statusTip);
             QCoreApplication::sendEvent(const_cast<QWidget *>(this), &tip);
@@ -9168,7 +9168,7 @@ bool QWidget::event(QEvent *event)
         break;
 
     case QEvent::Leave:
-#if QT_CONFIG(statustip)
+#if BOBUI_CONFIG(statustip)
         if (d->statusTip.size()) {
             QString empty;
             QStatusTipEvent tip(empty);
@@ -9204,19 +9204,19 @@ bool QWidget::event(QEvent *event)
         closeEvent((QCloseEvent *)event);
         break;
 
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
     case QEvent::ContextMenu:
         switch (data->context_menu_policy) {
-        case Qt::PreventContextMenu:
+        case BobUI::PreventContextMenu:
             break;
-        case Qt::DefaultContextMenu:
+        case BobUI::DefaultContextMenu:
             contextMenuEvent(static_cast<QContextMenuEvent *>(event));
             break;
-        case Qt::CustomContextMenu:
+        case BobUI::CustomContextMenu:
             emit customContextMenuRequested(static_cast<QContextMenuEvent *>(event)->pos());
             break;
-#if QT_CONFIG(menu)
-        case Qt::ActionsContextMenu:
+#if BOBUI_CONFIG(menu)
+        case BobUI::ActionsContextMenu:
             if (d->actions.size()) {
                 QMenu::exec(d->actions, static_cast<QContextMenuEvent *>(event)->globalPos(),
                             nullptr, this);
@@ -9229,9 +9229,9 @@ bool QWidget::event(QEvent *event)
             break;
         }
         break;
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     case QEvent::Drop:
         dropEvent((QDropEvent*) event);
         break;
@@ -9290,7 +9290,7 @@ bool QWidget::event(QEvent *event)
         break;
 
     case QEvent::WindowStateChange: {
-        const bool wasMinimized = static_cast<const QWindowStateChangeEvent *>(event)->oldState() & Qt::WindowMinimized;
+        const bool wasMinimized = static_cast<const QWindowStateChangeEvent *>(event)->oldState() & BobUI::WindowMinimized;
         if (wasMinimized != isMinimized()) {
             QWidget *widget = const_cast<QWidget *>(this);
             if (wasMinimized) {
@@ -9377,15 +9377,15 @@ bool QWidget::event(QEvent *event)
             }
         }
         break;
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
     case QEvent::ToolTip:
         if (!d->toolTip.isEmpty())
-            QToolTip::showText(static_cast<QHelpEvent*>(event)->globalPos(), d->toolTip, this, QRect(), d->toolTipDuration);
+            BOBUIoolTip::showText(static_cast<QHelpEvent*>(event)->globalPos(), d->toolTip, this, QRect(), d->toolTipDuration);
         else
             event->ignore();
         break;
 #endif
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
     case QEvent::WhatsThis:
         if (d->whatsThis.size())
             QWhatsThis::showText(static_cast<QHelpEvent *>(event)->globalPos(), d->whatsThis, this);
@@ -9401,7 +9401,7 @@ bool QWidget::event(QEvent *event)
         d->topData()->frameStrut.setCoords(0 ,0, 0, 0);
         data->fstrut_dirty = false;
         break;
-#ifndef QT_NO_ACTION
+#ifndef BOBUI_NO_ACTION
     case QEvent::ActionAdded:
     case QEvent::ActionRemoved:
     case QEvent::ActionChanged:
@@ -9430,13 +9430,13 @@ bool QWidget::event(QEvent *event)
         event->ignore();
         break;
     }
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     case QEvent::Gesture:
         event->ignore();
         break;
 #endif
     case QEvent::ScreenChangeInternal:
-        if (const QTLWExtra *te = d->maybeTopData()) {
+        if (const BOBUILWExtra *te = d->maybeTopData()) {
             const QWindow *win = te->window;
             d->setWinId((win && win->handle()) ? win->handle()->winId() : 0);
         }
@@ -9490,7 +9490,7 @@ void QWidget::changeEvent(QEvent * event)
     switch(event->type()) {
     case QEvent::EnabledChange: {
         update();
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
         QAccessible::State s;
         s.disabled = true;
         QAccessibleStateChangeEvent event(this, s);
@@ -9516,9 +9516,9 @@ void QWidget::changeEvent(QEvent * event)
     case QEvent::ThemeChange:
         if (QGuiApplication::desktopSettingsAware()
             && qApp && !QCoreApplication::closingDown()) {
-            if (testAttribute(Qt::WA_WState_Polished))
+            if (testAttribute(BobUI::WA_WState_Polished))
                 QApplication::style()->unpolish(this);
-            if (testAttribute(Qt::WA_WState_Polished))
+            if (testAttribute(BobUI::WA_WState_Polished))
                 QApplication::style()->polish(this);
             QEvent styleChangedEvent(QEvent::StyleChange);
             QCoreApplication::sendEvent(this, &styleChangedEvent);
@@ -9551,13 +9551,13 @@ void QWidget::changeEvent(QEvent * event)
     relative to this widget. For press and release events, the
     position is usually the same as the position of the last mouse
     move event, but it might be different if the user's hand shakes.
-    This is a feature of the underlying window system, not Qt.
+    This is a feature of the underlying window system, not BobUI.
 
     If you want to show a tooltip immediately, while the mouse is
     moving (e.g., to get the mouse coordinates with QMouseEvent::position()
     and show them as a tooltip), you must first enable mouse tracking
     as described above. Then, to ensure that the tooltip is updated
-    immediately, you must call QToolTip::showText() instead of
+    immediately, you must call BOBUIoolTip::showText() instead of
     setToolTip() in your implementation of mouseMoveEvent().
 
     \sa setMouseTracking(), mousePressEvent(), mouseReleaseEvent(),
@@ -9589,7 +9589,7 @@ void QWidget::mouseMoveEvent(QMouseEvent *event)
 void QWidget::mousePressEvent(QMouseEvent *event)
 {
     event->ignore();
-    if ((windowType() == Qt::Popup)) {
+    if ((windowType() == BobUI::Popup)) {
         event->accept();
         QWidget* w;
         while ((w = QApplication::activePopupWidget()) && w != this){
@@ -9638,7 +9638,7 @@ void QWidget::mouseDoubleClickEvent(QMouseEvent *event)
     mousePressEvent(event);
 }
 
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
 /*!
     This event handler, for event \a event, can be reimplemented in a
     subclass to receive wheel events for the widget.
@@ -9657,9 +9657,9 @@ void QWidget::wheelEvent(QWheelEvent *event)
 {
     event->ignore();
 }
-#endif // QT_CONFIG(wheelevent)
+#endif // BOBUI_CONFIG(wheelevent)
 
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
 /*!
     This event handler, for event \a event, can be reimplemented in a
     subclass to receive tablet events for the widget.
@@ -9677,14 +9677,14 @@ void QWidget::wheelEvent(QWheelEvent *event)
     the tablet, with no buttons pressed.
 
     \sa QEvent::ignore(), QEvent::accept(), event(), setTabletTracking(),
-    QTabletEvent
+    BOBUIabletEvent
 */
 
-void QWidget::tabletEvent(QTabletEvent *event)
+void QWidget::tabletEvent(BOBUIabletEvent *event)
 {
     event->ignore();
 }
-#endif // QT_CONFIG(tabletevent)
+#endif // BOBUI_CONFIG(tabletevent)
 
 /*!
     This event handler, for event \a event, can be reimplemented in a
@@ -9711,8 +9711,8 @@ void QWidget::tabletEvent(QTabletEvent *event)
 
 void QWidget::keyPressEvent(QKeyEvent *event)
 {
-#ifndef QT_NO_SHORTCUT
-    if ((windowType() == Qt::Popup) && event->matches(QKeySequence::Cancel)) {
+#ifndef BOBUI_NO_SHORTCUT
+    if ((windowType() == BobUI::Popup) && event->matches(QKeySequence::Cancel)) {
         event->accept();
         close();
     } else
@@ -9757,7 +9757,7 @@ void QWidget::keyReleaseEvent(QKeyEvent *event)
     is passed in the \a event parameter
 
     A widget normally must setFocusPolicy() to something other than
-    Qt::NoFocus to receive focus events. (Note that the
+    BobUI::NoFocus to receive focus events. (Note that the
     application programmer can call setFocus() on any widget, even
     those that do not normally accept focus.)
 
@@ -9770,7 +9770,7 @@ void QWidget::keyReleaseEvent(QKeyEvent *event)
 
 void QWidget::focusInEvent(QFocusEvent *)
 {
-    if (focusPolicy() != Qt::NoFocus || !isWindow()) {
+    if (focusPolicy() != BobUI::NoFocus || !isWindow()) {
         update();
     }
 }
@@ -9783,7 +9783,7 @@ void QWidget::focusInEvent(QFocusEvent *)
     passed in the \a event parameter.
 
     A widget normally must setFocusPolicy() to something other than
-    Qt::NoFocus to receive focus events. (Note that the
+    BobUI::NoFocus to receive focus events. (Note that the
     application programmer can call setFocus() on any widget, even
     those that do not normally accept focus.)
 
@@ -9796,12 +9796,12 @@ void QWidget::focusInEvent(QFocusEvent *)
 
 void QWidget::focusOutEvent(QFocusEvent *)
 {
-    if (focusPolicy() != Qt::NoFocus || !isWindow())
+    if (focusPolicy() != BobUI::NoFocus || !isWindow())
         update();
 
-#if !defined(QT_PLATFORM_UIKIT)
-    // FIXME: revisit autoSIP logic, QTBUG-42906
-    if (qApp->autoSipEnabled() && testAttribute(Qt::WA_InputMethodEnabled))
+#if !defined(BOBUI_PLATFORM_UIKIT)
+    // FIXME: revisit autoSIP logic, BOBUIBUG-42906
+    if (qApp->autoSipEnabled() && testAttribute(BobUI::WA_InputMethodEnabled))
         QGuiApplication::inputMethod()->hide();
 #endif
 }
@@ -9857,11 +9857,11 @@ void QWidget::leaveEvent(QEvent *)
     some slow widgets need to optimize by painting only the requested region:
     QPaintEvent::region(). This speed optimization does not change the result,
     as painting is clipped to that region during event processing. QListView
-    and QTableView do this, for example.
+    and BOBUIableView do this, for example.
 
-    Qt also tries to speed up painting by merging multiple paint events into
+    BobUI also tries to speed up painting by merging multiple paint events into
     one. When update() is called several times or the window system sends
-    several paint events, Qt merges these events into one event with a larger
+    several paint events, BobUI merges these events into one event with a larger
     region (see QRegion::united()). The repaint() function does not permit this
     optimization, so we suggest using update() whenever possible.
 
@@ -9870,7 +9870,7 @@ void QWidget::leaveEvent(QEvent *)
 
     The background can be set using setBackgroundRole() and setPalette().
 
-    Since Qt 4.0, QWidget automatically double-buffers its painting, so there
+    Since BobUI 4.0, QWidget automatically double-buffers its painting, so there
     is no need to write double-buffering code in paintEvent() to avoid flicker.
 
     \note Generally, you should refrain from calling update() or repaint()
@@ -9878,8 +9878,8 @@ void QWidget::leaveEvent(QEvent *)
     children inside a paintEvent() results in undefined behavior; the child may
     or may not get a paint event.
 
-    \warning If you are using a custom paint engine without Qt's backingstore,
-    Qt::WA_PaintOnScreen must be set. Otherwise, QWidget::paintEngine() will
+    \warning If you are using a custom paint engine without BobUI's backingstore,
+    BobUI::WA_PaintOnScreen must be set. Otherwise, QWidget::paintEngine() will
     never be called; the backingstore will be used instead.
 
     \sa event(), repaint(), update(), QPainter, QPixmap, QPaintEvent,
@@ -9929,7 +9929,7 @@ void QWidget::resizeEvent(QResizeEvent * /* event */)
 {
 }
 
-#ifndef QT_NO_ACTION
+#ifndef BOBUI_NO_ACTION
 /*!
     \fn void QWidget::actionEvent(QActionEvent *event)
 
@@ -9945,7 +9945,7 @@ void QWidget::actionEvent(QActionEvent *)
 #endif
 
 /*!
-    This event handler is called with the given \a event when Qt receives a window
+    This event handler is called with the given \a event when BobUI receives a window
     close request for a top-level widget from the window system.
 
     By default, the event is accepted and the widget is closed. You can reimplement
@@ -9964,13 +9964,13 @@ void QWidget::closeEvent(QCloseEvent *event)
     event->accept();
 }
 
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
 /*!
     This event handler, for event \a event, can be reimplemented in a
     subclass to receive widget context menu events.
 
     The handler is called when the widget's \l contextMenuPolicy is
-    Qt::DefaultContextMenu.
+    BobUI::DefaultContextMenu.
 
     The default implementation ignores the context event.
     See the \l QContextMenuEvent documentation for more details.
@@ -9982,7 +9982,7 @@ void QWidget::contextMenuEvent(QContextMenuEvent *event)
 {
     event->ignore();
 }
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
 
 
 /*!
@@ -9991,7 +9991,7 @@ void QWidget::contextMenuEvent(QContextMenuEvent *event)
     is called when the state of the input method changes.
 
     Note that when creating custom text editing widgets, the
-    Qt::WA_InputMethodEnabled window attribute must be set explicitly
+    BobUI::WA_InputMethodEnabled window attribute must be set explicitly
     (using the setAttribute() function) in order to receive input
     method events.
 
@@ -10016,19 +10016,19 @@ void QWidget::inputMethodEvent(QInputMethodEvent *event)
 
     \sa inputMethodEvent(), QInputMethodEvent, QInputMethodQueryEvent, inputMethodHints
 */
-QVariant QWidget::inputMethodQuery(Qt::InputMethodQuery query) const
+QVariant QWidget::inputMethodQuery(BobUI::InputMethodQuery query) const
 {
     switch(query) {
-    case Qt::ImCursorRectangle:
+    case BobUI::ImCursorRectangle:
         return QRect(width()/2, 0, 1, height());
-    case Qt::ImFont:
+    case BobUI::ImFont:
         return font();
-    case Qt::ImAnchorPosition:
+    case BobUI::ImAnchorPosition:
         // Fallback.
-        return inputMethodQuery(Qt::ImCursorPosition);
-    case Qt::ImHints:
+        return inputMethodQuery(BobUI::ImCursorPosition);
+    case BobUI::ImHints:
         return (int)inputMethodHints();
-    case Qt::ImInputItemClipRectangle:
+    case BobUI::ImInputItemClipRectangle:
         return d_func()->clipRect();
     default:
         return QVariant();
@@ -10041,7 +10041,7 @@ QVariant QWidget::inputMethodQuery(Qt::InputMethodQuery query) const
 
     This is only relevant for input widgets. It is used by
     the input method to retrieve hints as to how the input method
-    should operate. For example, if the Qt::ImhFormattedNumbersOnly flag
+    should operate. For example, if the BobUI::ImhFormattedNumbersOnly flag
     is set, the input method may change its visual components to reflect
     that only numbers can be entered.
 
@@ -10054,15 +10054,15 @@ QVariant QWidget::inputMethodQuery(Qt::InputMethodQuery query) const
           sure that a certain type of characters are entered,
           you should also set a QValidator on the widget.
 
-    The default value is Qt::ImhNone.
+    The default value is BobUI::ImhNone.
 
     \since 4.6
 
     \sa inputMethodQuery()
 */
-Qt::InputMethodHints QWidget::inputMethodHints() const
+BobUI::InputMethodHints QWidget::inputMethodHints() const
 {
-#if QT_CONFIG(im)
+#if BOBUI_CONFIG(im)
     const QWidgetPrivate *priv = d_func();
     while (priv->inheritsInputMethodHints) {
         priv = priv->q_func()->parentWidget()->d_func();
@@ -10070,26 +10070,26 @@ Qt::InputMethodHints QWidget::inputMethodHints() const
     }
     return priv->imHints;
 #else
-    return Qt::ImhNone;
+    return BobUI::ImhNone;
 #endif
 }
 
-void QWidget::setInputMethodHints(Qt::InputMethodHints hints)
+void QWidget::setInputMethodHints(BobUI::InputMethodHints hints)
 {
-#ifndef QT_NO_IM
+#ifndef BOBUI_NO_IM
     Q_D(QWidget);
     if (d->imHints == hints)
         return;
     d->imHints = hints;
     if (this == QGuiApplication::focusObject())
-        QGuiApplication::inputMethod()->update(Qt::ImHints);
+        QGuiApplication::inputMethod()->update(BobUI::ImHints);
 #else
     Q_UNUSED(hints);
-#endif //QT_NO_IM
+#endif //BOBUI_NO_IM
 }
 
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 
 /*!
     \fn void QWidget::dragEnterEvent(QDragEnterEvent *event)
@@ -10158,7 +10158,7 @@ void QWidget::dropEvent(QDropEvent *)
 {
 }
 
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
 
 /*!
     \fn void QWidget::showEvent(QShowEvent *event)
@@ -10211,16 +10211,16 @@ void QWidget::hideEvent(QHideEvent *)
     which are passed in the \a message parameter.
 
     In your reimplementation of this function, if you want to stop the
-    event being handled by Qt, return true and set \a result. The \a result
+    event being handled by BobUI, return true and set \a result. The \a result
     parameter has meaning only on Windows. If you return false, this native
-    event is passed back to Qt, which translates the event into a Qt event
+    event is passed back to BobUI, which translates the event into a BobUI event
     and sends it to the widget.
 
     \note Events are only delivered to this event handler if the widget
     has a native window handle.
 
     \note This function superseedes the event filter functions
-    x11Event(), winEvent() and macEvent() of Qt 4.
+    x11Event(), winEvent() and macEvent() of BobUI 4.
 
     \sa QAbstractNativeEventFilter
 
@@ -10418,7 +10418,7 @@ QLayout *QWidget::takeLayout()
     vertically. The same applies to lineedit controls (such as
     QLineEdit, QSpinBox or an editable QComboBox) and other
     horizontally orientated widgets (such as QProgressBar).
-    QToolButton's are normally square, so they allow growth in both
+    BOBUIoolButton's are normally square, so they allow growth in both
     directions. Widgets that support different directions (such as
     QSlider, QScrollBar or QHeader) specify stretching in the
     respective direction only. Widgets that can provide scroll bars
@@ -10437,7 +10437,7 @@ QSizePolicy QWidget::sizePolicy() const
 void QWidget::setSizePolicy(QSizePolicy policy)
 {
     Q_D(QWidget);
-    setAttribute(Qt::WA_WState_OwnSizePolicy);
+    setAttribute(BobUI::WA_WState_OwnSizePolicy);
     if (policy == d->size_policy)
         return;
 
@@ -10446,7 +10446,7 @@ void QWidget::setSizePolicy(QSizePolicy policy)
 
     d->size_policy = policy;
 
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
     if (const auto &extra = d->extra) {
         if (extra->proxyWidget)
             extra->proxyWidget->setSizePolicy(policy);
@@ -10545,7 +10545,7 @@ QWidget *QWidgetPrivate::childAtRecursiveHelper(const QPointF &p, bool ignoreChi
 {
     for (int i = children.size() - 1; i >= 0; --i) {
         QWidget *child = qobject_cast<QWidget *>(children.at(i));
-        if (!child || child->isWindow() || child->isHidden() || child->testAttribute(Qt::WA_TransparentForMouseEvents)
+        if (!child || child->isWindow() || child->isHidden() || child->testAttribute(BobUI::WA_TransparentForMouseEvents)
             || (ignoreChildrenInDestructor && child->data->in_destructor)) {
             continue;
         }
@@ -10604,14 +10604,14 @@ void QWidget::updateGeometry()
 
 /*! \property QWidget::windowFlags
 
-    Window flags are a combination of a type (e.g. Qt::Dialog) and
+    Window flags are a combination of a type (e.g. BobUI::Dialog) and
     zero or more hints to the window system (e.g.
-    Qt::FramelessWindowHint).
+    BobUI::FramelessWindowHint).
 
-    If the widget had type Qt::Widget or Qt::SubWindow and becomes a
-    window (Qt::Window, Qt::Dialog, etc.), it is put at position (0,
+    If the widget had type BobUI::Widget or BobUI::SubWindow and becomes a
+    window (BobUI::Window, BobUI::Dialog, etc.), it is put at position (0,
     0) on the desktop. If the widget is a window and becomes a
-    Qt::Widget or Qt::SubWindow, it is put at position (0, 0)
+    BobUI::Widget or BobUI::SubWindow, it is put at position (0, 0)
     relative to its parent widget.
 
     \note This function calls setParent() when changing the flags for
@@ -10620,7 +10620,7 @@ void QWidget::updateGeometry()
 
     \sa windowType(), setWindowFlag(), {Window Flags Example}
 */
-void QWidget::setWindowFlags(Qt::WindowFlags flags)
+void QWidget::setWindowFlags(BobUI::WindowFlags flags)
 {
     Q_D(QWidget);
     d->setWindowFlags(flags);
@@ -10638,7 +10638,7 @@ void QWidget::setWindowFlags(Qt::WindowFlags flags)
 
     \sa setWindowFlags(), windowFlags(), windowType()
 */
-void QWidget::setWindowFlag(Qt::WindowType flag, bool on)
+void QWidget::setWindowFlag(BobUI::WindowType flag, bool on)
 {
     Q_D(QWidget);
     if (on)
@@ -10651,14 +10651,14 @@ void QWidget::setWindowFlag(Qt::WindowType flag, bool on)
 
     Implemented in QWidgetPrivate so that QMdiSubWindowPrivate can reimplement it.
 */
-void QWidgetPrivate::setWindowFlags(Qt::WindowFlags flags)
+void QWidgetPrivate::setWindowFlags(BobUI::WindowFlags flags)
 {
     Q_Q(QWidget);
-#if QT_DEPRECATED_SINCE(6, 11)
-    QT_IGNORE_DEPRECATIONS(
-    if (flags.testFlag(Qt::WindowType::Desktop)) {
-        qWarning() << "Qt::WindowType::Desktop has been deprecated in Qt 6. Ignoring.";
-        flags.setFlag(Qt::WindowType::Desktop, false);
+#if BOBUI_DEPRECATED_SINCE(6, 11)
+    BOBUI_IGNORE_DEPRECATIONS(
+    if (flags.testFlag(BobUI::WindowType::Desktop)) {
+        qWarning() << "BobUI::WindowType::Desktop has been deprecated in BobUI 6. Ignoring.";
+        flags.setFlag(BobUI::WindowType::Desktop, false);
     }
     )
 #endif
@@ -10666,18 +10666,18 @@ void QWidgetPrivate::setWindowFlags(Qt::WindowFlags flags)
     if (q->data->window_flags == flags)
         return;
 
-    if ((q->data->window_flags | flags) & Qt::Window) {
+    if ((q->data->window_flags | flags) & BobUI::Window) {
         // the old type was a window and/or the new type is a window
         QPoint oldPos = q->pos();
         bool visible = q->isVisible();
-        const bool windowFlagChanged = (q->data->window_flags ^ flags) & Qt::Window;
+        const bool windowFlagChanged = (q->data->window_flags ^ flags) & BobUI::Window;
         q->setParent(q->parentWidget(), flags);
 
         // if both types are windows or neither of them are, we restore
         // the old position
-        if (!windowFlagChanged && (visible || q->testAttribute(Qt::WA_Moved)))
+        if (!windowFlagChanged && (visible || q->testAttribute(BobUI::WA_Moved)))
             q->move(oldPos);
-        // for backward-compatibility we change Qt::WA_QuitOnClose attribute value only when the window was recreated.
+        // for backward-compatibility we change BobUI::WA_QuitOnClose attribute value only when the window was recreated.
         adjustQuitOnCloseAttribute();
     } else {
         q->data->window_flags = flags;
@@ -10693,16 +10693,16 @@ void QWidgetPrivate::setWindowFlags(Qt::WindowFlags flags)
 
     \sa setWindowFlags()
 */
-void QWidget::overrideWindowFlags(Qt::WindowFlags flags)
+void QWidget::overrideWindowFlags(BobUI::WindowFlags flags)
 {
     data->window_flags = flags;
 }
 
 /*!
-    \fn Qt::WindowType QWidget::windowType() const
+    \fn BobUI::WindowType QWidget::windowType() const
 
     Returns the window type of this widget. This is identical to
-    windowFlags() & Qt::WindowType_Mask.
+    windowFlags() & BobUI::WindowType_Mask.
 
     \sa windowFlags
 */
@@ -10739,7 +10739,7 @@ void QWidget::setParent(QWidget *parent)
 {
     if (parent == parentWidget())
         return;
-    setParent((QWidget*)parent, windowFlags() & ~Qt::WindowType_Mask);
+    setParent((QWidget*)parent, windowFlags() & ~BobUI::WindowType_Mask);
 }
 
 void qSendWindowChangeToTextureChildrenRecursively(QWidget *widget, QEvent::Type eventType)
@@ -10769,11 +10769,11 @@ void qSendWindowChangeToTextureChildrenRecursively(QWidget *widget, QEvent::Type
     This function also takes widget flags, \a f as an argument.
 */
 
-void QWidget::setParent(QWidget *parent, Qt::WindowFlags f)
+void QWidget::setParent(QWidget *parent, BobUI::WindowFlags f)
 {
     Q_D(QWidget);
     Q_ASSERT_X(this != parent, Q_FUNC_INFO, "Cannot parent a QWidget to itself");
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
     const auto checkForParentChildLoops = qScopeGuard([&](){
         int depth = 0;
         auto p = parentWidget();
@@ -10788,26 +10788,26 @@ void QWidget::setParent(QWidget *parent, Qt::WindowFlags f)
     });
 #endif
 
-    const bool resized = testAttribute(Qt::WA_Resized);
-    const bool wasCreated = testAttribute(Qt::WA_WState_Created);
+    const bool resized = testAttribute(BobUI::WA_Resized);
+    const bool wasCreated = testAttribute(BobUI::WA_WState_Created);
     QWidget *oldtlw = window();
     Q_ASSERT(oldtlw);
     QWidget *oldParentWithWindow = d->closestParentWidgetWithWindowHandle();
 
-    if (f & Qt::Window) // Frame geometry likely changes, refresh.
+    if (f & BobUI::Window) // Frame geometry likely changes, refresh.
         d->data.fstrut_dirty = true;
 
     bool newParent = (parent != parentWidget());
 
     if (newParent && parent) {
-        if (testAttribute(Qt::WA_NativeWindow) && !QCoreApplication::testAttribute(Qt::AA_DontCreateNativeWidgetSiblings))
+        if (testAttribute(BobUI::WA_NativeWindow) && !QCoreApplication::testAttribute(BobUI::AA_DontCreateNativeWidgetSiblings))
             parent->d_func()->enforceNativeChildren();
-        else if (parent->d_func()->nativeChildrenForced() || parent->testAttribute(Qt::WA_PaintOnScreen))
-            setAttribute(Qt::WA_NativeWindow);
+        else if (parent->d_func()->nativeChildrenForced() || parent->testAttribute(BobUI::WA_PaintOnScreen))
+            setAttribute(BobUI::WA_NativeWindow);
     }
 
     if (wasCreated) {
-        if (!testAttribute(Qt::WA_WState_Hidden)) {
+        if (!testAttribute(BobUI::WA_WState_Hidden)) {
             // Hiding the widget will set WA_WState_Hidden as well, which would
             // normally require the widget to be explicitly shown again to become
             // visible, even as a child widget. But we refine this value later in
@@ -10822,7 +10822,7 @@ void QWidget::setParent(QWidget *parent, Qt::WindowFlags f)
             // Though it can be argued that ExplicitShowHide should reflect the
             // last update of the widget's state, so if we hide the widget as a
             // side effect of changing parent, perhaps we _should_ reset it?
-            setAttribute(Qt::WA_WState_ExplicitShowHide, false);
+            setAttribute(BobUI::WA_WState_ExplicitShowHide, false);
         }
         if (newParent) {
             QEvent e(QEvent::ParentAboutToChange);
@@ -10839,7 +10839,7 @@ void QWidget::setParent(QWidget *parent, Qt::WindowFlags f)
 
     // If we get parented into another window, children will be folded
     // into the new parent's focus chain, so clear focus now.
-    if (newParent && isAncestorOf(focusWidget()) && !(f & Qt::Window))
+    if (newParent && isAncestorOf(focusWidget()) && !(f & BobUI::Window))
         focusWidget()->clearFocus();
 
     d->setParent_sys(parent, f);
@@ -10858,13 +10858,13 @@ void QWidget::setParent(QWidget *parent, Qt::WindowFlags f)
     }
 
     d->reparentFocusWidgets(oldtlw);
-    setAttribute(Qt::WA_Resized, resized);
+    setAttribute(BobUI::WA_Resized, resized);
 
     const bool useStyleSheetPropagationInWidgetStyles =
-        QCoreApplication::testAttribute(Qt::AA_UseStyleSheetPropagationInWidgetStyles);
+        QCoreApplication::testAttribute(BobUI::AA_UseStyleSheetPropagationInWidgetStyles);
 
-    if (!useStyleSheetPropagationInWidgetStyles && !testAttribute(Qt::WA_StyleSheet)
-        && (!parent || !parent->testAttribute(Qt::WA_StyleSheet))) {
+    if (!useStyleSheetPropagationInWidgetStyles && !testAttribute(BobUI::WA_StyleSheet)
+        && (!parent || !parent->testAttribute(BobUI::WA_StyleSheet))) {
         // if the parent has a font set or inherited, then propagate the mask to the new child
         if (parent) {
             const auto pd = parent->d_func();
@@ -10879,18 +10879,18 @@ void QWidget::setParent(QWidget *parent, Qt::WindowFlags f)
 
     // Note: GL widgets under WGL or EGL will always need a ParentChange
     // event to handle recreation/rebinding of the GL context, hence the
-    // (f & Qt::MSWindowsOwnDC) clause (which is set on QGLWidgets on all
+    // (f & BobUI::MSWindowsOwnDC) clause (which is set on QGLWidgets on all
     // platforms).
     if (newParent || !wasCreated
-#if QT_CONFIG(opengles2)
-        || (f & Qt::MSWindowsOwnDC)
+#if BOBUI_CONFIG(opengles2)
+        || (f & BobUI::MSWindowsOwnDC)
 #endif
         ) {
         // propagate enabled updates enabled state to non-windows
         if (!isWindow()) {
-            if (!testAttribute(Qt::WA_ForceDisabled))
+            if (!testAttribute(BobUI::WA_ForceDisabled))
                 d->setEnabled_helper(parent ? parent->isEnabled() : true);
-            if (!testAttribute(Qt::WA_ForceUpdatesDisabled))
+            if (!testAttribute(BobUI::WA_ForceUpdatesDisabled))
                 d->setUpdatesEnabled_helper(parent ? parent->updatesEnabled() : true);
         }
         d->inheritStyle();
@@ -10917,14 +10917,14 @@ void QWidget::setParent(QWidget *parent, Qt::WindowFlags f)
 
     if (!wasCreated) {
         if (isWindow() || parentWidget()->isVisible())
-            setAttribute(Qt::WA_WState_Hidden, true);
-        else if (!testAttribute(Qt::WA_WState_ExplicitShowHide))
-            setAttribute(Qt::WA_WState_Hidden, false);
+            setAttribute(BobUI::WA_WState_Hidden, true);
+        else if (!testAttribute(BobUI::WA_WState_ExplicitShowHide))
+            setAttribute(BobUI::WA_WState_Hidden, false);
     }
 
     d->updateIsOpaque();
 
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
     // Embed the widget into a proxy if the parent is embedded.
     // ### Doesn't handle reparenting out of an embedded widget.
     if (oldtlw->graphicsProxyWidget()) {
@@ -10987,7 +10987,7 @@ void QWidget::setParent(QWidget *parent, Qt::WindowFlags f)
         }
     }
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     if (QGuiApplicationPrivate::is_app_running && !QGuiApplicationPrivate::is_app_closing) {
         QAccessibleEvent qaEvent(this, QAccessible::ParentChanged);
         QAccessible::updateAccessibility(&qaEvent);
@@ -10996,27 +10996,27 @@ void QWidget::setParent(QWidget *parent, Qt::WindowFlags f)
 
 }
 
-void QWidgetPrivate::setParent_sys(QWidget *newparent, Qt::WindowFlags f)
+void QWidgetPrivate::setParent_sys(QWidget *newparent, BobUI::WindowFlags f)
 {
     Q_Q(QWidget);
 
-    Qt::WindowFlags oldFlags = data.window_flags;
-    bool wasCreated = q->testAttribute(Qt::WA_WState_Created);
+    BobUI::WindowFlags oldFlags = data.window_flags;
+    bool wasCreated = q->testAttribute(BobUI::WA_WState_Created);
 
     QScreen *targetScreen = nullptr;
     setWinId(0);
 
     if (!newparent) {
-        f |= Qt::Window;
+        f |= BobUI::Window;
         if (parent)
             targetScreen = q->parentWidget()->window()->screen();
     }
 
     const bool destroyWindow = (
         // Reparenting top level to child
-        (oldFlags & Qt::Window) && !(f & Qt::Window)
+        (oldFlags & BobUI::Window) && !(f & BobUI::Window)
         // And we can dispose of the window
-        && wasCreated && !q->testAttribute(Qt::WA_NativeWindow)
+        && wasCreated && !q->testAttribute(BobUI::WA_NativeWindow)
     );
 
     if (parent != newparent) {
@@ -11038,7 +11038,7 @@ void QWidgetPrivate::setParent_sys(QWidget *newparent, Qt::WindowFlags f)
             // QWindow should be a top level (with a transient parent) or not. This
             // widget has not updated its window flags yet, so we can't ask the widget
             // directly at that point. Nor can we use the QWindow flags, as unlike QWidgets
-            // the QWindow flags always reflect Qt::Window, even for child windows. And
+            // the QWindow flags always reflect BobUI::Window, even for child windows. And
             // we can't use QWindow::isTopLevel() either, as that depends on the parent,
             // which we are in the process of updating. So we propagate the
             // new flags of the reparented window here.
@@ -11074,33 +11074,33 @@ void QWidgetPrivate::setParent_sys(QWidget *newparent, Qt::WindowFlags f)
 
     adjustFlags(f, q);
     data.window_flags = f;
-    q->setAttribute(Qt::WA_WState_Created, false);
-    q->setAttribute(Qt::WA_WState_Visible, false);
-    q->setAttribute(Qt::WA_WState_Hidden, false);
+    q->setAttribute(BobUI::WA_WState_Created, false);
+    q->setAttribute(BobUI::WA_WState_Visible, false);
+    q->setAttribute(BobUI::WA_WState_Hidden, false);
 
-    if (newparent && wasCreated && (q->testAttribute(Qt::WA_NativeWindow) || (f & Qt::Window)))
+    if (newparent && wasCreated && (q->testAttribute(BobUI::WA_NativeWindow) || (f & BobUI::Window)))
         q->createWinId();
 
     if (q->isWindow() || (!newparent || newparent->isVisible()) || explicitlyHidden)
-        q->setAttribute(Qt::WA_WState_Hidden);
-    q->setAttribute(Qt::WA_WState_ExplicitShowHide, explicitlyHidden);
+        q->setAttribute(BobUI::WA_WState_Hidden);
+    q->setAttribute(BobUI::WA_WState_ExplicitShowHide, explicitlyHidden);
 
     // move the window to the selected screen
     if (!newparent && targetScreen) {
         // only if it is already created
-        if (q->testAttribute(Qt::WA_WState_Created))
+        if (q->testAttribute(BobUI::WA_WState_Created))
             q->windowHandle()->setScreen(targetScreen);
         else
             topData()->initialScreen = targetScreen;
     }
 }
 
-void QWidgetPrivate::reparentWidgetWindows(QWidget *parentWithWindow, Qt::WindowFlags windowFlags)
+void QWidgetPrivate::reparentWidgetWindows(QWidget *parentWithWindow, BobUI::WindowFlags windowFlags)
 {
     if (QWindow *window = windowHandle()) {
         // Reparent this QWindow, and all QWindow children will follow
         if (parentWithWindow) {
-            if (windowFlags & Qt::Window) {
+            if (windowFlags & BobUI::Window) {
                 // Top level windows can only have transient parents,
                 // and the transient parent must be another top level.
                 QWidget *topLevel = parentWithWindow->window();
@@ -11142,14 +11142,14 @@ void QWidgetPrivate::reparentWidgetWindowChildren(QWidget *parentWithWindow)
     right and \a dy downward. Both \a dx and \a dy may be negative.
 
     After scrolling, the widgets will receive paint events for
-    the areas that need to be repainted. For widgets that Qt knows to
+    the areas that need to be repainted. For widgets that BobUI knows to
     be opaque, this is only the newly exposed parts.
     For example, if an opaque widget is scrolled 8 pixels to the left,
     only an 8-pixel wide stripe at the right edge needs updating.
 
     Since widgets propagate the contents of their parents by default,
     you need to set the \l autoFillBackground property, or use
-    setAttribute() to set the Qt::WA_OpaquePaintEvent attribute, to make
+    setAttribute() to set the BobUI::WA_OpaquePaintEvent attribute, to make
     a widget opaque.
 
     For widgets that use contents propagation, a scroll will cause an
@@ -11165,7 +11165,7 @@ void QWidget::scroll(int dx, int dy)
     if (dx == 0 && dy == 0)
         return;
     Q_D(QWidget);
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
     if (QGraphicsProxyWidget *proxy = QWidgetPrivate::nearestGraphicsProxyWidget(this)) {
         // Graphics View maintains its own dirty region as a list of rects;
         // until we can connect item updates directly to the view, we must
@@ -11173,7 +11173,7 @@ void QWidget::scroll(int dx, int dy)
         for (const QRect &rect : d->dirty)
             proxy->update(rect.translated(dx, dy));
         proxy->scroll(dx, dy, proxy->subWidgetRect(this));
-        d->scrollChildren(dx, dy); // QTBUG-138381: scroll item view cell widgets
+        d->scrollChildren(dx, dy); // BOBUIBUG-138381: scroll item view cell widgets
         return;
     }
 #endif
@@ -11206,7 +11206,7 @@ void QWidget::scroll(int dx, int dy, const QRect &r)
     if (dx == 0 && dy == 0)
         return;
     Q_D(QWidget);
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
     if (QGraphicsProxyWidget *proxy = QWidgetPrivate::nearestGraphicsProxyWidget(this)) {
         // Graphics View maintains its own dirty region as a list of rects;
         // until we can connect item updates directly to the view, we must
@@ -11233,7 +11233,7 @@ void QWidgetPrivate::scroll_sys(int dx, int dy, const QRect &r)
 
     We suggest only using repaint() if you need an immediate repaint,
     for example during animation. In most circumstances update()
-    is better, as it permits Qt to optimize for speed and minimize
+    is better, as it permits BobUI to optimize for speed and minimize
     flicker.
 
     \warning If you call repaint() in a function which may itself be
@@ -11298,7 +11298,7 @@ void QWidgetPrivate::repaint(T r)
     if (!q->isVisible() || !q->updatesEnabled() || r.isEmpty())
         return;
 
-    QTLWExtra *tlwExtra = q->window()->d_func()->maybeTopData();
+    BOBUILWExtra *tlwExtra = q->window()->d_func()->maybeTopData();
     if (tlwExtra && tlwExtra->backingStore && tlwExtra->repaintManager)
         tlwExtra->repaintManager->markDirty(r, q, QWidgetRepaintManager::UpdateNow);
 }
@@ -11308,15 +11308,15 @@ void QWidgetPrivate::repaint(T r)
     hidden.
 
     This function does not cause an immediate repaint; instead it
-    schedules a paint event for processing when Qt returns to the main
-    event loop. This permits Qt to optimize for more speed and less
+    schedules a paint event for processing when BobUI returns to the main
+    event loop. This permits BobUI to optimize for more speed and less
     flicker than a call to repaint() does.
 
     Calling update() several times normally results in just one
     paintEvent() call.
 
-    Qt normally erases the widget's area before the paintEvent() call.
-    If the Qt::WA_OpaquePaintEvent widget attribute is set, the widget is
+    BobUI normally erases the widget's area before the paintEvent() call.
+    If the BobUI::WA_OpaquePaintEvent widget attribute is set, the widget is
     responsible for painting all its pixels with an opaque color.
 
     \sa repaint(), paintEvent(), setUpdatesEnabled(), {Analog Clock}
@@ -11373,12 +11373,12 @@ void QWidgetPrivate::update(T r)
     if (clipped.isEmpty())
         return;
 
-    if (q->testAttribute(Qt::WA_WState_InPaintEvent)) {
+    if (q->testAttribute(BobUI::WA_WState_InPaintEvent)) {
         QCoreApplication::postEvent(q, new QUpdateLaterEvent(clipped));
         return;
     }
 
-    QTLWExtra *tlwExtra = q->window()->d_func()->maybeTopData();
+    BOBUILWExtra *tlwExtra = q->window()->d_func()->maybeTopData();
     if (tlwExtra && tlwExtra->backingStore && tlwExtra->repaintManager)
         tlwExtra->repaintManager->markDirty(clipped, q);
 }
@@ -11388,7 +11388,7 @@ void QWidgetPrivate::update(T r)
 
   This just sets the corresponding attribute bit to 1 or 0
  */
-static void setAttribute_internal(Qt::WidgetAttribute attribute, bool on, QWidgetData *data,
+static void setAttribute_internal(BobUI::WidgetAttribute attribute, bool on, QWidgetData *data,
                                   QWidgetPrivate *d)
 {
     if (attribute < int(8*sizeof(uint))) {
@@ -11414,10 +11414,10 @@ void QWidgetPrivate::macUpdateSizeAttribute()
     QCoreApplication::sendEvent(q, &event);
     for (int i = 0; i < children.size(); ++i) {
         QWidget *w = qobject_cast<QWidget *>(children.at(i));
-        if (w && (!w->isWindow() || w->testAttribute(Qt::WA_WindowPropagation))
-              && !w->testAttribute(Qt::WA_MacMiniSize) // no attribute set? inherit from parent
-              && !w->testAttribute(Qt::WA_MacSmallSize)
-              && !w->testAttribute(Qt::WA_MacNormalSize))
+        if (w && (!w->isWindow() || w->testAttribute(BobUI::WA_WindowPropagation))
+              && !w->testAttribute(BobUI::WA_MacMiniSize) // no attribute set? inherit from parent
+              && !w->testAttribute(BobUI::WA_MacSmallSize)
+              && !w->testAttribute(BobUI::WA_MacNormalSize))
             w->d_func()->macUpdateSizeAttribute();
     }
     resolveFont();
@@ -11430,11 +11430,11 @@ void QWidgetPrivate::macUpdateSizeAttribute()
 
     \sa testAttribute()
 */
-void QWidget::setAttribute(Qt::WidgetAttribute attribute, bool on)
+void QWidget::setAttribute(BobUI::WidgetAttribute attribute, bool on)
 {
     Q_D(QWidget);
 
-    if (attribute == Qt::WA_ContentsMarginsRespectsSafeArea) {
+    if (attribute == BobUI::WA_ContentsMarginsRespectsSafeArea) {
         if (isWindow()) {
             auto *topExtra = d->topData();
             topExtra->explicitContentsMarginsRespectsSafeArea = true;
@@ -11444,12 +11444,12 @@ void QWidget::setAttribute(Qt::WidgetAttribute attribute, bool on)
     if (testAttribute(attribute) == on)
         return;
 
-    static_assert(sizeof(d->high_attributes)*8 >= (Qt::WA_AttributeCount - sizeof(uint)*8),
+    static_assert(sizeof(d->high_attributes)*8 >= (BobUI::WA_AttributeCount - sizeof(uint)*8),
                       "QWidget::setAttribute(WidgetAttribute, bool): "
                       "QWidgetPrivate::high_attributes[] too small to contain all attributes in WidgetAttribute");
 #ifdef Q_OS_WIN
     // ### Don't use PaintOnScreen+paintEngine() to do native painting in some future release
-    if (attribute == Qt::WA_PaintOnScreen && on && !inherits("QGLWidget")) {
+    if (attribute == BobUI::WA_PaintOnScreen && on && !inherits("QGLWidget")) {
         // see ::paintEngine for details
         paintEngine();
         if (d->noPaintOnScreen)
@@ -11458,7 +11458,7 @@ void QWidget::setAttribute(Qt::WidgetAttribute attribute, bool on)
 #endif
 
     // Don't set WA_NativeWindow on platforms that don't support it -- except for QGLWidget, which depends on it
-    if (attribute == Qt::WA_NativeWindow && !d->mustHaveWindowHandle) {
+    if (attribute == BobUI::WA_NativeWindow && !d->mustHaveWindowHandle) {
         QPlatformIntegration *platformIntegration = QGuiApplicationPrivate::platformIntegration();
         if (!platformIntegration->hasCapability(QPlatformIntegration::NativeWidgets))
             return;
@@ -11468,40 +11468,40 @@ void QWidget::setAttribute(Qt::WidgetAttribute attribute, bool on)
 
     switch (attribute) {
 
-#if QT_CONFIG(draganddrop)
-    case Qt::WA_AcceptDrops:  {
-        if (on && !testAttribute(Qt::WA_DropSiteRegistered))
-            setAttribute(Qt::WA_DropSiteRegistered, true);
-        else if (!on && (isWindow() || !parentWidget() || !parentWidget()->testAttribute(Qt::WA_DropSiteRegistered)))
-            setAttribute(Qt::WA_DropSiteRegistered, false);
+#if BOBUI_CONFIG(draganddrop)
+    case BobUI::WA_AcceptDrops:  {
+        if (on && !testAttribute(BobUI::WA_DropSiteRegistered))
+            setAttribute(BobUI::WA_DropSiteRegistered, true);
+        else if (!on && (isWindow() || !parentWidget() || !parentWidget()->testAttribute(BobUI::WA_DropSiteRegistered)))
+            setAttribute(BobUI::WA_DropSiteRegistered, false);
         QEvent e(QEvent::AcceptDropsChange);
         QCoreApplication::sendEvent(this, &e);
         break;
     }
-    case Qt::WA_DropSiteRegistered:  {
+    case BobUI::WA_DropSiteRegistered:  {
         for (int i = 0; i < d->children.size(); ++i) {
             QWidget *w = qobject_cast<QWidget *>(d->children.at(i));
-            if (w && !w->isWindow() && !w->testAttribute(Qt::WA_AcceptDrops) && w->testAttribute(Qt::WA_DropSiteRegistered) != on)
-                w->setAttribute(Qt::WA_DropSiteRegistered, on);
+            if (w && !w->isWindow() && !w->testAttribute(BobUI::WA_AcceptDrops) && w->testAttribute(BobUI::WA_DropSiteRegistered) != on)
+                w->setAttribute(BobUI::WA_DropSiteRegistered, on);
         }
         break;
     }
 #endif
 
-    case Qt::WA_NoChildEventsForParent:
+    case BobUI::WA_NoChildEventsForParent:
         d->sendChildEvents = !on;
         break;
-    case Qt::WA_NoChildEventsFromChildren:
+    case BobUI::WA_NoChildEventsFromChildren:
         d->receiveChildEvents = !on;
         break;
-    case Qt::WA_MacNormalSize:
-    case Qt::WA_MacSmallSize:
-    case Qt::WA_MacMiniSize:
+    case BobUI::WA_MacNormalSize:
+    case BobUI::WA_MacSmallSize:
+    case BobUI::WA_MacMiniSize:
 #ifdef Q_OS_MAC
         {
             // We can only have one of these set at a time
-            const Qt::WidgetAttribute MacSizes[] = { Qt::WA_MacNormalSize, Qt::WA_MacSmallSize,
-                                                     Qt::WA_MacMiniSize };
+            const BobUI::WidgetAttribute MacSizes[] = { BobUI::WA_MacNormalSize, BobUI::WA_MacSmallSize,
+                                                     BobUI::WA_MacMiniSize };
             for (int i = 0; i < 3; ++i) {
                 if (MacSizes[i] != attribute)
                     setAttribute_internal(MacSizes[i], false, data, d);
@@ -11510,83 +11510,83 @@ void QWidget::setAttribute(Qt::WidgetAttribute attribute, bool on)
         }
 #endif
         break;
-    case Qt::WA_ShowModal:
+    case BobUI::WA_ShowModal:
         if (!on) {
             // reset modality type to NonModal when clearing WA_ShowModal
-            data->window_modality = Qt::NonModal;
-        } else if (data->window_modality == Qt::NonModal) {
+            data->window_modality = BobUI::NonModal;
+        } else if (data->window_modality == BobUI::NonModal) {
             // If modality hasn't been set prior to setting WA_ShowModal, use
             // ApplicationModal.
-            data->window_modality = Qt::ApplicationModal;
+            data->window_modality = BobUI::ApplicationModal;
             // Some window managers do not allow us to enter modality after the
             // window is visible.The window must be hidden before changing the
             // windowModality property and then reshown.
         }
-        if (testAttribute(Qt::WA_WState_Created)) {
+        if (testAttribute(BobUI::WA_WState_Created)) {
             // don't call setModal_sys() before create()
             d->setModal_sys();
         }
         break;
-    case Qt::WA_MouseTracking: {
+    case BobUI::WA_MouseTracking: {
         QEvent e(QEvent::MouseTrackingChange);
         QCoreApplication::sendEvent(this, &e);
         break; }
-    case Qt::WA_TabletTracking: {
+    case BobUI::WA_TabletTracking: {
         QEvent e(QEvent::TabletTrackingChange);
         QCoreApplication::sendEvent(this, &e);
         break; }
-    case Qt::WA_NativeWindow: {
+    case BobUI::WA_NativeWindow: {
         d->createTLExtra();
         if (on)
             d->createTLSysExtra();
-#ifndef QT_NO_IM
+#ifndef BOBUI_NO_IM
         QWidget *focusWidget = d->effectiveFocusWidget();
         if (on && !internalWinId() && this == QGuiApplication::focusObject()
-            && focusWidget->testAttribute(Qt::WA_InputMethodEnabled)) {
+            && focusWidget->testAttribute(BobUI::WA_InputMethodEnabled)) {
             QGuiApplication::inputMethod()->commit();
-            QGuiApplication::inputMethod()->update(Qt::ImEnabled);
+            QGuiApplication::inputMethod()->update(BobUI::ImEnabled);
         }
-        if (!QCoreApplication::testAttribute(Qt::AA_DontCreateNativeWidgetSiblings) && parentWidget())
+        if (!QCoreApplication::testAttribute(BobUI::AA_DontCreateNativeWidgetSiblings) && parentWidget())
             parentWidget()->d_func()->enforceNativeChildren();
-        if (on && !internalWinId() && testAttribute(Qt::WA_WState_Created))
+        if (on && !internalWinId() && testAttribute(BobUI::WA_WState_Created))
             d->createWinId();
         if (isEnabled() && focusWidget->isEnabled() && this == QGuiApplication::focusObject()
-            && focusWidget->testAttribute(Qt::WA_InputMethodEnabled)) {
-            QGuiApplication::inputMethod()->update(Qt::ImEnabled);
+            && focusWidget->testAttribute(BobUI::WA_InputMethodEnabled)) {
+            QGuiApplication::inputMethod()->update(BobUI::ImEnabled);
         }
-#endif //QT_NO_IM
+#endif //BOBUI_NO_IM
         break;
     }
-    case Qt::WA_PaintOnScreen:
+    case BobUI::WA_PaintOnScreen:
         d->updateIsOpaque();
         Q_FALLTHROUGH();
-    case Qt::WA_OpaquePaintEvent:
+    case BobUI::WA_OpaquePaintEvent:
         d->updateIsOpaque();
         break;
-    case Qt::WA_NoSystemBackground:
+    case BobUI::WA_NoSystemBackground:
         d->updateIsOpaque();
         Q_FALLTHROUGH();
-    case Qt::WA_UpdatesDisabled:
+    case BobUI::WA_UpdatesDisabled:
         d->updateSystemBackground();
         break;
-    case Qt::WA_TransparentForMouseEvents:
+    case BobUI::WA_TransparentForMouseEvents:
         break;
-    case Qt::WA_InputMethodEnabled: {
-#ifndef QT_NO_IM
+    case BobUI::WA_InputMethodEnabled: {
+#ifndef BOBUI_NO_IM
         if (QGuiApplication::focusObject() == this) {
             if (!on)
                 QGuiApplication::inputMethod()->commit();
-            QGuiApplication::inputMethod()->update(Qt::ImEnabled);
+            QGuiApplication::inputMethod()->update(BobUI::ImEnabled);
         }
-#endif //QT_NO_IM
+#endif //BOBUI_NO_IM
         break;
     }
-    case Qt::WA_WindowPropagation:
+    case BobUI::WA_WindowPropagation:
         d->resolvePalette();
         d->resolveFont();
         d->resolveLocale();
         break;
-    case Qt::WA_DontShowOnScreen: {
+    case BobUI::WA_DontShowOnScreen: {
         if (on && isVisible()) {
             // Make sure we keep the current state and only hide the widget
             // from the desktop. show_sys will only update platform specific
@@ -11597,23 +11597,23 @@ void QWidget::setAttribute(Qt::WidgetAttribute attribute, bool on)
         break;
     }
 
-    case Qt::WA_X11NetWmWindowTypeDesktop:
-    case Qt::WA_X11NetWmWindowTypeDock:
-    case Qt::WA_X11NetWmWindowTypeToolBar:
-    case Qt::WA_X11NetWmWindowTypeMenu:
-    case Qt::WA_X11NetWmWindowTypeUtility:
-    case Qt::WA_X11NetWmWindowTypeSplash:
-    case Qt::WA_X11NetWmWindowTypeDialog:
-    case Qt::WA_X11NetWmWindowTypeDropDownMenu:
-    case Qt::WA_X11NetWmWindowTypePopupMenu:
-    case Qt::WA_X11NetWmWindowTypeToolTip:
-    case Qt::WA_X11NetWmWindowTypeNotification:
-    case Qt::WA_X11NetWmWindowTypeCombo:
-    case Qt::WA_X11NetWmWindowTypeDND:
+    case BobUI::WA_X11NetWmWindowTypeDesktop:
+    case BobUI::WA_X11NetWmWindowTypeDock:
+    case BobUI::WA_X11NetWmWindowTypeToolBar:
+    case BobUI::WA_X11NetWmWindowTypeMenu:
+    case BobUI::WA_X11NetWmWindowTypeUtility:
+    case BobUI::WA_X11NetWmWindowTypeSplash:
+    case BobUI::WA_X11NetWmWindowTypeDialog:
+    case BobUI::WA_X11NetWmWindowTypeDropDownMenu:
+    case BobUI::WA_X11NetWmWindowTypePopupMenu:
+    case BobUI::WA_X11NetWmWindowTypeToolTip:
+    case BobUI::WA_X11NetWmWindowTypeNotification:
+    case BobUI::WA_X11NetWmWindowTypeCombo:
+    case BobUI::WA_X11NetWmWindowTypeDND:
         d->setNetWmWindowTypes();
         break;
 
-    case Qt::WA_StaticContents:
+    case BobUI::WA_StaticContents:
         if (QWidgetRepaintManager *repaintManager = d->maybeRepaintManager()) {
             if (on)
                 repaintManager->addStaticWidget(this);
@@ -11621,27 +11621,27 @@ void QWidget::setAttribute(Qt::WidgetAttribute attribute, bool on)
                 repaintManager->removeStaticWidget(this);
         }
         break;
-    case Qt::WA_TranslucentBackground:
+    case BobUI::WA_TranslucentBackground:
         if (on)
-            setAttribute(Qt::WA_NoSystemBackground);
+            setAttribute(BobUI::WA_NoSystemBackground);
         d->updateIsTranslucent();
 
         break;
-    case Qt::WA_AcceptTouchEvents:
+    case BobUI::WA_AcceptTouchEvents:
         break;
     default:
         break;
     }
 }
 
-/*! \fn bool QWidget::testAttribute(Qt::WidgetAttribute attribute) const
+/*! \fn bool QWidget::testAttribute(BobUI::WidgetAttribute attribute) const
 
   Returns \c true if attribute \a attribute is set on this widget;
   otherwise returns \c false.
 
   \sa setAttribute()
  */
-bool QWidget::testAttribute_helper(Qt::WidgetAttribute attribute) const
+bool QWidget::testAttribute_helper(BobUI::WidgetAttribute attribute) const
 {
     Q_D(const QWidget);
     const int x = attribute - 8*sizeof(uint);
@@ -11687,15 +11687,15 @@ void QWidget::setWindowOpacity(qreal opacity)
         return;
 
     opacity = qBound(qreal(0.0), opacity, qreal(1.0));
-    QTLWExtra *extra = d->topData();
+    BOBUILWExtra *extra = d->topData();
     extra->opacity = uint(opacity * 255);
-    setAttribute(Qt::WA_WState_WindowOpacitySet);
+    setAttribute(BobUI::WA_WState_WindowOpacitySet);
     d->setWindowOpacity_sys(opacity);
 
-    if (!testAttribute(Qt::WA_WState_Created))
+    if (!testAttribute(BobUI::WA_WState_Created))
         return;
 
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
     if (QGraphicsProxyWidget *proxy = graphicsProxyWidget()) {
         // Avoid invalidating the cache if set.
         if (proxy->cacheMode() == QGraphicsItem::NoCache)
@@ -11740,13 +11740,13 @@ void QWidgetPrivate::setWindowOpacity_sys(qreal level)
 */
 bool QWidget::isWindowModified() const
 {
-    return testAttribute(Qt::WA_WindowModified);
+    return testAttribute(BobUI::WA_WindowModified);
 }
 
 void QWidget::setWindowModified(bool mod)
 {
     Q_D(QWidget);
-    setAttribute(Qt::WA_WindowModified, mod);
+    setAttribute(BobUI::WA_WindowModified, mod);
 
     d->setWindowModified_helper();
 
@@ -11763,7 +11763,7 @@ void QWidgetPrivate::setWindowModified_helper()
     QPlatformWindow *platformWindow = window->handle();
     if (!platformWindow)
         return;
-    bool on = q->testAttribute(Qt::WA_WindowModified);
+    bool on = q->testAttribute(BobUI::WA_WindowModified);
     if (!platformWindow->setWindowModified(on)) {
         if (Q_UNLIKELY(on && !q->windowTitle().contains("[*]"_L1)))
             qWarning("QWidget::setWindowModified: The window title does not contain a '[*]' placeholder");
@@ -11772,7 +11772,7 @@ void QWidgetPrivate::setWindowModified_helper()
     }
 }
 
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
 /*!
   \property QWidget::toolTip
 
@@ -11780,7 +11780,7 @@ void QWidgetPrivate::setWindowModified_helper()
 
   Note that by default tooltips are only shown for widgets that are
   children of the active window. You can change this behavior by
-  setting the attribute Qt::WA_AlwaysShowToolTips on the \e window,
+  setting the attribute BobUI::WA_AlwaysShowToolTips on the \e window,
   not on the widget with the tooltip.
 
   If you want to control a tooltip's behavior, you can intercept the
@@ -11789,7 +11789,7 @@ void QWidgetPrivate::setWindowModified_helper()
 
   By default, this property contains an empty string.
 
-  \sa QToolTip, statusTip, whatsThis
+  \sa BOBUIoolTip, statusTip, whatsThis
 */
 void QWidget::setToolTip(const QString &s)
 {
@@ -11829,10 +11829,10 @@ int QWidget::toolTipDuration() const
     return d->toolTipDuration;
 }
 
-#endif // QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
 
 
-#if QT_CONFIG(statustip)
+#if BOBUI_CONFIG(statustip)
 /*!
   \property QWidget::statusTip
   \brief the widget's status tip
@@ -11852,9 +11852,9 @@ QString QWidget::statusTip() const
     Q_D(const QWidget);
     return d->statusTip;
 }
-#endif // QT_CONFIG(statustip)
+#endif // BOBUI_CONFIG(statustip)
 
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
 /*!
   \property QWidget::whatsThis
 
@@ -11875,9 +11875,9 @@ QString QWidget::whatsThis() const
     Q_D(const QWidget);
     return d->whatsThis;
 }
-#endif // QT_CONFIG(whatsthis)
+#endif // BOBUI_CONFIG(whatsthis)
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 /*!
   \property QWidget::accessibleName
 
@@ -11893,7 +11893,7 @@ QString QWidget::whatsThis() const
   The name should be short and equivalent to the visual information conveyed
   by the widget.
 
-  This property has to be \l{Internationalization with Qt}{localized}.
+  This property has to be \l{Internationalization with BobUI}{localized}.
 
   By default, this property contains an empty string.
 
@@ -11925,9 +11925,9 @@ QString QWidget::accessibleName() const
   While the \l accessibleName should be a short and concise string (e.g. \gui{Save}),
   the description should give more context, such as \gui{Saves the current document}.
 
-  This property has to be \l{Internationalization with Qt}{localized}.
+  This property has to be \l{Internationalization with BobUI}{localized}.
 
-  By default, this property contains an empty string and Qt falls back
+  By default, this property contains an empty string and BobUI falls back
   to using the tool tip to provide this information.
 
   \sa QWidget::accessibleName, QAccessibleInterface::text()
@@ -11977,15 +11977,15 @@ QString QWidget::accessibleIdentifier() const
     return d->accessibleIdentifier;
 }
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)
 
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
 /*!
-    Adds a shortcut to Qt's shortcut system that watches for the given
+    Adds a shortcut to BobUI's shortcut system that watches for the given
     \a key sequence in the given \a context. If the \a context is
-    Qt::ApplicationShortcut, the shortcut applies to the application as a
-    whole. Otherwise, it is either local to this widget, Qt::WidgetShortcut,
-    or to the window itself, Qt::WindowShortcut.
+    BobUI::ApplicationShortcut, the shortcut applies to the application as a
+    whole. Otherwise, it is either local to this widget, BobUI::WidgetShortcut,
+    or to the window itself, BobUI::WindowShortcut.
 
     If the same \a key sequence has been grabbed by several widgets,
     when the \a key sequence occurs a QEvent::Shortcut event is sent
@@ -12003,23 +12003,23 @@ QString QWidget::accessibleIdentifier() const
 
     \sa releaseShortcut(), setShortcutEnabled()
 */
-int QWidget::grabShortcut(const QKeySequence &key, Qt::ShortcutContext context)
+int QWidget::grabShortcut(const QKeySequence &key, BobUI::ShortcutContext context)
 {
     Q_ASSERT(qApp);
     if (key.isEmpty())
         return 0;
-    setAttribute(Qt::WA_GrabbedShortcut);
+    setAttribute(BobUI::WA_GrabbedShortcut);
     return QGuiApplicationPrivate::instance()->shortcutMap.addShortcut(this, key, context, qWidgetShortcutContextMatcher);
 }
 
 /*!
-    Removes the shortcut with the given \a id from Qt's shortcut
+    Removes the shortcut with the given \a id from BobUI's shortcut
     system. The widget will no longer receive QEvent::Shortcut events
     for the shortcut's key sequence (unless it has other shortcuts
     with the same key sequence).
 
     \warning You should not normally need to use this function since
-    Qt's shortcut system removes shortcuts automatically when their
+    BobUI's shortcut system removes shortcuts automatically when their
     parent widget is destroyed. It is best to use QAction or
     QShortcut to handle shortcuts, since they are easier to use than
     this low-level function. Note also that this is an expensive
@@ -12039,7 +12039,7 @@ void QWidget::releaseShortcut(int id)
     enabled; otherwise the shortcut is disabled.
 
     \warning You should not normally need to use this function since
-    Qt's shortcut system enables/disables shortcuts automatically as
+    BobUI's shortcut system enables/disables shortcuts automatically as
     widgets become hidden/visible and gain or lose focus. It is best
     to use QAction or QShortcut to handle shortcuts, since they are
     easier to use than this low-level function.
@@ -12067,13 +12067,13 @@ void QWidget::setShortcutAutoRepeat(int id, bool enable)
     if (id)
         QGuiApplicationPrivate::instance()->shortcutMap.setShortcutAutoRepeat(enable, id, this, 0);
 }
-#endif // QT_NO_SHORTCUT
+#endif // BOBUI_NO_SHORTCUT
 
 /*!
     Updates the widget's micro focus and informs input methods
     that the state specified by \a query has changed.
 */
-void QWidget::updateMicroFocus(Qt::InputMethodQuery query)
+void QWidget::updateMicroFocus(BobUI::InputMethodQuery query)
 {
     if (this == QGuiApplication::focusObject())
         QGuiApplication::inputMethod()->update(query);
@@ -12104,7 +12104,7 @@ void QWidget::raise()
         // Do nothing if the widget is already in correct stacking order _and_ created.
         if (from != parentChildCount -1)
             p->d_func()->children.move(from, parentChildCount - 1);
-        if (!testAttribute(Qt::WA_WState_Created) && p->testAttribute(Qt::WA_WState_Created))
+        if (!testAttribute(BobUI::WA_WState_Created) && p->testAttribute(BobUI::WA_WState_Created))
             create();
         else if (from == parentChildCount - 1)
             return;
@@ -12113,7 +12113,7 @@ void QWidget::raise()
         d->subtractOpaqueSiblings(region);
         d->invalidateBackingStore(region);
     }
-    if (testAttribute(Qt::WA_WState_Created))
+    if (testAttribute(BobUI::WA_WState_Created))
         d->raise_sys();
 
     if (d->extra && d->extra->hasWindowContainer)
@@ -12126,7 +12126,7 @@ void QWidget::raise()
 void QWidgetPrivate::raise_sys()
 {
     Q_Q(QWidget);
-    if (q->isWindow() || q->testAttribute(Qt::WA_NativeWindow)) {
+    if (q->isWindow() || q->testAttribute(BobUI::WA_NativeWindow)) {
         q->windowHandle()->raise();
     } else if (renderToTexture) {
         if (QWidget *p = q->parentWidget()) {
@@ -12158,12 +12158,12 @@ void QWidget::lower()
         // Do nothing if the widget is already in correct stacking order _and_ created.
         if (from != 0)
             p->d_func()->children.move(from, 0);
-        if (!testAttribute(Qt::WA_WState_Created) && p->testAttribute(Qt::WA_WState_Created))
+        if (!testAttribute(BobUI::WA_WState_Created) && p->testAttribute(BobUI::WA_WState_Created))
             create();
         else if (from == 0)
             return;
     }
-    if (testAttribute(Qt::WA_WState_Created))
+    if (testAttribute(BobUI::WA_WState_Created))
         d->lower_sys();
 
     if (d->extra && d->extra->hasWindowContainer)
@@ -12176,8 +12176,8 @@ void QWidget::lower()
 void QWidgetPrivate::lower_sys()
 {
     Q_Q(QWidget);
-    if (q->isWindow() || q->testAttribute(Qt::WA_NativeWindow)) {
-        Q_ASSERT(q->testAttribute(Qt::WA_WState_Created));
+    if (q->isWindow() || q->testAttribute(BobUI::WA_NativeWindow)) {
+        Q_ASSERT(q->testAttribute(BobUI::WA_WState_Created));
         q->windowHandle()->lower();
     } else if (QWidget *p = q->parentWidget()) {
         setDirtyOpaqueRegion();
@@ -12208,12 +12208,12 @@ void QWidget::stackUnder(QWidget* w)
         // Do nothing if the widget is already in correct stacking order _and_ created.
         if (from != to)
             p->d_func()->children.move(from, to);
-        if (!testAttribute(Qt::WA_WState_Created) && p->testAttribute(Qt::WA_WState_Created))
+        if (!testAttribute(BobUI::WA_WState_Created) && p->testAttribute(BobUI::WA_WState_Created))
             create();
         else if (from == to)
             return;
     }
-    if (testAttribute(Qt::WA_WState_Created))
+    if (testAttribute(BobUI::WA_WState_Created))
         d->stackUnder_sys(w);
 
     QEvent e(QEvent::ZOrderChange);
@@ -12272,7 +12272,7 @@ void QWidgetPrivate::stackUnder_sys(QWidget*)
 QRect QWidgetPrivate::frameStrut() const
 {
     Q_Q(const QWidget);
-    if (!q->isWindow() || q->testAttribute(Qt::WA_DontShowOnScreen)) {
+    if (!q->isWindow() || q->testAttribute(BobUI::WA_DontShowOnScreen)) {
         // x2 = x1 + w - 1, so w/h = 1
         return QRect(0, 0, 1, 1);
     }
@@ -12280,7 +12280,7 @@ QRect QWidgetPrivate::frameStrut() const
     if (data.fstrut_dirty
         // ### Fix properly for 4.3
         && q->isVisible()
-        && q->testAttribute(Qt::WA_WState_Created))
+        && q->testAttribute(BobUI::WA_WState_Created))
         const_cast<QWidgetPrivate *>(this)->updateFrameStrut();
 
     return maybeTopData() ? maybeTopData()->frameStrut : QRect();
@@ -12290,7 +12290,7 @@ void QWidgetPrivate::updateFrameStrut()
 {
     Q_Q(QWidget);
     if (q->data->fstrut_dirty) {
-        if (QTLWExtra *te = maybeTopData()) {
+        if (BOBUILWExtra *te = maybeTopData()) {
             if (te->window && te->window->handle()) {
                 const QMargins margins = te->window->frameMargins();
                 if (!margins.isNull()) {
@@ -12302,7 +12302,7 @@ void QWidgetPrivate::updateFrameStrut()
     }
 }
 
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
 /*!
     \internal
 
@@ -12363,7 +12363,7 @@ QWidget *QWidgetPrivate::widgetInNavigationDirection(Direction direction)
         // Only navigate to a target widget that...
         if (       targetCandidate != sourceWidget
                    // ...takes the focus,
-                && targetCandidate->focusPolicy() & Qt::TabFocus
+                && targetCandidate->focusPolicy() & BobUI::TabFocus
                    // ...is above if DirectionNorth,
                 && !(direction == DirectionNorth && targetCandidateRect.bottom() > sourceRect.top())
                    // ...is on the right if DirectionEast,
@@ -12412,9 +12412,9 @@ QWidget *QWidgetPrivate::widgetInNavigationDirection(Direction direction)
 
     \sa QWidgetPrivate::widgetInNavigationDirection(), QWidget::hasEditFocus()
 */
-bool QWidgetPrivate::canKeypadNavigate(Qt::Orientation orientation)
+bool QWidgetPrivate::canKeypadNavigate(BobUI::Orientation orientation)
 {
-    return orientation == Qt::Horizontal?
+    return orientation == BobUI::Horizontal?
             (QWidgetPrivate::widgetInNavigationDirection(QWidgetPrivate::DirectionEast)
                     || QWidgetPrivate::widgetInNavigationDirection(QWidgetPrivate::DirectionWest))
             :(QWidgetPrivate::widgetInNavigationDirection(QWidgetPrivate::DirectionNorth)
@@ -12423,9 +12423,9 @@ bool QWidgetPrivate::canKeypadNavigate(Qt::Orientation orientation)
 /*!
     \internal
 
-    Checks, if the \a widget is inside a QTabWidget. If is is inside
+    Checks, if the \a widget is inside a BOBUIabWidget. If is is inside
     one, left/right key events will be used to switch between tabs in keypad
-    navigation. If there is no QTabWidget, the horizontal key events can be used
+    navigation. If there is no BOBUIabWidget, the horizontal key events can be used
 to
     interact with the value in the focused widget, even though it currently has
     not the editFocus.
@@ -12435,7 +12435,7 @@ to
 bool QWidgetPrivate::inTabWidget(QWidget *widget)
 {
     for (QWidget *tabWidget = widget; tabWidget; tabWidget = tabWidget->parentWidget())
-        if (qobject_cast<const QTabWidget*>(tabWidget))
+        if (qobject_cast<const BOBUIabWidget*>(tabWidget))
             return true;
     return false;
 }
@@ -12457,7 +12457,7 @@ void QWidget::setBackingStore(QBackingStore *store)
 
     Q_D(QWidget);
 
-    QTLWExtra *topData = d->topData();
+    BOBUILWExtra *topData = d->topData();
     if (topData->backingStore == store)
         return;
 
@@ -12484,7 +12484,7 @@ void QWidget::setBackingStore(QBackingStore *store)
 QBackingStore *QWidget::backingStore() const
 {
     Q_D(const QWidget);
-    QTLWExtra *extra = d->maybeTopData();
+    BOBUILWExtra *extra = d->maybeTopData();
     if (extra && extra->backingStore)
         return extra->backingStore;
 
@@ -12545,17 +12545,17 @@ void QWidgetPrivate::setLayoutItemMargins(QStyle::SubElement element, const QSty
         bottomLayoutItemMargin = 0;
     }
 }
-// resets the Qt::WA_QuitOnClose attribute to the default value for transient widgets.
+// resets the BobUI::WA_QuitOnClose attribute to the default value for transient widgets.
 void QWidgetPrivate::adjustQuitOnCloseAttribute()
 {
     Q_Q(QWidget);
 
     if (!q->parentWidget()) {
-        Qt::WindowType type = q->windowType();
-        if (type == Qt::Widget || type == Qt::SubWindow)
-            type = Qt::Window;
-        if (type != Qt::Widget && type != Qt::Window && type != Qt::Dialog)
-            q->setAttribute(Qt::WA_QuitOnClose, false);
+        BobUI::WindowType type = q->windowType();
+        if (type == BobUI::Widget || type == BobUI::SubWindow)
+            type = BobUI::Window;
+        if (type != BobUI::Widget && type != BobUI::Window && type != BobUI::Dialog)
+            q->setAttribute(BobUI::WA_QuitOnClose, false);
     }
 }
 
@@ -12575,18 +12575,18 @@ void QWidgetPrivate::sendComposeStatus(QWidget *w, bool end)
     }
 }
 
-Q_WIDGETS_EXPORT QWidgetData *qt_qwidget_data(QWidget *widget)
+Q_WIDGETS_EXPORT QWidgetData *bobui_qwidget_data(QWidget *widget)
 {
     return widget->data;
 }
 
-Q_WIDGETS_EXPORT QWidgetPrivate *qt_widget_private(QWidget *widget)
+Q_WIDGETS_EXPORT QWidgetPrivate *bobui_widget_private(QWidget *widget)
 {
     return widget->d_func();
 }
 
 
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
 /*!
    \since 4.5
 
@@ -12606,14 +12606,14 @@ QGraphicsProxyWidget *QWidget::graphicsProxyWidget() const
 }
 #endif
 
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
 /*!
     Subscribes the widget to a given \a gesture with specific \a flags.
 
     \sa ungrabGesture(), QGestureEvent
     \since 4.6
 */
-void QWidget::grabGesture(Qt::GestureType gesture, Qt::GestureFlags flags)
+void QWidget::grabGesture(BobUI::GestureType gesture, BobUI::GestureFlags flags)
 {
     Q_D(QWidget);
     d->gestureContext.insert(gesture, flags);
@@ -12626,7 +12626,7 @@ void QWidget::grabGesture(Qt::GestureType gesture, Qt::GestureFlags flags)
     \sa grabGesture(), QGestureEvent
     \since 4.6
 */
-void QWidget::ungrabGesture(Qt::GestureType gesture)
+void QWidget::ungrabGesture(BobUI::GestureType gesture)
 {
     // if you modify this function, check the inlined version in ~QWidget, too
     Q_D(QWidget);
@@ -12635,7 +12635,7 @@ void QWidget::ungrabGesture(Qt::GestureType gesture)
             manager->cleanupCachedGestures(this, gesture);
     }
 }
-#endif // QT_NO_GESTURES
+#endif // BOBUI_NO_GESTURES
 
 /*!
     \fn void QWidget::destroy(bool destroyWindow, bool destroySubWindows)
@@ -12659,7 +12659,7 @@ void QWidget::destroy(bool destroyWindow, bool destroySubWindows)
         parentWidget()->d_func()->invalidateBackingStore(d->effectiveRectFor(geometry()));
     d->deactivateWidgetCleanup();
 
-    if ((windowType() == Qt::Popup) && qApp)
+    if ((windowType() == BobUI::Popup) && qApp)
         qApp->d_func()->closePopup(this);
 
     if (this == qApp->activeWindow())
@@ -12669,13 +12669,13 @@ void QWidget::destroy(bool destroyWindow, bool destroySubWindows)
     if (QWidget::keyboardGrabber() == this)
         releaseKeyboard();
 
-    setAttribute(Qt::WA_WState_Created, false);
+    setAttribute(BobUI::WA_WState_Created, false);
 
     if (destroySubWindows) {
         QObjectList childList(children());
         for (int i = 0; i < childList.size(); i++) {
             QWidget *widget = qobject_cast<QWidget *>(childList.at(i));
-            if (widget && widget->testAttribute(Qt::WA_NativeWindow)) {
+            if (widget && widget->testAttribute(BobUI::WA_NativeWindow)) {
                 if (widget->windowHandle()) {
                     widget->destroy();
                 }
@@ -12685,7 +12685,7 @@ void QWidget::destroy(bool destroyWindow, bool destroySubWindows)
     if (destroyWindow) {
         d->deleteTLSysExtra();
     } else {
-        if (parentWidget() && parentWidget()->testAttribute(Qt::WA_WState_Created)) {
+        if (parentWidget() && parentWidget()->testAttribute(BobUI::WA_WState_Created)) {
             d->hide_sys();
         }
     }
@@ -12700,7 +12700,7 @@ void QWidget::destroy(bool destroyWindow, bool destroySubWindows)
 
     Note that this function should not be called explicitly by the
     user, since it's meant for reimplementation purposes only. The
-    function is called by Qt internally, and the default
+    function is called by BobUI internally, and the default
     implementation may not always return a valid pointer.
 */
 QPaintEngine *QWidget::paintEngine() const
@@ -12709,9 +12709,9 @@ QPaintEngine *QWidget::paintEngine() const
 
 #ifdef Q_OS_WIN
     // We set this bit which is checked in setAttribute for
-    // Qt::WA_PaintOnScreen. We do this to allow these two scenarios:
+    // BobUI::WA_PaintOnScreen. We do this to allow these two scenarios:
     //
-    // 1. Users accidentally set Qt::WA_PaintOnScreen on X and port to
+    // 1. Users accidentally set BobUI::WA_PaintOnScreen on X and port to
     // Windows which would mean suddenly their widgets stop working.
     //
     // 2. Users set paint on screen and subclass paintEngine() to
@@ -12731,22 +12731,22 @@ QPaintEngine *QWidget::paintEngine() const
 // Do not call QWindow::mapToGlobal() until QPlatformWindow is properly showing.
 static inline bool canMapPosition(QWindow *window)
 {
-    return window->handle() && !qt_window_private(window)->resizeEventPending;
+    return window->handle() && !bobui_window_private(window)->resizeEventPending;
 }
 
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
 static inline QGraphicsProxyWidget *graphicsProxyWidget(const QWidget *w)
 {
     QGraphicsProxyWidget *result = nullptr;
-    const QWidgetPrivate *d = qt_widget_private(const_cast<QWidget *>(w));
+    const QWidgetPrivate *d = bobui_widget_private(const_cast<QWidget *>(w));
     if (d->extra)
         result = d->extra->proxyWidget;
     return result;
 }
-#endif // QT_CONFIG(graphicsview)
+#endif // BOBUI_CONFIG(graphicsview)
 
 struct MapToGlobalTransformResult {
-    QTransform transform;
+    BOBUIransform transform;
     QWindow *window;
 };
 
@@ -12755,18 +12755,18 @@ static MapToGlobalTransformResult mapToGlobalTransform(const QWidget *w)
     MapToGlobalTransformResult result;
     result.window = nullptr;
     for ( ; w ; w = w->parentWidget()) {
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
         if (QGraphicsProxyWidget *qgpw = graphicsProxyWidget(w)) {
             if (const QGraphicsScene *scene = qgpw->scene()) {
                 const QList <QGraphicsView *> views = scene->views();
                 if (!views.isEmpty()) {
-                    auto *viewP = static_cast<QGraphicsViewPrivate *>(qt_widget_private(views.constFirst()));
+                    auto *viewP = static_cast<QGraphicsViewPrivate *>(bobui_widget_private(views.constFirst()));
                     result.transform *= viewP->mapToViewTransform(qgpw);
                     w = views.first()->viewport();
                 }
             }
         }
-#endif // QT_CONFIG(graphicsview)
+#endif // BOBUI_CONFIG(graphicsview)
         QWindow *window = w->windowHandle();
         if (window && canMapPosition(window)) {
             result.window = window;
@@ -12774,7 +12774,7 @@ static MapToGlobalTransformResult mapToGlobalTransform(const QWidget *w)
         }
 
         const auto &geometry = w->geometry();
-        result.transform *= QTransform::fromTranslate(geometry.x(), geometry.y());
+        result.transform *= BOBUIransform::fromTranslate(geometry.x(), geometry.y());
         if (w->isWindow())
             break;
     }
@@ -12830,7 +12830,7 @@ QPoint QWidget::mapFromGlobal(const QPoint &pos) const
    return mapFromGlobal(QPointF(pos)).toPoint();
 }
 
-QWidget *qt_mouseGrb = nullptr;
+QWidget *bobui_mouseGrb = nullptr;
 static bool mouseGrabWithCursor = false;
 static QWidget *keyboardGrb = nullptr;
 
@@ -12843,43 +12843,43 @@ static inline QWindow *grabberWindow(const QWidget *w)
     return window;
 }
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 static void grabMouseForWidget(QWidget *widget, const QCursor *cursor = nullptr)
 #else
 static void grabMouseForWidget(QWidget *widget)
 #endif
 {
-    if (qt_mouseGrb)
-        qt_mouseGrb->releaseMouse();
+    if (bobui_mouseGrb)
+        bobui_mouseGrb->releaseMouse();
 
     mouseGrabWithCursor = false;
     if (QWindow *window = grabberWindow(widget)) {
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
         if (cursor) {
             mouseGrabWithCursor = true;
             QGuiApplication::setOverrideCursor(*cursor);
         }
-#endif // !QT_NO_CURSOR
+#endif // !BOBUI_NO_CURSOR
         window->setMouseGrabEnabled(true);
     }
 
-    qt_mouseGrb = widget;
+    bobui_mouseGrb = widget;
 }
 
 static void releaseMouseGrabOfWidget(QWidget *widget)
 {
-    if (qt_mouseGrb == widget) {
+    if (bobui_mouseGrb == widget) {
         if (QWindow *window = grabberWindow(widget)) {
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
             if (mouseGrabWithCursor) {
                 QGuiApplication::restoreOverrideCursor();
                 mouseGrabWithCursor = false;
             }
-#endif // !QT_NO_CURSOR
+#endif // !BOBUI_NO_CURSOR
             window->setMouseGrabEnabled(false);
         }
     }
-    qt_mouseGrb = nullptr;
+    bobui_mouseGrb = nullptr;
 }
 
 /*!
@@ -12896,8 +12896,8 @@ static void releaseMouseGrabOfWidget(QWidget *widget)
     terminal. Use this function with extreme caution, and consider
     using the \c -nograb command line option while debugging.
 
-    It is seldom necessary to grab the mouse when using Qt, as
-    Qt grabs and releases it sensibly. In particular, Qt grabs the
+    It is seldom necessary to grab the mouse when using BobUI, as
+    BobUI grabs and releases it sensibly. In particular, BobUI grabs the
     mouse when a mouse button is pressed and keeps it until the last
     button is released.
 
@@ -12931,7 +12931,7 @@ void QWidget::grabMouse()
 
     \sa releaseMouse(), grabKeyboard(), releaseKeyboard(), setCursor()
 */
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 void QWidget::grabMouse(const QCursor &cursor)
 {
     grabMouseForWidget(this, &cursor);
@@ -13024,7 +13024,7 @@ void QWidget::releaseKeyboard()
 */
 QWidget *QWidget::mouseGrabber()
 {
-    return qt_mouseGrb;
+    return bobui_mouseGrb;
 }
 
 /*!
@@ -13094,7 +13094,7 @@ int QWidget::metric(PaintDeviceMetric m) const
     auto resolveDevicePixelRatio = [this, screen]() -> qreal {
 
         // Note: keep in sync with QBackingStorePrivate::backingStoreDevicePixelRatio()!
-        static bool downscale = qEnvironmentVariableIntValue("QT_WIDGETS_HIGHDPI_DOWNSCALE") > 0;
+        static bool downscale = qEnvironmentVariableIntValue("BOBUI_WIDGETS_HIGHDPI_DOWNSCALE") > 0;
         QWindow *window = this->window()->windowHandle();
         if (window)
             return downscale ? std::ceil(window->devicePixelRatio()) : window->devicePixelRatio();
@@ -13229,19 +13229,19 @@ void QWidget::setMask(const QRegion &newMask)
     if (newMask == d->extra->mask)
         return;
 
-#ifndef QT_NO_BACKINGSTORE
+#ifndef BOBUI_NO_BACKINGSTORE
     const QRegion oldMask(d->extra->mask);
 #endif
 
     d->extra->mask = newMask;
     d->extra->hasMask = !newMask.isEmpty();
 
-    if (!testAttribute(Qt::WA_WState_Created))
+    if (!testAttribute(BobUI::WA_WState_Created))
         return;
 
     d->setMask_sys(newMask);
 
-#ifndef QT_NO_BACKINGSTORE
+#ifndef BOBUI_NO_BACKINGSTORE
     if (!isVisible())
         return;
 
@@ -13354,38 +13354,38 @@ std::string QWidgetPrivate::flagsForDumping() const
 
 void QWidgetPrivate::setNetWmWindowTypes(bool skipIfMissing)
 {
-#if QT_CONFIG(xcb)
+#if BOBUI_CONFIG(xcb)
     Q_Q(QWidget);
 
     if (!q->windowHandle())
         return;
 
     QXcbWindow::WindowTypes wmWindowType = QXcbWindow::None;
-    if (q->testAttribute(Qt::WA_X11NetWmWindowTypeDesktop))
+    if (q->testAttribute(BobUI::WA_X11NetWmWindowTypeDesktop))
         wmWindowType |= QXcbWindow::Desktop;
-    if (q->testAttribute(Qt::WA_X11NetWmWindowTypeDock))
+    if (q->testAttribute(BobUI::WA_X11NetWmWindowTypeDock))
         wmWindowType |= QXcbWindow::Dock;
-    if (q->testAttribute(Qt::WA_X11NetWmWindowTypeToolBar))
+    if (q->testAttribute(BobUI::WA_X11NetWmWindowTypeToolBar))
         wmWindowType |= QXcbWindow::Toolbar;
-    if (q->testAttribute(Qt::WA_X11NetWmWindowTypeMenu))
+    if (q->testAttribute(BobUI::WA_X11NetWmWindowTypeMenu))
         wmWindowType |= QXcbWindow::Menu;
-    if (q->testAttribute(Qt::WA_X11NetWmWindowTypeUtility))
+    if (q->testAttribute(BobUI::WA_X11NetWmWindowTypeUtility))
         wmWindowType |= QXcbWindow::Utility;
-    if (q->testAttribute(Qt::WA_X11NetWmWindowTypeSplash))
+    if (q->testAttribute(BobUI::WA_X11NetWmWindowTypeSplash))
         wmWindowType |= QXcbWindow::Splash;
-    if (q->testAttribute(Qt::WA_X11NetWmWindowTypeDialog))
+    if (q->testAttribute(BobUI::WA_X11NetWmWindowTypeDialog))
         wmWindowType |= QXcbWindow::Dialog;
-    if (q->testAttribute(Qt::WA_X11NetWmWindowTypeDropDownMenu))
+    if (q->testAttribute(BobUI::WA_X11NetWmWindowTypeDropDownMenu))
         wmWindowType |= QXcbWindow::DropDownMenu;
-    if (q->testAttribute(Qt::WA_X11NetWmWindowTypePopupMenu))
+    if (q->testAttribute(BobUI::WA_X11NetWmWindowTypePopupMenu))
         wmWindowType |= QXcbWindow::PopupMenu;
-    if (q->testAttribute(Qt::WA_X11NetWmWindowTypeToolTip))
+    if (q->testAttribute(BobUI::WA_X11NetWmWindowTypeToolTip))
         wmWindowType |= QXcbWindow::Tooltip;
-    if (q->testAttribute(Qt::WA_X11NetWmWindowTypeNotification))
+    if (q->testAttribute(BobUI::WA_X11NetWmWindowTypeNotification))
         wmWindowType |= QXcbWindow::Notification;
-    if (q->testAttribute(Qt::WA_X11NetWmWindowTypeCombo))
+    if (q->testAttribute(BobUI::WA_X11NetWmWindowTypeCombo))
         wmWindowType |= QXcbWindow::Combo;
-    if (q->testAttribute(Qt::WA_X11NetWmWindowTypeDND))
+    if (q->testAttribute(BobUI::WA_X11NetWmWindowTypeDND))
         wmWindowType |= QXcbWindow::Dnd;
 
     if (wmWindowType == QXcbWindow::None && skipIfMissing)
@@ -13403,10 +13403,10 @@ void QWidgetPrivate::setNetWmWindowTypes(bool skipIfMissing)
    \return \c true, if a child with \param policy exists and isn't a child of \param excludeChildrenOf.
    Return false otherwise.
  */
-bool QWidgetPrivate::hasChildWithFocusPolicy(Qt::FocusPolicy policy, const QWidget *excludeChildrenOf) const
+bool QWidgetPrivate::hasChildWithFocusPolicy(BobUI::FocusPolicy policy, const QWidget *excludeChildrenOf) const
 {
     Q_Q(const QWidget);
-    const QWidgetList &children = q->findChildren<QWidget *>(Qt::FindChildrenRecursively);
+    const QWidgetList &children = q->findChildren<QWidget *>(BobUI::FindChildrenRecursively);
     for (const auto *child : children) {
         if (child->focusPolicy() == policy && child->isEnabled()
             && (!excludeChildrenOf || !excludeChildrenOf->isAncestorOf(child))) {
@@ -13416,7 +13416,7 @@ bool QWidgetPrivate::hasChildWithFocusPolicy(Qt::FocusPolicy policy, const QWidg
     return false;
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 
 namespace {
 QDebug operator<<(QDebug debug, const WidgetAttributes &attributes)
@@ -13425,11 +13425,11 @@ QDebug operator<<(QDebug debug, const WidgetAttributes &attributes)
     debug.nospace();
     debug << '[';
     if (const QWidget *widget = attributes.widget) {
-        const QMetaObject *qtMo = qt_getEnumMetaObject(Qt::WA_AttributeCount);
-        const QMetaEnum me = qtMo->enumerator(qtMo->indexOfEnumerator("WidgetAttribute"));
+        const QMetaObject *bobuiMo = bobui_getEnumMetaObject(BobUI::WA_AttributeCount);
+        const QMetaEnum me = bobuiMo->enumerator(bobuiMo->indexOfEnumerator("WidgetAttribute"));
         int count = 0;
-        for (int a = 0; a < Qt::WA_AttributeCount; ++a) {
-            if (widget->testAttribute(static_cast<Qt::WidgetAttribute>(a))) {
+        for (int a = 0; a < BobUI::WA_AttributeCount; ++a) {
+            if (widget->testAttribute(static_cast<BobUI::WidgetAttribute>(a))) {
                 if (count++)
                     debug << ',';
                 debug << me.valueToKey(a);
@@ -13462,7 +13462,7 @@ QDebug operator<<(QDebug debug, const QWidget *widget)
             if (widget->isWindow())
                 debug << ", window";
             debug << ", " << geometry.width() << 'x' << geometry.height()
-                << Qt::forcesign << geometry.x() << geometry.y() << Qt::noforcesign;
+                << BobUI::forcesign << geometry.x() << geometry.y() << BobUI::noforcesign;
             if (frameGeometry != geometry) {
                 const QMargins margins(geometry.x() - frameGeometry.x(),
                                        geometry.y() - frameGeometry.y(),
@@ -13472,7 +13472,7 @@ QDebug operator<<(QDebug debug, const QWidget *widget)
             }
             debug << ", devicePixelRatio=" << widget->devicePixelRatio();
             if (const WId wid = widget->internalWinId())
-                debug << ", winId=0x" << Qt::hex << wid << Qt::dec;
+                debug << ", winId=0x" << BobUI::hex << wid << BobUI::dec;
         }
         debug << ')';
     } else {
@@ -13480,7 +13480,7 @@ QDebug operator<<(QDebug debug, const QWidget *widget)
     }
     return debug;
 }
-#endif // !QT_NO_DEBUG_STREAM
+#endif // !BOBUI_NO_DEBUG_STREAM
 
 
 // *************************** Focus abstraction ************************************
@@ -13491,7 +13491,7 @@ QDebug operator<<(QDebug debug, const QWidget *widget)
 /*!
     \internal
     \return next or previous element in the focus chain, depending on
-    \param direction, irrespective of focus proxies or widgets with Qt::NoFocus.
+    \param direction, irrespective of focus proxies or widgets with BobUI::NoFocus.
  */
 QWidget *QWidgetPrivate::nextPrevElementInFocusChain(FocusDirection direction) const
 {
@@ -13514,7 +13514,7 @@ bool QWidgetPrivate::removeFromFocusChain(FocusChainRemovalRules rules, FocusDir
 {
     Q_Q(QWidget);
     if (!isFocusChainConsistent()) {
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
         if (rules.testFlag(FocusChainRemovalRule::AssertConsistency))
             qFatal() << q << "has inconsistent focus chain.";
 #endif
@@ -13802,7 +13802,7 @@ QWidget *QWidgetPrivate::determineLastFocusChild(QWidget *noFurtherThan)
 
     QWidget *focusProxy = deepestFocusProxy();
     if (!focusProxy) {
-        // QTBUG-81097: Another case is possible here. We can have a child
+        // BOBUIBUG-81097: Another case is possible here. We can have a child
         // widget, that sets its focusProxy() to the parent (target).
         // An example of such widget is a QLineEdit, nested into
         // a QAbstractSpinBox. In this case such widget should be considered
@@ -13822,7 +13822,7 @@ QWidget *QWidgetPrivate::determineLastFocusChild(QWidget *noFurtherThan)
              focusNext = focusNext->nextInFocusChain()) {
             if (focusNext == noFurtherThan)
                 break;
-            if (focusNext->focusPolicy() != Qt::NoFocus)
+            if (focusNext->focusPolicy() != BobUI::NoFocus)
                 lastFocusChild = focusNext;
         }
     }
@@ -13854,7 +13854,7 @@ bool QWidgetPrivate::isInFocusChain() const
     when the focus chain has been initialized. A newly constructed widget is considered to have
     a consistent focus chain, while not being part of a focus chain.
 
-    The method always returns \c true, when the logging category "qt.widgets.focus" is disabled.
+    The method always returns \c true, when the logging category "bobui.widgets.focus" is disabled.
     When it is enabled, the method returns \c true early, if a widget is pointing to itself.
     It returns \c false, if one of the following is detected:
     \list
@@ -13872,7 +13872,7 @@ bool QWidgetPrivate::isInFocusChain() const
 bool QWidgetPrivate::isFocusChainConsistent() const
 {
     Q_Q(const QWidget);
-    const bool skip = !QLoggingCategory("qt.widgets.focus").isDebugEnabled();
+    const bool skip = !QLoggingCategory("bobui.widgets.focus").isDebugEnabled();
     if (skip)
         return true;
 
@@ -13909,7 +13909,7 @@ bool QWidgetPrivate::isFocusChainConsistent() const
 #undef FOCUS_PREV
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qwidget.cpp"
 #include "moc_qwidget_p.cpp"

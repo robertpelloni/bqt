@@ -1,23 +1,23 @@
-# Copyright (C) 2025 The Qt Company Ltd.
+# Copyright (C) 2025 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 cmake_minimum_required(VERSION 3.16)
 project(test_plugin_deployment)
 enable_testing()
 
-find_package(Qt6 REQUIRED COMPONENTS Core Test)
+find_package(BobUI6 REQUIRED COMPONENTS Core Test)
 if(NOT UNIX OR APPLE)
-    find_package(Qt6 REQUIRED COMPONENTS Gui)
+    find_package(BobUI6 REQUIRED COMPONENTS Gui)
 endif()
 
-qt6_standard_project_setup()
+bobui6_standard_project_setup()
 add_subdirectory(mylib)
 
 function(create_test_executable target)
     if(CMAKE_VERSION VERSION_LESS "3.19")
-        qt_add_executable(${target} MANUAL_FINALIZATION main.cpp)
+        bobui_add_executable(${target} MANUAL_FINALIZATION main.cpp)
     else()
-        qt_add_executable(${target} main.cpp)
+        bobui_add_executable(${target} main.cpp)
     endif()
 
     set_target_properties(${target} PROPERTIES
@@ -26,25 +26,25 @@ function(create_test_executable target)
 
         MACOSX_BUNDLE TRUE
     )
-    target_link_libraries(${target} PRIVATE MyLib Qt::Test)
+    target_link_libraries(${target} PRIVATE MyLib BobUI::Test)
 
     install(TARGETS ${target}
         BUNDLE  DESTINATION .
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     )
 
-    # Install MyLib explicitly, because macdeployqt/winddeployqt don't take care of installing
-    # non-Qt dependencies.
+    # Install MyLib explicitly, because macdeploybobui/winddeploybobui don't take care of installing
+    # non-BobUI dependencies.
     if(APPLE)
         install(TARGETS MyLib
             LIBRARY DESTINATION "${target}.app/Contents/Frameworks"
         )
     elseif(WIN32)
-        # windeployqt doesn't take care of installing non-Qt dependencies.
+        # windeploybobui doesn't take care of installing non-BobUI dependencies.
         install(TARGETS MyLib
             RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
         )
-    elseif(UNIX AND NOT QT6_IS_SHARED_LIBS_BUILD)
+    elseif(UNIX AND NOT BOBUI6_IS_SHARED_LIBS_BUILD)
         # In a static build, GRD won't run, and we need to install the DSO manually.
         install(TARGETS MyLib
             LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
@@ -52,12 +52,12 @@ function(create_test_executable target)
     endif()
 
     if(NOT UNIX OR APPLE)
-        # Explicitly link against Qt::Gui, because otherwise, macdeployqt/windeployqt don't deploy
+        # Explicitly link against BobUI::Gui, because otherwise, macdeploybobui/windeploybobui don't deploy
         # the Gui module.
-        target_link_libraries(${target} PRIVATE Qt::Gui)
+        target_link_libraries(${target} PRIVATE BobUI::Gui)
     endif()
 
-    qt_generate_deploy_app_script(
+    bobui_generate_deploy_app_script(
         TARGET ${target}
         OUTPUT_SCRIPT deploy_script
         # Don't fail at configure time on unsupported platforms
@@ -66,7 +66,7 @@ function(create_test_executable target)
     install(SCRIPT ${deploy_script})
 
     if(CMAKE_VERSION VERSION_LESS "3.19")
-        qt_finalize_target(${target})
+        bobui_finalize_target(${target})
     endif()
 
     if(APPLE AND NOT IOS)
@@ -79,7 +79,7 @@ function(create_test_executable target)
 
     # There's no nice way to get the location of an installed binary, so we need to construct
     # the binary install path by hand, somewhat similar to how it's done in
-    # the implementation of qt_deploy_runtime_dependencies.
+    # the implementation of bobui_deploy_runtime_dependencies.
     # On unsupported deployment platforms, either the install_ test will fail not finding
     # the location of the app (because we do not set a installed_app_location value)
     # or the run_deployed_ test will fail because we didn't deploy the runtime dependencies.

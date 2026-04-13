@@ -1,9 +1,9 @@
 // Copyright (C) 2012 Thorbjørn Lund Martsum - tmartsum[at]gmail.com
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 //#define Q_NO_DEBUGMAP_PARENT_TEST
 // Comment in line above to skip the parent test.
-#include <QtCore/QMap>
+#include <BobUICore/QMap>
 #include <QDebug>
 
 void noBugErase()

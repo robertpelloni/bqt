@@ -1,11 +1,11 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QFile>
-#include <QTest>
+#include <BOBUIest>
 #include <QLibraryInfo>
 #include <QDir>
 
@@ -20,8 +20,8 @@ private slots:
     void DeploymentSettings_data();
     void DeploymentSettings();
 
-    void QtPaths_data();
-    void QtPaths();
+    void BobUIPaths_data();
+    void BobUIPaths();
 
 private:
     static QString makePath(QLibraryInfo::LibraryLocation loc);
@@ -40,9 +40,9 @@ QString tst_android_deployment_settings::makePath(QLibraryInfo::LibraryLocation 
 
 void tst_android_deployment_settings::initTestCase_data()
 {
-    QTest::addColumn<QString>("file");
-    QTest::newRow("old") << ":/old_settings.json";
-    QTest::newRow("new") << ":/new_settings.json";
+    BOBUIest::addColumn<QString>("file");
+    BOBUIest::newRow("old") << ":/old_settings.json";
+    BOBUIest::newRow("new") << ":/new_settings.json";
 }
 
 void tst_android_deployment_settings::init()
@@ -56,36 +56,36 @@ void tst_android_deployment_settings::init()
 
 void tst_android_deployment_settings::DeploymentSettings_data()
 {
-    QTest::addColumn<QString>("key");
-    QTest::addColumn<QString>("value");
+    BOBUIest::addColumn<QString>("key");
+    BOBUIest::addColumn<QString>("value");
 
-    QTest::newRow("sdkBuildToolsRevision") << "sdkBuildToolsRevision"
+    BOBUIest::newRow("sdkBuildToolsRevision") << "sdkBuildToolsRevision"
                                            << "28.0.3";
-    QTest::newRow("deployment-dependencies") << "deployment-dependencies"
+    BOBUIest::newRow("deployment-dependencies") << "deployment-dependencies"
                                              << "dep1.so,dep2.so,dep3.so";
-    QTest::newRow("android-extra-plugins")
+    BOBUIest::newRow("android-extra-plugins")
             << "android-extra-plugins"
             << "some/path/to/plugin1.so,some/path/to/plugin2.so,some/path/to/plugin3.so";
-    QTest::newRow("android-extra-libs") << "android-extra-libs"
+    BOBUIest::newRow("android-extra-libs") << "android-extra-libs"
                                         << "some/path/to/lib1.so,some/path/to/lib2.so,some/path/to/"
                                            "lib3.so,some/path/to/lib4.so";
-    QTest::newRow("android-system-libs-prefix") << "android-system-libs-prefix"
+    BOBUIest::newRow("android-system-libs-prefix") << "android-system-libs-prefix"
                                                 << "myLibPrefix";
-    QTest::newRow("android-package-source-directory") << "android-package-source-directory"
+    BOBUIest::newRow("android-package-source-directory") << "android-package-source-directory"
                                                       << "path/to/source/dir";
-    QTest::newRow("android-min-sdk-version") << "android-min-sdk-version"
+    BOBUIest::newRow("android-min-sdk-version") << "android-min-sdk-version"
                                              << "1";
-    QTest::newRow("android-target-sdk-version") << "android-target-sdk-version"
+    BOBUIest::newRow("android-target-sdk-version") << "android-target-sdk-version"
                                                 << "2";
-    QTest::newRow("android-compile-sdk-version") << "android-compile-sdk-version"
+    BOBUIest::newRow("android-compile-sdk-version") << "android-compile-sdk-version"
                                                 << "36";
-    QTest::newRow("android-package-name") << "android-package-name"
-                                          << "org.qtproject.android_deployment_settings_test";
-    QTest::newRow("android-app-name") << "android-app-name"
+    BOBUIest::newRow("android-package-name") << "android-package-name"
+                                          << "org.bobuiproject.android_deployment_settings_test";
+    BOBUIest::newRow("android-app-name") << "android-app-name"
                                           << "Android Deployment Settings Test";
-    QTest::newRow("android-legacy-packaging") << "android-legacy-packaging"
+    BOBUIest::newRow("android-legacy-packaging") << "android-legacy-packaging"
                                               << "false";
-    QTest::newRow("permissions")
+    BOBUIest::newRow("permissions")
             << "permissions"
             << "[{\"maxSdkVersion\":\"34\",\"minSdkVersion\":\"32\",\"name\":\"PERMISSION_WITH_"
                "ATTRIBUTES\"},{\"name\":\"PERMISSION_WITHOUT_ATTRIBUTES\"},{\"name\":\"android."
@@ -115,21 +115,21 @@ void tst_android_deployment_settings::DeploymentSettings()
     }
 }
 
-void tst_android_deployment_settings::QtPaths_data()
+void tst_android_deployment_settings::BobUIPaths_data()
 {
-    QTest::addColumn<QString>("key");
-    QTest::addColumn<QString>("value");
+    BOBUIest::addColumn<QString>("key");
+    BOBUIest::addColumn<QString>("value");
 
-    QTest::newRow("qtDataDirectory") << "qtDataDirectory" << makePath(QLibraryInfo::DataPath);
-    QTest::newRow("qtLibExecsDirectory")
-            << "qtLibExecsDirectory" << makePath(QLibraryInfo::LibraryExecutablesPath);
-    QTest::newRow("qtLibsDirectory") << "qtLibsDirectory" << makePath(QLibraryInfo::LibrariesPath);
-    QTest::newRow("qtPluginsDirectory")
-            << "qtPluginsDirectory" << makePath(QLibraryInfo::PluginsPath);
-    QTest::newRow("qtQmlDirectory") << "qtQmlDirectory" << makePath(QLibraryInfo::QmlImportsPath);
+    BOBUIest::newRow("bobuiDataDirectory") << "bobuiDataDirectory" << makePath(QLibraryInfo::DataPath);
+    BOBUIest::newRow("bobuiLibExecsDirectory")
+            << "bobuiLibExecsDirectory" << makePath(QLibraryInfo::LibraryExecutablesPath);
+    BOBUIest::newRow("bobuiLibsDirectory") << "bobuiLibsDirectory" << makePath(QLibraryInfo::LibrariesPath);
+    BOBUIest::newRow("bobuiPluginsDirectory")
+            << "bobuiPluginsDirectory" << makePath(QLibraryInfo::PluginsPath);
+    BOBUIest::newRow("bobuiQmlDirectory") << "bobuiQmlDirectory" << makePath(QLibraryInfo::QmlImportsPath);
 }
 
-void tst_android_deployment_settings::QtPaths()
+void tst_android_deployment_settings::BobUIPaths()
 {
     QFETCH(QString, key);
     QFETCH(QString, value);
@@ -137,6 +137,6 @@ void tst_android_deployment_settings::QtPaths()
              QDir::cleanPath(value));
 }
 
-QTEST_MAIN(tst_android_deployment_settings)
+BOBUIEST_MAIN(tst_android_deployment_settings)
 
 #include "tst_android_deployment_settings.moc"

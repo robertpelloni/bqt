@@ -1,19 +1,19 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qmetacontainer.h"
 #include "qmetatype.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QMetaContainer
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 6.0
     \brief The QMetaContainer class provides common functionality for sequential
         and associative containers.
 
-    QMetaContainer is part of Qt's meta-type system that allows type-erased access
+    QMetaContainer is part of BobUI's meta-type system that allows type-erased access
     to container-like types at runtime.
 
     It serves as a common base for accessing properties of containers in a generic
@@ -42,7 +42,7 @@ bool QMetaContainer::hasInputIterator() const
 {
     if (!d_ptr)
         return false;
-    return d_ptr->iteratorCapabilities.testAnyFlag(QtMetaContainerPrivate::InputCapability);
+    return d_ptr->iteratorCapabilities.testAnyFlag(BobUIMetaContainerPrivate::InputCapability);
 }
 
 /*!
@@ -59,7 +59,7 @@ bool QMetaContainer::hasForwardIterator() const
 {
     if (!d_ptr)
         return false;
-    return d_ptr->iteratorCapabilities.testAnyFlag(QtMetaContainerPrivate::ForwardCapability);
+    return d_ptr->iteratorCapabilities.testAnyFlag(BobUIMetaContainerPrivate::ForwardCapability);
 }
 
 /*!
@@ -75,7 +75,7 @@ bool QMetaContainer::hasBidirectionalIterator() const
 {
     if (!d_ptr)
         return false;
-    return d_ptr->iteratorCapabilities.testAnyFlag(QtMetaContainerPrivate::BiDirectionalCapability);
+    return d_ptr->iteratorCapabilities.testAnyFlag(BobUIMetaContainerPrivate::BiDirectionalCapability);
 }
 
 /*!
@@ -90,7 +90,7 @@ bool QMetaContainer::hasRandomAccessIterator() const
 {
     if (!d_ptr)
         return false;
-    return d_ptr->iteratorCapabilities.testAnyFlag(QtMetaContainerPrivate::RandomAccessCapability);
+    return d_ptr->iteratorCapabilities.testAnyFlag(BobUIMetaContainerPrivate::RandomAccessCapability);
 }
 
 /*!
@@ -168,7 +168,7 @@ void *QMetaContainer::begin(void *container) const
 {
     return hasIterator()
             ? d_ptr->createIteratorFn(
-                  container, QtMetaContainerPrivate::QMetaContainerInterface::AtBegin)
+                  container, BobUIMetaContainerPrivate::QMetaContainerInterface::AtBegin)
             : nullptr;
 }
 
@@ -185,7 +185,7 @@ void *QMetaContainer::end(void *container) const
 {
     return hasIterator()
             ? d_ptr->createIteratorFn(
-                  container, QtMetaContainerPrivate::QMetaContainerInterface::AtEnd)
+                  container, BobUIMetaContainerPrivate::QMetaContainerInterface::AtEnd)
             : nullptr;
 }
 
@@ -285,7 +285,7 @@ void *QMetaContainer::constBegin(const void *container) const
 {
     return hasConstIterator()
             ? d_ptr->createConstIteratorFn(
-                  container, QtMetaContainerPrivate::QMetaContainerInterface::AtBegin)
+                  container, BobUIMetaContainerPrivate::QMetaContainerInterface::AtBegin)
             : nullptr;
 }
 
@@ -302,7 +302,7 @@ void *QMetaContainer::constEnd(const void *container) const
 {
     return hasConstIterator()
             ? d_ptr->createConstIteratorFn(
-                  container, QtMetaContainerPrivate::QMetaContainerInterface::AtEnd)
+                  container, BobUIMetaContainerPrivate::QMetaContainerInterface::AtEnd)
             : nullptr;
 }
 
@@ -369,4 +369,4 @@ qsizetype QMetaContainer::diffConstIterator(const void *i, const void *j) const
     return (i != j && hasConstIterator()) ?  d_ptr->diffConstIteratorFn(i, j) : 0;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,5 +1,5 @@
 CONFIG -= moc
 CONFIG += cmdline
-QT = core
+BOBUI = core
 
 SOURCES += generate_keywords.cpp

@@ -1,6 +1,6 @@
 // Copyright (C) 2018 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qcborstreamwriter.h"
 
@@ -14,19 +14,19 @@
 #include <qstack.h>
 #include <qvarlengtharray.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-static CborError qt_cbor_encoder_write_callback(void *token, const void *data, size_t len, CborEncoderAppendType);
+static CborError bobui_cbor_encoder_write_callback(void *token, const void *data, size_t len, CborEncoderAppendType);
 #define CBOR_ENCODER_WRITER_CONTROL     1
-#define CBOR_ENCODER_WRITE_FUNCTION     qt_cbor_encoder_write_callback
+#define CBOR_ENCODER_WRITE_FUNCTION     bobui_cbor_encoder_write_callback
 #define CBOR_ENCODER_NO_CHECK_USER
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_MSVC(4334) // '<<': result of 32-bit shift implicitly converted to 64 bits (was 64-bit shift intended?)
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_MSVC(4334) // '<<': result of 32-bit shift implicitly converted to 64 bits (was 64-bit shift intended?)
 
 #include <cborencoder.c>
 
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
 // silence compilers that complain about this being a static function declared
 // but never defined
@@ -44,9 +44,9 @@ Q_DECLARE_TYPEINFO(CborEncoder, Q_PRIMITIVE_TYPE);
 
 /*!
    \class QCborStreamWriter
-   \inmodule QtCore
+   \inmodule BobUICore
    \ingroup cbor
-   \ingroup qtserialization
+   \ingroup bobuiserialization
    \reentrant
    \since 5.12
 
@@ -117,7 +117,7 @@ Q_DECLARE_TYPEINFO(CborEncoder, Q_PRIMITIVE_TYPE);
 
    Canonical CBOR encoding is defined by
    \l{RFC 7049, section 3.9}{Section 3.9 of RFC
-   7049}. Canonical encoding is not a requirement for Qt's CBOR decoding
+   7049}. Canonical encoding is not a requirement for BobUI's CBOR decoding
    functionality, but it may be required for some protocols. In particular,
    protocols that require the ability to reproduce the same stream identically
    may require this.
@@ -194,7 +194,7 @@ public:
     QCborStreamWriterPrivate(QIODevice *device)
         : device(device)
     {
-        cbor_encoder_init_writer(&encoder, qt_cbor_encoder_write_callback, this);
+        cbor_encoder_init_writer(&encoder, bobui_cbor_encoder_write_callback, this);
     }
 
     ~QCborStreamWriterPrivate()
@@ -247,7 +247,7 @@ public:
     }
 };
 
-static CborError qt_cbor_encoder_write_callback(void *self, const void *data, size_t len, CborEncoderAppendType)
+static CborError bobui_cbor_encoder_write_callback(void *self, const void *data, size_t len, CborEncoderAppendType)
 {
     auto that = static_cast<QCborStreamWriterPrivate *>(self);
     if (!that->device)
@@ -260,7 +260,7 @@ static CborError qt_cbor_encoder_write_callback(void *self, const void *data, si
    Creates a QCborStreamWriter object that will write the stream to \a device.
    The device must be opened before the first append() call is made. This
    constructor can be used with any class that derives from QIODevice, such as
-   QFile, QProcess or QTcpSocket.
+   QFile, QProcess or BOBUIcpSocket.
 
    QCborStreamWriter has no buffering, so every append() call will result in
    one or more calls to the device's \l {QIODevice::}{write()} method.
@@ -278,7 +278,7 @@ QCborStreamWriter::QCborStreamWriter(QIODevice *device)
 {
 }
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 /*!
    Creates a QCborStreamWriter object that will append the stream to \a data.
    All streaming is done immediately to the byte array, without the need for
@@ -413,7 +413,7 @@ void QCborStreamWriter::append(QCborNegativeInteger n)
    As the example shows, unlike JSON, CBOR requires no escaping for binary
    content.
 
-   \note The overload taking a \l QByteArrayView has been present since Qt
+   \note The overload taking a \l QByteArrayView has been present since BobUI
    6.10.
 
    \sa appendByteString(), QCborStreamReader::isByteArray(),
@@ -456,7 +456,7 @@ void QCborStreamWriter::append(QLatin1StringView str)
 {
     // We've got Latin-1 but CBOR wants UTF-8, so check if the string is the
     // common subset (US-ASCII).
-    if (QtPrivate::isAscii(str)) {
+    if (BobUIPrivate::isAscii(str)) {
         // it is plain US-ASCII
         appendTextString(str.latin1(), str.size());
     } else {
@@ -525,7 +525,7 @@ void QCborStreamWriter::append(QCborTag tag)
 
    Appends the CBOR simple type \a st to the stream, creating a CBOR Simple
    Type value. In the following example, we write the simple type for Null as
-   well as for type 32, which Qt has no support for.
+   well as for type 32, which BobUI has no support for.
 
    \snippet code/src_corelib_serialization_qcborstream.cpp 12
 
@@ -540,7 +540,7 @@ void QCborStreamWriter::append(QCborSimpleType st)
     d->executeAppend(cbor_encode_simple_value, uint8_t(st));
 }
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 /*!
    \overload
 
@@ -557,7 +557,7 @@ void QCborStreamWriter::append(qfloat16 f)
 {
     d->executeAppend(cbor_encode_half_float, static_cast<const void *>(&f));
 }
-#endif // QT_BOOTSTRAPPED
+#endif // BOBUI_BOOTSTRAPPED
 
 /*!
    \overload
@@ -841,7 +841,7 @@ bool QCborStreamWriter::endMap()
     return d->closeContainer();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #undef CBOR_ENCODER_WRITER_CONTROL
 #undef CBOR_ENCODER_WRITE_FUNCTION

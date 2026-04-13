@@ -1,9 +1,9 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/qtest.h>
-#include <QtCore/private/qcomptr_p.h>
-#include <QtCore/private/qcomobject_p.h>
+#include <BobUITest/bobuiest.h>
+#include <BobUICore/private/qcomptr_p.h>
+#include <BobUICore/private/qcomobject_p.h>
 
 MIDL_INTERFACE("8B06D1DA-94F2-45A5-9E86-77E89A51FAC7")
 IMyInterface : IUnknown{};
@@ -13,7 +13,7 @@ __CRT_UUID_DECL(IMyInterface, 0x8b06d1da, 0x94f2, 0x45a5, 0x9e, 0x86, 0x77, 0xe8
                 0xc7);
 #endif
 
-QT_USE_NAMESPACE
+BOBUI_USE_NAMESPACE
 
 class IMyInterfaceImpl : public QComObject<IMyInterface>
 {
@@ -139,5 +139,5 @@ private slots:
     }
 };
 
-QTEST_MAIN(tst_qcomptr)
+BOBUIEST_MAIN(tst_qcomptr)
 #include "tst_qcomptr.moc"

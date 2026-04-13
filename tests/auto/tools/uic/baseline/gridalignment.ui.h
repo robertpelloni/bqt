@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'gridalignment.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,13 +9,13 @@
 #ifndef GRIDALIGNMENT_H
 #define GRIDALIGNMENT_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QPushButton>
+#include <BobUIWidgets/QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_Form
 {
@@ -36,22 +36,22 @@ public:
         pushButton = new QPushButton(Form);
         pushButton->setObjectName("pushButton");
 
-        gridLayout->addWidget(pushButton, 0, 0, 1, 1, Qt::AlignmentFlag::AlignLeft);
+        gridLayout->addWidget(pushButton, 0, 0, 1, 1, BobUI::AlignmentFlag::AlignLeft);
 
         pushButton_3 = new QPushButton(Form);
         pushButton_3->setObjectName("pushButton_3");
 
-        gridLayout->addWidget(pushButton_3, 0, 1, 1, 1, Qt::AlignmentFlag::AlignTop);
+        gridLayout->addWidget(pushButton_3, 0, 1, 1, 1, BobUI::AlignmentFlag::AlignTop);
 
         pushButton_2 = new QPushButton(Form);
         pushButton_2->setObjectName("pushButton_2");
 
-        gridLayout->addWidget(pushButton_2, 1, 0, 1, 1, Qt::AlignmentFlag::AlignRight);
+        gridLayout->addWidget(pushButton_2, 1, 0, 1, 1, BobUI::AlignmentFlag::AlignRight);
 
         pushButton_4 = new QPushButton(Form);
         pushButton_4->setObjectName("pushButton_4");
 
-        gridLayout->addWidget(pushButton_4, 1, 1, 1, 1, Qt::AlignmentFlag::AlignBottom);
+        gridLayout->addWidget(pushButton_4, 1, 1, 1, 1, BobUI::AlignmentFlag::AlignBottom);
 
 
         retranslateUi(Form);
@@ -74,6 +74,6 @@ namespace Ui {
     class Form: public Ui_Form {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // GRIDALIGNMENT_H

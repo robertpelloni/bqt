@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2024 Jie Liu <liujie01@kylinos.cn>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandinputdevice_p.h"
 
@@ -9,17 +9,17 @@
 #include "qwaylandwindow_p.h"
 #include "qwaylandsurface_p.h"
 #include "qwaylandbuffer_p.h"
-#if QT_CONFIG(wayland_datadevice)
+#if BOBUI_CONFIG(wayland_datadevice)
 #include "qwaylanddatadevice_p.h"
 #include "qwaylanddatadevicemanager_p.h"
 #endif
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
 #include "qwaylanddatacontrolv1_p.h"
 #endif
-#if QT_CONFIG(wayland_client_primary_selection)
+#if BOBUI_CONFIG(wayland_client_primary_selection)
 #include "qwaylandprimaryselectionv1_p.h"
 #endif
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
 #include "qwaylandtabletv2_p.h"
 #endif
 #include "qwaylandpointergestures_p.h"
@@ -35,8 +35,8 @@
 #include "qwaylandcallback_p.h"
 #include "qwaylandcursorsurface_p.h"
 
-#include <QtGui/private/qpixmap_raster_p.h>
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qpixmap_raster_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 #include <qpa/qplatformwindow.h>
 #include <qpa/qplatforminputcontext.h>
 #include <qpa/qplatformtheme.h>
@@ -46,18 +46,18 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
 #include <wayland-cursor.h>
 #endif
 
-#include <QtGui/QGuiApplication>
-#include <QtGui/QPointingDevice>
+#include <BobUIGui/QGuiApplication>
+#include <BobUIGui/QPointingDevice>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
-Q_LOGGING_CATEGORY(lcQpaWaylandInput, "qt.qpa.wayland.input");
+Q_LOGGING_CATEGORY(lcQpaWaylandInput, "bobui.qpa.wayland.input");
 
 // The maximum number of concurrent touchpoints is not exposed in wayland, so we assume a
 // reasonable number of them. As of 2021 most touchscreen panels support 10 concurrent touchpoints.
@@ -73,7 +73,7 @@ bool QWaylandEventCompressionPrivate::compressEvent()
 {
     using namespace std::chrono_literals;
 
-    if (!QCoreApplication::testAttribute(Qt::AA_CompressHighFrequencyEvents))
+    if (!QCoreApplication::testAttribute(BobUI::AA_CompressHighFrequencyEvents))
         return false;
 
     const auto elapsed = timeElapsed.durationElapsed();
@@ -102,7 +102,7 @@ QWaylandInputDevice::Keyboard::Keyboard(QWaylandInputDevice *p)
             return;
         }
         mRepeatTimer.setInterval(1000 / mRepeatRate);
-        Qt::KeyboardModifiers modifiers = this->modifiers();
+        BobUI::KeyboardModifiers modifiers = this->modifiers();
         handleKey(mRepeatKey.time, QEvent::KeyRelease, mRepeatKey.key, modifiers,
                   mRepeatKey.code, mRepeatKey.nativeVirtualKey, this->mNativeModifiers,
                   mRepeatKey.text, true);
@@ -112,7 +112,7 @@ QWaylandInputDevice::Keyboard::Keyboard(QWaylandInputDevice *p)
     });
 }
 
-#if QT_CONFIG(xkbcommon)
+#if BOBUI_CONFIG(xkbcommon)
 bool QWaylandInputDevice::Keyboard::createDefaultKeymap()
 {
     struct xkb_context *ctx = mParent->mQDisplay->xkbContext();
@@ -158,7 +158,7 @@ QWaylandInputDevice::Pointer::Pointer(QWaylandInputDevice *seat)
     : mParent(seat)
 {
     init(seat->get_pointer());
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
     if (auto cursorShapeManager = seat->mQDisplay->cursorShapeManager()) {
         mCursor.shape.reset(new QWaylandCursorShape(cursorShapeManager->get_pointer(object())));
     }
@@ -185,7 +185,7 @@ QWaylandWindow *QWaylandInputDevice::Pointer::focusWindow() const
     return mFocus ? mFocus->waylandWindow() : nullptr;
 }
 
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
 
 int QWaylandInputDevice::Pointer::idealCursorScale() const
 {
@@ -224,7 +224,7 @@ void QWaylandInputDevice::Pointer::updateCursorTheme()
     if (!mCursor.theme)
         return; // A warning has already been printed in loadCursorTheme
 
-    if (auto *arrow = mCursor.theme->cursor(Qt::ArrowCursor)) {
+    if (auto *arrow = mCursor.theme->cursor(BobUI::ArrowCursor)) {
         int arrowPixelSize = qMax(arrow->images[0]->width, arrow->images[0]->height); // Not all cursor themes are square
         while (scale > 1 && arrowPixelSize / scale < cursorSize.width())
             --scale;
@@ -241,14 +241,14 @@ void QWaylandInputDevice::Pointer::updateCursor()
 
     auto shape = seat()->mCursor.shape;
 
-    if (shape == Qt::BlankCursor) {
+    if (shape == BobUI::BlankCursor) {
         if (mCursor.surface)
             mCursor.surface->reset();
         set_cursor(mEnterSerial, nullptr, 0, 0);
         return;
     }
 
-    if (shape == Qt::BitmapCursor) {
+    if (shape == BobUI::BitmapCursor) {
         auto buffer = seat()->mCursor.bitmapBuffer;
         if (!buffer) {
             qCWarning(lcQpaWayland) << "No buffer for bitmap cursor, can't set cursor";
@@ -328,7 +328,7 @@ void QWaylandInputDevice::Pointer::cursorFrameCallback()
     }
 }
 
-#endif // QT_CONFIG(cursor)
+#endif // BOBUI_CONFIG(cursor)
 
 QWaylandInputDevice::Touch::Touch(QWaylandInputDevice *p)
     : mParent(p)
@@ -345,25 +345,25 @@ QWaylandInputDevice::Touch::~Touch()
 }
 
 QWaylandInputDevice::QWaylandInputDevice(QWaylandDisplay *display, int version, uint32_t id)
-    : QtWayland::wl_seat(display->wl_registry(), id, qMin(version, 10))
+    : BobUIWayland::wl_seat(display->wl_registry(), id, qMin(version, 10))
     , mQDisplay(display)
     , mDisplay(display->wl_display())
     , mId(id)
 {
 
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
     if (auto *dataControlManager = mQDisplay->dataControlManager()) {
         setDataControlDevice(dataControlManager->createDevice(this));
     }
 #endif
 
-#if QT_CONFIG(wayland_datadevice)
+#if BOBUI_CONFIG(wayland_datadevice)
     if (mQDisplay->dndSelectionHandler()) {
         mDataDevice = mQDisplay->dndSelectionHandler()->getDataDevice(this);
     }
 #endif
 
-#if QT_CONFIG(wayland_client_primary_selection)
+#if BOBUI_CONFIG(wayland_client_primary_selection)
     // TODO: Could probably decouple this more if there was a signal for new seat added
     if (auto *psm = mQDisplay->primarySelectionManager())
         setPrimarySelectionDevice(psm->createDevice(this));
@@ -384,7 +384,7 @@ QWaylandInputDevice::QWaylandInputDevice(QWaylandDisplay *display, int version, 
     if (mQDisplay->textInputMethodManager())
         mTextInputMethod.reset(new QWaylandTextInputMethod(mQDisplay, mQDisplay->textInputMethodManager()->get_text_input_method(wl_seat())));
 
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
     if (auto *tm = mQDisplay->tabletManager())
         mTabletSeat.reset(new QWaylandTabletSeatV2(tm, this));
 #endif
@@ -505,7 +505,7 @@ void QWaylandInputDevice::handleStartDrag()
         mPointer->leavePointers();
 }
 
-#if QT_CONFIG(wayland_datadevice)
+#if BOBUI_CONFIG(wayland_datadevice)
 void QWaylandInputDevice::setDataDevice(QWaylandDataDevice *device)
 {
     mDataDevice = device;
@@ -517,7 +517,7 @@ QWaylandDataDevice *QWaylandInputDevice::dataDevice() const
 }
 #endif
 
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
 void QWaylandInputDevice::setDataControlDevice(QWaylandDataControlDeviceV1 *dataControlDevice)
 {
     mDataControlDevice.reset(dataControlDevice);
@@ -529,7 +529,7 @@ QWaylandDataControlDeviceV1 *QWaylandInputDevice::dataControlDevice() const
 }
 #endif
 
-#if QT_CONFIG(wayland_client_primary_selection)
+#if BOBUI_CONFIG(wayland_client_primary_selection)
 void QWaylandInputDevice::setPrimarySelectionDevice(QWaylandPrimarySelectionDeviceV1 *primarySelectionDevice)
 {
     mPrimarySelectionDevice.reset(primarySelectionDevice);
@@ -546,7 +546,7 @@ void QWaylandInputDevice::setTextInput(QWaylandTextInputInterface *textInput)
     mTextInput.reset(textInput);
 }
 
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
 void QWaylandInputDevice::setTabletSeat(QWaylandTabletSeatV2 *tabletSeat)
 {
     mTabletSeat.reset(tabletSeat);
@@ -573,7 +573,7 @@ QWaylandTextInputMethod *QWaylandInputDevice::textInputMethod() const
     return mTextInputMethod.data();
 }
 
-void QWaylandInputDevice::removeMouseButtonFromState(Qt::MouseButton button)
+void QWaylandInputDevice::removeMouseButtonFromState(BobUI::MouseButton button)
 {
     if (mPointer)
         mPointer->mButtons = mPointer->mButtons & !button;
@@ -601,7 +601,7 @@ QPointF QWaylandInputDevice::pointerSurfacePosition() const
 
 QList<int> QWaylandInputDevice::possibleKeys(const QKeyEvent *event) const
 {
-#if QT_CONFIG(xkbcommon)
+#if BOBUI_CONFIG(xkbcommon)
     if (mKeyboard && mKeyboard->mXkbState)
         return QXkbCommon::possibleKeys(mKeyboard->mXkbState.get(), event);
 #else
@@ -610,19 +610,19 @@ QList<int> QWaylandInputDevice::possibleKeys(const QKeyEvent *event) const
     return {};
 }
 
-Qt::KeyboardModifiers QWaylandInputDevice::modifiers() const
+BobUI::KeyboardModifiers QWaylandInputDevice::modifiers() const
 {
     if (!mKeyboard)
-        return Qt::NoModifier;
+        return BobUI::NoModifier;
 
     return mKeyboard->modifiers();
 }
 
-Qt::KeyboardModifiers QWaylandInputDevice::Keyboard::modifiers() const
+BobUI::KeyboardModifiers QWaylandInputDevice::Keyboard::modifiers() const
 {
-    Qt::KeyboardModifiers ret = Qt::NoModifier;
+    BobUI::KeyboardModifiers ret = BobUI::NoModifier;
 
-#if QT_CONFIG(xkbcommon)
+#if BOBUI_CONFIG(xkbcommon)
     if (!mXkbState)
         return ret;
 
@@ -632,17 +632,17 @@ Qt::KeyboardModifiers QWaylandInputDevice::Keyboard::modifiers() const
     return ret;
 }
 
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
 void QWaylandInputDevice::setCursor(const QCursor *cursor, const QSharedPointer<QWaylandBuffer> &cachedBuffer, int fallbackOutputScale)
 {
     CursorState oldCursor = mCursor;
     mCursor = CursorState(); // Clear any previous state
-    mCursor.shape = cursor ? cursor->shape() : Qt::ArrowCursor;
+    mCursor.shape = cursor ? cursor->shape() : BobUI::ArrowCursor;
     mCursor.hotspot = cursor ? cursor->hotSpot() : QPoint();
     mCursor.fallbackOutputScale = fallbackOutputScale;
     mCursor.animationTimer.start();
 
-    if (mCursor.shape == Qt::BitmapCursor) {
+    if (mCursor.shape == BobUI::BitmapCursor) {
         mCursor.bitmapBuffer = cachedBuffer ? cachedBuffer : QWaylandCursor::cursorBitmapBuffer(mQDisplay, cursor);
         qreal dpr = cursor->pixmap().devicePixelRatio();
         mCursor.bitmapScale = int(dpr); // Wayland doesn't support fractional buffer scale
@@ -652,7 +652,7 @@ void QWaylandInputDevice::setCursor(const QCursor *cursor, const QSharedPointer<
     }
 
     // Return early if setCursor was called redundantly (mostly happens from decorations)
-    if (mCursor.shape != Qt::BitmapCursor
+    if (mCursor.shape != BobUI::BitmapCursor
             && mCursor.shape == oldCursor.shape
             && mCursor.hotspot == oldCursor.hotspot
             && mCursor.fallbackOutputScale == oldCursor.fallbackOutputScale) {
@@ -662,7 +662,7 @@ void QWaylandInputDevice::setCursor(const QCursor *cursor, const QSharedPointer<
     if (mPointer)
         mPointer->updateCursor();
 
-#if QT_CONFIG(tabletevent)
+#if BOBUI_CONFIG(tabletevent)
     if (mTabletSeat)
         mTabletSeat->updateCursor();
 #endif
@@ -673,8 +673,8 @@ class EnterEvent : public QWaylandPointerEvent
 {
 public:
     EnterEvent(QWaylandWindow *surface, const QPointF &local, const QPointF &global)
-        : QWaylandPointerEvent(QEvent::Enter, Qt::NoScrollPhase, surface, 0,
-                               local, global, Qt::NoButton, Qt::NoButton, Qt::NoModifier)
+        : QWaylandPointerEvent(QEvent::Enter, BobUI::NoScrollPhase, surface, 0,
+                               local, global, BobUI::NoButton, BobUI::NoButton, BobUI::NoModifier)
     {}
 };
 
@@ -708,7 +708,7 @@ void QWaylandInputDevice::Pointer::pointer_enter(uint32_t serial, struct wl_surf
         mParent->mQDisplay->setLastInputDevice(mParent, serial, window);
     }
 
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
     // Depends on mEnterSerial being updated
     updateCursor();
 #endif
@@ -722,8 +722,8 @@ class LeaveEvent : public QWaylandPointerEvent
 {
 public:
     LeaveEvent(QWaylandWindow *surface, const QPointF &localPos, const QPointF &globalPos)
-        : QWaylandPointerEvent(QEvent::Leave, Qt::NoScrollPhase, surface, 0,
-                               localPos, globalPos, Qt::NoButton, Qt::NoButton, Qt::NoModifier)
+        : QWaylandPointerEvent(QEvent::Leave, BobUI::NoScrollPhase, surface, 0,
+                               localPos, globalPos, BobUI::NoButton, BobUI::NoButton, BobUI::NoModifier)
     {}
 };
 
@@ -732,7 +732,7 @@ void QWaylandInputDevice::Pointer::pointer_leave(uint32_t serial, struct wl_surf
     Q_UNUSED(serial);
 
     invalidateFocus();
-    mButtons = Qt::NoButton;
+    mButtons = BobUI::NoButton;
 
     // The event may arrive after destroying the window, indicated by
     // a null surface.
@@ -751,9 +751,9 @@ class MotionEvent : public QWaylandPointerEvent
 {
 public:
     MotionEvent(QWaylandWindow *surface, ulong timestamp, const QPointF &localPos,
-                const QPointF &globalPos, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers)
-        : QWaylandPointerEvent(QEvent::MouseMove, Qt::NoScrollPhase, surface,
-                               timestamp, localPos, globalPos, buttons, Qt::NoButton, modifiers)
+                const QPointF &globalPos, BobUI::MouseButtons buttons, BobUI::KeyboardModifiers modifiers)
+        : QWaylandPointerEvent(QEvent::MouseMove, BobUI::NoScrollPhase, surface,
+                               timestamp, localPos, globalPos, buttons, BobUI::NoButton, modifiers)
     {
     }
 };
@@ -789,9 +789,9 @@ class PressEvent : public QWaylandPointerEvent
 {
 public:
     PressEvent(QWaylandWindow *surface, ulong timestamp, const QPointF &localPos,
-               const QPointF &globalPos, Qt::MouseButtons buttons, Qt::MouseButton button,
-               Qt::KeyboardModifiers modifiers)
-        : QWaylandPointerEvent(QEvent::MouseButtonPress, Qt::NoScrollPhase, surface,
+               const QPointF &globalPos, BobUI::MouseButtons buttons, BobUI::MouseButton button,
+               BobUI::KeyboardModifiers modifiers)
+        : QWaylandPointerEvent(QEvent::MouseButtonPress, BobUI::NoScrollPhase, surface,
                                timestamp, localPos, globalPos, buttons, button, modifiers)
     {
     }
@@ -801,9 +801,9 @@ class ReleaseEvent : public QWaylandPointerEvent
 {
 public:
     ReleaseEvent(QWaylandWindow *surface, ulong timestamp, const QPointF &localPos,
-                 const QPointF &globalPos, Qt::MouseButtons buttons, Qt::MouseButton button,
-                 Qt::KeyboardModifiers modifiers)
-        : QWaylandPointerEvent(QEvent::MouseButtonRelease, Qt::NoScrollPhase, surface,
+                 const QPointF &globalPos, BobUI::MouseButtons buttons, BobUI::MouseButton button,
+                 BobUI::KeyboardModifiers modifiers)
+        : QWaylandPointerEvent(QEvent::MouseButtonRelease, BobUI::NoScrollPhase, surface,
                                timestamp, localPos, globalPos, buttons, button, modifiers)
     {
     }
@@ -819,36 +819,36 @@ void QWaylandInputDevice::Pointer::pointer_button(uint32_t serial, uint32_t time
         return;
     }
 
-    Qt::MouseButton qt_button;
+    BobUI::MouseButton bobui_button;
 
-    // translate from kernel (input.h) 'button' to corresponding Qt:MouseButton.
+    // translate from kernel (input.h) 'button' to corresponding BobUI:MouseButton.
     // The range of mouse values is 0x110 <= mouse_button < 0x120, the first Joystick button.
     switch (button) {
-    case 0x110: qt_button = Qt::LeftButton; break;    // kernel BTN_LEFT
-    case 0x111: qt_button = Qt::RightButton; break;
-    case 0x112: qt_button = Qt::MiddleButton; break;
-    case 0x113: qt_button = Qt::ExtraButton1; break;  // AKA Qt::BackButton
-    case 0x114: qt_button = Qt::ExtraButton2; break;  // AKA Qt::ForwardButton
-    case 0x115: qt_button = Qt::ExtraButton3; break;  // AKA Qt::TaskButton
-    case 0x116: qt_button = Qt::ExtraButton4; break;
-    case 0x117: qt_button = Qt::ExtraButton5; break;
-    case 0x118: qt_button = Qt::ExtraButton6; break;
-    case 0x119: qt_button = Qt::ExtraButton7; break;
-    case 0x11a: qt_button = Qt::ExtraButton8; break;
-    case 0x11b: qt_button = Qt::ExtraButton9; break;
-    case 0x11c: qt_button = Qt::ExtraButton10; break;
-    case 0x11d: qt_button = Qt::ExtraButton11; break;
-    case 0x11e: qt_button = Qt::ExtraButton12; break;
-    case 0x11f: qt_button = Qt::ExtraButton13; break;
-    default: return; // invalid button number (as far as Qt is concerned)
+    case 0x110: bobui_button = BobUI::LeftButton; break;    // kernel BTN_LEFT
+    case 0x111: bobui_button = BobUI::RightButton; break;
+    case 0x112: bobui_button = BobUI::MiddleButton; break;
+    case 0x113: bobui_button = BobUI::ExtraButton1; break;  // AKA BobUI::BackButton
+    case 0x114: bobui_button = BobUI::ExtraButton2; break;  // AKA BobUI::ForwardButton
+    case 0x115: bobui_button = BobUI::ExtraButton3; break;  // AKA BobUI::TaskButton
+    case 0x116: bobui_button = BobUI::ExtraButton4; break;
+    case 0x117: bobui_button = BobUI::ExtraButton5; break;
+    case 0x118: bobui_button = BobUI::ExtraButton6; break;
+    case 0x119: bobui_button = BobUI::ExtraButton7; break;
+    case 0x11a: bobui_button = BobUI::ExtraButton8; break;
+    case 0x11b: bobui_button = BobUI::ExtraButton9; break;
+    case 0x11c: bobui_button = BobUI::ExtraButton10; break;
+    case 0x11d: bobui_button = BobUI::ExtraButton11; break;
+    case 0x11e: bobui_button = BobUI::ExtraButton12; break;
+    case 0x11f: bobui_button = BobUI::ExtraButton13; break;
+    default: return; // invalid button number (as far as BobUI is concerned)
     }
 
-    mLastButton = qt_button;
+    mLastButton = bobui_button;
 
     if (state)
-        mButtons |= qt_button;
+        mButtons |= bobui_button;
     else
-        mButtons &= ~qt_button;
+        mButtons &= ~bobui_button;
 
     mParent->mTime = time;
     mParent->mSerial = serial;
@@ -867,9 +867,9 @@ void QWaylandInputDevice::Pointer::pointer_button(uint32_t serial, uint32_t time
     }
 
     if (state)
-        setFrameEvent(new PressEvent(window, time, pos, global, mButtons, qt_button, mParent->modifiers()));
+        setFrameEvent(new PressEvent(window, time, pos, global, mButtons, bobui_button, mParent->modifiers()));
     else
-        setFrameEvent(new ReleaseEvent(window, time, pos, global, mButtons, qt_button, mParent->modifiers()));
+        setFrameEvent(new ReleaseEvent(window, time, pos, global, mButtons, bobui_button, mParent->modifiers()));
 }
 
 void QWaylandInputDevice::Pointer::invalidateFocus()
@@ -883,7 +883,7 @@ void QWaylandInputDevice::Pointer::invalidateFocus()
 
 void QWaylandInputDevice::Pointer::releaseButtons()
 {
-    setFrameEvent(new ReleaseEvent(nullptr, mParent->mTime, mSurfacePos, mGlobalPos, Qt::NoButton, Qt::NoButton, mParent->modifiers()));
+    setFrameEvent(new ReleaseEvent(nullptr, mParent->mTime, mSurfacePos, mGlobalPos, BobUI::NoButton, BobUI::NoButton, mParent->modifiers()));
     flushFrameEvent();
 }
 
@@ -898,12 +898,12 @@ void QWaylandInputDevice::Pointer::leavePointers()
 class WheelEvent : public QWaylandPointerEvent
 {
 public:
-    WheelEvent(QWaylandWindow *surface, Qt::ScrollPhase phase, ulong timestamp, const QPointF &local,
+    WheelEvent(QWaylandWindow *surface, BobUI::ScrollPhase phase, ulong timestamp, const QPointF &local,
                const QPointF &global, const QPoint &pixelDelta, const QPoint &angleDelta,
-               Qt::MouseEventSource source, Qt::KeyboardModifiers modifiers, bool inverted)
+               BobUI::MouseEventSource source, BobUI::KeyboardModifiers modifiers, bool inverted)
         : QWaylandPointerEvent(QEvent::Wheel, phase, surface, timestamp, local, global,
-                               modifiers & Qt::AltModifier ? pixelDelta.transposed() : pixelDelta,
-                               modifiers & Qt::AltModifier ? angleDelta.transposed() : angleDelta,
+                               modifiers & BobUI::AltModifier ? pixelDelta.transposed() : pixelDelta,
+                               modifiers & BobUI::AltModifier ? angleDelta.transposed() : angleDelta,
                                source, modifiers, inverted)
     {
     }
@@ -1082,7 +1082,7 @@ bool QWaylandInputDevice::Pointer::FrameData::hasPixelDelta() const
     case axis_source_wheel_tilt: // sideways tilt of the wheel
     case axis_source_wheel:
         // In the case of wheel events, a pixel delta doesn't really make sense,
-        // and will make Qt think this is a continuous scroll event when it isn't,
+        // and will make BobUI think this is a continuous scroll event when it isn't,
         // so just ignore it.
         return false;
     case axis_source_finger:
@@ -1127,16 +1127,16 @@ QPoint QWaylandInputDevice::Pointer::FrameData::angleDelta() const
     return -delta120;
 }
 
-Qt::MouseEventSource QWaylandInputDevice::Pointer::FrameData::wheelEventSource() const
+BobUI::MouseEventSource QWaylandInputDevice::Pointer::FrameData::wheelEventSource() const
 {
     switch (axisSource) {
     case axis_source_wheel_tilt: // sideways tilt of the wheel
     case axis_source_wheel:
-        return Qt::MouseEventNotSynthesized;
+        return BobUI::MouseEventNotSynthesized;
     case axis_source_finger:
     case axis_source_continuous:
     default: // Whatever other sources might be added are probably not mouse wheels
-        return Qt::MouseEventSynthesizedBySystem;
+        return BobUI::MouseEventSynthesizedBySystem;
     }
 }
 
@@ -1144,11 +1144,11 @@ void QWaylandInputDevice::Pointer::flushScrollEvent()
 {
     QPoint angleDelta = mFrameData.angleDelta();
 
-    // The wayland protocol has separate horizontal and vertical axes, Qt has just the one inverted flag
+    // The wayland protocol has separate horizontal and vertical axes, BobUI has just the one inverted flag
     // Pragmatically it should't come up
     const bool inverted = mFrameData.verticalAxisInverted || mFrameData.horizontalAxisInverted;
 
-    // Angle delta is required for Qt wheel events, so don't try to send events if it's zero
+    // Angle delta is required for BobUI wheel events, so don't try to send events if it's zero
     if (!angleDelta.isNull()) {
         QWaylandWindow *target = mScrollTarget;
         if (!mScrollBeginSent) {
@@ -1165,16 +1165,16 @@ void QWaylandInputDevice::Pointer::flushScrollEvent()
 
         if (isDefinitelyTerminated(mFrameData.axisSource) && !mScrollBeginSent) {
             qCDebug(lcQpaWaylandInput) << "Flushing scroll event sending ScrollBegin";
-            target->handleMouse(mParent, WheelEvent(focusWindow(), Qt::ScrollBegin, mParent->mTime,
+            target->handleMouse(mParent, WheelEvent(focusWindow(), BobUI::ScrollBegin, mParent->mTime,
                                                     mSurfacePos, mGlobalPos, QPoint(), QPoint(),
-                                                    Qt::MouseEventNotSynthesized,
+                                                    BobUI::MouseEventNotSynthesized,
                                                     mParent->modifiers(), false));
             mScrollBeginSent = true;
             mScrollDeltaRemainder = QPointF();
             mScrollTarget = target;
         }
 
-        Qt::ScrollPhase phase = mScrollBeginSent ? Qt::ScrollUpdate : Qt::NoScrollPhase;
+        BobUI::ScrollPhase phase = mScrollBeginSent ? BobUI::ScrollUpdate : BobUI::NoScrollPhase;
         QPoint pixelDelta = mFrameData.pixelDeltaAndError(&mScrollDeltaRemainder);
 
         qCDebug(lcQpaWaylandInput) << "Flushing scroll event" << phase << pixelDelta << angleDelta;
@@ -1186,7 +1186,7 @@ void QWaylandInputDevice::Pointer::flushScrollEvent()
         if (mScrollBeginSent) {
             if (auto target = mScrollTarget.get()) {
                 qCDebug(lcQpaWaylandInput) << "Flushing scroll end event";
-                target->handleMouse(mParent, WheelEvent(focusWindow(), Qt::ScrollEnd, mParent->mTime, mSurfacePos, mGlobalPos,
+                target->handleMouse(mParent, WheelEvent(focusWindow(), BobUI::ScrollEnd, mParent->mTime, mSurfacePos, mGlobalPos,
                                                         QPoint(), QPoint(), mFrameData.wheelEventSource(), mParent->modifiers(), inverted));
             }
             mScrollBeginSent = false;
@@ -1220,8 +1220,8 @@ void QWaylandInputDevice::Pointer::flushFrameEvent()
                     nullptr, event->timestamp,
                     QPointingDevice::primaryPointingDevice(mParent->seatname()), event->local,
                     event->global, event->buttons, event->button, event->type,
-                    event->modifiers); // , Qt::MouseEventSource source =
-                                       // Qt::MouseEventNotSynthesized);
+                    event->modifiers); // , BobUI::MouseEventSource source =
+                                       // BobUI::MouseEventNotSynthesized);
         }
         mFrameData.event.reset();
     }
@@ -1230,7 +1230,7 @@ void QWaylandInputDevice::Pointer::flushFrameEvent()
     flushScrollEvent();
 }
 
-bool QWaylandInputDevice::Pointer::isDefinitelyTerminated(QtWayland::wl_pointer::axis_source source) const
+bool QWaylandInputDevice::Pointer::isDefinitelyTerminated(BobUIWayland::wl_pointer::axis_source source) const
 {
     return source == axis_source_finger;
 }
@@ -1238,7 +1238,7 @@ bool QWaylandInputDevice::Pointer::isDefinitelyTerminated(QtWayland::wl_pointer:
 void QWaylandInputDevice::Keyboard::keyboard_keymap(uint32_t format, int32_t fd, uint32_t size)
 {
     mKeymapFormat = format;
-#if QT_CONFIG(xkbcommon)
+#if BOBUI_CONFIG(xkbcommon)
     if (format == WL_KEYBOARD_KEYMAP_FORMAT_NO_KEYMAP)
         return;
 
@@ -1322,7 +1322,7 @@ void QWaylandInputDevice::Keyboard::keyboard_leave(uint32_t serial, struct wl_su
 }
 
 void QWaylandInputDevice::Keyboard::handleKey(ulong timestamp, QEvent::Type type, int key,
-                                              Qt::KeyboardModifiers modifiers, quint32 nativeScanCode,
+                                              BobUI::KeyboardModifiers modifiers, quint32 nativeScanCode,
                                               quint32 nativeVirtualKey, quint32 nativeModifiers,
                                               const QString &text, bool autorepeat, ushort count)
 {
@@ -1339,7 +1339,7 @@ void QWaylandInputDevice::Keyboard::handleKey(ulong timestamp, QEvent::Type type
     if (!filtered) {
         auto window = focusWindow()->window();
 
-        if (type == QEvent::KeyPress && key == Qt::Key_Menu) {
+        if (type == QEvent::KeyPress && key == BobUI::Key_Menu) {
             auto cursor = window->screen()->handle()->cursor();
             if (cursor) {
                 const QPoint globalPos = cursor->pos();
@@ -1374,16 +1374,16 @@ void QWaylandInputDevice::Keyboard::keyboard_key(uint32_t serial, uint32_t time,
         mParent->mQDisplay->setLastInputDevice(mParent, serial, window);
 
     if (mKeymapFormat == WL_KEYBOARD_KEYMAP_FORMAT_XKB_V1) {
-#if QT_CONFIG(xkbcommon)
+#if BOBUI_CONFIG(xkbcommon)
         if ((!mXkbKeymap || !mXkbState) && !createDefaultKeymap())
             return;
 
         auto code = key + 8; // map to wl_keyboard::keymap_format::keymap_format_xkb_v1
 
         xkb_keysym_t sym = xkb_state_key_get_one_sym(mXkbState.get(), code);
-        Qt::KeyboardModifiers modifiers = QXkbCommon::modifiers(mXkbState.get(), sym);
+        BobUI::KeyboardModifiers modifiers = QXkbCommon::modifiers(mXkbState.get(), sym);
 
-        int qtkey = keysymToQtKey(sym, modifiers, mXkbState.get(), code);
+        int bobuikey = keysymToBobUIKey(sym, modifiers, mXkbState.get(), code);
         QString text = QXkbCommon::lookupString(mXkbState.get(), code);
 
         QEvent::Type type = isDown ? QEvent::KeyPress : QEvent::KeyRelease;
@@ -1397,12 +1397,12 @@ void QWaylandInputDevice::Keyboard::keyboard_key(uint32_t serial, uint32_t time,
             return;
         }
         if (isAutoRepeat)
-            handleKey(time, QEvent::KeyRelease, qtkey, modifiers, code, sym, mNativeModifiers, text, isAutoRepeat);
+            handleKey(time, QEvent::KeyRelease, bobuikey, modifiers, code, sym, mNativeModifiers, text, isAutoRepeat);
 
-        handleKey(time, type, qtkey, modifiers, code, sym, mNativeModifiers, text, isAutoRepeat);
+        handleKey(time, type, bobuikey, modifiers, code, sym, mNativeModifiers, text, isAutoRepeat);
 
         if (state == WL_KEYBOARD_KEY_STATE_PRESSED && xkb_keymap_key_repeats(mXkbKeymap.get(), code) && mRepeatRate > 0) {
-            mRepeatKey.key = qtkey;
+            mRepeatKey.key = bobuikey;
             mRepeatKey.code = code;
             mRepeatKey.time = time;
             mRepeatKey.text = text;
@@ -1443,7 +1443,7 @@ void QWaylandInputDevice::Keyboard::keyboard_modifiers(uint32_t serial,
                                              uint32_t group)
 {
     Q_UNUSED(serial);
-#if QT_CONFIG(xkbcommon)
+#if BOBUI_CONFIG(xkbcommon)
     if (mXkbState)
         xkb_state_update_mask(mXkbState.get(),
                               mods_depressed, mods_latched, mods_locked,
@@ -1593,7 +1593,7 @@ void QWaylandInputDevice::Touch::touch_frame()
     if (mFocus) {
         // Returns a reference to the last item in the list. The list must not be empty.
         // If the list can be empty, call isEmpty() before calling this function.
-        // See: https://doc.qt.io/qt-5.15/qlist.html#last
+        // See: https://doc.bobui.io/bobui-5.15/qlist.html#last
         if (mPendingTouchPoints.empty())
             return;
         const QWindowSystemInterface::TouchPoint &tp = mPendingTouchPoints.constLast();
@@ -1624,6 +1624,6 @@ void QWaylandInputDevice::Touch::touch_frame()
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qwaylandinputdevice_p.cpp"

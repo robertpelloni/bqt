@@ -1,0 +1,27 @@
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
+
+/*!
+    \headerfile <BobUIPreprocessorSupport>
+    \inmodule BobUICore
+    \ingroup funclists
+    \brief Preprocessor-specific macros.
+*/
+
+/*!
+    \macro Q_UNUSED(name)
+    \relates <BobUIPreprocessorSupport>
+
+    Indicates to the compiler that the parameter with the specified
+    \a name is not used in the body of a function. This can be used to
+    suppress compiler warnings while allowing functions to be defined
+    with meaningful parameter names in their signatures.
+*/
+
+/*!
+    \macro BOBUI_STRINGIFY(arg)
+    \relates <BobUIPreprocessorSupport>
+
+    The macro can be used to turn the builtin line expander \a arg into a string
+    literal.
+*/

@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qgifhandler_p.h"
 
@@ -9,9 +9,9 @@
 #include <qloggingcategory.h>
 #include <qvariant.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcGif, "qt.gui.imageio.gif")
+Q_LOGGING_CATEGORY(lcGif, "bobui.gui.imageio.gif")
 
 #define Q_TRANSPARENT 0x00ffffff
 
@@ -1199,4 +1199,4 @@ int QGifHandler::currentImageNumber() const
     return frameNumber;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

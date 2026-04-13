@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QPRINTER_P_H
 #define QPRINTER_P_H
@@ -9,7 +9,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -17,19 +17,19 @@
 //
 
 
-#include <QtPrintSupport/private/qtprintsupportglobal_p.h>
+#include <BobUIPrintSupport/private/bobuiprintsupportglobal_p.h>
 
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
 
-#include "QtPrintSupport/qprinter.h"
-#include "QtPrintSupport/qprinterinfo.h"
-#include "QtPrintSupport/qprintengine.h"
-#include "QtCore/qpointer.h"
-#include "QtCore/qset.h"
+#include "BobUIPrintSupport/qprinter.h"
+#include "BobUIPrintSupport/qprinterinfo.h"
+#include "BobUIPrintSupport/qprintengine.h"
+#include "BobUICore/qpointer.h"
+#include "BobUICore/qset.h"
 
 #include <limits.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QPrintEngine;
 class QPreviewPaintEngine;
@@ -45,7 +45,7 @@ public:
           paintEngine(nullptr),
           realPrintEngine(nullptr),
           realPaintEngine(nullptr),
-#if QT_CONFIG(printpreviewwidget)
+#if BOBUI_CONFIG(printpreviewwidget)
           previewEngine(nullptr),
 #endif
           q_ptr(printer),
@@ -68,7 +68,7 @@ public:
     QPrinterInfo findValidPrinter(const QPrinterInfo &printer = QPrinterInfo());
     void initEngines(QPrinter::OutputFormat format, const QPrinterInfo &printer);
     void changeEngines(QPrinter::OutputFormat format, const QPrinterInfo &printer);
-#if QT_CONFIG(printpreviewwidget)
+#if BOBUI_CONFIG(printpreviewwidget)
     QList<const QPicture *> previewPages() const;
     void setPreviewMode(bool);
     bool previewMode() const;
@@ -84,7 +84,7 @@ public:
 
     QPrintEngine *realPrintEngine;
     QPaintEngine *realPaintEngine;
-#if QT_CONFIG(printpreviewwidget)
+#if BOBUI_CONFIG(printpreviewwidget)
     QPreviewPaintEngine *previewEngine;
 #endif
 
@@ -102,8 +102,8 @@ public:
     QSet<QPrintEngine::PrintEnginePropertyKey> m_properties;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_PRINTER
+#endif // BOBUI_NO_PRINTER
 
 #endif // QPRINTER_P_H

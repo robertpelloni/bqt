@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtGui/QOpenGLFunctions>
-#include <QtGui/QScreen>
-#include <QtGui/QWindow>
+#include <BobUIGui/QOpenGLFunctions>
+#include <BobUIGui/QScreen>
+#include <BobUIGui/QWindow>
 #include <private/qguiapplication_p.h>
 #include <qpa/qplatformintegration.h>
 #include <qpa/qplatformnativeinterface.h>
 #include <private/qopengl_p.h>
 
-#include <QTest>
+#include <BOBUIest>
 
-#include <QtCore/QSysInfo>
-#include <QtCore/QLibraryInfo>
-#include <QtCore/QScopedPointer>
-#include <QtCore/QVariant>
-#include <QtCore/QDebug>
-#include <QtCore/QTextStream>
-#include <QtCore/QJsonDocument>
+#include <BobUICore/QSysInfo>
+#include <BobUICore/QLibraryInfo>
+#include <BobUICore/QScopedPointer>
+#include <BobUICore/QVariant>
+#include <BobUICore/QDebug>
+#include <BobUICore/BOBUIextStream>
+#include <BobUICore/QJsonDocument>
 
 #include <algorithm>
 
@@ -25,25 +25,25 @@
     if (platformIntegration->hasCapability(QPlatformIntegration::capability)) \
         str << ' ' << #capability;
 
-QTextStream &operator<<(QTextStream &str, const QSize &s)
+BOBUIextStream &operator<<(BOBUIextStream &str, const QSize &s)
 {
     str << s.width() << 'x' << s.height();
     return str;
 }
 
-QTextStream &operator<<(QTextStream &str, const QRect &r)
+BOBUIextStream &operator<<(BOBUIextStream &str, const QRect &r)
 {
     str << r.size() << '+' << r.x() << '+' << r.y();
     return str;
 }
 
-QTextStream &operator<<(QTextStream &str, const QSizeF &s)
+BOBUIextStream &operator<<(BOBUIextStream &str, const QSizeF &s)
 {
     str << s.width() << 'x' << s.height();
     return str;
 }
 
-QTextStream &operator<<(QTextStream &str, const QSurfaceFormat &format)
+BOBUIextStream &operator<<(BOBUIextStream &str, const QSurfaceFormat &format)
 {
     str << "Version: " << format.majorVersion() << '.'
         << format.minorVersion() << " Profile: " << format.profile()
@@ -65,7 +65,7 @@ QTextStream &operator<<(QTextStream &str, const QSurfaceFormat &format)
     return str;
 }
 
-/* This test contains code from the qtdiag tool. Its purpose is to output the
+/* This test contains code from the bobuidiag tool. Its purpose is to output the
  * graphics configuration to the CI log and to verify that Open GL can be
  * initialized for platforms on which the qopengl test is marked as
  * insignificant. */
@@ -82,7 +82,7 @@ private slots:
     void testDefaultWindowsBlacklist();
 };
 
-static void dumpConfiguration(QTextStream &str)
+static void dumpConfiguration(BOBUIextStream &str)
 {
     const QPlatformIntegration *platformIntegration = QGuiApplicationPrivate::platformIntegration();
     str << "\nBuild        : " << QLibraryInfo::build()
@@ -145,16 +145,16 @@ void tst_QOpenGlConfig::initTestCase()
 void tst_QOpenGlConfig::testConfiguration()
 {
     QString result;
-    QTextStream str(&result);
+    BOBUIextStream str(&result);
     dumpConfiguration(str);
 
     qDebug().noquote() << '\n' << result;
 }
 
-static void dumpGlConfiguration(QOpenGLContext &context, QTextStream &str)
+static void dumpGlConfiguration(QOpenGLContext &context, BOBUIextStream &str)
 {
     str << "Type             : ";
-#ifdef QT_OPENGL_DYNAMIC
+#ifdef BOBUI_OPENGL_DYNAMIC
     str << "Dynamic GL ";
 #endif
     switch (context.openGLModuleType()) {
@@ -184,7 +184,7 @@ static void dumpGlConfiguration(QOpenGLContext &context, QTextStream &str)
 void tst_QOpenGlConfig::testGlConfiguration()
 {
     QString result;
-    QTextStream str(&result);
+    BOBUIextStream str(&result);
 
     QWindow window;
     window.setSurfaceType(QSurface::OpenGLSurface);
@@ -255,7 +255,7 @@ void tst_QOpenGlConfig::testBugList()
     QVERIFY2(expectedFeatures == actualFeatures,
              msgSetMismatch(expectedFeatures, actualFeatures));
 
-    gpu = QOpenGLConfig::Gpu::fromGLVendor(QByteArrayLiteral("The Qt Company"));
+    gpu = QOpenGLConfig::Gpu::fromGLVendor(QByteArrayLiteral("The BobUI Company"));
     expectedFeatures = QSet<QString>() << "cool_feature";
     actualFeatures = QOpenGLConfig::gpuFeatures(gpu, QStringLiteral("linux"),
                                                 QVersionNumber(1, 0), QString(), fileName);
@@ -265,10 +265,10 @@ void tst_QOpenGlConfig::testBugList()
 
 void tst_QOpenGlConfig::testDefaultWindowsBlacklist()
 {
-    if (QGuiApplication::platformName().compare(QLatin1String("windows"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().compare(QLatin1String("windows"), BobUI::CaseInsensitive))
         QSKIP("Only applicable to Windows");
 
-    QFile f(QStringLiteral(":/qt-project.org/windows/openglblacklists/default.json"));
+    QFile f(QStringLiteral(":/bobui-project.org/windows/openglblacklists/default.json"));
     QVERIFY(f.open(QIODevice::ReadOnly | QIODevice::Text));
     QJsonParseError err;
     QJsonDocument doc = QJsonDocument::fromJson(f.readAll(), &err);
@@ -277,6 +277,6 @@ void tst_QOpenGlConfig::testDefaultWindowsBlacklist()
              .arg(err.offset).arg(err.errorString()).toLatin1());
 }
 
-QTEST_MAIN(tst_QOpenGlConfig)
+BOBUIEST_MAIN(tst_QOpenGlConfig)
 
 #include "tst_qopenglconfig.moc"

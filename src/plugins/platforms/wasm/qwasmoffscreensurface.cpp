@@ -1,9 +1,9 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "qwasmoffscreensurface.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QWasmOffscreenSurface::QWasmOffscreenSurface(QOffscreenSurface *offscreenSurface)
     : QPlatformOffscreenSurface(offscreenSurface), m_offscreenCanvas(emscripten::val::undefined())
@@ -16,7 +16,7 @@ QWasmOffscreenSurface::QWasmOffscreenSurface(QOffscreenSurface *offscreenSurface
     m_offscreenCanvas = offscreenCanvasClass.new_(offscreenSurface->size().width(),
                                                   offscreenSurface->size().height());
 
-    m_specialTargetId = std::string("!qtoffscreen_") + std::to_string(uintptr_t(this));
+    m_specialTargetId = std::string("!bobuioffscreen_") + std::to_string(uintptr_t(this));
 
     emscripten::val::module_property("specialHTMLTargets")
             .set(m_specialTargetId, m_offscreenCanvas);
@@ -32,4 +32,4 @@ bool QWasmOffscreenSurface::isValid() const
     return !m_offscreenCanvas.isNull() && !m_offscreenCanvas.isUndefined();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

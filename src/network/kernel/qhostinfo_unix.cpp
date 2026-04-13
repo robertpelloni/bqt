@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:trusted-data
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:trusted-data
 
 //#define QHOSTINFO_DEBUG
 
@@ -15,7 +15,7 @@
 #include <netdb.h>
 #include <netinet/in.h>
 
-#if QT_CONFIG(libresolv)
+#if BOBUI_CONFIG(libresolv)
 #  include <resolv.h>
 #endif
 
@@ -23,9 +23,9 @@
 #  define _PATH_RESCONF "/etc/resolv.conf"
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static void maybeRefreshResolver()
 {
@@ -53,13 +53,13 @@ static void maybeRefreshResolver()
     return;
 #endif
 
-#if QT_CONFIG(libresolv)
+#if BOBUI_CONFIG(libresolv)
     // OSes known or thought to reach here: AIX, NetBSD, Solaris,
     // Linux with MUSL (though res_init() does nothing and is unnecessary)
 
-    Q_CONSTINIT static QT_STATBUF lastStat = {};
+    Q_CONSTINIT static BOBUI_STATBUF lastStat = {};
     Q_CONSTINIT static QBasicMutex mutex = {};
-    if (QT_STATBUF st; QT_STAT(_PATH_RESCONF, &st) == 0) {
+    if (BOBUI_STATBUF st; BOBUI_STAT(_PATH_RESCONF, &st) == 0) {
         QMutexLocker locker(&mutex);
         bool refresh = false;
         if ((_res.options & RES_INIT) == 0)
@@ -96,7 +96,7 @@ QHostInfo QHostInfoAgent::fromName(const QString &hostName)
 
 QString QHostInfo::localDomainName()
 {
-#if QT_CONFIG(libresolv)
+#if BOBUI_CONFIG(libresolv)
     auto domainNameFromRes = [](res_state r) {
         QString domainName;
         if (r->defdname[0])
@@ -115,7 +115,7 @@ QString QHostInfo::localDomainName()
     // using thread-unsafe version
     maybeRefreshResolver();
     return domainNameFromRes(&_res);
-#endif  // !QT_CONFIG(libresolv)
+#endif  // !BOBUI_CONFIG(libresolv)
 
     // nothing worked, try doing it by ourselves:
     QFile resolvconf;
@@ -146,4 +146,4 @@ QString QHostInfo::localDomainName()
     return domainName;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

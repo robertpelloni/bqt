@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <qcoreapplication.h>
 #include <qsqldatabase.h>
 #include <qsqlerror.h>
@@ -35,7 +35,7 @@ private slots:
     void basicDriverTest();
 };
 
-/****************** General Qt SQL Module tests *****************/
+/****************** General BobUI SQL Module tests *****************/
 void tst_QSql::initTestCase()
 {
 }
@@ -56,12 +56,12 @@ void tst_QSql::cleanup()
 // it can be used while developing new drivers,
 // it's original purpose is to test ODBC Text datasources that are basically
 // to stupid to do anything more advanced than SELECT/INSERT/UPDATE/DELETE
-// the datasource has to have a table called "qtest_basictest" consisting
+// the datasource has to have a table called "bobuiest_basictest" consisting
 // of a field "id"(integer) and "name"(char/varchar).
 void tst_QSql::basicDriverTest()
 {
     int argc = 1;
-    char *argv[] = { const_cast<char*>(QTest::currentAppName()) };
+    char *argv[] = { const_cast<char*>(BOBUIest::currentAppName()) };
     QCoreApplication app(argc, argv, false);
     tst_Databases dbs;
     QVERIFY(dbs.open());
@@ -73,12 +73,12 @@ void tst_QSql::basicDriverTest()
         QStringList tables = db.tables();
         QString tableName;
 
-        if (tables.contains("qtest_basictest.txt"))
-            tableName = "qtest_basictest.txt";
-        else if (tables.contains("qtest_basictest"))
-            tableName = "qtest_basictest";
-        else if (tables.contains("QTEST_BASICTEST"))
-            tableName = "QTEST_BASICTEST";
+        if (tables.contains("bobuiest_basictest.txt"))
+            tableName = "bobuiest_basictest.txt";
+        else if (tables.contains("bobuiest_basictest"))
+            tableName = "bobuiest_basictest";
+        else if (tables.contains("BOBUIEST_BASICTEST"))
+            tableName = "BOBUIEST_BASICTEST";
         else {
             QVERIFY(1);
             continue;
@@ -102,7 +102,7 @@ void tst_QSql::open()
 {
     int i;
     int argc = 1;
-    char *argv[] = { const_cast<char*>(QTest::currentAppName()) };
+    char *argv[] = { const_cast<char*>(BOBUIest::currentAppName()) };
     int count = -1;
     for (i = 0; i < 10; ++i) {
         QCoreApplication app(argc, argv, false);
@@ -122,7 +122,7 @@ void tst_QSql::open()
 void tst_QSql::openInvalid()
 {
     int argc = 1;
-    char *argv[] = { const_cast<char*>(QTest::currentAppName()) };
+    char *argv[] = { const_cast<char*>(BOBUIest::currentAppName()) };
     QCoreApplication app(argc, argv, false);
 
     QSqlDatabase db;
@@ -135,7 +135,7 @@ void tst_QSql::openInvalid()
 void tst_QSql::concurrentAccess()
 {
     int argc = 1;
-    char *argv[] = { const_cast<char*>(QTest::currentAppName()) };
+    char *argv[] = { const_cast<char*>(BOBUIest::currentAppName()) };
     QCoreApplication app(argc, argv, false);
     tst_Databases dbs;
 
@@ -165,7 +165,7 @@ void tst_QSql::concurrentAccess()
 void tst_QSql::openErrorRecovery()
 {
     int argc = 1;
-    char *argv[] = { const_cast<char*>(QTest::currentAppName()) };
+    char *argv[] = { const_cast<char*>(BOBUIest::currentAppName()) };
     QCoreApplication app(argc, argv, false);
     tst_Databases dbs;
 
@@ -213,7 +213,7 @@ void tst_QSql::openErrorRecovery()
 void tst_QSql::registerSqlDriver()
 {
     int argc = 1;
-    char *argv[] = { const_cast<char*>(QTest::currentAppName()) };
+    char *argv[] = { const_cast<char*>(BOBUIest::currentAppName()) };
     QCoreApplication app(argc, argv, false);
 
     QSqlDatabase::registerSqlDriver("QSQLTESTDRIVER", new QSqlDriverCreator<QSqlNullDriver>);
@@ -225,5 +225,5 @@ void tst_QSql::registerSqlDriver()
     QCOMPARE(db.tables(), QStringList());
 }
 
-QTEST_APPLESS_MAIN(tst_QSql)
+BOBUIEST_APPLESS_MAIN(tst_QSql)
 #include "tst_qsql.moc"

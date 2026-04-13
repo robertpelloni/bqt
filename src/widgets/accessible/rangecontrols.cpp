@@ -1,43 +1,43 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "rangecontrols_p.h"
 
-#if QT_CONFIG(slider)
+#if BOBUI_CONFIG(slider)
 #include <qslider.h>
 #endif
-#if QT_CONFIG(dial)
+#if BOBUI_CONFIG(dial)
 #include <qdial.h>
 #endif
-#if QT_CONFIG(spinbox)
+#if BOBUI_CONFIG(spinbox)
 #include <qspinbox.h>
 #endif
-#if QT_CONFIG(scrollbar)
+#if BOBUI_CONFIG(scrollbar)
 #include <qscrollbar.h>
 #endif
 #include <qstyle.h>
 #include <qstyleoption.h>
 #include <qdebug.h>
 #include <qglobal.h>
-#if QT_CONFIG(lineedit)
-#include <QtWidgets/qlineedit.h>
+#if BOBUI_CONFIG(lineedit)
+#include <BobUIWidgets/qlineedit.h>
 #endif
 #include <qmath.h>
 #include <private/qmath_p.h>
 
 #include "simplewidgets_p.h" // let spinbox use line edit's interface
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 
-#if QT_CONFIG(spinbox)
+#if BOBUI_CONFIG(spinbox)
 
 /*!
     \class QAccessibleAbstractSpinBox
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
     \internal
 */
 QAccessibleAbstractSpinBox::QAccessibleAbstractSpinBox(QWidget *w)
@@ -61,7 +61,7 @@ QAbstractSpinBox *QAccessibleAbstractSpinBox::abstractSpinBox() const
 
 QAccessibleInterface *QAccessibleAbstractSpinBox::lineEditIface() const
 {
-#if QT_CONFIG(lineedit)
+#if BOBUI_CONFIG(lineedit)
     // QAccessibleLineEdit is only used to forward the text functions
     if (!lineEdit)
         lineEdit = new QAccessibleLineEdit(abstractSpinBox()->lineEdit());
@@ -251,7 +251,7 @@ QSpinBox *QAccessibleSpinBox::spinBox() const
 
 /*!
     \class QAccessibleDoubleSpinBox
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
     \internal
 */
 QAccessibleDoubleSpinBox::QAccessibleDoubleSpinBox(QWidget *widget)
@@ -276,9 +276,9 @@ QString QAccessibleDoubleSpinBox::text(QAccessible::Text textType) const
     return QAccessibleWidgetV2::text(textType);
 }
 
-#endif // QT_CONFIG(spinbox)
+#endif // BOBUI_CONFIG(spinbox)
 
-#if QT_CONFIG(scrollbar)
+#if BOBUI_CONFIG(scrollbar)
 /*!
   \class QAccessibleScrollBar
   \brief The QAccessibleScrollBar class implements the QAccessibleInterface for scroll bars.
@@ -311,9 +311,9 @@ QString QAccessibleScrollBar::text(QAccessible::Text t) const
     return QAccessibleAbstractSlider::text(t);
 }
 
-#endif // QT_CONFIG(scrollbar)
+#endif // BOBUI_CONFIG(scrollbar)
 
-#if QT_CONFIG(slider)
+#if BOBUI_CONFIG(slider)
 /*!
   \class QAccessibleSlider
   \brief The QAccessibleSlider class implements the QAccessibleInterface for sliders.
@@ -406,9 +406,9 @@ QAbstractSlider *QAccessibleAbstractSlider::abstractSlider() const
     return static_cast<QAbstractSlider *>(object());
 }
 
-#endif // QT_CONFIG(slider)
+#endif // BOBUI_CONFIG(slider)
 
-#if QT_CONFIG(dial)
+#if BOBUI_CONFIG(dial)
 // ======================================= QAccessibleDial ======================================
 QAccessibleDial::QAccessibleDial(QWidget *widget)
     : QAccessibleAbstractSlider(widget, QAccessible::Dial)
@@ -429,8 +429,8 @@ QDial *QAccessibleDial::dial() const
 {
     return static_cast<QDial*>(object());
 }
-#endif // QT_CONFIG(dial)
+#endif // BOBUI_CONFIG(dial)
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

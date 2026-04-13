@@ -1,35 +1,35 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qplatformdefs.h"
 
 #include "qwidgetrepaintmanager_p.h"
 
-#include <QtCore/qglobal.h>
-#include <QtCore/qdebug.h>
-#include <QtCore/qvarlengtharray.h>
-#include <QtGui/qevent.h>
-#include <QtWidgets/qapplication.h>
-#include <QtGui/qpaintengine.h>
-#if QT_CONFIG(graphicsview)
-#include <QtWidgets/qgraphicsproxywidget.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qvarlengtharray.h>
+#include <BobUIGui/qevent.h>
+#include <BobUIWidgets/qapplication.h>
+#include <BobUIGui/qpaintengine.h>
+#if BOBUI_CONFIG(graphicsview)
+#include <BobUIWidgets/qgraphicsproxywidget.h>
 #endif
 
 #include <private/qwidget_p.h>
 #include <private/qapplication_p.h>
 #include <private/qpaintengine_raster_p.h>
-#if QT_CONFIG(graphicseffect)
+#if BOBUI_CONFIG(graphicseffect)
 #include <private/qgraphicseffect_p.h>
 #endif
-#include <QtGui/private/qwindow_p.h>
-#include <QtGui/private/qhighdpiscaling_p.h>
+#include <BobUIGui/private/qwindow_p.h>
+#include <BobUIGui/private/qhighdpiscaling_p.h>
 
 #include <qpa/qplatformbackingstore.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_GLOBAL_STATIC(QPlatformTextureList, qt_dummy_platformTextureList)
+Q_GLOBAL_STATIC(QPlatformTextureList, bobui_dummy_platformTextureList)
 
 // Watches one or more QPlatformTextureLists for changes in the lock state and
 // triggers a backingstore sync when all the registered lists turn into
@@ -94,7 +94,7 @@ void QWidgetRepaintManager::updateLists(QWidget *cur)
         updateLists(child);
     }
 
-    if (cur->testAttribute(Qt::WA_StaticContents))
+    if (cur->testAttribute(BobUI::WA_StaticContents))
         addStaticWidget(cur);
 }
 
@@ -125,7 +125,7 @@ void QWidgetPrivate::invalidateBackingStore(const T &r)
     if (!q->isVisible() || !q->updatesEnabled())
         return;
 
-    QTLWExtra *tlwExtra = q->window()->d_func()->maybeTopData();
+    BOBUILWExtra *tlwExtra = q->window()->d_func()->maybeTopData();
     if (!tlwExtra || !tlwExtra->backingStore || !tlwExtra->repaintManager)
         return;
 
@@ -177,7 +177,7 @@ void QWidgetRepaintManager::markDirty(const T &r, QWidget *widget, UpdateTime up
     Q_ASSERT(widget->window() == tlw);
     Q_ASSERT(!r.isEmpty());
 
-#if QT_CONFIG(graphicseffect)
+#if BOBUI_CONFIG(graphicseffect)
     widget->d_func()->invalidateGraphicsEffectsRecursively();
 #endif
 
@@ -190,7 +190,7 @@ void QWidgetRepaintManager::markDirty(const T &r, QWidget *widget, UpdateTime up
             widget->d_func()->dirty = r;
             sendUpdateRequest(widget, updateTime);
             return;
-        } else if (qt_region_strictContains(widget->d_func()->dirty, widgetRect)) {
+        } else if (bobui_region_strictContains(widget->d_func()->dirty, widgetRect)) {
             if (updateTime == UpdateNow)
                 sendUpdateRequest(widget, updateTime);
             return; // Already dirty
@@ -218,11 +218,11 @@ void QWidgetRepaintManager::markDirty(const T &r, QWidget *widget, UpdateTime up
     QRect effectiveWidgetRect = widget->d_func()->effectiveRectFor(widgetRect);
     const QPoint offset = widget->mapTo(tlw, QPoint());
     QRect translatedRect = effectiveWidgetRect.translated(offset);
-#if QT_CONFIG(graphicseffect)
+#if BOBUI_CONFIG(graphicseffect)
     // Graphics effects may exceed window size, clamp
     translatedRect = translatedRect.intersected(QRect(QPoint(), tlw->size()));
 #endif
-    if (qt_region_strictContains(dirty, translatedRect)) {
+    if (bobui_region_strictContains(dirty, translatedRect)) {
         if (updateTime == UpdateNow)
             sendUpdateRequest(tlw, updateTime);
         return; // Already dirty
@@ -232,7 +232,7 @@ void QWidgetRepaintManager::markDirty(const T &r, QWidget *widget, UpdateTime up
 
     if (bufferState == BufferInvalid) {
         const bool eventAlreadyPosted = !dirty.isEmpty() || updateRequestSent;
-#if QT_CONFIG(graphicseffect)
+#if BOBUI_CONFIG(graphicseffect)
         if (widget->d_func()->graphicsEffect)
             dirty += widget->d_func()->effectiveRectFor(r).translated(offset);
         else
@@ -255,8 +255,8 @@ void QWidgetRepaintManager::markDirty(const T &r, QWidget *widget, UpdateTime up
     // ---------------------------------------------------------------------------
 
     if (widget->d_func()->inDirtyList) {
-        if (!qt_region_strictContains(widget->d_func()->dirty, effectiveWidgetRect)) {
-#if QT_CONFIG(graphicseffect)
+        if (!bobui_region_strictContains(widget->d_func()->dirty, effectiveWidgetRect)) {
+#if BOBUI_CONFIG(graphicseffect)
             if (widget->d_func()->graphicsEffect)
                 widget->d_func()->dirty += widget->d_func()->effectiveRectFor(r);
             else
@@ -279,11 +279,11 @@ void QWidgetRepaintManager::addDirtyWidget(QWidget *widget, const QRegion &rgn)
 {
     if (widget && !widget->d_func()->inDirtyList && !widget->data->in_destructor) {
         QWidgetPrivate *widgetPrivate = widget->d_func();
-#if QT_CONFIG(graphicseffect)
+#if BOBUI_CONFIG(graphicseffect)
         if (widgetPrivate->graphicsEffect)
             widgetPrivate->dirty = widgetPrivate->effectiveRectFor(rgn.boundingRect());
         else
-#endif // QT_CONFIG(graphicseffect)
+#endif // BOBUI_CONFIG(graphicseffect)
             widgetPrivate->dirty = rgn;
         dirtyWidgets.append(widget);
         widgetPrivate->inDirtyList = true;
@@ -361,7 +361,7 @@ void QWidgetRepaintManager::sendUpdateRequest(QWidget *widget, UpdateTime update
         // normal backingstore sync machinery.
         if (!widget->d_func()->shouldPaintOnScreen())
             updateRequestSent = true;
-        QCoreApplication::postEvent(widget, new QEvent(QEvent::UpdateRequest), Qt::LowEventPriority);
+        QCoreApplication::postEvent(widget, new QEvent(QEvent::UpdateRequest), BobUI::LowEventPriority);
         break;
     case UpdateNow: {
         QEvent event(QEvent::UpdateRequest);
@@ -388,7 +388,7 @@ void QWidgetPrivate::moveRect(const QRect &rect, int dx, int dy)
 
     QWidget *tlw = q->window();
 
-    static const bool accelEnv = qEnvironmentVariableIntValue("QT_NO_FAST_MOVE") == 0;
+    static const bool accelEnv = qEnvironmentVariableIntValue("BOBUI_NO_FAST_MOVE") == 0;
 
     QWidget *parentWidget = q->parentWidget();
     QPoint toplevelOffset = parentWidget->mapTo(tlw, QPoint());
@@ -403,7 +403,7 @@ void QWidgetPrivate::moveRect(const QRect &rect, int dx, int dy)
     const bool nativeWithTextureChild = textureChildSeen && hasPlatformWindow(q);
 
     bool accelerateMove = accelEnv && isOpaque && !nativeWithTextureChild && sourceRect.isValid()
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
                           // No accelerate move for proxy widgets.
                           && !tlw->d_func()->extra->proxyWidget
 #endif
@@ -466,11 +466,11 @@ void QWidgetPrivate::scrollRect(const QRect &rect, int dx, int dy)
     if (!repaintManager)
         return;
 
-    static const bool accelEnv = qEnvironmentVariableIntValue("QT_NO_FAST_SCROLL") == 0;
+    static const bool accelEnv = qEnvironmentVariableIntValue("BOBUI_NO_FAST_SCROLL") == 0;
 
     const QRect scrollRect = rect & clipRect();
     bool overlapped = false;
-    bool accelerateScroll = accelEnv && isOpaque && !q_func()->testAttribute(Qt::WA_WState_InPaintEvent)
+    bool accelerateScroll = accelEnv && isOpaque && !q_func()->testAttribute(BobUI::WA_WState_InPaintEvent)
                             && !(overlapped = isOverlapped(scrollRect.translated(data.crect.topLeft())));
 
     if (!accelerateScroll) {
@@ -589,7 +589,7 @@ static QPlatformTextureList *widgetTexturesFor(QWidget *tlw, QWidget *widget)
     }
 
     if (QWidgetPrivate::get(widget)->textureChildSeen)
-        return qt_dummy_platformTextureList();
+        return bobui_dummy_platformTextureList();
 
     return nullptr;
 }
@@ -598,7 +598,7 @@ static QPlatformTextureList *widgetTexturesFor(QWidget *tlw, QWidget *widget)
 
 /*!
     \class QWidgetRepaintManager
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
     \internal
 */
 
@@ -617,7 +617,7 @@ void QWidgetRepaintManager::sync(QWidget *exposedWidget, const QRegion &exposedR
         return;
 
     if (!exposedWidget || !hasPlatformWindow(exposedWidget)
-        || !exposedWidget->isVisible() || !exposedWidget->testAttribute(Qt::WA_Mapped)
+        || !exposedWidget->isVisible() || !exposedWidget->testAttribute(BobUI::WA_Mapped)
         || !exposedWidget->updatesEnabled() || exposedRegion.isEmpty()) {
         return;
     }
@@ -647,7 +647,7 @@ void QWidgetRepaintManager::sync()
     qCInfo(lcWidgetPainting) << "Syncing dirty widgets";
 
     updateRequestSent = false;
-    if (qt_widget_private(tlw)->shouldDiscardSyncRequest()) {
+    if (bobui_widget_private(tlw)->shouldDiscardSyncRequest()) {
         // If the top-level is minimized, it's not visible on the screen so we can delay the
         // update until it's shown again. In order to do that we must keep the dirty states.
         // These will be cleared when we receive the first expose after showNormal().
@@ -669,12 +669,12 @@ void QWidgetRepaintManager::sync()
 bool QWidgetPrivate::shouldDiscardSyncRequest() const
 {
     Q_Q(const QWidget);
-    return !maybeTopData() || !q->testAttribute(Qt::WA_Mapped) || !q->isVisible();
+    return !maybeTopData() || !q->testAttribute(BobUI::WA_Mapped) || !q->isVisible();
 }
 
 bool QWidgetRepaintManager::syncAllowed()
 {
-    QTLWExtra *tlwExtra = tlw->d_func()->maybeTopData();
+    BOBUILWExtra *tlwExtra = tlw->d_func()->maybeTopData();
     if (textureListWatcher && !textureListWatcher->isLocked()) {
         textureListWatcher->deleteLater();
         textureListWatcher = nullptr;
@@ -697,7 +697,7 @@ bool QWidgetRepaintManager::syncAllowed()
 
 static bool isDrawnInEffect(const QWidget *w)
 {
-#if QT_CONFIG(graphicseffect)
+#if BOBUI_CONFIG(graphicseffect)
     do {
         if (w->graphicsEffect())
             return true;
@@ -789,7 +789,7 @@ void QWidgetRepaintManager::paintAndFlush()
                                            : wd->dirty);
         toClean += widgetDirty;
 
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
         if (tlw->d_func()->extra->proxyWidget) {
             resetWidget(w);
             continue;
@@ -809,7 +809,7 @@ void QWidgetRepaintManager::paintAndFlush()
     // Find all render-to-texture child widgets (including self).
     // The search is cut at native widget boundaries, meaning that each native child widget
     // has its own list for the subtree below it.
-    QTLWExtra *tlwExtra = tlw->d_func()->topData();
+    BOBUILWExtra *tlwExtra = tlw->d_func()->topData();
     tlwExtra->widgetTextures.clear();
     findAllTextureWidgetsRecursively(tlw, tlw);
 
@@ -866,7 +866,7 @@ void QWidgetRepaintManager::paintAndFlush()
         resetWidget(dirtyRenderToTextureWidgets.at(i));
     dirtyRenderToTextureWidgets.clear();
 
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
     if (tlw->d_func()->extra->proxyWidget) {
         updateStaticContentsSize();
         dirty = QRegion();
@@ -961,7 +961,7 @@ void QWidgetRepaintManager::markNeedsFlush(QWidget *widget, const QRegion &regio
     if (!widget)
         return;
 
-    auto *widgetPrivate = qt_widget_private(widget);
+    auto *widgetPrivate = bobui_widget_private(widget);
     if (!widgetPrivate->needsFlush)
         widgetPrivate->needsFlush = new QRegion;
 
@@ -1020,7 +1020,7 @@ void QWidgetRepaintManager::flush(QWidget *widget, const QRegion &region, QPlatf
     Q_ASSERT(widget);
     Q_ASSERT(tlw);
 
-    if (tlw->testAttribute(Qt::WA_DontShowOnScreen) || widget->testAttribute(Qt::WA_DontShowOnScreen))
+    if (tlw->testAttribute(BobUI::WA_DontShowOnScreen) || widget->testAttribute(BobUI::WA_DontShowOnScreen))
         return;
 
     QWindow *window = widget->windowHandle();
@@ -1028,10 +1028,10 @@ void QWidgetRepaintManager::flush(QWidget *widget, const QRegion &region, QPlatf
     Q_ASSERT(window);
 
     // Foreign Windows do not have backing store content and must not be flushed
-    if (window->type() == Qt::ForeignWindow)
+    if (window->type() == BobUI::ForeignWindow)
         return;
 
-    static bool fpsDebug = qEnvironmentVariableIntValue("QT_DEBUG_FPS");
+    static bool fpsDebug = qEnvironmentVariableIntValue("BOBUI_DEBUG_FPS");
     if (fpsDebug) {
         if (!perfFrames++)
             perfTime.start();
@@ -1059,7 +1059,7 @@ void QWidgetRepaintManager::flush(QWidget *widget, const QRegion &region, QPlatf
     // data along with textures produced by the RHI widgets.
     if (flushWithRhi) {
         if (!widgetTextures)
-            widgetTextures = qt_dummy_platformTextureList;
+            widgetTextures = bobui_dummy_platformTextureList;
 
         // We only need to let the widget sub-hierarchy that
         // we are flushing know that we're compositing.
@@ -1069,7 +1069,7 @@ void QWidgetRepaintManager::flush(QWidget *widget, const QRegion &region, QPlatf
         // A window may have alpha even when the app did not request
         // WA_TranslucentBackground. Therefore the compositor needs to know whether the app intends
         // to rely on translucency, in order to decide if it should clear to transparent or opaque.
-        const bool translucentBackground = widget->testAttribute(Qt::WA_TranslucentBackground);
+        const bool translucentBackground = widget->testAttribute(BobUI::WA_TranslucentBackground);
 
         QPlatformBackingStore::FlushResult flushResult;
         flushResult = store->handle()->rhiFlush(window,
@@ -1101,7 +1101,7 @@ void QWidgetRepaintManager::addStaticWidget(QWidget *widget)
     if (!widget)
         return;
 
-    Q_ASSERT(widget->testAttribute(Qt::WA_StaticContents));
+    Q_ASSERT(widget->testAttribute(BobUI::WA_StaticContents));
     if (!staticWidgets.contains(widget))
         staticWidgets.append(widget);
 }
@@ -1145,7 +1145,7 @@ bool QWidgetRepaintManager::hasStaticContents() const
 */
 QRegion QWidgetRepaintManager::staticContents(QWidget *parent, const QRect &withinClipRect) const
 {
-    if (!parent && tlw->testAttribute(Qt::WA_StaticContents)) {
+    if (!parent && tlw->testAttribute(BobUI::WA_StaticContents)) {
         QRect backingstoreRect(QPoint(0, 0), store->size());
         if (!withinClipRect.isEmpty())
             backingstoreRect &= withinClipRect;
@@ -1209,7 +1209,7 @@ bool QWidgetRepaintManager::isDirty() const
 
 /*!
     \class QWidgetPrivate
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
     \internal
 */
 
@@ -1223,7 +1223,7 @@ void QWidgetPrivate::invalidateBackingStore_resizeHelper(const QPoint &oldPos, c
     Q_ASSERT(!q->isWindow());
     Q_ASSERT(q->parentWidget());
 
-    const bool staticContents = q->testAttribute(Qt::WA_StaticContents);
+    const bool staticContents = q->testAttribute(BobUI::WA_StaticContents);
     const bool sizeDecreased = (data.crect.width() < oldSize.width())
                                || (data.crect.height() < oldSize.height());
 
@@ -1305,7 +1305,7 @@ void QWidgetPrivate::invalidateBackingStore_resizeHelper(const QPoint &oldPos, c
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "qwidgetrepaintmanager.moc"
 #include "moc_qwidgetrepaintmanager_p.cpp"

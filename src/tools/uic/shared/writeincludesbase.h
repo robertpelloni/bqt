@@ -1,15 +1,15 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #ifndef WRITEINCLUDES_BASE_H
 #define WRITEINCLUDES_BASE_H
 
 #include <treewalker.h>
 
-#include <QtCore/qset.h>
-#include <QtCore/qstring.h>
+#include <BobUICore/qset.h>
+#include <BobUICore/qstring.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class DomCustomWidget;
 class Uic;
@@ -69,6 +69,6 @@ private:
     bool m_laidOut = false;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // WRITEINCLUDES_BASE_H

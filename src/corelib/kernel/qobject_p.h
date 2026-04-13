@@ -1,6 +1,6 @@
-// Copyright (C) 2019 The Qt Company Ltd.
+// Copyright (C) 2019 The BobUI Company Ltd.
 // Copyright (C) 2013 Olivier Goffart <ogoffart@woboq.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QOBJECT_P_H
 #define QOBJECT_P_H
@@ -9,55 +9,55 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of qapplication_*.cpp, qwidget*.cpp and qfiledialog.cpp.  This header
 // file may change from version to version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/private/qglobal_p.h>
-#include "QtCore/qcoreevent.h"
-#include <QtCore/qfunctionaltools_impl.h>
-#include "QtCore/qlist.h"
-#include "QtCore/qobject.h"
-#include "QtCore/qpointer.h"
-#include "QtCore/qvariant.h"
-#include "QtCore/qproperty.h"
-#include <QtCore/qshareddata.h>
-#include "QtCore/private/qproperty_p.h"
+#include <BobUICore/private/qglobal_p.h>
+#include "BobUICore/qcoreevent.h"
+#include <BobUICore/qfunctionaltools_impl.h>
+#include "BobUICore/qlist.h"
+#include "BobUICore/qobject.h"
+#include "BobUICore/qpointer.h"
+#include "BobUICore/qvariant.h"
+#include "BobUICore/qproperty.h"
+#include <BobUICore/qshareddata.h>
+#include "BobUICore/private/qproperty_p.h"
 
 #include <string>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #ifdef Q_MOC_RUN
-#define QT_ANONYMOUS_PROPERTY(text) QT_ANONYMOUS_PROPERTY(text)
-#define QT_ANONYMOUS_PRIVATE_PROPERTY(d, text) QT_ANONYMOUS_PRIVATE_PROPERTY(d, text)
-#elif !defined QT_NO_META_MACROS
-#define QT_ANONYMOUS_PROPERTY(...) QT_ANNOTATE_CLASS(qt_anonymous_property, __VA_ARGS__)
-#define QT_ANONYMOUS_PRIVATE_PROPERTY(d, text) QT_ANNOTATE_CLASS2(qt_anonymous_private_property, d, text)
+#define BOBUI_ANONYMOUS_PROPERTY(text) BOBUI_ANONYMOUS_PROPERTY(text)
+#define BOBUI_ANONYMOUS_PRIVATE_PROPERTY(d, text) BOBUI_ANONYMOUS_PRIVATE_PROPERTY(d, text)
+#elif !defined BOBUI_NO_META_MACROS
+#define BOBUI_ANONYMOUS_PROPERTY(...) BOBUI_ANNOTATE_CLASS(bobui_anonymous_property, __VA_ARGS__)
+#define BOBUI_ANONYMOUS_PRIVATE_PROPERTY(d, text) BOBUI_ANNOTATE_CLASS2(bobui_anonymous_private_property, d, text)
 #endif
 
-#define QT_CONCAT(B, M, m, u)   QT_CONCAT2(B, M, m, u)
-#define QT_CONCAT2(B, M, m, u)  B ## M ## _ ## m ## _ ## u
-#if defined(QT_BUILD_INTERNAL) && !QT_CONFIG(elf_private_full_version)
+#define BOBUI_CONCAT(B, M, m, u)   BOBUI_CONCAT2(B, M, m, u)
+#define BOBUI_CONCAT2(B, M, m, u)  B ## M ## _ ## m ## _ ## u
+#if defined(BOBUI_BUILD_INTERNAL) && !BOBUI_CONFIG(elf_private_full_version)
 // Don't check the version parameter in internal builds.
 // This allows incompatible versions to be loaded, possibly for testing.
 enum QObjectPrivateVersionEnum
 #else
-enum QT_CONCAT(QtPrivate_, QT_VERSION_MAJOR, QT_VERSION_MINOR, QT_VERSION_PATCH)
+enum BOBUI_CONCAT(BobUIPrivate_, BOBUI_VERSION_MAJOR, BOBUI_VERSION_MINOR, BOBUI_VERSION_PATCH)
 #endif
-{ QObjectPrivateVersion = QT_VERSION };
-#undef QT_CONCAT
-#undef QT_CONCAT2
+{ QObjectPrivateVersion = BOBUI_VERSION };
+#undef BOBUI_CONCAT
+#undef BOBUI_CONCAT2
 
 class QVariant;
-class QThreadData;
+class BOBUIhreadData;
 class QObjectConnectionListVector;
-namespace QtSharedPointer { struct ExternalRefCountData; }
+namespace BobUISharedPointer { struct ExternalRefCountData; }
 
-/* for Qt Test */
+/* for BobUI Test */
 struct QSignalSpyCallbackSet
 {
     typedef void (*BeginCallback)(QObject *caller, int signal_or_method_index, void **argv);
@@ -67,9 +67,9 @@ struct QSignalSpyCallbackSet
     EndCallback signal_end_callback,
                 slot_end_callback;
 };
-void Q_CORE_EXPORT qt_register_signal_spy_callbacks(QSignalSpyCallbackSet *callback_set);
+void Q_CORE_EXPORT bobui_register_signal_spy_callbacks(QSignalSpyCallbackSet *callback_set);
 
-extern Q_CORE_EXPORT QBasicAtomicPointer<QSignalSpyCallbackSet> qt_signal_spy_callback_set;
+extern Q_CORE_EXPORT QBasicAtomicPointer<QSignalSpyCallbackSet> bobui_signal_spy_callback_set;
 
 class Q_CORE_EXPORT QAbstractDeclarativeData
 {
@@ -78,7 +78,7 @@ public:
     static void (*signalEmitted)(QAbstractDeclarativeData *, QObject *, int, void **);
     static int  (*receivers)(QAbstractDeclarativeData *, const QObject *, int);
     static bool (*isSignalConnected)(QAbstractDeclarativeData *, const QObject *, int);
-    static void (*setWidgetParent)(QObject *, QObject *); // Used by the QML engine to specify parents for widgets. Set by QtWidgets.
+    static void (*setWidgetParent)(QObject *, QObject *); // Used by the QML engine to specify parents for widgets. Set by BobUIWidgets.
 };
 
 class Q_CORE_EXPORT QObjectPrivate : public QObjectData
@@ -102,7 +102,7 @@ public:
 
         QList<QByteArray> propertyNames;
         QList<QVariant> propertyValues;
-        QList<Qt::TimerId> runningTimers;
+        QList<BobUI::TimerId> runningTimers;
         QList<QPointer<QObject>> eventFilters;
         Q_OBJECT_COMPAT_PROPERTY(QObjectPrivate::ExtraData, QString, objectName,
                                  &QObjectPrivate::ExtraData::setObjectNameForwarder,
@@ -149,7 +149,7 @@ public:
 
     void setParent_helper(QObject *);
     void moveToThread_helper();
-    void setThreadData_helper(QThreadData *currentData, QThreadData *targetData, QBindingStatus *status);
+    void setThreadData_helper(BOBUIhreadData *currentData, BOBUIhreadData *targetData, QBindingStatus *status);
 
     QObjectList receiverList(const char *signal) const;
 
@@ -173,34 +173,34 @@ public:
     void reinitBindingStorageAfterThreadMove();
 
     template <typename Func1, typename Func2>
-    static inline QMetaObject::Connection connect(const typename QtPrivate::FunctionPointer<Func1>::Object *sender, Func1 signal,
-                                                  const typename QtPrivate::FunctionPointer<Func2>::Object *receiverPrivate, Func2 slot,
-                                                  Qt::ConnectionType type = Qt::AutoConnection);
+    static inline QMetaObject::Connection connect(const typename BobUIPrivate::FunctionPointer<Func1>::Object *sender, Func1 signal,
+                                                  const typename BobUIPrivate::FunctionPointer<Func2>::Object *receiverPrivate, Func2 slot,
+                                                  BobUI::ConnectionType type = BobUI::AutoConnection);
 
     template <typename Func1, typename Func2>
-    static inline bool disconnect(const typename QtPrivate::FunctionPointer<Func1>::Object *sender, Func1 signal,
-                                  const typename QtPrivate::FunctionPointer<Func2>::Object *receiverPrivate, Func2 slot);
+    static inline bool disconnect(const typename BobUIPrivate::FunctionPointer<Func1>::Object *sender, Func1 signal,
+                                  const typename BobUIPrivate::FunctionPointer<Func2>::Object *receiverPrivate, Func2 slot);
 
     static QMetaObject::Connection connectImpl(const QObject *sender, int signal_index,
                                                const QObject *receiver, void **slot,
-                                               QtPrivate::QSlotObjectBase *slotObj, int type,
+                                               BobUIPrivate::QSlotObjectBase *slotObj, int type,
                                                const int *types, const QMetaObject *senderMetaObject);
-    static QMetaObject::Connection connect(const QObject *sender, int signal_index, QtPrivate::QSlotObjectBase *slotObj, Qt::ConnectionType type);
+    static QMetaObject::Connection connect(const QObject *sender, int signal_index, BobUIPrivate::QSlotObjectBase *slotObj, BobUI::ConnectionType type);
     static QMetaObject::Connection connect(const QObject *sender, int signal_index,
                                            const QObject *receiver,
-                                           QtPrivate::QSlotObjectBase *slotObj,
-                                           Qt::ConnectionType type);
+                                           BobUIPrivate::QSlotObjectBase *slotObj,
+                                           BobUI::ConnectionType type);
     static bool disconnect(const QObject *sender, int signal_index, void **slot);
     static bool disconnect(const QObject *sender, int signal_index, const QObject *receiver,
                            void **slot);
 
     virtual std::string flagsForDumping() const;
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
     virtual void writeToDebugStream(QDebug &) const;
 #endif
 
-    QtPrivate::QPropertyAdaptorSlotObject *
+    BobUIPrivate::QPropertyAdaptorSlotObject *
     getPropertyAdaptorSlotObject(const QMetaProperty &property);
 
 public:
@@ -210,7 +210,7 @@ public:
     // because postEvent is thread-safe.
     // However, most of the code paths involving QObject are only reentrant and
     // not thread-safe, so synchronization should not be necessary there.
-    QAtomicPointer<QThreadData> threadData; // id of the thread that owns the object
+    QAtomicPointer<BOBUIhreadData> threadData; // id of the thread that owns the object
 
     using ConnectionDataPointer = QExplicitlySharedDataPointer<ConnectionData>;
     QAtomicPointer<ConnectionData> connections;
@@ -222,7 +222,7 @@ public:
 
     // these objects are all used to indicate that a QObject was deleted
     // plus QPointer, which keeps a separate list
-    QAtomicPointer<QtSharedPointer::ExternalRefCountData> sharedRefcount;
+    QAtomicPointer<BobUISharedPointer::ExternalRefCountData> sharedRefcount;
 };
 
 inline bool QObjectPrivate::isDeclarativeSignalConnected(uint signal_index) const
@@ -241,11 +241,11 @@ inline void QObjectPrivate::disconnectNotify(const QMetaMethod &signal)
     q_ptr->disconnectNotify(signal);
 }
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 inline const QObject *getQObject(const QObjectPrivate *d) { return d->q_func(); }
 
 template <typename Func>
-using FunctionStorage = QtPrivate::CompactStorage<Func>;
+using FunctionStorage = BobUIPrivate::CompactStorage<Func>;
 
 template <typename ObjPrivate> inline void assertObjectType(QObjectPrivate *d)
 {
@@ -256,8 +256,8 @@ template <typename ObjPrivate> inline void assertObjectType(QObjectPrivate *d)
 template<typename Func, typename Args, typename R>
 class QPrivateSlotObject : public QSlotObjectBase, private FunctionStorage<Func>
 {
-    typedef QtPrivate::FunctionPointer<Func> FuncType;
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+    typedef BobUIPrivate::FunctionPointer<Func> FuncType;
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
     static void impl(int which, QSlotObjectBase *this_, QObject *r, void **a, bool *ret)
 #else
     static void impl(QSlotObjectBase *this_, QObject *r, void **a, int which, bool *ret)
@@ -281,47 +281,47 @@ class QPrivateSlotObject : public QSlotObjectBase, private FunctionStorage<Func>
 public:
     explicit QPrivateSlotObject(Func f) : QSlotObjectBase(&impl), FunctionStorage<Func>{std::move(f)} {}
 };
-} //namespace QtPrivate
+} //namespace BobUIPrivate
 
 template <typename Func1, typename Func2>
-inline QMetaObject::Connection QObjectPrivate::connect(const typename QtPrivate::FunctionPointer<Func1>::Object *sender, Func1 signal,
-                                                       const typename QtPrivate::FunctionPointer<Func2>::Object *receiverPrivate, Func2 slot,
-                                                       Qt::ConnectionType type)
+inline QMetaObject::Connection QObjectPrivate::connect(const typename BobUIPrivate::FunctionPointer<Func1>::Object *sender, Func1 signal,
+                                                       const typename BobUIPrivate::FunctionPointer<Func2>::Object *receiverPrivate, Func2 slot,
+                                                       BobUI::ConnectionType type)
 {
-    typedef QtPrivate::FunctionPointer<Func1> SignalType;
-    typedef QtPrivate::FunctionPointer<Func2> SlotType;
-    static_assert(QtPrivate::HasQ_OBJECT_Macro<typename SignalType::Object>::Value,
+    typedef BobUIPrivate::FunctionPointer<Func1> SignalType;
+    typedef BobUIPrivate::FunctionPointer<Func2> SlotType;
+    static_assert(BobUIPrivate::HasQ_OBJECT_Macro<typename SignalType::Object>::Value,
                       "No Q_OBJECT in the class with the signal");
 
     //compilation error if the arguments does not match.
     static_assert(int(SignalType::ArgumentCount) >= int(SlotType::ArgumentCount),
                       "The slot requires more arguments than the signal provides.");
-    static_assert((QtPrivate::CheckCompatibleArguments<typename SignalType::Arguments, typename SlotType::Arguments>::value),
+    static_assert((BobUIPrivate::CheckCompatibleArguments<typename SignalType::Arguments, typename SlotType::Arguments>::value),
                       "Signal and slot arguments are not compatible.");
-    static_assert((QtPrivate::AreArgumentsCompatible<typename SlotType::ReturnType, typename SignalType::ReturnType>::value),
+    static_assert((BobUIPrivate::AreArgumentsCompatible<typename SlotType::ReturnType, typename SignalType::ReturnType>::value),
                       "Return type of the slot is not compatible with the return type of the signal.");
 
     const int *types = nullptr;
-    if (type == Qt::QueuedConnection || type == Qt::BlockingQueuedConnection)
-        types = QtPrivate::ConnectionTypes<typename SignalType::Arguments>::types();
+    if (type == BobUI::QueuedConnection || type == BobUI::BlockingQueuedConnection)
+        types = BobUIPrivate::ConnectionTypes<typename SignalType::Arguments>::types();
 
     return QObject::connectImpl(sender, reinterpret_cast<void **>(&signal),
-        QtPrivate::getQObject(receiverPrivate), reinterpret_cast<void **>(&slot),
-        new QtPrivate::QPrivateSlotObject<Func2, typename QtPrivate::List_Left<typename SignalType::Arguments, SlotType::ArgumentCount>::Value,
+        BobUIPrivate::getQObject(receiverPrivate), reinterpret_cast<void **>(&slot),
+        new BobUIPrivate::QPrivateSlotObject<Func2, typename BobUIPrivate::List_Left<typename SignalType::Arguments, SlotType::ArgumentCount>::Value,
                                         typename SignalType::ReturnType>(slot),
         type, types, &SignalType::Object::staticMetaObject);
 }
 
 template <typename Func1, typename Func2>
-bool QObjectPrivate::disconnect(const typename QtPrivate::FunctionPointer< Func1 >::Object* sender, Func1 signal,
-                                const typename QtPrivate::FunctionPointer< Func2 >::Object* receiverPrivate, Func2 slot)
+bool QObjectPrivate::disconnect(const typename BobUIPrivate::FunctionPointer< Func1 >::Object* sender, Func1 signal,
+                                const typename BobUIPrivate::FunctionPointer< Func2 >::Object* receiverPrivate, Func2 slot)
 {
-    typedef QtPrivate::FunctionPointer<Func1> SignalType;
-    typedef QtPrivate::FunctionPointer<Func2> SlotType;
-    static_assert(QtPrivate::HasQ_OBJECT_Macro<typename SignalType::Object>::Value,
+    typedef BobUIPrivate::FunctionPointer<Func1> SignalType;
+    typedef BobUIPrivate::FunctionPointer<Func2> SlotType;
+    static_assert(BobUIPrivate::HasQ_OBJECT_Macro<typename SignalType::Object>::Value,
                       "No Q_OBJECT in the class with the signal");
     //compilation error if the arguments does not match.
-    static_assert((QtPrivate::CheckCompatibleArguments<typename SignalType::Arguments, typename SlotType::Arguments>::value),
+    static_assert((BobUIPrivate::CheckCompatibleArguments<typename SignalType::Arguments, typename SlotType::Arguments>::value),
                       "Signal and slot arguments are not compatible.");
     return QObject::disconnectImpl(sender, reinterpret_cast<void **>(&signal),
                           receiverPrivate->q_ptr, reinterpret_cast<void **>(&slot),
@@ -356,10 +356,10 @@ public:
                    QObjectPrivate::StaticMetaCallFunction callFunction,
                    const QObject *sender, int signalId,
                    void **args, QLatch *latch);
-    QMetaCallEvent(QtPrivate::QSlotObjectBase *slotObj,
+    QMetaCallEvent(BobUIPrivate::QSlotObjectBase *slotObj,
                    const QObject *sender, int signalId,
                    void **args, QLatch *latch);
-    QMetaCallEvent(QtPrivate::SlotObjUniquePtr slotObj,
+    QMetaCallEvent(BobUIPrivate::SlotObjUniquePtr slotObj,
                    const QObject *sender, int signalId,
                    void **args, QLatch *latch);
 
@@ -367,7 +367,7 @@ public:
 
 protected:
     struct Data {
-        QtPrivate::SlotObjUniquePtr slotObj_;
+        BobUIPrivate::SlotObjUniquePtr slotObj_;
         void **args_;
         QObjectPrivate::StaticMetaCallFunction callFunction_;
         int nargs_;
@@ -385,22 +385,22 @@ public:
     QQueuedMetaCallEvent(ushort method_offset, ushort method_relative,
                          QObjectPrivate::StaticMetaCallFunction callFunction,
                          const QObject *sender, int signalId,
-                         int argCount, const QtPrivate::QMetaTypeInterface * const *argTypes,
+                         int argCount, const BobUIPrivate::QMetaTypeInterface * const *argTypes,
                          const void * const *argValues);
-    QQueuedMetaCallEvent(QtPrivate::QSlotObjectBase *slotObj,
+    QQueuedMetaCallEvent(BobUIPrivate::QSlotObjectBase *slotObj,
                          const QObject *sender, int signalId,
-                         int argCount, const QtPrivate::QMetaTypeInterface * const *argTypes,
+                         int argCount, const BobUIPrivate::QMetaTypeInterface * const *argTypes,
                          const void * const *argValues);
-    QQueuedMetaCallEvent(QtPrivate::SlotObjUniquePtr slotObj,
+    QQueuedMetaCallEvent(BobUIPrivate::SlotObjUniquePtr slotObj,
                          const QObject *sender, int signalId,
-                         int argCount, const QtPrivate::QMetaTypeInterface * const *argTypes,
+                         int argCount, const BobUIPrivate::QMetaTypeInterface * const *argTypes,
                          const void * const *argValues);
 
     ~QQueuedMetaCallEvent() override;
 
 private:
     inline void allocArgs();
-    inline void copyArgValues(int argCount, const QtPrivate::QMetaTypeInterface * const *argTypes,
+    inline void copyArgValues(int argCount, const BobUIPrivate::QMetaTypeInterface * const *argTypes,
                               const void * const *argValues);
     static inline bool typeFitsInPlace(const QMetaType type);
 
@@ -423,7 +423,7 @@ struct Q_CORE_EXPORT QDynamicMetaObjectData
     virtual ~QDynamicMetaObjectData();
     virtual void objectDestroyed(QObject *) { delete this; }
 
-#if QT_VERSION >= QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION >= BOBUI_VERSION_CHECK(7, 0, 0)
     virtual const QMetaObject *toDynamicMetaObject(QObject *) const = 0;
 #else
     virtual QMetaObject *toDynamicMetaObject(QObject *) = 0;
@@ -435,7 +435,7 @@ struct Q_CORE_EXPORT QAbstractDynamicMetaObject : public QDynamicMetaObjectData,
 {
     ~QAbstractDynamicMetaObject();
 
-#if QT_VERSION >= QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION >= BOBUI_VERSION_CHECK(7, 0, 0)
     const QMetaObject *toDynamicMetaObject(QObject *) const override { return this; }
 #else
     QMetaObject *toDynamicMetaObject(QObject *) override { return this; }
@@ -463,6 +463,6 @@ inline QBindingStorage *qGetBindingStorage(QObjectPrivate::ExtraData *ed)
     return &ed->parent->bindingStorage;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QOBJECT_P_H

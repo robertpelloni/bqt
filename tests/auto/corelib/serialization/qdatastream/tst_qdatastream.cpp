@@ -1,33 +1,33 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QBuffer>
 #include <QEasingCurve>
 #include <QJsonValue>
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QJsonDocument>
-#include <QtEndian>
+#include <BobUIEndian>
 
-#include <QtGui/QBitmap>
-#include <QtGui/QPainter>
-#include <QtGui/QPainterPath>
-#include <QtGui/QPalette>
-#include <QtGui/QPen>
-#include <QtGui/QPicture>
-#include <QtGui/QPixmap>
-#include <QtGui/QTextLength>
+#include <BobUIGui/QBitmap>
+#include <BobUIGui/QPainter>
+#include <BobUIGui/QPainterPath>
+#include <BobUIGui/QPalette>
+#include <BobUIGui/QPen>
+#include <BobUIGui/QPicture>
+#include <BobUIGui/QPixmap>
+#include <BobUIGui/BOBUIextLength>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-static_assert(QTypeTraits::has_ostream_operator_v<QDataStream, int>);
-static_assert(QTypeTraits::has_ostream_operator_v<QDataStream, QList<int>>);
-static_assert(QTypeTraits::has_ostream_operator_v<QDataStream, QMap<int, QString>>);
+static_assert(BOBUIypeTraits::has_ostream_operator_v<QDataStream, int>);
+static_assert(BOBUIypeTraits::has_ostream_operator_v<QDataStream, QList<int>>);
+static_assert(BOBUIypeTraits::has_ostream_operator_v<QDataStream, QMap<int, QString>>);
 struct NonStreamable {};
-static_assert(!QTypeTraits::has_ostream_operator_v<QDataStream, NonStreamable>);
-static_assert(!QTypeTraits::has_ostream_operator_v<QDataStream, QList<NonStreamable>>);
-static_assert(!QTypeTraits::has_ostream_operator_v<QDataStream, QMap<int, NonStreamable>>);
+static_assert(!BOBUIypeTraits::has_ostream_operator_v<QDataStream, NonStreamable>);
+static_assert(!BOBUIypeTraits::has_ostream_operator_v<QDataStream, QList<NonStreamable>>);
+static_assert(!BOBUIypeTraits::has_ostream_operator_v<QDataStream, QMap<int, NonStreamable>>);
 
 class tst_QDataStream : public QObject
 {
@@ -57,7 +57,7 @@ private slots:
     void stream_QByteArray_data();
     void stream_QByteArray();
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     void stream_QCursor_data();
     void stream_QCursor();
 #endif
@@ -65,8 +65,8 @@ private slots:
     void stream_QDate_data();
     void stream_QDate();
 
-    void stream_QTime_data();
-    void stream_QTime();
+    void stream_BOBUIime_data();
+    void stream_BOBUIime();
 
     void stream_QDateTime_data();
     void stream_QDateTime();
@@ -104,7 +104,7 @@ private slots:
     void stream_QString_data();
     void stream_QString();
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     void stream_QRegularExpression_data();
     void stream_QRegularExpression();
 #endif
@@ -143,7 +143,7 @@ private slots:
     void stream_QJsonObject();
     void stream_QJsonValue();
 
-#if QT_CONFIG(cborstreamwriter)
+#if BOBUI_CONFIG(cborstreamwriter)
     void stream_QCborArray();
     void stream_QCborMap();
     void stream_QCborValue();
@@ -190,9 +190,9 @@ private slots:
 
     void floatingPointPrecision();
 
-    void compatibility_Qt5();
-    void compatibility_Qt3();
-    void compatibility_Qt2();
+    void compatibility_BobUI5();
+    void compatibility_BobUI3();
+    void compatibility_BobUI2();
 
     void floatingPointNaN();
 
@@ -201,7 +201,7 @@ private slots:
     void nestedTransactionsResult_data();
     void nestedTransactionsResult();
 
-    void typedefQt5Compat();
+    void typedefBobUI5Compat();
 
 private:
     void writebool(QDataStream *s);
@@ -210,12 +210,12 @@ private:
     void writeQColor(QDataStream *s);
     void writeQByteArray(QDataStream *s);
     void writenullptr_t(QDataStream *s);
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     void writeQCursor(QDataStream *s);
 #endif
     void writeQWaitCursor(QDataStream *s);
     void writeQDate(QDataStream *s);
-    void writeQTime(QDataStream *s);
+    void writeBOBUIime(QDataStream *s);
     void writeQDateTime(QDataStream *s);
     void writeQFont(QDataStream *s);
     void writeQImage(QDataStream *s);
@@ -227,7 +227,7 @@ private:
     void writeQRegion(QDataStream *s);
     void writeQSize(QDataStream *s);
     void writeQString(QDataStream* dev);
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     void writeQRegularExpression(QDataStream *dev);
 #endif
     void writeMap(QDataStream* dev);
@@ -244,11 +244,11 @@ private:
     void readQColor(QDataStream *s);
     void readQByteArray(QDataStream *s);
     void readnullptr_t(QDataStream *s);
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     void readQCursor(QDataStream *s);
 #endif
     void readQDate(QDataStream *s);
-    void readQTime(QDataStream *s);
+    void readBOBUIime(QDataStream *s);
     void readQDateTime(QDataStream *s);
     void readQFont(QDataStream *s);
     void readQImage(QDataStream *s);
@@ -260,7 +260,7 @@ private:
     void readQRegion(QDataStream *s);
     void readQSize(QDataStream *s);
     void readQString(QDataStream *s);
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     void readQRegularExpression(QDataStream *s);
 #endif
     void readMap(QDataStream *s);
@@ -272,40 +272,40 @@ private:
     void readQEasingCurve(QDataStream *s);
 
 private:
-    QSharedPointer<QTemporaryDir> m_tempDir;
+    QSharedPointer<BOBUIemporaryDir> m_tempDir;
     QString m_previousCurrent;
 };
 
 static constexpr int NColorRoles[] = {
     QPalette::NoRole,              // No Version
-    QPalette::NoRole,              // Qt_1_0
-    QPalette::HighlightedText + 1, // Qt_2_0
-    QPalette::HighlightedText + 1, // Qt_2_1
-    QPalette::LinkVisited + 1,     // Qt_3_0
-    QPalette::HighlightedText + 1, // Qt_3_1
-    QPalette::HighlightedText + 1, // Qt_3_3
-    QPalette::HighlightedText + 1, // Qt_4_0, Qt_4_1
-    QPalette::HighlightedText + 1, // Qt_4_2
-    QPalette::AlternateBase + 1,   // Qt_4_3
-    QPalette::ToolTipText + 1,     // Qt_4_4
-    QPalette::ToolTipText + 1,     // Qt_4_5
-    QPalette::ToolTipText + 1,     // Qt_4_6, Qt_4_7, Qt_4_8, Qt_4_9
-    QPalette::ToolTipText + 1,     // Qt_5_0
-    QPalette::ToolTipText + 1,     // Qt_5_1
-    QPalette::ToolTipText + 1,     // Qt_5_2, Qt_5_3
-    QPalette::ToolTipText + 1,     // Qt_5_4, Qt_5_5
-    QPalette::ToolTipText + 1,     // Qt_5_6, Qt_5_7, Qt_5_8, Qt_5_9, Qt_5_10, Qt_5_11
-    QPalette::PlaceholderText + 1, // Qt_5_12
-    QPalette::PlaceholderText + 1, // Qt_5_13, Qt_5_14, Qt_5_15
-    QPalette::PlaceholderText + 1, // Qt_6_0
-    QPalette::Accent + 1,     // Qt_6_6
-    QPalette::Accent + 1,     // Qt_6_7
-    QPalette::Accent + 1,     // Qt_6_10
-    QPalette::Accent + 1,     // Qt_6_11
+    QPalette::NoRole,              // BobUI_1_0
+    QPalette::HighlightedText + 1, // BobUI_2_0
+    QPalette::HighlightedText + 1, // BobUI_2_1
+    QPalette::LinkVisited + 1,     // BobUI_3_0
+    QPalette::HighlightedText + 1, // BobUI_3_1
+    QPalette::HighlightedText + 1, // BobUI_3_3
+    QPalette::HighlightedText + 1, // BobUI_4_0, BobUI_4_1
+    QPalette::HighlightedText + 1, // BobUI_4_2
+    QPalette::AlternateBase + 1,   // BobUI_4_3
+    QPalette::ToolTipText + 1,     // BobUI_4_4
+    QPalette::ToolTipText + 1,     // BobUI_4_5
+    QPalette::ToolTipText + 1,     // BobUI_4_6, BobUI_4_7, BobUI_4_8, BobUI_4_9
+    QPalette::ToolTipText + 1,     // BobUI_5_0
+    QPalette::ToolTipText + 1,     // BobUI_5_1
+    QPalette::ToolTipText + 1,     // BobUI_5_2, BobUI_5_3
+    QPalette::ToolTipText + 1,     // BobUI_5_4, BobUI_5_5
+    QPalette::ToolTipText + 1,     // BobUI_5_6, BobUI_5_7, BobUI_5_8, BobUI_5_9, BobUI_5_10, BobUI_5_11
+    QPalette::PlaceholderText + 1, // BobUI_5_12
+    QPalette::PlaceholderText + 1, // BobUI_5_13, BobUI_5_14, BobUI_5_15
+    QPalette::PlaceholderText + 1, // BobUI_6_0
+    QPalette::Accent + 1,     // BobUI_6_6
+    QPalette::Accent + 1,     // BobUI_6_7
+    QPalette::Accent + 1,     // BobUI_6_10
+    QPalette::Accent + 1,     // BobUI_6_11
 };
 
 // +1, because we start from "No Version"
-static_assert(std::size(NColorRoles) == QDataStream::Qt_DefaultCompiledVersion + 1);
+static_assert(std::size(NColorRoles) == QDataStream::BobUI_DefaultCompiledVersion + 1);
 
 // Testing get/set functions
 void tst_QDataStream::getSetCheck()
@@ -334,7 +334,7 @@ void tst_QDataStream::getSetCheck()
 void tst_QDataStream::initTestCase()
 {
     m_previousCurrent = QDir::currentPath();
-    m_tempDir = QSharedPointer<QTemporaryDir>::create();
+    m_tempDir = QSharedPointer<BOBUIemporaryDir>::create();
     QVERIFY2(!m_tempDir.isNull(), qPrintable("Could not create temporary directory."));
     QVERIFY2(QDir::setCurrent(m_tempDir->path()), qPrintable("Could not switch current directory"));
 }
@@ -371,15 +371,15 @@ static const char * const devices[] = {
 /*
     IMPORTANT.
     In this testcase i follow a different approach than usual: I don't use the full power of
-    QtTestTable and QtTestData. This is done deliberately because QtTestData uses a QDataStream
-    itself to handle its data. So it would be a bit inapropriate to fully rely on QtTestData in this
+    BobUITestTable and BobUITestData. This is done deliberately because BobUITestData uses a QDataStream
+    itself to handle its data. So it would be a bit inapropriate to fully rely on BobUITestData in this
     testcase.
-    I do use QString in QtTestData because this is thouroughly tested in the selftest.
+    I do use QString in BobUITestData because this is thouroughly tested in the selftest.
 */
 void tst_QDataStream::stream_data(int noOfElements)
 {
-    QTest::addColumn<QString>("device");
-    QTest::addColumn<QString>("byteOrder");
+    BOBUIest::addColumn<QString>("device");
+    BOBUIest::addColumn<QString>("byteOrder");
 
     for (int d=0; devices[d] != 0; d++) {
         QString device = devices[d];
@@ -388,7 +388,7 @@ void tst_QDataStream::stream_data(int noOfElements)
 
             QString tag = device + QLatin1Char('_') + byte_order;
             for (int e=0; e<noOfElements; e++) {
-                QTest::newRow(qPrintable(tag + QLatin1Char('_') + QString::number(e))) << device << byte_order;
+                BOBUIest::newRow(qPrintable(tag + QLatin1Char('_') + QString::number(e))) << device << byte_order;
             }
         }
     }
@@ -479,7 +479,7 @@ void tst_QDataStream::stream_QString()
 
 void tst_QDataStream::writeQString(QDataStream* s)
 {
-    QString test(stringData(dataIndex(QTest::currentDataTag())));
+    QString test(stringData(dataIndex(BOBUIest::currentDataTag())));
     *s << test;
     *s << QString("Her er det noe tekst");
     *s << test;
@@ -494,7 +494,7 @@ void tst_QDataStream::writeQString(QDataStream* s)
 void tst_QDataStream::readQString(QDataStream *s)
 {
     QString S;
-    QString test(stringData(dataIndex(QTest::currentDataTag())));
+    QString test(stringData(dataIndex(BOBUIest::currentDataTag())));
 
     *s >> S;
     QCOMPARE(S, test);
@@ -518,7 +518,7 @@ void tst_QDataStream::readQString(QDataStream *s)
 
 // ************************************
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 static QRegularExpression QRegularExpressionData(int index)
 {
     switch (index) {
@@ -546,7 +546,7 @@ void tst_QDataStream::stream_QRegularExpression()
 
 void tst_QDataStream::writeQRegularExpression(QDataStream* s)
 {
-    QRegularExpression test(QRegularExpressionData(dataIndex(QTest::currentDataTag())));
+    QRegularExpression test(QRegularExpressionData(dataIndex(BOBUIest::currentDataTag())));
     *s << test;
     *s << QString("Her er det noe tekst");
     *s << test;
@@ -560,7 +560,7 @@ void tst_QDataStream::readQRegularExpression(QDataStream *s)
     QRegularExpression R;
     QString S;
     QVariant V;
-    QRegularExpression test(QRegularExpressionData(dataIndex(QTest::currentDataTag())));
+    QRegularExpression test(QRegularExpressionData(dataIndex(BOBUIest::currentDataTag())));
 
     *s >> R;
 
@@ -577,7 +577,7 @@ void tst_QDataStream::readQRegularExpression(QDataStream *s)
     QCOMPARE(V.userType(), QMetaType::QRegularExpression);
     QCOMPARE(V.toRegularExpression(), test);
 }
-#endif //QT_CONFIG(regularexpression)
+#endif //BOBUI_CONFIG(regularexpression)
 
 // ************************************
 
@@ -613,7 +613,7 @@ void tst_QDataStream::stream_Map()
 
 void tst_QDataStream::writeMap(QDataStream* s)
 {
-    Map test(MapData(dataIndex(QTest::currentDataTag())));
+    Map test(MapData(dataIndex(BOBUIest::currentDataTag())));
     *s << test;
     *s << test;
 }
@@ -621,7 +621,7 @@ void tst_QDataStream::writeMap(QDataStream* s)
 void tst_QDataStream::readMap(QDataStream *s)
 {
     Map S;
-    Map test(MapData(dataIndex(QTest::currentDataTag())));
+    Map test(MapData(dataIndex(BOBUIest::currentDataTag())));
 
     *s >> S;
     QCOMPARE(S, test);
@@ -667,7 +667,7 @@ void tst_QDataStream::stream_MultiMap()
 
 void tst_QDataStream::writeMultiMap(QDataStream* s)
 {
-    MultiMap test(MultiMapData(dataIndex(QTest::currentDataTag())));
+    MultiMap test(MultiMapData(dataIndex(BOBUIest::currentDataTag())));
     *s << test;
     *s << test;
 }
@@ -675,7 +675,7 @@ void tst_QDataStream::writeMultiMap(QDataStream* s)
 void tst_QDataStream::readMultiMap(QDataStream *s)
 {
     MultiMap S;
-    MultiMap test(MultiMapData(dataIndex(QTest::currentDataTag())));
+    MultiMap test(MultiMapData(dataIndex(BOBUIest::currentDataTag())));
 
     *s >> S;
     QCOMPARE(S, test);
@@ -717,7 +717,7 @@ void tst_QDataStream::stream_Hash()
 
 void tst_QDataStream::writeHash(QDataStream* s)
 {
-    Hash test(HashData(dataIndex(QTest::currentDataTag())));
+    Hash test(HashData(dataIndex(BOBUIest::currentDataTag())));
     *s << test;
     *s << test;
 }
@@ -725,7 +725,7 @@ void tst_QDataStream::writeHash(QDataStream* s)
 void tst_QDataStream::readHash(QDataStream *s)
 {
     Hash S;
-    Hash test(HashData(dataIndex(QTest::currentDataTag())));
+    Hash test(HashData(dataIndex(BOBUIest::currentDataTag())));
 
     *s >> S;
     QCOMPARE(S, test);
@@ -771,7 +771,7 @@ void tst_QDataStream::stream_MultiHash()
 
 void tst_QDataStream::writeMultiHash(QDataStream* s)
 {
-    MultiHash test(MultiHashData(dataIndex(QTest::currentDataTag())));
+    MultiHash test(MultiHashData(dataIndex(BOBUIest::currentDataTag())));
     *s << test;
     *s << test;
 }
@@ -779,7 +779,7 @@ void tst_QDataStream::writeMultiHash(QDataStream* s)
 void tst_QDataStream::readMultiHash(QDataStream *s)
 {
     MultiHash S;
-    MultiHash test(MultiHashData(dataIndex(QTest::currentDataTag())));
+    MultiHash test(MultiHashData(dataIndex(BOBUIest::currentDataTag())));
 
     *s >> S;
     QCOMPARE(S, test);
@@ -838,14 +838,14 @@ void tst_QDataStream::stream_QEasingCurve()
 
 void tst_QDataStream::writeQEasingCurve(QDataStream* s)
 {
-    QEasingCurve test(QEasingCurveData(dataIndex(QTest::currentDataTag())));
+    QEasingCurve test(QEasingCurveData(dataIndex(BOBUIest::currentDataTag())));
     *s << test;
 }
 
 void tst_QDataStream::readQEasingCurve(QDataStream *s)
 {
     QEasingCurve S;
-    QEasingCurve expected(QEasingCurveData(dataIndex(QTest::currentDataTag())));
+    QEasingCurve expected(QEasingCurveData(dataIndex(BOBUIest::currentDataTag())));
 
     *s >> S;
     QCOMPARE(S, expected);
@@ -882,7 +882,7 @@ void tst_QDataStream::stream_qint64()
 
 void tst_QDataStream::writeqint64(QDataStream* s)
 {
-    qint64 test = qint64Data(dataIndex(QTest::currentDataTag()));
+    qint64 test = qint64Data(dataIndex(BOBUIest::currentDataTag()));
     *s << test;
     *s << int(1);
     *s << (quint64)test;
@@ -890,7 +890,7 @@ void tst_QDataStream::writeqint64(QDataStream* s)
 
 void tst_QDataStream::readqint64(QDataStream *s)
 {
-    qint64 test = qint64Data(dataIndex(QTest::currentDataTag()));
+    qint64 test = qint64Data(dataIndex(BOBUIest::currentDataTag()));
     qint64 i64;
     quint64 ui64;
     int i;
@@ -929,13 +929,13 @@ void tst_QDataStream::stream_bool()
 
 void tst_QDataStream::writebool(QDataStream *s)
 {
-    bool d1 = boolData(dataIndex(QTest::currentDataTag()));
+    bool d1 = boolData(dataIndex(BOBUIest::currentDataTag()));
     *s << d1;
 }
 
 void tst_QDataStream::readbool(QDataStream *s)
 {
-    bool expected = boolData(dataIndex(QTest::currentDataTag()));
+    bool expected = boolData(dataIndex(BOBUIest::currentDataTag()));
 
     bool d1;
     *s >> d1;
@@ -991,14 +991,14 @@ void tst_QDataStream::stream_QBitArray()
 void tst_QDataStream::writeQBitArray(QDataStream *s)
 {
     QBitArray d1;
-    QBitArrayData(&d1, dataIndex(QTest::currentDataTag()));
+    QBitArrayData(&d1, dataIndex(BOBUIest::currentDataTag()));
     *s << d1;
 }
 
 void tst_QDataStream::readQBitArray(QDataStream *s)
 {
     QBitArray expected;
-    QBitArrayData(&expected, dataIndex(QTest::currentDataTag()));
+    QBitArrayData(&expected, dataIndex(BOBUIest::currentDataTag()));
 
     QBitArray d1;
     *s >> d1;
@@ -1010,16 +1010,16 @@ void tst_QDataStream::readQBitArray(QDataStream *s)
 static QBrush qBrushData(int index)
 {
     switch (index) {
-    case 0: return QBrush(Qt::NoBrush);
-    case 1: return QBrush(Qt::SolidPattern);
-    case 2: return QBrush(Qt::Dense7Pattern);
-    case 3: return QBrush(Qt::red, Qt::NoBrush);
-    case 4: return QBrush(Qt::green, Qt::SolidPattern);
-    case 5: return QBrush(Qt::blue, Qt::Dense7Pattern);
+    case 0: return QBrush(BobUI::NoBrush);
+    case 1: return QBrush(BobUI::SolidPattern);
+    case 2: return QBrush(BobUI::Dense7Pattern);
+    case 3: return QBrush(BobUI::red, BobUI::NoBrush);
+    case 4: return QBrush(BobUI::green, BobUI::SolidPattern);
+    case 5: return QBrush(BobUI::blue, BobUI::Dense7Pattern);
     case 6:
         {
             QPixmap pm(open_xpm);
-            QBrush custom(Qt::black, pm);
+            QBrush custom(BobUI::black, pm);
             return custom;
         }
     case 7:
@@ -1027,13 +1027,13 @@ static QBrush qBrushData(int index)
         gradient.setCoordinateMode(QGradient::ObjectBoundingMode);
         gradient.setSpread(QGradient::ReflectSpread);
         gradient.setInterpolationMode(QGradient::ComponentInterpolation);
-        gradient.setColorAt(0.2, Qt::red);
-        gradient.setColorAt(0.6, Qt::transparent);
-        gradient.setColorAt(0.8, Qt::blue);
+        gradient.setColorAt(0.2, BobUI::red);
+        gradient.setColorAt(0.6, BobUI::transparent);
+        gradient.setColorAt(0.8, BobUI::blue);
         return QBrush(gradient);
     }
 
-    return QBrush(Qt::NoBrush);
+    return QBrush(BobUI::NoBrush);
 }
 
 void tst_QDataStream::stream_QBrush_data()
@@ -1043,7 +1043,7 @@ void tst_QDataStream::stream_QBrush_data()
 
 void tst_QDataStream::stream_QBrush()
 {
-    if (QString(QTest::currentDataTag()).endsWith("6"))
+    if (QString(BOBUIest::currentDataTag()).endsWith("6"))
         QSKIP("Custom brushes don't seem to be supported with QDataStream");
 
     STREAM_IMPL(QBrush);
@@ -1051,7 +1051,7 @@ void tst_QDataStream::stream_QBrush()
 
 void tst_QDataStream::writeQBrush(QDataStream *s)
 {
-    QBrush brush = qBrushData(dataIndex(QTest::currentDataTag()));
+    QBrush brush = qBrushData(dataIndex(BOBUIest::currentDataTag()));
     *s << brush;
 }
 
@@ -1060,7 +1060,7 @@ void tst_QDataStream::readQBrush(QDataStream *s)
     QBrush d2;
     *s >> d2;
 
-    QBrush brush = qBrushData(dataIndex(QTest::currentDataTag()));
+    QBrush brush = qBrushData(dataIndex(BOBUIest::currentDataTag()));
     QCOMPARE(d2, brush);
 }
 
@@ -1094,13 +1094,13 @@ void tst_QDataStream::stream_QColor()
 
 void tst_QDataStream::writeQColor(QDataStream *s)
 {
-    QColor d3(QColorData(dataIndex(QTest::currentDataTag())));
+    QColor d3(QColorData(dataIndex(BOBUIest::currentDataTag())));
     *s << d3;
 }
 
 void tst_QDataStream::readQColor(QDataStream *s)
 {
-    QColor test(QColorData(dataIndex(QTest::currentDataTag())));
+    QColor test(QColorData(dataIndex(BOBUIest::currentDataTag())));
     QColor d3;
     *s >> d3;
     QCOMPARE(d3, test);
@@ -1137,7 +1137,7 @@ void tst_QDataStream::stream_QByteArray()
 
 void tst_QDataStream::writeQByteArray(QDataStream *s)
 {
-    QByteArray d4(qByteArrayData(dataIndex(QTest::currentDataTag())));
+    QByteArray d4(qByteArrayData(dataIndex(BOBUIest::currentDataTag())));
     *s << d4;
 }
 
@@ -1148,7 +1148,7 @@ void tst_QDataStream::writenullptr_t(QDataStream *s)
 
 void tst_QDataStream::readQByteArray(QDataStream *s)
 {
-    QByteArray test(qByteArrayData(dataIndex(QTest::currentDataTag())));
+    QByteArray test(qByteArrayData(dataIndex(BOBUIest::currentDataTag())));
     QByteArray d4;
     *s >> d4;
     QCOMPARE(d4, test);
@@ -1162,15 +1162,15 @@ void tst_QDataStream::readnullptr_t(QDataStream *s)
 }
 
 // ************************************
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 static QCursor qCursorData(int index)
 {
     switch (index) {
-    case 0: return QCursor(Qt::ArrowCursor);
-    case 1: return QCursor(Qt::WaitCursor);
-    case 2: return QCursor(Qt::BitmapCursor);
-    case 3: return QCursor(Qt::BlankCursor);
-    case 4: return QCursor(Qt::BlankCursor);
+    case 0: return QCursor(BobUI::ArrowCursor);
+    case 1: return QCursor(BobUI::WaitCursor);
+    case 2: return QCursor(BobUI::BitmapCursor);
+    case 3: return QCursor(BobUI::BlankCursor);
+    case 4: return QCursor(BobUI::BlankCursor);
     case 5: return QCursor(QPixmap(open_xpm), 1, 1);
     case 6: { QPixmap pm(open_xpm); return QCursor(QBitmap::fromPixmap(pm), pm.mask(), 3, 4); }
     case 7: return QCursor(QPixmap(open_xpm), -1, 5);
@@ -1181,32 +1181,32 @@ static QCursor qCursorData(int index)
 }
 #endif
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 void tst_QDataStream::stream_QCursor_data()
 {
     stream_data(9);
 }
 #endif
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 void tst_QDataStream::stream_QCursor()
 {
     STREAM_IMPL(QCursor);
 }
 #endif
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 void tst_QDataStream::writeQCursor(QDataStream *s)
 {
-    QCursor d5(qCursorData(dataIndex(QTest::currentDataTag())));
+    QCursor d5(qCursorData(dataIndex(BOBUIest::currentDataTag())));
     *s << d5;
 }
 #endif
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 void tst_QDataStream::readQCursor(QDataStream *s)
 {
-    QCursor test(qCursorData(dataIndex(QTest::currentDataTag())));
+    QCursor test(qCursorData(dataIndex(BOBUIest::currentDataTag())));
     QCursor d5;
     *s >> d5;
 
@@ -1265,13 +1265,13 @@ void tst_QDataStream::stream_QDate()
 
 void tst_QDataStream::writeQDate(QDataStream *s)
 {
-    QDate d6(qDateData(dataIndex(QTest::currentDataTag())));
+    QDate d6(qDateData(dataIndex(BOBUIest::currentDataTag())));
     QVERIFY(*s << d6);
 }
 
 void tst_QDataStream::readQDate(QDataStream *s)
 {
-    QDate test(qDateData(dataIndex(QTest::currentDataTag())));
+    QDate test(qDateData(dataIndex(BOBUIest::currentDataTag())));
     QDate d6;
     QVERIFY(*s >> d6);
     QCOMPARE(d6, test);
@@ -1279,95 +1279,95 @@ void tst_QDataStream::readQDate(QDataStream *s)
 
 // ************************************
 
-static QTime qTimeData(int index)
+static BOBUIime qTimeData(int index)
 {
     switch (index) {
-    case 0 : return QTime(0, 0, 0, 0);
-    case 1 : return QTime(0, 0, 0, 1);
-    case 2 : return QTime(0, 0, 0, 99);
-    case 3 : return QTime(0, 0, 0, 100);
-    case 4 : return QTime(0, 0, 0, 999);
-    case 5 : return QTime(0, 0, 1, 0);
-    case 6 : return QTime(0, 0, 1, 1);
-    case 7 : return QTime(0, 0, 1, 99);
-    case 8 : return QTime(0, 0, 1, 100);
-    case 9 : return QTime(0, 0, 1, 999);
-    case 10: return QTime(0, 0, 59, 0);
-    case 11: return QTime(0, 0, 59, 1);
-    case 12: return QTime(0, 0, 59, 99);
-    case 13: return QTime(0, 0, 59, 100);
-    case 14: return QTime(0, 0, 59, 999);
-    case 15: return QTime(0, 59, 0, 0);
-    case 16: return QTime(0, 59, 0, 1);
-    case 17: return QTime(0, 59, 0, 99);
-    case 18: return QTime(0, 59, 0, 100);
-    case 19: return QTime(0, 59, 0, 999);
-    case 20: return QTime(0, 59, 1, 0);
-    case 21: return QTime(0, 59, 1, 1);
-    case 22: return QTime(0, 59, 1, 99);
-    case 23: return QTime(0, 59, 1, 100);
-    case 24: return QTime(0, 59, 1, 999);
-    case 25: return QTime(0, 59, 59, 0);
-    case 26: return QTime(0, 59, 59, 1);
-    case 27: return QTime(0, 59, 59, 99);
-    case 28: return QTime(0, 59, 59, 100);
-    case 29: return QTime(0, 59, 59, 999);
-    case 30: return QTime(23, 0, 0, 0);
-    case 31: return QTime(23, 0, 0, 1);
-    case 32: return QTime(23, 0, 0, 99);
-    case 33: return QTime(23, 0, 0, 100);
-    case 34: return QTime(23, 0, 0, 999);
-    case 35: return QTime(23, 0, 1, 0);
-    case 36: return QTime(23, 0, 1, 1);
-    case 37: return QTime(23, 0, 1, 99);
-    case 38: return QTime(23, 0, 1, 100);
-    case 39: return QTime(23, 0, 1, 999);
-    case 40: return QTime(23, 0, 59, 0);
-    case 41: return QTime(23, 0, 59, 1);
-    case 42: return QTime(23, 0, 59, 99);
-    case 43: return QTime(23, 0, 59, 100);
-    case 44: return QTime(23, 0, 59, 999);
-    case 45: return QTime(23, 59, 0, 0);
-    case 46: return QTime(23, 59, 0, 1);
-    case 47: return QTime(23, 59, 0, 99);
-    case 48: return QTime(23, 59, 0, 100);
-    case 49: return QTime(23, 59, 0, 999);
-    case 50: return QTime(23, 59, 1, 0);
-    case 51: return QTime(23, 59, 1, 1);
-    case 52: return QTime(23, 59, 1, 99);
-    case 53: return QTime(23, 59, 1, 100);
-    case 54: return QTime(23, 59, 1, 999);
-    case 55: return QTime(23, 59, 59, 0);
-    case 56: return QTime(23, 59, 59, 1);
-    case 57: return QTime(23, 59, 59, 99);
-    case 58: return QTime(23, 59, 59, 100);
-    case 59: return QTime(23, 59, 59, 999);
-    case 60: return QTime();
+    case 0 : return BOBUIime(0, 0, 0, 0);
+    case 1 : return BOBUIime(0, 0, 0, 1);
+    case 2 : return BOBUIime(0, 0, 0, 99);
+    case 3 : return BOBUIime(0, 0, 0, 100);
+    case 4 : return BOBUIime(0, 0, 0, 999);
+    case 5 : return BOBUIime(0, 0, 1, 0);
+    case 6 : return BOBUIime(0, 0, 1, 1);
+    case 7 : return BOBUIime(0, 0, 1, 99);
+    case 8 : return BOBUIime(0, 0, 1, 100);
+    case 9 : return BOBUIime(0, 0, 1, 999);
+    case 10: return BOBUIime(0, 0, 59, 0);
+    case 11: return BOBUIime(0, 0, 59, 1);
+    case 12: return BOBUIime(0, 0, 59, 99);
+    case 13: return BOBUIime(0, 0, 59, 100);
+    case 14: return BOBUIime(0, 0, 59, 999);
+    case 15: return BOBUIime(0, 59, 0, 0);
+    case 16: return BOBUIime(0, 59, 0, 1);
+    case 17: return BOBUIime(0, 59, 0, 99);
+    case 18: return BOBUIime(0, 59, 0, 100);
+    case 19: return BOBUIime(0, 59, 0, 999);
+    case 20: return BOBUIime(0, 59, 1, 0);
+    case 21: return BOBUIime(0, 59, 1, 1);
+    case 22: return BOBUIime(0, 59, 1, 99);
+    case 23: return BOBUIime(0, 59, 1, 100);
+    case 24: return BOBUIime(0, 59, 1, 999);
+    case 25: return BOBUIime(0, 59, 59, 0);
+    case 26: return BOBUIime(0, 59, 59, 1);
+    case 27: return BOBUIime(0, 59, 59, 99);
+    case 28: return BOBUIime(0, 59, 59, 100);
+    case 29: return BOBUIime(0, 59, 59, 999);
+    case 30: return BOBUIime(23, 0, 0, 0);
+    case 31: return BOBUIime(23, 0, 0, 1);
+    case 32: return BOBUIime(23, 0, 0, 99);
+    case 33: return BOBUIime(23, 0, 0, 100);
+    case 34: return BOBUIime(23, 0, 0, 999);
+    case 35: return BOBUIime(23, 0, 1, 0);
+    case 36: return BOBUIime(23, 0, 1, 1);
+    case 37: return BOBUIime(23, 0, 1, 99);
+    case 38: return BOBUIime(23, 0, 1, 100);
+    case 39: return BOBUIime(23, 0, 1, 999);
+    case 40: return BOBUIime(23, 0, 59, 0);
+    case 41: return BOBUIime(23, 0, 59, 1);
+    case 42: return BOBUIime(23, 0, 59, 99);
+    case 43: return BOBUIime(23, 0, 59, 100);
+    case 44: return BOBUIime(23, 0, 59, 999);
+    case 45: return BOBUIime(23, 59, 0, 0);
+    case 46: return BOBUIime(23, 59, 0, 1);
+    case 47: return BOBUIime(23, 59, 0, 99);
+    case 48: return BOBUIime(23, 59, 0, 100);
+    case 49: return BOBUIime(23, 59, 0, 999);
+    case 50: return BOBUIime(23, 59, 1, 0);
+    case 51: return BOBUIime(23, 59, 1, 1);
+    case 52: return BOBUIime(23, 59, 1, 99);
+    case 53: return BOBUIime(23, 59, 1, 100);
+    case 54: return BOBUIime(23, 59, 1, 999);
+    case 55: return BOBUIime(23, 59, 59, 0);
+    case 56: return BOBUIime(23, 59, 59, 1);
+    case 57: return BOBUIime(23, 59, 59, 99);
+    case 58: return BOBUIime(23, 59, 59, 100);
+    case 59: return BOBUIime(23, 59, 59, 999);
+    case 60: return BOBUIime();
     }
-    return QTime(0, 0, 0);
+    return BOBUIime(0, 0, 0);
 }
-#define MAX_QTIME_DATA 61
+#define MAX_BOBUIIME_DATA 61
 
-void tst_QDataStream::stream_QTime_data()
+void tst_QDataStream::stream_BOBUIime_data()
 {
-    stream_data(MAX_QTIME_DATA);
-}
-
-void tst_QDataStream::stream_QTime()
-{
-    STREAM_IMPL(QTime);
+    stream_data(MAX_BOBUIIME_DATA);
 }
 
-void tst_QDataStream::writeQTime(QDataStream *s)
+void tst_QDataStream::stream_BOBUIime()
 {
-    QTime d7 = qTimeData(dataIndex(QTest::currentDataTag()));
+    STREAM_IMPL(BOBUIime);
+}
+
+void tst_QDataStream::writeBOBUIime(QDataStream *s)
+{
+    BOBUIime d7 = qTimeData(dataIndex(BOBUIest::currentDataTag()));
     *s << d7;
 }
 
-void tst_QDataStream::readQTime(QDataStream *s)
+void tst_QDataStream::readBOBUIime(QDataStream *s)
 {
-    QTime test = qTimeData(dataIndex(QTest::currentDataTag()));
-    QTime d7;
+    BOBUIime test = qTimeData(dataIndex(BOBUIest::currentDataTag()));
+    BOBUIime d7;
     *s >> d7;
     QCOMPARE(d7, test);
 }
@@ -1377,24 +1377,24 @@ void tst_QDataStream::readQTime(QDataStream *s)
 static QDateTime qDateTimeData(int index)
 {
     switch (index) {
-    case 0: return QDateTime(QDate(1900, 1, 1), QTime(0,0,0,0));
-    case 1: return QDateTime(QDate(1900, 1, 2), QTime(1,1,1,1));
-    case 2: return QDateTime(QDate(1900, 1, 3), QTime(12,0,0,0));
-    case 3: return QDateTime(QDate(1900, 1, 4), QTime(23,59,59,999));
-    case 4: return QDateTime(QDate(1999, 1, 1), QTime(0,0,0,0));
-    case 5: return QDateTime(QDate(1999, 1, 2), QTime(1,1,1,1));
-    case 6: return QDateTime(QDate(1999, 1, 3), QTime(12,0,0,0));
-    case 7: return QDateTime(QDate(1999, 1, 4), QTime(23,59,59,999));
-    case 8: return QDateTime(QDate(2000, 1, 1), QTime(0,0,0,0));
-    case 9: return QDateTime(QDate(2000, 1, 2), QTime(1,1,1,1));
-    case 10: return QDateTime(QDate(2000, 1, 3), QTime(12,0,0,0));
-    case 11: return QDateTime(QDate(2000, 1, 4), QTime(23,59,59,999));
-    case 12: return QDateTime(QDate(2000, 12, 31), QTime(0,0,0,0));
-    case 13: return QDateTime(QDate(2000, 12, 31), QTime(1,1,1,1));
-    case 14: return QDateTime(QDate(2000, 12, 31), QTime(12,0,0,0));
-    case 15: return QDateTime(QDate(2000, 12, 31), QTime(23,59,59,999));
+    case 0: return QDateTime(QDate(1900, 1, 1), BOBUIime(0,0,0,0));
+    case 1: return QDateTime(QDate(1900, 1, 2), BOBUIime(1,1,1,1));
+    case 2: return QDateTime(QDate(1900, 1, 3), BOBUIime(12,0,0,0));
+    case 3: return QDateTime(QDate(1900, 1, 4), BOBUIime(23,59,59,999));
+    case 4: return QDateTime(QDate(1999, 1, 1), BOBUIime(0,0,0,0));
+    case 5: return QDateTime(QDate(1999, 1, 2), BOBUIime(1,1,1,1));
+    case 6: return QDateTime(QDate(1999, 1, 3), BOBUIime(12,0,0,0));
+    case 7: return QDateTime(QDate(1999, 1, 4), BOBUIime(23,59,59,999));
+    case 8: return QDateTime(QDate(2000, 1, 1), BOBUIime(0,0,0,0));
+    case 9: return QDateTime(QDate(2000, 1, 2), BOBUIime(1,1,1,1));
+    case 10: return QDateTime(QDate(2000, 1, 3), BOBUIime(12,0,0,0));
+    case 11: return QDateTime(QDate(2000, 1, 4), BOBUIime(23,59,59,999));
+    case 12: return QDateTime(QDate(2000, 12, 31), BOBUIime(0,0,0,0));
+    case 13: return QDateTime(QDate(2000, 12, 31), BOBUIime(1,1,1,1));
+    case 14: return QDateTime(QDate(2000, 12, 31), BOBUIime(12,0,0,0));
+    case 15: return QDateTime(QDate(2000, 12, 31), BOBUIime(23,59,59,999));
     }
-    return QDateTime(QDate(1900, 1, 1), QTime(0,0,0));
+    return QDateTime(QDate(1900, 1, 1), BOBUIime(0,0,0));
 }
 #define MAX_QDATETIME_DATA 16
 
@@ -1421,13 +1421,13 @@ void tst_QDataStream::stream_nullptr_t()
 
 void tst_QDataStream::writeQDateTime(QDataStream *s)
 {
-    QDateTime dt(qDateTimeData(dataIndex(QTest::currentDataTag())));
+    QDateTime dt(qDateTimeData(dataIndex(BOBUIest::currentDataTag())));
     *s << dt;
 }
 
 void tst_QDataStream::readQDateTime(QDataStream *s)
 {
-    QDateTime test(qDateTimeData(dataIndex(QTest::currentDataTag())));
+    QDateTime test(qDateTimeData(dataIndex(BOBUIest::currentDataTag())));
     QDateTime d8;
     *s >> d8;
     QCOMPARE(d8, test);
@@ -1530,13 +1530,13 @@ void tst_QDataStream::stream_QFont()
 
 void tst_QDataStream::writeQFont(QDataStream *s)
 {
-    QFont d9(qFontData(dataIndex(QTest::currentDataTag())));
+    QFont d9(qFontData(dataIndex(BOBUIest::currentDataTag())));
     *s << d9;
 }
 
 void tst_QDataStream::readQFont(QDataStream *s)
 {
-    QFont test(qFontData(dataIndex(QTest::currentDataTag())));
+    QFont test(qFontData(dataIndex(BOBUIest::currentDataTag())));
     QFont d9;
     *s >> d9;
 
@@ -1600,58 +1600,58 @@ static QPen qPenData(int index)
     switch (index) {
     case 0:
         {
-            QPen p(Qt::blue, 0, Qt::NoPen);
-            p.setCapStyle(Qt::FlatCap);
-            p.setJoinStyle(Qt::MiterJoin);
+            QPen p(BobUI::blue, 0, BobUI::NoPen);
+            p.setCapStyle(BobUI::FlatCap);
+            p.setJoinStyle(BobUI::MiterJoin);
             return p;
         }
     case 1:
         {
-            QPen p(Qt::red, 1, Qt::SolidLine);
-            p.setCapStyle(Qt::SquareCap);
-            p.setJoinStyle(Qt::BevelJoin);
+            QPen p(BobUI::red, 1, BobUI::SolidLine);
+            p.setCapStyle(BobUI::SquareCap);
+            p.setJoinStyle(BobUI::BevelJoin);
             return p;
         }
     case 2:
         {
-            QPen p(Qt::red, 4, Qt::DashDotDotLine);
-            p.setCapStyle(Qt::RoundCap);
-            p.setJoinStyle(Qt::RoundJoin);
+            QPen p(BobUI::red, 4, BobUI::DashDotDotLine);
+            p.setCapStyle(BobUI::RoundCap);
+            p.setJoinStyle(BobUI::RoundJoin);
             return p;
         }
     case 3:
         {
-            QPen p(Qt::blue, 12, Qt::NoPen);
-            p.setCapStyle(Qt::FlatCap);
-            p.setJoinStyle(Qt::RoundJoin);
+            QPen p(BobUI::blue, 12, BobUI::NoPen);
+            p.setCapStyle(BobUI::FlatCap);
+            p.setJoinStyle(BobUI::RoundJoin);
             return p;
         }
     case 4:
         {
-            QPen p(Qt::red, 99, Qt::SolidLine);
-            p.setCapStyle(Qt::SquareCap);
-            p.setJoinStyle(Qt::MiterJoin);
+            QPen p(BobUI::red, 99, BobUI::SolidLine);
+            p.setCapStyle(BobUI::SquareCap);
+            p.setJoinStyle(BobUI::MiterJoin);
             return p;
         }
     case 5:
         {
-            QPen p(Qt::red, 255, Qt::DashDotLine);
-            p.setCapStyle(Qt::RoundCap);
-            p.setJoinStyle(Qt::BevelJoin);
+            QPen p(BobUI::red, 255, BobUI::DashDotLine);
+            p.setCapStyle(BobUI::RoundCap);
+            p.setJoinStyle(BobUI::BevelJoin);
             return p;
         }
     case 6:
         {
-            QPen p(Qt::red, 256, Qt::DashDotLine);
-            p.setCapStyle(Qt::RoundCap);
-            p.setJoinStyle(Qt::BevelJoin);
+            QPen p(BobUI::red, 256, BobUI::DashDotLine);
+            p.setCapStyle(BobUI::RoundCap);
+            p.setJoinStyle(BobUI::BevelJoin);
             return p;
         }
     case 7:
         {
-            QPen p(Qt::red, 0.25, Qt::DashDotLine);
-            p.setCapStyle(Qt::RoundCap);
-            p.setJoinStyle(Qt::BevelJoin);
+            QPen p(BobUI::red, 0.25, BobUI::DashDotLine);
+            p.setCapStyle(BobUI::RoundCap);
+            p.setJoinStyle(BobUI::BevelJoin);
             return p;
         }
     }
@@ -1672,13 +1672,13 @@ void tst_QDataStream::stream_QPen()
 
 void tst_QDataStream::writeQPen(QDataStream *s)
 {
-    QPen d15(qPenData(dataIndex(QTest::currentDataTag())));
+    QPen d15(qPenData(dataIndex(BOBUIest::currentDataTag())));
     *s << d15;
 }
 
 void tst_QDataStream::readQPen(QDataStream *s)
 {
-    QPen origPen(qPenData(dataIndex(QTest::currentDataTag())));
+    QPen origPen(qPenData(dataIndex(BOBUIest::currentDataTag())));
     QPen d15;
     *s >> d15;
     QCOMPARE(d15.style(), origPen.style());
@@ -1784,7 +1784,7 @@ void tst_QDataStream::stream_QPoint()
 
 void tst_QDataStream::writeQPoint(QDataStream *s)
 {
-    QPoint d17(qPointData(dataIndex(QTest::currentDataTag())));
+    QPoint d17(qPointData(dataIndex(BOBUIest::currentDataTag())));
     *s << d17;
 
     QPointF d17f = d17;
@@ -1793,7 +1793,7 @@ void tst_QDataStream::writeQPoint(QDataStream *s)
 
 void tst_QDataStream::readQPoint(QDataStream *s)
 {
-    QPoint ref(qPointData(dataIndex(QTest::currentDataTag())));
+    QPoint ref(qPointData(dataIndex(BOBUIest::currentDataTag())));
     QPoint d17;
     *s >> d17;
     QCOMPARE(d17, ref);
@@ -1836,7 +1836,7 @@ void tst_QDataStream::stream_QRect()
 
 void tst_QDataStream::writeQRect(QDataStream *s)
 {
-    QRect d18(qRectData(dataIndex(QTest::currentDataTag())));
+    QRect d18(qRectData(dataIndex(BOBUIest::currentDataTag())));
     *s << d18;
 
     QRectF d18f(d18);
@@ -1845,7 +1845,7 @@ void tst_QDataStream::writeQRect(QDataStream *s)
 
 void tst_QDataStream::readQRect(QDataStream *s)
 {
-    QRect ref(qRectData(dataIndex(QTest::currentDataTag())));
+    QRect ref(qRectData(dataIndex(BOBUIest::currentDataTag())));
     QRect d18;
     *s >> d18;
     QCOMPARE(d18, ref);
@@ -1949,7 +1949,7 @@ void tst_QDataStream::stream_QPolygon()
 
 void tst_QDataStream::writeQPolygon(QDataStream *s)
 {
-    QPolygon d19(qPolygonData(dataIndex(QTest::currentDataTag())));
+    QPolygon d19(qPolygonData(dataIndex(BOBUIest::currentDataTag())));
     *s << d19;
 
     QPolygonF d19f(d19);
@@ -1958,7 +1958,7 @@ void tst_QDataStream::writeQPolygon(QDataStream *s)
 
 void tst_QDataStream::readQPolygon(QDataStream *s)
 {
-    QPolygon ref(qPolygonData(dataIndex(QTest::currentDataTag())));
+    QPolygon ref(qPolygonData(dataIndex(BOBUIest::currentDataTag())));
     QPolygon d19;
     *s >> d19;
     QCOMPARE(d19, ref);
@@ -2016,13 +2016,13 @@ void tst_QDataStream::stream_QRegion()
 
 void tst_QDataStream::writeQRegion(QDataStream *s)
 {
-    QRegion r(qRegionData(dataIndex(QTest::currentDataTag())));
+    QRegion r(qRegionData(dataIndex(BOBUIest::currentDataTag())));
     *s << r;
 }
 
 void tst_QDataStream::readQRegion(QDataStream *s)
 {
-    QRegion ref(qRegionData(dataIndex(QTest::currentDataTag())));
+    QRegion ref(qRegionData(dataIndex(BOBUIest::currentDataTag())));
     QRegion r;
     *s >> r;
     QCOMPARE(r, ref);
@@ -2061,7 +2061,7 @@ void tst_QDataStream::stream_QSize()
 
 void tst_QDataStream::writeQSize(QDataStream *s)
 {
-    QSize d21(qSizeData(dataIndex(QTest::currentDataTag())));
+    QSize d21(qSizeData(dataIndex(BOBUIest::currentDataTag())));
     *s << d21;
 
     QSizeF d21f(d21);
@@ -2070,7 +2070,7 @@ void tst_QDataStream::writeQSize(QDataStream *s)
 
 void tst_QDataStream::readQSize(QDataStream *s)
 {
-    QSize ref(qSizeData(dataIndex(QTest::currentDataTag())));
+    QSize ref(qSizeData(dataIndex(BOBUIest::currentDataTag())));
     QSize d21;
     *s >> d21;
     QCOMPARE(d21, ref);
@@ -2202,7 +2202,7 @@ void tst_QDataStream::stream_writeSizeLimitExceeded()
     QByteArray ba;
     QDataStream ds(&ba, QDataStream::ReadWrite);
     // Set the version that supports only 32-bit data size
-    ds.setVersion(QDataStream::Qt_6_6);
+    ds.setVersion(QDataStream::BobUI_6_6);
     QCOMPARE(ds.status(), QDataStream::Ok);
     const qint64 size = qint64(std::numeric_limits<quint32>::max()) + 1;
     ds.writeBytes("", size);
@@ -2332,7 +2332,7 @@ void tst_QDataStream::stream_QJsonValue()
     }
 }
 
-#if QT_CONFIG(cborstreamwriter)
+#if BOBUI_CONFIG(cborstreamwriter)
 void tst_QDataStream::stream_QCborArray()
 {
     QByteArray buffer;
@@ -2372,11 +2372,11 @@ void tst_QDataStream::stream_QCborValue()
 
 void tst_QDataStream::setVersion_data()
 {
-    QTest::addColumn<int>("vers");
+    BOBUIest::addColumn<int>("vers");
     QDataStream latest;
 
     for (int vers = 1; vers <= latest.version(); ++vers)
-        QTest::newRow(("v_" + QByteArray::number(vers)).constData()) << vers;
+        BOBUIest::newRow(("v_" + QByteArray::number(vers)).constData()) << vers;
 }
 
 void tst_QDataStream::setVersion()
@@ -2384,7 +2384,7 @@ void tst_QDataStream::setVersion()
     QDataStream latest;
     QFETCH(int, vers);
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     /*
         Test QKeySequence.
     */
@@ -2392,7 +2392,7 @@ void tst_QDataStream::setVersion()
     {
         QDataStream out(&ba1, QIODevice::WriteOnly);
         out.setVersion(vers);
-        QVERIFY(out << QKeySequence(Qt::Key_A) << QKeySequence(Qt::Key_B, Qt::Key_C)
+        QVERIFY(out << QKeySequence(BobUI::Key_A) << QKeySequence(BobUI::Key_B, BobUI::Key_C)
                     << (quint32)0xDEADBEEF);
     }
     {
@@ -2401,15 +2401,15 @@ void tst_QDataStream::setVersion()
         QDataStream in(&ba1, QIODevice::ReadOnly);
         in.setVersion(vers);
         QVERIFY(in >> keyseq1 >> keyseq2 >> deadbeef);
-        QCOMPARE(keyseq1, QKeySequence(Qt::Key_A));
+        QCOMPARE(keyseq1, QKeySequence(BobUI::Key_A));
         if (vers >= 5) {
-            QVERIFY(keyseq2 == QKeySequence(Qt::Key_B, Qt::Key_C));
+            QVERIFY(keyseq2 == QKeySequence(BobUI::Key_B, BobUI::Key_C));
         } else {
-            QCOMPARE(keyseq2, QKeySequence(Qt::Key_B));
+            QCOMPARE(keyseq2, QKeySequence(BobUI::Key_B));
         }
         QCOMPARE(deadbeef, 0xDEADBEEF);
     }
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
     /*
         Test QPalette.
@@ -2508,23 +2508,23 @@ private:
 
 void tst_QDataStream::skipRawData_data()
 {
-    QTest::addColumn<QString>("deviceType");
-    QTest::addColumn<QByteArray>("data");
-    QTest::addColumn<int>("read");
-    QTest::addColumn<int>("skip");
-    QTest::addColumn<int>("skipped");
-    QTest::addColumn<char>("expect");
+    BOBUIest::addColumn<QString>("deviceType");
+    BOBUIest::addColumn<QByteArray>("data");
+    BOBUIest::addColumn<int>("read");
+    BOBUIest::addColumn<int>("skip");
+    BOBUIest::addColumn<int>("skipped");
+    BOBUIest::addColumn<char>("expect");
 
     QByteArray bigData;
     bigData.fill('a', 20000);
     bigData[10001] = 'x';
 
-    QTest::newRow("1") << QString("sequential")    << QByteArray("abcdefghij") << 3 << 6 << 6 << 'j';
-    QTest::newRow("2") << QString("random-access") << QByteArray("abcdefghij") << 3 << 6 << 6 << 'j';
-    QTest::newRow("3") << QString("sequential")    << bigData << 1 << 10000 << 10000 << 'x';
-    QTest::newRow("4") << QString("random-access") << bigData << 1 << 10000 << 10000 << 'x';
-    QTest::newRow("5") << QString("sequential")    << bigData << 1 << 20000 << 19999 << '\0';
-    QTest::newRow("6") << QString("random-access") << bigData << 1 << 20000 << 19999 << '\0';
+    BOBUIest::newRow("1") << QString("sequential")    << QByteArray("abcdefghij") << 3 << 6 << 6 << 'j';
+    BOBUIest::newRow("2") << QString("random-access") << QByteArray("abcdefghij") << 3 << 6 << 6 << 'j';
+    BOBUIest::newRow("3") << QString("sequential")    << bigData << 1 << 10000 << 10000 << 'x';
+    BOBUIest::newRow("4") << QString("random-access") << bigData << 1 << 10000 << 10000 << 'x';
+    BOBUIest::newRow("5") << QString("sequential")    << bigData << 1 << 20000 << 19999 << '\0';
+    BOBUIest::newRow("6") << QString("random-access") << bigData << 1 << 20000 << 19999 << '\0';
 }
 
 void tst_QDataStream::skipRawData()
@@ -2628,161 +2628,161 @@ void tst_QDataStream::skipRawData()
 
 void tst_QDataStream::status_qint8_data()
 {
-    QTest::addColumn<QByteArray>("bigEndianData");
-    QTest::addColumn<QByteArray>("littleEndianData");
-    QTest::addColumn<int>("expectedStatus");
-    QTest::addColumn<qint64>("expectedValue");
+    BOBUIest::addColumn<QByteArray>("bigEndianData");
+    BOBUIest::addColumn<QByteArray>("littleEndianData");
+    BOBUIest::addColumn<int>("expectedStatus");
+    BOBUIest::addColumn<qint64>("expectedValue");
 
     // ok
-    QTest::newRow("0") << QByteArray(1, '\x0') << QByteArray(1, '\x0') << (int) QDataStream::Ok << qint64(0);
-    QTest::newRow("-1") << QByteArray(1, '\xff') << QByteArray(1, '\xff') << (int) QDataStream::Ok << qint64(-1);
-    QTest::newRow("1") << QByteArray(1, '\x01') << QByteArray(1, '\x01') << (int) QDataStream::Ok << qint64(1);
-    QTest::newRow("37") << QByteArray(1, '\x25') << QByteArray(1, '\x25') << (int) QDataStream::Ok << qint64(37);
-    QTest::newRow("37j") << QByteArray("\x25j") << QByteArray("\x25j") << (int) QDataStream::Ok << qint64(37);
+    BOBUIest::newRow("0") << QByteArray(1, '\x0') << QByteArray(1, '\x0') << (int) QDataStream::Ok << qint64(0);
+    BOBUIest::newRow("-1") << QByteArray(1, '\xff') << QByteArray(1, '\xff') << (int) QDataStream::Ok << qint64(-1);
+    BOBUIest::newRow("1") << QByteArray(1, '\x01') << QByteArray(1, '\x01') << (int) QDataStream::Ok << qint64(1);
+    BOBUIest::newRow("37") << QByteArray(1, '\x25') << QByteArray(1, '\x25') << (int) QDataStream::Ok << qint64(37);
+    BOBUIest::newRow("37j") << QByteArray("\x25j") << QByteArray("\x25j") << (int) QDataStream::Ok << qint64(37);
 
     // past end
-    QTest::newRow("empty") << QByteArray() << QByteArray() << (int) QDataStream::ReadPastEnd << qint64(0);
+    BOBUIest::newRow("empty") << QByteArray() << QByteArray() << (int) QDataStream::ReadPastEnd << qint64(0);
 }
 
 TEST_qint(qint8, quint8)
 
 void tst_QDataStream::status_qint16_data()
 {
-    QTest::addColumn<QByteArray>("bigEndianData");
-    QTest::addColumn<QByteArray>("littleEndianData");
-    QTest::addColumn<int>("expectedStatus");
-    QTest::addColumn<qint64>("expectedValue");
+    BOBUIest::addColumn<QByteArray>("bigEndianData");
+    BOBUIest::addColumn<QByteArray>("littleEndianData");
+    BOBUIest::addColumn<int>("expectedStatus");
+    BOBUIest::addColumn<qint64>("expectedValue");
 
     // ok
-    QTest::newRow("0") << QByteArray(2, '\x0') << QByteArray(2, '\x0') << (int) QDataStream::Ok << qint64(0);
-    QTest::newRow("-1") << QByteArray("\xff\xff", 2) << QByteArray("\xff\xff", 2) << (int) QDataStream::Ok << qint64(-1);
-    QTest::newRow("1") << QByteArray("\x00\x01", 2) << QByteArray("\x01\x00", 2) << (int) QDataStream::Ok << qint64(1);
-    QTest::newRow("37") << QByteArray("\x00\x25", 2) << QByteArray("\x25\x00", 2) << (int) QDataStream::Ok << qint64(37);
-    QTest::newRow("37j") << QByteArray("\x00\x25j", 3) << QByteArray("\x25\x00j", 3) << (int) QDataStream::Ok << qint64(37);
-    QTest::newRow("0x1234") << QByteArray("\x12\x34", 2) << QByteArray("\x34\x12", 2) << (int) QDataStream::Ok << qint64(0x1234);
+    BOBUIest::newRow("0") << QByteArray(2, '\x0') << QByteArray(2, '\x0') << (int) QDataStream::Ok << qint64(0);
+    BOBUIest::newRow("-1") << QByteArray("\xff\xff", 2) << QByteArray("\xff\xff", 2) << (int) QDataStream::Ok << qint64(-1);
+    BOBUIest::newRow("1") << QByteArray("\x00\x01", 2) << QByteArray("\x01\x00", 2) << (int) QDataStream::Ok << qint64(1);
+    BOBUIest::newRow("37") << QByteArray("\x00\x25", 2) << QByteArray("\x25\x00", 2) << (int) QDataStream::Ok << qint64(37);
+    BOBUIest::newRow("37j") << QByteArray("\x00\x25j", 3) << QByteArray("\x25\x00j", 3) << (int) QDataStream::Ok << qint64(37);
+    BOBUIest::newRow("0x1234") << QByteArray("\x12\x34", 2) << QByteArray("\x34\x12", 2) << (int) QDataStream::Ok << qint64(0x1234);
 
     // past end
-    QTest::newRow("empty") << QByteArray() << QByteArray() << (int) QDataStream::ReadPastEnd << qint64(0);
-    QTest::newRow("end 1") << QByteArray("", 1) << QByteArray("", 1) << (int) QDataStream::ReadPastEnd << qint64(0);
-    QTest::newRow("end 2") << QByteArray("\x25", 1) << QByteArray("\x25", 1) << (int) QDataStream::ReadPastEnd << qint64(0);
+    BOBUIest::newRow("empty") << QByteArray() << QByteArray() << (int) QDataStream::ReadPastEnd << qint64(0);
+    BOBUIest::newRow("end 1") << QByteArray("", 1) << QByteArray("", 1) << (int) QDataStream::ReadPastEnd << qint64(0);
+    BOBUIest::newRow("end 2") << QByteArray("\x25", 1) << QByteArray("\x25", 1) << (int) QDataStream::ReadPastEnd << qint64(0);
 }
 
 TEST_qint(qint16, quint16)
 
 void tst_QDataStream::status_qint32_data()
 {
-    QTest::addColumn<QByteArray>("bigEndianData");
-    QTest::addColumn<QByteArray>("littleEndianData");
-    QTest::addColumn<int>("expectedStatus");
-    QTest::addColumn<qint64>("expectedValue");
+    BOBUIest::addColumn<QByteArray>("bigEndianData");
+    BOBUIest::addColumn<QByteArray>("littleEndianData");
+    BOBUIest::addColumn<int>("expectedStatus");
+    BOBUIest::addColumn<qint64>("expectedValue");
 
     // ok
-    QTest::newRow("0") << QByteArray(4, '\x0') << QByteArray(4, '\x0') << (int) QDataStream::Ok << qint64(0);
-    QTest::newRow("-1") << QByteArray("\xff\xff\xff\xff", 4) << QByteArray("\xff\xff\xff\xff", 4) << (int) QDataStream::Ok << qint64(-1);
-    QTest::newRow("1") << QByteArray("\x00\x00\x00\x01", 4) << QByteArray("\x01\x00\x00\x00", 4) << (int) QDataStream::Ok << qint64(1);
-    QTest::newRow("37") << QByteArray("\x00\x00\x00\x25", 4) << QByteArray("\x25\x00\x00\x00", 4) << (int) QDataStream::Ok << qint64(37);
-    QTest::newRow("37j") << QByteArray("\x00\x00\x00\x25j", 5) << QByteArray("\x25\x00\x00\x00j", 5) << (int) QDataStream::Ok << qint64(37);
-    QTest::newRow("0x12345678") << QByteArray("\x12\x34\x56\x78", 4) << QByteArray("\x78\x56\x34\x12", 4) << (int) QDataStream::Ok << qint64(0x12345678);
+    BOBUIest::newRow("0") << QByteArray(4, '\x0') << QByteArray(4, '\x0') << (int) QDataStream::Ok << qint64(0);
+    BOBUIest::newRow("-1") << QByteArray("\xff\xff\xff\xff", 4) << QByteArray("\xff\xff\xff\xff", 4) << (int) QDataStream::Ok << qint64(-1);
+    BOBUIest::newRow("1") << QByteArray("\x00\x00\x00\x01", 4) << QByteArray("\x01\x00\x00\x00", 4) << (int) QDataStream::Ok << qint64(1);
+    BOBUIest::newRow("37") << QByteArray("\x00\x00\x00\x25", 4) << QByteArray("\x25\x00\x00\x00", 4) << (int) QDataStream::Ok << qint64(37);
+    BOBUIest::newRow("37j") << QByteArray("\x00\x00\x00\x25j", 5) << QByteArray("\x25\x00\x00\x00j", 5) << (int) QDataStream::Ok << qint64(37);
+    BOBUIest::newRow("0x12345678") << QByteArray("\x12\x34\x56\x78", 4) << QByteArray("\x78\x56\x34\x12", 4) << (int) QDataStream::Ok << qint64(0x12345678);
 
     // past end
-    QTest::newRow("empty") << QByteArray() << QByteArray() << (int) QDataStream::ReadPastEnd << qint64(0);
-    QTest::newRow("end 1") << QByteArray("", 1) << QByteArray("", 1) << (int) QDataStream::ReadPastEnd << qint64(0);
-    QTest::newRow("end 2") << QByteArray("\x25", 1) << QByteArray("\x25", 1) << (int) QDataStream::ReadPastEnd << qint64(0);
-    QTest::newRow("end 3") << QByteArray("11", 2) << QByteArray("11", 2) << (int) QDataStream::ReadPastEnd << qint64(0);
-    QTest::newRow("end 4") << QByteArray("111", 3) << QByteArray("111", 3) << (int) QDataStream::ReadPastEnd << qint64(0);
+    BOBUIest::newRow("empty") << QByteArray() << QByteArray() << (int) QDataStream::ReadPastEnd << qint64(0);
+    BOBUIest::newRow("end 1") << QByteArray("", 1) << QByteArray("", 1) << (int) QDataStream::ReadPastEnd << qint64(0);
+    BOBUIest::newRow("end 2") << QByteArray("\x25", 1) << QByteArray("\x25", 1) << (int) QDataStream::ReadPastEnd << qint64(0);
+    BOBUIest::newRow("end 3") << QByteArray("11", 2) << QByteArray("11", 2) << (int) QDataStream::ReadPastEnd << qint64(0);
+    BOBUIest::newRow("end 4") << QByteArray("111", 3) << QByteArray("111", 3) << (int) QDataStream::ReadPastEnd << qint64(0);
 }
 
 TEST_qint(qint32, quint32)
 
 void tst_QDataStream::status_qint64_data()
 {
-    QTest::addColumn<QByteArray>("bigEndianData");
-    QTest::addColumn<QByteArray>("littleEndianData");
-    QTest::addColumn<int>("expectedStatus");
-    QTest::addColumn<qint64>("expectedValue");
+    BOBUIest::addColumn<QByteArray>("bigEndianData");
+    BOBUIest::addColumn<QByteArray>("littleEndianData");
+    BOBUIest::addColumn<int>("expectedStatus");
+    BOBUIest::addColumn<qint64>("expectedValue");
 
     // ok
-    QTest::newRow("0") << QByteArray(8, '\x0') << QByteArray(8, '\x0') << (int) QDataStream::Ok << qint64(0);
-    QTest::newRow("-1") << QByteArray("\xff\xff\xff\xff\xff\xff\xff\xff", 8) << QByteArray("\xff\xff\xff\xff\xff\xff\xff\xff", 8) << (int) QDataStream::Ok << qint64(-1);
-    QTest::newRow("1") << QByteArray("\x00\x00\x00\x00\x00\x00\x00\x01", 8) << QByteArray("\x01\x00\x00\x00\x00\x00\x00\x00", 8) << (int) QDataStream::Ok << qint64(1);
-    QTest::newRow("37") << QByteArray("\x00\x00\x00\x00\x00\x00\x00\x25", 8) << QByteArray("\x25\x00\x00\x00\x00\x00\x00\x00", 8) << (int) QDataStream::Ok << qint64(37);
-    QTest::newRow("37j") << QByteArray("\x00\x00\x00\x00\x00\x00\x00\x25j", 9) << QByteArray("\x25\x00\x00\x00\x00\x00\x00\x00j", 9) << (int) QDataStream::Ok << qint64(37);
-    QTest::newRow("0x123456789ABCDEF0") << QByteArray("\x12\x34\x56\x78\x9a\xbc\xde\xf0", 8) << QByteArray("\xf0\xde\xbc\x9a\x78\x56\x34\x12", 8) << (int) QDataStream::Ok << (qint64)Q_INT64_C(0x123456789ABCDEF0);
+    BOBUIest::newRow("0") << QByteArray(8, '\x0') << QByteArray(8, '\x0') << (int) QDataStream::Ok << qint64(0);
+    BOBUIest::newRow("-1") << QByteArray("\xff\xff\xff\xff\xff\xff\xff\xff", 8) << QByteArray("\xff\xff\xff\xff\xff\xff\xff\xff", 8) << (int) QDataStream::Ok << qint64(-1);
+    BOBUIest::newRow("1") << QByteArray("\x00\x00\x00\x00\x00\x00\x00\x01", 8) << QByteArray("\x01\x00\x00\x00\x00\x00\x00\x00", 8) << (int) QDataStream::Ok << qint64(1);
+    BOBUIest::newRow("37") << QByteArray("\x00\x00\x00\x00\x00\x00\x00\x25", 8) << QByteArray("\x25\x00\x00\x00\x00\x00\x00\x00", 8) << (int) QDataStream::Ok << qint64(37);
+    BOBUIest::newRow("37j") << QByteArray("\x00\x00\x00\x00\x00\x00\x00\x25j", 9) << QByteArray("\x25\x00\x00\x00\x00\x00\x00\x00j", 9) << (int) QDataStream::Ok << qint64(37);
+    BOBUIest::newRow("0x123456789ABCDEF0") << QByteArray("\x12\x34\x56\x78\x9a\xbc\xde\xf0", 8) << QByteArray("\xf0\xde\xbc\x9a\x78\x56\x34\x12", 8) << (int) QDataStream::Ok << (qint64)Q_INT64_C(0x123456789ABCDEF0);
 
     // past end
-    QTest::newRow("empty") << QByteArray() << QByteArray() << (int) QDataStream::ReadPastEnd << qint64(0);
-    QTest::newRow("end 1") << QByteArray("", 1) << QByteArray("", 1) << (int) QDataStream::ReadPastEnd << qint64(0);
-    QTest::newRow("end 2") << QByteArray("\x25", 1) << QByteArray("\x25", 1) << (int) QDataStream::ReadPastEnd << qint64(0);
-    QTest::newRow("end 3") << QByteArray("11", 2) << QByteArray("11", 2) << (int) QDataStream::ReadPastEnd << qint64(0);
-    QTest::newRow("end 4") << QByteArray("111", 3) << QByteArray("111", 3) << (int) QDataStream::ReadPastEnd << qint64(0);
-    QTest::newRow("end 5") << QByteArray("1111", 4) << QByteArray("1111", 4) << (int) QDataStream::ReadPastEnd << qint64(0);
-    QTest::newRow("end 6") << QByteArray("11111", 5) << QByteArray("11111", 5) << (int) QDataStream::ReadPastEnd << qint64(0);
-    QTest::newRow("end 7") << QByteArray("111111", 6) << QByteArray("111111", 6) << (int) QDataStream::ReadPastEnd << qint64(0);
-    QTest::newRow("end 8") << QByteArray("1111111", 7) << QByteArray("1111111", 7) << (int) QDataStream::ReadPastEnd << qint64(0);
+    BOBUIest::newRow("empty") << QByteArray() << QByteArray() << (int) QDataStream::ReadPastEnd << qint64(0);
+    BOBUIest::newRow("end 1") << QByteArray("", 1) << QByteArray("", 1) << (int) QDataStream::ReadPastEnd << qint64(0);
+    BOBUIest::newRow("end 2") << QByteArray("\x25", 1) << QByteArray("\x25", 1) << (int) QDataStream::ReadPastEnd << qint64(0);
+    BOBUIest::newRow("end 3") << QByteArray("11", 2) << QByteArray("11", 2) << (int) QDataStream::ReadPastEnd << qint64(0);
+    BOBUIest::newRow("end 4") << QByteArray("111", 3) << QByteArray("111", 3) << (int) QDataStream::ReadPastEnd << qint64(0);
+    BOBUIest::newRow("end 5") << QByteArray("1111", 4) << QByteArray("1111", 4) << (int) QDataStream::ReadPastEnd << qint64(0);
+    BOBUIest::newRow("end 6") << QByteArray("11111", 5) << QByteArray("11111", 5) << (int) QDataStream::ReadPastEnd << qint64(0);
+    BOBUIest::newRow("end 7") << QByteArray("111111", 6) << QByteArray("111111", 6) << (int) QDataStream::ReadPastEnd << qint64(0);
+    BOBUIest::newRow("end 8") << QByteArray("1111111", 7) << QByteArray("1111111", 7) << (int) QDataStream::ReadPastEnd << qint64(0);
 }
 
 TEST_qint(qint64, quint64)
 
 void tst_QDataStream::status_float_data()
 {
-    QTest::addColumn<QByteArray>("bigEndianData");
-    QTest::addColumn<QByteArray>("littleEndianData");
-    QTest::addColumn<int>("expectedStatus");
-    QTest::addColumn<double>("expectedValue");
+    BOBUIest::addColumn<QByteArray>("bigEndianData");
+    BOBUIest::addColumn<QByteArray>("littleEndianData");
+    BOBUIest::addColumn<int>("expectedStatus");
+    BOBUIest::addColumn<double>("expectedValue");
 
     // ok
-    QTest::newRow("0") << QByteArray(4, '\0') << QByteArray(4, '\0') << (int) QDataStream::Ok << (double) 0.0;
-    QTest::newRow("-1") << QByteArray("\xbf\x80\x00\x00", 4) << QByteArray("\x00\x00\x80\xbf", 4) << (int) QDataStream::Ok << (double) -1;
-    QTest::newRow("1") << QByteArray("\x3f\x80\x00\x00", 4) << QByteArray("\x00\x00\x80\x3f", 4) << (int) QDataStream::Ok << (double) 1;
-    QTest::newRow("37") << QByteArray("\x42\x14\x00\x00", 4) << QByteArray("\x00\x00\x14\x42", 4) << (int) QDataStream::Ok << (double) 37;
-    QTest::newRow("37j") << QByteArray("\x42\x14\x00\x00j", 5) << QByteArray("\x00\x00\x14\x42j", 5) << (int) QDataStream::Ok << (double) 37;
-    QTest::newRow("3.14") << QByteArray("\x40\x48\xf5\xc3", 4) << QByteArray("\xc3\xf5\x48\x40", 4) << (int) QDataStream::Ok << (double) 3.14;
+    BOBUIest::newRow("0") << QByteArray(4, '\0') << QByteArray(4, '\0') << (int) QDataStream::Ok << (double) 0.0;
+    BOBUIest::newRow("-1") << QByteArray("\xbf\x80\x00\x00", 4) << QByteArray("\x00\x00\x80\xbf", 4) << (int) QDataStream::Ok << (double) -1;
+    BOBUIest::newRow("1") << QByteArray("\x3f\x80\x00\x00", 4) << QByteArray("\x00\x00\x80\x3f", 4) << (int) QDataStream::Ok << (double) 1;
+    BOBUIest::newRow("37") << QByteArray("\x42\x14\x00\x00", 4) << QByteArray("\x00\x00\x14\x42", 4) << (int) QDataStream::Ok << (double) 37;
+    BOBUIest::newRow("37j") << QByteArray("\x42\x14\x00\x00j", 5) << QByteArray("\x00\x00\x14\x42j", 5) << (int) QDataStream::Ok << (double) 37;
+    BOBUIest::newRow("3.14") << QByteArray("\x40\x48\xf5\xc3", 4) << QByteArray("\xc3\xf5\x48\x40", 4) << (int) QDataStream::Ok << (double) 3.14;
 
     // past end
-    QTest::newRow("empty") << QByteArray() << QByteArray() << (int) QDataStream::ReadPastEnd << double(0);
-    QTest::newRow("end 1") << QByteArray("", 1) << QByteArray("", 1) << (int) QDataStream::ReadPastEnd << double(0);
-    QTest::newRow("end 2") << QByteArray("\x25", 1) << QByteArray("\x25", 1) << (int) QDataStream::ReadPastEnd << double(0);
-    QTest::newRow("end 3") << QByteArray("11", 2) << QByteArray("11", 2) << (int) QDataStream::ReadPastEnd << double(0);
-    QTest::newRow("end 4") << QByteArray("111", 3) << QByteArray("111", 3) << (int) QDataStream::ReadPastEnd << double(0);
+    BOBUIest::newRow("empty") << QByteArray() << QByteArray() << (int) QDataStream::ReadPastEnd << double(0);
+    BOBUIest::newRow("end 1") << QByteArray("", 1) << QByteArray("", 1) << (int) QDataStream::ReadPastEnd << double(0);
+    BOBUIest::newRow("end 2") << QByteArray("\x25", 1) << QByteArray("\x25", 1) << (int) QDataStream::ReadPastEnd << double(0);
+    BOBUIest::newRow("end 3") << QByteArray("11", 2) << QByteArray("11", 2) << (int) QDataStream::ReadPastEnd << double(0);
+    BOBUIest::newRow("end 4") << QByteArray("111", 3) << QByteArray("111", 3) << (int) QDataStream::ReadPastEnd << double(0);
 }
 
 TEST_FLOAT(float)
 
 void tst_QDataStream::status_double_data()
 {
-    QTest::addColumn<QByteArray>("bigEndianData");
-    QTest::addColumn<QByteArray>("littleEndianData");
-    QTest::addColumn<int>("expectedStatus");
-    QTest::addColumn<double>("expectedValue");
+    BOBUIest::addColumn<QByteArray>("bigEndianData");
+    BOBUIest::addColumn<QByteArray>("littleEndianData");
+    BOBUIest::addColumn<int>("expectedStatus");
+    BOBUIest::addColumn<double>("expectedValue");
 
     // ok
-    QTest::newRow("0") << QByteArray("\x00\x00\x00\x00\x00\x00\x00\x00", 8) << QByteArray("\x00\x00\x00\x00\x00\x00\x00\x00", 8) << (int) QDataStream::Ok << (double) 0;
-    QTest::newRow("-1") << QByteArray("\xbf\xf0\x00\x00\x00\x00\x00\x00", 8) << QByteArray("\x00\x00\x00\x00\x00\x00\xf0\xbf", 8) << (int) QDataStream::Ok << (double) -1;
-    QTest::newRow("1") << QByteArray("\x3f\xf0\x00\x00\x00\x00\x00\x00", 8) << QByteArray("\x00\x00\x00\x00\x00\x00\xf0\x3f", 8) << (int) QDataStream::Ok << (double) 1;
-    QTest::newRow("37") << QByteArray("\x40\x42\x80\x00\x00\x00\x00\x00", 8) << QByteArray("\x00\x00\x00\x00\x00\x80\x42\x40", 8) << (int) QDataStream::Ok << (double) 37;
-    QTest::newRow("37j") << QByteArray("\x40\x42\x80\x00\x00\x00\x00\x00j", 9) << QByteArray("\x00\x00\x00\x00\x00\x80\x42\x40j", 9) << (int) QDataStream::Ok << (double) 37;
-    QTest::newRow("3.14") << QByteArray("\x40\x09\x1e\xb8\x60\x00\x00\x00", 8) << QByteArray("\x00\x00\x00\x60\xb8\x1e\x09\x40", 8) << (int) QDataStream::Ok << (double) 3.14;
-    QTest::newRow("1234.5678") << QByteArray("\x40\x93\x4a\x45\x6d\x5c\xfa\xad", 8) << QByteArray("\xad\xfa\x5c\x6d\x45\x4a\x93\x40", 8) << (int) QDataStream::Ok << (double) 1234.5678;
+    BOBUIest::newRow("0") << QByteArray("\x00\x00\x00\x00\x00\x00\x00\x00", 8) << QByteArray("\x00\x00\x00\x00\x00\x00\x00\x00", 8) << (int) QDataStream::Ok << (double) 0;
+    BOBUIest::newRow("-1") << QByteArray("\xbf\xf0\x00\x00\x00\x00\x00\x00", 8) << QByteArray("\x00\x00\x00\x00\x00\x00\xf0\xbf", 8) << (int) QDataStream::Ok << (double) -1;
+    BOBUIest::newRow("1") << QByteArray("\x3f\xf0\x00\x00\x00\x00\x00\x00", 8) << QByteArray("\x00\x00\x00\x00\x00\x00\xf0\x3f", 8) << (int) QDataStream::Ok << (double) 1;
+    BOBUIest::newRow("37") << QByteArray("\x40\x42\x80\x00\x00\x00\x00\x00", 8) << QByteArray("\x00\x00\x00\x00\x00\x80\x42\x40", 8) << (int) QDataStream::Ok << (double) 37;
+    BOBUIest::newRow("37j") << QByteArray("\x40\x42\x80\x00\x00\x00\x00\x00j", 9) << QByteArray("\x00\x00\x00\x00\x00\x80\x42\x40j", 9) << (int) QDataStream::Ok << (double) 37;
+    BOBUIest::newRow("3.14") << QByteArray("\x40\x09\x1e\xb8\x60\x00\x00\x00", 8) << QByteArray("\x00\x00\x00\x60\xb8\x1e\x09\x40", 8) << (int) QDataStream::Ok << (double) 3.14;
+    BOBUIest::newRow("1234.5678") << QByteArray("\x40\x93\x4a\x45\x6d\x5c\xfa\xad", 8) << QByteArray("\xad\xfa\x5c\x6d\x45\x4a\x93\x40", 8) << (int) QDataStream::Ok << (double) 1234.5678;
 
     // past end
-    QTest::newRow("empty") << QByteArray() << QByteArray() << (int) QDataStream::ReadPastEnd << double(0);
-    QTest::newRow("end 1") << QByteArray("", 1) << QByteArray("", 1) << (int) QDataStream::ReadPastEnd << double(0);
-    QTest::newRow("end 2") << QByteArray("\x25", 1) << QByteArray("\x25", 1) << (int) QDataStream::ReadPastEnd << double(0);
-    QTest::newRow("end 3") << QByteArray("11", 2) << QByteArray("11", 2) << (int) QDataStream::ReadPastEnd << double(0);
-    QTest::newRow("end 4") << QByteArray("111", 3) << QByteArray("111", 3) << (int) QDataStream::ReadPastEnd << double(0);
-    QTest::newRow("end 5") << QByteArray("1111", 4) << QByteArray("1111", 4) << (int) QDataStream::ReadPastEnd << double(0);
-    QTest::newRow("end 6") << QByteArray("11111", 5) << QByteArray("11111", 5) << (int) QDataStream::ReadPastEnd << double(0);
-    QTest::newRow("end 7") << QByteArray("111111", 6) << QByteArray("111111", 6) << (int) QDataStream::ReadPastEnd << double(0);
-    QTest::newRow("end 8") << QByteArray("1111111", 7) << QByteArray("1111111", 7) << (int) QDataStream::ReadPastEnd << double(0);
+    BOBUIest::newRow("empty") << QByteArray() << QByteArray() << (int) QDataStream::ReadPastEnd << double(0);
+    BOBUIest::newRow("end 1") << QByteArray("", 1) << QByteArray("", 1) << (int) QDataStream::ReadPastEnd << double(0);
+    BOBUIest::newRow("end 2") << QByteArray("\x25", 1) << QByteArray("\x25", 1) << (int) QDataStream::ReadPastEnd << double(0);
+    BOBUIest::newRow("end 3") << QByteArray("11", 2) << QByteArray("11", 2) << (int) QDataStream::ReadPastEnd << double(0);
+    BOBUIest::newRow("end 4") << QByteArray("111", 3) << QByteArray("111", 3) << (int) QDataStream::ReadPastEnd << double(0);
+    BOBUIest::newRow("end 5") << QByteArray("1111", 4) << QByteArray("1111", 4) << (int) QDataStream::ReadPastEnd << double(0);
+    BOBUIest::newRow("end 6") << QByteArray("11111", 5) << QByteArray("11111", 5) << (int) QDataStream::ReadPastEnd << double(0);
+    BOBUIest::newRow("end 7") << QByteArray("111111", 6) << QByteArray("111111", 6) << (int) QDataStream::ReadPastEnd << double(0);
+    BOBUIest::newRow("end 8") << QByteArray("1111111", 7) << QByteArray("1111111", 7) << (int) QDataStream::ReadPastEnd << double(0);
 }
 
 TEST_FLOAT(double)
 
 void tst_QDataStream::status_charptr_QByteArray_data()
 {
-    QTest::addColumn<QByteArray>("data");
-    QTest::addColumn<int>("expectedStatus");
-    QTest::addColumn<QByteArray>("expectedString");
+    BOBUIest::addColumn<QByteArray>("data");
+    BOBUIest::addColumn<int>("expectedStatus");
+    BOBUIest::addColumn<QByteArray>("expectedString");
 
     QByteArray oneMbMinus1(1024 * 1024 - 1, '\0');
     for (int i = 0; i < oneMbMinus1.size(); ++i)
@@ -2790,35 +2790,35 @@ void tst_QDataStream::status_charptr_QByteArray_data()
     QByteArray threeMbMinus1 = oneMbMinus1 + 'j' + oneMbMinus1 + 'k' + oneMbMinus1;
 
     // ok
-    QTest::newRow("size 0") << QByteArray("\x00\x00\x00\x00", 4) << (int) QDataStream::Ok << QByteArray();
-    QTest::newRow("size 1") << QByteArray("\x00\x00\x00\x01j", 5) << (int) QDataStream::Ok << QByteArray("j");
-    QTest::newRow("size 2") << QByteArray("\x00\x00\x00\x02jk", 6) << (int) QDataStream::Ok << QByteArray("jk");
-    QTest::newRow("size 3") << QByteArray("\x00\x00\x00\x03jkl", 7) << (int) QDataStream::Ok << QByteArray("jkl");
-    QTest::newRow("size 4") << QByteArray("\x00\x00\x00\x04jklm", 8) << (int) QDataStream::Ok << QByteArray("jklm");
-    QTest::newRow("size 4j") << QByteArray("\x00\x00\x00\x04jklmj", 8) << (int) QDataStream::Ok << QByteArray("jklm");
-    QTest::newRow("size 1MB-1") << QByteArray("\x00\x0f\xff\xff", 4) + oneMbMinus1 + QByteArray("j") << (int) QDataStream::Ok << oneMbMinus1;
-    QTest::newRow("size 1MB") << QByteArray("\x00\x10\x00\x00", 4) + oneMbMinus1 + QByteArray("jkl") << (int) QDataStream::Ok << oneMbMinus1 + "j";
-    QTest::newRow("size 1MB+1") << QByteArray("\x00\x10\x00\x01", 4) + oneMbMinus1 + QByteArray("jkl") << (int) QDataStream::Ok << oneMbMinus1 + "jk";
-    QTest::newRow("size 3MB-1") << QByteArray("\x00\x2f\xff\xff", 4) + threeMbMinus1 + QByteArray("j") << (int) QDataStream::Ok << threeMbMinus1;
-    QTest::newRow("size 3MB") << QByteArray("\x00\x30\x00\x00", 4) + threeMbMinus1 + QByteArray("jkl") << (int) QDataStream::Ok << threeMbMinus1 + "j";
-    QTest::newRow("size 3MB+1") << QByteArray("\x00\x30\x00\x01", 4) + threeMbMinus1 + QByteArray("jkl") << (int) QDataStream::Ok << threeMbMinus1 + "jk";
+    BOBUIest::newRow("size 0") << QByteArray("\x00\x00\x00\x00", 4) << (int) QDataStream::Ok << QByteArray();
+    BOBUIest::newRow("size 1") << QByteArray("\x00\x00\x00\x01j", 5) << (int) QDataStream::Ok << QByteArray("j");
+    BOBUIest::newRow("size 2") << QByteArray("\x00\x00\x00\x02jk", 6) << (int) QDataStream::Ok << QByteArray("jk");
+    BOBUIest::newRow("size 3") << QByteArray("\x00\x00\x00\x03jkl", 7) << (int) QDataStream::Ok << QByteArray("jkl");
+    BOBUIest::newRow("size 4") << QByteArray("\x00\x00\x00\x04jklm", 8) << (int) QDataStream::Ok << QByteArray("jklm");
+    BOBUIest::newRow("size 4j") << QByteArray("\x00\x00\x00\x04jklmj", 8) << (int) QDataStream::Ok << QByteArray("jklm");
+    BOBUIest::newRow("size 1MB-1") << QByteArray("\x00\x0f\xff\xff", 4) + oneMbMinus1 + QByteArray("j") << (int) QDataStream::Ok << oneMbMinus1;
+    BOBUIest::newRow("size 1MB") << QByteArray("\x00\x10\x00\x00", 4) + oneMbMinus1 + QByteArray("jkl") << (int) QDataStream::Ok << oneMbMinus1 + "j";
+    BOBUIest::newRow("size 1MB+1") << QByteArray("\x00\x10\x00\x01", 4) + oneMbMinus1 + QByteArray("jkl") << (int) QDataStream::Ok << oneMbMinus1 + "jk";
+    BOBUIest::newRow("size 3MB-1") << QByteArray("\x00\x2f\xff\xff", 4) + threeMbMinus1 + QByteArray("j") << (int) QDataStream::Ok << threeMbMinus1;
+    BOBUIest::newRow("size 3MB") << QByteArray("\x00\x30\x00\x00", 4) + threeMbMinus1 + QByteArray("jkl") << (int) QDataStream::Ok << threeMbMinus1 + "j";
+    BOBUIest::newRow("size 3MB+1") << QByteArray("\x00\x30\x00\x01", 4) + threeMbMinus1 + QByteArray("jkl") << (int) QDataStream::Ok << threeMbMinus1 + "jk";
 
     // past end
-    QTest::newRow("empty") << QByteArray() << (int) QDataStream::ReadPastEnd << QByteArray();
-    QTest::newRow("trunclen 1") << QByteArray("x") << (int) QDataStream::ReadPastEnd << QByteArray();
-    QTest::newRow("trunclen 2") << QByteArray("xx") << (int) QDataStream::ReadPastEnd << QByteArray();
-    QTest::newRow("trunclen 3") << QByteArray("xxx") << (int) QDataStream::ReadPastEnd << QByteArray();
-    QTest::newRow("truncdata 1") << QByteArray("xxxx") << (int) QDataStream::ReadPastEnd << QByteArray();
-    QTest::newRow("truncdata 2") << QByteArray("xxxxyyyy") << (int) QDataStream::ReadPastEnd << QByteArray();
-    QTest::newRow("badsize 1") << QByteArray("\x00\x00\x00\x01", 4) << (int) QDataStream::ReadPastEnd << QByteArray();
-    QTest::newRow("badsize 2") << QByteArray("\x00\x00\x00\x02j", 5) << (int) QDataStream::ReadPastEnd << QByteArray();
-    QTest::newRow("badsize 3") << QByteArray("\x00\x00\x00\x03jk", 6) << (int) QDataStream::ReadPastEnd << QByteArray();
-    QTest::newRow("badsize 4") << QByteArray("\x00\x00\x00\x04jkl", 7) << (int) QDataStream::ReadPastEnd << QByteArray();
-    QTest::newRow("badsize 1MB") << QByteArray("\x00\x10\x00\x00", 4) + oneMbMinus1 << (int) QDataStream::ReadPastEnd << QByteArray();
-    QTest::newRow("badsize 1MB+1") << QByteArray("\x00\x10\x00\x01", 4) + oneMbMinus1 + QByteArray("j") << (int) QDataStream::ReadPastEnd << QByteArray();
-    QTest::newRow("badsize 3MB") << QByteArray("\x00\x30\x00\x00", 4) + threeMbMinus1 << (int) QDataStream::ReadPastEnd << QByteArray();
-    QTest::newRow("badsize 3MB+1") << QByteArray("\x00\x30\x00\x01", 4) + threeMbMinus1 + QByteArray("j") << (int) QDataStream::ReadPastEnd << QByteArray();
-    QTest::newRow("size -2") << QByteArray("\xff\xff\xff\xfe", 4) << (int) QDataStream::ReadPastEnd << QByteArray();
+    BOBUIest::newRow("empty") << QByteArray() << (int) QDataStream::ReadPastEnd << QByteArray();
+    BOBUIest::newRow("trunclen 1") << QByteArray("x") << (int) QDataStream::ReadPastEnd << QByteArray();
+    BOBUIest::newRow("trunclen 2") << QByteArray("xx") << (int) QDataStream::ReadPastEnd << QByteArray();
+    BOBUIest::newRow("trunclen 3") << QByteArray("xxx") << (int) QDataStream::ReadPastEnd << QByteArray();
+    BOBUIest::newRow("truncdata 1") << QByteArray("xxxx") << (int) QDataStream::ReadPastEnd << QByteArray();
+    BOBUIest::newRow("truncdata 2") << QByteArray("xxxxyyyy") << (int) QDataStream::ReadPastEnd << QByteArray();
+    BOBUIest::newRow("badsize 1") << QByteArray("\x00\x00\x00\x01", 4) << (int) QDataStream::ReadPastEnd << QByteArray();
+    BOBUIest::newRow("badsize 2") << QByteArray("\x00\x00\x00\x02j", 5) << (int) QDataStream::ReadPastEnd << QByteArray();
+    BOBUIest::newRow("badsize 3") << QByteArray("\x00\x00\x00\x03jk", 6) << (int) QDataStream::ReadPastEnd << QByteArray();
+    BOBUIest::newRow("badsize 4") << QByteArray("\x00\x00\x00\x04jkl", 7) << (int) QDataStream::ReadPastEnd << QByteArray();
+    BOBUIest::newRow("badsize 1MB") << QByteArray("\x00\x10\x00\x00", 4) + oneMbMinus1 << (int) QDataStream::ReadPastEnd << QByteArray();
+    BOBUIest::newRow("badsize 1MB+1") << QByteArray("\x00\x10\x00\x01", 4) + oneMbMinus1 + QByteArray("j") << (int) QDataStream::ReadPastEnd << QByteArray();
+    BOBUIest::newRow("badsize 3MB") << QByteArray("\x00\x30\x00\x00", 4) + threeMbMinus1 << (int) QDataStream::ReadPastEnd << QByteArray();
+    BOBUIest::newRow("badsize 3MB+1") << QByteArray("\x00\x30\x00\x01", 4) + threeMbMinus1 + QByteArray("j") << (int) QDataStream::ReadPastEnd << QByteArray();
+    BOBUIest::newRow("size -2") << QByteArray("\xff\xff\xff\xfe", 4) << (int) QDataStream::ReadPastEnd << QByteArray();
 }
 
 void tst_QDataStream::status_charptr_QByteArray()
@@ -2848,8 +2848,8 @@ void tst_QDataStream::status_charptr_QByteArray()
         QCOMPARE(int(stream.status()), expectedStatus);
         delete [] buf;
     }
-#if QT_DEPRECATED_SINCE(6, 11)
-QT_WARNING_PUSH QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 11)
+BOBUI_WARNING_PUSH BOBUI_WARNING_DISABLE_DEPRECATED
     {
         // check that old overload still works as expected
         QDataStream stream(&data, QIODevice::ReadOnly);
@@ -2864,8 +2864,8 @@ QT_WARNING_PUSH QT_WARNING_DISABLE_DEPRECATED
         QCOMPARE(QByteArray(buf, len), expectedString);
         QCOMPARE(int(stream.status()), expectedStatus);
     }
-QT_WARNING_POP
-#endif // QT_DEPRECATED_SINCE(6, 11)
+BOBUI_WARNING_POP
+#endif // BOBUI_DEPRECATED_SINCE(6, 11)
     {
         QDataStream stream(&data, QIODevice::ReadOnly);
         QByteArray buf = "Content to be overwritten";
@@ -2895,9 +2895,9 @@ static QByteArray qstring2qbytearray(const QString &str)
 
 void tst_QDataStream::status_QString_data()
 {
-    QTest::addColumn<QByteArray>("data");
-    QTest::addColumn<int>("expectedStatus");
-    QTest::addColumn<QString>("expectedString");
+    BOBUIest::addColumn<QByteArray>("data");
+    BOBUIest::addColumn<int>("expectedStatus");
+    BOBUIest::addColumn<QString>("expectedString");
 
     QString oneMbMinus1;
     oneMbMinus1.resize(1024 * 1024 - 1);
@@ -2909,48 +2909,48 @@ void tst_QDataStream::status_QString_data()
     QByteArray oneMbMinus1Data = qstring2qbytearray(oneMbMinus1);
 
     // ok
-    QTest::newRow("size 0") << QByteArray("\x00\x00\x00\x00", 4) << (int) QDataStream::Ok << QString();
-    QTest::newRow("size 1") << QByteArray("\x00\x00\x00\x02\x00j", 6) << (int) QDataStream::Ok << QString("j");
-    QTest::newRow("size 2") << QByteArray("\x00\x00\x00\x04\x00j\x00k", 8) << (int) QDataStream::Ok << QString("jk");
-    QTest::newRow("size 3") << QByteArray("\x00\x00\x00\x06\x00j\x00k\x00l", 10) << (int) QDataStream::Ok << QString("jkl");
-    QTest::newRow("size 4") << QByteArray("\x00\x00\x00\x08\x00j\x00k\x00l\x00m", 12) << (int) QDataStream::Ok << QString("jklm");
-    QTest::newRow("size 4j") << QByteArray("\x00\x00\x00\x08\x00j\x00k\x00l\x00mjj", 14) << (int) QDataStream::Ok << QString("jklm");
-    QTest::newRow("size 1MB-1") << QByteArray("\x00\x1f\xff\xfe", 4) + oneMbMinus1Data + QByteArray("jj") << (int) QDataStream::Ok << oneMbMinus1;
-    QTest::newRow("size 1MB") << QByteArray("\x00\x20\x00\x00", 4) + oneMbMinus1Data + QByteArray("\x00j\x00k\x00l", 6) << (int) QDataStream::Ok << oneMbMinus1 + "j";
-    QTest::newRow("size 1MB+1") << QByteArray("\x00\x20\x00\x02", 4) + oneMbMinus1Data + QByteArray("\x00j\x00k\x00l", 6) << (int) QDataStream::Ok << oneMbMinus1 + "jk";
-    QTest::newRow("size 3MB-1") << QByteArray("\x00\x5f\xff\xfe", 4) + threeMbMinus1Data + QByteArray("jj") << (int) QDataStream::Ok << threeMbMinus1;
-    QTest::newRow("size 3MB") << QByteArray("\x00\x60\x00\x00", 4) + threeMbMinus1Data + QByteArray("\x00j\x00k\x00l", 6) << (int) QDataStream::Ok << threeMbMinus1 + "j";
-    QTest::newRow("size 3MB+1") << QByteArray("\x00\x60\x00\x02", 4) + threeMbMinus1Data + QByteArray("\x00j\x00k\x00l", 6) << (int) QDataStream::Ok << threeMbMinus1 + "jk";
+    BOBUIest::newRow("size 0") << QByteArray("\x00\x00\x00\x00", 4) << (int) QDataStream::Ok << QString();
+    BOBUIest::newRow("size 1") << QByteArray("\x00\x00\x00\x02\x00j", 6) << (int) QDataStream::Ok << QString("j");
+    BOBUIest::newRow("size 2") << QByteArray("\x00\x00\x00\x04\x00j\x00k", 8) << (int) QDataStream::Ok << QString("jk");
+    BOBUIest::newRow("size 3") << QByteArray("\x00\x00\x00\x06\x00j\x00k\x00l", 10) << (int) QDataStream::Ok << QString("jkl");
+    BOBUIest::newRow("size 4") << QByteArray("\x00\x00\x00\x08\x00j\x00k\x00l\x00m", 12) << (int) QDataStream::Ok << QString("jklm");
+    BOBUIest::newRow("size 4j") << QByteArray("\x00\x00\x00\x08\x00j\x00k\x00l\x00mjj", 14) << (int) QDataStream::Ok << QString("jklm");
+    BOBUIest::newRow("size 1MB-1") << QByteArray("\x00\x1f\xff\xfe", 4) + oneMbMinus1Data + QByteArray("jj") << (int) QDataStream::Ok << oneMbMinus1;
+    BOBUIest::newRow("size 1MB") << QByteArray("\x00\x20\x00\x00", 4) + oneMbMinus1Data + QByteArray("\x00j\x00k\x00l", 6) << (int) QDataStream::Ok << oneMbMinus1 + "j";
+    BOBUIest::newRow("size 1MB+1") << QByteArray("\x00\x20\x00\x02", 4) + oneMbMinus1Data + QByteArray("\x00j\x00k\x00l", 6) << (int) QDataStream::Ok << oneMbMinus1 + "jk";
+    BOBUIest::newRow("size 3MB-1") << QByteArray("\x00\x5f\xff\xfe", 4) + threeMbMinus1Data + QByteArray("jj") << (int) QDataStream::Ok << threeMbMinus1;
+    BOBUIest::newRow("size 3MB") << QByteArray("\x00\x60\x00\x00", 4) + threeMbMinus1Data + QByteArray("\x00j\x00k\x00l", 6) << (int) QDataStream::Ok << threeMbMinus1 + "j";
+    BOBUIest::newRow("size 3MB+1") << QByteArray("\x00\x60\x00\x02", 4) + threeMbMinus1Data + QByteArray("\x00j\x00k\x00l", 6) << (int) QDataStream::Ok << threeMbMinus1 + "jk";
 
     // past end
-    QTest::newRow("empty") << QByteArray() << (int) QDataStream::ReadPastEnd << QString();
-    QTest::newRow("trunclen 1") << QByteArray("x") << (int) QDataStream::ReadPastEnd << QString();
-    QTest::newRow("trunclen 2") << QByteArray("xx") << (int) QDataStream::ReadPastEnd << QString();
-    QTest::newRow("trunclen 3") << QByteArray("xxx") << (int) QDataStream::ReadPastEnd << QString();
-    QTest::newRow("truncdata 1") << QByteArray("xxxx") << (int) QDataStream::ReadPastEnd << QString();
-    QTest::newRow("truncdata 2") << QByteArray("xxxxyyyy") << (int) QDataStream::ReadPastEnd << QString();
-    QTest::newRow("badsize 1") << QByteArray("\x00\x00\x00\x02", 4) << (int) QDataStream::ReadPastEnd << QString();
-    QTest::newRow("badsize 2") << QByteArray("\x00\x00\x00\x04jj", 6) << (int) QDataStream::ReadPastEnd << QString();
-    QTest::newRow("badsize 3") << QByteArray("\x00\x00\x00\x06jjkk", 8) << (int) QDataStream::ReadPastEnd << QString();
-    QTest::newRow("badsize 4") << QByteArray("\x00\x00\x00\x08jjkkll", 10) << (int) QDataStream::ReadPastEnd << QString();
-    QTest::newRow("badsize 1MB") << QByteArray("\x00\x20\x00\x00", 4) + oneMbMinus1Data << (int) QDataStream::ReadPastEnd << QString();
-    QTest::newRow("badsize 1MB+1") << QByteArray("\x00\x20\x00\x02", 4) + oneMbMinus1Data + QByteArray("j") << (int) QDataStream::ReadPastEnd << QString();
-    QTest::newRow("badsize 3MB") << QByteArray("\x00\x60\x00\x00", 4) + threeMbMinus1Data << (int) QDataStream::ReadPastEnd << QString();
-    QTest::newRow("badsize 3MB+1") << QByteArray("\x00\x60\x00\x02", 4) + threeMbMinus1Data + QByteArray("j") << (int) QDataStream::ReadPastEnd << QString();
-    QTest::newRow("32 bit size should be 64 bit") << QByteArray("\xff\xff\xff\xfe", 4) << (int) QDataStream::ReadPastEnd << QString();
+    BOBUIest::newRow("empty") << QByteArray() << (int) QDataStream::ReadPastEnd << QString();
+    BOBUIest::newRow("trunclen 1") << QByteArray("x") << (int) QDataStream::ReadPastEnd << QString();
+    BOBUIest::newRow("trunclen 2") << QByteArray("xx") << (int) QDataStream::ReadPastEnd << QString();
+    BOBUIest::newRow("trunclen 3") << QByteArray("xxx") << (int) QDataStream::ReadPastEnd << QString();
+    BOBUIest::newRow("truncdata 1") << QByteArray("xxxx") << (int) QDataStream::ReadPastEnd << QString();
+    BOBUIest::newRow("truncdata 2") << QByteArray("xxxxyyyy") << (int) QDataStream::ReadPastEnd << QString();
+    BOBUIest::newRow("badsize 1") << QByteArray("\x00\x00\x00\x02", 4) << (int) QDataStream::ReadPastEnd << QString();
+    BOBUIest::newRow("badsize 2") << QByteArray("\x00\x00\x00\x04jj", 6) << (int) QDataStream::ReadPastEnd << QString();
+    BOBUIest::newRow("badsize 3") << QByteArray("\x00\x00\x00\x06jjkk", 8) << (int) QDataStream::ReadPastEnd << QString();
+    BOBUIest::newRow("badsize 4") << QByteArray("\x00\x00\x00\x08jjkkll", 10) << (int) QDataStream::ReadPastEnd << QString();
+    BOBUIest::newRow("badsize 1MB") << QByteArray("\x00\x20\x00\x00", 4) + oneMbMinus1Data << (int) QDataStream::ReadPastEnd << QString();
+    BOBUIest::newRow("badsize 1MB+1") << QByteArray("\x00\x20\x00\x02", 4) + oneMbMinus1Data + QByteArray("j") << (int) QDataStream::ReadPastEnd << QString();
+    BOBUIest::newRow("badsize 3MB") << QByteArray("\x00\x60\x00\x00", 4) + threeMbMinus1Data << (int) QDataStream::ReadPastEnd << QString();
+    BOBUIest::newRow("badsize 3MB+1") << QByteArray("\x00\x60\x00\x02", 4) + threeMbMinus1Data + QByteArray("j") << (int) QDataStream::ReadPastEnd << QString();
+    BOBUIest::newRow("32 bit size should be 64 bit") << QByteArray("\xff\xff\xff\xfe", 4) << (int) QDataStream::ReadPastEnd << QString();
 
-#if QT_POINTER_SIZE != 4
+#if BOBUI_POINTER_SIZE != 4
     // past end on 64 bit platforms
-    QTest::newRow("32 bit size MAX string no content") << QByteArray("\xff\xff\xff\xfc", 4) << (int) QDataStream::ReadPastEnd << QString();
+    BOBUIest::newRow("32 bit size MAX string no content") << QByteArray("\xff\xff\xff\xfc", 4) << (int) QDataStream::ReadPastEnd << QString();
 #else
     // too big for 32 bit platforms
-    QTest::newRow("32 bit size MAX string no content") << QByteArray("\xff\xff\xff\xfc", 4) << (int) QDataStream::SizeLimitExceeded << QString();
+    BOBUIest::newRow("32 bit size MAX string no content") << QByteArray("\xff\xff\xff\xfc", 4) << (int) QDataStream::SizeLimitExceeded << QString();
 #endif
     // too big on both 32 and 64 bit platforms because qsizetype is signed
-    QTest::newRow("64 bit size MAX string no content") << QByteArray("\xff\xff\xff\xfe\xff\xff\xff\xff\xff\xff\xff\xfe", 12) << (int) QDataStream::SizeLimitExceeded << QString();
+    BOBUIest::newRow("64 bit size MAX string no content") << QByteArray("\xff\xff\xff\xfe\xff\xff\xff\xff\xff\xff\xff\xfe", 12) << (int) QDataStream::SizeLimitExceeded << QString();
 
     // corrupt data because QChar is 16 bit => even size required
-    QTest::newRow("corrupt1") << QByteArray("yyyy") << (int) QDataStream::ReadCorruptData << QString();
+    BOBUIest::newRow("corrupt1") << QByteArray("yyyy") << (int) QDataStream::ReadCorruptData << QString();
 }
 
 void tst_QDataStream::status_QString()
@@ -2978,72 +2978,72 @@ static QBitArray bitarray(const QString &str)
 
 void tst_QDataStream::status_QBitArray_data()
 {
-    QTest::addColumn<QDataStream::Version>("version");
-    QTest::addColumn<QByteArray>("data");
-    QTest::addColumn<int>("expectedStatus");
-    QTest::addColumn<QBitArray>("expectedString");
+    BOBUIest::addColumn<QDataStream::Version>("version");
+    BOBUIest::addColumn<QByteArray>("data");
+    BOBUIest::addColumn<int>("expectedStatus");
+    BOBUIest::addColumn<QBitArray>("expectedString");
 
     // ok
-    QTest::newRow("size 0") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x00", 4) << (int) QDataStream::Ok << QBitArray();
-    QTest::newRow("size 1a") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x01\x00", 5) << (int) QDataStream::Ok << bitarray("0");
-    QTest::newRow("size 1b") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x01\x01", 5) << (int) QDataStream::Ok << bitarray("1");
-    QTest::newRow("size 2") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x02\x03", 5) << (int) QDataStream::Ok << bitarray("11");
-    QTest::newRow("size 3") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x03\x07", 5) << (int) QDataStream::Ok << bitarray("111");
-    QTest::newRow("size 4") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x04\x0f", 5) << (int) QDataStream::Ok << bitarray("1111");
-    QTest::newRow("size 5") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x05\x1f", 5) << (int) QDataStream::Ok << bitarray("11111");
-    QTest::newRow("size 6") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x06\x3f", 5) << (int) QDataStream::Ok << bitarray("111111");
-    QTest::newRow("size 7a") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x07\x7f", 5) << (int) QDataStream::Ok << bitarray("1111111");
-    QTest::newRow("size 7b") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x07\x7e", 5) << (int) QDataStream::Ok << bitarray("0111111");
-    QTest::newRow("size 7c") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x07\x00", 5) << (int) QDataStream::Ok << bitarray("0000000");
-    QTest::newRow("size 7d") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x07\x39", 5) << (int) QDataStream::Ok << bitarray("1001110");
-    QTest::newRow("size 8") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x08\xff", 5) << (int) QDataStream::Ok << bitarray("11111111");
-    QTest::newRow("size 9") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x09\xff\x01", 6) << (int) QDataStream::Ok << bitarray("111111111");
-    QTest::newRow("size 15") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x0f\xff\x7f", 6) << (int) QDataStream::Ok << bitarray("111111111111111");
-    QTest::newRow("size 16") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x10\xff\xff", 6) << (int) QDataStream::Ok << bitarray("1111111111111111");
-    QTest::newRow("size 17") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x11\xff\xff\x01", 7) << (int) QDataStream::Ok << bitarray("11111111111111111");
-    QTest::newRow("size 32") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x20\xff\xff\xff\xff", 8) << (int) QDataStream::Ok << bitarray("11111111111111111111111111111111");
+    BOBUIest::newRow("size 0") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x00", 4) << (int) QDataStream::Ok << QBitArray();
+    BOBUIest::newRow("size 1a") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x01\x00", 5) << (int) QDataStream::Ok << bitarray("0");
+    BOBUIest::newRow("size 1b") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x01\x01", 5) << (int) QDataStream::Ok << bitarray("1");
+    BOBUIest::newRow("size 2") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x02\x03", 5) << (int) QDataStream::Ok << bitarray("11");
+    BOBUIest::newRow("size 3") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x03\x07", 5) << (int) QDataStream::Ok << bitarray("111");
+    BOBUIest::newRow("size 4") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x04\x0f", 5) << (int) QDataStream::Ok << bitarray("1111");
+    BOBUIest::newRow("size 5") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x05\x1f", 5) << (int) QDataStream::Ok << bitarray("11111");
+    BOBUIest::newRow("size 6") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x06\x3f", 5) << (int) QDataStream::Ok << bitarray("111111");
+    BOBUIest::newRow("size 7a") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x07\x7f", 5) << (int) QDataStream::Ok << bitarray("1111111");
+    BOBUIest::newRow("size 7b") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x07\x7e", 5) << (int) QDataStream::Ok << bitarray("0111111");
+    BOBUIest::newRow("size 7c") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x07\x00", 5) << (int) QDataStream::Ok << bitarray("0000000");
+    BOBUIest::newRow("size 7d") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x07\x39", 5) << (int) QDataStream::Ok << bitarray("1001110");
+    BOBUIest::newRow("size 8") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x08\xff", 5) << (int) QDataStream::Ok << bitarray("11111111");
+    BOBUIest::newRow("size 9") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x09\xff\x01", 6) << (int) QDataStream::Ok << bitarray("111111111");
+    BOBUIest::newRow("size 15") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x0f\xff\x7f", 6) << (int) QDataStream::Ok << bitarray("111111111111111");
+    BOBUIest::newRow("size 16") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x10\xff\xff", 6) << (int) QDataStream::Ok << bitarray("1111111111111111");
+    BOBUIest::newRow("size 17") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x11\xff\xff\x01", 7) << (int) QDataStream::Ok << bitarray("11111111111111111");
+    BOBUIest::newRow("size 32") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x20\xff\xff\xff\xff", 8) << (int) QDataStream::Ok << bitarray("11111111111111111111111111111111");
 
 
-    QTest::newRow("new size 0") << QDataStream::Qt_6_0 << QByteArray("\x00\x00\x00\x00\x00\x00\x00\x00", 8) << (int) QDataStream::Ok << QBitArray();
-    QTest::newRow("new size 1a") << QDataStream::Qt_6_0 << QByteArray("\x00\x00\x00\x00\x00\x00\x00\x01\x00", 9) << (int) QDataStream::Ok << bitarray("0");
-    QTest::newRow("new size 1b") << QDataStream::Qt_6_0 << QByteArray("\x00\x00\x00\x00\x00\x00\x00\x01\x01", 9) << (int) QDataStream::Ok << bitarray("1");
-    QTest::newRow("new size 32") << QDataStream::Qt_6_0 << QByteArray("\x00\x00\x00\x00\x00\x00\x00\x20\xff\xff\xff\xff", 12) << (int) QDataStream::Ok << bitarray("11111111111111111111111111111111");
+    BOBUIest::newRow("new size 0") << QDataStream::BobUI_6_0 << QByteArray("\x00\x00\x00\x00\x00\x00\x00\x00", 8) << (int) QDataStream::Ok << QBitArray();
+    BOBUIest::newRow("new size 1a") << QDataStream::BobUI_6_0 << QByteArray("\x00\x00\x00\x00\x00\x00\x00\x01\x00", 9) << (int) QDataStream::Ok << bitarray("0");
+    BOBUIest::newRow("new size 1b") << QDataStream::BobUI_6_0 << QByteArray("\x00\x00\x00\x00\x00\x00\x00\x01\x01", 9) << (int) QDataStream::Ok << bitarray("1");
+    BOBUIest::newRow("new size 32") << QDataStream::BobUI_6_0 << QByteArray("\x00\x00\x00\x00\x00\x00\x00\x20\xff\xff\xff\xff", 12) << (int) QDataStream::Ok << bitarray("11111111111111111111111111111111");
 
     // past end
-    QTest::newRow("empty") << QDataStream::Qt_5_15 << QByteArray() << (int) QDataStream::ReadPastEnd << QBitArray();
-    QTest::newRow("badsize 0a") << QDataStream::Qt_5_15 << QByteArray("\x00", 1) << (int) QDataStream::ReadPastEnd << QBitArray();
-    QTest::newRow("badsize 0b") << QDataStream::Qt_5_15 << QByteArray("\x00\x00", 2) << (int) QDataStream::ReadPastEnd << QBitArray();
-    QTest::newRow("badsize 0c") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00", 3) << (int) QDataStream::ReadPastEnd << QBitArray();
-    QTest::newRow("badsize 1") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x01", 4) << (int) QDataStream::ReadPastEnd << QBitArray();
-    QTest::newRow("badsize 2") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x02", 4) << (int) QDataStream::ReadPastEnd << QBitArray();
-    QTest::newRow("badsize 3") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x03", 4) << (int) QDataStream::ReadPastEnd << QBitArray();
-    QTest::newRow("badsize 7") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x07", 4) << (int) QDataStream::ReadPastEnd << QBitArray();
-    QTest::newRow("badsize 8") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x08", 4) << (int) QDataStream::ReadPastEnd << QBitArray();
-    QTest::newRow("badsize 9") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x09\xff", 5) << (int) QDataStream::ReadPastEnd << QBitArray();
-    QTest::newRow("badsize 15") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x0f\xff", 5) << (int) QDataStream::ReadPastEnd << QBitArray();
-    QTest::newRow("badsize 16") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x10\xff", 5) << (int) QDataStream::ReadPastEnd << QBitArray();
-    QTest::newRow("badsize 17") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x11\xff\xff", 6) << (int) QDataStream::ReadPastEnd << QBitArray();
-    QTest::newRow("badsize 32") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x20\xff\xff\xff", 7) << (int) QDataStream::ReadPastEnd << QBitArray();
-    QTest::newRow("badsize INT_MAX") << QDataStream::Qt_5_15 << QByteArray("\x7f\xff\xff\xff\xff\xff\xff", 7) << int(QDataStream::ReadPastEnd) << QBitArray(); // size accepted
-    QTest::addRow("badsize INT_MAX + 1") << QDataStream::Qt_5_15 << QByteArray("\x80\x00\x00\x01" "\xff\xff\xff", 7) << int(QDataStream::ReadCorruptData) << QBitArray(); // size rejected
-    QTest::newRow("new badsize 0") << QDataStream::Qt_6_0 << QByteArray("\x00\x00\x00\x00", 4) << (int) QDataStream::ReadPastEnd << QBitArray();
-    QTest::newRow("new badsize 9") << QDataStream::Qt_6_0 << QByteArray("\x00\x00\x00\x00\x00\x00\x00\x09\xff", 9) << (int) QDataStream::ReadPastEnd << QBitArray();
-    QTest::newRow("new badsize 0x10000") << QDataStream::Qt_6_0 << QByteArray("\x00\x00\x00\x01\x00\x00\x00\x00\x00", 9) << (int) QDataStream::ReadPastEnd << QBitArray();
+    BOBUIest::newRow("empty") << QDataStream::BobUI_5_15 << QByteArray() << (int) QDataStream::ReadPastEnd << QBitArray();
+    BOBUIest::newRow("badsize 0a") << QDataStream::BobUI_5_15 << QByteArray("\x00", 1) << (int) QDataStream::ReadPastEnd << QBitArray();
+    BOBUIest::newRow("badsize 0b") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00", 2) << (int) QDataStream::ReadPastEnd << QBitArray();
+    BOBUIest::newRow("badsize 0c") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00", 3) << (int) QDataStream::ReadPastEnd << QBitArray();
+    BOBUIest::newRow("badsize 1") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x01", 4) << (int) QDataStream::ReadPastEnd << QBitArray();
+    BOBUIest::newRow("badsize 2") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x02", 4) << (int) QDataStream::ReadPastEnd << QBitArray();
+    BOBUIest::newRow("badsize 3") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x03", 4) << (int) QDataStream::ReadPastEnd << QBitArray();
+    BOBUIest::newRow("badsize 7") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x07", 4) << (int) QDataStream::ReadPastEnd << QBitArray();
+    BOBUIest::newRow("badsize 8") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x08", 4) << (int) QDataStream::ReadPastEnd << QBitArray();
+    BOBUIest::newRow("badsize 9") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x09\xff", 5) << (int) QDataStream::ReadPastEnd << QBitArray();
+    BOBUIest::newRow("badsize 15") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x0f\xff", 5) << (int) QDataStream::ReadPastEnd << QBitArray();
+    BOBUIest::newRow("badsize 16") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x10\xff", 5) << (int) QDataStream::ReadPastEnd << QBitArray();
+    BOBUIest::newRow("badsize 17") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x11\xff\xff", 6) << (int) QDataStream::ReadPastEnd << QBitArray();
+    BOBUIest::newRow("badsize 32") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x20\xff\xff\xff", 7) << (int) QDataStream::ReadPastEnd << QBitArray();
+    BOBUIest::newRow("badsize INT_MAX") << QDataStream::BobUI_5_15 << QByteArray("\x7f\xff\xff\xff\xff\xff\xff", 7) << int(QDataStream::ReadPastEnd) << QBitArray(); // size accepted
+    BOBUIest::addRow("badsize INT_MAX + 1") << QDataStream::BobUI_5_15 << QByteArray("\x80\x00\x00\x01" "\xff\xff\xff", 7) << int(QDataStream::ReadCorruptData) << QBitArray(); // size rejected
+    BOBUIest::newRow("new badsize 0") << QDataStream::BobUI_6_0 << QByteArray("\x00\x00\x00\x00", 4) << (int) QDataStream::ReadPastEnd << QBitArray();
+    BOBUIest::newRow("new badsize 9") << QDataStream::BobUI_6_0 << QByteArray("\x00\x00\x00\x00\x00\x00\x00\x09\xff", 9) << (int) QDataStream::ReadPastEnd << QBitArray();
+    BOBUIest::newRow("new badsize 0x10000") << QDataStream::BobUI_6_0 << QByteArray("\x00\x00\x00\x01\x00\x00\x00\x00\x00", 9) << (int) QDataStream::ReadPastEnd << QBitArray();
 
     // corrupt data: bits in positions outsize [0, size()[
-    QTest::newRow("junk 1a") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x01\x02", 5) << (int) QDataStream::ReadCorruptData << QBitArray();
-    QTest::newRow("junk 1b") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x01\x04", 5) << (int) QDataStream::ReadCorruptData << QBitArray();
-    QTest::newRow("junk 1c") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x01\x08", 5) << (int) QDataStream::ReadCorruptData << QBitArray();
-    QTest::newRow("junk 1d") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x01\x10", 5) << (int) QDataStream::ReadCorruptData << QBitArray();
-    QTest::newRow("junk 1e") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x01\x20", 5) << (int) QDataStream::ReadCorruptData << QBitArray();
-    QTest::newRow("junk 1f") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x01\x40", 5) << (int) QDataStream::ReadCorruptData << QBitArray();
-    QTest::newRow("junk 1g") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x01\x80", 5) << (int) QDataStream::ReadCorruptData << QBitArray();
-    QTest::newRow("junk 2") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x02\x04", 5) << (int) QDataStream::ReadCorruptData << QBitArray();
-    QTest::newRow("junk 3") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x03\x08", 5) << (int) QDataStream::ReadCorruptData << QBitArray();
-    QTest::newRow("junk 4") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x04\x10", 5) << (int) QDataStream::ReadCorruptData << QBitArray();
-    QTest::newRow("junk 5") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x05\x20", 5) << (int) QDataStream::ReadCorruptData << QBitArray();
-    QTest::newRow("junk 6") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x06\x40", 5) << (int) QDataStream::ReadCorruptData << QBitArray();
-    QTest::newRow("junk 7") << QDataStream::Qt_5_15 << QByteArray("\x00\x00\x00\x07\x80", 5) << (int) QDataStream::ReadCorruptData << QBitArray();
+    BOBUIest::newRow("junk 1a") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x01\x02", 5) << (int) QDataStream::ReadCorruptData << QBitArray();
+    BOBUIest::newRow("junk 1b") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x01\x04", 5) << (int) QDataStream::ReadCorruptData << QBitArray();
+    BOBUIest::newRow("junk 1c") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x01\x08", 5) << (int) QDataStream::ReadCorruptData << QBitArray();
+    BOBUIest::newRow("junk 1d") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x01\x10", 5) << (int) QDataStream::ReadCorruptData << QBitArray();
+    BOBUIest::newRow("junk 1e") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x01\x20", 5) << (int) QDataStream::ReadCorruptData << QBitArray();
+    BOBUIest::newRow("junk 1f") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x01\x40", 5) << (int) QDataStream::ReadCorruptData << QBitArray();
+    BOBUIest::newRow("junk 1g") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x01\x80", 5) << (int) QDataStream::ReadCorruptData << QBitArray();
+    BOBUIest::newRow("junk 2") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x02\x04", 5) << (int) QDataStream::ReadCorruptData << QBitArray();
+    BOBUIest::newRow("junk 3") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x03\x08", 5) << (int) QDataStream::ReadCorruptData << QBitArray();
+    BOBUIest::newRow("junk 4") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x04\x10", 5) << (int) QDataStream::ReadCorruptData << QBitArray();
+    BOBUIest::newRow("junk 5") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x05\x20", 5) << (int) QDataStream::ReadCorruptData << QBitArray();
+    BOBUIest::newRow("junk 6") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x06\x40", 5) << (int) QDataStream::ReadCorruptData << QBitArray();
+    BOBUIest::newRow("junk 7") << QDataStream::BobUI_5_15 << QByteArray("\x00\x00\x00\x07\x80", 5) << (int) QDataStream::ReadCorruptData << QBitArray();
 }
 
 void tst_QDataStream::status_QBitArray()
@@ -3059,7 +3059,7 @@ void tst_QDataStream::status_QBitArray()
     QCOMPARE(static_cast<bool>(stream >> str), (expectedStatus == (int) QDataStream::Ok));
 
     if (sizeof(qsizetype) == sizeof(int))
-        QEXPECT_FAIL("new badsize 0x10000", "size > INT_MAX fails on 32bit system (QTBUG-87660)",
+        QEXPECT_FAIL("new badsize 0x10000", "size > INT_MAX fails on 32bit system (BOBUIBUG-87660)",
                      Continue);
 
     QCOMPARE(int(stream.status()), expectedStatus);
@@ -3262,7 +3262,7 @@ void tst_QDataStream::streamRealDataTypes()
     // Generate QPicture from pixmap.
     QPixmap pm(open_xpm);
     QVERIFY(!pm.isNull());
-#ifndef QT_NO_PICTURE
+#ifndef BOBUI_NO_PICTURE
     QPicture picture;
     picture.setBoundingRect(QRect(QPoint(0, 0), pm.size()));
     QPainter painter(&picture);
@@ -3301,18 +3301,18 @@ void tst_QDataStream::streamRealDataTypes()
             // Generate data
             QVERIFY(file.open(QIODevice::WriteOnly));
             QDataStream stream(&file);
-            stream.setVersion(QDataStream::Qt_4_2);
+            stream.setVersion(QDataStream::BobUI_4_2);
             QVERIFY(stream << qreal(0) << qreal(1.0) << qreal(1.1) << qreal(3.14) << qreal(-3.14) << qreal(-1));
             QVERIFY(stream << QPointF(3, 5) << QRectF(-1, -2, 3, 4) << (QPolygonF() << QPointF(0, 0) << QPointF(1, 2)));
-            QVERIFY(stream << QTransform().rotate(90).scale(2, 2).asAffineMatrix());
+            QVERIFY(stream << BOBUIransform().rotate(90).scale(2, 2).asAffineMatrix());
             QVERIFY(stream << path);
-#ifndef QT_NO_PICTURE
+#ifndef BOBUI_NO_PICTURE
             QVERIFY(stream << picture);
 #endif
-            QVERIFY(stream << QTextLength(QTextLength::VariableLength, 1.5));
+            QVERIFY(stream << BOBUIextLength(BOBUIextLength::VariableLength, 1.5));
             QVERIFY(stream << color);
             QVERIFY(stream << radialBrush << conicalBrush);
-            QVERIFY(stream << QPen(QBrush(Qt::red), 1.5));
+            QVERIFY(stream << QPen(QBrush(BobUI::red), 1.5));
 
             file.close();
         }
@@ -3320,20 +3320,20 @@ void tst_QDataStream::streamRealDataTypes()
         QPointF point(1, 2);
         QRectF rect(1, 2, 5, 6);
         QPolygonF polygon {{3, 4}, {5, 6}};
-        QTransform transform;
+        BOBUIransform transform;
         QPainterPath p = otherPath;
-#ifndef QT_NO_PICTURE
+#ifndef BOBUI_NO_PICTURE
         QPicture pict;
 #endif
-        QTextLength textLength(QTextLength::FixedLength, 2.5);
+        BOBUIextLength textLength(BOBUIextLength::FixedLength, 2.5);
         QColor col(128, 128, 127);
-        QBrush rGrad(Qt::CrossPattern);
-        QBrush cGrad(Qt::CrossPattern);
+        QBrush rGrad(BobUI::CrossPattern);
+        QBrush cGrad(BobUI::CrossPattern);
         QPen pen(conicalBrush, 10);
 
         QVERIFY(file.open(QIODevice::ReadOnly));
         QDataStream stream(&file);
-        stream.setVersion(QDataStream::Qt_4_2);
+        stream.setVersion(QDataStream::BobUI_4_2);
 
         if (i == 0) {
             // the reference stream for 4.2 contains doubles,
@@ -3374,10 +3374,10 @@ void tst_QDataStream::streamRealDataTypes()
         QCOMPARE((QList<QPointF> &)polygon, (QPolygonF() << QPointF(0, 0) << QPointF(1, 2)));
         auto matrix = transform.asAffineMatrix();
         QVERIFY(stream >> matrix);
-        QCOMPARE(transform, QTransform().rotate(90).scale(2, 2));
+        QCOMPARE(transform, BOBUIransform().rotate(90).scale(2, 2));
         QVERIFY(stream >> p);
         QCOMPARE(p, path);
-#ifndef QT_NO_PICTURE
+#ifndef BOBUI_NO_PICTURE
         if (i == 1) {
             QVERIFY(stream >> pict);
 
@@ -3393,7 +3393,7 @@ void tst_QDataStream::streamRealDataTypes()
         }
 #endif
         QVERIFY(stream >> textLength);
-        QCOMPARE(textLength, QTextLength(QTextLength::VariableLength, 1.5));
+        QCOMPARE(textLength, BOBUIextLength(BOBUIextLength::VariableLength, 1.5));
         QVERIFY(stream >> col);
         QCOMPARE(col, color);
         QVERIFY(stream >> rGrad);
@@ -3422,21 +3422,21 @@ void tst_QDataStream::streamRealDataTypes()
     }
 }
 
-void tst_QDataStream::compatibility_Qt5()
+void tst_QDataStream::compatibility_BobUI5()
 {
     QLinearGradient gradient(QPointF(0,0), QPointF(1,1));
-    gradient.setColorAt(0, Qt::red);
-    gradient.setColorAt(1, Qt::blue);
+    gradient.setColorAt(0, BobUI::red);
+    gradient.setColorAt(1, BobUI::blue);
 
     QBrush brush(gradient);
     QPalette palette;
     palette.setBrush(QPalette::Button, brush);
-    palette.setColor(QPalette::Light, Qt::green);
+    palette.setColor(QPalette::Light, BobUI::green);
 
     QByteArray stream;
     {
         QDataStream out(&stream, QIODevice::WriteOnly);
-        out.setVersion(QDataStream::Qt_5_7);
+        out.setVersion(QDataStream::BobUI_5_7);
         QVERIFY(out << palette);
         QVERIFY(out << brush);
     }
@@ -3444,16 +3444,16 @@ void tst_QDataStream::compatibility_Qt5()
     QPalette in_palette;
     {
         QDataStream in(stream);
-        in.setVersion(QDataStream::Qt_5_7);
+        in.setVersion(QDataStream::BobUI_5_7);
         QVERIFY(in >> in_palette);
         QVERIFY(in >> in_brush);
     }
-    QCOMPARE(in_brush.style(), Qt::LinearGradientPattern);
-    QCOMPARE(in_palette.brush(QPalette::Button).style(), Qt::LinearGradientPattern);
-    QCOMPARE(in_palette.color(QPalette::Light), QColor(Qt::green));
+    QCOMPARE(in_brush.style(), BobUI::LinearGradientPattern);
+    QCOMPARE(in_palette.brush(QPalette::Button).style(), BobUI::LinearGradientPattern);
+    QCOMPARE(in_palette.color(QPalette::Light), QColor(BobUI::green));
 }
 
-void tst_QDataStream::compatibility_Qt3()
+void tst_QDataStream::compatibility_BobUI3()
 {
     QByteArray ba("hello");
     QVariant var = ba;
@@ -3461,20 +3461,20 @@ void tst_QDataStream::compatibility_Qt3()
     QByteArray stream;
     {
         QDataStream out(&stream, QIODevice::WriteOnly);
-        out.setVersion(QDataStream::Qt_3_3);
+        out.setVersion(QDataStream::BobUI_3_3);
         QVERIFY(out << var);
         QVERIFY(out << QColor());
-        QVERIFY(out << QColor(Qt::darkYellow));
-        QVERIFY(out << QColor(Qt::darkCyan));
+        QVERIFY(out << QColor(BobUI::darkYellow));
+        QVERIFY(out << QColor(BobUI::darkCyan));
         QVERIFY(out << invalidColor);
     }
     {
         QDataStream in(stream);
-        in.setVersion(QDataStream::Qt_3_3);
+        in.setVersion(QDataStream::BobUI_3_3);
 
         quint32 type;
         QVERIFY(in >> type);
-        //29 is the type of a QByteArray in Qt3
+        //29 is the type of a QByteArray in BobUI3
         QCOMPARE(type, quint32(29));
         QByteArray ba2;
         QVERIFY(in >> ba2);
@@ -3484,27 +3484,27 @@ void tst_QDataStream::compatibility_Qt3()
         QVERIFY(in >> color);
         QCOMPARE(color, invalidColor);
         QVERIFY(in >> color);
-        QCOMPARE(color, QColor(Qt::darkYellow).rgb());
+        QCOMPARE(color, QColor(BobUI::darkYellow).rgb());
         QColor col;
         QVERIFY(in >> col);
-        QCOMPARE(col, QColor(Qt::darkCyan));
+        QCOMPARE(col, QColor(BobUI::darkCyan));
         QVERIFY(in >> col);
         QVERIFY(!col.isValid());
     }
     {
         QLinearGradient gradient(QPointF(0,0), QPointF(1,1));
-        gradient.setColorAt(0, Qt::red);
-        gradient.setColorAt(1, Qt::blue);
+        gradient.setColorAt(0, BobUI::red);
+        gradient.setColorAt(1, BobUI::blue);
 
         QBrush brush(gradient);
         QPalette palette;
         palette.setBrush(QPalette::Button, brush);
-        palette.setColor(QPalette::Light, Qt::green);
+        palette.setColor(QPalette::Light, BobUI::green);
 
         QByteArray stream;
         {
             QDataStream out(&stream, QIODevice::WriteOnly);
-            out.setVersion(QDataStream::Qt_3_3);
+            out.setVersion(QDataStream::BobUI_3_3);
             QVERIFY(out << palette);
             QVERIFY(out << brush);
         }
@@ -3512,55 +3512,55 @@ void tst_QDataStream::compatibility_Qt3()
         QPalette in_palette;
         {
             QDataStream in(stream);
-            in.setVersion(QDataStream::Qt_3_3);
+            in.setVersion(QDataStream::BobUI_3_3);
             QVERIFY(in >> in_palette);
             QVERIFY(in >> in_brush);
         }
-        QCOMPARE(in_brush.style(), Qt::NoBrush);
-        QCOMPARE(in_palette.brush(QPalette::Button).style(), Qt::NoBrush);
-        QCOMPARE(in_palette.color(QPalette::Light), QColor(Qt::green));
+        QCOMPARE(in_brush.style(), BobUI::NoBrush);
+        QCOMPARE(in_palette.brush(QPalette::Button).style(), BobUI::NoBrush);
+        QCOMPARE(in_palette.color(QPalette::Light), QColor(BobUI::green));
     }
-    // QTime() was serialized to (0, 0, 0, 0) in Qt3, not (0xFF, 0xFF, 0xFF, 0xFF)
-    // This is because in Qt3 a null time was valid, and there was no support for deserializing a value of -1.
+    // BOBUIime() was serialized to (0, 0, 0, 0) in BobUI3, not (0xFF, 0xFF, 0xFF, 0xFF)
+    // This is because in BobUI3 a null time was valid, and there was no support for deserializing a value of -1.
     {
         QByteArray stream;
         {
             QDataStream out(&stream, QIODevice::WriteOnly);
-            out.setVersion(QDataStream::Qt_3_3);
-            QVERIFY(out << QTime());
+            out.setVersion(QDataStream::BobUI_3_3);
+            QVERIFY(out << BOBUIime());
         }
-        QTime in_time;
+        BOBUIime in_time;
         {
             QDataStream in(stream);
-            in.setVersion(QDataStream::Qt_3_3);
+            in.setVersion(QDataStream::BobUI_3_3);
             QVERIFY(in >> in_time);
         }
         QVERIFY(in_time.isNull());
 
         quint32 rawValue;
         QDataStream in(stream);
-        in.setVersion(QDataStream::Qt_3_3);
+        in.setVersion(QDataStream::BobUI_3_3);
         QVERIFY(in >> rawValue);
         QCOMPARE(rawValue, quint32(0));
     }
 
 }
 
-void tst_QDataStream::compatibility_Qt2()
+void tst_QDataStream::compatibility_BobUI2()
 {
     QLinearGradient gradient(QPointF(0,0), QPointF(1,1));
-    gradient.setColorAt(0, Qt::red);
-    gradient.setColorAt(1, Qt::blue);
+    gradient.setColorAt(0, BobUI::red);
+    gradient.setColorAt(1, BobUI::blue);
 
     QBrush brush(gradient);
     QPalette palette;
     palette.setBrush(QPalette::Button, brush);
-    palette.setColor(QPalette::Light, Qt::green);
+    palette.setColor(QPalette::Light, BobUI::green);
 
     QByteArray stream;
     {
         QDataStream out(&stream, QIODevice::WriteOnly);
-        out.setVersion(QDataStream::Qt_2_1);
+        out.setVersion(QDataStream::BobUI_2_1);
         QVERIFY(out << palette);
         QVERIFY(out << brush);
     }
@@ -3568,13 +3568,13 @@ void tst_QDataStream::compatibility_Qt2()
     QPalette in_palette;
     {
         QDataStream in(stream);
-        in.setVersion(QDataStream::Qt_2_1);
+        in.setVersion(QDataStream::BobUI_2_1);
         QVERIFY(in >> in_palette);
         QVERIFY(in >> in_brush);
     }
-    QCOMPARE(in_brush.style(), Qt::NoBrush);
-    QCOMPARE(in_palette.brush(QPalette::Button).style(), Qt::NoBrush);
-    QCOMPARE(in_palette.color(QPalette::Light), QColor(Qt::green));
+    QCOMPARE(in_brush.style(), BobUI::NoBrush);
+    QCOMPARE(in_palette.brush(QPalette::Button).style(), BobUI::NoBrush);
+    QCOMPARE(in_palette.color(QPalette::Light), QColor(BobUI::green));
 }
 
 void tst_QDataStream::floatingPointNaN()
@@ -3789,27 +3789,27 @@ void tst_QDataStream::floatingPointPrecision()
 
 void tst_QDataStream::transaction_data()
 {
-    QTest::addColumn<qint8>("i8Data");
-    QTest::addColumn<qint16>("i16Data");
-    QTest::addColumn<qint32>("i32Data");
-    QTest::addColumn<qint64>("i64Data");
-    QTest::addColumn<bool>("bData");
-    QTest::addColumn<float>("fData");
-    QTest::addColumn<double>("dData");
-    QTest::addColumn<QImage>("imgData");
-    QTest::addColumn<QByteArray>("strData");
-    QTest::addColumn<QByteArray>("rawData");
+    BOBUIest::addColumn<qint8>("i8Data");
+    BOBUIest::addColumn<qint16>("i16Data");
+    BOBUIest::addColumn<qint32>("i32Data");
+    BOBUIest::addColumn<qint64>("i64Data");
+    BOBUIest::addColumn<bool>("bData");
+    BOBUIest::addColumn<float>("fData");
+    BOBUIest::addColumn<double>("dData");
+    BOBUIest::addColumn<QImage>("imgData");
+    BOBUIest::addColumn<QByteArray>("strData");
+    BOBUIest::addColumn<QByteArray>("rawData");
 
     QImage img1(open_xpm);
     QImage img2;
     QImage img3(50, 50, QImage::Format_ARGB32);
     img3.fill(qRgba(12, 34, 56, 78));
 
-    QTest::newRow("1") << qint8(1) << qint16(2) << qint32(3) << qint64(4) << true << 5.0f
-                       << double(6.0) << img1 << QByteArray("Hello world!") << QByteArray("Qt rocks!");
-    QTest::newRow("2") << qint8(1 << 6) << qint16(1 << 14) << qint32(1 << 30) << qint64Data(3) << false << 123.0f
+    BOBUIest::newRow("1") << qint8(1) << qint16(2) << qint32(3) << qint64(4) << true << 5.0f
+                       << double(6.0) << img1 << QByteArray("Hello world!") << QByteArray("BobUI rocks!");
+    BOBUIest::newRow("2") << qint8(1 << 6) << qint16(1 << 14) << qint32(1 << 30) << qint64Data(3) << false << 123.0f
                        << double(234.0) << img2 << stringData(5).toUtf8() << stringData(6).toUtf8();
-    QTest::newRow("3") << qint8(-1) << qint16(-2) << qint32(-3) << qint64(-4) << true << -123.0f
+    BOBUIest::newRow("3") << qint8(-1) << qint16(-2) << qint32(-3) << qint64(-4) << true << -123.0f
                        << double(-234.0) << img3 << stringData(3).toUtf8() << stringData(4).toUtf8();
 }
 
@@ -3887,33 +3887,33 @@ void tst_QDataStream::transaction()
 
 void tst_QDataStream::nestedTransactionsResult_data()
 {
-    QTest::addColumn<bool>("commitFirst");
-    QTest::addColumn<bool>("rollbackFirst");
-    QTest::addColumn<bool>("commitSecond");
-    QTest::addColumn<bool>("rollbackSecond");
-    QTest::addColumn<bool>("successExpected");
-    QTest::addColumn<bool>("expectedAtEnd");
-    QTest::addColumn<int>("expectedStatus");
+    BOBUIest::addColumn<bool>("commitFirst");
+    BOBUIest::addColumn<bool>("rollbackFirst");
+    BOBUIest::addColumn<bool>("commitSecond");
+    BOBUIest::addColumn<bool>("rollbackSecond");
+    BOBUIest::addColumn<bool>("successExpected");
+    BOBUIest::addColumn<bool>("expectedAtEnd");
+    BOBUIest::addColumn<int>("expectedStatus");
 
-    QTest::newRow("1") << false << false << false << false
+    BOBUIest::newRow("1") << false << false << false << false
                        << false << true << int(QDataStream::ReadCorruptData);
-    QTest::newRow("2") << false << false << false << true
+    BOBUIest::newRow("2") << false << false << false << true
                        << false << true << int(QDataStream::ReadCorruptData);
-    QTest::newRow("3") << false << false << true << false
+    BOBUIest::newRow("3") << false << false << true << false
                        << false << true << int(QDataStream::ReadCorruptData);
 
-    QTest::newRow("4") << false << true << false << false
+    BOBUIest::newRow("4") << false << true << false << false
                        << false << true << int(QDataStream::ReadCorruptData);
-    QTest::newRow("5") << false << true << false << true
+    BOBUIest::newRow("5") << false << true << false << true
                        << false << false << int(QDataStream::ReadPastEnd);
-    QTest::newRow("6") << false << true << true << false
+    BOBUIest::newRow("6") << false << true << true << false
                        << false << false << int(QDataStream::ReadPastEnd);
 
-    QTest::newRow("7") << true << false << false << false
+    BOBUIest::newRow("7") << true << false << false << false
                        << false << true << int(QDataStream::ReadCorruptData);
-    QTest::newRow("8") << true << false << false << true
+    BOBUIest::newRow("8") << true << false << false << true
                        << false << false << int(QDataStream::ReadPastEnd);
-    QTest::newRow("9") << true << false << true << false
+    BOBUIest::newRow("9") << true << false << true << false
                        << true << true << int(QDataStream::Ok);
 }
 
@@ -3963,18 +3963,18 @@ QDataStream &operator>>(QDataStream &ds, CustomPair &pd)
 { return ds >> pd.first >> pd.second; }
 
 
-void tst_QDataStream::typedefQt5Compat()
+void tst_QDataStream::typedefBobUI5Compat()
 {
     qRegisterMetaType<CustomPair>("CustomPair");
-    QByteArray qt5Data;
+    QByteArray bobui5Data;
     {
-        // we can read the qt5 version
+        // we can read the bobui5 version
         QFile in(QFINDTESTDATA("typedef.q5"));
         QVERIFY(in.open(QIODevice::ReadOnly));
-        qt5Data = in.readAll();
+        bobui5Data = in.readAll();
         QVERIFY(in.seek(0));
         QDataStream stream(&in);
-        stream.setVersion(QDataStream::Qt_5_15);
+        stream.setVersion(QDataStream::BobUI_5_15);
         QVariant var;
         QVERIFY(stream >> var);
         QCOMPARE(stream.status(), QDataStream::Ok);
@@ -3983,22 +3983,22 @@ void tst_QDataStream::typedefQt5Compat()
         QCOMPARE(p.second, 100);
     }
     {
-        // writing in Qt 6 results in the same file
-        QTemporaryDir dir;
+        // writing in BobUI 6 results in the same file
+        BOBUIemporaryDir dir;
         QVERIFY(dir.isValid());
         QFile file(dir.filePath(u"typedef.q6"_s));
         QVERIFY(file.open(QIODevice::WriteOnly));
         QDataStream stream(&file);
-        stream.setVersion(QDataStream::Qt_5_15);
+        stream.setVersion(QDataStream::BobUI_5_15);
         CustomPair p {42, 100};
         QVERIFY(stream << QVariant::fromValue(p));
         file.close();
         QVERIFY(file.open(QIODevice::ReadOnly));
-        QCOMPARE(file.readAll(), qt5Data);
+        QCOMPARE(file.readAll(), bobui5Data);
     }
 }
 
-QTEST_MAIN(tst_QDataStream)
+BOBUIEST_MAIN(tst_QDataStream)
 
 #include "tst_qdatastream.moc"
 

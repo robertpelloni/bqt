@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef BASE_H
 #define BASE_H
 
 #include <QWidget>
-#include <QTimer>
+#include <BOBUIimer>
 #include <QDialog>
 
 class base : public QWidget
 {
 Q_OBJECT
-    QTimer *m_timer;
+    BOBUIimer *m_timer;
     bool m_modalStarted = false;
     QDialog *m_modalDialog = nullptr;
 public:

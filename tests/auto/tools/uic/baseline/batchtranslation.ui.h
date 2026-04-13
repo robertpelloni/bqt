@@ -1,14 +1,14 @@
 /*
 
-* Copyright (C) 2016 The Qt Company Ltd.
-* SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+* Copyright (C) 2016 The BobUI Company Ltd.
+* SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 */
 
 /********************************************************************************
 ** Form generated from reading UI file 'batchtranslation.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -16,19 +16,19 @@
 #ifndef BATCHTRANSLATION_H
 #define BATCHTRANSLATION_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QListView>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QVBoxLayout>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QCheckBox>
+#include <BobUIWidgets/QDialog>
+#include <BobUIWidgets/QGroupBox>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QListView>
+#include <BobUIWidgets/QPushButton>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/QVBoxLayout>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_databaseTranslationDialog
 {
@@ -190,7 +190,7 @@ public:
 
     void retranslateUi(QDialog *databaseTranslationDialog)
     {
-        databaseTranslationDialog->setWindowTitle(QCoreApplication::translate("databaseTranslationDialog", "Qt Linguist - Batch Translation", nullptr));
+        databaseTranslationDialog->setWindowTitle(QCoreApplication::translate("databaseTranslationDialog", "BobUI Linguist - Batch Translation", nullptr));
         groupBox->setTitle(QCoreApplication::translate("databaseTranslationDialog", "Options", nullptr));
         ckOnlyUntranslated->setText(QCoreApplication::translate("databaseTranslationDialog", "Only translate entries with no translation", nullptr));
         ckMarkFinished->setText(QCoreApplication::translate("databaseTranslationDialog", "Set translated entries to finished", nullptr));
@@ -208,6 +208,6 @@ namespace Ui {
     class databaseTranslationDialog: public Ui_databaseTranslationDialog {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // BATCHTRANSLATION_H

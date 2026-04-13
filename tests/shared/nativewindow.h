@@ -1,5 +1,5 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef NATIVEWINDOW_H
 #define NATIVEWINDOW_H
@@ -11,13 +11,13 @@
 #  include <UIKit/UIKit.h>
 #  define VIEW_BASE UIView
 #elif defined(Q_OS_WIN)
-#  include <QtCore/qt_windows.h>
-#elif QT_CONFIG(xcb)
+#  include <BobUICore/bobui_windows.h>
+#elif BOBUI_CONFIG(xcb)
 #  include <xcb/xcb.h>
 #elif defined(ANDROID)
-#  include <QtCore/qjniobject.h>
-#  include <QtCore/qjnitypes.h>
-#  include <QtCore/qnativeinterface.h>
+#  include <BobUICore/qjniobject.h>
+#  include <BobUICore/qjnitypes.h>
+#  include <BobUICore/qnativeinterface.h>
 Q_DECLARE_JNI_CLASS(View, "android/view/View")
 Q_DECLARE_JNI_CLASS(ViewParent, "android/view/ViewParent")
 #endif
@@ -28,14 +28,14 @@ class NativeWindow
 public:
 #if defined(Q_OS_MACOS)
     using Handle = NSView*;
-#elif defined(QT_PLATFORM_UIKIT)
+#elif defined(BOBUI_PLATFORM_UIKIT)
     using Handle = UIView*;
 #elif defined(Q_OS_WIN)
     using Handle = HWND;
-#elif QT_CONFIG(xcb)
+#elif BOBUI_CONFIG(xcb)
     using Handle = xcb_window_t;
 #elif defined(ANDROID)
-    using Handle = QtJniTypes::View;
+    using Handle = BobUIJniTypes::View;
 #endif
 
     NativeWindow();
@@ -53,7 +53,7 @@ private:
     Handle m_handle = {};
 };
 
-#if defined(Q_OS_MACOS) || defined(QT_PLATFORM_UIKIT)
+#if defined(Q_OS_MACOS) || defined(BOBUI_PLATFORM_UIKIT)
 
 @interface View : VIEW_BASE
 @end
@@ -179,7 +179,7 @@ void NativeWindow::setParent(WId parent)
     SetParent(m_handle, Handle(parent));
 }
 
-#elif QT_CONFIG(xcb)
+#elif BOBUI_CONFIG(xcb)
 
 struct Connection
 {
@@ -260,7 +260,7 @@ void NativeWindow::setParent(WId parent)
 #elif defined (ANDROID)
 NativeWindow::NativeWindow()
 {
-    m_handle = QJniObject::construct<QtJniTypes::View, QtJniTypes::Context>(
+    m_handle = QJniObject::construct<BobUIJniTypes::View, BobUIJniTypes::Context>(
                                                 QNativeInterface::QAndroidApplication::context());
     m_handle.callMethod<void>("setBackgroundColor", 0xffffaaff);
 }
@@ -292,7 +292,7 @@ WId NativeWindow::parentWinId() const
 {
     // TODO note, the returned object is a ViewParent, not necessarily
     // a View - what is this used for?
-    using namespace QtJniTypes;
+    using namespace BobUIJniTypes;
     ViewParent parentView = m_handle.callMethod<ViewParent>("getParent");
     if (parentView.isValid())
         return reinterpret_cast<WId>(parentView.object());

@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2023 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:execute-external-code
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:execute-external-code
 
 #ifndef QPROCESS_H
 #define QPROCESS_H
 
-#include <QtCore/qcompare.h>
-#include <QtCore/qiodevice.h>
-#include <QtCore/qstringlist.h>
-#include <QtCore/qshareddata.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qiodevice.h>
+#include <BobUICore/qstringlist.h>
+#include <BobUICore/qshareddata.h>
 
 #include <functional>
 
-QT_REQUIRE_CONFIG(processenvironment);
+BOBUI_REQUIRE_CONFIG(processenvironment);
 
 #if defined(Q_OS_WIN) || defined(Q_QDOC)
 struct _PROCESS_INFORMATION;
@@ -24,7 +24,7 @@ using Q_SECURITY_ATTRIBUTES = _SECURITY_ATTRIBUTES;
 using Q_STARTUPINFO = _STARTUPINFOW;
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QProcessPrivate;
 class QProcessEnvironmentPrivate;
@@ -38,12 +38,12 @@ public:
     QProcessEnvironment(Initialization) noexcept;
     QProcessEnvironment(const QProcessEnvironment &other);
     ~QProcessEnvironment();
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QProcessEnvironment)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QProcessEnvironment)
     QProcessEnvironment &operator=(const QProcessEnvironment &other);
 
     void swap(QProcessEnvironment &other) noexcept { d.swap(other.d); }
 
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
     bool operator==(const QProcessEnvironment &other) const;
     inline bool operator!=(const QProcessEnvironment &other) const
     { return !operator==(other); }
@@ -77,7 +77,7 @@ private:
 
 Q_DECLARE_SHARED(QProcessEnvironment)
 
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
 
 class Q_CORE_EXPORT QProcess : public QIODevice
 {
@@ -270,12 +270,12 @@ private:
     Q_DECLARE_PRIVATE(QProcess)
     Q_DISABLE_COPY(QProcess)
 
-#if QT_VERSION < QT_VERSION_CHECK(7,0,0)
-    // ### Qt7: Remove this struct and the virtual function; they're here only
-    // to cause build errors in Qt 5 code that wasn't updated to Qt 6's
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7,0,0)
+    // ### BobUI7: Remove this struct and the virtual function; they're here only
+    // to cause build errors in BobUI 5 code that wasn't updated to BobUI 6's
     // setChildProcessModifier()
     struct Use_setChildProcessModifier_Instead {};
-    QT_DEPRECATED_X("Use setChildProcessModifier() instead")
+    BOBUI_DEPRECATED_X("Use setChildProcessModifier() instead")
     virtual Use_setChildProcessModifier_Instead setupChildProcess();
 #endif
 };
@@ -284,7 +284,7 @@ private:
 Q_DECLARE_OPERATORS_FOR_FLAGS(QProcess::UnixProcessFlags)
 #endif
 
-#else // !QT_CONFIG(process)
+#else // !BOBUI_CONFIG(process)
 
 class QProcess
 {
@@ -296,8 +296,8 @@ private:
     Q_DISABLE_COPY_MOVE(QProcess)
 };
 
-#endif // QT_CONFIG(process)
+#endif // BOBUI_CONFIG(process)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPROCESS_H

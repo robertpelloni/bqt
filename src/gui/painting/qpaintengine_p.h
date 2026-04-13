@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPAINTENGINE_P_H
 #define QPAINTENGINE_P_H
@@ -8,20 +8,20 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
+// This file is not part of the BobUI API.  It exists for the convenience
+// of other BobUI classes.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
-#include "QtGui/qpainter.h"
-#include "QtGui/qpaintengine.h"
-#include "QtGui/qregion.h"
+#include <BobUIGui/private/bobuiguiglobal_p.h>
+#include "BobUIGui/qpainter.h"
+#include "BobUIGui/qpaintengine.h"
+#include "BobUIGui/qregion.h"
 #include "private/qobject_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QPaintDevice;
 
@@ -39,7 +39,7 @@ public:
     QRegion systemClip;
     QRect systemRect;
     QRegion systemViewport;
-    QTransform systemTransform;
+    BOBUIransform systemTransform;
     QPaintDevice *currentClipDevice;
     uint hasSystemTransform : 1;
     uint hasSystemViewport : 1;
@@ -51,7 +51,7 @@ public:
             return;
 
         if (hasSystemTransform) {
-            if (systemTransform.type() <= QTransform::TxTranslate)
+            if (systemTransform.type() <= BOBUIransform::TxTranslate)
                 systemClip.translate(qRound(systemTransform.dx()), qRound(systemTransform.dy()));
             else
                 systemClip = systemTransform.map(systemClip);
@@ -67,7 +67,7 @@ public:
         }
     }
 
-    inline void setSystemTransform(const QTransform &xform)
+    inline void setSystemTransform(const BOBUIransform &xform)
     {
         systemTransform = xform;
         hasSystemTransform = !xform.isIdentity();
@@ -85,7 +85,7 @@ public:
             systemStateChanged();
     }
 
-    inline void setSystemTransformAndViewport(const QTransform &xform, const QRegion &region)
+    inline void setSystemTransformAndViewport(const BOBUIransform &xform, const QRegion &region)
     {
         systemTransform = xform;
         hasSystemTransform = !xform.isIdentity();
@@ -98,14 +98,14 @@ public:
 
     virtual void systemStateChanged() { }
 
-    void drawBoxTextItem(const QPointF &p, const QTextItemInt &ti);
+    void drawBoxTextItem(const QPointF &p, const BOBUIextItemInt &ti);
 
     static QPaintEnginePrivate *get(QPaintEngine *paintEngine) { return paintEngine->d_func(); }
 
     virtual QPaintEngine *aggregateEngine() { return nullptr; }
-    virtual Qt::HANDLE nativeHandle() { return nullptr; }
+    virtual BobUI::HANDLE nativeHandle() { return nullptr; }
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPAINTENGINE_P_H

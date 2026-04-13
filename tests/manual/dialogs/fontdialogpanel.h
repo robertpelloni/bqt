@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef FONTDIALOGPANEL_H
 #define FONTDIALOGPANEL_H
@@ -7,12 +7,12 @@
 #include <QPointer>
 #include <QFontDialog>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QCheckBox;
 class QPushButton;
 class QFontComboBox;
 class QDoubleSpinBox;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 class FontDialogPanel : public QWidget
 {
@@ -22,7 +22,7 @@ public:
 
 public slots:
     void execModal();
-    void showModal(Qt::WindowModality modality);
+    void showModal(BobUI::WindowModality modality);
     void showNonModal();
     void deleteNonModalDialog();
     void deleteModalDialog();

@@ -1,14 +1,14 @@
-# Copyright (C) 2023 The Qt Company Ltd.
+# Copyright (C) 2023 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-qt_internal_add_manual_test(tst_manual_ssl_client_auth
+bobui_internal_add_manual_test(tst_manual_ssl_client_auth
     SOURCES
         tst_manual_ssl_client_auth.cpp
     LIBRARIES
-        Qt::Network
+        BobUI::Network
 )
 
-qt_internal_add_resource(tst_manual_ssl_client_auth "tst_manual_ssl_client_auth"
+bobui_internal_add_resource(tst_manual_ssl_client_auth "tst_manual_ssl_client_auth"
     PREFIX
         "/"
     FILES

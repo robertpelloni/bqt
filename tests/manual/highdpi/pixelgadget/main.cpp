@@ -1,8 +1,8 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtGui>
-#include <QtWidgets>
+#include <BobUIGui>
+#include <BobUIWidgets>
 
 class PixelGridViewWidget: public QWidget
 {
@@ -288,7 +288,7 @@ public:
 //            opt.palette = QPalette(QColor(200, 200, 200)); // force light mode
             opt.rect = scrollBarRect;
             opt.subControls = QStyle::SC_All;
-            opt.orientation = Qt::Horizontal;
+            opt.orientation = BobUI::Horizontal;
             opt.minimum = 0;
             opt.maximum = 10;
             opt.sliderPosition = 0;
@@ -385,8 +385,8 @@ public:
 
 int main(int argc, char **argv) {
 
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
+    QCoreApplication::setAttribute(BobUI::AA_EnableHighDpiScaling);
+    QGuiApplication::setHighDpiScaleFactorRoundingPolicy(BobUI::HighDpiScaleFactorRoundingPolicy::PassThrough);
 
     QApplication app(argc, argv);
 

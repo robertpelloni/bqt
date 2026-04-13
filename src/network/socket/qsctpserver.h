@@ -1,21 +1,21 @@
 // Copyright (C) 2016 Alex Trotsenko <alex1973tr@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSCTPSERVER_H
 #define QSCTPSERVER_H
 
-#include <QtNetwork/qtcpserver.h>
+#include <BobUINetwork/bobuicpserver.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
-#if !defined(QT_NO_SCTP) || defined(Q_QDOC)
+#if !defined(BOBUI_NO_SCTP) || defined(Q_QDOC)
 
 class QSctpServerPrivate;
 class QSctpSocket;
 
-class Q_NETWORK_EXPORT QSctpServer : public QTcpServer
+class Q_NETWORK_EXPORT QSctpServer : public BOBUIcpServer
 {
     Q_OBJECT
 public:
@@ -35,8 +35,8 @@ private:
     Q_DECLARE_PRIVATE(QSctpServer)
 };
 
-#endif // QT_NO_SCTP
+#endif // BOBUI_NO_SCTP
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSCTPSERVER_H

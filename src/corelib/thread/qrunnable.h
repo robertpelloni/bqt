@@ -1,19 +1,19 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QRUNNABLE_H
 #define QRUNNABLE_H
 
-#include <QtCore/qcompilerdetection.h>
-#include <QtCore/qfunctionaltools_impl.h>
-#include <QtCore/qtclasshelpermacros.h>
-#include <QtCore/qtcoreexports.h>
+#include <BobUICore/qcompilerdetection.h>
+#include <BobUICore/qfunctionaltools_impl.h>
+#include <BobUICore/bobuiclasshelpermacros.h>
+#include <BobUICore/bobuicoreexports.h>
 
 #include <functional>
 #include <type_traits>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Q_CORE_EXPORT QRunnable
 {
@@ -25,7 +25,7 @@ public:
 
     constexpr QRunnable() noexcept = default;
     virtual ~QRunnable();
-#if QT_CORE_REMOVED_SINCE(6, 6)
+#if BOBUI_CORE_REMOVED_SINCE(6, 6)
     static QRunnable *create(std::function<void()> functionToRun);
 #endif
     template <typename Callable>
@@ -64,9 +64,9 @@ class Q_CORE_EXPORT QRunnable::QGenericRunnable : public QRunnable
     };
 
     template <typename Callable>
-    class Helper : public HelperBase, private QtPrivate::CompactStorage<Callable>
+    class Helper : public HelperBase, private BobUIPrivate::CompactStorage<Callable>
     {
-        using Storage = QtPrivate::CompactStorage<Callable>;
+        using Storage = BobUIPrivate::CompactStorage<Callable>;
         static void *impl(Op op, HelperBase *that, [[maybe_unused]] void *arg)
         {
             const auto _this = static_cast<Helper*>(that);
@@ -97,7 +97,7 @@ public:
     void run() override;
 };
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 template <typename T>
 constexpr inline bool is_function_pointer_v = std::conjunction_v<
@@ -109,14 +109,14 @@ constexpr inline bool is_std_function_v = false;
 template <typename T>
 constexpr inline bool is_std_function_v<std::function<T>> = true;
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 template <typename Callable, QRunnable::if_callable<Callable>>
 QRunnable *QRunnable::create(Callable &&functionToRun)
 {
     using F = std::decay_t<Callable>;
-    constexpr bool is_std_function = QtPrivate::is_std_function_v<F>;
-    constexpr bool is_function_pointer = QtPrivate::is_function_pointer_v<F>;
+    constexpr bool is_std_function = BobUIPrivate::is_std_function_v<F>;
+    constexpr bool is_function_pointer = BobUIPrivate::is_function_pointer_v<F>;
     if constexpr (is_std_function || is_function_pointer) {
         bool is_null;
         if constexpr (is_std_function) {
@@ -133,6 +133,6 @@ QRunnable *QRunnable::create(Callable &&functionToRun)
     return new QGenericRunnable(std::forward<Callable>(functionToRun));
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

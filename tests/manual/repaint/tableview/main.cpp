@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "../shared/shared.h"
 
 #include <QApplication>
 #include <QMainWindow>
-#include <QTableWidget>
+#include <BOBUIableWidget>
 #include <QPaintEvent>
 
 class CellWidget : public QWidget
@@ -24,9 +24,9 @@ public:
 int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
-    QTableWidget tableWidget;
-//    tableWidget.setAttribute(Qt::WA_StaticContents);
-    tableWidget.viewport()->setAttribute(Qt::WA_StaticContents);
+    BOBUIableWidget tableWidget;
+//    tableWidget.setAttribute(BobUI::WA_StaticContents);
+    tableWidget.viewport()->setAttribute(BobUI::WA_StaticContents);
     tableWidget.setRowCount(15);
     tableWidget.setColumnCount(4);
     for (int row = 0; row  < 15; ++row)

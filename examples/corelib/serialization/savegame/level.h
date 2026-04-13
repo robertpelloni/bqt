@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef LEVEL_H
 #define LEVEL_H
@@ -9,7 +9,7 @@
 #include <QJsonObject>
 #include <QList>
 
-QT_FORWARD_DECLARE_CLASS(QTextStream)
+BOBUI_FORWARD_DECLARE_CLASS(BOBUIextStream)
 
 //! [0]
 class Level
@@ -26,7 +26,7 @@ public:
     static Level fromJson(const QJsonObject &json);
     QJsonObject toJson() const;
 
-    void print(QTextStream &s, int indentation = 0) const;
+    void print(BOBUIextStream &s, int indentation = 0) const;
 
 private:
     QString mName;

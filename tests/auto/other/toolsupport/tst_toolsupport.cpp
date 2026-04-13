@@ -1,7 +1,7 @@
-// Copyright (C) 2015 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2015 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
 //
 // Note:
@@ -12,7 +12,7 @@
 // in the same commit as the modification to the private class.
 //
 // Please also notify downstream users of the information checked here
-// such as Qt Creator developers, of such a change by putting them
+// such as BobUI Creator developers, of such a change by putting them
 // on Cc: on the respective change on gerrit.
 //
 
@@ -70,19 +70,19 @@ void tst_toolsupport::offsets()
 
 void tst_toolsupport::offsets_data()
 {
-    QTest::addColumn<size_t>("actual");
-    QTest::addColumn<int>("expected32");
-    QTest::addColumn<int>("expected64");
+    BOBUIest::addColumn<size_t>("actual");
+    BOBUIest::addColumn<int>("expected32");
+    BOBUIest::addColumn<int>("expected64");
 
     {
-        QTestData &data = QTest::newRow("sizeof(QObjectData)")
+        BOBUIestData &data = BOBUIest::newRow("sizeof(QObjectData)")
                 << sizeof(QObjectData);
         // Please heed the comment at the top of this file when changing this line:
         data << 44 << 80; // vptr + 2 ptr + (2*ptr + int) + 2 int + ptr
     }
 
     {
-        QTestData &data = QTest::newRow("sizeof(QObjectPrivate::ExtraData)")
+        BOBUIestData &data = BOBUIest::newRow("sizeof(QObjectPrivate::ExtraData)")
                 << sizeof(QObjectPrivate::ExtraData);
         // Please heed the comment at the top of this file when changing this line:
         data << 64 << 128; // 4 * QList + 1 * QString + ptr
@@ -90,21 +90,21 @@ void tst_toolsupport::offsets_data()
 
 #if RUN_MEMBER_OFFSET_TEST
     {
-        QTestData &data = QTest::newRow("QObjectPrivate::extraData")
+        BOBUIestData &data = BOBUIest::newRow("QObjectPrivate::extraData")
                 << pmm_to_offsetof(&QObjectPrivate::extraData);
         // Please heed the comment at the top of this file when changing this line:
         data << 44 << 80;    // sizeof(QObjectData)
     }
 
     {
-        QTestData &data = QTest::newRow("QFileInfoPrivate::fileEntry")
+        BOBUIestData &data = BOBUIest::newRow("QFileInfoPrivate::fileEntry")
                 << pmm_to_offsetof(&QFileInfoPrivate::fileEntry);
         // Please heed the comment at the top of this file when changing this line:
         data << 4 << 8;
     }
 
     {
-        QTestData &data = QTest::newRow("QFileSystemEntry::filePath")
+        BOBUIestData &data = BOBUIest::newRow("QFileSystemEntry::filePath")
                 << pmm_to_offsetof(&QFileSystemEntry::m_filePath);
         // Please heed the comment at the top of this file when changing this line:
         data << 0 << 0;
@@ -112,11 +112,11 @@ void tst_toolsupport::offsets_data()
 
 #ifdef Q_OS_LINUX
     {
-        QTestData &data = QTest::newRow("QFilePrivate::fileName")
+        BOBUIestData &data = BOBUIest::newRow("QFilePrivate::fileName")
                 << pmm_to_offsetof(&QFilePrivate::fileName);
         // Please heed the comment at the top of this file when changing one of these lines:
 #ifdef Q_PROCESSOR_X86_32
-        // x86 32-bit has weird alignment rules. Refer to QtPrivate::AlignOf in
+        // x86 32-bit has weird alignment rules. Refer to BobUIPrivate::AlignOf in
         // qglobal.h for more details.
         data << 264 << -1;
 #else
@@ -127,14 +127,14 @@ void tst_toolsupport::offsets_data()
 
     {
         // Please heed the comment at the top of this file when changing one of these lines:
-        QTest::newRow("QDateTimePrivate::m_msecs")
+        BOBUIest::newRow("QDateTimePrivate::m_msecs")
             << pmm_to_offsetof(&QDateTimePrivate::m_msecs) << 8 << 8;
-        QTest::newRow("QDateTimePrivate::m_status")
+        BOBUIest::newRow("QDateTimePrivate::m_status")
             << pmm_to_offsetof(&QDateTimePrivate::m_status) << 4 << 4;
-        QTest::newRow("QDateTimePrivate::m_offsetFromUtc")
+        BOBUIest::newRow("QDateTimePrivate::m_offsetFromUtc")
             << pmm_to_offsetof(&QDateTimePrivate::m_offsetFromUtc) << 16 << 16;
-#if QT_CONFIG(timezone)
-        QTest::newRow("QDateTimePrivate::m_timeZone")
+#if BOBUI_CONFIG(timezone)
+        BOBUIest::newRow("QDateTimePrivate::m_timeZone")
             << pmm_to_offsetof(&QDateTimePrivate::m_timeZone) << 20 << 24;
 #endif
     }
@@ -142,7 +142,7 @@ void tst_toolsupport::offsets_data()
 }
 
 
-QTEST_APPLESS_MAIN(tst_toolsupport);
+BOBUIEST_APPLESS_MAIN(tst_toolsupport);
 
 #include "tst_toolsupport.moc"
 

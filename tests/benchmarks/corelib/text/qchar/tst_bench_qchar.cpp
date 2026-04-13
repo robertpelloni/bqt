@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
-#include <QTest>
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
+#include <BOBUIest>
 #include <QChar>
 
 class tst_QChar: public QObject
@@ -23,14 +23,14 @@ private slots:
 
 void tst_QChar::isUpper_data()
 {
-    QTest::addColumn<QChar>("c");
+    BOBUIest::addColumn<QChar>("c");
 
-    QTest::newRow("k") << QChar('k');
-    QTest::newRow("K") << QChar('K');
-    QTest::newRow("5") << QChar('5');
-    QTest::newRow("\\0") << QChar();
-    QTest::newRow("space") << QChar(' ');
-    QTest::newRow("\\u3C20") << QChar(0x3C20);
+    BOBUIest::newRow("k") << QChar('k');
+    BOBUIest::newRow("K") << QChar('K');
+    BOBUIest::newRow("5") << QChar('5');
+    BOBUIest::newRow("\\0") << QChar();
+    BOBUIest::newRow("space") << QChar(' ');
+    BOBUIest::newRow("\\u3C20") << QChar(0x3C20);
 }
 
 void tst_QChar::isUpper()
@@ -106,6 +106,6 @@ void tst_QChar::isSpace()
     }
 }
 
-QTEST_MAIN(tst_QChar)
+BOBUIEST_MAIN(tst_QChar)
 
 #include "tst_bench_qchar.moc"

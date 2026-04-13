@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'imagedialog.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,20 +9,20 @@
 #ifndef IMAGEDIALOG_H
 #define IMAGEDIALOG_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QSpinBox>
-#include <QtWidgets/QVBoxLayout>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QComboBox>
+#include <BobUIWidgets/QDialog>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QLineEdit>
+#include <BobUIWidgets/QPushButton>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/QSpinBox>
+#include <BobUIWidgets/QVBoxLayout>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_ImageDialog
 {
@@ -66,7 +66,7 @@ public:
         widthLabel->setObjectName("widthLabel");
         widthLabel->setFrameShape(QFrame::Shape::NoFrame);
         widthLabel->setFrameShadow(QFrame::Shadow::Plain);
-        widthLabel->setTextFormat(Qt::TextFormat::AutoText);
+        widthLabel->setTextFormat(BobUI::TextFormat::AutoText);
 
         gridLayout->addWidget(widthLabel, 1, 0, 1, 1);
 
@@ -74,7 +74,7 @@ public:
         heightLabel->setObjectName("heightLabel");
         heightLabel->setFrameShape(QFrame::Shape::NoFrame);
         heightLabel->setFrameShadow(QFrame::Shadow::Plain);
-        heightLabel->setTextFormat(Qt::TextFormat::AutoText);
+        heightLabel->setTextFormat(BobUI::TextFormat::AutoText);
 
         gridLayout->addWidget(heightLabel, 2, 0, 1, 1);
 
@@ -126,7 +126,7 @@ public:
         nameLabel->setObjectName("nameLabel");
         nameLabel->setFrameShape(QFrame::Shape::NoFrame);
         nameLabel->setFrameShadow(QFrame::Shadow::Plain);
-        nameLabel->setTextFormat(Qt::TextFormat::AutoText);
+        nameLabel->setTextFormat(BobUI::TextFormat::AutoText);
 
         gridLayout->addWidget(nameLabel, 0, 0, 1, 1);
 
@@ -134,7 +134,7 @@ public:
         colorDepthLabel->setObjectName("colorDepthLabel");
         colorDepthLabel->setFrameShape(QFrame::Shape::NoFrame);
         colorDepthLabel->setFrameShadow(QFrame::Shadow::Plain);
-        colorDepthLabel->setTextFormat(Qt::TextFormat::AutoText);
+        colorDepthLabel->setTextFormat(BobUI::TextFormat::AutoText);
 
         gridLayout->addWidget(colorDepthLabel, 3, 0, 1, 1);
 
@@ -198,6 +198,6 @@ namespace Ui {
     class ImageDialog: public Ui_ImageDialog {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // IMAGEDIALOG_H

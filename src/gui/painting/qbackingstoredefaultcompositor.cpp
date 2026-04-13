@@ -1,14 +1,14 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qbackingstoredefaultcompositor_p.h"
-#include <QtGui/private/qwindow_p.h>
+#include <BobUIGui/private/qwindow_p.h>
 #include <qpa/qplatformgraphicsbuffer.h>
-#include <QtCore/qfile.h>
+#include <BobUICore/qfile.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QBackingStoreDefaultCompositor::~QBackingStoreDefaultCompositor()
 {
@@ -247,7 +247,7 @@ static QShader getShader(const QString &name)
         return QShader::fromSerialized(f.readAll());
 
     qWarning("QBackingStoreDefaultCompositor: Could not find built-in shader %s "
-             "(is something wrong with QtGui library resources?)",
+             "(is something wrong with BobUIGui library resources?)",
              qPrintable(name));
     return QShader();
 }
@@ -308,8 +308,8 @@ static QRhiGraphicsPipeline *createGraphicsPipeline(QRhi *rhi,
     }
 
     ps->setShaderStages({
-        { QRhiShaderStage::Vertex, getShader(":/qt-project.org/gui/painting/shaders/backingstorecompose.vert.qsb"_L1) },
-        { QRhiShaderStage::Fragment, getShader(":/qt-project.org/gui/painting/shaders/backingstorecompose.frag.qsb"_L1) }
+        { QRhiShaderStage::Vertex, getShader(":/bobui-project.org/gui/painting/shaders/backingstorecompose.vert.qsb"_L1) },
+        { QRhiShaderStage::Fragment, getShader(":/bobui-project.org/gui/painting/shaders/backingstorecompose.frag.qsb"_L1) }
     });
     QRhiVertexInputLayout inputLayout;
     inputLayout.setBindings({ { 5 * sizeof(float) } });
@@ -483,7 +483,7 @@ QPlatformBackingStore::FlushResult QBackingStoreDefaultCompositor::flush(QPlatfo
         return QPlatformBackingStore::FlushFailed;
     }
 
-    if (!qt_window_private(window)->receivedExpose)
+    if (!bobui_window_private(window)->receivedExpose)
         return QPlatformBackingStore::FlushSuccess;
 
     qCDebug(lcQpaBackingStore) << "Composing and flushing" << region << "of" << window
@@ -547,7 +547,7 @@ QPlatformBackingStore::FlushResult QBackingStoreDefaultCompositor::flush(QPlatfo
     const QRect sourceWindowRect = scaledRect(QRect(QPoint(), window->size()), sourceDevicePixelRatio);
     // If sourceWindowRect is larger than deviceWindowRect, we are doing high
     // DPI downscaling. In that case Linear filtering is a must, whereas for the
-    // 1:1 case Nearest must be used for Qt 5 visual compatibility.
+    // 1:1 case Nearest must be used for BobUI 5 visual compatibility.
     const bool needsLinearSampler = sourceWindowRect.width() > deviceWindowRect.width()
                                     && sourceWindowRect.height() > deviceWindowRect.height();
 
@@ -607,7 +607,7 @@ QPlatformBackingStore::FlushResult QBackingStoreDefaultCompositor::flush(QPlatfo
     // Record the render pass (with committing the resource updates).
     QRhiCommandBuffer *cb = swapchain->currentFrameCommandBuffer();
     const QSize outputSizeInPixels = swapchain->currentPixelSize();
-    QColor clearColor = translucentBackground ? Qt::transparent : Qt::black;
+    QColor clearColor = translucentBackground ? BobUI::transparent : BobUI::black;
 
     cb->resourceUpdate(resourceUpdates);
 
@@ -682,4 +682,4 @@ QPlatformBackingStore::FlushResult QBackingStoreDefaultCompositor::flush(QPlatfo
     return QPlatformBackingStore::FlushSuccess;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

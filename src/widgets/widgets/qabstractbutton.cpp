@@ -1,13 +1,13 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "private/qabstractbutton_p.h"
 
-#if QT_CONFIG(itemviews)
+#if BOBUI_CONFIG(itemviews)
 #include "qabstractitemview.h"
 #endif
-#if QT_CONFIG(buttongroup)
+#if BOBUI_CONFIG(buttongroup)
 #include "qbuttongroup.h"
 #include "private/qbuttongroup_p.h"
 #endif
@@ -17,21 +17,21 @@
 #include "qpainter.h"
 #include "qapplication.h"
 #include "qstyle.h"
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 #include "qaccessible.h"
 #endif
 #include <qpa/qplatformtheme.h>
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #define AUTO_REPEAT_DELAY  300
 #define AUTO_REPEAT_INTERVAL 100
 
-Q_WIDGETS_EXPORT extern bool qt_tab_all_widgets();
+Q_WIDGETS_EXPORT extern bool bobui_tab_all_widgets();
 
 /*!
     \class QAbstractButton
@@ -40,7 +40,7 @@ Q_WIDGETS_EXPORT extern bool qt_tab_all_widgets();
     button widgets, providing functionality common to buttons.
 
     \ingroup abstractwidgets
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     This class implements an \e abstract button.
     Subclasses of this class handle user actions, and specify how the button
@@ -49,7 +49,7 @@ Q_WIDGETS_EXPORT extern bool qt_tab_all_widgets();
     QAbstractButton provides support for both push buttons and checkable
     (toggle) buttons. Checkable buttons are implemented in the QRadioButton
     and QCheckBox classes. Push buttons are implemented in the
-    QPushButton and QToolButton classes; these also provide toggle
+    QPushButton and BOBUIoolButton classes; these also provide toggle
     behavior if required.
 
     Any button can display a label containing text and an icon. setText()
@@ -73,7 +73,7 @@ Q_WIDGETS_EXPORT extern bool qt_tab_all_widgets();
 
     \snippet code/src_gui_widgets_qabstractbutton.cpp 1
 
-    All the buttons provided by Qt (QPushButton, QToolButton,
+    All the buttons provided by BobUI (QPushButton, BOBUIoolButton,
     QCheckBox, and QRadioButton) can display both \l text and \l{icon}{icons}.
 
     A button can be made the default button in a dialog by means of
@@ -138,12 +138,12 @@ Q_WIDGETS_EXPORT extern bool qt_tab_all_widgets();
 
 QAbstractButtonPrivate::QAbstractButtonPrivate(QSizePolicy::ControlType type)
     :
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     shortcutId(0),
 #endif
     checkable(false), checked(false), autoRepeat(false), autoExclusive(false),
     down(false), blockRefresh(false), pressed(false),
-#if QT_CONFIG(buttongroup)
+#if BOBUI_CONFIG(buttongroup)
     group(nullptr),
 #endif
     autoRepeatDelay(AUTO_REPEAT_DELAY),
@@ -153,7 +153,7 @@ QAbstractButtonPrivate::QAbstractButtonPrivate(QSizePolicy::ControlType type)
 
 QList<QAbstractButton *>QAbstractButtonPrivate::queryButtonList() const
 {
-#if QT_CONFIG(buttongroup)
+#if BOBUI_CONFIG(buttongroup)
     if (group)
         return group->d_func()->buttonList;
 #endif
@@ -164,7 +164,7 @@ QList<QAbstractButton *>QAbstractButtonPrivate::queryButtonList() const
     if (autoExclusive) {
         auto isNoMemberOfMyAutoExclusiveGroup = [](QAbstractButton *candidate) {
             return !candidate->autoExclusive()
-#if QT_CONFIG(buttongroup)
+#if BOBUI_CONFIG(buttongroup)
                 || candidate->group()
 #endif
                 ;
@@ -176,7 +176,7 @@ QList<QAbstractButton *>QAbstractButtonPrivate::queryButtonList() const
 
 QAbstractButton *QAbstractButtonPrivate::queryCheckedButton() const
 {
-#if QT_CONFIG(buttongroup)
+#if BOBUI_CONFIG(buttongroup)
     if (group)
         return group->d_func()->checkedButton;
 #endif
@@ -196,7 +196,7 @@ QAbstractButton *QAbstractButtonPrivate::queryCheckedButton() const
 
 void QAbstractButtonPrivate::notifyChecked()
 {
-#if QT_CONFIG(buttongroup)
+#if BOBUI_CONFIG(buttongroup)
     Q_Q(QAbstractButton);
     if (group) {
         QAbstractButton *previous = group->d_func()->checkedButton;
@@ -214,7 +214,7 @@ void QAbstractButtonPrivate::notifyChecked()
 void QAbstractButtonPrivate::moveFocus(int key)
 {
     QList<QAbstractButton *> buttonList = queryButtonList();
-#if QT_CONFIG(buttongroup)
+#if BOBUI_CONFIG(buttongroup)
     bool exclusive = group ? group->d_func()->exclusive : autoExclusive;
 #else
     bool exclusive = autoExclusive;
@@ -228,7 +228,7 @@ void QAbstractButtonPrivate::moveFocus(int key)
     int bestScore = -1;
     QRect target = f->rect().translated(f->mapToGlobal(QPoint(0,0)));
     QPoint goal = target.center();
-    uint focus_flag = qt_tab_all_widgets() ? Qt::TabFocus : Qt::StrongFocus;
+    uint focus_flag = bobui_tab_all_widgets() ? BobUI::TabFocus : BobUI::StrongFocus;
 
     for (int i = 0; i < buttonList.size(); ++i) {
         QAbstractButton *button = buttonList.at(i);
@@ -242,11 +242,11 @@ void QAbstractButtonPrivate::moveFocus(int key)
             //take also in account orthogonal distance in case two widget are in the same distance.
             int score;
             if ((buttonRect.x() < target.right() && target.x() < buttonRect.right())
-                  && (key == Qt::Key_Up || key == Qt::Key_Down)) {
+                  && (key == BobUI::Key_Up || key == BobUI::Key_Down)) {
                 //one item's is at the vertical of the other
                 score = (qAbs(p.y() - goal.y()) << 16) + qAbs(p.x() - goal.x());
             } else if ((buttonRect.y() < target.bottom() && target.y() < buttonRect.bottom())
-                        && (key == Qt::Key_Left || key == Qt::Key_Right) ) {
+                        && (key == BobUI::Key_Left || key == BobUI::Key_Right) ) {
                 //one item's is at the horizontal of the other
                 score = (qAbs(p.x() - goal.x()) << 16) + qAbs(p.y() - goal.y());
             } else {
@@ -257,25 +257,25 @@ void QAbstractButtonPrivate::moveFocus(int key)
                 continue;
 
             switch(key) {
-            case Qt::Key_Up:
+            case BobUI::Key_Up:
                 if (p.y() < goal.y()) {
                     candidate = button;
                     bestScore = score;
                 }
                 break;
-            case Qt::Key_Down:
+            case BobUI::Key_Down:
                 if (p.y() > goal.y()) {
                     candidate = button;
                     bestScore = score;
                 }
                 break;
-            case Qt::Key_Left:
+            case BobUI::Key_Left:
                 if (p.x() < goal.x()) {
                     candidate = button;
                     bestScore = score;
                 }
                 break;
-            case Qt::Key_Right:
+            case BobUI::Key_Right:
                 if (p.x() > goal.x()) {
                     candidate = button;
                     bestScore = score;
@@ -286,7 +286,7 @@ void QAbstractButtonPrivate::moveFocus(int key)
     }
 
     if (exclusive
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
         && !QApplicationPrivate::keypadNavigationEnabled()
 #endif
         && candidate
@@ -295,17 +295,17 @@ void QAbstractButtonPrivate::moveFocus(int key)
         candidate->click();
 
     if (candidate) {
-        if (key == Qt::Key_Up || key == Qt::Key_Left)
-            candidate->setFocus(Qt::BacktabFocusReason);
+        if (key == BobUI::Key_Up || key == BobUI::Key_Left)
+            candidate->setFocus(BobUI::BacktabFocusReason);
         else
-            candidate->setFocus(Qt::TabFocusReason);
+            candidate->setFocus(BobUI::TabFocusReason);
     }
 }
 
 void QAbstractButtonPrivate::fixFocusPolicy()
 {
     Q_Q(QAbstractButton);
-#if QT_CONFIG(buttongroup)
+#if BOBUI_CONFIG(buttongroup)
     if (!group && !autoExclusive)
 #else
     if (!autoExclusive)
@@ -317,9 +317,9 @@ void QAbstractButtonPrivate::fixFocusPolicy()
         QAbstractButton *b = buttonList.at(i);
         if (!b->isCheckable())
             continue;
-        b->setFocusPolicy((Qt::FocusPolicy) ((b == q || !q->isCheckable())
-                                         ? (b->focusPolicy() | Qt::TabFocus)
-                                         :  (b->focusPolicy() & ~Qt::TabFocus)));
+        b->setFocusPolicy((BobUI::FocusPolicy) ((b == q || !q->isCheckable())
+                                         ? (b->focusPolicy() | BobUI::TabFocus)
+                                         :  (b->focusPolicy() & ~BobUI::TabFocus)));
     }
 }
 
@@ -327,9 +327,9 @@ void QAbstractButtonPrivate::init()
 {
     Q_Q(QAbstractButton);
 
-    q->setFocusPolicy(Qt::FocusPolicy(q->style()->styleHint(QStyle::SH_Button_FocusPolicy, nullptr, q)));
+    q->setFocusPolicy(BobUI::FocusPolicy(q->style()->styleHint(QStyle::SH_Button_FocusPolicy, nullptr, q)));
     q->setSizePolicy(QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed, controlType));
-    q->setAttribute(Qt::WA_WState_OwnSizePolicy, false);
+    q->setAttribute(BobUI::WA_WState_OwnSizePolicy, false);
     q->setForegroundRole(QPalette::ButtonText);
     q->setBackgroundRole(QPalette::Button);
 }
@@ -352,7 +352,7 @@ void QAbstractButtonPrivate::click()
     bool changeState = true;
     if (checked && queryCheckedButton() == q) {
         // the checked button of an exclusive or autoexclusive group cannot be unchecked
-#if QT_CONFIG(buttongroup)
+#if BOBUI_CONFIG(buttongroup)
         if (group ? group->d_func()->exclusive : autoExclusive)
 #else
         if (autoExclusive)
@@ -380,7 +380,7 @@ void QAbstractButtonPrivate::emitClicked()
     Q_Q(QAbstractButton);
     QPointer<QAbstractButton> guard(q);
     emit q->clicked(checked);
-#if QT_CONFIG(buttongroup)
+#if BOBUI_CONFIG(buttongroup)
     if (guard && group) {
         emit group->idClicked(group->id(q));
         if (guard && group)
@@ -394,7 +394,7 @@ void QAbstractButtonPrivate::emitPressed()
     Q_Q(QAbstractButton);
     QPointer<QAbstractButton> guard(q);
     emit q->pressed();
-#if QT_CONFIG(buttongroup)
+#if BOBUI_CONFIG(buttongroup)
     if (guard && group) {
         emit group->idPressed(group->id(q));
         if (guard && group)
@@ -408,7 +408,7 @@ void QAbstractButtonPrivate::emitReleased()
     Q_Q(QAbstractButton);
     QPointer<QAbstractButton> guard(q);
     emit q->released();
-#if QT_CONFIG(buttongroup)
+#if BOBUI_CONFIG(buttongroup)
     if (guard && group) {
         emit group->idReleased(group->id(q));
         if (guard && group)
@@ -422,7 +422,7 @@ void QAbstractButtonPrivate::emitToggled(bool checked)
     Q_Q(QAbstractButton);
     QPointer<QAbstractButton> guard(q);
     emit q->toggled(checked);
-#if QT_CONFIG(buttongroup)
+#if BOBUI_CONFIG(buttongroup)
     if (guard && group) {
         emit group->idToggled(group->id(q), checked);
         if (guard && group)
@@ -453,7 +453,7 @@ QAbstractButton::QAbstractButton(QWidget *parent)
  */
  QAbstractButton::~QAbstractButton()
 {
-#if QT_CONFIG(buttongroup)
+#if BOBUI_CONFIG(buttongroup)
     Q_D(QAbstractButton);
     if (d->group)
         d->group->removeButton(this);
@@ -493,14 +493,14 @@ void QAbstractButton::setText(const QString &text)
     if (d->text == text)
         return;
     d->text = text;
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     QKeySequence newMnemonic = QKeySequence::mnemonic(text);
     setShortcut(newMnemonic);
 #endif
     d->sizeHint = QSize();
     update();
     updateGeometry();
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     QAccessibleEvent event(this, QAccessible::NameChanged);
     QAccessible::updateAccessibility(&event);
 #endif
@@ -535,7 +535,7 @@ QIcon QAbstractButton::icon() const
     return d->icon;
 }
 
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
 /*!
 \property QAbstractButton::shortcut
 \brief the mnemonic associated with the button
@@ -555,7 +555,7 @@ QKeySequence QAbstractButton::shortcut() const
     Q_D(const QAbstractButton);
     return d->shortcut;
 }
-#endif // QT_NO_SHORTCUT
+#endif // BOBUI_NO_SHORTCUT
 
 /*!
 \property QAbstractButton::checkable
@@ -600,7 +600,7 @@ void QAbstractButton::setChecked(bool checked)
 
     if (!checked && d->queryCheckedButton() == this) {
         // the checked button of an exclusive or autoexclusive group cannot be  unchecked
-#if QT_CONFIG(buttongroup)
+#if BOBUI_CONFIG(buttongroup)
         if (d->group ? d->group->d_func()->exclusive : d->autoExclusive)
             return;
         if (d->group)
@@ -623,7 +623,7 @@ void QAbstractButton::setChecked(bool checked)
     if (guard)
         d->emitToggled(checked);
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     if (guard) {
         QAccessible::State s;
         s.checked = true;
@@ -776,7 +776,7 @@ bool QAbstractButton::autoExclusive() const
     return d->autoExclusive;
 }
 
-#if QT_CONFIG(buttongroup)
+#if BOBUI_CONFIG(buttongroup)
 /*!
   Returns the group that this button belongs to.
 
@@ -790,7 +790,7 @@ QButtonGroup *QAbstractButton::group() const
     Q_D(const QAbstractButton);
     return d->group;
 }
-#endif // QT_CONFIG(buttongroup)
+#endif // BOBUI_CONFIG(buttongroup)
 
 /*!
 Performs an animated click: the button is pressed immediately, and
@@ -810,7 +810,7 @@ void QAbstractButton::animateClick()
     if (!isEnabled())
         return;
     Q_D(QAbstractButton);
-    if (d->checkable && focusPolicy() & Qt::ClickFocus)
+    if (d->checkable && focusPolicy() & BobUI::ClickFocus)
         setFocus();
     setDown(true);
     repaint();
@@ -921,7 +921,7 @@ bool QAbstractButton::event(QEvent *e)
         }
     }
 
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     if (e->type() == QEvent::Shortcut) {
         Q_D(QAbstractButton);
         QShortcutEvent *se = static_cast<QShortcutEvent *>(e);
@@ -931,9 +931,9 @@ bool QAbstractButton::event(QEvent *e)
             if (!d->animateTimer.isActive())
                 animateClick();
         } else {
-            if (focusPolicy() != Qt::NoFocus)
-                setFocus(Qt::ShortcutFocusReason);
-            window()->setAttribute(Qt::WA_KeyboardFocusChange);
+            if (focusPolicy() != BobUI::NoFocus)
+                setFocus(BobUI::ShortcutFocusReason);
+            window()->setAttribute(BobUI::WA_KeyboardFocusChange);
         }
         return true;
     }
@@ -945,7 +945,7 @@ bool QAbstractButton::event(QEvent *e)
 void QAbstractButton::mousePressEvent(QMouseEvent *e)
 {
     Q_D(QAbstractButton);
-    if (e->button() != Qt::LeftButton) {
+    if (e->button() != BobUI::LeftButton) {
         e->ignore();
         return;
     }
@@ -965,7 +965,7 @@ void QAbstractButton::mouseReleaseEvent(QMouseEvent *e)
 {
     Q_D(QAbstractButton);
 
-    if (e->button() != Qt::LeftButton) {
+    if (e->button() != BobUI::LeftButton) {
         e->ignore();
         return;
     }
@@ -993,7 +993,7 @@ void QAbstractButton::mouseReleaseEvent(QMouseEvent *e)
 void QAbstractButton::mouseMoveEvent(QMouseEvent *e)
 {
     Q_D(QAbstractButton);
-    if (!(e->buttons() & Qt::LeftButton) || !d->pressed) {
+    if (!(e->buttons() & BobUI::LeftButton) || !d->pressed) {
         e->ignore();
         return;
     }
@@ -1020,7 +1020,7 @@ void QAbstractButton::keyPressEvent(QKeyEvent *e)
     const auto key = e->key();
     const auto buttonPressKeys = QGuiApplicationPrivate::platformTheme()
                                          ->themeHint(QPlatformTheme::ButtonPressKeys)
-                                         .value<QList<Qt::Key>>();
+                                         .value<QList<BobUI::Key>>();
     if (buttonPressKeys.contains(key) && !e->isAutoRepeat()) {
         setDown(true);
         repaint();
@@ -1029,27 +1029,27 @@ void QAbstractButton::keyPressEvent(QKeyEvent *e)
     }
 
     switch (key) {
-    case Qt::Key_Up:
+    case BobUI::Key_Up:
         next = false;
         Q_FALLTHROUGH();
-    case Qt::Key_Left:
-    case Qt::Key_Right:
-    case Qt::Key_Down: {
-#ifdef QT_KEYPAD_NAVIGATION
+    case BobUI::Key_Left:
+    case BobUI::Key_Right:
+    case BobUI::Key_Down: {
+#ifdef BOBUI_KEYPAD_NAVIGATION
         if ((QApplicationPrivate::keypadNavigationEnabled()
-                && (e->key() == Qt::Key_Left || e->key() == Qt::Key_Right))
-                || (!QApplication::navigationMode() == Qt::NavigationModeKeypadDirectional
-                || (e->key() == Qt::Key_Up || e->key() == Qt::Key_Down))) {
+                && (e->key() == BobUI::Key_Left || e->key() == BobUI::Key_Right))
+                || (!QApplication::navigationMode() == BobUI::NavigationModeKeypadDirectional
+                || (e->key() == BobUI::Key_Up || e->key() == BobUI::Key_Down))) {
             e->ignore();
             return;
         }
 #endif
         QWidget *pw = parentWidget();
         if (d->autoExclusive
-#if QT_CONFIG(buttongroup)
+#if BOBUI_CONFIG(buttongroup)
         || d->group
 #endif
-#if QT_CONFIG(itemviews)
+#if BOBUI_CONFIG(itemviews)
         || (pw && qobject_cast<QAbstractItemView *>(pw->parentWidget()))
 #endif
         ) {
@@ -1063,9 +1063,9 @@ void QAbstractButton::keyPressEvent(QKeyEvent *e)
         } else {
             // Prefer parent widget, use this if parent is absent
             QWidget *w = pw ? pw : this;
-            bool reverse = (w->layoutDirection() == Qt::RightToLeft);
-            if ((e->key() == Qt::Key_Left && !reverse)
-                || (e->key() == Qt::Key_Right && reverse)) {
+            bool reverse = (w->layoutDirection() == BobUI::RightToLeft);
+            if ((e->key() == BobUI::Key_Left && !reverse)
+                || (e->key() == BobUI::Key_Right && reverse)) {
                 next = false;
             }
             focusNextPrevChild(next);
@@ -1073,7 +1073,7 @@ void QAbstractButton::keyPressEvent(QKeyEvent *e)
         break;
     }
     default:
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
         if (e->matches(QKeySequence::Cancel) && d->down) {
             setDown(false);
             repaint();
@@ -1095,7 +1095,7 @@ void QAbstractButton::keyReleaseEvent(QKeyEvent *e)
 
     const auto buttonPressKeys = QGuiApplicationPrivate::platformTheme()
                                          ->themeHint(QPlatformTheme::ButtonPressKeys)
-                                         .value<QList<Qt::Key>>();
+                                         .value<QList<BobUI::Key>>();
     if (buttonPressKeys.contains(e->key()) && !e->isAutoRepeat() && d->down) {
         d->click();
         return;
@@ -1106,7 +1106,7 @@ void QAbstractButton::keyReleaseEvent(QKeyEvent *e)
 
 /*!\reimp
  */
-void QAbstractButton::timerEvent(QTimerEvent *e)
+void QAbstractButton::timerEvent(BOBUIimerEvent *e)
 {
     Q_D(QAbstractButton);
     if (e->timerId() == d->repeatTimer.timerId()) {
@@ -1131,7 +1131,7 @@ void QAbstractButton::timerEvent(QTimerEvent *e)
 void QAbstractButton::focusInEvent(QFocusEvent *e)
 {
     Q_D(QAbstractButton);
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     if (!QApplicationPrivate::keypadNavigationEnabled())
 #endif
     d->fixFocusPolicy();
@@ -1142,7 +1142,7 @@ void QAbstractButton::focusInEvent(QFocusEvent *e)
 void QAbstractButton::focusOutEvent(QFocusEvent *e)
 {
     Q_D(QAbstractButton);
-    if (e->reason() != Qt::PopupFocusReason && d->down) {
+    if (e->reason() != BobUI::PopupFocusReason && d->down) {
         d->down = false;
         d->emitReleased();
     }
@@ -1267,6 +1267,6 @@ void QAbstractButton::setIconSize(const QSize &size)
 
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qabstractbutton.cpp"

@@ -1,8 +1,8 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2021 Intel Corporation.
 // Copyright (C) 2012 Giuseppe D'Angelo <dangelog@gmail.com>.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 // for rand_s, _CRT_RAND_S must be #defined before #including stdlib.h.
 // put it at the beginning so some indirect inclusion doesn't break it
@@ -28,11 +28,11 @@
 #include <private/qrandom_p.h>
 #include <private/qsimd_p.h>
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 #include <qcoreapplication.h>
 #include <qrandom.h>
 #include <private/qlocale_tools_p.h>
-#endif // QT_BOOTSTRAPPED
+#endif // BOBUI_BOOTSTRAPPED
 
 // Implementation of SipHash algorithm
 #include "../../3rdparty/siphash/siphash.cpp"
@@ -40,7 +40,7 @@
 #include <array>
 #include <limits.h>
 
-#if defined(QT_NO_DEBUG) && !defined(NDEBUG)
+#if defined(BOBUI_NO_DEBUG) && !defined(NDEBUG)
 #  define NDEBUG
 #endif
 #include <assert.h>
@@ -51,13 +51,13 @@
 #  define Q_DECL_HOT_FUNCTION
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-void qt_from_latin1(char16_t *dst, const char *str, size_t size) noexcept;  // qstring.cpp
+void bobui_from_latin1(char16_t *dst, const char *str, size_t size) noexcept;  // qstring.cpp
 
 // We assume that pointers and size_t have the same size. If that assumption should fail
 // on a platform the code selecting the different methods below needs to be fixed.
-static_assert(sizeof(size_t) == QT_POINTER_SIZE, "size_t and pointers have different size.");
+static_assert(sizeof(size_t) == BOBUI_POINTER_SIZE, "size_t and pointers have different size.");
 
 namespace {
 struct HashSeedStorage
@@ -65,7 +65,7 @@ struct HashSeedStorage
     static constexpr int SeedCount = 2;
     QBasicAtomicInteger<quintptr> seeds[SeedCount] = { Q_BASIC_ATOMIC_INITIALIZER(0), Q_BASIC_ATOMIC_INITIALIZER(0) };
 
-#if !QT_SUPPORTS_INIT_PRIORITY || defined(QT_BOOTSTRAPPED)
+#if !BOBUI_SUPPORTS_INIT_PRIORITY || defined(BOBUI_BOOTSTRAPPED)
     constexpr HashSeedStorage() = default;
 #else
     HashSeedStorage() { initialize(0); }
@@ -89,7 +89,7 @@ struct HashSeedStorage
 
     void resetSeed()
     {
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
         if (state().state < AlreadyInitialized)
             return;
 
@@ -113,18 +113,18 @@ private:
 [[maybe_unused]] HashSeedStorage::StateResult HashSeedStorage::initialize(int which) noexcept
 {
     StateResult result = { 0, OverriddenByEnvironment };
-#ifdef QT_BOOTSTRAPPED
+#ifdef BOBUI_BOOTSTRAPPED
     Q_UNUSED(which);
     Q_UNREACHABLE_RETURN(result);
 #else
     // can't use qEnvironmentVariableIntValue (reentrancy)
-    const char *seedstr = getenv("QT_HASH_SEED");
+    const char *seedstr = getenv("BOBUI_HASH_SEED");
     if (seedstr) {
         auto r = qstrntoll(seedstr, strlen(seedstr), 10);
         if (r.used > 0 && size_t(r.used) == strlen(seedstr)) {
             if (r.result) {
                 // can't use qWarning here (reentrancy)
-                fprintf(stderr, "QT_HASH_SEED: forced seed value is not 0; ignored.\n");
+                fprintf(stderr, "BOBUI_HASH_SEED: forced seed value is not 0; ignored.\n");
             }
 
             // we don't have to store to the seed, since it's pre-initialized by
@@ -134,7 +134,7 @@ private:
     }
 
     // update the full seed
-    auto x = qt_initial_random_value();
+    auto x = bobui_initial_random_value();
     for (int i = 0; i < SeedCount; ++i) {
         seeds[i].storeRelaxed(x.data[i]);
         if (which == i)
@@ -150,9 +150,9 @@ inline HashSeedStorage::StateResult HashSeedStorage::state(int which)
     constexpr quintptr BadSeed = quintptr(Q_UINT64_C(0x5555'5555'5555'5555));
     StateResult result = { BadSeed, AlreadyInitialized };
 
-#if defined(QT_BOOTSTRAPPED)
+#if defined(BOBUI_BOOTSTRAPPED)
     result = { 0, OverriddenByEnvironment };
-#elif !QT_SUPPORTS_INIT_PRIORITY
+#elif !BOBUI_SUPPORTS_INIT_PRIORITY
     // dynamic initialization
     static auto once = [&]() {
         result = initialize(which);
@@ -175,13 +175,13 @@ Q_DECL_INIT_PRIORITY(05)
 #else
 Q_CONSTINIT
 #endif
-static HashSeedStorage qt_qhash_seed;
+static HashSeedStorage bobui_qhash_seed;
 
 /*
  * Hashing for memory segments is based on the public domain MurmurHash2 by
  * Austin Appleby. See http://murmurhash.googlepages.com/
  */
-#if QT_POINTER_SIZE == 4
+#if BOBUI_POINTER_SIZE == 4
 Q_NEVER_INLINE Q_DECL_HOT_FUNCTION
 static inline uint murmurhash(const void *key, uint len, uint seed) noexcept
 {
@@ -298,7 +298,7 @@ template <ZeroExtension = None> static size_t
 qHashBits_fallback(const uchar *p, size_t size, size_t seed, size_t seed2) noexcept;
 template <> size_t qHashBits_fallback<None>(const uchar *p, size_t size, size_t seed, size_t seed2) noexcept
 {
-    if (size <= QT_POINTER_SIZE)
+    if (size <= BOBUI_POINTER_SIZE)
         return murmurhash(p, size, seed);
 
     return siphash(reinterpret_cast<const uchar *>(p), size, seed, seed2);
@@ -310,8 +310,8 @@ template <> size_t qHashBits_fallback<ByteToWord>(const uchar *data, size_t size
         // Quick, "inlined" version for very short blocks
         std::copy_n(data, size, dest);
     };
-    if (size <= QT_POINTER_SIZE / 2) {
-        std::array<char16_t, QT_POINTER_SIZE / 2> buf;
+    if (size <= BOBUI_POINTER_SIZE / 2) {
+        std::array<char16_t, BOBUI_POINTER_SIZE / 2> buf;
         quick_from_latin1(buf.data(), data, size);
         return murmurhash(buf.data(), size * 2, seed);
     }
@@ -321,12 +321,12 @@ template <> size_t qHashBits_fallback<ByteToWord>(const uchar *data, size_t size
     SipHash<> siphash(size * 2, seed, seed2);
     ptrdiff_t offset = 0;
     for ( ; offset + buf.size() < size; offset += buf.size()) {
-        qt_from_latin1(buf.data(), reinterpret_cast<const char *>(data) + offset, buf.size());
+        bobui_from_latin1(buf.data(), reinterpret_cast<const char *>(data) + offset, buf.size());
         siphash.addBlock(reinterpret_cast<uint8_t *>(buf.data()), sizeof(buf));
     }
     if (size_t n = size - offset; n > TailSizeMask) {
         n &= ~TailSizeMask;
-        qt_from_latin1(buf.data(), reinterpret_cast<const char *>(data) + offset, n);
+        bobui_from_latin1(buf.data(), reinterpret_cast<const char *>(data) + offset, n);
         siphash.addBlock(reinterpret_cast<uint8_t *>(buf.data()), n * 2);
         offset += n;
     }
@@ -346,18 +346,18 @@ template <> size_t qHashBits_fallback<ByteToWord>(const uchar *data, size_t size
 // specific case and overcome the problem by correctly discarding the
 // out-of-range bits. To allow building the code with sanitizer,
 // QHASH_AES_SANITIZER_BUILD is used to disable aeshash() usage.
-#if QT_COMPILER_SUPPORTS_HERE(AES) && QT_COMPILER_SUPPORTS_HERE(SSE4_2) && \
+#if BOBUI_COMPILER_SUPPORTS_HERE(AES) && BOBUI_COMPILER_SUPPORTS_HERE(SSE4_2) && \
     !defined(QHASH_AES_SANITIZER_BUILD)
 #  define AESHASH
-#  define QT_FUNCTION_TARGET_STRING_AES_AVX2    "avx2,aes"
-#  define QT_FUNCTION_TARGET_STRING_AES_AVX512          \
-    QT_FUNCTION_TARGET_STRING_ARCH_SKYLAKE_AVX512 ","   \
-    QT_FUNCTION_TARGET_STRING_AES
-#  define QT_FUNCTION_TARGET_STRING_VAES_AVX512         \
-    QT_FUNCTION_TARGET_STRING_ARCH_SKYLAKE_AVX512 ","   \
-    QT_FUNCTION_TARGET_STRING_VAES
+#  define BOBUI_FUNCTION_TARGET_STRING_AES_AVX2    "avx2,aes"
+#  define BOBUI_FUNCTION_TARGET_STRING_AES_AVX512          \
+    BOBUI_FUNCTION_TARGET_STRING_ARCH_SKYLAKE_AVX512 ","   \
+    BOBUI_FUNCTION_TARGET_STRING_AES
+#  define BOBUI_FUNCTION_TARGET_STRING_VAES_AVX512         \
+    BOBUI_FUNCTION_TARGET_STRING_ARCH_SKYLAKE_AVX512 ","   \
+    BOBUI_FUNCTION_TARGET_STRING_VAES
 #  undef QHASH_AES_SANITIZER_BUILD
-#  if QT_POINTER_SIZE == 8
+#  if BOBUI_POINTER_SIZE == 8
 #    define mm_set1_epz     _mm_set1_epi64x
 #    define mm_cvtsz_si128  _mm_cvtsi64_si128
 #    define mm_cvtsi128_sz  _mm_cvtsi128_si64
@@ -401,11 +401,11 @@ namespace {
     }
 
     template <ZeroExtension> static __m128i loadu128(const void *ptr);
-    template <> Q_ALWAYS_INLINE QT_FUNCTION_TARGET(AES) __m128i loadu128<None>(const void *ptr)
+    template <> Q_ALWAYS_INLINE BOBUI_FUNCTION_TARGET(AES) __m128i loadu128<None>(const void *ptr)
     {
         return _mm_loadu_si128(reinterpret_cast<const __m128i *>(ptr));
     }
-    template <> Q_ALWAYS_INLINE QT_FUNCTION_TARGET(AES) __m128i loadu128<ByteToWord>(const void *ptr)
+    template <> Q_ALWAYS_INLINE BOBUI_FUNCTION_TARGET(AES) __m128i loadu128<ByteToWord>(const void *ptr)
     {
         // use a MOVQ followed by PMOVZXBW
         // the compiler usually combines them as a single, loading PMOVZXBW
@@ -414,7 +414,7 @@ namespace {
     }
 
     // hash 16 bytes, running 3 scramble rounds of AES on itself (like label "final1")
-    Q_ALWAYS_INLINE static void QT_FUNCTION_TARGET(AES) QT_VECTORCALL
+    Q_ALWAYS_INLINE static void BOBUI_FUNCTION_TARGET(AES) BOBUI_VECTORCALL
     hash16bytes(__m128i &state0, __m128i data)
     {
         state0 = _mm_xor_si128(state0, data);
@@ -425,7 +425,7 @@ namespace {
 
     // hash twice 16 bytes, running 2 scramble rounds of AES on itself
     template <ZeroExtension ZX>
-    static void QT_FUNCTION_TARGET(AES) QT_VECTORCALL
+    static void BOBUI_FUNCTION_TARGET(AES) BOBUI_VECTORCALL
     hash2x16bytes(__m128i &state0, __m128i &state1, const __m128i *src0, const __m128i *src1)
     {
         __m128i data0 = loadu128<ZX>(src0);
@@ -442,9 +442,9 @@ namespace {
     {
         __m128i state0;
         __m128i mseed2;
-        AESHashSeed(size_t seed, size_t seed2) QT_FUNCTION_TARGET(AES);
-        __m128i state1() const QT_FUNCTION_TARGET(AES);
-        __m256i state0_256() const QT_FUNCTION_TARGET(AES_AVX2)
+        AESHashSeed(size_t seed, size_t seed2) BOBUI_FUNCTION_TARGET(AES);
+        __m128i state1() const BOBUI_FUNCTION_TARGET(AES);
+        __m256i state0_256() const BOBUI_FUNCTION_TARGET(AES_AVX2)
         { return _mm256_set_m128i(state1(), state0); }
     };
 } // unnamed namespace
@@ -477,7 +477,7 @@ Q_ALWAYS_INLINE __m128i AESHashSeed::state1() const
 }
 
 template <ZeroExtension ZX>
-static size_t QT_FUNCTION_TARGET(AES) QT_VECTORCALL
+static size_t BOBUI_FUNCTION_TARGET(AES) BOBUI_VECTORCALL
 aeshash128_16to32(__m128i state0, __m128i state1, const __m128i *src, const __m128i *srcend)
 {
     {
@@ -511,7 +511,7 @@ static const qint8 shufflecontrol[] = {
 };
 
 template <ZeroExtension ZX>
-static size_t QT_FUNCTION_TARGET(AES) QT_VECTORCALL
+static size_t BOBUI_FUNCTION_TARGET(AES) BOBUI_VECTORCALL
 aeshash128_lt16(__m128i state0, const __m128i *src, const __m128i *srcend, size_t len)
 {
     if (len) {
@@ -541,7 +541,7 @@ aeshash128_lt16(__m128i state0, const __m128i *src, const __m128i *srcend, size_
 }
 
 template <ZeroExtension ZX>
-static size_t QT_FUNCTION_TARGET(AES) QT_VECTORCALL
+static size_t BOBUI_FUNCTION_TARGET(AES) BOBUI_VECTORCALL
 aeshash128_ge32(__m128i state0, __m128i state1, const __m128i *src, const __m128i *srcend)
 {
     // main loop: scramble two 16-byte blocks
@@ -551,13 +551,13 @@ aeshash128_ge32(__m128i state0, __m128i state1, const __m128i *src, const __m128
     return aeshash128_16to32<ZX>(state0, state1, src, srcend);
 }
 
-#  if QT_COMPILER_SUPPORTS_HERE(VAES)
+#  if BOBUI_COMPILER_SUPPORTS_HERE(VAES)
 template <ZeroExtension> static __m256i loadu256(const void *ptr);
-template <> Q_ALWAYS_INLINE QT_FUNCTION_TARGET(VAES) __m256i loadu256<None>(const void *ptr)
+template <> Q_ALWAYS_INLINE BOBUI_FUNCTION_TARGET(VAES) __m256i loadu256<None>(const void *ptr)
 {
     return _mm256_loadu_si256(reinterpret_cast<const __m256i *>(ptr));
 }
-template <> Q_ALWAYS_INLINE QT_FUNCTION_TARGET(VAES) __m256i loadu256<ByteToWord>(const void *ptr)
+template <> Q_ALWAYS_INLINE BOBUI_FUNCTION_TARGET(VAES) __m256i loadu256<ByteToWord>(const void *ptr)
 {
     // VPMOVZXBW xmm, ymm
     __m128i data = _mm_loadu_si128(reinterpret_cast<const __m128i *>(ptr));
@@ -565,7 +565,7 @@ template <> Q_ALWAYS_INLINE QT_FUNCTION_TARGET(VAES) __m256i loadu256<ByteToWord
 }
 
 template <ZeroExtension ZX>
-static size_t QT_FUNCTION_TARGET(VAES_AVX512) QT_VECTORCALL
+static size_t BOBUI_FUNCTION_TARGET(VAES_AVX512) BOBUI_VECTORCALL
 aeshash256_lt32_avx256(__m256i state0, const uchar *p, size_t len)
 {
     __m128i state0_128 = _mm256_castsi256_si128(state0);
@@ -599,10 +599,10 @@ aeshash256_lt32_avx256(__m256i state0, const uchar *p, size_t len)
 }
 
 template <ZeroExtension ZX>
-static size_t QT_FUNCTION_TARGET(VAES) QT_VECTORCALL
+static size_t BOBUI_FUNCTION_TARGET(VAES) BOBUI_VECTORCALL
 aeshash256_ge32(__m256i state0, const __m128i *s, const __m128i *end, size_t len)
 {
-    static const auto hash32bytes = [](__m256i &state0, __m256i data) QT_FUNCTION_TARGET(VAES) {
+    static const auto hash32bytes = [](__m256i &state0, __m256i data) BOBUI_FUNCTION_TARGET(VAES) {
         state0 = _mm256_xor_si256(state0, data);
         state0 = _mm256_aesenc_epi128(state0, state0);
         state0 = _mm256_aesenc_epi128(state0, state0);
@@ -611,7 +611,7 @@ aeshash256_ge32(__m256i state0, const __m128i *s, const __m128i *end, size_t len
 
     // hash twice 32 bytes, running 2 scramble rounds of AES on itself
     const auto hash2x32bytes = [](__m256i &state0, __m256i &state1, const void *src0,
-            const void *src1) QT_FUNCTION_TARGET(VAES) {
+            const void *src1) BOBUI_FUNCTION_TARGET(VAES) {
         __m256i data0 = loadu256<ZX>(src0);
         __m256i data1 = loadu256<ZX>(src1);
         state0 = _mm256_xor_si256(data0, state0);
@@ -651,7 +651,7 @@ aeshash256_ge32(__m256i state0, const __m128i *s, const __m128i *end, size_t len
 }
 
 template <ZeroExtension ZX>
-static size_t QT_FUNCTION_TARGET(VAES)
+static size_t BOBUI_FUNCTION_TARGET(VAES)
 aeshash256(const uchar *p, size_t len, size_t seed, size_t seed2) noexcept
 {
     AESHashSeed state(seed, seed2);
@@ -668,7 +668,7 @@ aeshash256(const uchar *p, size_t len, size_t seed, size_t seed2) noexcept
 }
 
 template <ZeroExtension ZX>
-static size_t QT_FUNCTION_TARGET(VAES_AVX512)
+static size_t BOBUI_FUNCTION_TARGET(VAES_AVX512)
 aeshash256_avx256(const uchar *p, size_t len, size_t seed, size_t seed2) noexcept
 {
     AESHashSeed state(seed, seed2);
@@ -683,7 +683,7 @@ aeshash256_avx256(const uchar *p, size_t len, size_t seed, size_t seed2) noexcep
 #  endif // VAES
 
 template <ZeroExtension ZX>
-static size_t QT_FUNCTION_TARGET(AES)
+static size_t BOBUI_FUNCTION_TARGET(AES)
 aeshash128(const uchar *p, size_t len, size_t seed, size_t seed2) noexcept
 {
     AESHashSeed state(seed, seed2);
@@ -705,7 +705,7 @@ static size_t aeshash(const uchar *p, size_t len, size_t seed, size_t seed2) noe
     if constexpr (ZX == ByteToWord)
         len *= 2;           // see note above on ZX == ByteToWord hashing
 
-#  if QT_COMPILER_SUPPORTS_HERE(VAES)
+#  if BOBUI_COMPILER_SUPPORTS_HERE(VAES)
     if (qCpuHasFeature(VAES)) {
         if (qCpuHasFeature(AVX512VL))
             return aeshash256_avx256<ZX>(p, len, seed, seed2);
@@ -716,12 +716,12 @@ static size_t aeshash(const uchar *p, size_t len, size_t seed, size_t seed2) noe
 }
 #endif // x86 AESNI
 
-#if defined(Q_PROCESSOR_ARM) && QT_COMPILER_SUPPORTS_HERE(CRYPTO) && !defined(QHASH_AES_SANITIZER_BUILD) && !defined(QT_BOOTSTRAPPED)
-QT_FUNCTION_TARGET(AES)
+#if defined(Q_PROCESSOR_ARM) && BOBUI_COMPILER_SUPPORTS_HERE(CRYPTO) && !defined(QHASH_AES_SANITIZER_BUILD) && !defined(BOBUI_BOOTSTRAPPED)
+BOBUI_FUNCTION_TARGET(AES)
 static size_t aeshash(const uchar *p, size_t len, size_t seed, size_t seed2) noexcept
 {
     uint8x16_t key;
-#  if QT_POINTER_SIZE == 8
+#  if BOBUI_POINTER_SIZE == 8
     uint64x2_t vseed = vcombine_u64(vcreate_u64(seed), vcreate_u64(seed2));
     key = vreinterpretq_u8_u64(vseed);
 #  else
@@ -733,7 +733,7 @@ static size_t aeshash(const uchar *p, size_t len, size_t seed, size_t seed2) noe
 
     // Compared to x86 AES, ARM splits each round into two instructions
     // and includes the pre-xor instead of the post-xor.
-    const auto hash16bytes = [](uint8x16_t &state0, uint8x16_t data) QT_FUNCTION_TARGET(AES) {
+    const auto hash16bytes = [](uint8x16_t &state0, uint8x16_t data) BOBUI_FUNCTION_TARGET(AES) {
         auto state1 = state0;
         state0 = vaeseq_u8(state0, data);
         state0 = vaesmcq_u8(state0);
@@ -840,7 +840,7 @@ lt8:
     }
 
     // extract state0
-#  if QT_POINTER_SIZE == 8
+#  if BOBUI_POINTER_SIZE == 8
     return vgetq_lane_u64(vreinterpretq_u64_u8(state0), 0);
 #  else
     return vgetq_lane_u32(vreinterpretq_u32_u8(state0), 0);
@@ -850,22 +850,22 @@ lt8:
 
 size_t qHashBits(const void *p, size_t size, size_t seed) noexcept
 {
-#ifdef QT_BOOTSTRAPPED
+#ifdef BOBUI_BOOTSTRAPPED
     // the seed is always 0 in bootstrapped mode (no seed generation code),
     // so help the compiler do dead code elimination
     seed = 0;
 #endif
     // mix in the length as a secondary seed. For seed == 0, seed2 must be
-    // size, to match what we used to do prior to Qt 6.2.
+    // size, to match what we used to do prior to BobUI 6.2.
     size_t seed2 = size;
     if (seed)
-        seed2 = qt_qhash_seed.currentSeed(1);
+        seed2 = bobui_qhash_seed.currentSeed(1);
 
     auto data = reinterpret_cast<const uchar *>(p);
 #ifdef AESHASH
     if (seed && qCpuHasFeature(AES) && qCpuHasFeature(SSE4_2))
         return aeshash(data, size, seed, seed2);
-#elif defined(Q_PROCESSOR_ARM) && QT_COMPILER_SUPPORTS_HERE(CRYPTO) && !defined(QHASH_AES_SANITIZER_BUILD) && !defined(QT_BOOTSTRAPPED)
+#elif defined(Q_PROCESSOR_ARM) && BOBUI_COMPILER_SUPPORTS_HERE(CRYPTO) && !defined(QHASH_AES_SANITIZER_BUILD) && !defined(BOBUI_BOOTSTRAPPED)
     if (seed && qCpuHasFeature(AES))
         return aeshash(data, size, seed, seed2);
 #endif
@@ -883,7 +883,7 @@ size_t qHash(QStringView key, size_t seed) noexcept
     return qHashBits(key.data(), key.size()*sizeof(QChar), seed);
 }
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 size_t qHash(const QBitArray &bitArray, size_t seed) noexcept
 {
     qsizetype m = bitArray.d.size() - 1;
@@ -900,7 +900,7 @@ size_t qHash(const QBitArray &bitArray, size_t seed) noexcept
 
 size_t qHash(QLatin1StringView key, size_t seed) noexcept
 {
-#ifdef QT_BOOTSTRAPPED
+#ifdef BOBUI_BOOTSTRAPPED
     // the seed is always 0 in bootstrapped mode (no seed generation code),
     // so help the compiler do dead code elimination
     seed = 0;
@@ -913,7 +913,7 @@ size_t qHash(QLatin1StringView key, size_t seed) noexcept
     // Multiplied by 2 to match the byte size of the equiavlent UTF-16 string.
     size_t seed2 = size * 2;
     if (seed)
-        seed2 = qt_qhash_seed.currentSeed(1);
+        seed2 = bobui_qhash_seed.currentSeed(1);
 
 #if defined(AESHASH)
     if (seed && qCpuHasFeature(AES) && qCpuHasFeature(SSE4_2))
@@ -924,7 +924,7 @@ size_t qHash(QLatin1StringView key, size_t seed) noexcept
 
 /*!
     \class QHashSeed
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 6.2
 
     The QHashSeed class is used to convey the QHash seed. This is used
@@ -950,7 +950,7 @@ size_t qHash(QLatin1StringView key, size_t seed) noexcept
     deterministic value, which the qHash() functions will take to mean that
     they should use a fixed hashing function on their data too. This
     functionality is only meant to be used in debugging applications. This
-    behavior can also be controlled by setting the \c QT_HASH_SEED environment
+    behavior can also be controlled by setting the \c BOBUI_HASH_SEED environment
     variable to the value zero (any other value is ignored).
 
     \sa QHash, QRandomGenerator
@@ -973,17 +973,17 @@ size_t qHash(QLatin1StringView key, size_t seed) noexcept
 
     Returns the current global QHash seed. The value returned by this function
     will be zero if setDeterministicGlobalSeed() has been called or if the
-    \c{QT_HASH_SEED} environment variable is set to zero.
+    \c{BOBUI_HASH_SEED} environment variable is set to zero.
  */
 QHashSeed QHashSeed::globalSeed() noexcept
 {
-    return qt_qhash_seed.currentSeed(0);
+    return bobui_qhash_seed.currentSeed(0);
 }
 
 /*!
     \threadsafe
 
-    Forces the Qt hash seed to a deterministic value (zero) and asks the
+    Forces the BobUI hash seed to a deterministic value (zero) and asks the
     qHash() functions to use a pre-determined hashing function. This mode is
     only useful for debugging and should not be used in production code.
 
@@ -991,30 +991,30 @@ QHashSeed QHashSeed::globalSeed() noexcept
  */
 void QHashSeed::setDeterministicGlobalSeed()
 {
-    qt_qhash_seed.clearSeed();
+    bobui_qhash_seed.clearSeed();
 }
 
 /*!
     \threadsafe
 
-    Reseeds the Qt hashing seed to a new, random value. Calling this function
+    Reseeds the BobUI hashing seed to a new, random value. Calling this function
     is not necessary, but long-running applications may want to do so after a
     long period of time in which information about its hash may have been
     exposed to potential attackers.
 
-    If the environment variable \c QT_HASH_SEED is set to zero, calling this
+    If the environment variable \c BOBUI_HASH_SEED is set to zero, calling this
     function will result in a no-op.
 
-    Qt never calls this function during the execution of the application, but
-    unless the \c QT_HASH_SEED variable is set to 0, the hash seed returned by
+    BobUI never calls this function during the execution of the application, but
+    unless the \c BOBUI_HASH_SEED variable is set to 0, the hash seed returned by
     globalSeed() will be a random value as if this function had been called.
  */
 void QHashSeed::resetRandomGlobalSeed()
 {
-    qt_qhash_seed.resetSeed();
+    bobui_qhash_seed.resetSeed();
 }
 
-#if QT_DEPRECATED_SINCE(6,6)
+#if BOBUI_DEPRECATED_SINCE(6,6)
 /*! \relates QHash
     \since 5.6
     \deprecated [6.6] Use QHashSeed::globalSeed() instead.
@@ -1042,7 +1042,7 @@ int qGlobalQHashSeed()
     is needed. We discourage to do it in production code as it can make your
     application susceptible to \l{algorithmic complexity attacks}.
 
-    From Qt 5.10 and onwards, the only allowed values are 0 and -1. Passing the
+    From BobUI 5.10 and onwards, the only allowed values are 0 and -1. Passing the
     value -1 will reinitialize the global QHash seed to a random value, while
     the value of 0 is used to request a stable algorithm for C++ primitive
     types types (like \c int) and string types (QString, QByteArray).
@@ -1050,7 +1050,7 @@ int qGlobalQHashSeed()
     The seed is set in any newly created QHash. See \l{qHash} about how this seed
     is being used by QHash.
 
-    If the environment variable \c QT_HASH_SEED is set, calling this function will
+    If the environment variable \c BOBUI_HASH_SEED is set, calling this function will
     result in a no-op.
 
     \sa QHashSeed::globalSeed(), QHashSeed
@@ -1067,24 +1067,24 @@ void qSetGlobalQHashSeed(int newSeed)
         fprintf(stderr, "qSetGlobalQHashSeed: forced seed value is not 0; ignoring call\n");
     }
 }
-#endif  // QT_DEPRECATED_SINCE(6,6)
+#endif  // BOBUI_DEPRECATED_SINCE(6,6)
 
 /*!
     \internal
 
-    Private copy of the implementation of the Qt 4 qHash algorithm for strings,
+    Private copy of the implementation of the BobUI 4 qHash algorithm for strings,
     (that is, QChar-based arrays, so all QString-like classes),
     to be used wherever the result is somehow stored or reused across multiple
-    Qt versions. The public qHash implementation can change at any time,
+    BobUI versions. The public qHash implementation can change at any time,
     therefore one must not rely on the fact that it will always give the same
     results.
 
-    The qt_hash functions must *never* change their results.
+    The bobui_hash functions must *never* change their results.
 
     This function can hash discontiguous memory by invoking it on each chunk,
     passing the previous's result in the next call's \a chained argument.
 */
-uint qt_hash(QStringView key, uint chained) noexcept
+uint bobui_hash(QStringView key, uint chained) noexcept
 {
     uint h = chained;
 
@@ -1171,9 +1171,9 @@ uint qt_hash(QStringView key, uint chained) noexcept
     \snippet code/src_corelib_tools_qhash.cpp qhashrange
 
     It bears repeating that the implementation of qHashRange() - like
-    the qHash() overloads offered by Qt - may change at any time. You
+    the qHash() overloads offered by BobUI - may change at any time. You
     \b{must not} rely on the fact that qHashRange() will give the same
-    results (for the same inputs) across different Qt versions, even
+    results (for the same inputs) across different BobUI versions, even
     if qHash() for the element type would.
 
     \sa qHashBits(), qHashRangeCommutative()
@@ -1206,10 +1206,10 @@ uint qt_hash(QStringView key, uint chained) noexcept
     \snippet code/src_corelib_tools_qhash.cpp qhashrangecommutative
 
     It bears repeating that the implementation of
-    qHashRangeCommutative() - like the qHash() overloads offered by Qt
+    qHashRangeCommutative() - like the qHash() overloads offered by BobUI
     - may change at any time. You \b{must not} rely on the fact that
     qHashRangeCommutative() will give the same results (for the same
-    inputs) across different Qt versions, even if qHash() for the
+    inputs) across different BobUI versions, even if qHash() for the
     element type would.
 
     \sa qHashBits(), qHashRange()
@@ -1233,9 +1233,9 @@ uint qt_hash(QStringView key, uint chained) noexcept
     padding, you should use qHashRange() instead.
 
     It bears repeating that the implementation of qHashBits() - like
-    the qHash() overloads offered by Qt - may change at any time. You
+    the qHash() overloads offered by BobUI - may change at any time. You
     \b{must not} rely on the fact that qHashBits() will give the same
-    results (for the same inputs) across different Qt versions.
+    results (for the same inputs) across different BobUI versions.
 
     \sa qHashRange(), qHashRangeCommutative()
 */
@@ -1249,7 +1249,7 @@ uint qt_hash(QStringView key, uint chained) noexcept
     \note This is qHash(bool), constrained to accept only arguments of type bool,
     not arguments of types that merely convert to bool.
 
-    \note In Qt versions prior to 6.9, this overload was unintendedly provided by
+    \note In BobUI versions prior to 6.9, this overload was unintendedly provided by
     an undocumented 1-to-2-arg qHash adapter template function, with identical behavior.
 */
 
@@ -1409,10 +1409,10 @@ size_t qHash(long double key, size_t seed) noexcept
     \since 6.5
     \qhashbuiltin
 
-    \note Prior to Qt 6.5, unscoped enums relied on the integer overloads of this
+    \note Prior to BobUI 6.5, unscoped enums relied on the integer overloads of this
     function due to implicit conversion to their underlying integer types.
     For scoped enums, you had to implement an overload yourself. This is still the
-    backwards-compatible fix to remain compatible with older Qt versions.
+    backwards-compatible fix to remain compatible with older BobUI versions.
 */
 
 /*! \fn size_t qHash(const QChar key, size_t seed = 0)
@@ -1472,7 +1472,7 @@ size_t qHash(long double key, size_t seed) noexcept
 
 /*!
     \class QHash
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QHash class is a template class that provides a hash-table-based dictionary.
     \compares equality
 
@@ -1481,7 +1481,7 @@ size_t qHash(long double key, size_t seed) noexcept
 
     \reentrant
 
-    QHash\<Key, T\> is one of Qt's generic \l{container classes}, where
+    QHash\<Key, T\> is one of BobUI's generic \l{container classes}, where
     \a Key is the type used for lookup keys and \a T is the mapped value
     type. It stores (key, value) pairs and provides very fast lookup of
     the value associated with a key.
@@ -1624,15 +1624,15 @@ size_t qHash(long double key, size_t seed) noexcept
     seed the calculation of the hash function. This seed is provided by QHash
     in order to prevent a family of \l{algorithmic complexity attacks}.
 
-    \note In Qt 6 it is possible to define a \c{qHash()} overload
+    \note In BobUI 6 it is possible to define a \c{qHash()} overload
     taking only one argument; support for this is deprecated. Starting
-    with Qt 7, it will be mandatory to use a two-arguments overload. If
+    with BobUI 7, it will be mandatory to use a two-arguments overload. If
     both a one-argument and a two-arguments overload are defined for a
     key type, the latter is used by QHash (note that you can simply
     define a two-arguments version, and use a default value for the
-    seed parameter). In Qt 6 it is possible to disable support for the
+    seed parameter). In BobUI 6 it is possible to disable support for the
     single argument qHash overload by defining the
-    \c{QT_NO_SINGLE_ARGUMENT_QHASH_OVERLOAD} macro.
+    \c{BOBUI_NO_SINGLE_ARGUMENT_QHASH_OVERLOAD} macro.
 
     The second way to provide a hashing function is by specializing
     the \c{std::hash} class for the key type \c{K}, and providing a
@@ -1648,11 +1648,11 @@ size_t qHash(long double key, size_t seed) noexcept
     If both a \c{qHash()} overload and a \c{std::hash} specializations
     are provided for a type, then the \c{qHash()} overload is preferred.
 
-    Here's a partial list of the C++ and Qt types that can serve as keys in a
+    Here's a partial list of the C++ and BobUI types that can serve as keys in a
     QHash: any integer type (char, unsigned long, etc.), any pointer type,
     QChar, QString, and QByteArray. For all of these, the \c <QHash> header
     defines a qHash() function that computes an adequate hash value. Many other
-    Qt classes also declare a qHash overload for their type; please refer to
+    BobUI classes also declare a qHash overload for their type; please refer to
     the documentation of each class.
 
     If you want to use other types as the key, make sure that you provide
@@ -1665,13 +1665,13 @@ size_t qHash(long double key, size_t seed) noexcept
     Example:
     \snippet code/src_corelib_tools_qhash.cpp 13
 
-    In the example above, we've relied on Qt's own implementation of
+    In the example above, we've relied on BobUI's own implementation of
     qHash() for QString and QDate to give us a hash value for the
     employee's name and date of birth respectively.
 
-    Note that the implementation of the qHash() overloads offered by Qt
+    Note that the implementation of the qHash() overloads offered by BobUI
     may change at any time. You \b{must not} rely on the fact that qHash()
-    will give the same results (for the same inputs) across different Qt
+    will give the same results (for the same inputs) across different BobUI
     versions.
 
     \section2 Algorithmic complexity attacks
@@ -1694,7 +1694,7 @@ size_t qHash(long double key, size_t seed) noexcept
     should never depend on a particular QHash ordering, there may be situations
     where you temporarily need deterministic behavior, for example for debugging or
     regression testing. To disable the randomization, define the environment
-    variable \c QT_HASH_SEED to have the value 0. Alternatively, you can call
+    variable \c BOBUI_HASH_SEED to have the value 0. Alternatively, you can call
     the QHashSeed::setDeterministicGlobalSeed() function.
 
     \sa QHashIterator, QMutableHashIterator, QMap, QSet
@@ -2348,7 +2348,7 @@ size_t qHash(long double key, size_t seed) noexcept
 
 /*!
     \class QHash::TryEmplaceResult
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 6.9
     \ingroup tools
     \brief The TryEmplaceResult class is used to represent the result of a tryEmplace() operation.
@@ -2561,12 +2561,12 @@ size_t qHash(long double key, size_t seed) noexcept
 
 /*! \typedef QHash::ConstIterator
 
-    Qt-style synonym for QHash::const_iterator.
+    BobUI-style synonym for QHash::const_iterator.
 */
 
 /*! \typedef QHash::Iterator
 
-    Qt-style synonym for QHash::iterator.
+    BobUI-style synonym for QHash::iterator.
 */
 
 /*! \typedef QHash::difference_type
@@ -2650,7 +2650,7 @@ size_t qHash(long double key, size_t seed) noexcept
 */
 
 /*! \class QHash::iterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QHash::iterator class provides an STL-style non-const iterator for QHash.
 
     QHash\<Key, T\>::iterator allows you to iterate over a QHash
@@ -2793,7 +2793,7 @@ size_t qHash(long double key, size_t seed) noexcept
 */
 
 /*! \class QHash::const_iterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QHash::const_iterator class provides an STL-style const iterator for QHash.
 
     QHash\<Key, T\>::const_iterator allows you to iterate over a
@@ -2922,7 +2922,7 @@ size_t qHash(long double key, size_t seed) noexcept
 */
 
 /*! \class QHash::key_iterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 5.6
     \brief The QHash::key_iterator class provides an STL-style const iterator for QHash keys.
 
@@ -3009,7 +3009,7 @@ size_t qHash(long double key, size_t seed) noexcept
 */
 
 /*! \typedef QHash::const_key_value_iterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 5.10
     \brief The QHash::const_key_value_iterator typedef provides an STL-style const iterator for QHash.
 
@@ -3021,7 +3021,7 @@ size_t qHash(long double key, size_t seed) noexcept
 */
 
 /*! \typedef QHash::key_value_iterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 5.10
     \brief The QHash::key_value_iterator typedef provides an STL-style iterator for QHash.
 
@@ -3040,7 +3040,7 @@ size_t qHash(long double key, size_t seed) noexcept
     This function requires the key and value types to implement \c
     operator<<().
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 /*! \fn template <class Key, class T> QDataStream &operator>>(QDataStream &in, QHash<Key, T> &hash)
@@ -3051,11 +3051,11 @@ size_t qHash(long double key, size_t seed) noexcept
     This function requires the key and value types to implement \c
     operator>>().
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 /*! \class QMultiHash
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QMultiHash class provides a multi-valued hash table.
     \compares equality
 
@@ -3064,7 +3064,7 @@ size_t qHash(long double key, size_t seed) noexcept
 
     \reentrant
 
-    QMultiHash\<Key, T\> is one of Qt's generic \l{container classes}, where
+    QMultiHash\<Key, T\> is one of BobUI's generic \l{container classes}, where
     \a Key is the type used for lookup keys and \a T is the mapped value type.
     It provides a hash table that allows multiple values for the same key.
 
@@ -3692,7 +3692,7 @@ size_t qHash(long double key, size_t seed) noexcept
 */
 
 /*! \class QMultiHash::iterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QMultiHash::iterator class provides an STL-style non-const iterator for QMultiHash.
 
     QMultiHash\<Key, T\>::iterator allows you to iterate over a QMultiHash
@@ -3835,7 +3835,7 @@ size_t qHash(long double key, size_t seed) noexcept
 */
 
 /*! \class QMultiHash::const_iterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QMultiHash::const_iterator class provides an STL-style const iterator for QMultiHash.
 
     QMultiHash\<Key, T\>::const_iterator allows you to iterate over a
@@ -3963,7 +3963,7 @@ size_t qHash(long double key, size_t seed) noexcept
 */
 
 /*! \class QMultiHash::key_iterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 5.6
     \brief The QMultiHash::key_iterator class provides an STL-style const iterator for QMultiHash keys.
 
@@ -4049,7 +4049,7 @@ size_t qHash(long double key, size_t seed) noexcept
 */
 
 /*! \typedef QMultiHash::const_key_value_iterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 5.10
     \brief The QMultiHash::const_key_value_iterator typedef provides an STL-style const iterator for QMultiHash.
 
@@ -4061,7 +4061,7 @@ size_t qHash(long double key, size_t seed) noexcept
 */
 
 /*! \typedef QMultiHash::key_value_iterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 5.10
     \brief The QMultiHash::key_value_iterator typedef provides an STL-style iterator for QMultiHash.
 
@@ -4080,7 +4080,7 @@ size_t qHash(long double key, size_t seed) noexcept
     This function requires the key and value types to implement \c
     operator<<().
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 /*! \fn template <class Key, class T> QDataStream &operator>>(QDataStream &in, QMultiHash<Key, T> &hash)
@@ -4091,7 +4091,7 @@ size_t qHash(long double key, size_t seed) noexcept
     This function requires the key and value types to implement \c
     operator>>().
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 /*!
@@ -4134,19 +4134,19 @@ size_t qHash(long double key, size_t seed) noexcept
     Returns the number of elements removed, if any.
 */
 
-/*! \macro QT_NO_SINGLE_ARGUMENT_QHASH_OVERLOAD
+/*! \macro BOBUI_NO_SINGLE_ARGUMENT_QHASH_OVERLOAD
     \relates QHash
     \since 6.11
 
     Defining this macro disables the support for qHash overloads that only take
     one argument; in other words, for qHash overloads that do not also accept
     a seed. Support for the single-argument overloads of qHash is deprecated
-    and will be removed in Qt 7.
+    and will be removed in BobUI 7.
 
     \sa qHash
 */
 
-#ifdef QT_HAS_CONSTEXPR_BITOPS
+#ifdef BOBUI_HAS_CONSTEXPR_BITOPS
 namespace QHashPrivate {
 static_assert(qPopulationCount(SpanConstants::NEntries) == 1,
         "NEntries must be a power of 2 for bucketForHash() to work.");
@@ -4178,4 +4178,4 @@ static_assert(GrowthPolicy::bucketsForCapacity(SIZE_MAX) == SIZE_MAX);
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,6 +1,6 @@
 // Copyright (C) 2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Marc Mutz <marc.mutz@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDUPLICATETRACKER_P_H
 #define QDUPLICATETRACKER_P_H
@@ -9,7 +9,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -26,7 +26,7 @@
 #  include <qset.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 template <typename T, size_t Prealloc = 32>
 class QDuplicateTracker {
@@ -146,6 +146,6 @@ public:
     const_iterator cend() const { return end(); }
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif /* QDUPLICATETRACKER_P_H */

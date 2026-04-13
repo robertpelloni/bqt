@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPLATFORMOFFSCREENSURFACE_H
 #define QPLATFORMOFFSCREENSURFACE_H
@@ -10,17 +10,17 @@
 //
 // This file is part of the QPA API and is not meant to be used
 // in applications. Usage of this API may make your code
-// source and binary incompatible with future versions of Qt.
+// source and binary incompatible with future versions of BobUI.
 //
 
 #include "qplatformsurface.h"
 
-#include <QtGui/qoffscreensurface.h>
-#include <QtCore/qscopedpointer.h>
+#include <BobUIGui/qoffscreensurface.h>
+#include <BobUICore/qscopedpointer.h>
 
-#include <QtCore/qnativeinterface.h>
+#include <BobUICore/qnativeinterface.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QOffscreenSurface;
 class QPlatformScreen;
@@ -52,7 +52,7 @@ namespace QNativeInterface::Private {
 #if defined(Q_OS_ANDROID)
 struct Q_GUI_EXPORT QAndroidOffScreenIntegration
 {
-    QT_DECLARE_NATIVE_INTERFACE(QAndroidOffScreenIntegration)
+    BOBUI_DECLARE_NATIVE_INTERFACE(QAndroidOffScreenIntegration)
     virtual QOffscreenSurface *createOffscreenSurface(ANativeWindow *nativeSurface) const = 0;
 };
 #endif
@@ -60,6 +60,6 @@ struct Q_GUI_EXPORT QAndroidOffScreenIntegration
 } // QNativeInterface::Private
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPLATFORMOFFSCREENSURFACE_H

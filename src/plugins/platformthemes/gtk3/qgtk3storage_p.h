@@ -1,6 +1,6 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QGTK3STORAGE_P_H
 #define QGTK3STORAGE_P_H
@@ -9,7 +9,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -18,18 +18,18 @@
 
 #include "qgtk3interface_p.h"
 
-#include <QtCore/QJsonDocument>
-#include <QtCore/QCache>
-#include <QtCore/QString>
-#include <QtGui/QGuiApplication>
-#include <QtGui/QPalette>
+#include <BobUICore/QJsonDocument>
+#include <BobUICore/QCache>
+#include <BobUICore/QString>
+#include <BobUIGui/QGuiApplication>
+#include <BobUIGui/QPalette>
 
 #include <qpa/qplatformtheme.h>
 #include <private/qflatmap_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if QT_CONFIG(dbus)
+#if BOBUI_CONFIG(dbus)
 class QGnomePortalInterface;
 #endif
 
@@ -69,7 +69,7 @@ public:
     struct RecursiveSource  {
         QPalette::ColorGroup colorGroup;
         QPalette::ColorRole colorRole;
-        Qt::ColorScheme colorScheme;
+        BobUI::ColorScheme colorScheme;
         int lighter = 100;
         int deltaRed = 0;
         int deltaGreen = 0;
@@ -136,7 +136,7 @@ public:
 
         // Recursive constructor for darker/lighter colors
         Source(QPalette::ColorGroup group, QPalette::ColorRole role,
-               Qt::ColorScheme scheme, int p_lighter = 100)
+               BobUI::ColorScheme scheme, int p_lighter = 100)
                : sourceType(SourceType::Modified)
         {
             rec.colorGroup = group;
@@ -147,7 +147,7 @@ public:
 
         // Recursive constructor for color modification
         Source(QPalette::ColorGroup group, QPalette::ColorRole role,
-               Qt::ColorScheme scheme, int p_red, int p_green, int p_blue)
+               BobUI::ColorScheme scheme, int p_red, int p_green, int p_blue)
                : sourceType(SourceType::Modified)
         {
             rec.colorGroup = group;
@@ -160,7 +160,7 @@ public:
 
         // Recursive constructor for all: color modification and darker/lighter
         Source(QPalette::ColorGroup group, QPalette::ColorRole role,
-               Qt::ColorScheme scheme, int p_lighter,
+               BobUI::ColorScheme scheme, int p_lighter,
                int p_red, int p_green, int p_blue) : sourceType(SourceType::Modified)
         {
             rec.colorGroup = group;
@@ -203,15 +203,15 @@ public:
     struct TargetBrush {
         QPalette::ColorGroup colorGroup;
         QPalette::ColorRole colorRole;
-        Qt::ColorScheme colorScheme;
+        BobUI::ColorScheme colorScheme;
 
         // Generic constructor
         TargetBrush(QPalette::ColorGroup group, QPalette::ColorRole role,
-                    Qt::ColorScheme scheme = Qt::ColorScheme::Unknown) :
+                    BobUI::ColorScheme scheme = BobUI::ColorScheme::Unknown) :
                     colorGroup(group), colorRole(role), colorScheme(scheme) {}
 
         // Copy constructor with color scheme modifier for dark/light aware search
-        TargetBrush(const TargetBrush &other, Qt::ColorScheme scheme) :
+        TargetBrush(const TargetBrush &other, BobUI::ColorScheme scheme) :
             colorGroup(other.colorGroup), colorRole(other.colorRole), colorScheme(scheme) {}
 
         // struct becomes key of a map, so operator< is needed
@@ -230,7 +230,7 @@ public:
     // Public getters
     const QPalette *palette(QPlatformTheme::Palette = QPlatformTheme::SystemPalette) const;
     QPixmap standardPixmap(QPlatformTheme::StandardPixmap standardPixmap, const QSizeF &size) const;
-    Qt::ColorScheme colorScheme() const { return m_colorScheme; }
+    BobUI::ColorScheme colorScheme() const { return m_colorScheme; }
     static QPalette standardPalette();
     const QString themeName() const { return m_interface ? m_interface->themeName() : QString(); }
     const QFont *font(QPlatformTheme::Font type) const;
@@ -245,11 +245,11 @@ private:
     PaletteMap m_palettes;
 
     std::unique_ptr<QGtk3Interface> m_interface;
-#if QT_CONFIG(dbus)
+#if BOBUI_CONFIG(dbus)
     std::unique_ptr<QGnomePortalInterface> m_portalInterface;
 #endif
 
-    Qt::ColorScheme m_colorScheme = Qt::ColorScheme::Unknown;
+    BobUI::ColorScheme m_colorScheme = BobUI::ColorScheme::Unknown;
 
     // Caches for Pixmaps, fonts and palettes
     mutable QCache<QPlatformTheme::StandardPixmap, QImage> m_pixmapCache;
@@ -273,5 +273,5 @@ private:
     bool load(const QString &filename);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 #endif // QGTK3STORAGE_H

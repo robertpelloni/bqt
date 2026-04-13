@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QUndoCommand>
 
@@ -35,7 +35,7 @@ struct InsertText : public QUndoCommand
 
 struct SetColor : public QUndoCommand
 {
-    SetColor(QString *doc, int idx, int len, const Qt::GlobalColor &color, QUndoCommand *parent = nullptr);
+    SetColor(QString *doc, int idx, int len, const BobUI::GlobalColor &color, QUndoCommand *parent = nullptr);
 };
 
 void examples(QUndoStack *stack, QString *document, int idx, const QString &text)
@@ -62,7 +62,7 @@ void examples(QUndoStack *stack, QString *document, int idx, const QString &text
         insertRed->setText("insert red text");
 
         new InsertText(document, idx, text, insertRed); // becomes child of insertRed
-        new SetColor(document, idx, text.length(), Qt::red, insertRed);
+        new SetColor(document, idx, text.length(), BobUI::red, insertRed);
 
         stack.push(insertRed);
         //! [2]
@@ -84,7 +84,7 @@ void wrap( QUndoStack &stack, QString *document, int idx, const QString &text)
     //! [4]
     stack.beginMacro("insert red text");
     stack.push(new InsertText(document, idx, text));
-    stack.push(new SetColor(document, idx, text.length(), Qt::red));
+    stack.push(new SetColor(document, idx, text.length(), BobUI::red));
     stack.endMacro(); // indexChanged() is emitted
     //! [4]
 
@@ -94,7 +94,7 @@ void wrap( QUndoStack &stack, QString *document, int idx, const QString &text)
     insertRed->setText("insert red text");
 
     new InsertText(document, idx, text, insertRed); // becomes child of insertRed
-    new SetColor(document, idx, text.length(), Qt::red, insertRed);
+    new SetColor(document, idx, text.length(), BobUI::red, insertRed);
 
     stack.push(insertRed);
     //! [5]

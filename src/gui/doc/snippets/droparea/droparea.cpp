@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 #include <QGuiApplication>
 #include <QClipboard>
 #include <QMimeData>
@@ -10,10 +10,10 @@ struct DropArea : public QWidget {
     void paste();
     void setPixmap(QPixmap);
     void setText(QString);
-    void setTextFormat(Qt::TextFormat);
+    void setTextFormat(BobUI::TextFormat);
 };
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
 //![0]
 void DropArea::paste()
 {
@@ -24,10 +24,10 @@ void DropArea::paste()
         setPixmap(qvariant_cast<QPixmap>(mimeData->imageData()));
     } else if (mimeData->hasHtml()) {
         setText(mimeData->html());
-        setTextFormat(Qt::RichText);
+        setTextFormat(BobUI::RichText);
     } else if (mimeData->hasText()) {
         setText(mimeData->text());
-        setTextFormat(Qt::PlainText);
+        setTextFormat(BobUI::PlainText);
     } else {
         setText(tr("Cannot display data"));
     }

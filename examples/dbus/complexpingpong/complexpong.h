@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef COMPLEXPONG_H
 #define COMPLEXPONG_H
 
-#include <QtCore/QObject>
-#include <QtDBus/QDBusAbstractAdaptor>
-#include <QtDBus/QDBusVariant>
+#include <BobUICore/QObject>
+#include <BobUIDBus/QDBusAbstractAdaptor>
+#include <BobUIDBus/QDBusVariant>
 
 class Pong : public QDBusAbstractAdaptor
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "org.example.QtDBus.ComplexPong.Pong")
+    Q_CLASSINFO("D-Bus Interface", "org.example.BobUIDBus.ComplexPong.Pong")
     Q_PROPERTY(QString value READ value WRITE setValue)
 public:
     QString value() const;

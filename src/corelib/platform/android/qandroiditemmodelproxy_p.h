@@ -1,5 +1,5 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QANDROIDITEMMODELPROXY_P_H
 #define QANDROIDITEMMODELPROXY_P_H
@@ -8,36 +8,36 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 
-#include <QtCore/private/qandroidmodelindexproxy_p.h>
-#include <QtCore/private/qandroidtypes_p.h>
+#include <BobUICore/private/qandroidmodelindexproxy_p.h>
+#include <BobUICore/private/qandroidtypes_p.h>
 
-#include <QtCore/qabstractitemmodel.h>
-#include <QtCore/qjniobject.h>
-#include <QtCore/qjnienvironment.h>
-#include <QtCore/qjnitypes.h>
-#include <QtCore/qthread.h>
-#include <QtCore/qmutex.h>
+#include <BobUICore/qabstractitemmodel.h>
+#include <BobUICore/qjniobject.h>
+#include <BobUICore/qjnienvironment.h>
+#include <BobUICore/qjnitypes.h>
+#include <BobUICore/bobuihread.h>
+#include <BobUICore/qmutex.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Q_CORE_EXPORT QAndroidItemModelProxy : public QAbstractItemModel
 {
     Q_OBJECT
 
 public:
-    explicit QAndroidItemModelProxy(QtJniTypes::JQtAbstractItemModel jInstance)
+    explicit QAndroidItemModelProxy(BobUIJniTypes::JBobUIAbstractItemModel jInstance)
         : jInstance(jInstance)
     {
     }
 
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    QVariant data(const QModelIndex &index, int role = BobUI::DisplayRole) const override;
     QModelIndex index(int row, int column,
                       const QModelIndex &parent = QModelIndex()) const override;
     QModelIndex parent(const QModelIndex &index) const override;
@@ -53,11 +53,11 @@ public:
     bool hasChildrenDefault(const QModelIndex &parent) const;
     QModelIndex sibling(int row, int column, const QModelIndex &parent) const override;
     QModelIndex siblingDefault(int row, int column, const QModelIndex &parent);
-    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
+    bool setData(const QModelIndex &index, const QVariant &value, int role = BobUI::EditRole) override;
     bool setDataDefault(const QModelIndex &index, const QVariant &value, int role);
 
     Q_REQUIRED_RESULT static QAbstractItemModel *
-    nativeInstance(QtJniTypes::JQtAbstractItemModel itemModel);
+    nativeInstance(BobUIJniTypes::JBobUIAbstractItemModel itemModel);
     Q_REQUIRED_RESULT static QAbstractItemModel *createNativeProxy(QJniObject itemModel);
     static QJniObject createProxy(QAbstractItemModel *abstractClass);
 
@@ -98,61 +98,61 @@ public:
             return std::invoke(std::forward<Func2>(func), nativeModel, std::forward<Args>(args)...);
     }
 
-    static jint jni_columnCount(JNIEnv *env, jobject object, JQtModelIndex parent);
+    static jint jni_columnCount(JNIEnv *env, jobject object, JBobUIModelIndex parent);
     Q_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE(jni_columnCount)
 
-    static jobject jni_data(JNIEnv *env, jobject object, JQtModelIndex index, jint role);
+    static jobject jni_data(JNIEnv *env, jobject object, JBobUIModelIndex index, jint role);
     Q_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE(jni_data)
 
     static jobject jni_index(JNIEnv *env, jobject object, jint row, jint column,
-                             JQtModelIndex parent);
+                             JBobUIModelIndex parent);
     Q_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE(jni_index)
 
-    static jobject jni_parent(JNIEnv *env, jobject object, JQtModelIndex index);
+    static jobject jni_parent(JNIEnv *env, jobject object, JBobUIModelIndex index);
     Q_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE(jni_parent)
 
-    static jint jni_rowCount(JNIEnv *env, jobject object, JQtModelIndex parent);
+    static jint jni_rowCount(JNIEnv *env, jobject object, JBobUIModelIndex parent);
     Q_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE(jni_rowCount)
 
-    static jboolean jni_canFetchMore(JNIEnv *env, jobject object, JQtModelIndex parent);
-    QT_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE_2(jni_canFetchMore, canFetchMore)
+    static jboolean jni_canFetchMore(JNIEnv *env, jobject object, JBobUIModelIndex parent);
+    BOBUI_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE_2(jni_canFetchMore, canFetchMore)
 
-    static void jni_fetchMore(JNIEnv *env, jobject object, JQtModelIndex parent);
-    QT_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE_2(jni_fetchMore, fetchMore)
+    static void jni_fetchMore(JNIEnv *env, jobject object, JBobUIModelIndex parent);
+    BOBUI_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE_2(jni_fetchMore, fetchMore)
 
-    static jboolean jni_hasChildren(JNIEnv *env, jobject object, JQtModelIndex parent);
-    QT_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE_2(jni_hasChildren, hasChildren)
+    static jboolean jni_hasChildren(JNIEnv *env, jobject object, JBobUIModelIndex parent);
+    BOBUI_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE_2(jni_hasChildren, hasChildren)
 
     static jboolean jni_hasIndex(JNIEnv *env, jobject object, jint row, jint column,
-                                 JQtModelIndex parent);
-    QT_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE_2(jni_hasIndex, hasIndex)
+                                 JBobUIModelIndex parent);
+    BOBUI_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE_2(jni_hasIndex, hasIndex)
 
     static jobject jni_roleNames(JNIEnv *env, jobject object);
     Q_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE(jni_roleNames)
 
-    static void jni_beginInsertColumns(JNIEnv *env, jobject object, JQtModelIndex parent,
+    static void jni_beginInsertColumns(JNIEnv *env, jobject object, JBobUIModelIndex parent,
                                        jint first, jint last);
     Q_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE(jni_beginInsertColumns)
 
-    static void jni_beginInsertRows(JNIEnv *env, jobject object, JQtModelIndex parent, jint first,
+    static void jni_beginInsertRows(JNIEnv *env, jobject object, JBobUIModelIndex parent, jint first,
                                     jint last);
     Q_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE(jni_beginInsertRows)
 
-    static jboolean jni_beginMoveColumns(JNIEnv *env, jobject object, JQtModelIndex sourceParent,
+    static jboolean jni_beginMoveColumns(JNIEnv *env, jobject object, JBobUIModelIndex sourceParent,
                                          jint sourceFirst, jint sourceLast,
-                                         JQtModelIndex destinationParent, jint destinationChild);
+                                         JBobUIModelIndex destinationParent, jint destinationChild);
     Q_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE(jni_beginMoveColumns)
 
-    static jboolean jni_beginMoveRows(JNIEnv *env, jobject object, JQtModelIndex sourceParent,
+    static jboolean jni_beginMoveRows(JNIEnv *env, jobject object, JBobUIModelIndex sourceParent,
                                       jint sourceFirst, jint sourceLast,
-                                      JQtModelIndex destinationParent, jint destinationChild);
+                                      JBobUIModelIndex destinationParent, jint destinationChild);
     Q_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE(jni_beginMoveRows)
 
-    static void jni_beginRemoveColumns(JNIEnv *env, jobject object, JQtModelIndex parent,
+    static void jni_beginRemoveColumns(JNIEnv *env, jobject object, JBobUIModelIndex parent,
                                        jint first, jint last);
     Q_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE(jni_beginRemoveColumns)
 
-    static void jni_beginRemoveRows(JNIEnv *env, jobject object, JQtModelIndex parent, jint first,
+    static void jni_beginRemoveRows(JNIEnv *env, jobject object, JBobUIModelIndex parent, jint first,
                                     jint last);
     Q_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE(jni_beginRemoveRows)
 
@@ -184,14 +184,14 @@ public:
     Q_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE(jni_endResetModel)
 
     static jobject jni_sibling(JNIEnv *env, jobject object, jint row, jint column,
-                                 JQtModelIndex parent);
+                                 JBobUIModelIndex parent);
     Q_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE(jni_sibling)
 
-    static void jni_dataChanged(JNIEnv *env, jobject object, JQtModelIndex topLeft,
-                                JQtModelIndex bottomRight, QJniArray<jint> roles);
+    static void jni_dataChanged(JNIEnv *env, jobject object, JBobUIModelIndex topLeft,
+                                JBobUIModelIndex bottomRight, QJniArray<jint> roles);
     Q_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE(jni_dataChanged)
 
-    static jboolean jni_setData(JNIEnv *env, jobject object, JQtModelIndex index, jobject value,
+    static jboolean jni_setData(JNIEnv *env, jobject object, JBobUIModelIndex index, jobject value,
                                 jint role);
     Q_DECLARE_JNI_NATIVE_METHOD_IN_CURRENT_SCOPE(jni_setData)
 
@@ -216,6 +216,6 @@ private:
     friend class QAndroidModelIndexProxy;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QANDROIDITEMMODELPROXY_P_H

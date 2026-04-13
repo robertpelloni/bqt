@@ -1,9 +1,9 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QPointer>
-#include "QtCore/qapplicationstatic.h"
+#include "BobUICore/qapplicationstatic.h"
 
 Q_APPLICATION_STATIC(QObject, tstObject)
 
@@ -36,5 +36,5 @@ void tst_qapplicationstatic::testCreateMultipleApplications() const
     }
 }
 
-QTEST_APPLESS_MAIN(tst_qapplicationstatic)
+BOBUIEST_APPLESS_MAIN(tst_qapplicationstatic)
 #include "tst_qapplicationstatic.moc"

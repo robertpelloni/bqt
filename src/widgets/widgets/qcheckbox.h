@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QCHECKBOX_H
 #define QCHECKBOX_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qabstractbutton.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qabstractbutton.h>
 
-QT_REQUIRE_CONFIG(checkbox);
+BOBUI_REQUIRE_CONFIG(checkbox);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QCheckBoxPrivate;
@@ -33,15 +33,15 @@ public:
     void setTristate(bool y = true);
     bool isTristate() const;
 
-    Qt::CheckState checkState() const;
-    void setCheckState(Qt::CheckState state);
+    BobUI::CheckState checkState() const;
+    void setCheckState(BobUI::CheckState state);
 
 Q_SIGNALS:
-#if QT_DEPRECATED_SINCE(6, 9)
-    QT_MOC_COMPAT QT_DEPRECATED_VERSION_X_6_9("Use checkStateChanged() instead")
+#if BOBUI_DEPRECATED_SINCE(6, 9)
+    BOBUI_MOC_COMPAT BOBUI_DEPRECATED_VERSION_X_6_9("Use checkStateChanged() instead")
     void stateChanged(int);
 #endif
-    void checkStateChanged(Qt::CheckState);
+    void checkStateChanged(BobUI::CheckState);
 
 protected:
     bool event(QEvent *e) override;
@@ -59,6 +59,6 @@ private:
     friend class QAccessibleButton;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCHECKBOX_H

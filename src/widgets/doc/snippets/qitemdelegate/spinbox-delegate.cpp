@@ -1,5 +1,5 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QStyledItemDelegate>
 #include <QSpinBox>
@@ -49,7 +49,7 @@ QWidget *SpinBoxDelegate::createEditor(QWidget *parent,
 void SpinBoxDelegate::setEditorData(QWidget *editor,
                                     const QModelIndex &index) const
 {
-    int value = index.data(Qt::EditRole).toInt();
+    int value = index.data(BobUI::EditRole).toInt();
 
     QSpinBox *spinBox = static_cast<QSpinBox*>(editor);
     spinBox->setValue(value);
@@ -64,7 +64,7 @@ void SpinBoxDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
     spinBox->interpretText();
     int value = spinBox->value();
 
-    model->setData(index, value, Qt::EditRole);
+    model->setData(index, value, BobUI::EditRole);
 }
 //! [setModelData]
 

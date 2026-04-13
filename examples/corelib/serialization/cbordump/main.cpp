@@ -1,5 +1,5 @@
 // Copyright (C) 2018 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QCborStreamReader>
 #include <QCommandLineParser>
@@ -14,7 +14,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*
  * To regenerate:
@@ -498,7 +498,7 @@ void CborDumper::dumpOneDetailed(int nestingLevel)
         // was chunked
         print(descr, "(indeterminate length)");
 
-        QByteArray bytes(size, Qt::Uninitialized);
+        QByteArray bytes(size, BobUI::Uninitialized);
         auto r = reader.readStringChunk(bytes.data(), bytes.size());
         while (r.status == QCborStreamReader::Ok) {
             // We'll have to decode the length's width directly from CBOR...

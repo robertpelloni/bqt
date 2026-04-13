@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qpaintdevice.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QPaintDevice::QPaintDevice() noexcept
 {
@@ -20,7 +20,7 @@ QPaintDevice::~QPaintDevice()
 /*!
     \internal
 */
-// ### Qt 7: Replace this workaround mechanism: virtual devicePixelRatio() and virtual metricF()
+// ### BobUI 7: Replace this workaround mechanism: virtual devicePixelRatio() and virtual metricF()
 double QPaintDevice::getDecodedMetricF(PaintDeviceMetric metricA, PaintDeviceMetric metricB) const
 {
     qint32 buf[2];
@@ -74,7 +74,7 @@ QPainter *QPaintDevice::sharedPainter() const
     return nullptr;
 }
 
-Q_GUI_EXPORT int qt_paint_device_metric(const QPaintDevice *device, QPaintDevice::PaintDeviceMetric metric)
+Q_GUI_EXPORT int bobui_paint_device_metric(const QPaintDevice *device, QPaintDevice::PaintDeviceMetric metric)
 {
     return device->metric(metric);
 }
@@ -117,4 +117,4 @@ int QPaintDevice::metric(PaintDeviceMetric m) const
     return 0;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtGlobal>
-#include <QtAlgorithms>
-#include <QtPrintSupport/qprinterinfo.h>
+#include <BOBUIest>
+#include <BobUIGlobal>
+#include <BobUIAlgorithms>
+#include <BobUIPrintSupport/qprinterinfo.h>
 
 #include <algorithm>
 
@@ -21,7 +21,7 @@ class tst_QPrinterInfo : public QObject
     Q_OBJECT
 
 public slots:
-#ifdef QT_NO_PRINTER
+#ifdef BOBUI_NO_PRINTER
     void initTestCase();
     void cleanupTestCase();
 #else
@@ -46,12 +46,12 @@ private:
 };
 
 
-#ifdef QT_NO_PRINTER
+#ifdef BOBUI_NO_PRINTER
 void tst_QPrinterInfo::initTestCase()
 {
 #ifdef Q_OS_ANDROID
     if (QNativeInterface::QAndroidApplication::sdkVersion() == 33)
-        QSKIP("Is flaky on Android 13 / RHEL 8.6 and 8.8 (QTQAINFRA-5606)");
+        QSKIP("Is flaky on Android 13 / RHEL 8.6 and 8.8 (BOBUIQAINFRA-5606)");
 #endif
     QSKIP("This test requires printing support");
 }
@@ -220,20 +220,20 @@ void tst_QPrinterInfo::testForPrinters()
     QStringList testPrinters = getPrintersFromSystem();
 
     QList<QPrinterInfo> printers = QPrinterInfo::availablePrinters();
-    QStringList qtPrinters;
+    QStringList bobuiPrinters;
     for (int i = 0; i < printers.size(); ++i)
-        qtPrinters.append(printers.at(i).printerName());
+        bobuiPrinters.append(printers.at(i).printerName());
 
     std::sort(testPrinters.begin(), testPrinters.end());
-    std::sort(qtPrinters.begin(), qtPrinters.end());
+    std::sort(bobuiPrinters.begin(), bobuiPrinters.end());
 
     qDebug() << "Test believes Available Printers                              = " << testPrinters;
-    qDebug() << "QPrinterInfo::availablePrinters() believes Available Printers = " << qtPrinters;
+    qDebug() << "QPrinterInfo::availablePrinters() believes Available Printers = " << bobuiPrinters;
 
-    QCOMPARE(qtPrinters.size(), testPrinters.size());
+    QCOMPARE(bobuiPrinters.size(), testPrinters.size());
 
     for (int i = 0; i < testPrinters.size(); ++i)
-        QCOMPARE(qtPrinters.at(i), testPrinters.at(i));
+        QCOMPARE(bobuiPrinters.at(i), testPrinters.at(i));
 }
 #endif
 
@@ -363,7 +363,7 @@ void tst_QPrinterInfo::namedPrinter()
         QCOMPARE(pi2.supportedDuplexModes(),    pi.supportedDuplexModes());
     }
 }
-#endif // QT_NO_PRINTER
+#endif // BOBUI_NO_PRINTER
 
-QTEST_MAIN(tst_QPrinterInfo)
+BOBUIEST_MAIN(tst_QPrinterInfo)
 #include "tst_qprinterinfo.moc"

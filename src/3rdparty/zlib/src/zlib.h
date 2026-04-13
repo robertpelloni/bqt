@@ -41,7 +41,7 @@
 extern "C" {
 #endif
 
-#define ZLIB_VERSION "1.3.1 (Qt)"
+#define ZLIB_VERSION "1.3.1 (BobUI)"
 #define ZLIB_VERNUM 0x1310
 #define ZLIB_VER_MAJOR 1
 #define ZLIB_VER_MINOR 3

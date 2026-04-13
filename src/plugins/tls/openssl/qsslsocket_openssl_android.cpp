@@ -1,11 +1,11 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 /****************************************************************************
 **
 ** In addition, as a special exception, the copyright holders listed above give
-** permission to link the code of its release of Qt with the OpenSSL project's
+** permission to link the code of its release of BobUI with the OpenSSL project's
 ** "OpenSSL" library (or modified versions of the "OpenSSL" library that use the
 ** same license as the original version), and distribute the linked executables.
 **
@@ -17,20 +17,20 @@
 **
 ****************************************************************************/
 
-#include <QtCore/QJniEnvironment>
-#include <QtCore/QJniObject>
-#include <QtCore/QList>
-#include <QtCore/QByteArray>
+#include <BobUICore/QJniEnvironment>
+#include <BobUICore/QJniObject>
+#include <BobUICore/QList>
+#include <BobUICore/QByteArray>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QTlsPrivate {
+namespace BOBUIlsPrivate {
 
 QList<QByteArray> fetchSslCertificateData()
 {
     QList<QByteArray> certificateData;
 
-    QJniObject certificates = QJniObject::callStaticObjectMethod("org/qtproject/qt/android/QtNative",
+    QJniObject certificates = QJniObject::callStaticObjectMethod("org/bobuiproject/bobui/android/BobUINative",
                                                                  "getSSLCertificates",
                                                                  "()[[B");
     if (!certificates.isValid())
@@ -54,6 +54,6 @@ QList<QByteArray> fetchSslCertificateData()
     return certificateData;
 }
 
-} // namespace QTlsPrivate
+} // namespace BOBUIlsPrivate
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

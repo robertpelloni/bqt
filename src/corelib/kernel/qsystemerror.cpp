@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include <qglobal.h>
 #include "qsystemerror_p.h"
@@ -8,18 +8,18 @@
 #  include <crtdbg.h>
 #endif
 #ifdef Q_OS_WIN
-#  include <qt_windows.h>
+#  include <bobui_windows.h>
 #  include <comdef.h>
 #endif
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 #  include <qcoreapplication.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-#if !defined(Q_OS_WIN) && QT_CONFIG(thread) && !defined(Q_OS_INTEGRITY) && !defined(Q_OS_QNX) && \
+#if !defined(Q_OS_WIN) && BOBUI_CONFIG(thread) && !defined(Q_OS_INTEGRITY) && !defined(Q_OS_QNX) && \
     defined(_POSIX_THREAD_SAFE_FUNCTIONS) && _POSIX_VERSION >= 200112L
 namespace {
     // There are two incompatible versions of strerror_r:
@@ -76,20 +76,20 @@ static QString standardLibraryErrorString(int errorCode)
     case 0:
         break;
     case EACCES:
-        s = QT_TRANSLATE_NOOP("QIODevice", "Permission denied");
+        s = BOBUI_TRANSLATE_NOOP("QIODevice", "Permission denied");
         break;
     case EMFILE:
-        s = QT_TRANSLATE_NOOP("QIODevice", "Too many open files");
+        s = BOBUI_TRANSLATE_NOOP("QIODevice", "Too many open files");
         break;
     case ENOENT:
-        s = QT_TRANSLATE_NOOP("QIODevice", "No such file or directory");
+        s = BOBUI_TRANSLATE_NOOP("QIODevice", "No such file or directory");
         break;
     case ENOSPC:
-        s = QT_TRANSLATE_NOOP("QIODevice", "No space left on device");
+        s = BOBUI_TRANSLATE_NOOP("QIODevice", "No space left on device");
         break;
     default: {
-      #if QT_CONFIG(thread) && defined(_POSIX_THREAD_SAFE_FUNCTIONS) && _POSIX_VERSION >= 200112L && !defined(Q_OS_INTEGRITY) && !defined(Q_OS_QNX)
-            QByteArray buf(1024, Qt::Uninitialized);
+      #if BOBUI_CONFIG(thread) && defined(_POSIX_THREAD_SAFE_FUNCTIONS) && _POSIX_VERSION >= 200112L && !defined(Q_OS_INTEGRITY) && !defined(Q_OS_QNX)
+            QByteArray buf(1024, BobUI::Uninitialized);
             ret = fromstrerror_helper(strerror_r(errorCode, buf.data(), buf.size()), buf);
       #else
             ret = QString::fromLocal8Bit(strerror(errorCode));
@@ -97,7 +97,7 @@ static QString standardLibraryErrorString(int errorCode)
     break; }
     }
     if (s) {
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
         ret = QCoreApplication::translate("QIODevice", s);
 #else
         ret = QString::fromLatin1(s);
@@ -143,15 +143,15 @@ QString QSystemError::windowsComString(HRESULT hr)
     return result;
 }
 
-QString qt_error_string(int code)
+QString bobui_error_string(int code)
 {
     return windowsErrorString(code == -1 ? GetLastError() : code);
 }
 #else
-QString qt_error_string(int code)
+QString bobui_error_string(int code)
 {
     return standardLibraryErrorString(code == -1 ? errno : code);
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "adddialog.h"
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 //! [0]
 AddDialog::AddDialog(QWidget *parent)
     : QDialog(parent),
       nameText(new QLineEdit),
-      addressText(new QTextEdit)
+      addressText(new BOBUIextEdit)
 {
     auto nameLabel = new QLabel(tr("Name"));
     auto addressLabel = new QLabel(tr("Address"));
@@ -21,14 +21,14 @@ AddDialog::AddDialog(QWidget *parent)
     gLayout->addWidget(nameLabel, 0, 0);
     gLayout->addWidget(nameText, 0, 1);
 
-    gLayout->addWidget(addressLabel, 1, 0, Qt::AlignLeft|Qt::AlignTop);
-    gLayout->addWidget(addressText, 1, 1, Qt::AlignLeft);
+    gLayout->addWidget(addressLabel, 1, 0, BobUI::AlignLeft|BobUI::AlignTop);
+    gLayout->addWidget(addressText, 1, 1, BobUI::AlignLeft);
 
     auto buttonLayout = new QHBoxLayout;
     buttonLayout->addWidget(okButton);
     buttonLayout->addWidget(cancelButton);
 
-    gLayout->addLayout(buttonLayout, 2, 1, Qt::AlignRight);
+    gLayout->addLayout(buttonLayout, 2, 1, BobUI::AlignRight);
 
     auto mainLayout = new QVBoxLayout;
     mainLayout->addLayout(gLayout);

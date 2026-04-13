@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "ioutils.h"
 
@@ -8,7 +8,7 @@
 #include <qregularexpression.h>
 
 #ifdef Q_OS_WIN
-#  include <qt_windows.h>
+#  include <bobui_windows.h>
 #  include <private/qsystemerror_p.h>
 #else
 #  include <sys/types.h>
@@ -21,7 +21,7 @@
 
 #define fL1S(s) QString::fromLatin1(s)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace QMakeInternal;
 
@@ -266,7 +266,7 @@ bool IoUtils::touchFile(const QString &targetFileName, const QString &referenceF
     return true;
 }
 
-#if defined(QT_BUILD_QMAKE) && defined(Q_OS_UNIX)
+#if defined(BOBUI_BUILD_QMAKE) && defined(Q_OS_UNIX)
 bool IoUtils::readLinkTarget(const QString &symlinkPath, QString *target)
 {
     const QByteArray localSymlinkPath = QFile::encodeName(symlinkPath);
@@ -303,4 +303,4 @@ bool IoUtils::readLinkTarget(const QString &symlinkPath, QString *target)
 
 #endif  // PROEVALUATOR_FULL
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

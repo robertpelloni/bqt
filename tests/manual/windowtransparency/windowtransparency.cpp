@@ -1,14 +1,14 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtGui>
-#include <QtWidgets>
-#include <QtOpenGL/QOpenGLShaderProgram>
+#include <BobUIGui>
+#include <BobUIWidgets>
+#include <BobUIOpenGL/QOpenGLShaderProgram>
 
 class GLWindow : public QWindow
 {
 public:
-    GLWindow(Qt::WindowFlags flags)
+    GLWindow(BobUI::WindowFlags flags)
         : gl(0)
     {
         setFlags(flags);
@@ -89,10 +89,10 @@ private:
 class Widget : public QWidget
 {
 public:
-    Widget(Qt::WindowFlags flags)
+    Widget(BobUI::WindowFlags flags)
         : QWidget(0, flags)
     {
-        setAttribute(Qt::WA_TranslucentBackground);
+        setAttribute(BobUI::WA_TranslucentBackground);
     }
 
     void paintEvent(QPaintEvent *)
@@ -114,9 +114,9 @@ public:
         path.cubicTo(w2, h, w2, h2, 0, 0);
 
         QLinearGradient lg(0, 0, w, h);
-        lg.setColorAt(0.0, Qt::transparent);
+        lg.setColorAt(0.0, BobUI::transparent);
         lg.setColorAt(0.5, QColor("palegreen"));
-        lg.setColorAt(1.0, Qt::transparent);
+        lg.setColorAt(1.0, BobUI::transparent);
 
         p.setCompositionMode(QPainter::CompositionMode_Source);
         p.fillPath(path, lg);
@@ -140,7 +140,7 @@ int main(int argc, char **argv)
         bool mask = i & 0x1;
         bool opacity = i & 0x2;
 
-        Qt::WindowFlags flags = Qt::FramelessWindowHint;
+        BobUI::WindowFlags flags = BobUI::FramelessWindowHint;
 
         Widget *widget = new Widget(flags);
         GLWindow *window = new GLWindow(flags);

@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \class QRgbaFloat
@@ -7,10 +7,10 @@
     \since 6.2
 
     \ingroup painting
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     QRgbaFloat is a template class where \a F specifies the floating-point type
-    used for the color components. Qt provides two type aliases: QRgbaFloat16
+    used for the color components. BobUI provides two type aliases: QRgbaFloat16
     using 16-bit half-precision floats, and QRgbaFloat32 using 32-bit
     single-precision floats.
 

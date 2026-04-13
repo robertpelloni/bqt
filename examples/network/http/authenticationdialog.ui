@@ -50,7 +50,7 @@
    <item row="5" column="0" colspan="2" >
     <widget class="QDialogButtonBox" name="buttonBox" >
      <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
+      <enum>BobUI::Horizontal</enum>
      </property>
      <property name="standardButtons" >
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
@@ -83,7 +83,7 @@
    <item row="4" column="0" >
     <spacer>
      <property name="orientation" >
-      <enum>Qt::Vertical</enum>
+      <enum>BobUI::Vertical</enum>
      </property>
      <property name="sizeHint" >
       <size>

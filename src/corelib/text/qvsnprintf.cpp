@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qplatformdefs.h"
 
@@ -8,14 +8,14 @@
 #include "qstring.h"
 
 #include <cerrno>
-#include <QtCore/q26numeric.h>
+#include <BobUICore/q26numeric.h>
 
 #include "string.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
-    \macro QT_NO_QSNPRINTF
+    \macro BOBUI_NO_QSNPRINTF
     \since 6.8
     \relates QByteArray
 
@@ -26,9 +26,9 @@ QT_BEGIN_NAMESPACE
     \sa qsnprintf(), qvsnprintf().
 */
 
-#if QT_DEPRECATED_SINCE(6, 9)
+#if BOBUI_DEPRECATED_SINCE(6, 9)
 
-#if !defined(QT_VSNPRINTF) || defined(Q_QDOC)
+#if !defined(BOBUI_VSNPRINTF) || defined(Q_QDOC)
 
 /*!
     \fn int qvsnprintf(char *str, size_t n, const char *fmt, va_list ap)
@@ -57,7 +57,7 @@ QT_BEGIN_NAMESPACE
     \sa qsnprintf(), QString::asprintf()
 */
 
-Q_CORE_EXPORT // QT_NO_QSNPRINTF is in effect
+Q_CORE_EXPORT // BOBUI_NO_QSNPRINTF is in effect
 int qvsnprintf(char *str, size_t n, const char *fmt, va_list ap)
 {
     if (!str || !fmt)
@@ -88,14 +88,14 @@ int qvsnprintf(char *str, size_t n, const char *fmt, va_list ap)
 
 #else
 
-QT_BEGIN_INCLUDE_NAMESPACE
+BOBUI_BEGIN_INCLUDE_NAMESPACE
 #include <stdio.h>
-QT_END_INCLUDE_NAMESPACE
+BOBUI_END_INCLUDE_NAMESPACE
 
-Q_CORE_EXPORT // QT_NO_QSNPRINTF is in effect
+Q_CORE_EXPORT // BOBUI_NO_QSNPRINTF is in effect
 int qvsnprintf(char *str, size_t n, const char *fmt, va_list ap)
 {
-    return QT_VSNPRINTF(str, n, fmt, ap);
+    return BOBUI_VSNPRINTF(str, n, fmt, ap);
 }
 
 #endif
@@ -119,13 +119,13 @@ int qvsnprintf(char *str, size_t n, const char *fmt, va_list ap)
     \sa qvsnprintf(), QString::asprintf()
 */
 
-Q_CORE_EXPORT // QT_NO_QSNPRINTF is in effect
+Q_CORE_EXPORT // BOBUI_NO_QSNPRINTF is in effect
 int qsnprintf(char *str, size_t n, const char *fmt, ...)
 {
     va_list ap;
     va_start(ap, fmt);
 
-    QT_IGNORE_DEPRECATIONS(
+    BOBUI_IGNORE_DEPRECATIONS(
     int ret = qvsnprintf(str, n, fmt, ap);
     )
     va_end(ap);
@@ -133,6 +133,6 @@ int qsnprintf(char *str, size_t n, const char *fmt, ...)
     return ret;
 }
 
-#endif // QT_DEPRECATED_SINCE(6, 9)
+#endif // BOBUI_DEPRECATED_SINCE(6, 9)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

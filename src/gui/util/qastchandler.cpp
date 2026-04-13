@@ -1,9 +1,9 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qastchandler_p.h"
-#include "qtexturefiledata_p.h"
+#include "bobuiexturefiledata_p.h"
 
 #include <private/qnumeric_p.h>
 
@@ -11,7 +11,7 @@
 #include <QDebug>
 #include <QSize>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct AstcHeader
 {
@@ -66,23 +66,23 @@ quint32 QAstcHandler::astcGLFormat(quint8 xBlockDim, quint8 yBlockDim) const
     if (index < 0)
         return 0;
 
-    bool useSrgb = qEnvironmentVariableIsSet("QT_ASTCHANDLER_USE_SRGB")
+    bool useSrgb = qEnvironmentVariableIsSet("BOBUI_ASTCHANDLER_USE_SRGB")
                    || logName().toLower().contains("srgb");
 
     return useSrgb ? (glFormatSRGBBase + index) : (glFormatRGBABase + index);
 }
 
-QTextureFileData QAstcHandler::read()
+BOBUIextureFileData QAstcHandler::read()
 {
-    QTextureFileData nullData;
-    QTextureFileData res;
+    BOBUIextureFileData nullData;
+    BOBUIextureFileData res;
 
     if (!device())
         return nullData;
 
     QByteArray fileData = device()->readAll();
     if (fileData.size() < int(sizeof(AstcHeader)) || !canRead(QByteArray(), fileData)) {
-        qCDebug(lcQtGuiTextureIO, "Not an ASTC file: %s", logName().constData());
+        qCDebug(lcBobUIGuiTextureIO, "Not an ASTC file: %s", logName().constData());
         return nullData;
     }
     res.setData(fileData);
@@ -96,7 +96,7 @@ QTextureFileData QAstcHandler::read()
     quint32 glFmt = astcGLFormat(header->blockDimX, header->blockDimY);
 
     if (!xSz || !ySz || !zSz || !glFmt || header->blockDimZ != 1) {
-        qCDebug(lcQtGuiTextureIO, "Invalid ASTC header data in file %s", logName().constData());
+        qCDebug(lcBobUIGuiTextureIO, "Invalid ASTC header data in file %s", logName().constData());
         return nullData;
     }
 
@@ -121,7 +121,7 @@ QTextureFileData QAstcHandler::read()
     res.setDataLength(byteCount);
 
     if (oob || !res.isValid()) {
-        qCDebug(lcQtGuiTextureIO, "Invalid ASTC file %s", logName().constData());
+        qCDebug(lcBobUIGuiTextureIO, "Invalid ASTC file %s", logName().constData());
         return nullData;
     }
 
@@ -133,4 +133,4 @@ QTextureFileData QAstcHandler::read()
     return res;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

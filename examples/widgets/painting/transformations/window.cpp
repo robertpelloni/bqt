@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "window.h"
 
@@ -54,7 +54,7 @@ void Window::setupShapes()
 {
     QPainterPath truck;
 //! [3]
-    truck.setFillRule(Qt::WindingFill);
+    truck.setFillRule(BobUI::WindingFill);
     truck.moveTo(0.0, 87.0);
     truck.lineTo(0.0, 60.0);
     truck.lineTo(10.0, 60.0);
@@ -103,8 +103,8 @@ void Window::setupShapes()
 //! [6]
     QFont font;
     font.setPixelSize(50);
-    QRect fontBoundingRect = QFontMetrics(font).boundingRect(tr("Qt"));
-    text.addText(-QPointF(fontBoundingRect.center()), font, tr("Qt"));
+    QRect fontBoundingRect = QFontMetrics(font).boundingRect(tr("BobUI"));
+    text.addText(-QPointF(fontBoundingRect.center()), font, tr("BobUI"));
 
 //! [7]
     shapes.append(clock);

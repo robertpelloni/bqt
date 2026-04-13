@@ -1,7 +1,7 @@
-QT += widgets
+BOBUI += widgets
 
 SOURCES       = trivialwizard.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/dialogs/trivialwizard
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/dialogs/trivialwizard
 INSTALLS += target

@@ -1,16 +1,16 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/qcoreapplication.h>
+#include <BobUICore/qcoreapplication.h>
 
-#include <QtCore/qthread.h>
-#include <QtCore/qfile.h>
-#include <QtCore/qdir.h>
+#include <BobUICore/bobuihread.h>
+#include <BobUICore/qfile.h>
+#include <BobUICore/qdir.h>
 
-#include <QtNetwork/qsslsocket.h>
-#include <QtNetwork/qsslserver.h>
-#include <QtNetwork/qsslconfiguration.h>
-#include <QtNetwork/qsslkey.h>
+#include <BobUINetwork/qsslsocket.h>
+#include <BobUINetwork/qsslserver.h>
+#include <BobUINetwork/qsslconfiguration.h>
+#include <BobUINetwork/qsslkey.h>
 
 // Client and/or server presents a certificate signed by a system-trusted CA
 // but the other side presents a certificate signed by a different CA.
@@ -20,7 +20,7 @@ constexpr bool TestClientPresentsIncorrectCa = true;
 // or into the socket's specific ssl configuration.
 constexpr bool UseGlobalConfiguration = true;
 
-class ServerThread : public QThread
+class ServerThread : public BOBUIhread
 {
     Q_OBJECT
 public:
@@ -73,7 +73,7 @@ int main(int argc, char **argv)
 {
     QCoreApplication app(argc, argv);
 
-    using namespace Qt::StringLiterals;
+    using namespace BobUI::StringLiterals;
 
     if (!QFileInfo(u":/rootCA.pem"_s).exists())
         qFatal("rootCA.pem not found. Did you run generate.sh in the certs directory?");

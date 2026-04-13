@@ -1,50 +1,50 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QDateEdit>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QProgressBar>
-#include <QtWidgets/QSpinBox>
-#include <QtWidgets/QSplitter>
-#include <QtWidgets/QStyle>
-#include <QtWidgets/QStyleFactory>
-#include <QtWidgets/QTabBar>
-#include <QtWidgets/QTabWidget>
-#include <QtWidgets/QTableWidget>
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QToolTip>
-#include <QtWidgets/QTreeView>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QProxyStyle>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QCheckBox>
+#include <BobUIWidgets/QComboBox>
+#include <BobUIWidgets/QDateEdit>
+#include <BobUIWidgets/QDialog>
+#include <BobUIWidgets/QDialogButtonBox>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QGroupBox>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QHeaderView>
+#include <BobUIWidgets/QLineEdit>
+#include <BobUIWidgets/QMainWindow>
+#include <BobUIWidgets/QMenu>
+#include <BobUIWidgets/QPushButton>
+#include <BobUIWidgets/QProgressBar>
+#include <BobUIWidgets/QSpinBox>
+#include <BobUIWidgets/QSplitter>
+#include <BobUIWidgets/QStyle>
+#include <BobUIWidgets/QStyleFactory>
+#include <BobUIWidgets/BOBUIabBar>
+#include <BobUIWidgets/BOBUIabWidget>
+#include <BobUIWidgets/BOBUIableWidget>
+#include <BobUIWidgets/BOBUIoolButton>
+#include <BobUIWidgets/BOBUIoolTip>
+#include <BobUIWidgets/BOBUIreeView>
+#include <BobUIWidgets/QVBoxLayout>
+#include <BobUIWidgets/QProxyStyle>
 
-#include <QtGui/QPainter>
-#include <QtGui/QScreen>
+#include <BobUIGui/QPainter>
+#include <BobUIGui/QScreen>
 
-#include <QTest>
+#include <BOBUIest>
 
-#include <QtCore/QDebug>
-#include <QtCore/QMetaObject>
-#include <QtCore/QScopedPointer>
+#include <BobUICore/QDebug>
+#include <BobUICore/QMetaObject>
+#include <BobUICore/QScopedPointer>
 
 #include <private/qstylesheetstyle_p.h>
 #include <private/qhighdpiscaling_p.h>
-#include <QtTest/private/qtesthelpers_p.h>
+#include <BobUITest/private/bobuiesthelpers_p.h>
 #include <qpa/qplatformtheme.h>
-#include <QtWidgets/private/qapplication_p.h>
+#include <BobUIWidgets/private/qapplication_p.h>
 
-using namespace QTestPrivate;
+using namespace BOBUIestPrivate;
 
 class tst_QStyleSheetStyle : public QObject
 {
@@ -83,7 +83,7 @@ private slots:
     void onWidgetDestroyed();
     void fontPrecedence();
     void focusColors();
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     void hoverColors();
 #endif
     void background();
@@ -107,8 +107,8 @@ private slots:
     void task188195_baseBackground();
     void task232085_spinBoxLineEditBg();
     void changeStyleInChangeEvent();
-    void QTBUG15910_crashNullWidget();
-    void QTBUG36933_brokenPseudoClassLookup();
+    void BOBUIBUG15910_crashNullWidget();
+    void BOBUIBUG36933_brokenPseudoClassLookup();
     void styleSheetChangeBeforePolish();
     void placeholderColor();
     void accent();
@@ -117,7 +117,7 @@ private slots:
     //at the end because it mess with the style.
     void widgetStyle();
     void appStyle();
-    void QTBUG11658_cachecrash();
+    void BOBUIBUG11658_cachecrash();
     void styleSheetTargetAttribute();
     void tabWidgetDocumentModeCrash();
     void unpolish();
@@ -179,18 +179,18 @@ tst_QStyleSheetStyle::tst_QStyleSheetStyle()
 void tst_QStyleSheetStyle::init()
 {
     qApp->setStyleSheet(QString());
-    QCoreApplication::setAttribute(Qt::AA_UseStyleSheetPropagationInWidgetStyles, false);
+    QCoreApplication::setAttribute(BobUI::AA_UseStyleSheetPropagationInWidgetStyles, false);
 }
 
 void tst_QStyleSheetStyle::cleanup()
 {
-    QTRY_VERIFY(QApplication::topLevelWidgets().isEmpty());
+    BOBUIRY_VERIFY(QApplication::topLevelWidgets().isEmpty());
 }
 
 void tst_QStyleSheetStyle::numinstances()
 {
     QWidget w;
-    w.setWindowTitle(QTest::currentTestFunction());
+    w.setWindowTitle(BOBUIest::currentTestFunction());
     w.resize(m_testSize);
     centerOnScreen(&w);
     QCommonStyle *style = new QCommonStyle;
@@ -229,8 +229,8 @@ void tst_QStyleSheetStyle::numinstances()
 void tst_QStyleSheetStyle::widgetsBeforeAppStyleSheet()
 {
     QPushButton w1; // widget with no stylesheet
-    const QColor red(Qt::red);
-    const QColor white(Qt::white);
+    const QColor red(BobUI::red);
+    const QColor white(BobUI::white);
     qApp->setStyleSheet("* { color: red; }");
     QCOMPARE(COLOR(w1), red);
     w1.setStyleSheet("color: white");
@@ -245,8 +245,8 @@ class FriendlySpinBox : public QSpinBox { friend class tst_QStyleSheetStyle; };
 
 void tst_QStyleSheetStyle::widgetsAfterAppStyleSheet()
 {
-    const QColor red(Qt::red);
-    const QColor white(Qt::white);
+    const QColor red(BobUI::red);
+    const QColor white(BobUI::white);
     qApp->setStyleSheet("* { color: red; font-size: 32pt; }");
     QPushButton w1;
     FriendlySpinBox spin;
@@ -279,8 +279,8 @@ void tst_QStyleSheetStyle::widgetsAfterAppStyleSheet()
 
 void tst_QStyleSheetStyle::applicationStyleSheet()
 {
-    const QColor red(Qt::red);
-    const QColor white(Qt::white);
+    const QColor red(BobUI::red);
+    const QColor white(BobUI::white);
     QPushButton w1;
     qApp->setStyleSheet("* { color: red; }");
     QCOMPARE(COLOR(w1), red);
@@ -294,8 +294,8 @@ void tst_QStyleSheetStyle::applicationStyleSheet()
 
 void tst_QStyleSheetStyle::windowStyleSheet()
 {
-    const QColor red(Qt::red);
-    const QColor white(Qt::white);
+    const QColor red(BobUI::red);
+    const QColor white(BobUI::white);
     QPushButton w1;
     qApp->setStyleSheet(QString());
     w1.setStyleSheet("* { color: red; }");
@@ -317,9 +317,9 @@ void tst_QStyleSheetStyle::windowStyleSheet()
 
 void tst_QStyleSheetStyle::widgetStyleSheet()
 {
-    const QColor blue(Qt::blue);
-    const QColor red(Qt::red);
-    const QColor white(Qt::white);
+    const QColor blue(BobUI::blue);
+    const QColor red(BobUI::red);
+    const QColor white(BobUI::white);
     QPushButton w1;
     QPushButton *pb = new QPushButton(&w1);
     QPushButton &w2 = *pb;
@@ -347,9 +347,9 @@ void tst_QStyleSheetStyle::widgetStyleSheet()
 
 void tst_QStyleSheetStyle::reparentWithNoChildStyleSheet()
 {
-    const QColor blue(Qt::blue);
-    const QColor red(Qt::red);
-    const QColor white(Qt::white);
+    const QColor blue(BobUI::blue);
+    const QColor red(BobUI::red);
+    const QColor white(BobUI::white);
     QPushButton p1, p2;
     QPushButton *pb = new QPushButton(&p1);
     QPushButton &c1 = *pb; // child with no stylesheet
@@ -375,7 +375,7 @@ void tst_QStyleSheetStyle::reparentWithNoChildStyleSheet()
 void tst_QStyleSheetStyle::reparentWithChildStyleSheet()
 {
     const QColor gray("gray");
-    const QColor white(Qt::white);
+    const QColor white(BobUI::white);
     qApp->setStyleSheet(QString());
     QPushButton p1, p2;
     QPushButton *pb = new QPushButton(&p1);
@@ -394,8 +394,8 @@ void tst_QStyleSheetStyle::reparentWithChildStyleSheet()
 
 void tst_QStyleSheetStyle::repolish()
 {
-    const QColor red(Qt::red);
-    const QColor white(Qt::white);
+    const QColor red(BobUI::red);
+    const QColor white(BobUI::white);
     qApp->setStyleSheet(QString());
     QPushButton p1;
     p1.setStyleSheet("color: red; background: white");
@@ -412,10 +412,10 @@ void tst_QStyleSheetStyle::repolish()
 
 void tst_QStyleSheetStyle::repolish_without_crashing()
 {
-    // This used to crash, QTBUG-69204
+    // This used to crash, BOBUIBUG-69204
     QMainWindow w;
     w.resize(m_testSize);
-    w.setWindowTitle(QTest::currentTestFunction());
+    w.setWindowTitle(BOBUIest::currentTestFunction());
     QScopedPointer<QSplitter> splitter1(new QSplitter(w.centralWidget()));
     QScopedPointer<QSplitter> splitter2(new QSplitter);
     QScopedPointer<QSplitter> splitter3(new QSplitter);
@@ -423,13 +423,13 @@ void tst_QStyleSheetStyle::repolish_without_crashing()
 
     splitter2->setStyleSheet("color: red");
     QScopedPointer<QLabel> label(new QLabel);
-    label->setTextFormat(Qt::RichText);
+    label->setTextFormat(BobUI::RichText);
     splitter3->addWidget(label.data());
     label->setText("hey");
 
     splitter1->addWidget(splitter2.data());
     w.show();
-    QCOMPARE(COLOR(*label), QColor(Qt::red));
+    QCOMPARE(COLOR(*label), QColor(BobUI::red));
 }
 
 void tst_QStyleSheetStyle::repolish_children()
@@ -440,9 +440,9 @@ void tst_QStyleSheetStyle::repolish_children()
     // a layout would call show, triggering a polish of the child while
     // the parent on which the style sheet is set remains unpolished
     p2.show();
-    QCOMPARE(BACKGROUND(p2), Qt::white);
+    QCOMPARE(BACKGROUND(p2), BobUI::white);
     parent.setStyleSheet("QPushButton { color: red; background: red }");
-    QCOMPARE(BACKGROUND(p2), Qt::red);
+    QCOMPARE(BACKGROUND(p2), BobUI::red);
 }
 
 void tst_QStyleSheetStyle::widgetStyle()
@@ -641,20 +641,20 @@ void tst_QStyleSheetStyle::dynamicProperty()
     pb1.move(m_availableGeometry.topLeft() + QPoint(20, 100));
 
     QPushButton pb2(QStringLiteral("dynamicProperty_pb2"));
-    pb2.setWindowTitle(QTest::currentTestFunction());
+    pb2.setWindowTitle(BOBUIest::currentTestFunction());
     pb2.setMinimumWidth(m_testSize.width());
     pb2.move(m_availableGeometry.topLeft() + QPoint(20, m_testSize.width() + 40));
 
     pb1.setProperty("type", "critical");
     qApp->setStyleSheet("*[class~=\"QPushButton\"] { color: red; } *[type=\"critical\"] { background: white; }");
-    QVERIFY(COLOR(pb1) == Qt::red);
-    QVERIFY(BACKGROUND(pb1) == Qt::white);
+    QVERIFY(COLOR(pb1) == BobUI::red);
+    QVERIFY(BACKGROUND(pb1) == BobUI::white);
 
     pb2.setProperty("class", "critical"); // dynamic class
     pb2.setStyleSheet(QLatin1String(".critical[style~=\"") + appStyle + "\"] { color: blue }");
     pb2.show();
 
-    QVERIFY(COLOR(pb2) == Qt::blue);
+    QVERIFY(COLOR(pb2) == BobUI::blue);
 }
 
 #ifdef Q_OS_MAC
@@ -664,8 +664,8 @@ void tst_QStyleSheetStyle::layoutSpacing()
     QCheckBox ck1;
     QCheckBox ck2;
     QWidget window;
-    int spacing_widgetstyle = window.style()->layoutSpacing(ck1.sizePolicy().controlType(), ck2.sizePolicy().controlType(), Qt::Vertical);
-    int spacing_style = window.style()->layoutSpacing(ck1.sizePolicy().controlType(), ck2.sizePolicy().controlType(), Qt::Vertical);
+    int spacing_widgetstyle = window.style()->layoutSpacing(ck1.sizePolicy().controlType(), ck2.sizePolicy().controlType(), BobUI::Vertical);
+    int spacing_style = window.style()->layoutSpacing(ck1.sizePolicy().controlType(), ck2.sizePolicy().controlType(), BobUI::Vertical);
     QCOMPARE(spacing_widgetstyle, spacing_style);
 }
 #endif
@@ -712,9 +712,9 @@ namespace ns {
 
 void tst_QStyleSheetStyle::namespaces()
 {
-    const QColor blue(Qt::blue);
-    const QColor red(Qt::red);
-    const QColor white(Qt::white);
+    const QColor blue(BobUI::blue);
+    const QColor red(BobUI::red);
+    const QColor white(BobUI::white);
     ns::PushButton1 pb1;
     qApp->setStyleSheet("ns--PushButton1 { background: white }");
     QCOMPARE(BACKGROUND(pb1), white);
@@ -725,7 +725,7 @@ void tst_QStyleSheetStyle::namespaces()
     qApp->setStyleSheet("ns--PushButton1 { background: blue}");
     QCOMPARE(BACKGROUND(pb2), blue);
     qApp->setStyleSheet("ns--PushButton2 { background: magenta }");
-    QCOMPARE(BACKGROUND(pb2), QColor(Qt::magenta));
+    QCOMPARE(BACKGROUND(pb2), QColor(BobUI::magenta));
     qApp->setStyleSheet(".PushButtonTwo { background: white; }");
     QCOMPARE(BACKGROUND(pb2), white);
     qApp->setStyleSheet(".PushButtonDuo { background: red; }");
@@ -734,12 +734,12 @@ void tst_QStyleSheetStyle::namespaces()
 
 void tst_QStyleSheetStyle::palettePropagation_data()
 {
-    QTest::addColumn<QString>("applicationStyleSheet");
-    QTest::addColumn<bool>("widgetStylePropagation");
-    QTest::newRow("Widget style propagation") << " " << true;
-    QTest::newRow("Widget style propagation, no application style sheet") << QString() << true;
-    QTest::newRow("Default propagation") << " " << false;
-    QTest::newRow("Default propagation, no application style sheet") << QString() << false;
+    BOBUIest::addColumn<QString>("applicationStyleSheet");
+    BOBUIest::addColumn<bool>("widgetStylePropagation");
+    BOBUIest::newRow("Widget style propagation") << " " << true;
+    BOBUIest::newRow("Widget style propagation, no application style sheet") << QString() << true;
+    BOBUIest::newRow("Default propagation") << " " << false;
+    BOBUIest::newRow("Default propagation, no application style sheet") << QString() << false;
 }
 
 void tst_QStyleSheetStyle::palettePropagation()
@@ -748,7 +748,7 @@ void tst_QStyleSheetStyle::palettePropagation()
     QFETCH(bool, widgetStylePropagation);
 
     qApp->setStyleSheet(applicationStyleSheet);
-    QCoreApplication::setAttribute(Qt::AA_UseStyleSheetPropagationInWidgetStyles, widgetStylePropagation);
+    QCoreApplication::setAttribute(BobUI::AA_UseStyleSheetPropagationInWidgetStyles, widgetStylePropagation);
 
     QGroupBox gb;
     QLabel *label = new QLabel(&gb);
@@ -756,10 +756,10 @@ void tst_QStyleSheetStyle::palettePropagation()
     label->setText("AsdF");
 
     gb.setStyleSheet("QGroupBox { color: red }");
-    QCOMPARE(COLOR(gb), QColor(Qt::red));
+    QCOMPARE(COLOR(gb), QColor(BobUI::red));
 
     if (widgetStylePropagation) {
-        QCOMPARE(COLOR(lb), QColor(Qt::red)); // palette should propagate in standard mode
+        QCOMPARE(COLOR(lb), QColor(BobUI::red)); // palette should propagate in standard mode
     } else {
         QCOMPARE(COLOR(lb), APPCOLOR(lb)); // palette shouldn't propagate
     }
@@ -769,10 +769,10 @@ void tst_QStyleSheetStyle::palettePropagation()
     if (widgetStylePropagation) {
         // In standard propagation mode, widgets that are not explicitly
         // targeted do not have their propagated palette unset when they are
-        // unpolished by changing parents.  This is consistent with regular Qt
+        // unpolished by changing parents.  This is consistent with regular BobUI
         // widgets, who also maintain their propagated palette when changing
         // parents
-        QCOMPARE(COLOR(lb), QColor(Qt::red));
+        QCOMPARE(COLOR(lb), QColor(BobUI::red));
     } else {
         QCOMPARE(COLOR(lb), APPCOLOR(lb));
     }
@@ -780,22 +780,22 @@ void tst_QStyleSheetStyle::palettePropagation()
 
     gb.setStyleSheet("QGroupBox * { color: red }");
 
-    QCOMPARE(COLOR(lb), QColor(Qt::red));
+    QCOMPARE(COLOR(lb), QColor(BobUI::red));
     QCOMPARE(COLOR(gb), APPCOLOR(gb));
 
     window.setStyleSheet("* { color: white; }");
     lb.setParent(&window);
-    QCOMPARE(COLOR(lb), QColor(Qt::white));
+    QCOMPARE(COLOR(lb), QColor(BobUI::white));
 }
 
 void tst_QStyleSheetStyle::fontPropagation_data()
 {
-    QTest::addColumn<QString>("applicationStyleSheet");
-    QTest::addColumn<bool>("widgetStylePropagation");
-    QTest::newRow("Widget style propagation") << " " << true;
-    QTest::newRow("Widget style propagation, no application style sheet") << QString() << true;
-    QTest::newRow("Default propagation") << " " << false;
-    QTest::newRow("Default propagation, no application style sheet") << QString() << false;
+    BOBUIest::addColumn<QString>("applicationStyleSheet");
+    BOBUIest::addColumn<bool>("widgetStylePropagation");
+    BOBUIest::newRow("Widget style propagation") << " " << true;
+    BOBUIest::newRow("Widget style propagation, no application style sheet") << QString() << true;
+    BOBUIest::newRow("Default propagation") << " " << false;
+    BOBUIest::newRow("Default propagation, no application style sheet") << QString() << false;
 }
 
 void tst_QStyleSheetStyle::fontPropagation()
@@ -804,7 +804,7 @@ void tst_QStyleSheetStyle::fontPropagation()
     QFETCH(bool, widgetStylePropagation);
 
     qApp->setStyleSheet(applicationStyleSheet);
-    QCoreApplication::setAttribute(Qt::AA_UseStyleSheetPropagationInWidgetStyles, widgetStylePropagation);
+    QCoreApplication::setAttribute(BobUI::AA_UseStyleSheetPropagationInWidgetStyles, widgetStylePropagation);
 
     QComboBox cb;
     cb.addItem("item1");
@@ -844,11 +844,11 @@ void tst_QStyleSheetStyle::fontPropagation()
     window.setStyleSheet(QString());
     QCOMPARE(FONTSIZE(pb), buttonFontSize);
 
-    QTabWidget tw;
-    tw.setStyleSheet("QTabWidget { font-size: 20pt; }");
+    BOBUIabWidget tw;
+    tw.setStyleSheet("BOBUIabWidget { font-size: 20pt; }");
     QCOMPARE(FONTSIZE(tw), 20);
-    QWidget *child = tw.findChild<QWidget *>("qt_tabwidget_tabbar");
-    QVERIFY2(child, "QTabWidget did not contain a widget named \"qt_tabwidget_tabbar\"");
+    QWidget *child = tw.findChild<QWidget *>("bobui_tabwidget_tabbar");
+    QVERIFY2(child, "BOBUIabWidget did not contain a widget named \"bobui_tabwidget_tabbar\"");
     QCOMPARE(FONTSIZE(*child), 20);
 }
 
@@ -865,7 +865,7 @@ void tst_QStyleSheetStyle::onWidgetDestroyed()
 void tst_QStyleSheetStyle::fontPrecedence()
 {
     QLineEdit edit;
-    edit.setWindowTitle(QTest::currentTestFunction());
+    edit.setWindowTitle(BOBUIest::currentTestFunction());
     edit.setMinimumWidth(m_testSize.width());
     centerOnScreen(&edit);
     edit.show();
@@ -974,20 +974,20 @@ void tst_QStyleSheetStyle::focusColors()
     // anti-aliasing effect.
 #if !defined(Q_OS_WIN32) && !(defined(Q_OS_LINUX) && defined(Q_CC_GNU))
     QSKIP("This is a fragile test which fails on many esoteric platforms because of focus problems"
-          " (for example, QTBUG-33959)."
+          " (for example, BOBUIBUG-33959)."
           "That doesn't mean that the feature doesn't work in practice.");
 #endif
 
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     TestDialog frame(QStringLiteral("*:focus { border:none; background: #e8ff66; color: #ff0084 }"));
-    frame.setWindowTitle(QTest::currentTestFunction());
+    frame.setWindowTitle(BOBUIest::currentTestFunction());
 
     centerOnScreen(&frame);
     frame.show();
 
-    QVERIFY(QTest::qWaitForWindowActive(&frame));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&frame));
 
     for (QWidget *widget : frame.widgets()) {
         widget->setFocus();
@@ -1011,17 +1011,17 @@ void tst_QStyleSheetStyle::focusColors()
     }
 }
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 void tst_QStyleSheetStyle::hoverColors()
 {
 #ifdef Q_OS_MACOS
-    QSKIP("This test is fragile on Mac, most likely due to QTBUG-33959.");
+    QSKIP("This test is fragile on Mac, most likely due to BOBUIBUG-33959.");
 #endif
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     TestDialog frame(QStringLiteral("*:hover { border:none; background: #e8ff66; color: #ff0084 }"));
-    frame.setWindowTitle(QTest::currentTestFunction());
+    frame.setWindowTitle(BOBUIest::currentTestFunction());
 
     centerOnScreen(&frame);
     // Move the mouse cursor out of the way to suppress spontaneous QEvent::Enter
@@ -1032,19 +1032,19 @@ void tst_QStyleSheetStyle::hoverColors()
     QCursor::setPos(frame.geometry().topLeft() - QPoint(100, 0));
     frame.show();
 
-    QVERIFY(QTest::qWaitForWindowActive(&frame));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&frame));
 
     QWindow *frameWindow = frame.windowHandle();
     QVERIFY(frameWindow);
 
     const QPoint dummyPos = frame.focusDummy()->geometry().center();
-    QTest::mouseMove(frameWindow, dummyPos);
+    BOBUIest::mouseMove(frameWindow, dummyPos);
 
     for (QWidget *widget : frame.widgets()) {
         //move the mouse inside the widget, it should be colored
         const QRect widgetGeometry = widget->geometry();
-        QTest::mouseMove(frameWindow, widgetGeometry.center());
-        QTRY_VERIFY2(widget->testAttribute(Qt::WA_UnderMouse), widget->metaObject()->className());
+        BOBUIest::mouseMove(frameWindow, widgetGeometry.center());
+        BOBUIRY_VERIFY2(widget->testAttribute(BobUI::WA_UnderMouse), widget->metaObject()->className());
 
         QImage image(widgetGeometry.size(), QImage::Format_ARGB32);
         widget->render(&image);
@@ -1057,8 +1057,8 @@ void tst_QStyleSheetStyle::hoverColors()
                   + " did not contain text color #ff0084").toLocal8Bit().constData());
 
         //move the mouse outside the widget, it should NOT be colored
-        QTest::mouseMove(frameWindow, dummyPos);
-        QTRY_VERIFY2(frame.focusDummy()->testAttribute(Qt::WA_UnderMouse), "FocusDummy");
+        BOBUIest::mouseMove(frameWindow, dummyPos);
+        BOBUIRY_VERIFY2(frame.focusDummy()->testAttribute(BobUI::WA_UnderMouse), "FocusDummy");
 
         widget->render(&image);
 
@@ -1070,8 +1070,8 @@ void tst_QStyleSheetStyle::hoverColors()
                   + " did contain text color #ff0084").toLocal8Bit().constData());
 
         //move the mouse again inside the widget, it should be colored
-        QTest::mouseMove (frameWindow, widgetGeometry.center());
-        QTRY_VERIFY2(widget->testAttribute(Qt::WA_UnderMouse), widget->metaObject()->className());
+        BOBUIest::mouseMove (frameWindow, widgetGeometry.center());
+        BOBUIRY_VERIFY2(widget->testAttribute(BobUI::WA_UnderMouse), widget->metaObject()->className());
 
         widget->render(&image);
 
@@ -1145,15 +1145,15 @@ void tst_QStyleSheetStyle::background()
         QWidget *widget = widgets.at(c).data();
         widget->setWindowTitle(QStringLiteral("background ") + QString::number(c));
         widget->show();
-        QVERIFY(QTest::qWaitForWindowExposed(widget));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(widget));
 
         QImage image(widget->width(), widget->height(), QImage::Format_ARGB32);
         widget->render(&image);
         if (image.depth() < 24)
             QSKIP("Test doesn't support color depth < 24");
 
-        if (c == 2 && !QApplication::style()->objectName().compare(QLatin1String("fusion"), Qt::CaseInsensitive))
-            QEXPECT_FAIL("", "QTBUG-21468", Abort);
+        if (c == 2 && !QApplication::style()->objectName().compare(QLatin1String("fusion"), BobUI::CaseInsensitive))
+            QEXPECT_FAIL("", "BOBUIBUG-21468", Abort);
 
         QVERIFY2(testForColors(image, QColor(0xe8, 0xff, 0x66)),
                 (QString::number(c) + QLatin1Char(' ') + QString::fromLatin1(widget->metaObject()->className())
@@ -1167,48 +1167,48 @@ void tst_QStyleSheetStyle::background()
 void tst_QStyleSheetStyle::tabAlignment()
 {
     QWidget topLevel;
-    topLevel.setWindowTitle(QTest::currentTestFunction());
-    QTabWidget tabWidget(&topLevel);
+    topLevel.setWindowTitle(BOBUIest::currentTestFunction());
+    BOBUIabWidget tabWidget(&topLevel);
     tabWidget.addTab(new QLabel("tab1"),"tab1");
     tabWidget.resize(QSize(400,400));
     centerOnScreen(&topLevel);
     topLevel.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&topLevel));
-    QTabBar *bar = tabWidget.findChild<QTabBar*>();
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&topLevel));
+    BOBUIabBar *bar = tabWidget.findChild<BOBUIabBar*>();
     QVERIFY(bar);
     //check the tab is on the right
-    tabWidget.setStyleSheet("QTabWidget::tab-bar { alignment: right ; }");
+    tabWidget.setStyleSheet("BOBUIabWidget::tab-bar { alignment: right ; }");
     qApp->processEvents();
     QVERIFY(bar->geometry().right() > 380);
     QVERIFY(bar->geometry().left() > 200);
     //check the tab is on the middle
-    tabWidget.setStyleSheet("QTabWidget::tab-bar { alignment: center ; }");
+    tabWidget.setStyleSheet("BOBUIabWidget::tab-bar { alignment: center ; }");
     QVERIFY(bar->geometry().right() < 300);
     QVERIFY(bar->geometry().left() > 100);
     //check the tab is on the left
-    tabWidget.setStyleSheet("QTabWidget::tab-bar { alignment: left ; }");
+    tabWidget.setStyleSheet("BOBUIabWidget::tab-bar { alignment: left ; }");
     QVERIFY(bar->geometry().left() < 20);
     QVERIFY(bar->geometry().right() < 200);
 
-    tabWidget.setTabPosition(QTabWidget::West);
+    tabWidget.setTabPosition(BOBUIabWidget::West);
     //check the tab is on the top
     QVERIFY(bar->geometry().top() < 20);
     QVERIFY(bar->geometry().bottom() < 200);
     //check the tab is on the bottom
-    tabWidget.setStyleSheet("QTabWidget::tab-bar { alignment: right ; }");
+    tabWidget.setStyleSheet("BOBUIabWidget::tab-bar { alignment: right ; }");
     QVERIFY(bar->geometry().bottom() > 380);
     QVERIFY(bar->geometry().top() > 200);
     //check the tab is on the middle
-    tabWidget.setStyleSheet("QTabWidget::tab-bar { alignment: center ; }");
+    tabWidget.setStyleSheet("BOBUIabWidget::tab-bar { alignment: center ; }");
     QVERIFY(bar->geometry().bottom() < 300);
     QVERIFY(bar->geometry().top() > 100);
 }
 
 void tst_QStyleSheetStyle::tabFont_data()
 {
-    QTest::addColumn<QFont>("tabFont");
-    QTest::addColumn<QTabWidget::TabPosition>("tabPosition");
-    QTest::addColumn<bool>("closable");
+    BOBUIest::addColumn<QFont>("tabFont");
+    BOBUIest::addColumn<BOBUIabWidget::TabPosition>("tabPosition");
+    BOBUIest::addColumn<bool>("closable");
 
     QFont medium;
     medium.setPixelSize(24);
@@ -1217,18 +1217,18 @@ void tst_QStyleSheetStyle::tabFont_data()
     QFont bold;
     bold.setBold(true);
 
-    QTest::newRow("medium, horizontal") << medium << QTabWidget::North << false;
-    QTest::newRow("large, vertical") << large << QTabWidget::West << false;
-    QTest::newRow("bold, horizontal, closable") << bold << QTabWidget::North << true;
-    QTest::newRow("bold, vertical, closable") << bold << QTabWidget::West << true;
+    BOBUIest::newRow("medium, horizontal") << medium << BOBUIabWidget::North << false;
+    BOBUIest::newRow("large, vertical") << large << BOBUIabWidget::West << false;
+    BOBUIest::newRow("bold, horizontal, closable") << bold << BOBUIabWidget::North << true;
+    BOBUIest::newRow("bold, vertical, closable") << bold << BOBUIabWidget::West << true;
 }
 
 void tst_QStyleSheetStyle::tabFont()
 {
     QFETCH(QFont, tabFont);
-    QFETCH(QTabWidget::TabPosition, tabPosition);
+    QFETCH(BOBUIabWidget::TabPosition, tabPosition);
     QFETCH(bool, closable);
-    const bool vertical = tabPosition == QTabWidget::West || tabPosition == QTabWidget::East;
+    const bool vertical = tabPosition == BOBUIabWidget::West || tabPosition == BOBUIabWidget::East;
     const QString tab0Text("Tab title");
     const QString tab1Text("Very Long Tab title");
 
@@ -1236,20 +1236,20 @@ void tst_QStyleSheetStyle::tabFont()
     QWindowsStyle windowsStyle;
     QWidget topLevel;
     topLevel.setStyle(&windowsStyle);
-    topLevel.setWindowTitle(QTest::currentTestFunction());
-    QTabWidget tabWidget;
+    topLevel.setWindowTitle(BOBUIest::currentTestFunction());
+    BOBUIabWidget tabWidget;
     tabWidget.setStyle(&windowsStyle);
     tabWidget.setTabPosition(tabPosition);
     tabWidget.addTab(new QWidget, tab0Text);
     tabWidget.addTab(new QWidget, tab1Text);
-    QTabWidget styledWidget;
+    BOBUIabWidget styledWidget;
     styledWidget.setStyle(&windowsStyle);
     styledWidget.setTabPosition(tabPosition);
     styledWidget.addTab(new QWidget, tab0Text);
     styledWidget.addTab(new QWidget, tab1Text);
 
-    QTabBar *bar = tabWidget.tabBar();
-    QTabBar *styledBar = styledWidget.tabBar();
+    BOBUIabBar *bar = tabWidget.tabBar();
+    BOBUIabBar *styledBar = styledWidget.tabBar();
     QVERIFY(bar && styledBar);
     bar->setStyle(&windowsStyle);
     bar->setTabsClosable(closable);
@@ -1264,11 +1264,11 @@ void tst_QStyleSheetStyle::tabFont()
     topLevel.resize(600, 600);
     centerOnScreen(&topLevel);
     topLevel.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&topLevel));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&topLevel));
 
     const QFont defaultFont = tabWidget.font();
-    if (QFontMetrics(defaultFont).size(Qt::TextShowMnemonic, tab0Text).width() >=
-        QFontMetrics(tabFont).size(Qt::TextShowMnemonic, tab0Text).width()) {
+    if (QFontMetrics(defaultFont).size(BobUI::TextShowMnemonic, tab0Text).width() >=
+        QFontMetrics(tabFont).size(BobUI::TextShowMnemonic, tab0Text).width()) {
         QSKIP("The used font is not larger when bold");
     }
 
@@ -1282,7 +1282,7 @@ void tst_QStyleSheetStyle::tabFont()
     else
         QVERIFY(rectWithFont.width() > defaultRect.width());
 
-    QString styleSheet = "QTabBar::tab:first {";
+    QString styleSheet = "BOBUIabBar::tab:first {";
     if (tabFont.pixelSize() != -1)
         styleSheet += QString(" font-size: %1px;").arg(tabFont.pixelSize());
     if (tabFont.bold())
@@ -1300,8 +1300,8 @@ void tst_QStyleSheetStyle::tabFont()
 
 void tst_QStyleSheetStyle::attributesList()
 {
-    const QColor blue(Qt::blue);
-    const QColor red(Qt::red);
+    const QColor blue(BobUI::blue);
+    const QColor red(BobUI::red);
     QWidget w;
     QPushButton *p1=new QPushButton(&w);
     QPushButton *p2=new QPushButton(&w);
@@ -1320,12 +1320,12 @@ void tst_QStyleSheetStyle::attributesList()
 
 void tst_QStyleSheetStyle::minmaxSizes()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
-    QTabWidget tabWidget;
+    BOBUIabWidget tabWidget;
     tabWidget.resize(m_testSize);
-    tabWidget.setWindowTitle(QTest::currentTestFunction());
+    tabWidget.setWindowTitle(BOBUIest::currentTestFunction());
     tabWidget.setObjectName("tabWidget");
     int index1 = tabWidget.addTab(new QLabel("Tab1"),"a");
 
@@ -1338,49 +1338,49 @@ void tst_QStyleSheetStyle::minmaxSizes()
     page3->setStyleSheet("* {background-color: yellow; min-height: 250px; max-height:500px }");
     int index3 = tabWidget.addTab(page3,"very_long_long_long_long_caption");
 
-    tabWidget.setStyleSheet("QTabBar::tab { min-width:100px; max-width:130px; }");
+    tabWidget.setStyleSheet("BOBUIabBar::tab { min-width:100px; max-width:130px; }");
 
     centerOnScreen(&tabWidget);
     tabWidget.show();
-    QVERIFY(QTest::qWaitForWindowActive(&tabWidget));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&tabWidget));
     //i allow 4px additional border from the native style (hence the -2, <=2)
     QVERIFY(qAbs(page2->maximumSize().width() - 500 - 2) <= 2);
     QVERIFY(qAbs(page2->minimumSize().width() - 250 - 2) <= 2);
     QVERIFY(qAbs(page3->maximumSize().height() - 500 - 2) <= 2);
     QVERIFY(qAbs(page3->minimumSize().height() - 250 - 2) <= 2);
     QVERIFY(qAbs(page3->minimumSize().height() - 250 - 2) <= 2);
-    QTabBar *bar = tabWidget.findChild<QTabBar*>();
+    BOBUIabBar *bar = tabWidget.findChild<BOBUIabBar*>();
     QVERIFY(bar);
 #ifdef Q_OS_MAC
-    QEXPECT_FAIL("", "QTBUG-23686", Continue);
+    QEXPECT_FAIL("", "BOBUIBUG-23686", Continue);
 #endif
     QVERIFY(qAbs(bar->tabRect(index1).width() - 100 - 2) <= 2);
 #ifdef Q_OS_MAC
-    QEXPECT_FAIL("", "QTBUG-23686", Continue);
+    QEXPECT_FAIL("", "BOBUIBUG-23686", Continue);
 #endif
     QVERIFY(qAbs(bar->tabRect(index3).width() - 130 - 2) <= 2);
 }
 
 void tst_QStyleSheetStyle::task206238_twice()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
-    const QColor red(Qt::red);
+    const QColor red(BobUI::red);
     QMainWindow w;
     w.resize(m_testSize);
-    w.setWindowTitle(QTest::currentTestFunction());
-    QTabWidget* tw = new QTabWidget;
+    w.setWindowTitle(BOBUIest::currentTestFunction());
+    BOBUIabWidget* tw = new BOBUIabWidget;
     tw->addTab(new QLabel("foo"), "test");
     w.setCentralWidget(tw);
     w.setStyleSheet("background: red;");
     centerOnScreen(&w);
     w.show();
-    QVERIFY(QTest::qWaitForWindowActive(&w));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&w));
     QCOMPARE(BACKGROUND(w) , red);
     QCOMPARE(BACKGROUND(*tw), red);
     w.setStyleSheet("background: red;");
-    QTest::qWait(20);
+    BOBUIest::qWait(20);
     QCOMPARE(BACKGROUND(w) , red);
     QCOMPARE(BACKGROUND(*tw), red);
 }
@@ -1497,7 +1497,7 @@ class ProxyStyle : public QStyle
 
         int layoutSpacing(QSizePolicy::ControlType c1,
                           QSizePolicy::ControlType c2,
-                          Qt::Orientation ori,
+                          BobUI::Orientation ori,
                           const QStyleOption *opt,
                           const QWidget *w) const override
         {
@@ -1523,13 +1523,13 @@ void ProxyStyle::drawControl(ControlElement ce, const QStyleOption *opt,
         if (const QStyleOptionButton *btn = qstyleoption_cast<const QStyleOptionButton *>(opt))
         {
             QRect r = btn->rect;
-            painter->fillRect(r, Qt::green);
+            painter->fillRect(r, BobUI::green);
 
             if(btn->state & QStyle::State_HasFocus)
-                painter->fillRect(r.adjusted(5, 5, -5, -5), Qt::yellow);
+                painter->fillRect(r.adjusted(5, 5, -5, -5), BobUI::yellow);
 
 
-            painter->drawText(r, Qt::AlignCenter, btn->text);
+            painter->drawText(r, BobUI::AlignCenter, btn->text);
         }
     }
     else
@@ -1540,7 +1540,7 @@ void ProxyStyle::drawControl(ControlElement ce, const QStyleOption *opt,
 
 void tst_QStyleSheetStyle::proxyStyle()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     //Should not crash;   task 158984
@@ -1582,9 +1582,9 @@ void tst_QStyleSheetStyle::proxyStyle()
     layout->addWidget(pb5);
 
     w->show();
-    QVERIFY(QTest::qWaitForWindowActive(w));
+    QVERIFY(BOBUIest::qWaitForWindowActive(w));
 
-    // Test for QTBUG-7198 - style sheet overrides custom element size
+    // Test for BOBUIBUG-7198 - style sheet overrides custom element size
     QStyleOptionViewItem opt;
     opt.initFrom(w);
     opt.features |= QStyleOptionViewItem::HasCheckIndicator;
@@ -1615,9 +1615,9 @@ void tst_QStyleSheetStyle::useProxyandStyleSheetStyleInTabBar()
             }
     };
 
-    qApp->setStyleSheet("QTabBar::scroller { width: 50px; }");
+    qApp->setStyleSheet("BOBUIabBar::scroller { width: 50px; }");
 
-    QTabBar tabBar;
+    BOBUIabBar tabBar;
     tabBar.setMaximumWidth(150);
     tabBar.setStyle(new CustomProxy);
     int totalWidth = 0;
@@ -1628,14 +1628,14 @@ void tst_QStyleSheetStyle::useProxyandStyleSheetStyleInTabBar()
     if (totalWidth < 200)
         tabBar.resize(totalWidth / 2, 30);
     tabBar.show();
-    QVERIFY(QTest::qWaitForWindowActive(&tabBar));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&tabBar));
 
-    QToolButton *scrollLeftButton = qobject_cast<QToolButton *>(tabBar.children().at(0));
+    BOBUIoolButton *scrollLeftButton = qobject_cast<BOBUIoolButton *>(tabBar.children().at(0));
     QVERIFY(scrollLeftButton);
     QCOMPARE(scrollLeftButton->pos(), QPoint(0, 0));
     QCOMPARE(scrollLeftButton->width(), 25);
 
-    QToolButton *scrollRightButton = qobject_cast<QToolButton *>(tabBar.children().at(1));
+    BOBUIoolButton *scrollRightButton = qobject_cast<BOBUIoolButton *>(tabBar.children().at(1));
     QVERIFY(scrollRightButton);
     QCOMPARE(scrollRightButton->width(), 25);
 }
@@ -1654,16 +1654,16 @@ void tst_QStyleSheetStyle::emptyStyleSheet()
     //empty stylesheet should not change anything
     qApp->setStyleSheet(QString());
     QWidget w;
-    w.setWindowTitle(QTest::currentTestFunction());
+    w.setWindowTitle(BOBUIest::currentTestFunction());
     QHBoxLayout layout(&w);
     w.setLayout(&layout);
     layout.addWidget(new QPushButton("push", &w));
-    layout.addWidget(new QToolButton(&w));
+    layout.addWidget(new BOBUIoolButton(&w));
     QLabel label("toto", &w);
     label.setFrameShape(QLabel::Panel);
     label.setFrameShadow(QLabel::Sunken);
     layout.addWidget(&label); //task 231137
-    layout.addWidget(new QTableWidget(200,200, &w));
+    layout.addWidget(new BOBUIableWidget(200,200, &w));
     layout.addWidget(new QProgressBar(&w));
     layout.addWidget(new QLineEdit(&w));
     layout.addWidget(new QSpinBox(&w));
@@ -1673,17 +1673,17 @@ void tst_QStyleSheetStyle::emptyStyleSheet()
 
     centerOnScreen(&w);
     w.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
     //workaround the fact that the label sizehint is one pixel different the first time.
     label.setIndent(0); //force to recompute the sizeHint:
     w.setFocus();
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
 
     QImage img1(w.size(), QImage::Format_ARGB32);
     w.render(&img1);
 
     w.setStyleSheet("/* */");
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
 
     QImage img2(w.size(), QImage::Format_ARGB32);
     w.render(&img2);
@@ -1693,7 +1693,7 @@ void tst_QStyleSheetStyle::emptyStyleSheet()
         img2.save("emptyStyleSheet_img2.png");
     }
 
-    QEXPECT_FAIL("", "QTBUG-21468", Abort);
+    QEXPECT_FAIL("", "BOBUIBUG-21468", Abort);
     QCOMPARE(img1,img2);
 }
 
@@ -1711,11 +1711,11 @@ private:
 
 void tst_QStyleSheetStyle::toolTip_data()
 {
-    QTest::addColumn<QString>("style");
+    BOBUIest::addColumn<QString>("style");
 
-    QTest::newRow("fusion") << QString("Fusion");
+    BOBUIest::newRow("fusion") << QString("Fusion");
 #ifdef Q_OS_WINDOWS
-    QTest::newRow("windowsvista") << QString("WindowsVista");
+    BOBUIest::newRow("windowsvista") << QString("WindowsVista");
 #endif
 }
 
@@ -1723,12 +1723,12 @@ void tst_QStyleSheetStyle::toolTip()
 {
     QFETCH(QString, style);
 
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QWidget w;
     w.resize(m_testSize);
-    w.setWindowTitle(QTest::currentTestFunction());
+    w.setWindowTitle(BOBUIest::currentTestFunction());
 
     // Use "Fusion" to prevent the Vista style from clobbering the tooltip palette in polish().
     QStyle *appStyle = QStyleFactory::create(style);
@@ -1740,7 +1740,7 @@ void tst_QStyleSheetStyle::toolTip()
 
     QWidget *wid1 = new QGroupBox(&w);
     layout.addWidget(wid1);
-    wid1->setStyleSheet("QToolTip { background: #ae2; }   #wid3 > QToolTip { background: #0b8; } ");
+    wid1->setStyleSheet("BOBUIoolTip { background: #ae2; }   #wid3 > BOBUIoolTip { background: #0b8; } ");
     QVBoxLayout *layout1 = new QVBoxLayout(wid1);
     wid1->setLayout(layout1);
     wid1->setToolTip("this is wid1");
@@ -1748,7 +1748,7 @@ void tst_QStyleSheetStyle::toolTip()
 
     QWidget *wid2 = new QPushButton("wid2", wid1);
     layout1->addWidget(wid2);
-    wid2->setStyleSheet("QToolTip { background: #f81; } ");
+    wid2->setStyleSheet("BOBUIoolTip { background: #f81; } ");
     wid2->setToolTip("this is wid2");
     wid2->setObjectName("wid2");
 
@@ -1764,22 +1764,22 @@ void tst_QStyleSheetStyle::toolTip()
 
     QWidget *wid5 = new QPushButton("wid5", &w);
     layout.addWidget(wid5);
-    wid5->setStyleSheet("QToolTip { background: #ff0; color: #f00 }");
+    wid5->setStyleSheet("BOBUIoolTip { background: #ff0; color: #f00 }");
     wid5->setToolTip("this is wid5");
     wid5->setObjectName("wid5");
 
     centerOnScreen(&w);
     w.show();
-    QVERIFY(QTest::qWaitForWindowActive(&w));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&w));
 
-    QColor normalToolTipBgColor = QToolTip::palette().color(QPalette::Inactive, QPalette::ToolTipBase);
+    QColor normalToolTipBgColor = BOBUIoolTip::palette().color(QPalette::Inactive, QPalette::ToolTipBase);
 
 #ifdef Q_OS_MACOS
     // macOS uses tool tip text color set in label palette
     const QPalette *labelPalette = QGuiApplicationPrivate::platformTheme()->palette(QPlatformTheme::LabelPalette);
     QColor normalToolTipFgColor = labelPalette->color(QPalette::Inactive, QPalette::ToolTipText);
 #else
-    QColor normalToolTipFgColor = QToolTip::palette().color(QPalette::Inactive, QPalette::ToolTipText);
+    QColor normalToolTipFgColor = BOBUIoolTip::palette().color(QPalette::Inactive, QPalette::ToolTipText);
 #endif
 
     // Tooltip on the widget without stylesheet, then to other widget,
@@ -1797,19 +1797,19 @@ void tst_QStyleSheetStyle::toolTip()
         QColor bgColor = bgcolors.at(i);
         QColor fgColor = fgcolors.at(i);
 
-        QToolTip::showText( QPoint(0,0) , "This is " + wid->objectName(), wid);
+        BOBUIoolTip::showText( QPoint(0,0) , "This is " + wid->objectName(), wid);
 
         topLevels = QApplication::topLevelWidgets();
         QWidget *tooltip = nullptr;
         for (QWidget *widget : std::as_const(topLevels)) {
-            if (widget->inherits("QTipLabel")) {
+            if (widget->inherits("BOBUIipLabel")) {
                 tooltip = widget;
                 break;
             }
         }
 
         QVERIFY(tooltip);
-        QTRY_VERIFY(tooltip->isVisible()); // Wait until Roll-Effect is finished (Windows Vista)
+        BOBUIRY_VERIFY(tooltip->isVisible()); // Wait until Roll-Effect is finished (Windows Vista)
 
 #ifdef Q_OS_WINDOWS
         // If tooltip palette contains empty resolve mask, validate with inherited palette
@@ -1823,10 +1823,10 @@ void tst_QStyleSheetStyle::toolTip()
         QCOMPARE(tooltip->palette().color(tooltip->foregroundRole()), fgColor);
     }
 
-    QToolTip::showText( QPoint(0,0) , "This is " + wid3->objectName(), wid3);
-    QTest::qWait(100);
+    BOBUIoolTip::showText( QPoint(0,0) , "This is " + wid3->objectName(), wid3);
+    BOBUIest::qWait(100);
     delete wid3; //should not crash;
-    QTest::qWait(10);
+    BOBUIest::qWait(10);
     topLevels = QApplication::topLevelWidgets();
     for (QWidget *widget : std::as_const(topLevels))
         widget->update(); //should not crash either
@@ -1834,30 +1834,30 @@ void tst_QStyleSheetStyle::toolTip()
 
 void tst_QStyleSheetStyle::embeddedFonts()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     //task 235622 and 210551
     QSpinBox spin;
-    spin.setWindowTitle(QTest::currentTestFunction());
+    spin.setWindowTitle(BOBUIest::currentTestFunction());
     spin.setMinimumWidth(m_testSize.width());
     spin.move(m_availableGeometry.topLeft() + QPoint(20, 20));
     spin.show();
     spin.setStyleSheet("QSpinBox { font-size: 32px; }");
-    QTest::qWait(20);
+    BOBUIest::qWait(20);
     QLineEdit *embedded = spin.findChild<QLineEdit *>();
     QVERIFY(embedded);
     QCOMPARE(spin.font().pixelSize(), 32);
     QCOMPARE(embedded->font().pixelSize(), 32);
 
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
     QMenu *menu = embedded->createStandardContextMenu();
     menu->show();
-    QTest::qWait(20);
+    BOBUIest::qWait(20);
     QVERIFY(menu);
     QVERIFY(menu->font().pixelSize() != 32);
     QCOMPARE(menu->font().pixelSize(), qApp->font(menu).pixelSize());
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
 
     //task 242556
     QComboBox box;
@@ -1867,7 +1867,7 @@ void tst_QStyleSheetStyle::embeddedFonts()
     box.addItems(QStringList() << "First" << "Second" << "Third");
     box.setStyleSheet("QComboBox { font-size: 32px; }");
     box.show();
-    QVERIFY(QTest::qWaitForWindowActive(&box));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&box));
     embedded = box.findChild<QLineEdit *>();
     QVERIFY(embedded);
     QCOMPARE(box.font().pixelSize(), 32);
@@ -1876,19 +1876,19 @@ void tst_QStyleSheetStyle::embeddedFonts()
 
 void tst_QStyleSheetStyle::opaquePaintEvent_data()
 {
-    QTest::addColumn<QString>("stylesheet");
-    QTest::addColumn<bool>("transparent");
-    QTest::addColumn<bool>("styled");
+    BOBUIest::addColumn<QString>("stylesheet");
+    BOBUIest::addColumn<bool>("transparent");
+    BOBUIest::addColumn<bool>("styled");
 
-    QTest::newRow("none") << QString::fromLatin1("/* */") << false << false;
-    QTest::newRow("background black ") << QString::fromLatin1("background: black;") << false << true;
-    QTest::newRow("background qrgba") << QString::fromLatin1("background: rgba(125,0,0,125);") << true << true;
-    QTest::newRow("background transparent") << QString::fromLatin1("background: transparent;") << true << true;
-    QTest::newRow("border native") << QString::fromLatin1("border: native;") << false << false;
-    QTest::newRow("border solid") << QString::fromLatin1("border: 2px solid black;") << true << true;
-    QTest::newRow("border transparent") << QString::fromLatin1("background: black; border: 2px solid rgba(125,0,0,125);") << true << true;
-    QTest::newRow("margin") << QString::fromLatin1("margin: 25px;") << true << true;
-    QTest::newRow("focus") << QString::fromLatin1("*:focus { background: rgba(125,0,0,125) }") << true << true;
+    BOBUIest::newRow("none") << QString::fromLatin1("/* */") << false << false;
+    BOBUIest::newRow("background black ") << QString::fromLatin1("background: black;") << false << true;
+    BOBUIest::newRow("background qrgba") << QString::fromLatin1("background: rgba(125,0,0,125);") << true << true;
+    BOBUIest::newRow("background transparent") << QString::fromLatin1("background: transparent;") << true << true;
+    BOBUIest::newRow("border native") << QString::fromLatin1("border: native;") << false << false;
+    BOBUIest::newRow("border solid") << QString::fromLatin1("border: 2px solid black;") << true << true;
+    BOBUIest::newRow("border transparent") << QString::fromLatin1("background: black; border: 2px solid rgba(125,0,0,125);") << true << true;
+    BOBUIest::newRow("margin") << QString::fromLatin1("margin: 25px;") << true << true;
+    BOBUIest::newRow("focus") << QString::fromLatin1("*:focus { background: rgba(125,0,0,125) }") << true << true;
 }
 
 void tst_QStyleSheetStyle::opaquePaintEvent()
@@ -1899,18 +1899,18 @@ void tst_QStyleSheetStyle::opaquePaintEvent()
 
     QWidget tl;
     QWidget cl(&tl);
-    cl.setAttribute(Qt::WA_OpaquePaintEvent, true);
+    cl.setAttribute(BobUI::WA_OpaquePaintEvent, true);
     cl.setAutoFillBackground(true);
     cl.setStyleSheet(stylesheet);
     cl.ensurePolished();
-    QCOMPARE(cl.testAttribute(Qt::WA_OpaquePaintEvent), !transparent);
-    QCOMPARE(cl.testAttribute(Qt::WA_StyledBackground), styled);
+    QCOMPARE(cl.testAttribute(BobUI::WA_OpaquePaintEvent), !transparent);
+    QCOMPARE(cl.testAttribute(BobUI::WA_StyledBackground), styled);
     QCOMPARE(cl.autoFillBackground(), !styled );
 }
 
 void tst_QStyleSheetStyle::complexWidgetFocus()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     // This test is a simplified version of the focusColors() test above.
@@ -1922,13 +1922,13 @@ void tst_QStyleSheetStyle::complexWidgetFocus()
     // For this reason, we use unusual and extremely ugly colors! :-)
 
     QDialog frame;
-    frame.setWindowTitle(QTest::currentTestFunction());
+    frame.setWindowTitle(BOBUIest::currentTestFunction());
     frame.setStyleSheet("*:focus { background: black; color: black } "
                         "QSpinBox::up-arrow:focus, QSpinBox::down-arrow:focus { width: 7px; height: 7px; background: #ff0084 } "
                         "QComboBox::down-arrow:focus { width: 7px; height: 7px; background: #ff0084 }"
                         "QSlider::handle:horizontal:focus { width: 7px; height: 7px; background: #ff0084 } ");
 
-    const QWidgetList widgets{new QSpinBox, new QComboBox, new QSlider(Qt::Horizontal)};
+    const QWidgetList widgets{new QSpinBox, new QComboBox, new QSlider(BobUI::Horizontal)};
 
     QLayout* layout = new QGridLayout;
     layout->addWidget(new QLineEdit); // Avoids initial focus.
@@ -1938,7 +1938,7 @@ void tst_QStyleSheetStyle::complexWidgetFocus()
 
     centerOnScreen(&frame);
     frame.show();
-    QVERIFY(QTest::qWaitForWindowActive(&frame));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&frame));
     for (QWidget *widget : widgets) {
         widget->setFocus();
         QApplication::processEvents();
@@ -1958,15 +1958,15 @@ void tst_QStyleSheetStyle::complexWidgetFocus()
 
 void tst_QStyleSheetStyle::task188195_baseBackground()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
-    QTreeView tree;
-    tree.setWindowTitle(QTest::currentTestFunction());
-    tree.setStyleSheet( "QTreeView:disabled { background-color:#ab1251; }" );
+    BOBUIreeView tree;
+    tree.setWindowTitle(BOBUIest::currentTestFunction());
+    tree.setStyleSheet( "BOBUIreeView:disabled { background-color:#ab1251; }" );
     tree.setGeometry(QRect(m_availableGeometry.topLeft() + QPoint(20, 100), m_testSize));
     tree.show();
-    QVERIFY(QTest::qWaitForWindowActive(&tree));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&tree));
     QImage image(tree.width(), tree.height(), QImage::Format_ARGB32);
 
     tree.render(&image);
@@ -1982,21 +1982,21 @@ void tst_QStyleSheetStyle::task188195_baseBackground()
     QVERIFY(testForColors(image, tree.palette().base().color()));
     QVERIFY(!testForColors(image, QColor(0xab, 0x12, 0x51)));
 
-    QTableWidget table(12, 12);
-    table.setItem(0, 0, new QTableWidgetItem());
-    table.setStyleSheet( "QTableView {background-color: #ff0000}" );
+    BOBUIableWidget table(12, 12);
+    table.setItem(0, 0, new BOBUIableWidgetItem());
+    table.setStyleSheet( "BOBUIableView {background-color: #ff0000}" );
     // This needs to be large so that >50% (excluding header rows/columns) are red.
     table.setGeometry(QRect(m_availableGeometry.topLeft() + QPoint(300, 100), m_testSize * 2));
     table.show();
-    QVERIFY(QTest::qWaitForWindowActive(&table));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&table));
     image = QImage(table.width(), table.height(), QImage::Format_ARGB32);
     table.render(&image);
-    QVERIFY(testForColors(image, Qt::red, true));
+    QVERIFY(testForColors(image, BobUI::red, true));
 }
 
 void tst_QStyleSheetStyle::task232085_spinBoxLineEditBg()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     // This test is a simplified version of the focusColors() test above.
@@ -2011,7 +2011,7 @@ void tst_QStyleSheetStyle::task232085_spinBoxLineEditBg()
     spinbox->setValue(8888);
 
     QDialog frame;
-    frame.setWindowTitle(QTest::currentTestFunction());
+    frame.setWindowTitle(BOBUIest::currentTestFunction());
     QLayout* layout = new QGridLayout;
 
     QLineEdit* dummy = new QLineEdit; // Avoids initial focus.
@@ -2027,7 +2027,7 @@ void tst_QStyleSheetStyle::task232085_spinBoxLineEditBg()
     centerOnScreen(&frame);
     frame.show();
     spinbox->setFocus();
-    QVERIFY(QTest::qWaitForWindowActive(&frame));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&frame));
 
     QImage image(frame.width(), frame.height(), QImage::Format_ARGB32);
     frame.render(&image);
@@ -2075,7 +2075,7 @@ void tst_QStyleSheetStyle::changeStyleInChangeEvent()
     wid.ensurePolished();
 }
 
-void tst_QStyleSheetStyle::QTBUG11658_cachecrash()
+void tst_QStyleSheetStyle::BOBUIBUG11658_cachecrash()
 {
     //should not crash
     class Widget : public QWidget
@@ -2099,16 +2099,16 @@ void tst_QStyleSheetStyle::QTBUG11658_cachecrash()
     Widget *w = new Widget(m_testSize.width());
     delete w;
     w = new Widget(m_testSize.width());
-    w->setWindowTitle(QTest::currentTestFunction());
+    w->setWindowTitle(BOBUIest::currentTestFunction());
     centerOnScreen(w);
     w->show();
 
-    QVERIFY(QTest::qWaitForWindowExposed(w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(w));
     delete w;
     qApp->setStyleSheet(QString());
 }
 
-void tst_QStyleSheetStyle::QTBUG15910_crashNullWidget()
+void tst_QStyleSheetStyle::BOBUIBUG15910_crashNullWidget()
 {
     struct Widget : QWidget {
         void paintEvent(QPaintEvent *) override
@@ -2121,36 +2121,36 @@ void tst_QStyleSheetStyle::QTBUG15910_crashNullWidget()
             style()->drawControl(QStyle::CE_PushButton, &opt, &p, nullptr);
         }
     } w;
-    w.setWindowTitle(QTest::currentTestFunction());
+    w.setWindowTitle(BOBUIest::currentTestFunction());
     w.setStyleSheet("* { background-color: white; color:black; border 3px solid yellow }");
     w.setMinimumWidth(160);
     centerOnScreen(&w);
     w.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
 }
 
-void tst_QStyleSheetStyle::QTBUG36933_brokenPseudoClassLookup()
+void tst_QStyleSheetStyle::BOBUIBUG36933_brokenPseudoClassLookup()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     const int rowCount = 10;
     const int columnCount = 10;
 
-    QTableWidget widget(rowCount, columnCount);
+    BOBUIableWidget widget(rowCount, columnCount);
     widget.resize(m_testSize);
-    widget.setWindowTitle(QTest::currentTestFunction());
+    widget.setWindowTitle(BOBUIest::currentTestFunction());
 
     for (int row = 0; row < rowCount; ++row) {
         const QString rowNumber = QLatin1String("row ") + QString::number(row + 1);
         for (int column = 0; column < columnCount; ++column) {
             const QString t = rowNumber
                 + QLatin1String(" column ") + QString::number(column + 1);
-            widget.setItem(row, column, new QTableWidgetItem(t));
+            widget.setItem(row, column, new BOBUIableWidgetItem(t));
         }
 
         // put no visible text for the vertical headers, but still put some text or they will collapse
-        widget.setVerticalHeaderItem(row, new QTableWidgetItem(QStringLiteral("    ")));
+        widget.setVerticalHeaderItem(row, new BOBUIableWidgetItem(QStringLiteral("    ")));
     }
 
     // parsing of this stylesheet must not crash, and it must be correctly applied
@@ -2158,23 +2158,23 @@ void tst_QStyleSheetStyle::QTBUG36933_brokenPseudoClassLookup()
 
     centerOnScreen(&widget);
     widget.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&widget));
 
     widget.activateWindow();
-    QVERIFY(QTest::qWaitForWindowActive(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&widget));
 
     QHeaderView *verticalHeader = widget.verticalHeader();
     QImage image(verticalHeader->size(), QImage::Format_ARGB32);
     verticalHeader->render(&image);
-    if (!QApplication::style()->objectName().compare(QLatin1String("fusion"), Qt::CaseInsensitive))
-        QEXPECT_FAIL("", "QTBUG-21468", Abort);
+    if (!QApplication::style()->objectName().compare(QLatin1String("fusion"), BobUI::CaseInsensitive))
+        QEXPECT_FAIL("", "BOBUIBUG-21468", Abort);
     QVERIFY(testForColors(image, QColor(0xFF, 0x00, 0x00)));
 }
 
 void tst_QStyleSheetStyle::styleSheetChangeBeforePolish()
 {
     QWidget widget;
-    widget.setWindowTitle(QTest::currentTestFunction());
+    widget.setWindowTitle(BOBUIest::currentTestFunction());
     QVBoxLayout *vbox = new QVBoxLayout(&widget);
     QFrame *frame = new QFrame(&widget);
     frame->setFixedSize(m_testSize);
@@ -2187,7 +2187,7 @@ void tst_QStyleSheetStyle::styleSheetChangeBeforePolish()
     frame2->setStyleSheet("background-color: #00FF00;");
     vbox->addWidget(frame);
     widget.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&widget));
     QImage image(frame->size(), QImage::Format_ARGB32);
     frame->render(&image);
     QVERIFY(testForColors(image, QColor(0x00, 0xFF, 0x00)));
@@ -2198,17 +2198,17 @@ void tst_QStyleSheetStyle::styleSheetChangeBeforePolish()
 
 void tst_QStyleSheetStyle::widgetStylePropagation_data()
 {
-    QTest::addColumn<QString>("applicationStyleSheet");
-    QTest::addColumn<QString>("parentStyleSheet");
-    QTest::addColumn<QString>("childStyleSheet");
-    QTest::addColumn<QFont>("parentFont");
-    QTest::addColumn<QFont>("childFont");
-    QTest::addColumn<QPalette>("parentPalette");
-    QTest::addColumn<QPalette>("childPalette");
-    QTest::addColumn<int>("parentExpectedSize");
-    QTest::addColumn<int>("childExpectedSize");
-    QTest::addColumn<QColor>("parentExpectedColor");
-    QTest::addColumn<QColor>("childExpectedColor");
+    BOBUIest::addColumn<QString>("applicationStyleSheet");
+    BOBUIest::addColumn<QString>("parentStyleSheet");
+    BOBUIest::addColumn<QString>("childStyleSheet");
+    BOBUIest::addColumn<QFont>("parentFont");
+    BOBUIest::addColumn<QFont>("childFont");
+    BOBUIest::addColumn<QPalette>("parentPalette");
+    BOBUIest::addColumn<QPalette>("childPalette");
+    BOBUIest::addColumn<int>("parentExpectedSize");
+    BOBUIest::addColumn<int>("childExpectedSize");
+    BOBUIest::addColumn<QColor>("parentExpectedColor");
+    BOBUIest::addColumn<QColor>("childExpectedColor");
 
     QFont noFont;
     QFont font45; font45.setPointSize(45);
@@ -2225,57 +2225,57 @@ void tst_QStyleSheetStyle::widgetStylePropagation_data()
     QColor redColor("red");
     QColor greenColor("green");
 
-    // Check regular Qt propagation works as expected, with and without a
+    // Check regular BobUI propagation works as expected, with and without a
     // non-interfering application stylesheet
-    QTest::newRow("defaults")
+    BOBUIest::newRow("defaults")
         << QString() << QString() << QString()
         << noFont << noFont << noPalette << noPalette
         << defaultSize << defaultSize << defaultColor << defaultColor;
-    QTest::newRow("parent font propagation, no application style sheet")
+    BOBUIest::newRow("parent font propagation, no application style sheet")
         << QString() << QString() << QString()
         << font45 << noFont << noPalette << noPalette
         << 45 << 45 << defaultColor << defaultColor;
-    QTest::newRow("parent font propagation, dummy application style sheet")
+    BOBUIest::newRow("parent font propagation, dummy application style sheet")
         << "QGroupBox { font-size: 64pt }" << QString() << QString()
         << font45 << noFont << noPalette << noPalette
         << 45 << 45 << defaultColor << defaultColor;
-    QTest::newRow("parent color propagation, no application style sheet")
+    BOBUIest::newRow("parent color propagation, no application style sheet")
         << QString() << QString() << QString()
         << noFont << noFont << redPalette << noPalette
         << defaultSize << defaultSize << redColor << redColor;
-    QTest::newRow("parent color propagation, dummy application style sheet")
+    BOBUIest::newRow("parent color propagation, dummy application style sheet")
         << "QGroupBox { color: blue }" << QString() << QString()
         << noFont << noFont << redPalette << noPalette
         << defaultSize << defaultSize << redColor << redColor;
 
     // Parent style sheet propagates to child if child has not explicitly
     // set a value
-    QTest::newRow("parent style sheet color propagation")
+    BOBUIest::newRow("parent style sheet color propagation")
         << "#parentLabel { color: red }" << QString() << QString()
         << noFont << noFont << noPalette << noPalette
         << defaultSize << defaultSize << redColor << redColor;
-    QTest::newRow("parent style sheet font propagation")
+    BOBUIest::newRow("parent style sheet font propagation")
         << "#parentLabel { font-size: 45pt }" << QString() << QString()
         << noFont << noFont << noPalette << noPalette
         << 45 << 45 << defaultColor << defaultColor;
 
     // Parent style sheet does not propagate to child if child has explicitly
     // set a value
-    QTest::newRow("parent style sheet color propagation, child explicitly set")
+    BOBUIest::newRow("parent style sheet color propagation, child explicitly set")
         << "#parentLabel { color: red }" << QString() << QString()
         << noFont << noFont << noPalette << greenPalette
         << defaultSize << defaultSize << redColor << greenColor;
-    QTest::newRow("parent style sheet font propagation, child explicitly set")
+    BOBUIest::newRow("parent style sheet font propagation, child explicitly set")
         << "#parentLabel { font-size: 45pt }" << QString() << QString()
         << noFont << font32 << noPalette << noPalette
         << 45 << 32 << defaultColor << defaultColor;
 
     // Parent does not propagate to child when child is target of style sheet
-    QTest::newRow("parent style sheet font propagation, child application style sheet")
+    BOBUIest::newRow("parent style sheet font propagation, child application style sheet")
         << "#childLabel { font-size: 32pt }" << QString() << QString()
         << font45 << noFont << noPalette << noPalette
         << 45 << 32 << defaultColor << defaultColor;
-    QTest::newRow("parent style sheet color propagation, child application style sheet")
+    BOBUIest::newRow("parent style sheet color propagation, child application style sheet")
         << "#childLabel { color: green }" << QString() << QString()
         << noFont << noFont << redPalette << noPalette
         << defaultSize << defaultSize << redColor << greenColor;
@@ -2297,7 +2297,7 @@ void tst_QStyleSheetStyle::widgetStylePropagation()
     QFETCH(QColor, parentExpectedColor);
     QFETCH(QColor, childExpectedColor);
 
-    QCoreApplication::setAttribute(Qt::AA_UseStyleSheetPropagationInWidgetStyles, true);
+    QCoreApplication::setAttribute(BobUI::AA_UseStyleSheetPropagationInWidgetStyles, true);
 
     qApp->setStyleSheet(applicationStyleSheet);
 
@@ -2335,58 +2335,58 @@ void tst_QStyleSheetStyle::styleSheetTargetAttribute()
     QPushButton pb(&lb);
 
     gb.ensurePolished(); lb.ensurePolished(); pb.ensurePolished();
-    QCOMPARE(gb.testAttribute(Qt::WA_StyleSheetTarget), false);
-    QCOMPARE(lb.testAttribute(Qt::WA_StyleSheetTarget), false);
-    QCOMPARE(pb.testAttribute(Qt::WA_StyleSheetTarget), false);
+    QCOMPARE(gb.testAttribute(BobUI::WA_StyleSheetTarget), false);
+    QCOMPARE(lb.testAttribute(BobUI::WA_StyleSheetTarget), false);
+    QCOMPARE(pb.testAttribute(BobUI::WA_StyleSheetTarget), false);
 
     qApp->setStyleSheet("QPushButton { background-color: blue; }");
 
     gb.ensurePolished(); lb.ensurePolished(); pb.ensurePolished();
-    QCOMPARE(gb.testAttribute(Qt::WA_StyleSheetTarget), false);
-    QCOMPARE(lb.testAttribute(Qt::WA_StyleSheetTarget), false);
-    QCOMPARE(pb.testAttribute(Qt::WA_StyleSheetTarget), true);
+    QCOMPARE(gb.testAttribute(BobUI::WA_StyleSheetTarget), false);
+    QCOMPARE(lb.testAttribute(BobUI::WA_StyleSheetTarget), false);
+    QCOMPARE(pb.testAttribute(BobUI::WA_StyleSheetTarget), true);
 
     qApp->setStyleSheet("QGroupBox { background-color: blue; }");
 
     gb.ensurePolished(); lb.ensurePolished(); pb.ensurePolished();
-    QCOMPARE(gb.testAttribute(Qt::WA_StyleSheetTarget), true);
-    QCOMPARE(lb.testAttribute(Qt::WA_StyleSheetTarget), false);
-    QCOMPARE(pb.testAttribute(Qt::WA_StyleSheetTarget), false);
+    QCOMPARE(gb.testAttribute(BobUI::WA_StyleSheetTarget), true);
+    QCOMPARE(lb.testAttribute(BobUI::WA_StyleSheetTarget), false);
+    QCOMPARE(pb.testAttribute(BobUI::WA_StyleSheetTarget), false);
 
     qApp->setStyleSheet("QGroupBox * { background-color: blue; }");
 
     gb.ensurePolished(); lb.ensurePolished(); pb.ensurePolished();
-    QCOMPARE(gb.testAttribute(Qt::WA_StyleSheetTarget), false);
-    QCOMPARE(lb.testAttribute(Qt::WA_StyleSheetTarget), true);
-    QCOMPARE(pb.testAttribute(Qt::WA_StyleSheetTarget), true);
+    QCOMPARE(gb.testAttribute(BobUI::WA_StyleSheetTarget), false);
+    QCOMPARE(lb.testAttribute(BobUI::WA_StyleSheetTarget), true);
+    QCOMPARE(pb.testAttribute(BobUI::WA_StyleSheetTarget), true);
 
     qApp->setStyleSheet("* { background-color: blue; }");
     gb.ensurePolished(); lb.ensurePolished(); pb.ensurePolished();
-    QCOMPARE(gb.testAttribute(Qt::WA_StyleSheetTarget), true);
-    QCOMPARE(lb.testAttribute(Qt::WA_StyleSheetTarget), true);
-    QCOMPARE(pb.testAttribute(Qt::WA_StyleSheetTarget), true);
+    QCOMPARE(gb.testAttribute(BobUI::WA_StyleSheetTarget), true);
+    QCOMPARE(lb.testAttribute(BobUI::WA_StyleSheetTarget), true);
+    QCOMPARE(pb.testAttribute(BobUI::WA_StyleSheetTarget), true);
 
     qApp->setStyleSheet("QLabel { font-size: 32pt; }");
 
     gb.ensurePolished(); lb.ensurePolished(); pb.ensurePolished();
-    QCOMPARE(gb.testAttribute(Qt::WA_StyleSheetTarget), false);
-    QCOMPARE(lb.testAttribute(Qt::WA_StyleSheetTarget), true);
-    QCOMPARE(pb.testAttribute(Qt::WA_StyleSheetTarget), false);
+    QCOMPARE(gb.testAttribute(BobUI::WA_StyleSheetTarget), false);
+    QCOMPARE(lb.testAttribute(BobUI::WA_StyleSheetTarget), true);
+    QCOMPARE(pb.testAttribute(BobUI::WA_StyleSheetTarget), false);
 
     qApp->setStyleSheet(QString());
 
     gb.ensurePolished(); lb.ensurePolished(); pb.ensurePolished();
-    QCOMPARE(gb.testAttribute(Qt::WA_StyleSheetTarget), false);
-    QCOMPARE(lb.testAttribute(Qt::WA_StyleSheetTarget), false);
-    QCOMPARE(pb.testAttribute(Qt::WA_StyleSheetTarget), false);
+    QCOMPARE(gb.testAttribute(BobUI::WA_StyleSheetTarget), false);
+    QCOMPARE(lb.testAttribute(BobUI::WA_StyleSheetTarget), false);
+    QCOMPARE(pb.testAttribute(BobUI::WA_StyleSheetTarget), false);
 }
 
 void tst_QStyleSheetStyle::tabWidgetDocumentModeCrash()
 {
-    // Don't crash when matching accessing documentMode of QTabWidget while styling QTabBar.
-    qApp->setStyleSheet("QTabWidget[documentMode=true] QTabBar { font-size: 40pt; }");
+    // Don't crash when matching accessing documentMode of BOBUIabWidget while styling BOBUIabBar.
+    qApp->setStyleSheet("BOBUIabWidget[documentMode=true] BOBUIabBar { font-size: 40pt; }");
 
-    QTabWidget tabWidget;
+    BOBUIabWidget tabWidget;
     tabWidget.setDocumentMode(true);
     QCOMPARE(FONTSIZE(*tabWidget.tabBar()), 40);
 }
@@ -2404,11 +2404,11 @@ void tst_QStyleSheetStyle::unpolish()
 
 void tst_QStyleSheetStyle::highdpiImages_data()
 {
-    QTest::addColumn<qreal>("screenFactor");
-    QTest::addColumn<QColor>("color");
+    BOBUIest::addColumn<qreal>("screenFactor");
+    BOBUIest::addColumn<QColor>("color");
 
-    QTest::newRow("highdpi") << 2.0 << QColor(0x00, 0xFF, 0x00);
-    QTest::newRow("lowdpi")  << 1.0 << QColor(0xFF, 0x00, 0x00);
+    BOBUIest::newRow("highdpi") << 2.0 << QColor(0x00, 0xFF, 0x00);
+    BOBUIest::newRow("lowdpi")  << 1.0 << QColor(0xFF, 0x00, 0x00);
 }
 
 void tst_QStyleSheetStyle::highdpiImages()
@@ -2417,8 +2417,8 @@ void tst_QStyleSheetStyle::highdpiImages()
     QFETCH(QColor, color);
 
     QWidget w;
-    w.setWindowTitle(QLatin1String(QTest::currentTestFunction()) + QLatin1String("::")
-                     + QLatin1String(QTest::currentDataTag()));
+    w.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction()) + QLatin1String("::")
+                     + QLatin1String(BOBUIest::currentDataTag()));
     QScreen *screen = QGuiApplication::primaryScreen();
     auto inverseDpr = 1 / screen->devicePixelRatio();
     w.move(screen->availableGeometry().topLeft());
@@ -2426,7 +2426,7 @@ void tst_QStyleSheetStyle::highdpiImages()
     w.setStyleSheet("QWidget { background-image: url(\":/images/testimage.png\"); }");
     w.show();
 
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
     QImage image(w.size(), QImage::Format_ARGB32);
     w.render(&image);
     QVERIFY(testForColors(image, color));
@@ -2437,7 +2437,7 @@ void tst_QStyleSheetStyle::highdpiImages()
 
 void tst_QStyleSheetStyle::placeholderColor()
 {
-    const QColor red(Qt::red);
+    const QColor red(BobUI::red);
     qApp->setStyleSheet("* { color: red; }");
     QLineEdit le1;
     QLineEdit le2;
@@ -2473,24 +2473,24 @@ void tst_QStyleSheetStyle::accent()
 
 void tst_QStyleSheetStyle::enumPropertySelector_data()
 {
-    QTest::addColumn<QString>("styleSheet");
+    BOBUIest::addColumn<QString>("styleSheet");
 
-    QTest::addRow("Enum value") << R"(QToolButton[popupMode=MenuButtonPopup] { padding-right: 40px; })";
-    QTest::addRow("Int value") << R"(QToolButton[popupMode="1"] { padding-right: 40px; })";
+    BOBUIest::addRow("Enum value") << R"(BOBUIoolButton[popupMode=MenuButtonPopup] { padding-right: 40px; })";
+    BOBUIest::addRow("Int value") << R"(BOBUIoolButton[popupMode="1"] { padding-right: 40px; })";
 }
 
 void tst_QStyleSheetStyle::enumPropertySelector()
 {
     QFETCH(QString, styleSheet);
 
-    QToolButton button;
+    BOBUIoolButton button;
     QMenu menu;
     menu.addAction("Action1");
     QPixmap pm(50, 50);
-    pm.fill(Qt::red);
+    pm.fill(BobUI::red);
     button.setIcon(pm);
     button.setMenu(&menu);
-    button.setPopupMode(QToolButton::MenuButtonPopup);
+    button.setPopupMode(BOBUIoolButton::MenuButtonPopup);
 
     button.show();
     const QSize unstyledSizeHint = button.sizeHint();
@@ -2498,8 +2498,8 @@ void tst_QStyleSheetStyle::enumPropertySelector()
     qApp->setStyleSheet(styleSheet);
     const QSize styledSizeHint = button.sizeHint();
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    QEXPECT_FAIL("Enum value", "In Qt 5, style sheet selectors have to use integer enum values", Continue);
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(6, 0, 0)
+    QEXPECT_FAIL("Enum value", "In BobUI 5, style sheet selectors have to use integer enum values", Continue);
 #endif
 
     QVERIFY(styledSizeHint.width() > unstyledSizeHint.width());
@@ -2507,9 +2507,9 @@ void tst_QStyleSheetStyle::enumPropertySelector()
 
 void tst_QStyleSheetStyle::iconSizes_data()
 {
-    QTest::addColumn<QString>("styleSheet");
-    QTest::addColumn<QFont>("font");
-    QTest::addColumn<QSize>("iconSize");
+    BOBUIest::addColumn<QString>("styleSheet");
+    BOBUIest::addColumn<QFont>("font");
+    BOBUIest::addColumn<QSize>("iconSize");
 
     const int defaultSize = QApplication::style()->pixelMetric(QStyle::PM_ButtonIconSize);
 
@@ -2520,36 +2520,36 @@ void tst_QStyleSheetStyle::iconSizes_data()
     QFont hugeFont;
     hugeFont.setPointSizeF(40.0);
 
-    QTest::addRow("default") << QString() << QFont() << QSize(defaultSize, defaultSize);
-    QTest::addRow("pixels") << "icon-size: 50px" << QFont() << QSize(50, 50);
-    QTest::addRow("points") << "icon-size: 20pt" << QFont() << QSize(15, 15);
-    QTest::addRow("pixels with font") << "icon-size: 50px" << smallFont << QSize(50, 50);
-    QTest::addRow("points with font") << "icon-size: 20pt" << largeFont << QSize(15, 15);
+    BOBUIest::addRow("default") << QString() << QFont() << QSize(defaultSize, defaultSize);
+    BOBUIest::addRow("pixels") << "icon-size: 50px" << QFont() << QSize(50, 50);
+    BOBUIest::addRow("points") << "icon-size: 20pt" << QFont() << QSize(15, 15);
+    BOBUIest::addRow("pixels with font") << "icon-size: 50px" << smallFont << QSize(50, 50);
+    BOBUIest::addRow("points with font") << "icon-size: 20pt" << largeFont << QSize(15, 15);
 
     const QFontMetrics defaultMetrics{QFont()};
     const QFontMetrics smallMetrics(smallFont);
     const QFontMetrics largeMetrics(largeFont);
     const QFontMetrics hugeMetrics(hugeFont);
-    QTest::addRow("1em, default font") << "icon-size: 1em"
+    BOBUIest::addRow("1em, default font") << "icon-size: 1em"
         << QFont() << QSize(defaultMetrics.height(), defaultMetrics.height());
-    QTest::addRow("1em, small font") << "icon-size: 1em"
+    BOBUIest::addRow("1em, small font") << "icon-size: 1em"
         << smallFont << QSize(smallMetrics.height(), smallMetrics.height());
-    QTest::addRow("1em, large font") << "icon-size: 1em"
+    BOBUIest::addRow("1em, large font") << "icon-size: 1em"
         << largeFont << QSize(largeMetrics.height(), largeMetrics.height());
-    QTest::addRow("1.5em, lage font") << "icon-size: 1.5em"
+    BOBUIest::addRow("1.5em, lage font") << "icon-size: 1.5em"
         << largeFont << QSize(largeMetrics.height(), largeMetrics.height()) * 1.5;
-    QTest::addRow("2em with styled font") << "font-size: 40pt; icon-size: 2em"
+    BOBUIest::addRow("2em with styled font") << "font-size: 40pt; icon-size: 2em"
         << QFont() << QSize(hugeMetrics.height(), hugeMetrics.height()) * 2;
 
-    QTest::addRow("1ex, default font") << "icon-size: 1ex"
+    BOBUIest::addRow("1ex, default font") << "icon-size: 1ex"
         << QFont() << QSize(defaultMetrics.xHeight(), defaultMetrics.xHeight());
-    QTest::addRow("1ex, small font") << "icon-size: 1ex"
+    BOBUIest::addRow("1ex, small font") << "icon-size: 1ex"
         << smallFont << QSize(smallMetrics.xHeight(), smallMetrics.xHeight());
-    QTest::addRow("1ex, large font") << "icon-size: 1ex"
+    BOBUIest::addRow("1ex, large font") << "icon-size: 1ex"
         << largeFont << QSize(largeMetrics.xHeight(), largeMetrics.xHeight());
-    QTest::addRow("1.5ex, lage font") << "icon-size: 1.5ex"
+    BOBUIest::addRow("1.5ex, lage font") << "icon-size: 1.5ex"
         << largeFont << QSize(largeMetrics.xHeight(), largeMetrics.xHeight()) * 1.5;
-    QTest::addRow("2ex with styled font") << "font-size: 40pt; icon-size: 2ex"
+    BOBUIest::addRow("2ex with styled font") << "font-size: 40pt; icon-size: 2ex"
         << QFont() << QSize(hugeMetrics.xHeight(), hugeMetrics.xHeight()) * 2;
 }
 
@@ -2567,11 +2567,11 @@ void tst_QStyleSheetStyle::iconSizes()
 
 void tst_QStyleSheetStyle::inheritWidgetPalette_data()
 {
-    QTest::addColumn<const QString>("styleSheet");
-    QTest::addColumn<const QColor>("phColorPalette");
+    BOBUIest::addColumn<const QString>("styleSheet");
+    BOBUIest::addColumn<const QColor>("phColorPalette");
 
-    QTest::addRow("blueAndGreen") << "QLineEdit {color: rgb(0,0,255);}" << QColor(Qt::green);
-    QTest::addRow("emptyStyleSheet") << QString() << QColor(Qt::green);
+    BOBUIest::addRow("blueAndGreen") << "QLineEdit {color: rgb(0,0,255);}" << QColor(BobUI::green);
+    BOBUIest::addRow("emptyStyleSheet") << QString() << QColor(BobUI::green);
 
 }
 
@@ -2612,6 +2612,6 @@ void tst_QStyleSheetStyle::resetFont()
     checkFont(false);
 }
 
-QTEST_MAIN(tst_QStyleSheetStyle)
+BOBUIEST_MAIN(tst_QStyleSheetStyle)
 #include "tst_qstylesheetstyle.moc"
 

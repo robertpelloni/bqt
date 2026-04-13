@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 #include "mainwindow.h"
 
@@ -24,7 +24,7 @@ MainWindow::MainWindow()
     menuBar()->addMenu(insertMenu);
 
 //! [0]
-    editor = new QTextEdit(this);
+    editor = new BOBUIextEdit(this);
 //! [0]
 
     connect(saveAction, &QAction::triggered, this, &MainWindow::saveFile);
@@ -53,13 +53,13 @@ void MainWindow::saveFile()
 void MainWindow::insertCalendar()
 {
 //! [1]
-    QTextCursor cursor(editor->textCursor());
-    cursor.movePosition(QTextCursor::Start);
+    BOBUIextCursor cursor(editor->textCursor());
+    cursor.movePosition(BOBUIextCursor::Start);
 
-    QTextCharFormat format(cursor.charFormat());
+    BOBUIextCharFormat format(cursor.charFormat());
     format.setFontFamilies({"Courier"});
 
-    QTextCharFormat boldFormat = format;
+    BOBUIextCharFormat boldFormat = format;
     boldFormat.setFontWeight(QFont::Bold);
 
     cursor.insertBlock();

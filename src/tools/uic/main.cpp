@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "uic.h"
 #include "option.h"
@@ -9,15 +9,15 @@
 #include <qfile.h>
 #include <qdir.h>
 #include <qhashfunctions.h>
-#include <qtextstream.h>
+#include <bobuiextstream.h>
 #include <qcoreapplication.h>
 #include <qcommandlineoption.h>
 #include <qcommandlineparser.h>
 #include <qfileinfo.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static const char pythonPathVar[] = "PYTHONPATH";
 
@@ -25,9 +25,9 @@ static const char pythonPathVar[] = "PYTHONPATH";
 static QString pythonRoot(const QString &pythonPath, const QString &uiFileIn)
 {
 #ifdef Q_OS_WIN
-    static const Qt::CaseSensitivity fsSensitivity = Qt::CaseInsensitive;
+    static const BobUI::CaseSensitivity fsSensitivity = BobUI::CaseInsensitive;
 #else
-    static const Qt::CaseSensitivity fsSensitivity = Qt::CaseSensitive;
+    static const BobUI::CaseSensitivity fsSensitivity = BobUI::CaseSensitive;
 #endif
 
     if (pythonPath.isEmpty() || uiFileIn.isEmpty())
@@ -36,7 +36,7 @@ static QString pythonRoot(const QString &pythonPath, const QString &uiFileIn)
     if (uiFile.isEmpty())
         return {};
     const auto uiFileSize = uiFile.size();
-    const auto paths = pythonPath.split(QDir::listSeparator(), Qt::SkipEmptyParts);
+    const auto paths = pythonPath.split(QDir::listSeparator(), BobUI::SkipEmptyParts);
     for (const auto &path : paths) {
         const QString canonicalPath = QFileInfo(path).canonicalFilePath();
         const auto canonicalPathSize = canonicalPath.size();
@@ -63,7 +63,7 @@ int runUic(int argc, char *argv[])
     // If you use this code as an example for a translated app, make sure to translate the strings.
     QCommandLineParser parser;
     parser.setSingleDashWordOptionMode(QCommandLineParser::ParseAsLongOptions);
-    parser.setApplicationDescription(u"Qt User Interface Compiler version %1"_s.arg(version));
+    parser.setApplicationDescription(u"BobUI User Interface Compiler version %1"_s.arg(version));
     parser.addHelpOption();
     parser.addVersionOption();
 
@@ -93,10 +93,10 @@ int runUic(int argc, char *argv[])
     postfixOption.setValueName(u"postfix"_s);
     parser.addOption(postfixOption);
 
-    QCommandLineOption noQtNamespaceOption(u"no-qt-namespace"_s);
-    noQtNamespaceOption.setDescription(
-        u"Disable wrapping the definition of the generated class in QT_{BEGIN,END}_NAMESPACE."_s);
-    parser.addOption(noQtNamespaceOption);
+    QCommandLineOption noBobUINamespaceOption(u"no-bobui-namespace"_s);
+    noBobUINamespaceOption.setDescription(
+        u"Disable wrapping the definition of the generated class in BOBUI_{BEGIN,END}_NAMESPACE."_s);
+    parser.addOption(noBobUINamespaceOption);
 
     QCommandLineOption translateOption(QStringList{u"tr"_s, u"translate"_s});
     translateOption.setDescription(u"Use <function> for i18n."_s);
@@ -130,12 +130,12 @@ int runUic(int argc, char *argv[])
     absoluteImportsOption.setDescription(u"Python: generate absolute imports"_s);
     parser.addOption(absoluteImportsOption);
 
-    // FIXME Qt 7: Flip the default?
+    // FIXME BobUI 7: Flip the default?
     QCommandLineOption rcPrefixOption(u"rc-prefix"_s);
     rcPrefixOption.setDescription(uR"(Python: Generate "rc_file" instead of "file_rc" import)"_s);
     parser.addOption(rcPrefixOption);
 
-    // FIXME Qt 7: Remove?
+    // FIXME BobUI 7: Remove?
     QCommandLineOption useStarImportsOption(u"star-imports"_s);
     useStarImportsOption.setDescription(u"Python: Use * imports"_s);
     parser.addOption(useStarImportsOption);
@@ -154,7 +154,7 @@ int runUic(int argc, char *argv[])
     driver.option().autoConnection = !parser.isSet(noAutoConnectionOption);
     driver.option().headerProtection = !parser.isSet(noProtOption);
     driver.option().implicitIncludes = !parser.isSet(noImplicitIncludesOption);
-    driver.option().qtNamespace = !parser.isSet(noQtNamespaceOption);
+    driver.option().bobuiNamespace = !parser.isSet(noBobUINamespaceOption);
     driver.option().idBased = parser.isSet(idBasedOption);
     driver.option().postfix = parser.value(postfixOption);
     driver.option().translateFunction = parser.value(translateOption);
@@ -198,7 +198,7 @@ int runUic(int argc, char *argv[])
         return !driver.printDependencies(inputFile);
     }
 
-    QTextStream *out = nullptr;
+    BOBUIextStream *out = nullptr;
     QFile f;
     if (!driver.option().outputFile.isEmpty()) {
         f.setFileName(driver.option().outputFile);
@@ -206,7 +206,7 @@ int runUic(int argc, char *argv[])
             fprintf(stderr, "Could not create output file\n");
             return 1;
         }
-        out = new QTextStream(&f);
+        out = new BOBUIextStream(&f);
         out->setEncoding(QStringConverter::Utf8);
     }
 
@@ -224,9 +224,9 @@ int runUic(int argc, char *argv[])
     return !rtn;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 int main(int argc, char *argv[])
 {
-    return QT_PREPEND_NAMESPACE(runUic)(argc, argv);
+    return BOBUI_PREPEND_NAMESPACE(runUic)(argc, argv);
 }

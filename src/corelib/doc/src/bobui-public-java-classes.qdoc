@@ -1,0 +1,27 @@
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
+
+/*!
+    \externalpage https://doc.bobui.io/bobui-6/android/org/bobuiproject/bobui/android/BobUIAbstractItemModel.html
+    \title BobUIAbstractItemModel
+*/
+
+/*!
+    \externalpage https://doc.bobui.io/bobui-6/android/org/bobuiproject/bobui/android/BobUIAbstractItemModel.OnDataChangedListener.html
+    \title BobUIAbstractItemModel.OnDataChangedListener
+*/
+
+/*!
+    \externalpage https://doc.bobui.io/bobui-6/android/org/bobuiproject/bobui/android/BobUIModelIndex.html
+    \title BobUIModelIndex
+*/
+
+/*!
+    \externalpage https://doc.bobui.io/bobui-6/android/org/bobuiproject/bobui/android/BobUIAbstractListModel.html
+    \title BobUIAbstractListModel
+*/
+
+/*!
+    \externalpage https://doc.bobui.io/bobui-6/android/org/bobuiproject/bobui/android/BobUISignalListener.html
+    \title BobUISignalListener<T>
+*/

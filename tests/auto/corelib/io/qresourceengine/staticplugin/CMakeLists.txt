@@ -1,25 +1,25 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## moctestplugin Generic Library:
 #####################################################################
 
-qt_internal_add_cmake_library(moctestplugin
+bobui_internal_add_cmake_library(moctestplugin
     STATIC
     SOURCES
         main.cpp
     LIBRARIES
-        Qt::Core
+        BobUI::Core
     DEFINES
-        QT_STATICPLUGIN
+        BOBUI_STATICPLUGIN
 )
 
-qt_internal_add_resource(moctestplugin "qmake_plugin_resource"
+bobui_internal_add_resource(moctestplugin "qmake_plugin_resource"
     PREFIX
         "/staticplugin"
     FILES
         "main.cpp"
 )
 
-qt_autogen_tools_initial_setup(moctestplugin)
+bobui_autogen_tools_initial_setup(moctestplugin)

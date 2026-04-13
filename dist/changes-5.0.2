@@ -1,15 +1,15 @@
-Qt 5.0.2 is a bug-fix release. It maintains both forward and backward
-compatibility (source and binary) with Qt 5.0.0 and 5.0.1.
+BobUI 5.0.2 is a bug-fix release. It maintains both forward and backward
+compatibility (source and binary) with BobUI 5.0.0 and 5.0.1.
 
 For more details, refer to the online documentation included in this
 distribution. The documentation is also available online:
 
-  http://qt-project.org/doc/qt-5.0/
+  http://bobui-project.org/doc/bobui-5.0/
 
 Some of the changes listed in this file include issue tracking numbers
-corresponding to tasks in the Qt Bug Tracker:
+corresponding to tasks in the BobUI Bug Tracker:
 
-  http://bugreports.qt-project.org/
+  http://bugreports.bobui-project.org/
 
 Each of these identifiers can be entered in the bug tracker to obtain more
 information about a particular change.
@@ -28,44 +28,44 @@ General Improvements
 *                          Library                                         *
 ****************************************************************************
 
-QtCore
+BobUICore
 -----
 
- - [QTBUG-29130] Fixed compilation when connecting with the new syntax to a
+ - [BOBUIBUG-29130] Fixed compilation when connecting with the new syntax to a
    signal that has more than 3 registered meta type arguments, and the compiler
    does not support variadic templates
 
-QtGui
+BobUIGui
 -----
 
- - [QTBUG-14766] Fixed potential access violation in QPixmap::copy() for <32 bit pixmaps.
- - [QTBUG-24762] Fixed dashes being rendered differently depending on system clip.
- - [QTBUG-25036] Fixed artifacts when drawing same line with different clips.
- - [QTBUG-29643] Fixed crashes when using QImage in combination with QCoreApplication.
+ - [BOBUIBUG-14766] Fixed potential access violation in QPixmap::copy() for <32 bit pixmaps.
+ - [BOBUIBUG-24762] Fixed dashes being rendered differently depending on system clip.
+ - [BOBUIBUG-25036] Fixed artifacts when drawing same line with different clips.
+ - [BOBUIBUG-29643] Fixed crashes when using QImage in combination with QCoreApplication.
 
-QtWidgets
+BobUIWidgets
 ---------
 
- - [QTBUG-28817] Fixed QColorDialog::setOption(), QFontDialog::setOption().
- - [QTBUG-29680] Fix mouse double click events not bubbling up to parent widgets.
+ - [BOBUIBUG-28817] Fixed QColorDialog::setOption(), QFontDialog::setOption().
+ - [BOBUIBUG-29680] Fix mouse double click events not bubbling up to parent widgets.
 
-QtNetwork
+BobUINetwork
 ---------
 
- - [QTBUG-29103] Toggle on demand loading of root certs properly.
+ - [BOBUIBUG-29103] Toggle on demand loading of root certs properly.
 
-QtConcurrent
+BobUIConcurrent
 ------------
 
- - [QTBUG-28984] Fix compilation of Qt Concurrent with gcc 4.3.
+ - [BOBUIBUG-28984] Fix compilation of BobUI Concurrent with gcc 4.3.
 
-QtSql
+BobUISql
 -----
 
  - Fix QSqlTableModel:revert() for OnFieldChange.
- - [QTBUG-29102] Support refreshing inserted rows with auto columns.
- - [QTBUG-29108] Fix QSqlTableModel::headerData() for empty query with inserted row.
- - [QTBUG-29217] Fix QSqlTableModel::setData() for non-change detection.
+ - [BOBUIBUG-29102] Support refreshing inserted rows with auto columns.
+ - [BOBUIBUG-29108] Fix QSqlTableModel::headerData() for empty query with inserted row.
+ - [BOBUIBUG-29217] Fix QSqlTableModel::setData() for non-change detection.
 
 ****************************************************************************
 *                          Database Drivers                                *
@@ -81,43 +81,43 @@ postgres
 *                      Platform Specific Changes                           *
 ****************************************************************************
 
-Qt for Linux/X11
+BobUI for Linux/X11
 ----------------
 
  - Fix focus handling of native child widgets in xcb.
  - Fixed crash when VNCing and trying to use non-present XFixes extension.
 
-Qt for Windows
+BobUI for Windows
 --------------
 
- - [QTBUG-28439] Implement QPlatformWindow::isExposed() on Windows.
- - [QTBUG-29010, QTBUG-28531] Fixed handling of layered windows required for
+ - [BOBUIBUG-28439] Implement QPlatformWindow::isExposed() on Windows.
+ - [BOBUIBUG-29010, BOBUIBUG-28531] Fixed handling of layered windows required for
    translucent or non-opaque windows.
- - [QTBUG-30185] Fixed adding of suffixes in Window native file save dialog.
+ - [BOBUIBUG-30185] Fixed adding of suffixes in Window native file save dialog.
 
-Qt for Mac OS X
+BobUI for Mac OS X
 ---------------
 
- - [QTBUG-29389] Fix transient scroll bar appearance before the proper one.
- - [QTBUG-25297, QTBUG-29434] Add QMdiSubWindow size grip back.
+ - [BOBUIBUG-29389] Fix transient scroll bar appearance before the proper one.
+ - [BOBUIBUG-25297, BOBUIBUG-29434] Add QMdiSubWindow size grip back.
 
-Qt for BlackBerry
+BobUI for BlackBerry
 -----------------
 
-Qt for Embedded Linux
+BobUI for Embedded Linux
 ---------------------
 
-Qt for Windows CE
+BobUI for Windows CE
 -----------------
 
  - Removed User32.dll usage.
- - Fix compilation with QT_NO_CURSOR.
+ - Fix compilation with BOBUI_NO_CURSOR.
 
 ****************************************************************************
 *                      Compiler Specific Changes                           *
 ****************************************************************************
 
- - [QTBUG-29099] Fix gcc OOM error when compiling in release mode.
+ - [BOBUIBUG-29099] Fix gcc OOM error when compiling in release mode.
 
 ****************************************************************************
 *                          Tools                                           *
@@ -126,37 +126,37 @@ Qt for Windows CE
 Build System & configure
 ------------------------
 
- - [QTBUG-26697] The -skip option was added to configure, which enables not
+ - [BOBUIBUG-26697] The -skip option was added to configure, which enables not
    building particular modules. Typical use case: -skip webkit.
- - [QTBUG-28769, ...] Assorted build fixes
- - [QTBUG-28902] Fixed contents of installed .prl files
- - [QTBUG-29110, QTBUG-29186, ...] Assorted fixes to CMake config files
- - [QTBUG-29174] Fixed numerous configure options which start with -l
- - [QTBUG-29400] Fixed configure -fully-process not creating .vcproj files
- - [QTBUG-29453, ...] Fixed generation of pkg-config .pc files
- - [QTBUG-29478] Fixed static builds with ICU
- - [QTBUG-29661] Fixed QtWebProcess.exe not finding Qt DLLs. -libexec
+ - [BOBUIBUG-28769, ...] Assorted build fixes
+ - [BOBUIBUG-28902] Fixed contents of installed .prl files
+ - [BOBUIBUG-29110, BOBUIBUG-29186, ...] Assorted fixes to CMake config files
+ - [BOBUIBUG-29174] Fixed numerous configure options which start with -l
+ - [BOBUIBUG-29400] Fixed configure -fully-process not creating .vcproj files
+ - [BOBUIBUG-29453, ...] Fixed generation of pkg-config .pc files
+ - [BOBUIBUG-29478] Fixed static builds with ICU
+ - [BOBUIBUG-29661] Fixed BobUIWebProcess.exe not finding BobUI DLLs. -libexec
    now defaults to bin/ on Windows.
- - [QTBUG-29838] Fixed module versioning when mixing releases
- - [QTBUG-30102] Fixed passing of values with spaces to -device-option
+ - [BOBUIBUG-29838] Fixed module versioning when mixing releases
+ - [BOBUIBUG-30102] Fixed passing of values with spaces to -device-option
  - Production builds do not build examples any more. 'make install' will
    copy only the example sources.
- - pkg-config: qt_config is now contained only in Qt5Core.pc, and it reflects
-   QT_CONFIG, not the module build's CONFIG.
+ - pkg-config: bobui_config is now contained only in BobUI5Core.pc, and it reflects
+   BOBUI_CONFIG, not the module build's CONFIG.
 
 qmake
 -----
 
- - [QTBUG-28132] Fixed parallelized 'jom install'
- - [QTBUG-29143] MSVC: Fixed parsing of /openmp
- - [QTBUG-29286] MSVC: Fixed use of VERSION breaking MSVC2010 projects
- - [QTBUG-29329] MSVC: Fixed misparsing of /Gs as /GS
- - [QTBUG-29329] MSVC: Stopped disabling buffer security check by default
- - [QTBUG-29371] Fixed generation of XCode projects for XCode 4.6
- - [QTBUG-29698] MSVC: Fixed incremental linking with non-standard shells
- - [QTBUG-29700] Fixed pkg-config file generation when cross-compiling
- - Qt modules are now enumerated in QT_MODULES, not QT_CONFIG. For portability,
-   use qtHaveModule() (since 5.0.1) or !isEmpty(QT.<module>.name) instead.
+ - [BOBUIBUG-28132] Fixed parallelized 'jom install'
+ - [BOBUIBUG-29143] MSVC: Fixed parsing of /openmp
+ - [BOBUIBUG-29286] MSVC: Fixed use of VERSION breaking MSVC2010 projects
+ - [BOBUIBUG-29329] MSVC: Fixed misparsing of /Gs as /GS
+ - [BOBUIBUG-29329] MSVC: Stopped disabling buffer security check by default
+ - [BOBUIBUG-29371] Fixed generation of XCode projects for XCode 4.6
+ - [BOBUIBUG-29698] MSVC: Fixed incremental linking with non-standard shells
+ - [BOBUIBUG-29700] Fixed pkg-config file generation when cross-compiling
+ - BobUI modules are now enumerated in BOBUI_MODULES, not BOBUI_CONFIG. For portability,
+   use bobuiHaveModule() (since 5.0.1) or !isEmpty(BOBUI.<module>.name) instead.
  - $$(VAR) style environment variable expansions will not split on
    whitespace any more. Use $$split() if necessary.
  - Fixed qmake -tp vc (and configure without -no-vcproj)
@@ -167,7 +167,7 @@ qmake
 moc
 ---
 
- - [QTBUG-29759] Fixed infinite recursion in macro substitution which
+ - [BOBUIBUG-29759] Fixed infinite recursion in macro substitution which
    prevented some headers to compile.
 
 ****************************************************************************

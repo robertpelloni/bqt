@@ -1,6 +1,6 @@
 // Copyright (C) 2016 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author David Faure <david.faure@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qconcatenatetablesproxymodel.h"
 #include <private/qabstractitemmodel_p.h>
@@ -8,7 +8,7 @@
 #include "qmap.h"
 #include "qdebug.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QConcatenateTablesProxyModelPrivate : public QAbstractItemModelPrivate
 {
@@ -99,7 +99,7 @@ QConcatenateTablesProxyModelPrivate::QConcatenateTablesProxyModelPrivate()
 /*!
     \since 5.13
     \class QConcatenateTablesProxyModel
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QConcatenateTablesProxyModel class proxies multiple source models, concatenating their rows.
 
     \ingroup model-view
@@ -233,11 +233,11 @@ bool QConcatenateTablesProxyModel::setItemData(const QModelIndex &proxyIndex, co
   If the \a index is invalid (as used to determine if dropping onto an empty area
   in the view is allowed, for instance), the flags from the first model are returned.
 */
-Qt::ItemFlags QConcatenateTablesProxyModel::flags(const QModelIndex &index) const
+BobUI::ItemFlags QConcatenateTablesProxyModel::flags(const QModelIndex &index) const
 {
     Q_D(const QConcatenateTablesProxyModel);
     if (d->m_models.isEmpty())
-        return Qt::NoItemFlags;
+        return BobUI::NoItemFlags;
     Q_ASSERT(checkIndex(index));
     if (!index.isValid())
         return d->m_models.at(0).model->flags(index);
@@ -251,15 +251,15 @@ Qt::ItemFlags QConcatenateTablesProxyModel::flags(const QModelIndex &index) cons
     and the vertical header data for the source model corresponding to each row.
     \reimp
 */
-QVariant QConcatenateTablesProxyModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant QConcatenateTablesProxyModel::headerData(int section, BobUI::Orientation orientation, int role) const
 {
     Q_D(const QConcatenateTablesProxyModel);
     if (d->m_models.isEmpty())
         return QVariant();
     switch (orientation) {
-        case Qt::Horizontal:
+        case BobUI::Horizontal:
             return d->m_models.at(0).model->headerData(section, orientation, role);
-        case Qt::Vertical: {
+        case BobUI::Vertical: {
             const auto result = d->sourceModelForRow(section);
             Q_ASSERT(result.sourceModel);
             return result.sourceModel->headerData(result.sourceRow, orientation, role);
@@ -393,7 +393,7 @@ bool QConcatenateTablesProxyModelPrivate::mapDropCoordinatesToSource(int row, in
 /*!
   \reimp
 */
-bool QConcatenateTablesProxyModel::canDropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) const
+bool QConcatenateTablesProxyModel::canDropMimeData(const QMimeData *data, BobUI::DropAction action, int row, int column, const QModelIndex &parent) const
 {
     Q_D(const QConcatenateTablesProxyModel);
     if (d->m_models.isEmpty())
@@ -416,7 +416,7 @@ bool QConcatenateTablesProxyModel::canDropMimeData(const QMimeData *data, Qt::Dr
 
   \reimp
 */
-bool QConcatenateTablesProxyModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
+bool QConcatenateTablesProxyModel::dropMimeData(const QMimeData *data, BobUI::DropAction action, int row, int column, const QModelIndex &parent)
 {
     Q_D(const QConcatenateTablesProxyModel);
     if (d->m_models.isEmpty())
@@ -876,6 +876,6 @@ QConcatenateTablesProxyModelPrivate::SourceModelForRowResult QConcatenateTablesP
     return result;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qconcatenatetablesproxymodel.cpp"

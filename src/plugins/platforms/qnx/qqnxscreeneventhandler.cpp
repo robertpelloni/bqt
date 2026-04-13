@@ -1,7 +1,7 @@
 // Copyright (C) 2013 BlackBerry Limited. All rights reserved.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#undef QT_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
+#undef BOBUI_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
 
 #include "qqnxglobal.h"
 
@@ -21,14 +21,14 @@
 
 using namespace std::chrono_literals;
 
-Q_LOGGING_CATEGORY(lcQpaScreenEvents, "qt.qpa.screen.events");
+Q_LOGGING_CATEGORY(lcQpaScreenEvents, "bobui.qpa.screen.events");
 
-static int qtKey(int virtualKey, QChar::Category category)
+static int bobuiKey(int virtualKey, QChar::Category category)
 {
     if (Q_UNLIKELY(category == QChar::Other_NotAssigned))
         return virtualKey;
     else if (category == QChar::Other_PrivateUse)
-        return qtKeyForPrivateUseQnxKey(virtualKey);
+        return bobuiKeyForPrivateUseQnxKey(virtualKey);
     else
         return QChar::toUpper(virtualKey);
 }
@@ -98,13 +98,13 @@ static void finishCloseEvent(screen_event_t event)
     }
 }
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QQnxScreenEventHandler::QQnxScreenEventHandler(QQnxIntegration *integration)
     : m_qnxIntegration(integration)
-    , m_lastButtonState(Qt::NoButton)
+    , m_lastButtonState(BobUI::NoButton)
     , m_lastMouseWindow(0)
     , m_touchDevice(0)
     , m_mouseDevice(0)
@@ -216,27 +216,27 @@ void QQnxScreenEventHandler::injectKeyboardEvent(int flags, int sym, int modifie
     if ((flags & KEY_SYM_VALID) && sym == static_cast<int>(0xFFFFFFFF))
         flags &= ~(KEY_SYM_VALID);
 
-    Qt::KeyboardModifiers qtMod = Qt::NoModifier;
+    BobUI::KeyboardModifiers bobuiMod = BobUI::NoModifier;
     if (modifiers & KEYMOD_SHIFT)
-        qtMod |= Qt::ShiftModifier;
+        bobuiMod |= BobUI::ShiftModifier;
     if (modifiers & KEYMOD_CTRL)
-        qtMod |= Qt::ControlModifier;
+        bobuiMod |= BobUI::ControlModifier;
     if (modifiers & KEYMOD_ALT)
-        qtMod |= Qt::AltModifier;
+        bobuiMod |= BobUI::AltModifier;
     if (isKeypadKey(cap))
-        qtMod |= Qt::KeypadModifier;
+        bobuiMod |= BobUI::KeypadModifier;
 
     QEvent::Type type = (flags & KEY_DOWN) ? QEvent::KeyPress : QEvent::KeyRelease;
 
     int virtualKey = (flags & KEY_SYM_VALID) ? sym : cap;
     QChar::Category category = QChar::category(virtualKey);
-    int key = qtKey(virtualKey, category);
+    int key = bobuiKey(virtualKey, category);
     QString keyStr = (flags & KEY_SYM_VALID) ? keyString(sym, category) :
                                                capKeyString(cap, modifiers, key);
 
-    QWindowSystemInterface::handleExtendedKeyEvent(QGuiApplication::focusWindow(), type, key, qtMod,
+    QWindowSystemInterface::handleExtendedKeyEvent(QGuiApplication::focusWindow(), type, key, bobuiMod,
             scan, virtualKey, modifiers, keyStr, flags & KEY_REPEAT);
-    qCDebug(lcQpaScreenEvents) << "Qt key t=" << type << ", k=" << key << ", s=" << keyStr;
+    qCDebug(lcQpaScreenEvents) << "BobUI key t=" << type << ", k=" << key << ", s=" << keyStr;
 }
 
 void QQnxScreenEventHandler::setScreenEventThread(QQnxScreenEventThread *eventThread)
@@ -365,18 +365,18 @@ void QQnxScreenEventHandler::handlePointerEvent(screen_event_t event)
 
         if (wOld) {
             QWindowSystemInterface::handleLeaveEvent(wOld);
-            qCDebug(lcQpaScreenEvents) << "Qt leave, w=" << wOld;
+            qCDebug(lcQpaScreenEvents) << "BobUI leave, w=" << wOld;
         }
 
         if (w) {
             QWindowSystemInterface::handleEnterEvent(w);
-            qCDebug(lcQpaScreenEvents) << "Qt enter, w=" << w;
+            qCDebug(lcQpaScreenEvents) << "BobUI enter, w=" << w;
         }
     }
 
     m_lastMouseWindow = qnxWindow;
 
-    // Apply scaling to wheel delta and invert value for Qt. We'll probably want to scale
+    // Apply scaling to wheel delta and invert value for BobUI. We'll probably want to scale
     // this via a system preference at some point. But for now this is a sane value and makes
     // the wheel usable.
     wheelDelta *= -10;
@@ -389,39 +389,39 @@ void QQnxScreenEventHandler::handlePointerEvent(screen_event_t event)
     // Some QNX header files invert 'Right Button versus "Left Button' ('Right' == 0x01). But they also offer a 'Button Swap' bit,
     // so we may receive events as shown. (If this is wrong, the fix is easy.)
     // QNX Button mask is 8 buttons wide, with a maximum value of x080.
-    Qt::MouseButtons buttons = Qt::NoButton;
+    BobUI::MouseButtons buttons = BobUI::NoButton;
     if (buttonState & 0x01)
-        buttons |= Qt::LeftButton;
+        buttons |= BobUI::LeftButton;
     if (buttonState & 0x02)
-        buttons |= Qt::MiddleButton;
+        buttons |= BobUI::MiddleButton;
     if (buttonState & 0x04)
-        buttons |= Qt::RightButton;
+        buttons |= BobUI::RightButton;
     if (buttonState & 0x08)
-        buttons |= Qt::ExtraButton1;    // AKA 'Qt::BackButton'
+        buttons |= BobUI::ExtraButton1;    // AKA 'BobUI::BackButton'
     if (buttonState & 0x10)
-        buttons |= Qt::ExtraButton2;    // AKA 'Qt::ForwardButton'
+        buttons |= BobUI::ExtraButton2;    // AKA 'BobUI::ForwardButton'
     if (buttonState & 0x20)
-        buttons |= Qt::ExtraButton3;
+        buttons |= BobUI::ExtraButton3;
     if (buttonState & 0x40)
-        buttons |= Qt::ExtraButton4;
+        buttons |= BobUI::ExtraButton4;
     if (buttonState & 0x80)
-        buttons |= Qt::ExtraButton5;
+        buttons |= BobUI::ExtraButton5;
 
     if (w) {
-        // Inject mouse event into Qt only if something has changed.
+        // Inject mouse event into BobUI only if something has changed.
         if (m_lastGlobalMousePoint != globalPoint || m_lastLocalMousePoint != localPoint) {
             QWindowSystemInterface::handleMouseEvent(w, timestamp, m_mouseDevice, localPoint,
-                                                     globalPoint, buttons, Qt::NoButton,
+                                                     globalPoint, buttons, BobUI::NoButton,
                                                      QEvent::MouseMove);
-            qCDebug(lcQpaScreenEvents) << "Qt mouse move, w=" << w << ", (" << localPoint.x() << ","
+            qCDebug(lcQpaScreenEvents) << "BobUI mouse move, w=" << w << ", (" << localPoint.x() << ","
                                        << localPoint.y() << "), b=" << static_cast<int>(buttons);
         }
 
         if (m_lastButtonState != buttons) {
-            static const auto supportedButtons = { Qt::LeftButton,   Qt::MiddleButton,
-                                                   Qt::RightButton,  Qt::ExtraButton1,
-                                                   Qt::ExtraButton2, Qt::ExtraButton3,
-                                                   Qt::ExtraButton4, Qt::ExtraButton5 };
+            static const auto supportedButtons = { BobUI::LeftButton,   BobUI::MiddleButton,
+                                                   BobUI::RightButton,  BobUI::ExtraButton1,
+                                                   BobUI::ExtraButton2, BobUI::ExtraButton3,
+                                                   BobUI::ExtraButton4, BobUI::ExtraButton5 };
 
             int releasedButtons = (m_lastButtonState ^ buttons) & ~buttons;
             for (auto button : supportedButtons) {
@@ -429,7 +429,7 @@ void QQnxScreenEventHandler::handlePointerEvent(screen_event_t event)
                     QWindowSystemInterface::handleMouseEvent(w, timestamp, m_mouseDevice,
                                                              localPoint, globalPoint, buttons,
                                                              button, QEvent::MouseButtonRelease);
-                    qCDebug(lcQpaScreenEvents) << "Qt mouse release, w=" << w << ", (" << localPoint.x()
+                    qCDebug(lcQpaScreenEvents) << "BobUI mouse release, w=" << w << ", (" << localPoint.x()
                                                << "," << localPoint.y() << "), b=" << button;
                 }
             }
@@ -444,7 +444,7 @@ void QQnxScreenEventHandler::handlePointerEvent(screen_event_t event)
                     QWindowSystemInterface::handleMouseEvent(w, timestamp, m_mouseDevice,
                                                              localPoint, globalPoint, buttons,
                                                              button, QEvent::MouseButtonPress);
-                    qCDebug(lcQpaScreenEvents) << "Qt mouse press, w=" << w << ", (" << localPoint.x()
+                    qCDebug(lcQpaScreenEvents) << "BobUI mouse press, w=" << w << ", (" << localPoint.x()
                                                << "," << localPoint.y() << "), b=" << button;
                 }
             }
@@ -456,7 +456,7 @@ void QQnxScreenEventHandler::handlePointerEvent(screen_event_t event)
             QPoint angleDelta(0, wheelDelta);
             QWindowSystemInterface::handleWheelEvent(w, timestamp, m_mouseDevice, localPoint,
                                                      globalPoint, QPoint(), angleDelta);
-            qCDebug(lcQpaScreenEvents) << "Qt wheel, w=" << w << ", (" << localPoint.x() << ","
+            qCDebug(lcQpaScreenEvents) << "BobUI wheel, w=" << w << ", (" << localPoint.x() << ","
                                 << localPoint.y() << "), d=" << static_cast<int>(wheelDelta);
         }
     }
@@ -514,12 +514,12 @@ void QQnxScreenEventHandler::handleTouchEvent(screen_event_t event, int qnxType)
 
             if (wOld) {
                 QWindowSystemInterface::handleLeaveEvent(wOld);
-                qCDebug(lcQpaScreenEvents) << "Qt leave, w=" << wOld;
+                qCDebug(lcQpaScreenEvents) << "BobUI leave, w=" << wOld;
             }
 
             if (w) {
                 QWindowSystemInterface::handleEnterEvent(w);
-                qCDebug(lcQpaScreenEvents) << "Qt enter, w=" << w;
+                qCDebug(lcQpaScreenEvents) << "BobUI enter, w=" << w;
             }
         }
         m_lastMouseWindow = qnxWindow;
@@ -546,7 +546,7 @@ void QQnxScreenEventHandler::handleTouchEvent(screen_event_t event, int qnxType)
                 parent = parent->parent();
             }
 
-            //Qt expects the pressure between 0 and 1. There is however no definite upper limit for
+            //BobUI expects the pressure between 0 and 1. There is however no definite upper limit for
             //the integer value of touch event pressure. The 200 was determined by experiment, it
             //usually does not get higher than that.
             m_touchPoints[touchId].pressure = static_cast<qreal>(touchPressure)/200.0;
@@ -584,9 +584,9 @@ void QQnxScreenEventHandler::handleTouchEvent(screen_event_t event, int qnxType)
                 }
             }
 
-            // inject event into Qt
+            // inject event into BobUI
             QWindowSystemInterface::handleTouchEvent(w, m_touchDevice, pointList);
-            qCDebug(lcQpaScreenEvents) << "Qt touch, w =" << w
+            qCDebug(lcQpaScreenEvents) << "BobUI touch, w =" << w
                                        << ", p=" << m_touchPoints[touchId].area.topLeft()
                                        << ", t=" << type;
         }
@@ -738,7 +738,7 @@ void QQnxScreenEventHandler::handleKeyboardFocusPropertyEvent(screen_window_t wi
     m_focusLostTimer.stop();
 
     if (focus && focusWindow != QGuiApplication::focusWindow())
-        QWindowSystemInterface::handleFocusWindowChanged(focusWindow, Qt::ActiveWindowFocusReason);
+        QWindowSystemInterface::handleFocusWindowChanged(focusWindow, BobUI::ActiveWindowFocusReason);
     else if (!focus && focusWindow == QGuiApplication::focusWindow())
         m_focusLostTimer.start(50ms, this);
 }
@@ -758,16 +758,16 @@ void QQnxScreenEventHandler::handleGeometryPropertyEvent(screen_window_t window)
     }
 
     QRect rect(pos[0], pos[1], size[0], size[1]);
-    QWindow *qtWindow = QQnxIntegration::instance()->window(window);
-    if (qtWindow) {
-        qtWindow->setGeometry(rect);
-        QWindowSystemInterface::handleGeometryChange(qtWindow, rect);
+    QWindow *bobuiWindow = QQnxIntegration::instance()->window(window);
+    if (bobuiWindow) {
+        bobuiWindow->setGeometry(rect);
+        QWindowSystemInterface::handleGeometryChange(bobuiWindow, rect);
     }
 
-    qCDebug(lcQpaScreenEvents) << qtWindow << "moved to" << rect;
+    qCDebug(lcQpaScreenEvents) << bobuiWindow << "moved to" << rect;
 }
 
-void QQnxScreenEventHandler::timerEvent(QTimerEvent *event)
+void QQnxScreenEventHandler::timerEvent(BOBUIimerEvent *event)
 {
     if (event->id() == m_focusLostTimer.id()) {
         m_focusLostTimer.stop();
@@ -777,7 +777,7 @@ void QQnxScreenEventHandler::timerEvent(QTimerEvent *event)
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 void QQnxScreenEventHandler::handleManagerEvent(screen_event_t event)
 {

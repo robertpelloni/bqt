@@ -1,17 +1,17 @@
 // Copyright (C) 2021 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Marc Mutz <marc.mutz@kdab.com>
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2013 Richard J. Moore <rich@kde.org>.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:cryptography
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:cryptography
 
 #ifndef QCRYPTOGRAPHICHASH_H
 #define QCRYPTOGRAPHICHASH_H
 
-#include <QtCore/qbytearray.h>
-#include <QtCore/qobjectdefs.h>
-#include <QtCore/qspan.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qobjectdefs.h>
+#include <BobUICore/qspan.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QCryptographicHashPrivate;
@@ -38,7 +38,7 @@ public:
         RealSha3_256,
         RealSha3_384,
         RealSha3_512,
-#  ifndef QT_SHA3_KECCAK_COMPAT
+#  ifndef BOBUI_SHA3_KECCAK_COMPAT
         Sha3_224 = RealSha3_224,
         Sha3_256 = RealSha3_256,
         Sha3_384 = RealSha3_384,
@@ -66,17 +66,17 @@ public:
     QCryptographicHash(QCryptographicHash &&other) noexcept : d(std::exchange(other.d, nullptr)) {}
     ~QCryptographicHash();
 
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QCryptographicHash)
-    void swap(QCryptographicHash &other) noexcept { qt_ptr_swap(d, other.d); }
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QCryptographicHash)
+    void swap(QCryptographicHash &other) noexcept { bobui_ptr_swap(d, other.d); }
 
     void reset() noexcept;
     [[nodiscard]] Algorithm algorithm() const noexcept;
 
-#if QT_DEPRECATED_SINCE(6, 4)
-    QT_DEPRECATED_VERSION_X_6_4("Use the QByteArrayView overload instead")
+#if BOBUI_DEPRECATED_SINCE(6, 4)
+    BOBUI_DEPRECATED_VERSION_X_6_4("Use the QByteArrayView overload instead")
     void addData(const char *data, qsizetype length);
 #endif
-#if QT_CORE_REMOVED_SINCE(6, 3)
+#if BOBUI_CORE_REMOVED_SINCE(6, 3)
     void addData(const QByteArray &data);
 #endif
     void addData(QByteArrayView data) noexcept;
@@ -85,7 +85,7 @@ public:
     QByteArray result() const;
     QByteArrayView resultView() const noexcept;
 
-#if QT_CORE_REMOVED_SINCE(6, 3)
+#if BOBUI_CORE_REMOVED_SINCE(6, 3)
     static QByteArray hash(const QByteArray &data, Algorithm method);
 #endif
     static QByteArray hash(QByteArrayView data, Algorithm method);
@@ -109,6 +109,6 @@ private:
     QCryptographicHashPrivate *d;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

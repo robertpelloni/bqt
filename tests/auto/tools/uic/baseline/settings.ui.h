@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'settings.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,19 +9,19 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QAbstractButton>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QSlider>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QVBoxLayout>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QAbstractButton>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QComboBox>
+#include <BobUIWidgets/QDialog>
+#include <BobUIWidgets/QDialogButtonBox>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QSlider>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/QVBoxLayout>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_Dialog
 {
@@ -62,7 +62,7 @@ public:
         sizePolicy.setHeightForWidth(label->sizePolicy().hasHeightForWidth());
         label->setSizePolicy(sizePolicy);
         label->setMinimumSize(QSize(90, 0));
-        label->setAlignment(Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop);
+        label->setAlignment(BobUI::AlignmentFlag::AlignLeading|BobUI::AlignmentFlag::AlignLeft|BobUI::AlignmentFlag::AlignTop);
 
         hboxLayout->addWidget(label);
 
@@ -86,7 +86,7 @@ public:
         sizePolicy.setHeightForWidth(label_6->sizePolicy().hasHeightForWidth());
         label_6->setSizePolicy(sizePolicy);
         label_6->setMinimumSize(QSize(90, 0));
-        label_6->setAlignment(Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop);
+        label_6->setAlignment(BobUI::AlignmentFlag::AlignLeading|BobUI::AlignmentFlag::AlignLeft|BobUI::AlignmentFlag::AlignTop);
 
         hboxLayout1->addWidget(label_6);
 
@@ -107,7 +107,7 @@ public:
         sizePolicy.setHeightForWidth(crossFadeLabel->sizePolicy().hasHeightForWidth());
         crossFadeLabel->setSizePolicy(sizePolicy);
         crossFadeLabel->setMinimumSize(QSize(90, 0));
-        crossFadeLabel->setAlignment(Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop);
+        crossFadeLabel->setAlignment(BobUI::AlignmentFlag::AlignLeading|BobUI::AlignmentFlag::AlignLeft|BobUI::AlignmentFlag::AlignTop);
 
         hboxLayout2->addWidget(crossFadeLabel);
 
@@ -122,7 +122,7 @@ public:
         crossFadeSlider->setSingleStep(1);
         crossFadeSlider->setPageStep(2);
         crossFadeSlider->setValue(0);
-        crossFadeSlider->setOrientation(Qt::Orientation::Horizontal);
+        crossFadeSlider->setOrientation(BobUI::Orientation::Horizontal);
         crossFadeSlider->setTickPosition(QSlider::TickPosition::TicksBelow);
 
         vboxLayout->addWidget(crossFadeSlider);
@@ -168,7 +168,7 @@ public:
 
         buttonBox = new QDialogButtonBox(Dialog);
         buttonBox->setObjectName("buttonBox");
-        buttonBox->setOrientation(Qt::Orientation::Horizontal);
+        buttonBox->setOrientation(BobUI::Orientation::Horizontal);
         buttonBox->setStandardButtons(QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok);
 
         verticalLayout->addWidget(buttonBox);
@@ -198,6 +198,6 @@ namespace Ui {
     class Dialog: public Ui_Dialog {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // SETTINGS_H

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef DIALOG_H
 #define DIALOG_H
@@ -7,10 +7,10 @@
 #include <QWidget>
 #include "fortuneserver.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QLabel;
 class QPushButton;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 class Dialog : public QWidget
 {

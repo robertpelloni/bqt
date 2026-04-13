@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "message.h"
 
@@ -14,7 +14,7 @@ Message::Message(const QString &body, const QStringList &headers)
 QDebug operator<<(QDebug dbg, const Message &message)
 {
     QDebugStateSaver saver(dbg);
-    QList<QStringView> pieces = message.body().split(u"\r\n", Qt::SkipEmptyParts);
+    QList<QStringView> pieces = message.body().split(u"\r\n", BobUI::SkipEmptyParts);
     if (pieces.isEmpty())
         dbg.nospace() << "Message()";
     else if (pieces.size() == 1)

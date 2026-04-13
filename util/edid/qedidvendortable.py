@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Copyright (C) 2017 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 import urllib.request
 import sys
@@ -11,14 +11,14 @@ import sys
 url = 'https://github.com/vcrhonek/hwdata/raw/master/pnp.ids'
 # REUSE-IgnoreStart
 copyright = """// Copyright (C) 2017 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 """
 # REUSE-IgnoreEnd
 notice = """/*
  * This lookup table was generated from {}
  *
  * Do not change this file directly, instead edit the
- * qtbase/util/edid/qedidvendortable.py script and regenerate this file.
+ * bobuibase/util/edid/qedidvendortable.py script and regenerate this file.
  */""".format(url)
 
 header = """
@@ -29,19 +29,19 @@ header = """
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists purely as an
+// This file is not part of the BobUI API. It exists purely as an
 // implementation detail. This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/private/qglobal_p.h>
-#include <QtCore/qtypes.h>
+#include <BobUICore/private/qglobal_p.h>
+#include <BobUICore/bobuiypes.h>
 
 #include <iterator>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 """
 
 vendorIdHeader = """struct QEdidVendorId {
@@ -65,7 +65,7 @@ vendorNameOffsetFooter = """};
 
 footer = """static_assert(std::size(q_edidVendorIds) == std::size(q_edidVendorNamesOffsets));
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QEDIDVENDORTABLE_P_H"""
 

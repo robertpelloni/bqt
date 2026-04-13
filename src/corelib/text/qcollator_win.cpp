@@ -1,6 +1,6 @@
 // Copyright (C) 2020 Aleix Pol Gonzalez <aleixpol@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qcollator_p.h"
 #include "qlocale_p.h"
@@ -9,10 +9,10 @@
 
 #include <QDebug>
 
-#include <qt_windows.h>
+#include <bobui_windows.h>
 #include <qsysinfo.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 //NOTE: SORT_DIGITSASNUMBERS is available since win7
 #ifndef SORT_DIGITSASNUMBERS
@@ -20,7 +20,7 @@ QT_BEGIN_NAMESPACE
 #endif
 
 // implemented in qlocale_win.cpp
-extern LCID qt_inIsoNametoLCID(const char *name);
+extern LCID bobui_inIsoNametoLCID(const char *name);
 
 void QCollatorPrivate::init()
 {
@@ -28,13 +28,13 @@ void QCollatorPrivate::init()
     if (isC())
         return;
 
-    localeID = qt_inIsoNametoLCID(QLocalePrivate::get(locale)->bcp47Name().constData());
+    localeID = bobui_inIsoNametoLCID(QLocalePrivate::get(locale)->bcp47Name().constData());
 
-    if (caseSensitivity == Qt::CaseInsensitive)
+    if (caseSensitivity == BobUI::CaseInsensitive)
         collator |= NORM_IGNORECASE;
 
     // WINE does not support SORT_DIGITSASNUMBERS :-(
-    // (and its std::sort() crashes on bad comparisons, QTBUG-74209)
+    // (and its std::sort() crashes on bad comparisons, BOBUIBUG-74209)
     if (numericMode)
         collator |= SORT_DIGITSASNUMBERS;
 
@@ -97,12 +97,12 @@ QCollatorSortKey QCollator::sortKey(const QString &string) const
     if (d->isC())
         return QCollatorSortKey(new QCollatorSortKeyPrivate(string));
 
-    // truncating sizes (QTBUG-105038)
+    // truncating sizes (BOBUIBUG-105038)
     int size = LCMapStringW(d->localeID, LCMAP_SORTKEY | d->collator,
                            reinterpret_cast<const wchar_t*>(string.constData()), string.size(),
                            0, 0);
 
-    QString ret(size, Qt::Uninitialized);
+    QString ret(size, BobUI::Uninitialized);
     int finalSize = LCMapStringW(d->localeID, LCMAP_SORTKEY | d->collator,
                            reinterpret_cast<const wchar_t*>(string.constData()), string.size(),
                            reinterpret_cast<wchar_t*>(ret.data()), ret.size());
@@ -119,4 +119,4 @@ int QCollatorSortKey::compare(const QCollatorSortKey &otherKey) const
     return d->m_key.compare(otherKey.d->m_key);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

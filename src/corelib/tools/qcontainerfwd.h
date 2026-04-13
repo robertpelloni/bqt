@@ -1,15 +1,15 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QCONTAINERFWD_H
 #define QCONTAINERFWD_H
 
-#include <QtCore/qtconfigmacros.h>
-#include <QtCore/qtypes.h>
+#include <BobUICore/bobuiconfigmacros.h>
+#include <BobUICore/bobuiypes.h>
 
 #if 0
-#pragma qt_class(QtContainerFwd)
+#pragma bobui_class(BobUIContainerFwd)
 #endif
 
 // std headers can unfortunately not be forward declared
@@ -17,14 +17,14 @@
 #include <utility>
 #include <limits>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 template <typename Key, typename T> class QCache;
 template <typename Key, typename T> class QHash;
 template <typename Key, typename T> class QMap;
 template <typename Key, typename T> class QMultiHash;
 template <typename Key, typename T> class QMultiMap;
-#ifndef QT_NO_QPAIR
+#ifndef BOBUI_NO_QPAIR
 template <typename T1, typename T2>
 using QPair = std::pair<T1, T2>;
 #endif
@@ -54,12 +54,12 @@ using QVariantMap = QMap<QString, QVariant>;
 using QVariantHash = QHash<QString, QVariant>;
 using QVariantPair = std::pair<QVariant, QVariant>;
 
-namespace QtPrivate
+namespace BobUIPrivate
 {
 [[maybe_unused]]
 constexpr qsizetype MaxAllocSize = (std::numeric_limits<qsizetype>::max)();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCONTAINERFWD_H

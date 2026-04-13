@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef TEXTDUMP_H
 #define TEXTDUMP_H
 
-#include <QtCore/QtGlobal>
+#include <BobUICore/BobUIGlobal>
 
-QT_FORWARD_DECLARE_CLASS(QString)
+BOBUI_FORWARD_DECLARE_CLASS(QString)
 
-namespace QtDiag {
+namespace BobUIDiag {
 
 QString dumpText(const QString &text);
 QString dumpTextAsCode(const QString &text);
 
-} // namespace QtDiag
+} // namespace BobUIDiag
 
 #endif // TEXTDUMP_H

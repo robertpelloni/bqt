@@ -1,11 +1,11 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QApplication>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QSlider>
-#include <QTextEdit>
+#include <BOBUIextEdit>
 #include <QPushButton>
 #include <QLabel>
 #include <QCheckBox>
@@ -26,11 +26,11 @@ int main(int argc, char **argv)
     QLabel *overlayLabel = new QLabel(rhiWidget);
     overlayLabel->setText(QObject::tr("This is a\nsemi-transparent\n overlay widget\n"
                                       "placed on top of\nthe QRhiWidget."));
-    overlayLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    overlayLabel->setAlignment(BobUI::AlignHCenter | BobUI::AlignVCenter);
     overlayLabel->setAutoFillBackground(true);
     QPalette semiTransparent(QColor(255, 0, 0, 64));
-    semiTransparent.setBrush(QPalette::Text, Qt::white);
-    semiTransparent.setBrush(QPalette::WindowText, Qt::white);
+    semiTransparent.setBrush(QPalette::Text, BobUI::white);
+    semiTransparent.setBrush(QPalette::WindowText, BobUI::white);
     overlayLabel->setPalette(semiTransparent);
     QFont f = overlayLabel->font();
     f.setPixelSize(QFontInfo(f).pixelSize() * 2);
@@ -44,16 +44,16 @@ int main(int argc, char **argv)
         overlayLabel->setGeometry(rhiWidget->width() / 2 - w / 2, rhiWidget->height() / 2 - h / 2, w, h);
     });
 
-    QTextEdit *edit = new QTextEdit(QObject::tr("QRhiWidget!<br><br>"
+    BOBUIextEdit *edit = new BOBUIextEdit(QObject::tr("QRhiWidget!<br><br>"
                                                 "The cube is textured with QPainter-generated content.<br><br>"
                                                 "Regular, non-native widgets on top work just fine."));
-    QObject::connect(edit, &QTextEdit::textChanged, edit, [edit, rhiWidget] {
+    QObject::connect(edit, &BOBUIextEdit::textChanged, edit, [edit, rhiWidget] {
         rhiWidget->setCubeTextureText(edit->toPlainText());
     });
     edit->setMaximumHeight(100);
     layout->addWidget(edit);
 
-    QSlider *slider = new QSlider(Qt::Horizontal);
+    QSlider *slider = new QSlider(BobUI::Horizontal);
     slider->setMinimum(0);
     slider->setMaximum(360);
     QObject::connect(slider, &QSlider::valueChanged, slider, [slider, rhiWidget] {
@@ -77,11 +77,11 @@ int main(int argc, char **argv)
     QObject::connect(btnMakeWindow, &QPushButton::clicked, btnMakeWindow, [rhiWidget, btnMakeWindow, layout] {
         if (rhiWidget->parentWidget()) {
             rhiWidget->setParent(nullptr);
-            rhiWidget->setAttribute(Qt::WA_DeleteOnClose, true);
+            rhiWidget->setAttribute(BobUI::WA_DeleteOnClose, true);
             rhiWidget->show();
             btnMakeWindow->setText(QObject::tr("Make child widget"));
         } else {
-            rhiWidget->setAttribute(Qt::WA_DeleteOnClose, false);
+            rhiWidget->setAttribute(BobUI::WA_DeleteOnClose, false);
             layout->addWidget(rhiWidget);
             btnMakeWindow->setText(QObject::tr("Make top-level window"));
         }
@@ -129,7 +129,7 @@ int main(int argc, char **argv)
 
     QCheckBox *cbFixedSize = new QCheckBox(QObject::tr("Use fixed color buffer size"));
     btnLayout->addWidget(cbFixedSize);
-    QSlider *fixedSizeSlider = new QSlider(Qt::Horizontal);
+    QSlider *fixedSizeSlider = new QSlider(BobUI::Horizontal);
     fixedSizeSlider->setMinimum(16);
     fixedSizeSlider->setMaximum(512);
     btnLayout->addWidget(fixedSizeSlider);

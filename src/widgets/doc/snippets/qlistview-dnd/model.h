@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef MODEL_H
 #define MODEL_H
@@ -14,15 +14,15 @@ class DragDropListModel : public QStringListModel
 public:
     DragDropListModel(const QStringList &strings, QObject *parent = nullptr);
 
-    Qt::ItemFlags flags(const QModelIndex &index) const override;
+    BobUI::ItemFlags flags(const QModelIndex &index) const override;
 
-    bool canDropMimeData(const QMimeData *data, Qt::DropAction action,
+    bool canDropMimeData(const QMimeData *data, BobUI::DropAction action,
                          int row, int column, const QModelIndex &parent) const override;
-    bool dropMimeData(const QMimeData *data, Qt::DropAction action,
+    bool dropMimeData(const QMimeData *data, BobUI::DropAction action,
                       int row, int column, const QModelIndex &parent) override;
     QMimeData *mimeData(const QModelIndexList &indexes) const override;
     QStringList mimeTypes() const override;
-    Qt::DropActions supportedDropActions() const override;
+    BobUI::DropActions supportedDropActions() const override;
 };
 
 #endif

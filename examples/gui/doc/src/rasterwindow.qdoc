@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example rasterwindow
@@ -31,8 +31,8 @@
 
     \snippet rasterwindow/rasterwindow.h 1
 
-    We first start by including the \c <QtGui> header. This means we
-    can use all classes in the Qt GUI module. Classes can also be
+    We first start by including the \c <BobUIGui> header. This means we
+    can use all classes in the BobUI GUI module. Classes can also be
     included individually if that is preferred.
 
     The RasterWindow class subclasses QWindow directly and provides a

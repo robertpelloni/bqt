@@ -1,9 +1,9 @@
 // Copyright (C) 2024 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef FLAGS_PROPERTY_INTEGER_ACCESS
 #define FLAGS_PROPERTY_INTEGER_ACCESS
-#include <QtCore/qobject.h>
+#include <BobUICore/qobject.h>
 
 class ClassWithFlagsAccessAsInteger : public QObject
 {

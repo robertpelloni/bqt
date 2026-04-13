@@ -32,10 +32,10 @@ instructions:
 
   - type: EnvironmentVariable
     variableName: COIN_CONFIGURE_ARGS
-    variableValue: "{{.Env.NON_QTBASE_TARGET_CONFIGURE_ARGS}}"
+    variableValue: "{{.Env.NON_BOBUIBASE_TARGET_CONFIGURE_ARGS}}"
   - type: EnvironmentVariable
     variableName: COIN_CMAKE_ARGS
-    variableValue: "{{.Env.NON_QTBASE_TARGET_CMAKE_ARGS}} {{.Env.COMMON_NON_QTBASE_TARGET_CMAKE_ARGS}}"
+    variableValue: "{{.Env.NON_BOBUIBASE_TARGET_CMAKE_ARGS}} {{.Env.COMMON_NON_BOBUIBASE_TARGET_CMAKE_ARGS}}"
   - type: AppendToEnvironmentVariable
     variableName: COIN_CONFIGURE_ARGS
     variableValue: " ${{ToUpper .Env.TESTED_MODULE_COIN}}_TARGET_CONFIGURE_ARGS"
@@ -53,8 +53,8 @@ instructions:
   - type: EnvironmentVariable
     variableName: CONFIGURE_ENV_PREFIX
     variableValue: "{{.Env.TARGET_ENV_PREFIX}}"
-  - !include "{{qt/qtbase}}/prepare_install_dir_suffix_target.yaml"
-  - !include "{{qt/qtbase}}/call_configure_module.yaml"
+  - !include "{{bobui/bobuibase}}/prepare_install_dir_suffix_target.yaml"
+  - !include "{{bobui/bobuibase}}/call_configure_module.yaml"
 
   - type: ExecuteCommand
     command: "{{.Env.CONFIGURE_ENV_PREFIX}} cmake --build . --parallel -v"
@@ -99,11 +99,11 @@ instructions:
             - condition: property
               property: target.osVersion
               not_in_values: [WebAssembly, Android_ANY]
-  - !include "{{qt/qtbase}}/call_target_install.yaml"
+  - !include "{{bobui/bobuibase}}/call_target_install.yaml"
   - type: EnvironmentVariable
     variableName: DESTDIR
     variableValue: "{{.InstallRoot}}"
-  - !include "{{qt/qtbase}}/call_target_install.yaml"
+  - !include "{{bobui/bobuibase}}/call_target_install.yaml"
   - type: EnvironmentVariable
     variableName: DESTDIR
     variableValue: ""
@@ -128,13 +128,13 @@ instructions:
   - type: EnvironmentVariable
     variableName: COIN_CONFIG_TYPE
     variableValue: "Target"
-  - !include "{{qt/qtbase}}/cmake_build_standalone_examples_target.yaml"
-  - !include "{{qt/qtbase}}/qmake/get_qmake_location_target.yaml"
-  - !include "{{qt/qtbase}}/qmake_examples/build_qmake_examples_instructions.yaml"
+  - !include "{{bobui/bobuibase}}/cmake_build_standalone_examples_target.yaml"
+  - !include "{{bobui/bobuibase}}/qmake/get_qmake_location_target.yaml"
+  - !include "{{bobui/bobuibase}}/qmake_examples/build_qmake_examples_instructions.yaml"
 
   - type: Group
     instructions:
-      - !include "{{qt/qtbase}}/build_android_javadocs.yaml"
+      - !include "{{bobui/bobuibase}}/build_android_javadocs.yaml"
     enable_if:
       condition: and
       conditions:
@@ -146,4 +146,4 @@ instructions:
           equals_value: "Android_ANY"
         - condition: runtime
           env_var: TESTED_MODULE_COIN
-          equals_value: "qtdeclarative"
+          equals_value: "bobuideclarative"

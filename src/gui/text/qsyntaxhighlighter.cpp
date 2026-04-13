@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qsyntaxhighlighter.h"
 
-#ifndef QT_NO_SYNTAXHIGHLIGHTER
+#ifndef BOBUI_NO_SYNTAXHIGHLIGHTER
 #include <private/qobject_p.h>
-#include <qtextdocument.h>
-#include <private/qtextdocument_p.h>
-#include <qtextlayout.h>
+#include <bobuiextdocument.h>
+#include <private/bobuiextdocument_p.h>
+#include <bobuiextlayout.h>
 #include <qpointer.h>
 #include <qscopedvaluerollback.h>
-#include <qtextobject.h>
-#include <qtextcursor.h>
+#include <bobuiextobject.h>
+#include <bobuiextcursor.h>
 #include <qdebug.h>
-#include <qtimer.h>
+#include <bobuiimer.h>
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QSyntaxHighlighterPrivate : public QObjectPrivate
 {
@@ -27,13 +27,13 @@ public:
         : rehighlightPending(false), inReformatBlocks(false)
     {}
 
-    QPointer<QTextDocument> doc;
+    QPointer<BOBUIextDocument> doc;
 
     void _q_reformatBlocks(int from, int charsRemoved, int charsAdded);
     void reformatBlocks(int from, int charsRemoved, int charsAdded);
-    void reformatBlock(const QTextBlock &block);
+    void reformatBlock(const BOBUIextBlock &block);
 
-    inline void rehighlight(QTextCursor &cursor, QTextCursor::MoveOperation operation)
+    inline void rehighlight(BOBUIextCursor &cursor, BOBUIextCursor::MoveOperation operation)
     {
         QScopedValueRollback<bool> bg(inReformatBlocks, true);
         cursor.beginEditBlock();
@@ -51,8 +51,8 @@ public:
     }
 
     void applyFormatChanges();
-    QList<QTextCharFormat> formatChanges;
-    QTextBlock currentBlock;
+    QList<BOBUIextCharFormat> formatChanges;
+    BOBUIextBlock currentBlock;
     bool rehighlightPending;
     bool inReformatBlocks;
 };
@@ -61,15 +61,15 @@ void QSyntaxHighlighterPrivate::applyFormatChanges()
 {
     bool formatsChanged = false;
 
-    QTextLayout *layout = currentBlock.layout();
+    BOBUIextLayout *layout = currentBlock.layout();
 
-    QList<QTextLayout::FormatRange> ranges = layout->formats();
+    QList<BOBUIextLayout::FormatRange> ranges = layout->formats();
 
     const int preeditAreaStart = layout->preeditAreaPosition();
     const int preeditAreaLength = layout->preeditAreaText().size();
 
     if (preeditAreaLength != 0) {
-        auto isOutsidePreeditArea = [=](const QTextLayout::FormatRange &range) {
+        auto isOutsidePreeditArea = [=](const BOBUIextLayout::FormatRange &range) {
             return range.start < preeditAreaStart
                     || range.start + range.length > preeditAreaStart + preeditAreaLength;
         };
@@ -82,7 +82,7 @@ void QSyntaxHighlighterPrivate::applyFormatChanges()
 
     int i = 0;
     while (i < formatChanges.size()) {
-        QTextLayout::FormatRange r;
+        BOBUIextLayout::FormatRange r;
 
         while (i < formatChanges.size() && formatChanges.at(i) == r.format)
             ++i;
@@ -124,16 +124,16 @@ void QSyntaxHighlighterPrivate::_q_reformatBlocks(int from, int charsRemoved, in
 
 void QSyntaxHighlighterPrivate::reformatBlocks(int from, int charsRemoved, int charsAdded)
 {
-    QTextBlock block = doc->findBlock(from);
+    BOBUIextBlock block = doc->findBlock(from);
     if (!block.isValid())
         return;
 
     int endPosition;
-    QTextBlock lastBlock = doc->findBlock(from + charsAdded + (charsRemoved > 0 ? 1 : 0));
+    BOBUIextBlock lastBlock = doc->findBlock(from + charsAdded + (charsRemoved > 0 ? 1 : 0));
     if (lastBlock.isValid())
         endPosition = lastBlock.position() + lastBlock.length();
     else
-        endPosition = QTextDocumentPrivate::get(doc)->length();
+        endPosition = BOBUIextDocumentPrivate::get(doc)->length();
 
     bool forceHighlightOfNextBlock = false;
 
@@ -150,7 +150,7 @@ void QSyntaxHighlighterPrivate::reformatBlocks(int from, int charsRemoved, int c
     formatChanges.clear();
 }
 
-void QSyntaxHighlighterPrivate::reformatBlock(const QTextBlock &block)
+void QSyntaxHighlighterPrivate::reformatBlock(const BOBUIextBlock &block)
 {
     Q_Q(QSyntaxHighlighter);
 
@@ -158,17 +158,17 @@ void QSyntaxHighlighterPrivate::reformatBlock(const QTextBlock &block)
 
     currentBlock = block;
 
-    formatChanges.fill(QTextCharFormat(), block.length() - 1);
+    formatChanges.fill(BOBUIextCharFormat(), block.length() - 1);
     q->highlightBlock(block.text());
     applyFormatChanges();
 
-    currentBlock = QTextBlock();
+    currentBlock = BOBUIextBlock();
 }
 
 /*!
     \class QSyntaxHighlighter
     \reentrant
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QSyntaxHighlighter class allows you to define syntax
     highlighting rules, and in addition you can use the class to query
@@ -179,8 +179,8 @@ void QSyntaxHighlighterPrivate::reformatBlock(const QTextBlock &block)
     \ingroup richtext-processing
 
     The QSyntaxHighlighter class is a base class for implementing
-    QTextDocument syntax highlighters.  A syntax highligher automatically
-    highlights parts of the text in a QTextDocument. Syntax highlighters are
+    BOBUIextDocument syntax highlighters.  A syntax highligher automatically
+    highlights parts of the text in a BOBUIextDocument. Syntax highlighters are
     often used when the user is entering text in a specific format (for example source code)
     and help the user to read the text and identify syntax errors.
 
@@ -188,7 +188,7 @@ void QSyntaxHighlighterPrivate::reformatBlock(const QTextBlock &block)
     QSyntaxHighlighter and reimplement highlightBlock().
 
     When you create an instance of your QSyntaxHighlighter subclass,
-    pass it the QTextDocument that you want the syntax
+    pass it the BOBUIextDocument that you want the syntax
     highlighting to be applied to. For example:
 
     \snippet code/src_gui_text_qsyntaxhighlighter.cpp 0
@@ -197,7 +197,7 @@ void QSyntaxHighlighterPrivate::reformatBlock(const QTextBlock &block)
     automatically whenever necessary. Use your highlightBlock()
     function to apply formatting (e.g. setting the font and color) to
     the text that is passed to it. QSyntaxHighlighter provides the
-    setFormat() function which applies a given QTextCharFormat on
+    setFormat() function which applies a given BOBUIextCharFormat on
     the current text block. For example:
 
     \snippet code/src_gui_text_qsyntaxhighlighter.cpp 1
@@ -219,7 +219,7 @@ void QSyntaxHighlighterPrivate::reformatBlock(const QTextBlock &block)
     an int value. If no state is set, the returned value is -1. You
     can designate any other value to identify any given state using
     the setCurrentBlockState() function. Once the state is set the
-    QTextBlock keeps that value until it is set again or until the
+    BOBUIextBlock keeps that value until it is set again or until the
     corresponding paragraph of text is deleted.
 
     For example, if you're writing a simple C++ syntax highlighter,
@@ -239,27 +239,27 @@ void QSyntaxHighlighterPrivate::reformatBlock(const QTextBlock &block)
     using the format() and currentBlockUserData() functions
     respectively. You can also attach user data to the current text
     block using the setCurrentBlockUserData() function.
-    QTextBlockUserData can be used to store custom settings. In the
+    BOBUIextBlockUserData can be used to store custom settings. In the
     case of syntax highlighting, it is in particular interesting as
     cache storage for information that you may figure out while
     parsing the paragraph's text. For an example, see the
     setCurrentBlockUserData() documentation.
 
-    \sa QTextDocument, {Syntax Highlighter Example}
+    \sa BOBUIextDocument, {Syntax Highlighter Example}
 */
 
 /*!
     Constructs a QSyntaxHighlighter with the given \a parent.
 
-    If the parent is a QTextEdit, it installs the syntax highlighter on the
-    parents document. The specified QTextEdit also becomes the owner of
+    If the parent is a BOBUIextEdit, it installs the syntax highlighter on the
+    parents document. The specified BOBUIextEdit also becomes the owner of
     the QSyntaxHighlighter.
 */
 QSyntaxHighlighter::QSyntaxHighlighter(QObject *parent)
     : QObject(*new QSyntaxHighlighterPrivate, parent)
 {
-    if (parent && parent->inherits("QTextEdit")) {
-        QTextDocument *doc = qvariant_cast<QTextDocument *>(parent->property("document"));
+    if (parent && parent->inherits("BOBUIextEdit")) {
+        BOBUIextDocument *doc = qvariant_cast<BOBUIextDocument *>(parent->property("document"));
         if (doc)
             setDocument(doc);
     }
@@ -267,10 +267,10 @@ QSyntaxHighlighter::QSyntaxHighlighter(QObject *parent)
 
 /*!
     Constructs a QSyntaxHighlighter and installs it on \a parent.
-    The specified QTextDocument also becomes the owner of the
+    The specified BOBUIextDocument also becomes the owner of the
     QSyntaxHighlighter.
 */
-QSyntaxHighlighter::QSyntaxHighlighter(QTextDocument *parent)
+QSyntaxHighlighter::QSyntaxHighlighter(BOBUIextDocument *parent)
     : QObject(*new QSyntaxHighlighterPrivate, parent)
 {
     setDocument(parent);
@@ -285,19 +285,19 @@ QSyntaxHighlighter::~QSyntaxHighlighter()
 }
 
 /*!
-    Installs the syntax highlighter on the given QTextDocument \a doc.
+    Installs the syntax highlighter on the given BOBUIextDocument \a doc.
     A QSyntaxHighlighter can only be used with one document at a time.
 */
-void QSyntaxHighlighter::setDocument(QTextDocument *doc)
+void QSyntaxHighlighter::setDocument(BOBUIextDocument *doc)
 {
     Q_D(QSyntaxHighlighter);
     if (d->doc) {
         disconnect(d->doc, SIGNAL(contentsChange(int,int,int)),
                    this, SLOT(_q_reformatBlocks(int,int,int)));
 
-        QTextCursor cursor(d->doc);
+        BOBUIextCursor cursor(d->doc);
         cursor.beginEditBlock();
-        for (QTextBlock blk = d->doc->begin(); blk.isValid(); blk = blk.next())
+        for (BOBUIextBlock blk = d->doc->begin(); blk.isValid(); blk = blk.next())
             blk.layout()->clearFormats();
         cursor.endEditBlock();
     }
@@ -307,16 +307,16 @@ void QSyntaxHighlighter::setDocument(QTextDocument *doc)
                 this, SLOT(_q_reformatBlocks(int,int,int)));
         if (!d->doc->isEmpty()) {
             d->rehighlightPending = true;
-            QTimer::singleShot(0, this, SLOT(_q_delayedRehighlight()));
+            BOBUIimer::singleShot(0, this, SLOT(_q_delayedRehighlight()));
         }
     }
 }
 
 /*!
-    Returns the QTextDocument on which this syntax highlighter is
+    Returns the BOBUIextDocument on which this syntax highlighter is
     installed.
 */
-QTextDocument *QSyntaxHighlighter::document() const
+BOBUIextDocument *QSyntaxHighlighter::document() const
 {
     Q_D(const QSyntaxHighlighter);
     return d->doc;
@@ -335,19 +335,19 @@ void QSyntaxHighlighter::rehighlight()
     if (!d->doc)
         return;
 
-    QTextCursor cursor(d->doc);
-    d->rehighlight(cursor, QTextCursor::End);
+    BOBUIextCursor cursor(d->doc);
+    d->rehighlight(cursor, BOBUIextCursor::End);
     d->rehighlightPending = false; // user manually did a full rehighlight
 }
 
 /*!
     \since 4.6
 
-    Reapplies the highlighting to the given QTextBlock \a block.
+    Reapplies the highlighting to the given BOBUIextBlock \a block.
 
     \sa rehighlight()
 */
-void QSyntaxHighlighter::rehighlightBlock(const QTextBlock &block)
+void QSyntaxHighlighter::rehighlightBlock(const BOBUIextBlock &block)
 {
     Q_D(QSyntaxHighlighter);
     if (!d->doc || !block.isValid() || block.document() != d->doc)
@@ -355,8 +355,8 @@ void QSyntaxHighlighter::rehighlightBlock(const QTextBlock &block)
 
     const bool rehighlightPending = d->rehighlightPending;
 
-    QTextCursor cursor(block);
-    d->rehighlight(cursor, QTextCursor::EndOfBlock);
+    BOBUIextCursor cursor(block);
+    d->rehighlight(cursor, BOBUIextCursor::EndOfBlock);
 
     if (rehighlightPending)
         d->rehighlightPending = rehighlightPending;
@@ -395,12 +395,12 @@ void QSyntaxHighlighter::rehighlightBlock(const QTextBlock &block)
     nothing is done). The formatting properties set in \a format are
     merged at display time with the formatting information stored
     directly in the document, for example as previously set with
-    QTextCursor's functions. Note that the document itself remains
+    BOBUIextCursor's functions. Note that the document itself remains
     unmodified by the format set through this function.
 
     \sa format(), highlightBlock()
 */
-void QSyntaxHighlighter::setFormat(int start, int count, const QTextCharFormat &format)
+void QSyntaxHighlighter::setFormat(int start, int count, const BOBUIextCharFormat &format)
 {
     Q_D(QSyntaxHighlighter);
     if (start < 0 || start >= d->formatChanges.size())
@@ -424,7 +424,7 @@ void QSyntaxHighlighter::setFormat(int start, int count, const QTextCharFormat &
 */
 void QSyntaxHighlighter::setFormat(int start, int count, const QColor &color)
 {
-    QTextCharFormat format;
+    BOBUIextCharFormat format;
     format.setForeground(color);
     setFormat(start, count, format);
 }
@@ -442,22 +442,22 @@ void QSyntaxHighlighter::setFormat(int start, int count, const QColor &color)
 */
 void QSyntaxHighlighter::setFormat(int start, int count, const QFont &font)
 {
-    QTextCharFormat format;
+    BOBUIextCharFormat format;
     format.setFont(font);
     setFormat(start, count, format);
 }
 
 /*!
-    \fn QTextCharFormat QSyntaxHighlighter::format(int position) const
+    \fn BOBUIextCharFormat QSyntaxHighlighter::format(int position) const
 
     Returns the format at \a position inside the syntax highlighter's
     current text block.
 */
-QTextCharFormat QSyntaxHighlighter::format(int pos) const
+BOBUIextCharFormat QSyntaxHighlighter::format(int pos) const
 {
     Q_D(const QSyntaxHighlighter);
     if (pos < 0 || pos >= d->formatChanges.size())
-        return QTextCharFormat();
+        return BOBUIextCharFormat();
     return d->formatChanges.at(pos);
 }
 
@@ -474,7 +474,7 @@ int QSyntaxHighlighter::previousBlockState() const
     if (!d->currentBlock.isValid())
         return -1;
 
-    const QTextBlock previous = d->currentBlock.previous();
+    const BOBUIextBlock previous = d->currentBlock.previous();
     if (!previous.isValid())
         return -1;
 
@@ -511,10 +511,10 @@ void QSyntaxHighlighter::setCurrentBlockState(int newState)
 /*!
     Attaches the given \a data to the current text block.  The
     ownership is passed to the underlying text document, i.e. the
-    provided QTextBlockUserData object will be deleted if the
+    provided BOBUIextBlockUserData object will be deleted if the
     corresponding text block gets deleted.
 
-    QTextBlockUserData can be used to store custom settings. In the
+    BOBUIextBlockUserData can be used to store custom settings. In the
     case of syntax highlighting, it is in particular interesting as
     cache storage for information that you may figure out while
     parsing the paragraph's text.
@@ -522,12 +522,12 @@ void QSyntaxHighlighter::setCurrentBlockState(int newState)
     For example while parsing the text, you can keep track of
     parenthesis characters that you encounter ('{[(' and the like),
     and store their relative position and the actual QChar in a simple
-    class derived from QTextBlockUserData:
+    class derived from BOBUIextBlockUserData:
 
     \snippet code/src_gui_text_qsyntaxhighlighter.cpp 3
 
     During cursor navigation in the associated editor, you can ask the
-    current QTextBlock (retrieved using the QTextCursor::block()
+    current BOBUIextBlock (retrieved using the BOBUIextCursor::block()
     function) if it has a user data object set and cast it to your \c
     BlockData object. Then you can check if the current cursor
     position matches with a previously recorded parenthesis position,
@@ -540,9 +540,9 @@ void QSyntaxHighlighter::setCurrentBlockState(int newState)
     find where a corresponding opening/closing parenthesis is when
     editing parenthesis intensive code.
 
-    \sa QTextBlock::setUserData()
+    \sa BOBUIextBlock::setUserData()
 */
-void QSyntaxHighlighter::setCurrentBlockUserData(QTextBlockUserData *data)
+void QSyntaxHighlighter::setCurrentBlockUserData(BOBUIextBlockUserData *data)
 {
     Q_D(QSyntaxHighlighter);
     if (!d->currentBlock.isValid())
@@ -552,12 +552,12 @@ void QSyntaxHighlighter::setCurrentBlockUserData(QTextBlockUserData *data)
 }
 
 /*!
-    Returns the QTextBlockUserData object previously attached to the
+    Returns the BOBUIextBlockUserData object previously attached to the
     current text block.
 
-    \sa QTextBlock::userData(), setCurrentBlockUserData()
+    \sa BOBUIextBlock::userData(), setCurrentBlockUserData()
 */
-QTextBlockUserData *QSyntaxHighlighter::currentBlockUserData() const
+BOBUIextBlockUserData *QSyntaxHighlighter::currentBlockUserData() const
 {
     Q_D(const QSyntaxHighlighter);
     if (!d->currentBlock.isValid())
@@ -571,14 +571,14 @@ QTextBlockUserData *QSyntaxHighlighter::currentBlockUserData() const
 
     Returns the current text block.
 */
-QTextBlock QSyntaxHighlighter::currentBlock() const
+BOBUIextBlock QSyntaxHighlighter::currentBlock() const
 {
     Q_D(const QSyntaxHighlighter);
     return d->currentBlock;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsyntaxhighlighter.cpp"
 
-#endif // QT_NO_SYNTAXHIGHLIGHTER
+#endif // BOBUI_NO_SYNTAXHIGHLIGHTER

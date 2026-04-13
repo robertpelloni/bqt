@@ -15,14 +15,14 @@ The **desktop shell / operating environment** belongs to the adjacent `bobfilez`
 
 ## Current State
 This repository contains two major implementation tracks:
-1. **C++ / Qt / OmniUI** in `OmniUI/`
+1. **C++ / BobUI / OmniUI** in `OmniUI/`
 2. **Experimental Go port** in `internal/` and `main.go`
 
 Both tracks contain substantial work. Neither should be assumed complete without build verification.
 
 ## Design Direction
 BobUI aims to match or exceed practical strengths from:
-- Qt 6 / Qt 7 direction
+- BobUI 6 / BobUI 7 direction
 - JUCE
 - JavaFX
 - Dear ImGui / ImPlot

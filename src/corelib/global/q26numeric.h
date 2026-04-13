@@ -1,18 +1,18 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 #ifndef Q26NUMERIC_H
 #define Q26NUMERIC_H
 
-#include <QtCore/qglobal.h>
+#include <BobUICore/qglobal.h>
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. Types and functions defined in this
+// This file is not part of the BobUI API. Types and functions defined in this
 // file can reliably be replaced by their std counterparts, once available.
 // You may use these definitions in your own code, but be aware that we
-// will remove them once Qt depends on the C++ version that supports
+// will remove them once BobUI depends on the C++ version that supports
 // them in namespace std. There will be NO deprecation warning, the
 // definitions will JUST go away.
 //
@@ -25,7 +25,7 @@
 #include <limits>
 #include <type_traits>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace q26 {
 
@@ -64,6 +64,6 @@ constexpr auto saturate_cast(From x)
 
 } // namespace q26
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif /* Q26NUMERIC_H */

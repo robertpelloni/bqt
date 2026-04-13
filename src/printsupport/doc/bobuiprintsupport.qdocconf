@@ -1,0 +1,48 @@
+include($BOBUI_INSTALL_DOCS/global/bobui-module-defaults.qdocconf)
+include($BOBUI_INSTALL_DOCS/config/exampleurl-bobuibase.qdocconf)
+
+project                 = BobUIPrintSupport
+description             = BobUI Print Support Reference Documentation
+version                 = $BOBUI_VERSION
+
+examplesinstallpath     = printsupport
+
+# Path to the root of bobuibase (for automatic linking to source code)
+url.sources.rootdir     = ../../..
+
+qhp.projects            = BobUIPrintSupport
+
+qhp.BobUIPrintSupport.file         = bobuiprintsupport.qhp
+qhp.BobUIPrintSupport.namespace           = org.bobui-project.bobuiprintsupport.$BOBUI_VERSION_TAG
+qhp.BobUIPrintSupport.virtualFolder       = bobuiprintsupport
+qhp.BobUIPrintSupport.indexTitle          = BobUI Print Support
+qhp.BobUIPrintSupport.indexRoot           =
+
+qhp.BobUIPrintSupport.subprojects         = classes
+qhp.BobUIPrintSupport.subprojects.classes.title = C++ Classes
+qhp.BobUIPrintSupport.subprojects.classes.indexTitle = BobUI Print Support C++ Classes
+qhp.BobUIPrintSupport.subprojects.classes.selectors = class fake:headerfile
+qhp.BobUIPrintSupport.subprojects.classes.sortPages = true
+
+tagfile                 = ../../../doc/bobuiprintsupport/bobuiprintsupport.tags
+
+depends                 += bobuicore bobuigui bobuiwidgets bobuidoc qmake bobuicmake
+
+headerdirs  += ..
+
+sourcedirs  += ..
+
+exampledirs += . \
+               snippets \
+               ..
+
+excludedirs += ../../../examples/widgets/doc
+
+imagedirs   += images \
+               ../../widgets/doc/images \
+
+navigation.landingpage = "BobUI Print Support"
+navigation.cppclassespage = "BobUI Print Support C++ Classes"
+
+# Enforce zero documentation warnings
+warninglimit = 0

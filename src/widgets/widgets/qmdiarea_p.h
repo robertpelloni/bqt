@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QMDIAREA_P_H
 #define QMDIAREA_P_H
@@ -9,30 +9,30 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 #include "qmdiarea.h"
 #include "qmdisubwindow.h"
 
-QT_REQUIRE_CONFIG(mdiarea);
+BOBUI_REQUIRE_CONFIG(mdiarea);
 
 #include <QBasicTimer>
 #include <QList>
 #include <QRect>
 #include <QPoint>
-#include <QtWidgets/qapplication.h>
+#include <BobUIWidgets/qapplication.h>
 #include <private/qmdisubwindow_p.h>
 #include <private/qabstractscrollarea_p.h>
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace QMdi {
 class Rearranger
@@ -113,7 +113,7 @@ public:
     QMdi::Rearranger *regularTiler;
     QMdi::Rearranger *iconTiler;
     QMdi::Placer *placer;
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
     QRubberBand *rubberBand;
 #endif
     QMdiAreaTabBar *tabBar;
@@ -127,14 +127,14 @@ public:
     QMdiArea::WindowOrder activationOrder;
     QMdiArea::AreaOptions options;
     QMdiArea::ViewMode viewMode;
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     bool documentMode;
     bool tabsClosable;
     bool tabsMovable;
 #endif
-#if QT_CONFIG(tabwidget)
-    QTabWidget::TabShape tabShape;
-    QTabWidget::TabPosition tabPosition;
+#if BOBUI_CONFIG(tabwidget)
+    BOBUIabWidget::TabShape tabShape;
+    BOBUIabWidget::TabPosition tabPosition;
 #endif
     bool ignoreGeometryChange;
     bool ignoreWindowStateChange;
@@ -153,7 +153,7 @@ public:
 
     // Slots.
     void _q_deactivateAllWindows(QMdiSubWindow *aboutToActivate = nullptr);
-    void _q_processWindowStateChanged(Qt::WindowStates oldState, Qt::WindowStates newState);
+    void _q_processWindowStateChanged(BobUI::WindowStates oldState, BobUI::WindowStates newState);
     void _q_currentTabChanged(int index);
     void _q_closeTab(int index);
     void _q_moveTab(int from, int to);
@@ -175,14 +175,14 @@ public:
     bool lastWindowAboutToBeDestroyed() const;
     void setChildActivationEnabled(bool enable = true, bool onlyNextActivationEvent = false) const;
     QRect resizeToMinimumTileSize(const QSize &minSubWindowSize, int subWindowCount);
-    void scrollBarPolicyChanged(Qt::Orientation, Qt::ScrollBarPolicy) override; // reimp
+    void scrollBarPolicyChanged(BobUI::Orientation, BobUI::ScrollBarPolicy) override; // reimp
     QMdiSubWindow *nextVisibleSubWindow(int increaseFactor, QMdiArea::WindowOrder,
                                         int removed = -1, int fromIndex = -1) const;
     void highlightNextSubWindow(int increaseFactor);
     QList<QMdiSubWindow *> subWindowList(QMdiArea::WindowOrder, bool reversed = false) const;
     void disconnectSubWindow(QObject *subWindow);
     void setViewMode(QMdiArea::ViewMode mode);
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     void updateTabBarGeometry();
     void refreshTabBar();
 #endif
@@ -207,7 +207,7 @@ public:
     {
         if (!subWindow)
             return false;
-        return subWindow->windowFlags() & Qt::WindowStaysOnTopHint;
+        return subWindow->windowFlags() & BobUI::WindowStaysOnTopHint;
     }
 
     inline bool isExplicitlyDeactivated(QMdiSubWindow *subWindow) const
@@ -223,7 +223,7 @@ public:
             subWindow->d_func()->setActive(active, changeFocus);
     }
 
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
     void showRubberBandFor(QMdiSubWindow *subWindow);
 
     inline void hideRubberBand()
@@ -232,9 +232,9 @@ public:
             rubberBand->hide();
         indexToHighlighted = -1;
     }
-#endif // QT_CONFIG(rubberband)
+#endif // BOBUI_CONFIG(rubberband)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QMDIAREA_P_H

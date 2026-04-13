@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <qplatformdefs.h>
 
@@ -24,7 +24,7 @@
 #  define DEBUG if (false) qDebug
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static void callBackFunction(ConstFSEventStreamRef streamRef,
                              void *clientCallBackInfo,
@@ -44,10 +44,10 @@ bool QFseventsFileSystemWatcherEngine::checkDir(DirsByName::iterator &it)
 {
     bool needsRestart = false;
 
-    QT_STATBUF st;
+    BOBUI_STATBUF st;
     const QString &name = it.key();
     Info &info = it->dirInfo;
-    const int res = QT_STAT(QFile::encodeName(name), &st);
+    const int res = BOBUI_STAT(QFile::encodeName(name), &st);
     if (res == -1) {
         needsRestart |= derefPath(info.watchedPath);
         emit emitDirectoryChanged(info.origPath, true);
@@ -62,7 +62,7 @@ bool QFseventsFileSystemWatcherEngine::checkDir(DirsByName::iterator &it)
         InfoByName &entries = it->entries;
         // check known entries:
         for (InfoByName::iterator i = entries.begin(); i != entries.end(); ) {
-            if (QT_STAT(QFile::encodeName(i.key()), &st) == -1) {
+            if (BOBUI_STAT(QFile::encodeName(i.key()), &st) == -1) {
                 // entry disappeared
                 dirChanged = true;
                 i = entries.erase(i);
@@ -88,8 +88,8 @@ bool QFseventsFileSystemWatcherEngine::checkDir(DirsByName::iterator &it)
             QString entryName = dirIt.filePath();
             if (!entries.contains(entryName)) {
                 dirChanged = true;
-                QT_STATBUF st;
-                if (QT_STAT(QFile::encodeName(entryName), &st) == -1)
+                BOBUI_STATBUF st;
+                if (BOBUI_STAT(QFile::encodeName(entryName), &st) == -1)
                     continue;
                 entries.insert(entryName, Info(QString(), st.st_ctimespec, st.st_mode, QString()));
 
@@ -123,9 +123,9 @@ bool QFseventsFileSystemWatcherEngine::rescanFiles(InfoByName &filesInPath)
     bool needsRestart = false;
 
     for (InfoByName::iterator it = filesInPath.begin(); it != filesInPath.end(); ) {
-        QT_STATBUF st;
+        BOBUI_STATBUF st;
         QString name = it.key();
-        const int res = QT_STAT(QFile::encodeName(name), &st);
+        const int res = BOBUI_STAT(QFile::encodeName(name), &st);
         if (res == -1) {
             needsRestart |= derefPath(it->watchedPath);
             emit emitFileChanged(it.value().origPath, true);
@@ -268,13 +268,13 @@ QFseventsFileSystemWatcherEngine::QFseventsFileSystemWatcherEngine(QObject *pare
     // We cannot use signal-to-signal queued connections, because the
     // QSignalSpy cannot spot signals fired from other/alien threads.
     connect(this, SIGNAL(emitDirectoryChanged(QString,bool)),
-            this, SLOT(doEmitDirectoryChanged(QString,bool)), Qt::QueuedConnection);
+            this, SLOT(doEmitDirectoryChanged(QString,bool)), BobUI::QueuedConnection);
     connect(this, SIGNAL(emitFileChanged(QString,bool)),
-            this, SLOT(doEmitFileChanged(QString,bool)), Qt::QueuedConnection);
+            this, SLOT(doEmitFileChanged(QString,bool)), BobUI::QueuedConnection);
     connect(this, SIGNAL(scheduleStreamRestart()),
-            this, SLOT(restartStream()), Qt::QueuedConnection);
+            this, SLOT(restartStream()), BobUI::QueuedConnection);
 
-    queue = dispatch_queue_create("org.qt-project.QFseventsFileSystemWatcherEngine", NULL);
+    queue = dispatch_queue_create("org.bobui-project.QFseventsFileSystemWatcherEngine", NULL);
 }
 
 QFseventsFileSystemWatcherEngine::~QFseventsFileSystemWatcherEngine()
@@ -325,8 +325,8 @@ QStringList QFseventsFileSystemWatcherEngine::addPaths(const QStringList &paths,
         if (realPath.isEmpty())
             continue;
 
-        QT_STATBUF st;
-        if (QT_STAT(QFile::encodeName(realPath), &st) == -1)
+        BOBUI_STATBUF st;
+        if (BOBUI_STAT(QFile::encodeName(realPath), &st) == -1)
             continue;
 
         const bool isDir = S_ISDIR(st.st_mode);
@@ -534,8 +534,8 @@ QFseventsFileSystemWatcherEngine::InfoByName QFseventsFileSystemWatcherEngine::s
     while (it.hasNext()) {
         it.next();
         QString entryName = it.filePath();
-        QT_STATBUF st;
-        if (QT_STAT(QFile::encodeName(entryName), &st) == -1)
+        BOBUI_STATBUF st;
+        if (BOBUI_STAT(QFile::encodeName(entryName), &st) == -1)
             continue;
         entries.insert(entryName, Info(QString(), st.st_ctimespec, st.st_mode, QString()));
     }
@@ -555,4 +555,4 @@ bool QFseventsFileSystemWatcherEngine::derefPath(const QString &watchedPath)
     return false;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

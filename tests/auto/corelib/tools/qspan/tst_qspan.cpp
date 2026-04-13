@@ -1,13 +1,13 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QSpan>
 
 #include <QList>
-#include <QTest>
+#include <BOBUIest>
 
-#ifndef QTEST_THROW_ON_FAIL
-# error This test requires QTEST_THROW_ON_FAIL being active.
+#ifndef BOBUIEST_THROW_ON_FAIL
+# error This test requires BOBUIEST_THROW_ON_FAIL being active.
 #endif
 
 #include <algorithm>
@@ -129,7 +129,7 @@ private Q_SLOTS:
     void fromQList() const;
     void fromInitList() const;
 
-    void constQSpansDontDetachQtContainers() const;
+    void constQSpansDontDetachBobUIContainers() const;
 
 private:
     template <typename T, std::size_t N, typename S, std::size_t M>
@@ -470,14 +470,14 @@ void tst_QSpan::fromQList() const
     from_variable_size_container_impl(li);
 }
 
-void tst_QSpan::constQSpansDontDetachQtContainers() const
+void tst_QSpan::constQSpansDontDetachBobUIContainers() const
 {
     QList<int> li = {42, 84, 168, 336};
 
     {
         [[maybe_unused]] const QList copy = li;
         QVERIFY(!li.isDetached());
-        [[maybe_unused]] QSpan<const int> cvspan = li; // should not detach (QTBUG-132133)
+        [[maybe_unused]] QSpan<const int> cvspan = li; // should not detach (BOBUIBUG-132133)
         QVERIFY(!li.isDetached());
         [[maybe_unused]] QSpan<int> mvspan = li; // this _has_ to detach, though
         QVERIFY(li.isDetached());
@@ -487,7 +487,7 @@ void tst_QSpan::constQSpansDontDetachQtContainers() const
     {
         [[maybe_unused]] const QList copy = li;
         QVERIFY(!li.isDetached());
-        [[maybe_unused]] QSpan<const int, 4> cfspan = li; // should not detach (QTBUG-132133)
+        [[maybe_unused]] QSpan<const int, 4> cfspan = li; // should not detach (BOBUIBUG-132133)
         QVERIFY(!li.isDetached());
         [[maybe_unused]] QSpan<int, 4> mfspan = li; // this _has_ to detach, though
         QVERIFY(li.isDetached());
@@ -505,5 +505,5 @@ void tst_QSpan::fromInitList() const
     l2({4, 5, 6});
 }
 
-QTEST_APPLESS_MAIN(tst_QSpan);
+BOBUIEST_APPLESS_MAIN(tst_QSpan);
 #include "tst_qspan.moc"

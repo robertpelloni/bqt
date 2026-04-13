@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtTest/private/qbenchmarkevent_p.h>
-#include <QtTest/private/qbenchmark_p.h>
-#include <QtTest/private/qbenchmarkmetric_p.h>
+#include <BobUITest/private/qbenchmarkevent_p.h>
+#include <BobUITest/private/qbenchmark_p.h>
+#include <BobUITest/private/qbenchmarkmetric_p.h>
 #include <qdebug.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QBenchmarkEvent::QBenchmarkEvent() = default;
 
@@ -21,7 +21,7 @@ void QBenchmarkEvent::start()
 QList<QBenchmarkMeasurerBase::Measurement> QBenchmarkEvent::stop()
 {
     QAbstractEventDispatcher::instance()->removeNativeEventFilter(this);
-    return { { qreal(eventCounter), QTest::Events } };
+    return { { qreal(eventCounter), BOBUIest::Events } };
 }
 
 // It's very tempting to simply reject a measurement if 0 events
@@ -55,4 +55,4 @@ bool QBenchmarkEvent::nativeEventFilter(const QByteArray &eventType, void *messa
     return false;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

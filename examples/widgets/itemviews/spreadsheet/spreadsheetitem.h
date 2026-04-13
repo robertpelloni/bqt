@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef SPREADSHEETITEM_H
 #define SPREADSHEETITEM_H
 
 #include "spreadsheet.h"
 
-#include <QTableWidgetItem>
+#include <BOBUIableWidgetItem>
 
-class SpreadSheetItem : public QTableWidgetItem
+class SpreadSheetItem : public BOBUIableWidgetItem
 {
 public:
-    using QTableWidgetItem::QTableWidgetItem;
+    using BOBUIableWidgetItem::BOBUIableWidgetItem;
 
-    QTableWidgetItem *clone() const override;
+    BOBUIableWidgetItem *clone() const override;
 
     QVariant data(int role) const override;
     void setData(int role, const QVariant &value) override;
@@ -21,12 +21,12 @@ public:
 
     inline QString formula() const
     {
-        return QTableWidgetItem::data(Qt::DisplayRole).toString();
+        return BOBUIableWidgetItem::data(BobUI::DisplayRole).toString();
     }
 
     static QVariant computeFormula(const QString &formula,
-                                   const QTableWidget *widget,
-                                   const QTableWidgetItem *self = nullptr);
+                                   const BOBUIableWidget *widget,
+                                   const BOBUIableWidgetItem *self = nullptr);
 
 private:
     mutable bool isResolving = false;

@@ -11,7 +11,7 @@
 	<key>CFBundleExecutable</key>
 	<string>tst_manual_sandboxed_file_access</string>
 	<key>CFBundleIdentifier</key>
-	<string>io.qt.dev.tst-manual-sandboxed-file-access</string>
+	<string>io.bobui.dev.tst-manual-sandboxed-file-access</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>

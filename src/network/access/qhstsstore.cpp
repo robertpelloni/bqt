@@ -1,6 +1,6 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qhstsstore_p.h"
 #include "qhstspolicy.h"
@@ -15,9 +15,9 @@
 
 #include <utility>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static QString host_name_to_settings_key(const QString &hostName)
 {
@@ -164,4 +164,4 @@ void QHstsStore::evictPolicy(const QString &key)
         store.remove(key);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

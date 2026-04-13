@@ -1,17 +1,17 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtGui>
-#include <QtWidgets>
+#include <BobUIGui>
+#include <BobUIWidgets>
 
-#include <QtGui/qpa/qplatformscreen.h>
-#include <QtGui/qpa/qplatformwindow.h>
-#include <QtGui/qpa/qplatformcursor.h>
+#include <BobUIGui/qpa/qplatformscreen.h>
+#include <BobUIGui/qpa/qplatformwindow.h>
+#include <BobUIGui/qpa/qplatformcursor.h>
 
 // This test app optionally doubles as a manual test for QScreen::mapToNative()
 // #define TEST_MAP_TO_NATIVE
 
-// ScreenDisplayer based on original impl from qtbase/tests/manual/highdpi
+// ScreenDisplayer based on original impl from bobuibase/tests/manual/highdpi
 class ScreenDisplayer : public QWidget
 {
 public:
@@ -39,7 +39,7 @@ public:
 #endif
     }
 
-    void timerEvent(QTimerEvent *) override
+    void timerEvent(BOBUIimerEvent *) override
     {
         update();
         setTitle();
@@ -83,13 +83,13 @@ public:
         qreal scaleMargin = 0.9;
         scaleFactor = scaleMargin * qMin(rect.width()/total.width(), rect.height()/total.height());
 
-       // p.fillRect(rect, Qt::black);
+       // p.fillRect(rect, BobUI::black);
         int margin = 20;
         p.translate(margin, margin + rect.y());
         p.scale(scaleFactor, scaleFactor);
         p.translate(-total.topLeft());
-        p.setPen(QPen(Qt::white, 10));
-        p.setBrush(Qt::gray);
+        p.setPen(QPen(BobUI::white, 10));
+        p.setBrush(BobUI::gray);
 
         for (const QScreen *screen : screens) {
             QRect geometry = native ? screen->handle()->geometry() : screen->geometry();
@@ -103,7 +103,7 @@ public:
                 text += QString("\nGeometry: %1 %2 %3 %4 \n ").arg(geometry.x()).arg(geometry.y()).arg(geometry.width()).arg(geometry.height());
                 p.save();
                 p.translate(20, 0);
-                p.drawText(geometry, Qt::AlignLeft | Qt::AlignVCenter, text);
+                p.drawText(geometry, BobUI::AlignLeft | BobUI::AlignVCenter, text);
                 p.restore();
             }
         }
@@ -210,7 +210,7 @@ int main(int argc, char **argv) {
     Controller controller(&displayer);
     controller.resize(100, 200);
 
-    QTimer::singleShot(300, [&controller, &displayer](){
+    BOBUIimer::singleShot(300, [&controller, &displayer](){
         controller.move(displayer.pos() + QPoint(displayer.width(), 0) + QPoint(50, 0));
         controller.show();
     });

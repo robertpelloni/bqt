@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QICONENGINE_H
 #define QICONENGINE_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qlist.h>
-#include <QtGui/qicon.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qlist.h>
+#include <BobUIGui/qicon.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class Q_GUI_EXPORT QIconEngine
@@ -18,7 +18,7 @@ public:
     virtual ~QIconEngine();
     virtual void paint(QPainter *painter, const QRect &rect, QIcon::Mode mode, QIcon::State state) = 0;
     virtual QSize actualSize(const QSize &size, QIcon::Mode mode, QIcon::State state);
-    // ### Qt7: add qreal scale argument and remove scaledPixmap
+    // ### BobUI7: add qreal scale argument and remove scaledPixmap
     virtual QPixmap pixmap(const QSize &size, QIcon::Mode mode, QIcon::State state);
 
     virtual void addPixmap(const QPixmap &pixmap, QIcon::Mode mode, QIcon::State state);
@@ -56,6 +56,6 @@ private:
     QIconEngine &operator=(const QIconEngine &other) = delete;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QICONENGINE_H

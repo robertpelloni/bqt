@@ -1,10 +1,10 @@
-QT += widgets
-requires(qtConfig(combobox))
+BOBUI += widgets
+requires(bobuiConfig(combobox))
 
 HEADERS     = mainwindow.h
 SOURCES     = main.cpp \
               mainwindow.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/richtext/calendar
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/richtext/calendar
 INSTALLS += target

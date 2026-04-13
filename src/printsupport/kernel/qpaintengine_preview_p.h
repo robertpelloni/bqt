@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QPAINTENGINE_PREVIEW_P_H
 #define QPAINTENGINE_PREVIEW_P_H
@@ -9,7 +9,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of QPreviewPrinter and friends.  This header file may change from
 // version to version without notice, or even be removed.
 //
@@ -17,13 +17,13 @@
 //
 //
 
-#include <QtPrintSupport/private/qtprintsupportglobal_p.h>
-#include <QtGui/qpaintengine.h>
-#include <QtPrintSupport/qprintengine.h>
+#include <BobUIPrintSupport/private/bobuiprintsupportglobal_p.h>
+#include <BobUIGui/qpaintengine.h>
+#include <BobUIPrintSupport/qprintengine.h>
 
-QT_REQUIRE_CONFIG(printpreviewwidget);
+BOBUI_REQUIRE_CONFIG(printpreviewwidget);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QPreviewPaintEnginePrivate;
 
@@ -41,7 +41,7 @@ public:
 
     void drawPath(const QPainterPath &path) override;
     void drawPolygon(const QPointF *points, int pointCount, PolygonDrawMode mode) override;
-    void drawTextItem(const QPointF &p, const QTextItem &textItem) override;
+    void drawTextItem(const QPointF &p, const BOBUIextItem &textItem) override;
 
     void drawPixmap(const QRectF &r, const QPixmap &pm, const QRectF &sr) override;
     void drawTiledPixmap(const QRectF &r, const QPixmap &pm, const QPointF &p) override;
@@ -63,6 +63,6 @@ public:
     QPrinter::PrinterState printerState() const override;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

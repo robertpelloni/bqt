@@ -1,6 +1,6 @@
 <!--
-Copyright (C) 2024 The Qt Company Ltd.
-SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+Copyright (C) 2024 The BobUI Company Ltd.
+SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 -->
 <assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
     <compatibility xmlns="urn:schemas-microsoft-com:compatibility.v1">

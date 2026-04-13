@@ -1,10 +1,10 @@
-# Qt Tool Documentation Front Page
+# BobUI Tool Documentation Front Page
 
 The `tool-name.qdoc` file is a template for creating a front page for the
-documentation of a Qt tool, such as Qt Creator or Qt Design Studio.
+documentation of a BobUI tool, such as BobUI Creator or BobUI Design Studio.
 
 The purpose of the template is to make it easier for technical writers to create
-documentation with a consistent look and feel. It was designed by the Qt UX team.
+documentation with a consistent look and feel. It was designed by the BobUI UX team.
 For this to work, you cannot move the sections around. You can and must change
 the text within the angle brackets and check the links.
 
@@ -34,5 +34,5 @@ REFERENCE topics.
 The name and contents of this section depend on your project. For a small doc
 set, you can list all topics. For a big doc set, you can group topics.
 
-In the [Qt Creator Documentation](https://doc.qt.io/qtcreator/index.html), this
+In the [BobUI Creator Documentation](https://doc.bobui.io/bobuicreator/index.html), this
 section is called `HOW TO`.

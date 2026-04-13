@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPIXELLAYOUT_P_H
 #define QPIXELLAYOUT_P_H
@@ -8,31 +8,31 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/qlist.h>
-#include <QtGui/qimage.h>
-#include <QtGui/qrgba64.h>
-#include <QtGui/qrgbafloat.h>
-#include <QtCore/private/qglobal_p.h>
+#include <BobUICore/qlist.h>
+#include <BobUIGui/qimage.h>
+#include <BobUIGui/qrgba64.h>
+#include <BobUIGui/qrgbafloat.h>
+#include <BobUICore/private/qglobal_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-enum QtPixelOrder {
+enum BobUIPixelOrder {
     PixelOrderRGB,
     PixelOrderBGR
 };
 
-template<enum QtPixelOrder> inline uint qConvertArgb32ToA2rgb30(QRgb);
+template<enum BobUIPixelOrder> inline uint qConvertArgb32ToA2rgb30(QRgb);
 
-template<enum QtPixelOrder> inline uint qConvertRgb32ToRgb30(QRgb);
+template<enum BobUIPixelOrder> inline uint qConvertRgb32ToRgb30(QRgb);
 
-template<enum QtPixelOrder> inline QRgb qConvertA2rgb30ToArgb32(uint c);
+template<enum BobUIPixelOrder> inline QRgb qConvertA2rgb30ToArgb32(uint c);
 
 // A combined unpremultiply and premultiply with new simplified alpha.
 // Needed when alpha loses precision relative to other colors during conversion (ARGB32 -> A2RGB30).
@@ -123,7 +123,7 @@ inline QRgb qConvertA2rgb30ToArgb32<PixelOrderRGB>(uint c)
         | ((c >> 2) & 0x000000ff);
 }
 
-template<enum QtPixelOrder> inline QRgba64 qConvertA2rgb30ToRgb64(uint rgb);
+template<enum BobUIPixelOrder> inline QRgba64 qConvertA2rgb30ToRgb64(uint rgb);
 
 template<>
 inline QRgba64 qConvertA2rgb30ToRgb64<PixelOrderBGR>(uint rgb)
@@ -159,7 +159,7 @@ inline QRgba64 qConvertA2rgb30ToRgb64<PixelOrderRGB>(uint rgb)
     return qRgba64(red, green, blue, alpha);
 }
 
-template<enum QtPixelOrder> inline unsigned int qConvertRgb64ToRgb30(QRgba64);
+template<enum BobUIPixelOrder> inline unsigned int qConvertRgb64ToRgb30(QRgba64);
 
 template<>
 inline unsigned int qConvertRgb64ToRgb30<PixelOrderBGR>(QRgba64 c)
@@ -237,55 +237,55 @@ static inline quint32 ARGB2RGBA(quint32 x) {
     }
 
 
-inline const uint *qt_convertARGB32ToARGB32PM(uint *buffer, const uint *src, int count)
+inline const uint *bobui_convertARGB32ToARGB32PM(uint *buffer, const uint *src, int count)
 {
     UNALIASED_CONVERSION_LOOP(buffer, src, count, qPremultiply);
     return buffer;
 }
 
-inline const uint *qt_convertRGBA8888ToARGB32PM(uint *buffer, const uint *src, int count)
+inline const uint *bobui_convertRGBA8888ToARGB32PM(uint *buffer, const uint *src, int count)
 {
     UNALIASED_CONVERSION_LOOP(buffer, src, count, [](uint s) { return qPremultiply(RGBA2ARGB(s));});
     return buffer;
 }
 
-template<bool RGBA> void qt_convertRGBA64ToARGB32(uint *dst, const QRgba64 *src, int count);
+template<bool RGBA> void bobui_convertRGBA64ToARGB32(uint *dst, const QRgba64 *src, int count);
 
 struct QDitherInfo {
     int x;
     int y;
 };
 
-typedef const uint *(QT_FASTCALL *FetchAndConvertPixelsFunc)(uint *buffer, const uchar *src,
+typedef const uint *(BOBUI_FASTCALL *FetchAndConvertPixelsFunc)(uint *buffer, const uchar *src,
                                                              int index, int count,
                                                              const QList<QRgb> *clut,
                                                              QDitherInfo *dither);
-typedef void(QT_FASTCALL *ConvertAndStorePixelsFunc)(uchar *dest, const uint *src, int index,
+typedef void(BOBUI_FASTCALL *ConvertAndStorePixelsFunc)(uchar *dest, const uint *src, int index,
                                                      int count, const QList<QRgb> *clut,
                                                      QDitherInfo *dither);
 
-typedef const QRgba64 *(QT_FASTCALL *FetchAndConvertPixelsFunc64)(QRgba64 *buffer, const uchar *src,
+typedef const QRgba64 *(BOBUI_FASTCALL *FetchAndConvertPixelsFunc64)(QRgba64 *buffer, const uchar *src,
                                                                   int index, int count,
                                                                   const QList<QRgb> *clut,
                                                                   QDitherInfo *dither);
-typedef void(QT_FASTCALL *ConvertAndStorePixelsFunc64)(uchar *dest, const QRgba64 *src, int index,
+typedef void(BOBUI_FASTCALL *ConvertAndStorePixelsFunc64)(uchar *dest, const QRgba64 *src, int index,
                                                        int count, const QList<QRgb> *clut,
                                                        QDitherInfo *dither);
 
-typedef const QRgbaFloat32 *(QT_FASTCALL *FetchAndConvertPixelsFuncFP)(QRgbaFloat32 *buffer, const uchar *src, int index, int count,
+typedef const QRgbaFloat32 *(BOBUI_FASTCALL *FetchAndConvertPixelsFuncFP)(QRgbaFloat32 *buffer, const uchar *src, int index, int count,
                                                                    const QList<QRgb> *clut, QDitherInfo *dither);
-typedef void (QT_FASTCALL *ConvertAndStorePixelsFuncFP)(uchar *dest, const QRgbaFloat32 *src, int index, int count,
+typedef void (BOBUI_FASTCALL *ConvertAndStorePixelsFuncFP)(uchar *dest, const QRgbaFloat32 *src, int index, int count,
                                                         const QList<QRgb> *clut, QDitherInfo *dither);
-typedef void (QT_FASTCALL *ConvertFunc)(uint *buffer, int count, const QList<QRgb> *clut);
-typedef void (QT_FASTCALL *Convert64Func)(QRgba64 *buffer, int count);
-typedef void (QT_FASTCALL *ConvertFPFunc)(QRgbaFloat32 *buffer, int count);
-typedef void (QT_FASTCALL *Convert64ToFPFunc)(QRgbaFloat32 *buffer, const quint64 *src, int count);
+typedef void (BOBUI_FASTCALL *ConvertFunc)(uint *buffer, int count, const QList<QRgb> *clut);
+typedef void (BOBUI_FASTCALL *Convert64Func)(QRgba64 *buffer, int count);
+typedef void (BOBUI_FASTCALL *ConvertFPFunc)(QRgbaFloat32 *buffer, int count);
+typedef void (BOBUI_FASTCALL *Convert64ToFPFunc)(QRgbaFloat32 *buffer, const quint64 *src, int count);
 
-typedef const QRgba64 *(QT_FASTCALL *ConvertTo64Func)(QRgba64 *buffer, const uint *src, int count,
+typedef const QRgba64 *(BOBUI_FASTCALL *ConvertTo64Func)(QRgba64 *buffer, const uint *src, int count,
                                                       const QList<QRgb> *clut, QDitherInfo *dither);
-typedef const QRgbaFloat32 *(QT_FASTCALL *ConvertToFPFunc)(QRgbaFloat32 *buffer, const uint *src, int count,
+typedef const QRgbaFloat32 *(BOBUI_FASTCALL *ConvertToFPFunc)(QRgbaFloat32 *buffer, const uint *src, int count,
                                                        const QList<QRgb> *clut, QDitherInfo *dither);
-typedef void (QT_FASTCALL *RbSwapFunc)(uchar *dst, const uchar *src, int count);
+typedef void (BOBUI_FASTCALL *RbSwapFunc)(uchar *dst, const uchar *src, int count);
 
 typedef void (*MemRotateFunc)(const uchar *srcPixels, int w, int h, int sbpl, uchar *destPixels, int dbpl);
 
@@ -320,7 +320,7 @@ struct QPixelLayout
 
 extern ConvertAndStorePixelsFunc64 qStoreFromRGBA64PM[QImage::NImageFormats];
 
-#if QT_CONFIG(raster_fp)
+#if BOBUI_CONFIG(raster_fp)
 extern ConvertToFPFunc qConvertToRGBA32F[];
 extern FetchAndConvertPixelsFuncFP qFetchToRGBA32F[];
 extern ConvertAndStorePixelsFuncFP qStoreFromRGBA32F[];
@@ -330,6 +330,6 @@ extern QPixelLayout qPixelLayouts[];
 
 extern MemRotateFunc qMemRotateFunctions[QPixelLayout::BPPCount][3];
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPIXELLAYOUT_P_H

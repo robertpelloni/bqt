@@ -178,17 +178,17 @@ src/widgets/qsplitter.cpp    1.13  agulbra  +12 -12
   more doc; mention setFixed()
 
 
-src/widgets/qtoolbar.cpp    2.21  agulbra  +46 -12
+src/widgets/bobuioolbar.cpp    2.21  agulbra  +46 -12
 
   paint a tool bar handle in motif style too
 
 
-src/widgets/qtoolbar.cpp    2.22  paul  +3 -2
+src/widgets/bobuioolbar.cpp    2.22  paul  +3 -2
 
   Don't override max/min sizes for children
 
 
-src/widgets/qtoolbutton.cpp    2.27  agulbra  +24 -22
+src/widgets/bobuioolbutton.cpp    2.27  agulbra  +24 -22
 
   handle text label correctly; check for null pointer; minor doc
   improvements

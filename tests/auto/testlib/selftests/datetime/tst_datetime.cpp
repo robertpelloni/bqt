@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/QDateTime>
-#include <QtCore/QTimeZone>
-#include <QTest>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/QDateTime>
+#include <BobUICore/BOBUIimeZone>
+#include <BOBUIest>
 
 /*!
   \internal
@@ -23,9 +23,9 @@ private slots:
 void tst_DateTime::dateTime() const
 {
     const auto twoMinutes = std::chrono::minutes{2};
-    const QDateTime utc(QDate(2000, 5, 3), QTime(4, 3, 4), QTimeZone::UTC);
-    const QDateTime local(QDate(2000, 5, 3), QTime(4, 3, 4),
-                          QTimeZone::fromDurationAheadOfUtc(twoMinutes));
+    const QDateTime utc(QDate(2000, 5, 3), BOBUIime(4, 3, 4), BOBUIimeZone::UTC);
+    const QDateTime local(QDate(2000, 5, 3), BOBUIime(4, 3, 4),
+                          BOBUIimeZone::fromDurationAheadOfUtc(twoMinutes));
 
     QCOMPARE(local, utc);
 }
@@ -40,15 +40,15 @@ void tst_DateTime::qurl() const
 
 void tst_DateTime::qurl_data() const
 {
-    QTest::addColumn<QUrl>("operandA");
-    QTest::addColumn<QUrl>("operandB");
+    BOBUIest::addColumn<QUrl>("operandA");
+    BOBUIest::addColumn<QUrl>("operandB");
 
-    QTest::newRow("empty urls") << QUrl() << QUrl();
-    QTest::newRow("empty rhs") << QUrl(QLatin1String("http://example.com")) << QUrl();
-    QTest::newRow("empty lhs") << QUrl() << QUrl(QLatin1String("http://example.com"));
-    QTest::newRow("same urls") << QUrl(QLatin1String("http://example.com")) << QUrl(QLatin1String("http://example.com"));
+    BOBUIest::newRow("empty urls") << QUrl() << QUrl();
+    BOBUIest::newRow("empty rhs") << QUrl(QLatin1String("http://example.com")) << QUrl();
+    BOBUIest::newRow("empty lhs") << QUrl() << QUrl(QLatin1String("http://example.com"));
+    BOBUIest::newRow("same urls") << QUrl(QLatin1String("http://example.com")) << QUrl(QLatin1String("http://example.com"));
 }
 
-QTEST_MAIN(tst_DateTime)
+BOBUIEST_MAIN(tst_DateTime)
 
 #include "tst_datetime.moc"

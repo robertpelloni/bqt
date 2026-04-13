@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'validators.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,25 +9,25 @@
 #ifndef VALIDATORS_H
 #define VALIDATORS_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QDoubleSpinBox>
-#include <QtWidgets/QFrame>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QSpinBox>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QComboBox>
+#include <BobUIWidgets/QDoubleSpinBox>
+#include <BobUIWidgets/QFrame>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QGroupBox>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QLineEdit>
+#include <BobUIWidgets/QPushButton>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/QSpinBox>
+#include <BobUIWidgets/QVBoxLayout>
+#include <BobUIWidgets/QWidget>
 #include "ledwidget.h"
 #include "localeselector.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_ValidatorsForm
 {
@@ -134,7 +134,7 @@ public:
         gridLayout->setObjectName("gridLayout");
         label = new QLabel(groupBox);
         label->setObjectName("label");
-        label->setAlignment(Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter);
+        label->setAlignment(BobUI::AlignmentFlag::AlignRight|BobUI::AlignmentFlag::AlignTrailing|BobUI::AlignmentFlag::AlignVCenter);
 
         gridLayout->addWidget(label, 0, 0, 1, 1);
 
@@ -152,7 +152,7 @@ public:
 
         label_2 = new QLabel(groupBox);
         label_2->setObjectName("label_2");
-        label_2->setAlignment(Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter);
+        label_2->setAlignment(BobUI::AlignmentFlag::AlignRight|BobUI::AlignmentFlag::AlignTrailing|BobUI::AlignmentFlag::AlignVCenter);
 
         gridLayout->addWidget(label_2, 1, 0, 1, 1);
 
@@ -189,7 +189,7 @@ public:
         sizePolicy1.setHeightForWidth(ledWidget->sizePolicy().hasHeightForWidth());
         ledWidget->setSizePolicy(sizePolicy1);
         ledWidget->setPixmap(QPixmap(QString::fromUtf8(":/ledoff.png")));
-        ledWidget->setAlignment(Qt::AlignmentFlag::AlignCenter);
+        ledWidget->setAlignment(BobUI::AlignmentFlag::AlignCenter);
 
         vboxLayout2->addWidget(ledWidget);
 
@@ -244,7 +244,7 @@ public:
         gridLayout1->setObjectName("gridLayout1");
         label_3 = new QLabel(groupBox_2);
         label_3->setObjectName("label_3");
-        label_3->setAlignment(Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter);
+        label_3->setAlignment(BobUI::AlignmentFlag::AlignRight|BobUI::AlignmentFlag::AlignTrailing|BobUI::AlignmentFlag::AlignVCenter);
 
         gridLayout1->addWidget(label_3, 0, 0, 1, 1);
 
@@ -260,7 +260,7 @@ public:
 
         label_5 = new QLabel(groupBox_2);
         label_5->setObjectName("label_5");
-        label_5->setAlignment(Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter);
+        label_5->setAlignment(BobUI::AlignmentFlag::AlignRight|BobUI::AlignmentFlag::AlignTrailing|BobUI::AlignmentFlag::AlignVCenter);
 
         gridLayout1->addWidget(label_5, 0, 2, 1, 1);
 
@@ -273,7 +273,7 @@ public:
 
         label_4 = new QLabel(groupBox_2);
         label_4->setObjectName("label_4");
-        label_4->setAlignment(Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter);
+        label_4->setAlignment(BobUI::AlignmentFlag::AlignRight|BobUI::AlignmentFlag::AlignTrailing|BobUI::AlignmentFlag::AlignVCenter);
 
         gridLayout1->addWidget(label_4, 1, 0, 1, 1);
 
@@ -289,7 +289,7 @@ public:
 
         label_6 = new QLabel(groupBox_2);
         label_6->setObjectName("label_6");
-        label_6->setAlignment(Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter);
+        label_6->setAlignment(BobUI::AlignmentFlag::AlignRight|BobUI::AlignmentFlag::AlignTrailing|BobUI::AlignmentFlag::AlignVCenter);
 
         gridLayout1->addWidget(label_6, 1, 2, 1, 1);
 
@@ -317,7 +317,7 @@ public:
         doubleLedWidget = new LEDWidget(frame_2);
         doubleLedWidget->setObjectName("doubleLedWidget");
         doubleLedWidget->setPixmap(QPixmap(QString::fromUtf8(":/ledoff.png")));
-        doubleLedWidget->setAlignment(Qt::AlignmentFlag::AlignCenter);
+        doubleLedWidget->setAlignment(BobUI::AlignmentFlag::AlignCenter);
 
         vboxLayout4->addWidget(doubleLedWidget);
 
@@ -399,6 +399,6 @@ namespace Ui {
     class ValidatorsForm: public Ui_ValidatorsForm {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // VALIDATORS_H

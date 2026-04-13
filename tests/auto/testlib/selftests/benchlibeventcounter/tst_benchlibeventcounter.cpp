@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QtCore/QCoreApplication>
-#include <QTest>
+#include <BobUICore/QCoreApplication>
+#include <BOBUIest>
 #if defined(Q_OS_WIN32)
 #include <QWinEventNotifier>
 #endif
@@ -21,7 +21,7 @@ public:
     void interrupt() override {}
     bool processEvents(QEventLoop::ProcessEventsFlags) override { return false; }
     void registerSocketNotifier(QSocketNotifier*) override {}
-    void registerTimer(int,qint64,Qt::TimerType,QObject*) override {}
+    void registerTimer(int,qint64,BobUI::TimerType,QObject*) override {}
     QList<TimerInfo> registeredTimers(QObject*) const override { return QList<TimerInfo>(); }
     void unregisterSocketNotifier(QSocketNotifier*) override {}
     bool unregisterTimer(int) override { return false; }
@@ -58,15 +58,15 @@ void tst_BenchlibEventCounter::events()
 
 void tst_BenchlibEventCounter::events_data()
 {
-    QTest::addColumn<int>("eventCount");
+    BOBUIest::addColumn<int>("eventCount");
 
-    QTest::newRow("0")      << 0;
-    QTest::newRow("1")      << 1;
-    QTest::newRow("10")     << 10;
-    QTest::newRow("100")    << 100;
-    QTest::newRow("500")    << 500;
-    QTest::newRow("5000")   << 5000;
-    QTest::newRow("100000") << 100000;
+    BOBUIest::newRow("0")      << 0;
+    BOBUIest::newRow("1")      << 1;
+    BOBUIest::newRow("10")     << 10;
+    BOBUIest::newRow("100")    << 100;
+    BOBUIest::newRow("500")    << 500;
+    BOBUIest::newRow("5000")   << 5000;
+    BOBUIest::newRow("100000") << 100000;
 }
 
 int main(int argc, char** argv)
@@ -79,7 +79,7 @@ int main(int argc, char** argv)
     TestEventDispatcher dispatcher;
     QCoreApplication app(argc, argv);
     tst_BenchlibEventCounter test;
-    return QTest::qExec(&test, argc, argv);
+    return BOBUIest::qExec(&test, argc, argv);
 }
 
 #include "tst_benchlibeventcounter.moc"

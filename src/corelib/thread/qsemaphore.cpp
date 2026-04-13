@@ -1,7 +1,7 @@
-// Copyright (C) 2022 The Qt Company Ltd.
+// Copyright (C) 2022 The BobUI Company Ltd.
 // Copyright (C) 2018 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qsemaphore.h"
 #include "qfutex_p.h"
@@ -12,19 +12,19 @@
 #include "qwaitcondition_p.h"
 
 #include <chrono>
-#if !QT_CONFIG(thread)
+#if !BOBUI_CONFIG(thread)
 #include <limits>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace QtFutex;
+using namespace BobUIFutex;
 
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
 
 /*!
     \class QSemaphore
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QSemaphore class provides a general counting semaphore.
 
     \threadsafe
@@ -69,7 +69,7 @@ using namespace QtFutex;
     seated (taking the available seats to 5, making the party of 10
     people wait longer).
 
-    \sa QSemaphoreReleaser, QMutex, QWaitCondition, QThread,
+    \sa QSemaphoreReleaser, QMutex, QWaitCondition, BOBUIhread,
         {Producer and Consumer using Semaphores}
 */
 
@@ -100,7 +100,7 @@ using namespace QtFutex;
     unspecified, but it's likely single-token threads will get woken up first.
  */
 
-#if defined(FUTEX_OP) && QT_POINTER_SIZE > 4
+#if defined(FUTEX_OP) && BOBUI_POINTER_SIZE > 4
 static constexpr bool futexHasWaiterCount = true;
 #else
 static constexpr bool futexHasWaiterCount = false;
@@ -135,7 +135,7 @@ static bool futexNeedsWake(quintptr v)
 static QBasicAtomicInteger<quint32> *futexLow32(QBasicAtomicInteger<quintptr> *ptr)
 {
     auto result = reinterpret_cast<QBasicAtomicInteger<quint32> *>(ptr);
-#if Q_BYTE_ORDER == Q_BIG_ENDIAN && QT_POINTER_SIZE > 4
+#if Q_BYTE_ORDER == Q_BIG_ENDIAN && BOBUI_POINTER_SIZE > 4
     ++result;
 #endif
     return result;
@@ -145,7 +145,7 @@ static QBasicAtomicInteger<quint32> *futexHigh32(QBasicAtomicInteger<quintptr> *
 {
     Q_ASSERT(futexHasWaiterCount);
     auto result = reinterpret_cast<QBasicAtomicInteger<quint32> *>(ptr);
-#if Q_BYTE_ORDER == Q_LITTLE_ENDIAN && QT_POINTER_SIZE > 4
+#if Q_BYTE_ORDER == Q_LITTLE_ENDIAN && BOBUI_POINTER_SIZE > 4
     ++result;
 #endif
     return result;
@@ -255,8 +255,8 @@ futexSemaphoreTryAcquire(QBasicAtomicInteger<quintptr> &u, int n, T timeout)
     return false;
 }
 
-namespace QtSemaphorePrivate {
-using namespace QtPrivate;
+namespace BobUISemaphorePrivate {
+using namespace BobUIPrivate;
 struct Layout1
 {
     alignas(IdealMutexAlignment) std::mutex mutex;
@@ -274,9 +274,9 @@ struct Layout2
 // Choose Layout1 if it is smaller than Layout2. That happens for platforms
 // where sizeof(mutex) is 64.
 using Members = std::conditional_t<sizeof(Layout1) <= sizeof(Layout2), Layout1, Layout2>;
-} // namespace QtSemaphorePrivate
+} // namespace BobUISemaphorePrivate
 
-class QSemaphorePrivate : public QtSemaphorePrivate::Members
+class QSemaphorePrivate : public BobUISemaphorePrivate::Members
 {
 public:
     explicit QSemaphorePrivate(qsizetype n) { avail = n; }
@@ -322,7 +322,7 @@ QSemaphore::~QSemaphore()
 */
 void QSemaphore::acquire(int n)
 {
-#if QT_VERSION >= QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION >= BOBUI_VERSION_CHECK(7, 0, 0)
 #  warning "Move the Q_ASSERT to inline code, make QSemaphore have wide contract, " \
     "and mark noexcept where futexes are in use."
 #else
@@ -336,7 +336,7 @@ void QSemaphore::acquire(int n)
 
     const auto sufficientResourcesAvailable = [this, n] { return d->avail >= n; };
 
-    auto locker = qt_unique_lock(d->mutex);
+    auto locker = bobui_unique_lock(d->mutex);
     d->cond.wait(locker, sufficientResourcesAvailable);
     d->avail -= n;
 }
@@ -409,7 +409,7 @@ void QSemaphore::release(int n)
 
     // Keep mutex locked until after notify_all() lest another thread acquire()s
     // the semaphore once d->avail == 0 and then destroys it, leaving `d` dangling.
-    const auto locker = qt_scoped_lock(d->mutex);
+    const auto locker = bobui_scoped_lock(d->mutex);
     d->avail += n;
     d->cond.notify_all();
 }
@@ -425,7 +425,7 @@ int QSemaphore::available() const
     if (futexAvailable())
         return futexAvailCounter(u.loadRelaxed());
 
-    const auto locker = qt_scoped_lock(d->mutex);
+    const auto locker = bobui_scoped_lock(d->mutex);
     return d->avail;
 }
 
@@ -447,7 +447,7 @@ bool QSemaphore::tryAcquire(int n)
     if (futexAvailable())
         return futexSemaphoreTryAcquire(u, n, Expired);
 
-    const auto locker = qt_scoped_lock(d->mutex);
+    const auto locker = bobui_scoped_lock(d->mutex);
     if (n > d->avail)
         return false;
     d->avail -= n;
@@ -504,7 +504,7 @@ bool QSemaphore::tryAcquire(int n, QDeadlineTimer timer)
     using namespace std::chrono;
     const auto sufficientResourcesAvailable = [this, n] { return d->avail >= n; };
 
-    auto locker = qt_unique_lock(d->mutex);
+    auto locker = bobui_unique_lock(d->mutex);
     if (!d->cond.wait_until(locker, timer.deadline<steady_clock>(), sufficientResourcesAvailable))
         return false;
     d->avail -= n;
@@ -561,7 +561,7 @@ bool QSemaphore::tryAcquire(int n, QDeadlineTimer timer)
     \brief The QSemaphoreReleaser class provides exception-safe deferral of a QSemaphore::release() call.
     \since 5.10
     \ingroup thread
-    \inmodule QtCore
+    \inmodule BobUICore
 
     \reentrant
 
@@ -680,7 +680,7 @@ bool QSemaphore::tryAcquire(int n, QDeadlineTimer timer)
     \snippet code/src_corelib_thread_qsemaphore.cpp 7
 */
 
-#else // #if QT_CONFIG(thread)
+#else // #if BOBUI_CONFIG(thread)
 
 // No-thread stubs for QSemaphore. These essentially allow
 // unlimited acquire and release, since we can't ever block
@@ -724,4 +724,4 @@ bool QSemaphore::tryAcquire(int, QDeadlineTimer)
 
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

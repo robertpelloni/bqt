@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qitemdelegate.h"
 
@@ -22,11 +22,11 @@
 #include <qpixmapcache.h>
 #include <qitemeditorfactory.h>
 #include <qmetaobject.h>
-#include <qtextlayout.h>
+#include <bobuiextlayout.h>
 #include <private/qabstractitemdelegate_p.h>
 #include <private/qabstractitemmodel_p.h>
 #include <private/qstylehelper_p.h>
-#include <private/qtextengine_p.h>
+#include <private/bobuiextengine_p.h>
 #include <qdebug.h>
 #include <qlocale.h>
 #include <qmath.h>
@@ -38,7 +38,7 @@
 #  define DBL_DIG 10
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QItemDelegatePrivate : public QAbstractItemDelegatePrivate
 {
@@ -76,8 +76,8 @@ public:
     QRect textLayoutBounds(const QStyleOptionViewItem &option,
                            const QRect &decorationRect, const QRect &checkRect) const;
     QSizeF doTextLayout(int lineWidth) const;
-    mutable QTextLayout textLayout;
-    mutable QTextOption textOption;
+    mutable BOBUIextLayout textLayout;
+    mutable BOBUIextOption textOption;
 
     const QWidget *widget(const QStyleOptionViewItem &option) const
     {
@@ -96,19 +96,19 @@ QRect QItemDelegatePrivate::displayRect(const QModelIndex &index, const QStyleOp
                                         const QRect &decorationRect, const QRect &checkRect) const
 {
     Q_Q(const QItemDelegate);
-    const QVariant value = index.data(Qt::DisplayRole);
+    const QVariant value = index.data(BobUI::DisplayRole);
     if (!value.isValid() || value.isNull())
         return QRect();
 
     const QString text = valueToText(value, option);
-    const QVariant fontVal = index.data(Qt::FontRole);
+    const QVariant fontVal = index.data(BobUI::FontRole);
     const QFont fnt = qvariant_cast<QFont>(fontVal).resolve(option.font);
     return q->textRectangle(nullptr,
                             textLayoutBounds(option, decorationRect, checkRect),
                             fnt, text);
 }
 
-// similar to QCommonStylePrivate::viewItemSize(Qt::DisplayRole)
+// similar to QCommonStylePrivate::viewItemSize(BobUI::DisplayRole)
 QRect QItemDelegatePrivate::textLayoutBounds(const QStyleOptionViewItem &option,
                                              const QRect &decorationRect, const QRect &checkRect) const
 {
@@ -148,7 +148,7 @@ QSizeF QItemDelegatePrivate::doTextLayout(int lineWidth) const
     qreal widthUsed = 0;
     textLayout.beginLayout();
     while (true) {
-        QTextLine line = textLayout.createLine();
+        BOBUIextLine line = textLayout.createLine();
         if (!line.isValid())
             break;
         line.setLineWidth(lineWidth);
@@ -167,7 +167,7 @@ QSizeF QItemDelegatePrivate::doTextLayout(int lineWidth) const
     data items from a model.
 
     \ingroup model-view
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QItemDelegate can be used to provide custom display features and editor
     widgets for item views based on QAbstractItemView subclasses. Using a
@@ -175,15 +175,15 @@ QSizeF QItemDelegatePrivate::doTextLayout(int lineWidth) const
     customized and developed independently from the model and view.
 
     The QItemDelegate class is one of the \l{Model/View Classes} and
-    is part of Qt's \l{Model/View Programming}{model/view framework}.
+    is part of BobUI's \l{Model/View Programming}{model/view framework}.
     Note that QStyledItemDelegate has taken over the job of drawing
-    Qt's item views. We recommend the use of QStyledItemDelegate when
+    BobUI's item views. We recommend the use of QStyledItemDelegate when
     creating new delegates.
 
     When displaying items from a custom model in a standard view, it is
     often sufficient to simply ensure that the model returns appropriate
-    data for each of the \l{Qt::ItemDataRole}{roles} that determine the
-    appearance of items in views. The default delegate used by Qt's
+    data for each of the \l{BobUI::ItemDataRole}{roles} that determine the
+    appearance of items in views. The default delegate used by BobUI's
     standard views uses this role information to display items in most
     of the common forms expected by users. However, it is sometimes
     necessary to have even more control over the appearance of items than
@@ -204,7 +204,7 @@ QSizeF QItemDelegatePrivate::doTextLayout(int lineWidth) const
     QItemEditorFactory is installed on all item delegates. You can set
     a custom factory using setItemEditorFactory() or set a new default
     factory with QItemEditorFactory::setDefaultFactory(). It is the
-    data stored in the item model with the Qt::EditRole that is edited.
+    data stored in the item model with the BobUI::EditRole that is edited.
 
     Only the standard editing functions for widget-based delegates are
     reimplemented here:
@@ -223,32 +223,32 @@ QSizeF QItemDelegatePrivate::doTextLayout(int lineWidth) const
 
     \section1 Standard Roles and Data Types
 
-    The default delegate used by the standard views supplied with Qt
-    associates each standard role (defined by Qt::ItemDataRole) with certain
+    The default delegate used by the standard views supplied with BobUI
+    associates each standard role (defined by BobUI::ItemDataRole) with certain
     data types. Models that return data in these types can influence the
     appearance of the delegate as described in the following table.
 
     \table
     \header \li Role \li Accepted Types
     \omit
-    \row    \li \l Qt::AccessibleDescriptionRole \li QString
-    \row    \li \l Qt::AccessibleTextRole \li QString
+    \row    \li \l BobUI::AccessibleDescriptionRole \li QString
+    \row    \li \l BobUI::AccessibleTextRole \li QString
     \endomit
-    \row    \li \l Qt::BackgroundRole \li QBrush
-    \row    \li \l Qt::CheckStateRole \li Qt::CheckState
-    \row    \li \l Qt::DecorationRole \li QIcon, QPixmap and QColor
-    \row    \li \l Qt::DisplayRole \li QString and types with a string representation
-    \row    \li \l Qt::EditRole \li See QItemEditorFactory for details
-    \row    \li \l Qt::FontRole \li QFont
-    \row    \li \l Qt::SizeHintRole \li QSize
+    \row    \li \l BobUI::BackgroundRole \li QBrush
+    \row    \li \l BobUI::CheckStateRole \li BobUI::CheckState
+    \row    \li \l BobUI::DecorationRole \li QIcon, QPixmap and QColor
+    \row    \li \l BobUI::DisplayRole \li QString and types with a string representation
+    \row    \li \l BobUI::EditRole \li See QItemEditorFactory for details
+    \row    \li \l BobUI::FontRole \li QFont
+    \row    \li \l BobUI::SizeHintRole \li QSize
     \omit
-    \row    \li \l Qt::StatusTipRole \li
+    \row    \li \l BobUI::StatusTipRole \li
     \endomit
-    \row    \li \l Qt::TextAlignmentRole \li Qt::Alignment
-    \row    \li \l Qt::ForegroundRole \li QBrush
+    \row    \li \l BobUI::TextAlignmentRole \li BobUI::Alignment
+    \row    \li \l BobUI::ForegroundRole \li QBrush
     \omit
-    \row    \li \l Qt::ToolTipRole
-    \row    \li \l Qt::WhatsThisRole
+    \row    \li \l BobUI::ToolTipRole
+    \row    \li \l BobUI::WhatsThisRole
     \endomit
     \endtable
 
@@ -284,13 +284,13 @@ QSizeF QItemDelegatePrivate::doTextLayout(int lineWidth) const
 
     \section1 QStyledItemDelegate vs. QItemDelegate
 
-    Since Qt 4.4, there are two delegate classes: QItemDelegate and
+    Since BobUI 4.4, there are two delegate classes: QItemDelegate and
     QStyledItemDelegate. However, the default delegate is QStyledItemDelegate.
     These two classes are independent alternatives to painting and providing
     editors for items in views. The difference between them is that
     QStyledItemDelegate uses the current style to paint its items. We therefore
     recommend using QStyledItemDelegate as the base class when implementing
-    custom delegates or when working with Qt style sheets. The code required
+    custom delegates or when working with BobUI style sheets. The code required
     for either class should be equal unless the custom delegate needs to use
     the style for drawing.
 
@@ -338,7 +338,7 @@ void QItemDelegate::setClipping(bool clip)
 
 QString QItemDelegatePrivate::valueToText(const QVariant &value, const QStyleOptionViewItem &option) const
 {
-    return textForRole(Qt::DisplayRole, value, option.locale, DBL_DIG);
+    return textForRole(BobUI::DisplayRole, value, option.locale, DBL_DIG);
 }
 
 /*!
@@ -385,7 +385,7 @@ void QItemDelegate::paint(QPainter *painter,
 
     QPixmap pixmap;
     QRect decorationRect;
-    value = index.data(Qt::DecorationRole);
+    value = index.data(BobUI::DecorationRole);
     if (value.isValid()) {
         // ### we need the pixmap to call the virtual function
         pixmap = decoration(opt, value);
@@ -406,16 +406,16 @@ void QItemDelegate::paint(QPainter *painter,
     }
 
     QRect checkRect;
-    Qt::CheckState checkState = Qt::Unchecked;
-    value = index.data(Qt::CheckStateRole);
+    BobUI::CheckState checkState = BobUI::Unchecked;
+    value = index.data(BobUI::CheckStateRole);
     if (value.isValid()) {
-        checkState = QtPrivate::legacyEnumValueFromModelData<Qt::CheckState>(value);
+        checkState = BobUIPrivate::legacyEnumValueFromModelData<BobUI::CheckState>(value);
         checkRect = doCheck(opt, opt.rect, value);
     }
 
     QString text;
     QRect displayRect;
-    value = index.data(Qt::DisplayRole);
+    value = index.data(BobUI::DisplayRole);
     if (value.isValid() && !value.isNull()) {
         text = d->valueToText(value, opt);
         displayRect = d->displayRect(index, opt, decorationRect, checkRect);
@@ -451,11 +451,11 @@ QSize QItemDelegate::sizeHint(const QStyleOptionViewItem &option,
                               const QModelIndex &index) const
 {
     Q_D(const QItemDelegate);
-    QVariant value = index.data(Qt::SizeHintRole);
+    QVariant value = index.data(BobUI::SizeHintRole);
     if (value.isValid())
         return qvariant_cast<QSize>(value);
-    QRect decorationRect = rect(option, index, Qt::DecorationRole);
-    QRect checkRect = rect(option, index, Qt::CheckStateRole);
+    QRect decorationRect = rect(option, index, BobUI::DecorationRole);
+    QRect checkRect = rect(option, index, BobUI::CheckStateRole);
     QRect displayRect = d->displayRect(index, option, decorationRect, checkRect);
 
     doLayout(option, &checkRect, &decorationRect, &displayRect, true);
@@ -481,9 +481,9 @@ QWidget *QItemDelegate::createEditor(QWidget *parent,
     const QItemEditorFactory *factory = d->f;
     if (factory == nullptr)
         factory = QItemEditorFactory::defaultFactory();
-    QWidget *w = factory->createEditor(index.data(Qt::EditRole).userType(), parent);
+    QWidget *w = factory->createEditor(index.data(BobUI::EditRole).userType(), parent);
     if (w)
-        w->setFocusPolicy(Qt::WheelFocus);
+        w->setFocusPolicy(BobUI::WheelFocus);
     return w;
 }
 
@@ -492,14 +492,14 @@ QWidget *QItemDelegate::createEditor(QWidget *parent,
     data model item specified by the model \a index.
 
     The default implementation stores the data in the \a editor
-    widget's \l {Qt's Property System} {user property}.
+    widget's \l {BobUI's Property System} {user property}.
 
     \sa QMetaProperty::isUser()
 */
 
 void QItemDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
-    QVariant v = index.data(Qt::EditRole);
+    QVariant v = index.data(BobUI::EditRole);
     QByteArray n = editor->metaObject()->userProperty().name();
 
     if (!n.isEmpty()) {
@@ -514,7 +514,7 @@ void QItemDelegate::setEditorData(QWidget *editor, const QModelIndex &index) con
     \a model at the item \a index.
 
     The default implementation gets the value to be stored in the data
-    model from the \a editor widget's \l {Qt's Property System} {user
+    model from the \a editor widget's \l {BobUI's Property System} {user
     property}.
 
     \sa QMetaProperty::isUser()
@@ -530,9 +530,9 @@ void QItemDelegate::setModelData(QWidget *editor,
     QByteArray n = editor->metaObject()->userProperty().name();
     if (n.isEmpty())
         n = d->editorFactory()->valuePropertyName(
-            model->data(index, Qt::EditRole).userType());
+            model->data(index, BobUI::EditRole).userType());
     if (!n.isEmpty())
-        model->setData(index, editor->property(n), Qt::EditRole);
+        model->setData(index, editor->property(n), BobUI::EditRole);
 }
 
 /*!
@@ -547,11 +547,11 @@ void QItemDelegate::updateEditorGeometry(QWidget *editor,
     if (!editor)
         return;
     Q_ASSERT(index.isValid());
-    QPixmap pixmap = decoration(option, index.data(Qt::DecorationRole));
-    QString text = QItemDelegatePrivate::replaceNewLine(index.data(Qt::DisplayRole).toString());
+    QPixmap pixmap = decoration(option, index.data(BobUI::DecorationRole));
+    QString text = QItemDelegatePrivate::replaceNewLine(index.data(BobUI::DisplayRole).toString());
     QRect pixmapRect = QRect(QPoint(0, 0), option.decorationSize).intersected(pixmap.rect());
     QRect textRect = textRectangle(nullptr, option.rect, option.font, text);
-    QRect checkRect = doCheck(option, textRect, index.data(Qt::CheckStateRole));
+    QRect checkRect = doCheck(option, textRect, index.data(BobUI::CheckStateRole));
     QStyleOptionViewItem opt = option;
     opt.showDecorationSelected = true; // let the editor take up all available space
     doLayout(opt, &checkRect, &pixmapRect, &textRect, false);
@@ -614,7 +614,7 @@ void QItemDelegate::drawDisplay(QPainter *painter, const QStyleOptionViewItem &o
     const int textMargin = style->pixelMetric(QStyle::PM_FocusFrameHMargin, nullptr, widget) + 1;
     QRect textRect = rect.adjusted(textMargin, 0, -textMargin, 0); // remove width padding
     const bool wrapText = opt.features & QStyleOptionViewItem::WrapText;
-    d->textOption.setWrapMode(wrapText ? QTextOption::WordWrap : QTextOption::ManualWrap);
+    d->textOption.setWrapMode(wrapText ? BOBUIextOption::WordWrap : BOBUIextOption::ManualWrap);
     d->textOption.setTextDirection(option.direction);
     d->textOption.setAlignment(QStyle::visualAlignment(option.direction, option.displayAlignment));
     d->textLayout.setTextOption(d->textOption);
@@ -654,11 +654,11 @@ void QItemDelegate::drawDisplay(QPainter *painter, const QStyleOptionViewItem &o
                            || textRect.height() < textLayoutSize.height())) {
         painter->save();
         painter->setClipRect(layoutRect);
-        d->textLayout.draw(painter, layoutRect.topLeft(), QList<QTextLayout::FormatRange>(),
+        d->textLayout.draw(painter, layoutRect.topLeft(), QList<BOBUIextLayout::FormatRange>(),
                            layoutRect);
         painter->restore();
     } else {
-        d->textLayout.draw(painter, layoutRect.topLeft(), QList<QTextLayout::FormatRange>(),
+        d->textLayout.draw(painter, layoutRect.topLeft(), QList<BOBUIextLayout::FormatRange>(),
                            layoutRect);
     }
 }
@@ -724,7 +724,7 @@ void QItemDelegate::drawFocus(QPainter *painter,
 
 void QItemDelegate::drawCheck(QPainter *painter,
                               const QStyleOptionViewItem &option,
-                              const QRect &rect, Qt::CheckState state) const
+                              const QRect &rect, BobUI::CheckState state) const
 {
     Q_D(const QItemDelegate);
     if (!rect.isValid())
@@ -735,13 +735,13 @@ void QItemDelegate::drawCheck(QPainter *painter,
     opt.state = opt.state & ~QStyle::State_HasFocus;
 
     switch (state) {
-    case Qt::Unchecked:
+    case BobUI::Unchecked:
         opt.state |= QStyle::State_Off;
         break;
-    case Qt::PartiallyChecked:
+    case BobUI::PartiallyChecked:
         opt.state |= QStyle::State_NoChange;
         break;
-    case Qt::Checked:
+    case BobUI::Checked:
         opt.state |= QStyle::State_On;
         break;
     }
@@ -768,7 +768,7 @@ void QItemDelegate::drawBackground(QPainter *painter,
 
         painter->fillRect(option.rect, option.palette.brush(cg, QPalette::Highlight));
     } else {
-        QVariant value = index.data(Qt::BackgroundRole);
+        QVariant value = index.data(BobUI::BackgroundRole);
         if (value.canConvert<QBrush>()) {
             QPainterStateGuard psg(painter);
             painter->setBrushOrigin(option.rect.topLeft());
@@ -834,7 +834,7 @@ void QItemDelegate::doLayout(const QStyleOptionViewItem &option,
     if (hasCheck) {
         cw = checkRect->width() + 2 * checkMargin;
         if (hint) w += cw;
-        if (option.direction == Qt::RightToLeft) {
+        if (option.direction == BobUI::RightToLeft) {
             check.setRect(x + w - cw, y, cw, h);
         } else {
             check.setRect(x, y, cw, h);
@@ -851,7 +851,7 @@ void QItemDelegate::doLayout(const QStyleOptionViewItem &option,
             pm.setHeight(pm.height() + pixmapMargin); // add space
         h = hint ? textRect->height() : h - pm.height();
 
-        if (option.direction == Qt::RightToLeft) {
+        if (option.direction == BobUI::RightToLeft) {
             decoration.setRect(x, y, w - cw, pm.height());
             display.setRect(x, y + pm.height(), w - cw, h);
         } else {
@@ -864,7 +864,7 @@ void QItemDelegate::doLayout(const QStyleOptionViewItem &option,
             textRect->setHeight(textRect->height() + textMargin); // add space
         h = hint ? textRect->height() + pm.height() : h;
 
-        if (option.direction == Qt::RightToLeft) {
+        if (option.direction == BobUI::RightToLeft) {
             display.setRect(x, y, w - cw, textRect->height());
             decoration.setRect(x, y + textRect->height(), w - cw, h - textRect->height());
         } else {
@@ -873,7 +873,7 @@ void QItemDelegate::doLayout(const QStyleOptionViewItem &option,
         }
         break; }
     case QStyleOptionViewItem::Left: {
-        if (option.direction == Qt::LeftToRight) {
+        if (option.direction == BobUI::LeftToRight) {
             decoration.setRect(x + cw, y, pm.width(), h);
             display.setRect(decoration.right() + 1, y, w - pm.width() - cw, h);
         } else {
@@ -882,7 +882,7 @@ void QItemDelegate::doLayout(const QStyleOptionViewItem &option,
         }
         break; }
     case QStyleOptionViewItem::Right: {
-        if (option.direction == Qt::LeftToRight) {
+        if (option.direction == BobUI::LeftToRight) {
             display.setRect(x + cw, y, w - pm.width() - cw, h);
             decoration.setRect(display.right() + 1, y, pm.width(), h);
         } else {
@@ -897,7 +897,7 @@ void QItemDelegate::doLayout(const QStyleOptionViewItem &option,
     }
 
     if (!hint) { // we only need to do the internal layout if we are going to paint
-        *checkRect = QStyle::alignedRect(option.direction, Qt::AlignCenter,
+        *checkRect = QStyle::alignedRect(option.direction, BobUI::AlignCenter,
                                          checkRect->size(), check);
         *pixmapRect = QStyle::alignedRect(option.direction, option.decorationAlignment,
                                           pixmapRect->size(), decoration);
@@ -993,14 +993,14 @@ QPixmap QItemDelegate::selectedPixmap(const QPixmap &pixmap, const QPalette &pal
 
 /*!
   \internal
-  Only used (and usable) for Qt::DecorationRole and Qt::CheckStateRole
+  Only used (and usable) for BobUI::DecorationRole and BobUI::CheckStateRole
 */
 QRect QItemDelegate::rect(const QStyleOptionViewItem &option,
                           const QModelIndex &index, int role) const
 {
     Q_D(const QItemDelegate);
     QVariant value = index.data(role);
-    if (role == Qt::CheckStateRole)
+    if (role == BobUI::CheckStateRole)
         return doCheck(option, option.rect, value);
     if (value.isValid() && !value.isNull()) {
         switch (value.userType()) {
@@ -1023,7 +1023,7 @@ QRect QItemDelegate::rect(const QStyleOptionViewItem &option,
         case QMetaType::QString:
         default: {
             const QString text = d->valueToText(value, option);
-            value = index.data(Qt::FontRole);
+            value = index.data(BobUI::FontRole);
             QFont fnt = qvariant_cast<QFont>(value).resolve(option.font);
             return textRectangle(nullptr,
                                  d->textLayoutBounds(option, QRect(), QRect()),
@@ -1058,7 +1058,7 @@ QRect QItemDelegate::textRectangle(QPainter * /*painter*/, const QRect &rect,
                                    const QFont &font, const QString &text) const
 {
     Q_D(const QItemDelegate);
-    d->textOption.setWrapMode(QTextOption::WordWrap);
+    d->textOption.setWrapMode(BOBUIextOption::WordWrap);
     d->textLayout.setTextOption(d->textOption);
     d->textLayout.setFont(font);
     d->textLayout.setText(QItemDelegatePrivate::replaceNewLine(text));
@@ -1093,13 +1093,13 @@ bool QItemDelegate::editorEvent(QEvent *event,
     Q_ASSERT(model);
 
     // make sure that the item is checkable
-    Qt::ItemFlags flags = model->flags(index);
-    if (!(flags & Qt::ItemIsUserCheckable) || !(option.state & QStyle::State_Enabled)
-        || !(flags & Qt::ItemIsEnabled))
+    BobUI::ItemFlags flags = model->flags(index);
+    if (!(flags & BobUI::ItemIsUserCheckable) || !(option.state & QStyle::State_Enabled)
+        || !(flags & BobUI::ItemIsEnabled))
         return false;
 
     // make sure that we have a check state
-    QVariant value = index.data(Qt::CheckStateRole);
+    QVariant value = index.data(BobUI::CheckStateRole);
     if (!value.isValid())
         return false;
 
@@ -1107,11 +1107,11 @@ bool QItemDelegate::editorEvent(QEvent *event,
     if ((event->type() == QEvent::MouseButtonRelease)
         || (event->type() == QEvent::MouseButtonDblClick)
         || (event->type() == QEvent::MouseButtonPress)) {
-        QRect checkRect = doCheck(option, option.rect, Qt::Checked);
+        QRect checkRect = doCheck(option, option.rect, BobUI::Checked);
         QRect emptyRect;
         doLayout(option, &checkRect, &emptyRect, &emptyRect, false);
         QMouseEvent *me = static_cast<QMouseEvent*>(event);
-        if (me->button() != Qt::LeftButton || !checkRect.contains(me->position().toPoint()))
+        if (me->button() != BobUI::LeftButton || !checkRect.contains(me->position().toPoint()))
             return false;
 
         // eat the double click events inside the check rect
@@ -1120,19 +1120,19 @@ bool QItemDelegate::editorEvent(QEvent *event,
             return true;
 
     } else if (event->type() == QEvent::KeyPress) {
-        if (static_cast<QKeyEvent*>(event)->key() != Qt::Key_Space
-         && static_cast<QKeyEvent*>(event)->key() != Qt::Key_Select)
+        if (static_cast<QKeyEvent*>(event)->key() != BobUI::Key_Space
+         && static_cast<QKeyEvent*>(event)->key() != BobUI::Key_Select)
             return false;
     } else {
         return false;
     }
 
-    Qt::CheckState state = QtPrivate::legacyEnumValueFromModelData<Qt::CheckState>(value);
-    if (flags & Qt::ItemIsUserTristate)
-        state = ((Qt::CheckState)((state + 1) % 3));
+    BobUI::CheckState state = BobUIPrivate::legacyEnumValueFromModelData<BobUI::CheckState>(value);
+    if (flags & BobUI::ItemIsUserTristate)
+        state = ((BobUI::CheckState)((state + 1) % 3));
     else
-        state = (state == Qt::Checked) ? Qt::Unchecked : Qt::Checked;
-    return model->setData(index, state, Qt::CheckStateRole);
+        state = (state == BobUI::Checked) ? BobUI::Unchecked : BobUI::Checked;
+    return model->setData(index, state, BobUI::CheckStateRole);
 }
 
 /*!
@@ -1145,28 +1145,28 @@ QStyleOptionViewItem QItemDelegate::setOptions(const QModelIndex &index,
     QStyleOptionViewItem opt = option;
 
     // set font
-    QVariant value = index.data(Qt::FontRole);
+    QVariant value = index.data(BobUI::FontRole);
     if (value.isValid()){
         opt.font = qvariant_cast<QFont>(value).resolve(opt.font);
         opt.fontMetrics = QFontMetrics(opt.font);
     }
 
     // set text alignment
-    value = index.data(Qt::TextAlignmentRole);
+    value = index.data(BobUI::TextAlignmentRole);
     if (value.isValid())
-        opt.displayAlignment = QtPrivate::legacyFlagValueFromModelData<Qt::Alignment>(value);
+        opt.displayAlignment = BobUIPrivate::legacyFlagValueFromModelData<BobUI::Alignment>(value);
 
     // set foreground brush
-    value = index.data(Qt::ForegroundRole);
+    value = index.data(BobUI::ForegroundRole);
     if (value.canConvert<QBrush>())
         opt.palette.setBrush(QPalette::Text, qvariant_cast<QBrush>(value));
 
-    // disable style animations for checkboxes etc. within itemviews (QTBUG-30146)
+    // disable style animations for checkboxes etc. within itemviews (BOBUIBUG-30146)
     opt.styleObject = nullptr;
 
     return opt;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qitemdelegate.cpp"

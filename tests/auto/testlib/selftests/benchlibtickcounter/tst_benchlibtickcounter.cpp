@@ -1,9 +1,9 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QtCore/QCoreApplication>
-#include <QTest>
+#include <BobUICore/QCoreApplication>
+#include <BOBUIest>
 
 #include <private/cycle_include_p.h>
 
@@ -37,11 +37,11 @@ void tst_BenchlibTickCounter::threeBillionTicks()
 #endif
 }
 
-QTEST_MAIN_WRAPPER(tst_BenchlibTickCounter,
+BOBUIEST_MAIN_WRAPPER(tst_BenchlibTickCounter,
     std::vector<const char*> args(argv, argv + argc);
     args.push_back("-tickcounter");
     argc = int(args.size());
     argv = const_cast<char**>(&args[0]);
-    QTEST_MAIN_SETUP())
+    BOBUIEST_MAIN_SETUP())
 
 #include "tst_benchlibtickcounter.moc"

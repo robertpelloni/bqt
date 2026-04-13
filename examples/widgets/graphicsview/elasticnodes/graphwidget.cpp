@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "graphwidget.h"
 #include "edge.h"
@@ -85,26 +85,26 @@ void GraphWidget::itemMoved()
 void GraphWidget::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key()) {
-    case Qt::Key_Up:
+    case BobUI::Key_Up:
         centerNode->moveBy(0, -20);
         break;
-    case Qt::Key_Down:
+    case BobUI::Key_Down:
         centerNode->moveBy(0, 20);
         break;
-    case Qt::Key_Left:
+    case BobUI::Key_Left:
         centerNode->moveBy(-20, 0);
         break;
-    case Qt::Key_Right:
+    case BobUI::Key_Right:
         centerNode->moveBy(20, 0);
         break;
-    case Qt::Key_Plus:
+    case BobUI::Key_Plus:
         zoomIn();
         break;
-    case Qt::Key_Minus:
+    case BobUI::Key_Minus:
         zoomOut();
         break;
-    case Qt::Key_Space:
-    case Qt::Key_Enter:
+    case BobUI::Key_Space:
+    case BobUI::Key_Enter:
         shuffle();
         break;
     default:
@@ -114,7 +114,7 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
 //! [3]
 
 //! [4]
-void GraphWidget::timerEvent(QTimerEvent *event)
+void GraphWidget::timerEvent(BOBUIimerEvent *event)
 {
     Q_UNUSED(event);
 
@@ -139,7 +139,7 @@ void GraphWidget::timerEvent(QTimerEvent *event)
 }
 //! [4]
 
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
 //! [5]
 void GraphWidget::wheelEvent(QWheelEvent *event)
 {
@@ -158,16 +158,16 @@ void GraphWidget::drawBackground(QPainter *painter, const QRectF &rect)
     QRectF rightShadow(sceneRect.right(), sceneRect.top() + 5, 5, sceneRect.height());
     QRectF bottomShadow(sceneRect.left() + 5, sceneRect.bottom(), sceneRect.width(), 5);
     if (rightShadow.intersects(rect) || rightShadow.contains(rect))
-        painter->fillRect(rightShadow, Qt::darkGray);
+        painter->fillRect(rightShadow, BobUI::darkGray);
     if (bottomShadow.intersects(rect) || bottomShadow.contains(rect))
-        painter->fillRect(bottomShadow, Qt::darkGray);
+        painter->fillRect(bottomShadow, BobUI::darkGray);
 
     // Fill
     QLinearGradient gradient(sceneRect.topLeft(), sceneRect.bottomRight());
-    gradient.setColorAt(0, Qt::white);
-    gradient.setColorAt(1, Qt::lightGray);
+    gradient.setColorAt(0, BobUI::white);
+    gradient.setColorAt(1, BobUI::lightGray);
     painter->fillRect(rect.intersected(sceneRect), gradient);
-    painter->setBrush(Qt::NoBrush);
+    painter->setBrush(BobUI::NoBrush);
     painter->drawRect(sceneRect);
 
     // Text
@@ -180,9 +180,9 @@ void GraphWidget::drawBackground(QPainter *painter, const QRectF &rect)
     font.setBold(true);
     font.setPointSize(14);
     painter->setFont(font);
-    painter->setPen(Qt::lightGray);
+    painter->setPen(BobUI::lightGray);
     painter->drawText(textRect.translated(2, 2), message);
-    painter->setPen(Qt::black);
+    painter->setPen(BobUI::black);
     painter->drawText(textRect, message);
 }
 //! [6]

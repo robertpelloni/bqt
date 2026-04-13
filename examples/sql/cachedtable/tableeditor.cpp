@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "tableeditor.h"
 
@@ -9,7 +9,7 @@
 #include <QPushButton>
 #include <QSqlError>
 #include <QSqlTableModel>
-#include <QTableView>
+#include <BOBUIableView>
 
 //! [0]
 TableEditor::TableEditor(const QString &tableName, QWidget *parent)
@@ -20,12 +20,12 @@ TableEditor::TableEditor(const QString &tableName, QWidget *parent)
     model->setEditStrategy(QSqlTableModel::OnManualSubmit);
     model->select();
 
-    model->setHeaderData(0, Qt::Horizontal, tr("ID"));
-    model->setHeaderData(1, Qt::Horizontal, tr("First name"));
-    model->setHeaderData(2, Qt::Horizontal, tr("Last name"));
+    model->setHeaderData(0, BobUI::Horizontal, tr("ID"));
+    model->setHeaderData(1, BobUI::Horizontal, tr("First name"));
+    model->setHeaderData(2, BobUI::Horizontal, tr("Last name"));
 
 //! [0] //! [1]
-    QTableView *view = new QTableView;
+    BOBUIableView *view = new BOBUIableView;
     view->setModel(model);
     view->resizeColumnsToContents();
 //! [1]
@@ -36,7 +36,7 @@ TableEditor::TableEditor(const QString &tableName, QWidget *parent)
     revertButton = new QPushButton(tr("&Revert"));
     quitButton = new QPushButton(tr("Quit"));
 
-    buttonBox = new QDialogButtonBox(Qt::Vertical);
+    buttonBox = new QDialogButtonBox(BobUI::Vertical);
     buttonBox->addButton(submitButton, QDialogButtonBox::ActionRole);
     buttonBox->addButton(revertButton, QDialogButtonBox::ActionRole);
     buttonBox->addButton(quitButton, QDialogButtonBox::RejectRole);

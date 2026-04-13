@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'addlinkdialog.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,19 +9,19 @@
 #ifndef ADDLINKDIALOG_H
 #define ADDLINKDIALOG_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QAbstractButton>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QFormLayout>
-#include <QtWidgets/QFrame>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QVBoxLayout>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QAbstractButton>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QDialog>
+#include <BobUIWidgets/QDialogButtonBox>
+#include <BobUIWidgets/QFormLayout>
+#include <BobUIWidgets/QFrame>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QLineEdit>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/QVBoxLayout>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_AddLinkDialog
 {
@@ -84,7 +84,7 @@ public:
 
         buttonBox = new QDialogButtonBox(AddLinkDialog);
         buttonBox->setObjectName("buttonBox");
-        buttonBox->setOrientation(Qt::Orientation::Horizontal);
+        buttonBox->setOrientation(BobUI::Orientation::Horizontal);
         buttonBox->setStandardButtons(QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok);
 
         verticalLayout->addWidget(buttonBox);
@@ -110,6 +110,6 @@ namespace Ui {
     class AddLinkDialog: public Ui_AddLinkDialog {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // ADDLINKDIALOG_H

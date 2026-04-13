@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \group json
-    \title JSON Support in Qt
-    \ingroup qt-basic-concepts
-    \brief An overview of JSON support in Qt.
+    \title JSON Support in BobUI
+    \ingroup bobui-basic-concepts
+    \brief An overview of JSON support in BobUI.
     \ingroup explanations-dataprocessingandio
     \ingroup frameworks-technologies
 
     \keyword JSON
 
-    Qt provides support for dealing with JSON data. JSON is a
+    BobUI provides support for dealing with JSON data. JSON is a
     format to encode object data derived from Javascript, but
     now widely used as a data exchange format on the internet.
 
-    The JSON support in Qt provides an easy to use C++ API to parse,
+    The JSON support in BobUI provides an easy to use C++ API to parse,
     modify and save JSON data.
 
     More details about the JSON data format can be found at \l{http://json.org}{json.org}
@@ -36,7 +36,7 @@
 
     A value can have any of the above types. A boolean value is represented by the
     strings true or false in JSON. JSON doesn't explicitly specify the valid range
-    for numbers, but the support in Qt is limited to the validity range and precision of
+    for numbers, but the support in BobUI is limited to the validity range and precision of
     doubles. A string can be any valid unicode string. An array is a list of values, and an
     object is a collection of key/value pairs. All keys in an object are strings, and
     an object cannot contain any duplicate keys.
@@ -78,5 +78,5 @@
     All JSON classes are value based,
     \l{Implicit Sharing}{implicitly shared classes}.
 
-    JSON support in Qt consists of these classes:
+    JSON support in BobUI consists of these classes:
 */

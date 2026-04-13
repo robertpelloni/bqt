@@ -1,5 +1,5 @@
 From cbda7ce74d74539ce0baef4a36198081dfb0265c Mon Sep 17 00:00:00 2001
-From: Marc Mutz <marc.mutz@qt.io>
+From: Marc Mutz <marc.mutz@bobui.io>
 Date: Fri, 14 Mar 2025 18:29:20 +0100
 Subject: [PATCH] ECMEnableSanitizers.cmake: fix GCC's "note: variable tracking
  size limit exceeded" when using asan

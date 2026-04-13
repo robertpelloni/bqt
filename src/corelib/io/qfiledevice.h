@@ -1,14 +1,14 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QFILEDEVICE_H
 #define QFILEDEVICE_H
 
-#include <QtCore/qiodevice.h>
-#include <QtCore/qstring.h>
+#include <BobUICore/qiodevice.h>
+#include <BobUICore/qstring.h>
 
-#if QT_CONFIG(cxx17_filesystem)
+#if BOBUI_CONFIG(cxx17_filesystem)
 #include <filesystem>
 #elif defined(Q_QDOC)
 namespace std {
@@ -19,13 +19,13 @@ namespace std {
 };
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDateTime;
 class QFileDevicePrivate;
 
-#if QT_CONFIG(cxx17_filesystem)
-namespace QtPrivate {
+#if BOBUI_CONFIG(cxx17_filesystem)
+namespace BobUIPrivate {
 inline QString fromFilesystemPath(const std::filesystem::path &path)
 {
     // we could use QAnyStringView, but this allows us to statically determine
@@ -42,28 +42,28 @@ inline std::filesystem::path toFilesystemPath(const QString &path)
     else
         return path.toStdString();
 }
-} // namespace QtPrivate
-#endif // QT_CONFIG(cxx17_filesystem)
+} // namespace BobUIPrivate
+#endif // BOBUI_CONFIG(cxx17_filesystem)
 
-#if !defined(QT_USE_NODISCARD_FILE_OPEN) && !defined(QT_NO_USE_NODISCARD_FILE_OPEN)
-#  if QT_VERSION < QT_VERSION_CHECK(6, 10, 0)
-#    define QT_NO_USE_NODISCARD_FILE_OPEN
+#if !defined(BOBUI_USE_NODISCARD_FILE_OPEN) && !defined(BOBUI_NO_USE_NODISCARD_FILE_OPEN)
+#  if BOBUI_VERSION < BOBUI_VERSION_CHECK(6, 10, 0)
+#    define BOBUI_NO_USE_NODISCARD_FILE_OPEN
 #  else
-#    define QT_USE_NODISCARD_FILE_OPEN
+#    define BOBUI_USE_NODISCARD_FILE_OPEN
 #  endif
 #endif
 
-#if defined(QT_USE_NODISCARD_FILE_OPEN) && defined(QT_NO_USE_NODISCARD_FILE_OPEN)
+#if defined(BOBUI_USE_NODISCARD_FILE_OPEN) && defined(BOBUI_NO_USE_NODISCARD_FILE_OPEN)
 #error "Inconsistent macro definition for nodiscard QFile::open"
-#elif defined(QT_USE_NODISCARD_FILE_OPEN)
+#elif defined(BOBUI_USE_NODISCARD_FILE_OPEN)
 #define QFILE_MAYBE_NODISCARD [[nodiscard]]
-#else /* QT_NO_USE_NODISCARD_FILE_OPEN */
+#else /* BOBUI_NO_USE_NODISCARD_FILE_OPEN */
 #define QFILE_MAYBE_NODISCARD
 #endif
 
 class Q_CORE_EXPORT QFileDevice : public QIODevice
 {
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     Q_OBJECT
 #endif
     Q_DECLARE_PRIVATE(QFileDevice)
@@ -145,7 +145,7 @@ public:
 
 protected:
     QFileDevice();
-#ifdef QT_NO_QOBJECT
+#ifdef BOBUI_NO_QOBJECT
     QFileDevice(QFileDevicePrivate &dd);
 #else
     explicit QFileDevice(QObject *parent);
@@ -164,6 +164,6 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(QFileDevice::Permissions)
 Q_DECLARE_OPERATORS_FOR_FLAGS(QFileDevice::FileHandleFlags)
 Q_DECLARE_OPERATORS_FOR_FLAGS(QFileDevice::MemoryMapFlags)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QFILEDEVICE_H

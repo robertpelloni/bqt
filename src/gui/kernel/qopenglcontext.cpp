@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include <qpa/qplatformopenglcontext.h>
 #include <qpa/qplatformintegration.h>
@@ -7,21 +7,21 @@
 #include "qopenglcontext_p.h"
 #include "qwindow.h"
 
-#include <QtCore/QThreadStorage>
-#include <QtCore/QThread>
-#include <QtCore/private/qlocking_p.h>
+#include <BobUICore/BOBUIhreadStorage>
+#include <BobUICore/BOBUIhread>
+#include <BobUICore/private/qlocking_p.h>
 
-#include <QtGui/private/qguiapplication_p.h>
-#include <QtGui/private/qopengl_p.h>
-#include <QtGui/private/qwindow_p.h>
-#include <QtGui/QScreen>
+#include <BobUIGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qopengl_p.h>
+#include <BobUIGui/private/qwindow_p.h>
+#include <BobUIGui/QScreen>
 #include <qpa/qplatformnativeinterface.h>
 
 #include <private/qopenglextensions_p.h>
 
 #include <QDebug>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QGuiGLThreadContext
 {
@@ -37,10 +37,10 @@ public:
     QOpenGLContext *context;
 };
 
-Q_GLOBAL_STATIC(QThreadStorage<QGuiGLThreadContext *>, qwindow_context_storage);
+Q_GLOBAL_STATIC(BOBUIhreadStorage<QGuiGLThreadContext *>, qwindow_context_storage);
 static QOpenGLContext *global_share_context = nullptr;
 
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
 QHash<QOpenGLContext *, bool> QOpenGLContextPrivate::makeCurrentTracker;
 Q_CONSTINIT QMutex QOpenGLContextPrivate::makeCurrentTrackerMutex;
 #endif
@@ -48,13 +48,13 @@ Q_CONSTINIT QMutex QOpenGLContextPrivate::makeCurrentTrackerMutex;
 /*!
     \internal
 
-    This function is used by Qt::AA_ShareOpenGLContexts and the Qt
+    This function is used by BobUI::AA_ShareOpenGLContexts and the BobUI
     WebEngine to set up context sharing across multiple windows. Do
     not use it for any other purpose.
 
     Please maintain the binary compatibility of these functions.
 */
-void qt_gl_set_global_share_context(QOpenGLContext *context)
+void bobui_gl_set_global_share_context(QOpenGLContext *context)
 {
     global_share_context = context;
 }
@@ -62,7 +62,7 @@ void qt_gl_set_global_share_context(QOpenGLContext *context)
 /*!
     \internal
 */
-QOpenGLContext *qt_gl_global_share_context()
+QOpenGLContext *bobui_gl_global_share_context()
 {
     return global_share_context;
 }
@@ -70,7 +70,7 @@ QOpenGLContext *qt_gl_global_share_context()
 /*!
     \class QOpenGLContext
     \ingroup painting-3D
-    \inmodule QtGui
+    \inmodule BobUIGui
     \since 5.0
     \brief The QOpenGLContext class represents a native OpenGL context, enabling
            OpenGL rendering on a QSurface.
@@ -96,10 +96,10 @@ QOpenGLContext *qt_gl_global_share_context()
     QOpenGLContext itself.
 
     Once a QOpenGLContext has been made current, you can render to it in a
-    platform independent way by using Qt's OpenGL enablers such as
+    platform independent way by using BobUI's OpenGL enablers such as
     QOpenGLFunctions, QOpenGLBuffer, QOpenGLShaderProgram, and
     QOpenGLFramebufferObject. It is also possible to use the platform's OpenGL
-    API directly, without using the Qt enablers, although potentially at the
+    API directly, without using the BobUI enablers, although potentially at the
     cost of portability. The latter is necessary when wanting to use OpenGL 1.x
     or OpenGL ES 1.x.
 
@@ -151,7 +151,7 @@ QOpenGLContext *qt_gl_global_share_context()
     by the same native context.
 
     \note This means that when targeting WebAssembly with existing OpenGL-based
-    Qt code, some porting may be required to cater to these limitations.
+    BobUI code, some porting may be required to cater to these limitations.
 
 
     \sa QOpenGLFunctions, QOpenGLBuffer, QOpenGLShaderProgram, QOpenGLFramebufferObject
@@ -166,8 +166,8 @@ QOpenGLContext *QOpenGLContextPrivate::setCurrentContext(QOpenGLContext *context
 {
     QGuiGLThreadContext *threadContext = qwindow_context_storage()->localData();
     if (!threadContext) {
-        if (!QThread::currentThread()) {
-            qWarning("No QTLS available. currentContext won't work");
+        if (!BOBUIhread::currentThread()) {
+            qWarning("No BOBUILS available. currentContext won't work");
             return nullptr;
         }
         if (!context)
@@ -190,7 +190,7 @@ int QOpenGLContextPrivate::maxTextureSize()
     QOpenGLFunctions *funcs = q->functions();
     funcs->glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max_texture_size);
 
-#if !QT_CONFIG(opengles2)
+#if !BOBUI_CONFIG(opengles2)
     if (!q->isOpenGLES()) {
         GLenum proxy = GL_PROXY_TEXTURE_2D;
 
@@ -216,7 +216,7 @@ int QOpenGLContextPrivate::maxTextureSize()
 
         max_texture_size = size;
     }
-#endif // QT_CONFIG(opengles2)
+#endif // BOBUI_CONFIG(opengles2)
 
     return max_texture_size;
 }
@@ -472,7 +472,7 @@ void QOpenGLContext::destroy()
     If you wish to make the context current in order to do clean-up, make sure
     to only connect to the signal using a direct connection.
 
-    \note In Qt for Python, this signal will not be received when emitted
+    \note In BobUI for Python, this signal will not be received when emitted
     from the destructor of QOpenGLWidget or QOpenGLWindow due to the Python
     instance already being destroyed. We recommend doing cleanups
     in QWidget::hideEvent() instead.
@@ -487,7 +487,7 @@ QOpenGLContext::~QOpenGLContext()
 {
     destroy();
 
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     QOpenGLContextPrivate::cleanMakeCurrentTracker(this);
 #endif
 }
@@ -599,7 +599,7 @@ bool QOpenGLContext::hasExtension(const QByteArray &extension) const
     on the surface being rendered to, and might be different from 0. Thus,
     instead of calling glBindFramebuffer(0), you should call
     glBindFramebuffer(ctx->defaultFramebufferObject()) if you want your
-    application to work across different Qt platforms.
+    application to work across different BobUI platforms.
 
     If you use the glBindFramebuffer() in QOpenGLFunctions you do not have to
     worry about this, as it automatically binds the current context's
@@ -645,14 +645,14 @@ GLuint QOpenGLContext::defaultFramebufferObject() const
     current thread, by calling doneCurrent() if necessary. Then call
     moveToThread(otherThread) before using it in the other thread.
 
-    By default Qt employs a check that enforces the above condition on the
+    By default BobUI employs a check that enforces the above condition on the
     thread affinity. It is still possible to disable this check by setting the
-    \c{Qt::AA_DontCheckOpenGLContextThreadAffinity} application attribute. Be
+    \c{BobUI::AA_DontCheckOpenGLContextThreadAffinity} application attribute. Be
     sure to understand the consequences of using QObjects from outside
     the thread they live in, as explained in the
     \l{QObject#Thread Affinity}{QObject thread affinity} documentation.
 
-    \sa functions(), doneCurrent(), Qt::AA_DontCheckOpenGLContextThreadAffinity
+    \sa functions(), doneCurrent(), BobUI::AA_DontCheckOpenGLContextThreadAffinity
 */
 bool QOpenGLContext::makeCurrent(QSurface *surface)
 {
@@ -660,8 +660,8 @@ bool QOpenGLContext::makeCurrent(QSurface *surface)
     if (!isValid())
         return false;
 
-    if (Q_UNLIKELY(!qApp->testAttribute(Qt::AA_DontCheckOpenGLContextThreadAffinity)
-                   && thread() != QThread::currentThread())) {
+    if (Q_UNLIKELY(!qApp->testAttribute(BobUI::AA_DontCheckOpenGLContextThreadAffinity)
+                   && thread() != BOBUIhread::currentThread())) {
         qFatal("Cannot make QOpenGLContext current in a different thread");
     }
 
@@ -681,7 +681,7 @@ bool QOpenGLContext::makeCurrent(QSurface *surface)
         return false;
 
     QOpenGLContextPrivate::setCurrentContext(this);
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     QOpenGLContextPrivate::toggleMakeCurrentTracker(this, true);
 #endif
 
@@ -693,10 +693,10 @@ bool QOpenGLContext::makeCurrent(QSurface *surface)
     if (!needsWorkaroundSet) {
         QByteArray env;
 #ifdef Q_OS_ANDROID
-        env = qgetenv(QByteArrayLiteral("QT_ANDROID_DISABLE_GLYPH_CACHE_WORKAROUND"));
+        env = qgetenv(QByteArrayLiteral("BOBUI_ANDROID_DISABLE_GLYPH_CACHE_WORKAROUND"));
         needsWorkaround = env.isEmpty() || env == QByteArrayLiteral("0") || env == QByteArrayLiteral("false");
 #endif
-        env = qgetenv(QByteArrayLiteral("QT_ENABLE_GLYPH_CACHE_WORKAROUND"));
+        env = qgetenv(QByteArrayLiteral("BOBUI_ENABLE_GLYPH_CACHE_WORKAROUND"));
         if (env == QByteArrayLiteral("1") || env == QByteArrayLiteral("true"))
             needsWorkaround = true;
 
@@ -794,7 +794,7 @@ void QOpenGLContext::swapBuffers(QSurface *surface)
     if (!surfaceHandle)
         return;
 
-#if !defined(QT_NO_DEBUG)
+#if !defined(BOBUI_NO_DEBUG)
     if (!QOpenGLContextPrivate::toggleMakeCurrentTracker(this, false))
         qWarning("QOpenGLContext::swapBuffers() called without corresponding makeCurrent()");
 #endif
@@ -910,10 +910,10 @@ QScreen *QOpenGLContext::screen() const
  */
 QOpenGLContext::OpenGLModuleType QOpenGLContext::openGLModuleType()
 {
-#if defined(QT_OPENGL_DYNAMIC)
+#if defined(BOBUI_OPENGL_DYNAMIC)
     Q_ASSERT(qGuiApp);
     return QGuiApplicationPrivate::instance()->platformIntegration()->openGLModuleType();
-#elif QT_CONFIG(opengles2)
+#elif BOBUI_CONFIG(opengles2)
     return LibGLES;
 #else
     return LibGL;
@@ -963,7 +963,7 @@ bool QOpenGLContext::supportsThreadedOpenGL()
     current on any surface. Instead, you can create a new context which shares
     with the global one, and then make the new context current.
 
-    \sa Qt::AA_ShareOpenGLContexts, setShareContext(), makeCurrent()
+    \sa BobUI::AA_ShareOpenGLContexts, setShareContext(), makeCurrent()
 */
 QOpenGLContext *QOpenGLContext::globalShareContext()
 {
@@ -973,15 +973,15 @@ QOpenGLContext *QOpenGLContext::globalShareContext()
     QMutexLocker locker(&mutex);
 
     // Lazily create a global share context when enabled unless there is already one
-    if (!qt_gl_global_share_context() && qGuiApp->testAttribute(Qt::AA_ShareOpenGLContexts)) {
+    if (!bobui_gl_global_share_context() && qGuiApp->testAttribute(BobUI::AA_ShareOpenGLContexts)) {
         QOpenGLContext *ctx = new QOpenGLContext;
         ctx->setFormat(QSurfaceFormat::defaultFormat());
         ctx->create();
         ctx->moveToThread(qGuiApp->thread());
-        qt_gl_set_global_share_context(ctx);
+        bobui_gl_set_global_share_context(ctx);
         QGuiApplicationPrivate::instance()->ownGlobalShareContext = true;
     }
-    return qt_gl_global_share_context();
+    return bobui_gl_global_share_context();
 }
 
 /*!
@@ -1008,7 +1008,7 @@ void QOpenGLContext::setTextureFunctions(QOpenGLTextureHelper* textureFuncs, std
     \since 5.0
     \brief The QOpenGLContextGroup class represents a group of contexts sharing
     OpenGL resources.
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     QOpenGLContextGroup is automatically created and managed by QOpenGLContext
     instances.  Its purpose is to identify all the contexts that are sharing
@@ -1055,7 +1055,7 @@ QOpenGLContextGroupPrivate::~QOpenGLContextGroupPrivate()
 
 void QOpenGLContextGroupPrivate::addContext(QOpenGLContext *ctx)
 {
-    const auto locker = qt_scoped_lock(m_mutex);
+    const auto locker = bobui_scoped_lock(m_mutex);
     m_refs.ref();
     m_shares << ctx;
 }
@@ -1067,7 +1067,7 @@ void QOpenGLContextGroupPrivate::removeContext(QOpenGLContext *ctx)
     bool deleteObject = false;
 
     {
-        const auto locker = qt_scoped_lock(m_mutex);
+        const auto locker = bobui_scoped_lock(m_mutex);
         m_shares.removeOne(ctx);
 
         if (ctx == m_context && !m_shares.isEmpty())
@@ -1080,8 +1080,8 @@ void QOpenGLContextGroupPrivate::removeContext(QOpenGLContext *ctx)
     }
 
     if (deleteObject) {
-        if (q->thread() == QThread::currentThread())
-            delete q; // Delete directly to prevent leak, refer to QTBUG-29056
+        if (q->thread() == BOBUIhread::currentThread())
+            delete q; // Delete directly to prevent leak, refer to BOBUIBUG-29056
         else
             q->deleteLater();
     }
@@ -1115,7 +1115,7 @@ void QOpenGLContextGroupPrivate::cleanup()
 
 void QOpenGLContextGroupPrivate::deletePendingResources(QOpenGLContext *ctx)
 {
-    const auto locker = qt_scoped_lock(m_mutex);
+    const auto locker = bobui_scoped_lock(m_mutex);
 
     const QList<QOpenGLSharedResource *> pending = m_pendingDeletion;
     m_pendingDeletion.clear();
@@ -1137,7 +1137,7 @@ void QOpenGLContextGroupPrivate::deletePendingResources(QOpenGLContext *ctx)
     that are shared between OpenGL contexts (like textures, framebuffer
     objects, shader programs, etc), and clean them up in a safe way when
     they're no longer needed.
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     The QOpenGLSharedResource instance should never be deleted, instead free()
     should be called when it's no longer needed. Thus it will be put on a queue
@@ -1146,9 +1146,9 @@ void QOpenGLContextGroupPrivate::deletePendingResources(QOpenGLContext *ctx)
 
     The sub-class needs to implement two pure virtual functions. The first,
     freeResource() must be implemented to actually do the freeing, for example
-    call glDeleteTextures() on a texture id. Qt makes sure a valid context in
+    call glDeleteTextures() on a texture id. BobUI makes sure a valid context in
     the resource's share group is current at the time. The other,
-    invalidateResource(), is called by Qt in the circumstance when the last
+    invalidateResource(), is called by BobUI in the circumstance when the last
     context in the share group is destroyed before free() has been called. The
     implementation of invalidateResource() should set any identifiers to 0 or
     set a flag to prevent them from being used later on.
@@ -1156,7 +1156,7 @@ void QOpenGLContextGroupPrivate::deletePendingResources(QOpenGLContext *ctx)
 QOpenGLSharedResource::QOpenGLSharedResource(QOpenGLContextGroup *group)
     : m_group(group)
 {
-    const auto locker = qt_scoped_lock(m_group->d_func()->m_mutex);
+    const auto locker = bobui_scoped_lock(m_group->d_func()->m_mutex);
     m_group->d_func()->m_sharedResources << this;
 }
 
@@ -1172,7 +1172,7 @@ void QOpenGLSharedResource::free()
         return;
     }
 
-    const auto locker = qt_scoped_lock(m_group->d_func()->m_mutex);
+    const auto locker = bobui_scoped_lock(m_group->d_func()->m_mutex);
     m_group->d_func()->m_sharedResources.removeOne(this);
     m_group->d_func()->m_pendingDeletion << this;
 
@@ -1191,7 +1191,7 @@ void QOpenGLSharedResource::free()
     QOpenGLSharedResource to be used to track a single OpenGL object with a
     GLuint identifier. The constructor takes a function pointer to a function
     that will be used to free the resource if and when necessary.
-    \inmodule QtGui
+    \inmodule BobUIGui
 
 */
 
@@ -1218,7 +1218,7 @@ void QOpenGLSharedResourceGuard::freeResource(QOpenGLContext *context)
     QOpenGLContext *. To get an instance for a given context one calls
     T *QOpenGLMultiGroupSharedResource::value<T>(context), where T is a sub-class
     of QOpenGLSharedResource.
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     You should not call free() on QOpenGLSharedResources owned by a
     QOpenGLMultiGroupSharedResource instance.
@@ -1226,14 +1226,14 @@ void QOpenGLSharedResourceGuard::freeResource(QOpenGLContext *context)
 QOpenGLMultiGroupSharedResource::QOpenGLMultiGroupSharedResource()
     : active(0)
 {
-#ifdef QT_GL_CONTEXT_RESOURCE_DEBUG
+#ifdef BOBUI_GL_CONTEXT_RESOURCE_DEBUG
     qDebug("Creating context group resource object %p.", this);
 #endif
 }
 
 QOpenGLMultiGroupSharedResource::~QOpenGLMultiGroupSharedResource()
 {
-#ifdef QT_GL_CONTEXT_RESOURCE_DEBUG
+#ifdef BOBUI_GL_CONTEXT_RESOURCE_DEBUG
     qDebug("Deleting context group resource %p. Group size: %d.", this, m_groups.size());
 #endif
     for (int i = 0; i < m_groups.size(); ++i) {
@@ -1246,9 +1246,9 @@ QOpenGLMultiGroupSharedResource::~QOpenGLMultiGroupSharedResource()
         m_groups.at(i)->d_func()->m_resources.remove(this);
         active.deref();
     }
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (active.loadRelaxed() != 0) {
-        qWarning("QtGui: Resources are still available at program shutdown.\n"
+        qWarning("BobUIGui: Resources are still available at program shutdown.\n"
                  "          This is possibly caused by a leaked QOpenGLWidget, \n"
                  "          QOpenGLFramebufferObject or QOpenGLPixelBuffer.");
     }
@@ -1257,7 +1257,7 @@ QOpenGLMultiGroupSharedResource::~QOpenGLMultiGroupSharedResource()
 
 void QOpenGLMultiGroupSharedResource::insert(QOpenGLContext *context, QOpenGLSharedResource *value)
 {
-#ifdef QT_GL_CONTEXT_RESOURCE_DEBUG
+#ifdef BOBUI_GL_CONTEXT_RESOURCE_DEBUG
     qDebug("Inserting context group resource %p for context %p, managed by %p.", value, context, this);
 #endif
     QOpenGLContextGroup *group = context->shareGroup();
@@ -1286,8 +1286,8 @@ QList<QOpenGLSharedResource *> QOpenGLMultiGroupSharedResource::resources() cons
 
 void QOpenGLMultiGroupSharedResource::cleanup(QOpenGLContextGroup *group, QOpenGLSharedResource *value)
 {
-#ifdef QT_GL_CONTEXT_RESOURCE_DEBUG
-    qDebug("Cleaning up context group resource %p, for group %p in thread %p.", this, group, QThread::currentThread());
+#ifdef BOBUI_GL_CONTEXT_RESOURCE_DEBUG
+    qDebug("Cleaning up context group resource %p, for group %p in thread %p.", this, group, BOBUIhread::currentThread());
 #endif
     value->invalidateResource();
     value->free();
@@ -1300,7 +1300,7 @@ void QOpenGLMultiGroupSharedResource::cleanup(QOpenGLContextGroup *group, QOpenG
 QOpenGLContextVersionFunctionHelper::~QOpenGLContextVersionFunctionHelper()
     = default;
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug debug, const QOpenGLContext *ctx)
 {
     QDebugStateSaver saver(debug);
@@ -1337,7 +1337,7 @@ QDebug operator<<(QDebug debug, const QOpenGLContextGroup *cg)
     debug << ')';
     return debug;
 }
-#endif // QT_NO_DEBUG_STREAM
+#endif // BOBUI_NO_DEBUG_STREAM
 
 using namespace QNativeInterface;
 
@@ -1349,21 +1349,21 @@ void *QOpenGLContext::resolveInterface(const char *name, int revision) const
     Q_UNUSED(platformContext);
 
 #if defined(Q_OS_MACOS)
-    QT_NATIVE_INTERFACE_RETURN_IF(QCocoaGLContext, platformContext);
+    BOBUI_NATIVE_INTERFACE_RETURN_IF(QCocoaGLContext, platformContext);
 #endif
 #if defined(Q_OS_WIN)
-    QT_NATIVE_INTERFACE_RETURN_IF(QWGLContext, platformContext);
+    BOBUI_NATIVE_INTERFACE_RETURN_IF(QWGLContext, platformContext);
 #endif
-#if QT_CONFIG(xcb_glx_plugin)
-    QT_NATIVE_INTERFACE_RETURN_IF(QGLXContext, platformContext);
+#if BOBUI_CONFIG(xcb_glx_plugin)
+    BOBUI_NATIVE_INTERFACE_RETURN_IF(QGLXContext, platformContext);
 #endif
-#if QT_CONFIG(egl)
-    QT_NATIVE_INTERFACE_RETURN_IF(QEGLContext, platformContext);
+#if BOBUI_CONFIG(egl)
+    BOBUI_NATIVE_INTERFACE_RETURN_IF(QEGLContext, platformContext);
 #endif
 
     return nullptr;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qopenglcontext.cpp"

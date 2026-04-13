@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "msvc_nmake.h"
 #include "option.h"
@@ -11,10 +11,10 @@
 
 #include <time.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 bool
-NmakeMakefileGenerator::writeMakefile(QTextStream &t)
+NmakeMakefileGenerator::writeMakefile(BOBUIextStream &t)
 {
     writeHeader(t);
     if (writeDummyMakefile(t))
@@ -33,7 +33,7 @@ NmakeMakefileGenerator::writeMakefile(QTextStream &t)
     return false;
 }
 
-void NmakeMakefileGenerator::writeSubMakeCall(QTextStream &t, const QString &callPrefix,
+void NmakeMakefileGenerator::writeSubMakeCall(BOBUIextStream &t, const QString &callPrefix,
                                               const QString &makeArguments)
 {
     // Pass MAKEFLAGS as environment variable to sub-make calls.
@@ -98,7 +98,7 @@ QStringList &NmakeMakefileGenerator::findDependencies(const QString &file)
     return aList;
 }
 
-void NmakeMakefileGenerator::writeNmakeParts(QTextStream &t)
+void NmakeMakefileGenerator::writeNmakeParts(BOBUIextStream &t)
 {
     writeStandardParts(t);
 
@@ -109,7 +109,7 @@ void NmakeMakefileGenerator::writeNmakeParts(QTextStream &t)
         t << escapeDependencyPath(precompObj) << ": " << escapeDependencyPath(precompH) << ' '
           << finalizeDependencyPaths(findDependencies(precompH)).join(" \\\n\t\t")
           << "\n\t$(CXX) " + precompRule +" $(CXXFLAGS) $(INCPATH) -TP "
-          << escapeFilePath(precompH) << Qt::endl << Qt::endl;
+          << escapeFilePath(precompH) << BobUI::endl << BobUI::endl;
     }
     if (usePCHC) {
         QString precompRuleC = QString("-c -Yc -Fp%1 -Fo%2")
@@ -117,7 +117,7 @@ void NmakeMakefileGenerator::writeNmakeParts(QTextStream &t)
         t << escapeDependencyPath(precompObjC) << ": " << escapeDependencyPath(precompH) << ' '
           << finalizeDependencyPaths(findDependencies(precompH)).join(" \\\n\t\t")
           << "\n\t$(CC) " + precompRuleC +" $(CFLAGS) $(INCPATH) -TC "
-          << escapeFilePath(precompH) << Qt::endl << Qt::endl;
+          << escapeFilePath(precompH) << BobUI::endl << BobUI::endl;
     }
 }
 
@@ -149,7 +149,7 @@ QString NmakeMakefileGenerator::var(const ProKey &value) const
     return MakefileGenerator::var(value);
 }
 
-void NmakeMakefileGenerator::suppressBuiltinRules(QTextStream &) const
+void NmakeMakefileGenerator::suppressBuiltinRules(BOBUIextStream &) const
 {
 }
 
@@ -271,7 +271,7 @@ QStringList NmakeMakefileGenerator::sourceFilesForImplicitRulesFilter()
     return filter;
 }
 
-void NmakeMakefileGenerator::writeImplicitRulesPart(QTextStream &t)
+void NmakeMakefileGenerator::writeImplicitRulesPart(BOBUIextStream &t)
 {
     t << "####### Implicit rules\n\n";
 
@@ -280,7 +280,7 @@ void NmakeMakefileGenerator::writeImplicitRulesPart(QTextStream &t)
         t << " " << (*cit);
     for(QStringList::Iterator cppit = Option::cpp_ext.begin(); cppit != Option::cpp_ext.end(); ++cppit)
         t << " " << (*cppit);
-    t << Qt::endl << Qt::endl;
+    t << BobUI::endl << BobUI::endl;
 
     bool useInferenceRules = !project->isActiveConfig("no_batch");
     QSet<QString> source_directories;
@@ -357,14 +357,14 @@ void NmakeMakefileGenerator::writeImplicitRulesPart(QTextStream &t)
         }
     } else {
         for(QStringList::Iterator cppit = Option::cpp_ext.begin(); cppit != Option::cpp_ext.end(); ++cppit)
-            t << (*cppit) << Option::obj_ext << ":\n\t" << var("QMAKE_RUN_CXX_IMP") << Qt::endl << Qt::endl;
+            t << (*cppit) << Option::obj_ext << ":\n\t" << var("QMAKE_RUN_CXX_IMP") << BobUI::endl << BobUI::endl;
         for(QStringList::Iterator cit = Option::c_ext.begin(); cit != Option::c_ext.end(); ++cit)
-            t << (*cit) << Option::obj_ext << ":\n\t" << var("QMAKE_RUN_CC_IMP") << Qt::endl << Qt::endl;
+            t << (*cit) << Option::obj_ext << ":\n\t" << var("QMAKE_RUN_CC_IMP") << BobUI::endl << BobUI::endl;
     }
 
 }
 
-void NmakeMakefileGenerator::writeBuildRulesPart(QTextStream &t)
+void NmakeMakefileGenerator::writeBuildRulesPart(BOBUIextStream &t)
 {
     const ProString templateName = project->first("TEMPLATE");
 
@@ -462,10 +462,10 @@ void NmakeMakefileGenerator::writeBuildRulesPart(QTextStream &t)
     if(!project->isEmpty("QMAKE_POST_LINK")) {
         t << "\n\t" << var("QMAKE_POST_LINK");
     }
-    t << Qt::endl;
+    t << BobUI::endl;
 }
 
-void NmakeMakefileGenerator::writeLinkCommand(QTextStream &t, const QString &extraFlags, const QString &extraInlineFileContent)
+void NmakeMakefileGenerator::writeLinkCommand(BOBUIextStream &t, const QString &extraFlags, const QString &extraInlineFileContent)
 {
     t << "$(LINKER) $(LFLAGS)";
     if (!extraFlags.isEmpty())
@@ -478,7 +478,7 @@ void NmakeMakefileGenerator::writeLinkCommand(QTextStream &t, const QString &ext
     t << "<<";
 }
 
-void NmakeMakefileGenerator::writeResponseFileFiles(QTextStream &t, const ProStringList &files)
+void NmakeMakefileGenerator::writeResponseFileFiles(BOBUIextStream &t, const ProStringList &files)
 {
     // Add line breaks in file lists in reponse files to work around LNK1170.
     // The actual line length limit is 131070, but let's use a smaller limit
@@ -511,4 +511,4 @@ int NmakeMakefileGenerator::msvcVersion() const
     return ok ? int(f * 100) : fallbackVersion;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

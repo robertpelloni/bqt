@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include <qshareddata.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QSharedData
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QSharedData class is a base class for shared data objects.
     \reentrant
 
@@ -30,7 +30,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \class QAdoptSharedDataTag
-    \inmodule QtCore
+    \inmodule BobUICore
     \threadsafe
     \brief The QAdoptSharedDataTag is a helper tag class.
     \since 6.0
@@ -44,7 +44,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \class QSharedDataPointer
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QSharedDataPointer class represents a pointer to an implicitly shared object.
     \since 4.0
     \reentrant
@@ -62,7 +62,7 @@ QT_BEGIN_NAMESPACE
     reference counting, ensuring that adding QSharedDataPointers to your
     \l {reentrant} classes won't make them non-reentrant.
 
-    \l {Implicit sharing} is used by many Qt classes to combine the
+    \l {Implicit sharing} is used by many BobUI classes to combine the
     speed and memory efficiency of pointers with the ease of use of
     classes. See the \l{Shared Classes} page for more information.
 
@@ -212,13 +212,13 @@ QT_BEGIN_NAMESPACE
     In the member function documentation, \e{d pointer} always refers
     to the internal pointer to the shared data object.
 
-    \section1 Optimize Performance for Usage in Qt Containers
+    \section1 Optimize Performance for Usage in BobUI Containers
 
     You should consider marking your implicitly shared class as a movable type
     using the Q_DECLARE_TYPEINFO() macro if it resembles the \c Employee class
     above and uses a QSharedDataPointer or QExplicitlySharedDataPointer as the
     only member. This can improve performance and memory efficiency when using
-    Qt's \l{container classes}.
+    BobUI's \l{container classes}.
 
     \sa QSharedData, QExplicitlySharedDataPointer, QScopedPointer, QSharedPointer
 */
@@ -441,7 +441,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \class QExplicitlySharedDataPointer
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QExplicitlySharedDataPointer class represents a pointer to an explicitly shared object.
     \since 4.4
     \reentrant
@@ -666,4 +666,4 @@ QT_BEGIN_NAMESPACE
   \internal
  */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

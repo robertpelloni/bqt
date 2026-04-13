@@ -1,4 +1,4 @@
-# Copyright (C) 2024 The Qt Company Ltd.
+# Copyright (C) 2024 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 cmake_minimum_required(VERSION 3.16)
 project(direct_extern_access LANGUAGES CXX)

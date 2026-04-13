@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qxcbmime.h"
 
-#include <QtGui/QImageWriter>
-#include <QtCore/QBuffer>
+#include <BobUIGui/QImageWriter>
+#include <BobUICore/QBuffer>
 #include <qdebug.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QXcbMime::QXcbMime()
     : QInternalMimeData()
@@ -274,6 +274,6 @@ xcb_atom_t QXcbMime::mimeAtomForFormat(QXcbConnection *connection, const QString
     return 0;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qxcbmime.cpp"

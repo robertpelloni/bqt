@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #pragma once
 
@@ -9,13 +9,13 @@
 #include <xcb/xcb.h>
 #include <xcb/xfixes.h>
 
-#include <QtCore/qbasictimer.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qmap.h>
+#include <BobUICore/qbasictimer.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qmap.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
 
 class QXcbConnection;
 class QXcbScreen;
@@ -33,7 +33,7 @@ public:
     bool updateIncrementalProperty(const xcb_property_notify_event_t *event);
 
 protected:
-    void timerEvent(QTimerEvent *ev) override;
+    void timerEvent(BOBUIimerEvent *ev) override;
 
 private:
     QXcbClipboard *m_clipboard;
@@ -107,6 +107,6 @@ private:
     TransactionMap m_transactions;
 };
 
-#endif // QT_NO_CLIPBOARD
+#endif // BOBUI_NO_CLIPBOARD
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

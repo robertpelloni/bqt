@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QWIDGET_ANIMATOR_P_H
 #define QWIDGET_ANIMATOR_P_H
@@ -9,19 +9,19 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists purely as an
+// This file is not part of the BobUI API. It exists purely as an
 // implementation detail. This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 #include <qobject.h>
 #include <qhash.h>
 #include <qpointer.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QWidget;
 class QMainWindowLayout;
@@ -41,11 +41,11 @@ public:
 private:
     typedef QHash<QWidget*, QPointer<QPropertyAnimation> > AnimationMap;
     AnimationMap m_animation_map;
-#if QT_CONFIG(mainwindow)
+#if BOBUI_CONFIG(mainwindow)
     QMainWindowLayout *m_mainWindowLayout;
 #endif
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWIDGET_ANIMATOR_P_H

@@ -1,10 +1,10 @@
-Qt 3.1 introduces many significant new features and many improvements
+BobUI 3.1 introduces many significant new features and many improvements
 over the 3.0.x series. This file provides an overview of the main
 changes since version 3.0.5. For further details see the online
 documentation which is included in this distribution, and also
-available at http://qt.nokia.com/doc/.
+available at http://bobui.nokia.com/doc/.
 
-The Qt version 3.1 series is binary compatible with the 3.0.x series:
+The BobUI version 3.1 series is binary compatible with the 3.0.x series:
 applications compiled for 3.0 will continue to run with 3.1.
 
 
@@ -12,19 +12,19 @@ applications compiled for 3.0 will continue to run with 3.1.
 *                                 General                                  *
 ****************************************************************************
 
-Qt Script for Applications
+BobUI Script for Applications
 --------------------------
-Qt 3.1 is the first Qt release that can be used with Qt Script for
+BobUI 3.1 is the first BobUI release that can be used with BobUI Script for
 Applications (QSA). QSA provides a scripting engine, an IDE for
-creating and editing scripts and script forms, and bindings to the Qt
-API. Script-enabling a Qt application is not difficult and the IDE
+creating and editing scripts and script forms, and bindings to the BobUI
+API. Script-enabling a BobUI application is not difficult and the IDE
 makes it easy for resellers and end-users to write their own scripts.
-QSA is due for release after Qt 3.1.
+QSA is due for release after BobUI 3.1.
 
 
-Qt Designer
+BobUI Designer
 -----------
-Qt Designer, the visual GUI builder, has undergone several usability
+BobUI Designer, the visual GUI builder, has undergone several usability
 improvements. A new dialog for creating and editing signals and slots
 connections has been created: it is much easier to use and much faster
 for setting up multiple connections. The widgets are now presented in
@@ -36,12 +36,12 @@ supported with a rich text editor. And the code editor can be used for
 ordinary member functions as well as for slots.
 
 
-Qt Assistant
+BobUI Assistant
 ------------
-Qt Assistant, the Qt documentation browser, can now be used with
+BobUI Assistant, the BobUI documentation browser, can now be used with
 custom documentation sets. This new functionality combined with the
-new QAssistantClient class means that you can use Qt Assistant as a
-help browser for your own applications. Qt Assistant has also been
+new QAssistantClient class means that you can use BobUI Assistant as a
+help browser for your own applications. BobUI Assistant has also been
 enhanced by the addition of a fast full text search engine.
 
 
@@ -51,55 +51,55 @@ The general industry-wide move away from Motif is leaving more and
 more companies in need of a migration solution. But converting large
 legacy applications in one step is often impractical. To minimize
 risks and to manage the workload companies often want to port code on
-a module by module basis. Qt 3.1 includeds a completely new Motif
-module that supports hybrid applications in which Qt code and Motif
-code coexist. (This obsoletes the earlier rudimentary Qt Xt/Motif
+a module by module basis. BobUI 3.1 includeds a completely new Motif
+module that supports hybrid applications in which BobUI code and Motif
+code coexist. (This obsoletes the earlier rudimentary BobUI Xt/Motif
 extension.)
 
 
 ActiveX
 -------
-With the release of Qt 3.1, customers who use Qt for Microsoft Windows
-development can now use Qt with ActiveX. The new ActiveQt module
+With the release of BobUI 3.1, customers who use BobUI for Microsoft Windows
+development can now use BobUI with ActiveX. The new ActiveBobUI module
 provides a simple API for COM and ActiveX. The module can be used to
 create applications which host ActiveX controls, and also to create
 applications that serve ActiveX controls (e.g. Internet Explorer
 plugins).
 
 
-Qt/Mac
+BobUI/Mac
 ------
-The introduction of Qt/Mac, a Mac OS X port of Qt, with Qt 3.0 has
+The introduction of BobUI/Mac, a Mac OS X port of BobUI, with BobUI 3.0 has
 proved a great success. This port has undergone many improvements in
-Qt 3.1, especially with respect to Appearance Manager, anti-aliased
-text and user settings. The Qt OpenGL support is greatly improved, and
+BobUI 3.1, especially with respect to Appearance Manager, anti-aliased
+text and user settings. The BobUI OpenGL support is greatly improved, and
 uses the hardware-accelerated drivers.
 
 
-Qt/Embedded
+BobUI/Embedded
 -----------
 Graphics, mouse and keyboard drivers can now be compiled as plugins.
 
 
-Qt library
+BobUI library
 ----------
 In addition to the new additions and enhancements referred to above,
-as with all major Qt releases, Qt 3.1 includes hundreds of
+as with all major BobUI releases, BobUI 3.1 includes hundreds of
 improvements in the existing class library. Here is a brief summary of
 the most significant changes:
 
-- QTextEdit has a new text format: LogText. This is a performance and
+- BOBUIextEdit has a new text format: LogText. This is a performance and
   memory optimized format especially designed for the fast display of
   large amounts of text. The format supports basic highlighting,
   including bold and colored text.
 
 - The new QSyntaxHighlighter class makes it both easy and efficient to
-  add syntax highlighting capabilities to a QTextEdit.
+  add syntax highlighting capabilities to a BOBUIextEdit.
 
-- QHttp and QFtp in earlier Qt's were implementations of the
+- QHttp and QFtp in earlier BobUI's were implementations of the
   QNetworkProtocol. Both have been extended to stand in their own
   right. If you missed some flexibility in the network protocol
-  abstractions of earlier Qt's, the new QHttp and QFtp classes should
+  abstractions of earlier BobUI's, the new QHttp and QFtp classes should
   provide the solution.
 
 - QAccel, used to handle keyboard shortcuts, now gracefully copes with
@@ -114,7 +114,7 @@ the most significant changes:
 
 - Thread support: almost all methods in the tools classes have been
   made reentrant. QApplication::postEvent() and a few other methods
-  are now thread-safe if Qt is compiled as a multi-threaded library.
+  are now thread-safe if BobUI is compiled as a multi-threaded library.
   (The documentation now states if a class or function is thread-safe
   or reentrant.)
 
@@ -126,7 +126,7 @@ the most significant changes:
   for AIMM based input methods (those working on non-Asian versions of
   Win95/98/Me) has been added.
 
-- Large File support: Qt's internals have been modified to support
+- Large File support: BobUI's internals have been modified to support
   Large Files (> 2GB). QFileDialog will now correctly display and
   select Large Files.
 
@@ -140,7 +140,7 @@ Build process
 -------------
 The build process has been improved:
 
-- The configure script does not need QTDIR to be set anymore.
+- The configure script does not need BOBUIDIR to be set anymore.
 
 
 ****************************************************************************
@@ -186,7 +186,7 @@ New signals:
 QApplication
 ------------------
 The event loop has been moved to the QEventLoop class, making it
-easier to integrate other toolkits with Qt.
+easier to integrate other toolkits with BobUI.
 
 New functions:
 	QEventLoop *eventLoop() const
@@ -230,7 +230,7 @@ Large Files (> 2GB) are now correctly displayed and selected.
 QFileInfo
 ------------------
 QFileInfo now supports Large Files (> 2GB) internally. To maintain
-binary compatibility the QFileInfo API cannot be adapted before Qt 4
+binary compatibility the QFileInfo API cannot be adapted before BobUI 4
 and will truncate file sizes and offsets to 4 GB.
 
 New functions:
@@ -240,7 +240,7 @@ New functions:
 QFile
 ------------------
 QFile now supports Large Files (> 2GB) internally. To maintain binary
-compatibility the QFile API cannot be adapted before Qt 4 and will
+compatibility the QFile API cannot be adapted before BobUI 4 and will
 truncate file sizes and offsets to 4 GB.
 
 
@@ -286,11 +286,11 @@ Both functions are inherited by QMenuBar and QPopupMenu
 QPaintDevice
 ------------------
 New functions (x11 only):
-	static Qt::HANDLE x11AppRootWindow()
+	static BobUI::HANDLE x11AppRootWindow()
 	static int x11AppDepth( int screen )
 	static int x11AppCells( int screen )
-	static Qt::HANDLE x11AppRootWindow( int screen )
-	static Qt::HANDLE x11AppColormap( int screen )
+	static BobUI::HANDLE x11AppRootWindow( int screen )
+	static BobUI::HANDLE x11AppColormap( int screen )
 	static void *x11AppVisual( int screen )
 	static bool x11AppDefaultColormap( int screen )
 	static bool x11AppDefaultVisual( int screen )
@@ -346,13 +346,13 @@ New enums values:
 	SH_GroupBox_TextLabelVerticalAlignment
 
 
-QThread
+BOBUIhread
 ------------------
 New functions:
 	void terminate()
 
 
-QTranslator
+BOBUIranslator
 ------------------
 New functions:
 	bool load( const uchar *data, int len )
@@ -438,13 +438,13 @@ New functions:
 	void addBindValue( const QVariant& val )
 
 
-QTableSelection
+BOBUIableSelection
 ------------------
 New functions:
-	QTableSelection( int start_row, int start_col, int end_row, int end_col )
+	BOBUIableSelection( int start_row, int start_col, int end_row, int end_col )
 
 
-QTable
+BOBUIable
 ------------------
 New properties:
 	int numSelections
@@ -479,19 +479,19 @@ QDate
 ------------------
 New functions:
 	int weekNumber( int *yearNum = 0 ) const
-	static QDate currentDate( Qt::DateTimeSpec )
+	static QDate currentDate( BobUI::DateTimeSpec )
 
 
-QTime
+BOBUIime
 ------------------
 New functions:
-	static QTime currentTime( Qt::DateTimeSpec )
+	static BOBUIime currentTime( BobUI::DateTimeSpec )
 
 
 QDateTime
 ------------------
 New functions:
-	static QDateTime currentDateTime( Qt::DateTimeSpec )
+	static QDateTime currentDateTime( BobUI::DateTimeSpec )
 
 
 QPtrList
@@ -558,13 +558,13 @@ Improvements:
 	optimisations.
 
 
-QTextStream
+BOBUIextStream
 ------------------
 New functions:
-	QTextCodec *codec()
+	BOBUIextCodec *codec()
 
 
-QTimeEdit
+BOBUIimeEdit
 ------------------
 New properties:
 	Display display
@@ -612,16 +612,16 @@ New functions:
 	void subtractLine() (as slot)
 
 
-QTextBrowser
+BOBUIextBrowser
 ------------------
 New functions:
 	void sourceChanged( const QString& )
 	void anchorClicked( const QString&, const QString& )
 
 
-QTextEdit
+BOBUIextEdit
 ------------------
-QTextEdit offers another TextFormat (LogText), which is optimized
+BOBUIextEdit offers another TextFormat (LogText), which is optimized
 (speed and memory) for displaying large read-only texts normally used
 for logging.
 
@@ -645,7 +645,7 @@ New enum values:
 	AtWordOrDocumentBoundary
 
 
-QToolButton
+BOBUIoolButton
 ------------------
 New properties:
 	TextPosition textPosition
@@ -658,7 +658,7 @@ New enums:
 	TextPosition { Right, Under }
 
 
-QTooltip
+BOBUIooltip
 ------------------
 New functions:
 	static void setWakeUpDelay( int )

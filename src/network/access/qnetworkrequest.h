@@ -1,25 +1,25 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QNETWORKREQUEST_H
 #define QNETWORKREQUEST_H
 
-#include <QtNetwork/qtnetworkglobal.h>
-#include <QtNetwork/qhttpheaders.h>
+#include <BobUINetwork/bobuinetworkglobal.h>
+#include <BobUINetwork/qhttpheaders.h>
 
-#include <QtCore/qassert.h>
-#include <QtCore/QSharedDataPointer>
-#include <QtCore/QString>
-#include <QtCore/QUrl>
-#include <QtCore/QVariant>
+#include <BobUICore/qassert.h>
+#include <BobUICore/QSharedDataPointer>
+#include <BobUICore/QString>
+#include <BobUICore/QUrl>
+#include <BobUICore/QVariant>
 
-#include <QtCore/q26numeric.h>
-#include <QtCore/q20utility.h>
+#include <BobUICore/q26numeric.h>
+#include <BobUICore/q20utility.h>
 
 #include <chrono>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QSslConfiguration;
 class QHttp2Configuration;
@@ -139,12 +139,12 @@ public:
     void setHeader(KnownHeaders header, const QVariant &value);
 
     // raw headers:
-#if QT_NETWORK_REMOVED_SINCE(6, 7)
+#if BOBUI_NETWORK_REMOVED_SINCE(6, 7)
     bool hasRawHeader(const QByteArray &headerName) const;
 #endif
     bool hasRawHeader(QAnyStringView headerName) const;
     QList<QByteArray> rawHeaderList() const;
-#if QT_NETWORK_REMOVED_SINCE(6, 7)
+#if BOBUI_NETWORK_REMOVED_SINCE(6, 7)
     QByteArray rawHeader(const QByteArray &headerName) const;
 #endif
     QByteArray rawHeader(QAnyStringView headerName) const;
@@ -154,7 +154,7 @@ public:
     QVariant attribute(Attribute code, const QVariant &defaultValue = QVariant()) const;
     void setAttribute(Attribute code, const QVariant &value);
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     QSslConfiguration sslConfiguration() const;
     void setSslConfiguration(const QSslConfiguration &configuration);
 #endif
@@ -171,7 +171,7 @@ public:
 
     QString peerVerifyName() const;
     void setPeerVerifyName(const QString &peerName);
-#if QT_CONFIG(http)
+#if BOBUI_CONFIG(http)
     QHttp1Configuration http1Configuration() const;
     void setHttp1Configuration(const QHttp1Configuration &configuration);
 
@@ -180,7 +180,7 @@ public:
 
     qint64 decompressedSafetyCheckThreshold() const;
     void setDecompressedSafetyCheckThreshold(qint64 threshold);
-#endif // QT_CONFIG(http)
+#endif // BOBUI_CONFIG(http)
     std::chrono::seconds tcpKeepAliveIdleTimeBeforeProbes() const;
     void setTcpKeepAliveIdleTimeBeforeProbes(std::chrono::seconds idle)
     {
@@ -198,15 +198,15 @@ public:
     int tcpKeepAliveProbeCount() const;
     void setTcpKeepAliveProbeCount(int probes);
 
-#if QT_CONFIG(http) || defined (Q_OS_WASM)
-    QT_NETWORK_INLINE_SINCE(6, 8)
+#if BOBUI_CONFIG(http) || defined (Q_OS_WASM)
+    BOBUI_NETWORK_INLINE_SINCE(6, 8)
     int transferTimeout() const;
-    QT_NETWORK_INLINE_SINCE(6, 8)
+    BOBUI_NETWORK_INLINE_SINCE(6, 8)
     void setTransferTimeout(int timeout);
 
     std::chrono::milliseconds transferTimeoutAsDuration() const;
     void setTransferTimeout(std::chrono::milliseconds duration = DefaultTransferTimeout);
-#endif // QT_CONFIG(http) || defined (Q_OS_WASM)
+#endif // BOBUI_CONFIG(http) || defined (Q_OS_WASM)
 private:
     void doSetIdleTimeBeforeProbes(std::chrono::duration<int> idle);
     void doSetIntervalBetweenProbes(std::chrono::duration<int> interval);
@@ -216,8 +216,8 @@ private:
 
 Q_DECLARE_SHARED(QNetworkRequest)
 
-#if QT_NETWORK_INLINE_IMPL_SINCE(6, 8)
-#if QT_CONFIG(http) || defined (Q_OS_WASM)
+#if BOBUI_NETWORK_INLINE_IMPL_SINCE(6, 8)
+#if BOBUI_CONFIG(http) || defined (Q_OS_WASM)
 int QNetworkRequest::transferTimeout() const
 {
     return q26::saturate_cast<int>(transferTimeoutAsDuration().count());
@@ -227,13 +227,13 @@ void QNetworkRequest::setTransferTimeout(int timeout)
 {
     setTransferTimeout(std::chrono::milliseconds(timeout));
 }
-#endif // QT_CONFIG(http) || defined (Q_OS_WASM)
+#endif // BOBUI_CONFIG(http) || defined (Q_OS_WASM)
 #endif // INLINE_SINCE 6.8
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN(QNetworkRequest, Q_NETWORK_EXPORT)
-QT_DECL_METATYPE_EXTERN_TAGGED(QNetworkRequest::RedirectPolicy,
+BOBUI_DECL_METATYPE_EXTERN(QNetworkRequest, Q_NETWORK_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN_TAGGED(QNetworkRequest::RedirectPolicy,
                                QNetworkRequest__RedirectPolicy, Q_NETWORK_EXPORT)
 
 #endif

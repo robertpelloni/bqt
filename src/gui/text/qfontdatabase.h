@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QFONTDATABASE_H
 #define QFONTDATABASE_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtGui/qwindowdefs.h>
-#include <QtCore/qstring.h>
-#include <QtGui/qfont.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUIGui/qwindowdefs.h>
+#include <BobUICore/qstring.h>
+#include <BobUIGui/qfont.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 struct QFontDef;
@@ -73,8 +73,8 @@ public:
 
     static QList<int> standardSizes();
 
-#if QT_DEPRECATED_SINCE(6, 0) && !defined(QT_BUILD_GUI_LIB)
-    QT_DEPRECATED_VERSION_X_6_0("Call the static functions instead") explicit QFontDatabase() = default;
+#if BOBUI_DEPRECATED_SINCE(6, 0) && !defined(BOBUI_BUILD_GUI_LIB)
+    BOBUI_DEPRECATED_VERSION_X_6_0("Call the static functions instead") explicit QFontDatabase() = default;
 #else
     QFontDatabase() = delete;
 #endif
@@ -125,6 +125,6 @@ public:
     static QFont systemFont(SystemFont type);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QFONTDATABASE_H

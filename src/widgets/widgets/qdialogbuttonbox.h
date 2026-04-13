@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDIALOGBUTTONBOX_H
 #define QDIALOGBUTTONBOX_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qwidget.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qwidget.h>
 
-QT_REQUIRE_CONFIG(dialogbuttonbox);
+BOBUI_REQUIRE_CONFIG(dialogbuttonbox);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QAbstractButton;
@@ -20,7 +20,7 @@ class QDialogButtonBoxPrivate;
 class Q_WIDGETS_EXPORT QDialogButtonBox : public QWidget
 {
     Q_OBJECT
-    Q_PROPERTY(Qt::Orientation orientation READ orientation WRITE setOrientation)
+    Q_PROPERTY(BobUI::Orientation orientation READ orientation WRITE setOrientation)
     Q_PROPERTY(StandardButtons standardButtons READ standardButtons WRITE setStandardButtons)
     Q_PROPERTY(bool centerButtons READ centerButtons WRITE setCenterButtons)
 
@@ -82,14 +82,14 @@ public:
     };
 
     QDialogButtonBox(QWidget *parent = nullptr);
-    QDialogButtonBox(Qt::Orientation orientation, QWidget *parent = nullptr);
+    QDialogButtonBox(BobUI::Orientation orientation, QWidget *parent = nullptr);
     explicit QDialogButtonBox(StandardButtons buttons, QWidget *parent = nullptr);
-    QDialogButtonBox(StandardButtons buttons, Qt::Orientation orientation,
+    QDialogButtonBox(StandardButtons buttons, BobUI::Orientation orientation,
                      QWidget *parent = nullptr);
     ~QDialogButtonBox();
 
-    void setOrientation(Qt::Orientation orientation);
-    Qt::Orientation orientation() const;
+    void setOrientation(BobUI::Orientation orientation);
+    BobUI::Orientation orientation() const;
 
     void addButton(QAbstractButton *button, ButtonRole role);
     QPushButton *addButton(const QString &text, ButtonRole role);
@@ -125,6 +125,6 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QDialogButtonBox::StandardButtons)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QDIALOGBUTTONBOX_H

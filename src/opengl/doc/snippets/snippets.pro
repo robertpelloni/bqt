@@ -1,3 +1,3 @@
 #! [qmake_use]
-QT += opengl
+BOBUI += opengl
 #! [qmake_use]

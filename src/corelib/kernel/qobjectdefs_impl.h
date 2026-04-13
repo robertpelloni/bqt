@@ -1,28 +1,28 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2013 Olivier Goffart <ogoffart@woboq.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QOBJECTDEFS_H
 #error Do not include qobjectdefs_impl.h directly
-#include <QtCore/qnamespace.h>
+#include <BobUICore/qnamespace.h>
 #endif
 
 #if 0
-#pragma qt_sync_skip_header_check
-#pragma qt_sync_stop_processing
+#pragma bobui_sync_skip_header_check
+#pragma bobui_sync_stop_processing
 #endif
 
-#include <QtCore/qfunctionaltools_impl.h>
+#include <BobUICore/qfunctionaltools_impl.h>
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QObject;
 class QObjectPrivate;
 class QMetaMethod;
 class QByteArray;
 
-namespace QtPrivate {
+namespace BobUIPrivate {
     template <typename T> struct RemoveRef { typedef T Type; };
     template <typename T> struct RemoveRef<T&> { typedef T Type; };
     template <typename T> struct RemoveConstRef { typedef T Type; };
@@ -76,14 +76,14 @@ namespace QtPrivate {
       The FunctionPointer<Func> struct is a type trait for function pointer.
         - ArgumentCount  is the number of argument, or -1 if it is unknown
         - the Object typedef is the Object of a pointer to member function
-        - the Arguments typedef is the list of argument (in a QtPrivate::List)
+        - the Arguments typedef is the list of argument (in a BobUIPrivate::List)
         - the Function typedef is an alias to the template parameter Func
         - the call<Args, R>(f,o,args) method is used to call that slot
             Args is the list of argument of the signal
             R is the return type of the signal
             f is the function pointer
             o is the receiver object
-            and args is the array of pointer to arguments, as used in qt_metacall
+            and args is the array of pointer to arguments, as used in bobui_metacall
 
        The Functor<Func,N> struct is the helper to call a functor of N argument.
        Its call function is the same as the FunctionPointer::call function.
@@ -272,7 +272,7 @@ namespace QtPrivate {
         static int test(const std::remove_reference_t<A2>&);
         static char test(...);
         enum { value = sizeof(test(std::declval<std::remove_reference_t<A1>>())) == sizeof(int) };
-#ifdef QT_NO_NARROWING_CONVERSIONS_IN_CONNECT
+#ifdef BOBUI_NO_NARROWING_CONVERSIONS_IN_CONNECT
         using AreArgumentsConvertibleWithoutNarrowing = AreArgumentsConvertibleWithoutNarrowingBase<std::decay_t<A1>, std::decay_t<A2>>;
         static_assert(AreArgumentsConvertibleWithoutNarrowing::value, "Signal and slot arguments are not compatible (narrowing)");
 #endif
@@ -330,7 +330,7 @@ namespace QtPrivate {
         using ReturnType = std::invoke_result_t<Func, Args...>;
         using Function = ReturnType(*)(Args...);
         enum {ArgumentCount = sizeof...(Args)};
-        using Arguments = QtPrivate::List<Args...>;
+        using Arguments = BobUIPrivate::List<Args...>;
 
         template <typename SignalArgs, typename R>
         static void call(Func &f, void *, void **arg) {
@@ -397,20 +397,20 @@ namespace QtPrivate {
                                       int>
     countMatchingArguments()
     {
-        using ExpectedArguments = typename QtPrivate::FunctionPointer<Prototype>::Arguments;
+        using ExpectedArguments = typename BobUIPrivate::FunctionPointer<Prototype>::Arguments;
         using Actual = std::decay_t<Functor>;
 
-        if constexpr (QtPrivate::FunctionPointer<Actual>::IsPointerToMemberFunction
-                   || QtPrivate::FunctionPointer<Actual>::ArgumentCount >= 0) {
+        if constexpr (BobUIPrivate::FunctionPointer<Actual>::IsPointerToMemberFunction
+                   || BobUIPrivate::FunctionPointer<Actual>::ArgumentCount >= 0) {
             // PMF or free function
-            using ActualArguments = typename QtPrivate::FunctionPointer<Actual>::Arguments;
-            if constexpr (QtPrivate::CheckCompatibleArguments<ExpectedArguments, ActualArguments>::value)
-                return QtPrivate::FunctionPointer<Actual>::ArgumentCount;
+            using ActualArguments = typename BobUIPrivate::FunctionPointer<Actual>::Arguments;
+            if constexpr (BobUIPrivate::CheckCompatibleArguments<ExpectedArguments, ActualArguments>::value)
+                return BobUIPrivate::FunctionPointer<Actual>::ArgumentCount;
             else
                 return -1;
         } else {
             // lambda or functor
-            return QtPrivate::ComputeFunctorArgumentCount<Actual, ExpectedArguments>::Value;
+            return BobUIPrivate::ComputeFunctorArgumentCount<Actual, ExpectedArguments>::Value;
         }
     }
 
@@ -421,7 +421,7 @@ namespace QtPrivate {
         // compiler to create tons of per-polymorphic-class stuff that
         // we'll never need. We just use one function pointer, and the
         // Operations enum below to distinguish requests
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
         QAtomicInt m_ref = 1;
         typedef void (*ImplFn)(int which, QSlotObjectBase* this_, QObject *receiver, void **args, bool *ret);
         const ImplFn m_impl;
@@ -453,7 +453,7 @@ namespace QtPrivate {
         };
 
         bool ref() noexcept { return m_ref.ref(); }
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
         inline void destroyIfLastRef() noexcept
         { if (!m_ref.deref()) m_impl(Destroy, this, nullptr, nullptr, nullptr); }
 
@@ -520,13 +520,13 @@ namespace QtPrivate {
     // Args and R are the List of arguments and the return type of the signal to which the slot is connected.
     template <typename Func, typename Args, typename R>
     class QCallableObject : public QSlotObjectBase,
-                            private QtPrivate::CompactStorage<std::decay_t<Func>>
+                            private BobUIPrivate::CompactStorage<std::decay_t<Func>>
     {
         using FunctorValue = std::decay_t<Func>;
-        using Storage = QtPrivate::CompactStorage<FunctorValue>;
+        using Storage = BobUIPrivate::CompactStorage<FunctorValue>;
         using FuncType = Callable<Func, Args>;
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
         Q_DECL_HIDDEN static void impl(int which, QSlotObjectBase *this_, QObject *r, void **a, bool *ret)
 #else
         // Design note: the first three arguments match those for typical Call
@@ -584,12 +584,12 @@ namespace QtPrivate {
     struct ContextTypeForFunctor<Func,
         std::enable_if_t<std::conjunction_v<std::negation<std::is_convertible<Func, const char *>>,
                                             std::is_member_function_pointer<Func>,
-                                            std::is_convertible<typename QtPrivate::FunctionPointer<Func>::Object *, QObject *>
+                                            std::is_convertible<typename BobUIPrivate::FunctionPointer<Func>::Object *, QObject *>
                                            >
                         >
     >
     {
-        using ContextType = typename QtPrivate::FunctionPointer<Func>::Object;
+        using ContextType = typename BobUIPrivate::FunctionPointer<Func>::Object;
     };
 
     /*
@@ -599,31 +599,31 @@ namespace QtPrivate {
         not compatible with the expected Prototype.
     */
     template <typename Prototype, typename Functor>
-    static constexpr std::enable_if_t<QtPrivate::countMatchingArguments<Prototype, Functor>() >= 0,
-        QtPrivate::QSlotObjectBase *>
+    static constexpr std::enable_if_t<BobUIPrivate::countMatchingArguments<Prototype, Functor>() >= 0,
+        BobUIPrivate::QSlotObjectBase *>
     makeCallableObject(Functor &&func)
     {
-        using ExpectedSignature = QtPrivate::FunctionPointer<Prototype>;
+        using ExpectedSignature = BobUIPrivate::FunctionPointer<Prototype>;
         using ExpectedReturnType = typename ExpectedSignature::ReturnType;
         using ExpectedArguments = typename ExpectedSignature::Arguments;
 
-        using ActualSignature = QtPrivate::FunctionPointer<Functor>;
-        constexpr int MatchingArgumentCount = QtPrivate::countMatchingArguments<Prototype, Functor>();
-        using ActualArguments  = typename QtPrivate::List_Left<ExpectedArguments, MatchingArgumentCount>::Value;
+        using ActualSignature = BobUIPrivate::FunctionPointer<Functor>;
+        constexpr int MatchingArgumentCount = BobUIPrivate::countMatchingArguments<Prototype, Functor>();
+        using ActualArguments  = typename BobUIPrivate::List_Left<ExpectedArguments, MatchingArgumentCount>::Value;
 
         static_assert(int(ActualSignature::ArgumentCount) <= int(ExpectedSignature::ArgumentCount),
             "Functor requires more arguments than what can be provided.");
 
         // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
-        return new QtPrivate::QCallableObject<std::decay_t<Functor>, ActualArguments, ExpectedReturnType>(std::forward<Functor>(func));
+        return new BobUIPrivate::QCallableObject<std::decay_t<Functor>, ActualArguments, ExpectedReturnType>(std::forward<Functor>(func));
     }
 
     template<typename Prototype, typename Functor, typename = void>
     struct AreFunctionsCompatible : std::false_type {};
     template<typename Prototype, typename Functor>
     struct AreFunctionsCompatible<Prototype, Functor, std::enable_if_t<
-        std::is_same_v<decltype(QtPrivate::makeCallableObject<Prototype>(std::forward<Functor>(std::declval<Functor>()))),
-        QtPrivate::QSlotObjectBase *>>
+        std::is_same_v<decltype(BobUIPrivate::makeCallableObject<Prototype>(std::forward<Functor>(std::declval<Functor>()))),
+        BobUIPrivate::QSlotObjectBase *>>
     > : std::true_type {};
 
     template<typename Prototype, typename Functor>
@@ -632,7 +632,7 @@ namespace QtPrivate {
                       "Functor is not compatible with expected prototype!");
         return true;
     }
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 

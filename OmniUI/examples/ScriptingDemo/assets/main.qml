@@ -1,4 +1,4 @@
-import QtQuick 2.15
+import BobUIQuick 2.15
 import OmniUI 1.0
 import OmniScript 1.0
 import OmniNet 1.0

@@ -1,7 +1,7 @@
 // Copyright (C) 2013 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Marc Mutz <marc.mutz@woboq.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
 #include "qobject.h"
 
@@ -144,5 +144,5 @@ void tst_QSignalBlocker::dismiss()
     QVERIFY(obj.signalsBlocked());
 }
 
-QTEST_MAIN(tst_QSignalBlocker)
+BOBUIEST_MAIN(tst_QSignalBlocker)
 #include "tst_qsignalblocker.moc"

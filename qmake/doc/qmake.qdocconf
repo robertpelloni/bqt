@@ -1,4 +1,4 @@
-include($QT_INSTALL_DOCS/global/qt-module-defaults.qdocconf)
+include($BOBUI_INSTALL_DOCS/global/bobui-module-defaults.qdocconf)
 
 project                 = QMake
 moduleheader            = qmake_pch.h
@@ -7,7 +7,7 @@ description             = QMake Manual
 qhp.projects            = qmake
 
 qhp.qmake.file                = qmake.qhp
-qhp.qmake.namespace           = org.qt-project.qmake.$QT_VERSION_TAG
+qhp.qmake.namespace           = org.bobui-project.qmake.$BOBUI_VERSION_TAG
 qhp.qmake.virtualFolder       = qmake
 qhp.qmake.indexTitle          = QMake Manual
 qhp.qmake.subprojects         = manual
@@ -24,39 +24,39 @@ exampledirs             = snippets
 
 tagfile = qmake.tags
 
-macro.qtbug = "\\l{https://bugreports.qt.io/browse/\1}{\1}"
+macro.bobuibug = "\\l{https://bugreports.bobui.io/browse/\1}{\1}"
 
 depends += \
-    activeqt \
-    qt3d \
-    qtassistant \
-    qtbluetooth \
-    qtconcurrent \
-    qtcore \
-    qtdbus \
-    qtdoc \
-    qtdesigner \
-    qtgui \
-    qthelp \
-    qtimageformats \
-    qtlinguist \
-    qtlocation \
-    qtmultimedia \
-    qtnetwork \
-    qtopengl \
-    qtprintsupport \
-    qtqml qtqmltest \
-    qtquick \
-    qtquickcontrols \
-    qtquickdialogs \
-    qtsensors \
-    qtserialport \
-    qtsql \
-    qtsvg \
-    qttestlib \
-    qtuitools \
-    qtwidgets \
-    qtxml
+    activebobui \
+    bobui3d \
+    bobuiassistant \
+    bobuibluetooth \
+    bobuiconcurrent \
+    bobuicore \
+    bobuidbus \
+    bobuidoc \
+    bobuidesigner \
+    bobuigui \
+    bobuihelp \
+    bobuiimageformats \
+    bobuilinguist \
+    bobuilocation \
+    bobuimultimedia \
+    bobuinetwork \
+    bobuiopengl \
+    bobuiprintsupport \
+    bobuiqml bobuiqmltest \
+    bobuiquick \
+    bobuiquickcontrols \
+    bobuiquickdialogs \
+    bobuisensors \
+    bobuiserialport \
+    bobuisql \
+    bobuisvg \
+    bobuitestlib \
+    bobuiuitools \
+    bobuiwidgets \
+    bobuixml
 
 navigation.landingpage = "qmake Manual"
 # Auto-generate navigation linking based on "QMake module topics":

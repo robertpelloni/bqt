@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="orientation">
-    <enum>Qt::Orientation::Vertical</enum>
+    <enum>BobUI::Orientation::Vertical</enum>
    </property>
    <property name="standardButtons">
     <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>

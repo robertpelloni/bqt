@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef WINDOW_H
 #define WINDOW_H
@@ -7,13 +7,13 @@
 #include <QWidget>
 #include <QDir>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QComboBox;
 class QLabel;
 class QPushButton;
-class QTableWidget;
-class QTableWidgetItem;
-QT_END_NAMESPACE
+class BOBUIableWidget;
+class BOBUIableWidgetItem;
+BOBUI_END_NAMESPACE
 
 //! [0]
 class Window : public QWidget
@@ -41,7 +41,7 @@ private:
     QComboBox *directoryComboBox;
     QLabel *filesFoundLabel;
     QPushButton *findButton;
-    QTableWidget *filesTable;
+    BOBUIableWidget *filesTable;
 
     QDir currentDir;
 };

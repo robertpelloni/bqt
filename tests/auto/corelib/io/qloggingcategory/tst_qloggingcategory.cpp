@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QMutexLocker>
 #include <QLoggingCategory>
 #include <QMap>
@@ -12,27 +12,27 @@ Q_LOGGING_CATEGORY(Digia_Oslo_Office_com, "Digia.Oslo.Office.com")
 Q_LOGGING_CATEGORY(Digia_Oulu_Office_com, "Digia.Oulu.Office.com")
 Q_LOGGING_CATEGORY(Digia_Berlin_Office_com, "Digia.Berlin.Office.com")
 
-QT_USE_NAMESPACE
+BOBUI_USE_NAMESPACE
 
-QtMessageHandler oldMessageHandler;
+BobUIMessageHandler oldMessageHandler;
 QString logMessage;
 bool multithreadtest = false;
 QStringList threadtest;
 QMutex threadmutex;
 bool usedefaultformat = false;
 
-QByteArray qMyMessageFormatString(QtMsgType type, const QMessageLogContext &context,
+QByteArray qMyMessageFormatString(BobUIMsgType type, const QMessageLogContext &context,
                                               const QString &str)
 {
     QByteArray message;
     if (!usedefaultformat) {
         message.append(context.category);
         switch (type) {
-        case QtDebugMsg:   message.append(".debug"); break;
-        case QtInfoMsg:    message.append(".info"); break;
-        case QtWarningMsg: message.append(".warning"); break;
-        case QtCriticalMsg:message.append(".critical"); break;
-        case QtFatalMsg:   message.append(".fatal"); break;
+        case BobUIDebugMsg:   message.append(".debug"); break;
+        case BobUIInfoMsg:    message.append(".info"); break;
+        case BobUIWarningMsg: message.append(".warning"); break;
+        case BobUICriticalMsg:message.append(".critical"); break;
+        case BobUIFatalMsg:   message.append(".fatal"); break;
         }
         message.append(": ");
         message.append(qPrintable(str));
@@ -43,7 +43,7 @@ QByteArray qMyMessageFormatString(QtMsgType type, const QMessageLogContext &cont
     return message.simplified();
 }
 
-static void myCustomMessageHandler(QtMsgType type,
+static void myCustomMessageHandler(BobUIMsgType type,
                                    const QMessageLogContext &context,
                                    const QString &msg)
 {
@@ -77,11 +77,11 @@ public:
     QByteArray array()
     {
         QString ret;
-        QTextStream out(&ret);
+        BOBUIextStream out(&ret);
         for (int a = 0; a < _configitemEntryOrder.size(); a++) {
             out << _configitemEntryOrder[a]
                    << " = "
-                   << _values.value(_configitemEntryOrder[a]) << Qt::endl;
+                   << _values.value(_configitemEntryOrder[a]) << BobUI::endl;
         }
         out.flush();
         return ret.toLatin1();
@@ -101,7 +101,7 @@ private:
 static Configuration configuration1;
 static Configuration configuration2;
 
-class LogThread : public QThread
+class LogThread : public BOBUIhread
 {
     Q_OBJECT
 
@@ -166,7 +166,7 @@ static void customCategoryFilter(QLoggingCategory *category)
 {
     customCategoryFilterArgs << QLatin1String(category->categoryName());
     // invert debug
-    category->setEnabled(QtDebugMsg, !category->isEnabled(QtDebugMsg));
+    category->setEnabled(BobUIDebugMsg, !category->isEnabled(BobUIDebugMsg));
 }
 
 class tst_QLogging : public QObject
@@ -181,7 +181,7 @@ private slots:
     void initTestCase()
     {
         qputenv("XDG_CONFIG_DIRS", "/does/not/exist");
-        qputenv("QT_MESSAGE_PATTERN", "%{category}: %{type},%{message}");
+        qputenv("BOBUI_MESSAGE_PATTERN", "%{category}: %{type},%{message}");
         oldMessageHandler = qInstallMessageHandler(myCustomMessageHandler);
         // Create configuration
         _config = new Configuration();
@@ -221,35 +221,35 @@ private slots:
         logMessage.clear();
 
         QCOMPARE(QLoggingCategory::defaultCategory()->isDebugEnabled(), true);
-        QCOMPARE(QLoggingCategory::defaultCategory()->isEnabled(QtDebugMsg), true);
+        QCOMPARE(QLoggingCategory::defaultCategory()->isEnabled(BobUIDebugMsg), true);
         QCOMPARE(QLoggingCategory::defaultCategory()->isWarningEnabled(), true);
-        QCOMPARE(QLoggingCategory::defaultCategory()->isEnabled(QtWarningMsg), true);
+        QCOMPARE(QLoggingCategory::defaultCategory()->isEnabled(BobUIWarningMsg), true);
         QCOMPARE(QLoggingCategory::defaultCategory()->isCriticalEnabled(), true);
-        QCOMPARE(QLoggingCategory::defaultCategory()->isEnabled(QtCriticalMsg), true);
+        QCOMPARE(QLoggingCategory::defaultCategory()->isEnabled(BobUICriticalMsg), true);
 
         QLoggingCategory defaultCategory("default");
         QCOMPARE(defaultCategory.isDebugEnabled(), true);
-        QCOMPARE(defaultCategory.isEnabled(QtDebugMsg), true);
+        QCOMPARE(defaultCategory.isEnabled(BobUIDebugMsg), true);
         QCOMPARE(defaultCategory.isWarningEnabled(), true);
-        QCOMPARE(defaultCategory.isEnabled(QtWarningMsg), true);
+        QCOMPARE(defaultCategory.isEnabled(BobUIWarningMsg), true);
         QCOMPARE(defaultCategory.isCriticalEnabled(), true);
-        QCOMPARE(defaultCategory.isEnabled(QtCriticalMsg), true);
+        QCOMPARE(defaultCategory.isEnabled(BobUICriticalMsg), true);
 
         QLoggingCategory customCategory("custom");
         QCOMPARE(customCategory.isDebugEnabled(), true);
-        QCOMPARE(customCategory.isEnabled(QtDebugMsg), true);
+        QCOMPARE(customCategory.isEnabled(BobUIDebugMsg), true);
         QCOMPARE(customCategory.isWarningEnabled(), true);
-        QCOMPARE(customCategory.isEnabled(QtWarningMsg), true);
+        QCOMPARE(customCategory.isEnabled(BobUIWarningMsg), true);
         QCOMPARE(customCategory.isCriticalEnabled(), true);
-        QCOMPARE(customCategory.isEnabled(QtCriticalMsg), true);
+        QCOMPARE(customCategory.isEnabled(BobUICriticalMsg), true);
 
-        QLoggingCategory onlyWarningsCategory("withType", QtWarningMsg);
+        QLoggingCategory onlyWarningsCategory("withType", BobUIWarningMsg);
         QCOMPARE(onlyWarningsCategory.isDebugEnabled(), false);
-        QCOMPARE(onlyWarningsCategory.isEnabled(QtDebugMsg), false);
+        QCOMPARE(onlyWarningsCategory.isEnabled(BobUIDebugMsg), false);
         QCOMPARE(onlyWarningsCategory.isWarningEnabled(), true);
-        QCOMPARE(onlyWarningsCategory.isEnabled(QtWarningMsg), true);
+        QCOMPARE(onlyWarningsCategory.isEnabled(BobUIWarningMsg), true);
         QCOMPARE(onlyWarningsCategory.isCriticalEnabled(), true);
-        QCOMPARE(onlyWarningsCategory.isEnabled(QtCriticalMsg), true);
+        QCOMPARE(onlyWarningsCategory.isEnabled(BobUICriticalMsg), true);
 
         // make sure nothing has printed warnings
         QVERIFY(logMessage.isEmpty());
@@ -261,9 +261,9 @@ private slots:
 
         QCOMPARE(QLoggingCategory::defaultCategory()->isDebugEnabled(), true);
 
-        QLoggingCategory::defaultCategory()->setEnabled(QtDebugMsg, false);
+        QLoggingCategory::defaultCategory()->setEnabled(BobUIDebugMsg, false);
         QCOMPARE(QLoggingCategory::defaultCategory()->isDebugEnabled(), false);
-        QLoggingCategory::defaultCategory()->setEnabled(QtDebugMsg, true);
+        QLoggingCategory::defaultCategory()->setEnabled(BobUIDebugMsg, true);
 
         // make sure nothing has printed warnings
         QVERIFY(logMessage.isEmpty());
@@ -328,7 +328,7 @@ private slots:
         qCritical("%s", "Check critical with no filter active");
         QCOMPARE(logMessage, buf);
 
-        // install filter (inverts rules for qtdebug)
+        // install filter (inverts rules for bobuidebug)
         QLoggingCategory::installFilter(customCategoryFilter);
 
         // Check default debug
@@ -346,9 +346,9 @@ private slots:
     }
 
     Q_LOGGING_CATEGORY(TST_MACRO_1, "tst.macro.1")
-    Q_LOGGING_CATEGORY(TST_MACRO_2, "tst.macro.2", QtDebugMsg)
-    Q_LOGGING_CATEGORY(TST_MACRO_3, "tst.macro.3", QtFatalMsg)
-    Q_LOGGING_CATEGORY(TST_MACRO_4, "tst.macro.4", QtInfoMsg)
+    Q_LOGGING_CATEGORY(TST_MACRO_2, "tst.macro.2", BobUIDebugMsg)
+    Q_LOGGING_CATEGORY(TST_MACRO_3, "tst.macro.3", BobUIFatalMsg)
+    Q_LOGGING_CATEGORY(TST_MACRO_4, "tst.macro.4", BobUIInfoMsg)
 
     void QLoggingCategoryMacro()
     {
@@ -440,7 +440,7 @@ private slots:
         qCCritical(customCategory) << "Check critical with no filter active";
         QCOMPARE(logMessage, buf);
 
-        // install filter (inverts rules for qtdebug)
+        // install filter (inverts rules for bobuidebug)
         QLoggingCategory::installFilter(customCategoryFilter);
 
         // Check custom debug
@@ -950,6 +950,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(tst_QLogging)
+BOBUIEST_MAIN(tst_QLogging)
 
 #include "tst_qloggingcategory.moc"

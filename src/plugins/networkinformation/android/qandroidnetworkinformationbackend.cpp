@@ -1,16 +1,16 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#include <QtNetwork/private/qnetworkinformation_p.h>
+#include <BobUINetwork/private/qnetworkinformation_p.h>
 
 #include "wrapper/androidconnectivitymanager.h"
 
-#include <QtCore/qglobal.h>
+#include <BobUICore/qglobal.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 Q_DECLARE_LOGGING_CATEGORY(lcNetInfoAndroid)
-Q_LOGGING_CATEGORY(lcNetInfoAndroid, "qt.network.info.android");
+Q_LOGGING_CATEGORY(lcNetInfoAndroid, "bobui.network.info.android");
 
 static QString backendName() {
     return QString::fromUtf16(QNetworkInformationBackend::PluginNames
@@ -143,6 +143,6 @@ void QAndroidNetworkInformationBackend::updateTransportMedium(
     setTransportMedium(mapTransport(transport));
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "qandroidnetworkinformationbackend.moc"

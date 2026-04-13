@@ -1,19 +1,19 @@
 // Copyright (C) 2023 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/QDebug>
-#include <QtCore/QElapsedTimer>
-#include <QtCore/QMetaEnum>
-#include <QtCore/QTimer>
-#include <QtCore/QUrl>
-#include <QtNetwork/QHostAddress>
-#include <QtNetwork/QHostInfo>
-#include <QtNetwork/QDnsLookup>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/QDebug>
+#include <BobUICore/QElapsedTimer>
+#include <BobUICore/QMetaEnum>
+#include <BobUICore/BOBUIimer>
+#include <BobUICore/QUrl>
+#include <BobUINetwork/QHostAddress>
+#include <BobUINetwork/QHostInfo>
+#include <BobUINetwork/QDnsLookup>
 
-#if QT_CONFIG(ssl)
-#  include <QtNetwork/QSslCipher>
-#  include <QtNetwork/QSslConfiguration>
+#if BOBUI_CONFIG(ssl)
+#  include <BobUINetwork/QSslCipher>
+#  include <BobUINetwork/QSslConfiguration>
 #endif
 
 #include <stdlib.h>
@@ -21,7 +21,7 @@
 
 #include <chrono>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 using namespace std::chrono;
 using namespace std::chrono_literals;
 
@@ -156,7 +156,7 @@ static void printResults(const QDnsLookup &lookup, QElapsedTimer::Duration durat
         if (port == 0)
             port = QDnsLookup::defaultPortForProtocol(lookup.nameserverProtocol());
         printf(";; SERVER: %s#%d", qPrintable(server.toString()), port);
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
         if (lookup.nameserverProtocol() != QDnsLookup::Standard) {
             if (QSslConfiguration conf = lookup.sslConfiguration(); !conf.isNull()) {
                 printf(" (%s %s)", enumToString(conf.sessionProtocol()).constData(),
@@ -210,7 +210,7 @@ int main(int argc, char *argv[])
     }
 
     if (domain.isEmpty())
-        domain = u"qt-project.org"_s;
+        domain = u"bobui-project.org"_s;
     if (type == QDnsLookup::Type{})
         type = QDnsLookup::A;
 
@@ -227,14 +227,14 @@ int main(int argc, char *argv[])
 
     // execute the lookup
     QObject::connect(&lookup, &QDnsLookup::finished, qApp, &QCoreApplication::quit);
-    QTimer::singleShot(15s, []() { qApp->exit(EXIT_FAILURE); });
+    BOBUIimer::singleShot(15s, []() { qApp->exit(EXIT_FAILURE); });
 
     QElapsedTimer timer;
     timer.start();
     lookup.lookup();
     if (a.exec() == EXIT_FAILURE)
         return EXIT_FAILURE;
-    printf("; <<>> QDnsLookup " QT_VERSION_STR " <<>> %s %s\n",
+    printf("; <<>> QDnsLookup " BOBUI_VERSION_STR " <<>> %s %s\n",
            qPrintable(QCoreApplication::applicationName()), qPrintable(args.join(u' ')));
     printResults(lookup, timer.durationElapsed());
     return 0;

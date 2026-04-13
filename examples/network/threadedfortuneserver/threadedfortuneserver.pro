@@ -1,4 +1,4 @@
-QT += network widgets
+BOBUI += network widgets
 
 HEADERS       = dialog.h \
                 fortuneserver.h \
@@ -9,7 +9,7 @@ SOURCES       = dialog.cpp \
                 main.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/network/threadedfortuneserver
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/network/threadedfortuneserver
 INSTALLS += target
 
 

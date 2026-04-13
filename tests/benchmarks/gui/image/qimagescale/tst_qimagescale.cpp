@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <qtest.h>
+#include <bobuiest.h>
 #include <QImage>
 
 class tst_QImageScale : public QObject
@@ -21,17 +21,17 @@ private:
 
 void tst_QImageScale::scaleRgb32_data()
 {
-    QTest::addColumn<QImage>("inputImage");
-    QTest::addColumn<QSize>("outputSize");
+    BOBUIest::addColumn<QImage>("inputImage");
+    BOBUIest::addColumn<QSize>("outputSize");
 
     QImage image = generateImageRgb32(1000, 1000);
-    QTest::newRow("1000x1000 -> 2000x2000") << image << QSize(2000, 2000);
-    QTest::newRow("1000x1000 -> 2000x1000") << image << QSize(2000, 1000);
-    QTest::newRow("1000x1000 -> 1000x2000") << image << QSize(1000, 2000);
-    QTest::newRow("1000x1000 -> 2000x500") << image << QSize(2000, 500);
-    QTest::newRow("1000x1000 -> 500x2000") << image << QSize(500, 2000);
-    QTest::newRow("1000x1000 -> 500x500") << image << QSize(500, 500);
-    QTest::newRow("1000x1000 -> 200x200") << image << QSize(200, 200);
+    BOBUIest::newRow("1000x1000 -> 2000x2000") << image << QSize(2000, 2000);
+    BOBUIest::newRow("1000x1000 -> 2000x1000") << image << QSize(2000, 1000);
+    BOBUIest::newRow("1000x1000 -> 1000x2000") << image << QSize(1000, 2000);
+    BOBUIest::newRow("1000x1000 -> 2000x500") << image << QSize(2000, 500);
+    BOBUIest::newRow("1000x1000 -> 500x2000") << image << QSize(500, 2000);
+    BOBUIest::newRow("1000x1000 -> 500x500") << image << QSize(500, 500);
+    BOBUIest::newRow("1000x1000 -> 200x200") << image << QSize(200, 200);
 }
 
 void tst_QImageScale::scaleRgb32()
@@ -40,7 +40,7 @@ void tst_QImageScale::scaleRgb32()
     QFETCH(QSize, outputSize);
 
     QBENCHMARK {
-        volatile QImage output = inputImage.scaled(outputSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        volatile QImage output = inputImage.scaled(outputSize, BobUI::IgnoreAspectRatio, BobUI::SmoothTransformation);
         // we need the volatile and the following to make sure the compiler does not do
         // anything stupid :)
         (void)output;
@@ -49,17 +49,17 @@ void tst_QImageScale::scaleRgb32()
 
 void tst_QImageScale::scaleArgb32pm_data()
 {
-    QTest::addColumn<QImage>("inputImage");
-    QTest::addColumn<QSize>("outputSize");
+    BOBUIest::addColumn<QImage>("inputImage");
+    BOBUIest::addColumn<QSize>("outputSize");
 
     QImage image = generateImageArgb32(1000, 1000).convertToFormat(QImage::Format_ARGB32_Premultiplied);
-    QTest::newRow("1000x1000 -> 2000x2000") << image << QSize(2000, 2000);
-    QTest::newRow("1000x1000 -> 2000x1000") << image << QSize(2000, 1000);
-    QTest::newRow("1000x1000 -> 1000x2000") << image << QSize(1000, 2000);
-    QTest::newRow("1000x1000 -> 2000x500") << image << QSize(2000, 500);
-    QTest::newRow("1000x1000 -> 500x2000") << image << QSize(500, 2000);
-    QTest::newRow("1000x1000 -> 500x500") << image << QSize(500, 500);
-    QTest::newRow("1000x1000 -> 200x200") << image << QSize(200, 200);
+    BOBUIest::newRow("1000x1000 -> 2000x2000") << image << QSize(2000, 2000);
+    BOBUIest::newRow("1000x1000 -> 2000x1000") << image << QSize(2000, 1000);
+    BOBUIest::newRow("1000x1000 -> 1000x2000") << image << QSize(1000, 2000);
+    BOBUIest::newRow("1000x1000 -> 2000x500") << image << QSize(2000, 500);
+    BOBUIest::newRow("1000x1000 -> 500x2000") << image << QSize(500, 2000);
+    BOBUIest::newRow("1000x1000 -> 500x500") << image << QSize(500, 500);
+    BOBUIest::newRow("1000x1000 -> 200x200") << image << QSize(200, 200);
 }
 
 void tst_QImageScale::scaleArgb32pm()
@@ -68,7 +68,7 @@ void tst_QImageScale::scaleArgb32pm()
     QFETCH(QSize, outputSize);
 
     QBENCHMARK {
-        volatile QImage output = inputImage.scaled(outputSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        volatile QImage output = inputImage.scaled(outputSize, BobUI::IgnoreAspectRatio, BobUI::SmoothTransformation);
         // we need the volatile and the following to make sure the compiler does not do
         // anything stupid :)
         (void)output;
@@ -106,5 +106,5 @@ QImage tst_QImageScale::generateImageArgb32(int width, int height)
     return image;
 }
 
-QTEST_MAIN(tst_QImageScale)
+BOBUIEST_MAIN(tst_QImageScale)
 #include "tst_qimagescale.moc"

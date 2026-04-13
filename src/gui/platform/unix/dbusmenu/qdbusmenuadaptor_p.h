@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 /*
     This file was originally created by qdbusxml2cpp version 0.8
@@ -20,7 +20,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -32,7 +32,7 @@
 
 #include <private/qdbusmenutypes_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*
  * Adaptor class for interface com.canonical.dbusmenu
@@ -52,7 +52,7 @@ class QDBusMenuAdaptor: public QDBusAbstractAdaptor
 "    <property access=\"read\" type=\"as\" name=\"IconThemePath\">\n"
 "    </property>\n"
 "    <method name=\"GetLayout\">\n"
-"      <annotation value=\"QDBusMenuLayoutItem\" name=\"org.qtproject.QtDBus.QtTypeName.Out1\"/>\n"
+"      <annotation value=\"QDBusMenuLayoutItem\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out1\"/>\n"
 "      <arg direction=\"in\" type=\"i\" name=\"parentId\"/>\n"
 "      <arg direction=\"in\" type=\"i\" name=\"recursionDepth\"/>\n"
 "      <arg direction=\"in\" type=\"as\" name=\"propertyNames\"/>\n"
@@ -60,8 +60,8 @@ class QDBusMenuAdaptor: public QDBusAbstractAdaptor
 "      <arg direction=\"out\" type=\"(ia{sv}av)\" name=\"layout\"/>\n"
 "    </method>\n"
 "    <method name=\"GetGroupProperties\">\n"
-"      <annotation value=\"QList&lt;int&gt;\" name=\"org.qtproject.QtDBus.QtTypeName.In0\"/>\n"
-"      <annotation value=\"QDBusMenuItemList\" name=\"org.qtproject.QtDBus.QtTypeName.Out0\"/>\n"
+"      <annotation value=\"QList&lt;int&gt;\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName.In0\"/>\n"
+"      <annotation value=\"QDBusMenuItemList\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\"/>\n"
 "      <arg direction=\"in\" type=\"ai\" name=\"ids\"/>\n"
 "      <arg direction=\"in\" type=\"as\" name=\"propertyNames\"/>\n"
 "      <arg direction=\"out\" type=\"a(ia{sv})\" name=\"properties\"/>\n"
@@ -78,8 +78,8 @@ class QDBusMenuAdaptor: public QDBusAbstractAdaptor
 "      <arg direction=\"in\" type=\"u\" name=\"timestamp\"/>\n"
 "    </method>\n"
 "    <method name=\"EventGroup\">\n"
-"      <annotation value=\"QList&lt;QDBusMenuEvent&gt;\" name=\"org.qtproject.QtDBus.QtTypeName.In0\"/>\n"
-"      <annotation value=\"QList&lt;int&gt;\" name=\"org.qtproject.QtDBus.QtTypeName.Out0\"/>\n"
+"      <annotation value=\"QList&lt;QDBusMenuEvent&gt;\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName.In0\"/>\n"
+"      <annotation value=\"QList&lt;int&gt;\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\"/>\n"
 "      <arg direction=\"in\" type=\"a(isvu)\" name=\"events\"/>\n"
 "      <arg direction=\"out\" type=\"ai\" name=\"idErrors\"/>\n"
 "    </method>\n"
@@ -88,16 +88,16 @@ class QDBusMenuAdaptor: public QDBusAbstractAdaptor
 "      <arg direction=\"out\" type=\"b\" name=\"needUpdate\"/>\n"
 "    </method>\n"
 "    <method name=\"AboutToShowGroup\">\n"
-"      <annotation value=\"QList&lt;int&gt;\" name=\"org.qtproject.QtDBus.QtTypeName.In0\"/>\n"
-"      <annotation value=\"QList&lt;int&gt;\" name=\"org.qtproject.QtDBus.QtTypeName.Out0\"/>\n"
-"      <annotation value=\"QList&lt;int&gt;\" name=\"org.qtproject.QtDBus.QtTypeName.Out1\"/>\n"
+"      <annotation value=\"QList&lt;int&gt;\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName.In0\"/>\n"
+"      <annotation value=\"QList&lt;int&gt;\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out0\"/>\n"
+"      <annotation value=\"QList&lt;int&gt;\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName.Out1\"/>\n"
 "      <arg direction=\"in\" type=\"ai\" name=\"ids\"/>\n"
 "      <arg direction=\"out\" type=\"ai\" name=\"updatesNeeded\"/>\n"
 "      <arg direction=\"out\" type=\"ai\" name=\"idErrors\"/>\n"
 "    </method>\n"
 "    <signal name=\"ItemsPropertiesUpdated\">\n"
-"      <annotation value=\"QDBusMenuItemList\" name=\"org.qtproject.QtDBus.QtTypeName.In0\"/>\n"
-"      <annotation value=\"QDBusMenuItemKeysList\" name=\"org.qtproject.QtDBus.QtTypeName.In1\"/>\n"
+"      <annotation value=\"QDBusMenuItemList\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName.In0\"/>\n"
+"      <annotation value=\"QDBusMenuItemKeysList\" name=\"org.bobuiproject.BobUIDBus.BobUITypeName.In1\"/>\n"
 "      <arg direction=\"out\" type=\"a(ia{sv})\" name=\"updatedProps\"/>\n"
 "      <arg direction=\"out\" type=\"a(ias)\" name=\"removedProps\"/>\n"
 "    </signal>\n"
@@ -143,6 +143,6 @@ private:
     QDBusPlatformMenu *m_topLevelMenu;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // DBUSMENUADAPTOR_H

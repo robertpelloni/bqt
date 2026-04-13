@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
@@ -12,7 +12,7 @@ class QComboBox;
 class QLabel;
 class QLineEdit;
 class QMouseEvent;
-class QTextEdit;
+class BOBUIextEdit;
 class DragWidget;
 
 class MainWindow : public QMainWindow

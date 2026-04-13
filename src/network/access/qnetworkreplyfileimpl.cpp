@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qnetworkreplyfileimpl_p.h"
 
-#include "QtCore/qdatetime.h"
+#include "BobUICore/qdatetime.h"
 #include "qnetworkaccessmanager_p.h"
-#include <QtCore/QCoreApplication>
-#include <QtCore/QFileInfo>
-#include <QtCore/QThread>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/QFileInfo>
+#include <BobUICore/BOBUIhread>
 #include "qnetworkfile_p.h"
 #include "qnetworkrequest.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-QT_IMPL_METATYPE_EXTERN_TAGGED(QNetworkRequest::KnownHeaders, QNetworkRequest__KnownHeaders)
+BOBUI_IMPL_METATYPE_EXTERN_TAGGED(QNetworkRequest::KnownHeaders, QNetworkRequest__KnownHeaders)
 
 QNetworkReplyFileImplPrivate::QNetworkReplyFileImplPrivate()
     : QNetworkReplyPrivate(), managerPrivate(nullptr), realFile(nullptr)
@@ -29,10 +29,10 @@ QNetworkReplyFileImpl::~QNetworkReplyFileImpl()
 {
     QNetworkReplyFileImplPrivate *d = (QNetworkReplyFileImplPrivate*) d_func();
     if (d->realFile) {
-        if (d->realFile->thread() == QThread::currentThread())
+        if (d->realFile->thread() == BOBUIhread::currentThread())
             delete d->realFile;
         else
-            QMetaObject::invokeMethod(d->realFile, "deleteLater", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(d->realFile, "deleteLater", BobUI::QueuedConnection);
     }
 }
 
@@ -59,9 +59,9 @@ QNetworkReplyFileImpl::QNetworkReplyFileImpl(QNetworkAccessManager *manager, con
         QString msg = QCoreApplication::translate("QNetworkAccessFileBackend", "Request for opening non-local file %1").arg(url.toString());
         setError(QNetworkReply::ProtocolInvalidOperationError, msg);
         setFinished(true); // We're finished, will emit finished() after ctor is done.
-        QMetaObject::invokeMethod(this, "errorOccurred", Qt::QueuedConnection,
+        QMetaObject::invokeMethod(this, "errorOccurred", BobUI::QueuedConnection,
             Q_ARG(QNetworkReply::NetworkError, QNetworkReply::ProtocolInvalidOperationError));
-        QMetaObject::invokeMethod(this, &QNetworkReplyFileImpl::fileOpenFinished, Qt::QueuedConnection, false);
+        QMetaObject::invokeMethod(this, &QNetworkReplyFileImpl::fileOpenFinished, BobUI::QueuedConnection, false);
         return;
     }
 #endif
@@ -87,14 +87,14 @@ QNetworkReplyFileImpl::QNetworkReplyFileImpl(QNetworkAccessManager *manager, con
     if (req.attribute(QNetworkRequest::BackgroundRequestAttribute).toBool()) { // Asynchronous open
         auto realFile = new QNetworkFile(fileName);
         connect(realFile, &QNetworkFile::headerRead, this, &QNetworkReplyFileImpl::setWellKnownHeader,
-                Qt::QueuedConnection);
+                BobUI::QueuedConnection);
         connect(realFile, &QNetworkFile::networkError, this, &QNetworkReplyFileImpl::setError,
-                Qt::QueuedConnection);
+                BobUI::QueuedConnection);
         connect(realFile, SIGNAL(finished(bool)), SLOT(fileOpenFinished(bool)),
-                Qt::QueuedConnection);
+                BobUI::QueuedConnection);
 
         realFile->moveToThread(d->managerPrivate->createThread());
-        QMetaObject::invokeMethod(realFile, "open", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(realFile, "open", BobUI::QueuedConnection);
 
         d->realFile = realFile;
     } else { // Synch open
@@ -104,9 +104,9 @@ QNetworkReplyFileImpl::QNetworkReplyFileImpl(QNetworkAccessManager *manager, con
         if (fi.isDir()) {
             QString msg = QCoreApplication::translate("QNetworkAccessFileBackend", "Cannot open %1: Path is a directory").arg(url.toString());
             setError(QNetworkReply::ContentOperationNotPermittedError, msg);
-            QMetaObject::invokeMethod(this, "errorOccurred", Qt::QueuedConnection,
+            QMetaObject::invokeMethod(this, "errorOccurred", BobUI::QueuedConnection,
                 Q_ARG(QNetworkReply::NetworkError, QNetworkReply::ContentOperationNotPermittedError));
-            QMetaObject::invokeMethod(this, "finished", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(this, "finished", BobUI::QueuedConnection);
             return;
         }
         d->realFile = new QFile(fileName, this);
@@ -119,14 +119,14 @@ QNetworkReplyFileImpl::QNetworkReplyFileImpl(QNetworkAccessManager *manager, con
 
             if (fi.exists()) {
                 setError(QNetworkReply::ContentAccessDenied, msg);
-                QMetaObject::invokeMethod(this, "errorOccurred", Qt::QueuedConnection,
+                QMetaObject::invokeMethod(this, "errorOccurred", BobUI::QueuedConnection,
                     Q_ARG(QNetworkReply::NetworkError, QNetworkReply::ContentAccessDenied));
             } else {
                 setError(QNetworkReply::ContentNotFoundError, msg);
-                QMetaObject::invokeMethod(this, "errorOccurred", Qt::QueuedConnection,
+                QMetaObject::invokeMethod(this, "errorOccurred", BobUI::QueuedConnection,
                     Q_ARG(QNetworkReply::NetworkError, QNetworkReply::ContentNotFoundError));
             }
-            QMetaObject::invokeMethod(this, "finished", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(this, "finished", BobUI::QueuedConnection);
             return;
         }
         auto h = headers();
@@ -136,11 +136,11 @@ QNetworkReplyFileImpl::QNetworkReplyFileImpl(QNetworkAccessManager *manager, con
                           QByteArray::number(fi.size()));
         setHeaders(std::move(h));
 
-        QMetaObject::invokeMethod(this, "metaDataChanged", Qt::QueuedConnection);
-        QMetaObject::invokeMethod(this, "downloadProgress", Qt::QueuedConnection,
+        QMetaObject::invokeMethod(this, "metaDataChanged", BobUI::QueuedConnection);
+        QMetaObject::invokeMethod(this, "downloadProgress", BobUI::QueuedConnection,
             Q_ARG(qint64, fi.size()), Q_ARG(qint64, fi.size()));
-        QMetaObject::invokeMethod(this, "readyRead", Qt::QueuedConnection);
-        QMetaObject::invokeMethod(this, "finished", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this, "readyRead", BobUI::QueuedConnection);
+        QMetaObject::invokeMethod(this, "finished", BobUI::QueuedConnection);
     }
 }
 
@@ -152,7 +152,7 @@ void QNetworkReplyFileImpl::close()
         if (d->realFile->thread() == thread())
             d->realFile->close();
         else
-            QMetaObject::invokeMethod(d->realFile, "close", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(d->realFile, "close", BobUI::QueuedConnection);
     }
 }
 
@@ -213,7 +213,7 @@ void QNetworkReplyFileImpl::fileOpenFinished(bool isOpen)
     Q_EMIT finished();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qnetworkreplyfileimpl_p.cpp"
 

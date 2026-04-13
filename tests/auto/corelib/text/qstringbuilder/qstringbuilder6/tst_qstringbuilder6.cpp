@@ -1,22 +1,22 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/qglobal.h>
+#include <BobUICore/qglobal.h>
 
 // SCENARIO 6
 // We disable QStringBuilder and compile with normal operator+ to verify
 // that all QSB supported operations are still available when QSB is disabled.
 // We also allow casts to/from ASCII
-#undef QT_USE_QSTRINGBUILDER
-#undef QT_NO_CAST_FROM_ASCII
-#undef QT_NO_CAST_TO_ASCII
+#undef BOBUI_USE_QSTRINGBUILDER
+#undef BOBUI_NO_CAST_FROM_ASCII
+#undef BOBUI_NO_CAST_TO_ASCII
 
-#include <QtCore/QObject>
-#include <QtCore/QString>
-#include <QtCore/QStringBuilder>
-#include <QtTest/QTest>
+#include <BobUICore/QObject>
+#include <BobUICore/QString>
+#include <BobUICore/QStringBuilder>
+#include <BobUITest/BOBUIest>
 
-#include <QtCore/q20iterator.h>
+#include <BobUICore/q20iterator.h>
 
 #define LITERAL "some literal"
 
@@ -36,4 +36,4 @@ private slots:
 
 #include "tst_qstringbuilder6.moc"
 
-QTEST_APPLESS_MAIN(tst_QStringBuilder6)
+BOBUIEST_APPLESS_MAIN(tst_QStringBuilder6)

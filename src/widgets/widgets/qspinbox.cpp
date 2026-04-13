@@ -1,6 +1,6 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include <private/qabstractspinbox_p.h>
 #include <qspinbox.h>
@@ -14,9 +14,9 @@
 #include <cmath>
 #include <float.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 //#define QSPINBOX_QSBDEBUG
 #ifdef QSPINBOX_QSBDEBUG
@@ -39,7 +39,7 @@ public:
 
     inline void init() {
         Q_Q(QSpinBox);
-        q->setInputMethodHints(Qt::ImhDigitsOnly);
+        q->setInputMethodHints(BobUI::ImhDigitsOnly);
         setLayoutItemMargins(QStyle::SE_SpinBoxLayoutItem);
     }
 
@@ -65,7 +65,7 @@ public:
 
     inline void init() {
         Q_Q(QDoubleSpinBox);
-        q->setInputMethodHints(Qt::ImhFormattedNumbersOnly);
+        q->setInputMethodHints(BobUI::ImhFormattedNumbersOnly);
     }
 
     // When fiddling with the decimals property, we may lose precision in these properties.
@@ -81,7 +81,7 @@ public:
     \brief The QSpinBox class provides a spin box widget.
 
     \ingroup basicwidgets
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     \image fusion-spinbox.png {Spin box widget displaying an integer}
 
@@ -552,7 +552,7 @@ void QSpinBox::fixup(QString &input) const
     takes doubles.
 
     \ingroup basicwidgets
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     \image fusion-doublespinbox.png {Spin box displaying a double}
 
@@ -1435,6 +1435,6 @@ bool QSpinBox::event(QEvent *event)
     return QAbstractSpinBox::event(event);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qspinbox.cpp"

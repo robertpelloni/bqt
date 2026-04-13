@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <comment>
-* Copyright (C) 2016 The Qt Company Ltd.
-* SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+* Copyright (C) 2016 The BobUI Company Ltd.
+* SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 </comment>
  <class>qdesigner_internal::TreeWidgetEditor</class>
  <widget class="QDialog" name="qdesigner_internal::TreeWidgetEditor">
@@ -25,9 +25,9 @@
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
-       <widget class="QTreeWidget" name="treeWidget">
+       <widget class="BOBUIreeWidget" name="treeWidget">
         <property name="focusPolicy">
-         <enum>Qt::FocusPolicy::TabFocus</enum>
+         <enum>BobUI::FocusPolicy::TabFocus</enum>
         </property>
         <property name="toolTip">
          <string>Tree Items</string>
@@ -42,7 +42,7 @@
       <item row="1" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
-         <widget class="QToolButton" name="newItemButton">
+         <widget class="BOBUIoolButton" name="newItemButton">
           <property name="toolTip">
            <string>New Item</string>
           </property>
@@ -52,7 +52,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QToolButton" name="newSubItemButton">
+         <widget class="BOBUIoolButton" name="newSubItemButton">
           <property name="toolTip">
            <string>New Subitem</string>
           </property>
@@ -62,7 +62,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QToolButton" name="deleteItemButton">
+         <widget class="BOBUIoolButton" name="deleteItemButton">
           <property name="toolTip">
            <string>Delete Item</string>
           </property>
@@ -74,7 +74,7 @@
         <item>
          <spacer>
           <property name="orientation">
-           <enum>Qt::Orientation::Horizontal</enum>
+           <enum>BobUI::Orientation::Horizontal</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -85,7 +85,7 @@
          </spacer>
         </item>
         <item>
-         <widget class="QToolButton" name="moveItemLeftButton">
+         <widget class="BOBUIoolButton" name="moveItemLeftButton">
           <property name="toolTip">
            <string>Move Item Left (before Parent Item)</string>
           </property>
@@ -95,7 +95,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QToolButton" name="moveItemRightButton">
+         <widget class="BOBUIoolButton" name="moveItemRightButton">
           <property name="toolTip">
            <string>Move Item Right (as a First Subitem of the Next Sibling Item)</string>
           </property>
@@ -105,7 +105,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QToolButton" name="moveItemUpButton">
+         <widget class="BOBUIoolButton" name="moveItemUpButton">
           <property name="toolTip">
            <string>Move Item Up</string>
           </property>
@@ -115,7 +115,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QToolButton" name="moveItemDownButton">
+         <widget class="BOBUIoolButton" name="moveItemDownButton">
           <property name="toolTip">
            <string>Move Item Down</string>
           </property>
@@ -141,7 +141,7 @@
         <item>
          <spacer name="horizontalSpacer">
           <property name="orientation">
-           <enum>Qt::Orientation::Horizontal</enum>
+           <enum>BobUI::Orientation::Horizontal</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -177,7 +177,7 @@
          </sizepolicy>
         </property>
         <property name="focusPolicy">
-         <enum>Qt::FocusPolicy::TabFocus</enum>
+         <enum>BobUI::FocusPolicy::TabFocus</enum>
         </property>
         <property name="toolTip">
          <string>Tree Columns</string>
@@ -187,7 +187,7 @@
       <item row="1" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
-         <widget class="QToolButton" name="newColumnButton">
+         <widget class="BOBUIoolButton" name="newColumnButton">
           <property name="toolTip">
            <string>New Column</string>
           </property>
@@ -197,7 +197,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QToolButton" name="deleteColumnButton">
+         <widget class="BOBUIoolButton" name="deleteColumnButton">
           <property name="toolTip">
            <string>Delete Column</string>
           </property>
@@ -209,7 +209,7 @@
         <item>
          <spacer>
           <property name="orientation">
-           <enum>Qt::Orientation::Horizontal</enum>
+           <enum>BobUI::Orientation::Horizontal</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -220,7 +220,7 @@
          </spacer>
         </item>
         <item>
-         <widget class="QToolButton" name="moveColumnUpButton">
+         <widget class="BOBUIoolButton" name="moveColumnUpButton">
           <property name="toolTip">
            <string>Move Column Up</string>
           </property>
@@ -230,7 +230,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QToolButton" name="moveColumnDownButton">
+         <widget class="BOBUIoolButton" name="moveColumnDownButton">
           <property name="toolTip">
            <string>Move Column Down</string>
           </property>
@@ -256,7 +256,7 @@
         <item>
          <spacer>
           <property name="orientation">
-           <enum>Qt::Orientation::Horizontal</enum>
+           <enum>BobUI::Orientation::Horizontal</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -274,7 +274,7 @@
    <item row="1" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
-      <enum>Qt::Orientation::Horizontal</enum>
+      <enum>BobUI::Orientation::Horizontal</enum>
      </property>
      <property name="standardButtons">
       <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>

@@ -1,18 +1,18 @@
-Qt 5.2.1 is a bug-fix release. It maintains both forward and backward
-compatibility (source and binary) with Qt 5.2.0.
+BobUI 5.2.1 is a bug-fix release. It maintains both forward and backward
+compatibility (source and binary) with BobUI 5.2.0.
 
 For more details, refer to the online documentation included in this
 distribution. The documentation is also available online:
 
-  http://qt-project.org/doc/qt-5.2
+  http://bobui-project.org/doc/bobui-5.2
 
-The Qt version 5.2 series is binary compatible with the 5.1.x series.
+The BobUI version 5.2 series is binary compatible with the 5.1.x series.
 Applications compiled for 5.1 will continue to run with 5.2.
 
 Some of the changes listed in this file include issue tracking numbers
-corresponding to tasks in the Qt Bug Tracker:
+corresponding to tasks in the BobUI Bug Tracker:
 
-  http://bugreports.qt-project.org/
+  http://bugreports.bobui-project.org/
 
 Each of these identifiers can be entered in the bug tracker to obtain more
 information about a particular change.
@@ -21,9 +21,9 @@ information about a particular change.
 *                   Important Behavior Changes                             *
 ****************************************************************************
 
- - [QTBUG-34345][QTBUG-26008][QTBUG-26430] QPrinter no longer allows you to
+ - [BOBUIBUG-34345][BOBUIBUG-26008][BOBUIBUG-26430] QPrinter no longer allows you to
    set an invalid printer name.
- - [QTBUG-34141] Parsing of Qt::ISODate by QDate::fromString() and
+ - [BOBUIBUG-34141] Parsing of BobUI::ISODate by QDate::fromString() and
    QDateTime()::fromString() is not as lenient as before, the date
    component separators are now required to be non-numeric. This means a
    string like "2000901901" will no longer be recognized as a valid ISO
@@ -34,78 +34,78 @@ information about a particular change.
 *                          Library                                         *
 ****************************************************************************
 
-QtCore
+BobUICore
 ------
 
- - [QTBUG-35069] Fixed a bug that caused negative number input using '-' to
+ - [BOBUIBUG-35069] Fixed a bug that caused negative number input using '-' to
    be rejected because the current locale uses U+2212. QLocale::toString()
    as well as QIntValidator and QDoubleValidator now accept both '-' and
    U+2212, as well as the locale minus sign. QString also accepts '-' and
    U+2212.
  - Fixed sign conversion warnings in code using QMetaTypeId.
 
- - QTemporaryDir:
-   * Fixed a bug in QTemporaryDir name generator that dramatically reduced
+ - BOBUIemporaryDir:
+   * Fixed a bug in BOBUIemporaryDir name generator that dramatically reduced
      randomness of the name.
 
- - QThread:
-   * [QTBUG-34840] Fixed handle leaks on Windows.
+ - BOBUIhread:
+   * [BOBUIBUG-34840] Fixed handle leaks on Windows.
 
-QtGui
+BobUIGui
 -----
 
- - [QTBUG-35421] Fixed crash when sending accessibility updates when the
+ - [BOBUIBUG-35421] Fixed crash when sending accessibility updates when the
    corresponding widget does not have a corresponding QAccessibleInterface.
    This showed on Mac for example with QStatusBar.
- - Qt's generic font database now adds OpenType fonts (.otf).
+ - BobUI's generic font database now adds OpenType fonts (.otf).
 
  - Accessibility
    * On Linux action names were returned as empty strings in AT-SPI
      getActions, now returns the proper names.
 
  - QKeySequence:
-   * [QTBUG-24406] return Qt::Key_unknown with invalid modifiers on OS X
+   * [BOBUIBUG-24406] return BobUI::Key_unknown with invalid modifiers on OS X
 
  - Text:
-   * [QTBUG-35740] Fixed regression when shaping some strings containing
+   * [BOBUIBUG-35740] Fixed regression when shaping some strings containing
      characters from multiple fonts.
 
-QtPrintSupport
+BobUIPrintSupport
 --------------
 
- - [QTBUG-34700][QTBUG-35500] Fixed bugs that caused QtPrintSupport
+ - [BOBUIBUG-34700][BOBUIBUG-35500] Fixed bugs that caused BobUIPrintSupport
    not to report the correct the paper sizes on Windows and on OS X.
 
-QtSql
+BobUISql
 -----
 
  - IBase support:
-   * [QTBUG-33345] Custom port numbers are now supported.
-   * [QTBUG-13435] Fixed the internal state of IBase driver after a failed
+   * [BOBUIBUG-33345] Custom port numbers are now supported.
+   * [BOBUIBUG-13435] Fixed the internal state of IBase driver after a failed
      open call.
 
  - MySQL / MariaDB support:
-   * [QTBUG-31124] Fixed handling of fractions of second.
+   * [BOBUIBUG-31124] Fixed handling of fractions of second.
 
  - Oracle support:
-   * [QTBUG-34794] Fixed the compilation
+   * [BOBUIBUG-34794] Fixed the compilation
 
  - Sqlite support:
-   * [QTBUG-24200] Fixed handling of fractions of second.
-   * [QTBUG-35186] Fixed evaluation of driver options
+   * [BOBUIBUG-24200] Fixed handling of fractions of second.
+   * [BOBUIBUG-35186] Fixed evaluation of driver options
 
-QtTestLib
+BobUITestLib
 ---------
 
- - [QTBUG-34630] The (default) plain text logger on Windows now logs to
+ - [BOBUIBUG-34630] The (default) plain text logger on Windows now logs to
    either the system debug log (in case no console is open), or stdout, not
    both.
 
-QtWidgets
+BobUIWidgets
 ---------
 
  - QSpinBox:
-   * [QTBUG-20691] Entering positive values with the '+' prefix is now
+   * [BOBUIBUG-20691] Entering positive values with the '+' prefix is now
      allowed.
 
 ****************************************************************************
@@ -115,29 +115,29 @@ QtWidgets
 Android
 -------
 
- - [QTBUG-34984] Added workarounds for OpenGL bugs on Samsung Galaxy
+ - [BOBUIBUG-34984] Added workarounds for OpenGL bugs on Samsung Galaxy
    Tab 3.
 
 OS X
 ----
 
- - [QTBUG-34411] Implemented QMainWindow::setUnifiedTitleAndToolBarOnMac.
+ - [BOBUIBUG-34411] Implemented QMainWindow::setUnifiedTitleAndToolBarOnMac.
 
 X11 / XCB
 ---------
 
-- [QTBUG-32683] Fixed a bug that caused Qt applications to think the
+- [BOBUIBUG-32683] Fixed a bug that caused BobUI applications to think the
   screen DPI had changed when it had not, after connecting or
   disconnecting monitors.
 
 Windows
 -------
 
- - [QTBUG-8361] Maximizing frameless windows will no longer cover the
+ - [BOBUIBUG-8361] Maximizing frameless windows will no longer cover the
    taskbar
- - [QTBUG-34799] Updated QWidgetBackingStore and the Windows
-   implementation to support Qt::WA_StaticContents.
- - [QTBUG-35357] Fixed a regression from Qt4 in QProcess that
+ - [BOBUIBUG-34799] Updated QWidgetBackingStore and the Windows
+   implementation to support BobUI::WA_StaticContents.
+ - [BOBUIBUG-35357] Fixed a regression from BobUI4 in QProcess that
    prevented altering the pipe modes of stdin in the child process.
 
 
@@ -148,17 +148,17 @@ Windows
 configure & build system
 ------------------------
 
- - [QTBUG-34949] EGL works with desktop OpenGL now
- - A build from source will not install the Qt DLLs into lib/ any more.
+ - [BOBUIBUG-34949] EGL works with desktop OpenGL now
+ - A build from source will not install the BobUI DLLs into lib/ any more.
    The canonical location is bin/.
 
 qmake
 -----
 
- - [QTBUG-35530] Fixed the detection of multiple VS installations.
- - [QTBUG-35610] Fixed the generation of VS 2010 project files.
- - [QTBUG-32412] Numerous fixes to Windows PDB file handling.
- - [QTBUG-3883] Fixed make distclean not removing static library targets.
+ - [BOBUIBUG-35530] Fixed the detection of multiple VS installations.
+ - [BOBUIBUG-35610] Fixed the generation of VS 2010 project files.
+ - [BOBUIBUG-32412] Numerous fixes to Windows PDB file handling.
+ - [BOBUIBUG-3883] Fixed make distclean not removing static library targets.
  - Added makespec for clang using libc++ on Linux.
  - qmake will not look for mkspecs/ directories in project trees any more.
    Use .qmake.conf and/or .qmake.cache to "anchor" project roots.

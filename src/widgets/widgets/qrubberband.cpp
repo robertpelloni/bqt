@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qbitmap.h"
 #include "qevent.h"
@@ -14,10 +14,10 @@
 
 #include <private/qwidget_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 //### a rubberband window type would be a more elegant solution
-#define RUBBERBAND_WINDOW_TYPE Qt::ToolTip
+#define RUBBERBAND_WINDOW_TYPE BobUI::ToolTip
 
 class QRubberBandPrivate : public QWidgetPrivate
 {
@@ -54,7 +54,7 @@ void QRubberBand::initStyleOption(QStyleOptionRubberBand *option) const
     \brief The QRubberBand class provides a rectangle or line that can
     indicate a selection or a boundary.
 
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     A rubber band is often used to show a new bounding area (as in a
     QSplitter or a QDockWidget that is undocking). Historically this has
@@ -95,13 +95,13 @@ void QRubberBand::initStyleOption(QStyleOptionRubberBand *option) const
     semi-transparent filled selection rectangle.
 */
 QRubberBand::QRubberBand(Shape s, QWidget *p)
-    : QWidget(*new QRubberBandPrivate, p, Qt::Widget)
+    : QWidget(*new QRubberBandPrivate, p, BobUI::Widget)
 {
     Q_D(QRubberBand);
     d->shape = s;
-    setAttribute(Qt::WA_TransparentForMouseEvents);
-    setAttribute(Qt::WA_NoSystemBackground);
-    setAttribute(Qt::WA_WState_ExplicitShowHide);
+    setAttribute(BobUI::WA_TransparentForMouseEvents);
+    setAttribute(BobUI::WA_NoSystemBackground);
+    setAttribute(BobUI::WA_WState_ExplicitShowHide);
     setVisible(false);
 }
 
@@ -280,6 +280,6 @@ bool QRubberBand::event(QEvent *e)
     return QWidget::event(e);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qrubberband.cpp"

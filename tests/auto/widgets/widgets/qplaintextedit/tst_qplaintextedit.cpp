@@ -1,35 +1,35 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <QSignalSpy>
 
-#include <qtextedit.h>
-#include <qtextcursor.h>
-#include <qtextlist.h>
+#include <bobuiextedit.h>
+#include <bobuiextcursor.h>
+#include <bobuiextlist.h>
 #include <qdebug.h>
 #include <qapplication.h>
 #include <qclipboard.h>
-#include <qtextbrowser.h>
+#include <bobuiextbrowser.h>
 #include <private/qwidgettextcontrol_p.h>
 #include <private/qplaintextedit_p.h>
 #include <qscrollbar.h>
-#include <qtextobject.h>
+#include <bobuiextobject.h>
 #include <qmenu.h>
 
 #include <qabstracttextdocumentlayout.h>
-#include <qtextdocumentfragment.h>
+#include <bobuiextdocumentfragment.h>
 
 #include "qplaintextedit.h"
 #include "../../../shared/platformclipboard.h"
 
 //Used in copyAvailable
-using keyPairType = std::pair<Qt::Key, Qt::KeyboardModifier>;
+using keyPairType = std::pair<BobUI::Key, BobUI::KeyboardModifier>;
 typedef QList<keyPairType> pairListType;
 Q_DECLARE_METATYPE(keyPairType);
 
-QT_FORWARD_DECLARE_CLASS(QPlainTextEdit)
+BOBUI_FORWARD_DECLARE_CLASS(QPlainTextEdit)
 
 class tst_QPlainTextEdit : public QObject
 {
@@ -42,12 +42,12 @@ public slots:
     void cleanup();
 private slots:
     void getSetCheck();
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     void clearMustNotChangeClipboard();
 #endif
     void clearMustNotResetRootFrameMarginToDefault();
     void paragSeparatorOnPlaintextAppend();
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     void selectAllSetsNotSelection();
 #endif
     void asciiTab();
@@ -56,7 +56,7 @@ private slots:
     void appendOnEmptyDocumentShouldReuseInitialParagraph();
     void cursorPositionChanged();
     void setTextCursor();
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     void undoAvailableAfterPaste();
 #endif
     void undoRedoAvailableRepetition();
@@ -65,7 +65,7 @@ private slots:
     void shiftBackspace();
     void undoRedo();
     void preserveCharFormatInAppend();
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     void copyAndSelectAllInReadonly();
 #endif
     void charWithAltOrCtrlModifier_data();
@@ -77,20 +77,20 @@ private slots:
     void shiftDownInLineLastShouldSelectToEnd();
     void undoRedoShouldRepositionTextEditCursor();
     void lineWrapModes();
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     void mouseCursorShape();
 #endif
     void implicitClear();
     void undoRedoAfterSetContent();
     void numPadKeyNavigation();
     void moveCursor();
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     void mimeDataReimplementations();
 #endif
     void shiftEnterShouldInsertLineSeparator();
     void selectWordsFromStringsContainingSeparators_data();
     void selectWordsFromStringsContainingSeparators();
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     void canPaste();
     void copyAvailable_data();
     void copyAvailable();
@@ -111,22 +111,22 @@ private slots:
     void insertAndScrollToBottom();
     void inputMethodQueryImHints_data();
     void inputMethodQueryImHints();
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     void findWithRegularExpression();
     void findBackwardWithRegularExpression();
     void findWithRegularExpressionReturnsFalseIfNoMoreResults();
 #endif
     void layoutAfterMultiLineRemove();
     void undoCommandRemovesAndReinsertsBlock();
-    void taskQTBUG_43562_lineCountCrash();
-#if !defined(QT_NO_CONTEXTMENU) && !defined(QT_NO_CLIPBOARD)
+    void taskBOBUIBUG_43562_lineCountCrash();
+#if !defined(BOBUI_NO_CONTEXTMENU) && !defined(BOBUI_NO_CLIPBOARD)
     void contextMenu();
 #endif
     void inputMethodCursorRect();
-#if QT_CONFIG(scrollbar)
+#if BOBUI_CONFIG(scrollbar)
     void updateAfterChangeCenterOnScroll();
 #endif
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     void updateCursorPositionAfterEdit();
 #endif
     void appendTextWhenInvisible();
@@ -148,15 +148,15 @@ private:
 void tst_QPlainTextEdit::getSetCheck()
 {
     QPlainTextEdit obj1;
-    // QTextDocument * QPlainTextEdit::document()
-    // void QPlainTextEdit::setDocument(QTextDocument *)
-    QTextDocument *var1 = new QTextDocument;
+    // BOBUIextDocument * QPlainTextEdit::document()
+    // void QPlainTextEdit::setDocument(BOBUIextDocument *)
+    BOBUIextDocument *var1 = new BOBUIextDocument;
     var1->setDocumentLayout(new QPlainTextDocumentLayout(var1));
     obj1.setDocument(var1);
     QCOMPARE(var1, obj1.document());
-    obj1.setDocument((QTextDocument *)0);
+    obj1.setDocument((BOBUIextDocument *)0);
     QVERIFY(var1 != obj1.document()); // QPlainTextEdit creates a new document when setting 0
-    QVERIFY((QTextDocument *)0 != obj1.document());
+    QVERIFY((BOBUIextDocument *)0 != obj1.document());
     delete var1;
 
 
@@ -196,16 +196,16 @@ void tst_QPlainTextEdit::getSetCheck()
     QCOMPARE(std::numeric_limits<qreal>::max(), obj1.tabStopDistance());
 }
 
-class QtTestDocumentLayout : public QAbstractTextDocumentLayout
+class BobUITestDocumentLayout : public QAbstractTextDocumentLayout
 {
     Q_OBJECT
 public:
-    inline QtTestDocumentLayout(QPlainTextEdit *edit, QTextDocument *doc, int &itCount)
+    inline BobUITestDocumentLayout(QPlainTextEdit *edit, BOBUIextDocument *doc, int &itCount)
         : QAbstractTextDocumentLayout(doc), useBiggerSize(false), ed(edit), iterationCounter(itCount) {}
 
     virtual void draw(QPainter *, const QAbstractTextDocumentLayout::PaintContext &) override {}
 
-    virtual int hitTest(const QPointF &, Qt::HitTestAccuracy ) const override { return 0; }
+    virtual int hitTest(const QPointF &, BobUI::HitTestAccuracy ) const override { return 0; }
 
     virtual void documentChanged(int, int, int) override {}
 
@@ -213,8 +213,8 @@ public:
 
     virtual QSizeF documentSize() const override { return usedSize; }
 
-    virtual QRectF frameBoundingRect(QTextFrame *) const override { return QRectF(); }
-    virtual QRectF blockBoundingRect(const QTextBlock &) const override { return QRectF(); }
+    virtual QRectF frameBoundingRect(BOBUIextFrame *) const override { return QRectF(); }
+    virtual QRectF blockBoundingRect(const BOBUIextBlock &) const override { return QRectF(); }
 
     bool useBiggerSize;
     QSize usedSize;
@@ -242,29 +242,29 @@ void tst_QPlainTextEdit::cleanup()
 
 void tst_QPlainTextEdit::createSelection()
 {
-    QTest::keyClicks(ed, "Hello World");
+    BOBUIest::keyClicks(ed, "Hello World");
     /* go to start */
 #ifndef Q_OS_MAC
-    QTest::keyClick(ed, Qt::Key_Home, Qt::ControlModifier);
+    BOBUIest::keyClick(ed, BobUI::Key_Home, BobUI::ControlModifier);
 #else
-    QTest::keyClick(ed, Qt::Key_Home);
+    BOBUIest::keyClick(ed, BobUI::Key_Home);
 #endif
     QCOMPARE(ed->textCursor().position(), 0);
     /* select until end of text */
 #ifndef Q_OS_MAC
-    QTest::keyClick(ed, Qt::Key_End, Qt::ControlModifier | Qt::ShiftModifier);
+    BOBUIest::keyClick(ed, BobUI::Key_End, BobUI::ControlModifier | BobUI::ShiftModifier);
 #else
-    QTest::keyClick(ed, Qt::Key_End, Qt::ShiftModifier);
+    BOBUIest::keyClick(ed, BobUI::Key_End, BobUI::ShiftModifier);
 #endif
     QCOMPARE(ed->textCursor().position(), 11);
 }
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
 void tst_QPlainTextEdit::clearMustNotChangeClipboard()
 {
     if (!PlatformClipboard::isAvailable())
         QSKIP("Clipboard not working with cron-started unit tests");
 
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     ed->textCursor().insertText("Hello World");
@@ -287,7 +287,7 @@ void tst_QPlainTextEdit::paragSeparatorOnPlaintextAppend()
 {
     ed->appendPlainText("Hello\nWorld");
     int cnt = 0;
-    QTextBlock blk = ed->document()->begin();
+    BOBUIextBlock blk = ed->document()->begin();
     while (blk.isValid()) {
         ++cnt;
         blk = blk.next();
@@ -295,7 +295,7 @@ void tst_QPlainTextEdit::paragSeparatorOnPlaintextAppend()
     QCOMPARE(cnt, 2);
 }
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
 void tst_QPlainTextEdit::selectAllSetsNotSelection()
 {
     if (!QApplication::clipboard()->supportsSelection())
@@ -322,9 +322,9 @@ void tst_QPlainTextEdit::asciiTab()
 
 void tst_QPlainTextEdit::setDocument()
 {
-    QTextDocument *document = new QTextDocument(ed);
+    BOBUIextDocument *document = new BOBUIextDocument(ed);
     document->setDocumentLayout(new QPlainTextDocumentLayout(document));
-    QTextCursor(document).insertText("Test");
+    BOBUIextCursor(document).insertText("Test");
     ed->setDocument(document);
     QCOMPARE(ed->toPlainText(), QString("Test"));
 }
@@ -333,7 +333,7 @@ void tst_QPlainTextEdit::setDocument()
 int tst_QPlainTextEdit::blockCount() const
 {
     int blocks = 0;
-    for (QTextBlock block = ed->document()->begin(); block.isValid(); block = block.next())
+    for (BOBUIextBlock block = ed->document()->begin(); block.isValid(); block = block.next())
         ++blocks;
     return blocks;
 }
@@ -341,7 +341,7 @@ int tst_QPlainTextEdit::blockCount() const
 int tst_QPlainTextEdit::lineCount() const
 {
     int lines = 0;
-    for (QTextBlock block = ed->document()->begin(); block.isValid(); block = block.next()) {
+    for (BOBUIextBlock block = ed->document()->begin(); block.isValid(); block = block.next()) {
         ed->document()->documentLayout()->blockBoundingRect(block);
         lines += block.layout()->lineCount();
     }
@@ -394,26 +394,26 @@ void tst_QPlainTextEdit::cursorPositionChanged()
     QSignalSpy spy(ed, SIGNAL(cursorPositionChanged()));
 
     spy.clear();
-    QTest::keyClick(ed, Qt::Key_A);
+    BOBUIest::keyClick(ed, BobUI::Key_A);
     QCOMPARE(spy.size(), 1);
 
-    QTextCursor cursor = ed->textCursor();
-    cursor.movePosition(QTextCursor::Start);
+    BOBUIextCursor cursor = ed->textCursor();
+    cursor.movePosition(BOBUIextCursor::Start);
     ed->setTextCursor(cursor);
-    cursor.movePosition(QTextCursor::End);
+    cursor.movePosition(BOBUIextCursor::End);
     spy.clear();
     cursor.insertText("Test");
     QCOMPARE(spy.size(), 0);
 
-    cursor.movePosition(QTextCursor::End);
+    cursor.movePosition(BOBUIextCursor::End);
     ed->setTextCursor(cursor);
-    cursor.movePosition(QTextCursor::Start);
+    cursor.movePosition(BOBUIextCursor::Start);
     spy.clear();
     cursor.insertText("Test");
     QCOMPARE(spy.size(), 1);
 
     spy.clear();
-    QTest::keyClick(ed, Qt::Key_Left);
+    BOBUIest::keyClick(ed, BobUI::Key_Left);
     QCOMPARE(spy.size(), 1);
 
     CursorPositionChangedRecorder spy2(ed);
@@ -429,9 +429,9 @@ void tst_QPlainTextEdit::setTextCursor()
     QSignalSpy spy(ed, SIGNAL(cursorPositionChanged()));
 
     ed->setPlainText("Test");
-    QTextCursor cursor = ed->textCursor();
-    cursor.movePosition(QTextCursor::Start);
-    cursor.movePosition(QTextCursor::NextCharacter);
+    BOBUIextCursor cursor = ed->textCursor();
+    cursor.movePosition(BOBUIextCursor::Start);
+    cursor.movePosition(BOBUIextCursor::NextCharacter);
 
     spy.clear();
 
@@ -439,13 +439,13 @@ void tst_QPlainTextEdit::setTextCursor()
     QCOMPARE(spy.size(), 1);
 }
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
 void tst_QPlainTextEdit::undoAvailableAfterPaste()
 {
     if (!PlatformClipboard::isAvailable())
         QSKIP("Clipboard not working with cron-started unit tests");
 
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QSignalSpy spy(ed->document(), SIGNAL(undoAvailable(bool)));
@@ -462,7 +462,7 @@ class UndoRedoRecorder : public QObject
 {
     Q_OBJECT
 public:
-    UndoRedoRecorder(QTextDocument *doc)
+    UndoRedoRecorder(BOBUIextDocument *doc)
         : undoRepetitions(false)
         , redoRepetitions(false)
         , undoCount(0)
@@ -516,39 +516,39 @@ void tst_QPlainTextEdit::undoRedoAvailableRepetition()
 
 void tst_QPlainTextEdit::appendShouldNotTouchTheSelection()
 {
-    QTextCursor cursor(ed->document());
-    QTextCharFormat fmt;
-    fmt.setForeground(Qt::blue);
+    BOBUIextCursor cursor(ed->document());
+    BOBUIextCharFormat fmt;
+    fmt.setForeground(BobUI::blue);
     cursor.insertText("H", fmt);
-    fmt.setForeground(Qt::red);
+    fmt.setForeground(BobUI::red);
     cursor.insertText("ey", fmt);
 
     cursor.insertText("some random text inbetween");
 
-    cursor.movePosition(QTextCursor::Start);
-    cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
-    QCOMPARE(cursor.charFormat().foreground().color(), QColor(Qt::blue));
-    cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
-    QCOMPARE(cursor.charFormat().foreground().color(), QColor(Qt::red));
-    cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
-    QCOMPARE(cursor.charFormat().foreground().color(), QColor(Qt::red));
+    cursor.movePosition(BOBUIextCursor::Start);
+    cursor.movePosition(BOBUIextCursor::NextCharacter, BOBUIextCursor::KeepAnchor);
+    QCOMPARE(cursor.charFormat().foreground().color(), QColor(BobUI::blue));
+    cursor.movePosition(BOBUIextCursor::NextCharacter, BOBUIextCursor::KeepAnchor);
+    QCOMPARE(cursor.charFormat().foreground().color(), QColor(BobUI::red));
+    cursor.movePosition(BOBUIextCursor::NextCharacter, BOBUIextCursor::KeepAnchor);
+    QCOMPARE(cursor.charFormat().foreground().color(), QColor(BobUI::red));
     QCOMPARE(cursor.selectedText(), QString("Hey"));
 
     ed->setTextCursor(cursor);
     QVERIFY(ed->textCursor().hasSelection());
 
     ed->appendHtml("<b>Some Bold Text</b>");
-    cursor.movePosition(QTextCursor::Start);
-    cursor.movePosition(QTextCursor::NextCharacter);
-    QCOMPARE(cursor.charFormat().foreground().color(), QColor(Qt::blue));
+    cursor.movePosition(BOBUIextCursor::Start);
+    cursor.movePosition(BOBUIextCursor::NextCharacter);
+    QCOMPARE(cursor.charFormat().foreground().color(), QColor(BobUI::blue));
 }
 
 void tst_QPlainTextEdit::backspace()
 {
-    QTextCursor cursor = ed->textCursor();
+    BOBUIextCursor cursor = ed->textCursor();
 
-    QTextListFormat listFmt;
-    listFmt.setStyle(QTextListFormat::ListDisc);
+    BOBUIextListFormat listFmt;
+    listFmt.setStyle(BOBUIextListFormat::ListDisc);
     listFmt.setIndent(1);
     cursor.insertList(listFmt);
     cursor.insertText("A");
@@ -556,23 +556,23 @@ void tst_QPlainTextEdit::backspace()
     ed->setTextCursor(cursor);
 
     // delete 'A'
-    QTest::keyClick(ed, Qt::Key_Backspace);
+    BOBUIest::keyClick(ed, BobUI::Key_Backspace);
     QVERIFY(ed->textCursor().currentList());
     // delete list
-    QTest::keyClick(ed, Qt::Key_Backspace);
+    BOBUIest::keyClick(ed, BobUI::Key_Backspace);
     QVERIFY(!ed->textCursor().currentList());
     QCOMPARE(ed->textCursor().blockFormat().indent(), 1);
     // outdent paragraph
-    QTest::keyClick(ed, Qt::Key_Backspace);
+    BOBUIest::keyClick(ed, BobUI::Key_Backspace);
     QCOMPARE(ed->textCursor().blockFormat().indent(), 0);
 }
 
 void tst_QPlainTextEdit::shiftBackspace()
 {
-    QTextCursor cursor = ed->textCursor();
+    BOBUIextCursor cursor = ed->textCursor();
 
-    QTextListFormat listFmt;
-    listFmt.setStyle(QTextListFormat::ListDisc);
+    BOBUIextListFormat listFmt;
+    listFmt.setStyle(BOBUIextListFormat::ListDisc);
     listFmt.setIndent(1);
     cursor.insertList(listFmt);
     cursor.insertText("A");
@@ -580,21 +580,21 @@ void tst_QPlainTextEdit::shiftBackspace()
     ed->setTextCursor(cursor);
 
     // delete 'A'
-    QTest::keyClick(ed, Qt::Key_Backspace, Qt::ShiftModifier);
+    BOBUIest::keyClick(ed, BobUI::Key_Backspace, BobUI::ShiftModifier);
     QVERIFY(ed->textCursor().currentList());
     // delete list
-    QTest::keyClick(ed, Qt::Key_Backspace, Qt::ShiftModifier);
+    BOBUIest::keyClick(ed, BobUI::Key_Backspace, BobUI::ShiftModifier);
     QVERIFY(!ed->textCursor().currentList());
     QCOMPARE(ed->textCursor().blockFormat().indent(), 1);
     // outdent paragraph
-    QTest::keyClick(ed, Qt::Key_Backspace, Qt::ShiftModifier);
+    BOBUIest::keyClick(ed, BobUI::Key_Backspace, BobUI::ShiftModifier);
     QCOMPARE(ed->textCursor().blockFormat().indent(), 0);
 }
 
 void tst_QPlainTextEdit::undoRedo()
 {
     ed->clear();
-    QTest::keyClicks(ed, "abc d");
+    BOBUIest::keyClicks(ed, "abc d");
     QCOMPARE(ed->toPlainText(), QString("abc d"));
     ed->undo();
     QCOMPARE(ed->toPlainText(), QString());
@@ -602,10 +602,10 @@ void tst_QPlainTextEdit::undoRedo()
     QCOMPARE(ed->toPlainText(), QString("abc d"));
 #ifdef Q_OS_WIN
     // shortcut for undo
-    QTest::keyClick(ed, Qt::Key_Backspace, Qt::AltModifier);
+    BOBUIest::keyClick(ed, BobUI::Key_Backspace, BobUI::AltModifier);
     QCOMPARE(ed->toPlainText(), QString());
     // shortcut for redo
-    QTest::keyClick(ed, Qt::Key_Backspace, Qt::ShiftModifier|Qt::AltModifier);
+    BOBUIest::keyClick(ed, BobUI::Key_Backspace, BobUI::ShiftModifier|BobUI::AltModifier);
     QCOMPARE(ed->toPlainText(), QString("abc d"));
 #endif
 }
@@ -617,37 +617,37 @@ void tst_QPlainTextEdit::preserveCharFormatInAppend()
     ed->appendHtml("<b>Second para</b>");
     ed->appendHtml("third para");
 
-    QTextCursor cursor(ed->textCursor());
+    BOBUIextCursor cursor(ed->textCursor());
 
-    cursor.movePosition(QTextCursor::Start);
-    cursor.movePosition(QTextCursor::NextCharacter);
+    cursor.movePosition(BOBUIextCursor::Start);
+    cursor.movePosition(BOBUIextCursor::NextCharacter);
     QCOMPARE(cursor.charFormat().fontWeight(), (int)QFont::Normal);
     QCOMPARE(cursor.block().text(), QString("First para"));
 
-    cursor.movePosition(QTextCursor::NextBlock);
-    cursor.movePosition(QTextCursor::NextCharacter);
+    cursor.movePosition(BOBUIextCursor::NextBlock);
+    cursor.movePosition(BOBUIextCursor::NextCharacter);
     QCOMPARE(cursor.charFormat().fontWeight(), (int)QFont::Bold);
     QCOMPARE(cursor.block().text(), QString("Second para"));
 
-    cursor.movePosition(QTextCursor::NextBlock);
-    cursor.movePosition(QTextCursor::NextCharacter);
+    cursor.movePosition(BOBUIextCursor::NextBlock);
+    cursor.movePosition(BOBUIextCursor::NextCharacter);
     QCOMPARE(cursor.charFormat().fontWeight(), (int)QFont::Normal);
     QCOMPARE(cursor.block().text(), QString("third para"));
 }
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
 void tst_QPlainTextEdit::copyAndSelectAllInReadonly()
 {
     if (!PlatformClipboard::isAvailable())
         QSKIP("Clipboard not working with cron-started unit tests");
 
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     ed->setReadOnly(true);
     ed->setPlainText("Hello World");
 
-    QTextCursor cursor = ed->textCursor();
+    BOBUIextCursor cursor = ed->textCursor();
     cursor.clearSelection();
     ed->setTextCursor(cursor);
     QVERIFY(!ed->textCursor().hasSelection());
@@ -655,48 +655,48 @@ void tst_QPlainTextEdit::copyAndSelectAllInReadonly()
     QCOMPARE(ed->toPlainText(), QString("Hello World"));
 
     // shouldn't do anything
-    QTest::keyClick(ed, Qt::Key_A);
+    BOBUIest::keyClick(ed, BobUI::Key_A);
 
     QCOMPARE(ed->toPlainText(), QString("Hello World"));
 
-    QTest::keyClick(ed, Qt::Key_A, Qt::ControlModifier);
+    BOBUIest::keyClick(ed, BobUI::Key_A, BobUI::ControlModifier);
 
     QVERIFY(ed->textCursor().hasSelection());
 
     QApplication::clipboard()->setText(QString());
     QVERIFY(QApplication::clipboard()->text().isEmpty());
 
-    QTest::keyClick(ed, Qt::Key_C, Qt::ControlModifier);
+    BOBUIest::keyClick(ed, BobUI::Key_C, BobUI::ControlModifier);
     QCOMPARE(QApplication::clipboard()->text(), QString("Hello World"));
 }
 #endif
 
-Q_DECLARE_METATYPE(Qt::KeyboardModifiers)
+Q_DECLARE_METATYPE(BobUI::KeyboardModifiers)
 
-// Test how QWidgetTextControlPrivate (used in QPlainTextEdit, QTextEdit)
+// Test how QWidgetTextControlPrivate (used in QPlainTextEdit, BOBUIextEdit)
 // handles input with modifiers.
 void tst_QPlainTextEdit::charWithAltOrCtrlModifier_data()
 {
-    QTest::addColumn<Qt::KeyboardModifiers>("modifiers");
-    QTest::addColumn<bool>("textExpected");
+    BOBUIest::addColumn<BobUI::KeyboardModifiers>("modifiers");
+    BOBUIest::addColumn<bool>("textExpected");
 
-    QTest::newRow("no-modifiers") << Qt::KeyboardModifiers() << true;
-    // Ctrl, Ctrl+Shift: No text (QTBUG-35734)
-    QTest::newRow("ctrl") << Qt::KeyboardModifiers(Qt::ControlModifier)
+    BOBUIest::newRow("no-modifiers") << BobUI::KeyboardModifiers() << true;
+    // Ctrl, Ctrl+Shift: No text (BOBUIBUG-35734)
+    BOBUIest::newRow("ctrl") << BobUI::KeyboardModifiers(BobUI::ControlModifier)
         << false;
-    QTest::newRow("ctrl-shift") << Qt::KeyboardModifiers(Qt::ShiftModifier | Qt::ControlModifier)
+    BOBUIest::newRow("ctrl-shift") << BobUI::KeyboardModifiers(BobUI::ShiftModifier | BobUI::ControlModifier)
         << false;
-    QTest::newRow("alt") << Qt::KeyboardModifiers(Qt::AltModifier) << true;
+    BOBUIest::newRow("alt") << BobUI::KeyboardModifiers(BobUI::AltModifier) << true;
     // Alt-Ctrl (Alt-Gr on German keyboards, Task 129098): Expect text
-    QTest::newRow("alt-ctrl") << (Qt::AltModifier | Qt::ControlModifier) << true;
+    BOBUIest::newRow("alt-ctrl") << (BobUI::AltModifier | BobUI::ControlModifier) << true;
 }
 
 void tst_QPlainTextEdit::charWithAltOrCtrlModifier()
 {
-    QFETCH(Qt::KeyboardModifiers, modifiers);
+    QFETCH(BobUI::KeyboardModifiers, modifiers);
     QFETCH(bool, textExpected);
 
-    QTest::keyClick(ed, Qt::Key_At, modifiers);
+    BOBUIest::keyClick(ed, BobUI::Key_At, modifiers);
     const QString expectedText = textExpected ?  QLatin1String("@") : QString();
     QCOMPARE(ed->toPlainText(), expectedText);
 }
@@ -722,42 +722,42 @@ void tst_QPlainTextEdit::setPlainTextShouldEmitTextChangedOnce()
 void tst_QPlainTextEdit::overwriteMode()
 {
     QVERIFY(!ed->overwriteMode());
-    QTest::keyClicks(ed, "Some first text");
+    BOBUIest::keyClicks(ed, "Some first text");
 
     QCOMPARE(ed->toPlainText(), QString("Some first text"));
 
     ed->setOverwriteMode(true);
 
-    QTextCursor cursor = ed->textCursor();
+    BOBUIextCursor cursor = ed->textCursor();
     cursor.setPosition(5);
     ed->setTextCursor(cursor);
 
-    QTest::keyClicks(ed, "shiny");
+    BOBUIest::keyClicks(ed, "shiny");
     QCOMPARE(ed->toPlainText(), QString("Some shiny text"));
 
-    cursor.movePosition(QTextCursor::End);
+    cursor.movePosition(BOBUIextCursor::End);
     ed->setTextCursor(cursor);
 
-    QTest::keyClick(ed, Qt::Key_Enter);
+    BOBUIest::keyClick(ed, BobUI::Key_Enter);
 
     ed->setOverwriteMode(false);
-    QTest::keyClicks(ed, "Second paragraph");
+    BOBUIest::keyClicks(ed, "Second paragraph");
 
     QCOMPARE(blockCount(), 2);
 
-    cursor.movePosition(QTextCursor::Start);
-    cursor.movePosition(QTextCursor::EndOfBlock);
+    cursor.movePosition(BOBUIextCursor::Start);
+    cursor.movePosition(BOBUIextCursor::EndOfBlock);
 
     QCOMPARE(cursor.position(), 15);
     ed->setTextCursor(cursor);
 
     ed->setOverwriteMode(true);
 
-    QTest::keyClicks(ed, " blah");
+    BOBUIest::keyClicks(ed, " blah");
 
     QCOMPARE(blockCount(), 2);
 
-    QTextBlock block = ed->document()->begin();
+    BOBUIextBlock block = ed->document()->begin();
     QCOMPARE(block.text(), QString("Some shiny text blah"));
     block = block.next();
     QCOMPARE(block.text(), QString("Second paragraph"));
@@ -767,11 +767,11 @@ void tst_QPlainTextEdit::shiftDownInLineLastShouldSelectToEnd_data()
 {
     // shift cursor-down in the last line should select to the end of the document
 
-    QTest::addColumn<QString>("input");
-    QTest::addColumn<int>("totalLineCount");
+    BOBUIest::addColumn<QString>("input");
+    BOBUIest::addColumn<int>("totalLineCount");
 
-    QTest::newRow("1") << QString("Foo\nBar") << 2;
-    QTest::newRow("2") << QString("Foo\nBar") + QChar(QChar::LineSeparator) + QString("Baz") << 3;
+    BOBUIest::newRow("1") << QString("Foo\nBar") << 2;
+    BOBUIest::newRow("2") << QString("Foo\nBar") + QChar(QChar::LineSeparator) + QString("Baz") << 3;
 }
 
 void tst_QPlainTextEdit::shiftDownInLineLastShouldSelectToEnd()
@@ -783,22 +783,22 @@ void tst_QPlainTextEdit::shiftDownInLineLastShouldSelectToEnd()
     ed->show();
 
     // ensure we're layouted
-    for (QTextBlock block = ed->document()->begin(); block.isValid(); block = block.next())
+    for (BOBUIextBlock block = ed->document()->begin(); block.isValid(); block = block.next())
         ed->document()->documentLayout()->blockBoundingRect(block);
 
     QCOMPARE(blockCount(), 2);
 
     int lineCount = 0;
-    for (QTextBlock block = ed->document()->begin(); block.isValid(); block = block.next())
+    for (BOBUIextBlock block = ed->document()->begin(); block.isValid(); block = block.next())
         lineCount += block.layout()->lineCount();
     QCOMPARE(lineCount, totalLineCount);
 
-    QTextCursor cursor = ed->textCursor();
-    cursor.movePosition(QTextCursor::Start);
+    BOBUIextCursor cursor = ed->textCursor();
+    cursor.movePosition(BOBUIextCursor::Start);
     ed->setTextCursor(cursor);
 
     for (int i = 0; i < lineCount; ++i) {
-        QTest::keyClick(ed, Qt::Key_Down, Qt::ShiftModifier);
+        BOBUIest::keyClick(ed, BobUI::Key_Down, BobUI::ShiftModifier);
     }
 
     input.replace(QLatin1Char('\n'), QChar(QChar::ParagraphSeparator));
@@ -807,10 +807,10 @@ void tst_QPlainTextEdit::shiftDownInLineLastShouldSelectToEnd()
 
     // also test that without shift modifier the cursor does not move to the end
     // for Key_Down in the last line
-    cursor.movePosition(QTextCursor::Start);
+    cursor.movePosition(BOBUIextCursor::Start);
     ed->setTextCursor(cursor);
     for (int i = 0; i < lineCount; ++i) {
-        QTest::keyClick(ed, Qt::Key_Down);
+        BOBUIest::keyClick(ed, BobUI::Key_Down);
     }
     QVERIFY(!ed->textCursor().atEnd());
 }
@@ -818,8 +818,8 @@ void tst_QPlainTextEdit::shiftDownInLineLastShouldSelectToEnd()
 void tst_QPlainTextEdit::undoRedoShouldRepositionTextEditCursor()
 {
     ed->setPlainText("five\nlines\nin\nthis\ntextedit");
-    QTextCursor cursor = ed->textCursor();
-    cursor.movePosition(QTextCursor::Start);
+    BOBUIextCursor cursor = ed->textCursor();
+    cursor.movePosition(BOBUIextCursor::Start);
 
     ed->setUndoRedoEnabled(false);
     ed->setUndoRedoEnabled(true);
@@ -832,7 +832,7 @@ void tst_QPlainTextEdit::undoRedoShouldRepositionTextEditCursor()
     QVERIFY(ed->document()->isUndoAvailable());
     QVERIFY(!ed->document()->isRedoAvailable());
 
-    cursor.movePosition(QTextCursor::End);
+    cursor.movePosition(BOBUIextCursor::End);
     ed->setTextCursor(cursor);
 
     QVERIFY(QMetaObject::invokeMethod(ed, "undo"));
@@ -842,7 +842,7 @@ void tst_QPlainTextEdit::undoRedoShouldRepositionTextEditCursor()
 
     QCOMPARE(ed->textCursor().position(), 0);
 
-    cursor.movePosition(QTextCursor::End);
+    cursor.movePosition(BOBUIextCursor::End);
     ed->setTextCursor(cursor);
 
     QVERIFY(QMetaObject::invokeMethod(ed, "redo"));
@@ -875,130 +875,130 @@ void tst_QPlainTextEdit::lineWrapModes()
     delete window;
 }
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 void tst_QPlainTextEdit::mouseCursorShape()
 {
     // always show an IBeamCursor, see change 170146
     QVERIFY(!ed->isReadOnly());
-    QCOMPARE(ed->viewport()->cursor().shape(), Qt::IBeamCursor);
+    QCOMPARE(ed->viewport()->cursor().shape(), BobUI::IBeamCursor);
 
     ed->setReadOnly(true);
-    QCOMPARE(ed->viewport()->cursor().shape(), Qt::IBeamCursor);
+    QCOMPARE(ed->viewport()->cursor().shape(), BobUI::IBeamCursor);
 
     ed->setPlainText("Foo");
-    QCOMPARE(ed->viewport()->cursor().shape(), Qt::IBeamCursor);
+    QCOMPARE(ed->viewport()->cursor().shape(), BobUI::IBeamCursor);
 }
 #endif
 
 void tst_QPlainTextEdit::implicitClear()
 {
     // test that QPlainTextEdit::setHtml, etc. avoid calling clear() but instead call
-    // QTextDocument::setHtml/etc. instead, which also clear the contents and
+    // BOBUIextDocument::setHtml/etc. instead, which also clear the contents and
     // cached resource but preserve manually added resources. setHtml on a textedit
     // should behave the same as on a document with respect to that.
-    // see also clearResources() autotest in qtextdocument
+    // see also clearResources() autotest in bobuiextdocument
 
-    // regular resource for QTextDocument
+    // regular resource for BOBUIextDocument
     QUrl testUrl(":/foobar");
     QVariant testResource("hello world");
 
-    ed->document()->addResource(QTextDocument::ImageResource, testUrl, testResource);
-    QVERIFY(ed->document()->resource(QTextDocument::ImageResource, testUrl) == testResource);
+    ed->document()->addResource(BOBUIextDocument::ImageResource, testUrl, testResource);
+    QVERIFY(ed->document()->resource(BOBUIextDocument::ImageResource, testUrl) == testResource);
 
     ed->setPlainText("Blah");
-    QVERIFY(ed->document()->resource(QTextDocument::ImageResource, testUrl) == testResource);
+    QVERIFY(ed->document()->resource(BOBUIextDocument::ImageResource, testUrl) == testResource);
 
     ed->setPlainText("<b>Blah</b>");
-    QVERIFY(ed->document()->resource(QTextDocument::ImageResource, testUrl) == testResource);
+    QVERIFY(ed->document()->resource(BOBUIextDocument::ImageResource, testUrl) == testResource);
 
     ed->clear();
-    QVERIFY(!ed->document()->resource(QTextDocument::ImageResource, testUrl).isValid());
+    QVERIFY(!ed->document()->resource(BOBUIextDocument::ImageResource, testUrl).isValid());
     QVERIFY(ed->toPlainText().isEmpty());
 }
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
 void tst_QPlainTextEdit::copyAvailable_data()
 {
-    QTest::addColumn<pairListType>("keystrokes");
-    QTest::addColumn<QList<bool> >("copyAvailable");
-    QTest::addColumn<QString>("function");
+    BOBUIest::addColumn<pairListType>("keystrokes");
+    BOBUIest::addColumn<QList<bool> >("copyAvailable");
+    BOBUIest::addColumn<QString>("function");
 
     QList<bool> copyAvailable;
 
-    pairListType keystrokes = {{Qt::Key_B, Qt::NoModifier},
-                               {Qt::Key_B, Qt::NoModifier},
-                               {Qt::Key_Left, Qt::ShiftModifier}};
+    pairListType keystrokes = {{BobUI::Key_B, BobUI::NoModifier},
+                               {BobUI::Key_B, BobUI::NoModifier},
+                               {BobUI::Key_Left, BobUI::ShiftModifier}};
     copyAvailable << true ;
-    QTest::newRow(QString("Case1 B,B, <- + shift | signals: true").toLatin1())
+    BOBUIest::newRow(QString("Case1 B,B, <- + shift | signals: true").toLatin1())
         << keystrokes << copyAvailable << QString();
 
     copyAvailable.clear();
 
-    keystrokes = {{Qt::Key_T, Qt::NoModifier},
-                  {Qt::Key_A, Qt::NoModifier},
-                  {Qt::Key_A, Qt::NoModifier},
-                  {Qt::Key_Left, Qt::ShiftModifier}};
+    keystrokes = {{BobUI::Key_T, BobUI::NoModifier},
+                  {BobUI::Key_A, BobUI::NoModifier},
+                  {BobUI::Key_A, BobUI::NoModifier},
+                  {BobUI::Key_Left, BobUI::ShiftModifier}};
     copyAvailable << true << false;
-    QTest::newRow(QString("Case2 T,A,A, <- + shift, cut() | signals: true, false").toLatin1())
+    BOBUIest::newRow(QString("Case2 T,A,A, <- + shift, cut() | signals: true, false").toLatin1())
         << keystrokes << copyAvailable << QString("cut");
 
     copyAvailable.clear();
 
-    keystrokes = {{Qt::Key_T, Qt::NoModifier},
-                  {Qt::Key_A, Qt::NoModifier},
-                  {Qt::Key_A, Qt::NoModifier},
-                  {Qt::Key_Left, Qt::ShiftModifier},
-                  {Qt::Key_Left, Qt::ShiftModifier},
-                  {Qt::Key_Left, Qt::ShiftModifier}};
+    keystrokes = {{BobUI::Key_T, BobUI::NoModifier},
+                  {BobUI::Key_A, BobUI::NoModifier},
+                  {BobUI::Key_A, BobUI::NoModifier},
+                  {BobUI::Key_Left, BobUI::ShiftModifier},
+                  {BobUI::Key_Left, BobUI::ShiftModifier},
+                  {BobUI::Key_Left, BobUI::ShiftModifier}};
     copyAvailable << true;
-    QTest::newRow(QString("Case3 T,A,A, <- + shift, <- + shift, <- + shift, copy() | signals: true").toLatin1())
+    BOBUIest::newRow(QString("Case3 T,A,A, <- + shift, <- + shift, <- + shift, copy() | signals: true").toLatin1())
         << keystrokes << copyAvailable << QString("copy");
 
     copyAvailable.clear();
 
-    keystrokes = {{Qt::Key_T, Qt::NoModifier},
-                  {Qt::Key_A, Qt::NoModifier},
-                  {Qt::Key_A, Qt::NoModifier},
-                  {Qt::Key_Left, Qt::ShiftModifier},
-                  {Qt::Key_Left, Qt::ShiftModifier},
-                  {Qt::Key_Left, Qt::ShiftModifier},
-                  {Qt::Key_X, Qt::ControlModifier}};
+    keystrokes = {{BobUI::Key_T, BobUI::NoModifier},
+                  {BobUI::Key_A, BobUI::NoModifier},
+                  {BobUI::Key_A, BobUI::NoModifier},
+                  {BobUI::Key_Left, BobUI::ShiftModifier},
+                  {BobUI::Key_Left, BobUI::ShiftModifier},
+                  {BobUI::Key_Left, BobUI::ShiftModifier},
+                  {BobUI::Key_X, BobUI::ControlModifier}};
     copyAvailable << true << false;
-    QTest::newRow(QString("Case4 T,A,A, <- + shift, <- + shift, <- + shift, ctrl + x, paste() | signals: true, false").toLatin1())
+    BOBUIest::newRow(QString("Case4 T,A,A, <- + shift, <- + shift, <- + shift, ctrl + x, paste() | signals: true, false").toLatin1())
         << keystrokes << copyAvailable << QString("paste");
 
     copyAvailable.clear();
 
-    keystrokes = {{Qt::Key_B, Qt::NoModifier},
-                  {Qt::Key_B, Qt::NoModifier},
-                  {Qt::Key_Left, Qt::ShiftModifier},
-                  {Qt::Key_Left, Qt::NoModifier}};
+    keystrokes = {{BobUI::Key_B, BobUI::NoModifier},
+                  {BobUI::Key_B, BobUI::NoModifier},
+                  {BobUI::Key_Left, BobUI::ShiftModifier},
+                  {BobUI::Key_Left, BobUI::NoModifier}};
     copyAvailable << true << false;
-    QTest::newRow(QString("Case5 B,B, <- + shift, <- | signals: true, false").toLatin1())
+    BOBUIest::newRow(QString("Case5 B,B, <- + shift, <- | signals: true, false").toLatin1())
         << keystrokes << copyAvailable << QString();
 
     copyAvailable.clear();
 
-    keystrokes = {{Qt::Key_B, Qt::NoModifier},
-                  {Qt::Key_A, Qt::NoModifier},
-                  {Qt::Key_Left, Qt::ShiftModifier},
-                  {Qt::Key_Left, Qt::NoModifier},
-                  {Qt::Key_Right, Qt::ShiftModifier}};
+    keystrokes = {{BobUI::Key_B, BobUI::NoModifier},
+                  {BobUI::Key_A, BobUI::NoModifier},
+                  {BobUI::Key_Left, BobUI::ShiftModifier},
+                  {BobUI::Key_Left, BobUI::NoModifier},
+                  {BobUI::Key_Right, BobUI::ShiftModifier}};
     copyAvailable << true << false << true << false;
-    QTest::newRow(QString("Case6 B,A, <- + shift, ->, <- + shift | signals: true, false, true, false").toLatin1())
+    BOBUIest::newRow(QString("Case6 B,A, <- + shift, ->, <- + shift | signals: true, false, true, false").toLatin1())
         << keystrokes << copyAvailable << QString("cut");
 
     copyAvailable.clear();
 
-    keystrokes = {{Qt::Key_T, Qt::NoModifier},
-                  {Qt::Key_A, Qt::NoModifier},
-                  {Qt::Key_A, Qt::NoModifier},
-                  {Qt::Key_Left, Qt::ShiftModifier},
-                  {Qt::Key_Left, Qt::ShiftModifier},
-                  {Qt::Key_Left, Qt::ShiftModifier},
-                  {Qt::Key_X, Qt::ControlModifier}};
+    keystrokes = {{BobUI::Key_T, BobUI::NoModifier},
+                  {BobUI::Key_A, BobUI::NoModifier},
+                  {BobUI::Key_A, BobUI::NoModifier},
+                  {BobUI::Key_Left, BobUI::ShiftModifier},
+                  {BobUI::Key_Left, BobUI::ShiftModifier},
+                  {BobUI::Key_Left, BobUI::ShiftModifier},
+                  {BobUI::Key_X, BobUI::ControlModifier}};
     copyAvailable << true << false << true;
-    QTest::newRow(QString("Case7 T,A,A, <- + shift, <- + shift, <- + shift, ctrl + x, undo() | signals: true, false, true").toLatin1())
+    BOBUIest::newRow(QString("Case7 T,A,A, <- + shift, <- + shift, <- + shift, ctrl + x, undo() | signals: true, false, true").toLatin1())
         << keystrokes << copyAvailable << QString("undo");
 }
 
@@ -1010,7 +1010,7 @@ void tst_QPlainTextEdit::copyAvailable()
     QFETCH(QString, function);
 
 #ifdef Q_OS_MAC
-    QSKIP("QTBUG-22283: copyAvailable has never passed on Mac");
+    QSKIP("BOBUIBUG-22283: copyAvailable has never passed on Mac");
 #endif
     ed->clear();
     QApplication::clipboard()->clear();
@@ -1019,7 +1019,7 @@ void tst_QPlainTextEdit::copyAvailable()
 
     //Execute Keystrokes
     for (keyPairType keyPair : keystrokes)
-        QTest::keyClick(ed, keyPair.first, keyPair.second );
+        BOBUIest::keyClick(ed, keyPair.first, keyPair.second );
 
     //Execute ed->"function"
     if (function == "cut")
@@ -1060,7 +1060,7 @@ void tst_QPlainTextEdit::numPadKeyNavigation()
 {
     ed->setPlainText("Hello World");
     QCOMPARE(ed->textCursor().position(), 0);
-    QTest::keyClick(ed, Qt::Key_Right, Qt::KeypadModifier);
+    BOBUIest::keyClick(ed, BobUI::Key_Right, BobUI::KeypadModifier);
     QCOMPARE(ed->textCursor().position(), 1);
 }
 
@@ -1071,10 +1071,10 @@ void tst_QPlainTextEdit::moveCursor()
     QSignalSpy cursorMovedSpy(ed, SIGNAL(cursorPositionChanged()));
 
     QCOMPARE(ed->textCursor().position(), 0);
-    ed->moveCursor(QTextCursor::NextCharacter);
+    ed->moveCursor(BOBUIextCursor::NextCharacter);
     QCOMPARE(ed->textCursor().position(), 1);
     QCOMPARE(cursorMovedSpy.size(), 1);
-    ed->moveCursor(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+    ed->moveCursor(BOBUIextCursor::NextCharacter, BOBUIextCursor::KeepAnchor);
     QCOMPARE(ed->textCursor().position(), 2);
     QCOMPARE(cursorMovedSpy.size(), 2);
     QCOMPARE(ed->textCursor().selectedText(), QString("e"));
@@ -1108,7 +1108,7 @@ public:
 
 };
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
 void tst_QPlainTextEdit::mimeDataReimplementations()
 {
     MyTextEdit ed;
@@ -1130,7 +1130,7 @@ void tst_QPlainTextEdit::mimeDataReimplementations()
     QCOMPARE(ed.canInsertCallCount, 0);
     QCOMPARE(ed.insertCallCount, 0);
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     QWidgetTextControl *control = ed.findChild<QWidgetTextControl *>();
     QVERIFY(control);
 
@@ -1151,9 +1151,9 @@ void tst_QPlainTextEdit::mimeDataReimplementations()
 
 void tst_QPlainTextEdit::shiftEnterShouldInsertLineSeparator()
 {
-    QTest::keyClick(ed, Qt::Key_A);
-    QTest::keyClick(ed, Qt::Key_Enter, Qt::ShiftModifier);
-    QTest::keyClick(ed, Qt::Key_B);
+    BOBUIest::keyClick(ed, BobUI::Key_A);
+    BOBUIest::keyClick(ed, BobUI::Key_Enter, BobUI::ShiftModifier);
+    BOBUIest::keyClick(ed, BobUI::Key_B);
     QString expected;
     expected += 'a';
     expected += QChar::LineSeparator;
@@ -1163,8 +1163,8 @@ void tst_QPlainTextEdit::shiftEnterShouldInsertLineSeparator()
 
 void tst_QPlainTextEdit::selectWordsFromStringsContainingSeparators_data()
 {
-    QTest::addColumn<QString>("testString");
-    QTest::addColumn<QString>("selectedWord");
+    BOBUIest::addColumn<QString>("testString");
+    BOBUIest::addColumn<QString>("selectedWord");
 
     const ushort wordSeparators[] =
         {'.', ',', '?', '!', ':', ';', '-', '<', '>', '[', ']', '(', ')', '{', '}',
@@ -1177,7 +1177,7 @@ void tst_QPlainTextEdit::selectWordsFromStringsContainingSeparators_data()
             rowName += char(u);
         else
             rowName += QByteArrayLiteral("0x") + QByteArray::number(u, 16);
-        QTest::newRow(rowName.constData()) << QString("foo") + QChar(u) + QString("bar") << QString("foo");
+        BOBUIest::newRow(rowName.constData()) << QString("foo") + QChar(u) + QString("bar") << QString("foo");
     }
 }
 
@@ -1186,28 +1186,28 @@ void tst_QPlainTextEdit::selectWordsFromStringsContainingSeparators()
     QFETCH(QString, testString);
     QFETCH(QString, selectedWord);
     ed->setPlainText(testString);
-    QTextCursor cursor = ed->textCursor();
-    cursor.movePosition(QTextCursor::StartOfLine);
-    cursor.select(QTextCursor::WordUnderCursor);
+    BOBUIextCursor cursor = ed->textCursor();
+    cursor.movePosition(BOBUIextCursor::StartOfLine);
+    cursor.select(BOBUIextCursor::WordUnderCursor);
     QVERIFY(cursor.hasSelection());
     QCOMPARE(cursor.selection().toPlainText(), selectedWord);
     cursor.clearSelection();
 }
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
 void tst_QPlainTextEdit::canPaste()
 {
     if (!PlatformClipboard::isAvailable())
         QSKIP("Clipboard not working with cron-started unit tests");
 
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QApplication::clipboard()->setText(QString());
     QVERIFY(!ed->canPaste());
     QApplication::clipboard()->setText("Test");
     QVERIFY(ed->canPaste());
-    ed->setTextInteractionFlags(Qt::NoTextInteraction);
+    ed->setTextInteractionFlags(BobUI::NoTextInteraction);
     QVERIFY(!ed->canPaste());
 }
 #endif
@@ -1221,11 +1221,11 @@ void tst_QPlainTextEdit::ensureCursorVisibleOnInitialShow()
     ed->setPlainText(manyPagesOfPlainText);
     QCOMPARE(ed->textCursor().position(), 0);
 
-    ed->moveCursor(QTextCursor::End);
+    ed->moveCursor(BOBUIextCursor::End);
     ed->show();
     QVERIFY(ed->verticalScrollBar()->value() > 10);
 
-    ed->moveCursor(QTextCursor::Start);
+    ed->moveCursor(BOBUIextCursor::Start);
     QVERIFY(ed->verticalScrollBar()->value() < 10);
     ed->hide();
     ed->verticalScrollBar()->setValue(ed->verticalScrollBar()->maximum());
@@ -1244,7 +1244,7 @@ protected:
     virtual void resizeEvent(QResizeEvent *e) override
     {
         QPlainTextEdit::resizeEvent(e);
-        setPlainText("<img src=qtextbrowser-resizeevent.png width=" + QString::number(size().width()) + "><br>Size is " + QString::number(size().width()) + " x " + QString::number(size().height()));
+        setPlainText("<img src=bobuiextbrowser-resizeevent.png width=" + QString::number(size().width()) + "><br>Size is " + QString::number(size().width()) + " x " + QString::number(size().height()));
         resizeEventCalled = true;
     }
 };
@@ -1259,33 +1259,33 @@ void tst_QPlainTextEdit::setTextInsideResizeEvent()
 
 void tst_QPlainTextEdit::colorfulAppend()
 {
-    QTextCharFormat fmt;
+    BOBUIextCharFormat fmt;
 
-    fmt.setForeground(QBrush(Qt::red));
+    fmt.setForeground(QBrush(BobUI::red));
     ed->mergeCurrentCharFormat(fmt);
     ed->appendPlainText("Red");
-    fmt.setForeground(QBrush(Qt::blue));
+    fmt.setForeground(QBrush(BobUI::blue));
     ed->mergeCurrentCharFormat(fmt);
     ed->appendPlainText("Blue");
-    fmt.setForeground(QBrush(Qt::green));
+    fmt.setForeground(QBrush(BobUI::green));
     ed->mergeCurrentCharFormat(fmt);
     ed->appendPlainText("Green");
 
     QCOMPARE(ed->document()->blockCount(), 3);
-    QTextBlock block = ed->document()->begin();
+    BOBUIextBlock block = ed->document()->begin();
     QCOMPARE(block.begin().fragment().text(), QString("Red"));
-    QVERIFY(block.begin().fragment().charFormat().foreground().color() == Qt::red);
+    QVERIFY(block.begin().fragment().charFormat().foreground().color() == BobUI::red);
     block = block.next();
     QCOMPARE(block.begin().fragment().text(), QString("Blue"));
-    QVERIFY(block.begin().fragment().charFormat().foreground().color() == Qt::blue);
+    QVERIFY(block.begin().fragment().charFormat().foreground().color() == BobUI::blue);
     block = block.next();
     QCOMPARE(block.begin().fragment().text(), QString("Green"));
-    QVERIFY(block.begin().fragment().charFormat().foreground().color() == Qt::green);
+    QVERIFY(block.begin().fragment().charFormat().foreground().color() == BobUI::green);
 }
 
 void tst_QPlainTextEdit::ensureVisibleWithRtl()
 {
-    ed->setLayoutDirection(Qt::RightToLeft);
+    ed->setLayoutDirection(BobUI::RightToLeft);
     ed->setLineWrapMode(QPlainTextEdit::NoWrap);
     QString txt(500, QChar(QLatin1Char('a')));
     QCOMPARE(txt.size(), 500);
@@ -1297,50 +1297,50 @@ void tst_QPlainTextEdit::ensureVisibleWithRtl()
 
     QVERIFY(ed->horizontalScrollBar()->maximum() > 0);
 
-    ed->moveCursor(QTextCursor::Start);
+    ed->moveCursor(BOBUIextCursor::Start);
     QCOMPARE(ed->horizontalScrollBar()->value(), ed->horizontalScrollBar()->maximum());
-    ed->moveCursor(QTextCursor::End);
+    ed->moveCursor(BOBUIextCursor::End);
     QCOMPARE(ed->horizontalScrollBar()->value(), 0);
-    ed->moveCursor(QTextCursor::Start);
+    ed->moveCursor(BOBUIextCursor::Start);
     QCOMPARE(ed->horizontalScrollBar()->value(), ed->horizontalScrollBar()->maximum());
-    ed->moveCursor(QTextCursor::End);
+    ed->moveCursor(BOBUIextCursor::End);
     QCOMPARE(ed->horizontalScrollBar()->value(), 0);
 }
 
 void tst_QPlainTextEdit::preserveCharFormatAfterSetPlainText()
 {
-    QTextCharFormat fmt;
-    fmt.setForeground(QBrush(Qt::blue));
+    BOBUIextCharFormat fmt;
+    fmt.setForeground(QBrush(BobUI::blue));
     ed->mergeCurrentCharFormat(fmt);
     ed->setPlainText("This is blue");
     ed->appendPlainText("This should still be blue");
-    QTextBlock block = ed->document()->begin();
+    BOBUIextBlock block = ed->document()->begin();
     block = block.next();
     QCOMPARE(block.text(), QString("This should still be blue"));
-    QCOMPARE(block.begin().fragment().charFormat().foreground().color(), QColor(Qt::blue));
+    QCOMPARE(block.begin().fragment().charFormat().foreground().color(), QColor(BobUI::blue));
 }
 
 void tst_QPlainTextEdit::extraSelections()
 {
     ed->setPlainText("Hello World");
 
-    QTextCursor c = ed->textCursor();
-    c.movePosition(QTextCursor::Start);
-    c.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
+    BOBUIextCursor c = ed->textCursor();
+    c.movePosition(BOBUIextCursor::Start);
+    c.movePosition(BOBUIextCursor::End, BOBUIextCursor::KeepAnchor);
     const int endPos = c.position();
 
-    QTextEdit::ExtraSelection sel;
+    BOBUIextEdit::ExtraSelection sel;
     sel.cursor = c;
-    ed->setExtraSelections(QList<QTextEdit::ExtraSelection>() << sel);
+    ed->setExtraSelections(QList<BOBUIextEdit::ExtraSelection>() << sel);
 
-    c.movePosition(QTextCursor::Start);
-    c.movePosition(QTextCursor::NextWord);
+    c.movePosition(BOBUIextCursor::Start);
+    c.movePosition(BOBUIextCursor::NextWord);
     const int wordPos = c.position();
-    c.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
+    c.movePosition(BOBUIextCursor::End, BOBUIextCursor::KeepAnchor);
     sel.cursor = c;
-    ed->setExtraSelections(QList<QTextEdit::ExtraSelection>() << sel);
+    ed->setExtraSelections(QList<BOBUIextEdit::ExtraSelection>() << sel);
 
-    QList<QTextEdit::ExtraSelection> selections = ed->extraSelections();
+    QList<BOBUIextEdit::ExtraSelection> selections = ed->extraSelections();
     QCOMPARE(selections.size(), 1);
     QCOMPARE(selections.at(0).cursor.position(), endPos);
     QCOMPARE(selections.at(0).cursor.anchor(), wordPos);
@@ -1364,9 +1364,9 @@ void tst_QPlainTextEdit::adjustScrollbars()
 
     QVERIFY(ed->verticalScrollBar()->maximum() > 0);
 
-    ed->moveCursor(QTextCursor::End);
+    ed->moveCursor(BOBUIextCursor::End);
     int oldMaximum = ed->verticalScrollBar()->maximum();
-    QTextCursor cursor = ed->textCursor();
+    BOBUIextCursor cursor = ed->textCursor();
     cursor.insertText(QLatin1String("\n"));
     cursor.deletePreviousChar();
     QCOMPARE(ed->verticalScrollBar()->maximum(), oldMaximum);
@@ -1379,13 +1379,13 @@ public:
     SignalReceiver() : received(0) {}
 
     int receivedSignals() const { return received; }
-    QTextCharFormat charFormat() const { return format; }
+    BOBUIextCharFormat charFormat() const { return format; }
 
 public slots:
-    void charFormatChanged(const QTextCharFormat &tcf) { ++received; format = tcf; }
+    void charFormatChanged(const BOBUIextCharFormat &tcf) { ++received; format = tcf; }
 
 private:
-    QTextCharFormat format;
+    BOBUIextCharFormat format;
     int received;
 };
 
@@ -1405,7 +1405,7 @@ void tst_QPlainTextEdit::textObscuredByScrollbars()
             "abc abc abc abc abc abc abc abc abc abc abc abc abc abc abc abc "
             "ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab"
     );
-    ed->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ed->setHorizontalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
     ed->show();
 
     QSize documentSize = ed->document()->documentLayout()->documentSize().toSize();
@@ -1435,61 +1435,61 @@ void tst_QPlainTextEdit::wordWrapProperty()
 {
     {
         QPlainTextEdit edit;
-        QTextDocument *doc = new QTextDocument(&edit);
+        BOBUIextDocument *doc = new BOBUIextDocument(&edit);
         doc->setDocumentLayout(new QPlainTextDocumentLayout(doc));
         edit.setDocument(doc);
-        edit.setWordWrapMode(QTextOption::NoWrap);
-        QCOMPARE(doc->defaultTextOption().wrapMode(), QTextOption::NoWrap);
+        edit.setWordWrapMode(BOBUIextOption::NoWrap);
+        QCOMPARE(doc->defaultTextOption().wrapMode(), BOBUIextOption::NoWrap);
     }
     {
         QPlainTextEdit edit;
-        QTextDocument *doc = new QTextDocument(&edit);
+        BOBUIextDocument *doc = new BOBUIextDocument(&edit);
         doc->setDocumentLayout(new QPlainTextDocumentLayout(doc));
-        edit.setWordWrapMode(QTextOption::NoWrap);
+        edit.setWordWrapMode(BOBUIextOption::NoWrap);
         edit.setDocument(doc);
-        QCOMPARE(doc->defaultTextOption().wrapMode(), QTextOption::NoWrap);
+        QCOMPARE(doc->defaultTextOption().wrapMode(), BOBUIextOption::NoWrap);
     }
 }
 
 void tst_QPlainTextEdit::lineWrapProperty()
 {
-    QCOMPARE(ed->wordWrapMode(), QTextOption::WrapAtWordBoundaryOrAnywhere);
+    QCOMPARE(ed->wordWrapMode(), BOBUIextOption::WrapAtWordBoundaryOrAnywhere);
     QCOMPARE(ed->lineWrapMode(), QPlainTextEdit::WidgetWidth);
     ed->setLineWrapMode(QPlainTextEdit::NoWrap);
     QCOMPARE(ed->lineWrapMode(), QPlainTextEdit::NoWrap);
-    QCOMPARE(ed->wordWrapMode(), QTextOption::WrapAtWordBoundaryOrAnywhere);
-    QCOMPARE(ed->document()->defaultTextOption().wrapMode(), QTextOption::NoWrap);
+    QCOMPARE(ed->wordWrapMode(), BOBUIextOption::WrapAtWordBoundaryOrAnywhere);
+    QCOMPARE(ed->document()->defaultTextOption().wrapMode(), BOBUIextOption::NoWrap);
 }
 
 void tst_QPlainTextEdit::selectionChanged()
 {
     ed->setPlainText("Hello World");
 
-    ed->moveCursor(QTextCursor::Start);
+    ed->moveCursor(BOBUIextCursor::Start);
 
     QSignalSpy selectionChangedSpy(ed, SIGNAL(selectionChanged()));
 
-    QTest::keyClick(ed, Qt::Key_Right);
+    BOBUIest::keyClick(ed, BobUI::Key_Right);
     QCOMPARE(ed->textCursor().position(), 1);
     QCOMPARE(selectionChangedSpy.size(), 0);
 
-    QTest::keyClick(ed, Qt::Key_Right, Qt::ShiftModifier);
+    BOBUIest::keyClick(ed, BobUI::Key_Right, BobUI::ShiftModifier);
     QCOMPARE(ed->textCursor().position(), 2);
     QCOMPARE(selectionChangedSpy.size(), 1);
 
-    QTest::keyClick(ed, Qt::Key_Right, Qt::ShiftModifier);
+    BOBUIest::keyClick(ed, BobUI::Key_Right, BobUI::ShiftModifier);
     QCOMPARE(ed->textCursor().position(), 3);
     QCOMPARE(selectionChangedSpy.size(), 2);
 
-    QTest::keyClick(ed, Qt::Key_Right, Qt::ShiftModifier);
+    BOBUIest::keyClick(ed, BobUI::Key_Right, BobUI::ShiftModifier);
     QCOMPARE(ed->textCursor().position(), 4);
     QCOMPARE(selectionChangedSpy.size(), 3);
 
-    QTest::keyClick(ed, Qt::Key_Right);
+    BOBUIest::keyClick(ed, BobUI::Key_Right);
     QCOMPARE(ed->textCursor().position(), 4);
     QCOMPARE(selectionChangedSpy.size(), 4);
 
-    QTest::keyClick(ed, Qt::Key_Right);
+    BOBUIest::keyClick(ed, BobUI::Key_Right);
     QCOMPARE(ed->textCursor().position(), 5);
     QCOMPARE(selectionChangedSpy.size(), 4);
 }
@@ -1520,7 +1520,7 @@ void tst_QPlainTextEdit::insertAndScrollToBottom()
     for(int i = 0; i < 2000; ++i) {
         text += QLatin1String("this is another line of text to be appended. It is quite long and will probably wrap around, meaning the number of lines is larger than the number of blocks in the text.\n");
     }
-    QTextCursor cursor = ed->textCursor();
+    BOBUIextCursor cursor = ed->textCursor();
     cursor.beginEditBlock();
     cursor.insertText(text);
     cursor.endEditBlock();
@@ -1528,26 +1528,26 @@ void tst_QPlainTextEdit::insertAndScrollToBottom()
     QCOMPARE(ed->verticalScrollBar()->value(), ed->verticalScrollBar()->maximum());
 }
 
-Q_DECLARE_METATYPE(Qt::InputMethodHints)
+Q_DECLARE_METATYPE(BobUI::InputMethodHints)
 void tst_QPlainTextEdit::inputMethodQueryImHints_data()
 {
-    QTest::addColumn<Qt::InputMethodHints>("hints");
+    BOBUIest::addColumn<BobUI::InputMethodHints>("hints");
 
-    QTest::newRow("None") << static_cast<Qt::InputMethodHints>(Qt::ImhNone);
-    QTest::newRow("Password") << static_cast<Qt::InputMethodHints>(Qt::ImhHiddenText);
-    QTest::newRow("Normal") << static_cast<Qt::InputMethodHints>(Qt::ImhNoAutoUppercase | Qt::ImhNoPredictiveText | Qt::ImhSensitiveData);
+    BOBUIest::newRow("None") << static_cast<BobUI::InputMethodHints>(BobUI::ImhNone);
+    BOBUIest::newRow("Password") << static_cast<BobUI::InputMethodHints>(BobUI::ImhHiddenText);
+    BOBUIest::newRow("Normal") << static_cast<BobUI::InputMethodHints>(BobUI::ImhNoAutoUppercase | BobUI::ImhNoPredictiveText | BobUI::ImhSensitiveData);
 }
 
 void tst_QPlainTextEdit::inputMethodQueryImHints()
 {
-    QFETCH(Qt::InputMethodHints, hints);
+    QFETCH(BobUI::InputMethodHints, hints);
     ed->setInputMethodHints(hints);
 
-    QVariant value = ed->inputMethodQuery(Qt::ImHints);
-    QCOMPARE(static_cast<Qt::InputMethodHints>(value.toInt()), hints);
+    QVariant value = ed->inputMethodQuery(BobUI::ImHints);
+    QCOMPARE(static_cast<BobUI::InputMethodHints>(value.toInt()), hints);
 }
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 void tst_QPlainTextEdit::findWithRegularExpression()
 {
     ed->setPlainText(QStringLiteral("arbitrary text"));
@@ -1562,12 +1562,12 @@ void tst_QPlainTextEdit::findWithRegularExpression()
 void tst_QPlainTextEdit::findBackwardWithRegularExpression()
 {
     ed->setPlainText(QStringLiteral("arbitrary text"));
-    QTextCursor cursor = ed->textCursor();
-    cursor.movePosition(QTextCursor::End);
+    BOBUIextCursor cursor = ed->textCursor();
+    cursor.movePosition(BOBUIextCursor::End);
     ed->setTextCursor(cursor);
     QRegularExpression rx("a\\w*t");
 
-    bool found = ed->find(rx, QTextDocument::FindBackward);
+    bool found = ed->find(rx, BOBUIextDocument::FindBackward);
 
     QVERIFY(found);
     QCOMPARE(ed->textCursor().selectedText(), QStringLiteral("arbit"));
@@ -1601,14 +1601,14 @@ void tst_QPlainTextEdit::layoutAfterMultiLineRemove()
      * edit block is required for the bug to be reproduced.
      */
 
-    QTextCursor curs = ed->textCursor();
-    curs.movePosition(QTextCursor::Start);
-    curs.movePosition(QTextCursor::NextBlock);
+    BOBUIextCursor curs = ed->textCursor();
+    curs.movePosition(BOBUIextCursor::Start);
+    curs.movePosition(BOBUIextCursor::NextBlock);
 
     curs.beginEditBlock();
     for (int i = 0; i < 3; ++i) {
         curs.deleteChar();
-        curs.movePosition(QTextCursor::NextBlock);
+        curs.movePosition(BOBUIextCursor::NextBlock);
     }
     curs.endEditBlock();
 
@@ -1623,9 +1623,9 @@ void tst_QPlainTextEdit::layoutAfterMultiLineRemove()
      * still be positioned on block 3. Verify that this is the case.
      */
 
-    curs.movePosition(QTextCursor::Start);
-    curs.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, 3);
-    curs.movePosition(QTextCursor::EndOfLine);
+    curs.movePosition(BOBUIextCursor::Start);
+    curs.movePosition(BOBUIextCursor::Down, BOBUIextCursor::MoveAnchor, 3);
+    curs.movePosition(BOBUIextCursor::EndOfLine);
 
     QCOMPARE(curs.blockNumber(), 3);
 }
@@ -1636,16 +1636,16 @@ void tst_QPlainTextEdit::undoCommandRemovesAndReinsertsBlock()
     ed->setPlainText(QStringLiteral("line1\nline2"));
     QCOMPARE(ed->document()->blockCount(), 2);
 
-    QTextCursor cursor = ed->textCursor();
-    cursor.movePosition(QTextCursor::Start);
-    cursor.movePosition(QTextCursor::NextBlock, QTextCursor::KeepAnchor);
+    BOBUIextCursor cursor = ed->textCursor();
+    cursor.movePosition(BOBUIextCursor::Start);
+    cursor.movePosition(BOBUIextCursor::NextBlock, BOBUIextCursor::KeepAnchor);
     cursor.insertText(QStringLiteral("\n"));
     QCOMPARE(ed->document()->blockCount(), 2);
 
     ed->undo();
     QCOMPARE(ed->document()->blockCount(), 2);
 
-    QTextBlock block;
+    BOBUIextBlock block;
     for (block = ed->document()->begin(); block != ed->document()->end(); block = block.next()) {
         QVERIFY(block.isValid());
         QCOMPARE(block.length(), 6);
@@ -1659,11 +1659,11 @@ public:
     ContentsChangedFunctor(QPlainTextEdit *t) : textEdit(t) {}
     void operator()(int, int, int)
     {
-        QTextCursor c(textEdit->textCursor());
+        BOBUIextCursor c(textEdit->textCursor());
         c.beginEditBlock();
-        c.movePosition(QTextCursor::Start);
-        c.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
-        c.setCharFormat(QTextCharFormat());
+        c.movePosition(BOBUIextCursor::Start);
+        c.movePosition(BOBUIextCursor::End, BOBUIextCursor::KeepAnchor);
+        c.setCharFormat(BOBUIextCharFormat());
         c.endEditBlock();
     }
 
@@ -1671,25 +1671,25 @@ private:
     QPlainTextEdit *textEdit;
 };
 
-void tst_QPlainTextEdit::taskQTBUG_43562_lineCountCrash()
+void tst_QPlainTextEdit::taskBOBUIBUG_43562_lineCountCrash()
 {
-    connect(ed->document(), &QTextDocument::contentsChange, ContentsChangedFunctor(ed));
+    connect(ed->document(), &BOBUIextDocument::contentsChange, ContentsChangedFunctor(ed));
     // Don't crash
-    QTest::keyClicks(ed, "Some text");
-    QTest::keyClick(ed, Qt::Key_Left);
-    QTest::keyClick(ed, Qt::Key_Right);
-    QTest::keyClick(ed, Qt::Key_A);
-    QTest::keyClick(ed, Qt::Key_Left);
-    QTest::keyClick(ed, Qt::Key_Right);
-    QTest::keyClick(ed, Qt::Key_Space);
-    QTest::keyClicks(ed, "nd some more");
+    BOBUIest::keyClicks(ed, "Some text");
+    BOBUIest::keyClick(ed, BobUI::Key_Left);
+    BOBUIest::keyClick(ed, BobUI::Key_Right);
+    BOBUIest::keyClick(ed, BobUI::Key_A);
+    BOBUIest::keyClick(ed, BobUI::Key_Left);
+    BOBUIest::keyClick(ed, BobUI::Key_Right);
+    BOBUIest::keyClick(ed, BobUI::Key_Space);
+    BOBUIest::keyClicks(ed, "nd some more");
     disconnect(ed->document(), SIGNAL(contentsChange(int, int, int)), 0, 0);
 }
 
-#if !defined(QT_NO_CONTEXTMENU) && !defined(QT_NO_CLIPBOARD)
+#if !defined(BOBUI_NO_CONTEXTMENU) && !defined(BOBUI_NO_CLIPBOARD)
 void tst_QPlainTextEdit::contextMenu()
 {
-    ed->appendHtml(QStringLiteral("Hello <a href='http://www.qt.io'>Qt</a>"));
+    ed->appendHtml(QStringLiteral("Hello <a href='http://www.bobui.io'>BobUI</a>"));
 
     QMenu *menu = ed->createStandardContextMenu();
     QVERIFY(menu);
@@ -1698,7 +1698,7 @@ void tst_QPlainTextEdit::contextMenu()
     delete menu;
     QVERIFY(!ed->findChild<QAction *>(QStringLiteral("link-copy")));
 
-    ed->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    ed->setTextInteractionFlags(BobUI::TextBrowserInteraction);
 
     menu = ed->createStandardContextMenu();
     QVERIFY(menu);
@@ -1708,7 +1708,7 @@ void tst_QPlainTextEdit::contextMenu()
     delete menu;
     QVERIFY(!ed->findChild<QAction *>(QStringLiteral("link-copy")));
 
-    QTextCursor cursor = ed->textCursor();
+    BOBUIextCursor cursor = ed->textCursor();
     cursor.setPosition(ed->toPlainText().size() - 2);
     ed->setTextCursor(cursor);
 
@@ -1720,22 +1720,22 @@ void tst_QPlainTextEdit::contextMenu()
     delete menu;
     QVERIFY(!ed->findChild<QAction *>(QStringLiteral("link-copy")));
 }
-#endif // QT_NO_CONTEXTMENU && QT_NO_CLIPBOARD
+#endif // BOBUI_NO_CONTEXTMENU && BOBUI_NO_CLIPBOARD
 
-// QTBUG-51923: Verify that the cursor rectangle returned by the input
+// BOBUIBUG-51923: Verify that the cursor rectangle returned by the input
 // method query correctly reflects the viewport offset.
 void tst_QPlainTextEdit::inputMethodCursorRect()
 {
     ed->setPlainText("Line1\nLine2Line3\nLine3");
-    ed->moveCursor(QTextCursor::End);
+    ed->moveCursor(BOBUIextCursor::End);
     const QRectF cursorRect = ed->cursorRect();
-    const QVariant cursorRectV = ed->inputMethodQuery(Qt::ImCursorRectangle);
+    const QVariant cursorRectV = ed->inputMethodQuery(BobUI::ImCursorRectangle);
     QCOMPARE(cursorRectV.userType(), QMetaType::QRectF);
     QCOMPARE(cursorRectV.toRect(), cursorRect.toRect());
 }
 
-#if QT_CONFIG(scrollbar)
-// QTBUG-64730: Verify that the scrollbar is updated after center on scroll was set
+#if BOBUI_CONFIG(scrollbar)
+// BOBUIBUG-64730: Verify that the scrollbar is updated after center on scroll was set
 void tst_QPlainTextEdit::updateAfterChangeCenterOnScroll()
 {
     ed->setPlainText("Line1\nLine2Line3\nLine3");
@@ -1749,7 +1749,7 @@ void tst_QPlainTextEdit::updateAfterChangeCenterOnScroll()
 
 #endif
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
 void tst_QPlainTextEdit::updateCursorPositionAfterEdit()
 {
     QPlainTextEdit plaintextEdit;
@@ -1759,27 +1759,27 @@ void tst_QPlainTextEdit::updateCursorPositionAfterEdit()
 
     // select some text
     auto cursor = plaintextEdit.textCursor();
-    cursor.setPosition(initialPosition, QTextCursor::MoveAnchor);
-    cursor.setPosition(initialPosition + 3, QTextCursor::KeepAnchor);
+    cursor.setPosition(initialPosition, BOBUIextCursor::MoveAnchor);
+    cursor.setPosition(initialPosition + 3, BOBUIextCursor::KeepAnchor);
     plaintextEdit.setTextCursor(cursor);
     QVERIFY(plaintextEdit.textCursor().hasSelection());
 
-    QTest::keyClick(&plaintextEdit, Qt::Key_Delete);
-    QTest::keyClick(&plaintextEdit, Qt::Key_Down);
-    QTest::keyClick(&plaintextEdit, Qt::Key_Up);
+    BOBUIest::keyClick(&plaintextEdit, BobUI::Key_Delete);
+    BOBUIest::keyClick(&plaintextEdit, BobUI::Key_Down);
+    BOBUIest::keyClick(&plaintextEdit, BobUI::Key_Up);
 
     // Moving the cursor down and up should bring it to the initial position
     QCOMPARE(plaintextEdit.textCursor().position(), initialPosition);
 
     // Test the same with backspace
     cursor = plaintextEdit.textCursor();
-    cursor.setPosition(initialPosition + 3, QTextCursor::KeepAnchor);
+    cursor.setPosition(initialPosition + 3, BOBUIextCursor::KeepAnchor);
     plaintextEdit.setTextCursor(cursor);
     QVERIFY(plaintextEdit.textCursor().hasSelection());
 
-    QTest::keyClick(&plaintextEdit, Qt::Key_Backspace);
-    QTest::keyClick(&plaintextEdit, Qt::Key_Down);
-    QTest::keyClick(&plaintextEdit, Qt::Key_Up);
+    BOBUIest::keyClick(&plaintextEdit, BobUI::Key_Backspace);
+    BOBUIest::keyClick(&plaintextEdit, BobUI::Key_Down);
+    BOBUIest::keyClick(&plaintextEdit, BobUI::Key_Up);
 
     // Moving the cursor down and up should bring it to the initial position
     QCOMPARE(plaintextEdit.textCursor().position(), initialPosition);
@@ -1788,8 +1788,8 @@ void tst_QPlainTextEdit::updateCursorPositionAfterEdit()
     const QString txt("txt");
     QApplication::clipboard()->setText(txt);
     plaintextEdit.paste();
-    QTest::keyClick(&plaintextEdit, Qt::Key_Down);
-    QTest::keyClick(&plaintextEdit, Qt::Key_Up);
+    BOBUIest::keyClick(&plaintextEdit, BobUI::Key_Down);
+    BOBUIest::keyClick(&plaintextEdit, BobUI::Key_Up);
 
     // The curser should move back to the end of the copied text
     QCOMPARE(plaintextEdit.textCursor().position(), initialPosition + txt.size());
@@ -1805,7 +1805,7 @@ void tst_QPlainTextEdit::appendTextWhenInvisible()
     plainTextEdit->resize(320, 240);
 
     window.show();
-    QVERIFY(QTest::qWaitForWindowActive(&window));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&window));
 
     // this should be long enough to let vertical scroll bar show up
     const QString baseText("text\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\ntext");
@@ -1836,66 +1836,66 @@ enum SetupCommand {
 
 void tst_QPlainTextEdit::placeholderVisibility_data()
 {
-    QTest::addColumn<QList<SetupCommand>>("setupCommands");
-    QTest::addColumn<bool>("placeholderVisible");
-    QTest::addRow("no placeholder set + no text set")
+    BOBUIest::addColumn<QList<SetupCommand>>("setupCommands");
+    BOBUIest::addColumn<bool>("placeholderVisible");
+    BOBUIest::addRow("no placeholder set + no text set")
             << QList<SetupCommand>{} << false;
-    QTest::addRow("no placeholder set + text set or text set + no placeholder set")
+    BOBUIest::addRow("no placeholder set + text set or text set + no placeholder set")
             << QList<SetupCommand>{ SetContent } << false;
-    QTest::addRow("no placeholder set + text set + empty text set")
+    BOBUIest::addRow("no placeholder set + text set + empty text set")
             << QList<SetupCommand>{ SetContent , ClearContent }
             << false;
-    QTest::addRow("no placeholder set + empty text set + text set")
+    BOBUIest::addRow("no placeholder set + empty text set + text set")
             << QList<SetupCommand>{ ClearContent, SetContent }
             << false;
-    QTest::addRow("empty placeholder set + no text set")
+    BOBUIest::addRow("empty placeholder set + no text set")
             << QList<SetupCommand>{ ClearPlaceHolder } << false;
-    QTest::addRow("empty placeholder set + text set")
+    BOBUIest::addRow("empty placeholder set + text set")
             << QList<SetupCommand>{ ClearPlaceHolder, SetContent }
             << false;
-    QTest::addRow("empty placeholder set + text set + empty text set")
+    BOBUIest::addRow("empty placeholder set + text set + empty text set")
             << QList<SetupCommand>{ ClearPlaceHolder, SetContent, ClearContent }
             << false;
-    QTest::addRow("empty placeholder set + empty text set + text set")
+    BOBUIest::addRow("empty placeholder set + empty text set + text set")
             << QList<SetupCommand>{ ClearPlaceHolder, ClearContent, SetContent }
             << false;
-    QTest::addRow("placeholder set + no text set")
+    BOBUIest::addRow("placeholder set + no text set")
             << QList<SetupCommand>{ SetPlaceHolder, ClearContent }
             << true;
-    QTest::addRow("placeholder set + text set")
+    BOBUIest::addRow("placeholder set + text set")
             << QList<SetupCommand>{ SetPlaceHolder, SetContent }
             << false;
-    QTest::addRow("placeholder set + text set + empty text set")
+    BOBUIest::addRow("placeholder set + text set + empty text set")
             << QList<SetupCommand>{ SetPlaceHolder, SetContent, ClearContent }
             << true;
-    QTest::addRow("placeholder set + empty text set + text set")
+    BOBUIest::addRow("placeholder set + empty text set + text set")
             << QList<SetupCommand>{ SetPlaceHolder, ClearContent, SetContent }
             << false;
-    QTest::addRow("placeholder set + text set + empty placeholder set")
+    BOBUIest::addRow("placeholder set + text set + empty placeholder set")
             << QList<SetupCommand>{ SetPlaceHolder, SetContent, ClearPlaceHolder}
             << false;
-    QTest::addRow("placeholder set + empty placeholder set + text set")
+    BOBUIest::addRow("placeholder set + empty placeholder set + text set")
             << QList<SetupCommand>{ SetPlaceHolder, ClearPlaceHolder, SetContent }
             << false;
-    QTest::addRow("placeholder set + empty placeholder set + empty text set")
+    BOBUIest::addRow("placeholder set + empty placeholder set + empty text set")
             << QList<SetupCommand>{ SetPlaceHolder, ClearPlaceHolder, ClearContent }
             << false;
-    QTest::addRow("placeholder set + empty text set + empty placeholder set")
+    BOBUIest::addRow("placeholder set + empty text set + empty placeholder set")
             << QList<SetupCommand>{ SetPlaceHolder, ClearContent, ClearPlaceHolder }
             << false;
-    QTest::addRow("text set + no placeholder set + empty text set")
+    BOBUIest::addRow("text set + no placeholder set + empty text set")
             << QList<SetupCommand>{ SetContent, ClearContent }
             << false;
-    QTest::addRow("text set + empty placeholder set")
+    BOBUIest::addRow("text set + empty placeholder set")
             << QList<SetupCommand>{ SetContent, ClearPlaceHolder }
             << false;
-    QTest::addRow("text set + placeholder set")
+    BOBUIest::addRow("text set + placeholder set")
             << QList<SetupCommand>{ SetContent, SetPlaceHolder }
             << false;
-    QTest::addRow("text set + placeholder set + empty text set")
+    BOBUIest::addRow("text set + placeholder set + empty text set")
             << QList<SetupCommand>{ SetContent, SetPlaceHolder, ClearContent }
             << true;
-    QTest::addRow("text set + placeholder set + empty placeholder set")
+    BOBUIest::addRow("text set + placeholder set + empty placeholder set")
             << QList<SetupCommand>{ SetContent, SetPlaceHolder, ClearPlaceHolder }
             << false;
 }
@@ -1912,7 +1912,7 @@ void tst_QPlainTextEdit::placeholderVisibility()
             plainTextEdit.setPlaceholderText("");
             break;
         case SetPlaceHolder:
-            plainTextEdit.setPlaceholderText("Qt is awesome !");
+            plainTextEdit.setPlaceholderText("BobUI is awesome !");
             break;
         case ClearContent:
             plainTextEdit.setPlainText("");
@@ -1922,11 +1922,11 @@ void tst_QPlainTextEdit::placeholderVisibility()
             break;
         }
     }
-    auto *plainTextEdit_d = static_cast<QPlainTextEditPrivate *>(qt_widget_private(&plainTextEdit));
+    auto *plainTextEdit_d = static_cast<QPlainTextEditPrivate *>(bobui_widget_private(&plainTextEdit));
 
     plainTextEdit.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&plainTextEdit));
-    QTRY_COMPARE(plainTextEdit_d->placeholderTextShown, placeholderVisible);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&plainTextEdit));
+    BOBUIRY_COMPARE(plainTextEdit_d->placeholderTextShown, placeholderVisible);
 }
 
 
@@ -1939,19 +1939,19 @@ void tst_QPlainTextEdit::scrollBarSignals()
     plainTextEdit.setPlainText(longText);
     QScrollBar *vbar = plainTextEdit.verticalScrollBar();
     plainTextEdit.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&plainTextEdit));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&plainTextEdit));
     QSignalSpy spy(vbar, &QScrollBar::valueChanged);
 
-    QTest::keyClick(vbar, Qt::Key_Down);
-    QTRY_COMPARE(spy.count(), 1);
-    QTest::keyClick(vbar, Qt::Key_PageDown);
-    QTRY_COMPARE(spy.count(), 2);
-    QTest::keyClick(vbar, Qt::Key_PageDown);
-    QTRY_COMPARE(spy.count(), 3);
-    QTest::keyClick(vbar, Qt::Key_Up);
-    QTRY_COMPARE(spy.count(), 4);
-    QTest::keyClick(vbar, Qt::Key_PageUp);
-    QTRY_COMPARE(spy.count(), 5);
+    BOBUIest::keyClick(vbar, BobUI::Key_Down);
+    BOBUIRY_COMPARE(spy.count(), 1);
+    BOBUIest::keyClick(vbar, BobUI::Key_PageDown);
+    BOBUIRY_COMPARE(spy.count(), 2);
+    BOBUIest::keyClick(vbar, BobUI::Key_PageDown);
+    BOBUIRY_COMPARE(spy.count(), 3);
+    BOBUIest::keyClick(vbar, BobUI::Key_Up);
+    BOBUIRY_COMPARE(spy.count(), 4);
+    BOBUIest::keyClick(vbar, BobUI::Key_PageUp);
+    BOBUIRY_COMPARE(spy.count(), 5);
 }
 
 void tst_QPlainTextEdit::dontCrashWithCss()
@@ -1963,5 +1963,5 @@ void tst_QPlainTextEdit::dontCrashWithCss()
 }
 
 
-QTEST_MAIN(tst_QPlainTextEdit)
+BOBUIEST_MAIN(tst_QPlainTextEdit)
 #include "tst_qplaintextedit.moc"

@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QLISTVIEW_H
 #define QLISTVIEW_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qabstractitemview.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qabstractitemview.h>
 
-QT_REQUIRE_CONFIG(listview);
+BOBUI_REQUIRE_CONFIG(listview);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QListViewPrivate;
 
@@ -30,7 +30,7 @@ class Q_WIDGETS_EXPORT QListView : public QAbstractItemView
     Q_PROPERTY(int batchSize READ batchSize WRITE setBatchSize)
     Q_PROPERTY(bool wordWrap READ wordWrap WRITE setWordWrap)
     Q_PROPERTY(bool selectionRectVisible READ isSelectionRectVisible WRITE setSelectionRectVisible)
-    Q_PROPERTY(Qt::Alignment itemAlignment READ itemAlignment WRITE setItemAlignment)
+    Q_PROPERTY(BobUI::Alignment itemAlignment READ itemAlignment WRITE setItemAlignment)
 
 public:
     enum Movement { Static, Free, Snap };
@@ -91,8 +91,8 @@ public:
     void setSelectionRectVisible(bool show);
     bool isSelectionRectVisible() const;
 
-    void setItemAlignment(Qt::Alignment alignment);
-    Qt::Alignment itemAlignment() const;
+    void setItemAlignment(BobUI::Alignment alignment);
+    BobUI::Alignment itemAlignment() const;
 
     QRect visualRect(const QModelIndex &index) const override;
     void scrollTo(const QModelIndex &index, ScrollHint hint = EnsureVisible) override;
@@ -122,25 +122,25 @@ protected:
 
     void mouseMoveEvent(QMouseEvent *e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
     void wheelEvent(QWheelEvent *e) override;
 #endif
 
-    void timerEvent(QTimerEvent *e) override;
+    void timerEvent(BOBUIimerEvent *e) override;
     void resizeEvent(QResizeEvent *e) override;
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     void dragMoveEvent(QDragMoveEvent *e) override;
     void dragLeaveEvent(QDragLeaveEvent *e) override;
     void dropEvent(QDropEvent *e) override;
-    void startDrag(Qt::DropActions supportedActions) override;
-#endif // QT_CONFIG(draganddrop)
+    void startDrag(BobUI::DropActions supportedActions) override;
+#endif // BOBUI_CONFIG(draganddrop)
 
     void initViewItemOption(QStyleOptionViewItem *option) const override;
     void paintEvent(QPaintEvent *e) override;
 
     int horizontalOffset() const override;
     int verticalOffset() const override;
-    QModelIndex moveCursor(CursorAction cursorAction, Qt::KeyboardModifiers modifiers) override;
+    QModelIndex moveCursor(CursorAction cursorAction, BobUI::KeyboardModifiers modifiers) override;
     QRect rectForIndex(const QModelIndex &index) const;
     void setPositionForIndex(const QPoint &position, const QModelIndex &index);
 
@@ -165,6 +165,6 @@ private:
     Q_DISABLE_COPY(QListView)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QLISTVIEW_H

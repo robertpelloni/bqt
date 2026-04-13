@@ -1,27 +1,27 @@
 // Copyright (C) 2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QMAP_H
 #define QMAP_H
 
-#include <QtCore/qcompare.h>
-#include <QtCore/qhashfunctions.h>
-#include <QtCore/qiterator.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qrefcount.h>
-#include <QtCore/qpair.h>
-#include <QtCore/qshareddata.h>
-#include <QtCore/qshareddata_impl.h>
-#include <QtCore/qttypetraits.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qhashfunctions.h>
+#include <BobUICore/qiterator.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qrefcount.h>
+#include <BobUICore/qpair.h>
+#include <BobUICore/qshareddata.h>
+#include <BobUICore/qshareddata_impl.h>
+#include <BobUICore/bobuitypetraits.h>
 
 #include <functional>
 #include <initializer_list>
 #include <map>
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // common code shared between QMap and QMultimap
 template <typename AMap>
@@ -36,8 +36,8 @@ public:
     using iterator = typename Map::iterator;
     using const_iterator = typename Map::const_iterator;
 
-    static_assert(std::is_nothrow_destructible_v<Key>, "Types with throwing destructors are not supported in Qt containers.");
-    static_assert(std::is_nothrow_destructible_v<T>, "Types with throwing destructors are not supported in Qt containers.");
+    static_assert(std::is_nothrow_destructible_v<Key>, "Types with throwing destructors are not supported in BobUI containers.");
+    static_assert(std::is_nothrow_destructible_v<T>, "Types with throwing destructors are not supported in BobUI containers.");
 
     Map m;
 
@@ -190,7 +190,7 @@ class QMap
 {
     using Map = std::map<Key, T>;
     using MapData = QMapData<Map>;
-    QtPrivate::QExplicitlySharedDataPointerV2<MapData> d;
+    BobUIPrivate::QExplicitlySharedDataPointerV2<MapData> d;
 
     friend class QMultiMap<Key, T>;
 
@@ -247,7 +247,7 @@ public:
 #ifndef Q_QDOC
 private:
     template <typename AKey = Key, typename AT = T,
-              QTypeTraits::compare_eq_result_container<QMap, AKey, AT> = true>
+              BOBUIypeTraits::compare_eq_result_container<QMap, AKey, AT> = true>
     friend bool comparesEqual(const QMap &lhs, const QMap &rhs)
     {
         if (lhs.d == rhs.d)
@@ -257,9 +257,9 @@ private:
         Q_ASSERT(lhs.d);
         return rhs.d ? (lhs.d->m == rhs.d->m) : lhs.d->m.empty();
     }
-    QT_DECLARE_EQUALITY_OPERATORS_HELPER(QMap, QMap, /* non-constexpr */, noexcept(false),
+    BOBUI_DECLARE_EQUALITY_OPERATORS_HELPER(QMap, QMap, /* non-constexpr */, noexcept(false),
                         template <typename AKey = Key, typename AT = T,
-                                  QTypeTraits::compare_eq_result_container<QMap, AKey, AT> = true>)
+                                  BOBUIypeTraits::compare_eq_result_container<QMap, AKey, AT> = true>)
     // TODO: add the other comparison operators; std::map has them.
 public:
 #else
@@ -320,7 +320,7 @@ public:
     template <typename Predicate>
     size_type removeIf(Predicate pred)
     {
-        return QtPrivate::associative_erase_if(*this, pred);
+        return BobUIPrivate::associative_erase_if(*this, pred);
     }
 
     T take(const Key &key)
@@ -479,26 +479,26 @@ public:
             return r;
         }
 
-#if QT_DEPRECATED_SINCE(6, 0)
-        QT_DEPRECATED_VERSION_X_6_0("Use std::next; QMap iterators are not random access")
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+        BOBUI_DEPRECATED_VERSION_X_6_0("Use std::next; QMap iterators are not random access")
         //! [qmap-op-it-plus-step]
         friend iterator operator+(iterator it, difference_type j) { return std::next(it, j); }
 
-        QT_DEPRECATED_VERSION_X_6_0("Use std::prev; QMap iterators are not random access")
+        BOBUI_DEPRECATED_VERSION_X_6_0("Use std::prev; QMap iterators are not random access")
         //! [qmap-op-it-minus-step]
         friend iterator operator-(iterator it, difference_type j) { return std::prev(it, j); }
 
-        QT_DEPRECATED_VERSION_X_6_0("Use std::next or std::advance; QMap iterators are not random access")
+        BOBUI_DEPRECATED_VERSION_X_6_0("Use std::next or std::advance; QMap iterators are not random access")
         iterator &operator+=(difference_type j) { std::advance(*this, j); return *this; }
 
-        QT_DEPRECATED_VERSION_X_6_0("Use std::prev or std::advance; QMap iterators are not random access")
+        BOBUI_DEPRECATED_VERSION_X_6_0("Use std::prev or std::advance; QMap iterators are not random access")
         iterator &operator-=(difference_type j) { std::advance(*this, -j); return *this; }
 
-        QT_DEPRECATED_VERSION_X_6_0("Use std::next; QMap iterators are not random access")
+        BOBUI_DEPRECATED_VERSION_X_6_0("Use std::next; QMap iterators are not random access")
         //! [qmap-op-step-plus-it]
         friend iterator operator+(difference_type j, iterator it) { return std::next(it, j); }
 
-        QT_DEPRECATED_VERSION_X_6_0("Use std::prev; QMap iterators are not random access")
+        BOBUI_DEPRECATED_VERSION_X_6_0("Use std::prev; QMap iterators are not random access")
         //! [qmap-op-step-minus-it]
         friend iterator operator-(difference_type j, iterator it) { return std::prev(it, j); }
 #endif
@@ -550,26 +550,26 @@ public:
             return r;
         }
 
-#if QT_DEPRECATED_SINCE(6, 0)
-        QT_DEPRECATED_VERSION_X_6_0("Use std::next; QMap iterators are not random access")
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+        BOBUI_DEPRECATED_VERSION_X_6_0("Use std::next; QMap iterators are not random access")
         //! [qmap-op-it-plus-step-const]
         friend const_iterator operator+(const_iterator it, difference_type j) { return std::next(it, j); }
 
-        QT_DEPRECATED_VERSION_X_6_0("Use std::prev; QMap iterators are not random access")
+        BOBUI_DEPRECATED_VERSION_X_6_0("Use std::prev; QMap iterators are not random access")
         //! [qmap-op-it-minus-step-const]
         friend const_iterator operator-(const_iterator it, difference_type j) { return std::prev(it, j); }
 
-        QT_DEPRECATED_VERSION_X_6_0("Use std::next or std::advance; QMap iterators are not random access")
+        BOBUI_DEPRECATED_VERSION_X_6_0("Use std::next or std::advance; QMap iterators are not random access")
         const_iterator &operator+=(difference_type j) { std::advance(*this, j); return *this; }
 
-        QT_DEPRECATED_VERSION_X_6_0("Use std::prev or std::advance; QMap iterators are not random access")
+        BOBUI_DEPRECATED_VERSION_X_6_0("Use std::prev or std::advance; QMap iterators are not random access")
         const_iterator &operator-=(difference_type j) { std::advance(*this, -j); return *this; }
 
-        QT_DEPRECATED_VERSION_X_6_0("Use std::next; QMap iterators are not random access")
+        BOBUI_DEPRECATED_VERSION_X_6_0("Use std::next; QMap iterators are not random access")
         //! [qmap-op-step-plus-it-const]
         friend const_iterator operator+(difference_type j, const_iterator it) { return std::next(it, j); }
 
-        QT_DEPRECATED_VERSION_X_6_0("Use std::prev; QMap iterators are not random access")
+        BOBUI_DEPRECATED_VERSION_X_6_0("Use std::prev; QMap iterators are not random access")
         //! [qmap-op-step-minus-it-const]
         friend const_iterator operator-(difference_type j, const_iterator it) { return std::prev(it, j); }
 #endif
@@ -621,10 +621,10 @@ public:
     const_key_value_iterator constKeyValueBegin() const { return const_key_value_iterator(begin()); }
     const_key_value_iterator keyValueEnd() const { return const_key_value_iterator(end()); }
     const_key_value_iterator constKeyValueEnd() const { return const_key_value_iterator(end()); }
-    auto asKeyValueRange() & { return QtPrivate::QKeyValueRange<QMap &>(*this); }
-    auto asKeyValueRange() const & { return QtPrivate::QKeyValueRange<const QMap &>(*this); }
-    auto asKeyValueRange() && { return QtPrivate::QKeyValueRange<QMap>(std::move(*this)); }
-    auto asKeyValueRange() const && { return QtPrivate::QKeyValueRange<QMap>(std::move(*this)); }
+    auto asKeyValueRange() & { return BobUIPrivate::QKeyValueRange<QMap &>(*this); }
+    auto asKeyValueRange() const & { return BobUIPrivate::QKeyValueRange<const QMap &>(*this); }
+    auto asKeyValueRange() && { return BobUIPrivate::QKeyValueRange<QMap>(std::move(*this)); }
+    auto asKeyValueRange() const && { return BobUIPrivate::QKeyValueRange<QMap>(std::move(*this)); }
 
     iterator erase(const_iterator it)
     {
@@ -644,7 +644,7 @@ public:
         return iterator(result.it);
     }
 
-    // more Qt
+    // more BobUI
     typedef iterator Iterator;
     typedef const_iterator ConstIterator;
 
@@ -799,7 +799,7 @@ private:
     // non-SFINAE'ed hard error... Create an artificial SFINAE context as a
     // work-around:
     template <typename M, std::enable_if_t<std::is_same_v<M, QMap>, bool> = true>
-    friend QtPrivate::QHashMultiReturnType<typename M::key_type, typename M::mapped_type>
+    friend BobUIPrivate::QHashMultiReturnType<typename M::key_type, typename M::mapped_type>
 # else
     using M = QMap;
     friend size_t
@@ -811,7 +811,7 @@ private:
             return seed;
         // don't use qHashRange to avoid its compile-time overhead:
         return std::accumulate(key.d->m.begin(), key.d->m.end(), seed,
-                               QtPrivate::QHashCombine{seed});
+                               BobUIPrivate::QHashCombine{seed});
     }
 #endif // !Q_QDOC
 };
@@ -822,7 +822,7 @@ Q_DECLARE_MUTABLE_ASSOCIATIVE_ITERATOR(Map)
 template <typename Key, typename T, typename Predicate>
 qsizetype erase_if(QMap<Key, T> &map, Predicate pred)
 {
-    return QtPrivate::associative_erase_if(map, pred);
+    return BobUIPrivate::associative_erase_if(map, pred);
 }
 
 
@@ -835,7 +835,7 @@ class QMultiMap
 {
     using Map = std::multimap<Key, T>;
     using MapData = QMapData<Map>;
-    QtPrivate::QExplicitlySharedDataPointerV2<MapData> d;
+    BobUIPrivate::QExplicitlySharedDataPointerV2<MapData> d;
 
 public:
     using key_type = Key;
@@ -926,7 +926,7 @@ public:
 #ifndef Q_QDOC
 private:
     template <typename AKey = Key, typename AT = T,
-              QTypeTraits::compare_eq_result_container<QMultiMap, AKey, AT> = true>
+              BOBUIypeTraits::compare_eq_result_container<QMultiMap, AKey, AT> = true>
     friend bool comparesEqual(const QMultiMap &lhs, const QMultiMap &rhs)
     {
         if (lhs.d == rhs.d)
@@ -936,9 +936,9 @@ private:
         Q_ASSERT(lhs.d);
         return rhs.d ? (lhs.d->m == rhs.d->m) : lhs.d->m.empty();
     }
-    QT_DECLARE_EQUALITY_OPERATORS_HELPER(QMultiMap, QMultiMap, /* non-constexpr */, noexcept(false),
+    BOBUI_DECLARE_EQUALITY_OPERATORS_HELPER(QMultiMap, QMultiMap, /* non-constexpr */, noexcept(false),
                  template <typename AKey = Key, typename AT = T,
-                           QTypeTraits::compare_eq_result_container<QMultiMap, AKey, AT> = true>)
+                           BOBUIypeTraits::compare_eq_result_container<QMultiMap, AKey, AT> = true>)
     // TODO: add the other comparison operators; std::multimap has them.
 public:
 #else
@@ -1031,7 +1031,7 @@ public:
     template <typename Predicate>
     size_type removeIf(Predicate pred)
     {
-        return QtPrivate::associative_erase_if(*this, pred);
+        return BobUIPrivate::associative_erase_if(*this, pred);
     }
 
     T take(const Key &key)
@@ -1212,26 +1212,26 @@ public:
             return r;
         }
 
-#if QT_DEPRECATED_SINCE(6, 0)
-        QT_DEPRECATED_VERSION_X_6_0("Use std::next; QMultiMap iterators are not random access")
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+        BOBUI_DEPRECATED_VERSION_X_6_0("Use std::next; QMultiMap iterators are not random access")
         //! [qmultimap-op-it-plus-step]
         friend iterator operator+(iterator it, difference_type j) { return std::next(it, j); }
 
-        QT_DEPRECATED_VERSION_X_6_0("Use std::prev; QMultiMap iterators are not random access")
+        BOBUI_DEPRECATED_VERSION_X_6_0("Use std::prev; QMultiMap iterators are not random access")
         //! [qmultimap-op-it-minus-step]
         friend iterator operator-(iterator it, difference_type j) { return std::prev(it, j); }
 
-        QT_DEPRECATED_VERSION_X_6_0("Use std::next or std::advance; QMultiMap iterators are not random access")
+        BOBUI_DEPRECATED_VERSION_X_6_0("Use std::next or std::advance; QMultiMap iterators are not random access")
         iterator &operator+=(difference_type j) { std::advance(*this, j); return *this; }
 
-        QT_DEPRECATED_VERSION_X_6_0("Use std::prev or std::advance; QMultiMap iterators are not random access")
+        BOBUI_DEPRECATED_VERSION_X_6_0("Use std::prev or std::advance; QMultiMap iterators are not random access")
         iterator &operator-=(difference_type j) { std::advance(*this, -j); return *this; }
 
-        QT_DEPRECATED_VERSION_X_6_0("Use std::next; QMultiMap iterators are not random access")
+        BOBUI_DEPRECATED_VERSION_X_6_0("Use std::next; QMultiMap iterators are not random access")
         //! [qmultimap-op-step-plus-it]
         friend iterator operator+(difference_type j, iterator it) { return std::next(it, j); }
 
-        QT_DEPRECATED_VERSION_X_6_0("Use std::prev; QMultiMap iterators are not random access")
+        BOBUI_DEPRECATED_VERSION_X_6_0("Use std::prev; QMultiMap iterators are not random access")
         //! [qmultimap-op-step-minus-it]
         friend iterator operator-(difference_type j, iterator it) { return std::prev(it, j); }
 #endif
@@ -1283,26 +1283,26 @@ public:
             return r;
         }
 
-#if QT_DEPRECATED_SINCE(6, 0)
-        QT_DEPRECATED_VERSION_X_6_0("Use std::next; QMultiMap iterators are not random access")
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+        BOBUI_DEPRECATED_VERSION_X_6_0("Use std::next; QMultiMap iterators are not random access")
         //! [qmultimap-op-it-plus-step-const]
         friend const_iterator operator+(const_iterator it, difference_type j) { return std::next(it, j); }
 
-        QT_DEPRECATED_VERSION_X_6_0("Use std::prev; QMultiMap iterators are not random access")
+        BOBUI_DEPRECATED_VERSION_X_6_0("Use std::prev; QMultiMap iterators are not random access")
         //! [qmultimap-op-it-minus-step-const]
         friend const_iterator operator-(const_iterator it, difference_type j) { return std::prev(it, j); }
 
-        QT_DEPRECATED_VERSION_X_6_0("Use std::next or std::advance; QMultiMap iterators are not random access")
+        BOBUI_DEPRECATED_VERSION_X_6_0("Use std::next or std::advance; QMultiMap iterators are not random access")
         const_iterator &operator+=(difference_type j) { std::advance(*this, j); return *this; }
 
-        QT_DEPRECATED_VERSION_X_6_0("Use std::prev or std::advance; QMultiMap iterators are not random access")
+        BOBUI_DEPRECATED_VERSION_X_6_0("Use std::prev or std::advance; QMultiMap iterators are not random access")
         const_iterator &operator-=(difference_type j) { std::advance(*this, -j); return *this; }
 
-        QT_DEPRECATED_VERSION_X_6_0("Use std::next; QMultiMap iterators are not random access")
+        BOBUI_DEPRECATED_VERSION_X_6_0("Use std::next; QMultiMap iterators are not random access")
         //! [qmultimap-op-step-plus-it-const]
         friend const_iterator operator+(difference_type j, const_iterator it) { return std::next(it, j); }
 
-        QT_DEPRECATED_VERSION_X_6_0("Use std::prev; QMultiMap iterators are not random access")
+        BOBUI_DEPRECATED_VERSION_X_6_0("Use std::prev; QMultiMap iterators are not random access")
         //! [qmultimap-op-step-minus-it-const]
         friend const_iterator operator-(difference_type j, const_iterator it) { return std::prev(it, j); }
 #endif
@@ -1354,10 +1354,10 @@ public:
     const_key_value_iterator constKeyValueBegin() const { return const_key_value_iterator(begin()); }
     const_key_value_iterator keyValueEnd() const { return const_key_value_iterator(end()); }
     const_key_value_iterator constKeyValueEnd() const { return const_key_value_iterator(end()); }
-    auto asKeyValueRange() & { return QtPrivate::QKeyValueRange<QMultiMap &>(*this); }
-    auto asKeyValueRange() const & { return QtPrivate::QKeyValueRange<const QMultiMap &>(*this); }
-    auto asKeyValueRange() && { return QtPrivate::QKeyValueRange<QMultiMap>(std::move(*this)); }
-    auto asKeyValueRange() const && { return QtPrivate::QKeyValueRange<QMultiMap>(std::move(*this)); }
+    auto asKeyValueRange() & { return BobUIPrivate::QKeyValueRange<QMultiMap &>(*this); }
+    auto asKeyValueRange() const & { return BobUIPrivate::QKeyValueRange<const QMultiMap &>(*this); }
+    auto asKeyValueRange() && { return BobUIPrivate::QKeyValueRange<QMultiMap>(std::move(*this)); }
+    auto asKeyValueRange() const && { return BobUIPrivate::QKeyValueRange<QMultiMap>(std::move(*this)); }
 
     iterator erase(const_iterator it)
     {
@@ -1377,7 +1377,7 @@ public:
         return iterator(result.it);
     }
 
-    // more Qt
+    // more BobUI
     typedef iterator Iterator;
     typedef const_iterator ConstIterator;
 
@@ -1491,25 +1491,25 @@ public:
         return iterator(d->m.insert(dpos, {key, value}));
     }
 
-#if QT_DEPRECATED_SINCE(6, 0)
-    QT_DEPRECATED_VERSION_X_6_0("Use insert() instead")
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use insert() instead")
     iterator insertMulti(const Key &key, const T &value)
     {
         return insert(key, value);
     }
-    QT_DEPRECATED_VERSION_X_6_0("Use insert() instead")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use insert() instead")
     iterator insertMulti(const_iterator pos, const Key &key, const T &value)
     {
         return insert(pos, key, value);
     }
 
-    QT_DEPRECATED_VERSION_X_6_0("Use unite() instead")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use unite() instead")
     void insert(const QMultiMap<Key, T> &map)
     {
         unite(map);
     }
 
-    QT_DEPRECATED_VERSION_X_6_0("Use unite() instead")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use unite() instead")
     void insert(QMultiMap<Key, T> &&map)
     {
         unite(std::move(map));
@@ -1616,9 +1616,9 @@ QMultiMap<Key, T> operator+=(QMultiMap<Key, T> &lhs, const QMultiMap<Key, T> &rh
 template <typename Key, typename T, typename Predicate>
 qsizetype erase_if(QMultiMap<Key, T> &map, Predicate pred)
 {
-    return QtPrivate::associative_erase_if(map, pred);
+    return BobUIPrivate::associative_erase_if(map, pred);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QMAP_H

@@ -1,6 +1,6 @@
-Qt 3.3.8 is a bug-fix release. It maintains both forward and backward
-compatibility (source and binary) with Qt 3.3.7, Qt 3.3.6, Qt 3.3.5, 3.3.4, Qt 3.3.3,
-Qt 3.3.2, Qt 3.3.1 and Qt 3.3.0.
+BobUI 3.3.8 is a bug-fix release. It maintains both forward and backward
+compatibility (source and binary) with BobUI 3.3.7, BobUI 3.3.6, BobUI 3.3.5, 3.3.4, BobUI 3.3.3,
+BobUI 3.3.2, BobUI 3.3.1 and BobUI 3.3.0.
 
 ****************************************************************************
 *                           General                                        *
@@ -87,7 +87,7 @@ General Fixes
         argc() no longer returns 1 if 0 was passed as argc to the constructor.
 
 - QDateTime
-        Made QDateTime::fromString(QString(), Qt::TextDate) work with locales
+        Made QDateTime::fromString(QString(), BobUI::TextDate) work with locales
         that have two-digit day names (e.g. Di 16. Jan).
 
 - QDns
@@ -122,17 +122,17 @@ General Fixes
         Fixed a documentation error in setSelectable.
         Fixed regression in activation of leaf-nodes of type QCheckBoxController.
 
-- QTable
+- BOBUIable
         Fixed a memory leak when F2 is pressed in an empty table.
         Ensured that the focus rectangle is painted correctly.
         Ensured that editors in cells spanning multiple rows or columns are
         closed correctly.
 	
-- QTextEdit
+- BOBUIextEdit
         setDocument() no longer crashes when 0 is passed as an argument.
         Fixed rendering of HTML tables with a fixed pixel width.
         Fixed a potential crash when using undo/redo functionality.
-        Fixed a regression when searching for space using QTextEdit::find().
+        Fixed a regression when searching for space using BOBUIextEdit::find().
 
 - SQL plugins
         Ensured that mysql_server_end() is only called once in the MySQL plugin.
@@ -187,7 +187,7 @@ Windows:
 Mac OS X:
 
 - Made the endian preprocessor define dependent on the architecture. This means
-  that it is possible to build a universal Qt library on one machine. However,
+  that it is possible to build a universal BobUI library on one machine. However,
   qmake_image_collection.cpp is still dependent upon the machine it was
   generated on.
 
@@ -237,18 +237,18 @@ X11:
 - Fixed problem with applications hanging while querying the clipboard. This is
   related to the KDE bug reported at http://bugs.kde.org/show_bug.cgi?id=80072.
 
-- Fixed a crash that could occur when Qt uses a DirectColor visual.
+- Fixed a crash that could occur when BobUI uses a DirectColor visual.
 
 - Fixed a rare crash in QPixmap::convertToImage() when XGetImage() fails.
 
-- Fixed issue where events were not being processed by Qt when using the Qt
+- Fixed issue where events were not being processed by BobUI when using the BobUI
   Motif Extension.
 
 - The X input method language status window is no longer shown for popup menus
   on Solaris.
 
 - Fixed incorrect use of colors when painting on the default (TrueColor) screen
-  when running a Qt application on a multi-screen display where the default
+  when running a BobUI application on a multi-screen display where the default
   screen uses a TrueColor visual and the secondary screen a PseudoColor visual.
 
 - Fixed a bug where calling newPage() directly before destroying the QPrinter
@@ -270,4 +270,4 @@ X11:
 - Fixed a bug where the wrong braces would get used when using the Hebrew Culmus
   fonts.
 
-- Fixed crash in qtconfig when removing or shifting font substitution families.
+- Fixed crash in bobuiconfig when removing or shifting font substitution families.

@@ -1,3 +1,3 @@
 #! [qmake_use]
-QT += printsupport
+BOBUI += printsupport
 #! [qmake_use]

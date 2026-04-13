@@ -1,23 +1,23 @@
 // Copyright (C) 2013 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtCore/private/qobject_p.h>
-#include <QtCore/qglobal.h>
-#include <QtCore/qvarlengtharray.h>
-#include <QtGui/qopengl.h>
-#include <QtGui/qopenglfunctions.h>
-#include <QtGui/qoffscreensurface.h>
+#include <BobUICore/private/qobject_p.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qvarlengtharray.h>
+#include <BobUIGui/qopengl.h>
+#include <BobUIGui/qopenglfunctions.h>
+#include <BobUIGui/qoffscreensurface.h>
 
 #include "qopengldebug.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_IMPL_METATYPE_EXTERN(QOpenGLDebugMessage)
+BOBUI_IMPL_METATYPE_EXTERN(QOpenGLDebugMessage)
 
 /*!
     \class QOpenGLDebugMessage
     \brief The QOpenGLDebugMessage class wraps an OpenGL debug message.
-    \inmodule QtOpenGL
+    \inmodule BobUIOpenGL
     \reentrant
     \since 5.1
     \ingroup shared
@@ -38,7 +38,7 @@ QT_IMPL_METATYPE_EXTERN(QOpenGLDebugMessage)
 /*!
     \class QOpenGLDebugLogger
     \brief The QOpenGLDebugLogger enables logging of OpenGL debugging messages.
-    \inmodule QtOpenGL
+    \inmodule BobUIOpenGL
     \since 5.1
     \ingroup painting-3D
 
@@ -77,7 +77,7 @@ QT_IMPL_METATYPE_EXTERN(QOpenGLDebugMessage)
 
     For efficiency reasons, OpenGL implementations are allowed not to create
     any debug output at all, unless the OpenGL context is a debug context. In order
-    to create a debug context from Qt, you must set the QSurfaceFormat::DebugContext
+    to create a debug context from BobUI, you must set the QSurfaceFormat::DebugContext
     format option on the QSurfaceFormat used to create the QOpenGLContext object:
 
     \snippet code/src_gui_opengl_qopengldebug.cpp 1
@@ -91,7 +91,7 @@ QT_IMPL_METATYPE_EXTERN(QOpenGLDebugMessage)
 
     QOpenGLDebugLogger is a simple QObject-derived class. Just like all QObject
     subclasses, you create an instance (and optionally specify a parent
-    object), and like the other OpenGL functions in Qt you \e{must} initialize
+    object), and like the other OpenGL functions in BobUI you \e{must} initialize
     it before usage by calling initialize() whilst there is a current OpenGL context:
 
     \snippet code/src_gui_opengl_qopengldebug.cpp 2
@@ -154,7 +154,7 @@ QT_IMPL_METATYPE_EXTERN(QOpenGLDebugMessage)
     to the messageLogged() signal, and see in the backtrace the exact call
     that caused the logged message. This can be extremely useful to debug
     an OpenGL problem. Note that if OpenGL rendering is happening in another
-    thread, you must force the signal/slot connection type to Qt::DirectConnection
+    thread, you must force the signal/slot connection type to BobUI::DirectConnection
     in order to be able to see the actual backtrace.
 
     Refer to the LoggingMode enum documentation for more information about
@@ -528,7 +528,7 @@ typedef void (QOPENGLF_APIENTRY *GLDEBUGPROC)(GLenum source,GLenum type,GLuint i
 /*!
     \internal
 */
-static QOpenGLDebugMessage::Source qt_messageSourceFromGL(GLenum source)
+static QOpenGLDebugMessage::Source bobui_messageSourceFromGL(GLenum source)
 {
     switch (source) {
     case GL_DEBUG_SOURCE_API:
@@ -552,7 +552,7 @@ static QOpenGLDebugMessage::Source qt_messageSourceFromGL(GLenum source)
 /*!
     \internal
 */
-static GLenum qt_messageSourceToGL(QOpenGLDebugMessage::Source source)
+static GLenum bobui_messageSourceToGL(QOpenGLDebugMessage::Source source)
 {
     switch (source) {
     case QOpenGLDebugMessage::InvalidSource:
@@ -580,7 +580,7 @@ static GLenum qt_messageSourceToGL(QOpenGLDebugMessage::Source source)
 /*!
     \internal
 */
-static QString qt_messageSourceToString(QOpenGLDebugMessage::Source source)
+static QString bobui_messageSourceToString(QOpenGLDebugMessage::Source source)
 {
     switch (source) {
     case QOpenGLDebugMessage::InvalidSource:
@@ -608,7 +608,7 @@ static QString qt_messageSourceToString(QOpenGLDebugMessage::Source source)
 /*!
     \internal
 */
-static QOpenGLDebugMessage::Type qt_messageTypeFromGL(GLenum type)
+static QOpenGLDebugMessage::Type bobui_messageTypeFromGL(GLenum type)
 {
     switch (type) {
     case GL_DEBUG_TYPE_ERROR:
@@ -638,7 +638,7 @@ static QOpenGLDebugMessage::Type qt_messageTypeFromGL(GLenum type)
 /*!
     \internal
 */
-static GLenum qt_messageTypeToGL(QOpenGLDebugMessage::Type type)
+static GLenum bobui_messageTypeToGL(QOpenGLDebugMessage::Type type)
 {
     switch (type) {
     case QOpenGLDebugMessage::InvalidType:
@@ -672,7 +672,7 @@ static GLenum qt_messageTypeToGL(QOpenGLDebugMessage::Type type)
 /*!
     \internal
 */
-static QString qt_messageTypeToString(QOpenGLDebugMessage::Type type)
+static QString bobui_messageTypeToString(QOpenGLDebugMessage::Type type)
 {
     switch (type) {
     case QOpenGLDebugMessage::InvalidType:
@@ -706,7 +706,7 @@ static QString qt_messageTypeToString(QOpenGLDebugMessage::Type type)
 /*!
     \internal
 */
-static QOpenGLDebugMessage::Severity qt_messageSeverityFromGL(GLenum severity)
+static QOpenGLDebugMessage::Severity bobui_messageSeverityFromGL(GLenum severity)
 {
     switch (severity) {
     case GL_DEBUG_SEVERITY_HIGH:
@@ -726,7 +726,7 @@ static QOpenGLDebugMessage::Severity qt_messageSeverityFromGL(GLenum severity)
 /*!
     \internal
 */
-static GLenum qt_messageSeverityToGL(QOpenGLDebugMessage::Severity severity)
+static GLenum bobui_messageSeverityToGL(QOpenGLDebugMessage::Severity severity)
 {
     switch (severity) {
     case QOpenGLDebugMessage::InvalidSeverity:
@@ -750,7 +750,7 @@ static GLenum qt_messageSeverityToGL(QOpenGLDebugMessage::Severity severity)
 /*!
     \internal
 */
-static QString qt_messageSeverityToString(QOpenGLDebugMessage::Severity severity)
+static QString bobui_messageSeverityToString(QOpenGLDebugMessage::Severity severity)
 {
     switch (severity) {
     case QOpenGLDebugMessage::InvalidSeverity:
@@ -958,7 +958,7 @@ bool QOpenGLDebugMessage::operator==(const QOpenGLDebugMessage &debugMessage) co
     \sa operator==()
 */
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 /*!
     \relates QOpenGLDebugMessage
 
@@ -969,7 +969,7 @@ QDebug operator<<(QDebug debug, QOpenGLDebugMessage::Source source)
 {
     QDebugStateSaver saver(debug);
     debug.nospace() << "QOpenGLDebugMessage::Source("
-                    << qt_messageSourceToString(source)
+                    << bobui_messageSourceToString(source)
                     << ')';
     return debug;
 }
@@ -984,7 +984,7 @@ QDebug operator<<(QDebug debug, QOpenGLDebugMessage::Type type)
 {
     QDebugStateSaver saver(debug);
     debug.nospace() << "QOpenGLDebugMessage::Type("
-                    << qt_messageTypeToString(type)
+                    << bobui_messageTypeToString(type)
                     << ')';
     return debug;
 }
@@ -999,7 +999,7 @@ QDebug operator<<(QDebug debug, QOpenGLDebugMessage::Severity severity)
 {
     QDebugStateSaver saver(debug);
     debug.nospace() << "QOpenGLDebugMessage::Severity("
-                    << qt_messageSeverityToString(severity)
+                    << bobui_messageSeverityToString(severity)
                     << ')';
     return debug;
 }
@@ -1014,23 +1014,23 @@ QDebug operator<<(QDebug debug, const QOpenGLDebugMessage &message)
 {
     QDebugStateSaver saver(debug);
     debug.nospace() << "QOpenGLDebugMessage("
-                    << qt_messageSourceToString(message.source()) << ", "
+                    << bobui_messageSourceToString(message.source()) << ", "
                     << message.id() << ", "
                     << message.message() << ", "
-                    << qt_messageSeverityToString(message.severity()) << ", "
-                    << qt_messageTypeToString(message.type()) << ')';
+                    << bobui_messageSeverityToString(message.severity()) << ", "
+                    << bobui_messageTypeToString(message.type()) << ')';
     return debug;
 
 }
-#endif // QT_NO_DEBUG_STREAM
+#endif // BOBUI_NO_DEBUG_STREAM
 
-typedef void (QOPENGLF_APIENTRYP qt_glDebugMessageControl_t)(GLenum source, GLenum type, GLenum severity, GLsizei count, const GLuint *ids, GLboolean enabled);
-typedef void (QOPENGLF_APIENTRYP qt_glDebugMessageInsert_t)(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *buf);
-typedef void (QOPENGLF_APIENTRYP qt_glDebugMessageCallback_t)(GLDEBUGPROC callback, const void *userParam);
-typedef GLuint (QOPENGLF_APIENTRYP qt_glGetDebugMessageLog_t)(GLuint count, GLsizei bufsize, GLenum *sources, GLenum *types, GLuint *ids, GLenum *severities, GLsizei *lengths, GLchar *messageLog);
-typedef void (QOPENGLF_APIENTRYP qt_glPushDebugGroup_t)(GLenum source, GLuint id, GLsizei length, const GLchar *message);
-typedef void (QOPENGLF_APIENTRYP qt_glPopDebugGroup_t)();
-typedef void (QOPENGLF_APIENTRYP qt_glGetPointerv_t)(GLenum pname, GLvoid **params);
+typedef void (QOPENGLF_APIENTRYP bobui_glDebugMessageControl_t)(GLenum source, GLenum type, GLenum severity, GLsizei count, const GLuint *ids, GLboolean enabled);
+typedef void (QOPENGLF_APIENTRYP bobui_glDebugMessageInsert_t)(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *buf);
+typedef void (QOPENGLF_APIENTRYP bobui_glDebugMessageCallback_t)(GLDEBUGPROC callback, const void *userParam);
+typedef GLuint (QOPENGLF_APIENTRYP bobui_glGetDebugMessageLog_t)(GLuint count, GLsizei bufsize, GLenum *sources, GLenum *types, GLuint *ids, GLenum *severities, GLsizei *lengths, GLchar *messageLog);
+typedef void (QOPENGLF_APIENTRYP bobui_glPushDebugGroup_t)(GLenum source, GLuint id, GLsizei length, const GLchar *message);
+typedef void (QOPENGLF_APIENTRYP bobui_glPopDebugGroup_t)();
+typedef void (QOPENGLF_APIENTRYP bobui_glGetPointerv_t)(GLenum pname, GLvoid **params);
 
 class QOpenGLDebugLoggerPrivate : public QObjectPrivate
 {
@@ -1045,13 +1045,13 @@ public:
                               const QByteArray &callerName, bool enable);
     void _q_contextAboutToBeDestroyed();
 
-    qt_glDebugMessageControl_t glDebugMessageControl;
-    qt_glDebugMessageInsert_t glDebugMessageInsert;
-    qt_glDebugMessageCallback_t glDebugMessageCallback;
-    qt_glGetDebugMessageLog_t glGetDebugMessageLog;
-    qt_glPushDebugGroup_t glPushDebugGroup;
-    qt_glPopDebugGroup_t glPopDebugGroup;
-    qt_glGetPointerv_t glGetPointerv;
+    bobui_glDebugMessageControl_t glDebugMessageControl;
+    bobui_glDebugMessageInsert_t glDebugMessageInsert;
+    bobui_glDebugMessageCallback_t glDebugMessageCallback;
+    bobui_glGetDebugMessageLog_t glGetDebugMessageLog;
+    bobui_glPushDebugGroup_t glPushDebugGroup;
+    bobui_glPopDebugGroup_t glPopDebugGroup;
+    bobui_glGetPointerv_t glGetPointerv;
 
     GLDEBUGPROC oldDebugCallbackFunction;
     void *oldDebugCallbackParameter;
@@ -1101,10 +1101,10 @@ void QOpenGLDebugLoggerPrivate::handleMessage(GLenum source,
     QOpenGLDebugMessage message;
 
     QOpenGLDebugMessagePrivate *messagePrivate = message.d.data();
-    messagePrivate->source = qt_messageSourceFromGL(source);
-    messagePrivate->type = qt_messageTypeFromGL(type);
+    messagePrivate->source = bobui_messageSourceFromGL(source);
+    messagePrivate->type = bobui_messageTypeFromGL(type);
     messagePrivate->id = id;
-    messagePrivate->severity = qt_messageSeverityFromGL(severity);
+    messagePrivate->severity = bobui_messageSeverityFromGL(severity);
     // not passing the length to fromUtf8, as some bugged OpenGL drivers
     // do not handle the length correctly. Just rely on the message to be NUL terminated.
     messagePrivate->message = QString::fromUtf8(rawMessage);
@@ -1176,7 +1176,7 @@ void QOpenGLDebugLoggerPrivate::controlDebugMessages(QOpenGLDebugMessage::Source
     } else { \
         for (uint i = 1; i <= QOpenGLDebugMessage::Last ## type; i = i << 1) \
             if (source.testFlag(QOpenGLDebugMessage:: type (i))) \
-                target << qt_message ## type ## ToGL (QOpenGLDebugMessage:: type (i)); \
+                target << bobui_message ## type ## ToGL (QOpenGLDebugMessage:: type (i)); \
     }
 
     CONVERT_TO_GL_DEBUG_MESSAGE_CONTROL_PARAMETERS(Source, sources, glSources)
@@ -1239,7 +1239,7 @@ void QOpenGLDebugLoggerPrivate::_q_contextAboutToBeDestroyed()
 }
 
 extern "C" {
-static void QOPENGLF_APIENTRY qt_opengl_debug_callback(GLenum source,
+static void QOPENGLF_APIENTRY bobui_opengl_debug_callback(GLenum source,
                                                        GLenum type,
                                                        GLuint id,
                                                        GLenum severity,
@@ -1324,7 +1324,7 @@ bool QOpenGLDebugLogger::initialize()
     connect(d->context, SIGNAL(aboutToBeDestroyed()), this, SLOT(_q_contextAboutToBeDestroyed()));
 
 #define GET_DEBUG_PROC_ADDRESS(procName) \
-    d->procName = reinterpret_cast< qt_ ## procName ## _t >( \
+    d->procName = reinterpret_cast< bobui_ ## procName ## _t >( \
         d->context->getProcAddress(d->context->isOpenGLES() ? (#procName "KHR") : (#procName)) \
     );
 
@@ -1340,14 +1340,14 @@ bool QOpenGLDebugLogger::initialize()
 
     QOpenGLContext::currentContext()->functions()->glGetIntegerv(GL_MAX_DEBUG_MESSAGE_LENGTH, &d->maxMessageLength);
 
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (!d->context->format().testOption(QSurfaceFormat::DebugContext)) {
         qWarning("QOpenGLDebugLogger::initialize(): the current context is not a debug context:\n"
                  "    this means that the GL may not generate any debug output at all.\n"
                  "    To avoid this warning, try creating the context with the\n"
                  "    QSurfaceFormat::DebugContext surface format option.");
     }
-#endif // QT_NO_DEBUG
+#endif // BOBUI_NO_DEBUG
 
     d->initialized = true;
     return true;
@@ -1380,7 +1380,7 @@ bool QOpenGLDebugLogger::isLogging() const
     still be invoked when logging.
 
     \note It's not possible to change the logging mode without stopping and
-    starting logging again. This might change in a future version of Qt.
+    starting logging again. This might change in a future version of BobUI.
 
     \note The object must be initialized before logging can happen.
 
@@ -1404,7 +1404,7 @@ void QOpenGLDebugLogger::startLogging(QOpenGLDebugLogger::LoggingMode loggingMod
     d->glGetPointerv(GL_DEBUG_CALLBACK_FUNCTION, reinterpret_cast<void **>(&d->oldDebugCallbackFunction));
     d->glGetPointerv(GL_DEBUG_CALLBACK_USER_PARAM, &d->oldDebugCallbackParameter);
 
-    d->glDebugMessageCallback(&qt_opengl_debug_callback, d);
+    d->glDebugMessageCallback(&bobui_opengl_debug_callback, d);
 
     QOpenGLFunctions *funcs = QOpenGLContext::currentContext()->functions();
     d->debugWasEnabled = funcs->glIsEnabled(GL_DEBUG_OUTPUT);
@@ -1494,9 +1494,9 @@ void QOpenGLDebugLogger::logMessage(const QOpenGLDebugMessage &debugMessage)
         return;
     }
 
-    const GLenum source = qt_messageSourceToGL(debugMessage.source());
-    const GLenum type = qt_messageTypeToGL(debugMessage.type());
-    const GLenum severity = qt_messageSeverityToGL(debugMessage.severity());
+    const GLenum source = bobui_messageSourceToGL(debugMessage.source());
+    const GLenum type = bobui_messageTypeToGL(debugMessage.type());
+    const GLenum severity = bobui_messageSeverityToGL(debugMessage.severity());
     QByteArray rawMessage = debugMessage.message().toUtf8();
     rawMessage.append('\0');
 
@@ -1562,7 +1562,7 @@ void QOpenGLDebugLogger::pushGroup(const QString &name, GLuint id, QOpenGLDebugM
     // Don't pass rawMessage.length(), as unfortunately bugged
     // OpenGL drivers will eat the trailing NUL in the name. Just rely
     // on the name being NUL terminated.
-    d->glPushDebugGroup(qt_messageSourceToGL(source), id, -1, rawName.constData());
+    d->glPushDebugGroup(bobui_messageSourceToGL(source), id, -1, rawName.constData());
 }
 
 /*!
@@ -1709,10 +1709,10 @@ QList<QOpenGLDebugMessage> QOpenGLDebugLogger::loggedMessages() const
             QOpenGLDebugMessage message;
 
             QOpenGLDebugMessagePrivate *messagePrivate = message.d.data();
-            messagePrivate->source = qt_messageSourceFromGL(messageSources[i]);
-            messagePrivate->type = qt_messageTypeFromGL(messageTypes[i]);
+            messagePrivate->source = bobui_messageSourceFromGL(messageSources[i]);
+            messagePrivate->type = bobui_messageTypeFromGL(messageTypes[i]);
             messagePrivate->id = messageIds[i];
-            messagePrivate->severity = qt_messageSeverityFromGL(messageSeverities[i]);
+            messagePrivate->severity = bobui_messageSeverityFromGL(messageSeverities[i]);
             messagePrivate->message = QString::fromUtf8(messagesBufferPtr, messageLengths[i] - 1);
 
             messagesBufferPtr += messageLengths[i];
@@ -1734,7 +1734,7 @@ QList<QOpenGLDebugMessage> QOpenGLDebugLogger::loggedMessages() const
     different from the thread the QOpenGLContext in which this object has
     been initialized lives in. Moreover, the signal could be emitted from
     multiple threads at the same time. This is normally not a problem,
-    as Qt will utilize a queued connection for cross-thread signal emissions,
+    as BobUI will utilize a queued connection for cross-thread signal emissions,
     but if you force the connection type to Direct then you must be aware of
     the potential races in the slots connected to this signal.
 
@@ -1772,6 +1772,6 @@ qint64 QOpenGLDebugLogger::maximumMessageLength() const
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qopengldebug.cpp"

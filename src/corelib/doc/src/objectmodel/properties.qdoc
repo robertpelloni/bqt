@@ -1,20 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \page properties.html
     \title The Property System
-    \brief An overview of Qt's property system.
+    \brief An overview of BobUI's property system.
     \ingroup explanations-basics
-    \ingroup qt-basic-concepts
-    \keyword Qt's Property System
+    \ingroup bobui-basic-concepts
+    \keyword BobUI's Property System
 
-    Qt provides a sophisticated property system similar to the ones
+    BobUI provides a sophisticated property system similar to the ones
     supplied by some compiler vendors. However, as a compiler- and
-    platform-independent library, Qt does not rely on non-standard
-    compiler features like \c __property or \c [property]. The Qt
+    platform-independent library, BobUI does not rely on non-standard
+    compiler features like \c __property or \c [property]. The BobUI
     solution works with \e any standard C++ compiler on every platform
-    Qt supports. It is based on the \l {Meta-Object System} that also
+    BobUI supports. It is based on the \l {Meta-Object System} that also
     provides inter-object communication via \l{signals and slots}.
 
     \section1 Requirements for Declaring Properties
@@ -29,7 +29,7 @@
 
     \snippet code/doc_src_properties.cpp 1
 
-    Here is an example showing how to export member variables as Qt
+    Here is an example showing how to export member variables as BobUI
     properties using the \c MEMBER keyword.
     Note that a \c NOTIFY signal must be specified to allow QML property bindings.
 
@@ -83,7 +83,7 @@
     new value of the property. The \c NOTIFY signal should only be emitted when
     the property has really been changed, to avoid bindings being unnecessarily
     re-evaluated in QML, for example. The signal is emitted automatically when
-    the property is changed via the Qt API (QObject::setProperty,
+    the property is changed via the BobUI API (QObject::setProperty,
     QMetaProperty, etc.), but not when the MEMBER is changed directly.
 
     \li A \c REVISION number or \c REVISION() macro is optional. If included,
@@ -93,7 +93,7 @@
 
     \li The \c DESIGNABLE attribute indicates whether the property
     should be visible in the property editor of GUI design tool (e.g.,
-    \l {Qt Widgets Designer Manual}{\QD}). Most properties are \c DESIGNABLE
+    \l {BobUI Widgets Designer Manual}{\QD}). Most properties are \c DESIGNABLE
     (default true). Valid values are true and false.
 
     \li The \c SCRIPTABLE attribute indicates whether this property
@@ -116,11 +116,11 @@
     gets and sets a widget's \c USER property.
 
     \li The \c {BINDABLE bindableProperty} attribute indicates that the
-    property supports \l {Qt Bindable Properties}{bindings},
+    property supports \l {BobUI Bindable Properties}{bindings},
     and that it is possible to set and inspect
     bindings to this property via the meta object system (QMetaProperty).
     \c bindableProperty names a class member of type QBindable<T>, where T
-    is the property type. This attribute was introduced in Qt 6.0.
+    is the property type. This attribute was introduced in BobUI 6.0.
 
     \li The presence of the \c CONSTANT attribute indicates that the property
     value is constant.  For a given object instance, the READ method of a
@@ -306,7 +306,7 @@
 
     For more information, including examples, see the classes mentioned above
     and the general tips on implementing and using
-    \l {Qt Bindable Properties}{bindable properties}.
+    \l {BobUI Bindable Properties}{bindable properties}.
 
-    \sa {Qt Bindable Properties}, {Defining QML Types from C++}
+    \sa {BobUI Bindable Properties}, {Defining QML Types from C++}
 */

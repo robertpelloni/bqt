@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <comment>
+* Copyright (C) 2016 The BobUI Company Ltd.
+* SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
+</comment>
+ <class>BobUIGradientViewDialog</class>
+ <widget class="QDialog" name="BobUIGradientViewDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>188</width>
+    <height>72</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Select Gradient</string>
+  </property>
+  <layout class="QVBoxLayout">
+   <item>
+    <widget class="BobUIGradientView" name="gradientView">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>BobUI::Orientation::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>BobUIGradientView</class>
+   <extends>QFrame</extends>
+   <header>bobuigradientview.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>BobUIGradientViewDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>72</x>
+     <y>224</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>21</x>
+     <y>243</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>BobUIGradientViewDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>168</x>
+     <y>233</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>152</x>
+     <y>251</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

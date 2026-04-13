@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "widget.h"
 #include "renderwindow.h"
@@ -13,14 +13,14 @@
 #include <QList>
 #include <QByteArray>
 #include <QPushButton>
-#include <QTextEdit>
+#include <BOBUIextEdit>
 #include <QSplitter>
 #include <QGuiApplication>
 #include <QSurfaceFormat>
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
 #include <QDebug>
-#include <QTextStream>
+#include <BOBUIextStream>
 
 struct Version {
     const char *str;
@@ -162,7 +162,7 @@ Widget::Widget(QWidget *parent)
     : QWidget(parent)
 {
     QVBoxLayout *layout = new QVBoxLayout;
-    QSplitter *vsplit = new QSplitter(Qt::Vertical);
+    QSplitter *vsplit = new QSplitter(BobUI::Vertical);
     layout->addWidget(vsplit);
 
     QSplitter *hsplit = new QSplitter;
@@ -175,10 +175,10 @@ Widget::Widget(QWidget *parent)
     hsplit->addWidget(widgetWithLayout(settingsLayout));
 
     QVBoxLayout *outputLayout = new QVBoxLayout;
-    m_output = new QTextEdit;
+    m_output = new BOBUIextEdit;
     m_output->setReadOnly(true);
     outputLayout->addWidget(m_output);
-    m_extensions = new QTextEdit;
+    m_extensions = new BOBUIextEdit;
     m_extensions->setReadOnly(true);
     outputLayout->addWidget(m_extensions);
     hsplit->addWidget(widgetWithLayout(outputLayout));
@@ -195,21 +195,21 @@ Widget::Widget(QWidget *parent)
     addRenderWindow();
 
     QString description;
-    QTextStream str(&description);
-    str << "Qt " << QT_VERSION_STR << ' ' << QGuiApplication::platformName();
+    BOBUIextStream str(&description);
+    str << "BobUI " << BOBUI_VERSION_STR << ' ' << QGuiApplication::platformName();
     const char *openGlVariables[] =
-        {"QT_ANGLE_PLATFORM", "QT_OPENGL", "QT_OPENGL_BUGLIST", "QT_OPENGL_DLL"};
+        {"BOBUI_ANGLE_PLATFORM", "BOBUI_OPENGL", "BOBUI_OPENGL_BUGLIST", "BOBUI_OPENGL_DLL"};
     const size_t variableCount = sizeof(openGlVariables) / sizeof(openGlVariables[0]);
     for (size_t v = 0; v < variableCount; ++v) {
         if (qEnvironmentVariableIsSet(openGlVariables[v]))
             str << ' ' << openGlVariables[v] << '=' << qgetenv(openGlVariables[v]);
     }
-    if (QCoreApplication::testAttribute(Qt::AA_UseOpenGLES))
-        str << " Qt::AA_UseOpenGLES";
-    if (QCoreApplication::testAttribute(Qt::AA_UseSoftwareOpenGL))
-        str << " Qt::AA_UseSoftwareOpenGL";
-    if (QCoreApplication::testAttribute(Qt::AA_UseDesktopOpenGL))
-        str << " Qt::AA_UseDesktopOpenGL";
+    if (QCoreApplication::testAttribute(BobUI::AA_UseOpenGLES))
+        str << " BobUI::AA_UseOpenGLES";
+    if (QCoreApplication::testAttribute(BobUI::AA_UseSoftwareOpenGL))
+        str << " BobUI::AA_UseSoftwareOpenGL";
+    if (QCoreApplication::testAttribute(BobUI::AA_UseDesktopOpenGL))
+        str << " BobUI::AA_UseDesktopOpenGL";
     layout->addWidget(new QLabel(description));
 
     setLayout(layout);
@@ -334,13 +334,13 @@ void Widget::renderWindowReady()
     m_output->append(tr("\n*** QSurfaceFormat from window surface ***"));
     printFormat(m_surface->format());
 
-    m_output->append(tr("\n*** Qt build information ***"));
+    m_output->append(tr("\n*** BobUI build information ***"));
     const char *gltype[] = { "Desktop", "GLES 2", "GLES 1" };
-    m_output->append(tr("Qt OpenGL configuration: %1")
+    m_output->append(tr("BobUI OpenGL configuration: %1")
                      .arg(QString::fromLatin1(gltype[QOpenGLContext::openGLModuleType()])));
 #if defined(Q_OS_WIN)
     using namespace QNativeInterface;
-    m_output->append(tr("Qt OpenGL library handle: %1")
+    m_output->append(tr("BobUI OpenGL library handle: %1")
                      .arg(QString::number(qintptr(QWGLContext::openGLModuleHandle()), 16)));
 #endif
 
@@ -350,8 +350,8 @@ void Widget::renderWindowReady()
     for (const QByteArray &ext : std::as_const(extensionList))
         m_extensions->append(QString::fromLatin1(ext));
 
-    m_output->moveCursor(QTextCursor::Start);
-    m_extensions->moveCursor(QTextCursor::Start);
+    m_output->moveCursor(BOBUIextCursor::Start);
+    m_extensions->moveCursor(BOBUIextCursor::Start);
 }
 
 void Widget::renderWindowError(const QString &msg)

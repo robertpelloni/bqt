@@ -1,7 +1,7 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QSignalSpy>
 #include <QFont>
 
@@ -29,7 +29,7 @@ private slots:
     void setIconText();
     void setToolTip_data();
     void setToolTip();
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     void setStandardKeys();
     void task200823_tooltip();
 #endif
@@ -99,15 +99,15 @@ void tst_QAction::getSetCheck()
     obj1.setFont(font);
     QCOMPARE(obj1.font(), font);
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     QCOMPARE(obj1.shortcut(), QKeySequence());
-    QKeySequence quit(Qt::CTRL | Qt::Key_Q);
+    QKeySequence quit(BobUI::CTRL | BobUI::Key_Q);
     obj1.setShortcut(quit);
     QCOMPARE(obj1.shortcut(), quit);
 
-    QCOMPARE(obj1.shortcutContext(), Qt::WindowShortcut);
-    obj1.setShortcutContext(Qt::ApplicationShortcut);
-    QCOMPARE(obj1.shortcutContext(), Qt::ApplicationShortcut);
+    QCOMPARE(obj1.shortcutContext(), BobUI::WindowShortcut);
+    obj1.setShortcutContext(BobUI::ApplicationShortcut);
+    QCOMPARE(obj1.shortcutContext(), BobUI::ApplicationShortcut);
 
     QCOMPARE(obj1.autoRepeat(), true);
     obj1.setAutoRepeat(false);
@@ -140,14 +140,14 @@ void tst_QAction::getSetCheck()
 
 void tst_QAction::setText_data()
 {
-    QTest::addColumn<QString>("text");
-    QTest::addColumn<QString>("iconText");
-    QTest::addColumn<QString>("textFromIconText");
+    BOBUIest::addColumn<QString>("text");
+    BOBUIest::addColumn<QString>("iconText");
+    BOBUIest::addColumn<QString>("textFromIconText");
 
     //next we fill it with data
-    QTest::newRow("Normal") << "Action" << "Action" << "Action";
-    QTest::newRow("Ampersand") << "Search && Destroy" << "Search & Destroy" << "Search && Destroy";
-    QTest::newRow("Mnemonic and ellipsis") << "O&pen File ..." << "Open File" << "Open File";
+    BOBUIest::newRow("Normal") << "Action" << "Action" << "Action";
+    BOBUIest::newRow("Ampersand") << "Search && Destroy" << "Search & Destroy" << "Search && Destroy";
+    BOBUIest::newRow("Mnemonic and ellipsis") << "O&pen File ..." << "Open File" << "Open File";
 }
 
 void tst_QAction::setText()
@@ -177,27 +177,27 @@ void tst_QAction::setIconText()
 
 void tst_QAction::setToolTip_data()
 {
-    QTest::addColumn<QByteArrayList>("properties");
-    QTest::addColumn<QStringList>("values");
-    QTest::addColumn<QStringList>("expectedToolTips");
+    BOBUIest::addColumn<QByteArrayList>("properties");
+    BOBUIest::addColumn<QStringList>("values");
+    BOBUIest::addColumn<QStringList>("expectedToolTips");
 
-    QTest::newRow("Tooltip")
+    BOBUIest::newRow("Tooltip")
         << QByteArrayList{"toolTip", "toolTip", "toolTip"}
         << QStringList{"ToolTip", "Tool&Tip", "Tool && Tip"}
         << QStringList{"ToolTip", "Tool&Tip", "Tool && Tip"};
-    QTest::newRow("Only text")
+    BOBUIest::newRow("Only text")
         << QByteArrayList{"text", "text", "text", "text", "toolTip", "toolTip"}
         << QStringList {"Text", "Te&xt2", "Find && Replace", "O&pen File...", "ToolTip", QString()}
         << QStringList{"Text", "Text2", "Find & Replace", "Open File", "ToolTip", "Open File"};
-    QTest::newRow("Only iconText")
+    BOBUIest::newRow("Only iconText")
         << QByteArrayList{"iconText", "iconText", "iconText", "toolTip", "toolTip"}
         << QStringList{"Icon Text", "Find && Replace", "Icon&Text", "ToolTip", QString()}
         << QStringList{"Icon Text", "Find & Replace", "IconText", "ToolTip", "IconText"};
-    QTest::newRow("Text and iconText")
+    BOBUIest::newRow("Text and iconText")
         << QByteArrayList{"iconText", "text", "iconText", "text", "iconText"}
         << QStringList{"Icon", "Text", "Icon2", QString(), "Icon3"}
         << QStringList{"Icon", "Text", "Text", "Icon2", "Icon3"};
-    QTest::newRow("All and nothing")
+    BOBUIest::newRow("All and nothing")
         << QByteArrayList{"text",  "iconText", "toolTip", "text",    "iconText", "toolTip", "text",   "text",     "iconText", "iconText", "text"}
         << QStringList   {"Te&xt", "I&&con",   "ToolTip", "Text",    "Icon",     QString(), "Te&&xt2", QString(), "I&&con2",  QString(), "Text"}
         << QStringList   {"Text",  "Text",     "ToolTip", "ToolTip", "ToolTip",  "Text",    "Te&xt2", "Icon",     "I&con2",   QString(), "Text"};
@@ -222,7 +222,7 @@ void tst_QAction::setToolTip()
     }
 }
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 
 //basic testing of standard keys
 void tst_QAction::setStandardKeys()
@@ -266,7 +266,7 @@ void tst_QAction::task200823_tooltip()
     QCOMPARE(action->toolTip(), ref);
 }
 
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
 void tst_QAction::task229128TriggeredSignalWithoutActiongroup()
 {
@@ -288,7 +288,7 @@ void tst_QAction::task229128TriggeredSignalWithoutActiongroup()
     QCOMPARE(spyWithoutGroup.size(), 1);
 }
 
-void tst_QAction::setData() // QTBUG-62006
+void tst_QAction::setData() // BOBUIBUG-62006
 {
     QAction act(nullptr);
     QSignalSpy spy(&act, &QAction::changed);
@@ -368,5 +368,5 @@ void tst_QAction::setCheckabledSetChecked()
     QCOMPARE(checkableSpy.size(), 3);
 }
 
-QTEST_MAIN(tst_QAction)
+BOBUIEST_MAIN(tst_QAction)
 #include "tst_qaction.moc"

@@ -1,10 +1,10 @@
-requires(qtHaveModule(widgets))
+requires(bobuiHaveModule(widgets))
 
 TEMPLATE      = subdirs
 
-qtConfig(sharedmemory): SUBDIRS = sharedmemory
-qtHaveModule(network) {
-    QT_FOR_CONFIG += network
+bobuiConfig(sharedmemory): SUBDIRS = sharedmemory
+bobuiHaveModule(network) {
+    BOBUI_FOR_CONFIG += network
 
-    qtConfig(localserver): SUBDIRS += localfortuneserver localfortuneclient
+    bobuiConfig(localserver): SUBDIRS += localfortuneserver localfortuneclient
 }

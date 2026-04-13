@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtMath>
-#include <QtWidgets>
+#include <BobUIMath>
+#include <BobUIWidgets>
 
 #include "mouse.h"
 
@@ -39,12 +39,12 @@ int main(int argc, char **argv)
     view.setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
     view.setDragMode(QGraphicsView::ScrollHandDrag);
 //! [5] //! [6]
-    view.setWindowTitle(QT_TRANSLATE_NOOP(QGraphicsView, "Colliding Mice"));
+    view.setWindowTitle(BOBUI_TRANSLATE_NOOP(QGraphicsView, "Colliding Mice"));
     view.resize(400, 300);
     view.show();
 
-    QTimer timer;
-    QObject::connect(&timer, &QTimer::timeout, &scene, &QGraphicsScene::advance);
+    BOBUIimer timer;
+    QObject::connect(&timer, &BOBUIimer::timeout, &scene, &QGraphicsScene::advance);
     timer.start(1000 / 33);
 
     return app.exec();

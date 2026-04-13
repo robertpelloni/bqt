@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QOFFSCREENINTEGRATION_X11_H
 #define QOFFSCREENINTEGRATION_X11_H
@@ -11,15 +11,15 @@
 #include <qscopedpointer.h>
 
 #include <qpa/qplatformopenglcontext.h>
-#include <QtGui/qguiapplication.h>
+#include <BobUIGui/qguiapplication.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QOffscreenX11Connection;
 class QOffscreenX11Info;
 
 class QOffscreenX11PlatformNativeInterface : public QOffscreenPlatformNativeInterface
-#if QT_CONFIG(xcb)
+#if BOBUI_CONFIG(xcb)
                                            , public QNativeInterface::QX11Application
 #endif
 {
@@ -28,10 +28,10 @@ public:
     ~QOffscreenX11PlatformNativeInterface();
 
     void *nativeResourceForScreen(const QByteArray &resource, QScreen *screen) override;
-#if !defined(QT_NO_OPENGL) && QT_CONFIG(xcb_glx_plugin)
+#if !defined(BOBUI_NO_OPENGL) && BOBUI_CONFIG(xcb_glx_plugin)
     void *nativeResourceForContext(const QByteArray &resource, QOpenGLContext *context) override;
 #endif
-#if QT_CONFIG(xcb)
+#if BOBUI_CONFIG(xcb)
     Display *display() const override;
     xcb_connection_t *connection() const override { return nullptr; }
 #endif
@@ -45,7 +45,7 @@ public:
     ~QOffscreenX11Integration();
     bool hasCapability(QPlatformIntegration::Capability cap) const override;
 
-#if !defined(QT_NO_OPENGL) && QT_CONFIG(xcb_glx_plugin)
+#if !defined(BOBUI_NO_OPENGL) && BOBUI_CONFIG(xcb_glx_plugin)
     QPlatformOpenGLContext *createPlatformOpenGLContext(QOpenGLContext *context) const override;
 #endif
     QOffscreenX11PlatformNativeInterface *nativeInterface() const override;
@@ -68,7 +68,7 @@ private:
     QScopedPointer<QOffscreenX11Info> m_x11Info;
 };
 
-#if QT_CONFIG(xcb_glx_plugin)
+#if BOBUI_CONFIG(xcb_glx_plugin)
 class QOffscreenX11GLXContextData;
 
 class QOffscreenX11GLXContext : public QPlatformOpenGLContext
@@ -95,8 +95,8 @@ public:
 private:
     QScopedPointer<QOffscreenX11GLXContextData> d;
 };
-#endif // QT_CONFIG(xcb_glx_plugin)
+#endif // BOBUI_CONFIG(xcb_glx_plugin)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

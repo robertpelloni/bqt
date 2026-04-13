@@ -1,4 +1,4 @@
-// Definitions for building in Qt source, ref. src/jconfigint.h.in
+// Definitions for building in BobUI source, ref. src/jconfigint.h.in
 
 #include <stdint.h>
 

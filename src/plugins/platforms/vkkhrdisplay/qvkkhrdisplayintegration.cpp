@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qvkkhrdisplayintegration.h"
 #include "qvkkhrdisplayvulkaninstance.h"
@@ -9,32 +9,32 @@
 #include <qpa/qplatforminputcontextfactory_p.h>
 #include <qpa/qwindowsysteminterface.h>
 
-#include <QtGui/private/qguiapplication_p.h>
-#include <QtGui/private/qwindow_p.h>
-#include <QtGui/private/qgenericunixeventdispatcher_p.h>
-#include <QtGui/private/qgenericunixfontdatabase_p.h>
-#include <QtGui/private/qgenericunixtheme_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qwindow_p.h>
+#include <BobUIGui/private/qgenericunixeventdispatcher_p.h>
+#include <BobUIGui/private/qgenericunixfontdatabase_p.h>
+#include <BobUIGui/private/qgenericunixtheme_p.h>
 #include <qpa/qplatformservices.h>
 
-#include <QtFbSupport/private/qfbvthandler_p.h>
+#include <BobUIFbSupport/private/qfbvthandler_p.h>
 
-#if QT_CONFIG(libinput)
-#include <QtInputSupport/private/qlibinputhandler_p.h>
+#if BOBUI_CONFIG(libinput)
+#include <BobUIInputSupport/private/qlibinputhandler_p.h>
 #endif
 
-#if QT_CONFIG(evdev)
-#include <QtInputSupport/private/qevdevmousemanager_p.h>
-#include <QtInputSupport/private/qevdevkeyboardmanager_p.h>
-#include <QtInputSupport/private/qevdevtouchmanager_p.h>
+#if BOBUI_CONFIG(evdev)
+#include <BobUIInputSupport/private/qevdevmousemanager_p.h>
+#include <BobUIInputSupport/private/qevdevkeyboardmanager_p.h>
+#include <BobUIInputSupport/private/qevdevtouchmanager_p.h>
 #endif
 
-#if QT_CONFIG(tslib)
-#include <QtInputSupport/private/qtslib_p.h>
+#if BOBUI_CONFIG(tslib)
+#include <BobUIInputSupport/private/bobuislib_p.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class QVkKhrDisplayScreen : public QPlatformScreen
 {
@@ -114,7 +114,7 @@ void QVkKhrDisplayWindow::setGeometry(const QRect &)
     QWindowSystemInterface::handleGeometryChange(window(), rect);
     QPlatformWindow::setGeometry(rect);
 
-    const QRect lastReportedGeometry = qt_window_private(window())->geometry;
+    const QRect lastReportedGeometry = bobui_window_private(window())->geometry;
     if (rect != lastReportedGeometry)
         QWindowSystemInterface::handleExposeEvent(window(), QRect(QPoint(0, 0), rect.size()));
 }
@@ -180,7 +180,7 @@ void QVkKhrDisplayIntegration::initialize()
 
     m_vtHandler = new QFbVtHandler;
 
-    if (!qEnvironmentVariableIntValue("QT_QPA_DISABLE_INPUT"))
+    if (!qEnvironmentVariableIntValue("BOBUI_QPA_DISABLE_INPUT"))
         createInputHandlers();
 }
 
@@ -289,27 +289,27 @@ void *QVkKhrDisplayIntegration::nativeResourceForWindow(const QByteArray &resour
 
 void QVkKhrDisplayIntegration::createInputHandlers()
 {
-#if QT_CONFIG(libinput)
-    if (!qEnvironmentVariableIntValue("QT_QPA_NO_LIBINPUT")) {
+#if BOBUI_CONFIG(libinput)
+    if (!qEnvironmentVariableIntValue("BOBUI_QPA_NO_LIBINPUT")) {
         new QLibInputHandler("libinput"_L1, QString());
         return;
     }
 #endif
 
-#if QT_CONFIG(tslib)
-    bool useTslib = qEnvironmentVariableIntValue("QT_QPA_TSLIB");
+#if BOBUI_CONFIG(tslib)
+    bool useTslib = qEnvironmentVariableIntValue("BOBUI_QPA_TSLIB");
     if (useTslib)
-        new QTsLibMouseHandler("TsLib"_L1, QString());
+        new BOBUIsLibMouseHandler("TsLib"_L1, QString());
 #endif
 
-#if QT_CONFIG(evdev)
+#if BOBUI_CONFIG(evdev)
     new QEvdevKeyboardManager("EvdevKeyboard"_L1, QString(), this);
     new QEvdevMouseManager("EvdevMouse"_L1, QString(), this);
-#if QT_CONFIG(tslib)
+#if BOBUI_CONFIG(tslib)
     if (!useTslib)
 #endif
         new QEvdevTouchManager("EvdevTouch"_L1, QString() /* spec */, this);
 #endif
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

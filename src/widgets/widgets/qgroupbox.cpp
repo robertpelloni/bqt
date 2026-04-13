@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qgroupbox.h"
 
@@ -9,13 +9,13 @@
 #include "qdrawutil.h"
 #include "qevent.h"
 #include "qlayout.h"
-#if QT_CONFIG(radiobutton)
+#if BOBUI_CONFIG(radiobutton)
 #include "qradiobutton.h"
 #endif
 #include "qstyle.h"
 #include "qstyleoption.h"
 #include "qstylepainter.h"
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 #include "qaccessible.h"
 #endif
 #include <private/qwidget_p.h>
@@ -23,9 +23,9 @@
 #include <qpa/qplatformtheme.h>
 
 #include "qdebug.h"
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QGroupBoxPrivate : public QWidgetPrivate
 {
@@ -37,11 +37,11 @@ public:
     void calculateFrame();
     QString title;
     int align;
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     int shortcutId;
 #endif
 
-    void _q_fixFocus(Qt::FocusReason reason);
+    void _q_fixFocus(BobUI::FocusReason reason);
     void _q_setChildrenEnabled(bool b);
     void click();
     bool shouldHandleKeyEvent(const QKeyEvent *keyEvent) const;
@@ -70,7 +70,7 @@ void QGroupBox::initStyleOption(QStyleOptionGroupBox *option) const
     option->text = d->title;
     option->lineWidth = 1;
     option->midLineWidth = 0;
-    option->textAlignment = Qt::Alignment(d->align);
+    option->textAlignment = BobUI::Alignment(d->align);
     option->activeSubControls |= d->pressedControl;
     option->subControls = QStyle::SC_GroupBoxFrame;
 
@@ -112,7 +112,7 @@ void QGroupBoxPrivate::click()
 
     \ingroup organizers
     \ingroup geomanagement
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     \image fusion-groupbox.png {Group box displaying several radio button items}
 
@@ -174,8 +174,8 @@ QGroupBox::~QGroupBox()
 void QGroupBoxPrivate::init()
 {
     Q_Q(QGroupBox);
-    align = Qt::AlignLeft;
-#ifndef QT_NO_SHORTCUT
+    align = BobUI::AlignLeft;
+#ifndef BOBUI_NO_SHORTCUT
     shortcutId = 0;
 #endif
     flat = false;
@@ -195,7 +195,7 @@ void QGroupBox::setTitle(const QString &title)
     if (d->title == title)                                // no change
         return;
     d->title = title;
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     releaseShortcut(d->shortcutId);
     d->shortcutId = grabShortcut(QKeySequence::mnemonic(title));
 #endif
@@ -203,7 +203,7 @@ void QGroupBox::setTitle(const QString &title)
 
     update();
     updateGeometry();
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     QAccessibleEvent event(this, QAccessible::NameChanged);
     QAccessible::updateAccessibility(&event);
 #endif
@@ -243,16 +243,16 @@ QString QGroupBox::title() const
     the following list:
 
     \list
-    \li Qt::AlignLeft aligns the title text with the left-hand side of the group box.
-    \li Qt::AlignRight aligns the title text with the right-hand side of the group box.
-    \li Qt::AlignHCenter aligns the title text with the horizontal center of the group box.
+    \li BobUI::AlignLeft aligns the title text with the left-hand side of the group box.
+    \li BobUI::AlignRight aligns the title text with the right-hand side of the group box.
+    \li BobUI::AlignHCenter aligns the title text with the horizontal center of the group box.
     \endlist
 
-    The default alignment is Qt::AlignLeft.
+    The default alignment is BobUI::AlignLeft.
 
-    \sa Qt::Alignment
+    \sa BobUI::Alignment
 */
-Qt::Alignment QGroupBox::alignment() const
+BobUI::Alignment QGroupBox::alignment() const
 {
     Q_D(const QGroupBox);
     return QFlag(d->align);
@@ -288,15 +288,15 @@ void QGroupBox::paintEvent(QPaintEvent *)
 bool QGroupBox::event(QEvent *e)
 {
     Q_D(QGroupBox);
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     if (e->type() == QEvent::Shortcut) {
         QShortcutEvent *se = static_cast<QShortcutEvent *>(e);
         if (se->shortcutId() == d->shortcutId) {
             if (!isCheckable()) {
-                d->_q_fixFocus(Qt::ShortcutFocusReason);
+                d->_q_fixFocus(BobUI::ShortcutFocusReason);
             } else {
                 d->click();
-                setFocus(Qt::ShortcutFocusReason);
+                setFocus(BobUI::ShortcutFocusReason);
             }
             return true;
         }
@@ -369,12 +369,12 @@ void QGroupBox::childEvent(QChildEvent *c)
         return;
     if (d->checkable) {
         if (d->checked) {
-            if (!w->testAttribute(Qt::WA_ForceDisabled))
+            if (!w->testAttribute(BobUI::WA_ForceDisabled))
                 w->setEnabled(true);
         } else {
             if (w->isEnabled()) {
                 w->setEnabled(false);
-                w->setAttribute(Qt::WA_ForceDisabled, false);
+                w->setAttribute(BobUI::WA_ForceDisabled, false);
             }
         }
     }
@@ -388,7 +388,7 @@ void QGroupBox::childEvent(QChildEvent *c)
     focus, and gives the focus to that widget.
 */
 
-void QGroupBoxPrivate::_q_fixFocus(Qt::FocusReason reason)
+void QGroupBoxPrivate::_q_fixFocus(BobUI::FocusReason reason)
 {
     Q_Q(QGroupBox);
     QWidget *fw = q->focusWidget();
@@ -397,8 +397,8 @@ void QGroupBoxPrivate::_q_fixFocus(Qt::FocusReason reason)
         QWidget * candidate = nullptr;
         QWidget * w = q;
         while ((w = w->nextInFocusChain()) != q) {
-            if (q->isAncestorOf(w) && (w->focusPolicy() & Qt::TabFocus) == Qt::TabFocus && w->isVisibleTo(q)) {
-#if QT_CONFIG(radiobutton)
+            if (q->isAncestorOf(w) && (w->focusPolicy() & BobUI::TabFocus) == BobUI::TabFocus && w->isVisibleTo(q)) {
+#if BOBUI_CONFIG(radiobutton)
                 if (!best && qobject_cast<QRadioButton*>(w) && ((QRadioButton*)w)->isChecked())
                     // we prefer a checked radio button or a widget that
                     // already has focus, if there is one
@@ -438,7 +438,7 @@ void QGroupBoxPrivate::calculateFrame()
 void QGroupBox::focusInEvent(QFocusEvent *fe)
 { // note no call to super
     Q_D(QGroupBox);
-    if (focusPolicy() == Qt::NoFocus) {
+    if (focusPolicy() == BobUI::NoFocus) {
         d->_q_fixFocus(fe->reason());
     } else {
         QWidget::focusInEvent(fe);
@@ -529,13 +529,13 @@ void QGroupBox::setCheckable(bool checkable)
     if (checkable) {
         setChecked(true);
         if (!wasCheckable) {
-            setFocusPolicy(Qt::StrongFocus);
+            setFocusPolicy(BobUI::StrongFocus);
             d->_q_setChildrenEnabled(true);
             updateGeometry();
         }
     } else {
         if (wasCheckable) {
-            setFocusPolicy(Qt::NoFocus);
+            setFocusPolicy(BobUI::NoFocus);
             d->_q_setChildrenEnabled(true);
             updateGeometry();
         }
@@ -611,7 +611,7 @@ void QGroupBox::setChecked(bool b)
         update();
         d->checked = b;
         d->_q_setChildrenEnabled(b);
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
         QAccessible::State st;
         st.checked = true;
         QAccessibleStateChangeEvent e(this, st);
@@ -622,7 +622,7 @@ void QGroupBox::setChecked(bool b)
 }
 
 /*
-  sets all children of the group box except the qt_groupbox_checkbox
+  sets all children of the group box except the bobui_groupbox_checkbox
   to either disabled/enabled
 */
 void QGroupBoxPrivate::_q_setChildrenEnabled(bool b)
@@ -632,12 +632,12 @@ void QGroupBoxPrivate::_q_setChildrenEnabled(bool b)
         if (o->isWidgetType()) {
             QWidget *w = static_cast<QWidget *>(o);
             if (b) {
-                if (!w->testAttribute(Qt::WA_ForceDisabled))
+                if (!w->testAttribute(BobUI::WA_ForceDisabled))
                     w->setEnabled(true);
             } else {
                 if (w->isEnabled()) {
                     w->setEnabled(false);
-                    w->setAttribute(Qt::WA_ForceDisabled, false);
+                    w->setAttribute(BobUI::WA_ForceDisabled, false);
                 }
             }
         }
@@ -667,7 +667,7 @@ void QGroupBox::changeEvent(QEvent *ev)
 /*! \reimp */
 void QGroupBox::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() != Qt::LeftButton) {
+    if (event->button() != BobUI::LeftButton) {
         event->ignore();
         return;
     }
@@ -705,7 +705,7 @@ void QGroupBox::mouseMoveEvent(QMouseEvent *event)
 /*! \reimp */
 void QGroupBox::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (event->button() != Qt::LeftButton) {
+    if (event->button() != BobUI::LeftButton) {
         event->ignore();
         return;
     }
@@ -737,13 +737,13 @@ bool QGroupBoxPrivate::shouldHandleKeyEvent(const QKeyEvent *keyEvent) const
     if (!q->isEnabled() || !q->isCheckable() || keyEvent->isAutoRepeat())
         return false;
 
-    const QList<Qt::Key> buttonPressKeys = QGuiApplicationPrivate::platformTheme()
+    const QList<BobUI::Key> buttonPressKeys = QGuiApplicationPrivate::platformTheme()
                                            ->themeHint(QPlatformTheme::ButtonPressKeys)
-                                           .value<QList<Qt::Key>>();
+                                           .value<QList<BobUI::Key>>();
     return buttonPressKeys.contains(keyEvent->key());
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qgroupbox.cpp"

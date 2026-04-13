@@ -1,15 +1,15 @@
 // Copyright (C) 2014 John Layt <jlayt@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qprintdevice_p.h"
 #include "qplatformprintdevice.h"
 
 #include <private/qdebug_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
 
 QPrintDevice::QPrintDevice()
     : d(new QPlatformPrintDevice())
@@ -225,14 +225,14 @@ bool QPrintDevice::isFeatureAvailable(PrintDevicePropertyKey key, const QVariant
     return isValid() ? d->isFeatureAvailable(key, params) : false;
 }
 
-#if QT_CONFIG(mimetype)
+#if BOBUI_CONFIG(mimetype)
 QList<QMimeType> QPrintDevice::supportedMimeTypes() const
 {
     return isValid() ? d->supportedMimeTypes() : QList<QMimeType>();
 }
 #endif // mimetype
 
-#  ifndef QT_NO_DEBUG_STREAM
+#  ifndef BOBUI_NO_DEBUG_STREAM
 void QPrintDevice::format(QDebug debug) const
 {
     QDebugStateSaver saver(debug);
@@ -255,13 +255,13 @@ void QPrintDevice::format(QDebug debug) const
         if (supportsCustomPageSizes())
             debug << ", supportsCustomPageSizes";
         debug << ", physicalPageSize=(";
-        QtDebugUtils::formatQSize(debug, minimumPhysicalPageSize());
+        BobUIDebugUtils::formatQSize(debug, minimumPhysicalPageSize());
         debug << ")..(";
-        QtDebugUtils::formatQSize(debug, maximumPhysicalPageSize());
+        BobUIDebugUtils::formatQSize(debug, maximumPhysicalPageSize());
         debug << "), defaultResolution=" << defaultResolution()
               << ", defaultDuplexMode=" << defaultDuplexMode()
               << ", defaultColorMode="<< defaultColorMode();
-#    if QT_CONFIG(mimetype)
+#    if BOBUI_CONFIG(mimetype)
         const QList<QMimeType> mimeTypes = supportedMimeTypes();
         if (!mimeTypes.isEmpty()) {
             debug << ", supportedMimeTypes=(";
@@ -284,7 +284,7 @@ QDebug operator<<(QDebug debug, const QPrintDevice &p)
     debug << ')';
     return debug;
 }
-#  endif // QT_NO_DEBUG_STREAM
-#endif // QT_NO_PRINTER
+#  endif // BOBUI_NO_DEBUG_STREAM
+#endif // BOBUI_NO_PRINTER
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

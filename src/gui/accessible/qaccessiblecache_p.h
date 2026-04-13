@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QACCESSIBLECACHE_P
 #define QACCESSIBLECACHE_P
@@ -8,24 +8,24 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qhash.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qhash.h>
 
 #include "qaccessible.h"
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 
-Q_FORWARD_DECLARE_OBJC_CLASS(QT_MANGLE_NAMESPACE(QMacAccessibilityElement));
+Q_FORWARD_DECLARE_OBJC_CLASS(BOBUI_MANGLE_NAMESPACE(QMacAccessibilityElement));
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Q_GUI_EXPORT QAccessibleObjectDestroyedEvent :public QAccessibleEvent
 {
@@ -68,8 +68,8 @@ public:
     void deleteInterface(QAccessible::Id id, QObject *obj = nullptr);
     void sendObjectDestroyedEvent(QObject *obj);
 #ifdef Q_OS_APPLE
-    QT_MANGLE_NAMESPACE(QMacAccessibilityElement) *elementForId(QAccessible::Id axid) const;
-    bool insertElement(QAccessible::Id axid, QT_MANGLE_NAMESPACE(QMacAccessibilityElement) *element) const;
+    BOBUI_MANGLE_NAMESPACE(QMacAccessibilityElement) *elementForId(QAccessible::Id axid) const;
+    bool insertElement(QAccessible::Id axid, BOBUI_MANGLE_NAMESPACE(QMacAccessibilityElement) *element) const;
 #endif
 
 private Q_SLOTS:
@@ -84,15 +84,15 @@ private:
 
 #ifdef Q_OS_APPLE
     void removeAccessibleElement(QAccessible::Id axid);
-    mutable QHash<QAccessible::Id, QT_MANGLE_NAMESPACE(QMacAccessibilityElement) *> accessibleElements;
+    mutable QHash<QAccessible::Id, BOBUI_MANGLE_NAMESPACE(QMacAccessibilityElement) *> accessibleElements;
 #endif
 
     friend class QAccessible;
     friend class QAccessibleInterface;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)
 
 #endif

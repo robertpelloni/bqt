@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <QBuffer>
 #include <QColorSpace>
@@ -11,11 +11,11 @@
 #include <QImageWriter>
 #include <QPixmap>
 #include <QScopeGuard>
-#include <QTcpSocket>
-#include <QTcpServer>
-#include <QTimer>
-#include <QTemporaryDir>
-#include <QTemporaryFile>
+#include <BOBUIcpSocket>
+#include <BOBUIcpServer>
+#include <BOBUIimer>
+#include <BOBUIemporaryDir>
+#include <BOBUIemporaryFile>
 
 #include <algorithm>
 
@@ -158,7 +158,7 @@ private slots:
 
 private:
     QString prefix;
-    QTemporaryDir m_temporaryDir;
+    BOBUIemporaryDir m_temporaryDir;
 };
 
 // helper to skip an autotest when the given image format is not supported
@@ -209,38 +209,38 @@ void tst_QImageReader::cleanupTestCase()
 
 void tst_QImageReader::readImage_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<bool>("success");
-    QTest::addColumn<QByteArray>("format");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<bool>("success");
+    BOBUIest::addColumn<QByteArray>("format");
 
-    QTest::newRow("empty") << QString() << false << QByteArray();
-    QTest::newRow("BMP: colorful") << QString("colorful.bmp") << true << QByteArray("bmp");
-    QTest::newRow("BMP: test32bfv4") << QString("test32bfv4.bmp") << true << QByteArray("bmp");
-    QTest::newRow("BMP: test32v5") << QString("test32v5.bmp") << true << QByteArray("bmp");
-    QTest::newRow("BMP: font") << QString("font.bmp") << true << QByteArray("bmp");
-    QTest::newRow("BMP: signed char") << QString("crash-signed-char.bmp") << true << QByteArray("bmp");
-    QTest::newRow("BMP: 4bpp RLE") << QString("4bpp-rle.bmp") << true << QByteArray("bmp");
-    QTest::newRow("BMP: 4bpp uncompressed") << QString("tst7.bmp") << true << QByteArray("bmp");
-    QTest::newRow("BMP: 16bpp") << QString("16bpp.bmp") << true << QByteArray("bmp");
-    QTest::newRow("BMP: negative height") << QString("negativeheight.bmp") << true << QByteArray("bmp");
-    QTest::newRow("BMP: high mask bit set") << QString("rgb32bf.bmp") << true << QByteArray("bmp");
-    QTest::newRow("XPM: marble") << QString("marble.xpm") << true << QByteArray("xpm");
-    QTest::newRow("PNG: kollada") << QString("kollada.png") << true << QByteArray("png");
-    QTest::newRow("PNG: kollada 16bpc") << QString("kollada-16bpc.png") << true << QByteArray("png");
-    QTest::newRow("PPM: teapot") << QString("teapot.ppm") << true << QByteArray("ppm");
-    QTest::newRow("PPM: runners") << QString("runners.ppm") << true << QByteArray("ppm");
-    QTest::newRow("PPM: test") << QString("test.ppm") << true << QByteArray("ppm");
-    QTest::newRow("XBM: gnus") << QString("gnus.xbm") << true << QByteArray("xbm");
-    QTest::newRow("PGM: longcomment") << QString("longcomment.pgm") << true << QByteArray("pgm");
+    BOBUIest::newRow("empty") << QString() << false << QByteArray();
+    BOBUIest::newRow("BMP: colorful") << QString("colorful.bmp") << true << QByteArray("bmp");
+    BOBUIest::newRow("BMP: test32bfv4") << QString("test32bfv4.bmp") << true << QByteArray("bmp");
+    BOBUIest::newRow("BMP: test32v5") << QString("test32v5.bmp") << true << QByteArray("bmp");
+    BOBUIest::newRow("BMP: font") << QString("font.bmp") << true << QByteArray("bmp");
+    BOBUIest::newRow("BMP: signed char") << QString("crash-signed-char.bmp") << true << QByteArray("bmp");
+    BOBUIest::newRow("BMP: 4bpp RLE") << QString("4bpp-rle.bmp") << true << QByteArray("bmp");
+    BOBUIest::newRow("BMP: 4bpp uncompressed") << QString("tst7.bmp") << true << QByteArray("bmp");
+    BOBUIest::newRow("BMP: 16bpp") << QString("16bpp.bmp") << true << QByteArray("bmp");
+    BOBUIest::newRow("BMP: negative height") << QString("negativeheight.bmp") << true << QByteArray("bmp");
+    BOBUIest::newRow("BMP: high mask bit set") << QString("rgb32bf.bmp") << true << QByteArray("bmp");
+    BOBUIest::newRow("XPM: marble") << QString("marble.xpm") << true << QByteArray("xpm");
+    BOBUIest::newRow("PNG: kollada") << QString("kollada.png") << true << QByteArray("png");
+    BOBUIest::newRow("PNG: kollada 16bpc") << QString("kollada-16bpc.png") << true << QByteArray("png");
+    BOBUIest::newRow("PPM: teapot") << QString("teapot.ppm") << true << QByteArray("ppm");
+    BOBUIest::newRow("PPM: runners") << QString("runners.ppm") << true << QByteArray("ppm");
+    BOBUIest::newRow("PPM: test") << QString("test.ppm") << true << QByteArray("ppm");
+    BOBUIest::newRow("XBM: gnus") << QString("gnus.xbm") << true << QByteArray("xbm");
+    BOBUIest::newRow("PGM: longcomment") << QString("longcomment.pgm") << true << QByteArray("pgm");
 
-    QTest::newRow("JPEG: beavis") << QString("beavis.jpg") << true << QByteArray("jpeg");
-    QTest::newRow("JPEG: qtbug13653") << QString("qtbug13653-no_eoi.jpg") << true << QByteArray("jpeg");
+    BOBUIest::newRow("JPEG: beavis") << QString("beavis.jpg") << true << QByteArray("jpeg");
+    BOBUIest::newRow("JPEG: bobuibug13653") << QString("bobuibug13653-no_eoi.jpg") << true << QByteArray("jpeg");
 
-    QTest::newRow("GIF: earth") << QString("earth.gif") << true << QByteArray("gif");
-    QTest::newRow("GIF: trolltech") << QString("trolltech.gif") << true << QByteArray("gif");
+    BOBUIest::newRow("GIF: earth") << QString("earth.gif") << true << QByteArray("gif");
+    BOBUIest::newRow("GIF: trolltech") << QString("trolltech.gif") << true << QByteArray("gif");
 
-    QTest::newRow("SVG: rect") << QString("rect.svg") << true << QByteArray("svg");
-    QTest::newRow("SVGZ: rect") << QString("rect.svgz") << true << QByteArray("svgz");
+    BOBUIest::newRow("SVG: rect") << QString("rect.svg") << true << QByteArray("svg");
+    BOBUIest::newRow("SVGZ: rect") << QString("rect.svgz") << true << QByteArray("svgz");
 }
 
 void tst_QImageReader::readImage()
@@ -355,34 +355,34 @@ void tst_QImageReader::jpegRgbCmyk()
 
 void tst_QImageReader::setScaledSize_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<QSize>("newSize");
-    QTest::addColumn<QByteArray>("format");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QSize>("newSize");
+    BOBUIest::addColumn<QByteArray>("format");
 
-    QTest::newRow("BMP: colorful") << "colorful" << QSize(200, 200) << QByteArray("bmp");
-    QTest::newRow("BMP: font") << "font" << QSize(200, 200) << QByteArray("bmp");
-    QTest::newRow("XPM: marble") << "marble" << QSize(200, 200) << QByteArray("xpm");
-    QTest::newRow("PNG: kollada") << "kollada" << QSize(200, 200) << QByteArray("png");
-    QTest::newRow("PPM: teapot") << "teapot" << QSize(200, 200) << QByteArray("ppm");
-    QTest::newRow("PPM: runners") << "runners.ppm" << QSize(400, 400) << QByteArray("ppm");
-    QTest::newRow("PPM: test") << "test.ppm" << QSize(10, 10) << QByteArray("ppm");
-    QTest::newRow("XBM: gnus") << "gnus" << QSize(200, 200) << QByteArray("xbm");
+    BOBUIest::newRow("BMP: colorful") << "colorful" << QSize(200, 200) << QByteArray("bmp");
+    BOBUIest::newRow("BMP: font") << "font" << QSize(200, 200) << QByteArray("bmp");
+    BOBUIest::newRow("XPM: marble") << "marble" << QSize(200, 200) << QByteArray("xpm");
+    BOBUIest::newRow("PNG: kollada") << "kollada" << QSize(200, 200) << QByteArray("png");
+    BOBUIest::newRow("PPM: teapot") << "teapot" << QSize(200, 200) << QByteArray("ppm");
+    BOBUIest::newRow("PPM: runners") << "runners.ppm" << QSize(400, 400) << QByteArray("ppm");
+    BOBUIest::newRow("PPM: test") << "test.ppm" << QSize(10, 10) << QByteArray("ppm");
+    BOBUIest::newRow("XBM: gnus") << "gnus" << QSize(200, 200) << QByteArray("xbm");
 
-    QTest::newRow("JPEG: beavis A") << "beavis" << QSize(200, 200) << QByteArray("jpeg");
-    QTest::newRow("JPEG: beavis B") << "beavis" << QSize(175, 175) << QByteArray("jpeg");
-    QTest::newRow("JPEG: beavis C") << "beavis" << QSize(100, 100) << QByteArray("jpeg");
-    QTest::newRow("JPEG: beavis D") << "beavis" << QSize(100, 200) << QByteArray("jpeg");
-    QTest::newRow("JPEG: beavis E") << "beavis" << QSize(200, 100) << QByteArray("jpeg");
-    QTest::newRow("JPEG: beavis F") << "beavis" << QSize(87, 87) << QByteArray("jpeg");
-    QTest::newRow("JPEG: beavis G") << "beavis" << QSize(50, 45) << QByteArray("jpeg");
-    QTest::newRow("JPEG: beavis H") << "beavis" << QSize(43, 43) << QByteArray("jpeg");
-    QTest::newRow("JPEG: beavis I") << "beavis" << QSize(25, 25) << QByteArray("jpeg");
+    BOBUIest::newRow("JPEG: beavis A") << "beavis" << QSize(200, 200) << QByteArray("jpeg");
+    BOBUIest::newRow("JPEG: beavis B") << "beavis" << QSize(175, 175) << QByteArray("jpeg");
+    BOBUIest::newRow("JPEG: beavis C") << "beavis" << QSize(100, 100) << QByteArray("jpeg");
+    BOBUIest::newRow("JPEG: beavis D") << "beavis" << QSize(100, 200) << QByteArray("jpeg");
+    BOBUIest::newRow("JPEG: beavis E") << "beavis" << QSize(200, 100) << QByteArray("jpeg");
+    BOBUIest::newRow("JPEG: beavis F") << "beavis" << QSize(87, 87) << QByteArray("jpeg");
+    BOBUIest::newRow("JPEG: beavis G") << "beavis" << QSize(50, 45) << QByteArray("jpeg");
+    BOBUIest::newRow("JPEG: beavis H") << "beavis" << QSize(43, 43) << QByteArray("jpeg");
+    BOBUIest::newRow("JPEG: beavis I") << "beavis" << QSize(25, 25) << QByteArray("jpeg");
 
-    QTest::newRow("GIF: earth") << "earth" << QSize(200, 200) << QByteArray("gif");
-    QTest::newRow("GIF: trolltech") << "trolltech" << QSize(200, 200) << QByteArray("gif");
+    BOBUIest::newRow("GIF: earth") << "earth" << QSize(200, 200) << QByteArray("gif");
+    BOBUIest::newRow("GIF: trolltech") << "trolltech" << QSize(200, 200) << QByteArray("gif");
 
-    QTest::newRow("SVG: rect") << "rect" << QSize(200, 200) << QByteArray("svg");
-    QTest::newRow("SVGZ: rect") << "rect" << QSize(200, 200) << QByteArray("svgz");
+    BOBUIest::newRow("SVG: rect") << "rect" << QSize(200, 200) << QByteArray("svg");
+    BOBUIest::newRow("SVGZ: rect") << "rect" << QSize(200, 200) << QByteArray("svgz");
 }
 
 void tst_QImageReader::setScaledSize()
@@ -403,17 +403,17 @@ void tst_QImageReader::setScaledSize()
 
 void tst_QImageReader::setScaledSizeOneDimension_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<QByteArray>("format");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QByteArray>("format");
 
-    QTest::newRow("PNG: kollada") << QString("kollada") << QByteArray("png");
-    QTest::newRow("JPEG: beavis") << QString("beavis") << QByteArray("jpeg");
-    QTest::newRow("GIF: earth") << QString("earth") << QByteArray("gif");
-    QTest::newRow("SVG: rect") << QString("rect") << QByteArray("svg");
-    QTest::newRow("BMP: colorful") << QString("colorful") << QByteArray("bmp");
-    QTest::newRow("XPM: marble") << QString("marble") << QByteArray("xpm");
-    QTest::newRow("PPM: teapot") << QString("teapot") << QByteArray("ppm");
-    QTest::newRow("XBM: gnus") << QString("gnus") << QByteArray("xbm");
+    BOBUIest::newRow("PNG: kollada") << QString("kollada") << QByteArray("png");
+    BOBUIest::newRow("JPEG: beavis") << QString("beavis") << QByteArray("jpeg");
+    BOBUIest::newRow("GIF: earth") << QString("earth") << QByteArray("gif");
+    BOBUIest::newRow("SVG: rect") << QString("rect") << QByteArray("svg");
+    BOBUIest::newRow("BMP: colorful") << QString("colorful") << QByteArray("bmp");
+    BOBUIest::newRow("XPM: marble") << QString("marble") << QByteArray("xpm");
+    BOBUIest::newRow("PPM: teapot") << QString("teapot") << QByteArray("ppm");
+    BOBUIest::newRow("XBM: gnus") << QString("gnus") << QByteArray("xbm");
 }
 
 void tst_QImageReader::setScaledSizeOneDimension()
@@ -479,28 +479,28 @@ void tst_QImageReader::task255627_setNullScaledSize()
 
 void tst_QImageReader::setClipRect_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<QRect>("newRect");
-    QTest::addColumn<QByteArray>("format");
-    QTest::newRow("BMP: colorful") << "colorful" << QRect(0, 0, 50, 50) << QByteArray("bmp");
-    QTest::newRow("BMP: test32bfv4") << "test32bfv4" << QRect(0, 0, 50, 50) << QByteArray("bmp");
-    QTest::newRow("BMP: test32v5") << "test32v5" << QRect(0, 0, 50, 50) << QByteArray("bmp");
-    QTest::newRow("BMP: font") << "font" << QRect(0, 0, 50, 50) << QByteArray("bmp");
-    QTest::newRow("BMP: 4bpp uncompressed") << "tst7.bmp" << QRect(0, 0, 31, 31) << QByteArray("bmp");
-    QTest::newRow("XPM: marble") << "marble" << QRect(0, 0, 50, 50) << QByteArray("xpm");
-    QTest::newRow("PNG: kollada") << "kollada" << QRect(0, 0, 50, 50) << QByteArray("png");
-    QTest::newRow("PPM: teapot") << "teapot" << QRect(0, 0, 50, 50) << QByteArray("ppm");
-    QTest::newRow("PPM: runners") << "runners.ppm" << QRect(0, 0, 50, 50) << QByteArray("ppm");
-    QTest::newRow("PPM: test") << "test.ppm" << QRect(0, 0, 50, 50) << QByteArray("ppm");
-    QTest::newRow("XBM: gnus") << "gnus" << QRect(0, 0, 50, 50) << QByteArray("xbm");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QRect>("newRect");
+    BOBUIest::addColumn<QByteArray>("format");
+    BOBUIest::newRow("BMP: colorful") << "colorful" << QRect(0, 0, 50, 50) << QByteArray("bmp");
+    BOBUIest::newRow("BMP: test32bfv4") << "test32bfv4" << QRect(0, 0, 50, 50) << QByteArray("bmp");
+    BOBUIest::newRow("BMP: test32v5") << "test32v5" << QRect(0, 0, 50, 50) << QByteArray("bmp");
+    BOBUIest::newRow("BMP: font") << "font" << QRect(0, 0, 50, 50) << QByteArray("bmp");
+    BOBUIest::newRow("BMP: 4bpp uncompressed") << "tst7.bmp" << QRect(0, 0, 31, 31) << QByteArray("bmp");
+    BOBUIest::newRow("XPM: marble") << "marble" << QRect(0, 0, 50, 50) << QByteArray("xpm");
+    BOBUIest::newRow("PNG: kollada") << "kollada" << QRect(0, 0, 50, 50) << QByteArray("png");
+    BOBUIest::newRow("PPM: teapot") << "teapot" << QRect(0, 0, 50, 50) << QByteArray("ppm");
+    BOBUIest::newRow("PPM: runners") << "runners.ppm" << QRect(0, 0, 50, 50) << QByteArray("ppm");
+    BOBUIest::newRow("PPM: test") << "test.ppm" << QRect(0, 0, 50, 50) << QByteArray("ppm");
+    BOBUIest::newRow("XBM: gnus") << "gnus" << QRect(0, 0, 50, 50) << QByteArray("xbm");
 
-    QTest::newRow("JPEG: beavis") << "beavis" << QRect(0, 0, 50, 50) << QByteArray("jpeg");
+    BOBUIest::newRow("JPEG: beavis") << "beavis" << QRect(0, 0, 50, 50) << QByteArray("jpeg");
 
-    QTest::newRow("GIF: earth") << "earth" << QRect(0, 0, 50, 50) << QByteArray("gif");
-    QTest::newRow("GIF: trolltech") << "trolltech" << QRect(0, 0, 50, 50) << QByteArray("gif");
+    BOBUIest::newRow("GIF: earth") << "earth" << QRect(0, 0, 50, 50) << QByteArray("gif");
+    BOBUIest::newRow("GIF: trolltech") << "trolltech" << QRect(0, 0, 50, 50) << QByteArray("gif");
 
-    QTest::newRow("SVG: rect") << "rect" << QRect(0, 0, 50, 50) << QByteArray("svg");
-    QTest::newRow("SVGZ: rect") << "rect" << QRect(0, 0, 50, 50) << QByteArray("svgz");
+    BOBUIest::newRow("SVG: rect") << "rect" << QRect(0, 0, 50, 50) << QByteArray("svg");
+    BOBUIest::newRow("SVGZ: rect") << "rect" << QRect(0, 0, 50, 50) << QByteArray("svgz");
 }
 
 void tst_QImageReader::setClipRect()
@@ -524,28 +524,28 @@ void tst_QImageReader::setClipRect()
 
 void tst_QImageReader::setScaledClipRect_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<QRect>("newRect");
-    QTest::addColumn<QByteArray>("format");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QRect>("newRect");
+    BOBUIest::addColumn<QByteArray>("format");
 
-    QTest::newRow("BMP: colorful") << "colorful" << QRect(50, 20, 50, 50) << QByteArray("bmp");
-    QTest::newRow("BMP: test32bfv4") << "test32bfv4" << QRect(50, 20, 50, 50) << QByteArray("bmp");
-    QTest::newRow("BMP: test32v5") << "test32v5" << QRect(50, 20, 50, 50) << QByteArray("bmp");
-    QTest::newRow("BMP: font") << "font" << QRect(50, 20, 50, 50) << QByteArray("bmp");
-    QTest::newRow("XPM: marble") << "marble" << QRect(50, 20, 50, 50) << QByteArray("xpm");
-    QTest::newRow("PNG: kollada") << "kollada" << QRect(50, 20, 50, 50) << QByteArray("png");
-    QTest::newRow("PPM: teapot") << "teapot" << QRect(50, 20, 50, 50) << QByteArray("ppm");
-    QTest::newRow("PPM: runners") << "runners.ppm" << QRect(50, 20, 50, 50) << QByteArray("ppm");
-    QTest::newRow("PPM: test") << "test.ppm" << QRect(50, 20, 50, 50) << QByteArray("ppm");
-    QTest::newRow("XBM: gnus") << "gnus" << QRect(50, 20, 50, 50) << QByteArray("xbm");
+    BOBUIest::newRow("BMP: colorful") << "colorful" << QRect(50, 20, 50, 50) << QByteArray("bmp");
+    BOBUIest::newRow("BMP: test32bfv4") << "test32bfv4" << QRect(50, 20, 50, 50) << QByteArray("bmp");
+    BOBUIest::newRow("BMP: test32v5") << "test32v5" << QRect(50, 20, 50, 50) << QByteArray("bmp");
+    BOBUIest::newRow("BMP: font") << "font" << QRect(50, 20, 50, 50) << QByteArray("bmp");
+    BOBUIest::newRow("XPM: marble") << "marble" << QRect(50, 20, 50, 50) << QByteArray("xpm");
+    BOBUIest::newRow("PNG: kollada") << "kollada" << QRect(50, 20, 50, 50) << QByteArray("png");
+    BOBUIest::newRow("PPM: teapot") << "teapot" << QRect(50, 20, 50, 50) << QByteArray("ppm");
+    BOBUIest::newRow("PPM: runners") << "runners.ppm" << QRect(50, 20, 50, 50) << QByteArray("ppm");
+    BOBUIest::newRow("PPM: test") << "test.ppm" << QRect(50, 20, 50, 50) << QByteArray("ppm");
+    BOBUIest::newRow("XBM: gnus") << "gnus" << QRect(50, 20, 50, 50) << QByteArray("xbm");
 
-    QTest::newRow("JPEG: beavis") << "beavis" << QRect(50, 20, 50, 50) << QByteArray("jpeg");
+    BOBUIest::newRow("JPEG: beavis") << "beavis" << QRect(50, 20, 50, 50) << QByteArray("jpeg");
 
-    QTest::newRow("GIF: earth") << "earth" << QRect(50, 20, 50, 50) << QByteArray("gif");
-    QTest::newRow("GIF: trolltech") << "trolltech" << QRect(50, 20, 50, 50) << QByteArray("gif");
+    BOBUIest::newRow("GIF: earth") << "earth" << QRect(50, 20, 50, 50) << QByteArray("gif");
+    BOBUIest::newRow("GIF: trolltech") << "trolltech" << QRect(50, 20, 50, 50) << QByteArray("gif");
 
-    QTest::newRow("SVG: rect") << "rect" << QRect(50, 20, 50, 50) << QByteArray("svg");
-    QTest::newRow("SVGZ: rect") << "rect" << QRect(50, 20, 50, 50) << QByteArray("svgz");
+    BOBUIest::newRow("SVG: rect") << "rect" << QRect(50, 20, 50, 50) << QByteArray("svg");
+    BOBUIest::newRow("SVGZ: rect") << "rect" << QRect(50, 20, 50, 50) << QByteArray("svgz");
 }
 
 void tst_QImageReader::setScaledClipRect()
@@ -604,41 +604,41 @@ void tst_QImageReader::setFormat()
 
 void tst_QImageReader::imageFormat_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<QByteArray>("format");
-    QTest::addColumn<QImage::Format>("imageFormat");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QByteArray>("format");
+    BOBUIest::addColumn<QImage::Format>("imageFormat");
 
-    QTest::newRow("pbm") << QString("image.pbm") << QByteArray("pbm") << QImage::Format_Mono;
-    QTest::newRow("pgm") << QString("image.pgm") << QByteArray("pgm") << QImage::Format_Grayscale8;
-    QTest::newRow("pgm") << QString("image16.pgm") << QByteArray("pgm") << QImage::Format_Grayscale16;
-    QTest::newRow("ppm-1") << QString("image.ppm") << QByteArray("ppm") << QImage::Format_RGB32;
-    QTest::newRow("ppm-2") << QString("teapot.ppm") << QByteArray("ppm") << QImage::Format_RGB32;
-    QTest::newRow("ppm-3") << QString("runners.ppm") << QByteArray("ppm") << QImage::Format_RGB32;
-    QTest::newRow("ppm-4") << QString("test.ppm") << QByteArray("ppm") << QImage::Format_RGB32;
+    BOBUIest::newRow("pbm") << QString("image.pbm") << QByteArray("pbm") << QImage::Format_Mono;
+    BOBUIest::newRow("pgm") << QString("image.pgm") << QByteArray("pgm") << QImage::Format_Grayscale8;
+    BOBUIest::newRow("pgm") << QString("image16.pgm") << QByteArray("pgm") << QImage::Format_Grayscale16;
+    BOBUIest::newRow("ppm-1") << QString("image.ppm") << QByteArray("ppm") << QImage::Format_RGB32;
+    BOBUIest::newRow("ppm-2") << QString("teapot.ppm") << QByteArray("ppm") << QImage::Format_RGB32;
+    BOBUIest::newRow("ppm-3") << QString("runners.ppm") << QByteArray("ppm") << QImage::Format_RGB32;
+    BOBUIest::newRow("ppm-4") << QString("test.ppm") << QByteArray("ppm") << QImage::Format_RGB32;
 
-    QTest::newRow("jpeg-1") << QString("beavis.jpg") << QByteArray("jpeg") << QImage::Format_Grayscale8;
-    QTest::newRow("jpeg-2") << QString("YCbCr_cmyk.jpg") << QByteArray("jpeg") << QImage::Format_CMYK8888;
-    QTest::newRow("jpeg-3") << QString("YCbCr_rgb.jpg") << QByteArray("jpeg") << QImage::Format_RGB32;
+    BOBUIest::newRow("jpeg-1") << QString("beavis.jpg") << QByteArray("jpeg") << QImage::Format_Grayscale8;
+    BOBUIest::newRow("jpeg-2") << QString("YCbCr_cmyk.jpg") << QByteArray("jpeg") << QImage::Format_CMYK8888;
+    BOBUIest::newRow("jpeg-3") << QString("YCbCr_rgb.jpg") << QByteArray("jpeg") << QImage::Format_RGB32;
 
-    QTest::newRow("gif-1") << QString("earth.gif") << QByteArray("gif") << QImage::Format_Invalid;
-    QTest::newRow("gif-2") << QString("trolltech.gif") << QByteArray("gif") << QImage::Format_Invalid;
+    BOBUIest::newRow("gif-1") << QString("earth.gif") << QByteArray("gif") << QImage::Format_Invalid;
+    BOBUIest::newRow("gif-2") << QString("trolltech.gif") << QByteArray("gif") << QImage::Format_Invalid;
 
-    QTest::newRow("xbm") << QString("gnus.xbm") << QByteArray("xbm") << QImage::Format_MonoLSB;
-    QTest::newRow("xpm") << QString("marble.xpm") << QByteArray("xpm") << QImage::Format_Indexed8;
-    QTest::newRow("bmp-1") << QString("colorful.bmp") << QByteArray("bmp") << QImage::Format_Indexed8;
-    QTest::newRow("bmp-2") << QString("font.bmp") << QByteArray("bmp") << QImage::Format_Indexed8;
-    QTest::newRow("bmp-3") << QString("test32bfv4.bmp") << QByteArray("bmp") << QImage::Format_ARGB32;
-    QTest::newRow("bmp-4") << QString("test32v5.bmp") << QByteArray("bmp") << QImage::Format_RGB32;
-    QTest::newRow("png") << QString("kollada.png") << QByteArray("png") << QImage::Format_ARGB32;
-    QTest::newRow("png-2") << QString("YCbCr_cmyk.png") << QByteArray("png") << QImage::Format_RGB32;
-    QTest::newRow("png-3") << QString("kollada-16bpc.png") << QByteArray("png") << QImage::Format_RGBA64;
-    QTest::newRow("png-4") << QString("basn0g16.png") << QByteArray("png") << QImage::Format_Grayscale16;
-    QTest::newRow("png-5") << QString("basn2c16.png") << QByteArray("png") << QImage::Format_RGBX64;
-    QTest::newRow("png-6") << QString("basn4a16.png") << QByteArray("png") << QImage::Format_RGBA64; // Grayscale16Alpha16
-    QTest::newRow("png-7") << QString("basn6a16.png") << QByteArray("png") << QImage::Format_RGBA64;
-    QTest::newRow("png-8") << QString("tbwn0g16.png") << QByteArray("png") << QImage::Format_RGBA64; // Grayscale16+tRNS
-    QTest::newRow("svg") << QString("rect.svg") << QByteArray("svg") << QImage::Format_ARGB32_Premultiplied;
-    QTest::newRow("svgz") << QString("rect.svgz") << QByteArray("svgz") << QImage::Format_ARGB32_Premultiplied;
+    BOBUIest::newRow("xbm") << QString("gnus.xbm") << QByteArray("xbm") << QImage::Format_MonoLSB;
+    BOBUIest::newRow("xpm") << QString("marble.xpm") << QByteArray("xpm") << QImage::Format_Indexed8;
+    BOBUIest::newRow("bmp-1") << QString("colorful.bmp") << QByteArray("bmp") << QImage::Format_Indexed8;
+    BOBUIest::newRow("bmp-2") << QString("font.bmp") << QByteArray("bmp") << QImage::Format_Indexed8;
+    BOBUIest::newRow("bmp-3") << QString("test32bfv4.bmp") << QByteArray("bmp") << QImage::Format_ARGB32;
+    BOBUIest::newRow("bmp-4") << QString("test32v5.bmp") << QByteArray("bmp") << QImage::Format_RGB32;
+    BOBUIest::newRow("png") << QString("kollada.png") << QByteArray("png") << QImage::Format_ARGB32;
+    BOBUIest::newRow("png-2") << QString("YCbCr_cmyk.png") << QByteArray("png") << QImage::Format_RGB32;
+    BOBUIest::newRow("png-3") << QString("kollada-16bpc.png") << QByteArray("png") << QImage::Format_RGBA64;
+    BOBUIest::newRow("png-4") << QString("basn0g16.png") << QByteArray("png") << QImage::Format_Grayscale16;
+    BOBUIest::newRow("png-5") << QString("basn2c16.png") << QByteArray("png") << QImage::Format_RGBX64;
+    BOBUIest::newRow("png-6") << QString("basn4a16.png") << QByteArray("png") << QImage::Format_RGBA64; // Grayscale16Alpha16
+    BOBUIest::newRow("png-7") << QString("basn6a16.png") << QByteArray("png") << QImage::Format_RGBA64;
+    BOBUIest::newRow("png-8") << QString("tbwn0g16.png") << QByteArray("png") << QImage::Format_RGBA64; // Grayscale16+tRNS
+    BOBUIest::newRow("svg") << QString("rect.svg") << QByteArray("svg") << QImage::Format_ARGB32_Premultiplied;
+    BOBUIest::newRow("svgz") << QString("rect.svgz") << QByteArray("svgz") << QImage::Format_ARGB32_Premultiplied;
 }
 
 void tst_QImageReader::imageFormat()
@@ -707,26 +707,26 @@ void tst_QImageReader::supportedMimeTypes()
 
 void tst_QImageReader::setBackgroundColor_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<QColor>("color");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QColor>("color");
 
-    QTest::newRow("BMP: colorful") << QString("colorful.bmp") << QColor(Qt::white);
-    QTest::newRow("BMP: font") << QString("font.bmp") << QColor(Qt::black);
-    QTest::newRow("BMP: signed char") << QString("crash-signed-char.bmp") << QColor(Qt::red);
-    QTest::newRow("XPM: marble") << QString("marble.xpm") << QColor(Qt::darkRed);
-    QTest::newRow("PNG: kollada") << QString("kollada.png") << QColor(Qt::green);
-    QTest::newRow("PPM: teapot") << QString("teapot.ppm") << QColor(Qt::darkGreen);
-    QTest::newRow("PPM: runners") << QString("runners.ppm") << QColor(Qt::red);
-    QTest::newRow("PPM: test") << QString("test.ppm") << QColor(Qt::white);
-    QTest::newRow("XBM: gnus") << QString("gnus.xbm") << QColor(Qt::blue);
+    BOBUIest::newRow("BMP: colorful") << QString("colorful.bmp") << QColor(BobUI::white);
+    BOBUIest::newRow("BMP: font") << QString("font.bmp") << QColor(BobUI::black);
+    BOBUIest::newRow("BMP: signed char") << QString("crash-signed-char.bmp") << QColor(BobUI::red);
+    BOBUIest::newRow("XPM: marble") << QString("marble.xpm") << QColor(BobUI::darkRed);
+    BOBUIest::newRow("PNG: kollada") << QString("kollada.png") << QColor(BobUI::green);
+    BOBUIest::newRow("PPM: teapot") << QString("teapot.ppm") << QColor(BobUI::darkGreen);
+    BOBUIest::newRow("PPM: runners") << QString("runners.ppm") << QColor(BobUI::red);
+    BOBUIest::newRow("PPM: test") << QString("test.ppm") << QColor(BobUI::white);
+    BOBUIest::newRow("XBM: gnus") << QString("gnus.xbm") << QColor(BobUI::blue);
 
-    QTest::newRow("JPEG: beavis") << QString("beavis.jpg") << QColor(Qt::darkBlue);
+    BOBUIest::newRow("JPEG: beavis") << QString("beavis.jpg") << QColor(BobUI::darkBlue);
 
-    QTest::newRow("GIF: earth") << QString("earth.gif") << QColor(Qt::cyan);
-    QTest::newRow("GIF: trolltech") << QString("trolltech.gif") << QColor(Qt::magenta);
+    BOBUIest::newRow("GIF: earth") << QString("earth.gif") << QColor(BobUI::cyan);
+    BOBUIest::newRow("GIF: trolltech") << QString("trolltech.gif") << QColor(BobUI::magenta);
 
-    QTest::newRow("SVG: rect") << QString("rect.svg") << QColor(Qt::darkGreen);
-    QTest::newRow("SVGZ: rect") << QString("rect.svgz") << QColor(Qt::darkGreen);
+    BOBUIest::newRow("SVG: rect") << QString("rect.svg") << QColor(BobUI::darkGreen);
+    BOBUIest::newRow("SVGZ: rect") << QString("rect.svgz") << QColor(BobUI::darkGreen);
 }
 
 void tst_QImageReader::setBackgroundColor()
@@ -741,27 +741,27 @@ void tst_QImageReader::setBackgroundColor()
 
 void tst_QImageReader::supportsAnimation_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<bool>("success");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<bool>("success");
 
-    QTest::newRow("BMP: colorful") << QString("colorful.bmp") << false;
-    QTest::newRow("BMP: font") << QString("font.bmp") << false;
-    QTest::newRow("BMP: signed char") << QString("crash-signed-char.bmp") << false;
-    QTest::newRow("BMP: test32bfv4") << QString("test32bfv4.bmp") << false;
-    QTest::newRow("BMP: test32v5") << QString("test32v5.bmp") << false;
-    QTest::newRow("XPM: marble") << QString("marble.xpm") << false;
-    QTest::newRow("PNG: kollada") << QString("kollada.png") << false;
-    QTest::newRow("PPM: teapot") << QString("teapot.ppm") << false;
-    QTest::newRow("PPM: runners") << QString("runners.ppm") << false;
-    QTest::newRow("XBM: gnus") << QString("gnus.xbm") << false;
+    BOBUIest::newRow("BMP: colorful") << QString("colorful.bmp") << false;
+    BOBUIest::newRow("BMP: font") << QString("font.bmp") << false;
+    BOBUIest::newRow("BMP: signed char") << QString("crash-signed-char.bmp") << false;
+    BOBUIest::newRow("BMP: test32bfv4") << QString("test32bfv4.bmp") << false;
+    BOBUIest::newRow("BMP: test32v5") << QString("test32v5.bmp") << false;
+    BOBUIest::newRow("XPM: marble") << QString("marble.xpm") << false;
+    BOBUIest::newRow("PNG: kollada") << QString("kollada.png") << false;
+    BOBUIest::newRow("PPM: teapot") << QString("teapot.ppm") << false;
+    BOBUIest::newRow("PPM: runners") << QString("runners.ppm") << false;
+    BOBUIest::newRow("XBM: gnus") << QString("gnus.xbm") << false;
 
-    QTest::newRow("JPEG: beavis") << QString("beavis.jpg") << false;
+    BOBUIest::newRow("JPEG: beavis") << QString("beavis.jpg") << false;
 
-    QTest::newRow("GIF: earth") << QString("earth.gif") << true;
-    QTest::newRow("GIF: trolltech") << QString("trolltech.gif") << true;
+    BOBUIest::newRow("GIF: earth") << QString("earth.gif") << true;
+    BOBUIest::newRow("GIF: trolltech") << QString("trolltech.gif") << true;
 
-    QTest::newRow("SVG: rect") << QString("rect.svg") << false;
-    QTest::newRow("SVGZ: rect") << QString("rect.svgz") << false;
+    BOBUIest::newRow("SVG: rect") << QString("rect.svg") << false;
+    BOBUIest::newRow("SVGZ: rect") << QString("rect.svgz") << false;
 }
 
 void tst_QImageReader::supportsAnimation()
@@ -900,18 +900,18 @@ void tst_QImageReader::animatedGif()
 {
     SKIP_IF_UNSUPPORTED("gif");
 
-    QImageReader io(":images/qt.gif");
+    QImageReader io(":images/bobui.gif");
     QImage image = io.read();
     QVERIFY(!image.isNull());
     int i = 0;
     while(!image.isNull()){
-        QString frameName = QLatin1String(":images/qt") + QString::number(++i) + QLatin1String(".gif");
+        QString frameName = QLatin1String(":images/bobui") + QString::number(++i) + QLatin1String(".gif");
         QCOMPARE(image, QImage(frameName));
         image = io.read();
     }
 }
 
-// QTBUG-6696
+// BOBUIBUG-6696
 // Check the count of images in various call orders...
 void tst_QImageReader::gifImageCount()
 {
@@ -1055,58 +1055,58 @@ void tst_QImageReader::gifLoopCount()
     SKIP_IF_UNSUPPORTED("gif");
 
     {
-        QImageReader io(":images/qt-gif-anim.gif");
+        QImageReader io(":images/bobui-gif-anim.gif");
         QCOMPARE(io.loopCount(), -1); // infinite loop
     }
     {
-        QImageReader io(":images/qt-gif-noanim.gif");
+        QImageReader io(":images/bobui-gif-noanim.gif");
         QCOMPARE(io.loopCount(), 0); // no loop
     }
 }
 
 void tst_QImageReader::ppmMaxval_data()
 {
-    QTest::addColumn<bool>("hasColor");
-    QTest::addColumn<QByteArray>("bytes");
+    BOBUIest::addColumn<bool>("hasColor");
+    BOBUIest::addColumn<QByteArray>("bytes");
 
-    QTest::newRow("PGM plain  8bit full") << false << QByteArray("P2 3 1   255   255 0   127\n");
-    QTest::newRow("PGM plain  8bit lim.") << false << QByteArray("P2 3 1    50    50 0    25\n");
-    QTest::newRow("PGM plain 16bit full") << false << QByteArray("P2 3 1 65535 65535 0 32767\n");
-    QTest::newRow("PGM plain 16bit lim.") << false << QByteArray("P2 3 1  5000  5000 0  2500\n");
-    QTest::newRow("PGM raw    8bit full") << false << QByteArray("P5 3 1   255 \xff\x00\x7f", 13 + 3);
-    QTest::newRow("PGM raw    8bit lim.") << false << QByteArray("P5 3 1    50 \x32\x00\x19", 13 + 3);
-    QTest::newRow("PGM raw   16bit full") << false << QByteArray("P5 3 1 65535 \xff\xff\x00\x00\x7f\xff", 13 + 3 * 2);
-    QTest::newRow("PGM raw   16bit lim.") << false << QByteArray("P5 3 1  5000 \x13\x88\x00\x00\x09\xc4", 13 + 3 * 2);
+    BOBUIest::newRow("PGM plain  8bit full") << false << QByteArray("P2 3 1   255   255 0   127\n");
+    BOBUIest::newRow("PGM plain  8bit lim.") << false << QByteArray("P2 3 1    50    50 0    25\n");
+    BOBUIest::newRow("PGM plain 16bit full") << false << QByteArray("P2 3 1 65535 65535 0 32767\n");
+    BOBUIest::newRow("PGM plain 16bit lim.") << false << QByteArray("P2 3 1  5000  5000 0  2500\n");
+    BOBUIest::newRow("PGM raw    8bit full") << false << QByteArray("P5 3 1   255 \xff\x00\x7f", 13 + 3);
+    BOBUIest::newRow("PGM raw    8bit lim.") << false << QByteArray("P5 3 1    50 \x32\x00\x19", 13 + 3);
+    BOBUIest::newRow("PGM raw   16bit full") << false << QByteArray("P5 3 1 65535 \xff\xff\x00\x00\x7f\xff", 13 + 3 * 2);
+    BOBUIest::newRow("PGM raw   16bit lim.") << false << QByteArray("P5 3 1  5000 \x13\x88\x00\x00\x09\xc4", 13 + 3 * 2);
 
-    QTest::newRow("PPM plain  8bit full") << true  << QByteArray("P3 3 2   255 "
+    BOBUIest::newRow("PPM plain  8bit full") << true  << QByteArray("P3 3 2   255 "
                                                                  "255 255 255   0   0   0 127 127 127 "
                                                                  "255   0   0   0 255   0   0   0 255\n");
 
-    QTest::newRow("PPM plain  8bit lim.") << true  << QByteArray("P3 3 2    50 "
+    BOBUIest::newRow("PPM plain  8bit lim.") << true  << QByteArray("P3 3 2    50 "
                                                                  " 50  50  50   0   0   0  25  25  25 "
                                                                  " 50   0   0   0  50   0   0   0  50\n");
 
-    QTest::newRow("PPM plain 16bit full") << true  << QByteArray("P3 3 2 65535 "
+    BOBUIest::newRow("PPM plain 16bit full") << true  << QByteArray("P3 3 2 65535 "
                                                                  "65535 65535 65535     0     0     0 32767 32767 32767 "
                                                                  "65535     0     0     0 65535     0     0     0 65535\n");
 
-    QTest::newRow("PPM plain 16bit lim.") << true  << QByteArray("P3 3 2  5000 "
+    BOBUIest::newRow("PPM plain 16bit lim.") << true  << QByteArray("P3 3 2  5000 "
                                                                  " 5000  5000  5000     0     0     0  2500  2500  2500 "
                                                                  " 5000     0     0     0  5000     0     0     0  5000\n");
 
-    QTest::newRow("PPM raw    8bit full") << true  << QByteArray("P6 3 2   255 "
+    BOBUIest::newRow("PPM raw    8bit full") << true  << QByteArray("P6 3 2   255 "
                                                                  "\xff\xff\xff\x00\x00\x00\x7f\x7f\x7f"
                                                                  "\xff\x00\x00\x00\xff\x00\x00\x00\xff", 13 + 6 * 3);
 
-    QTest::newRow("PPM raw    8bit lim.") << true  << QByteArray("P6 3 2    50 "
+    BOBUIest::newRow("PPM raw    8bit lim.") << true  << QByteArray("P6 3 2    50 "
                                                                  "\x32\x32\x32\x00\x00\x00\x19\x19\x19"
                                                                  "\x32\x00\x00\x00\x32\x00\x00\x00\x32", 13 + 6 * 3);
 
-    QTest::newRow("PPM raw   16bit full") << true  << QByteArray("P6 3 2 65535 "
+    BOBUIest::newRow("PPM raw   16bit full") << true  << QByteArray("P6 3 2 65535 "
                                                                  "\xff\xff\xff\xff\xff\xff\x00\x00\x00\x00\x00\x00\x7f\xff\x7f\xff\x7f\xff"
                                                                  "\xff\xff\x00\x00\x00\x00\x00\x00\xff\xff\x00\x00\x00\x00\x00\x00\xff\xff", 13 + 6 * 3 * 2);
 
-    QTest::newRow("PPM raw   16bit lim.") << true  << QByteArray("P6 3 2  5000 "
+    BOBUIest::newRow("PPM raw   16bit lim.") << true  << QByteArray("P6 3 2  5000 "
                                                                  "\x13\x88\x13\x88\x13\x88\x00\x00\x00\x00\x00\x00\x09\xc4\x09\xc4\x09\xc4"
                                                                  "\x13\x88\x00\x00\x00\x00\x00\x00\x13\x88\x00\x00\x00\x00\x00\x00\x13\x88", 13 + 6 * 3 * 2);
 }
@@ -1156,7 +1156,7 @@ public slots:
     }
 
 public:
-    inline QTcpSocket *socket() const { return serverSocket; }
+    inline BOBUIcpSocket *socket() const { return serverSocket; }
 
 signals:
     void ready();
@@ -1181,44 +1181,44 @@ private slots:
     }
 
 private:
-    QTcpServer server;
-    QTcpSocket clientSocket;
-    QTcpSocket *serverSocket;
+    BOBUIcpServer server;
+    BOBUIcpSocket clientSocket;
+    BOBUIcpSocket *serverSocket;
     QByteArray data;
 };
 
 void tst_QImageReader::readFromDevice_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<QByteArray>("format");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QByteArray>("format");
 
-    QTest::newRow("pbm") << QString("image.pbm") << QByteArray("pbm");
-    QTest::newRow("pgm") << QString("image.pgm") << QByteArray("pgm");
-    QTest::newRow("ppm-1") << QString("image.ppm") << QByteArray("ppm");
-    QTest::newRow("ppm-2") << QString("teapot.ppm") << QByteArray("ppm");
-    QTest::newRow("ppm-3") << QString("teapot.ppm") << QByteArray("ppm");
-    QTest::newRow("ppm-4") << QString("runners.ppm") << QByteArray("ppm");
+    BOBUIest::newRow("pbm") << QString("image.pbm") << QByteArray("pbm");
+    BOBUIest::newRow("pgm") << QString("image.pgm") << QByteArray("pgm");
+    BOBUIest::newRow("ppm-1") << QString("image.ppm") << QByteArray("ppm");
+    BOBUIest::newRow("ppm-2") << QString("teapot.ppm") << QByteArray("ppm");
+    BOBUIest::newRow("ppm-3") << QString("teapot.ppm") << QByteArray("ppm");
+    BOBUIest::newRow("ppm-4") << QString("runners.ppm") << QByteArray("ppm");
 
-    QTest::newRow("jpeg-1") << QString("beavis.jpg") << QByteArray("jpeg");
-    QTest::newRow("jpeg-2") << QString("YCbCr_cmyk.jpg") << QByteArray("jpeg");
-    QTest::newRow("jpeg-3") << QString("YCbCr_rgb.jpg") << QByteArray("jpeg");
-    QTest::newRow("jpeg-4") << QString("qtbug13653-no_eoi.jpg") << QByteArray("jpeg");
+    BOBUIest::newRow("jpeg-1") << QString("beavis.jpg") << QByteArray("jpeg");
+    BOBUIest::newRow("jpeg-2") << QString("YCbCr_cmyk.jpg") << QByteArray("jpeg");
+    BOBUIest::newRow("jpeg-3") << QString("YCbCr_rgb.jpg") << QByteArray("jpeg");
+    BOBUIest::newRow("jpeg-4") << QString("bobuibug13653-no_eoi.jpg") << QByteArray("jpeg");
 
-    QTest::newRow("gif-1") << QString("earth.gif") << QByteArray("gif");
-    QTest::newRow("gif-2") << QString("trolltech.gif") << QByteArray("gif");
+    BOBUIest::newRow("gif-1") << QString("earth.gif") << QByteArray("gif");
+    BOBUIest::newRow("gif-2") << QString("trolltech.gif") << QByteArray("gif");
 
-    QTest::newRow("xbm") << QString("gnus.xbm") << QByteArray("xbm");
-    QTest::newRow("xpm") << QString("marble.xpm") << QByteArray("xpm");
-    QTest::newRow("bmp-1") << QString("colorful.bmp") << QByteArray("bmp");
-    QTest::newRow("bmp-2") << QString("font.bmp") << QByteArray("bmp");
-    QTest::newRow("bmp-3") << QString("test32bfv4.bmp") << QByteArray("bmp");
-    QTest::newRow("bmp-4") << QString("test32v5.bmp") << QByteArray("bmp");
-    QTest::newRow("png") << QString("kollada.png") << QByteArray("png");
+    BOBUIest::newRow("xbm") << QString("gnus.xbm") << QByteArray("xbm");
+    BOBUIest::newRow("xpm") << QString("marble.xpm") << QByteArray("xpm");
+    BOBUIest::newRow("bmp-1") << QString("colorful.bmp") << QByteArray("bmp");
+    BOBUIest::newRow("bmp-2") << QString("font.bmp") << QByteArray("bmp");
+    BOBUIest::newRow("bmp-3") << QString("test32bfv4.bmp") << QByteArray("bmp");
+    BOBUIest::newRow("bmp-4") << QString("test32v5.bmp") << QByteArray("bmp");
+    BOBUIest::newRow("png") << QString("kollada.png") << QByteArray("png");
 
-    QTest::newRow("svg") << QString("rect.svg") << QByteArray("svg");
-    QTest::newRow("svgz") << QString("rect.svgz") << QByteArray("svgz");
-#if defined QTEST_HAVE_TGA
-    QTest::newRow("tga") << QString("test-flag.tga") << QByteArray("tga");
+    BOBUIest::newRow("svg") << QString("rect.svg") << QByteArray("svg");
+    BOBUIest::newRow("svgz") << QString("rect.svgz") << QByteArray("svgz");
+#if defined BOBUIEST_HAVE_TGA
+    BOBUIest::newRow("tga") << QString("test-flag.tga") << QByteArray("tga");
 #endif
 }
 
@@ -1274,8 +1274,8 @@ void tst_QImageReader::readFromDevice()
     Server server(imageData);
     QEventLoop loop;
     connect(&server, SIGNAL(ready()), &loop, SLOT(quit()));
-    QTimer::singleShot(0, &server, SLOT(runTest()));
-    QTimer::singleShot(5000, &loop, SLOT(quit()));
+    BOBUIimer::singleShot(0, &server, SLOT(runTest()));
+    BOBUIimer::singleShot(5000, &loop, SLOT(quit()));
     loop.exec();
 
     QImageReader reader(server.socket(), format == "xbm" ? "xbm" : "");
@@ -1289,29 +1289,29 @@ void tst_QImageReader::readFromDevice()
 
 void tst_QImageReader::readFromFileAfterJunk_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<QByteArray>("format");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QByteArray>("format");
 
-    QTest::newRow("pbm") << QString("image.pbm") << QByteArray("pbm");
-    QTest::newRow("pgm") << QString("image.pgm") << QByteArray("pgm");
-    QTest::newRow("ppm-1") << QString("image.ppm") << QByteArray("ppm");
-    QTest::newRow("ppm-2") << QString("teapot.ppm") << QByteArray("ppm");
-    QTest::newRow("ppm-3") << QString("teapot.ppm") << QByteArray("ppm");
-    QTest::newRow("ppm-4") << QString("runners.ppm") << QByteArray("ppm");
+    BOBUIest::newRow("pbm") << QString("image.pbm") << QByteArray("pbm");
+    BOBUIest::newRow("pgm") << QString("image.pgm") << QByteArray("pgm");
+    BOBUIest::newRow("ppm-1") << QString("image.ppm") << QByteArray("ppm");
+    BOBUIest::newRow("ppm-2") << QString("teapot.ppm") << QByteArray("ppm");
+    BOBUIest::newRow("ppm-3") << QString("teapot.ppm") << QByteArray("ppm");
+    BOBUIest::newRow("ppm-4") << QString("runners.ppm") << QByteArray("ppm");
 
-    QTest::newRow("jpeg-1") << QString("beavis.jpg") << QByteArray("jpeg");
-    QTest::newRow("jpeg-2") << QString("YCbCr_cmyk.jpg") << QByteArray("jpeg");
-    QTest::newRow("jpeg-3") << QString("YCbCr_rgb.jpg") << QByteArray("jpeg");
+    BOBUIest::newRow("jpeg-1") << QString("beavis.jpg") << QByteArray("jpeg");
+    BOBUIest::newRow("jpeg-2") << QString("YCbCr_cmyk.jpg") << QByteArray("jpeg");
+    BOBUIest::newRow("jpeg-3") << QString("YCbCr_rgb.jpg") << QByteArray("jpeg");
 
-    QTest::newRow("xbm") << QString("gnus.xbm") << QByteArray("xbm");
-    QTest::newRow("xpm") << QString("marble.xpm") << QByteArray("xpm");
-    QTest::newRow("bmp-1") << QString("colorful.bmp") << QByteArray("bmp");
-    QTest::newRow("bmp-2") << QString("font.bmp") << QByteArray("bmp");
-    QTest::newRow("bmp-3") << QString("test32bfv4.bmp") << QByteArray("bmp");
-    QTest::newRow("bmp-4") << QString("test32v5.bmp") << QByteArray("bmp");
-    QTest::newRow("png") << QString("kollada.png") << QByteArray("png");
-    QTest::newRow("svg") << QString("rect.svg") << QByteArray("svg");
-    QTest::newRow("svgz") << QString("rect.svgz") << QByteArray("svgz");
+    BOBUIest::newRow("xbm") << QString("gnus.xbm") << QByteArray("xbm");
+    BOBUIest::newRow("xpm") << QString("marble.xpm") << QByteArray("xpm");
+    BOBUIest::newRow("bmp-1") << QString("colorful.bmp") << QByteArray("bmp");
+    BOBUIest::newRow("bmp-2") << QString("font.bmp") << QByteArray("bmp");
+    BOBUIest::newRow("bmp-3") << QString("test32bfv4.bmp") << QByteArray("bmp");
+    BOBUIest::newRow("bmp-4") << QString("test32v5.bmp") << QByteArray("bmp");
+    BOBUIest::newRow("png") << QString("kollada.png") << QByteArray("png");
+    BOBUIest::newRow("svg") << QString("rect.svg") << QByteArray("svg");
+    BOBUIest::newRow("svgz") << QString("rect.svgz") << QByteArray("svgz");
 }
 
 void tst_QImageReader::readFromFileAfterJunk()
@@ -1321,7 +1321,7 @@ void tst_QImageReader::readFromFileAfterJunk()
 
     SKIP_IF_UNSUPPORTED(format);
 
-    QTemporaryFile junkFile(m_temporaryDir.path() + QLatin1String("/junkXXXXXX"));
+    BOBUIemporaryFile junkFile(m_temporaryDir.path() + QLatin1String("/junkXXXXXX"));
     QVERIFY2(junkFile.open(), msgFileOpenWriteFailed(junkFile).constData());
 
     QFile imageFile(prefix + fileName);
@@ -1361,28 +1361,28 @@ void tst_QImageReader::readFromFileAfterJunk()
 
 void tst_QImageReader::devicePosition_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<QByteArray>("format");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QByteArray>("format");
 
-    QTest::newRow("pbm") << QString("image.pbm") << QByteArray("pbm");
-    QTest::newRow("pgm") << QString("image.pgm") << QByteArray("pgm");
-    QTest::newRow("ppm-1") << QString("image.ppm") << QByteArray("ppm");
+    BOBUIest::newRow("pbm") << QString("image.pbm") << QByteArray("pbm");
+    BOBUIest::newRow("pgm") << QString("image.pgm") << QByteArray("pgm");
+    BOBUIest::newRow("ppm-1") << QString("image.ppm") << QByteArray("ppm");
 
-    QTest::newRow("jpeg-1") << QString("beavis.jpg") << QByteArray("jpeg");
-    QTest::newRow("jpeg-2") << QString("YCbCr_cmyk.jpg") << QByteArray("jpeg");
-    QTest::newRow("jpeg-3") << QString("YCbCr_rgb.jpg") << QByteArray("jpeg");
+    BOBUIest::newRow("jpeg-1") << QString("beavis.jpg") << QByteArray("jpeg");
+    BOBUIest::newRow("jpeg-2") << QString("YCbCr_cmyk.jpg") << QByteArray("jpeg");
+    BOBUIest::newRow("jpeg-3") << QString("YCbCr_rgb.jpg") << QByteArray("jpeg");
 
-    QTest::newRow("gif-1") << QString("earth.gif") << QByteArray("gif");
+    BOBUIest::newRow("gif-1") << QString("earth.gif") << QByteArray("gif");
 
-    QTest::newRow("xbm") << QString("gnus.xbm") << QByteArray("xbm");
-    QTest::newRow("xpm") << QString("marble.xpm") << QByteArray("xpm");
-    QTest::newRow("bmp-1") << QString("colorful.bmp") << QByteArray("bmp");
-    QTest::newRow("bmp-2") << QString("font.bmp") << QByteArray("bmp");
-    QTest::newRow("bmp-3") << QString("test32bfv4.bmp") << QByteArray("bmp");
-    QTest::newRow("bmp-4") << QString("test32v5.bmp") << QByteArray("bmp");
-    QTest::newRow("png") << QString("kollada.png") << QByteArray("png");
-    QTest::newRow("svg") << QString("rect.svg") << QByteArray("svg");
-    QTest::newRow("svgz") << QString("rect.svgz") << QByteArray("svgz");
+    BOBUIest::newRow("xbm") << QString("gnus.xbm") << QByteArray("xbm");
+    BOBUIest::newRow("xpm") << QString("marble.xpm") << QByteArray("xpm");
+    BOBUIest::newRow("bmp-1") << QString("colorful.bmp") << QByteArray("bmp");
+    BOBUIest::newRow("bmp-2") << QString("font.bmp") << QByteArray("bmp");
+    BOBUIest::newRow("bmp-3") << QString("test32bfv4.bmp") << QByteArray("bmp");
+    BOBUIest::newRow("bmp-4") << QString("test32v5.bmp") << QByteArray("bmp");
+    BOBUIest::newRow("png") << QString("kollada.png") << QByteArray("png");
+    BOBUIest::newRow("svg") << QString("rect.svg") << QByteArray("svg");
+    BOBUIest::newRow("svgz") << QString("rect.svgz") << QByteArray("svgz");
 }
 
 void tst_QImageReader::devicePosition()
@@ -1421,150 +1421,150 @@ void tst_QImageReader::devicePosition()
 
 void tst_QImageReader::readFromResources_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<QByteArray>("format");
-    QTest::addColumn<QSize>("size");
-    QTest::addColumn<QString>("message");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QByteArray>("format");
+    BOBUIest::addColumn<QSize>("size");
+    BOBUIest::addColumn<QString>("message");
 
-    QTest::newRow("corrupt.bmp") << QString("corrupt.bmp")
+    BOBUIest::newRow("corrupt.bmp") << QString("corrupt.bmp")
                                         << QByteArray("bmp") << QSize(0, 0)
                                         << QString("");
-    QTest::newRow("negativeheight.bmp") << QString("negativeheight.bmp")
+    BOBUIest::newRow("negativeheight.bmp") << QString("negativeheight.bmp")
                                                << QByteArray("bmp") << QSize(127, 64)
                                                << QString("");
-    QTest::newRow("font.bmp") << QString("font.bmp")
+    BOBUIest::newRow("font.bmp") << QString("font.bmp")
                                      << QByteArray("bmp") << QSize(240, 8)
                                      << QString("");
-    QTest::newRow("noclearcode.bmp") << QString("noclearcode.bmp")
+    BOBUIest::newRow("noclearcode.bmp") << QString("noclearcode.bmp")
                                             << QByteArray("bmp") << QSize(29, 18)
                                             << QString("");
-    QTest::newRow("colorful.bmp") << QString("colorful.bmp")
+    BOBUIest::newRow("colorful.bmp") << QString("colorful.bmp")
                                          << QByteArray("bmp") << QSize(320, 200)
                                          << QString("");
-    QTest::newRow("16bpp.bmp") << QString("16bpp.bmp")
+    BOBUIest::newRow("16bpp.bmp") << QString("16bpp.bmp")
                                       << QByteArray("bmp") << QSize(320, 240)
                                       << QString("");
-    QTest::newRow("crash-signed-char.bmp") << QString("crash-signed-char.bmp")
+    BOBUIest::newRow("crash-signed-char.bmp") << QString("crash-signed-char.bmp")
                                                   << QByteArray("bmp") << QSize(360, 280)
                                                   << QString("");
-    QTest::newRow("4bpp-rle.bmp") << QString("4bpp-rle.bmp")
+    BOBUIest::newRow("4bpp-rle.bmp") << QString("4bpp-rle.bmp")
                                          << QByteArray("bmp") << QSize(640, 480)
                                          << QString("");
-    QTest::newRow("test32bfv4.bmp") << QString("test32bfv4.bmp")
+    BOBUIest::newRow("test32bfv4.bmp") << QString("test32bfv4.bmp")
                                          << QByteArray("bmp") << QSize(373, 156)
                                          << QString("");
-    QTest::newRow("test32v5.bmp") << QString("test32v5.bmp")
+    BOBUIest::newRow("test32v5.bmp") << QString("test32v5.bmp")
                                          << QByteArray("bmp") << QSize(373, 156)
                                          << QString("");
-    QTest::newRow("corrupt.gif") << QString("corrupt.gif")
+    BOBUIest::newRow("corrupt.gif") << QString("corrupt.gif")
                                         << QByteArray("gif") << QSize(0, 0)
                                         << QString("");
-    QTest::newRow("trolltech.gif") << QString("trolltech.gif")
+    BOBUIest::newRow("trolltech.gif") << QString("trolltech.gif")
                                           << QByteArray("gif") << QSize(128, 64)
                                           << QString("");
-    QTest::newRow("noclearcode.gif") << QString("noclearcode.gif")
+    BOBUIest::newRow("noclearcode.gif") << QString("noclearcode.gif")
                                             << QByteArray("gif") << QSize(29, 18)
                                             << QString("");
-    QTest::newRow("earth.gif") << QString("earth.gif")
+    BOBUIest::newRow("earth.gif") << QString("earth.gif")
                                       << QByteArray("gif") << QSize(320, 200)
                                       << QString("");
-    QTest::newRow("bat1.gif") << QString("bat1.gif")
+    BOBUIest::newRow("bat1.gif") << QString("bat1.gif")
                                      << QByteArray("gif") << QSize(32, 32)
                                      << QString("");
-    QTest::newRow("bat2.gif") << QString("bat2.gif")
+    BOBUIest::newRow("bat2.gif") << QString("bat2.gif")
                                      << QByteArray("gif") << QSize(32, 32)
                                      << QString("");
-    QTest::newRow("corrupt.jpg") << QString("corrupt.jpg")
+    BOBUIest::newRow("corrupt.jpg") << QString("corrupt.jpg")
                                         << QByteArray("jpg") << QSize(0, 0)
                                         << QString("JPEG datastream contains no image");
-    QTest::newRow("beavis.jpg") << QString("beavis.jpg")
+    BOBUIest::newRow("beavis.jpg") << QString("beavis.jpg")
                                        << QByteArray("jpg") << QSize(350, 350)
                                        << QString("");
-    QTest::newRow("YCbCr_cmyk.jpg") << QString("YCbCr_cmyk.jpg")
+    BOBUIest::newRow("YCbCr_cmyk.jpg") << QString("YCbCr_cmyk.jpg")
                                            << QByteArray("jpg") << QSize(75, 50)
                                            << QString("");
-    QTest::newRow("YCbCr_rgb.jpg") << QString("YCbCr_rgb.jpg")
+    BOBUIest::newRow("YCbCr_rgb.jpg") << QString("YCbCr_rgb.jpg")
                                           << QByteArray("jpg") << QSize(75, 50)
                                           << QString("");
-    QTest::newRow("qtbug13653-no_eoi.jpg") << QString("qtbug13653-no_eoi.jpg")
+    BOBUIest::newRow("bobuibug13653-no_eoi.jpg") << QString("bobuibug13653-no_eoi.jpg")
                                         << QByteArray("jpg") << QSize(240, 180)
                                         << QString("");
-    QTest::newRow("rect.svg") << QString("rect.svg")
+    BOBUIest::newRow("rect.svg") << QString("rect.svg")
                                      << QByteArray("svg") << QSize(128, 128)
                                      << QString("");
-    QTest::newRow("rect.svgz") << QString("rect.svgz")
+    BOBUIest::newRow("rect.svgz") << QString("rect.svgz")
                                      << QByteArray("svgz") << QSize(128, 128)
                                      << QString("");
-    QTest::newRow("corrupt.svg") << QString("corrupt.svg")
+    BOBUIest::newRow("corrupt.svg") << QString("corrupt.svg")
                                      << QByteArray("svg") << QSize(0, 0)
                                      << QString("");
-    QTest::newRow("corrupt.svgz") << QString("corrupt.svgz")
+    BOBUIest::newRow("corrupt.svgz") << QString("corrupt.svgz")
                                      << QByteArray("svgz") << QSize(0, 0)
                                      << QString("");
-    QTest::newRow("image.pbm") << QString("image.pbm")
+    BOBUIest::newRow("image.pbm") << QString("image.pbm")
                                       << QByteArray("pbm") << QSize(16, 6)
                                       << QString("");
-    QTest::newRow("image.pgm") << QString("image.pgm")
+    BOBUIest::newRow("image.pgm") << QString("image.pgm")
                                       << QByteArray("pgm") << QSize(24, 7)
                                       << QString("");
-    QTest::newRow("corrupt.png") << QString("corrupt.png")
+    BOBUIest::newRow("corrupt.png") << QString("corrupt.png")
                                         << QByteArray("png") << QSize(0, 0)
                                         << QString("");
-    QTest::newRow("away.png") << QString("away.png")
+    BOBUIest::newRow("away.png") << QString("away.png")
                                      << QByteArray("png") << QSize(16, 16)
                                      << QString("");
-    QTest::newRow("image.png") << QString("image.png")
+    BOBUIest::newRow("image.png") << QString("image.png")
                                       << QByteArray("png") << QSize(22, 22)
                                       << QString("");
-    QTest::newRow("kollada.png") << QString("kollada.png")
+    BOBUIest::newRow("kollada.png") << QString("kollada.png")
                                         << QByteArray("png") << QSize(436, 160)
                                         << QString("");
-    QTest::newRow("black.png") << QString("black.png")
+    BOBUIest::newRow("black.png") << QString("black.png")
                                       << QByteArray("png") << QSize(48, 48)
                                       << QString("");
-    QTest::newRow("YCbCr_cmyk.png") << QString("YCbCr_cmyk.png")
+    BOBUIest::newRow("YCbCr_cmyk.png") << QString("YCbCr_cmyk.png")
                                            << QByteArray("png") << QSize(75, 50)
                                            << QString("");
-    QTest::newRow("teapot.ppm") << QString("teapot.ppm")
+    BOBUIest::newRow("teapot.ppm") << QString("teapot.ppm")
                                        << QByteArray("ppm") << QSize(256, 256)
                                        << QString("");
-    QTest::newRow("image.ppm") << QString("image.ppm")
+    BOBUIest::newRow("image.ppm") << QString("image.ppm")
                                       << QByteArray("ppm") << QSize(4, 4)
                                       << QString("");
-    QTest::newRow("runners.ppm") << QString("runners.ppm")
+    BOBUIest::newRow("runners.ppm") << QString("runners.ppm")
                                         << QByteArray("ppm") << QSize(400, 400)
                                         << QString("");
-    QTest::newRow("test.ppm") << QString("test.ppm")
+    BOBUIest::newRow("test.ppm") << QString("test.ppm")
                                      << QByteArray("ppm") << QSize(10, 10)
                                      << QString("");
-    QTest::newRow("gnus.xbm") << QString("gnus.xbm")
+    BOBUIest::newRow("gnus.xbm") << QString("gnus.xbm")
                                      << QByteArray("xbm") << QSize(271, 273)
                                      << QString("");
-    QTest::newRow("corrupt-colors.xpm") << QString("corrupt-colors.xpm")
+    BOBUIest::newRow("corrupt-colors.xpm") << QString("corrupt-colors.xpm")
                                                << QByteArray("xpm") << QSize(0, 0)
                                                << QString("XPM color specification is missing: bla9an.n#x");
-    QTest::newRow("corrupt-pixels.xpm") << QString("corrupt-pixels.xpm")
+    BOBUIest::newRow("corrupt-pixels.xpm") << QString("corrupt-pixels.xpm")
                                                << QByteArray("xpm") << QSize(0, 0)
                                                << QString("XPM pixels missing on image line 3");
-    QTest::newRow("corrupt-pixel-count.xpm") << QString("corrupt-pixel-count.xpm")
+    BOBUIest::newRow("corrupt-pixel-count.xpm") << QString("corrupt-pixel-count.xpm")
                                              << QByteArray("xpm") << QSize(0, 0)
                                              << QString("");
-    QTest::newRow("marble.xpm") << QString("marble.xpm")
+    BOBUIest::newRow("marble.xpm") << QString("marble.xpm")
                                        << QByteArray("xpm") << QSize(240, 240)
                                        << QString("");
-    QTest::newRow("test.xpm") << QString("test.xpm")
+    BOBUIest::newRow("test.xpm") << QString("test.xpm")
                                      << QByteArray("xpm") << QSize(256, 256)
                                      << QString("");
-    QTest::newRow("black.xpm") << QString("black.xpm")
+    BOBUIest::newRow("black.xpm") << QString("black.xpm")
                                       << QByteArray("xpm") << QSize(48, 48)
                                       << QString("");
-    QTest::newRow("namedcolors.xpm") << QString("namedcolors.xpm")
+    BOBUIest::newRow("namedcolors.xpm") << QString("namedcolors.xpm")
                                             << QByteArray("xpm") << QSize(8, 8)
                                             << QString("");
-    QTest::newRow("nontransparent.xpm") << QString("nontransparent.xpm")
+    BOBUIest::newRow("nontransparent.xpm") << QString("nontransparent.xpm")
                                                << QByteArray("xpm") << QSize(8, 8)
                                                << QString("");
-    QTest::newRow("transparent.xpm") << QString("transparent.xpm")
+    BOBUIest::newRow("transparent.xpm") << QString("transparent.xpm")
                                             << QByteArray("xpm") << QSize(8, 8)
                                             << QString("");
 }
@@ -1584,7 +1584,7 @@ void tst_QImageReader::readFromResources()
             // suppress warnings if we expect them
             if (!message.isEmpty()) {
                 for (int j = 0; j < 5; ++j)
-                    QTest::ignoreMessage(QtWarningMsg, message.toLatin1());
+                    BOBUIest::ignoreMessage(BobUIWarningMsg, message.toLatin1());
             }
 
             // 1) full filename, no format
@@ -1640,34 +1640,34 @@ void tst_QImageReader::readFromResources()
 
     // Check that the results are identical
     if (!message.isEmpty()) {
-        QTest::ignoreMessage(QtWarningMsg, message.toLatin1());
-        QTest::ignoreMessage(QtWarningMsg, message.toLatin1());
+        BOBUIest::ignoreMessage(BobUIWarningMsg, message.toLatin1());
+        BOBUIest::ignoreMessage(BobUIWarningMsg, message.toLatin1());
     }
     QCOMPARE(QImageReader(prefix + fileName).read(), QImageReader(":/images/" + fileName).read());
 }
 
 void tst_QImageReader::readCorruptImage_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<bool>("shouldFail");
-    QTest::addColumn<QString>("message");
-    QTest::addColumn<QByteArray>("format");
-    QTest::newRow("corrupt jpeg") << QString("corrupt.jpg") << true
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<bool>("shouldFail");
+    BOBUIest::addColumn<QString>("message");
+    BOBUIest::addColumn<QByteArray>("format");
+    BOBUIest::newRow("corrupt jpeg") << QString("corrupt.jpg") << true
                                   << QString("JPEG datastream contains no image")
                                   << QByteArray("jpeg");
-    QTest::newRow("corrupt gif") << QString("corrupt.gif") << true << QString("") << QByteArray("gif");
-    QTest::newRow("corrupt png") << QString("corrupt.png") << true << QString("") << QByteArray("png");
-    QTest::newRow("corrupt bmp") << QString("corrupt.bmp") << true << QString("") << QByteArray("bmp");
-    QTest::newRow("corrupt bmp (clut)") << QString("corrupt_clut.bmp") << true << QString("") << QByteArray("bmp");
-    QTest::newRow("corrupt xpm (colors)") << QString("corrupt-colors.xpm") << true
+    BOBUIest::newRow("corrupt gif") << QString("corrupt.gif") << true << QString("") << QByteArray("gif");
+    BOBUIest::newRow("corrupt png") << QString("corrupt.png") << true << QString("") << QByteArray("png");
+    BOBUIest::newRow("corrupt bmp") << QString("corrupt.bmp") << true << QString("") << QByteArray("bmp");
+    BOBUIest::newRow("corrupt bmp (clut)") << QString("corrupt_clut.bmp") << true << QString("") << QByteArray("bmp");
+    BOBUIest::newRow("corrupt xpm (colors)") << QString("corrupt-colors.xpm") << true
                                           << QString("XPM color specification is missing: bla9an.n#x")
                                           << QByteArray("xpm");
-    QTest::newRow("corrupt xpm (pixels)") << QString("corrupt-pixels.xpm") << true
+    BOBUIest::newRow("corrupt xpm (pixels)") << QString("corrupt-pixels.xpm") << true
                                           << QString("XPM pixels missing on image line 3")
                                           << QByteArray("xpm");
-    QTest::newRow("corrupt xbm") << QString("corrupt.xbm") << false << QString("") << QByteArray("xbm");
-    QTest::newRow("corrupt svg") << QString("corrupt.svg") << true << QString("") << QByteArray("svg");
-    QTest::newRow("corrupt svgz") << QString("corrupt.svgz") << true << QString("") << QByteArray("svgz");
+    BOBUIest::newRow("corrupt xbm") << QString("corrupt.xbm") << false << QString("") << QByteArray("xbm");
+    BOBUIest::newRow("corrupt svg") << QString("corrupt.svg") << true << QString("") << QByteArray("svg");
+    BOBUIest::newRow("corrupt svgz") << QString("corrupt.svgz") << true << QString("") << QByteArray("svgz");
 }
 
 void tst_QImageReader::readCorruptImage()
@@ -1680,7 +1680,7 @@ void tst_QImageReader::readCorruptImage()
     SKIP_IF_UNSUPPORTED(format);
 
     if (!message.isEmpty())
-        QTest::ignoreMessage(QtWarningMsg, message.toLatin1());
+        BOBUIest::ignoreMessage(BobUIWarningMsg, message.toLatin1());
     QImageReader reader(prefix + fileName);
     QVERIFY(reader.canRead());
     QCOMPARE(reader.read().isNull(), shouldFail);
@@ -1693,10 +1693,10 @@ void tst_QImageReader::readCorruptBmp()
 
 void tst_QImageReader::supportsOption_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<QIntList>("options");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QIntList>("options");
 
-    QTest::newRow("png") << QString("black.png")
+    BOBUIest::newRow("png") << QString("black.png")
                          << QIntList{
                                 QImageIOHandler::Gamma,
                                 QImageIOHandler::Description,
@@ -1825,12 +1825,12 @@ void tst_QImageReader::fileNameProbing()
 
 void tst_QImageReader::pixelCompareWithBaseline_data()
 {
-    QTest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QString>("fileName");
 
-    QTest::newRow("floppy (16px,32px - 16 colors)") << "35floppy.ico";
-    QTest::newRow("semitransparent") << "semitransparent.ico";
-    QTest::newRow("slightlybrokenBMPHeader") << "kde_favicon.ico";
-    QTest::newRow("sightlybrokenIconHeader") << "connect.ico";
+    BOBUIest::newRow("floppy (16px,32px - 16 colors)") << "35floppy.ico";
+    BOBUIest::newRow("semitransparent") << "semitransparent.ico";
+    BOBUIest::newRow("slightlybrokenBMPHeader") << "kde_favicon.ico";
+    BOBUIest::newRow("sightlybrokenIconHeader") << "connect.ico";
 }
 
 void tst_QImageReader::pixelCompareWithBaseline()
@@ -1873,23 +1873,23 @@ void tst_QImageReader::pixelCompareWithBaseline()
 
 void tst_QImageReader::testIgnoresFormatAndExtension_data()
 {
-    QTest::addColumn<QString>("name");
-    QTest::addColumn<QString>("extension");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<QString>("name");
+    BOBUIest::addColumn<QString>("extension");
+    BOBUIest::addColumn<QString>("expected");
 
-    QTest::newRow("black.png") << "black" << "png" << "png";
-    QTest::newRow("black.xpm") << "black" << "xpm" << "xpm";
-    QTest::newRow("colorful.bmp") << "colorful" << "bmp" << "bmp";
-    QTest::newRow("image.ppm") << "image" << "ppm" << "ppm";
-    QTest::newRow("image.pbm") << "image" << "pbm" << "pbm";
-    QTest::newRow("image.pgm") << "image" << "pgm" << "pgm";
+    BOBUIest::newRow("black.png") << "black" << "png" << "png";
+    BOBUIest::newRow("black.xpm") << "black" << "xpm" << "xpm";
+    BOBUIest::newRow("colorful.bmp") << "colorful" << "bmp" << "bmp";
+    BOBUIest::newRow("image.ppm") << "image" << "ppm" << "ppm";
+    BOBUIest::newRow("image.pbm") << "image" << "pbm" << "pbm";
+    BOBUIest::newRow("image.pgm") << "image" << "pgm" << "pgm";
 
-    QTest::newRow("bat1.gif") << "bat1" << "gif" << "gif";
+    BOBUIest::newRow("bat1.gif") << "bat1" << "gif" << "gif";
 
-    QTest::newRow("beavis.jpg") << "beavis" << "jpg" << "jpeg";
+    BOBUIest::newRow("beavis.jpg") << "beavis" << "jpg" << "jpeg";
 
-    QTest::newRow("rect.svg") << "rect" << "svg" << "svg";
-    QTest::newRow("rect.svgz") << "rect" << "svgz" << "svgz";
+    BOBUIest::newRow("rect.svg") << "rect" << "svg" << "svg";
+    BOBUIest::newRow("rect.svgz") << "rect" << "svgz" << "svgz";
 }
 
 static QByteArray msgIgnoreFormatAndExtensionFail(const QString &sourceFileName,
@@ -1950,26 +1950,26 @@ void tst_QImageReader::testIgnoresFormatAndExtension()
 
 void tst_QImageReader::saveFormat_data()
 {
-    QTest::addColumn<QImage::Format>("format");
+    BOBUIest::addColumn<QImage::Format>("format");
 
-    QTest::newRow("Format_Mono") << QImage::Format_Mono;
-    QTest::newRow("Format_MonoLSB") << QImage::Format_MonoLSB;
-    QTest::newRow("Format_Indexed8") << QImage::Format_Indexed8;
-    QTest::newRow("Format_RGB32") << QImage::Format_RGB32;
-    QTest::newRow("Format_ARGB32") << QImage::Format_ARGB32;
-    QTest::newRow("Format_ARGB32_Premultiplied") << QImage::Format_ARGB32_Premultiplied;
-    QTest::newRow("Format_RGB16") << QImage::Format_RGB16;
-    QTest::newRow("Format_ARGB8565_Premultiplied") << QImage::Format_ARGB8565_Premultiplied;
-    QTest::newRow("Format_RGB666") << QImage::Format_RGB666;
-    QTest::newRow("Format_ARGB6666_Premultiplied") << QImage::Format_ARGB6666_Premultiplied;
-    QTest::newRow("Format_RGB555") << QImage::Format_RGB555;
-    QTest::newRow("Format_ARGB8555_Premultiplied") << QImage::Format_ARGB8555_Premultiplied;
-    QTest::newRow("Format_RGB888") << QImage::Format_RGB888;
-    QTest::newRow("Format_BGR888") << QImage::Format_BGR888;
-    QTest::newRow("Format_RGB444") << QImage::Format_RGB444;
-    QTest::newRow("Format_ARGB4444_Premultiplied") << QImage::Format_ARGB4444_Premultiplied;
-    QTest::newRow("Format_RGBA64") << QImage::Format_RGBA64;
-    QTest::newRow("Format_RGBA64_Premultiplied") << QImage::Format_RGBA64_Premultiplied;
+    BOBUIest::newRow("Format_Mono") << QImage::Format_Mono;
+    BOBUIest::newRow("Format_MonoLSB") << QImage::Format_MonoLSB;
+    BOBUIest::newRow("Format_Indexed8") << QImage::Format_Indexed8;
+    BOBUIest::newRow("Format_RGB32") << QImage::Format_RGB32;
+    BOBUIest::newRow("Format_ARGB32") << QImage::Format_ARGB32;
+    BOBUIest::newRow("Format_ARGB32_Premultiplied") << QImage::Format_ARGB32_Premultiplied;
+    BOBUIest::newRow("Format_RGB16") << QImage::Format_RGB16;
+    BOBUIest::newRow("Format_ARGB8565_Premultiplied") << QImage::Format_ARGB8565_Premultiplied;
+    BOBUIest::newRow("Format_RGB666") << QImage::Format_RGB666;
+    BOBUIest::newRow("Format_ARGB6666_Premultiplied") << QImage::Format_ARGB6666_Premultiplied;
+    BOBUIest::newRow("Format_RGB555") << QImage::Format_RGB555;
+    BOBUIest::newRow("Format_ARGB8555_Premultiplied") << QImage::Format_ARGB8555_Premultiplied;
+    BOBUIest::newRow("Format_RGB888") << QImage::Format_RGB888;
+    BOBUIest::newRow("Format_BGR888") << QImage::Format_BGR888;
+    BOBUIest::newRow("Format_RGB444") << QImage::Format_RGB444;
+    BOBUIest::newRow("Format_ARGB4444_Premultiplied") << QImage::Format_ARGB4444_Premultiplied;
+    BOBUIest::newRow("Format_RGBA64") << QImage::Format_RGBA64;
+    BOBUIest::newRow("Format_RGBA64_Premultiplied") << QImage::Format_RGBA64_Premultiplied;
 }
 
 void tst_QImageReader::saveFormat()
@@ -1992,13 +1992,13 @@ void tst_QImageReader::saveFormat()
 
 void tst_QImageReader::saveColorSpace_data()
 {
-    QTest::addColumn<QColorSpace::NamedColorSpace>("namedColorSpace");
+    BOBUIest::addColumn<QColorSpace::NamedColorSpace>("namedColorSpace");
 
-    QTest::newRow("sRGB")         << QColorSpace::SRgb;
-    QTest::newRow("sRGB(linear)") << QColorSpace::SRgbLinear;
-    QTest::newRow("AdobeRGB")     << QColorSpace::AdobeRgb;
-    QTest::newRow("DisplayP3")    << QColorSpace::DisplayP3;
-    QTest::newRow("ProPhotoRgb")  << QColorSpace::ProPhotoRgb;
+    BOBUIest::newRow("sRGB")         << QColorSpace::SRgb;
+    BOBUIest::newRow("sRGB(linear)") << QColorSpace::SRgbLinear;
+    BOBUIest::newRow("AdobeRGB")     << QColorSpace::AdobeRgb;
+    BOBUIest::newRow("DisplayP3")    << QColorSpace::DisplayP3;
+    BOBUIest::newRow("ProPhotoRgb")  << QColorSpace::ProPhotoRgb;
 }
 
 void tst_QImageReader::saveColorSpace()
@@ -2027,25 +2027,25 @@ void tst_QImageReader::saveColorSpace()
 
 void tst_QImageReader::readText_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<QString>("key");
-    QTest::addColumn<QString>("text");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QString>("key");
+    BOBUIest::addColumn<QString>("text");
 
-    QTest::newRow("png, tEXt before img") << "txts.png" << "Title" << "PNG";
-    QTest::newRow("png, zTXt before img") << "txts.png" << "Comment" << "Some compressed text.";
-    QTest::newRow("png, tEXt after img") << "txts.png" << "Disclaimer" << "For testing only.";
-    QTest::newRow("png, zTXt after img") << "txts.png" << "Description" << "Rendered by Persistence of Vision (tm) Ray Tracer";
+    BOBUIest::newRow("png, tEXt before img") << "txts.png" << "Title" << "PNG";
+    BOBUIest::newRow("png, zTXt before img") << "txts.png" << "Comment" << "Some compressed text.";
+    BOBUIest::newRow("png, tEXt after img") << "txts.png" << "Disclaimer" << "For testing only.";
+    BOBUIest::newRow("png, zTXt after img") << "txts.png" << "Description" << "Rendered by Persistence of Vision (tm) Ray Tracer";
 
-    QTest::newRow("jpg, JPEG_COM Title") << "txts.jpg" << "Title" << "JPG";
-    QTest::newRow("jpg, JPEG_COM Comment") << "txts.jpg" << "Comment" << "Some non-compressed text.";
-    QTest::newRow("jpg, JPEG_COM Disclaimer") << "txts.jpg" << "Disclaimer" << "For testing only.";
-    QTest::newRow("jpg, JPEG_COM Description") << "txts.jpg" << "Description" << "Rendered by Persistence of Vision (tm) Ray Tracer";
+    BOBUIest::newRow("jpg, JPEG_COM Title") << "txts.jpg" << "Title" << "JPG";
+    BOBUIest::newRow("jpg, JPEG_COM Comment") << "txts.jpg" << "Comment" << "Some non-compressed text.";
+    BOBUIest::newRow("jpg, JPEG_COM Disclaimer") << "txts.jpg" << "Disclaimer" << "For testing only.";
+    BOBUIest::newRow("jpg, JPEG_COM Description") << "txts.jpg" << "Description" << "Rendered by Persistence of Vision (tm) Ray Tracer";
 }
 
 
 void tst_QImageReader::readText()
 {
-#ifdef QT_NO_IMAGEIO_TEXT_LOADING
+#ifdef BOBUI_NO_IMAGEIO_TEXT_LOADING
     QSKIP("Reading text from image is configured away");
 #endif
 
@@ -2061,8 +2061,8 @@ void tst_QImageReader::readText()
 
 void tst_QImageReader::preserveTexts_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<QString>("text");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QString>("text");
 
     QString latin1set;
     for (int c = 0x20; c <= 0x7e; c++)
@@ -2076,22 +2076,22 @@ void tst_QImageReader::preserveTexts_data()
         // Common prefix of length 9 before file names: ":/images/", skipped below by + 9.
     };
     for (const auto &fileName : fileNames) {
-        QTest::addRow("Simple %s", fileName.data() + 9)
+        BOBUIest::addRow("Simple %s", fileName.data() + 9)
             << QString(fileName) << "simpletext";
-        QTest::addRow("Whitespace %s", fileName.data() + 9)
+        BOBUIest::addRow("Whitespace %s", fileName.data() + 9)
             << QString(fileName) << " A text  with whitespace ";
-        QTest::addRow("Newline %s", fileName.data() + 9)
+        BOBUIest::addRow("Newline %s", fileName.data() + 9)
             << QString(fileName) << "A text\nwith newlines\n";
-        QTest::addRow("Double newlines %s", fileName.data() + 9)
+        BOBUIest::addRow("Double newlines %s", fileName.data() + 9)
             << QString(fileName) << "A text\n\nwith double newlines\n\n";
-        QTest::addRow("Long %s", fileName.data() + 9)
+        BOBUIest::addRow("Long %s", fileName.data() + 9)
             << QString(fileName)
             << QString("A rather long text, at least after many repetitions. ").repeated(100);
-        QTest::addRow("All Latin1 chars %s", fileName.data() + 9)
+        BOBUIest::addRow("All Latin1 chars %s", fileName.data() + 9)
             << QString(fileName) << latin1set;
 #if 0
         // Depends on iTXt support in libpng
-        QTest::addRow("Multibyte string %s", fileName.data() + 9)
+        BOBUIest::addRow("Multibyte string %s", fileName.data() + 9)
             << QString(fileName)
             << QString::fromUtf8("\341\233\222\341\233\226\341\232\251\341\232"
                                  "\271\341\232\242\341\233\232\341\232\240");
@@ -2102,7 +2102,7 @@ void tst_QImageReader::preserveTexts_data()
 
 void tst_QImageReader::preserveTexts()
 {
-#ifdef QT_NO_IMAGEIO_TEXT_LOADING
+#ifdef BOBUI_NO_IMAGEIO_TEXT_LOADING
     QSKIP("Reading text from image is configured away");
 #endif
 
@@ -2142,13 +2142,13 @@ void tst_QImageReader::preserveTexts()
 
 void tst_QImageReader::devicePixelRatio_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<QSize>("size");
-    QTest::addColumn<qreal>("dpr");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QSize>("size");
+    BOBUIest::addColumn<qreal>("dpr");
 
-    QTest::newRow("1x") << "qticon16.png" << QSize(16, 16) << 1.0;
-    QTest::newRow("2x") << "qticon16@2x.png" << QSize(32, 32) << 2.0;
-    QTest::newRow("3x") << "qticon16@3x.png" << QSize(48, 48) << 3.0;
+    BOBUIest::newRow("1x") << "bobuiicon16.png" << QSize(16, 16) << 1.0;
+    BOBUIest::newRow("2x") << "bobuiicon16@2x.png" << QSize(32, 32) << 2.0;
+    BOBUIest::newRow("3x") << "bobuiicon16@3x.png" << QSize(48, 48) << 3.0;
 }
 
 void tst_QImageReader::devicePixelRatio()
@@ -2165,7 +2165,7 @@ void tst_QImageReader::devicePixelRatio()
 
 void tst_QImageReader::xpmBufferOverflow()
 {
-    // Please note that the overflow only showed when Qt was configured with "-sanitize address".
+    // Please note that the overflow only showed when BobUI was configured with "-sanitize address".
     QImageReader(":/images/oss-fuzz-23988.xpm").read();
 }
 
@@ -2205,5 +2205,5 @@ void tst_QImageReader::xbmBufferHandling()
     QImage::fromData(buffer, "xbm");
 }
 
-QTEST_MAIN(tst_QImageReader)
+BOBUIEST_MAIN(tst_QImageReader)
 #include "tst_qimagereader.moc"

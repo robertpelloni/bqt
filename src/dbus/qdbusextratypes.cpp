@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qdbusextratypes.h"
 #include "qdbusutil_p.h"
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
 BOBUI_BEGIN_NAMESPACE
 
-QT_IMPL_METATYPE_EXTERN(QDBusVariant)
-QT_IMPL_METATYPE_EXTERN(QDBusObjectPath)
-QT_IMPL_METATYPE_EXTERN(QDBusSignature)
+BOBUI_IMPL_METATYPE_EXTERN(QDBusVariant)
+BOBUI_IMPL_METATYPE_EXTERN(QDBusObjectPath)
+BOBUI_IMPL_METATYPE_EXTERN(QDBusSignature)
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 /*!
     \fn QDebug QDBusObjectPath::operator<<(QDebug dbg, const QDBusObjectPath &path)
     \since 6.8
@@ -69,7 +69,7 @@ void QDBusSignature::doCheck()
     The QVariant within a QDBusVariant is required to distinguish between a normal
     D-Bus value and a value within a D-Bus variant.
 
-    \sa {The Qt D-Bus Type System}
+    \sa {The BobUI D-Bus Type System}
 */
 
 /*!
@@ -81,7 +81,7 @@ void QDBusSignature::doCheck()
 /*!
     \fn QDBusVariant::QDBusVariant(const QVariant &variant)
 
-    Constructs a new D-Bus variant from the given Qt \a variant.
+    Constructs a new D-Bus variant from the given BobUI \a variant.
 
     \sa setVariant()
 */
@@ -97,7 +97,7 @@ void QDBusSignature::doCheck()
 /*!
     \fn void QDBusVariant::setVariant(const QVariant &variant)
 
-    Assigns the value of the given Qt \a variant to this D-Bus variant.
+    Assigns the value of the given BobUI \a variant to this D-Bus variant.
 
     \sa variant()
 */
@@ -110,7 +110,7 @@ void QDBusSignature::doCheck()
     \brief The QDBusObjectPath class enables the programmer to
     identify the OBJECT_PATH type provided by the D-Bus typesystem.
 
-    \sa {The Qt D-Bus Type System}
+    \sa {The BobUI D-Bus Type System}
 */
 
 /*!
@@ -171,7 +171,7 @@ QDBusObjectPath::operator QVariant() const { return QVariant::fromValue(*this); 
     \brief The QDBusSignature class enables the programmer to
     identify the SIGNATURE type provided by the D-Bus typesystem.
 
-    \sa {The Qt D-Bus Type System}
+    \sa {The BobUI D-Bus Type System}
 */
 
 /*!
@@ -232,4 +232,4 @@ QDBusObjectPath::operator QVariant() const { return QVariant::fromValue(*this); 
 
 BOBUI_END_NAMESPACE
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS

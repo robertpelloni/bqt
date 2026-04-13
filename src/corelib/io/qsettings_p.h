@@ -1,6 +1,6 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSETTINGS_P_H
 #define QSETTINGS_P_H
@@ -9,58 +9,58 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include "QtCore/qdatetime.h"
-#include "QtCore/qmap.h"
-#include "QtCore/qmutex.h"
-#include "QtCore/qiodevice.h"
-#include "QtCore/qstack.h"
-#include "QtCore/qstringlist.h"
+#include "BobUICore/qdatetime.h"
+#include "BobUICore/qmap.h"
+#include "BobUICore/qmutex.h"
+#include "BobUICore/qiodevice.h"
+#include "BobUICore/qstack.h"
+#include "BobUICore/qstringlist.h"
 
-#include <QtCore/qvariant.h>
+#include <BobUICore/qvariant.h>
 #include "qsettings.h"
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 #include "private/qobject_p.h"
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #ifndef Q_OS_WIN
-#define QT_QSETTINGS_ALWAYS_CASE_SENSITIVE_AND_FORGET_ORIGINAL_KEY_ORDER
+#define BOBUI_QSETTINGS_ALWAYS_CASE_SENSITIVE_AND_FORGET_ORIGINAL_KEY_ORDER
 #endif
 
 // used in testing framework
 #define QSETTINGS_P_H_VERSION 3
 
-#ifdef QT_QSETTINGS_ALWAYS_CASE_SENSITIVE_AND_FORGET_ORIGINAL_KEY_ORDER
-static const Qt::CaseSensitivity IniCaseSensitivity = Qt::CaseSensitive;
+#ifdef BOBUI_QSETTINGS_ALWAYS_CASE_SENSITIVE_AND_FORGET_ORIGINAL_KEY_ORDER
+static const BobUI::CaseSensitivity IniCaseSensitivity = BobUI::CaseSensitive;
 
 class QSettingsKey : public QString
 {
 public:
-    inline QSettingsKey(const QString &key, Qt::CaseSensitivity cs, qsizetype /* position */ = -1)
-        : QString(key) { Q_ASSERT(cs == Qt::CaseSensitive); Q_UNUSED(cs); }
+    inline QSettingsKey(const QString &key, BobUI::CaseSensitivity cs, qsizetype /* position */ = -1)
+        : QString(key) { Q_ASSERT(cs == BobUI::CaseSensitive); Q_UNUSED(cs); }
 
     inline QString originalCaseKey() const { return *this; }
     inline qsizetype originalKeyPosition() const { return -1; }
 };
 #else
-static const Qt::CaseSensitivity IniCaseSensitivity = Qt::CaseInsensitive;
+static const BobUI::CaseSensitivity IniCaseSensitivity = BobUI::CaseInsensitive;
 
 class QSettingsKey : public QString
 {
 public:
-    inline QSettingsKey(const QString &key, Qt::CaseSensitivity cs, qsizetype position = -1)
+    inline QSettingsKey(const QString &key, BobUI::CaseSensitivity cs, qsizetype position = -1)
         : QString(key), theOriginalKey(key), theOriginalKeyPosition(position)
     {
-        if (cs == Qt::CaseInsensitive)
+        if (cs == BobUI::CaseInsensitive)
             QString::operator=(toLower());
     }
 
@@ -146,11 +146,11 @@ private:
 };
 
 class Q_AUTOTEST_EXPORT QSettingsPrivate
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     : public QObjectPrivate
 #endif
 {
-#ifdef QT_NO_QOBJECT
+#ifdef BOBUI_NO_QOBJECT
     QSettings *q_ptr;
 #endif
     Q_DECLARE_PUBLIC(QSettings)
@@ -263,13 +263,13 @@ private:
     QSettings::ReadFunc readFunc;
     QSettings::WriteFunc writeFunc;
     QString extension;
-    Qt::CaseSensitivity caseSensitivity;
+    BobUI::CaseSensitivity caseSensitivity;
     qsizetype nextPosition;
 #ifdef Q_OS_WASM
     friend class QWasmIDBSettingsPrivate;
 #endif
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSETTINGS_P_H

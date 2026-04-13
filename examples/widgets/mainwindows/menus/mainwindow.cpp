@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 #include "mainwindow.h"
 
@@ -19,7 +19,7 @@ MainWindow::MainWindow()
     infoLabel = new QLabel(tr("<i>Choose a menu option, or right-click to "
                               "invoke a context menu</i>"));
     infoLabel->setFrameStyle(QFrame::StyledPanel | QFrame::Sunken);
-    infoLabel->setAlignment(Qt::AlignCenter);
+    infoLabel->setAlignment(BobUI::AlignCenter);
 
     QWidget *bottomFiller = new QWidget;
     bottomFiller->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -46,7 +46,7 @@ MainWindow::MainWindow()
 //! [2]
 
 //! [3]
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
 void MainWindow::contextMenuEvent(QContextMenuEvent *event)
 {
     QMenu menu(this);
@@ -55,7 +55,7 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *event)
     menu.addAction(pasteAct);
     menu.exec(event->globalPos());
 }
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
 //! [3]
 
 void MainWindow::newFile()
@@ -151,9 +151,9 @@ void MainWindow::about()
                "menu-bar menus and context menus."));
 }
 
-void MainWindow::aboutQt()
+void MainWindow::aboutBobUI()
 {
-    infoLabel->setText(tr("Invoked <b>Help|About Qt</b>"));
+    infoLabel->setText(tr("Invoked <b>Help|About BobUI</b>"));
 }
 
 //! [4]
@@ -262,10 +262,10 @@ void MainWindow::createActions()
     aboutAct->setStatusTip(tr("Show the application's About box"));
     connect(aboutAct, &QAction::triggered, this, &MainWindow::about);
 
-    aboutQtAct = new QAction(tr("About &Qt"), this);
-    aboutQtAct->setStatusTip(tr("Show the Qt library's About box"));
-    connect(aboutQtAct, &QAction::triggered, qApp, &QApplication::aboutQt);
-    connect(aboutQtAct, &QAction::triggered, this, &MainWindow::aboutQt);
+    aboutBobUIAct = new QAction(tr("About &BobUI"), this);
+    aboutBobUIAct->setStatusTip(tr("Show the BobUI library's About box"));
+    connect(aboutBobUIAct, &QAction::triggered, qApp, &QApplication::aboutBobUI);
+    connect(aboutBobUIAct, &QAction::triggered, this, &MainWindow::aboutBobUI);
 
     leftAlignAct = new QAction(QIcon::fromTheme(QIcon::ThemeIcon::FormatJustifyLeft),
                                tr("&Left Align"), this);
@@ -333,7 +333,7 @@ void MainWindow::createMenus()
 
     helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addAction(aboutAct);
-    helpMenu->addAction(aboutQtAct);
+    helpMenu->addAction(aboutBobUIAct);
 //! [8]
 
 //! [12]

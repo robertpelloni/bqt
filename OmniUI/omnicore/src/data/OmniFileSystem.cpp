@@ -2,9 +2,9 @@
 #include "OmniTimeMachine.h"
 #include <QFile>
 #include <QDir>
-#include <QTextStream>
+#include <BOBUIextStream>
 #include <QStandardPaths>
-#include <QtConcurrent>
+#include <BobUIConcurrent>
 #include <QDebug>
 
 OmniFileSystem* OmniFileSystem::instance()
@@ -20,7 +20,7 @@ OmniFileSystem::OmniFileSystem(QObject *parent) : QObject(parent) {
 OmniFileSystem::~OmniFileSystem() = default;
 
 void OmniFileSystem::readFile(const QString& absolutePath) {
-    QFuture<void> future = QtConcurrent::run([this, absolutePath]() {
+    QFuture<void> future = BobUIConcurrent::run([this, absolutePath]() {
         QFile file(absolutePath);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
             QString err = "Failed to open file for reading: " + file.errorString();
@@ -29,7 +29,7 @@ void OmniFileSystem::readFile(const QString& absolutePath) {
             return;
         }
 
-        QTextStream in(&file);
+        BOBUIextStream in(&file);
         QString content = in.readAll();
         file.close();
 
@@ -39,7 +39,7 @@ void OmniFileSystem::readFile(const QString& absolutePath) {
 }
 
 void OmniFileSystem::writeFile(const QString& absolutePath, const QString& content) {
-    QFuture<void> future = QtConcurrent::run([this, absolutePath, content]() {
+    QFuture<void> future = BobUIConcurrent::run([this, absolutePath, content]() {
         QFile file(absolutePath);
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
             QString err = "Failed to open file for writing: " + file.errorString();
@@ -48,7 +48,7 @@ void OmniFileSystem::writeFile(const QString& absolutePath, const QString& conte
             return;
         }
 
-        QTextStream out(&file);
+        BOBUIextStream out(&file);
         out << content;
         file.close();
 

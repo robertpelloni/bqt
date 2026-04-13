@@ -1,7 +1,7 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 #include <QApplication>
-#include <QtMath>
+#include <BobUIMath>
 #include <QPainter>
 #include <QVBoxLayout>
 #include <QWidget>
@@ -16,14 +16,14 @@ class SimpleTransformation : public QWidget
 void SimpleTransformation::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
-    painter.setPen(QPen(Qt::blue, 1, Qt::DashLine));
+    painter.setPen(QPen(BobUI::blue, 1, BobUI::DashLine));
     painter.drawRect(0, 0, 100, 100);
 
     painter.rotate(45);
 
     painter.setFont(QFont("Helvetica", 24));
-    painter.setPen(QPen(Qt::black, 1));
-    painter.drawText(20, 10, "QTransform");
+    painter.setPen(QPen(BobUI::black, 1));
+    painter.drawText(20, 10, "BOBUIransform");
 }
 //! [0]
 
@@ -36,18 +36,18 @@ class CombinedTransformation : public QWidget
 void CombinedTransformation::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
-    painter.setPen(QPen(Qt::blue, 1, Qt::DashLine));
+    painter.setPen(QPen(BobUI::blue, 1, BobUI::DashLine));
     painter.drawRect(0, 0, 100, 100);
 
-    QTransform transform;
+    BOBUIransform transform;
     transform.translate(50, 50);
     transform.rotate(45);
     transform.scale(0.5, 1.0);
     painter.setTransform(transform);
 
     painter.setFont(QFont("Helvetica", 24));
-    painter.setPen(QPen(Qt::black, 1));
-    painter.drawText(20, 10, "QTransform");
+    painter.setPen(QPen(BobUI::black, 1));
+    painter.drawText(20, 10, "BOBUIransform");
 }
 //! [1]
 
@@ -63,21 +63,21 @@ void BasicOperations::paintEvent(QPaintEvent *)
     double sina = sin(a);
     double cosa = cos(a);
 
-    QTransform scale(0.5, 0, 0, 1.0, 0, 0);
-    QTransform rotate(cosa, sina, -sina, cosa, 0, 0);
-    QTransform translate(1, 0, 0, 1, 50.0, 50.0);
+    BOBUIransform scale(0.5, 0, 0, 1.0, 0, 0);
+    BOBUIransform rotate(cosa, sina, -sina, cosa, 0, 0);
+    BOBUIransform translate(1, 0, 0, 1, 50.0, 50.0);
 
-    QTransform transform = scale * rotate * translate;
+    BOBUIransform transform = scale * rotate * translate;
 
     QPainter painter(this);
-    painter.setPen(QPen(Qt::blue, 1, Qt::DashLine));
+    painter.setPen(QPen(BobUI::blue, 1, BobUI::DashLine));
     painter.drawRect(0, 0, 100, 100);
 
     painter.setTransform(transform);
 
     painter.setFont(QFont("Helvetica", 24));
-    painter.setPen(QPen(Qt::black, 1));
-    painter.drawText(20, 10, "QTransform");
+    painter.setPen(QPen(BobUI::black, 1));
+    painter.drawText(20, 10, "BOBUIransform");
 }
 //! [2]
 

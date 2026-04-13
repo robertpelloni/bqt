@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef PREVIEWWINDOW_H
 #define PREVIEWWINDOW_H
 
 #include <QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QPushButton;
-class QTextEdit;
-QT_END_NAMESPACE
+class BOBUIextEdit;
+BOBUI_END_NAMESPACE
 
 //! [0]
 class PreviewWindow : public QWidget
@@ -19,10 +19,10 @@ class PreviewWindow : public QWidget
 public:
     PreviewWindow(QWidget *parent = nullptr);
 
-    void setWindowFlags(Qt::WindowFlags flags);
+    void setWindowFlags(BobUI::WindowFlags flags);
 
 private:
-    QTextEdit *textEdit;
+    BOBUIextEdit *textEdit;
     QPushButton *closeButton;
 };
 //! [0]

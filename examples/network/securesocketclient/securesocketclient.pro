@@ -1,4 +1,4 @@
-requires(qtHaveModule(network))
+requires(bobuiHaveModule(network))
 
 HEADERS   += certificateinfo.h \
              sslclient.h
@@ -9,11 +9,11 @@ RESOURCES += securesocketclient.qrc
 FORMS     += certificateinfo.ui \
              sslclient.ui \
              sslerrors.ui
-QT        += network widgets
-requires(qtConfig(listwidget))
-requires(qtConfig(combobox))
+BOBUI        += network widgets
+requires(bobuiConfig(listwidget))
+requires(bobuiConfig(combobox))
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/network/securesocketclient
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/network/securesocketclient
 INSTALLS += target
 

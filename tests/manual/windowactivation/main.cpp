@@ -1,7 +1,7 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 class RasterWindow : public QRasterWindow
 {
@@ -35,7 +35,7 @@ public:
             window->requestActivate();
         });
         connect(window, &QWindow::activeChanged, this, [this, window](){
-            setPalette(window->isActive() ? QPalette(Qt::red) : qApp->palette());
+            setPalette(window->isActive() ? QPalette(BobUI::red) : qApp->palette());
         });
     }
 };
@@ -46,27 +46,27 @@ class Controller : public QWidget
 public:
     Controller() {
         setWindowTitle("Controller window");
-        auto *ed1 = new QTextEdit;
+        auto *ed1 = new BOBUIextEdit;
         ed1->setWindowTitle("Editor 1");
         ed1->show();
-        auto *ed2 = new QTextEdit;
+        auto *ed2 = new BOBUIextEdit;
         ed2->setWindowTitle("Editor 2");
         ed2->show();
 
-        auto *win1 = new RasterWindow(Qt::red);
+        auto *win1 = new RasterWindow(BobUI::red);
         win1->setTitle("Window 1");
         win1->resize(300, 200);
         win1->show();
 
-        auto *win2 = new RasterWindow(Qt::green);
+        auto *win2 = new RasterWindow(BobUI::green);
         win2->setTitle("Window 2");
         win2->resize(300, 200);
         win2->show();
 
-        auto *noFocus = new RasterWindow(Qt::black);
+        auto *noFocus = new RasterWindow(BobUI::black);
         noFocus->setTitle("No focus");
         noFocus->resize(300, 200);
-        noFocus->setFlags(noFocus->flags() | Qt::WindowDoesNotAcceptFocus);
+        noFocus->setFlags(noFocus->flags() | BobUI::WindowDoesNotAcceptFocus);
         noFocus->show();
 
         lab = new QLabel(this);

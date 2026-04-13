@@ -1,9 +1,9 @@
 // Copyright (C) 2018 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "nullconverter.h"
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static NullConverter nullConverter;
 bool Converter::isNull(const Converter *converter)

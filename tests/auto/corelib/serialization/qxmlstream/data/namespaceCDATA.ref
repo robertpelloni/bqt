@@ -1,21 +1,21 @@
 StartDocument( )
 DTD( text="<!DOCTYPE footype [
- <!ATTLIST foo xmlns CDATA #FIXED "http://qt-project.org">
- <!ATTLIST pre:bar xmlns:pre CDATA #FIXED "http://qt-project.org">
+ <!ATTLIST foo xmlns CDATA #FIXED "http://bobui-project.org">
+ <!ATTLIST pre:bar xmlns:pre CDATA #FIXED "http://bobui-project.org">
 ]>" dtdName="footype" )
 StartElement( name="body" qualifiedName="body" )
 Characters( whitespace text="
 " )
-StartElement( name="foo" namespaceUri="http://qt-project.org" qualifiedName="foo"
-    NamespaceDeclaration( namespaceUri="http://qt-project.org" )
+StartElement( name="foo" namespaceUri="http://bobui-project.org" qualifiedName="foo"
+    NamespaceDeclaration( namespaceUri="http://bobui-project.org" )
  )
-EndElement( name="foo" namespaceUri="http://qt-project.org" qualifiedName="foo" )
+EndElement( name="foo" namespaceUri="http://bobui-project.org" qualifiedName="foo" )
 Characters( whitespace text="
 " )
-StartElement( name="bar" namespaceUri="http://qt-project.org" qualifiedName="pre:bar" prefix="pre"
-    NamespaceDeclaration( prefix="pre" namespaceUri="http://qt-project.org" )
+StartElement( name="bar" namespaceUri="http://bobui-project.org" qualifiedName="pre:bar" prefix="pre"
+    NamespaceDeclaration( prefix="pre" namespaceUri="http://bobui-project.org" )
  )
-EndElement( name="bar" namespaceUri="http://qt-project.org" qualifiedName="pre:bar" prefix="pre" )
+EndElement( name="bar" namespaceUri="http://bobui-project.org" qualifiedName="pre:bar" prefix="pre" )
 Characters( whitespace text="
 " )
 EndElement( name="body" qualifiedName="body" )

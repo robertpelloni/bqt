@@ -1,6 +1,6 @@
-// Copyright (C) 2019 The Qt Company Ltd.
+// Copyright (C) 2019 The BobUI Company Ltd.
 // Copyright (C) 2016 Jolla Ltd, author: <gunnar.sletta@jollamobile.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qevdevtouchhandler_p.h"
 #include "qoutputmapping_p.h"
@@ -9,13 +9,13 @@
 #include <QSocketNotifier>
 #include <QGuiApplication>
 #include <QLoggingCategory>
-#include <QtCore/private/qcore_unix_p.h>
-#include <QtGui/qpointingdevice.h>
-#include <QtGui/private/qhighdpiscaling_p.h>
-#include <QtGui/private/qguiapplication_p.h>
-#include <QtGui/private/qpointingdevice_p.h>
+#include <BobUICore/private/qcore_unix_p.h>
+#include <BobUIGui/qpointingdevice.h>
+#include <BobUIGui/private/qhighdpiscaling_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qpointingdevice_p.h>
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
 #include <mutex>
 
@@ -35,18 +35,18 @@
 
 #include <math.h>
 
-#if QT_CONFIG(mtdev)
+#if BOBUI_CONFIG(mtdev)
 extern "C" {
 #include <mtdev.h>
 }
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_LOGGING_CATEGORY(qLcEvdevTouch, "qt.qpa.input")
-Q_STATIC_LOGGING_CATEGORY(qLcEvents, "qt.qpa.input.events")
+Q_LOGGING_CATEGORY(qLcEvdevTouch, "bobui.qpa.input")
+Q_STATIC_LOGGING_CATEGORY(qLcEvents, "bobui.qpa.input.events")
 
 /* android (and perhaps some other linux-derived stuff) don't define everything
  * in linux/input.h, so we'll need to do that ourselves.
@@ -122,7 +122,7 @@ public:
     QString deviceNode;
     bool m_forceToActiveWindow;
     bool m_typeB;
-    QTransform m_rotate;
+    BOBUIransform m_rotate;
     bool m_singleTouch;
     QString m_screenName;
     mutable QPointer<QScreen> m_screen;
@@ -164,7 +164,7 @@ QEvdevTouchScreenData::QEvdevTouchScreenData(QEvdevTouchScreenHandler *q_ptr, co
 #define LONG_BITS (sizeof(long) << 3)
 #define NUM_LONGS(bits) (((bits) + LONG_BITS - 1) / LONG_BITS)
 
-#if !QT_CONFIG(mtdev)
+#if !BOBUI_CONFIG(mtdev)
 static inline bool testBit(long bit, const long *array)
 {
     return (array[bit / LONG_BITS] >> bit % LONG_BITS) & 1;
@@ -173,7 +173,7 @@ static inline bool testBit(long bit, const long *array)
 
 QEvdevTouchScreenHandler::QEvdevTouchScreenHandler(const QString &device, const QString &spec, QObject *parent)
     : QObject(parent), m_notify(nullptr), m_fd(-1), d(nullptr), m_device(nullptr)
-#if QT_CONFIG(mtdev)
+#if BOBUI_CONFIG(mtdev)
       , m_mtdev(nullptr)
 #endif
 {
@@ -208,7 +208,7 @@ QEvdevTouchScreenHandler::QEvdevTouchScreenHandler(const QString &device, const 
 
     qCDebug(qLcEvdevTouch, "evdevtouch: Using device %ls", qUtf16Printable(device));
 
-    m_fd = QT_OPEN(device.toLocal8Bit().constData(), O_RDONLY | O_NDELAY, 0);
+    m_fd = BOBUI_OPEN(device.toLocal8Bit().constData(), O_RDONLY | O_NDELAY, 0);
 
     if (m_fd >= 0) {
         m_notify = new QSocketNotifier(m_fd, QSocketNotifier::Read, this);
@@ -218,12 +218,12 @@ QEvdevTouchScreenHandler::QEvdevTouchScreenHandler(const QString &device, const 
         return;
     }
 
-#if QT_CONFIG(mtdev)
+#if BOBUI_CONFIG(mtdev)
     m_mtdev = static_cast<mtdev *>(calloc(1, sizeof(mtdev)));
     int mtdeverr = mtdev_open(m_mtdev, m_fd);
     if (mtdeverr) {
         qWarning("evdevtouch: mtdev_open failed: %d", mtdeverr);
-        QT_CLOSE(m_fd);
+        BOBUI_CLOSE(m_fd);
         free(m_mtdev);
         return;
     }
@@ -231,7 +231,7 @@ QEvdevTouchScreenHandler::QEvdevTouchScreenHandler(const QString &device, const 
 
     d = new QEvdevTouchScreenData(this, args);
 
-#if QT_CONFIG(mtdev)
+#if BOBUI_CONFIG(mtdev)
     const char *mtdevStr = "(mtdev)";
     d->m_typeB = true;
 #else
@@ -312,13 +312,13 @@ QEvdevTouchScreenHandler::QEvdevTouchScreenHandler(const QString &device, const 
         qWarning("evdevtouch: The device is grabbed by another process. No events will be read.");
 
     if (rotationAngle)
-        d->m_rotate = QTransform::fromTranslate(0.5, 0.5).rotate(rotationAngle).translate(-0.5, -0.5);
+        d->m_rotate = BOBUIransform::fromTranslate(0.5, 0.5).rotate(rotationAngle).translate(-0.5, -0.5);
 
     if (invertx)
-        d->m_rotate *= QTransform::fromTranslate(0.5, 0.5).scale(-1.0, 1.0).translate(-0.5, -0.5);
+        d->m_rotate *= BOBUIransform::fromTranslate(0.5, 0.5).scale(-1.0, 1.0).translate(-0.5, -0.5);
 
     if (inverty)
-        d->m_rotate *= QTransform::fromTranslate(0.5, 0.5).scale(1.0, -1.0).translate(-0.5, -0.5);
+        d->m_rotate *= BOBUIransform::fromTranslate(0.5, 0.5).scale(1.0, -1.0).translate(-0.5, -0.5);
 
     QOutputMapping *mapping = QOutputMapping::get();
     if (mapping->load()) {
@@ -333,7 +333,7 @@ QEvdevTouchScreenHandler::QEvdevTouchScreenHandler(const QString &device, const 
 
 QEvdevTouchScreenHandler::~QEvdevTouchScreenHandler()
 {
-#if QT_CONFIG(mtdev)
+#if BOBUI_CONFIG(mtdev)
     if (m_mtdev) {
         mtdev_close(m_mtdev);
         free(m_mtdev);
@@ -341,7 +341,7 @@ QEvdevTouchScreenHandler::~QEvdevTouchScreenHandler()
 #endif
 
     if (m_fd >= 0)
-        QT_CLOSE(m_fd);
+        BOBUI_CLOSE(m_fd);
 
     delete d;
 
@@ -363,7 +363,7 @@ void QEvdevTouchScreenHandler::readData()
     ::input_event buffer[32];
     int events = 0;
 
-#if QT_CONFIG(mtdev)
+#if BOBUI_CONFIG(mtdev)
     forever {
         do {
             events = mtdev_get(m_mtdev, m_fd, buffer, sizeof(buffer) / sizeof(::input_event));
@@ -385,7 +385,7 @@ void QEvdevTouchScreenHandler::readData()
 #else
     int n = 0;
     for (; ;) {
-        events = QT_READ(m_fd, reinterpret_cast<char*>(buffer) + n, sizeof(buffer) - n);
+        events = BOBUI_READ(m_fd, reinterpret_cast<char*>(buffer) + n, sizeof(buffer) - n);
         if (events <= 0)
             goto err;
         n += events;
@@ -411,7 +411,7 @@ err:
                 delete m_notify;
                 m_notify = nullptr;
 
-                QT_CLOSE(m_fd);
+                BOBUI_CLOSE(m_fd);
                 m_fd = -1;
 
                 unregisterPointingDevice();
@@ -783,7 +783,7 @@ void QEvdevTouchScreenData::reportPoints()
 
         // Generate a screen position that is always inside the active window
         // or the primary screen.  Even though we report this as a QRectF, internally
-        // Qt uses QRect/QPoint so we need to bound the size to winRect.size() - QSize(1, 1)
+        // BobUI uses QRect/QPoint so we need to bound the size to winRect.size() - QSize(1, 1)
         const qreal wx = winRect.left() + tp.normalPosition.x() * (winRect.width() - 1);
         const qreal wy = winRect.top() + tp.normalPosition.y() * (winRect.height() - 1);
         const qreal sizeRatio = (winRect.width() + winRect.height()) / qreal(hw_w + hw_h);
@@ -833,7 +833,7 @@ void QEvdevTouchScreenHandlerThread::run()
         connect(m_handler, &QEvdevTouchScreenHandler::touchPointsUpdated, this, &QEvdevTouchScreenHandlerThread::scheduleTouchPointUpdate);
 
     // Report the registration to the parent thread by invoking the method asynchronously
-    QMetaObject::invokeMethod(this, "notifyTouchDeviceRegistered", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(this, "notifyTouchDeviceRegistered", BobUI::QueuedConnection);
 
     exec();
 
@@ -985,6 +985,6 @@ void QEvdevTouchScreenHandlerThread::filterAndSendTouchPoints()
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qevdevtouchhandler_p.cpp"

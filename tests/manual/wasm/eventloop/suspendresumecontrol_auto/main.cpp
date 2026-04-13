@@ -1,10 +1,10 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/private/qwasmsuspendresumecontrol_p.h>
-#include <QtCore/qdebug.h>
-#include <qtwasmtestlib.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/private/qwasmsuspendresumecontrol_p.h>
+#include <BobUICore/qdebug.h>
+#include <bobuiwasmtestlib.h>
 
 using namespace emscripten;
 
@@ -186,7 +186,7 @@ void WasmSuspendResumeControlTest::suspendExclusive()
 int main(int argc, char **argv)
 {
     auto testObject = std::make_shared<WasmSuspendResumeControlTest>();
-    QtWasmTest::initTestCase<QCoreApplication>(argc, argv, testObject);
+    BobUIWasmTest::initTestCase<QCoreApplication>(argc, argv, testObject);
     return 0;
 }
 

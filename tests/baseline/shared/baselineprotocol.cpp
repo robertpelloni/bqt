@@ -1,18 +1,18 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 #include "baselineprotocol.h"
 #include <QLibraryInfo>
 #include <QImage>
 #include <QBuffer>
 #include <QHostInfo>
 #include <QSysInfo>
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
 # include <QProcess>
 #endif
 #include <QFileInfo>
 #include <QDir>
-#include <QThread>
-#include <QTime>
+#include <BOBUIhread>
+#include <BOBUIime>
 #include <QPointer>
 #include <QRegularExpression>
 
@@ -23,8 +23,8 @@ const QString PI_HostName(QLS("HostName"));
 const QString PI_HostAddress(QLS("HostAddress"));
 const QString PI_OSName(QLS("OSName"));
 const QString PI_OSVersion(QLS("OSVersion"));
-const QString PI_QtVersion(QLS("QtVersion"));
-const QString PI_QtBuildMode(QLS("QtBuildMode"));
+const QString PI_BobUIVersion(QLS("BobUIVersion"));
+const QString PI_BobUIBuildMode(QLS("BobUIBuildMode"));
 const QString PI_GitCommit(QLS("GitCommit"));
 const QString PI_GitBranch(QLS("GitBranch"));
 
@@ -32,9 +32,9 @@ PlatformInfo PlatformInfo::localHostInfo()
 {
     PlatformInfo pi;
     pi.insert(PI_HostName, QHostInfo::localHostName());
-    pi.insert(PI_QtVersion, QLS(qVersion()));
-    pi.insert(PI_QtBuildMode, QLibraryInfo::isDebugBuild() ? QLS("QtDebug") : QLS("QtRelease"));
-#if defined(Q_OS_LINUX) && QT_CONFIG(process)
+    pi.insert(PI_BobUIVersion, QLS(qVersion()));
+    pi.insert(PI_BobUIBuildMode, QLibraryInfo::isDebugBuild() ? QLS("BobUIDebug") : QLS("BobUIRelease"));
+#if defined(Q_OS_LINUX) && BOBUI_CONFIG(process)
     pi.insert(PI_OSName, QLS("Linux"));
 #elif defined(Q_OS_WIN)
     pi.insert(PI_OSName, QLS("Windows"));
@@ -253,7 +253,7 @@ BaselineProtocol::~BaselineProtocol()
 bool BaselineProtocol::disconnect()
 {
     socket.close();
-    return (socket.state() == QTcpSocket::UnconnectedState) ? true : socket.waitForDisconnected(Timeout);
+    return (socket.state() == BOBUIcpSocket::UnconnectedState) ? true : socket.waitForDisconnected(Timeout);
 }
 
 
@@ -262,14 +262,14 @@ bool BaselineProtocol::connect(const QString &testCase, bool *dryrun, const Plat
     errMsg.clear();
     QString serverName = server;
     if (serverName.isEmpty()) {
-        serverName = qEnvironmentVariable("QT_LANCELOT_SERVER");
+        serverName = qEnvironmentVariable("BOBUI_LANCELOT_SERVER");
         if (serverName.isEmpty())
-            serverName = QStringLiteral("lancelot.test.qt-project.org");
+            serverName = QStringLiteral("lancelot.test.bobui-project.org");
     }
 
     socket.connectToHost(serverName, ServerPort);
     if (!socket.waitForConnected(Timeout)) {
-        QThread::sleep(std::chrono::seconds{3});  // Wait a bit and try again, the server might just be restarting
+        BOBUIhread::sleep(std::chrono::seconds{3});  // Wait a bit and try again, the server might just be restarting
         if (!socket.waitForConnected(Timeout)) {
             errMsg += QLS("TCP connectToHost failed. Host:") + serverName + QLS(" port:") + QString::number(ServerPort);
             return false;

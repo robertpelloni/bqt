@@ -1,15 +1,15 @@
 // Copyright (C) 2012 BogDan Vatra <bogdan@kde.org>
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "androidjnimenu.h"
 #include "qandroidplatformmenu.h"
 #include "qandroidplatformmenuitem.h"
 
-#include <QtCore/qjnienvironment.h>
-#include <QtCore/qjniobject.h>
+#include <BobUICore/qjnienvironment.h>
+#include <BobUICore/qjniobject.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QAndroidPlatformMenu::QAndroidPlatformMenu()
 {
@@ -19,7 +19,7 @@ QAndroidPlatformMenu::QAndroidPlatformMenu()
 
 QAndroidPlatformMenu::~QAndroidPlatformMenu()
 {
-    QtAndroidMenu::androidPlatformMenuDestroyed(this);
+    BobUIAndroidMenu::androidPlatformMenuDestroyed(this);
 }
 
 void QAndroidPlatformMenu::insertMenuItem(QPlatformMenuItem *menuItem, QPlatformMenuItem *before)
@@ -66,7 +66,7 @@ void QAndroidPlatformMenu::syncMenuItem(QPlatformMenuItem *menuItem)
     }
 
     if (it != m_menuItems.end())
-        QtAndroidMenu::syncMenu(this);
+        BobUIAndroidMenu::syncMenu(this);
 }
 
 void QAndroidPlatformMenu::syncSeparatorsCollapsible(bool enable)
@@ -119,7 +119,7 @@ void QAndroidPlatformMenu::showPopup(const QWindow *parentWindow, const QRect &t
     Q_UNUSED(parentWindow);
     Q_UNUSED(item);
     setVisible(true);
-    QtAndroidMenu::showContextMenu(this, targetRect);
+    BobUIAndroidMenu::showContextMenu(this, targetRect);
 }
 
 QPlatformMenuItem *QAndroidPlatformMenu::menuItemForTag(quintptr tag) const
@@ -165,4 +165,4 @@ QMutex *QAndroidPlatformMenu::menuItemsMutex()
     return &m_menuItemsMutex;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

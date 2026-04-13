@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "browser.h"
 #include "qsqlconnectiondialog.h"
@@ -13,8 +13,8 @@
 #include <QSqlField>
 #include <QSqlQuery>
 #include <QSqlRecord>
-#include <QTextEdit>
-#include <QTimer>
+#include <BOBUIextEdit>
+#include <BOBUIimer>
 
 Browser::Browser(QWidget *parent)
     : QWidget(parent)
@@ -35,7 +35,7 @@ Browser::Browser(QWidget *parent)
     connect(m_ui->deleteRowAction, &QAction::triggered, this, &Browser::deleteRow);
     connect(m_ui->fieldStrategyAction, &QAction::triggered, this, &Browser::onFieldStrategyAction);
     connect(m_ui->rowStrategyAction, &QAction::triggered, this, &Browser::onRowStrategyAction);
-    connect(m_ui->sqlEdit, &QTextEdit::textChanged, this, &Browser::updateActions);
+    connect(m_ui->sqlEdit, &BOBUIextEdit::textChanged, this, &Browser::updateActions);
 
     connect(m_ui->connectionWidget, &ConnectionWidget::tableActivated,
             this, &Browser::showTable);
@@ -49,11 +49,11 @@ Browser::Browser(QWidget *parent)
 
     if (QSqlDatabase::drivers().isEmpty())
         QMessageBox::information(this, tr("No database drivers found"),
-                                 tr("This demo requires at least one Qt database driver. "
+                                 tr("This demo requires at least one BobUI database driver. "
                                     "Please check the documentation how to build the "
-                                    "Qt SQL plugins."));
+                                    "BobUI SQL plugins."));
 
-    QTimer::singleShot(0, this, [this]() {
+    BOBUIimer::singleShot(0, this, [this]() {
         updateActions();
         emit statusMessage(tr("Ready."));
     });
@@ -173,13 +173,13 @@ void Browser::showMetaData(const QString &t)
     model->insertRows(0, rec.count());
     model->insertColumns(0, 7);
 
-    model->setHeaderData(0, Qt::Horizontal, "Fieldname");
-    model->setHeaderData(1, Qt::Horizontal, "Type");
-    model->setHeaderData(2, Qt::Horizontal, "Length");
-    model->setHeaderData(3, Qt::Horizontal, "Precision");
-    model->setHeaderData(4, Qt::Horizontal, "Required");
-    model->setHeaderData(5, Qt::Horizontal, "AutoValue");
-    model->setHeaderData(6, Qt::Horizontal, "DefaultValue");
+    model->setHeaderData(0, BobUI::Horizontal, "Fieldname");
+    model->setHeaderData(1, BobUI::Horizontal, "Type");
+    model->setHeaderData(2, BobUI::Horizontal, "Length");
+    model->setHeaderData(3, BobUI::Horizontal, "Precision");
+    model->setHeaderData(4, BobUI::Horizontal, "Required");
+    model->setHeaderData(5, BobUI::Horizontal, "AutoValue");
+    model->setHeaderData(6, BobUI::Horizontal, "DefaultValue");
 
     for (int i = 0; i < rec.count(); ++i) {
         QSqlField fld = rec.field(i);

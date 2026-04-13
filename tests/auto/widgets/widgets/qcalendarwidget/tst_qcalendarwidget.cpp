@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <QSignalSpy>
 
 #include <qcalendarwidget.h>
-#include <qtoolbutton.h>
+#include <bobuioolbutton.h>
 #include <qspinbox.h>
 #include <qmenu.h>
 #include <qdebug.h>
 #include <qdatetime.h>
 #include <qscopeguard.h>
-#include <qtextformat.h>
+#include <bobuiextformat.h>
 
 class tst_QCalendarWidget : public QObject
 {
@@ -63,8 +63,8 @@ void tst_QCalendarWidget::getSetCheck()
     object.setMinimumDate(minDate);
     QCOMPARE(minDate, object.minimumDate());
     //day of week
-    object.setFirstDayOfWeek(Qt::Thursday);
-    QCOMPARE(Qt::Thursday, object.firstDayOfWeek());
+    object.setFirstDayOfWeek(BobUI::Thursday);
+    QCOMPARE(BobUI::Thursday, object.firstDayOfWeek());
     //grid visible
     object.setGridVisible(true);
     QVERIFY(object.isGridVisible());
@@ -138,7 +138,7 @@ void tst_QCalendarWidget::getSetCheck()
 
 void tst_QCalendarWidget::buttonClickCheck()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QCalendarWidget object;
@@ -146,50 +146,50 @@ void tst_QCalendarWidget::buttonClickCheck()
     object.setGeometry(0,0,size.width(), size.height());
     object.show();
     object.activateWindow();
-    QVERIFY(QTest::qWaitForWindowActive(&object));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&object));
 
     QDate selectedDate(2005, 1, 1);
     //click on the month buttons
     int month = object.monthShown();
-    QToolButton *button = object.findChild<QToolButton *>("qt_calendar_prevmonth");
-    QTest::mouseClick(button, Qt::LeftButton);
+    BOBUIoolButton *button = object.findChild<BOBUIoolButton *>("bobui_calendar_prevmonth");
+    BOBUIest::mouseClick(button, BobUI::LeftButton);
     QCOMPARE(month > 1 ? month-1 : 12, object.monthShown());
-    button = object.findChild<QToolButton *>("qt_calendar_nextmonth");
-    QTest::mouseClick(button, Qt::LeftButton);
+    button = object.findChild<BOBUIoolButton *>("bobui_calendar_nextmonth");
+    BOBUIest::mouseClick(button, BobUI::LeftButton);
     QCOMPARE(month, object.monthShown());
 
-    button = object.findChild<QToolButton *>("qt_calendar_yearbutton");
-    QTest::mouseClick(button, Qt::LeftButton, Qt::NoModifier, button->rect().center(), 2);
+    button = object.findChild<BOBUIoolButton *>("bobui_calendar_yearbutton");
+    BOBUIest::mouseClick(button, BobUI::LeftButton, BobUI::NoModifier, button->rect().center(), 2);
     QVERIFY(!button->isVisible());
-    QSpinBox *spinbox = object.findChild<QSpinBox *>("qt_calendar_yearedit");
-    QTest::keyClick(spinbox, '2');
-    QTest::keyClick(spinbox, '0');
-    QTest::keyClick(spinbox, '0');
-    QTest::keyClick(spinbox, '6');
-    QWidget *widget = object.findChild<QWidget *>("qt_calendar_calendarview");
-    QTest::mouseMove(widget);
-    QTest::mouseClick(widget, Qt::LeftButton);
+    QSpinBox *spinbox = object.findChild<QSpinBox *>("bobui_calendar_yearedit");
+    BOBUIest::keyClick(spinbox, '2');
+    BOBUIest::keyClick(spinbox, '0');
+    BOBUIest::keyClick(spinbox, '0');
+    BOBUIest::keyClick(spinbox, '6');
+    QWidget *widget = object.findChild<QWidget *>("bobui_calendar_calendarview");
+    BOBUIest::mouseMove(widget);
+    BOBUIest::mouseClick(widget, BobUI::LeftButton);
     QCOMPARE(2006, object.yearShown());
-    QTest::mouseClick(button, Qt::LeftButton, Qt::NoModifier, button->rect().center(), 2);
-    QTest::mouseMove(widget);
-    QTest::mouseClick(widget, Qt::LeftButton);
+    BOBUIest::mouseClick(button, BobUI::LeftButton, BobUI::NoModifier, button->rect().center(), 2);
+    BOBUIest::mouseMove(widget);
+    BOBUIest::mouseClick(widget, BobUI::LeftButton);
     QCOMPARE(button->text(), "2006"); // Check that it is shown as a year should be
     object.setSelectedDate(selectedDate);
     object.showSelectedDate();
-    QTest::keyClick(widget, Qt::Key_Down);
+    BOBUIest::keyClick(widget, BobUI::Key_Down);
     QVERIFY(selectedDate != object.selectedDate());
 
     object.setDateRange(QDate(2006,1,1), QDate(2006,2,28));
     object.setSelectedDate(QDate(2006,1,1));
     object.showSelectedDate();
-    button = object.findChild<QToolButton *>("qt_calendar_prevmonth");
-    QTest::mouseClick(button, Qt::LeftButton);
+    button = object.findChild<BOBUIoolButton *>("bobui_calendar_prevmonth");
+    BOBUIest::mouseClick(button, BobUI::LeftButton);
     QCOMPARE(1, object.monthShown());
 
-    button = object.findChild<QToolButton *>("qt_calendar_nextmonth");
-    QTest::mouseClick(button, Qt::LeftButton);
+    button = object.findChild<BOBUIoolButton *>("bobui_calendar_nextmonth");
+    BOBUIest::mouseClick(button, BobUI::LeftButton);
     QCOMPARE(2, object.monthShown());
-    QTest::mouseClick(button, Qt::LeftButton);
+    BOBUIest::mouseClick(button, BobUI::LeftButton);
     QCOMPARE(2, object.monthShown());
 
 }
@@ -197,9 +197,9 @@ void tst_QCalendarWidget::buttonClickCheck()
 void tst_QCalendarWidget::setTextFormat()
 {
     QCalendarWidget calendar;
-    QTextCharFormat format;
+    BOBUIextCharFormat format;
     format.setFontItalic(true);
-    format.setForeground(Qt::green);
+    format.setForeground(BobUI::green);
 
     const QDate date(1984, 10, 20);
     calendar.setDateTextFormat(date, format);
@@ -209,32 +209,32 @@ void tst_QCalendarWidget::setTextFormat()
 void tst_QCalendarWidget::resetTextFormat()
 {
     QCalendarWidget calendar;
-    QTextCharFormat format;
+    BOBUIextCharFormat format;
     format.setFontItalic(true);
-    format.setForeground(Qt::green);
+    format.setForeground(BobUI::green);
 
     const QDate date(1984, 10, 20);
     calendar.setDateTextFormat(date, format);
 
-    calendar.setDateTextFormat(QDate(), QTextCharFormat());
-    QCOMPARE(calendar.dateTextFormat(date), QTextCharFormat());
+    calendar.setDateTextFormat(QDate(), BOBUIextCharFormat());
+    QCOMPARE(calendar.dateTextFormat(date), BOBUIextCharFormat());
 }
 
 void tst_QCalendarWidget::setWeekdayFormat()
 {
     QCalendarWidget calendar;
 
-    QTextCharFormat format;
+    BOBUIextCharFormat format;
     format.setFontItalic(true);
-    format.setForeground(Qt::green);
+    format.setForeground(BobUI::green);
 
-    calendar.setWeekdayTextFormat(Qt::Wednesday, format);
+    calendar.setWeekdayTextFormat(BobUI::Wednesday, format);
 
     // check the format of the a given month
     for (int i = 1; i <= 31; ++i) {
         const QDate date(1984, 10, i);
-        const Qt::DayOfWeek dayOfWeek = static_cast<Qt::DayOfWeek>(date.dayOfWeek());
-        if (dayOfWeek == Qt::Wednesday)
+        const BobUI::DayOfWeek dayOfWeek = static_cast<BobUI::DayOfWeek>(date.dayOfWeek());
+        if (dayOfWeek == BobUI::Wednesday)
             QCOMPARE(calendar.weekdayTextFormat(dayOfWeek), format);
         else
             QVERIFY(calendar.weekdayTextFormat(dayOfWeek) != format);
@@ -246,26 +246,26 @@ Q_DECLARE_METATYPE(ShowFunc)
 
 void tst_QCalendarWidget::showPrevNext_data()
 {
-    QTest::addColumn<ShowFunc>("function");
-    QTest::addColumn<QDate>("dateOrigin");
-    QTest::addColumn<QDate>("expectedDate");
+    BOBUIest::addColumn<ShowFunc>("function");
+    BOBUIest::addColumn<QDate>("dateOrigin");
+    BOBUIest::addColumn<QDate>("expectedDate");
 
-    QTest::newRow("showNextMonth") << &QCalendarWidget::showNextMonth << QDate(1984,7,30) << QDate(1984,8,30);
-    QTest::newRow("showPrevMonth") << &QCalendarWidget::showPreviousMonth << QDate(1984,7,30) << QDate(1984,6,30);
-    QTest::newRow("showNextYear") << &QCalendarWidget::showNextYear << QDate(1984,7,30) << QDate(1985,7,30);
-    QTest::newRow("showPrevYear") << &QCalendarWidget::showPreviousYear << QDate(1984,7,30) << QDate(1983,7,30);
+    BOBUIest::newRow("showNextMonth") << &QCalendarWidget::showNextMonth << QDate(1984,7,30) << QDate(1984,8,30);
+    BOBUIest::newRow("showPrevMonth") << &QCalendarWidget::showPreviousMonth << QDate(1984,7,30) << QDate(1984,6,30);
+    BOBUIest::newRow("showNextYear") << &QCalendarWidget::showNextYear << QDate(1984,7,30) << QDate(1985,7,30);
+    BOBUIest::newRow("showPrevYear") << &QCalendarWidget::showPreviousYear << QDate(1984,7,30) << QDate(1983,7,30);
 
-    QTest::newRow("showNextMonth limit") << &QCalendarWidget::showNextMonth << QDate(2007,12,4) << QDate(2008,1,4);
-    QTest::newRow("showPreviousMonth limit") << &QCalendarWidget::showPreviousMonth << QDate(2006,1,23) << QDate(2005,12,23);
+    BOBUIest::newRow("showNextMonth limit") << &QCalendarWidget::showNextMonth << QDate(2007,12,4) << QDate(2008,1,4);
+    BOBUIest::newRow("showPreviousMonth limit") << &QCalendarWidget::showPreviousMonth << QDate(2006,1,23) << QDate(2005,12,23);
 
-    QTest::newRow("showNextMonth now") << &QCalendarWidget::showNextMonth << QDate() << QDate::currentDate().addMonths(1);
-    QTest::newRow("showNextYear now") << &QCalendarWidget::showNextYear << QDate() << QDate::currentDate().addYears(1);
-    QTest::newRow("showPrevieousMonth now") << &QCalendarWidget::showPreviousMonth << QDate() << QDate::currentDate().addMonths(-1);
-    QTest::newRow("showPreviousYear now") << &QCalendarWidget::showPreviousYear << QDate() << QDate::currentDate().addYears(-1);
+    BOBUIest::newRow("showNextMonth now") << &QCalendarWidget::showNextMonth << QDate() << QDate::currentDate().addMonths(1);
+    BOBUIest::newRow("showNextYear now") << &QCalendarWidget::showNextYear << QDate() << QDate::currentDate().addYears(1);
+    BOBUIest::newRow("showPrevieousMonth now") << &QCalendarWidget::showPreviousMonth << QDate() << QDate::currentDate().addMonths(-1);
+    BOBUIest::newRow("showPreviousYear now") << &QCalendarWidget::showPreviousYear << QDate() << QDate::currentDate().addYears(-1);
 
-    QTest::newRow("showToday now") << &QCalendarWidget::showToday << QDate(2000,1,31) << QDate::currentDate();
-    QTest::newRow("showNextMonth 31") << &QCalendarWidget::showNextMonth << QDate(2000,1,31) << QDate(2000,2,28);
-    QTest::newRow("selectedDate") << &QCalendarWidget::showSelectedDate << QDate(2008,2,29) << QDate(2008,2,29);
+    BOBUIest::newRow("showToday now") << &QCalendarWidget::showToday << QDate(2000,1,31) << QDate::currentDate();
+    BOBUIest::newRow("showNextMonth 31") << &QCalendarWidget::showNextMonth << QDate(2000,1,31) << QDate(2000,2,28);
+    BOBUIest::newRow("selectedDate") << &QCalendarWidget::showSelectedDate << QDate(2008,2,29) << QDate(2008,2,29);
 
 }
 
@@ -275,12 +275,12 @@ void tst_QCalendarWidget::showPrevNext()
     QFETCH(QDate, dateOrigin);
     QFETCH(QDate, expectedDate);
 #ifdef Q_OS_ANDROID
-    QSKIP("Crashes sometimes on Android emulator, figure out why (QTBUG-102258)");
+    QSKIP("Crashes sometimes on Android emulator, figure out why (BOBUIBUG-102258)");
 #endif
 
     QCalendarWidget calWidget;
     calWidget.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&calWidget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&calWidget));
     if(!dateOrigin.isNull()) {
         calWidget.setSelectedDate(dateOrigin);
         calWidget.setCurrentPage(dateOrigin.year(), dateOrigin.month());
@@ -297,9 +297,9 @@ void tst_QCalendarWidget::showPrevNext()
     QCOMPARE(calWidget.yearShown(), expectedDate.year());
     QCOMPARE(calWidget.monthShown(), expectedDate.month());
 
-    // QTBUG-4058
-    QToolButton *button = calWidget.findChild<QToolButton *>("qt_calendar_prevmonth");
-    QTest::mouseClick(button, Qt::LeftButton);
+    // BOBUIBUG-4058
+    BOBUIoolButton *button = calWidget.findChild<BOBUIoolButton *>("bobui_calendar_prevmonth");
+    BOBUIest::mouseClick(button, BobUI::LeftButton);
     expectedDate = expectedDate.addMonths(-1);
     QCOMPARE(calWidget.yearShown(), expectedDate.year());
     QCOMPARE(calWidget.monthShown(), expectedDate.month());
@@ -357,5 +357,5 @@ void tst_QCalendarWidget::contentsMargins()
     QCOMPARE(calendar1.minimumSizeHint() + QSize(30, 35), calendar2.minimumSizeHint());
 }
 
-QTEST_MAIN(tst_QCalendarWidget)
+BOBUIEST_MAIN(tst_QCalendarWidget)
 #include "tst_qcalendarwidget.moc"

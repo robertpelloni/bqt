@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 /*
 
@@ -16,7 +16,7 @@
 
 /*!
     \class QEasingCurve
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 4.6
     \ingroup animation
     \brief The QEasingCurve class provides easing curves for controlling animation.
@@ -304,19 +304,19 @@
 #include "qeasingcurve.h"
 #include <cmath>
 
-#ifndef QT_NO_DEBUG_STREAM
-#include <QtCore/qdebug.h>
-#include <QtCore/qstring.h>
+#ifndef BOBUI_NO_DEBUG_STREAM
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qstring.h>
 #endif
 
-#ifndef QT_NO_DATASTREAM
-#include <QtCore/qdatastream.h>
+#ifndef BOBUI_NO_DATASTREAM
+#include <BobUICore/qdatastream.h>
 #endif
 
-#include <QtCore/qpoint.h>
-#include <QtCore/qlist.h>
+#include <BobUICore/qpoint.h>
+#include <BobUICore/qlist.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static constexpr bool isConfigFunction(QEasingCurve::Type type)
 {
@@ -337,9 +337,9 @@ struct TCBPoint
     friend bool operator==(const TCBPoint &lhs, const TCBPoint &rhs) noexcept
     {
         return qFuzzyCompare(lhs._point, rhs._point)
-            && QtPrivate::fuzzyCompare(lhs._t, rhs._t)
-            && QtPrivate::fuzzyCompare(lhs._c, rhs._c)
-            && QtPrivate::fuzzyCompare(lhs._b, rhs._b);
+            && BobUIPrivate::fuzzyCompare(lhs._t, rhs._t)
+            && BobUIPrivate::fuzzyCompare(lhs._c, rhs._c)
+            && BobUIPrivate::fuzzyCompare(lhs._b, rhs._b);
     }
 };
 Q_DECLARE_TYPEINFO(TCBPoint, Q_PRIMITIVE_TYPE);
@@ -379,7 +379,7 @@ public:
     virtual ~QEasingCurveFunction() {}
     virtual qreal value(qreal t);
     virtual QEasingCurveFunction *clone() const { return new QEasingCurveFunction{*this}; }
-    // ### virtual? (cf. QTBUG-142709)
+    // ### virtual? (cf. BOBUIBUG-142709)
     bool fuzzyCompare(const QEasingCurveFunction &other) const noexcept;
 
     QEasingCurve::Type _t;
@@ -397,7 +397,7 @@ QDataStream &operator<<(QDataStream &stream, QEasingCurveFunction *func)
         stream << func->_p;
         stream << func->_a;
         stream << func->_o;
-        if (stream.version() > QDataStream::Qt_5_12) {
+        if (stream.version() > QDataStream::BobUI_5_12) {
             stream << func->_bezierCurves;
             stream << func->_tcbPoints;
         }
@@ -411,7 +411,7 @@ QDataStream &operator>>(QDataStream &stream, QEasingCurveFunction *func)
         stream >> func->_p;
         stream >> func->_a;
         stream >> func->_o;
-        if (stream.version() > QDataStream::Qt_5_12) {
+        if (stream.version() > QDataStream::BobUI_5_12) {
             stream >> func->_bezierCurves;
             stream >> func->_tcbPoints;
         }
@@ -430,16 +430,16 @@ qreal QEasingCurveFunction::value(qreal t)
 bool QEasingCurveFunction::fuzzyCompare(const QEasingCurveFunction &other) const noexcept
 {
     return _t == other._t
-        && QtPrivate::fuzzyCompare(_p, other._p)
-        && QtPrivate::fuzzyCompare(_a, other._a)
-        && QtPrivate::fuzzyCompare(_o, other._o)
+        && BobUIPrivate::fuzzyCompare(_p, other._p)
+        && BobUIPrivate::fuzzyCompare(_a, other._a)
+        && BobUIPrivate::fuzzyCompare(_o, other._o)
         && _bezierCurves == other._bezierCurves
         && _tcbPoints == other._tcbPoints;
 }
 
-QT_BEGIN_INCLUDE_NAMESPACE
+BOBUI_BEGIN_INCLUDE_NAMESPACE
 #include "../../3rdparty/easing/easing.cpp"
-QT_END_INCLUDE_NAMESPACE
+BOBUI_END_INCLUDE_NAMESPACE
 
 class QEasingCurvePrivate
 {
@@ -1058,7 +1058,7 @@ static QEasingCurve::EasingFunction curveToFunc(QEasingCurve::Type curve)
         return &easeInOutCirc;
     case QEasingCurve::OutInCirc:
         return &easeOutInCirc;
-    // Internal - needed for QTimeLine backward-compatibility:
+    // Internal - needed for BOBUIimeLine backward-compatibility:
     case QEasingCurve::InCurve:
         return &easeInCurve;
     case QEasingCurve::OutCurve:
@@ -1173,9 +1173,9 @@ bool comparesEqual(const QEasingCurve &lhs, const QEasingCurve &rhs)
             res = lhs.d_ptr->config->fuzzyCompare(*rhs.d_ptr->config);
         } else if (lhs.d_ptr->config || rhs.d_ptr->config) {
             // one one has a config object, which could contain default values
-            res = QtPrivate::fuzzyCompare(lhs.amplitude(), rhs.amplitude())
-               && QtPrivate::fuzzyCompare(lhs.period(), rhs.period())
-               && QtPrivate::fuzzyCompare(lhs.overshoot(), rhs.overshoot());
+            res = BobUIPrivate::fuzzyCompare(lhs.amplitude(), rhs.amplitude())
+               && BobUIPrivate::fuzzyCompare(lhs.period(), rhs.period())
+               && BobUIPrivate::fuzzyCompare(lhs.overshoot(), rhs.overshoot());
         }
     }
     return res;
@@ -1475,7 +1475,7 @@ qreal QEasingCurve::valueForProgress(qreal progress) const
         return progress;
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug debug, const QEasingCurve &item)
 {
     QDebugStateSaver saver(debug);
@@ -1488,9 +1488,9 @@ QDebug operator<<(QDebug debug, const QEasingCurve &item)
     }
     return debug;
 }
-#endif // QT_NO_DEBUG_STREAM
+#endif // BOBUI_NO_DEBUG_STREAM
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 /*!
     \fn QDataStream &operator<<(QDataStream &stream, const QEasingCurve &easing)
     \relates QEasingCurve
@@ -1501,7 +1501,7 @@ QDebug operator<<(QDebug debug, const QEasingCurve &item)
     \warning Writing easing curves of QEasingCurve::Custom type
     (that is, curves with a custom easing function) is not supported.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator<<(QDataStream &stream, const QEasingCurve &easing)
@@ -1513,7 +1513,7 @@ QDataStream &operator<<(QDataStream &stream, const QEasingCurve &easing)
         // Deliberately choose a curve that uses a config and not a
         // easing function. If this curve is deserialized from old
         // code, it will ignore the function pointer (cf.
-        // QTBUG-132575).
+        // BOBUIBUG-132575).
         static_assert(isConfigFunction(QEasingCurve::InElastic));
         stream << QEasingCurve(QEasingCurve::InElastic);
         return stream;
@@ -1538,7 +1538,7 @@ QDataStream &operator<<(QDataStream &stream, const QEasingCurve &easing)
     Reads an easing curve from the given \a stream into the given \a
     easing curve and returns a reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator>>(QDataStream &stream, QEasingCurve &easing)
@@ -1569,8 +1569,8 @@ QDataStream &operator>>(QDataStream &stream, QEasingCurve &easing)
     }
     return stream;
 }
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qeasingcurve.cpp"

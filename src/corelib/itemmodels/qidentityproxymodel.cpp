@@ -1,13 +1,13 @@
 // Copyright (C) 2011 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Stephen Kelly <stephen.kelly@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qidentityproxymodel.h"
 #include "qidentityproxymodel_p.h"
 #include "qitemselectionmodel.h"
 #include <private/qabstractproxymodel_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QIdentityProxyModelPrivate::~QIdentityProxyModelPrivate()
     = default;
@@ -15,7 +15,7 @@ QIdentityProxyModelPrivate::~QIdentityProxyModelPrivate()
 /*!
     \since 4.8
     \class QIdentityProxyModel
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QIdentityProxyModel class proxies its source model unmodified.
 
     \ingroup model-view
@@ -74,7 +74,7 @@ int QIdentityProxyModel::columnCount(const QModelIndex& parent) const
 /*!
     \reimp
  */
-bool QIdentityProxyModel::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent)
+bool QIdentityProxyModel::dropMimeData(const QMimeData* data, BobUI::DropAction action, int row, int column, const QModelIndex& parent)
 {
     Q_ASSERT(parent.isValid() ? parent.model() == this : true);
     Q_D(QIdentityProxyModel);
@@ -196,7 +196,7 @@ QModelIndex QIdentityProxyModel::mapToSource(const QModelIndex& proxyIndex) cons
 /*!
     \reimp
  */
-QModelIndexList QIdentityProxyModel::match(const QModelIndex& start, int role, const QVariant& value, int hits, Qt::MatchFlags flags) const
+QModelIndexList QIdentityProxyModel::match(const QModelIndex& start, int role, const QVariant& value, int hits, BobUI::MatchFlags flags) const
 {
     return QAbstractProxyModel::match(start, role, value, hits, flags);
 }
@@ -269,7 +269,7 @@ int QIdentityProxyModel::rowCount(const QModelIndex& parent) const
 /*!
     \reimp
  */
-QVariant QIdentityProxyModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant QIdentityProxyModel::headerData(int section, BobUI::Orientation orientation, int role) const
 {
     Q_D(const QIdentityProxyModel);
     return d->model->headerData(section, orientation, role);
@@ -479,7 +479,7 @@ void QIdentityProxyModelPrivate::sourceDataChanged(const QModelIndex &topLeft,
     emit q->dataChanged(q->mapFromSource(topLeft), q->mapFromSource(bottomRight), roles);
 }
 
-void QIdentityProxyModelPrivate::sourceHeaderDataChanged(Qt::Orientation orientation, int first,
+void QIdentityProxyModelPrivate::sourceHeaderDataChanged(BobUI::Orientation orientation, int first,
                                                          int last)
 {
     Q_Q(QIdentityProxyModel);
@@ -615,6 +615,6 @@ void QIdentityProxyModelPrivate::sourceRowsRemoved(const QModelIndex &parent, in
     q->endRemoveRows();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qidentityproxymodel.cpp"

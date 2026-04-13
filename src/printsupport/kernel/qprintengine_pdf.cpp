@@ -1,27 +1,27 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qprintengine_pdf_p.h"
 
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
 
 #include <qiodevice.h>
 #include <qfile.h>
 #include <qdebug.h>
 #include <qbuffer.h>
 #include "qprinterinfo.h"
-#include <QtGui/qpagelayout.h>
+#include <BobUIGui/qpagelayout.h>
 
 #ifdef Q_OS_UNIX
-#include "private/qcore_unix_p.h" // overrides QT_OPEN
+#include "private/qcore_unix_p.h" // overrides BOBUI_OPEN
 #endif
 
 #ifdef Q_OS_WIN
 #include <io.h> // _close.
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QPdfPrintEngine::QPdfPrintEngine(QPrinter::PrinterMode m, QPdfEngine::PdfVersion version)
     : QPdfEngine(*new QPdfPrintEnginePrivate(m))
@@ -369,7 +369,7 @@ QPdfPrintEnginePrivate::QPdfPrintEnginePrivate(QPrinter::PrinterMode m)
     if (m == QPrinter::HighResolution)
         resolution = 1200;
     else if (m == QPrinter::ScreenResolution)
-        resolution = qt_defaultDpi();
+        resolution = bobui_defaultDpi();
 }
 
 QPdfPrintEnginePrivate::~QPdfPrintEnginePrivate()
@@ -392,6 +392,6 @@ QPrinter::ColorMode QPdfPrintEnginePrivate::printerColorMode() const
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_PRINTER
+#endif // BOBUI_NO_PRINTER

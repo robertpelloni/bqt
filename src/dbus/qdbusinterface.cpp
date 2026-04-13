@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qdbusinterface.h"
 #include "qdbusinterface_p.h"
 
 #include "qdbus_symbols_p.h"
-#include <QtCore/qpointer.h>
-#include <QtCore/qstringlist.h>
+#include <BobUICore/qpointer.h>
+#include <BobUICore/qstringlist.h>
 
 #include "qdbusmetatype_p.h"
 #include "qdbusconnection_p.h"
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
 BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static void copyArgument(void *to, int id, const QVariant &arg)
 {
@@ -163,7 +163,7 @@ QDBusInterfacePrivate::~QDBusInterfacePrivate()
 
     \snippet code/src_qdbus_qdbusinterface.cpp 0
 
-    \sa {Qt D-Bus XML compiler (qdbusxml2cpp)}
+    \sa {BobUI D-Bus XML compiler (qdbusxml2cpp)}
 */
 
 /*!
@@ -208,25 +208,25 @@ const QMetaObject *QDBusInterface::metaObject() const
 
 /*!
     \internal
-    Override QObject::qt_metacast to catch the interface name too.
+    Override QObject::bobui_metacast to catch the interface name too.
 */
-void *QDBusInterface::qt_metacast(const char *_clname)
+void *QDBusInterface::bobui_metacast(const char *_clname)
 {
     if (!_clname) return nullptr;
     if (!strcmp(_clname, "QDBusInterface"))
         return static_cast<void*>(const_cast<QDBusInterface*>(this));
     if (d_func()->interface.toLatin1() == _clname)
         return static_cast<void*>(const_cast<QDBusInterface*>(this));
-    return QDBusAbstractInterface::qt_metacast(_clname);
+    return QDBusAbstractInterface::bobui_metacast(_clname);
 }
 
 /*!
     \internal
     Dispatch the call through the private.
 */
-int QDBusInterface::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+int QDBusInterface::bobui_metacall(QMetaObject::Call _c, int _id, void **_a)
 {
-    _id = QDBusAbstractInterface::qt_metacall(_c, _id, _a);
+    _id = QDBusAbstractInterface::bobui_metacall(_c, _id, _a);
     if (_id < 0 || !d_func()->isValid || !d_func()->metaObject)
         return _id;
     return d_func()->metacall(_c, _id, _a);
@@ -241,11 +241,11 @@ int QDBusInterfacePrivate::metacall(QMetaObject::Call c, int id, void **argv)
         QMetaMethod mm = metaObject->method(id + offset);
 
         if (mm.methodType() == QMetaMethod::Signal) {
-            // signal relay from D-Bus world to Qt world
+            // signal relay from D-Bus world to BobUI world
             QMetaObject::activate(q, metaObject, id, argv);
 
         } else if (mm.methodType() == QMetaMethod::Slot || mm.methodType() == QMetaMethod::Method) {
-            // method call relay from Qt world to D-Bus world
+            // method call relay from BobUI world to D-Bus world
             // get D-Bus equivalent signature
             QString methodName = QString::fromLatin1(mm.name());
             const int *inputTypes = metaObject->inputTypesForMethod(id);
@@ -293,4 +293,4 @@ int QDBusInterfacePrivate::metacall(QMetaObject::Call c, int id, void **argv)
 
 BOBUI_END_NAMESPACE
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS

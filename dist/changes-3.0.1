@@ -1,5 +1,5 @@
-Qt 3.0.1 is a bugfix release. It maintains both forward and backward
-compatibility (source and binary) with Qt 3.0.0
+BobUI 3.0.1 is a bugfix release. It maintains both forward and backward
+compatibility (source and binary) with BobUI 3.0.0
 
 
 ****************************************************************************
@@ -7,7 +7,7 @@ compatibility (source and binary) with Qt 3.0.0
 ****************************************************************************
 
 - Style Engine fixes
-	Qt 3.0 introduced a new and more flexibile style engine. This
+	BobUI 3.0 introduced a new and more flexibile style engine. This
 	release should fix most of the small visual flaws that the new
 	styles introduced. It also greatly improves appearance in
 	right-to-left mode.
@@ -16,7 +16,7 @@ compatibility (source and binary) with Qt 3.0.0
 	This is the first release to fully support Windows XP,
 	including the new themable GUI styles.
 	The Windows XP style can only be built as a plugin, which requires
-	Qt to be configured as a shared library. To build the plugin
+	BobUI to be configured as a shared library. To build the plugin
 	you must install a Microsoft Platform SDK for October 2001
 	or later. Your INCLUDE and LIB environment variables must
 	point to the respective directories in the SDK installation.
@@ -37,7 +37,7 @@ compatibility (source and binary) with Qt 3.0.0
 	Support for different TrueColor depths on each head (screen).
 	Drag'n'drop support across multiple screens. Tooltips always
 	stay on the correct screen. Improved OpenGL support on
-	multiple screens. Qt 3.1 will support different color depths
+	multiple screens. BobUI 3.1 will support different color depths
 	on every screen (e.g. one TrueColor screen, one 8-bit
 	PseudoColor and one 8-bit GreyScale).
 
@@ -110,7 +110,7 @@ compatibility (source and binary) with Qt 3.0.0
 
 - QCommonStyle
 	Respect QApplication::globalStrut() in scroll bars. Support
-	reverse layout in QTitleBar.
+	reverse layout in BOBUIitleBar.
 
 - QCursor
 	Safer cleanup of cursor shapes (avoids possible free'd memory
@@ -267,7 +267,7 @@ compatibility (source and binary) with Qt 3.0.0
 	when reinitialising a painter.
 
 - QPicture
-	Fixed the loading of binaries from older Qt versions.
+	Fixed the loading of binaries from older BobUI versions.
 
 - QPixmap
 	grabWidget(): when the widget sets WRepaintNoErase it might
@@ -297,13 +297,13 @@ compatibility (source and binary) with Qt 3.0.0
 
 - QPSPrinter
 	Make sure the fontPath is read correctly by the postscript
-	driver, and the qtconfig program. Small memory leaks closed.
+	driver, and the bobuiconfig program. Small memory leaks closed.
 	Better support for Asian printing. Limit line length of
 	Postscript DSC comments to 255 chars (as per the postscript
 	specification).
 
 -  QRichText
-	Fixed handling of &nbsp. Support both <qt title="..."> and
+	Fixed handling of &nbsp. Support both <bobui title="..."> and
 	<title>. Avoid painting \n at the end of lines (these
 	sometimes appeared as an empty unicode box). Fixed find() in
 	"whole words only" mode. Fixed unicode auto alignment. Made
@@ -375,11 +375,11 @@ compatibility (source and binary) with Qt 3.0.0
 	better scaling results. Supports QPicture's coordinate
 	transformations.
 
-- QTabBar
+- BOBUIabBar
 	Fixed the focus rectangles and spacing with icons and label
 	texts.
 
-- QTable
+- BOBUIable
 	Improved layout in right-to-left mode. Fixed adjustRow() when
 	using header items with icon sets. Do not let hidden
 	columns/rows re-appear when adjusting. Update header correctly
@@ -388,23 +388,23 @@ compatibility (source and binary) with Qt 3.0.0
 	contents of a combobox or checkbox table item while it is the
 	current cell.
 
-- QTableItem
+- BOBUIableItem
 	Make sure an item cannot span over a table's maximum number of
 	rows and columns.
 
-- QTabWidget
+- BOBUIabWidget
 	Constrain the sizehint to avoid having oversized dialogs.
 
-- QTextCode
+- BOBUIextCode
 	Rename iso8859-6-I to to 8859-6. The old name is still
 	supported for backwards compatibility.
 	- Win32: implemented locale().
 	- Mac: implemented locale().
 
-- QTextDrag (Win32 only)
+- BOBUIextDrag (Win32 only)
 	Performance improvements in encodedData().
 
-- QTextEdit
+- BOBUIextEdit
 	Fixed HTML output. New property tabStopWidth. Fixed append()
 	and made it smarter: it only scrolls to the end if the view
 	was scrolled to the end before. Proper reformatting when
@@ -414,14 +414,14 @@ compatibility (source and binary) with Qt 3.0.0
 	- X11 only: middle mouse selection pasting sets the cursor
 	  position.
 
-- QTextStream
+- BOBUIextStream
 	Faster string output in latin1 mode.
 
-- QThread
+- BOBUIhread
 	- Unix only: initialize threads in non-GUI mode as well.
-	- Win32 only: fixed the initial value of QThread::running().
+	- Win32 only: fixed the initial value of BOBUIhread::running().
 
-- QToolButton
+- BOBUIoolButton
 	Fixed unwanted occurences of delayed popup menus.
 
 - QUrlOperator
@@ -488,7 +488,7 @@ NO CHANGES
 *			      Other					   *
 ****************************************************************************
 
-- qtconfig (X11 only)
+- bobuiconfig (X11 only)
 	It is now possible to turn Xft on and off, as well as turning
 	antialiasing-by-default on and off. This is necessary since
 	Xft doesn't work on dual head.
@@ -506,7 +506,7 @@ NO CHANGES
 	includes in generated files.
 
 - lupdate
-	Allow translation of menubar items generated with Qt Designer
+	Allow translation of menubar items generated with BobUI Designer
 	(e.g. "&File", "&Edit", etc.).
 
 - libMNG
@@ -516,25 +516,25 @@ NO CHANGES
 	Updated to version 1.0.12.
 
 - Translations
-	Added Hebrew translations for Qt and the demo application.
+	Added Hebrew translations for BobUI and the demo application.
 
-- Qt Designer
+- BobUI Designer
 	Support 'Ignored' size policy. Support properties of type
 	'double'. Fixed saving of custom widgets in toolbars. Various
 	smaller usability improvements.
 
-- Qt Assistant
-	When users starts Qt Assistant themselves, always make a new
+- BobUI Assistant
+	When users starts BobUI Assistant themselves, always make a new
 	instance. Only use the unique-instance feature when invoking
-	from Qt Designer.
+	from BobUI Designer.
 
 - QMsDev
-	Invoke Qt Linguist when opening a .ts file in Visual Studio.
+	Invoke BobUI Linguist when opening a .ts file in Visual Studio.
 
 
 
 ****************************************************************************
-*		    Qt/Embedded-specific changes		           *
+*		    BobUI/Embedded-specific changes		           *
 ****************************************************************************
 
 NO CHANGES

@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPOINTINGDEVICE_P_H
 #define QPOINTINGDEVICE_P_H
@@ -8,23 +8,23 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/qloggingcategory.h>
-#include <QtGui/private/qevent_p.h>
-#include <QtGui/qpointingdevice.h>
-#include <QtGui/private/qtguiglobal_p.h>
-#include <QtGui/private/qinputdevice_p.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUIGui/private/qevent_p.h>
+#include <BobUIGui/qpointingdevice.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
+#include <BobUIGui/private/qinputdevice_p.h>
 
-#include <QtCore/qpointer.h>
-#include <QtCore/private/qflatmap_p.h>
+#include <BobUICore/qpointer.h>
+#include <BobUICore/private/qflatmap_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcPointerGrab);
 
@@ -47,7 +47,7 @@ public:
     }
     ~QPointingDevicePrivate() override;
 
-    void sendTouchCancelEvent(QTouchEvent *cancelEvent);
+    void sendTouchCancelEvent(BOBUIouchEvent *cancelEvent);
 
     /*! \internal
         This struct (stored in activePoints) holds persistent state between event deliveries.
@@ -107,6 +107,6 @@ public:
     static const QPointingDevice *pointingDeviceById(qint64 systemId);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPOINTINGDEVICE_P_H

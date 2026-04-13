@@ -1,24 +1,24 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWINDOWSWINDOW_H
 #define QWINDOWSWINDOW_H
 
-#include <QtCore/qt_windows.h>
-#include <QtCore/qpointer.h>
+#include <BobUICore/bobui_windows.h>
+#include <BobUICore/qpointer.h>
 #include "qwindowsapplication.h"
 #include "qwindowscursor.h"
 
 #include <qpa/qplatformwindow.h>
 #include <qpa/qplatformwindow_p.h>
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
 #include "qwindowsvulkaninstance.h"
 #endif
 
 #include <optional>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QWindowsOleDropTarget;
 class QWindowsMenuBar;
@@ -59,7 +59,7 @@ struct QWindowCreationContext
 
     const QWindow *window;
     // The screen to use to scale size constraints, etc. Might differ from the
-    // screen of the window after QPlatformWindow::initialGeometry() (QTBUG-77307).
+    // screen of the window after QPlatformWindow::initialGeometry() (BOBUIBUG-77307).
     const QScreen *screen;
     QRect requestedGeometryIn; // QWindow scaled
     QRect requestedGeometry; // after QPlatformWindow::initialGeometry()
@@ -76,7 +76,7 @@ struct QWindowCreationContext
 
 struct QWindowsWindowData
 {
-    Qt::WindowFlags flags;
+    BobUI::WindowFlags flags;
     QRect geometry;
     QRect restoreGeometry;
     QMargins fullFrameMargins; // Do not use directly for windows, see FrameDirty.
@@ -239,8 +239,8 @@ public:
     QPoint mapToGlobal(const QPoint &pos) const override;
     QPoint mapFromGlobal(const QPoint &pos) const override;
 
-    void setWindowFlags(Qt::WindowFlags flags) override;
-    void setWindowState(Qt::WindowStates state) override;
+    void setWindowFlags(BobUI::WindowFlags flags) override;
+    void setWindowState(BobUI::WindowStates state) override;
 
     void setParent(const QPlatformWindow *window) override;
 
@@ -268,7 +268,7 @@ public:
     bool setMouseGrabEnabled(bool grab) override;
     inline bool hasMouseCapture() const { return GetCapture() == m_data.hwnd; }
 
-    bool startSystemResize(Qt::Edges edges) override;
+    bool startSystemResize(BobUI::Edges edges) override;
     bool startSystemMove() override;
 
     void setFrameStrutEventsEnabled(bool enabled) override;
@@ -308,8 +308,8 @@ public:
     static inline void *userDataOf(HWND hwnd);
     static inline void setUserDataOf(HWND hwnd, void *ud);
 
-    static bool hasNoNativeFrame(HWND hwnd, Qt::WindowFlags flags);
-    static bool setWindowLayered(HWND hwnd, Qt::WindowFlags flags, bool hasAlpha, qreal opacity);
+    static bool hasNoNativeFrame(HWND hwnd, BobUI::WindowFlags flags);
+    static bool setWindowLayered(HWND hwnd, BobUI::WindowFlags flags, bool hasAlpha, qreal opacity);
     bool isLayered() const;
 
     HDC getDC();
@@ -319,7 +319,7 @@ public:
     bool handleNonClientActivate(LRESULT *result) const;
     void updateCustomTitlebar();
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     CursorHandlePtr cursor() const { return m_cursor; }
 #endif
     void setCursor(const CursorHandlePtr &c);
@@ -358,15 +358,15 @@ public:
     int savedDpi() const { return m_savedDpi; }
     qreal dpiRelativeScale(const UINT dpi) const;
 
-    bool isClientAreaExpanded() const { return m_data.flags.testFlag(Qt::ExpandedClientAreaHint); }
+    bool isClientAreaExpanded() const { return m_data.flags.testFlag(BobUI::ExpandedClientAreaHint); }
 
     void requestUpdate() override;
 
 private:
     inline void show_sys() const;
-    inline QWindowsWindowData setWindowFlags_sys(Qt::WindowFlags wt, unsigned flags = 0) const;
+    inline QWindowsWindowData setWindowFlags_sys(BobUI::WindowFlags wt, unsigned flags = 0) const;
     inline bool isFullScreen_sys() const;
-    inline void setWindowState_sys(Qt::WindowStates newState);
+    inline void setWindowState_sys(BobUI::WindowStates newState);
     inline void setParent_sys(const QPlatformWindow *parent);
     inline void updateTransientParent() const;
     void destroyWindow();
@@ -374,7 +374,7 @@ private:
     void setDropSiteEnabled(bool enabled);
     void updateDropSite(bool topLevel);
     void handleGeometryChange();
-    void handleWindowStateChange(Qt::WindowStates state);
+    void handleWindowStateChange(BobUI::WindowStates state);
     inline void destroyIcon();
     void fireExpose(const QRegion &region, bool force=false);
     void fireFullExpose(bool force=false);
@@ -385,10 +385,10 @@ private:
     QPointer<QWindowsMenuBar> m_menuBar;
     mutable unsigned m_flags = WithinCreate;
     HDC m_hdc = nullptr;
-    Qt::WindowStates m_windowState = Qt::WindowNoState;
+    BobUI::WindowStates m_windowState = BobUI::WindowNoState;
     QString m_windowTitle;
     qreal m_opacity = 1;
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     CursorHandlePtr m_cursor;
 #endif
     QWindowsOleDropTarget *m_dropTarget = nullptr;
@@ -401,7 +401,7 @@ private:
 
     static bool m_screenForGLInitialized;
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     // note: intentionally not using void * in order to avoid breaking x86
     VkSurfaceKHR m_vkSurface = VK_NULL_HANDLE;
 #endif
@@ -412,7 +412,7 @@ private:
     QAtomicInt m_vsyncUpdatePending;
 };
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug d, const RECT &r);
 QDebug operator<<(QDebug d, const POINT &);
 QDebug operator<<(QDebug d, const MINMAXINFO &i);
@@ -420,7 +420,7 @@ QDebug operator<<(QDebug d, const NCCALCSIZE_PARAMS &p);
 QDebug operator<<(QDebug d, const WINDOWPLACEMENT &);
 QDebug operator<<(QDebug d, const WINDOWPOS &);
 QDebug operator<<(QDebug d, const GUID &guid);
-#endif // !QT_NO_DEBUG_STREAM
+#endif // !BOBUI_NO_DEBUG_STREAM
 
 static inline void clientToScreen(HWND hwnd, POINT *wP)
 {
@@ -501,7 +501,7 @@ inline bool QWindowsWindow::isLayered() const
     return GetWindowLongPtr(m_data.hwnd, GWL_EXSTYLE) & WS_EX_LAYERED;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 Q_DECLARE_METATYPE(QMargins)
 

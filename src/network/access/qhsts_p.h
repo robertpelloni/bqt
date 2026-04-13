@@ -1,6 +1,6 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QHSTS_P_H
 #define QHSTS_P_H
@@ -9,26 +9,26 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of the Network Access API.  This header file may change from
 // version to version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtNetwork/private/qtnetworkglobal_p.h>
+#include <BobUINetwork/private/bobuinetworkglobal_p.h>
 
-#include <QtNetwork/qhstspolicy.h>
+#include <BobUINetwork/qhstspolicy.h>
 
-#include <QtCore/qbytearray.h>
-#include <QtCore/qdatetime.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qurl.h>
-#include <QtCore/qcontainerfwd.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qdatetime.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qurl.h>
+#include <BobUICore/qcontainerfwd.h>
 
 #include <map>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QHttpHeaders;
 
@@ -46,9 +46,9 @@ public:
 
     QList<QHstsPolicy> policies() const;
 
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
     void setStore(class QHstsStore *store);
-#endif // QT_CONFIG(settings)
+#endif // BOBUI_CONFIG(settings)
 
 private:
 
@@ -82,9 +82,9 @@ private:
     };
 
     mutable std::map<HostName, QHstsPolicy> knownHosts;
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
     QHstsStore *hstsStore = nullptr;
-#endif // QT_CONFIG(settings)
+#endif // BOBUI_CONFIG(settings)
 };
 
 class Q_AUTOTEST_EXPORT QHstsHeaderParser
@@ -113,6 +113,6 @@ private:
     bool subDomainsFound = false;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

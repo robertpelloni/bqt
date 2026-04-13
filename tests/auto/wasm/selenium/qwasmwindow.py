@@ -1,5 +1,5 @@
-# Copyright (C) 2022 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+# Copyright (C) 2022 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 from selenium.webdriver import Chrome
 from selenium.webdriver.chrome.service import Service as ChromeService
@@ -863,16 +863,16 @@ class Screen:
         return [
             Window(self, element=element) for element in [
                 *filter(lambda elem: (elem.get_attribute('id') if elem.get_attribute('id') is not None else '')
-                        .startswith('qt-window-'), self.hit_test_point(x, y))]]
+                        .startswith('bobui-window-'), self.hit_test_point(x, y))]]
 
     def query_windows(self):
-        shadow_container = self.element.find_element(By.CSS_SELECTOR, f'#qt-shadow-container')
+        shadow_container = self.element.find_element(By.CSS_SELECTOR, f'#bobui-shadow-container')
         return [
             Window(self, element=element) for element in shadow_container.shadow_root.find_elements(
-                    By.CSS_SELECTOR, f'div#{self.name} > div.qt-decorated-window')]
+                    By.CSS_SELECTOR, f'div#{self.name} > div.bobui-decorated-window')]
 
     def find_element(self, method, query):
-        shadow_container = self.element.find_element(By.CSS_SELECTOR, f'#qt-shadow-container')
+        shadow_container = self.element.find_element(By.CSS_SELECTOR, f'#bobui-shadow-container')
         return shadow_container.shadow_root.find_element(method, query)
 
     def click(self, element):
@@ -930,7 +930,7 @@ class Widget:
 
             self._window_id = self.__window_information()['id']
             self.element = self.screen.find_element(
-                    By.CSS_SELECTOR, f'#qt-window-{self._window_id}')
+                    By.CSS_SELECTOR, f'#bobui-window-{self._window_id}')
 
     def setNoFocusShow(self):
         self.driver.execute_script(
@@ -1019,7 +1019,7 @@ class Window:
                 self.screen = parent
         self._window_id = self.__window_information()['id']
         self.element = self.screen.find_element(
-                By.CSS_SELECTOR, f'#qt-window-{self._window_id}')
+                By.CSS_SELECTOR, f'#bobui-window-{self._window_id}')
         if visible:
             self.set_visible(True)
 
@@ -1111,7 +1111,7 @@ class Window:
     def inactive(self):
         window_chain = [
             *self.element.find_elements(By.XPATH, "ancestor::div"), self.element]
-        return next(filter(lambda elem: 'qt-window' in elem.get_attribute('class').split(' ') and
+        return next(filter(lambda elem: 'bobui-window' in elem.get_attribute('class').split(' ') and
                            'inactive' in elem.get_attribute(
                                'class').split(' '),
                            window_chain

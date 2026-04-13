@@ -1,15 +1,15 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "eventfilter.h"
-#include <QtGui/QMouseEvent>
-#include <QtCore/QDebug>
-#include <QtCore/QTextStream>
+#include <BobUIGui/QMouseEvent>
+#include <BobUICore/QDebug>
+#include <BobUICore/BOBUIextStream>
 
-#if defined(QT_WIDGETS_LIB)
+#if defined(BOBUI_WIDGETS_LIB)
 #  define HAVE_APPLICATION
 #endif
-#if defined(QT_GUI_LIB)
+#if defined(BOBUI_GUI_LIB)
 #  define HAVE_GUI_APPLICATION
 #endif
 
@@ -18,11 +18,11 @@
 #  include <QWidget>
 #endif
 #ifdef HAVE_GUI_APPLICATION
-#  include <QtGui/QGuiApplication>
-#  include <QtGui/QWindow>
+#  include <BobUIGui/QGuiApplication>
+#  include <BobUIGui/QWindow>
 #endif
 
-namespace QtDiag {
+namespace BobUIDiag {
 
 EventFilter::EventFilter(EventCategories eventCategories, QObject *p)
     : QObject(p)
@@ -94,7 +94,7 @@ void EventFilter::init(EventCategories eventCategories)
         m_eventTypes << QEvent::InputMethod;
         m_eventTypes << QEvent::InputMethodQuery;
     }
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     if (eventCategories & GestureEvents) {
         m_eventTypes << QEvent::Gesture << QEvent::GestureOverride
             << QEvent::NativeGesture;
@@ -197,4 +197,4 @@ bool EventFilter::eventFilter(QObject *o, QEvent *e)
     return false;
 }
 
-} // namespace QtDiag
+} // namespace BobUIDiag

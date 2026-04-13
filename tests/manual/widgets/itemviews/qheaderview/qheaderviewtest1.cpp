@@ -1,7 +1,7 @@
 // Copyright (C) 2012 Thorbjørn Lund Martsum - tmartsum[at]gmail.com
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtWidgets/QtWidgets>
+#include <BobUIWidgets/BobUIWidgets>
 
 struct ManualTask {
     const char *title;
@@ -11,11 +11,11 @@ struct ManualTask {
 };
 
 ManualTask tasks[] = {
-{ QT_TR_NOOP("0. Default"),
+{ BOBUI_TR_NOOP("0. Default"),
         "Please provide instructions",
         true, QAbstractItemView::SingleSelection
 },
-{ QT_TR_NOOP("1. Autoscroll"),
+{ BOBUI_TR_NOOP("1. Autoscroll"),
         "<ol>"
         "<li>Press and hold on section 9 of vertical header.<br/>"
           "<em>(all cells in the row will be selected)</em>"
@@ -107,9 +107,9 @@ private:
         return grp;
     }
 
-    QTableView *setupTableView()
+    BOBUIableView *setupTableView()
     {
-        tableView = new QTableView;
+        tableView = new BOBUIableView;
         const int rowCount = 200;
         m.setRowCount(rowCount);
         m.setColumnCount(250);
@@ -141,7 +141,7 @@ private Q_SLOTS:
 
 public:
     QCheckBox *ckMovable;
-    QTableView *tableView;
+    BOBUIableView *tableView;
     QStandardItemModel m;
     QComboBox *cbSelectionMode;
     QLabel *m_taskInstructions;
@@ -151,14 +151,14 @@ class SomeHandler : public QObject
 {
     Q_OBJECT
     QHeaderView *m_hv;
-    QTableView *m_tv;
+    BOBUIableView *m_tv;
 public:
-    SomeHandler(QHeaderView *hv, QTableView *tv);
+    SomeHandler(QHeaderView *hv, BOBUIableView *tv);
 public slots:
     void slotSectionResized(int, int, int);
 };
 
-SomeHandler::SomeHandler(QHeaderView *hv, QTableView *tv)
+SomeHandler::SomeHandler(QHeaderView *hv, BOBUIableView *tv)
 {
     m_hv = hv;
     m_tv = tv;

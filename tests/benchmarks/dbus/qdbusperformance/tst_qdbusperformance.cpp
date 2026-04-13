@@ -1,8 +1,8 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QTestEventLoop>
+#include <BOBUIest>
+#include <BOBUIestEventLoop>
 #include <QProcess>
 #include <QDBusServiceWatcher>
 #include <QDBusConnectionInterface>
@@ -11,7 +11,7 @@
 
 #include "./serverobject.h"
 
-static const char serviceName[] = "org.qtproject.autotests.performance";
+static const char serviceName[] = "org.bobuiproject.autotests.performance";
 static const int runTime = 500;
 
 class tst_QDBusPerformance: public QObject
@@ -52,7 +52,7 @@ void tst_QDBusPerformance::initTestCase()
     QDBusServiceWatcher watcher(serviceName, con,
                                 QDBusServiceWatcher::WatchForRegistration);
     connect(&watcher, SIGNAL(serviceRegistered(QString)),
-            &QTestEventLoop::instance(), SLOT(exitLoop()));
+            &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
 
 #ifdef Q_OS_WIN
 #  define EXE ".exe"
@@ -63,23 +63,23 @@ void tst_QDBusPerformance::initTestCase()
     QVERIFY2(proc.waitForStarted(), qPrintable(proc.errorString()));
     QVERIFY(proc.waitForReadyRead());
 
-    QTestEventLoop::instance().enterLoop(5);
+    BOBUIestEventLoop::instance().enterLoop(5);
     QVERIFY(con.interface()->isServiceRegistered(serviceName));
 
-    remote = new QDBusInterface(serviceName, "/", "org.qtproject.autotests.Performance", con, this);
+    remote = new QDBusInterface(serviceName, "/", "org.bobuiproject.autotests.Performance", con, this);
     QVERIFY(remote->isValid());
 
     new ServerObject("/", con, this);
-    local = new QDBusInterface(con.baseService(), "/", "org.qtproject.autotests.Performance", con, this);
+    local = new QDBusInterface(con.baseService(), "/", "org.bobuiproject.autotests.Performance", con, this);
     QVERIFY(local->isValid());
 }
 
 void tst_QDBusPerformance::initTestCase_data()
 {
-    QTest::addColumn<bool>("loopback");
+    BOBUIest::addColumn<bool>("loopback");
 
-    QTest::newRow("normal") << false;
-    QTest::newRow("loopback") << true;
+    BOBUIest::newRow("normal") << false;
+    BOBUIest::newRow("loopback") << true;
 }
 
 void tst_QDBusPerformance::init()
@@ -131,18 +131,18 @@ bool tst_QDBusPerformance::executeTest(const char *funcname, int size, const QVa
 
 void tst_QDBusPerformance::oneWay_data()
 {
-    QTest::addColumn<QVariant>("data");
-    QTest::addColumn<int>("size");
+    BOBUIest::addColumn<QVariant>("data");
+    BOBUIest::addColumn<int>("size");
 
     QByteArray ba(256, 'a');
     while (ba.size() < 8193) {
-        QTest::newRow(QString("%1-byteArray").arg(ba.size()).toLatin1()) << QVariant::fromValue(ba) << ba.size();
+        BOBUIest::newRow(QString("%1-byteArray").arg(ba.size()).toLatin1()) << QVariant::fromValue(ba) << ba.size();
         ba += ba;
     }
 
     QString s(256, QLatin1Char('a'));
     while (s.size() < 8193) {
-        QTest::newRow(QString("%1-string").arg(s.size()).toLatin1()) << QVariant::fromValue(s) << s.size();
+        BOBUIest::newRow(QString("%1-string").arg(s.size()).toLatin1()) << QVariant::fromValue(s) << s.size();
         s += s;
     }
 }
@@ -194,5 +194,5 @@ void tst_QDBusPerformance::roundTripVariant()
     QVERIFY(executeTest("echo", size, QVariant::fromValue(QDBusVariant(data))));
 }
 
-QTEST_MAIN(tst_QDBusPerformance)
+BOBUIEST_MAIN(tst_QDBusPerformance)
 #include "tst_qdbusperformance.moc"

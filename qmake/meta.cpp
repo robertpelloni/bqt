@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "meta.h"
 #include "project.h"
 #include "option.h"
 #include <qdir.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QHash<QString, ProValueMap> QMakeMetaInfo::cache_vars;
 
@@ -39,4 +39,4 @@ QMakeMetaInfo::checkLib(const QString &lib)
     return ret;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

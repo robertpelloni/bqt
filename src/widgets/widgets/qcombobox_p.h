@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QCOMBOBOX_P_H
 #define QCOMBOBOX_P_H
@@ -9,30 +9,30 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
-#include "QtWidgets/qcombobox.h"
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
+#include "BobUIWidgets/qcombobox.h"
 
-#include "QtWidgets/qabstractslider.h"
-#include "QtWidgets/qstyleditemdelegate.h"
-#include "QtWidgets/qlistview.h"
-#include "QtWidgets/qstyle.h"
-#include "QtCore/qtimer.h"
+#include "BobUIWidgets/qabstractslider.h"
+#include "BobUIWidgets/qstyleditemdelegate.h"
+#include "BobUIWidgets/qlistview.h"
+#include "BobUIWidgets/qstyle.h"
+#include "BobUICore/bobuiimer.h"
 #include "private/qwidget_p.h"
-#include "QtCore/qpointer.h"
+#include "BobUICore/qpointer.h"
 
 #include <array>
 #include <limits>
 
-QT_REQUIRE_CONFIG(combobox);
+BOBUI_REQUIRE_CONFIG(combobox);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QLineEdit;
 class QPainter;
@@ -73,7 +73,7 @@ protected:
 
     void enterEvent(QEnterEvent *) override;
     void leaveEvent(QEvent *) override;
-    void timerEvent(QTimerEvent *e) override;
+    void timerEvent(BOBUIimerEvent *e) override;
     void hideEvent(QHideEvent *) override;
     void mouseMoveEvent(QMouseEvent *e) override;
     void paintEvent(QPaintEvent *) override;
@@ -102,7 +102,7 @@ public:
     void updateTopBottomMargin();
     void updateStyleSettings();
 
-    QTimer blockMouseReleaseTimer;
+    BOBUIimer blockMouseReleaseTimer;
     QBasicTimer adjustSizeTimer;
     QPoint initialClickPosition;
 
@@ -119,7 +119,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *e) override;
     void showEvent(QShowEvent *e) override;
     void hideEvent(QHideEvent *e) override;
-    void timerEvent(QTimerEvent *timerEvent) override;
+    void timerEvent(BOBUIimerEvent *timerEvent) override;
     void resizeEvent(QResizeEvent *e) override;
     void paintEvent(QPaintEvent *e) override;
     QStyleOptionComboBox comboStyleOption() const;
@@ -193,7 +193,7 @@ public:
     void init();
     QComboBoxPrivateContainer* viewContainer();
     void updateLineEditGeometry();
-    Qt::MatchFlags matchFlags() const;
+    BobUI::MatchFlags matchFlags() const;
     void editingFinished();
     void returnPressed();
     void complete();
@@ -205,7 +205,7 @@ public:
     void modelDestroyed();
     void modelReset();
     void updateMicroFocus() { q_func()->updateMicroFocus(); } // PMF connect doesn't handle default args
-#if QT_CONFIG(completer)
+#if BOBUI_CONFIG(completer)
     void completerActivated(const QModelIndex &index);
 #endif
     void resetButton();
@@ -286,6 +286,6 @@ public:
     bool hidingPopup : 1;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCOMBOBOX_P_H

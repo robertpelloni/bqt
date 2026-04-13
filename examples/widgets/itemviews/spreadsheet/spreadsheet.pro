@@ -1,7 +1,7 @@
-QT += widgets
-requires(qtConfig(treeview))
-qtHaveModule(printsupport): QT += printsupport
-#unix:qtHaveModule(dbus): QT += dbus widgets
+BOBUI += widgets
+requires(bobuiConfig(treeview))
+bobuiHaveModule(printsupport): BOBUI += printsupport
+#unix:bobuiHaveModule(dbus): BOBUI += dbus widgets
 
 HEADERS += printview.h spreadsheet.h spreadsheetdelegate.h spreadsheetitem.h
 SOURCES += main.cpp \
@@ -17,6 +17,6 @@ build_all:!build_pass {
 }
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/itemviews/spreadsheet
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/itemviews/spreadsheet
 INSTALLS += target
 

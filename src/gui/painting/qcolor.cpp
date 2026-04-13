@@ -1,5 +1,5 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qcolor.h"
 #include "qcolor_p.h"
@@ -9,7 +9,7 @@
 #include "qdatastream.h"
 #include "qvariant.h"
 #include "qdebug.h"
-#include "private/qtools_p.h"
+#include "private/bobuiools_p.h"
 
 #include <algorithm>
 #include <optional>
@@ -17,11 +17,11 @@
 #include <stdio.h>
 #include <limits.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // QColor fits into QVariant's internal storage on 64bit systems.
-// It could also fit on 32bit systems, but we cannot make it happen in Qt6, due to BC.
-#if QT_VERSION >= QT_VERSION_CHECK(7,0,0) || QT_POINTER_SIZE > 4
+// It could also fit on 32bit systems, but we cannot make it happen in BobUI6, due to BC.
+#if BOBUI_VERSION >= BOBUI_VERSION_CHECK(7,0,0) || BOBUI_POINTER_SIZE > 4
 static_assert(sizeof(QColor) <= QVariant::Private::MaxInternalSize);
 #endif
 
@@ -37,7 +37,7 @@ static inline int hex2int(const char *s, int n)
     int result = 0;
     for (; n > 0; --n) {
         result = result * 16;
-        const int h = QtMiscUtils::fromHex(*s++);
+        const int h = BobUIMiscUtils::fromHex(*s++);
         if (h < 0)
             return -1;
         result += h;
@@ -87,7 +87,7 @@ static std::optional<QRgba64> get_hex_rgb(const char *name, size_t len)
     return qRgba64(r, g ,b, a);
 }
 
-std::optional<QRgb> qt_get_hex_rgb(const char *name)
+std::optional<QRgb> bobui_get_hex_rgb(const char *name)
 {
     if (std::optional<QRgba64> rgba64 = get_hex_rgb(name, qstrlen(name)))
         return rgba64->toArgb32();
@@ -112,7 +112,7 @@ static std::optional<QRgba64> get_hex_rgb(QAnyStringView name)
     });
 }
 
-#ifndef QT_NO_COLORNAMES
+#ifndef BOBUI_NO_COLORNAMES
 
 /*
   CSS color names = SVG 1.0 color names + transparent (rgba(0,0,0,0))
@@ -320,7 +320,7 @@ static std::optional<QRgb> get_named_rgb(QAnyStringView name)
     name.visit([&pos, &name_no_space] (auto name) {
         for (auto c : name) {
             if (c != u'\t' && c != u' ')
-                name_no_space[pos++] = QtMiscUtils::toAsciiLower(to_char(c));
+                name_no_space[pos++] = BobUIMiscUtils::toAsciiLower(to_char(c));
         }
     });
     name_no_space[pos] = 0;
@@ -328,12 +328,12 @@ static std::optional<QRgb> get_named_rgb(QAnyStringView name)
     return get_named_rgb_no_space(name_no_space);
 }
 
-#endif // QT_NO_COLORNAMES
+#endif // BOBUI_NO_COLORNAMES
 
 static QStringList get_colornames()
 {
     QStringList lst;
-#ifndef QT_NO_COLORNAMES
+#ifndef BOBUI_NO_COLORNAMES
     lst.reserve(rgbTblSize);
     for (int i = 0; i < rgbTblSize; i++)
         lst << QLatin1StringView(rgbTbl[i].name);
@@ -347,7 +347,7 @@ static QStringList get_colornames()
 
     \ingroup painting
     \ingroup appearance
-    \inmodule QtGui
+    \inmodule BobUIGui
 
 
     A color is normally specified in terms of RGB (red, green, and
@@ -458,7 +458,7 @@ static QStringList get_colornames()
     Furthermore, the \c{QColorConstants::Svg} namespace defines QColor
     objects for the standard \l{https://www.w3.org/TR/SVG11/types.html#ColorKeywords}{SVG color keyword names}.
 
-    \image qt-colors.png Qt Colors
+    \image bobui-colors.png BobUI Colors
 
     The \c{QColorConstants::Color0}, \c{QColorConstants::Color1} and
     \c{QColorConstants::Transparent} colors are used for special
@@ -476,7 +476,7 @@ static QStringList get_colornames()
     that is appropriate for the underlying pixel format in use.
 
     For historical reasons, the 20 predefined colors are also available
-    in the Qt::GlobalColor enumeration.
+    in the BobUI::GlobalColor enumeration.
 
     Finally, QColor recognizes a variety of color names (as strings);
     the static colorNames() function returns a QStringList color names
@@ -526,11 +526,11 @@ static QStringList get_colornames()
     -10), S=255, V=180; a grayish light red could have H about 0 (say
     350-359 or 0-10), S about 50-100, and S=255.
 
-    Qt returns a hue value of -1 for achromatic colors. If you pass a
-    hue value that is too large, Qt forces it into range. Hue 360 or 720 is
+    BobUI returns a hue value of -1 for achromatic colors. If you pass a
+    hue value that is too large, BobUI forces it into range. Hue 360 or 720 is
     treated as 0; hue 540 is treated as 180.
 
-    In addition to the standard HSV model, Qt provides an
+    In addition to the standard HSV model, BobUI provides an
     alpha-channel to feature \l {QColor#Alpha-Blended
     Drawing}{alpha-blended drawing}.
 
@@ -569,7 +569,7 @@ static QStringList get_colornames()
     that reason, black is added in professional printing to provide a
     solid black tone; hence the term 'four color process'.
 
-    In addition to the standard CMYK model, Qt provides an
+    In addition to the standard CMYK model, BobUI provides an
     alpha-channel to feature \l {QColor#Alpha-Blended
     Drawing}{alpha-blended drawing}.
 
@@ -650,7 +650,7 @@ static QStringList get_colornames()
 
     \sa isValid(), {QColor#Predefined Colors}{Predefined Colors}
  */
-QColor::QColor(Qt::GlobalColor color) noexcept
+QColor::QColor(BobUI::GlobalColor color) noexcept
 {
 #define QRGB(r, g, b) \
     QRgb(((0xffu << 24) | ((r & 0xff) << 16) | ((g & 0xff) << 8) | (b & 0xff)))
@@ -658,8 +658,8 @@ QColor::QColor(Qt::GlobalColor color) noexcept
     QRgb(((a & 0xff) << 24) | ((r & 0xff) << 16) | ((g & 0xff) << 8) | (b & 0xff))
 
     static const QRgb global_colors[] = {
-        QRGB(255, 255, 255), // Qt::color0
-        QRGB(  0,   0,   0), // Qt::color1
+        QRGB(255, 255, 255), // BobUI::color0
+        QRGB(  0,   0,   0), // BobUI::color1
         QRGB(  0,   0,   0), // black
         QRGB(255, 255, 255), // white
         /*
@@ -782,7 +782,7 @@ QColor::QColor(Spec spec) noexcept
     }
 }
 
-// ### Qt 7: remove those after deprecating them for the last Qt 6 LTS release
+// ### BobUI 7: remove those after deprecating them for the last BobUI 6 LTS release
 /*!
     \fn QColor::QColor(const QString &name)
 
@@ -841,7 +841,7 @@ QString QColor::name(NameFormat format) const
     return QString();
 }
 
-#if QT_DEPRECATED_SINCE(6, 6)
+#if BOBUI_DEPRECATED_SINCE(6, 6)
 /*!
     \deprecated [6.6] Use fromString() instead.
 
@@ -858,7 +858,7 @@ QString QColor::name(NameFormat format) const
        \l{https://www.w3.org/TR/SVG11/types.html#ColorKeywords}{SVG color keyword names}
        provided by the World Wide Web Consortium; for example, "steelblue" or "gainsboro".
        These color names work on all platforms. Note that these color names are \e not the
-       same as defined by the Qt::GlobalColor enums, e.g. "green" and Qt::green does not
+       same as defined by the BobUI::GlobalColor enums, e.g. "green" and BobUI::green does not
        refer to the same color.
     \li \c transparent - representing the absence of a color.
     \endlist
@@ -932,7 +932,7 @@ bool QColor::isValidColor(QLatin1StringView name) noexcept
 {
     return isValidColorName(name);
 }
-#endif // QT_DEPRECATED_SINCE(6, 6)
+#endif // BOBUI_DEPRECATED_SINCE(6, 6)
 
 /*!
    \since 6.4
@@ -966,7 +966,7 @@ bool QColor::isValidColorName(QAnyStringView name) noexcept
        \l{https://www.w3.org/TR/SVG11/types.html#ColorKeywords}{SVG color keyword names}
        provided by the World Wide Web Consortium; for example, "steelblue" or "gainsboro".
        These color names work on all platforms. Note that these color names are \e not the
-       same as defined by the Qt::GlobalColor enums, e.g. "green" and Qt::green does not
+       same as defined by the BobUI::GlobalColor enums, e.g. "green" and BobUI::green does not
        refer to the same color.
     \li \c transparent - representing the absence of a color.
     \endlist
@@ -983,7 +983,7 @@ QColor QColor::fromString(QAnyStringView name) noexcept
     if (name.front() == u'#') {
         if (std::optional<QRgba64> r = get_hex_rgb(name))
             return QColor::fromRgba64(*r);
-#ifndef QT_NO_COLORNAMES
+#ifndef BOBUI_NO_COLORNAMES
     } else if (std::optional<QRgb> r = get_named_rgb(name)) {
         return QColor::fromRgba(*r);
 #endif
@@ -993,7 +993,7 @@ QColor QColor::fromString(QAnyStringView name) noexcept
 }
 
 /*!
-    Returns a QStringList containing the color names Qt knows about.
+    Returns a QStringList containing the color names BobUI knows about.
 
     \sa {QColor#Predefined Colors}{Predefined Colors}
 */
@@ -1051,11 +1051,11 @@ void QColor::getHsv(int *h, int *s, int *v, int *a) const
     }
 
     *h = ct.ahsv.hue == USHRT_MAX ? -1 : ct.ahsv.hue / 100;
-    *s = qt_div_257(ct.ahsv.saturation);
-    *v = qt_div_257(ct.ahsv.value);
+    *s = bobui_div_257(ct.ahsv.saturation);
+    *v = bobui_div_257(ct.ahsv.value);
 
     if (a)
-        *a = qt_div_257(ct.ahsv.alpha);
+        *a = bobui_div_257(ct.ahsv.alpha);
 }
 
 /*!
@@ -1163,11 +1163,11 @@ void QColor::getHsl(int *h, int *s, int *l, int *a) const
     }
 
     *h = ct.ahsl.hue == USHRT_MAX ? -1 : ct.ahsl.hue / 100;
-    *s = qt_div_257(ct.ahsl.saturation);
-    *l = qt_div_257(ct.ahsl.lightness);
+    *s = bobui_div_257(ct.ahsl.saturation);
+    *l = bobui_div_257(ct.ahsl.lightness);
 
     if (a)
-        *a = qt_div_257(ct.ahsl.alpha);
+        *a = bobui_div_257(ct.ahsl.alpha);
 }
 
 /*!
@@ -1292,12 +1292,12 @@ void QColor::getRgb(int *r, int *g, int *b, int *a) const
         return;
     }
 
-    *r = qt_div_257(ct.argb.red);
-    *g = qt_div_257(ct.argb.green);
-    *b = qt_div_257(ct.argb.blue);
+    *r = bobui_div_257(ct.argb.red);
+    *g = bobui_div_257(ct.argb.green);
+    *b = bobui_div_257(ct.argb.blue);
 
     if (a)
-        *a = qt_div_257(ct.argb.alpha);
+        *a = bobui_div_257(ct.argb.alpha);
 }
 
 /*!
@@ -1375,7 +1375,7 @@ QRgb QColor::rgba() const noexcept
 {
     if (cspec != Invalid && cspec != Rgb)
         return toRgb().rgba();
-    return qRgba(qt_div_257(ct.argb.red), qt_div_257(ct.argb.green), qt_div_257(ct.argb.blue), qt_div_257(ct.argb.alpha));
+    return qRgba(bobui_div_257(ct.argb.red), bobui_div_257(ct.argb.green), bobui_div_257(ct.argb.blue), bobui_div_257(ct.argb.alpha));
 }
 
 /*!
@@ -1438,7 +1438,7 @@ QRgb QColor::rgb() const noexcept
 {
     if (cspec != Invalid && cspec != Rgb)
         return toRgb().rgb();
-    return qRgb(qt_div_257(ct.argb.red), qt_div_257(ct.argb.green), qt_div_257(ct.argb.blue));
+    return qRgb(bobui_div_257(ct.argb.red), bobui_div_257(ct.argb.green), bobui_div_257(ct.argb.blue));
 }
 
 /*!
@@ -1465,7 +1465,7 @@ int QColor::alpha() const noexcept
 {
     if (cspec == ExtendedRgb)
         return qRound(float(castF16(ct.argbExtended.alphaF16)) * 255);
-    return qt_div_257(ct.argb.alpha);
+    return bobui_div_257(ct.argb.alpha);
 }
 
 
@@ -1527,7 +1527,7 @@ int QColor::red() const noexcept
 {
     if (cspec != Invalid && cspec != Rgb)
         return toRgb().red();
-    return qt_div_257(ct.argb.red);
+    return bobui_div_257(ct.argb.red);
 }
 
 /*!
@@ -1554,7 +1554,7 @@ int QColor::green() const noexcept
 {
     if (cspec != Invalid && cspec != Rgb)
         return toRgb().green();
-    return qt_div_257(ct.argb.green);
+    return bobui_div_257(ct.argb.green);
 }
 
 /*!
@@ -1582,7 +1582,7 @@ int QColor::blue() const noexcept
 {
     if (cspec != Invalid && cspec != Rgb)
         return toRgb().blue();
-    return qt_div_257(ct.argb.blue);
+    return bobui_div_257(ct.argb.blue);
 }
 
 
@@ -1743,7 +1743,7 @@ int QColor::hsvSaturation() const noexcept
 {
     if (cspec != Invalid && cspec != Hsv)
         return toHsv().saturation();
-    return qt_div_257(ct.ahsv.saturation);
+    return bobui_div_257(ct.ahsv.saturation);
 }
 
 /*!
@@ -1755,7 +1755,7 @@ int QColor::value() const noexcept
 {
     if (cspec != Invalid && cspec != Hsv)
         return toHsv().value();
-    return qt_div_257(ct.ahsv.value);
+    return bobui_div_257(ct.ahsv.value);
 }
 
 /*!
@@ -1845,7 +1845,7 @@ int QColor::hslSaturation() const noexcept
 {
     if (cspec != Invalid && cspec != Hsl)
         return toHsl().hslSaturation();
-    return qt_div_257(ct.ahsl.saturation);
+    return bobui_div_257(ct.ahsl.saturation);
 }
 
 /*!
@@ -1859,7 +1859,7 @@ int QColor::lightness() const noexcept
 {
     if (cspec != Invalid && cspec != Hsl)
         return toHsl().lightness();
-    return qt_div_257(ct.ahsl.lightness);
+    return bobui_div_257(ct.ahsl.lightness);
 }
 
 /*!
@@ -1913,7 +1913,7 @@ int QColor::cyan() const noexcept
 {
     if (cspec != Invalid && cspec != Cmyk)
         return toCmyk().cyan();
-    return qt_div_257(ct.acmyk.cyan);
+    return bobui_div_257(ct.acmyk.cyan);
 }
 
 /*!
@@ -1925,7 +1925,7 @@ int QColor::magenta() const noexcept
 {
     if (cspec != Invalid && cspec != Cmyk)
         return toCmyk().magenta();
-    return qt_div_257(ct.acmyk.magenta);
+    return bobui_div_257(ct.acmyk.magenta);
 }
 
 /*!
@@ -1937,7 +1937,7 @@ int QColor::yellow() const noexcept
 {
     if (cspec != Invalid && cspec != Cmyk)
         return toCmyk().yellow();
-    return qt_div_257(ct.acmyk.yellow);
+    return bobui_div_257(ct.acmyk.yellow);
 }
 
 /*!
@@ -1950,7 +1950,7 @@ int QColor::black() const noexcept
 {
     if (cspec != Invalid && cspec != Cmyk)
         return toCmyk().black();
-    return qt_div_257(ct.acmyk.black);
+    return bobui_div_257(ct.acmyk.black);
 }
 
 /*!
@@ -2626,13 +2626,13 @@ void QColor::getCmyk(int *c, int *m, int *y, int *k, int *a) const
         return;
     }
 
-    *c = qt_div_257(ct.acmyk.cyan);
-    *m = qt_div_257(ct.acmyk.magenta);
-    *y = qt_div_257(ct.acmyk.yellow);
-    *k = qt_div_257(ct.acmyk.black);
+    *c = bobui_div_257(ct.acmyk.cyan);
+    *m = bobui_div_257(ct.acmyk.magenta);
+    *y = bobui_div_257(ct.acmyk.yellow);
+    *k = bobui_div_257(ct.acmyk.black);
 
     if (a)
-        *a = qt_div_257(ct.acmyk.alpha);
+        *a = bobui_div_257(ct.acmyk.alpha);
 }
 
 /*!
@@ -2864,7 +2864,7 @@ QColor QColor::darker(int factor) const noexcept
 /*! \overload
     Assigns a copy of \a color and returns a reference to this color.
  */
-QColor &QColor::operator=(Qt::GlobalColor color) noexcept
+QColor &QColor::operator=(BobUI::GlobalColor color) noexcept
 {
     return operator=(QColor(color));
 }
@@ -2920,7 +2920,7 @@ QColor::operator QVariant() const
 /*! \internal
 
     Marks the color as invalid and sets all components to zero (alpha is set
-    to fully opaque for compatibility with Qt 3).
+    to fully opaque for compatibility with BobUI 3).
 */
 void QColor::invalidate() noexcept
 {
@@ -2936,7 +2936,7 @@ void QColor::invalidate() noexcept
   QColor stream functions
  *****************************************************************************/
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QColor &c)
 {
     QDebugStateSaver saver(dbg);
@@ -2958,14 +2958,14 @@ QDebug operator<<(QDebug dbg, const QColor &c)
 }
 #endif
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 /*!
     \fn QDataStream &operator<<(QDataStream &stream, const QColor &color)
     \relates QColor
 
     Writes the \a color to the \a stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 QDataStream &operator<<(QDataStream &stream, const QColor &color)
 {
@@ -3001,7 +3001,7 @@ QDataStream &operator<<(QDataStream &stream, const QColor &color)
 
     Reads the \a color from the \a stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 QDataStream &operator>>(QDataStream &stream, QColor &color)
 {
@@ -3036,10 +3036,10 @@ QDataStream &operator>>(QDataStream &stream, QColor &color)
 
     return stream;
 }
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
 // A table of precalculated results of 0x00ff00ff/alpha use by qUnpremultiply:
-const uint qt_inv_premul_factor[256] = {
+const uint bobui_inv_premul_factor[256] = {
     0, 16711935, 8355967, 5570645, 4177983, 3342387, 2785322, 2387419,
     2088991, 1856881, 1671193, 1519266, 1392661, 1285533, 1193709, 1114129,
     1044495, 983055, 928440, 879575, 835596, 795806, 759633, 726605,
@@ -3201,7 +3201,7 @@ const uint qt_inv_premul_factor[256] = {
 
 /*!
     \namespace QColorConstants
-    \inmodule QtGui
+    \inmodule BobUIGui
     \since 5.14
 
     \brief The QColorConstants namespace contains QColor predefined constants.
@@ -3220,11 +3220,11 @@ const uint qt_inv_premul_factor[256] = {
     object.setColor(QColor("lightblue")); // expensive
     \endcode
 
-    \section1 Qt Colors
+    \section1 BobUI Colors
 
     The following colors are defined in the \c{QColorConstants} namespace:
 
-    \include qt-colors.qdocinc
+    \include bobui-colors.qdocinc
 
     \section1 SVG Colors
 
@@ -3234,7 +3234,7 @@ const uint qt_inv_premul_factor[256] = {
 
     \include svg-colors.qdocinc
 
-    \sa QColor, Qt::GlobalColor
+    \sa QColor, BobUI::GlobalColor
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

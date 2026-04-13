@@ -4,8 +4,8 @@ HEADERS += mainwindow.h view.h chip.h
 SOURCES += main.cpp
 SOURCES += mainwindow.cpp view.cpp chip.cpp
 
-QT += widgets
-qtHaveModule(printsupport): QT += printsupport
+BOBUI += widgets
+bobuiHaveModule(printsupport): BOBUI += printsupport
 
 build_all:!build_pass {
     CONFIG -= build_all
@@ -13,6 +13,6 @@ build_all:!build_pass {
 }
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/graphicsview/chip
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/graphicsview/chip
 INSTALLS += target
 

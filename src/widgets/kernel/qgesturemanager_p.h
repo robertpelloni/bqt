@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QGESTUREMANAGER_P_H
 #define QGESTUREMANAGER_P_H
@@ -9,26 +9,26 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
+// This file is not part of the BobUI API.  It exists for the convenience
+// of other BobUI classes.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 #include "qobject.h"
 #include "qbasictimer.h"
 #include "private/qwidget_p.h"
 #include "qgesturerecognizer.h"
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
 
 #include <functional>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QBasicTimer;
 class QGraphicsObject;
@@ -39,30 +39,30 @@ public:
     QGestureManager(QObject *parent);
     ~QGestureManager();
 
-    Qt::GestureType registerGestureRecognizer(QGestureRecognizer *recognizer);
-    void unregisterGestureRecognizer(Qt::GestureType type);
+    BobUI::GestureType registerGestureRecognizer(QGestureRecognizer *recognizer);
+    void unregisterGestureRecognizer(BobUI::GestureType type);
 
     bool filterEvent(QWidget *receiver, QEvent *event);
     bool filterEvent(QObject *receiver, QEvent *event);
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
     bool filterEvent(QGraphicsObject *receiver, QEvent *event);
-#endif // QT_CONFIG(graphicsview)
+#endif // BOBUI_CONFIG(graphicsview)
 
     enum InstanceCreation { ForceCreation, DontForceCreation };
 
     static QGestureManager *instance(InstanceCreation ic = ForceCreation); // implemented in qapplication.cpp
     static bool gesturePending(QObject *o);
 
-    void cleanupCachedGestures(QObject *target, Qt::GestureType type);
+    void cleanupCachedGestures(QObject *target, BobUI::GestureType type);
 
     void recycle(QGesture *gesture);
 
 protected:
-    bool filterEventThroughContexts(const QMultiMap<QObject *, Qt::GestureType> &contexts,
+    bool filterEventThroughContexts(const QMultiMap<QObject *, BobUI::GestureType> &contexts,
                                     QEvent *event);
 
 private:
-    QMultiMap<Qt::GestureType, QGestureRecognizer *> m_recognizers;
+    QMultiMap<BobUI::GestureType, QGestureRecognizer *> m_recognizers;
 
     QSet<QGesture *> m_activeGestures;
     QSet<QGesture *> m_maybeGestures;
@@ -70,9 +70,9 @@ private:
     struct ObjectGesture
     {
         QObject* object;
-        Qt::GestureType gesture;
+        BobUI::GestureType gesture;
 
-        ObjectGesture(QObject *o, const Qt::GestureType &g) : object(o), gesture(g) { }
+        ObjectGesture(QObject *o, const BobUI::GestureType &g) : object(o), gesture(g) { }
         inline bool operator<(const ObjectGesture &rhs) const
         {
             if (std::less<QObject *>{}(object, rhs.object))
@@ -97,7 +97,7 @@ private:
     void cleanupGesturesForRemovedRecognizer(QGesture *gesture);
 
     QGesture *getState(QObject *widget, QGestureRecognizer *recognizer,
-                       Qt::GestureType gesture);
+                       BobUI::GestureType gesture);
     void deliverEvents(const QSet<QGesture *> &gestures,
                        QSet<QGesture *> *undeliveredGestures);
     void getGestureTargets(const QSet<QGesture*> &gestures,
@@ -107,8 +107,8 @@ private:
     void cancelGesturesForChildren(QGesture *originatingGesture);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_GESTURES
+#endif // BOBUI_NO_GESTURES
 
 #endif // QGESTUREMANAGER_P_H

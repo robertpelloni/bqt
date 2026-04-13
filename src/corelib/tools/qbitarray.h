@@ -1,13 +1,13 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QBITARRAY_H
 #define QBITARRAY_H
 
-#include <QtCore/qbytearray.h>
+#include <BobUICore/qbytearray.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QBitRef;
 class Q_CORE_EXPORT QBitArray
@@ -36,7 +36,7 @@ class Q_CORE_EXPORT QBitArray
     friend QBitArray operator^(QBitArray &&a1, QBitArray &&a2)
     { return a1 ^= a2; }
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
     friend Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QBitArray &);
     friend Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QBitArray &);
 #endif
@@ -65,12 +65,12 @@ public:
     inline QBitArray() noexcept {}
     explicit QBitArray(qsizetype size, bool val = false);
     // Rule Of Zero applies
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
     QBitArray(const QBitArray &other) noexcept : d(other.d) {}
     inline QBitArray &operator=(const QBitArray &other) noexcept { d = other.d; return *this; }
     inline QBitArray(QBitArray &&other) noexcept : d(std::move(other.d)) {}
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QBitArray)
-#endif // Qt 6
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QBitArray)
+#endif // BobUI 6
 
     void swap(QBitArray &other) noexcept { d.swap(other.d); }
 
@@ -113,11 +113,11 @@ public:
     QBitArray &operator&=(const QBitArray &);
     QBitArray &operator|=(const QBitArray &);
     QBitArray &operator^=(const QBitArray &);
-#if QT_CORE_REMOVED_SINCE(6, 7)
+#if BOBUI_CORE_REMOVED_SINCE(6, 7)
     QBitArray operator~() const;
 #endif
 
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
     inline bool operator==(const QBitArray &other) const { return comparesEqual(d, other.d); }
     inline bool operator!=(const QBitArray &other) const { return !operator==(other); }
 #endif
@@ -146,7 +146,7 @@ private:
     Q_DECLARE_EQUALITY_COMPARABLE(QBitArray)
 };
 
-class QT6_ONLY(Q_CORE_EXPORT) QBitRef
+class BOBUI6_ONLY(Q_CORE_EXPORT) QBitRef
 {
 private:
     QBitArray &a;
@@ -164,17 +164,17 @@ public:
 QBitRef QBitArray::operator[](qsizetype i)
 { Q_ASSERT(i >= 0); return QBitRef(*this, i); }
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QBitArray &);
 Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QBitArray &);
 #endif
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QBitArray &);
 #endif
 
 Q_DECLARE_SHARED(QBitArray)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QBITARRAY_H

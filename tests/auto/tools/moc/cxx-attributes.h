@@ -1,14 +1,14 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef CXXATTRIBUTE_H
 #define CXXATTRIBUTE_H
 
-#include <QtCore/QObject>
+#include <BobUICore/QObject>
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_CLANG("-Wunknown-attributes")
-QT_WARNING_DISABLE_GCC("-Wattributes")
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_CLANG("-Wunknown-attributes")
+BOBUI_WARNING_DISABLE_GCC("-Wattributes")
 
 class [[deprecated]] CppAttribute : public QObject
 {
@@ -36,7 +36,7 @@ public slots:
 #endif
 };
 
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
 #ifdef Q_MOC_RUN
 #  define TEST_COMPILER_DEPRECATION [[deprecated]]
@@ -46,8 +46,8 @@ QT_WARNING_POP
 #  define TEST_COMPILER_DEPRECATION_X(x) Q_DECL_ENUMERATOR_DEPRECATED_X(x)
 #endif
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
 
 namespace TestQNamespaceDeprecated {
     Q_NAMESPACE
@@ -84,6 +84,6 @@ namespace TestQNamespaceDeprecated {
     Q_FLAG_NS(TestFlag1)
 }
 
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
 #endif // CXXATTRIBUTE_H

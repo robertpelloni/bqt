@@ -1,5 +1,5 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QKEYBOARDMAP_P_H
 #define QKEYBOARDMAP_P_H
@@ -8,18 +8,18 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/qnamespace.h>
-#include <QtCore/qtconfigmacros.h>
-#include <QtCore/qdatastream.h>
+#include <BobUICore/qnamespace.h>
+#include <BobUICore/bobuiconfigmacros.h>
+#include <BobUICore/qdatastream.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace QKeyboardMap {
 
@@ -28,7 +28,7 @@ namespace QKeyboardMap {
     struct Mapping {
         quint16 keycode;
         quint16 unicode;
-        quint32 qtcode;
+        quint32 bobuicode;
         quint8 modifiers;
         quint8 flags;
         quint16 special;
@@ -71,30 +71,30 @@ namespace QKeyboardMap {
         // ModCapsShift = 0x100, // not supported!
     };
 
-    inline Qt::KeyboardModifiers toQtModifiers(quint8 mod)
+    inline BobUI::KeyboardModifiers toBobUIModifiers(quint8 mod)
     {
-        Qt::KeyboardModifiers qtmod = Qt::NoModifier;
+        BobUI::KeyboardModifiers bobuimod = BobUI::NoModifier;
 
         if (mod & (ModShift | ModShiftL | ModShiftR))
-            qtmod |= Qt::ShiftModifier;
+            bobuimod |= BobUI::ShiftModifier;
         if (mod & (ModControl | ModCtrlL | ModCtrlR))
-            qtmod |= Qt::ControlModifier;
+            bobuimod |= BobUI::ControlModifier;
         if (mod & ModAlt)
-            qtmod |= Qt::AltModifier;
+            bobuimod |= BobUI::AltModifier;
 
-        return qtmod;
+        return bobuimod;
     }
 
 }
 
 inline QDataStream &operator>>(QDataStream &ds, QKeyboardMap::Mapping &m)
 {
-    return ds >> m.keycode >> m.unicode >> m.qtcode >> m.modifiers >> m.flags >> m.special;
+    return ds >> m.keycode >> m.unicode >> m.bobuicode >> m.modifiers >> m.flags >> m.special;
 }
 
 inline QDataStream &operator<<(QDataStream &ds, const QKeyboardMap::Mapping &m)
 {
-    return ds << m.keycode << m.unicode << m.qtcode << m.modifiers << m.flags << m.special;
+    return ds << m.keycode << m.unicode << m.bobuicode << m.modifiers << m.flags << m.special;
 }
 
 inline QDataStream &operator>>(QDataStream &ds, QKeyboardMap::Composing &c)
@@ -107,6 +107,6 @@ inline QDataStream &operator<<(QDataStream &ds, const QKeyboardMap::Composing &c
     return ds << c.first << c.second << c.result;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QKEYBOARDMAP_P_H

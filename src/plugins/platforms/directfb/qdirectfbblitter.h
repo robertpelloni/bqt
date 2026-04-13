@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDIRECTFBBLITTER_H
 #define QDIRECTFBBLITTER_H
@@ -11,7 +11,7 @@
 
 #include <directfb.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDirectFbBlitter : public QBlittable
 {
@@ -65,7 +65,7 @@ public:
     QDirectFbBlitter *dfbBlitter() const;
 
     bool fromFile(const QString &filename, const char *format,
-                  Qt::ImageConversionFlags flags) override;
+                  BobUI::ImageConversionFlags flags) override;
 
 private:
     bool fromDataBufferDescription(const DFBDataBufferDescription &);
@@ -89,7 +89,7 @@ inline IDirectFBSurface *QDirectFbBlitter::dfbSurface() const
 class QDirectFbTextureGlyphCache : public QImageTextureGlyphCache
 {
 public:
-    QDirectFbTextureGlyphCache(QFontEngine::GlyphFormat format, const QTransform &matrix)
+    QDirectFbTextureGlyphCache(QFontEngine::GlyphFormat format, const BOBUIransform &matrix)
         : QImageTextureGlyphCache(format, matrix)
     {}
 
@@ -101,6 +101,6 @@ private:
     QDirectFBPointer<IDirectFBSurface> m_surface;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QDIRECTFBBLITTER_H

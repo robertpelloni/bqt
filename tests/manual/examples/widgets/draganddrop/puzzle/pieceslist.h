@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef PIECESLIST_H
 #define PIECESLIST_H
@@ -20,7 +20,7 @@ protected:
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dragMoveEvent(QDragMoveEvent *event) override;
     void dropEvent(QDropEvent *event) override;
-    void startDrag(Qt::DropActions supportedActions) override;
+    void startDrag(BobUI::DropActions supportedActions) override;
 
     int m_PieceSize;
 };

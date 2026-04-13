@@ -1,6 +1,6 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qgenericunixtheme_p.h"
 #include "qgnometheme_p.h"
@@ -17,12 +17,12 @@
 #include <QVariant>
 #include <QStandardPaths>
 #include <QStringList>
-#if QT_CONFIG(mimetype)
+#if BOBUI_CONFIG(mimetype)
 #include <QMimeDatabase>
 #endif
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
 #include <QSettings>
-#if QT_CONFIG(dbus)
+#if BOBUI_CONFIG(dbus)
 #include "qkdetheme_p.h"
 #endif
 #endif
@@ -33,7 +33,7 @@
 #include <qpa/qplatformdialoghelper.h>
 #include <qpa/qplatformtheme_p.h>
 
-#if QT_CONFIG(dbus)
+#if BOBUI_CONFIG(dbus)
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonObject>
@@ -41,26 +41,26 @@
 #include <QJsonParseError>
 #include <private/qdbusmenubar_p.h>
 #endif
-#if QT_CONFIG(dbus) && QT_CONFIG(systemtrayicon)
+#if BOBUI_CONFIG(dbus) && BOBUI_CONFIG(systemtrayicon)
 #include <private/qdbustrayicon_p.h>
 #endif
 
 #include <private/qguiapplication_p.h>
 #include <qpa/qplatformintegration.h>
-#include <QtCore/QStandardPaths>
-#if QT_CONFIG(dbus)
-#include <QtDBus/QDBusConnectionInterface>
+#include <BobUICore/QStandardPaths>
+#if BOBUI_CONFIG(dbus)
+#include <BobUIDBus/QDBusConnectionInterface>
 #endif
-#if QT_CONFIG(mimetype)
-#include <QtCore/QMimeDatabase>
-#include <QtCore/QMimeData>
+#if BOBUI_CONFIG(mimetype)
+#include <BobUICore/QMimeDatabase>
+#include <BobUICore/QMimeData>
 #endif
 
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(qLcTray)
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 const char *QGenericUnixTheme::name = "generic";
 
@@ -96,7 +96,7 @@ const QFont *QGenericUnixTheme::font(Font type) const
     }
 }
 
-#if QT_CONFIG(dbus)
+#if BOBUI_CONFIG(dbus)
 QPlatformMenuBar *QGenericUnixTheme::createPlatformMenuBar() const
 {
     if (isDBusGlobalMenuAvailable())
@@ -105,7 +105,7 @@ QPlatformMenuBar *QGenericUnixTheme::createPlatformMenuBar() const
 }
 #endif
 
-#if QT_CONFIG(dbus) && QT_CONFIG(systemtrayicon)
+#if BOBUI_CONFIG(dbus) && BOBUI_CONFIG(systemtrayicon)
 QPlatformSystemTrayIcon *QGenericUnixTheme::createPlatformSystemTrayIcon() const
 {
     if (shouldUseDBusTray())
@@ -161,7 +161,7 @@ QStringList QGenericUnixTheme::themeNames()
                              << "LXDE";
         const QList<QByteArray> desktopNames = desktopEnvironment.split(':');
         for (const QByteArray &desktopName : desktopNames) {
-#if QT_CONFIG(dbus) && QT_CONFIG(settings) && (QT_CONFIG(xcb) || QT_CONFIG(wayland))
+#if BOBUI_CONFIG(dbus) && BOBUI_CONFIG(settings) && (BOBUI_CONFIG(xcb) || BOBUI_CONFIG(wayland))
             if (desktopEnvironment == "KDE") {
                 result.push_back(QLatin1StringView(QKdeTheme::name));
             } else
@@ -191,7 +191,7 @@ QPlatformTheme *QGenericUnixTheme::createUnixTheme(const QString &name)
 {
     if (name == QLatin1StringView(QGenericUnixTheme::name))
         return new QGenericUnixTheme;
-#if QT_CONFIG(dbus) && QT_CONFIG(settings) && (QT_CONFIG(xcb) || QT_CONFIG(wayland))
+#if BOBUI_CONFIG(dbus) && BOBUI_CONFIG(settings) && (BOBUI_CONFIG(xcb) || BOBUI_CONFIG(wayland))
     if (name == QLatin1StringView(QKdeTheme::name))
         return QKdeTheme::createKdeTheme();
 #endif
@@ -240,7 +240,7 @@ QSize QGenericUnixTheme::mouseCursorSize()
     return QSize(s, s);
 }
 
-#if QT_CONFIG(dbus)
+#if BOBUI_CONFIG(dbus)
 static bool checkDBusGlobalMenuAvailable()
 {
     const QDBusConnection connection = QDBusConnection::sessionBus();
@@ -257,7 +257,7 @@ bool QGenericUnixTheme::isDBusGlobalMenuAvailable()
 }
 #endif
 
-#if QT_CONFIG(mimetype)
+#if BOBUI_CONFIG(mimetype)
 QIcon QGenericUnixTheme::xdgFileIcon(const QFileInfo &fileInfo)
 {
     QMimeDatabase mimeDatabase;
@@ -276,7 +276,7 @@ QIcon QGenericUnixTheme::xdgFileIcon(const QFileInfo &fileInfo)
 #endif
 
 
-#if QT_CONFIG(dbus) && QT_CONFIG(systemtrayicon)
+#if BOBUI_CONFIG(dbus) && BOBUI_CONFIG(systemtrayicon)
 bool QGenericUnixTheme::shouldUseDBusTray()
 {
     // There's no other tray implementation to fallback to on non-X11
@@ -296,4 +296,4 @@ QList<QSize> QGenericUnixTheme::availableXdgFileIconSizes()
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

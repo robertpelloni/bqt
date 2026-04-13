@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "editablesqlmodel.h"
 
@@ -11,11 +11,11 @@ EditableSqlModel::EditableSqlModel(QObject *parent)
 }
 
 //! [0]
-Qt::ItemFlags EditableSqlModel::flags(const QModelIndex &index) const
+BobUI::ItemFlags EditableSqlModel::flags(const QModelIndex &index) const
 {
-    Qt::ItemFlags flags = QSqlQueryModel::flags(index);
+    BobUI::ItemFlags flags = QSqlQueryModel::flags(index);
     if (index.column() == 1 || index.column() == 2)
-        flags |= Qt::ItemIsEditable;
+        flags |= BobUI::ItemIsEditable;
     return flags;
 }
 //! [0]
@@ -44,9 +44,9 @@ bool EditableSqlModel::setData(const QModelIndex &index, const QVariant &value, 
 void EditableSqlModel::refresh()
 {
     setQuery("select * from person");
-    setHeaderData(0, Qt::Horizontal, QObject::tr("ID"));
-    setHeaderData(1, Qt::Horizontal, QObject::tr("First name"));
-    setHeaderData(2, Qt::Horizontal, QObject::tr("Last name"));
+    setHeaderData(0, BobUI::Horizontal, QObject::tr("ID"));
+    setHeaderData(1, BobUI::Horizontal, QObject::tr("First name"));
+    setHeaderData(2, BobUI::Horizontal, QObject::tr("Last name"));
 }
 
 //! [2]

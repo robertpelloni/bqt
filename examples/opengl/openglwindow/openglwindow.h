@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef OPENGLWINDOW_H
 #define OPENGLWINDOW_H
@@ -7,9 +7,9 @@
 #include <QWindow>
 #include <QOpenGLFunctions>
 
-QT_FORWARD_DECLARE_CLASS(QPainter)
-QT_FORWARD_DECLARE_CLASS(QOpenGLContext)
-QT_FORWARD_DECLARE_CLASS(QOpenGLPaintDevice)
+BOBUI_FORWARD_DECLARE_CLASS(QPainter)
+BOBUI_FORWARD_DECLARE_CLASS(QOpenGLContext)
+BOBUI_FORWARD_DECLARE_CLASS(QOpenGLPaintDevice)
 
 //! [1]
 class OpenGLWindow : public QWindow, protected QOpenGLFunctions

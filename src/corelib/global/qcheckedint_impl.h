@@ -1,19 +1,19 @@
 // Copyright (C) 2025 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QCHECKEDINT_H
 #define QCHECKEDINT_H
 
-#include <QtCore/qassert.h>
-#include <QtCore/qcompare.h>
-#include <QtCore/qhashfunctions.h>
-#include <QtCore/qnumeric.h>
+#include <BobUICore/qassert.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qhashfunctions.h>
+#include <BobUICore/qnumeric.h>
 
 #include <type_traits>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 namespace QCheckedIntegers {
 
 template <typename Int>
@@ -286,15 +286,15 @@ public:
         return lhs.m_i == rhs;
     }
 
-    friend constexpr Qt::strong_ordering compareThreeWay(QCheckedInt lhs, QCheckedInt rhs) noexcept
+    friend constexpr BobUI::strong_ordering compareThreeWay(QCheckedInt lhs, QCheckedInt rhs) noexcept
     {
-        return Qt::compareThreeWay(lhs.m_i, rhs.m_i);
+        return BobUI::compareThreeWay(lhs.m_i, rhs.m_i);
     }
 
     template <typename AInt, if_is_same_int<AInt> = true>
-    friend constexpr Qt::strong_ordering compareThreeWay(QCheckedInt lhs, AInt rhs) noexcept
+    friend constexpr BobUI::strong_ordering compareThreeWay(QCheckedInt lhs, AInt rhs) noexcept
     {
-        return Qt::compareThreeWay(lhs.m_i, rhs);
+        return BobUI::compareThreeWay(lhs.m_i, rhs);
     }
 
     Q_DECLARE_STRONGLY_ORDERED_LITERAL_TYPE(QCheckedInt)
@@ -306,14 +306,14 @@ public:
 private:
     friend size_t constexpr qHash(QCheckedInt key, size_t seed = 0) noexcept
     {
-        using QT_PREPEND_NAMESPACE(qHash); // ### needed?
+        using BOBUI_PREPEND_NAMESPACE(qHash); // ### needed?
         return qHash(key.value(), seed);
     }
 };
 
 } // namespace QCheckedIntegers
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCHECKEDINT_H

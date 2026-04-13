@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "mainwindow.h"
 #include "piecesmodel.h"
 #include "puzzlewidget.h"
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 #include <stdlib.h>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -65,7 +65,7 @@ void MainWindow::setupPuzzle()
     int size = qMin(puzzleImage.width(), puzzleImage.height());
     puzzleImage = puzzleImage.copy((puzzleImage.width() - size) / 2,
         (puzzleImage.height() - size) / 2, size, size).scaled(puzzleWidget->imageSize(),
-            puzzleWidget->imageSize(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+            puzzleWidget->imageSize(), BobUI::IgnoreAspectRatio, BobUI::SmoothTransformation);
 
     model->addPieces(puzzleImage);
     puzzleWidget->clear();
@@ -107,7 +107,7 @@ void MainWindow::setupWidgets()
     piecesList->setModel(model);
 
     connect(puzzleWidget, &PuzzleWidget::puzzleCompleted,
-            this, &MainWindow::setCompleted, Qt::QueuedConnection);
+            this, &MainWindow::setCompleted, BobUI::QueuedConnection);
 
     frameLayout->addWidget(piecesList);
     frameLayout->addWidget(puzzleWidget);

@@ -1,11 +1,11 @@
 // Copyright (C) 2023 David Edmundson <davidedmundson@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "mockcompositor.h"
-#include <QtGui/QRasterWindow>
-#include <QtGui/qpa/qplatformnativeinterface.h>
-#include <QtWaylandClient/private/wayland-wayland-client-protocol.h>
-#include <QtWaylandClient/private/qwaylandwindow_p.h>
+#include <BobUIGui/QRasterWindow>
+#include <BobUIGui/qpa/qplatformnativeinterface.h>
+#include <BobUIWaylandClient/private/wayland-wayland-client-protocol.h>
+#include <BobUIWaylandClient/private/qwaylandwindow_p.h>
 
 #include "cursorshapev1.h"
 
@@ -19,7 +19,7 @@ public:
     CursorShapeDevice* cursorShape();
 private slots:
     void initTestCase();
-    void cleanup() { QTRY_VERIFY2(isClean(), qPrintable(dirtyMessage())); }
+    void cleanup() { BOBUIRY_VERIFY2(isClean(), qPrintable(dirtyMessage())); }
     void setCursor();
     void overrideCursor();
 };
@@ -42,7 +42,7 @@ CursorShapeDevice* tst_cursor::cursorShape()
 
 void tst_cursor::initTestCase()
 {
-    qputenv("QT_WAYLAND_DISABLE_WINDOWDECORATION", "1");
+    qputenv("BOBUI_WAYLAND_DISABLE_WINDOWDECORATION", "1");
 }
 
 void tst_cursor::setCursor()
@@ -66,7 +66,7 @@ void tst_cursor::setCursor()
     QCOMPARE(setCursorShapeSpy.takeFirst().at(0).toUInt(), enterSerial);
 
     // client sets a different shape
-    window.setCursor(QCursor(Qt::WaitCursor));
+    window.setCursor(QCursor(BobUI::WaitCursor));
     QVERIFY(setCursorShapeSpy.wait());
     QCOMPOSITOR_COMPARE(cursorShape()->m_currentShape, CursorShapeDevice::shape_wait);
 
@@ -74,20 +74,20 @@ void tst_cursor::setCursor()
 
     // client hides the cursor
     // CursorShape will not be used, instead, it uses the old path
-    window.setCursor(QCursor(Qt::BlankCursor));
+    window.setCursor(QCursor(BobUI::BlankCursor));
     QVERIFY(setCursorSpy.wait());
     QVERIFY(setCursorShapeSpy.isEmpty());
     QCOMPOSITOR_VERIFY(!pointer()->cursorSurface());
 
     // same for bitmaps
     QPixmap myCustomPixmap(10, 10);
-    myCustomPixmap.fill(Qt::red);
+    myCustomPixmap.fill(BobUI::red);
     window.setCursor(QCursor(myCustomPixmap));
     QVERIFY(setCursorSpy.wait());
     QVERIFY(setCursorShapeSpy.isEmpty());
 
     // set a shape again
-    window.setCursor(QCursor(Qt::BusyCursor));
+    window.setCursor(QCursor(BobUI::BusyCursor));
     QVERIFY(setCursorShapeSpy.wait());
     QCOMPOSITOR_COMPARE(cursorShape()->m_currentShape, CursorShapeDevice::shape_progress);
 
@@ -99,7 +99,7 @@ void tst_cursor::setCursor()
     QVERIFY(setCursorSpy.wait());
     QVERIFY(setCursorShapeSpy.isEmpty());
 
-    window.setCursor(QCursor(Qt::ArrowCursor));
+    window.setCursor(QCursor(BobUI::ArrowCursor));
 }
 
 void tst_cursor::overrideCursor()
@@ -111,13 +111,13 @@ void tst_cursor::overrideCursor()
 
     QRasterWindow window1;
     window1.resize(64, 64);
-    window1.setCursor(QCursor(Qt::OpenHandCursor));
+    window1.setCursor(QCursor(BobUI::OpenHandCursor));
     window1.show();
     QCOMPOSITOR_TRY_VERIFY(xdgSurface() && xdgSurface()->m_committedConfigureSerial);
 
     QRasterWindow window2;
     window2.resize(64, 64);
-    window2.setCursor(QCursor(Qt::PointingHandCursor));
+    window2.setCursor(QCursor(BobUI::PointingHandCursor));
     window2.show();
 
     // first window should be shape_grab
@@ -152,7 +152,7 @@ void tst_cursor::overrideCursor()
     QCOMPARE(setCursorShapeSpy.takeFirst().at(0).toUInt(), enterSerial);
 
     // set the override cursor
-    QGuiApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    QGuiApplication::setOverrideCursor(QCursor(BobUI::WaitCursor));
 
     // verify it's set to shape_wait
     QVERIFY(setCursorShapeSpy.wait());

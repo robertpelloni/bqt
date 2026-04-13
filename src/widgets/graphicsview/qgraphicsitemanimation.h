@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QGRAPHICSITEMANIMATION_H
 #define QGRAPHICSITEMANIMATION_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtCore/qobject.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUICore/qobject.h>
 
-QT_REQUIRE_CONFIG(graphicsview);
+BOBUI_REQUIRE_CONFIG(graphicsview);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QGraphicsItem;
 class QPointF;
-class QTimeLine;
-class QTransform;
+class BOBUIimeLine;
+class BOBUIransform;
 
 class QGraphicsItemAnimationPrivate;
 class Q_WIDGETS_EXPORT QGraphicsItemAnimation : public QObject
@@ -28,14 +28,14 @@ public:
     QGraphicsItem *item() const;
     void setItem(QGraphicsItem *item);
 
-    QTimeLine *timeLine() const;
-    void setTimeLine(QTimeLine *timeLine);
+    BOBUIimeLine *timeLine() const;
+    void setTimeLine(BOBUIimeLine *timeLine);
 
     QPointF posAt(qreal step) const;
     QList<std::pair<qreal, QPointF> > posList() const;
     void setPosAt(qreal step, const QPointF &pos);
 
-    QTransform transformAt(qreal step) const;
+    BOBUIransform transformAt(qreal step) const;
 
     qreal rotationAt(qreal step) const;
     QList<std::pair<qreal, qreal> > rotationList() const;
@@ -70,6 +70,6 @@ private:
     QGraphicsItemAnimationPrivate *d;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

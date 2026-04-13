@@ -1,17 +1,17 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QDATASTREAM_H
 #define QDATASTREAM_H
 
-#include <QtCore/qobjectdefs.h>
-#include <QtCore/qchar.h>
-#include <QtCore/qcontainerfwd.h>
-#include <QtCore/qiodevicebase.h>
-#include <QtCore/qnamespace.h>
-#include <QtCore/qscopedpointer.h>
-#include <QtCore/qttypetraits.h>
+#include <BobUICore/qobjectdefs.h>
+#include <BobUICore/qchar.h>
+#include <BobUICore/qcontainerfwd.h>
+#include <BobUICore/qiodevicebase.h>
+#include <BobUICore/qnamespace.h>
+#include <BobUICore/qscopedpointer.h>
+#include <BobUICore/bobuitypetraits.h>
 
 #include <iterator>         // std::distance(), std::next()
 #include <memory>
@@ -20,9 +20,9 @@
 #error qdatastream.h must be included before any header file that defines Status
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if QT_CORE_REMOVED_SINCE(6, 3)
+#if BOBUI_CORE_REMOVED_SINCE(6, 3)
 class qfloat16;
 #endif
 class QByteArray;
@@ -30,8 +30,8 @@ class QDataStream;
 class QIODevice;
 class QString;
 
-#if !defined(QT_NO_DATASTREAM)
-namespace QtPrivate {
+#if !defined(BOBUI_NO_DATASTREAM)
+namespace BobUIPrivate {
 class StreamStateSaver;
 template <typename Container>
 QDataStream &readArrayBasedContainer(QDataStream &s, Container &c);
@@ -51,55 +51,55 @@ class Q_CORE_EXPORT QDataStream : public QIODeviceBase
     Q_GADGET
 
 public:
-    enum Version QT7_ONLY(: quint8) {
-        Qt_1_0 = 1,
-        Qt_2_0 = 2,
-        Qt_2_1 = 3,
-        Qt_3_0 = 4,
-        Qt_3_1 = 5,
-        Qt_3_3 = 6,
-        Qt_4_0 = 7,
-        Qt_4_1 = Qt_4_0,
-        Qt_4_2 = 8,
-        Qt_4_3 = 9,
-        Qt_4_4 = 10,
-        Qt_4_5 = 11,
-        Qt_4_6 = 12,
-        Qt_4_7 = Qt_4_6,
-        Qt_4_8 = Qt_4_7,
-        Qt_4_9 = Qt_4_8,
-        Qt_5_0 = 13,
-        Qt_5_1 = 14,
-        Qt_5_2 = 15,
-        Qt_5_3 = Qt_5_2,
-        Qt_5_4 = 16,
-        Qt_5_5 = Qt_5_4,
-        Qt_5_6 = 17,
-        Qt_5_7 = Qt_5_6,
-        Qt_5_8 = Qt_5_7,
-        Qt_5_9 = Qt_5_8,
-        Qt_5_10 = Qt_5_9,
-        Qt_5_11 = Qt_5_10,
-        Qt_5_12 = 18,
-        Qt_5_13 = 19,
-        Qt_5_14 = Qt_5_13,
-        Qt_5_15 = Qt_5_14,
-        Qt_6_0 = 20,
-        Qt_6_1 = Qt_6_0,
-        Qt_6_2 = Qt_6_0,
-        Qt_6_3 = Qt_6_0,
-        Qt_6_4 = Qt_6_0,
-        Qt_6_5 = Qt_6_0,
-        Qt_6_6 = 21,
-        Qt_6_7 = 22,
-        Qt_6_8 = Qt_6_7,
-        Qt_6_9 = Qt_6_7,
-        Qt_6_10 = 23,
-        Qt_6_11 = 24,
-        Qt_6_12 = Qt_6_11,
-        Qt_DefaultCompiledVersion = Qt_6_12
-#if QT_VERSION >= QT_VERSION_CHECK(6, 13, 0)
-#error Add the datastream version for this Qt version and update Qt_DefaultCompiledVersion
+    enum Version BOBUI7_ONLY(: quint8) {
+        BobUI_1_0 = 1,
+        BobUI_2_0 = 2,
+        BobUI_2_1 = 3,
+        BobUI_3_0 = 4,
+        BobUI_3_1 = 5,
+        BobUI_3_3 = 6,
+        BobUI_4_0 = 7,
+        BobUI_4_1 = BobUI_4_0,
+        BobUI_4_2 = 8,
+        BobUI_4_3 = 9,
+        BobUI_4_4 = 10,
+        BobUI_4_5 = 11,
+        BobUI_4_6 = 12,
+        BobUI_4_7 = BobUI_4_6,
+        BobUI_4_8 = BobUI_4_7,
+        BobUI_4_9 = BobUI_4_8,
+        BobUI_5_0 = 13,
+        BobUI_5_1 = 14,
+        BobUI_5_2 = 15,
+        BobUI_5_3 = BobUI_5_2,
+        BobUI_5_4 = 16,
+        BobUI_5_5 = BobUI_5_4,
+        BobUI_5_6 = 17,
+        BobUI_5_7 = BobUI_5_6,
+        BobUI_5_8 = BobUI_5_7,
+        BobUI_5_9 = BobUI_5_8,
+        BobUI_5_10 = BobUI_5_9,
+        BobUI_5_11 = BobUI_5_10,
+        BobUI_5_12 = 18,
+        BobUI_5_13 = 19,
+        BobUI_5_14 = BobUI_5_13,
+        BobUI_5_15 = BobUI_5_14,
+        BobUI_6_0 = 20,
+        BobUI_6_1 = BobUI_6_0,
+        BobUI_6_2 = BobUI_6_0,
+        BobUI_6_3 = BobUI_6_0,
+        BobUI_6_4 = BobUI_6_0,
+        BobUI_6_5 = BobUI_6_0,
+        BobUI_6_6 = 21,
+        BobUI_6_7 = 22,
+        BobUI_6_8 = BobUI_6_7,
+        BobUI_6_9 = BobUI_6_7,
+        BobUI_6_10 = 23,
+        BobUI_6_11 = 24,
+        BobUI_6_12 = BobUI_6_11,
+        BobUI_DefaultCompiledVersion = BobUI_6_12
+#if BOBUI_VERSION >= BOBUI_VERSION_CHECK(6, 13, 0)
+#error Add the datastream version for this BobUI version and update BobUI_DefaultCompiledVersion
 #endif
     };
     Q_ENUM(Version)
@@ -109,7 +109,7 @@ public:
         LittleEndian = QSysInfo::LittleEndian
     };
 
-    enum Status QT7_ONLY(: quint8) {
+    enum Status BOBUI7_ONLY(: quint8) {
         Ok,
         ReadPastEnd,
         ReadCorruptData,
@@ -117,7 +117,7 @@ public:
         SizeLimitExceeded,
     };
 
-    enum FloatingPointPrecision QT7_ONLY(: quint8) {
+    enum FloatingPointPrecision BOBUI7_ONLY(: quint8) {
         SinglePrecision,
         DoublePrecision
     };
@@ -133,12 +133,12 @@ public:
 
     bool atEnd() const;
 
-    QT_CORE_INLINE_SINCE(6, 8)
+    BOBUI_CORE_INLINE_SINCE(6, 8)
     Status status() const;
     void setStatus(Status status);
     void resetStatus();
 
-    QT_CORE_INLINE_SINCE(6, 8)
+    BOBUI_CORE_INLINE_SINCE(6, 8)
     FloatingPointPrecision floatingPointPrecision() const;
     void setFloatingPointPrecision(FloatingPointPrecision precision);
 
@@ -160,7 +160,7 @@ public:
     QDataStream &operator>>(std::nullptr_t &ptr) { ptr = nullptr; return *this; }
 
     QDataStream &operator>>(bool &i);
-#if QT_CORE_REMOVED_SINCE(6, 3)
+#if BOBUI_CORE_REMOVED_SINCE(6, 3)
     QDataStream &operator>>(qfloat16 &f);
 #endif
     QDataStream &operator>>(float &f);
@@ -179,7 +179,7 @@ public:
     QDataStream &operator<<(qint64 i);
     QDataStream &operator<<(quint64 i);
     QDataStream &operator<<(std::nullptr_t) { return *this; }
-#if QT_CORE_REMOVED_SINCE(6, 8) || defined(Q_QDOC)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8) || defined(Q_QDOC)
     QDataStream &operator<<(bool i);
 #endif
 #if !defined(Q_QDOC)
@@ -191,7 +191,7 @@ public:
         return (*this << qint8(i));
     }
 #endif
-#if QT_CORE_REMOVED_SINCE(6, 3)
+#if BOBUI_CORE_REMOVED_SINCE(6, 3)
     QDataStream &operator<<(qfloat16 f);
 #endif
     QDataStream &operator<<(float f);
@@ -202,11 +202,11 @@ public:
 
     explicit operator bool() const noexcept { return status() == Ok; }
 
-#if QT_DEPRECATED_SINCE(6, 11)
-    QT_DEPRECATED_VERSION_X_6_11("Use an overload that takes qint64 length.")
+#if BOBUI_DEPRECATED_SINCE(6, 11)
+    BOBUI_DEPRECATED_VERSION_X_6_11("Use an overload that takes qint64 length.")
     QDataStream &readBytes(char *&, uint &len);
 #endif
-#if QT_CORE_REMOVED_SINCE(6, 7)
+#if BOBUI_CORE_REMOVED_SINCE(6, 7)
     QDataStream &writeBytes(const char *, uint len);
     int skipRawData(int len);
     int readRawData(char *, int len);
@@ -227,7 +227,7 @@ public:
 private:
     Q_DISABLE_COPY(QDataStream)
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
     void* const d = nullptr;
 #endif
 
@@ -236,15 +236,15 @@ private:
     bool noswap = QSysInfo::ByteOrder == QSysInfo::BigEndian;
     quint8 fpPrecision = QDataStream::DoublePrecision;
     quint8 q_status = Ok;
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0) && !defined(QT_BOOTSTRAPPED)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0) && !defined(BOBUI_BOOTSTRAPPED)
     ByteOrder byteorder = BigEndian;
-    int ver = Qt_DefaultCompiledVersion;
+    int ver = BobUI_DefaultCompiledVersion;
 #else
-    Version ver = Qt_DefaultCompiledVersion;
+    Version ver = BobUI_DefaultCompiledVersion;
 #endif
     quint16 transactionDepth = 0;
 
-#if QT_CORE_REMOVED_SINCE(6, 7)
+#if BOBUI_CORE_REMOVED_SINCE(6, 7)
     int readBlock(char *data, int len);
 #endif
     qint64 readBlock(char *data, qint64 len);
@@ -253,27 +253,27 @@ private:
     static constexpr quint32 NullCode = 0xffffffffu;
     static constexpr quint32 ExtendedSize = 0xfffffffeu;
 
-    friend class QtPrivate::StreamStateSaver;
+    friend class BobUIPrivate::StreamStateSaver;
     Q_CORE_EXPORT friend QDataStream &operator<<(QDataStream &out, const QString &str);
     Q_CORE_EXPORT friend QDataStream &operator>>(QDataStream &in, QString &str);
     Q_CORE_EXPORT friend QDataStream &operator<<(QDataStream &out, const QByteArray &ba);
     Q_CORE_EXPORT friend QDataStream &operator>>(QDataStream &in, QByteArray &ba);
     template <typename Container>
-    friend QDataStream &QtPrivate::readArrayBasedContainer(QDataStream &s, Container &c);
+    friend QDataStream &BobUIPrivate::readArrayBasedContainer(QDataStream &s, Container &c);
     template <typename Container>
-    friend QDataStream &QtPrivate::readListBasedContainer(QDataStream &s, Container &c);
+    friend QDataStream &BobUIPrivate::readListBasedContainer(QDataStream &s, Container &c);
     template <typename Container>
-    friend QDataStream &QtPrivate::readAssociativeContainer(QDataStream &s, Container &c);
+    friend QDataStream &BobUIPrivate::readAssociativeContainer(QDataStream &s, Container &c);
     template <typename Container>
-    friend QDataStream &QtPrivate::writeSequentialContainer(QDataStream &s, const Container &c);
+    friend QDataStream &BobUIPrivate::writeSequentialContainer(QDataStream &s, const Container &c);
     template <typename Container>
-    friend QDataStream &QtPrivate::writeAssociativeContainer(QDataStream &s, const Container &c);
+    friend QDataStream &BobUIPrivate::writeAssociativeContainer(QDataStream &s, const Container &c);
     template <typename Container>
-    friend QDataStream &QtPrivate::writeAssociativeMultiContainer(QDataStream &s,
+    friend QDataStream &BobUIPrivate::writeAssociativeMultiContainer(QDataStream &s,
                                                                   const Container &c);
 };
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 class StreamStateSaver
 {
@@ -419,21 +419,21 @@ QDataStream &writeAssociativeMultiContainer(QDataStream &s, const Container &c)
     return s;
 }
 
-} // QtPrivate namespace
+} // BobUIPrivate namespace
 
 template<typename ...T>
 using QDataStreamIfHasOStreamOperators =
-    std::enable_if_t<std::conjunction_v<QTypeTraits::has_ostream_operator<QDataStream, T>...>, QDataStream &>;
+    std::enable_if_t<std::conjunction_v<BOBUIypeTraits::has_ostream_operator<QDataStream, T>...>, QDataStream &>;
 template<typename Container, typename ...T>
 using QDataStreamIfHasOStreamOperatorsContainer =
-    std::enable_if_t<std::conjunction_v<QTypeTraits::has_ostream_operator_container<QDataStream, Container, T>...>, QDataStream &>;
+    std::enable_if_t<std::conjunction_v<BOBUIypeTraits::has_ostream_operator_container<QDataStream, Container, T>...>, QDataStream &>;
 
 template<typename ...T>
 using QDataStreamIfHasIStreamOperators =
-    std::enable_if_t<std::conjunction_v<QTypeTraits::has_istream_operator<QDataStream, T>...>, QDataStream &>;
+    std::enable_if_t<std::conjunction_v<BOBUIypeTraits::has_istream_operator<QDataStream, T>...>, QDataStream &>;
 template<typename Container, typename ...T>
 using QDataStreamIfHasIStreamOperatorsContainer =
-    std::enable_if_t<std::conjunction_v<QTypeTraits::has_istream_operator_container<QDataStream, Container, T>...>, QDataStream &>;
+    std::enable_if_t<std::conjunction_v<BOBUIypeTraits::has_istream_operator_container<QDataStream, Container, T>...>, QDataStream &>;
 
 /*****************************************************************************
   QDataStream inline functions
@@ -442,7 +442,7 @@ using QDataStreamIfHasIStreamOperatorsContainer =
 inline QIODevice *QDataStream::device() const
 { return dev; }
 
-#if QT_CORE_INLINE_IMPL_SINCE(6, 8)
+#if BOBUI_CORE_INLINE_IMPL_SINCE(6, 8)
 QDataStream::Status QDataStream::status() const
 {
     return Status(q_status);
@@ -473,7 +473,7 @@ qint64 QDataStream::readQSizeType(QDataStream &s)
     s >> first;
     if (first == NullCode)
         return -1;
-    if (first < ExtendedSize || s.version() < QDataStream::Qt_6_7)
+    if (first < ExtendedSize || s.version() < QDataStream::BobUI_6_7)
         return qint64(first);
     qint64 extendedLen;
     s >> extendedLen;
@@ -484,7 +484,7 @@ bool QDataStream::writeQSizeType(QDataStream &s, qint64 value)
 {
     if (value < qint64(ExtendedSize)) {
         s << quint32(value);
-    } else if (s.version() >= QDataStream::Qt_6_7) {
+    } else if (s.version() >= QDataStream::BobUI_6_7) {
         s << ExtendedSize << value;
     } else if (value == qint64(ExtendedSize)) {
         s << ExtendedSize;
@@ -565,74 +565,74 @@ Q_CORE_EXPORT QDataStream &operator>>(QDataStream &in, QChar &chr);
 template<typename T>
 inline QDataStreamIfHasIStreamOperatorsContainer<QList<T>, T> operator>>(QDataStream &s, QList<T> &v)
 {
-    return QtPrivate::readArrayBasedContainer(s, v);
+    return BobUIPrivate::readArrayBasedContainer(s, v);
 }
 
 template<typename T>
 inline QDataStreamIfHasOStreamOperatorsContainer<QList<T>, T> operator<<(QDataStream &s, const QList<T> &v)
 {
-    return QtPrivate::writeSequentialContainer(s, v);
+    return BobUIPrivate::writeSequentialContainer(s, v);
 }
 
 template <typename T>
 inline QDataStreamIfHasIStreamOperatorsContainer<QSet<T>, T> operator>>(QDataStream &s, QSet<T> &set)
 {
-    return QtPrivate::readListBasedContainer(s, set);
+    return BobUIPrivate::readListBasedContainer(s, set);
 }
 
 template <typename T>
 inline QDataStreamIfHasOStreamOperatorsContainer<QSet<T>, T> operator<<(QDataStream &s, const QSet<T> &set)
 {
-    return QtPrivate::writeSequentialContainer(s, set);
+    return BobUIPrivate::writeSequentialContainer(s, set);
 }
 
 template <class Key, class T>
 inline QDataStreamIfHasIStreamOperatorsContainer<QHash<Key, T>, Key, T> operator>>(QDataStream &s, QHash<Key, T> &hash)
 {
-    return QtPrivate::readAssociativeContainer(s, hash);
+    return BobUIPrivate::readAssociativeContainer(s, hash);
 }
 
 template <class Key, class T>
 
 inline QDataStreamIfHasOStreamOperatorsContainer<QHash<Key, T>, Key, T> operator<<(QDataStream &s, const QHash<Key, T> &hash)
 {
-    return QtPrivate::writeAssociativeContainer(s, hash);
+    return BobUIPrivate::writeAssociativeContainer(s, hash);
 }
 
 template <class Key, class T>
 inline QDataStreamIfHasIStreamOperatorsContainer<QMultiHash<Key, T>, Key, T> operator>>(QDataStream &s, QMultiHash<Key, T> &hash)
 {
-    return QtPrivate::readAssociativeContainer(s, hash);
+    return BobUIPrivate::readAssociativeContainer(s, hash);
 }
 
 template <class Key, class T>
 inline QDataStreamIfHasOStreamOperatorsContainer<QMultiHash<Key, T>, Key, T> operator<<(QDataStream &s, const QMultiHash<Key, T> &hash)
 {
-    return QtPrivate::writeAssociativeMultiContainer(s, hash);
+    return BobUIPrivate::writeAssociativeMultiContainer(s, hash);
 }
 
 template <class Key, class T>
 inline QDataStreamIfHasIStreamOperatorsContainer<QMap<Key, T>, Key, T> operator>>(QDataStream &s, QMap<Key, T> &map)
 {
-    return QtPrivate::readAssociativeContainer(s, map);
+    return BobUIPrivate::readAssociativeContainer(s, map);
 }
 
 template <class Key, class T>
 inline QDataStreamIfHasOStreamOperatorsContainer<QMap<Key, T>, Key, T> operator<<(QDataStream &s, const QMap<Key, T> &map)
 {
-    return QtPrivate::writeAssociativeContainer(s, map);
+    return BobUIPrivate::writeAssociativeContainer(s, map);
 }
 
 template <class Key, class T>
 inline QDataStreamIfHasIStreamOperatorsContainer<QMultiMap<Key, T>, Key, T> operator>>(QDataStream &s, QMultiMap<Key, T> &map)
 {
-    return QtPrivate::readAssociativeContainer(s, map);
+    return BobUIPrivate::readAssociativeContainer(s, map);
 }
 
 template <class Key, class T>
 inline QDataStreamIfHasOStreamOperatorsContainer<QMultiMap<Key, T>, Key, T> operator<<(QDataStream &s, const QMultiMap<Key, T> &map)
 {
-    return QtPrivate::writeAssociativeMultiContainer(s, map);
+    return BobUIPrivate::writeAssociativeMultiContainer(s, map);
 }
 
 template <class T1, class T2>
@@ -708,8 +708,8 @@ inline QDataStream &operator<<(QDataStream &s, QKeyCombination combination)
     return s << combination.toCombined();
 }
 
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QDATASTREAM_H

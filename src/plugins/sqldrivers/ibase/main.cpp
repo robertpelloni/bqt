@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <qsqldriverplugin.h>
 #include <qstringlist.h>
 #include "qsql_ibase_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class QIBaseDriverPlugin : public QSqlDriverPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QSqlDriverFactoryInterface" FILE "ibase.json")
+    Q_PLUGIN_METADATA(IID "org.bobui-project.BobUI.QSqlDriverFactoryInterface" FILE "ibase.json")
 
 public:
     QIBaseDriverPlugin();
@@ -35,6 +35,6 @@ QSqlDriver* QIBaseDriverPlugin::create(const QString &name)
     return 0;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "main.moc"

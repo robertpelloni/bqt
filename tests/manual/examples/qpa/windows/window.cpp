@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "window.h"
 
@@ -36,8 +36,8 @@ void Window::initialize()
     if (parent())
         setGeometry(QRect(160, 120, 320, 240));
     else {
-        setFlags(flags() | Qt::WindowTitleHint | Qt::WindowSystemMenuHint
-                       | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
+        setFlags(flags() | BobUI::WindowTitleHint | BobUI::WindowSystemMenuHint
+                       | BobUI::WindowMinMaxButtonsHint | BobUI::WindowCloseButtonHint);
         const QSize baseSize = QSize(640, 480);
         setGeometry(QRect(geometry().topLeft(), baseSize));
 
@@ -111,11 +111,11 @@ void Window::resizeEvent(QResizeEvent *)
 void Window::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key()) {
-    case Qt::Key_Backspace:
+    case BobUI::Key_Backspace:
         m_text.chop(1);
         break;
-    case Qt::Key_Enter:
-    case Qt::Key_Return:
+    case BobUI::Key_Enter:
+    case BobUI::Key_Return:
         m_text.append('\n');
         break;
     default:
@@ -131,7 +131,7 @@ void Window::scheduleRender()
         m_renderTimer = startTimer(1);
 }
 
-void Window::timerEvent(QTimerEvent *)
+void Window::timerEvent(BOBUIimerEvent *)
 {
     if (isExposed())
         render();

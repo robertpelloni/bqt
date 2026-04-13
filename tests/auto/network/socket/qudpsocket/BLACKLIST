@@ -6,7 +6,7 @@ macos arm
 [linkLocalIPv6]
 macos arm
 
-# QTBUG-130078
+# BOBUIBUG-130078
 [writeDatagramToNonExistingPeer:localhost-bound, remote-bound]
 vxworks
 [bindMode]

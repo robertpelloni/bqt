@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QCOCOAWINDOW_H
 #define QCOCOAWINDOW_H
@@ -10,18 +10,18 @@
 #include <QRect>
 #include <QPointer>
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 #include "qcocoaglcontext.h"
 #endif
 #include "qnsview.h"
 #include "qnswindow.h"
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
 #include <MoltenVK/mvk_vulkan.h>
 #endif
 
-#include <QtCore/qhash.h>
-#include <QtCore/private/qflatmap_p.h>
+#include <BobUICore/qhash.h>
+#include <BobUICore/private/qflatmap_p.h>
 
 Q_FORWARD_DECLARE_OBJC_CLASS(NSWindow);
 Q_FORWARD_DECLARE_OBJC_CLASS(NSView);
@@ -33,9 +33,9 @@ using NSInteger = long;
 using NSUInteger = unsigned long;
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 class QDebug;
 #endif
 
@@ -50,20 +50,20 @@ class QDebug;
 // in an NSView hierarchy by getting a pointer to the "backing"
 // NSView and not calling QCocoaWindow::show():
 //
-// QWindow *qtWindow = new MyWindow();
-// qtWindow->create();
+// QWindow *bobuiWindow = new MyWindow();
+// bobuiWindow->create();
 // QPlatformNativeInterface *platformNativeInterface = QGuiApplication::platformNativeInterface();
-// NSView *qtView = (NSView *)platformNativeInterface->nativeResourceForWindow("nsview", qtWindow);
-// [parentView addSubview:qtView];
+// NSView *bobuiView = (NSView *)platformNativeInterface->nativeResourceForWindow("nsview", bobuiWindow);
+// [parentView addSubview:bobuiView];
 //
-// See the qt_on_cocoa manual tests for a working example, located
+// See the bobui_on_cocoa manual tests for a working example, located
 // in tests/manual/cocoa at the time of writing.
 
 #ifdef Q_MOC_RUN
 #define Q_NOTIFICATION_HANDLER(notification) Q_INVOKABLE Q_COCOA_NOTIFICATION_##notification
 #else
 #define Q_NOTIFICATION_HANDLER(notification)
-#define Q_NOTIFICATION_PREFIX QT_STRINGIFY2(Q_COCOA_NOTIFICATION_)
+#define Q_NOTIFICATION_PREFIX BOBUI_STRINGIFY2(Q_COCOA_NOTIFICATION_)
 #endif
 
 class QCocoaMenuBar;
@@ -86,8 +86,8 @@ public:
     QMargins safeAreaMargins() const override;
 
     void setVisible(bool visible) override;
-    void setWindowFlags(Qt::WindowFlags flags) override;
-    void setWindowState(Qt::WindowStates state) override;
+    void setWindowFlags(BobUI::WindowFlags flags) override;
+    void setWindowState(BobUI::WindowStates state) override;
     void setWindowTitle(const QString &title) override;
     void setWindowFilePath(const QString &filePath) override;
     void setWindowIcon(const QIcon &icon) override;
@@ -143,11 +143,11 @@ public:
     void windowWillZoom();
 
     bool windowShouldClose();
-    bool windowIsPopupType(Qt::WindowType type = Qt::Widget) const;
+    bool windowIsPopupType(BobUI::WindowType type = BobUI::Widget) const;
 
-    NSInteger windowLevel(Qt::WindowFlags flags);
-    NSUInteger windowStyleMask(Qt::WindowFlags flags);
-    void updateTitleBarButtons(Qt::WindowFlags flags);
+    NSInteger windowLevel(BobUI::WindowFlags flags);
+    NSUInteger windowStyleMask(BobUI::WindowFlags flags);
+    void updateTitleBarButtons(BobUI::WindowFlags flags);
     bool isFixedSize() const;
 
     bool setWindowModified(bool modified) override;
@@ -197,7 +197,7 @@ public:
     QPoint mapToGlobal(const QPoint &pos) const override;
     QPoint mapFromGlobal(const QPoint &pos) const override;
 
-    // Maps between Qt coordinates and potentially non-flipped NSView coordinates
+    // Maps between BobUI coordinates and potentially non-flipped NSView coordinates
     static CGPoint mapToNative(const QPointF &pos, NSView *referenceView);
     static CGRect mapToNative(const QRectF &rect, NSView *referenceView);
     static QPointF mapFromNative(CGPoint pos, NSView *referenceView);
@@ -206,8 +206,8 @@ public:
 protected:
     QCocoaNSWindow *createNSWindow(bool shouldBePanel);
 
-    Qt::WindowStates windowState() const;
-    void applyWindowState(Qt::WindowStates newState);
+    BobUI::WindowStates windowState() const;
+    void applyWindowState(BobUI::WindowStates newState);
     void toggleMaximized();
     void toggleFullScreen();
     bool isTransitioningToFullScreen() const;
@@ -246,8 +246,8 @@ public: // for QNSView
     NSView *m_view = nil;
     QCocoaNSWindow *m_nsWindow = nil;
 
-    Qt::WindowStates m_lastReportedWindowState = Qt::WindowNoState;
-    Qt::WindowModality m_windowModality = Qt::NonModal;
+    BobUI::WindowStates m_lastReportedWindowState = BobUI::WindowNoState;
+    BobUI::WindowModality m_windowModality = BobUI::NonModal;
 
     static QPointer<QCocoaWindow> s_windowUnderMouse;
 
@@ -289,18 +289,18 @@ public: // for QNSView
     static inline id s_globalMouseMonitor = 0;
     static inline id s_applicationActivationObserver = 0;
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     VkSurfaceKHR m_vulkanSurface = nullptr;
 #endif
 };
 
 extern const NSNotificationName QCocoaWindowWillReleaseQNSViewNotification;
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug debug, const QCocoaWindow *window);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCOCOAWINDOW_H
 

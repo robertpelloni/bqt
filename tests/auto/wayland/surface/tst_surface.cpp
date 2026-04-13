@@ -1,10 +1,10 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "mockcompositor.h"
-#include <QtGui/QRasterWindow>
-#if QT_CONFIG(opengl)
-#include <QtOpenGL/QOpenGLWindow>
+#include <BobUIGui/QRasterWindow>
+#if BOBUI_CONFIG(opengl)
+#include <BobUIOpenGL/QOpenGLWindow>
 #endif
 
 using namespace MockCompositor;
@@ -15,10 +15,10 @@ class tst_surface : public QObject, private DefaultCompositor
 public:
     explicit tst_surface();
 private slots:
-    void cleanup() { QTRY_VERIFY2(isClean(), qPrintable(dirtyMessage())); }
+    void cleanup() { BOBUIRY_VERIFY2(isClean(), qPrintable(dirtyMessage())); }
     void createDestroySurface();
     void waitForFrameCallbackRaster();
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
     void waitForFrameCallbackGl();
 #endif
     void negotiateShmFormat();
@@ -63,7 +63,7 @@ void tst_surface::waitForFrameCallbackRaster()
     exec([&] { xdgToplevel()->sendCompleteConfigure(); });
 
     // We should get the first buffer without waiting for a frame callback
-    QTRY_COMPARE(bufferSpy.size(), 1);
+    BOBUIRY_COMPARE(bufferSpy.size(), 1);
     bufferSpy.removeFirst();
 
     // Make sure we follow frame callbacks for some frames
@@ -74,12 +74,12 @@ void tst_surface::waitForFrameCallbackRaster()
             QVERIFY(!xdgToplevel()->surface()->m_waitingFrameCallbacks.empty());
             xdgToplevel()->surface()->sendFrameCallbacks();
         });
-        QTRY_COMPARE(bufferSpy.size(), 1);
+        BOBUIRY_COMPARE(bufferSpy.size(), 1);
         bufferSpy.removeFirst();
     }
 }
 
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
 void tst_surface::waitForFrameCallbackGl()
 {
     class TestWindow : public QOpenGLWindow {
@@ -104,13 +104,13 @@ void tst_surface::waitForFrameCallbackGl()
     exec([&] { xdgToplevel()->sendCompleteConfigure(); });
 
     // We should get the first buffer without waiting for a frame callback
-    QTRY_COMPARE(bufferSpy.size(), 1);
+    BOBUIRY_COMPARE(bufferSpy.size(), 1);
     bufferSpy.removeFirst();
 
     // Make sure we follow frame callbacks for some frames
     for (int i = 0; i < 5; ++i) {
         xdgPingAndWaitForPong(); // Make sure things have happened on the client
-        if (!qEnvironmentVariableIntValue("QT_WAYLAND_DISABLE_WINDOWDECORATION") && i == 0) {
+        if (!qEnvironmentVariableIntValue("BOBUI_WAYLAND_DISABLE_WINDOWDECORATION") && i == 0) {
             QCOMPARE(bufferSpy.size(), 1);
             bufferSpy.removeFirst();
         }
@@ -119,17 +119,17 @@ void tst_surface::waitForFrameCallbackGl()
             QVERIFY(!xdgToplevel()->surface()->m_waitingFrameCallbacks.empty());
             xdgToplevel()->surface()->sendFrameCallbacks();
         });
-        QTRY_COMPARE(bufferSpy.size(), 1);
+        BOBUIRY_COMPARE(bufferSpy.size(), 1);
         bufferSpy.removeFirst();
     }
 }
-#endif // QT_CONFIG(opengl)
+#endif // BOBUI_CONFIG(opengl)
 
 void tst_surface::negotiateShmFormat()
 {
     QSKIP("TODO: I'm not sure why we're choosing xrgb over argb in this case...");
     QRasterWindow window;
-    window.setFlag(Qt::FramelessWindowHint); // decorations force alpha
+    window.setFlag(BobUI::FramelessWindowHint); // decorations force alpha
     QSurfaceFormat format;
     format.setAlphaBufferSize(0);
     window.setFormat(format);
@@ -191,7 +191,7 @@ void tst_surface::createSubsurface()
 
 }
 
-// Used to cause a crash in libwayland (QTBUG-79674)
+// Used to cause a crash in libwayland (BOBUIBUG-79674)
 void tst_surface::createSubsurfaceForHiddenParent()
 {
     QRasterWindow window;

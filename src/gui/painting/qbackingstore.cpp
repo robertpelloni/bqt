@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include <qbackingstore.h>
 #include <qwindow.h>
@@ -15,7 +15,7 @@
 
 #include <private/qhighdpiscaling_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QBackingStorePrivate
 {
@@ -51,13 +51,13 @@ public:
     QRegion staticContents;
     QSize size;
     QSize nativeSize;
-    bool downscale = qEnvironmentVariableIntValue("QT_WIDGETS_HIGHDPI_DOWNSCALE") > 0;
+    bool downscale = qEnvironmentVariableIntValue("BOBUI_WIDGETS_HIGHDPI_DOWNSCALE") > 0;
 };
 
 /*!
     \class QBackingStore
     \since 5.0
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QBackingStore class provides a drawing area for QWindow.
 
@@ -124,7 +124,7 @@ void QBackingStore::beginPaint(const QRegion &region)
     QPlatformBackingStore *platformBackingStore = handle();
     platformBackingStore->beginPaint(QHighDpi::scale(region, toNativeFactor));
 
-    // When QtGui is applying a high-dpi scale factor the backing store
+    // When BobUIGui is applying a high-dpi scale factor the backing store
     // creates a "large" backing store image. This image needs to be
     // painted on as a high-dpi image, which is done by setting
     // devicePixelRatio. Do this on a separate image instance that shares
@@ -297,7 +297,7 @@ bool QBackingStore::hasStaticContents() const
     return !d_ptr->staticContents.isEmpty();
 }
 
-void Q_GUI_EXPORT qt_scrollRectInImage(QImage &img, const QRect &rect, const QPoint &offset)
+void Q_GUI_EXPORT bobui_scrollRectInImage(QImage &img, const QRect &rect, const QPoint &offset)
 {
     // make sure we don't detach
     uchar *mem = const_cast<uchar*>(img.constBits());
@@ -311,7 +311,7 @@ void Q_GUI_EXPORT qt_scrollRectInImage(QImage &img, const QRect &rect, const QPo
         return;
 
     const QRect destRect = sourceRect.translated(offset);
-    Q_ASSERT_X(imageRect.contains(destRect), "qt_scrollRectInImage",
+    Q_ASSERT_X(imageRect.contains(destRect), "bobui_scrollRectInImage",
         "The sourceRect should already account for clipping, both pre and post scroll");
 
     const uchar *src;
@@ -358,4 +358,4 @@ QPlatformBackingStore *QBackingStore::handle() const
     return d_ptr->platformBackingStore;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

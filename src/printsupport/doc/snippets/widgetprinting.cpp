@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
-#include <QtPrintSupport/qtprintsupportglobal.h>
-#if QT_CONFIG(printdialog)
+#include <BobUIWidgets>
+#include <BobUIPrintSupport/bobuiprintsupportglobal.h>
+#if BOBUI_CONFIG(printdialog)
 #include <QPrinter>
 #include <QPrintDialog>
 #endif
@@ -19,7 +19,7 @@ public:
         connect(myWidget, &QPushButton::clicked, this, &Window::print);
         myWidget2 = new QPushButton("Print Document");
         connect(myWidget2, &QPushButton::clicked, this, &Window::printFile);
-        editor = new QTextEdit(this);
+        editor = new BOBUIextEdit(this);
 
         QVBoxLayout *layout = new QVBoxLayout;
         layout->addWidget(myWidget);
@@ -31,7 +31,7 @@ public:
 private slots:
     void print()
     {
-    #if defined(QT_PRINTSUPPORT_LIB) && QT_CONFIG(printer)
+    #if defined(BOBUI_PRINTSUPPORT_LIB) && BOBUI_CONFIG(printer)
         QPrinter printer(QPrinter::HighResolution);
 
         printer.setOutputFileName("test.pdf");
@@ -57,7 +57,7 @@ private slots:
 
     void printFile()
     {
-    #if defined(QT_PRINTSUPPORT_LIB) && QT_CONFIG(printdialog)
+    #if defined(BOBUI_PRINTSUPPORT_LIB) && BOBUI_CONFIG(printdialog)
 //! [1]
         QPrinter printer;
 
@@ -75,7 +75,7 @@ private slots:
 private:
     QPushButton *myWidget;
     QPushButton *myWidget2;
-    QTextEdit   *editor;
+    BOBUIextEdit   *editor;
 };
 
 #include "main.moc"

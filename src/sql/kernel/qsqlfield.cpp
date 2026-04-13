@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qsqlfield.h"
 #include "qdebug.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QSqlFieldPrivate : public QSharedData
 {
@@ -43,7 +43,7 @@ public:
     bool gen: 1;
     bool autoval: 1;
 };
-QT_DEFINE_QESDP_SPECIALIZATION_DTOR(QSqlFieldPrivate)
+BOBUI_DEFINE_QESDP_SPECIALIZATION_DTOR(QSqlFieldPrivate)
 
 
 /*!
@@ -53,7 +53,7 @@ QT_DEFINE_QESDP_SPECIALIZATION_DTOR(QSqlFieldPrivate)
 
     \ingroup database
     \ingroup shared
-    \inmodule QtSql
+    \inmodule BobUISql
 
     QSqlField represents the characteristics of a single column in a
     database table or view, such as the data type and column name. A
@@ -220,7 +220,7 @@ void QSqlField::setDefaultValue(const QVariant &value)
     d->def = value;
 }
 
-#if QT_DEPRECATED_SINCE(6, 8)
+#if BOBUI_DEPRECATED_SINCE(6, 8)
 /*!
     \internal
     \deprecated [6.8] This internal value is no longer used.
@@ -471,7 +471,7 @@ QVariant QSqlField::defaultValue() const
     return d->def;
 }
 
-#if QT_DEPRECATED_SINCE(6, 8)
+#if BOBUI_DEPRECATED_SINCE(6, 8)
 /*!
     \internal
     \deprecated [6.8] This internal value is no longer used.
@@ -492,7 +492,7 @@ int QSqlField::typeID() const
     \since 6.8
 
     This property holds the generated state. If \a generated is \c false,
-    no SQL will be generated for this field; otherwise, Qt classes such as
+    no SQL will be generated for this field; otherwise, BobUI classes such as
     QSqlQueryModel and QSqlTableModel will generate SQL for this field.
 */
 
@@ -513,7 +513,7 @@ bool QSqlField::isValid() const
     return d->type.isValid();
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QSqlField &f)
 {
     QDebugStateSaver saver(dbg);
@@ -594,6 +594,6 @@ QString QSqlField::tableName() const
     return d->table;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsqlfield.cpp"

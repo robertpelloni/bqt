@@ -1,17 +1,17 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDESKTOPSERVICES_H
 #define QDESKTOPSERVICES_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qstring.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qstring.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
-#ifndef QT_NO_DESKTOPSERVICES
+#ifndef BOBUI_NO_DESKTOPSERVICES
 
 class QUrl;
 class QObject;
@@ -24,9 +24,9 @@ public:
     static void unsetUrlHandler(const QString &scheme);
 };
 
-#endif // QT_NO_DESKTOPSERVICES
+#endif // BOBUI_NO_DESKTOPSERVICES
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QDESKTOPSERVICES_H
 

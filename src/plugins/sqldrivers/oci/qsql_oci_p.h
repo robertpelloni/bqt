@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSQL_OCI_H
 #define QSQL_OCI_H
@@ -9,17 +9,17 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtSql/qsqldriver.h>
-#include <QtSql/private/qsqlcachedresult_p.h>
+#include <BobUISql/qsqldriver.h>
+#include <BobUISql/private/qsqlcachedresult_p.h>
 
-#ifdef QT_PLUGIN
+#ifdef BOBUI_PLUGIN
 #define Q_EXPORT_SQLDRIVER_OCI
 #else
 #define Q_EXPORT_SQLDRIVER_OCI Q_SQL_EXPORT
@@ -28,7 +28,7 @@
 typedef struct OCIEnv OCIEnv;
 typedef struct OCISvcCtx OCISvcCtx;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QSqlResult;
 class QOCIDriverPrivate;
@@ -97,6 +97,6 @@ private:
     Q_DECLARE_PRIVATE(QOCIResult)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSQL_OCI_H

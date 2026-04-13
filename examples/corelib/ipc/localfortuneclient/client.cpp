@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "client.h"
 
@@ -7,9 +7,9 @@
 #include <QGridLayout>
 #include <QGuiApplication>
 #include <QMessageBox>
-#include <QTimer>
+#include <BOBUIimer>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 Client::Client(QWidget *parent)
     : QDialog(parent),
@@ -19,7 +19,7 @@ Client::Client(QWidget *parent)
                                 "Local Fortune Server example as well."))),
       socket(new QLocalSocket(this))
 {
-    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+    setWindowFlags(windowFlags() & ~BobUI::WindowContextHelpButtonHint);
     QLabel *hostLabel = new QLabel(tr("&Server name:"));
     hostLabel->setBuddy(hostLineEdit);
 
@@ -33,7 +33,7 @@ Client::Client(QWidget *parent)
     buttonBox->addButton(quitButton, QDialogButtonBox::RejectRole);
 
     in.setDevice(socket);
-    in.setVersion(QDataStream::Qt_6_0);
+    in.setVersion(QDataStream::BobUI_6_0);
 
     connect(hostLineEdit, &QLineEdit::textChanged,
             this, &Client::enableGetFortuneButton);
@@ -72,7 +72,7 @@ void Client::readFortune()
         return;
 
     if (nextFortune == currentFortune) {
-        QTimer::singleShot(0, this, &Client::requestNewFortune);
+        BOBUIimer::singleShot(0, this, &Client::requestNewFortune);
         return;
     }
 

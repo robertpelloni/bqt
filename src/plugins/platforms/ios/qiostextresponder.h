@@ -1,27 +1,27 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QIOSTEXTRESPONDER_H
 #define QIOSTEXTRESPONDER_H
 
 #import <UIKit/UIKit.h>
 
-#include <QtCore/qstring.h>
-#include <QtGui/qevent.h>
+#include <BobUICore/qstring.h>
+#include <BobUIGui/qevent.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QIOSInputContext;
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 @interface QIOSTextResponder : UIResponder
 
-- (instancetype)initWithInputContext:(QT_PREPEND_NAMESPACE(QIOSInputContext) *)context;
+- (instancetype)initWithInputContext:(BOBUI_PREPEND_NAMESPACE(QIOSInputContext) *)context;
 
-- (void)notifyInputDelegate:(Qt::InputMethodQueries)updatedProperties;
-- (BOOL)needsKeyboardReconfigure:(Qt::InputMethodQueries)updatedProperties;
+- (void)notifyInputDelegate:(BobUI::InputMethodQueries)updatedProperties;
+- (BOOL)needsKeyboardReconfigure:(BobUI::InputMethodQueries)updatedProperties;
 - (void)reset;
 - (void)commit;
 
@@ -29,12 +29,12 @@ QT_END_NAMESPACE
 
 @interface QIOSTextInputResponder : QIOSTextResponder <UITextInputTraits, UIKeyInput, UITextInput>
 
-- (instancetype)initWithInputContext:(QT_PREPEND_NAMESPACE(QIOSInputContext) *)context;
-- (BOOL)needsKeyboardReconfigure:(Qt::InputMethodQueries)updatedProperties;
+- (instancetype)initWithInputContext:(BOBUI_PREPEND_NAMESPACE(QIOSInputContext) *)context;
+- (BOOL)needsKeyboardReconfigure:(BobUI::InputMethodQueries)updatedProperties;
 - (void)reset;
 - (void)commit;
 
-- (void)notifyInputDelegate:(Qt::InputMethodQueries)updatedProperties;
+- (void)notifyInputDelegate:(BobUI::InputMethodQueries)updatedProperties;
 
 @property(readwrite, retain) UIView *inputView;
 @property(readwrite, retain) UIView *inputAccessoryView;

@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef ANDROIDJNIACCESSIBILITY_H
 #define ANDROIDJNIACCESSIBILITY_H
 #include <jni.h>
-#include <QtCore/qglobal.h>
+#include <BobUICore/qglobal.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QObject;
 class QJniEnvironment;
 
-namespace QtAndroidAccessibility
+namespace BobUIAndroidAccessibility
 {
     bool isActive();
     bool registerNatives(QJniEnvironment &env);
@@ -26,6 +26,6 @@ namespace QtAndroidAccessibility
     void createAccessibilityContextObject(QObject *parent);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // ANDROIDJNIINPUT_H

@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 //
 //  W A R N I N G
@@ -33,7 +33,7 @@
 #include "qdbusmessage.h"
 #include "qdbusconnection_p.h"
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
 BOBUI_BEGIN_NAMESPACE
 
@@ -141,7 +141,7 @@ public:
 
 BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN(QDBusSlotCache, Q_DBUS_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QDBusSlotCache, Q_DBUS_EXPORT)
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS
 #endif

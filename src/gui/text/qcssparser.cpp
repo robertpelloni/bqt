@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qcssparser_p.h"
 
-#include <QtCore/qmap.h>
+#include <BobUICore/qmap.h>
 #include <qdebug.h>
 #include <qicon.h>
 #include <qcolor.h>
@@ -13,19 +13,19 @@
 #include <qfontmetrics.h>
 #include <qbrush.h>
 #include <qimagereader.h>
-#include <qtextformat.h>
+#include <bobuiextformat.h>
 
-#include <QtCore/q20algorithm.h>
+#include <BobUICore/q20algorithm.h>
 
-#ifndef QT_NO_CSSPARSER
+#ifndef BOBUI_NO_CSSPARSER
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-QT_IMPL_METATYPE_EXTERN_TAGGED(QCss::BackgroundData, QCss__BackgroundData)
-QT_IMPL_METATYPE_EXTERN_TAGGED(QCss::LengthData, QCss__LengthData)
-QT_IMPL_METATYPE_EXTERN_TAGGED(QCss::BorderData, QCss__BorderData)
+BOBUI_IMPL_METATYPE_EXTERN_TAGGED(QCss::BackgroundData, QCss__BackgroundData)
+BOBUI_IMPL_METATYPE_EXTERN_TAGGED(QCss::LengthData, QCss__LengthData)
+BOBUI_IMPL_METATYPE_EXTERN_TAGGED(QCss::BorderData, QCss__BorderData)
 
 #include "qcssscanner.cpp"
 
@@ -59,27 +59,27 @@ struct QCssKnownValue::ByName
 
 // This array is sorted alphabetically.
 static constexpr QCssKnownValue properties[] = {
-    { "-qt-background-role", QtBackgroundRole },
-    { "-qt-block-indent", QtBlockIndent },
-    { "-qt-fg-texture-cachekey", QtForegroundTextureCacheKey },
-    { "-qt-foreground", QtForeground },
-    { "-qt-line-height-type", QtLineHeightType },
-    { "-qt-list-indent", QtListIndent },
-    { "-qt-list-number-prefix", QtListNumberPrefix },
-    { "-qt-list-number-suffix", QtListNumberSuffix },
-    { "-qt-paragraph-type", QtParagraphType },
-    { "-qt-stroke-color", QtStrokeColor },
-    { "-qt-stroke-dasharray", QtStrokeDashArray },
-    { "-qt-stroke-dashoffset", QtStrokeDashOffset },
-    { "-qt-stroke-linecap", QtStrokeLineCap },
-    { "-qt-stroke-linejoin", QtStrokeLineJoin },
-    { "-qt-stroke-miterlimit", QtStrokeMiterLimit },
-    { "-qt-stroke-width", QtStrokeWidth },
-    { "-qt-style-features", QtStyleFeatures },
-    { "-qt-table-type", QtTableType },
-    { "-qt-user-state", QtUserState },
-    { "accent-color", QtAccent },
-    { "alternate-background-color", QtAlternateBackground },
+    { "-bobui-background-role", BobUIBackgroundRole },
+    { "-bobui-block-indent", BobUIBlockIndent },
+    { "-bobui-fg-texture-cachekey", BobUIForegroundTextureCacheKey },
+    { "-bobui-foreground", BobUIForeground },
+    { "-bobui-line-height-type", BobUILineHeightType },
+    { "-bobui-list-indent", BobUIListIndent },
+    { "-bobui-list-number-prefix", BobUIListNumberPrefix },
+    { "-bobui-list-number-suffix", BobUIListNumberSuffix },
+    { "-bobui-paragraph-type", BobUIParagraphType },
+    { "-bobui-stroke-color", BobUIStrokeColor },
+    { "-bobui-stroke-dasharray", BobUIStrokeDashArray },
+    { "-bobui-stroke-dashoffset", BobUIStrokeDashOffset },
+    { "-bobui-stroke-linecap", BobUIStrokeLineCap },
+    { "-bobui-stroke-linejoin", BobUIStrokeLineJoin },
+    { "-bobui-stroke-miterlimit", BobUIStrokeMiterLimit },
+    { "-bobui-stroke-width", BobUIStrokeWidth },
+    { "-bobui-style-features", BobUIStyleFeatures },
+    { "-bobui-table-type", BobUITableType },
+    { "-bobui-user-state", BobUIUserState },
+    { "accent-color", BobUIAccent },
+    { "alternate-background-color", BobUIAlternateBackground },
     { "background", Background },
     { "background-attachment", BackgroundAttachment },
     { "background-clip", BackgroundClip },
@@ -126,9 +126,9 @@ static constexpr QCssKnownValue properties[] = {
     { "font-variant", FontVariant },
     { "font-weight", FontWeight },
     { "height", Height },
-    { "icon", QtIcon },
-    { "image", QtImage },
-    { "image-position", QtImageAlignment },
+    { "icon", BobUIIcon },
+    { "image", BobUIImage },
+    { "image-position", BobUIImageAlignment },
     { "left", Left },
     { "letter-spacing", LetterSpacing },
     { "line-height", LineHeight },
@@ -160,14 +160,14 @@ static constexpr QCssKnownValue properties[] = {
     { "padding-top", PaddingTop },
     { "page-break-after", PageBreakAfter },
     { "page-break-before", PageBreakBefore },
-    { "placeholder-text-color", QtPlaceHolderTextColor },
+    { "placeholder-text-color", BobUIPlaceHolderTextColor },
     { "position", Position },
     { "right", Right },
-    { "selection-background-color", QtSelectionBackground },
-    { "selection-color", QtSelectionForeground },
-    { "spacing", QtSpacing },
-    { "subcontrol-origin", QtOrigin },
-    { "subcontrol-position", QtPosition },
+    { "selection-background-color", BobUISelectionBackground },
+    { "selection-color", BobUISelectionForeground },
+    { "spacing", BobUISpacing },
+    { "subcontrol-origin", BobUIOrigin },
+    { "subcontrol-position", BobUIPosition },
     { "text-align", TextAlignment },
     { "text-decoration", TextDecoration },
     { "text-decoration-color", TextDecorationColor },
@@ -383,12 +383,12 @@ CHECK_ARRAY_IS_SORTED(styleFeatures, size_t(NumKnownStyleFeatures) - 1)
 
 static bool operator<(const QString &name, const QCssKnownValue &prop)
 {
-    return QString::compare(name, QLatin1StringView(prop.name), Qt::CaseInsensitive) < 0;
+    return QString::compare(name, QLatin1StringView(prop.name), BobUI::CaseInsensitive) < 0;
 }
 
 static bool operator<(const QCssKnownValue &prop, const QString &name)
 {
-    return QString::compare(QLatin1StringView(prop.name), name, Qt::CaseInsensitive) < 0;
+    return QString::compare(QLatin1StringView(prop.name), name, BobUI::CaseInsensitive) < 0;
 }
 
 #undef CHECK_ARRAY_IS_SORTED
@@ -442,11 +442,11 @@ LengthData ValueExtractor::lengthValue(const Value& v)
     QStringView s(str);
     LengthData data;
     data.unit = LengthData::None;
-    if (s.endsWith(u"px", Qt::CaseInsensitive))
+    if (s.endsWith(u"px", BobUI::CaseInsensitive))
         data.unit = LengthData::Px;
-    else if (s.endsWith(u"ex", Qt::CaseInsensitive))
+    else if (s.endsWith(u"ex", BobUI::CaseInsensitive))
         data.unit = LengthData::Ex;
-    else if (s.endsWith(u"em", Qt::CaseInsensitive))
+    else if (s.endsWith(u"em", BobUI::CaseInsensitive))
         data.unit = LengthData::Em;
 
     if (data.unit != LengthData::None)
@@ -466,13 +466,13 @@ static int lengthValueFromData(const LengthData& data, const QFont& f)
     return qRound(qBound(double(INT_MIN) + 0.1, scale * data.number, double(INT_MAX)));
 }
 
-QTextLength ValueExtractor::textLength(const Declaration &decl)
+BOBUIextLength ValueExtractor::textLength(const Declaration &decl)
 {
     const LengthData data = lengthValue(decl.d->values.at(0));
     if (data.unit == LengthData::Percent)
-        return QTextLength(QTextLength::PercentageLength, data.number);
+        return BOBUIextLength(BOBUIextLength::PercentageLength, data.number);
 
-    return QTextLength(QTextLength::FixedLength, lengthValueFromData(data, f));
+    return BOBUIextLength(BOBUIextLength::FixedLength, lengthValueFromData(data, f));
 }
 
 int ValueExtractor::lengthValue(const Declaration &decl)
@@ -544,7 +544,7 @@ bool ValueExtractor::extractGeometry(int *w, int *h, int *minw, int *minh, int *
 }
 
 bool ValueExtractor::extractPosition(int *left, int *top, int *right, int *bottom, QCss::Origin *origin,
-                                     Qt::Alignment *position, QCss::PositionMode *mode, Qt::Alignment *textAlignment)
+                                     BobUI::Alignment *position, QCss::PositionMode *mode, BobUI::Alignment *textAlignment)
 {
     extractFont();
     bool hit = false;
@@ -555,8 +555,8 @@ bool ValueExtractor::extractPosition(int *left, int *top, int *right, int *botto
         case Top: *top = lengthValue(decl); break;
         case Right: *right = lengthValue(decl); break;
         case Bottom: *bottom = lengthValue(decl); break;
-        case QtOrigin: *origin = decl.originValue(); break;
-        case QtPosition: *position = decl.alignmentValue(); break;
+        case BobUIOrigin: *origin = decl.originValue(); break;
+        case BobUIPosition: *position = decl.alignmentValue(); break;
         case TextAlignment: *textAlignment = decl.alignmentValue(); break;
         case Position: *mode = decl.positionValue(); break;
         default: continue;
@@ -585,7 +585,7 @@ bool ValueExtractor::extractBox(int *margins, int *paddings, int *spacing)
         case MarginTop: margins[TopEdge] = lengthValue(decl); break;
         case MarginBottom: margins[BottomEdge] = lengthValue(decl); break;
         case Margin: lengthValues(decl, margins); break;
-        case QtSpacing: if (spacing) *spacing = lengthValue(decl); break;
+        case BobUISpacing: if (spacing) *spacing = lengthValue(decl); break;
 
         default: continue;
         }
@@ -600,7 +600,7 @@ int ValueExtractor::extractStyleFeatures()
     int features = StyleFeature_None;
     for (int i = 0; i < declarations.size(); i++) {
         const Declaration &decl = declarations.at(i);
-        if (decl.d->propertyId == QtStyleFeatures)
+        if (decl.d->propertyId == BobUIStyleFeatures)
             features = decl.styleFeaturesValue();
     }
     return features;
@@ -727,26 +727,26 @@ bool ValueExtractor::extractOutline(int *borders, QBrush *colors, BorderStyle *s
     return hit;
 }
 
-static Qt::Alignment parseAlignment(const QCss::Value *values, int count)
+static BobUI::Alignment parseAlignment(const QCss::Value *values, int count)
 {
-    Qt::Alignment a[2] = { { }, { } };
+    BobUI::Alignment a[2] = { { }, { } };
     for (int i = 0; i < qMin(2, count); i++) {
         if (values[i].type != Value::KnownIdentifier)
             break;
         switch (values[i].variant.toInt()) {
-        case Value_Left: a[i] = Qt::AlignLeft; break;
-        case Value_Right: a[i] = Qt::AlignRight; break;
-        case Value_Top: a[i] = Qt::AlignTop; break;
-        case Value_Bottom: a[i] = Qt::AlignBottom; break;
-        case Value_Center: a[i] = Qt::AlignCenter; break;
+        case Value_Left: a[i] = BobUI::AlignLeft; break;
+        case Value_Right: a[i] = BobUI::AlignRight; break;
+        case Value_Top: a[i] = BobUI::AlignTop; break;
+        case Value_Bottom: a[i] = BobUI::AlignBottom; break;
+        case Value_Center: a[i] = BobUI::AlignCenter; break;
         default: break;
         }
     }
 
-    if (a[0] == Qt::AlignCenter && a[1] != 0 && a[1] != Qt::AlignCenter)
-        a[0] = (a[1] == Qt::AlignLeft || a[1] == Qt::AlignRight) ? Qt::AlignVCenter : Qt::AlignHCenter;
-    if ((a[1] == 0 || a[1] == Qt::AlignCenter) && a[0] != Qt::AlignCenter)
-        a[1] = (a[0] == Qt::AlignLeft || a[0] == Qt::AlignRight) ? Qt::AlignVCenter : Qt::AlignHCenter;
+    if (a[0] == BobUI::AlignCenter && a[1] != 0 && a[1] != BobUI::AlignCenter)
+        a[0] = (a[1] == BobUI::AlignLeft || a[1] == BobUI::AlignRight) ? BobUI::AlignVCenter : BobUI::AlignHCenter;
+    if ((a[1] == 0 || a[1] == BobUI::AlignCenter) && a[0] != BobUI::AlignCenter)
+        a[1] = (a[0] == BobUI::AlignLeft || a[0] == BobUI::AlignRight) ? BobUI::AlignVCenter : BobUI::AlignHCenter;
     return a[0] | a[1];
 }
 
@@ -761,7 +761,7 @@ static ColorData parseColorValue(QCss::Value v)
         return qvariant_cast<QColor>(v.variant);
 
     if (v.type == Value::KnownIdentifier && v.variant.toInt() == Value_Transparent)
-        return QColor(Qt::transparent);
+        return QColor(BobUI::transparent);
 
     if (v.type != Value::Function)
         return ColorData();
@@ -771,7 +771,7 @@ static ColorData parseColorValue(QCss::Value v)
         return ColorData();
 
     const QString &identifier = lst.at(0);
-    if ((identifier.compare("palette"_L1, Qt::CaseInsensitive)) == 0) {
+    if ((identifier.compare("palette"_L1, BobUI::CaseInsensitive)) == 0) {
         static_assert((Value_LastColorRole - Value_FirstColorRole + 1) == QPalette::ColorRole::NColorRoles);
 
         int role = findKnownValue(lst.at(1).trimmed(), values, NumKnownValues);
@@ -898,7 +898,7 @@ static BrushData parseBrushValue(const QCss::Value &v, const QPalette &pal)
         if (!parser.test(COLON))
             return BrushData();
         parser.skipSpace();
-        if (attr.compare("stop"_L1, Qt::CaseInsensitive) == 0) {
+        if (attr.compare("stop"_L1, BobUI::CaseInsensitive) == 0) {
             QCss::Value stop, color;
             parser.next();
             if (!parser.parseTerm(&stop)) return BrushData();
@@ -913,9 +913,9 @@ static BrushData parseBrushValue(const QCss::Value &v, const QPalette &pal)
             parser.next();
             QCss::Value value;
             (void)parser.parseTerm(&value);
-            if (attr.compare("spread"_L1, Qt::CaseInsensitive) == 0)
+            if (attr.compare("spread"_L1, BobUI::CaseInsensitive) == 0)
                 spread = spreads.indexOf(value.variant.toString());
-            else if (attr.compare("coordinatemode"_L1, Qt::CaseInsensitive) == 0)
+            else if (attr.compare("coordinatemode"_L1, BobUI::CaseInsensitive) == 0)
                 coordinateMode = coordinateModes.indexOf(value.variant.toString());
             else
                 vars[attr] = value.variant.toReal();
@@ -1062,12 +1062,12 @@ void ValueExtractor::borderValue(const Declaration &decl, int *width, QCss::Bord
     }
 }
 
-static void parseShorthandBackgroundProperty(const QList<QCss::Value> &values, BrushData *brush, QString *image, Repeat *repeat, Qt::Alignment *alignment, const QPalette &pal)
+static void parseShorthandBackgroundProperty(const QList<QCss::Value> &values, BrushData *brush, QString *image, Repeat *repeat, BobUI::Alignment *alignment, const QPalette &pal)
 {
     *brush = BrushData();
     *image = QString();
     *repeat = Repeat_XY;
-    *alignment = Qt::AlignTop | Qt::AlignLeft;
+    *alignment = BobUI::AlignTop | BobUI::AlignLeft;
 
     for (int i = 0; i < values.size(); ++i) {
         const QCss::Value &v = values.at(i);
@@ -1078,7 +1078,7 @@ static void parseShorthandBackgroundProperty(const QList<QCss::Value> &values, B
             *image = QString();
             continue;
         } else if (v.type == Value::KnownIdentifier && v.variant.toInt() == Value_Transparent) {
-            *brush = QBrush(Qt::transparent);
+            *brush = QBrush(BobUI::transparent);
         }
 
         Repeat repeatAttempt = static_cast<Repeat>(findKnownValue(v.variant.toString(),
@@ -1096,7 +1096,7 @@ static void parseShorthandBackgroundProperty(const QList<QCss::Value> &values, B
                 ++i;
                 ++count;
             }
-            Qt::Alignment a = parseAlignment(values.constData() + start, count);
+            BobUI::Alignment a = parseAlignment(values.constData() + start, count);
             if (int(a) != 0) {
                 *alignment = a;
                 continue;
@@ -1109,7 +1109,7 @@ static void parseShorthandBackgroundProperty(const QList<QCss::Value> &values, B
 }
 
 bool ValueExtractor::extractBackground(QBrush *brush, QString *image, Repeat *repeat,
-                                       Qt::Alignment *alignment, Origin *origin, Attachment *attachment,
+                                       BobUI::Alignment *alignment, Origin *origin, Attachment *attachment,
                                        Origin *clip)
 {
     bool hit = false;
@@ -1190,14 +1190,14 @@ static bool setFontSizeFromValue(QCss::Value value, QFont *font, int *fontSizeAd
 
     bool valid = false;
     QString s = value.variant.toString();
-    if (s.endsWith("pt"_L1, Qt::CaseInsensitive)) {
+    if (s.endsWith("pt"_L1, BobUI::CaseInsensitive)) {
         s.chop(2);
         value.variant = s;
         if (value.variant.convert(QMetaType::fromType<qreal>())) {
             font->setPointSizeF(qBound(qreal(0), value.variant.toReal(), qreal(1 << 24) - 1));
             valid = true;
         }
-    } else if (s.endsWith("px"_L1, Qt::CaseInsensitive)) {
+    } else if (s.endsWith("px"_L1, BobUI::CaseInsensitive)) {
         s.chop(2);
         value.variant = s;
         if (value.variant.convert(QMetaType::fromType<qreal>())) {
@@ -1309,12 +1309,12 @@ static void setLetterSpacingFromValue(const QCss::Value &value, QFont *font)
     QString s = value.variant.toString();
     qreal val;
     bool ok = false;
-    if (s.endsWith("em"_L1, Qt::CaseInsensitive)) {
+    if (s.endsWith("em"_L1, BobUI::CaseInsensitive)) {
         s.chop(2);
         val = s.toDouble(&ok);
         if (ok)
             font->setLetterSpacing(QFont::PercentageSpacing, (val + 1.0) * 100);
-    } else if (s.endsWith("px"_L1, Qt::CaseInsensitive)) {
+    } else if (s.endsWith("px"_L1, BobUI::CaseInsensitive)) {
         s.chop(2);
         val = s.toDouble(&ok);
         if (ok)
@@ -1325,7 +1325,7 @@ static void setLetterSpacingFromValue(const QCss::Value &value, QFont *font)
 static void setWordSpacingFromValue(const QCss::Value &value, QFont *font)
 {
     QString s = value.variant.toString();
-    if (s.endsWith("px"_L1, Qt::CaseInsensitive)) {
+    if (s.endsWith("px"_L1, BobUI::CaseInsensitive)) {
         s.chop(2);
         qreal val;
         bool ok = false;
@@ -1432,11 +1432,11 @@ bool ValueExtractor::extractPalette(QBrush *foreground,
         const Declaration &decl = declarations.at(i);
         switch (decl.d->propertyId) {
         case Color: *foreground = decl.brushValue(pal); break;
-        case QtSelectionForeground: *selectedForeground = decl.brushValue(pal); break;
-        case QtSelectionBackground: *selectedBackground = decl.brushValue(pal); break;
-        case QtAlternateBackground: *alternateBackground = decl.brushValue(pal); break;
-        case QtPlaceHolderTextColor: *placeHolderTextForeground = decl.brushValue(pal); break;
-        case QtAccent: *accent = decl.brushValue(pal); break;
+        case BobUISelectionForeground: *selectedForeground = decl.brushValue(pal); break;
+        case BobUISelectionBackground: *selectedBackground = decl.brushValue(pal); break;
+        case BobUIAlternateBackground: *alternateBackground = decl.brushValue(pal); break;
+        case BobUIPlaceHolderTextColor: *placeHolderTextForeground = decl.brushValue(pal); break;
+        case BobUIAccent: *accent = decl.brushValue(pal); break;
         default: continue;
         }
         hit = true;
@@ -1452,13 +1452,13 @@ void ValueExtractor::extractFont()
     extractFont(&f, &dummy);
 }
 
-bool ValueExtractor::extractImage(QIcon *icon, Qt::Alignment *a, QSize *size)
+bool ValueExtractor::extractImage(QIcon *icon, BobUI::Alignment *a, QSize *size)
 {
     bool hit = false;
     for (int i = 0; i < declarations.size(); ++i) {
         const Declaration &decl = declarations.at(i);
         switch (decl.d->propertyId) {
-        case QtImage:
+        case BobUIImage:
             *icon = decl.iconValue();
             if (decl.d->values.size() > 0 && decl.d->values.at(0).type == Value::Uri) {
                 // try to pull just the size from the image...
@@ -1470,7 +1470,7 @@ bool ValueExtractor::extractImage(QIcon *icon, Qt::Alignment *a, QSize *size)
                 }
             }
             break;
-        case QtImageAlignment: *a = decl.alignmentValue();  break;
+        case BobUIImageAlignment: *a = decl.alignmentValue();  break;
         default: continue;
         }
         hit = true;
@@ -1483,7 +1483,7 @@ bool ValueExtractor::extractIcon(QIcon *icon, QSize *size)
     // Find last declaration that specifies an icon
     const auto declaration = std::find_if(
                 declarations.rbegin(), declarations.rend(),
-                [](const Declaration &decl) { return decl.d->propertyId == QtIcon; });
+                [](const Declaration &decl) { return decl.d->propertyId == BobUIIcon; });
     if (declaration == declarations.rend())
         return false;
 
@@ -1623,7 +1623,7 @@ bool Declaration::realValue(qreal *real, const char *unit) const
     QStringView s(str);
     if (unit) {
         const QLatin1StringView unitStr(unit);
-        if (!s.endsWith(unitStr, Qt::CaseInsensitive))
+        if (!s.endsWith(unitStr, BobUI::CaseInsensitive))
             return false;
         s.chop(unitStr.size());
     }
@@ -1642,7 +1642,7 @@ static bool intValueHelper(const QCss::Value &v, int *i, const char *unit)
     QStringView s(str);
     if (unit) {
         const QLatin1StringView unitStr(unit);
-        if (!s.endsWith(unitStr, Qt::CaseInsensitive))
+        if (!s.endsWith(unitStr, BobUI::CaseInsensitive))
             return false;
         s.chop(unitStr.size());
     }
@@ -1674,7 +1674,7 @@ QSize Declaration::sizeValue() const
         }
         const auto &value = d->values.at(i);
         const QString valueString = value.variant.toString();
-        if (valueString.endsWith(u"pt", Qt::CaseInsensitive)) {
+        if (valueString.endsWith(u"pt", BobUI::CaseInsensitive)) {
             intValueHelper(value, &x[i], "pt");
             // according to https://www.w3.org/TR/css3-values/#absolute-lengths
             // 1pt = 1/72th of 1 inch, and 1px = 1/96th of 1 inch
@@ -1705,7 +1705,7 @@ QRect Declaration::rectValue() const
     const QStringList func = v.variant.toStringList();
     if (func.size() != 2 || func.at(0).compare("rect"_L1) != 0)
         return QRect();
-    const auto args = QStringView{func[1]}.split(u' ', Qt::SkipEmptyParts);
+    const auto args = QStringView{func[1]}.split(u' ', BobUI::SkipEmptyParts);
     if (args.size() != 4)
         return QRect();
     QRect rect(args[0].toInt(), args[1].toInt(), args[2].toInt(), args[3].toInt());
@@ -1814,7 +1814,7 @@ Attachment Declaration::attachmentValue() const
 
 int Declaration::styleFeaturesValue() const
 {
-    Q_ASSERT(d->propertyId == QtStyleFeatures);
+    Q_ASSERT(d->propertyId == BobUIStyleFeatures);
     if (d->parsed.isValid())
         return d->parsed.toInt();
     int features = StyleFeature_None;
@@ -1833,14 +1833,14 @@ QString Declaration::uriValue() const
     return d->values.at(0).variant.toString();
 }
 
-Qt::Alignment Declaration::alignmentValue() const
+BobUI::Alignment Declaration::alignmentValue() const
 {
     if (d->parsed.isValid())
-        return Qt::Alignment(d->parsed.toInt());
+        return BobUI::Alignment(d->parsed.toInt());
     if (d->values.isEmpty() || d->values.size() > 2)
-        return Qt::AlignLeft | Qt::AlignTop;
+        return BobUI::AlignLeft | BobUI::AlignTop;
 
-    Qt::Alignment v = parseAlignment(d->values.constData(), d->values.size());
+    BobUI::Alignment v = parseAlignment(d->values.constData(), d->values.size());
     d->parsed = int(v);
     return v;
 }
@@ -1900,7 +1900,7 @@ bool Declaration::borderCollapseValue() const
 
 QList<qreal> Declaration::dashArray() const
 {
-    if (d->propertyId != Property::QtStrokeDashArray || d->values.empty())
+    if (d->propertyId != Property::BobUIStrokeDashArray || d->values.empty())
         return QList<qreal>();
 
     bool isValid = true;
@@ -2018,7 +2018,7 @@ quint64 Selector::pseudoClass(quint64 *negated) const
 
 ///////////////////////////////////////////////////////////////////////////////
 // StyleSheet
-void StyleSheet::buildIndexes(Qt::CaseSensitivity nameCaseSensitivity)
+void StyleSheet::buildIndexes(BobUI::CaseSensitivity nameCaseSensitivity)
 {
     QList<StyleRule> universals;
     for (int i = 0; i < styleRules.size(); ++i) {
@@ -2051,7 +2051,7 @@ void StyleSheet::buildIndexes(Qt::CaseSensitivity nameCaseSensitivity)
                 nr.declarations = rule.declarations;
                 nr.order = i;
                 QString name = sel.elementName;
-                if (nameCaseSensitivity == Qt::CaseInsensitive)
+                if (nameCaseSensitivity == BobUI::CaseInsensitive)
                     name = std::move(name).toLower();
                 nameIndex.insert(name, nr);
             } else {
@@ -2263,7 +2263,7 @@ QList<StyleRule> StyleSelector::styleRulesForNode(NodePtr node)
             QStringList names = nodeNames(node);
             for (int i = 0; i < names.size(); i++) {
                 QString name = names.at(i);
-                if (nameCaseSensitivity == Qt::CaseInsensitive)
+                if (nameCaseSensitivity == BobUI::CaseInsensitive)
                     name = std::move(name).toLower();
                 QMultiHash<QString, StyleRule>::const_iterator it = styleSheet.nameIndex.constFind(name);
                 while (it != styleSheet.nameIndex.constEnd() && it.key() == name) {
@@ -2274,7 +2274,7 @@ QList<StyleRule> StyleSelector::styleRulesForNode(NodePtr node)
         }
         if (!medium.isEmpty()) {
             for (int i = 0; i < styleSheet.mediaRules.size(); ++i) {
-                if (styleSheet.mediaRules.at(i).media.contains(medium, Qt::CaseInsensitive)) {
+                if (styleSheet.mediaRules.at(i).media.contains(medium, BobUI::CaseInsensitive)) {
                     for (int j = 0; j < styleSheet.mediaRules.at(i).styleRules.size(); ++j) {
                         matchRule(node, styleSheet.mediaRules.at(i).styleRules.at(j), styleSheet.origin,
                                styleSheet.depth, &weightedRules);
@@ -2292,7 +2292,7 @@ QList<StyleRule> StyleSelector::styleRulesForNode(NodePtr node)
     return rules;
 }
 
-// for qtexthtmlparser which requires just the declarations with Enabled state
+// for bobuiexthtmlparser which requires just the declarations with Enabled state
 // and without pseudo elements
 QList<Declaration> StyleSelector::declarationsForNode(NodePtr node, const char *extraPseudo)
 {
@@ -2426,7 +2426,7 @@ void Parser::init(const QString &css, bool isFile)
         QFile file(css);
         if (file.open(QFile::ReadOnly)) {
             sourcePath = QFileInfo(styleSheet).absolutePath() + u'/';
-            QTextStream stream(&file);
+            BOBUIextStream stream(&file);
             styleSheet = stream.readAll();
         } else {
             qWarning() << "QCss::Parser - Failed to load file " << css;
@@ -2444,7 +2444,7 @@ void Parser::init(const QString &css, bool isFile)
     errorIndex = -1;
 }
 
-bool Parser::parse(StyleSheet *styleSheet, Qt::CaseSensitivity nameCaseSensitivity)
+bool Parser::parse(StyleSheet *styleSheet, BobUI::CaseSensitivity nameCaseSensitivity)
 {
     if (testTokenAndEndsWith(ATKEYWORD_SYM, "charset"_L1)) {
         while (test(S) || test(CDO) || test(CDC)) {}
@@ -2891,7 +2891,7 @@ bool Parser::testPrio()
         index = rewind;
         return false;
     }
-    if (lexem().compare("important"_L1, Qt::CaseInsensitive) != 0) {
+    if (lexem().compare("important"_L1, BobUI::CaseInsensitive) != 0) {
         index = rewind;
         return false;
     }
@@ -3055,7 +3055,7 @@ bool Parser::testAndParseUri(QString *uri)
         index = rewind;
         return false;
     }
-    if (name.compare("url"_L1, Qt::CaseInsensitive) != 0) {
+    if (name.compare("url"_L1, BobUI::CaseInsensitive) != 0) {
         index = rewind;
         return false;
     }
@@ -3152,12 +3152,12 @@ bool Parser::until(QCss::TokenType target, QCss::TokenType target2)
 bool Parser::testTokenAndEndsWith(QCss::TokenType t, QLatin1StringView str)
 {
     if (!test(t)) return false;
-    if (!lexem().endsWith(str, Qt::CaseInsensitive)) {
+    if (!lexem().endsWith(str, BobUI::CaseInsensitive)) {
         prev();
         return false;
     }
     return true;
 }
 
-QT_END_NAMESPACE
-#endif // QT_NO_CSSPARSER
+BOBUI_END_NAMESPACE
+#endif // BOBUI_NO_CSSPARSER

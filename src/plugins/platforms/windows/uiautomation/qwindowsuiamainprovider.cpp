@@ -1,8 +1,8 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtGui/qtguiglobal.h>
-#if QT_CONFIG(accessibility)
+#include <BobUIGui/bobuiguiglobal.h>
+#if BOBUI_CONFIG(accessibility)
 
 #include "qwindowsuiamainprovider.h"
 #include "qwindowsuiavalueprovider.h"
@@ -22,20 +22,20 @@
 #include "qwindowsuiautils.h"
 #include "qwindowsuiaprovidercache.h"
 
-#include <QtCore/qloggingcategory.h>
-#include <QtGui/private/qaccessiblebridgeutils_p.h>
-#include <QtGui/qaccessible.h>
-#include <QtGui/qguiapplication.h>
-#include <QtGui/qwindow.h>
-#include <QtCore/private/qcomvariant_p.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUIGui/private/qaccessiblebridgeutils_p.h>
+#include <BobUIGui/qaccessible.h>
+#include <BobUIGui/qguiapplication.h>
+#include <BobUIGui/qwindow.h>
+#include <BobUICore/private/qcomvariant_p.h>
 
 #if !defined(Q_CC_BOR) && !defined (Q_CC_GNU)
 #include <comdef.h>
 #endif
 
-#include <QtCore/qt_windows.h>
+#include <BobUICore/bobui_windows.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace QWindowsUiAutomation;
 
@@ -227,7 +227,7 @@ void QWindowsUiaMainProvider::raiseNotification(QAccessibleAnnouncementEvent *ev
                     ? NotificationProcessing_ImportantAll
                     : NotificationProcessing_All;
             QBStr activityId{ QString::fromLatin1("") };
-#if !defined(Q_CC_MSVC) || !defined(QT_WIN_SERVER_2016_COMPAT)
+#if !defined(Q_CC_MSVC) || !defined(BOBUI_WIN_SERVER_2016_COMPAT)
             UiaRaiseNotificationEvent(provider.Get(), NotificationKind_Other, processing, message.bstr(),
                                       activityId.bstr());
 #else
@@ -581,7 +581,7 @@ HRESULT QWindowsUiaMainProvider::GetPropertyValue(PROPERTYID idProp, VARIANT *pR
         setLabelledBy(accessible, pRetVal);
         break;
     case UIA_FrameworkIdPropertyId:
-        *pRetVal = QComVariant{ QStringLiteral("Qt") }.release();
+        *pRetVal = QComVariant{ QStringLiteral("BobUI") }.release();
         break;
     case UIA_ControlTypePropertyId:
         if (topLevelWindow) {
@@ -636,8 +636,8 @@ HRESULT QWindowsUiaMainProvider::GetPropertyValue(PROPERTYID idProp, VARIANT *pR
     case UIA_IsPeripheralPropertyId:
         // True for peripheral UIs.
         if (QWindow *window = windowForAccessible(accessible)) {
-            const Qt::WindowType wt = window->type();
-            *pRetVal = QComVariant{ wt == Qt::Popup || wt == Qt::ToolTip || wt == Qt::SplashScreen }
+            const BobUI::WindowType wt = window->type();
+            *pRetVal = QComVariant{ wt == BobUI::Popup || wt == BobUI::ToolTip || wt == BobUI::SplashScreen }
                                .release();
         }
         break;
@@ -668,9 +668,9 @@ HRESULT QWindowsUiaMainProvider::GetPropertyValue(PROPERTYID idProp, VARIANT *pR
             const QVariant orientationVariant =
                     attributesIface->attributeValue(QAccessible::Attribute::Orientation);
             if (orientationVariant.isValid()) {
-                Q_ASSERT(orientationVariant.canConvert<Qt::Orientation>());
-                const Qt::Orientation orientation = orientationVariant.value<Qt::Orientation>();
-                orientationType = orientation == Qt::Horizontal ? OrientationType_Horizontal
+                Q_ASSERT(orientationVariant.canConvert<BobUI::Orientation>());
+                const BobUI::Orientation orientation = orientationVariant.value<BobUI::Orientation>();
+                orientationType = orientation == BobUI::Horizontal ? OrientationType_Horizontal
                                                                 : OrientationType_Vertical;
             }
         }
@@ -919,6 +919,6 @@ HRESULT QWindowsUiaMainProvider::GetFocus(IRawElementProviderFragment **pRetVal)
     return S_OK;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)

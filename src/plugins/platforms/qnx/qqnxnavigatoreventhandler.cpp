@@ -1,5 +1,5 @@
 // Copyright (C) 2012 Research In Motion
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qqnxnavigatoreventhandler.h"
 
@@ -10,9 +10,9 @@
 #include <QGuiApplication>
 #include <qpa/qwindowsysteminterface.h>
 
-Q_LOGGING_CATEGORY(lcQpaQnxNavigatorEvents, "qt.qpa.qnx.navigator.events");
+Q_LOGGING_CATEGORY(lcQpaQnxNavigatorEvents, "bobui.qpa.qnx.navigator.events");
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QQnxNavigatorEventHandler::QQnxNavigatorEventHandler(QObject *parent)
     : QObject(parent)
@@ -60,10 +60,10 @@ void QQnxNavigatorEventHandler::handleWindowGroupDeactivated(const QByteArray &i
     Q_EMIT windowGroupDeactivated(id);
 }
 
-void QQnxNavigatorEventHandler::handleWindowGroupStateChanged(const QByteArray &id, Qt::WindowState state)
+void QQnxNavigatorEventHandler::handleWindowGroupStateChanged(const QByteArray &id, BobUI::WindowState state)
 {
     qCDebug(lcQpaQnxNavigatorEvents) << Q_FUNC_INFO << id;
     Q_EMIT windowGroupStateChanged(id, state);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

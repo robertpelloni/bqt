@@ -1,5 +1,5 @@
-# Copyright (C) 2022 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+# Copyright (C) 2022 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 cmake_minimum_required(VERSION 3.16)
 project(wiggly LANGUAGES CXX)
@@ -10,11 +10,11 @@ endif()
 
 set(INSTALL_EXAMPLEDIR "${INSTALL_EXAMPLESDIR}/widgets/widgets/wiggly")
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
+find_package(BobUI6 REQUIRED COMPONENTS Core Gui Widgets)
 
-qt_standard_project_setup()
+bobui_standard_project_setup()
 
-qt_add_executable(wiggly
+bobui_add_executable(wiggly
     dialog.cpp dialog.h
     main.cpp
     wigglywidget.cpp wigglywidget.h
@@ -26,9 +26,9 @@ set_target_properties(wiggly PROPERTIES
 )
 
 target_link_libraries(wiggly PRIVATE
-    Qt6::Core
-    Qt6::Gui
-    Qt6::Widgets
+    BobUI6::Core
+    BobUI6::Gui
+    BobUI6::Widgets
 )
 
 install(TARGETS wiggly

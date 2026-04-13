@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QWindow>
 #include <QImage>
@@ -21,7 +21,7 @@ protected:
     void exposeEvent(QExposeEvent *);
     void resizeEvent(QResizeEvent *);
 
-    void timerEvent(QTimerEvent *);
+    void timerEvent(BOBUIimerEvent *);
 
 private:
     void render();
