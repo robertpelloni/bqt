@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Changelog
 
 All notable changes to this project will be documented in this file.
@@ -817,4 +818,9 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Implemented the `OmniMasterClock` singleton. It runs on the main Qt thread and explicitly pumps the `juce::MessageManager` and Ultimate++ `ProcessEvents` queues to prevent UI thread deadlocks and establish 1:1 cross-framework synchronized rendering.
+>>>>>>> origin/jules-11090863842246041945-58931a03
+=======
+
+### Changed
+- Analyzed `TODO.md` and confirmed that the Go Port for `OmniAudioGraph` was already implemented previously in `internal/audio/audio_graph.go`. Struck through the task.
 >>>>>>> origin/jules-11090863842246041945-58931a03
