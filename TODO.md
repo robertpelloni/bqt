@@ -1,5 +1,6 @@
-# TODO
+# BobQ Short-Term TODO List
 
+<<<<<<< HEAD
 ## Immediate
 - [x] Add `go test ./internal/...` and `go build -buildvcs=false .` to Go CI.
 - [x] Wire the `DemoSurface` into a real interactive Gio frame loop.
@@ -43,18 +44,18 @@
 - [ ] Classify the untracked C++ rename artifacts into canonical vs generated vs duplicate buckets before any broad migration work.
 - [ ] Choose one safe C++ package/export/header compatibility bucket for the first side-by-side migration implementation.
 >>>>>>> origin/dev
+=======
+## Phase 1 Parity Wrappers (Completed)
+1. ~~**Build System Validation:**~~ Modularized `CMakeLists.txt` via `BobQSubmodules.cmake`.
+2. ~~**Submodule Wrapper:**~~ Implemented `BobQJuceHost`.
+3. ~~**Go Port Coverage:**~~ Generated `ANALYSIS.md`.
+4. ~~**Documentation Sync:**~~ Generated `SUBMODULE_DASHBOARD.md`.
+5. ~~**GTK Parity Research:**~~ Implemented `BobQBox` and `BobQGrid`.
+>>>>>>> origin/jules-11090863842246041945-58931a03
 
-## Near-Term QML/Quick Focus
-- [x] Upgrade `WebView` JS bridge from compile-safe contract to executable runtime semantics.
-- [x] Add touch/swipe behavior primitives.
-- [ ] Add multi-touch/pinch/rotation primitives after the single-swipe baseline is exercised further.
-- [ ] Re-audit declarative state/transition parity versus QML/Quick.
-- [x] Add automated validation around WebView bridge queueing, correlation, and error routing.
-- [x] Add automated tests around navigation/history callback behavior.
-- [ ] Use the new BTK comparison doc to keep parity language grounded in verified runtime behavior rather than repo breadth.
-
-## Quality
-- [x] Add tests for Go kernel/data/net packages.
-- [x] Expand coverage into additional kernel services such as undo/clipboard/merge logic.
-- [ ] Keep docs aligned with verified state.
-- [ ] Revisit which abstractions should remain BobUI experiments versus long-term native framework candidates after each major parity milestone.
+## Phase 2: Unification & Interoperability
+6. ~~**Ultimate++ Submodule Wrapper:**~~ Implement a `BobQUltimatePPHost` wrapper class that allows placing an Ultimate++ `Ctrl` or layout component inside a BobQ `QQuickPaintedItem`.
+7. ~~**Unified Event Loop Sync:**~~ Connect the Qt `QEventLoop` explicitly to the U++ `Ctrl::ProcessEvents()` or JUCE MessageManager.
+8. **Audio Graph Port:** Begin porting `OmniAudioGraph` DSP concepts to the Go engine in `internal/audio/`.
+9. **Component Registry:** Expose U++ widgets (Buttons, Lists) dynamically through standard BobQ API structures to make them usable interchangeably with native Qt widgets.
+10. **Documentation Check:** Outline U++ and JUCE bridging details explicitly inside `Manual.md` and the universal instruction suite.

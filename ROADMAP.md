@@ -1,25 +1,24 @@
-# Project Roadmap
+# BobQ Development Roadmap
 
-## 1. Scope & Ownership
-- [x] `bobui` is the framework/kernel.
-- [ ] `bobfilez` remains the shell/desktop product.
+## Phase 1: Foundation (Completed)
+- [x] Initial framework architecture and meta-object system setup.
+- [x] Initial Go port foundations (`internal/`, `main.go`).
+- [x] Rename branding from Bobui to BobQ.
+- [x] Integrate JUCE and Ultimate++ as submodules.
+- [x] Establish universal AI agent instructions and autonomous pipeline.
 
-## 2. Verified Go Baseline
-- [x] `go test ./internal/...` passes.
-- [x] `go build -buildvcs=false .` succeeds.
-- [x] Add these exact commands to CI.
-- [x] Wire the current Go demo primitives into a live Gio frame loop.
+## Phase 2: Unification & Interoperability (In Progress)
+- [ ] Establish a unified Event Loop to drive Qt, GTK, JUCE, and U++ components seamlessly.
+- [ ] Map JUCE audio primitives into the `OmniAudioGraph` and `OmniSynthesizer`.
+- [ ] Expose U++ widgets through the BobQ standard API interface.
+- [ ] Achieve 100% 1:1 feature parity with GTK (implementing C-style structural paradigms).
 
-## 3. QML / Quick / QuickControls2 / WebEngineQuick Focus (Current)
-- [x] Add a first Go-native QuickControls2-style `Popup` primitive.
-- [x] Add baseline `Menu`, `Dialog`, `Drawer`, `ToolTip`, `ScrollView`, and `ScrollBar` primitives.
-- [x] Add a lightweight `WebView` navigation/history model.
-- [x] Add a richer event surface and bridge contract (`EvalJS`, `PostMessage`, `Request`, handler registration).
-- [x] Add a compile-safe demo composition surface for the new controls.
-- [x] Add runtime-integrated `ScrollBar` behavior and richer demo wiring.
-- [x] Add touch/swipe behavior primitives.
-- [x] Upgrade the `WebView` bridge from compile-safe contract to executable runtime semantics.
+## Phase 3: The Go Transcendence
+- [ ] Methodical 1:1 porting of C++ components to Go.
+- [ ] Implement Go routines to handle BobQ signal/slot emission.
+- [ ] Port the entire JUCE DSP stack to native Go where feasible.
 
+<<<<<<< HEAD
 ## 4. Framework Parity Work
 - [ ] Continue runtime-verifying parity claims instead of expanding only by file count.
 - [ ] Strengthen model/view parity (`TableView`, selection, sorting, delegates).
@@ -65,3 +64,8 @@
 >>>>>>> origin/dev
 - [ ] Keep `bobui` positioned as a fast idea/incubation track for ownership semantics, bridge contracts, and compile-safe parity exploration.
 - [ ] Promote ideas from `bobui` into larger native framework tracks only after they are scoped, validated, and clearly separated from shell/product concerns.
+=======
+## Phase 4: World Domination
+- [ ] 1:1 parity with JavaFX, WinUI, and DearImGui.
+- [ ] Build robust native UI shells (web, desktop, embedded) via `bobfilez`.
+>>>>>>> origin/jules-11090863842246041945-58931a03
