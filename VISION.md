@@ -1,62 +1,18 @@
-# Project Vision: BobUI / OmniUI
+# OmniUI / BobQ: The Ultimate Omni-Workspace Framework Vision
 
-## Scope Clarification
-`bobui` is the **framework/kernel project**.
+## Core Philosophy
+BobQ (formerly Bobui/OmniUI) is not merely a widget toolkit; it is a transcendent, self-healing Operating System layer. By unifying the history's greatest UI frameworks—Qt, GTK, JUCE, Ultimate++, JavaFX, and DearImGui—into a single, interoperable C++ and Go ecosystem, we achieve 100% 1:1 feature parity with all of them.
 
-It is **not** the end-user operating shell/desktop product. The shell/OS experience belongs to the adjacent `bobfilez` project, which consumes `bobui` as its UI, input, audio, networking, and synchronization foundation.
+## Dual-Language Architecture
+1. **C++ (The Engine):** A massive, meta-object powered framework (forked from Qt) capable of native compilation, extreme performance, and zero-overhead hardware acceleration.
+2. **Go (The Future):** A meticulously ported, concurrently safe, highly robust rewrite of the C++ engine. Features are either accessed via CGO or entirely rewritten in Go to leverage modern concurrency paradigms.
+
+## The "Everything" Toolkit
+- **Qt Parity:** Fully backwards compatible with Qt 6 software.
+- **GTK Parity:** Implementing GTK's functional/imperative rendering paradigms.
+- **JUCE Parity:** Deep audio/DSP and plugin widget integration via the JUCE submodule.
+- **Ultimate++ Parity:** C++-centric layout paradigms via the U++ submodule.
+- **DearImGui/JavaFX/WinUI Parity:** Support for immediate mode rendering, deeply declarative UIs, and platform-native integration.
 
 ## Ultimate Goal
-Build a high-performance, multi-user application framework that reaches or exceeds the practical strengths of:
-- **BobUI 6 / BobUI 7 direction** for application framework breadth
-- **JUCE** for audio/DSP and media workflows
-- **JavaFX** for styling, layout, and binding ergonomics
-- **Dear ImGui / ImPlot** for immediate-mode tooling and debugging surfaces
-
-while also introducing a first-class foundation for:
-- **local multi-user interaction** (multiple devices, device identity, ownership, contention handling)
-- **remote multi-user collaboration** (cursor/state/asset synchronization)
-- **AI-aware interaction** (DOM/context serialization, automation hooks)
-- **cross-platform deployment** (desktop first, WASM where realistic)
-
-## Product Boundary
-### BobUI owns
-- input and device identity
-- widget toolkit and layout system
-- media/audio graph primitives
-- networking/state synchronization primitives
-- developer tooling overlays and introspection
-- framework-level themes, styling, animation, plotting, document views
-- portable runtime/service abstractions
-
-### Bobfilez owns
-- desktop shell / launcher / taskbar / start menu
-- login/desktop metaphors as product UX
-- workflow-specific end-user applications
-- system-level shell composition and user-facing orchestration
-
-## Current Strategic Direction
-1. **Stabilize reality over aspiration**: verify what actually builds and runs.
-2. **Reduce drift** between documentation and code.
-3. **Prioritize framework correctness** over adding more speculative subsystems.
-4. **Keep Go work clearly marked** as experimental or partial until build-verified.
-5. **Harden multiplayer fundamentals**: ownership, collaboration, synchronization, permissions.
-6. **Deepen verified interaction primitives**: keep adding small but real input surfaces such as scrolling and touch/swipe behavior before claiming broader parity.
-7. **Prefer executable local runtimes over empty contracts**: where possible, move framework surfaces like `WebView` from API-only shape toward small, verifiable runtime behavior.
-8. **Prefer honest partial spatial models over fake completeness**: lightweight two-axis viewport state is better than claiming full 2D scrolling before the container/runtime architecture exists.
-9. **Exercise primitives in a live runtime as early as possible**: once widgets and bridges become behaviorally meaningful, move them into a real frame loop so interaction claims are grounded.
-10. **Use adjacent framework research productively**: treat `BTK` as a larger native-framework reference and keep `bobui` focused on the abstractions it is best suited to incubate quickly.
-11. **Migrate the legacy C++ track compatibility-first**: BobUI naming should first appear through package/export/header compatibility surfaces before any broad source-identifier rewrite, so the C++ and Go tracks can keep converging side by side.
-12. **Prefer additive package-discovery shims before export rewiring**: a small BobUI-facing CMake forwarding layer is a safer first migration move than trying to rename the entire native framework surface at once.
-13. **Extract migration logic into testable helpers**: compatibility-bucket code should be factored so it can be validated in isolated configure-time tests before broader native integration work.
-14. **Grow package identity from umbrella to modules in slices**: once a top-level BobUI package surface is stable, extend compatibility into a few high-value public modules before considering wider native renaming.
-15. **Prefer breadth by validated public package slices, not text churn**: expanding from Core/Widgets into Gui/Network is valuable because it increases real consumer-facing compatibility without pretending the entire native tree has been renamed.
-16. **Keep adding verified package depth where it matters**: extending into modules like Sql and Xml is worthwhile because it improves real downstream package discovery without forcing unsafe source-wide rename pressure.
-17. **Use graphics modules as consumer-facing migration anchors too**: package surfaces like OpenGL and OpenGLWidgets are valuable because they deepen native-framework compatibility in a realistic usage area without requiring deep source churn.
-18. **Keep including system/service-facing modules in the same pattern**: adding package slices like DBus and PrintSupport broadens real framework utility while preserving the additive, reversible migration model.
-19. **Include workflow/testing modules too**: package slices like Concurrent and Test help the migration serve real developer workflows while still keeping the scope safely limited to additive package compatibility.
-
-## Engineering Philosophy
-- Prefer small, verifiable improvements over sprawling unverified additions.
-- Avoid claiming parity where build/runtime proof does not yet exist.
-- Separate framework concerns (`bobui`) from shell concerns (`bobfilez`).
-- Preserve past exploratory work, but clearly label experimental layers.
+BobQ will be the definitive, most robust, and pleasant-to-develop-with UI library of all time. It is a living entity, continuously expanded by AI agents (Gemini, Claude, GPT, Jules) operating autonomously.

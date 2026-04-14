@@ -785,4 +785,36 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Updated `internal/ui/engine.go` to initialize the demo surface and wire baseline WebView callbacks.
 - Updated planning docs to move next toward richer runtime integration and WebEngineQuick-style JS bridge semantics.
+<<<<<<< HEAD
 >>>>>>> e1ee8d20be7bc6a9723aeacc01ec68b2c2393fe4
+=======
+
+## [1.1.53] - 2026-04-10
+### Changed
+- Mass rebranded `Bobui` and `OmniUI` to `BobQ` and `bobq` across the entire codebase.
+- Re-architected documentation to encompass JUCE, Ultimate++, GTK, and DearImGui 1:1 parity goals.
+### Added
+- Integrated JUCE and Ultimate++ as Git submodules in the `submodules/` directory.
+- Updated `CMakeLists.txt` to include submodules gracefully.
+### Added
+- Implemented `BobQJuceHost` (C++ Bridge) in `OmniUI/omnicore/`, which hosts a JUCE component inside a Qt QQuick painted item, translating Qt input and render events transparently to JUCE.
+
+### Added
+- Implemented `BobQBox` and `BobQGrid` to match GTK's layout paradigms (`GtkBox`, `GtkGrid`) natively inside BobQ's Qt scenegraph. Exposes `packStart`/`packEnd` and grid attachments explicitly.
+
+### Added
+- Implemented `BobQBox` in Go (`internal/ui/widgets/box.go`) using `gioui.org` to achieve GTK/C++ 1:1 structural parity on the Go side.
+- Created `ANALYSIS.md` to document the missing components in the Go port.
+
+### Added
+- Added `scripts/generate_dashboard.py` to autonomously scrape `.gitmodules` and output an accurate, universally readable markdown `SUBMODULE_DASHBOARD.md`.
+
+### Changed
+- Modularized submodule building (JUCE, Ultimate++) into `cmake/BobQSubmodules.cmake` to prevent conflicts with native `QtBase` internal CMake macros.
+
+### Added
+- Implemented `BobQUltimatePPHost` to achieve 1:1 structural integration and parity with Ultimate++. The bridge intercepts Qt input and renders U++ `Ctrl` components directly into a `QImage` mapped onto the QML scenegraph.
+
+### Added
+- Implemented the `OmniMasterClock` singleton. It runs on the main Qt thread and explicitly pumps the `juce::MessageManager` and Ultimate++ `ProcessEvents` queues to prevent UI thread deadlocks and establish 1:1 cross-framework synchronized rendering.
+>>>>>>> origin/jules-11090863842246041945-58931a03
