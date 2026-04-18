@@ -1,4 +1,9 @@
 ### Added
+- Implemented richer runtime integration for Go widgets (`Popup`, `Dialog`, `Drawer`, `ToolTip`, `Menu`), making them fully functional overlay surfaces with proper event blocking (modal behavior).
+- Improved Go `ScrollBar` and `ScrollView` with full drag behavior, styled thumbs, dynamic padding, and hover states.
+- Bumped version to v1.1.63.
+
+### Added
 - Verified compilation status. Fixes for the core library inclusions, C++ bridges, and JUCE/Ultimate++ have been implemented and properly built via qtbase-native configuration.
 - Analyzed missing feature implementations and updated ROADMAP.md, TODO.md, and IDEAS.md. The documentation accurately reflects the state of the Go UI components, the requested UI component implementations, and lists ideas for bringing BobQ to 1:1 parity with other frameworks.
 - Created UNIVERSAL_LLM_INSTRUCTIONS.md, updated AGENTS.md, CLAUDE.md, GEMINI.md, GPT.md, copilot-instructions.md. Bumped VERSION.md to v1.1.62.
