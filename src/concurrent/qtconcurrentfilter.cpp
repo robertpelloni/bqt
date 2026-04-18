@@ -3,7 +3,7 @@
 // Qt-Security score:significant reason:default
 
 /*!
-    \page bobuiconcurrentfilter.html
+    \page qtconcurrentfilter.html
     \title Concurrent Filter and Filter-Reduce
     \brief Selecting values from a sequence and combining them, all in parallel.
     \ingroup thread
@@ -21,7 +21,7 @@
     result instead of a QFuture. You use them in the same way as the
     asynchronous variants.
 
-    \snippet code/src_concurrent_bobuiconcurrentfilter.cpp 6
+    \snippet code/src_concurrent_qtconcurrentfilter.cpp 6
 
     Note that the result types above are not QFuture objects, but real result
     types (in this case, QStringList and QSet<QString>).
@@ -48,7 +48,7 @@
 
     The filter function must be of the form:
 
-    \snippet code/src_concurrent_bobuiconcurrentfilter.cpp 0
+    \snippet code/src_concurrent_qtconcurrentfilter.cpp 0
 
     T must match the type stored in the sequence. The function returns \c true if
     the item should be kept, false if it should be discarded.
@@ -56,7 +56,7 @@
     This example shows how to keep strings that are all lower-case from a
     QStringList:
 
-    \snippet code/src_concurrent_bobuiconcurrentfilter.cpp 1
+    \snippet code/src_concurrent_qtconcurrentfilter.cpp 1
 
     The results of the filter are made available through QFuture. See the
     QFuture and QFutureWatcher documentation for more information on how to
@@ -64,7 +64,7 @@
 
     If you want to modify a sequence in-place, use BobUIConcurrent::filter():
 
-    \snippet code/src_concurrent_bobuiconcurrentfilter.cpp 2
+    \snippet code/src_concurrent_qtconcurrentfilter.cpp 2
 
     Since the sequence is modified in place, BobUIConcurrent::filter() does not
     return any results via QFuture. However, you can still use QFuture and
@@ -77,7 +77,7 @@
     QFuture, make sure to use a continuation that takes QFuture as a parameter,
     otherwise only the first result will be processed:
 
-    \snippet code/src_concurrent_bobuiconcurrentfilter.cpp 18
+    \snippet code/src_concurrent_qtconcurrentfilter.cpp 18
 
     In this example \c {badFuture} will only print a single result, while
     \c {goodFuture} will print all results.
@@ -90,7 +90,7 @@
 
     The reduce function must be of the form:
 
-    \snippet code/src_concurrent_bobuiconcurrentfilter.cpp 3
+    \snippet code/src_concurrent_qtconcurrentfilter.cpp 3
 
     T is the type of the final result, U is the type of items being filtered.
     Note that the return value and return type of the reduce function are not
@@ -98,7 +98,7 @@
 
     Call BobUIConcurrent::filteredReduced() like this:
 
-    \snippet code/src_concurrent_bobuiconcurrentfilter.cpp 4
+    \snippet code/src_concurrent_qtconcurrentfilter.cpp 4
 
     The reduce function will be called once for each result kept by the filter
     function, and should merge the \e{intermediate} into the \e{result}
@@ -115,7 +115,7 @@
     instead of a sequence. You use them in the same way as the sequence
     variants:
 
-    \snippet code/src_concurrent_bobuiconcurrentfilter.cpp 5
+    \snippet code/src_concurrent_qtconcurrentfilter.cpp 5
 
 
     \section2 Using Member Functions
@@ -124,7 +124,7 @@
     BobUIConcurrent::filteredReduced() accept pointers to member functions.
     The member function class type must match the type stored in the sequence:
 
-    \snippet code/src_concurrent_bobuiconcurrentfilter.cpp 7
+    \snippet code/src_concurrent_qtconcurrentfilter.cpp 7
 
     Note the use of qOverload. It is needed to resolve the ambiguity for the
     methods, that have multiple overloads.
@@ -132,7 +132,7 @@
     Also note that when using BobUIConcurrent::filteredReduced(), you can mix the use of
     normal and member functions freely:
 
-    \snippet code/src_concurrent_bobuiconcurrentfilter.cpp 8
+    \snippet code/src_concurrent_qtconcurrentfilter.cpp 8
 
     \section2 Using Function Objects
 
@@ -141,11 +141,11 @@
     for the filter function. These function objects can be used to
     add state to a function call:
 
-    \snippet code/src_concurrent_bobuiconcurrentfilter.cpp 13
+    \snippet code/src_concurrent_qtconcurrentfilter.cpp 13
 
     Function objects are also supported for the reduce function:
 
-    \snippet code/src_concurrent_bobuiconcurrentfilter.cpp 14
+    \snippet code/src_concurrent_qtconcurrentfilter.cpp 14
 
     \section2 Using Lambda Expressions
 
@@ -153,17 +153,17 @@
     BobUIConcurrent::filteredReduced() accept lambda expressions for the filter and
     reduce function:
 
-    \snippet code/src_concurrent_bobuiconcurrentfilter.cpp 15
+    \snippet code/src_concurrent_qtconcurrentfilter.cpp 15
 
     When using BobUIConcurrent::filteredReduced() or
     BobUIConcurrent::blockingFilteredReduced(), you can mix the use of normal
     functions, member functions and lambda expressions freely.
 
-    \snippet code/src_concurrent_bobuiconcurrentfilter.cpp 16
+    \snippet code/src_concurrent_qtconcurrentfilter.cpp 16
 
     You can also pass a lambda as a reduce object:
 
-    \snippet code/src_concurrent_bobuiconcurrentfilter.cpp 17
+    \snippet code/src_concurrent_qtconcurrentfilter.cpp 17
 
     \section2 Wrapping Functions that Take Multiple Arguments
 
@@ -173,7 +173,7 @@
 
     As an example, we use QString::contains():
 
-    \snippet code/src_concurrent_bobuiconcurrentfilter.cpp 9
+    \snippet code/src_concurrent_qtconcurrentfilter.cpp 9
 
     QString::contains() takes 2 arguments (including the "this" pointer) and
     can't be used with BobUIConcurrent::filtered() directly, because
@@ -181,7 +181,7 @@
     use QString::contains() with BobUIConcurrent::filtered() we have to provide a
     value for the \e regexp argument:
 
-    \snippet code/src_concurrent_bobuiconcurrentfilter.cpp 12
+    \snippet code/src_concurrent_qtconcurrentfilter.cpp 12
 */
 
 /*!

@@ -7,7 +7,7 @@
 
 qt_internal_add_module(Xml
     SOURCES
-        bobuixmlglobal.h
+        qtxmlglobal.h
         BobUIXml
     DEFINES
         QT_NO_CONTEXTLESS_CONNECT

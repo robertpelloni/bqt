@@ -5,16 +5,16 @@
 #ifndef QDBUSABSTRACTINTERFACE_H
 #define QDBUSABSTRACTINTERFACE_H
 
-#include <BobUIDBus/bobuidbusglobal.h>
+#include <QtDBus/qtdbusglobal.h>
 #include <QtCore/qstring.h>
 #include <QtCore/qvariant.h>
 #include <QtCore/qlist.h>
 #include <QtCore/qobject.h>
 
-#include <BobUIDBus/qdbusmessage.h>
-#include <BobUIDBus/qdbusextratypes.h>
-#include <BobUIDBus/qdbusconnection.h>
-#include <BobUIDBus/qdbuspendingcall.h>
+#include <QtDBus/qdbusmessage.h>
+#include <QtDBus/qdbusextratypes.h>
+#include <QtDBus/qdbusconnection.h>
+#include <QtDBus/qdbuspendingcall.h>
 
 #ifdef interface
 #undef interface

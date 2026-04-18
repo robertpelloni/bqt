@@ -5,7 +5,7 @@
 #ifndef QDBUSERROR_H
 #define QDBUSERROR_H
 
-#include <BobUIDBus/bobuidbusglobal.h>
+#include <QtDBus/qtdbusglobal.h>
 #include <QtCore/qobjectdefs.h>
 #include <QtCore/qstring.h>
 

@@ -6,6 +6,6 @@
 #define BOBUICONCURRENT_GLOBAL_H
 
 #include <QtCore/qglobal.h>
-#include <BobUIConcurrent/bobuiconcurrentexports.h>
+#include <QtConcurrent/qtconcurrentexports.h>
 
 #endif // include guard

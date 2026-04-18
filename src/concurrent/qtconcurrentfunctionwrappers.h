@@ -5,8 +5,8 @@
 #ifndef BOBUICONCURRENT_FUNCTIONWRAPPERS_H
 #define BOBUICONCURRENT_FUNCTIONWRAPPERS_H
 
-#include <BobUIConcurrent/bobuiconcurrentcompilertest.h>
-#include <BobUIConcurrent/bobuiconcurrentreducekernel.h>
+#include <QtConcurrent/qtconcurrentcompilertest.h>
+#include <QtConcurrent/qtconcurrentreducekernel.h>
 #include <QtCore/qfuture.h>
 
 #include <tuple>

@@ -5,7 +5,7 @@
 #ifndef QDBUSVIRTUALOBJECT_H
 #define QDBUSVIRTUALOBJECT_H
 
-#include <BobUIDBus/bobuidbusglobal.h>
+#include <QtDBus/qtdbusglobal.h>
 #include <QtCore/qstring.h>
 #include <QtCore/qobject.h>
 

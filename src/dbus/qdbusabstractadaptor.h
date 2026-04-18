@@ -5,7 +5,7 @@
 #ifndef QDBUSABSTRACTADAPTOR_H
 #define QDBUSABSTRACTADAPTOR_H
 
-#include <BobUIDBus/bobuidbusglobal.h>
+#include <QtDBus/qtdbusglobal.h>
 #include <QtCore/qobject.h>
 
 #ifndef QT_NO_DBUS

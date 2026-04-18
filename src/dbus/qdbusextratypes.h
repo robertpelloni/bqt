@@ -7,7 +7,7 @@
 
 // define some useful types for D-Bus
 
-#include <BobUIDBus/bobuidbusglobal.h>
+#include <QtDBus/qtdbusglobal.h>
 #include <QtCore/qvariant.h>
 #include <QtCore/qstring.h>
 #include <QtCore/qhashfunctions.h>

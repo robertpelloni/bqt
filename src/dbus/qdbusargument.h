@@ -5,7 +5,7 @@
 #ifndef QDBUSARGUMENT_H
 #define QDBUSARGUMENT_H
 
-#include <BobUIDBus/bobuidbusglobal.h>
+#include <QtDBus/qtdbusglobal.h>
 #include <QtCore/qbytearray.h>
 #include <QtCore/qhash.h>
 #include <QtCore/qglobal.h>
@@ -14,7 +14,7 @@
 #include <QtCore/qstring.h>
 #include <QtCore/qstringlist.h>
 #include <QtCore/qvariant.h>
-#include <BobUIDBus/qdbusextratypes.h>
+#include <QtDBus/qdbusextratypes.h>
 
 #include <tuple>
 

@@ -5,10 +5,10 @@
 #ifndef BOBUICONCURRENT_STOREDFUNCTIONCALL_H
 #define BOBUICONCURRENT_STOREDFUNCTIONCALL_H
 
-#include <BobUIConcurrent/bobuiconcurrent_global.h>
+#include <QtConcurrent/qtconcurrent_global.h>
 
 #ifndef QT_NO_CONCURRENT
-#include <BobUIConcurrent/bobuiconcurrentrunbase.h>
+#include <QtConcurrent/qtconcurrentrunbase.h>
 #include <QtCore/qpromise.h>
 
 #include <type_traits>

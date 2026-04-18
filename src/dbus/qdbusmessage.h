@@ -5,8 +5,8 @@
 #ifndef QDBUSMESSAGE_H
 #define QDBUSMESSAGE_H
 
-#include <BobUIDBus/bobuidbusglobal.h>
-#include <BobUIDBus/qdbuserror.h>
+#include <QtDBus/qtdbusglobal.h>
+#include <QtDBus/qdbuserror.h>
 #include <QtCore/qlist.h>
 #include <QtCore/qvariant.h>
 
