@@ -14,6 +14,7 @@
 - [x] Consolidate BobUI CMake compatibility validation command and wire it into Go CI. (Added `cmake/tests/bobui_consolidated_compatibility_validation.cmake` and updated `.github/workflows/go_wasm.yml`).
 - [ ] Complete the generic component registry (`BobQUppComponentRegistry`) so any QML string can summon a U++ or JUCE component.
 
-## Refactoring
+## Refactoring & Documentation
+- [x] Outline U++ and JUCE bridging details explicitly inside `Manual.md` and the universal instruction suite.
 - [ ] Audit the BobQ C++ codebase to ensure that variable naming, structure, and paradigms match the cleanliness of the GTK implementation.
 - [ ] Continue porting `OmniAudioGraph` to pure Go.

@@ -2,8 +2,8 @@ package widgets
 
 import (
 	"image"
-	"math"
 
+	"gioui.org/io/pointer"
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/op/clip"
@@ -81,64 +81,44 @@ func (sb *ScrollBar) Layout(gtx layout.Context, th theme.Theme) layout.Dimension
 		return layout.Dimensions{}
 	}
 
-    // Draw track
-    trackColor := th.Surface
-    trackColor.A = 100 // Semi transparent track
-	paint.FillShape(gtx.Ops, trackColor, clip.Rect(track).Op())
-
-    // Add interaction to track
-    defer clip.Rect(track).Push(gtx.Ops).Pop()
+	defer clip.Rect(track).Push(gtx.Ops).Pop()
+	sb.state.AddDrag(gtx.Ops)
+	defer pointer.PassOp{}.Push(gtx.Ops).Pop()
 	sb.state.AddTrack(gtx.Ops)
 
-    // Calculate Thumb Dimensions
-	var thumb image.Rectangle
-    var thumbColor = th.Primary
-	if sb.Hovered || sb.Dragging {
+	trackColor := th.Surface
+	if sb.TrackHovered {
+		trackColor = th.Background
+	}
+	paint.FillShape(gtx.Ops, trackColor, clip.Rect(track).Op())
+
+	thumb := sb.thumbRect(track)
+	thumbColor := th.Primary
+	if sb.Hovered {
 		thumbColor = th.Accent
 	}
+	defer op.Offset(thumb.Min).Push(gtx.Ops).Pop()
+	thumbLocal := image.Rect(0, 0, thumb.Dx(), thumb.Dy())
+	paint.FillShape(gtx.Ops, thumbColor, clip.Rect(thumbLocal).Op())
+	defer clip.Rect(thumbLocal).Push(gtx.Ops).Pop()
+	sb.state.AddIndicator(gtx.Ops)
 
+	return layout.Dimensions{Size: track.Size()}
+}
+
+func (sb *ScrollBar) thumbRect(track image.Rectangle) image.Rectangle {
 	if sb.Orientation == ScrollVertical {
 		h := track.Dy()
 		thumbH := scrollMaxInt(8, int(float32(h)*sb.PageSize))
 		maxY := scrollMaxInt(0, h-thumbH)
 		y := int(float32(maxY) * sb.Position)
-
-        // Make the thumb slightly thinner than the track
-        padding := gtx.Dp(2)
-        thumbW := track.Dx() - padding*2
-        if thumbW < 2 { thumbW = 2 }
-
-		thumb = image.Rect(padding, y, padding+thumbW, y+thumbH)
-	} else {
-		w := track.Dx()
-		thumbW := scrollMaxInt(8, int(float32(w)*sb.PageSize))
-		maxX := scrollMaxInt(0, w-thumbW)
-		x := int(float32(maxX) * sb.Position)
-
-        padding := gtx.Dp(2)
-        thumbH := track.Dy() - padding*2
-        if thumbH < 2 { thumbH = 2 }
-
-		thumb = image.Rect(x, padding, x+thumbW, padding+thumbH)
+		return image.Rect(0, y, track.Dx(), y+thumbH)
 	}
-
-    // Draw Thumb
-    defer op.Offset(thumb.Min).Push(gtx.Ops).Pop()
-	thumbLocal := image.Rect(0, 0, thumb.Dx(), thumb.Dy())
-
-    // Rounded corners for the thumb
-    radius := float32(gtx.Dp(4))
-    if float32(thumbLocal.Dx())/2 < radius { radius = float32(thumbLocal.Dx())/2 }
-    if float32(thumbLocal.Dy())/2 < radius { radius = float32(thumbLocal.Dy())/2 }
-
-    rr := clip.UniformRRect(thumbLocal, int(math.Round(float64(radius))))
-    paint.FillShape(gtx.Ops, thumbColor, rr.Op(gtx.Ops))
-
-    // Add interaction to thumb
-    defer rr.Push(gtx.Ops).Pop()
-	sb.state.AddIndicator(gtx.Ops)
-
-	return layout.Dimensions{Size: track.Size()}
+	w := track.Dx()
+	thumbW := scrollMaxInt(8, int(float32(w)*sb.PageSize))
+	maxX := scrollMaxInt(0, w-thumbW)
+	x := int(float32(maxX) * sb.Position)
+	return image.Rect(x, 0, x+thumbW, track.Dy())
 }
 
 func scrollClamp01(v float32) float32 {

@@ -1,7 +1,7 @@
 ### Added
-- Implemented richer runtime integration for Go widgets (`Popup`, `Dialog`, `Drawer`, `ToolTip`, `Menu`), making them fully functional overlay surfaces with proper event blocking (modal behavior).
-- Improved Go `ScrollBar` and `ScrollView` with full drag behavior, styled thumbs, dynamic padding, and hover states.
-- Bumped version to v1.1.63.
+- Authored `Manual.md`, detailing the C++ assimilation architecture, specifically the `QQuickPaintedItem` rendering bridges (`BobQJuceHost`, `BobQUltimatePPHost`), event marshaling, `OmniMasterClock`, and `BobQUppComponentRegistry`.
+- Updated `docs/UNIVERSAL_LLM_INSTRUCTIONS.md` to formally require all AI agents to understand and use these multi-framework bridging mechanisms.
+- Bumped version to v1.1.64.
 
 ### Added
 - Verified compilation status. Fixes for the core library inclusions, C++ bridges, and JUCE/Ultimate++ have been implemented and properly built via qtbase-native configuration.
