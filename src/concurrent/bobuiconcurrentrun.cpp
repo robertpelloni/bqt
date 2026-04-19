@@ -26,11 +26,7 @@
     \section1 Optimize includes
 
     If you include the \c <BobUIConcurrent> header, the entire BobUI Concurrent
-<<<<<<< HEAD:src/concurrent/qtconcurrentrun.cpp
     module with the entire Qt Core module will be included, which may increase
-=======
-    module with the entire BobUI Core module will be included, which may increase
->>>>>>> origin/dev:src/concurrent/bobuiconcurrentrun.cpp
     compilation times and binary sizes. To use the
     \l {BobUIConcurrent::run}{BobUIConcurrent::run()} function, you can include a
     more specific header:
@@ -114,11 +110,7 @@
     \section3 Using Member Functions
 
     BobUIConcurrent::run() also accepts pointers to member functions.
-<<<<<<< HEAD:src/concurrent/qtconcurrentrun.cpp
     In Qt 6, the first argument must be the pointer to the member function,
-=======
-    In BobUI 6, the first argument must be the pointer to the member function,
->>>>>>> origin/dev:src/concurrent/bobuiconcurrentrun.cpp
     followed by either a const reference or a pointer to an instance of the
     class. Passing a const reference is useful when calling const member
     functions; passing a pointer is useful for calling non-const member
@@ -250,11 +242,7 @@
 
     Equivalent to
     \code
-<<<<<<< HEAD:src/concurrent/qtconcurrentrun.cpp
     BobUIConcurrent::run(QThreadPool::globalInstance(), function, ...);
-=======
-    BobUIConcurrent::run(BOBUIhreadPool::globalInstance(), function, ...);
->>>>>>> origin/dev:src/concurrent/bobuiconcurrentrun.cpp
     \endcode
 
     Runs \a function in a separate thread. The thread is taken from the global
@@ -287,11 +275,7 @@
 
 /*!
     \since 5.4
-<<<<<<< HEAD:src/concurrent/qtconcurrentrun.cpp
     \fn template <typename T> QFuture<T> BobUIConcurrent::run(QThreadPool *pool, Function function, ...);
-=======
-    \fn template <typename T> QFuture<T> BobUIConcurrent::run(BOBUIhreadPool *pool, Function function, ...);
->>>>>>> origin/dev:src/concurrent/bobuiconcurrentrun.cpp
 
     Schedules \a function on \a pool. Note that \a function may not run
     immediately; \a function will only be run once a thread becomes available.

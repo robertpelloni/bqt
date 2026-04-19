@@ -19,13 +19,8 @@
 
 #include <BobUIDBus/private/bobuidbusglobal_p.h>
 #include <BobUIDBus/qdbuserror.h>
-<<<<<<< HEAD
 #include <QtCore/qstring.h>
 #include <QtCore/qvariant.h>
-=======
-#include <BobUICore/qstring.h>
-#include <BobUICore/qvariant.h>
->>>>>>> origin/dev
 
 #include "qdbus_symbols_p.h"
 

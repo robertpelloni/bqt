@@ -17,15 +17,9 @@
 //
 
 #include <BobUIDBus/private/bobuidbusglobal_p.h>
-<<<<<<< HEAD
 #include <QtCore/qloggingcategory.h>
 #include <QtCore/qmap.h>
 #include <QtCore/qxmlstream.h>
-=======
-#include <BobUICore/qloggingcategory.h>
-#include <BobUICore/qmap.h>
-#include <BobUICore/qxmlstream.h>
->>>>>>> origin/dev
 #include "qdbusintrospection_p.h"
 
 #ifndef BOBUI_NO_DBUS

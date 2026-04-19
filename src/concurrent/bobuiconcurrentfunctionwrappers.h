@@ -7,11 +7,7 @@
 
 #include <BobUIConcurrent/bobuiconcurrentcompilertest.h>
 #include <BobUIConcurrent/bobuiconcurrentreducekernel.h>
-<<<<<<< HEAD:src/concurrent/qtconcurrentfunctionwrappers.h
 #include <QtCore/qfuture.h>
-=======
-#include <BobUICore/qfuture.h>
->>>>>>> origin/dev:src/concurrent/bobuiconcurrentfunctionwrappers.h
 
 #include <tuple>
 

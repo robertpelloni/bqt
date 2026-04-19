@@ -7,15 +7,9 @@
 
 #include <BobUIConcurrent/bobuiconcurrent_global.h>
 
-<<<<<<< HEAD:src/concurrent/qtconcurrentstoredfunctioncall.h
 #ifndef QT_NO_CONCURRENT
 #include <BobUIConcurrent/bobuiconcurrentrunbase.h>
 #include <QtCore/qpromise.h>
-=======
-#ifndef BOBUI_NO_CONCURRENT
-#include <BobUIConcurrent/bobuiconcurrentrunbase.h>
-#include <BobUICore/qpromise.h>
->>>>>>> origin/dev:src/concurrent/bobuiconcurrentstoredfunctioncall.h
 
 #include <type_traits>
 

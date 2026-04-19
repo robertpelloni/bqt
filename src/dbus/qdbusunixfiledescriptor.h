@@ -7,11 +7,7 @@
 #define QDBUSUNIXFILEDESCRIPTOR_H
 
 #include <BobUIDBus/bobuidbusglobal.h>
-<<<<<<< HEAD
 #include <QtCore/qshareddata.h>
-=======
-#include <BobUICore/qshareddata.h>
->>>>>>> origin/dev
 
 #ifndef BOBUI_NO_DBUS
 

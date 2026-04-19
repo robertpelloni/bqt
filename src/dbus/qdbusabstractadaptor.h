@@ -6,11 +6,7 @@
 #define QDBUSABSTRACTADAPTOR_H
 
 #include <BobUIDBus/bobuidbusglobal.h>
-<<<<<<< HEAD
 #include <QtCore/qobject.h>
-=======
-#include <BobUICore/qobject.h>
->>>>>>> origin/dev
 
 #ifndef BOBUI_NO_DBUS
 

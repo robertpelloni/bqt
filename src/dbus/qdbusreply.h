@@ -6,11 +6,7 @@
 #define QDBUSREPLY_H
 
 #include <BobUIDBus/bobuidbusglobal.h>
-<<<<<<< HEAD
 #include <QtCore/qvariant.h>
-=======
-#include <BobUICore/qvariant.h>
->>>>>>> origin/dev
 
 #include <BobUIDBus/qdbusmessage.h>
 #include <BobUIDBus/qdbuserror.h>

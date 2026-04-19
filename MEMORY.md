@@ -1,6 +1,5 @@
 # OmniUI / BobQ Internal Memory & Codebase Observations
 
-<<<<<<< HEAD
 ## High-Confidence Findings
 - `bobui` should be treated as the **framework/kernel**, not the full shell/desktop product. The shell belongs to `bobfilez`.
 - The repository now contains **both** a large C++/BobUI/OmniUI codebase and a large experimental Go port.
@@ -54,7 +53,6 @@
 - 2026-04-05: Direct managed-window activation requests now route through `WindowManager.Layout(...)`, making activation more realistic while keeping manager state authoritative.
 - 2026-04-05: The correct path to side-by-side C++ and Go compilation is a staged compatibility-first migration, not a global `qt` -> `bobui` text replacement.
 - The huge untracked C++ rename tree should be treated as a separate classification/cleanup project before any broad migration bucket is attempted.
-<<<<<<< HEAD
 - 2026-04-05: A first-pass census of the rename explosion shows the largest pressure in `tests/`, `src/corelib/`, and `cmake/`, which reinforces that tests/assets/docs are poor early targets and that `cmake/` package/export compatibility is the safest first real C++ migration bucket.
 - 2026-04-05: The first actual C++ migration work should improve identity/discovery through additive `cmake/` package/export compatibility surfaces before touching deep runtime identifiers.
 - 2026-04-05: The first additive C++ compatibility implementation now exists in `cmake/BobUICompatibilityHelpers.cmake`, `cmake/BobUI6Config.cmake`, and `cmake/BobUIConfig.cmake`, which forward BobUI package discovery to the canonical Qt package surface and create BobUI-namespaced compatibility component targets.
@@ -82,14 +80,3 @@
 - 2026-04-05: `cmake/tests/bobui_full_compatibility_validation.cmake` now provides a single repeatable command for the full BobUI CMake compatibility stack, which is a better default validation gate than a hand-maintained checklist of individual scripts.
 - 2026-04-05: `.github/workflows/go_wasm.yml` now includes a `validate-framework` job that runs the exact verified Go baseline plus the consolidated BobUI compatibility command.
 - 2026-04-05: `BOBUI_SKIP_NATIVE_CONFIGURE=ON` is now the CI-friendly way to keep the compatibility gate green while native compiler/toolchain provisioning remains a separate environment concern.
-=======
->>>>>>> origin/dev
-=======
-- **Naming Conventions:** The core framework was renamed from `bobui` to `bobq`. Internal namespace and folder restructurings have taken place. Do not blindly replace `Qt` across the tree; doing so breaks the Qt build scripts. Instead, `bobq` wrappers and namespaces sit atop the modified Qt base.
-- **Event Loops & Rendering:** The codebase contains multiple rendering strategies. With the introduction of JUCE and Ultimate++, we face multiple event loops. Future agents must carefully bind these loops to a singular BobQ master clock/loop, likely via the `OmniMasterClock` component.
-- **Go Port Status:** A port resides in `internal/` and `main.go`. It currently uses `gioui.org` but the goal is pure BobQ CGO/Go parity.
-- **Submodules:**
-  - `submodules/juce`: Used for audio/DSP and plugin widget parity.
-  - `submodules/ultimatepp`: Used for alternative C++ layout patterns.
-- **CMake:** The primary build system relies on `CMakeLists.txt` heavily mapped to Qt's internal build macros (`qt_internal_qtbase_build_repo`). Modifying it requires extreme care.
->>>>>>> origin/jules-11090863842246041945-58931a03

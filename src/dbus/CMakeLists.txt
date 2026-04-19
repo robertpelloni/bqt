@@ -40,10 +40,7 @@ bobui_internal_add_module(DBus
         qdbusxmlgenerator.cpp
         qdbusxmlparser.cpp qdbusxmlparser_p.h
         bobuidbusglobal.h bobuidbusglobal_p.h
-<<<<<<< HEAD
         BobUIDBus
-=======
->>>>>>> origin/dev
     NO_UNITY_BUILD_SOURCES
         qdbusconnectionmanager.cpp # bobui_windows.h clashing with "interface"
     DEFINES
@@ -82,10 +79,6 @@ bobui_internal_extend_target(DBus CONDITION WIN32
         user32
         ws2_32
 )
-<<<<<<< HEAD
 qt_internal_add_docs(DBus
-=======
-bobui_internal_add_docs(DBus
->>>>>>> origin/dev
     doc/bobuidbus.qdocconf
 )

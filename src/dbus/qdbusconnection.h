@@ -7,13 +7,8 @@
 #define QDBUSCONNECTION_H
 
 #include <BobUIDBus/bobuidbusglobal.h>
-<<<<<<< HEAD
 #include <QtCore/qobjectdefs.h>
 #include <QtCore/qstring.h>
-=======
-#include <BobUICore/qobjectdefs.h>
-#include <BobUICore/qstring.h>
->>>>>>> origin/dev
 
 #ifndef BOBUI_NO_DBUS
 

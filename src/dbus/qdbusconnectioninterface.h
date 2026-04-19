@@ -6,11 +6,7 @@
 #define QDBUSCONNECTIONINTERFACE_H
 
 #include <BobUIDBus/bobuidbusglobal.h>
-<<<<<<< HEAD
 #include <QtCore/qstringlist.h>
-=======
-#include <BobUICore/qstringlist.h>
->>>>>>> origin/dev
 
 #include <BobUIDBus/qdbusabstractinterface.h>
 #include <BobUIDBus/qdbusreply.h>

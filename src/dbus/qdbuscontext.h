@@ -6,11 +6,7 @@
 #define QDBUSCONTEXT_H
 
 #include <BobUIDBus/bobuidbusglobal.h>
-<<<<<<< HEAD
 #include <QtCore/qstring.h>
-=======
-#include <BobUICore/qstring.h>
->>>>>>> origin/dev
 #include <BobUIDBus/qdbuserror.h>
 
 #ifndef BOBUI_NO_DBUS

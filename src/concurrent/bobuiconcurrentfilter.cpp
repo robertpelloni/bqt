@@ -29,11 +29,7 @@
     \section1 Optimize includes
 
     If you include the \c <BobUIConcurrent> header, the entire BobUI Concurrent
-<<<<<<< HEAD:src/concurrent/qtconcurrentfilter.cpp
     module with the entire Qt Core module will be included, which may increase
-=======
-    module with the entire BobUI Core module will be included, which may increase
->>>>>>> origin/dev:src/concurrent/bobuiconcurrentfilter.cpp
     compilation times and binary sizes. To use the
     \l {BobUIConcurrent::filter}{BobUIConcurrent::filter()},
     \l {BobUIConcurrent::filtered}{BobUIConcurrent::filtered()}, and
@@ -231,11 +227,7 @@
 */
 
 /*!
-<<<<<<< HEAD:src/concurrent/qtconcurrentfilter.cpp
     \fn template <typename Sequence, typename KeepFunctor> QFuture<void> BobUIConcurrent::filter(QThreadPool *pool, Sequence &sequence, KeepFunctor &&filterFunction)
-=======
-    \fn template <typename Sequence, typename KeepFunctor> QFuture<void> BobUIConcurrent::filter(BOBUIhreadPool *pool, Sequence &sequence, KeepFunctor &&filterFunction)
->>>>>>> origin/dev:src/concurrent/bobuiconcurrentfilter.cpp
 
     Calls \a filterFunction once for each item in \a sequence.
     All calls to \a filterFunction are invoked from the threads taken from the BOBUIhreadPool \a pool.
@@ -262,11 +254,7 @@
 */
 
 /*!
-<<<<<<< HEAD:src/concurrent/qtconcurrentfilter.cpp
     \fn template <typename Sequence, typename KeepFunctor> QFuture<Sequence::value_type> BobUIConcurrent::filtered(QThreadPool *pool, Sequence &&sequence, KeepFunctor &&filterFunction)
-=======
-    \fn template <typename Sequence, typename KeepFunctor> QFuture<Sequence::value_type> BobUIConcurrent::filtered(BOBUIhreadPool *pool, Sequence &&sequence, KeepFunctor &&filterFunction)
->>>>>>> origin/dev:src/concurrent/bobuiconcurrentfilter.cpp
 
     Calls \a filterFunction once for each item in \a sequence and returns a
     new Sequence of kept items. All calls to \a filterFunction are invoked from the threads
@@ -289,11 +277,7 @@
 */
 
 /*!
-<<<<<<< HEAD:src/concurrent/qtconcurrentfilter.cpp
     \fn template <typename Iterator, typename KeepFunctor> QFuture<typename BobUIConcurrent::qValueType<Iterator>::value_type> BobUIConcurrent::filtered(QThreadPool *pool, Iterator begin, Iterator end, KeepFunctor &&filterFunction)
-=======
-    \fn template <typename Iterator, typename KeepFunctor> QFuture<typename BobUIConcurrent::qValueType<Iterator>::value_type> BobUIConcurrent::filtered(BOBUIhreadPool *pool, Iterator begin, Iterator end, KeepFunctor &&filterFunction)
->>>>>>> origin/dev:src/concurrent/bobuiconcurrentfilter.cpp
 
     Calls \a filterFunction once for each item from \a begin to \a end and
     returns a new Sequence of kept items. All calls to \a filterFunction are invoked from the threads
@@ -316,11 +300,7 @@
 */
 
 /*!
-<<<<<<< HEAD:src/concurrent/qtconcurrentfilter.cpp
     \fn template <typename ResultType, typename Sequence, typename KeepFunctor, typename ReduceFunctor> QFuture<ResultType> BobUIConcurrent::filteredReduced(QThreadPool *pool, Sequence &&sequence, KeepFunctor &&filterFunction, ReduceFunctor &&reduceFunction, BobUIConcurrent::ReduceOptions reduceOptions)
-=======
-    \fn template <typename ResultType, typename Sequence, typename KeepFunctor, typename ReduceFunctor> QFuture<ResultType> BobUIConcurrent::filteredReduced(BOBUIhreadPool *pool, Sequence &&sequence, KeepFunctor &&filterFunction, ReduceFunctor &&reduceFunction, BobUIConcurrent::ReduceOptions reduceOptions)
->>>>>>> origin/dev:src/concurrent/bobuiconcurrentfilter.cpp
 
     Calls \a filterFunction once for each item in \a sequence.
     All calls to \a filterFunction are invoked from the threads taken from the BOBUIhreadPool \a pool.
@@ -357,11 +337,7 @@
 */
 
 /*!
-<<<<<<< HEAD:src/concurrent/qtconcurrentfilter.cpp
     \fn template <typename ResultType, typename Sequence, typename KeepFunctor, typename ReduceFunctor, typename InitialValueType> QFuture<ResultType> BobUIConcurrent::filteredReduced(QThreadPool *pool, Sequence &&sequence, KeepFunctor &&filterFunction, ReduceFunctor &&reduceFunction, InitialValueType &&initialValue, BobUIConcurrent::ReduceOptions reduceOptions)
-=======
-    \fn template <typename ResultType, typename Sequence, typename KeepFunctor, typename ReduceFunctor, typename InitialValueType> QFuture<ResultType> BobUIConcurrent::filteredReduced(BOBUIhreadPool *pool, Sequence &&sequence, KeepFunctor &&filterFunction, ReduceFunctor &&reduceFunction, InitialValueType &&initialValue, BobUIConcurrent::ReduceOptions reduceOptions)
->>>>>>> origin/dev:src/concurrent/bobuiconcurrentfilter.cpp
 
     Calls \a filterFunction once for each item in \a sequence.
     All calls to \a filterFunction are invoked from the threads taken from the BOBUIhreadPool \a pool.
@@ -404,11 +380,7 @@
 */
 
 /*!
-<<<<<<< HEAD:src/concurrent/qtconcurrentfilter.cpp
     \fn template <typename ResultType, typename Iterator, typename KeepFunctor, typename ReduceFunctor> QFuture<ResultType> BobUIConcurrent::filteredReduced(QThreadPool *pool, Iterator begin, Iterator end, KeepFunctor &&filterFunction, ReduceFunctor &&reduceFunction, BobUIConcurrent::ReduceOptions reduceOptions)
-=======
-    \fn template <typename ResultType, typename Iterator, typename KeepFunctor, typename ReduceFunctor> QFuture<ResultType> BobUIConcurrent::filteredReduced(BOBUIhreadPool *pool, Iterator begin, Iterator end, KeepFunctor &&filterFunction, ReduceFunctor &&reduceFunction, BobUIConcurrent::ReduceOptions reduceOptions)
->>>>>>> origin/dev:src/concurrent/bobuiconcurrentfilter.cpp
 
     Calls \a filterFunction once for each item from \a begin to \a end.
     All calls to \a filterFunction are invoked from the threads taken from the BOBUIhreadPool \a pool.
@@ -445,11 +417,7 @@
 */
 
 /*!
-<<<<<<< HEAD:src/concurrent/qtconcurrentfilter.cpp
     \fn template <typename ResultType, typename Iterator, typename KeepFunctor, typename ReduceFunctor, typename InitialValueType> QFuture<ResultType> BobUIConcurrent::filteredReduced(QThreadPool *pool, Iterator begin, Iterator end, KeepFunctor &&filterFunction, ReduceFunctor &&reduceFunction, InitialValueType &&initialValue, BobUIConcurrent::ReduceOptions reduceOptions)
-=======
-    \fn template <typename ResultType, typename Iterator, typename KeepFunctor, typename ReduceFunctor, typename InitialValueType> QFuture<ResultType> BobUIConcurrent::filteredReduced(BOBUIhreadPool *pool, Iterator begin, Iterator end, KeepFunctor &&filterFunction, ReduceFunctor &&reduceFunction, InitialValueType &&initialValue, BobUIConcurrent::ReduceOptions reduceOptions)
->>>>>>> origin/dev:src/concurrent/bobuiconcurrentfilter.cpp
 
     Calls \a filterFunction once for each item from \a begin to \a end.
     All calls to \a filterFunction are invoked from the threads taken from the BOBUIhreadPool \a pool.
@@ -492,11 +460,7 @@
 */
 
 /*!
-<<<<<<< HEAD:src/concurrent/qtconcurrentfilter.cpp
     \fn template <typename Sequence, typename KeepFunctor> void BobUIConcurrent::blockingFilter(QThreadPool *pool, Sequence &sequence, KeepFunctor &&filterFunction)
-=======
-    \fn template <typename Sequence, typename KeepFunctor> void BobUIConcurrent::blockingFilter(BOBUIhreadPool *pool, Sequence &sequence, KeepFunctor &&filterFunction)
->>>>>>> origin/dev:src/concurrent/bobuiconcurrentfilter.cpp
 
     Calls \a filterFunction once for each item in \a sequence.
     All calls to \a filterFunction are invoked from the threads taken from the BOBUIhreadPool \a pool.
@@ -527,11 +491,7 @@
 */
 
 /*!
-<<<<<<< HEAD:src/concurrent/qtconcurrentfilter.cpp
     \fn template <typename Sequence, typename KeepFunctor> Sequence BobUIConcurrent::blockingFiltered(QThreadPool *pool, Sequence &&sequence, KeepFunctor &&filterFunction)
-=======
-    \fn template <typename Sequence, typename KeepFunctor> Sequence BobUIConcurrent::blockingFiltered(BOBUIhreadPool *pool, Sequence &&sequence, KeepFunctor &&filterFunction)
->>>>>>> origin/dev:src/concurrent/bobuiconcurrentfilter.cpp
 
     Calls \a filterFunction once for each item in \a sequence and returns a
     new Sequence of kept items. All calls to \a filterFunction are invoked from the threads
@@ -558,11 +518,7 @@
 */
 
 /*!
-<<<<<<< HEAD:src/concurrent/qtconcurrentfilter.cpp
     \fn template <typename OutputSequence, typename Iterator, typename KeepFunctor> OutputSequence BobUIConcurrent::blockingFiltered(QThreadPool *pool, Iterator begin, Iterator end, KeepFunctor &&filterFunction)
-=======
-    \fn template <typename OutputSequence, typename Iterator, typename KeepFunctor> OutputSequence BobUIConcurrent::blockingFiltered(BOBUIhreadPool *pool, Iterator begin, Iterator end, KeepFunctor &&filterFunction)
->>>>>>> origin/dev:src/concurrent/bobuiconcurrentfilter.cpp
 
     Calls \a filterFunction once for each item from \a begin to \a end and
     returns a new Sequence of kept items. All calls to \a filterFunction are invoked from the threads
@@ -591,11 +547,7 @@
 */
 
 /*!
-<<<<<<< HEAD:src/concurrent/qtconcurrentfilter.cpp
     \fn template <typename ResultType, typename Sequence, typename KeepFunctor, typename ReduceFunctor> ResultType BobUIConcurrent::blockingFilteredReduced(QThreadPool *pool, Sequence &&sequence, KeepFunctor &&filterFunction, ReduceFunctor &&reduceFunction, BobUIConcurrent::ReduceOptions reduceOptions)
-=======
-    \fn template <typename ResultType, typename Sequence, typename KeepFunctor, typename ReduceFunctor> ResultType BobUIConcurrent::blockingFilteredReduced(BOBUIhreadPool *pool, Sequence &&sequence, KeepFunctor &&filterFunction, ReduceFunctor &&reduceFunction, BobUIConcurrent::ReduceOptions reduceOptions)
->>>>>>> origin/dev:src/concurrent/bobuiconcurrentfilter.cpp
 
     Calls \a filterFunction once for each item in \a sequence.
     All calls to \a filterFunction are invoked from the threads taken from the BOBUIhreadPool \a pool.
@@ -636,11 +588,7 @@
 */
 
 /*!
-<<<<<<< HEAD:src/concurrent/qtconcurrentfilter.cpp
     \fn template <typename ResultType, typename Sequence, typename KeepFunctor, typename ReduceFunctor, typename InitialValueType> ResultType BobUIConcurrent::blockingFilteredReduced(QThreadPool *pool, Sequence &&sequence, KeepFunctor &&filterFunction, ReduceFunctor &&reduceFunction, InitialValueType &&initialValue, BobUIConcurrent::ReduceOptions reduceOptions)
-=======
-    \fn template <typename ResultType, typename Sequence, typename KeepFunctor, typename ReduceFunctor, typename InitialValueType> ResultType BobUIConcurrent::blockingFilteredReduced(BOBUIhreadPool *pool, Sequence &&sequence, KeepFunctor &&filterFunction, ReduceFunctor &&reduceFunction, InitialValueType &&initialValue, BobUIConcurrent::ReduceOptions reduceOptions)
->>>>>>> origin/dev:src/concurrent/bobuiconcurrentfilter.cpp
 
     Calls \a filterFunction once for each item in \a sequence.
     All calls to \a filterFunction are invoked from the threads taken from the BOBUIhreadPool \a pool.
@@ -687,11 +635,7 @@
 */
 
 /*!
-<<<<<<< HEAD:src/concurrent/qtconcurrentfilter.cpp
     \fn template <typename ResultType, typename Iterator, typename KeepFunctor, typename ReduceFunctor> ResultType BobUIConcurrent::blockingFilteredReduced(QThreadPool *pool, Iterator begin, Iterator end, KeepFunctor &&filterFunction, ReduceFunctor &&reduceFunction, BobUIConcurrent::ReduceOptions reduceOptions)
-=======
-    \fn template <typename ResultType, typename Iterator, typename KeepFunctor, typename ReduceFunctor> ResultType BobUIConcurrent::blockingFilteredReduced(BOBUIhreadPool *pool, Iterator begin, Iterator end, KeepFunctor &&filterFunction, ReduceFunctor &&reduceFunction, BobUIConcurrent::ReduceOptions reduceOptions)
->>>>>>> origin/dev:src/concurrent/bobuiconcurrentfilter.cpp
 
     Calls \a filterFunction once for each item from \a begin to \a end.
     All calls to \a filterFunction are invoked from the threads taken from the BOBUIhreadPool \a pool.
@@ -734,11 +678,7 @@
 */
 
 /*!
-<<<<<<< HEAD:src/concurrent/qtconcurrentfilter.cpp
     \fn template <typename ResultType, typename Iterator, typename KeepFunctor, typename ReduceFunctor, typename InitialValueType> ResultType BobUIConcurrent::blockingFilteredReduced(QThreadPool *pool, Iterator begin, Iterator end, KeepFunctor &&filterFunction, ReduceFunctor &&reduceFunction, InitialValueType &&initialValue, BobUIConcurrent::ReduceOptions reduceOptions)
-=======
-    \fn template <typename ResultType, typename Iterator, typename KeepFunctor, typename ReduceFunctor, typename InitialValueType> ResultType BobUIConcurrent::blockingFilteredReduced(BOBUIhreadPool *pool, Iterator begin, Iterator end, KeepFunctor &&filterFunction, ReduceFunctor &&reduceFunction, InitialValueType &&initialValue, BobUIConcurrent::ReduceOptions reduceOptions)
->>>>>>> origin/dev:src/concurrent/bobuiconcurrentfilter.cpp
 
     Calls \a filterFunction once for each item from \a begin to \a end.
     All calls to \a filterFunction are invoked from the threads taken from the BOBUIhreadPool \a pool.
@@ -787,55 +727,31 @@
 */
 
 /*!
-<<<<<<< HEAD:src/concurrent/qtconcurrentfilter.cpp
   \fn [BobUIConcurrent-2] ThreadEngineStarter<typename qValueType<Iterator>::value_type> BobUIConcurrent::startFiltered(QThreadPool *pool, Iterator begin, Iterator end, KeepFunctor &&functor)
-=======
-  \fn [BobUIConcurrent-2] ThreadEngineStarter<typename qValueType<Iterator>::value_type> BobUIConcurrent::startFiltered(BOBUIhreadPool *pool, Iterator begin, Iterator end, KeepFunctor &&functor)
->>>>>>> origin/dev:src/concurrent/bobuiconcurrentfilter.cpp
   \internal
 */
 
 /*!
-<<<<<<< HEAD:src/concurrent/qtconcurrentfilter.cpp
   \fn [BobUIConcurrent-3] ThreadEngineStarter<typename Sequence::value_type> BobUIConcurrent::startFiltered(QThreadPool *pool, Sequence &&sequence, KeepFunctor &&functor)
-=======
-  \fn [BobUIConcurrent-3] ThreadEngineStarter<typename Sequence::value_type> BobUIConcurrent::startFiltered(BOBUIhreadPool *pool, Sequence &&sequence, KeepFunctor &&functor)
->>>>>>> origin/dev:src/concurrent/bobuiconcurrentfilter.cpp
   \internal
 */
 
 /*!
-<<<<<<< HEAD:src/concurrent/qtconcurrentfilter.cpp
   \fn [BobUIConcurrent-4] ThreadEngineStarter<ResultType> BobUIConcurrent::startFilteredReduced(QThreadPool *pool, Sequence &&sequence, MapFunctor &&mapFunctor, ReduceFunctor &&reduceFunctor, ReduceOptions options)
-=======
-  \fn [BobUIConcurrent-4] ThreadEngineStarter<ResultType> BobUIConcurrent::startFilteredReduced(BOBUIhreadPool *pool, Sequence &&sequence, MapFunctor &&mapFunctor, ReduceFunctor &&reduceFunctor, ReduceOptions options)
->>>>>>> origin/dev:src/concurrent/bobuiconcurrentfilter.cpp
   \internal
 */
 
 /*!
-<<<<<<< HEAD:src/concurrent/qtconcurrentfilter.cpp
   \fn [BobUIConcurrent-5] ThreadEngineStarter<ResultType> BobUIConcurrent::startFilteredReduced(QThreadPool *pool, Iterator begin, Iterator end, MapFunctor &&mapFunctor, ReduceFunctor &&reduceFunctor, ReduceOptions options)
-=======
-  \fn [BobUIConcurrent-5] ThreadEngineStarter<ResultType> BobUIConcurrent::startFilteredReduced(BOBUIhreadPool *pool, Iterator begin, Iterator end, MapFunctor &&mapFunctor, ReduceFunctor &&reduceFunctor, ReduceOptions options)
->>>>>>> origin/dev:src/concurrent/bobuiconcurrentfilter.cpp
   \internal
 */
 
 /*!
-<<<<<<< HEAD:src/concurrent/qtconcurrentfilter.cpp
   \fn [BobUIConcurrent-6] ThreadEngineStarter<ResultType> BobUIConcurrent::startFilteredReduced(QThreadPool *pool, Sequence &&sequence, MapFunctor &&mapFunctor, ReduceFunctor &&reduceFunctor, ResultType &&initialValue, ReduceOptions options)
-=======
-  \fn [BobUIConcurrent-6] ThreadEngineStarter<ResultType> BobUIConcurrent::startFilteredReduced(BOBUIhreadPool *pool, Sequence &&sequence, MapFunctor &&mapFunctor, ReduceFunctor &&reduceFunctor, ResultType &&initialValue, ReduceOptions options)
->>>>>>> origin/dev:src/concurrent/bobuiconcurrentfilter.cpp
   \internal
 */
 
 /*!
-<<<<<<< HEAD:src/concurrent/qtconcurrentfilter.cpp
   \fn [BobUIConcurrent-7] ThreadEngineStarter<ResultType> BobUIConcurrent::startFilteredReduced(QThreadPool *pool, Iterator begin, Iterator end, MapFunctor &&mapFunctor, ReduceFunctor &&reduceFunctor, ResultType &&initialValue, ReduceOptions options)
-=======
-  \fn [BobUIConcurrent-7] ThreadEngineStarter<ResultType> BobUIConcurrent::startFilteredReduced(BOBUIhreadPool *pool, Iterator begin, Iterator end, MapFunctor &&mapFunctor, ReduceFunctor &&reduceFunctor, ResultType &&initialValue, ReduceOptions options)
->>>>>>> origin/dev:src/concurrent/bobuiconcurrentfilter.cpp
   \internal
 */

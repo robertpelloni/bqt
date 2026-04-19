@@ -6,17 +6,10 @@
 #define QDBUSABSTRACTINTERFACE_H
 
 #include <BobUIDBus/bobuidbusglobal.h>
-<<<<<<< HEAD
 #include <QtCore/qstring.h>
 #include <QtCore/qvariant.h>
 #include <QtCore/qlist.h>
 #include <QtCore/qobject.h>
-=======
-#include <BobUICore/qstring.h>
-#include <BobUICore/qvariant.h>
-#include <BobUICore/qlist.h>
-#include <BobUICore/qobject.h>
->>>>>>> origin/dev
 
 #include <BobUIDBus/qdbusmessage.h>
 #include <BobUIDBus/qdbusextratypes.h>

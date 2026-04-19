@@ -7,13 +7,8 @@
 
 #include <BobUIDBus/bobuidbusglobal.h>
 #include <BobUIDBus/qdbusmessage.h>
-<<<<<<< HEAD
 #include <QtCore/qobject.h>
 #include <QtCore/qshareddata.h>
-=======
-#include <BobUICore/qobject.h>
-#include <BobUICore/qshareddata.h>
->>>>>>> origin/dev
 
 #ifndef BOBUI_NO_DBUS
 

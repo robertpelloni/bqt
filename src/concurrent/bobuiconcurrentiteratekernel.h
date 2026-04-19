@@ -9,11 +9,7 @@
 
 #if !defined(BOBUI_NO_CONCURRENT) || defined(Q_QDOC)
 
-<<<<<<< HEAD:src/concurrent/qtconcurrentiteratekernel.h
 #include <QtCore/qatomic.h>
-=======
-#include <BobUICore/qatomic.h>
->>>>>>> origin/dev:src/concurrent/bobuiconcurrentiteratekernel.h
 #include <BobUIConcurrent/bobuiconcurrentmedian.h>
 #include <BobUIConcurrent/bobuiconcurrentthreadengine.h>
 

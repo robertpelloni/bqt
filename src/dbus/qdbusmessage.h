@@ -7,13 +7,8 @@
 
 #include <BobUIDBus/bobuidbusglobal.h>
 #include <BobUIDBus/qdbuserror.h>
-<<<<<<< HEAD
 #include <QtCore/qlist.h>
 #include <QtCore/qvariant.h>
-=======
-#include <BobUICore/qlist.h>
-#include <BobUICore/qvariant.h>
->>>>>>> origin/dev
 
 #if !defined(BOBUI_NO_DBUS) && !defined(BOBUI_BOOTSTRAPPED)
 

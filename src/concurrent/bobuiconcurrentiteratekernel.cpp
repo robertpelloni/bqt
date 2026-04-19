@@ -102,11 +102,7 @@ void BlockSizeManager::timeAfterUser()
     m_blockSize = qMin(m_blockSize * 2,  maxBlockSize);
 
 #ifdef BOBUICONCURRENT_FOR_DEBUG
-<<<<<<< HEAD:src/concurrent/qtconcurrentiteratekernel.cpp
     qDebug() << QThread::currentThread() << "adjusting block size" << controlPartElapsed.median() << userPartElapsed.median() << m_blockSize;
-=======
-    qDebug() << BOBUIhread::currentThread() << "adjusting block size" << controlPartElapsed.median() << userPartElapsed.median() << m_blockSize;
->>>>>>> origin/dev:src/concurrent/bobuiconcurrentiteratekernel.cpp
 #endif
 
     // Reset the medians after adjusting the block size so we get

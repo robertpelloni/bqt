@@ -6,11 +6,7 @@
 #define BOBUICONCURRENT_FILTER_H
 
 #if 0
-<<<<<<< HEAD:src/concurrent/qtconcurrentfilter.h
 #pragma qt_class(BobUIConcurrentFilter)
-=======
-#pragma bobui_class(BobUIConcurrentFilter)
->>>>>>> origin/dev:src/concurrent/bobuiconcurrentfilter.h
 #endif
 
 #include <BobUIConcurrent/bobuiconcurrent_global.h>

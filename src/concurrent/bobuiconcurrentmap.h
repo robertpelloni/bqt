@@ -6,11 +6,7 @@
 #define BOBUICONCURRENT_MAP_H
 
 #if 0
-<<<<<<< HEAD:src/concurrent/qtconcurrentmap.h
 #pragma qt_class(BobUIConcurrentMap)
-=======
-#pragma bobui_class(BobUIConcurrentMap)
->>>>>>> origin/dev:src/concurrent/bobuiconcurrentmap.h
 #endif
 
 #include <BobUIConcurrent/bobuiconcurrent_global.h>

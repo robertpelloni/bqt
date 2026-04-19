@@ -18,7 +18,6 @@
 - [ ] Implement Go routines to handle BobQ signal/slot emission.
 - [ ] Port the entire JUCE DSP stack to native Go where feasible.
 
-<<<<<<< HEAD
 ## 4. Framework Parity Work
 - [ ] Continue runtime-verifying parity claims instead of expanding only by file count.
 - [ ] Strengthen model/view parity (`TableView`, selection, sorting, delegates).
@@ -40,7 +39,6 @@
 ## 6. Strategic Alignment
 - [x] Record the current `BTK` relationship in `docs/ai/design/2026-04-04-bobui-vs-btk-comparison.md`.
 - [x] Document a safe staged strategy for C++/Go side-by-side migration instead of a destructive global `qt` -> `bobui` rename.
-<<<<<<< HEAD
 - [x] Classify the current C++ rename-artifact explosion into migration buckets and select `cmake/` package/export compatibility as the first safe implementation bucket.
 - [x] Implement the first additive `cmake/` package/export compatibility slice without staging unrelated rename artifacts.
 - [x] Wire the new BobUI CMake compatibility shims into install/export generation without replacing the canonical Qt package layout in one shot.
@@ -60,12 +58,5 @@
 - [x] Add a repeatable qtbase-native configure preflight gate that distinguishes missing-toolchain environments from real configure regressions.
 - [ ] Execute the qtbase-native configure gate in an environment with a visible C/C++ compiler toolchain.
 - [ ] Extend BobUI module-package shims to other high-value public modules in small verified slices.
-=======
->>>>>>> origin/dev
 - [ ] Keep `bobui` positioned as a fast idea/incubation track for ownership semantics, bridge contracts, and compile-safe parity exploration.
 - [ ] Promote ideas from `bobui` into larger native framework tracks only after they are scoped, validated, and clearly separated from shell/product concerns.
-=======
-## Phase 4: World Domination
-- [ ] 1:1 parity with JavaFX, WinUI, and DearImGui.
-- [ ] Build robust native UI shells (web, desktop, embedded) via `bobfilez`.
->>>>>>> origin/jules-11090863842246041945-58931a03
