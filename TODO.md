@@ -1,5 +1,6 @@
 # BobQ Short-Term TODO List
 
+<<<<<<< HEAD
 ## Immediate
 - [x] Add `go test ./internal/...` and `go build -buildvcs=false .` to Go CI.
 - [x] Wire the `DemoSurface` into a real interactive Gio frame loop.
@@ -38,6 +39,18 @@
 - [ ] Run the qtbase-native configure gate in an environment with a visible C/C++ compiler toolchain.
 - [ ] Add stronger native end-to-end qtbase configure/install validation when practical.
 - [ ] Extend BobUI module-package shims to other high-value public modules in small verified slices.
+=======
+- [ ] Classify the untracked C++ rename artifacts into canonical vs generated vs duplicate buckets before any broad migration work.
+- [ ] Choose one safe C++ package/export/header compatibility bucket for the first side-by-side migration implementation.
+=======
+## Phase 1 Parity Wrappers (Completed)
+1. ~~**Build System Validation:**~~ Modularized `CMakeLists.txt` via `BobQSubmodules.cmake`.
+2. ~~**Submodule Wrapper:**~~ Implemented `BobQJuceHost`.
+3. ~~**Go Port Coverage:**~~ Generated `ANALYSIS.md`.
+4. ~~**Documentation Sync:**~~ Generated `SUBMODULE_DASHBOARD.md`.
+5. ~~**GTK Parity Research:**~~ Implemented `BobQBox` and `BobQGrid`.
+>>>>>>> origin/jules-11090863842246041945-58931a03
+>>>>>>> 677b0f352ad2c50efba02126daac7b26465b876d
 
 ## Phase 2: Unification & Interoperability
 6. ~~**Ultimate++ Submodule Wrapper:**~~ Implement a `BobQUltimatePPHost` wrapper class that allows placing an Ultimate++ `Ctrl` or layout component inside a BobQ `QQuickPaintedItem`.

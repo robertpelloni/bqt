@@ -18,6 +18,10 @@
 - [ ] Implement Go routines to handle BobQ signal/slot emission.
 - [ ] Port the entire JUCE DSP stack to native Go where feasible.
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 677b0f352ad2c50efba02126daac7b26465b876d
 ## 4. Framework Parity Work
 - [ ] Continue runtime-verifying parity claims instead of expanding only by file count.
 - [ ] Strengthen model/view parity (`TableView`, selection, sorting, delegates).
@@ -60,3 +64,11 @@
 - [ ] Extend BobUI module-package shims to other high-value public modules in small verified slices.
 - [ ] Keep `bobui` positioned as a fast idea/incubation track for ownership semantics, bridge contracts, and compile-safe parity exploration.
 - [ ] Promote ideas from `bobui` into larger native framework tracks only after they are scoped, validated, and clearly separated from shell/product concerns.
+<<<<<<< HEAD
+=======
+=======
+## Phase 4: World Domination
+- [ ] 1:1 parity with JavaFX, WinUI, and DearImGui.
+- [ ] Build robust native UI shells (web, desktop, embedded) via `bobfilez`.
+>>>>>>> origin/jules-11090863842246041945-58931a03
+>>>>>>> 677b0f352ad2c50efba02126daac7b26465b876d
