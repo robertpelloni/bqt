@@ -9,13 +9,13 @@
 #pragma qt_class(BobUIConcurrentMap)
 #endif
 
-#include <BobUIConcurrent/bobuiconcurrent_global.h>
+#include <QtConcurrent/qtconcurrent_global.h>
 
 #if !defined(BOBUI_NO_CONCURRENT) || defined(Q_QDOC)
 
-#include <BobUIConcurrent/bobuiconcurrentmapkernel.h>
-#include <BobUIConcurrent/bobuiconcurrentreducekernel.h>
-#include <BobUIConcurrent/bobuiconcurrentfunctionwrappers.h>
+#include <QtConcurrent/qtconcurrentmapkernel.h>
+#include <QtConcurrent/qtconcurrentreducekernel.h>
+#include <QtConcurrent/qtconcurrentfunctionwrappers.h>
 
 BOBUI_BEGIN_NAMESPACE
 

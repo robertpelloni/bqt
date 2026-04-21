@@ -17,8 +17,8 @@
 #ifndef QDBUSUTIL_P_H
 #define QDBUSUTIL_P_H
 
-#include <BobUIDBus/private/bobuidbusglobal_p.h>
-#include <BobUIDBus/qdbuserror.h>
+#include <QtDBus/private/qtdbusglobal_p.h>
+#include <QtDBus/qdbuserror.h>
 #include <QtCore/qstring.h>
 #include <QtCore/qvariant.h>
 

@@ -7,7 +7,7 @@
 
 bobui_internal_add_module(Xml
     SOURCES
-        bobuixmlglobal.h
+        qtxmlglobal.h
         BobUIXml
     DEFINES
         BOBUI_NO_CONTEXTLESS_CONNECT

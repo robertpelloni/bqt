@@ -5,9 +5,9 @@
 #ifndef QDBUSCONTEXT_H
 #define QDBUSCONTEXT_H
 
-#include <BobUIDBus/bobuidbusglobal.h>
+#include <QtDBus/qtdbusglobal.h>
 #include <QtCore/qstring.h>
-#include <BobUIDBus/qdbuserror.h>
+#include <QtDBus/qdbuserror.h>
 
 #ifndef BOBUI_NO_DBUS
 

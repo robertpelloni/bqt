@@ -5,8 +5,8 @@
 #ifndef QDBUSPENDINGCALL_H
 #define QDBUSPENDINGCALL_H
 
-#include <BobUIDBus/bobuidbusglobal.h>
-#include <BobUIDBus/qdbusmessage.h>
+#include <QtDBus/qtdbusglobal.h>
+#include <QtDBus/qdbusmessage.h>
 #include <QtCore/qobject.h>
 #include <QtCore/qshareddata.h>
 

@@ -5,13 +5,13 @@
 #ifndef BOBUICONCURRENT_ITERATEKERNEL_H
 #define BOBUICONCURRENT_ITERATEKERNEL_H
 
-#include <BobUIConcurrent/bobuiconcurrent_global.h>
+#include <QtConcurrent/qtconcurrent_global.h>
 
 #if !defined(BOBUI_NO_CONCURRENT) || defined(Q_QDOC)
 
 #include <QtCore/qatomic.h>
-#include <BobUIConcurrent/bobuiconcurrentmedian.h>
-#include <BobUIConcurrent/bobuiconcurrentthreadengine.h>
+#include <QtConcurrent/qtconcurrentmedian.h>
+#include <QtConcurrent/qtconcurrentthreadengine.h>
 
 #include <iterator>
 

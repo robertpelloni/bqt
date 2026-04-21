@@ -7,7 +7,7 @@
 
 #include <QtCore/QObject>
 #include <QtCore/qcontainerfwd.h> // Q(String)List
-#include <BobUIDBus/bobuidbusglobal.h>
+#include <QtDBus/qtdbusglobal.h>
 
 #if !defined(BOBUI_NO_DBUS) && !defined(BOBUI_NO_QOBJECT)
 

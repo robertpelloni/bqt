@@ -5,13 +5,13 @@
 #ifndef QDBUSREPLY_H
 #define QDBUSREPLY_H
 
-#include <BobUIDBus/bobuidbusglobal.h>
+#include <QtDBus/qtdbusglobal.h>
 #include <QtCore/qvariant.h>
 
-#include <BobUIDBus/qdbusmessage.h>
-#include <BobUIDBus/qdbuserror.h>
-#include <BobUIDBus/qdbusextratypes.h>
-#include <BobUIDBus/qdbuspendingreply.h>
+#include <QtDBus/qdbusmessage.h>
+#include <QtDBus/qdbuserror.h>
+#include <QtDBus/qdbusextratypes.h>
+#include <QtDBus/qdbuspendingreply.h>
 
 #ifndef BOBUI_NO_DBUS
 

@@ -19,7 +19,7 @@
 #endif
 
 #ifndef QT_NO_DBUS
-#include <BobUIDBus/bobuidbusexports.h>
+#include <QtDBus/qtdbusexports.h>
 #endif // QT_NO_DBUS
 
 #endif

@@ -6,7 +6,7 @@
 #ifndef QDBUSUNIXFILEDESCRIPTOR_H
 #define QDBUSUNIXFILEDESCRIPTOR_H
 
-#include <BobUIDBus/bobuidbusglobal.h>
+#include <QtDBus/qtdbusglobal.h>
 #include <QtCore/qshareddata.h>
 
 #ifndef BOBUI_NO_DBUS

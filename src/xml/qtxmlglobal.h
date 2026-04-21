@@ -5,7 +5,7 @@
 #define BOBUIXMLGLOBAL_H
 
 #include <QtCore/qglobal.h>
-#include <BobUIXml/bobuixml-config.h>
-#include <BobUIXml/bobuixmlexports.h>
+#include <QtXml/qtxml-config.h>
+#include <QtXml/qtxmlexports.h>
 
 #endif // BOBUIXMLGLOBAL_H

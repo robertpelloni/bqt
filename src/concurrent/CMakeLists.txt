@@ -10,7 +10,7 @@ bobui_internal_add_module(Concurrent
     EXCEPTIONS
     SOURCES
         qtaskbuilder.h
-        bobuiconcurrent_global.h
+        qtconcurrent_global.h
         qtconcurrentcompilertest.h
         qtconcurrentfilter.cpp qtconcurrentfilter.h
         qtconcurrentfilterkernel.h

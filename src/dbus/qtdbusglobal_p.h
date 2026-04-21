@@ -16,7 +16,7 @@
 // We mean it.
 //
 
-#include <BobUIDBus/bobuidbusglobal.h>
+#include <QtDBus/qtdbusglobal.h>
 #include <QtCore/private/qglobal_p.h>
 
 #endif // BOBUIDBUSGLOBAL_P_H

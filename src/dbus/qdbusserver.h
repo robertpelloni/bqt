@@ -5,7 +5,7 @@
 #ifndef QDBUSSERVER_H
 #define QDBUSSERVER_H
 
-#include <BobUIDBus/bobuidbusglobal.h>
+#include <QtDBus/qtdbusglobal.h>
 #include <QtCore/qobject.h>
 #include <QtCore/qstring.h>
 
