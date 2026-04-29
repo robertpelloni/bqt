@@ -1,126 +1,82 @@
 package widgets
 
 import (
-	"fmt"
-
 	"gioui.org/layout"
 	"gioui.org/unit"
+	"gioui.org/widget"
 	"gioui.org/widget/material"
 	"github.com/robertpelloni/bobui/internal/ui/theme"
 )
 
-// DemoSurface is a compile-safe composition target for the Go QuickControls2-style
-// primitives so they can be exercised together as one framework demo.
 type DemoSurface struct {
-	Popup       Popup
-	Dialog      Dialog
-	Drawer      Drawer
-	ToolTip     ToolTip
-	Menu        Menu
-	WebView     WebView
-	ScrollBox   *ScrollView
-	ScrollItems []string
-	TouchPad    TouchArea
-	LastSwipe   string
+	btn1, btn2, btn3 widget.Clickable
+    dialog           Dialog
+    popup            Popup
+    drawer           Drawer
+    menu             Menu
+    tooltip          ToolTip
 }
 
-func NewDemoSurface() *DemoSurface {
-	d := &DemoSurface{}
-	d.Popup = Popup{Visible: true, Title: "Popup", Body: "QuickControls2 baseline popup"}
-	d.Dialog = Dialog{Visible: false, Title: "Dialog", Body: "Dialog body"}
-	d.Drawer = Drawer{Visible: true, Title: "Drawer"}
-	d.ToolTip = ToolTip{Visible: true, Text: "Tooltip baseline", X: 12, Y: 12}
-	d.Menu = Menu{Visible: true, Items: []MenuItem{{Label: "Open", Action: "open"}, {Label: "Close", Action: "close"}}}
-	d.WebView.Navigate("about:bobui", "<h1>BobUI WebView</h1><br>History and navigation baseline")
-	d.ScrollBox = NewScrollView(layout.Vertical)
-	d.ScrollBox.VerticalPolicy = ScrollAlwaysOn
-	d.ScrollBox.HorizontalPolicy = ScrollAlwaysOn
-	d.ScrollBox.VerticalPlacement = ScrollBarOccupy
-	d.ScrollBox.HorizontalPlacement = ScrollBarOccupy
-	d.ScrollBox.SetCrossAxisViewport(0.15, 0.45)
-	d.TouchPad = TouchArea{
-		Label:             "Swipe Demo",
-		AllowMouseAsTouch: true,
-		MinSwipeDistance:  24,
-	}
-	d.TouchPad.OnSwipe = func(direction SwipeDirection, distance float32) {
-		d.LastSwipe = fmt.Sprintf("%s %.0fpx", direction.String(), distance)
-	}
-	for i := 1; i <= 40; i++ {
-		d.ScrollItems = append(d.ScrollItems, fmt.Sprintf("Scroll item %02d - QuickControls2-style scroll baseline", i))
-	}
-	return d
-}
-
-func (d *DemoSurface) Layout(gtx layout.Context, th theme.Theme) layout.Dimensions {
+func (ds *DemoSurface) Layout(gtx layout.Context, th theme.Theme) layout.Dimensions {
 	mth := material.NewTheme()
 	mth.Palette.Fg = th.Text
-	mth.Palette.Bg = th.Surface
+	mth.Palette.Bg = th.Primary
 
-	// Compose in a simple top-to-bottom structure for verified baseline purposes.
-	return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-			_, _ = d.Menu.Layout(gtx, th)
-			return layout.Dimensions{}
-		}),
-		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-			return d.WebView.Layout(gtx, th)
-		}),
-		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-			return layout.Inset{Top: unit.Dp(8), Bottom: unit.Dp(8)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-				return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-					layout.Rigid(material.Label(mth, unit.Sp(11), fmt.Sprintf("Scroll demo items=%d vPos=%.2f vPage=%.2f hPos=%.2f hPage=%.2f", len(d.ScrollItems), d.ScrollBox.VerticalBar.Position, d.ScrollBox.VerticalBar.PageSize, d.ScrollBox.HorizontalBar.Position, d.ScrollBox.HorizontalBar.PageSize)).Layout),
-					layout.Rigid(material.Label(mth, unit.Sp(10), fmt.Sprintf("placements vertical=%s horizontal=%s deltas main=%.2f cross=%.2f", scrollPlacementLabel(d.ScrollBox.VerticalPlacement), scrollPlacementLabel(d.ScrollBox.HorizontalPlacement), d.ScrollBox.LastScrollDelta, d.ScrollBox.LastCrossDelta)).Layout),
-					layout.Rigid(layout.Spacer{Height: unit.Dp(6)}.Layout),
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-						gtx.Constraints.Min.Y = gtx.Dp(unit.Dp(140))
-						gtx.Constraints.Max.Y = gtx.Dp(unit.Dp(140))
-						return d.ScrollBox.LayoutWithTheme(gtx, th, len(d.ScrollItems), func(gtx layout.Context, i int) layout.Dimensions {
-							return layout.Inset{Top: unit.Dp(4), Bottom: unit.Dp(4), Left: unit.Dp(6), Right: unit.Dp(48)}.Layout(gtx, material.Body1(mth, d.ScrollItems[i]).Layout)
-						})
-					}),
+	if ds.btn1.Clicked(gtx) {
+		ds.dialog = Dialog{Visible: true, Title: "BobQ Dialog", Body: "This is a native dialog."}
+	}
+    if ds.btn2.Clicked(gtx) {
+		ds.popup = Popup{Visible: true, Title: "BobQ Popup", Body: "This is a transient popup."}
+	}
+    if ds.btn3.Clicked(gtx) {
+		ds.drawer = Drawer{Visible: true, Title: "Navigation Drawer", WidthDp: 250}
+	}
+    if ds.btn3.Hovered() {
+        ds.tooltip = ToolTip{Visible: true, Text: "Click to open drawer"}
+        ds.tooltip.X = 150
+        ds.tooltip.Y = 150
+    } else {
+        ds.tooltip.Visible = false
+    }
+
+    // Init menu items if needed
+    if len(ds.menu.Items) == 0 {
+        ds.menu.Items = []*MenuItem{
+            {Label: "File", Action: "file"},
+            {Label: "Edit", Action: "edit"},
+        }
+    }
+
+	return layout.Stack{}.Layout(gtx,
+		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+			return layout.UniformInset(unit.Dp(16)).Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+				return layout.Flex{Axis: layout.Vertical, Spacing: layout.SpaceEvenly}.Layout(gtx,
+					layout.Rigid(material.Button(mth, &ds.btn1, "Show Dialog").Layout),
+                    layout.Rigid(material.Button(mth, &ds.btn2, "Show Popup").Layout),
+                    layout.Rigid(material.Button(mth, &ds.btn3, "Show Drawer").Layout),
 				)
 			})
 		}),
-		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-			return layout.Inset{Top: unit.Dp(8), Bottom: unit.Dp(8)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-				return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-					layout.Rigid(material.Label(mth, unit.Sp(11), fmt.Sprintf("Touch/swipe demo lastSwipe=%s", emptyDemoValue(d.LastSwipe))).Layout),
-					layout.Rigid(layout.Spacer{Height: unit.Dp(6)}.Layout),
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-						return d.TouchPad.Layout(gtx, th)
-					}),
-				)
-			})
+		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+			dims, _ := ds.dialog.Layout(gtx, th)
+            return dims
 		}),
-		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-			return d.Popup.Layout(gtx, th)
+        layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+			return ds.popup.Layout(gtx, th)
 		}),
-		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-			_, _ = d.Dialog.Layout(gtx, th)
-			return layout.Dimensions{}
+        layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+			// dummy child for drawer
+            dummyChild := func(gtx layout.Context) layout.Dimensions {
+                return material.Body1(mth, "Drawer Content").Layout(gtx)
+            }
+            return ds.drawer.Layout(gtx, th, dummyChild)
 		}),
-		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-			return d.ToolTip.Layout(gtx, th)
+        layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+			dims, _ := ds.menu.Layout(gtx, th)
+            return dims
 		}),
-		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-			return d.Drawer.Layout(gtx, th, func(gtx layout.Context) layout.Dimensions {
-				return layout.Dimensions{}
-			})
+        layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+			return ds.tooltip.Layout(gtx, th)
 		}),
 	)
-}
-
-func emptyDemoValue(v string) string {
-	if v == "" {
-		return "none"
-	}
-	return v
-}
-
-func scrollPlacementLabel(p ScrollBarPlacement) string {
-	if p == ScrollBarOccupy {
-		return "occupy"
-	}
-	return "overlay"
 }
